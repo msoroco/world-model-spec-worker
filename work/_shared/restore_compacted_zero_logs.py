@@ -8,20 +8,8 @@ from pathlib import Path
 
 def restore(assignment, skip_existing_verified=False):
     root = Path(__file__).resolve().parents[2]
-    inventories = [json.loads((root / name).read_text()) for name in
-                   ('work/_shared/prune-history.json',
-                    'work/_shared/prune-history-2.json',
-                    'work/_shared/prune-history-3.json',
-                    'work/_shared/prune-history-4.json',
-                    'work/_shared/prune-history-5.json',
-                    'work/_shared/prune-history-6.json',
-                    'work/_shared/prune-history-7.json',
-                    'work/_shared/prune-history-8.json',
-                    'work/_shared/prune-history-9.json',
-                    'work/_shared/prune-history-10.json',
-                    'work/_shared/prune-history-11.json',
-                    'work/_shared/prune-history-12.json',
-                    'work/_shared/prune-history-13.json')]
+    inventories = [json.loads(path.read_text()) for path in
+                   sorted((root / 'work/_shared').glob('prune-history*.json'))]
     prefix = f'work/{assignment}/'
     count = 0
     rows = [row for inventory in inventories for row in

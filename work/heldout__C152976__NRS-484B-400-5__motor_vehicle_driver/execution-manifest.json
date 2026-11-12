@@ -1,0 +1,463 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "heldout__C152976__NRS-484B-400-5__motor_vehicle_driver",
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3",
+  "cases": [
+    {
+      "case_id": "heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__left_edge_reference",
+      "kind": "delivery",
+      "construction": "construction.json",
+      "construction_sha256": "8a4abed2d2a5237ebdbbd8b8a98f825cda50db57b79026b510ff6fef43a6fdab",
+      "measurement_procedure": {
+        "entrypoint": "one_way_saved.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native turn tracking and original curb visibility may fail physical capture"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/left_edge_reference/fallback1-construction.json",
+          "construction_sha256": "69c6171f260153e173b1feaccdae17d690e1c0ef5efe226e860d976fcf972a73",
+          "trigger": {
+            "source": "original route-following control and body history",
+            "metric": "turn path tracking deviation in metres",
+            "failure_condition": "Primary 3 m lookahead cuts the corner or loses the connected turn; 4 m preserves the same route and requested lateral positions."
+          },
+          "changed_knobs": [
+            "lookahead_m: 3.0 to 4.0"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C152976__NRS-484B-400-5__motor_vehicle_driver/execution-manifest.json --case heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__left_edge_reference --candidate fallback1 --output .runtime-work/c152976-left_edge_reference-fallback1-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "left_edge_reference-fallback1-offline-v2.log",
+            "log_sha256": "7a62220e8ec7da2dbd1d2689aacde9cec35b1303ead445d7856b545047bf5d71",
+            "construction_sha256": "69c6171f260153e173b1feaccdae17d690e1c0ef5efe226e860d976fcf972a73"
+          },
+          "compatibility": {
+            "receipt": "left_edge_reference-fallback1-compatibility.json",
+            "sha256": "e2f0e9449b6fdba07d71a028e882da63f53679e1d5ab504165fe02860a14a793",
+            "log": "left_edge_reference-fallback1-analysis.log",
+            "negative_log": "left_edge_reference-fallback1-negative.log"
+          },
+          "saved_processing_proof": {
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C152976__NRS-484B-400-5__motor_vehicle_driver/execution-manifest.json --case heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__left_edge_reference --attempt .runtime-work/c152976-left_edge_reference-fallback1-saved-attempt-v1 --output .runtime-work/c152976-left_edge_reference-fallback1-saved-proof-v1 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+            "exit_code": 0,
+            "log": "left_edge_reference-fallback1-saved.log",
+            "log_sha256": "68657b61c586d5c66fe58ccdfae57cf4349bb4f7ee5350f9f8bde4056ded5aae"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/left_edge_reference/fallback2-construction.json",
+          "construction_sha256": "efb83c0dd4acd00d59403e2a50a17a8aa2a8c2d64fa7542d8c32ed4cbd537c20",
+          "trigger": {
+            "source": "full-decoded overview and curb reference streams",
+            "metric": "body and curb visibility across full turn",
+            "failure_condition": "Primary overview occludes one turn segment; raised overview retains the same camera name, dimensions and route."
+          },
+          "changed_knobs": [
+            "overview_height_delta_m: 0 to 2"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C152976__NRS-484B-400-5__motor_vehicle_driver/execution-manifest.json --case heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__left_edge_reference --candidate fallback2 --output .runtime-work/c152976-left_edge_reference-fallback2-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "left_edge_reference-fallback2-offline-v2.log",
+            "log_sha256": "c772fcb256350ba14b37238a9d95215c1d57df51ffa4c9269aae8af65ca3005c",
+            "construction_sha256": "efb83c0dd4acd00d59403e2a50a17a8aa2a8c2d64fa7542d8c32ed4cbd537c20"
+          },
+          "compatibility": {
+            "receipt": "left_edge_reference-fallback2-compatibility.json",
+            "sha256": "52f47731d68cb8ae119bd8079d58fba8d3df18e8503fb5f6ba5d0cac272a79e1",
+            "log": "left_edge_reference-fallback2-analysis.log",
+            "negative_log": "left_edge_reference-fallback2-negative.log"
+          },
+          "saved_processing_proof": {
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C152976__NRS-484B-400-5__motor_vehicle_driver/execution-manifest.json --case heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__left_edge_reference --attempt .runtime-work/c152976-left_edge_reference-fallback2-saved-attempt-v1 --output .runtime-work/c152976-left_edge_reference-fallback2-saved-proof-v1 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+            "exit_code": 0,
+            "log": "left_edge_reference-fallback2-saved.log",
+            "log_sha256": "addf0bb94948d717ef712e0c37bfad4a0389debbccdbd0a1f57bd338b70206ab"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/left_edge_reference/fallback3-construction.json",
+          "construction_sha256": "c05c3d45d4a2afbeaff20273ad489b67ef6b2f04c16d3d0d10ed0972877d05fd",
+          "trigger": {
+            "source": "original speed and steering readback",
+            "metric": "speed tracking oscillation in m/s",
+            "failure_condition": "Primary gain causes persistent speed oscillation; reduced gain retains the same requested speed, route and lateral positions."
+          },
+          "changed_knobs": [
+            "speed_kp: 0.22 to 0.18"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C152976__NRS-484B-400-5__motor_vehicle_driver/execution-manifest.json --case heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__left_edge_reference --candidate fallback3 --output .runtime-work/c152976-left_edge_reference-fallback3-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "left_edge_reference-fallback3-offline-v2.log",
+            "log_sha256": "c8338c81fd53de0d5430c933b00df5d1cb169940227e546be367c4143db8794a",
+            "construction_sha256": "c05c3d45d4a2afbeaff20273ad489b67ef6b2f04c16d3d0d10ed0972877d05fd"
+          },
+          "compatibility": {
+            "receipt": "left_edge_reference-fallback3-compatibility.json",
+            "sha256": "443b41e5434f97a5c1bd2c53287571ad6de6964f6cc15addb98d9269673a324e",
+            "log": "left_edge_reference-fallback3-analysis.log",
+            "negative_log": "left_edge_reference-fallback3-negative.log"
+          },
+          "saved_processing_proof": {
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C152976__NRS-484B-400-5__motor_vehicle_driver/execution-manifest.json --case heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__left_edge_reference --attempt .runtime-work/c152976-left_edge_reference-fallback3-saved-attempt-v1 --output .runtime-work/c152976-left_edge_reference-fallback3-saved-proof-v1 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+            "exit_code": 0,
+            "log": "left_edge_reference-fallback3-saved.log",
+            "log_sha256": "21f18182010d3c5ed01cdde24fb0ec9ef38a1439c8837a3f50c95763265d00e2"
+          }
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "measurement_contract": "first-measurement-contract.json",
+      "fixture_recipe": "work/heldout__C152976__NRS-484B-400-5__motor_vehicle_driver/diagnostic-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C152976__NRS-484B-400-5__motor_vehicle_driver/execution-manifest.json --case heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__left_edge_reference --candidate primary --output .runtime-work/c152976-left_edge_reference-primary-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "log": "left_edge_reference-primary-offline-v2.log",
+        "log_sha256": "7075dbe84fca70603f7bde4c4903ccacf85d15782847becf43ae5b442e2958f1",
+        "construction_sha256": "8a4abed2d2a5237ebdbbd8b8a98f825cda50db57b79026b510ff6fef43a6fdab"
+      },
+      "compatibility": {
+        "receipt": "left_edge_reference-primary-compatibility.json",
+        "sha256": "f10d75e87215779df1b649484bae36b4efbd6c8b7aef1aba0f75d46d8869a3f6",
+        "log": "left_edge_reference-primary-analysis.log",
+        "negative_log": "left_edge_reference-primary-negative.log"
+      },
+      "saved_processing_proof": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C152976__NRS-484B-400-5__motor_vehicle_driver/execution-manifest.json --case heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__left_edge_reference --attempt .runtime-work/c152976-left_edge_reference-primary-saved-attempt-v2 --output .runtime-work/c152976-left_edge_reference-primary-saved-proof-v2 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "exit_code": 0,
+        "log": "left_edge_reference-primary-saved-v2.log",
+        "log_sha256": "ffcd3cb00736bd18df1c88c4122192703f762d91098f983119a4a05f9d70124c"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C152976__NRS-484B-400-5__motor_vehicle_driver/execution-manifest.json --case heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__left_edge_reference --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSED\"/v*/feedback.json",
+        "test_log": "left_edge_reference-primary-saved-v2.log",
+        "test_log_sha256": "ffcd3cb00736bd18df1c88c4122192703f762d91098f983119a4a05f9d70124c",
+        "test_exit_code": 0
+      },
+      "acquisition": {
+        "one_way_curb_gap_m": {
+          "entrypoint": "one_way_native_capture.py",
+          "method": "Original Native full-body footprint and sourced one-way curb joined in one_way_saved.py",
+          "evidence": "native/footprints.jsonl, native/road_edges.jsonl, video_frames.jsonl and original camera pixels"
+        }
+      }
+    },
+    {
+      "case_id": "heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__approach_shifted_right",
+      "kind": "delivery",
+      "construction": "cases/approach_shifted_right/construction.json",
+      "construction_sha256": "6cc3e1e11231d25a87638a2ca36febd83f661c1e5bf3405376964ee0b799e8d6",
+      "measurement_procedure": {
+        "entrypoint": "one_way_saved.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native turn tracking and original curb visibility may fail physical capture"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/approach_shifted_right/fallback1-construction.json",
+          "construction_sha256": "0f3a1afefa2490b73e7345147ecd3a529194cd5066bdf68a4acf4823f6da61f7",
+          "trigger": {
+            "source": "original route-following control and body history",
+            "metric": "turn path tracking deviation in metres",
+            "failure_condition": "Primary 3 m lookahead cuts the corner or loses the connected turn; 4 m preserves the same route and requested lateral positions."
+          },
+          "changed_knobs": [
+            "lookahead_m: 3.0 to 4.0"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C152976__NRS-484B-400-5__motor_vehicle_driver/execution-manifest.json --case heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__approach_shifted_right --candidate fallback1 --output .runtime-work/c152976-approach_shifted_right-fallback1-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "approach_shifted_right-fallback1-offline-v2.log",
+            "log_sha256": "2ed8e86067197cc5fb792c19ae5de0a83a2a4d70470073a86d0aab790c916231",
+            "construction_sha256": "0f3a1afefa2490b73e7345147ecd3a529194cd5066bdf68a4acf4823f6da61f7"
+          },
+          "compatibility": {
+            "receipt": "approach_shifted_right-fallback1-compatibility.json",
+            "sha256": "31a7bd18faca9b65babea9a4325bce8f4aae262110d9b3ab53ffdc0e736062d3",
+            "log": "approach_shifted_right-fallback1-analysis.log",
+            "negative_log": "approach_shifted_right-fallback1-negative.log"
+          },
+          "saved_processing_proof": {
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C152976__NRS-484B-400-5__motor_vehicle_driver/execution-manifest.json --case heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__approach_shifted_right --attempt .runtime-work/c152976-approach_shifted_right-fallback1-saved-attempt-v1 --output .runtime-work/c152976-approach_shifted_right-fallback1-saved-proof-v1 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+            "exit_code": 0,
+            "log": "approach_shifted_right-fallback1-saved.log",
+            "log_sha256": "10d696e6886fe17eddb39e92726987e95e5b667d5629a53b2c06afaff110b909"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/approach_shifted_right/fallback2-construction.json",
+          "construction_sha256": "1799575c0fba675e77fc41d5ce1d9a1f3def6131775f7063b5b942c4c4915ab7",
+          "trigger": {
+            "source": "full-decoded overview and curb reference streams",
+            "metric": "body and curb visibility across full turn",
+            "failure_condition": "Primary overview occludes one turn segment; raised overview retains the same camera name, dimensions and route."
+          },
+          "changed_knobs": [
+            "overview_height_delta_m: 0 to 2"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C152976__NRS-484B-400-5__motor_vehicle_driver/execution-manifest.json --case heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__approach_shifted_right --candidate fallback2 --output .runtime-work/c152976-approach_shifted_right-fallback2-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "approach_shifted_right-fallback2-offline-v2.log",
+            "log_sha256": "62f92fad5f925ceb45583e3afc52056dcfda0e9f61a95f618ce5f8bcf9d655fe",
+            "construction_sha256": "1799575c0fba675e77fc41d5ce1d9a1f3def6131775f7063b5b942c4c4915ab7"
+          },
+          "compatibility": {
+            "receipt": "approach_shifted_right-fallback2-compatibility.json",
+            "sha256": "9c25c8e64d4ce4b6e7f9830463c55ed9e64da667173a537a078455d418886985",
+            "log": "approach_shifted_right-fallback2-analysis.log",
+            "negative_log": "approach_shifted_right-fallback2-negative.log"
+          },
+          "saved_processing_proof": {
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C152976__NRS-484B-400-5__motor_vehicle_driver/execution-manifest.json --case heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__approach_shifted_right --attempt .runtime-work/c152976-approach_shifted_right-fallback2-saved-attempt-v1 --output .runtime-work/c152976-approach_shifted_right-fallback2-saved-proof-v1 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+            "exit_code": 0,
+            "log": "approach_shifted_right-fallback2-saved.log",
+            "log_sha256": "404c43b07e63bb8ccaaf93fa16ef01854dc8b47654ce60568ca663418ac39cf0"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/approach_shifted_right/fallback3-construction.json",
+          "construction_sha256": "6745a2449553f09f7b26ee6ab99738d8c008075db72c31ad86aac7670faf4b06",
+          "trigger": {
+            "source": "original speed and steering readback",
+            "metric": "speed tracking oscillation in m/s",
+            "failure_condition": "Primary gain causes persistent speed oscillation; reduced gain retains the same requested speed, route and lateral positions."
+          },
+          "changed_knobs": [
+            "speed_kp: 0.22 to 0.18"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C152976__NRS-484B-400-5__motor_vehicle_driver/execution-manifest.json --case heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__approach_shifted_right --candidate fallback3 --output .runtime-work/c152976-approach_shifted_right-fallback3-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "approach_shifted_right-fallback3-offline-v2.log",
+            "log_sha256": "3146077d7843c18e2b14c232e09e3c6ec6c97b0ecd475ec4561cc491a29e9f74",
+            "construction_sha256": "6745a2449553f09f7b26ee6ab99738d8c008075db72c31ad86aac7670faf4b06"
+          },
+          "compatibility": {
+            "receipt": "approach_shifted_right-fallback3-compatibility.json",
+            "sha256": "0ac6adf28e3bfdaa92c9c6ed55f0d9f221604a8550a2ae303d131ea2c6607e2e",
+            "log": "approach_shifted_right-fallback3-analysis.log",
+            "negative_log": "approach_shifted_right-fallback3-negative.log"
+          },
+          "saved_processing_proof": {
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C152976__NRS-484B-400-5__motor_vehicle_driver/execution-manifest.json --case heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__approach_shifted_right --attempt .runtime-work/c152976-approach_shifted_right-fallback3-saved-attempt-v1 --output .runtime-work/c152976-approach_shifted_right-fallback3-saved-proof-v1 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+            "exit_code": 0,
+            "log": "approach_shifted_right-fallback3-saved.log",
+            "log_sha256": "3fd4cf33af54bc2b95c13386228c89c5079aaef923dc5645eb20296dac1dd6da"
+          }
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "measurement_contract": "cases/approach_shifted_right/measurement-contract.json",
+      "fixture_recipe": "work/heldout__C152976__NRS-484B-400-5__motor_vehicle_driver/cases/approach_shifted_right/diagnostic-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C152976__NRS-484B-400-5__motor_vehicle_driver/execution-manifest.json --case heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__approach_shifted_right --candidate primary --output .runtime-work/c152976-approach_shifted_right-primary-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "log": "approach_shifted_right-primary-offline-v2.log",
+        "log_sha256": "1109fb3dc9d702e2339d8288046ddafc93fe5c36fde695dc04c463c560ba1efa",
+        "construction_sha256": "6cc3e1e11231d25a87638a2ca36febd83f661c1e5bf3405376964ee0b799e8d6"
+      },
+      "compatibility": {
+        "receipt": "approach_shifted_right-primary-compatibility.json",
+        "sha256": "7b781289c455e27b0a878dd8d577c2b8ebfc33fd38c3e3567079e633c5773371",
+        "log": "approach_shifted_right-primary-analysis.log",
+        "negative_log": "approach_shifted_right-primary-negative.log"
+      },
+      "saved_processing_proof": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C152976__NRS-484B-400-5__motor_vehicle_driver/execution-manifest.json --case heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__approach_shifted_right --attempt .runtime-work/c152976-approach_shifted_right-primary-saved-attempt-v1 --output .runtime-work/c152976-approach_shifted_right-primary-saved-proof-v1 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "exit_code": 0,
+        "log": "approach_shifted_right-primary-saved.log",
+        "log_sha256": "f73604455fd2e369f787337b19bbd27efa1368e8e9243c0afc9b6a8125a260d6"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C152976__NRS-484B-400-5__motor_vehicle_driver/execution-manifest.json --case heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__approach_shifted_right --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSED\"/v*/feedback.json",
+        "test_log": "approach_shifted_right-primary-saved.log",
+        "test_log_sha256": "f73604455fd2e369f787337b19bbd27efa1368e8e9243c0afc9b6a8125a260d6",
+        "test_exit_code": 0
+      },
+      "acquisition": {
+        "one_way_curb_gap_m": {
+          "entrypoint": "one_way_native_capture.py",
+          "method": "Original Native full-body footprint and sourced one-way curb joined in one_way_saved.py",
+          "evidence": "native/footprints.jsonl, native/road_edges.jsonl, video_frames.jsonl and original camera pixels"
+        }
+      }
+    },
+    {
+      "case_id": "heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__departure_shifted_right",
+      "kind": "delivery",
+      "construction": "cases/departure_shifted_right/construction.json",
+      "construction_sha256": "d6481f70adb11a6a02db5369572206c68f4be3b036a981d6ae50740c81847b71",
+      "measurement_procedure": {
+        "entrypoint": "one_way_saved.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native turn tracking and original curb visibility may fail physical capture"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/departure_shifted_right/fallback1-construction.json",
+          "construction_sha256": "92b8e1719059068797dfed0aa9128ecdc04166518cba6b30ed1874f4b5a110f5",
+          "trigger": {
+            "source": "original route-following control and body history",
+            "metric": "turn path tracking deviation in metres",
+            "failure_condition": "Primary 3 m lookahead cuts the corner or loses the connected turn; 4 m preserves the same route and requested lateral positions."
+          },
+          "changed_knobs": [
+            "lookahead_m: 3.0 to 4.0"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C152976__NRS-484B-400-5__motor_vehicle_driver/execution-manifest.json --case heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__departure_shifted_right --candidate fallback1 --output .runtime-work/c152976-departure_shifted_right-fallback1-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "departure_shifted_right-fallback1-offline-v2.log",
+            "log_sha256": "28a730b3d31763150464c9cd80f1da1567f63e6f427a273d8c1cd5e48af97ce0",
+            "construction_sha256": "92b8e1719059068797dfed0aa9128ecdc04166518cba6b30ed1874f4b5a110f5"
+          },
+          "compatibility": {
+            "receipt": "departure_shifted_right-fallback1-compatibility.json",
+            "sha256": "8bdc995ce73f996404930d13efa6273dc4400608646fdde281f0e070573e1a03",
+            "log": "departure_shifted_right-fallback1-analysis.log",
+            "negative_log": "departure_shifted_right-fallback1-negative.log"
+          },
+          "saved_processing_proof": {
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C152976__NRS-484B-400-5__motor_vehicle_driver/execution-manifest.json --case heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__departure_shifted_right --attempt .runtime-work/c152976-departure_shifted_right-fallback1-saved-attempt-v1 --output .runtime-work/c152976-departure_shifted_right-fallback1-saved-proof-v1 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+            "exit_code": 0,
+            "log": "departure_shifted_right-fallback1-saved.log",
+            "log_sha256": "ad961cb59d57a81a37c58667bc592c22af4f51121aad10689192ae873fcbaffa"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/departure_shifted_right/fallback2-construction.json",
+          "construction_sha256": "6cf29da4cf82af7a5918e729f14191dee98d91061bf5e34efde78b1a6d5d0337",
+          "trigger": {
+            "source": "full-decoded overview and curb reference streams",
+            "metric": "body and curb visibility across full turn",
+            "failure_condition": "Primary overview occludes one turn segment; raised overview retains the same camera name, dimensions and route."
+          },
+          "changed_knobs": [
+            "overview_height_delta_m: 0 to 2"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C152976__NRS-484B-400-5__motor_vehicle_driver/execution-manifest.json --case heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__departure_shifted_right --candidate fallback2 --output .runtime-work/c152976-departure_shifted_right-fallback2-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "departure_shifted_right-fallback2-offline-v2.log",
+            "log_sha256": "7de0bfea3eeb10c7a86fc8b97f2940aa650ad1a97f6137e894d9f08ac79b71d2",
+            "construction_sha256": "6cf29da4cf82af7a5918e729f14191dee98d91061bf5e34efde78b1a6d5d0337"
+          },
+          "compatibility": {
+            "receipt": "departure_shifted_right-fallback2-compatibility.json",
+            "sha256": "448f0ed1fd3ec6681afca9c3dbd0970c6ec74659289f497b437afa192cab00d2",
+            "log": "departure_shifted_right-fallback2-analysis.log",
+            "negative_log": "departure_shifted_right-fallback2-negative.log"
+          },
+          "saved_processing_proof": {
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C152976__NRS-484B-400-5__motor_vehicle_driver/execution-manifest.json --case heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__departure_shifted_right --attempt .runtime-work/c152976-departure_shifted_right-fallback2-saved-attempt-v1 --output .runtime-work/c152976-departure_shifted_right-fallback2-saved-proof-v1 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+            "exit_code": 0,
+            "log": "departure_shifted_right-fallback2-saved.log",
+            "log_sha256": "1958f8fb045837100aefa12d04faeee84a44dc267d86531511e04800286c63be"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/departure_shifted_right/fallback3-construction.json",
+          "construction_sha256": "1a6d8f314ad9500b5c20f5d6391e86a01e4c4d679456404ed5ef8f59277c4bc1",
+          "trigger": {
+            "source": "original speed and steering readback",
+            "metric": "speed tracking oscillation in m/s",
+            "failure_condition": "Primary gain causes persistent speed oscillation; reduced gain retains the same requested speed, route and lateral positions."
+          },
+          "changed_knobs": [
+            "speed_kp: 0.22 to 0.18"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C152976__NRS-484B-400-5__motor_vehicle_driver/execution-manifest.json --case heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__departure_shifted_right --candidate fallback3 --output .runtime-work/c152976-departure_shifted_right-fallback3-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "departure_shifted_right-fallback3-offline-v2.log",
+            "log_sha256": "ade523d87954a74d0cfaa5aec5268927fb561c16aeb9558be4267151d77f0d56",
+            "construction_sha256": "1a6d8f314ad9500b5c20f5d6391e86a01e4c4d679456404ed5ef8f59277c4bc1"
+          },
+          "compatibility": {
+            "receipt": "departure_shifted_right-fallback3-compatibility.json",
+            "sha256": "65eb541fe2fc18b4235984ce1d58b864ee3043c9bcc06c8dac3021b9b8cff083",
+            "log": "departure_shifted_right-fallback3-analysis.log",
+            "negative_log": "departure_shifted_right-fallback3-negative.log"
+          },
+          "saved_processing_proof": {
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C152976__NRS-484B-400-5__motor_vehicle_driver/execution-manifest.json --case heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__departure_shifted_right --attempt .runtime-work/c152976-departure_shifted_right-fallback3-saved-attempt-v1 --output .runtime-work/c152976-departure_shifted_right-fallback3-saved-proof-v1 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+            "exit_code": 0,
+            "log": "departure_shifted_right-fallback3-saved.log",
+            "log_sha256": "fedd54de4fb847e39032c4a1d33e326176924953b0e0befb6d8de96b86fc103e"
+          }
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "measurement_contract": "cases/departure_shifted_right/measurement-contract.json",
+      "fixture_recipe": "work/heldout__C152976__NRS-484B-400-5__motor_vehicle_driver/cases/departure_shifted_right/diagnostic-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C152976__NRS-484B-400-5__motor_vehicle_driver/execution-manifest.json --case heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__departure_shifted_right --candidate primary --output .runtime-work/c152976-departure_shifted_right-primary-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "log": "departure_shifted_right-primary-offline-v2.log",
+        "log_sha256": "bbe12224d054f5e343f0af9ca73ed4d573280ee234b9b143762bf5249ab2ce34",
+        "construction_sha256": "d6481f70adb11a6a02db5369572206c68f4be3b036a981d6ae50740c81847b71"
+      },
+      "compatibility": {
+        "receipt": "departure_shifted_right-primary-compatibility.json",
+        "sha256": "18ccfb5aa1ff8ce672b9cc94e0c854f5a944f05b4af85ba188739d58429d1c65",
+        "log": "departure_shifted_right-primary-analysis.log",
+        "negative_log": "departure_shifted_right-primary-negative.log"
+      },
+      "saved_processing_proof": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C152976__NRS-484B-400-5__motor_vehicle_driver/execution-manifest.json --case heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__departure_shifted_right --attempt .runtime-work/c152976-departure_shifted_right-primary-saved-attempt-v1 --output .runtime-work/c152976-departure_shifted_right-primary-saved-proof-v1 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "exit_code": 0,
+        "log": "departure_shifted_right-primary-saved.log",
+        "log_sha256": "7e49b2aab959e6f4863eae2fbe3cb37fa434e925d91dd8061ae2984e6a9a17f9"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C152976__NRS-484B-400-5__motor_vehicle_driver/execution-manifest.json --case heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__departure_shifted_right --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSED\"/v*/feedback.json",
+        "test_log": "departure_shifted_right-primary-saved.log",
+        "test_log_sha256": "7e49b2aab959e6f4863eae2fbe3cb37fa434e925d91dd8061ae2984e6a9a17f9",
+        "test_exit_code": 0
+      },
+      "acquisition": {
+        "one_way_curb_gap_m": {
+          "entrypoint": "one_way_native_capture.py",
+          "method": "Original Native full-body footprint and sourced one-way curb joined in one_way_saved.py",
+          "evidence": "native/footprints.jsonl, native/road_edges.jsonl, video_frames.jsonl and original camera pixels"
+        }
+      }
+    }
+  ]
+}

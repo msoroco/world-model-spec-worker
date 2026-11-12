@@ -4,6 +4,92 @@
   "actor": "motor_vehicle_driver",
   "cases": [
     {
+      "case_id": "heldout__C382420__LVMC-11-20-070__motor_vehicle_driver__shared_baseline",
+      "target_law_id": "LVMC-11-20-070",
+      "target_type": "baseline",
+      "rationale": "Shared source and four-view capture baseline for entry alternatives; no legal finding or additional recording.",
+      "variable_assignments": {
+        "entry_region_kind": {
+          "kind": "world_setup",
+          "value": "marked_crosswalk"
+        },
+        "downstream_standing_vehicle": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "downstream_available_length": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "passage_obstruction": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "signal_indication": {
+          "kind": "world_setup",
+          "value": "proceed"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "sufficient space to accommodate the vehicle without obstructing passage"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "entry_frame_and_region",
+            "unit": "binary flag",
+            "method": "original full-body intersection with Native marked entry region",
+            "sampling_rate_hz": 20,
+            "time_window": "approach and entry frames",
+            "reference_frame": "Native map ground plane and original synchronized frames",
+            "uncertainty": "Native map, actor footprints and pixel review remain unverified"
+          },
+          {
+            "name": "downstream_available_length",
+            "unit": "m",
+            "method": "contiguous receiving corridor length from original occupant footprints at entry",
+            "sampling_rate_hz": 20,
+            "time_window": "entry frame",
+            "reference_frame": "Native map ground plane and original synchronized frames",
+            "uncertainty": "Native map, actor footprints and pixel review remain unverified"
+          },
+          {
+            "name": "passage_obstruction",
+            "unit": "m^2",
+            "method": "original ego footprint overlap with other-road-user passage polygons",
+            "sampling_rate_hz": 20,
+            "time_window": "entry and following frames",
+            "reference_frame": "Native map ground plane and original synchronized frames",
+            "uncertainty": "Native map, actor footprints and pixel review remain unverified"
+          },
+          {
+            "name": "signal_indication",
+            "unit": "binary proceed flag",
+            "method": "original traffic-control signal state readback",
+            "sampling_rate_hz": 20,
+            "time_window": "full approach and entry",
+            "reference_frame": "Native map ground plane and original synchronized frames",
+            "uncertainty": "Native map, actor footprints and pixel review remain unverified"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "space_scene",
+            "unit": "structured record",
+            "method": "original Native map region, signal, receiving corridor and actor identity"
+          },
+          {
+            "name": "space_frames",
+            "unit": "structured record",
+            "method": "original ego, standing vehicle and pedestrian source frames"
+          }
+        ],
+        "limitations": [
+          "No numeric legal sufficiency or obstruction threshold is inferred from diagnostic geometry."
+        ]
+      }
+    },
+    {
       "case_id": "heldout__C382420__LVMC-11-20-070__motor_vehicle_driver__crosswalk_clear_downstream",
       "target_law_id": "LVMC-11-20-070",
       "target_type": "boundary_probe",

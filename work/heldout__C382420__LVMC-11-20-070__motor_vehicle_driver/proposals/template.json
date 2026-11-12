@@ -1,0 +1,65 @@
+{
+  "template_id": "LVMC-11-20-070@motor_vehicle_driver",
+  "law_id": "LVMC-11-20-070",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "No driver shall enter an intersection or a marked crosswalk unless there is sufficient space on the other side of the intersection or crosswalk to accommodate the vehicle he is operating without obstructing the passage of other vehicles or pedestrians, notwithstanding any traffic-control signal indication to proceed.",
+  "structure": {
+    "law_id": "LVMC-11-20-070",
+    "activation": {
+      "condition": "A driver of a vehicle enters an intersection or marked crosswalk.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "type": "must_not",
+      "description": "Do not enter unless space on the other side accommodates the vehicle without obstructing the passage of other vehicles or pedestrians.",
+      "numeric_conditions": []
+    },
+    "exceptions": [],
+    "timing": {
+      "description": "Assess space and passage at the original entry frame; a signal indication to proceed does not waive the condition.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "sufficient space on the other side of the intersection or crosswalk to accommodate the vehicle he is operating",
+        "note": "Measure original entry boundary, full vehicle extent, receiving corridor and other occupant footprints without imposing a legal length cutoff."
+      },
+      {
+        "phrase": "without obstructing the passage of other vehicles or pedestrians",
+        "note": "Measure original passage polygon, other vehicle/pedestrian motion and ego occupancy; legal obstruction remains for review."
+      },
+      {
+        "phrase": "notwithstanding any traffic-control signal indication to proceed",
+        "note": "Retain original governing signal indication as context; a proceed indication does not waive the entry restriction."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "entry_region_kind",
+      "kind": "world_setup",
+      "range_or_domain": "marked_crosswalk or intersection from original map"
+    },
+    {
+      "name": "downstream_standing_vehicle",
+      "kind": "world_setup",
+      "range_or_domain": "present or absent standing occupant with original footprint"
+    },
+    {
+      "name": "downstream_available_length",
+      "kind": "subject_behavior",
+      "range_or_domain": "measured nonnegative receiving-corridor length at entry; no legal cutoff"
+    },
+    {
+      "name": "passage_obstruction",
+      "kind": "subject_behavior",
+      "range_or_domain": "measured ego overlap with other-user passage; no legal cutoff"
+    },
+    {
+      "name": "signal_indication",
+      "kind": "world_setup",
+      "range_or_domain": "original governing signal indication including proceed or unresolved"
+    }
+  ]
+}

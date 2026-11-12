@@ -12,7 +12,7 @@ from runner import CASES, check_config
 def _source(root, name):
     path = Path(root)/name
     if not path.is_file() or not path.read_bytes():
-        raise ValueError('Missing required original source: '+name)
+        raise ValueError('Missing required source: '+name)
     return path
 
 

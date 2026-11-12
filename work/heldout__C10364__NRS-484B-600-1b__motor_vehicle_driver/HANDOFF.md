@@ -1,5 +1,49 @@
 # heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver: CPU preparation checkpoint
 
+## 2026-11-12 returned exact CPU delivery preparation
+
+Status: **ready for local Native delivery preparation**. The assignment-scoped strict
+gate passes with the current returned package:
+`.venv-cpu/bin/python worker_check.py --assignment heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver --complete --require-delivery-ready`.
+The gate receipt is `worker-check-strict.log`. This is CPU preparation only;
+actual alley identity, motion, visibility, capture duration and legal endangerment
+remain unverified.
+
+The returned `native_alley_survey.py` now requires a reviewed Native alley
+annotation bound to exact map and OpenDRIVE hashes, selected route and original
+survey bytes. `native_alley_cases.py` binds the chosen connected lane and retains
+the verified survey receipt, original pedestrian and property footprints, ego
+motion, source frame map and four named cameras. The independent delivery audit
+rejects absent or changed original survey, route, participant review or source
+pixels. The comparison audit rejects mixed Native alley sources. No diagnostic
+polygon is claimed as a physical alley.
+
+All nine primaries and 27 distinct physical-trigger fallbacks have returned
+exact constructions. The current `execution-manifest.json` SHA-256 is
+`23bba86b16bd6f51ca6bc4df7de85b7bcd84a6d0e544cc9d72802c55be7773fd`.
+`returned-exact-reproof.log` records 36 successful exact returned-manifest
+offline and positive/missing-original negative compatibility commands. The
+current 35-test `cpu-tests.log`, `execution-reproof.json`,
+`execution-saved-proofs.json`, `physical-preparation-proofs.json`,
+`delivery-audit-proofs.json` and `comparison-proofs.json` retain the source
+bindings. Nine marked synthetic attempts passed saved processing after the
+final construction revision; `cases/case-saved-*.log` retain their genuine
+processing receipts. Original per-case stage outputs remain under ignored
+`.runtime-work/c10364-native-stage/` and are not physical evidence. The
+current returned-manifest execution validator passes in
+`execution-validation.log`. Prior-construction receipts were source-hash
+archived in `obsolete-proof-inventory.json` and removed from the returned
+file set. The original physical and legal uncertainty is preserved.
+
+Exact CPU resume commands from the repository root:
+
+```sh
+PYTHONPATH=runtime/scenario_pipeline:work/heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver .venv-cpu/bin/python -m unittest discover -s work/heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver/tests -v
+.venv-cpu/bin/python work/heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver/reprove_execution_manifest.py
+PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver/validate_execution.py
+.venv-cpu/bin/python worker_check.py --assignment heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver --complete --require-delivery-ready
+```
+
 ## 2026-11-11 pinned decode and participant visibility audit continuation
 
 The current `.venv-cpu/bin/python runtime.py preflight` passes with the pinned

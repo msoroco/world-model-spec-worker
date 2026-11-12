@@ -1,82 +1,22 @@
-"""Reprove every exact construction against the delivery execution manifest."""
-
-from hashlib import sha256
-import json
 from pathlib import Path
-import shutil
-import subprocess
-import sys
-
-
-ROOT = Path(__file__).resolve().parent
-REPO = ROOT.parents[1]
-MANIFEST = ROOT / 'execution-manifest.json'
-LIBRARY = REPO / 'runtime/library'
-VALIDATOR = REPO / '.runtime-work/c125714-validator/.lake/build/bin/adapterCheck'
-
-
-def digest(path):
-    return sha256(Path(path).read_bytes()).hexdigest()
-
-
-def run(args, log):
-    process = subprocess.run(args, cwd=REPO, capture_output=True, text=True)
-    log.write_text(process.stdout + process.stderr)
-    if process.returncode:
-        raise ValueError(f'Exact execution reproof failed ({process.returncode}): {log}')
-
-
-def main():
-    manifest = json.loads(MANIFEST.read_text())
-    records = []
-    for case in manifest['cases']:
-        suffix = case['case_id'].split('__')[-1]
-        candidates = [('primary', None)] + [(item['id'], item) for item in case['candidates']]
-        candidate_proofs = []
-        for candidate_id, candidate in candidates:
-            tag = suffix + '-' + candidate_id
-            out_offline = REPO / '.runtime-work' / f'c10364-{tag}-execution-offline-proof-v3'
-            off_log = ROOT / 'cases' / f'execution-offline-{tag}.log'
-            args = [sys.executable, str(REPO / 'runtime.py'), 'offline',
-                    '--manifest', str(MANIFEST), '--case', case['case_id'],
-                    '--output', str(out_offline), '--python', sys.executable]
-            if candidate_id != 'primary':
-                args.extend(['--candidate', candidate_id])
-            run(args, off_log)
-            out_compat = REPO / '.runtime-work' / f'c10364-{tag}-execution-compat-proof-v3'
-            compat_log = ROOT / 'cases' / f'execution-compat-{tag}.log'
-            args = [sys.executable, str(REPO / 'runtime.py'), 'compatibility',
-                    '--manifest', str(MANIFEST), '--case', case['case_id'],
-                    '--output', str(out_compat), '--library', str(LIBRARY),
-                    '--validator', str(VALIDATOR)]
-            if candidate_id != 'primary':
-                args.extend(['--candidate', candidate_id])
-            run(args, compat_log)
-            receipt = json.loads((out_compat / 'compatibility.json').read_text())
-            if (receipt.get('case_id') != case['case_id'] or
-                    receipt.get('candidate_id') != candidate_id or not receipt.get('passed') or
-                    receipt.get('construction_sha256') !=
-                    (case if candidate is None else candidate)['construction_sha256']):
-                raise ValueError('Exact execution compatibility identity/hash differs: ' + tag)
-            receipt_path = ROOT / 'cases' / f'execution-receipt-{tag}.json'
-            shutil.copyfile(out_compat / 'compatibility.json', receipt_path)
-            candidate_proofs.append({'candidate_id': candidate_id,
-                'offline_log': str(off_log.relative_to(ROOT)), 'offline_log_sha256': digest(off_log),
-                'compatibility_log': str(compat_log.relative_to(ROOT)),
-                'compatibility_log_sha256': digest(compat_log),
-                'compatibility_receipt': str(receipt_path.relative_to(ROOT)),
-                'compatibility_receipt_sha256': digest(receipt_path),
-                'construction_sha256': receipt['construction_sha256']})
-            print('offline+compat ' + tag, flush=True)
-        records.append({'case_id': case['case_id'], 'candidates': candidate_proofs})
-    output = {'format': 'worker-alley-execution-reproof',
-              'assignment_id': manifest['assignment_id'],
-              'execution_manifest_sha256': digest(MANIFEST),
-              'cases': records, 'physical_acceptance_claimed': False,
-              'legal_acceptance_claimed': False}
-    (ROOT / 'execution-reproof.json').write_text(json.dumps(output, indent=2) + '\n')
-    print('All nine execution cases and 27 alternatives pass exact offline/compatibility', flush=True)
-
-
-if __name__ == '__main__':
-    main()
+import json,hashlib,subprocess,sys,shutil
+R=Path.cwd();W=R/'work/heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver';M=W/'execution-manifest.json';J=json.loads(M.read_text());V=R/'.runtime-work/c125714-validator/.lake/build/bin/adapterCheck'
+def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+def run(args):
+ p=subprocess.run(args,cwd=R,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True)
+ if p.returncode:raise ValueError('FAILED '+repr(args)+'\n'+p.stdout[-4000:])
+ return p.stdout
+for entry in J['cases']:
+ suffix=entry['case_id'].split('__')[-1]
+ for ident,sel in [('primary',entry),*[(x['id'],x) for x in entry['candidates']]]:
+  tag=suffix+'-'+ident;out=R/'.runtime-work/c10364-return-reproof'/tag
+  args=[sys.executable,str(R/'runtime.py'),'offline','--manifest',str(M),'--case',entry['case_id'],'--candidate',ident,'--output',str(out/'offline'),'--python',sys.executable]
+  log=W/'cases'/f'case-offline-{tag}.log';log.write_text(run(args));sel['offline'].update(command=' '.join(args),log_sha256=sha(log))
+  args=[sys.executable,str(R/'runtime.py'),'compatibility','--manifest',str(M),'--case',entry['case_id'],'--candidate',ident,'--output',str(out/'compat'),'--library',str(R/'runtime/library'),'--validator',str(V)]
+  run(args);src=out/'compat';spec=sel['compatibility']
+  for name,dst in [('compatibility.json',spec['receipt']),('compatibility-analysis.log',spec['log']),('negative-analysis.log',spec['negative_log'])]:shutil.copy2(src/name,W/dst)
+  spec['sha256']=sha(W/spec['receipt'])
+  receipt=json.loads((W/spec['receipt']).read_text());assert receipt['construction_sha256']==sel['construction_sha256'] and receipt['log_sha256']==sha(W/spec['log']) and receipt['negative_log_sha256']==sha(W/spec['negative_log'])
+  print('PASS',tag,flush=True)
+M.write_text(json.dumps(J,indent=2)+'\n')
+print('ALL 36 exact returned-manifest offline + positive/negative compatibility pass',sha(M),flush=True)

@@ -1,0 +1,26 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__departure_shifted_right",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "For a left turn where both intersecting highways are one-way, make both the approach and turn as close as practicable to the left-hand curb or edge.",
+      "source": "NRS 484B.400(5) full text in inputs/heldout__C152976__NRS-484B-400-5__motor_vehicle_driver/assignment.json",
+      "output_key": "one_way_curb_history",
+      "method": "measure_original_one_way",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "video_frames.jsonl",
+        "native/footprints.jsonl",
+        "native/road_edges.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "native/road_edges.jsonl"
+    ],
+    "error_contains": "Missing required source: native/road_edges.jsonl"
+  }
+}

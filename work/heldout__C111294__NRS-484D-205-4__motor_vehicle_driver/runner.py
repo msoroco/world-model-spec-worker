@@ -31,7 +31,8 @@ def check_config(config):
     if (not config.get('ego_blueprint_id') or not config.get('other_blueprint_id')
             or not config.get('equipment_inventory') or
             not 30 <= config.get('approach_m', 0) <= 60 or
-            not 25 <= config.get('exit_m', 0) <= 50):
+            not 25 <= config.get('exit_m', 0) <= 50 or
+            not .1 <= config.get('speed_gain', 0) <= .3):
         raise ValueError('Missing sourced vehicle and intersection setup')
     return True
 
@@ -76,9 +77,11 @@ def run(output, host, port):
         for index in range(config['frames']):
             set_backup_lamp(scene['ego'], carla, config['command_backup_lamp_on'])
             drive_through(scene['ego'], world.get_map(), carla, scene['ego_route'],
-                          speed_mps=config.get('ego_speed_mps', 5.))
+                          speed_mps=config.get('ego_speed_mps', 5.),
+                          gain=config['speed_gain'])
             drive_through(scene['other'], world.get_map(), carla, scene['other_route'],
-                          speed_mps=config.get('other_speed_mps', 4.))
+                          speed_mps=config.get('other_speed_mps', 4.),
+                          gain=config['speed_gain'])
             frame = world.tick(); snapshot = world.get_snapshot()
             if snapshot.frame != frame:
                 raise ValueError('Original snapshot/frame identity differs')

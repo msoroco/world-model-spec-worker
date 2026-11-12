@@ -1,0 +1,259 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "heldout__C111294__NRS-484D-205-4__motor_vehicle_driver",
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3",
+  "cases": [
+    {
+      "case_id": "heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__forward_backup_lamp_off",
+      "kind": "delivery",
+      "construction": "construction.json",
+      "construction_sha256": "297bd4f18106200c26ceaf149553dee8443d57d35cfd3403f2f7eb39c535416d",
+      "measurement_procedure": {
+        "entrypoint": "lamp_finalizer.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Perpendicular route discovery and rear-lamp source visibility require local physical verification"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/forward_backup_lamp_off/fallback1-construction.json",
+          "construction_sha256": "fddef4f39808ee22054fd813afcf8fe6cdea44e6b9c2646f1c6bf235f1bac2d3",
+          "trigger": {
+            "source": "Original map waypoint route selection",
+            "metric": "unique approach predecessor at 45 m",
+            "failure_condition": "Primary predecessor 45 m away is missing or branched; 40 m predecessor preserves same intersection and maneuver."
+          },
+          "changed_knobs": [
+            "approach_m: 45 to 40"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484D-205-4__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__forward_backup_lamp_off --candidate fallback1 --output .runtime-work/c111294-forward_backup_lamp_off-fallback1-v3 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "forward_backup_lamp_off-fallback1-offline-v3.log",
+            "log_sha256": "a06e27e34fcb0bcd7fc28c1b94787eb184bde779aaf94487856c5e41e1d453a3",
+            "construction_sha256": "fddef4f39808ee22054fd813afcf8fe6cdea44e6b9c2646f1c6bf235f1bac2d3"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/forward_backup_lamp_off/fallback2-construction.json",
+          "construction_sha256": "4036ac49907623147c382d148393c0ad04ff0770d981ea6a38d732537c29c666",
+          "trigger": {
+            "source": "Original map waypoint route selection",
+            "metric": "unique through-route exit at 35 m",
+            "failure_condition": "Primary 35 m successor is missing or branched; 30 m successor preserves the same through route."
+          },
+          "changed_knobs": [
+            "exit_m: 35 to 30"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484D-205-4__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__forward_backup_lamp_off --candidate fallback2 --output .runtime-work/c111294-forward_backup_lamp_off-fallback2-v3 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "forward_backup_lamp_off-fallback2-offline-v3.log",
+            "log_sha256": "313bb7d3e11c4ca3f3f6bcfe860ea7a0e3de71b8f493cf6e88ee9ad641b96ece",
+            "construction_sha256": "4036ac49907623147c382d148393c0ad04ff0770d981ea6a38d732537c29c666"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/forward_backup_lamp_off/fallback3-construction.json",
+          "construction_sha256": "4d90cd71bf273d3b64eff0ed077a015ce8c1433ead18d94da6d5c4fc99408362",
+          "trigger": {
+            "source": "Original Native motion samples",
+            "metric": "peak-to-peak speed tracking error in m/s",
+            "failure_condition": "Primary gain shows persistent oscillation about requested speed; reduced gain preserves the same speed target and route."
+          },
+          "changed_knobs": [
+            "speed_gain: 0.2 to 0.16"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484D-205-4__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__forward_backup_lamp_off --candidate fallback3 --output .runtime-work/c111294-forward_backup_lamp_off-fallback3-v3 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "forward_backup_lamp_off-fallback3-offline-v3.log",
+            "log_sha256": "e0171a3b7411f5d5570d4755de85716a7fc737d3727d49d7da49473b46348da4",
+            "construction_sha256": "4d90cd71bf273d3b64eff0ed077a015ce8c1433ead18d94da6d5c4fc99408362"
+          }
+        }
+      ],
+      "fixture_recipe": "work/heldout__C111294__NRS-484D-205-4__motor_vehicle_driver/diagnostic-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484D-205-4__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__forward_backup_lamp_off --candidate primary --output .runtime-work/c111294-forward_backup_lamp_off-primary-v3 --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "log": "forward_backup_lamp_off-primary-offline-v3.log",
+        "log_sha256": "0b57511c53aaa8503e6923420370e997392ff08ed0f8d6bd5c97304f322b26c1",
+        "construction_sha256": "297bd4f18106200c26ceaf149553dee8443d57d35cfd3403f2f7eb39c535416d"
+      }
+    },
+    {
+      "case_id": "heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__no_backup_lamp_installed",
+      "kind": "delivery",
+      "construction": "cases/no_backup_lamp_installed/construction.json",
+      "construction_sha256": "ad472a037a2723edf1a1464a27f74212e43352cce78b26de57aeddc6996bfb75",
+      "measurement_procedure": {
+        "entrypoint": "lamp_finalizer.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native route uniqueness and motion tracking may fail physical capture"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/no_backup_lamp_installed/fallback1-construction.json",
+          "construction_sha256": "0f7e87049d2c222bc15ae7f322deb0ede06cb945b91fa17358faa9805d402acf",
+          "trigger": {
+            "source": "Original map waypoint route selection",
+            "metric": "unique approach predecessor at 45 m",
+            "failure_condition": "Primary predecessor 45 m away is missing or branched; 40 m predecessor preserves same intersection and maneuver."
+          },
+          "changed_knobs": [
+            "approach_m: 45 to 40"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484D-205-4__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__no_backup_lamp_installed --candidate fallback1 --output .runtime-work/c111294-no_backup_lamp_installed-fallback1-v3 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "no_backup_lamp_installed-fallback1-offline-v3.log",
+            "log_sha256": "027e33d7ca54c5800c0f523e394926086d160a486358fa36ef965de0fec42938",
+            "construction_sha256": "0f7e87049d2c222bc15ae7f322deb0ede06cb945b91fa17358faa9805d402acf"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/no_backup_lamp_installed/fallback2-construction.json",
+          "construction_sha256": "3298b928905066f3277b016daee4fbd5a244088cc2ac08bec88efda1dc211174",
+          "trigger": {
+            "source": "Original map waypoint route selection",
+            "metric": "unique through-route exit at 35 m",
+            "failure_condition": "Primary 35 m successor is missing or branched; 30 m successor preserves the same through route."
+          },
+          "changed_knobs": [
+            "exit_m: 35 to 30"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484D-205-4__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__no_backup_lamp_installed --candidate fallback2 --output .runtime-work/c111294-no_backup_lamp_installed-fallback2-v3 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "no_backup_lamp_installed-fallback2-offline-v3.log",
+            "log_sha256": "81caf27eeb94fc03bcb0bc53275ccbf26bc67a0d3093cf6aee9805e630fcd4d9",
+            "construction_sha256": "3298b928905066f3277b016daee4fbd5a244088cc2ac08bec88efda1dc211174"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/no_backup_lamp_installed/fallback3-construction.json",
+          "construction_sha256": "bad97e2d8bc11331de6f93925bb73855f59e921ed8a1dcdb51c6848777fc0dbf",
+          "trigger": {
+            "source": "Original Native motion samples",
+            "metric": "peak-to-peak speed tracking error in m/s",
+            "failure_condition": "Primary gain shows persistent oscillation about requested speed; reduced gain preserves the same speed target and route."
+          },
+          "changed_knobs": [
+            "speed_gain: 0.2 to 0.16"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484D-205-4__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__no_backup_lamp_installed --candidate fallback3 --output .runtime-work/c111294-no_backup_lamp_installed-fallback3-v3 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "no_backup_lamp_installed-fallback3-offline-v3.log",
+            "log_sha256": "a267548d8cf34dadf957dd878709989627a1fb81e1c57141d8ff91697d8ca67c",
+            "construction_sha256": "bad97e2d8bc11331de6f93925bb73855f59e921ed8a1dcdb51c6848777fc0dbf"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484D-205-4__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__no_backup_lamp_installed --candidate primary --output .runtime-work/c111294-no_backup_lamp_installed-primary-v3 --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "log": "no_backup_lamp_installed-primary-offline-v3.log",
+        "log_sha256": "8b13ea0f1b48d1e30dff2899b3219b6cfe6e9f6ac7806581bd41cce4a4ebafbf",
+        "construction_sha256": "ad472a037a2723edf1a1464a27f74212e43352cce78b26de57aeddc6996bfb75"
+      }
+    },
+    {
+      "case_id": "heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__forward_backup_lamp_on",
+      "kind": "delivery",
+      "construction": "cases/forward_backup_lamp_on/construction.json",
+      "construction_sha256": "09add15359bc86b79872c6b2a9ef12c9ea7bfc94aaf974e3edfc9f2edd130902",
+      "measurement_procedure": {
+        "entrypoint": "lamp_finalizer.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native route uniqueness and motion tracking may fail physical capture"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/forward_backup_lamp_on/fallback1-construction.json",
+          "construction_sha256": "b63acc95299bbf620f192a51335bda728e056783916c77369ca2b94446eded9b",
+          "trigger": {
+            "source": "Original map waypoint route selection",
+            "metric": "unique approach predecessor at 45 m",
+            "failure_condition": "Primary predecessor 45 m away is missing or branched; 40 m predecessor preserves same intersection and maneuver."
+          },
+          "changed_knobs": [
+            "approach_m: 45 to 40"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484D-205-4__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__forward_backup_lamp_on --candidate fallback1 --output .runtime-work/c111294-forward_backup_lamp_on-fallback1-v3 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "forward_backup_lamp_on-fallback1-offline-v3.log",
+            "log_sha256": "043a0c0dfeeca8c178139fcebbe0d8ce660ea3696c217a38dbafacf397fae1ee",
+            "construction_sha256": "b63acc95299bbf620f192a51335bda728e056783916c77369ca2b94446eded9b"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/forward_backup_lamp_on/fallback2-construction.json",
+          "construction_sha256": "4083c56f9e7298a232781d265abbc3656f809d2f6f974be293c97fd9316e51e6",
+          "trigger": {
+            "source": "Original map waypoint route selection",
+            "metric": "unique through-route exit at 35 m",
+            "failure_condition": "Primary 35 m successor is missing or branched; 30 m successor preserves the same through route."
+          },
+          "changed_knobs": [
+            "exit_m: 35 to 30"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484D-205-4__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__forward_backup_lamp_on --candidate fallback2 --output .runtime-work/c111294-forward_backup_lamp_on-fallback2-v3 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "forward_backup_lamp_on-fallback2-offline-v3.log",
+            "log_sha256": "a9227ca8e97e9216ba7ec69480081fccd5bcf8b38c97e64bdb4a256024f800e5",
+            "construction_sha256": "4083c56f9e7298a232781d265abbc3656f809d2f6f974be293c97fd9316e51e6"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/forward_backup_lamp_on/fallback3-construction.json",
+          "construction_sha256": "8fe3b3fc5bd76d2c7999d6d140d352b3970eaa384415eb56702d660ec3f937b6",
+          "trigger": {
+            "source": "Original Native motion samples",
+            "metric": "peak-to-peak speed tracking error in m/s",
+            "failure_condition": "Primary gain shows persistent oscillation about requested speed; reduced gain preserves the same speed target and route."
+          },
+          "changed_knobs": [
+            "speed_gain: 0.2 to 0.16"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484D-205-4__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__forward_backup_lamp_on --candidate fallback3 --output .runtime-work/c111294-forward_backup_lamp_on-fallback3-v3 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "forward_backup_lamp_on-fallback3-offline-v3.log",
+            "log_sha256": "5f38ce71a457ba295dd49adf1b93fec5c805f4829e85a99bb78c22b8641e3792",
+            "construction_sha256": "8fe3b3fc5bd76d2c7999d6d140d352b3970eaa384415eb56702d660ec3f937b6"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484D-205-4__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__forward_backup_lamp_on --candidate primary --output .runtime-work/c111294-forward_backup_lamp_on-primary-v3 --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "log": "forward_backup_lamp_on-primary-offline-v3.log",
+        "log_sha256": "79df9083b068bbb8ce998c260c8f84ce37ea7f00624a51bacb077ae4b4914047",
+        "construction_sha256": "09add15359bc86b79872c6b2a9ef12c9ea7bfc94aaf974e3edfc9f2edd130902"
+      }
+    }
+  ]
+}
