@@ -1,0 +1,135 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C10014__NRS-484B-477-2__motor_vehicle_driver",
+  "status": "partial_selected_cpu_proofs_pending_physical_unverified",
+  "runtime_manifest_sha256": "ae635d487ae988b67925bacd5ba13210f31224fc6a1ae131d1836a5557ba8714",
+  "source_branch": "stop_or_stand_at_driveway",
+  "cases": [
+    {
+      "case_id": "training__C10014__NRS-484B-477-2__motor_vehicle_driver__reference",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native abutting-property access, precise stop, route tracking and source-camera framing require original evidence"
+      },
+      "measurement_contract": "draft-measurements/reference/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c10014-alley-entrance-saved-analysis-v1"
+      },
+      "fixture_recipe": "work/training__C10014__NRS-484B-477-2__motor_vehicle_driver/update015-diagnostic-reference-recipe.json",
+      "kind": "delivery",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-candidates/reference/fallback1/construction.json",
+          "construction_sha256": "0932909da5115cf8aa827390f70602aedd90eeb7913b39282620d95332f6aef9",
+          "trigger": {
+            "source": "original Native pose/stop trace",
+            "metric": "available approach distance before the entrance",
+            "failure_condition": "primary spawn-to-stop clearance below 25 m or route setup fails"
+          },
+          "changed_knobs": [
+            "approach start -45 m to -55 m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-candidates/reference/fallback2/construction.json",
+          "construction_sha256": "8419fe092f58670cd0a1f85b37743e11659ed603554a81a2079a59aa04549428",
+          "trigger": {
+            "source": "original Native pose, velocity and body trace",
+            "metric": "settled stop-target longitudinal error",
+            "failure_condition": "absolute stop-position error exceeds 0.25 m or 2 s stationary interval is absent"
+          },
+          "changed_knobs": [
+            "braking onset 6 m to 9 m before target"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-candidates/reference/fallback3/construction.json",
+          "construction_sha256": "c685049582f30fd53a954605936f9bc6489c236ebe2526ffc232f67bf2abcc0b",
+          "trigger": {
+            "source": "four original source videos and frame map",
+            "metric": "visible body and complete entrance corridor fraction during stationary frames",
+            "failure_condition": "fraction below 0.95 in any required view"
+          },
+          "changed_knobs": [
+            "overview/entrance FOV 90 to 105 degrees and elevated mount"
+          ]
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "preparation_status": "selected_for_CPU_proof; original Native evidence unverified",
+      "construction": "selected-candidates/reference/primary/construction.json",
+      "construction_sha256": "a753d69d9ffa0c963b87a0a6f258c7e1fab3804d98235602afddee0856a98423"
+    },
+    {
+      "case_id": "training__C10014__NRS-484B-477-2__motor_vehicle_driver__contrast",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native abutting-property access, precise stop, route tracking and source-camera framing require original evidence"
+      },
+      "measurement_contract": "draft-measurements/contrast/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c10014-alley-entrance-saved-analysis-v1"
+      },
+      "fixture_recipe": "work/training__C10014__NRS-484B-477-2__motor_vehicle_driver/update015-diagnostic-contrast-recipe.json",
+      "kind": "delivery",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-candidates/contrast/fallback1/construction.json",
+          "construction_sha256": "e9995285a77dc2a9a8836d2991d03e252b5954a99b9dedf59fec05f04a4bfe8a",
+          "trigger": {
+            "source": "original Native pose/stop trace",
+            "metric": "available approach distance before the entrance",
+            "failure_condition": "primary spawn-to-stop clearance below 25 m or route setup fails"
+          },
+          "changed_knobs": [
+            "approach start -45 m to -55 m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-candidates/contrast/fallback2/construction.json",
+          "construction_sha256": "cc1b27cb765f6297d2f4cf40dc44bd5fc098de624bac849361acc8dc8143b124",
+          "trigger": {
+            "source": "original Native pose, velocity and body trace",
+            "metric": "settled stop-target longitudinal error",
+            "failure_condition": "absolute stop-position error exceeds 0.25 m or 2 s stationary interval is absent"
+          },
+          "changed_knobs": [
+            "braking onset 6 m to 9 m before target"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-candidates/contrast/fallback3/construction.json",
+          "construction_sha256": "5247b26f12f4cafce591db1ede33cefa9e8a8da0db20c4aa9f3d6ac1c6ee6ae1",
+          "trigger": {
+            "source": "four original source videos and frame map",
+            "metric": "visible body and complete entrance corridor fraction during stationary frames",
+            "failure_condition": "fraction below 0.95 in any required view"
+          },
+          "changed_knobs": [
+            "overview/entrance FOV 90 to 105 degrees and elevated mount"
+          ]
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "preparation_status": "selected_for_CPU_proof; original Native evidence unverified",
+      "construction": "selected-candidates/contrast/primary/construction.json",
+      "construction_sha256": "6f1bbbfab0e35954418ea75b579a358f89d598184ea0bda5d525a66f5d30ddbc"
+    }
+  ]
+}

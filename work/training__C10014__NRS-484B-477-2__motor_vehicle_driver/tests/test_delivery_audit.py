@@ -33,16 +33,20 @@ class DeliveryAuditBoundaryTest(unittest.TestCase):
         sample = [
             {"time_s": i / 20, "native_frame": i + 100,
              "native_body_xy_m": [[-2, -3], [-2, -1], [2, -1], [2, -3]],
+             "native_center_xy_m": [0, -2], "native_forward_xy": [1, 0],
+             "native_road_id": 1, "native_lane_id": -1,
              "speed_mps": 0.0,
              "speed_provenance": "synthetic_native_sample" if synthetic else "native_velocity_readback"}
             for i in range(2)]
         vertices = [[-2, -3, 0], [-2, -1, 0], [2, -1, 0], [2, -3, 0]]
         values = {
             "trace.jsonl": [{"frame": s["native_frame"], "time_s": s["time_s"],
+                             "position": {"x": 0, "y": -2}, "speed_mps": 0.0,
                              "speed_provenance": s["speed_provenance"]} for s in sample],
             "capture/evidence.jsonl": [
                 {"original_frame": s["native_frame"], "recording_time_s": s["time_s"],
                  "ego": {"speed_provenance": s["speed_provenance"],
+                         "position_m": [0, -2, 0], "speed_mps": 0.0,
                          "body_vertices_m": vertices}}
                 for s in sample],
             "video_frames.jsonl": [
@@ -83,6 +87,23 @@ class DeliveryAuditBoundaryTest(unittest.TestCase):
             source.write_text("".join(json.dumps(row) + "\n" for row in rows))
             with self.assertRaisesRegex(ValueError, "frame join"):
                 check_original_rows(folder, 2)
+
+    def test_cross_source_pose_velocity_and_lane_disagreement_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            folder = Path(directory)
+            self.make_rows(folder)
+            for filename, mutate, error in (
+                ("trace.jsonl", lambda row: row.update(speed_mps=4), "velocity differs"),
+                ("capture/evidence.jsonl", lambda row: row["ego"].update(position_m=[8, -2, 0]), "pose or velocity differs"),
+                ("native_samples.jsonl", lambda row: row.pop("native_lane_id"), "lane missing"),
+            ):
+                self.make_rows(folder)
+                path = folder / filename
+                records = [json.loads(line) for line in path.read_text().splitlines()]
+                mutate(records[0])
+                path.write_text("".join(json.dumps(row) + "\n" for row in records))
+                with self.subTest(filename=filename), self.assertRaisesRegex(ValueError, error):
+                    check_original_rows(folder, 2)
 
     def test_unsealed_attempt_rejected_before_saved_result(self):
         with tempfile.TemporaryDirectory() as directory:

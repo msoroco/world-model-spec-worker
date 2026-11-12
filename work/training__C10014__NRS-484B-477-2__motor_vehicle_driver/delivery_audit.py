@@ -71,6 +71,14 @@ def check_original_rows(attempt: Path, expected_frames: int) -> dict:
                 e.get("ego", {}).get("speed_provenance") != "synthetic_native_sample",
                 "Synthetic diagnostic cannot establish original Native motion")
         vertices = n.get("native_body_xy_m")
+        center, forward = n.get("native_center_xy_m"), n.get("native_forward_xy")
+        require(all(isinstance(value, list) and len(value) == 2 and
+                    all(type(x) in (int, float) and math.isfinite(x) for x in value)
+                    for value in (center, forward)) and
+                abs(math.hypot(*forward) - 1) <= 1e-3 and
+                type(n.get("native_road_id")) is int and
+                type(n.get("native_lane_id")) is int,
+                "Original Native pose, heading or lane missing")
         require(isinstance(vertices, list) and len(vertices) == 4 and
                 all(isinstance(v, list) and len(v) == 2 and
                     all(type(x) in (int, float) and math.isfinite(x) for x in v)
@@ -78,6 +86,21 @@ def check_original_rows(attempt: Path, expected_frames: int) -> dict:
                 type(n.get("speed_mps")) in (int, float) and
                 math.isfinite(n["speed_mps"]) and n["speed_mps"] >= 0,
                 "Original Native body or velocity missing")
+        trace_position = t.get("position", {})
+        evidence_ego = e.get("ego", {})
+        require(isinstance(trace_position, dict) and
+                all(type(trace_position.get(axis)) in (int, float) and
+                    abs(trace_position[axis] - center[j]) <= 1e-3
+                    for j, axis in enumerate(("x", "y"))) and
+                isinstance(evidence_ego.get("position_m"), list) and
+                len(evidence_ego["position_m"]) >= 2 and
+                all(type(evidence_ego["position_m"][j]) in (int, float) and
+                    abs(evidence_ego["position_m"][j] - center[j]) <= 1e-3
+                    for j in range(2)) and
+                all(type(row.get("speed_mps")) in (int, float) and
+                    abs(row["speed_mps"] - n["speed_mps"]) <= 1e-3
+                    for row in (t, evidence_ego)),
+                "Original Native pose or velocity differs across sources")
         captured = e.get("ego", {}).get("body_vertices_m")
         historical = b.get("body_vertices_m")
         require(isinstance(captured, list) and isinstance(historical, list) and
