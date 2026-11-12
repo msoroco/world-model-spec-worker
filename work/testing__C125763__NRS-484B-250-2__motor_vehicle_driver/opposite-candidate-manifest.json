@@ -1,0 +1,141 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C125763__NRS-484B-250-2__motor_vehicle_driver",
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3",
+  "status": "isolated_partial_opposite_diagnostic",
+  "cases": [
+    {
+      "case_id": "testing__C125763__NRS-484B-250-2__motor_vehicle_driver__yield_opposite_left_turn",
+      "kind": "delivery",
+      "construction": "cases/yield_opposite_left_turn/construction.json",
+      "construction_sha256": "3a28aab5d023b68a6bafcfd12373b24f19c14efffc24ad2bdc8ba8c5c4e69508",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/cases/yield_opposite_left_turn/diagnostic-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/opposite-candidate-manifest.json --case testing__C125763__NRS-484B-250-2__motor_vehicle_driver__yield_opposite_left_turn --output .runtime-work/c125763-yield-opposite-offline-v2",
+        "exit_code": 0,
+        "construction_sha256": "3a28aab5d023b68a6bafcfd12373b24f19c14efffc24ad2bdc8ba8c5c4e69508",
+        "log": "opposite-offline-v2.log",
+        "log_sha256": "2bed2f735013853076b57e4e0e9d84a316a311a41cace2cd4862cef25e491304"
+      },
+      "compatibility": {
+        "receipt": "opposite-compatibility-receipt.json",
+        "sha256": "4d0e87c12cc0ecfff41353d7866e474113f5c1f0d00802a5b9ca11de55db25a0",
+        "log": "opposite-analysis.log"
+      },
+      "negative": {
+        "log": "opposite-negative-analysis.log"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Yield approach clearance, other spawn clearance and source-camera visibility can fail during Native capture."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/yield_opposite_left_turn/fallback1-construction.json",
+          "construction_sha256": "173b7bb6c1e941faca41421ff3eab433100f0e099ffc44068a53ed17aca2898e",
+          "trigger": {
+            "source": "original-frame ego position and controller history",
+            "metric": "distance from ego body to yield line when braking begins",
+            "failure_condition": "insufficient distance for the controller to slow before the governed entrance"
+          },
+          "changed_knobs": [
+            "ego spawn pose moved 5 m upstream along its heading"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/opposite-candidate-manifest.json --case testing__C125763__NRS-484B-250-2__motor_vehicle_driver__yield_opposite_left_turn --candidate fallback1 --output .runtime-work/c125763-opposite-fallback1-offline-v1",
+            "exit_code": 0,
+            "construction_sha256": "173b7bb6c1e941faca41421ff3eab433100f0e099ffc44068a53ed17aca2898e",
+            "log": "opposite-fallback1-offline-v1.log",
+            "log_sha256": "47ef23de1f20027a2ca5ceb43b2ed6c051fcce499112b53111a7a6f9182ded87"
+          },
+          "compatibility": {
+            "receipt": "opposite-fallback1-compatibility-receipt.json",
+            "sha256": "e40ecf5f49b00136d19fe95fd983daacc35e52e9d92c41702671b91020b93b01",
+            "log": "opposite-fallback1-analysis.log",
+            "negative_log": "opposite-fallback1-negative-analysis.log"
+          },
+          "saved_processing": {
+            "receipt": "opposite-fallback1-saved-receipt.json",
+            "sha256": "1c44c06522f8a5d676deca7cc9b8f4a76f34c42bef6ae9eba22fa7e1970d0a5b",
+            "log": "opposite-fallback1-saved-v1.log",
+            "log_sha256": "1c44c06522f8a5d676deca7cc9b8f4a76f34c42bef6ae9eba22fa7e1970d0a5b"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/yield_opposite_left_turn/fallback2-construction.json",
+          "construction_sha256": "2cac3697a6ffdbc7b328c61af7aebabb88c4da36d1d328f20d2fd21c65a2003e",
+          "trigger": {
+            "source": "original-frame other body and Native spawn log",
+            "metric": "other spawn clearance from median crossing and ego body",
+            "failure_condition": "spawn overlap or insufficient approach clearance before crossing entry"
+          },
+          "changed_knobs": [
+            "other spawn pose moved 5 m upstream along its heading"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/opposite-candidate-manifest.json --case testing__C125763__NRS-484B-250-2__motor_vehicle_driver__yield_opposite_left_turn --candidate fallback2 --output .runtime-work/c125763-opposite-fallback2-offline-v1",
+            "exit_code": 0,
+            "construction_sha256": "2cac3697a6ffdbc7b328c61af7aebabb88c4da36d1d328f20d2fd21c65a2003e",
+            "log": "opposite-fallback2-offline-v1.log",
+            "log_sha256": "3c38b27230390262c962f78615d8fafd44031c805a1ceb53aa82e4b726be709b"
+          },
+          "compatibility": {
+            "receipt": "opposite-fallback2-compatibility-receipt.json",
+            "sha256": "346e414002da663b48d79fcfa39fa251fef33bcba37c075b89bcc451469ed4af",
+            "log": "opposite-fallback2-analysis.log",
+            "negative_log": "opposite-fallback2-negative-analysis.log"
+          },
+          "saved_processing": {
+            "receipt": "opposite-fallback2-saved-receipt.json",
+            "sha256": "dc1b0f3806117b16135e4dad931338234fe9d0509949997ba45c4995b34837e0",
+            "log": "opposite-fallback2-saved-v1.log",
+            "log_sha256": "dc1b0f3806117b16135e4dad931338234fe9d0509949997ba45c4995b34837e0"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/yield_opposite_left_turn/fallback3-construction.json",
+          "construction_sha256": "d0663157ed1b170827dda6515ecece29564dfae4780adab9381753ee1c9f2869",
+          "trigger": {
+            "source": "original overview camera frames and sign-face review",
+            "metric": "yield-sign and crossing visibility in overview source",
+            "failure_condition": "sign face or complete body entry is outside the overview view"
+          },
+          "changed_knobs": [
+            "overview source camera shifted and raised for crossing visibility"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/opposite-candidate-manifest.json --case testing__C125763__NRS-484B-250-2__motor_vehicle_driver__yield_opposite_left_turn --candidate fallback3 --output .runtime-work/c125763-opposite-fallback3-offline-v1",
+            "exit_code": 0,
+            "construction_sha256": "d0663157ed1b170827dda6515ecece29564dfae4780adab9381753ee1c9f2869",
+            "log": "opposite-fallback3-offline-v1.log",
+            "log_sha256": "58814da75c4d0836e0567ee658d0d3efe9326bfeec9253672228d360e8ef1838"
+          },
+          "compatibility": {
+            "receipt": "opposite-fallback3-compatibility-receipt.json",
+            "sha256": "20976af59bbc4177f863799fb10afb30fdd1bf15d00e8172e0a10f92c68821e5",
+            "log": "opposite-fallback3-analysis.log",
+            "negative_log": "opposite-fallback3-negative-analysis.log"
+          },
+          "saved_processing": {
+            "receipt": "opposite-fallback3-saved-receipt.json",
+            "sha256": "c36d1faa4acce7aa01fe18a19592c5ca52fd89f042765e1bdf327beead42d87d",
+            "log": "opposite-fallback3-saved-v1.log",
+            "log_sha256": "c36d1faa4acce7aa01fe18a19592c5ca52fd89f042765e1bdf327beead42d87d"
+          }
+        }
+      ]
+    }
+  ]
+}

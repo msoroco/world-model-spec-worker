@@ -316,3 +316,64 @@ no paused assignments (`updates.log`). Full
 still exits 1 in `strict-gate.log` with `Preparation acceptance failed:
 partial/missing packages remain`. `result.json` stays partial and binds the
 current CPU test log hash.
+
+## Four selected-case CPU checkpoint, 2026-11-12
+
+The installed pinned CPU environment passes `preflight.log`; the assignment
+suite passes 29 tests in `cpu-tests.log`. The near-time primary and right
+constructions were rebuilt with `other_release_frame: 20` so the configured
+release precedes the observed body entry at frame index 30. Their current
+exact offline, compatibility and saved-processing logs are
+`primary-offline-v6.log`, `primary-compat-v8.log`, `primary-saved-v3.log` and
+`right-offline-v2.log`, `right-compat-v2.log`, `right-saved-v2.log`. These
+supersede earlier proof versions. The bound receipts are
+`primary-compatibility-receipt.json`, `primary-saved-receipt.json`,
+`right-compatibility-receipt.json` and `right-saved-receipt.json`.
+
+`build_separated_case.py` constructs `yield_ego_left_separated` from the
+same synthetic sign, crossing and left-side approaches, with other release
+at frame index 5 and original-body entry at index 20. It passes exact
+offline (`separated-offline-v1.log`), positive and missing-controller-source
+negative compatibility (`separated-compat-v1.log`), and recorded-only saved
+processing (`separated-saved-v1.log`). Its isolated manifest and receipts are
+`separated-candidate-manifest.json`, `separated-compatibility-receipt.json`
+and `separated-saved-receipt.json`.
+
+`build_opposite_case.py` constructs `yield_opposite_left_turn` with an
+opposing same-highway approach, a source-bound turn route and original-frame
+left-turn intention in both the crossing and controller histories. Its first
+offline attempt exposed a missing site relation declaration; that was fixed
+in the builder before its exact proofs. The current exact offline
+(`opposite-offline-v2.log`), positive and missing-controller-source negative
+compatibility (`opposite-compat-v1.log`), and recorded-only saved processing
+(`opposite-saved-v1.log`) all pass. `opposite-candidate-manifest.json` binds
+the current construction and receipt; the retained receipts are
+`opposite-compatibility-receipt.json` and `opposite-saved-receipt.json`.
+
+The source-integrity checks in `audit_comparisons.py` pass both declared
+software pairs on the current compatibility attempts: relative-side entry
+gaps are 0.05/0.05 s (`relative-side-audit-v2.log`); timing entry gaps are
+0.05/0.55 s (`entry-timing-audit-v1.log`). The complete declared-pair audit
+passes in `comparisons-audit-v1.log`. It checks the controlled release-frame
+change as well as the measured original-frame gap. These are synthetic CPU
+diagnostics with physical and legal acceptance explicitly unresolved; no
+numeric legal cutoff was inferred.
+
+All four selected cases have isolated partial manifests. A complete
+`execution-manifest.json` and full canonical proposals are still needed.
+Build and prove three distinct physical-risk fallback constructions per
+selected case, then run their exact offline, compatibility and saved checks,
+the full independent delivery audit, the assignment readiness gate and the
+strict batch gate. The fallback and site-review work is worker-owned; no
+status was changed to ready. `result.json` remains partial and binds the
+current test log. No frozen inputs, runtime, batch file or Git action was
+changed.
+
+The final recheck passed `worker_check.py --updates` (`updates.log`) and the
+scoped `worker_check.py --assignment
+testing__C125763__NRS-484B-250-2__motor_vehicle_driver --complete`
+(`assignment-check.log`). The full `.venv-cpu/bin/python worker_check.py
+--complete --require-delivery-ready` exited 1 in `strict-gate.log` with
+`Preparation acceptance failed: partial/missing packages remain`. Delivery
+readiness has not passed; continue the worker-owned fallback and delivery
+construction from this checkpoint.

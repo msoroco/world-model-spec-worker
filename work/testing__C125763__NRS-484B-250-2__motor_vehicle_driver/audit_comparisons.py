@@ -55,6 +55,7 @@ def audit_pair(name,left,right):
     time_b=bv['entry_timing']['absolute_difference_s']
     if name=='yield_sign_relative_side':
         require(ac['other_highway_id']==bc['other_highway_id'] and
+                cfg_a.get('other_release_frame')==cfg_b.get('other_release_frame') and
                 ac['other_approach_forward_xy']!=bc['other_approach_forward_xy'] and
                 av['relative_right_side']['other_spatially_right'] is True and
                 bv['relative_right_side']['other_spatially_right'] is False and
@@ -62,6 +63,9 @@ def audit_pair(name,left,right):
                 'Relative side change or fixed entry timing not demonstrated')
     else:
         require(ac['other_highway_id']==bc['other_highway_id'] and
+                type(cfg_a.get('other_release_frame')) is int and
+                type(cfg_b.get('other_release_frame')) is int and
+                cfg_b['other_release_frame']<cfg_a['other_release_frame'] and
                 ac['other_road_id']==bc['other_road_id'] and
                 ac['other_approach_forward_xy']==bc['other_approach_forward_xy'] and
                 av['relative_right_side']['other_spatially_right'] is True and

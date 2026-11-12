@@ -29,6 +29,7 @@ def build_attempt(root,variant='left',map_name=None):
             'right':'yield_ego_right_near_time',
             'separated':'yield_ego_left_separated'}[variant]
     cfg['selected_case_id']=ASSIGNMENT+'__'+suffix
+    cfg['other_release_frame']=0 if variant=='separated' else 2
     (root/'config.json').write_text(json.dumps(cfg))
     context=json.loads((root/'junction_context.json').read_text())
     context['other_approach_forward_xy']=[0,-1] if variant=='right' else [0,1]

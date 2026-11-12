@@ -1,0 +1,141 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C125763__NRS-484B-250-2__motor_vehicle_driver",
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3",
+  "status": "isolated_partial_separated_diagnostic",
+  "cases": [
+    {
+      "case_id": "testing__C125763__NRS-484B-250-2__motor_vehicle_driver__yield_ego_left_separated",
+      "kind": "delivery",
+      "construction": "cases/yield_ego_left_separated/construction.json",
+      "construction_sha256": "471e27a5cc322a6fbc5eb45d3df926261cf7639711074497f0a8abbe72594b31",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/cases/yield_ego_left_separated/diagnostic-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/separated-candidate-manifest.json --case testing__C125763__NRS-484B-250-2__motor_vehicle_driver__yield_ego_left_separated --output .runtime-work/c125763-yield-separated-offline-v1",
+        "exit_code": 0,
+        "construction_sha256": "471e27a5cc322a6fbc5eb45d3df926261cf7639711074497f0a8abbe72594b31",
+        "log": "separated-offline-v1.log",
+        "log_sha256": "0b3aa57d996ae5e39a28493ef7b16715e3b3bb8273d604c3bef287b7fe9dcf74"
+      },
+      "compatibility": {
+        "receipt": "separated-compatibility-receipt.json",
+        "sha256": "a775b0b38e898075e7a331c114cc9be34aabbd386a92e180b2f989a67c4e863d",
+        "log": "separated-analysis.log"
+      },
+      "negative": {
+        "log": "separated-negative-analysis.log"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Yield approach clearance, other spawn clearance and source-camera visibility can fail during Native capture."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/yield_ego_left_separated/fallback1-construction.json",
+          "construction_sha256": "2f11f3b6c02ab4db489f37dbcd40334718d9f07f4250a96dc8238879d01c186e",
+          "trigger": {
+            "source": "original-frame ego position and controller history",
+            "metric": "distance from ego body to yield line when braking begins",
+            "failure_condition": "insufficient distance for the controller to slow before the governed entrance"
+          },
+          "changed_knobs": [
+            "ego spawn pose moved 5 m upstream along its heading"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/separated-candidate-manifest.json --case testing__C125763__NRS-484B-250-2__motor_vehicle_driver__yield_ego_left_separated --candidate fallback1 --output .runtime-work/c125763-separated-fallback1-offline-v1",
+            "exit_code": 0,
+            "construction_sha256": "2f11f3b6c02ab4db489f37dbcd40334718d9f07f4250a96dc8238879d01c186e",
+            "log": "separated-fallback1-offline-v1.log",
+            "log_sha256": "3b1e5b149c00cc9c5de157868f15f7c05fc7349b22fd5295959424187922cbba"
+          },
+          "compatibility": {
+            "receipt": "separated-fallback1-compatibility-receipt.json",
+            "sha256": "05c3144cbfd9cf5f2f252851a15e9b5c322391515b7def3629374234d9dfd721",
+            "log": "separated-fallback1-analysis.log",
+            "negative_log": "separated-fallback1-negative-analysis.log"
+          },
+          "saved_processing": {
+            "receipt": "separated-fallback1-saved-receipt.json",
+            "sha256": "8821b98da5f309bafaf047dea022218bbf6aba9df5b42dfe2f267e435931e398",
+            "log": "separated-fallback1-saved-v1.log",
+            "log_sha256": "8821b98da5f309bafaf047dea022218bbf6aba9df5b42dfe2f267e435931e398"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/yield_ego_left_separated/fallback2-construction.json",
+          "construction_sha256": "76bcbcb4297fdcb4793ef175fc19d023542c118febddb2f77be220812976c67d",
+          "trigger": {
+            "source": "original-frame other body and Native spawn log",
+            "metric": "other spawn clearance from median crossing and ego body",
+            "failure_condition": "spawn overlap or insufficient approach clearance before crossing entry"
+          },
+          "changed_knobs": [
+            "other spawn pose moved 5 m upstream along its heading"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/separated-candidate-manifest.json --case testing__C125763__NRS-484B-250-2__motor_vehicle_driver__yield_ego_left_separated --candidate fallback2 --output .runtime-work/c125763-separated-fallback2-offline-v1",
+            "exit_code": 0,
+            "construction_sha256": "76bcbcb4297fdcb4793ef175fc19d023542c118febddb2f77be220812976c67d",
+            "log": "separated-fallback2-offline-v1.log",
+            "log_sha256": "b4be3f6c58074a887ccd9035a49ab084757b6affb7b3f4520845f3d6ba7b146a"
+          },
+          "compatibility": {
+            "receipt": "separated-fallback2-compatibility-receipt.json",
+            "sha256": "a6b62f0b753a57c4d5c042e32ce791633bc9ea81890fca5afd245311dd5d7879",
+            "log": "separated-fallback2-analysis.log",
+            "negative_log": "separated-fallback2-negative-analysis.log"
+          },
+          "saved_processing": {
+            "receipt": "separated-fallback2-saved-receipt.json",
+            "sha256": "812a0834e64c6962d94af13ea4676abf11127291b7c1e4bc42e2b3c5ed85f840",
+            "log": "separated-fallback2-saved-v1.log",
+            "log_sha256": "812a0834e64c6962d94af13ea4676abf11127291b7c1e4bc42e2b3c5ed85f840"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/yield_ego_left_separated/fallback3-construction.json",
+          "construction_sha256": "4fe7f3a971fcbd7c13a0e7711be2e0b419b3ce97db4a88431ddab49af2eb2c78",
+          "trigger": {
+            "source": "original overview camera frames and sign-face review",
+            "metric": "yield-sign and crossing visibility in overview source",
+            "failure_condition": "sign face or complete body entry is outside the overview view"
+          },
+          "changed_knobs": [
+            "overview source camera shifted and raised for crossing visibility"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/separated-candidate-manifest.json --case testing__C125763__NRS-484B-250-2__motor_vehicle_driver__yield_ego_left_separated --candidate fallback3 --output .runtime-work/c125763-separated-fallback3-offline-v1",
+            "exit_code": 0,
+            "construction_sha256": "4fe7f3a971fcbd7c13a0e7711be2e0b419b3ce97db4a88431ddab49af2eb2c78",
+            "log": "separated-fallback3-offline-v1.log",
+            "log_sha256": "c178c0be55e879dc078149830ff0b37de706d4a8b03a82754bda68a41c06ae0f"
+          },
+          "compatibility": {
+            "receipt": "separated-fallback3-compatibility-receipt.json",
+            "sha256": "297d55d9de394522e7e0083ccc2daf2605b2003dfd8e495d1db9b3d2acbc502f",
+            "log": "separated-fallback3-analysis.log",
+            "negative_log": "separated-fallback3-negative-analysis.log"
+          },
+          "saved_processing": {
+            "receipt": "separated-fallback3-saved-receipt.json",
+            "sha256": "1cf7a92a2e4952c5f7d2377a6458c980f33480dafdf7862d803085f5f6983d32",
+            "log": "separated-fallback3-saved-v1.log",
+            "log_sha256": "1cf7a92a2e4952c5f7d2377a6458c980f33480dafdf7862d803085f5f6983d32"
+          }
+        }
+      ]
+    }
+  ]
+}
