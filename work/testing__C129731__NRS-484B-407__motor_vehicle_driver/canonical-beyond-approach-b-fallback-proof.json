@@ -1,0 +1,56 @@
+{
+  "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__approach_to_crest__occluded_approach_b",
+  "exact_cpu_paths_passed": true,
+  "fallbacks": [
+    {
+      "changed_knobs": [
+        "turn_target_speed_mps"
+      ],
+      "compatibility_sha256": "1f1990010479c65dec591f73a58ffe5dfdc85bdad6946b169f3988983e81c5f0",
+      "construction": "branch-proof-canonical-beyond-approach-b/construction-fallback1.json",
+      "construction_sha256": "165fec8576ff59f4ede8130ec8265d3566cf32dc62ffc91c33117209cb68f77a",
+      "id": "fallback1",
+      "negative_sha256": "f8042d43cabecd7075d66a998b2c1c74c466722328eed20995722b272b832b17",
+      "saved_processing_sha256": "003f3ba506d6081ff2932b4877bfcf72358c6f748905e4cca02b9ed945526fb3",
+      "trigger": {
+        "failure_condition": "exit distance remains above 2 m after heading reversal and braking",
+        "metric": "measured turn overshoots exit before stable stop",
+        "source": "turn_history.jsonl"
+      }
+    },
+    {
+      "changed_knobs": [
+        "turn_lookahead_m"
+      ],
+      "compatibility_sha256": "22ae98c22351a09a5dabc8f7c23e21ed7530b86db12c483685b6d5a9e8d96a9e",
+      "construction": "branch-proof-canonical-beyond-approach-b/construction-fallback2.json",
+      "construction_sha256": "ef8659b400d17fd35c6563e84aa38b52ec6f4f890aff91d40939f013be70776d",
+      "id": "fallback2",
+      "negative_sha256": "1ea1f2adc372ca2922673578d2a2daff903e9af7b10802644e08281010c8b9d6",
+      "saved_processing_sha256": "d6c89c9acd99675726ea584cebaf5282f640ebcc40ac76cff3d8159dd82b7cb8",
+      "trigger": {
+        "failure_condition": "recorded heading change remains below 150 engineering degrees",
+        "metric": "body cuts the planned return corner and fails heading reversal",
+        "source": "turn_history.jsonl"
+      }
+    },
+    {
+      "changed_knobs": [
+        "approach_target_speed_mps"
+      ],
+      "compatibility_sha256": "45aaeb2322bd6e56da55b1600d74e4c3b58cf32cc6c07e50fd37138c86bedf75",
+      "construction": "branch-proof-canonical-beyond-approach-b/construction-fallback3.json",
+      "construction_sha256": "0d7d805717679f2ffaaed13f04db0aeb1af558c26340065afd9372bc67dad97e",
+      "id": "fallback3",
+      "negative_sha256": "3c87211ce8148a28c14ab788d87b3aa77a99e114ea62a740d5d7a246fb4927b5",
+      "saved_processing_sha256": "1fe8ffe04014382f9050645ed3190ddab101bd1f2d2ee0a6e781d81f9cd6cdbe",
+      "trigger": {
+        "failure_condition": "either approach vehicle has no sustained approach trajectory",
+        "metric": "incoming actor has insufficient measured travel within 55 seconds",
+        "source": "motion_history.jsonl"
+      }
+    }
+  ],
+  "physical_acceptance_claimed": false,
+  "primary_construction_sha256": "f8e8c82fef25fdf053f17118938a3783ce50fccb092a195ace63492df46e5644"
+}
