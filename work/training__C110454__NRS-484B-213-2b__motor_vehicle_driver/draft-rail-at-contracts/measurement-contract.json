@@ -1,0 +1,41 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C110454__NRS-484B-213-2b__motor_vehicle_driver__rail_at",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "text-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "left_side_driving",
+      "method": "measure_left_side",
+      "value_type": "boolean",
+      "kind": "measured",
+      "inputs": [
+        "native_samples.jsonl",
+        "road_geometry.json",
+        "statutory_context.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "text-1",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "statutory_approach_relation",
+      "method": "measure_approach",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native_samples.jsonl",
+        "road_geometry.json",
+        "statutory_context.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "statutory_context.json"
+    ],
+    "error_contains": "Missing required source: statutory_context.json"
+  },
+  "scope": "saved source identity and sampled geometry only; one-way exception applicability requires independent review"
+}
