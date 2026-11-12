@@ -968,6 +968,134 @@
         "negative_log": "vehicle-clearance-delivery-audit-proofs.json",
         "negative_log_sha256": "46bd45ddf2684f89511885f1e7e4f9bab3d11740d00452c69aff27bb9d5a2d84"
       }
+    },
+    {
+      "case_id": "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__vehicle_clearance_far_before_turn",
+      "kind": "delivery",
+      "construction": "vehicle-clearance-far-construction.json",
+      "construction_sha256": "4ef6c23f902ad049d9822e672484532f5f90731897479fd2876c632be8eae47e",
+      "measurement_procedure": {
+        "entrypoint": "turn_finalizer.py"
+      },
+      "measurement_contract": "vehicle-clearance-far-measurement-contract.json",
+      "fixture_recipe": "work/heldout__C111610__NRS-484B-413-1__motor_vehicle_driver/vehicle-clearance-far-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Farther vehicle placement and image visibility require original Native verification."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "vehicle-clearance-far-fallback1-construction.json",
+          "construction_sha256": "f2dbbdd0e6f29cdc25176c94eca20c65265ecb1a483dbd66260a7db9952d33b5",
+          "trigger": {
+            "source": "Native connected left-turn route inventory",
+            "metric": "eligible left-turn routes at 2 m sampling",
+            "failure_condition": "Primary route sampling finds no connected left turn"
+          },
+          "changed_knobs": [
+            "route sampling 2 m/6 steps to 1.5 m/8 steps"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111610__NRS-484B-413-1__motor_vehicle_driver/execution-manifest.json --case heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__vehicle_clearance_far_before_turn --candidate fallback1 --output .runtime-work/c111610-vehicle-clearance-far-fallback1-offline-75ab446cbe --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "vehicle-clearance-far-fallback1-offline.log",
+            "log_sha256": "87ee0262853d8b1e9415c2c788befd6158c0bf66b23cb0697ef731bb5747a765",
+            "construction_sha256": "f2dbbdd0e6f29cdc25176c94eca20c65265ecb1a483dbd66260a7db9952d33b5"
+          },
+          "compatibility": {
+            "receipt": "vehicle-clearance-far-fallback1-receipt.json",
+            "sha256": "4844bf96c71ef6447264e1f6de5b22ad688016bc343c5e20bb44b762cd6d40f5",
+            "log": "vehicle-clearance-near-primary-analysis.log",
+            "negative_log": "vehicle-clearance-far-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "vehicle-clearance-far-fallback2-construction.json",
+          "construction_sha256": "039a6a7661d79141d73ca196430d50899b2cfac65f0b7feeff812e050bc5c3e1",
+          "trigger": {
+            "source": "Original ego speed, yaw and indicator readback",
+            "metric": "approach speed settling and turn onset frames",
+            "failure_condition": "Primary 5 m/s approach destabilizes the signal-before-turn timing"
+          },
+          "changed_knobs": [
+            "target speed 5 to 4 m/s and gain .25 to .2"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111610__NRS-484B-413-1__motor_vehicle_driver/execution-manifest.json --case heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__vehicle_clearance_far_before_turn --candidate fallback2 --output .runtime-work/c111610-vehicle-clearance-far-fallback2-offline-d91758f29e --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "vehicle-clearance-far-fallback2-offline.log",
+            "log_sha256": "fb95b7601c2e84f947feb7ab2e5aa6f9e0419690c51666cf07130b9b8faca5e9",
+            "construction_sha256": "039a6a7661d79141d73ca196430d50899b2cfac65f0b7feeff812e050bc5c3e1"
+          },
+          "compatibility": {
+            "receipt": "vehicle-clearance-far-fallback2-receipt.json",
+            "sha256": "15a7d33cd641332353297b95c989033cd0d8c3c998833864c24071717c6e7f29",
+            "log": "vehicle-clearance-near-primary-analysis.log",
+            "negative_log": "vehicle-clearance-far-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "vehicle-clearance-far-fallback3-construction.json",
+          "construction_sha256": "3bbbed033f98368550fa3d7730daccb44024b5698e66966377a73c7bc15e7937",
+          "trigger": {
+            "source": "Original overview RGB decode",
+            "metric": "ego, affected vehicle and lamp visible pixel count",
+            "failure_condition": "Primary overview mount crops participant or indicator visibility"
+          },
+          "changed_knobs": [
+            "overview camera mount x -8 to -9 m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111610__NRS-484B-413-1__motor_vehicle_driver/execution-manifest.json --case heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__vehicle_clearance_far_before_turn --candidate fallback3 --output .runtime-work/c111610-vehicle-clearance-far-fallback3-offline-a44f41b676 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "vehicle-clearance-far-fallback3-offline.log",
+            "log_sha256": "efb26bec55e69a30ccc147f113c69291f92cdacd341e26cd978e301ec7ed5681",
+            "construction_sha256": "3bbbed033f98368550fa3d7730daccb44024b5698e66966377a73c7bc15e7937"
+          },
+          "compatibility": {
+            "receipt": "vehicle-clearance-far-fallback3-receipt.json",
+            "sha256": "9dfe4b70c2b35f2a0950a15e2e01008a309c0ee70f4066c4b155a547e262a967",
+            "log": "vehicle-clearance-near-primary-analysis.log",
+            "negative_log": "vehicle-clearance-far-fallback3-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111610__NRS-484B-413-1__motor_vehicle_driver/execution-manifest.json --case heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__vehicle_clearance_far_before_turn --output .runtime-work/c111610-vehicle-clearance-far-primary-offline-d4482e72d9 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "vehicle-clearance-far-primary-offline.log",
+        "log_sha256": "f5cadf1ff04e6dc4ece7e0d237a14fbfca54cc90a027106d848343835c5807d6",
+        "construction_sha256": "4ef6c23f902ad049d9822e672484532f5f90731897479fd2876c632be8eae47e"
+      },
+      "compatibility": {
+        "receipt": "vehicle-clearance-far-primary-receipt.json",
+        "sha256": "3a3e63e7b9e62b3a3a174872c089c10916c5c05d9d967cfeba1efddeab5e820e",
+        "log": "vehicle-clearance-near-primary-analysis.log",
+        "negative_log": "vehicle-clearance-far-primary-negative.log"
+      },
+      "negative": {
+        "log": "vehicle-clearance-far-primary-negative.log"
+      },
+      "saved_processing": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111610__NRS-484B-413-1__motor_vehicle_driver/execution-manifest.json --case heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__vehicle_clearance_far_before_turn --attempt .runtime-work/c111610-vehicle-clearance-far-primary-saved-attempt-d4482e72d9 --output .runtime-work/c111610-vehicle-clearance-far-primary-saved-d4482e72d9 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "exit_code": 0,
+        "log": "vehicle-clearance-far-primary-saved.log",
+        "log_sha256": "30f376ff19131664939a32e019306d0d54d7665d8ac7b75fe42502bfd02fdebd",
+        "receipt": "vehicle-clearance-far-primary-saved-receipt.json",
+        "receipt_sha256": "30f376ff19131664939a32e019306d0d54d7665d8ac7b75fe42502bfd02fdebd"
+      },
+      "physical_preparation": {
+        "receipt": "physical/vehicle_clearance_far_before_turn-proof.json",
+        "sha256": "e49fbe569f0ee82f156ddec261a63fba5ed4eb7094adb8a20f3840f6489a9b5a"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
     }
   ]
 }
