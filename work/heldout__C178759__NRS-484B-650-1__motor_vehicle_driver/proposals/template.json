@@ -1,0 +1,78 @@
+{
+  "template_id": "NRS-484B-650-1@motor_vehicle_driver",
+  "law_id": "NRS-484B-650-1",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "A driver commits an offense of aggressive driving if, during any single, continuous period of driving within the course of 1 mile, the driver does all the following, in any sequence: (a) Commits one or more acts of speeding in violation of NRS 484B.363 or 484B.600 [NRS-484B-363-1, NRS-484B-363-2, NRS-484B-600-1a, NRS-484B-600-1b, NRS-484B-600-1c, NRS-484B-600-1e]. (b) Commits two or more of the following acts, in any combination, or commits any of the following acts more than once: (1) Failing to obey an official traffic-control device in violation of NRS 484B.300 [NRS-484B-300-1]. (2) Overtaking and passing another vehicle upon the right by driving off the paved portion of the highway in violation of NRS 484B.210 [NRS-484B-210-3]. (3) Improper or unsafe driving upon a highway that has marked lanes for traffic in violation of NRS 484B.223 [NRS-484B-223-1b, NRS-484B-223-2, NRS-484B-223-3a, NRS-484B-223-3b, NRS-484B-223-3c, NRS-484B-223-4a, NRS-484B-223-4b]. (4) Following another vehicle too closely in violation of NRS 484B.127 [LVMC-11-12-080-A, NRS-484B-127-2, NRS-484B-127-3]. (5) Failing to yield the right-of-way in violation of any provision of NRS 484B.250 to 484B.267, inclusive [NRS-484B-250-1, NRS-484B-250-2, NRS-484B-250-3, NRS-484B-250-4, NRS-484B-253, NRS-484B-257-1, NRS-484B-257-2, NRS-484B-260, NRS-484B-263, NRS-484B-267-1a, NRS-484B-267-1b, NRS-484B-267-1c, NRS-484B-267-2a, NRS-484B-267-2b, NRS-484B-267-2c, NRS-484B-267-2d, NRS-484B-267-2e, NRS-484B-267-2f]. (c) Creates an immediate hazard, regardless of its duration, to another vehicle or to another person, whether or not the other person is riding in or upon the vehicle of the driver or any other vehicle.",
+  "structure": {
+    "law_id": "NRS-484B-650-1",
+    "activation": {
+      "condition": "One driver continuously drives through a single event-enclosing course of no more than one mile.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "type": "must_not",
+      "description": "Within the continuous one-mile course, do not combine an independently established speeding violation, two independently established listed acts or one listed act repeated, and an independently established immediate hazard. The selected C178759 branch requests repeated off-pavement right passing of the same fixed vehicle.",
+      "numeric_conditions": []
+    },
+    "exceptions": [],
+    "timing": {
+      "description": "All groups may occur in any sequence; immediate hazard has no minimum duration.",
+      "numeric_conditions": [
+        {
+          "variable": "candidate_event_window_path_length",
+          "operator": "<=",
+          "value": 1,
+          "unit": "mile"
+        }
+      ]
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "off the paved portion of the highway",
+        "note": "Mapped road edge is a controller proxy; actual paved portion and NRS 484B.210 operative exceptions need independent source review."
+      },
+      {
+        "phrase": "immediate hazard",
+        "note": "Original participant interaction, conflict geometry and pixels require independent review; no numeric cutoff is supplied."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "first_right_pass_request",
+      "kind": "controller",
+      "range_or_domain": "first requested off-road-edge right pass, original completion uncertain"
+    },
+    {
+      "name": "second_right_pass_request",
+      "kind": "controller",
+      "range_or_domain": "second requested off-road-edge right pass or paved-lane continuation comparison"
+    },
+    {
+      "name": "fixed_overtaken_actor_id",
+      "kind": "world_setup",
+      "range_or_domain": "one fixed other vehicle retained across both intervals"
+    },
+    {
+      "name": "ego_speed_mps",
+      "kind": "subject_behavior",
+      "range_or_domain": "original 20 Hz ego speed; no automatic speeding violation"
+    },
+    {
+      "name": "path_length_m",
+      "kind": "subject_behavior",
+      "range_or_domain": "continuous original ego path in meters"
+    },
+    {
+      "name": "mapped_road_edge_clearance_m",
+      "kind": "subject_behavior",
+      "range_or_domain": "original ego relative to mapped outer road edge; no pavement verdict"
+    },
+    {
+      "name": "hazard_conflict_geometry",
+      "kind": "subject_behavior",
+      "range_or_domain": "original ego/other body position and velocity with original RGB pixels"
+    }
+  ]
+}

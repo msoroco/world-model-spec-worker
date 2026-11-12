@@ -162,3 +162,5 @@ comparisons, fallback constructions, semantic proposals and independent
 audits. The geometry test is a software fixture and proves no actual turn.
 
 Latest scoped strict gate log `strict-gate.log` SHA256 `89a30e1a059e90fd63013ce8013c90439599f8902cd242e9ccbbf37d716c8292`; exit code 1 because status is correctly partial.
+
+2026-11-12 return-cap compaction: 47 small UTF-8 diagnostic logs have exact paths, complete text and SHA256 in `work/_shared/prune-history.json.compacted_text_files`. Scoped nonstrict preparation passes after compaction. Before a future strict sweep, restore with `.venv-cpu/bin/python work/_shared/restore_compacted_zero_logs.py --assignment heldout__C109705__NRS-484B-400-3__motor_vehicle_driver`. Status remains partial.

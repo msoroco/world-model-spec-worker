@@ -80,6 +80,17 @@ def _station(route, distance, vehicle):
     return distance[index], index
 
 
+def _lead_near_right_edge(edge):
+    """Request the fixed hazard target near the right driving edge.
+
+    The 0.4 m shoulder-side offset is an engineering encounter request, not a
+    legal or physical hazard threshold. Realized body clearance stays original.
+    """
+    point = edge['driving_edge_xy_m']
+    right = edge['right_axis_xy']
+    return (point[0] + .4 * right[0], point[1] + .4 * right[1])
+
+
 def run(output_dir, host, port):
     import carla
     from pipeline_capture import PipelineCapture
@@ -136,12 +147,17 @@ def run(output_dir, host, port):
             else:
                 point = waypoint.transform.location
                 ego_target = (point.x, point.y)
-            lead_point = route[min(lead_index+3, len(route)-1)].transform.location
+            lead_waypoint = route[min(lead_index+3, len(route)-1)]
+            lead_point = lead_waypoint.transform.location
+            lead_target = ((lead_point.x, lead_point.y)
+                           if phase.name not in ('first_right_pass_request',
+                                                 'second_right_pass_request')
+                           else _lead_near_right_edge(mapped_right_edges(lead_waypoint)))
             lead_speed = (engineering.get('reclaim_lead_speed_mps', 20)
                           if phase.name == 'lead_reclaim_request'
                           else phase.lead_speed_mps)
             apply_feedback(ego, carla, ego_target, phase.ego_speed_mps)
-            apply_feedback(lead, carla, (lead_point.x, lead_point.y), lead_speed)
+            apply_feedback(lead, carla, lead_target, lead_speed)
             frame = world.tick()
             snapshot = world.get_snapshot()
             if snapshot.frame != frame:
@@ -175,6 +191,7 @@ def run(output_dir, host, port):
                 'driving_lane_id': current_edge['driving_lane_id'],
                 'shoulder_lane_id': current_edge['shoulder_lane_id'],
                 'requested_phase': phase.name,
+                'requested_lead_target_xy_m': list(lead_target),
                 'pavement_surface_legal_judgment': None,
                 'right_pass_legal_judgment': None})
             bodies.append(sample(frame, time_s, ego, lead,

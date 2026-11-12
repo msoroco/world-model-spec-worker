@@ -91,7 +91,7 @@
     {
       "case_id": "heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver__straight_center_east",
       "requirement": "Eastbound unrelated straight travel in designated center lane",
-      "status": "planned_unimplemented",
+      "status": "primary_cpu_proved",
       "candidate_risk": {
         "status": "physical",
         "reason": "center-lane occupancy may be too brief to observe"
@@ -102,12 +102,17 @@
           "sha256": "6366d357ca323359ec0aaf0fd375c7bd4c9bd7c058a0f693e378c42cb0fff23b"
         }
       ],
-      "target_law_id": "LVMC-11-12-100-C"
+      "target_law_id": "LVMC-11-12-100-C",
+      "cpu_proofs": {
+        "offline_log": "straight-center-offline.log",
+        "compatibility_receipt": "straight-center-compatibility.json",
+        "saved_processing_receipt": "straight-center-saved-processing.json"
+      }
     },
     {
       "case_id": "heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver__straight_outer_east",
       "requirement": "Eastbound straight travel outside center lane",
-      "status": "planned_unimplemented",
+      "status": "primary_cpu_proved",
       "candidate_risk": {
         "status": "physical",
         "reason": "route may enter center lane unintentionally"
@@ -118,7 +123,12 @@
           "sha256": "6366d357ca323359ec0aaf0fd375c7bd4c9bd7c058a0f693e378c42cb0fff23b"
         }
       ],
-      "target_law_id": "LVMC-11-12-100-C"
+      "target_law_id": "LVMC-11-12-100-C",
+      "cpu_proofs": {
+        "offline_log": "straight-outer-offline.log",
+        "compatibility_receipt": "straight-outer-compatibility.json",
+        "saved_processing_receipt": "straight-outer-saved-processing.json"
+      }
     }
   ],
   "comparisons": [
@@ -164,13 +174,14 @@
       ],
       "fixed_conditions": "same eastbound designated center lane and observation method",
       "deliberate_differences": "turn preparation followed by left turn versus unrelated straight travel",
-      "status": "planned_unimplemented",
+      "status": "cpu_proved",
       "source_refs": [
         {
           "path": "inputs/heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver/assignment.json",
           "sha256": "6366d357ca323359ec0aaf0fd375c7bd4c9bd7c058a0f693e378c42cb0fff23b"
         }
-      ]
+      ],
+      "proof": "center-use-comparison-proof.json"
     },
     {
       "comparison_id": "east_direction",
@@ -323,7 +334,7 @@
     }
   },
   "implemented_measurement": "turn_origin_measurement.py and turn_origin_capture.py source-bind lane of origin and observed left deflection; turn_origin_finalizer.py derives the first exact case channel from retained raw sources. First exact offline, positive/negative compatibility and clean saved processing pass.",
-  "review_status": "partial; eastbound and westbound center/outer left-turn exact primaries plus independent original-source comparisons pass CPU; two straight exact cases, all fallbacks and remaining comparisons remain",
+  "review_status": "partial; six exact primaries, 18 tested fallbacks and three independent source comparisons pass CPU; two comparisons, semantic delivery, physical protocols and audits remain",
   "observations": [
     {
       "name": "turn_origin_observation",

@@ -7,7 +7,7 @@ from tempfile import TemporaryDirectory
 from aggressive_sequence import MILE_M, measure_sequence
 from paved_boundary import mapped_right_edges, signed_clearance
 from right_pass_source import candidates
-from runner import check_config
+from runner import _lead_near_right_edge, check_config
 from two_pass_finalizer import analyze
 from two_pass_construction import PHASES, phase_at, transition_guard, validate_schedule
 
@@ -25,6 +25,10 @@ def episodes():
 
 
 class SequenceTests(unittest.TestCase):
+    def test_fixed_lead_right_edge_encounter_request(self):
+        edge={'driving_edge_xy_m':(20.,-2.),'right_axis_xy':(0.,-1.)}
+        self.assertEqual(_lead_near_right_edge(edge),(20.,-2.4))
+
     def test_exact_runner_config_and_saved_original_source_analysis(self):
         config_path=Path(__file__).parent/'config.json'
         if not config_path.is_file():

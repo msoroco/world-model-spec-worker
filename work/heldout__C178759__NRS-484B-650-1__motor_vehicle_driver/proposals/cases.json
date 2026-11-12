@@ -4,39 +4,42 @@
   "status": "draft",
   "cases": [
     {
-      "case_id": "heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__repeated_right_pass",
+      "case_id": "C178759__semantic_baseline_reference",
       "target_law_id": "NRS-484B-650-1",
-      "target_type": "selected_branch",
-      "rationale": "Request two separate right-side passes of the fixed other vehicle with independent pavement and legal review",
+      "target_type": "baseline",
+      "rationale": "Shared neutral source-observation reference; no right pass, speeding act, hazard or legal outcome asserted",
       "variable_assignments": {
-        "first_pass_start_station_m": {
+        "first_right_pass_request": {
           "kind": "controller",
-          "value": 260
+          "value": "right_of_mapped_outer_edge"
         },
-        "lead_reclaim_start_station_m": {
+        "second_right_pass_request": {
           "kind": "controller",
-          "value": 500
+          "value": "paved_lane"
         },
-        "second_pass_start_station_m": {
-          "kind": "controller",
-          "value": 660
+        "fixed_overtaken_actor_id": {
+          "kind": "world_setup",
+          "value": "one fixed Native other-vehicle actor selected at spawn"
         },
-        "realized_right_passes": {
+        "ego_speed_mps": {
           "kind": "subject_behavior",
           "value": null
         },
-        "pavement_surface": {
-          "kind": "environment",
+        "path_length_m": {
+          "kind": "subject_behavior",
           "value": null
         },
-        "immediate_hazard": {
+        "mapped_road_edge_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "hazard_conflict_geometry": {
           "kind": "subject_behavior",
           "value": null
         }
       },
       "unresolved_judgment_calls": [
-        "off paved portion",
-        "speeding violation",
+        "off the paved portion of the highway",
         "immediate hazard"
       ],
       "recording_description": {
@@ -84,43 +87,42 @@
       }
     },
     {
-      "case_id": "heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__single_right_pass",
+      "case_id": "heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__repeated_right_pass",
       "target_law_id": "NRS-484B-650-1",
-      "target_type": "selected_branch",
-      "rationale": "Controlled single mapped-edge right-pass request with the same fixed overtaken vehicle, route, source cameras and duration; repeat-act predicate remains absent by construction request, subject to original motion review",
+      "target_type": "boundary_probe",
+      "rationale": "Request two separate right-side passes of the fixed other vehicle with independent pavement and legal review",
       "variable_assignments": {
-        "first_pass_start_station_m": {
+        "first_right_pass_request": {
           "kind": "controller",
-          "value": 260
+          "value": "right_of_mapped_outer_edge"
         },
-        "lead_reclaim_start_station_m": {
+        "second_right_pass_request": {
           "kind": "controller",
-          "value": 500
+          "value": "right_of_mapped_outer_edge"
         },
-        "second_pass_start_station_m": {
-          "kind": "controller",
-          "value": 660
+        "fixed_overtaken_actor_id": {
+          "kind": "world_setup",
+          "value": "one fixed Native other-vehicle actor selected at spawn"
         },
-        "realized_right_passes": {
+        "ego_speed_mps": {
           "kind": "subject_behavior",
           "value": null
         },
-        "pavement_surface": {
-          "kind": "environment",
-          "value": null
-        },
-        "immediate_hazard": {
+        "path_length_m": {
           "kind": "subject_behavior",
           "value": null
         },
-        "second_pass_request": {
-          "kind": "controller",
-          "value": "paved_lane_continuation"
+        "mapped_road_edge_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "hazard_conflict_geometry": {
+          "kind": "subject_behavior",
+          "value": null
         }
       },
       "unresolved_judgment_calls": [
-        "off paved portion",
-        "speeding violation",
+        "off the paved portion of the highway",
         "immediate hazard"
       ],
       "recording_description": {
@@ -165,9 +167,141 @@
           "Mapped road edge is a physical controller proxy, not proof of the paved portion.",
           "Speeding, two lawful predicate violations, immediate hazard and aggressive-driving legal judgment remain independent review."
         ]
+      },
+      "paired_probe_id": "repeated_right_pass_required",
+      "deliberate_differences": [
+        "second_right_pass_request"
+      ],
+      "probe": {
+        "primary_variable": "second_right_pass_request",
+        "comparison_or_standard": "one versus two requested mapped-edge right passes of the same fixed vehicle; legal act count remains independent review",
+        "target_value_or_branch": "two requested passes"
+      }
+    },
+    {
+      "case_id": "heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__single_right_pass",
+      "target_law_id": "NRS-484B-650-1",
+      "target_type": "boundary_probe",
+      "rationale": "Controlled single mapped-edge right-pass request with the same fixed overtaken vehicle, route, source cameras and duration; repeat-act predicate remains absent by construction request, subject to original motion review",
+      "variable_assignments": {
+        "first_right_pass_request": {
+          "kind": "controller",
+          "value": "right_of_mapped_outer_edge"
+        },
+        "second_right_pass_request": {
+          "kind": "controller",
+          "value": "paved_lane"
+        },
+        "fixed_overtaken_actor_id": {
+          "kind": "world_setup",
+          "value": "one fixed Native other-vehicle actor selected at spawn"
+        },
+        "ego_speed_mps": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "path_length_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "mapped_road_edge_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "hazard_conflict_geometry": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "off the paved portion of the highway",
+        "immediate hazard"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "path_length_m",
+            "unit": "m",
+            "method": "cumulative original 20 Hz ego world positions",
+            "sampling_rate_hz": 20,
+            "time_window": "entire continuous source drive",
+            "reference_frame": "Native world ground plane",
+            "uncertainty": "Native pose sample resolution"
+          },
+          {
+            "name": "mapped_road_edge_clearance_m",
+            "unit": "m",
+            "method": "signed original ego position against retained OpenDRIVE driving and shoulder outer edges",
+            "sampling_rate_hz": 20,
+            "time_window": "both pass requests and intervening reset",
+            "reference_frame": "Native road ground plane",
+            "uncertainty": "Map geometry does not establish pavement material"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "fixed_overtaken_vehicle",
+            "unit": "Native actor ID",
+            "method": "same lead actor ID retained with per-frame ego and lead positions and speed"
+          },
+          {
+            "name": "paved_versus_traveled_boundary",
+            "unit": "source geometry and RGB pixels",
+            "method": "driving-lane and mapped road edges retained separately; paved surface requires independent original-pixel review"
+          },
+          {
+            "name": "governing_cross_referenced_rule",
+            "unit": "sourced legal context",
+            "method": "NRS 484B.210 and 484B.650 source identity retained; no automatic violation finding"
+          }
+        ],
+        "limitations": [
+          "Mapped road edge is a physical controller proxy, not proof of the paved portion.",
+          "Speeding, two lawful predicate violations, immediate hazard and aggressive-driving legal judgment remain independent review."
+        ]
+      },
+      "paired_probe_id": "repeated_right_pass_required",
+      "deliberate_differences": [
+        "second_right_pass_request"
+      ],
+      "probe": {
+        "primary_variable": "second_right_pass_request",
+        "comparison_or_standard": "one versus two requested mapped-edge right passes of the same fixed vehicle; legal act count remains independent review",
+        "target_value_or_branch": "one requested pass"
       }
     }
   ],
-  "sweep_specs": [],
+  "sweep_specs": [
+    {
+      "sweep_id": "c178759_pavement_material",
+      "target_law_id": "NRS-484B-650-1",
+      "judgment_refs": [
+        {
+          "phrase": "off the paved portion of the highway",
+          "note": "Mapped road edge is a controller proxy; actual paved portion and NRS 484B.210 operative exceptions need independent source review."
+        }
+      ],
+      "rationale": "Physical lateral-position and surface review sweep for off-paved right pass; no legal cutoff",
+      "status": "incomplete",
+      "missing_inputs": [
+        "Further exact source-bound lateral-position comparison cases remain CPU work"
+      ]
+    },
+    {
+      "sweep_id": "c178759_hazard_geometry",
+      "target_law_id": "NRS-484B-650-1",
+      "judgment_refs": [
+        {
+          "phrase": "immediate hazard",
+          "note": "Original participant interaction, conflict geometry and pixels require independent review; no numeric cutoff is supplied."
+        }
+      ],
+      "rationale": "Physical ego/other interaction sweep for immediate-hazard evidence, with no numerical legal cutoff",
+      "status": "incomplete",
+      "missing_inputs": [
+        "Further exact source-bound hazard-geometry comparison cases remain CPU work"
+      ]
+    }
+  ],
   "sweeps_expanded": true
 }

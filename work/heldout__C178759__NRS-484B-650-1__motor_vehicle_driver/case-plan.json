@@ -8,25 +8,31 @@
       "case_id": "heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__repeated_right_pass",
       "target_law_id": "NRS-484B-650-1",
       "description": "Two separately source-measured rightward order reversals of the same fixed overtaken vehicle, with paved reentry and lead reclaim between, plus independent speeding and immediate-hazard source review",
-      "construction_status": "primary_exact_offline_compatibility_saved_passed",
+      "construction_status": "primary_and_three_fallbacks_offline_compatibility_saved_passed",
       "physical_risk": {
         "risk": "Native map may not have a traversable off-paved shoulder or enough same-vehicle gap reversal to reset between passes",
         "trigger_source": "20 Hz original ego/lead geometry, paved boundary source and four synchronized cameras",
         "trigger_metric": "first and second signed ego-minus-lead gap reversals with separate off-paved intervals and intervening paved reentry",
         "failure_condition": "either pass lacks original gap reversal, off-paved crossing, same target, reentry or four-camera visibility"
-      }
+      },
+      "gap_ids": [
+        "g_two_right_passes"
+      ]
     },
     {
       "case_id": "heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__single_right_pass",
       "target_law_id": "NRS-484B-650-1",
       "description": "Same fixed overtaken vehicle, route and four cameras with only one requested mapped-edge right pass; second interval remains on the paved lane as a controlled repeat-act comparison",
-      "construction_status": "exact_offline_passed_compatibility_pending",
+      "construction_status": "primary_and_three_fallbacks_offline_compatibility_saved_passed",
       "physical_risk": {
         "risk": "Native map may not have a traversable off-paved shoulder or enough same-vehicle gap reversal to reset between passes",
         "trigger_source": "20 Hz original ego/lead geometry, paved boundary source and four synchronized cameras",
         "trigger_metric": "first and second signed ego-minus-lead gap reversals with separate off-paved intervals and intervening paved reentry",
         "failure_condition": "either pass lacks original gap reversal, off-paved crossing, same target, reentry or four-camera visibility"
-      }
+      },
+      "gap_ids": [
+        "g_two_right_passes"
+      ]
     }
   ],
   "comparisons": [
@@ -142,5 +148,147 @@
       ],
       "evidence_or_gap": "Exact two-pass source collection and one-mile event-envelope measurement requested; original pavement, speeding predicate and hazard judgments remain independent review."
     }
-  ]
+  ],
+  "evidence_review": {
+    "reviewer": "C178759 worker CPU source review",
+    "method": "Read frozen evidence.json, assignment.json and conditional witness. Evidence inventory lists zero accepted recordings; no source-backed equivalence or reuse is claimed. C228508 provides generic code patterns but no exact C178759 cell recording.",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "g_two_right_passes",
+        "requirement": "Two separate right passes of the same fixed overtaken vehicle outside the paved portion, plus source-bound speeding, immediate hazard and one-mile envelope",
+        "source": "inputs/heldout__C178759__NRS-484B-650-1__motor_vehicle_driver/assignment.json",
+        "why_existing_insufficient": "No accepted C178759 recording exists; requested Native motion and original pavement pixels remain unverified."
+      }
+    ]
+  },
+  "source_observation_mapping": {
+    "kin.path_length": {
+      "evidence": "Original ego positions integrate continuous route distance; one-mile event envelope is derived from conduct frames.",
+      "channels": [
+        "path_length_m"
+      ],
+      "source_refs": [
+        "inputs/heldout__C178759__NRS-484B-650-1__motor_vehicle_driver/assignment.json",
+        "inputs/heldout__C178759__NRS-484B-650-1__motor_vehicle_driver/evidence.json"
+      ]
+    },
+    "kin.speed": {
+      "evidence": "Original ego speed is measurable; a speeding violation needs governing authority and independent review.",
+      "channels": [],
+      "source_refs": [
+        "inputs/heldout__C178759__NRS-484B-650-1__motor_vehicle_driver/assignment.json",
+        "inputs/heldout__C178759__NRS-484B-650-1__motor_vehicle_driver/evidence.json"
+      ]
+    },
+    "dev.speed_limit_sign": {
+      "evidence": "Native ego.get_speed_limit map value is retained as context; actual sign and operative rule require original pixel and authority review.",
+      "channels": [],
+      "source_refs": [
+        "inputs/heldout__C178759__NRS-484B-650-1__motor_vehicle_driver/assignment.json",
+        "inputs/heldout__C178759__NRS-484B-650-1__motor_vehicle_driver/evidence.json"
+      ]
+    },
+    "dev.traffic_signal": {
+      "evidence": "Not constructed in the selected repeated-right-pass branch; other listed-act alternatives remain separate coverage work.",
+      "channels": [],
+      "source_refs": [
+        "inputs/heldout__C178759__NRS-484B-650-1__motor_vehicle_driver/assignment.json",
+        "inputs/heldout__C178759__NRS-484B-650-1__motor_vehicle_driver/evidence.json"
+      ]
+    },
+    "drv.overtaking": {
+      "evidence": "Signed same-vehicle route order reversals are measured; mapped edge crossing is not pavement/legal proof.",
+      "channels": [],
+      "source_refs": [
+        "inputs/heldout__C178759__NRS-484B-650-1__motor_vehicle_driver/assignment.json",
+        "inputs/heldout__C178759__NRS-484B-650-1__motor_vehicle_driver/evidence.json"
+      ]
+    },
+    "st.shoulder": {
+      "evidence": "Driving and mapped outer-road edges and shoulder lane ID are separate; actual paved portion requires pixel review.",
+      "channels": [
+        "mapped_road_edge_clearance_m"
+      ],
+      "source_refs": [
+        "inputs/heldout__C178759__NRS-484B-650-1__motor_vehicle_driver/assignment.json",
+        "inputs/heldout__C178759__NRS-484B-650-1__motor_vehicle_driver/evidence.json"
+      ]
+    },
+    "drv.lane_change": {
+      "evidence": "Original lateral positions against driving edge are retained; marked-lane legal status unresolved.",
+      "channels": [],
+      "source_refs": [
+        "inputs/heldout__C178759__NRS-484B-650-1__motor_vehicle_driver/assignment.json",
+        "inputs/heldout__C178759__NRS-484B-650-1__motor_vehicle_driver/evidence.json"
+      ]
+    },
+    "drv.following": {
+      "evidence": "Fixed ego and overtaken lead body positions retained; no following violation inferred.",
+      "channels": [],
+      "source_refs": [
+        "inputs/heldout__C178759__NRS-484B-650-1__motor_vehicle_driver/assignment.json",
+        "inputs/heldout__C178759__NRS-484B-650-1__motor_vehicle_driver/evidence.json"
+      ]
+    },
+    "drv.time_gap": {
+      "evidence": "Can derive original spacing and ego speed; no legal cutoff supplied.",
+      "channels": [],
+      "source_refs": [
+        "inputs/heldout__C178759__NRS-484B-650-1__motor_vehicle_driver/assignment.json",
+        "inputs/heldout__C178759__NRS-484B-650-1__motor_vehicle_driver/evidence.json"
+      ]
+    },
+    "drv.yields_to": {
+      "evidence": "Not constructed in selected repeated-right-pass branch; yield alternative is separate coverage work.",
+      "channels": [],
+      "source_refs": [
+        "inputs/heldout__C178759__NRS-484B-650-1__motor_vehicle_driver/assignment.json",
+        "inputs/heldout__C178759__NRS-484B-650-1__motor_vehicle_driver/evidence.json"
+      ]
+    },
+    "drv.time_to_conflict": {
+      "evidence": "Original body positions and velocities can inform hazard review; no numeric hazard cutoff supplied.",
+      "channels": [],
+      "source_refs": [
+        "inputs/heldout__C178759__NRS-484B-650-1__motor_vehicle_driver/assignment.json",
+        "inputs/heldout__C178759__NRS-484B-650-1__motor_vehicle_driver/evidence.json"
+      ]
+    },
+    "kin.time": {
+      "evidence": "Original 20 Hz frame/time join binds all events in one continuous drive.",
+      "channels": [],
+      "source_refs": [
+        "inputs/heldout__C178759__NRS-484B-650-1__motor_vehicle_driver/assignment.json",
+        "inputs/heldout__C178759__NRS-484B-650-1__motor_vehicle_driver/evidence.json"
+      ]
+    }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 100,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "ego, fixed overtaken vehicle, both passes and route context",
+        "interval": "full 100-second continuous drive"
+      },
+      {
+        "view": "approach",
+        "subject": "first right-side approach and lead encounter",
+        "interval": "first pass request and reentry"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "fixed lead reclaim, second reset and mapped boundary context",
+        "interval": "intervening lead reclaim and second pass request"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "ego driver, speed context and fixed hazard target",
+        "interval": "full 100-second continuous drive"
+      }
+    ]
+  }
 }

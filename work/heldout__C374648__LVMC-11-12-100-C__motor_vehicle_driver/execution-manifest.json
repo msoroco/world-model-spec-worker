@@ -17,7 +17,86 @@
         "status": "physical",
         "reason": "Actual center-lane designation, map suitability, turn motion and camera visibility require Native review"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-left_center_east-fallback1.json",
+          "construction_sha256": "5b288ce90377e28a038b73264f384d953b72f61802794c9ae6ad9b2043341a97",
+          "trigger": {
+            "source": "Native center-lane waypoint inventory and original marking continuity",
+            "metric": "eligible marked approach length at 2 m spacing",
+            "failure_condition": "primary 2 m waypoint sampling misses a short marked center segment"
+          },
+          "changed_knobs": [
+            "waypoint spacing 2.0 m -> 1.0 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver/execution-manifest.json --case heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver__left_center_east --candidate fallback1 --output .runtime-work/c374648-left-center-east-fallback1-offline",
+            "exit_code": 0,
+            "log": "left-center-east-fallback1-offline.log",
+            "log_sha256": "507df744b837bf09840ff5a5c61b5472ab03811696e57aaf0fbae3bf966ff321",
+            "construction_sha256": "5b288ce90377e28a038b73264f384d953b72f61802794c9ae6ad9b2043341a97"
+          },
+          "compatibility": {
+            "receipt": "left-center-east-fallback1-compatibility.json",
+            "sha256": "cc33da13bf86ef455eecaa5c3fb4c60635f0199cd05494ed9e98ca9ec03c9535",
+            "log": "left-center-east-fallback1-compat-analysis.log",
+            "negative_log": "left-center-east-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-left_center_east-fallback2.json",
+          "construction_sha256": "834ac854cd958fdddc22c73739fe401adcf98cba25e54f21b5b75154c71fa641",
+          "trigger": {
+            "source": "Native marked-lane waypoint continuity",
+            "metric": "continuous marked approach length",
+            "failure_condition": "primary six-step approach does not fit the marked segment"
+          },
+          "changed_knobs": [
+            "approach steps 6 -> 4"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver/execution-manifest.json --case heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver__left_center_east --candidate fallback2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c374648-left_center_east-fallback2-v1/offline",
+            "exit_code": 0,
+            "log": "left_center_east-fallback2-offline.log",
+            "log_sha256": "a6efea72d068a4ba0a74285845dd89c252b665fbd2b2746a9fe69bf4b036b7ed",
+            "construction_sha256": "834ac854cd958fdddc22c73739fe401adcf98cba25e54f21b5b75154c71fa641"
+          },
+          "compatibility": {
+            "receipt": "left_center_east-fallback2-compatibility.json",
+            "sha256": "6c49eef38405541eead8c1415393cae454028d624dcdeb937492f62e03dd6ce7",
+            "log": "left_center_east-fallback2-compat-analysis.log",
+            "negative_log": "left_center_east-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-left_center_east-fallback3.json",
+          "construction_sha256": "ae85e12d9c72dc8043d71070d635e469e261195b36d6c62613fc850bd66008d5",
+          "trigger": {
+            "source": "Native spawn/topology and four-camera preview for first candidate",
+            "metric": "first candidate spawn and camera sight-line suitability",
+            "failure_condition": "first candidate is physically obstructed or cannot spawn while a second connected marked candidate exists"
+          },
+          "changed_knobs": [
+            "sorted route candidate index 0 -> 1"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver/execution-manifest.json --case heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver__left_center_east --candidate fallback3 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c374648-left_center_east-fallback3-v1/offline",
+            "exit_code": 0,
+            "log": "left_center_east-fallback3-offline.log",
+            "log_sha256": "66e84ad7e68ae4fb5a6b63a34c2c7edbf94dc5759f59612aee1a6765c5f02831",
+            "construction_sha256": "ae85e12d9c72dc8043d71070d635e469e261195b36d6c62613fc850bd66008d5"
+          },
+          "compatibility": {
+            "receipt": "left_center_east-fallback3-compatibility.json",
+            "sha256": "ca9e2093d419e4f0396e6fb1feff7c92ed3256da635559fdb370b2e700d11557",
+            "log": "left_center_east-fallback3-compat-analysis.log",
+            "negative_log": "left_center_east-fallback3-negative.log"
+          }
+        }
+      ],
       "acquisition": {
         "turn_origin_observation": {
           "entrypoint": "runner.py",
@@ -65,7 +144,86 @@
         "status": "physical",
         "reason": "Outer lane may cross into candidate center lane before turn; map and motion require Native review"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-left_outer_east-fallback1.json",
+          "construction_sha256": "1257de4f3d9436207518a6d26bbb8ed1571b09273018f93f70c138492bcd6290",
+          "trigger": {
+            "source": "Native marked-lane waypoint inventory",
+            "metric": "eligible marked approach at 2 m sampling",
+            "failure_condition": "primary 2 m sampling misses a short marked approach"
+          },
+          "changed_knobs": [
+            "waypoint spacing 2.0 m -> 1.0 m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver/execution-manifest.json --case heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver__left_outer_east --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c374648-left_outer_east-fallback1-v1/offline",
+            "exit_code": 0,
+            "log": "left_outer_east-fallback1-offline.log",
+            "log_sha256": "2d43da921a716c6fa8194061df248c62b5460ef4015f5fb7ea4ebeb6d47b10a1",
+            "construction_sha256": "1257de4f3d9436207518a6d26bbb8ed1571b09273018f93f70c138492bcd6290"
+          },
+          "compatibility": {
+            "receipt": "left_outer_east-fallback1-compatibility.json",
+            "sha256": "c84eec8c061a77106b71ba2d237e39aa59a002b26e00a3231efe276f69fc9100",
+            "log": "left_outer_east-fallback1-compat-analysis.log",
+            "negative_log": "left_outer_east-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-left_outer_east-fallback2.json",
+          "construction_sha256": "658dbaa27247e90b3183fb3a17719de473aab3a5726c9510a49301c70225a9ca",
+          "trigger": {
+            "source": "Native marked-lane waypoint continuity",
+            "metric": "continuous marked approach length",
+            "failure_condition": "primary six-step approach does not fit the marked segment"
+          },
+          "changed_knobs": [
+            "approach steps 6 -> 4"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver/execution-manifest.json --case heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver__left_outer_east --candidate fallback2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c374648-left_outer_east-fallback2-v1/offline",
+            "exit_code": 0,
+            "log": "left_outer_east-fallback2-offline.log",
+            "log_sha256": "6b0af8adc16a96c9b4a9ddd5ee47b24fb90d88346f0daa1d4f43786b4bea3e0f",
+            "construction_sha256": "658dbaa27247e90b3183fb3a17719de473aab3a5726c9510a49301c70225a9ca"
+          },
+          "compatibility": {
+            "receipt": "left_outer_east-fallback2-compatibility.json",
+            "sha256": "0089d7b376937a83e8784b53f8677cc10890ced981833d48cdbae6fb892a05bf",
+            "log": "left_outer_east-fallback2-compat-analysis.log",
+            "negative_log": "left_outer_east-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-left_outer_east-fallback3.json",
+          "construction_sha256": "47ebf981302cf2c4f49be7c1435dff24b56409c51f23a25ba236f7db76c607dd",
+          "trigger": {
+            "source": "Native spawn/topology and four-camera preview for first candidate",
+            "metric": "first candidate spawn and camera sight-line suitability",
+            "failure_condition": "first candidate is physically obstructed or cannot spawn while a second connected marked candidate exists"
+          },
+          "changed_knobs": [
+            "sorted route candidate index 0 -> 1"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver/execution-manifest.json --case heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver__left_outer_east --candidate fallback3 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c374648-left_outer_east-fallback3-v1/offline",
+            "exit_code": 0,
+            "log": "left_outer_east-fallback3-offline.log",
+            "log_sha256": "23ac6dee065a2917e77bbfa7afe5826a81829a35fe41691048e76b07725c89d2",
+            "construction_sha256": "47ebf981302cf2c4f49be7c1435dff24b56409c51f23a25ba236f7db76c607dd"
+          },
+          "compatibility": {
+            "receipt": "left_outer_east-fallback3-compatibility.json",
+            "sha256": "dca77b52c12064849db0e225386b66df100d34f4f1c6465c46015fa8233cb440",
+            "log": "left_outer_east-fallback3-compat-analysis.log",
+            "negative_log": "left_outer_east-fallback3-negative.log"
+          }
+        }
+      ],
       "acquisition": {
         "turn_origin_observation": {
           "entrypoint": "outer_runner.py",
@@ -113,7 +271,86 @@
         "status": "physical",
         "reason": "Westbound connected center lane may be unavailable or designation unverified; map and motion require Native review"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-left_center_west-fallback1.json",
+          "construction_sha256": "a5f069f5dc2e6750f2010b85e590c940961f362c6e1be819f43ab13eaea51ed2",
+          "trigger": {
+            "source": "Native marked-lane waypoint inventory",
+            "metric": "eligible marked approach at 2 m sampling",
+            "failure_condition": "primary 2 m sampling misses a short marked approach"
+          },
+          "changed_knobs": [
+            "waypoint spacing 2.0 m -> 1.0 m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver/execution-manifest.json --case heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver__left_center_west --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c374648-left_center_west-fallback1-v1/offline",
+            "exit_code": 0,
+            "log": "left_center_west-fallback1-offline.log",
+            "log_sha256": "e7267cf45b0487f39628af003bb3c685177109e49338ef3f5e30c32f07e1d648",
+            "construction_sha256": "a5f069f5dc2e6750f2010b85e590c940961f362c6e1be819f43ab13eaea51ed2"
+          },
+          "compatibility": {
+            "receipt": "left_center_west-fallback1-compatibility.json",
+            "sha256": "2bb62b4e95d6c26c97a200e47daa0a78f899fb02862fa3eba6cecc0b74220371",
+            "log": "left_center_west-fallback1-compat-analysis.log",
+            "negative_log": "left_center_west-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-left_center_west-fallback2.json",
+          "construction_sha256": "603d53f0ae3ef1bfa5e4859a698567d3048bae3079feeed07fd8d88d350c57d1",
+          "trigger": {
+            "source": "Native marked-lane waypoint continuity",
+            "metric": "continuous marked approach length",
+            "failure_condition": "primary six-step approach does not fit the marked segment"
+          },
+          "changed_knobs": [
+            "approach steps 6 -> 4"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver/execution-manifest.json --case heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver__left_center_west --candidate fallback2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c374648-left_center_west-fallback2-v1/offline",
+            "exit_code": 0,
+            "log": "left_center_west-fallback2-offline.log",
+            "log_sha256": "fbfdf8d51c258ed32f5ef7e2c91ee61e64c9d9da6da40e8143c03b74e6631b07",
+            "construction_sha256": "603d53f0ae3ef1bfa5e4859a698567d3048bae3079feeed07fd8d88d350c57d1"
+          },
+          "compatibility": {
+            "receipt": "left_center_west-fallback2-compatibility.json",
+            "sha256": "5cc11fc0d40b0ef9d98fa5560bf56469b63b33659b9206a3a8628bc5ea8d7b5b",
+            "log": "left_center_west-fallback2-compat-analysis.log",
+            "negative_log": "left_center_west-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-left_center_west-fallback3.json",
+          "construction_sha256": "4d0c5bdeefff79c8614d352dce120eec56c28ebdbd293dfdf5286937584e1fb7",
+          "trigger": {
+            "source": "Native spawn/topology and four-camera preview for first candidate",
+            "metric": "first candidate spawn and camera sight-line suitability",
+            "failure_condition": "first candidate is physically obstructed or cannot spawn while a second connected marked candidate exists"
+          },
+          "changed_knobs": [
+            "sorted route candidate index 0 -> 1"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver/execution-manifest.json --case heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver__left_center_west --candidate fallback3 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c374648-left_center_west-fallback3-v1/offline",
+            "exit_code": 0,
+            "log": "left_center_west-fallback3-offline.log",
+            "log_sha256": "896596d643b9283b6f4a2f4535dc29e9cdee265d4b53257e8b8e37d741bd8691",
+            "construction_sha256": "4d0c5bdeefff79c8614d352dce120eec56c28ebdbd293dfdf5286937584e1fb7"
+          },
+          "compatibility": {
+            "receipt": "left_center_west-fallback3-compatibility.json",
+            "sha256": "ddab6d80342515c2a22cf53b335c9606fe5c0f1ceba24692a7ea545bdc58784b",
+            "log": "left_center_west-fallback3-compat-analysis.log",
+            "negative_log": "left_center_west-fallback3-negative.log"
+          }
+        }
+      ],
       "acquisition": {
         "turn_origin_observation": {
           "entrypoint": "west_runner.py",
@@ -161,7 +398,86 @@
         "status": "physical",
         "reason": "Westbound outer lane may cross into candidate center lane before turn; map and motion require Native review"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-left_outer_west-fallback1.json",
+          "construction_sha256": "62dbcc5d3f8f7e75d84e2469c01e034d8b8ba22992684c73cbba9f907591bda1",
+          "trigger": {
+            "source": "Native marked-lane waypoint inventory",
+            "metric": "eligible marked approach at 2 m sampling",
+            "failure_condition": "primary 2 m sampling misses a short marked approach"
+          },
+          "changed_knobs": [
+            "waypoint spacing 2.0 m -> 1.0 m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver/execution-manifest.json --case heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver__left_outer_west --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c374648-left_outer_west-fallback1-v1/offline",
+            "exit_code": 0,
+            "log": "left_outer_west-fallback1-offline.log",
+            "log_sha256": "07fb9a2b56162bcda9d039e1a310e1f3d7ef86bf152d576583541ba347112784",
+            "construction_sha256": "62dbcc5d3f8f7e75d84e2469c01e034d8b8ba22992684c73cbba9f907591bda1"
+          },
+          "compatibility": {
+            "receipt": "left_outer_west-fallback1-compatibility.json",
+            "sha256": "8e0901ec12c71d9019ce8d83a6a33b435f66209d5f45f5cdab5db4d7ba56e360",
+            "log": "left_outer_west-fallback1-compat-analysis.log",
+            "negative_log": "left_outer_west-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-left_outer_west-fallback2.json",
+          "construction_sha256": "6c00ee27421baebf50432d33569c7f0f5c046fe98f96028e225b6a924d6807cb",
+          "trigger": {
+            "source": "Native marked-lane waypoint continuity",
+            "metric": "continuous marked approach length",
+            "failure_condition": "primary six-step approach does not fit the marked segment"
+          },
+          "changed_knobs": [
+            "approach steps 6 -> 4"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver/execution-manifest.json --case heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver__left_outer_west --candidate fallback2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c374648-left_outer_west-fallback2-v1/offline",
+            "exit_code": 0,
+            "log": "left_outer_west-fallback2-offline.log",
+            "log_sha256": "44dcc01ff1512effba32d1d381fc0985d919b63c9458051694c38212c291f450",
+            "construction_sha256": "6c00ee27421baebf50432d33569c7f0f5c046fe98f96028e225b6a924d6807cb"
+          },
+          "compatibility": {
+            "receipt": "left_outer_west-fallback2-compatibility.json",
+            "sha256": "42b27ec29b259b5e9f2f3c4d49a57202b15aabd9f3df1777dd96694976d4fa38",
+            "log": "left_outer_west-fallback2-compat-analysis.log",
+            "negative_log": "left_outer_west-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-left_outer_west-fallback3.json",
+          "construction_sha256": "f7ba80231353483f3b2f293bf09f62cc459d7edf4af17ea60994bbf2204e1d46",
+          "trigger": {
+            "source": "Native spawn/topology and four-camera preview for first candidate",
+            "metric": "first candidate spawn and camera sight-line suitability",
+            "failure_condition": "first candidate is physically obstructed or cannot spawn while a second connected marked candidate exists"
+          },
+          "changed_knobs": [
+            "sorted route candidate index 0 -> 1"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver/execution-manifest.json --case heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver__left_outer_west --candidate fallback3 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c374648-left_outer_west-fallback3-v1/offline",
+            "exit_code": 0,
+            "log": "left_outer_west-fallback3-offline.log",
+            "log_sha256": "db9d1e8e6667bb0532fdaba570bebdcadefef7ec2e44973dcd275e9a4b1b9701",
+            "construction_sha256": "f7ba80231353483f3b2f293bf09f62cc459d7edf4af17ea60994bbf2204e1d46"
+          },
+          "compatibility": {
+            "receipt": "left_outer_west-fallback3-compatibility.json",
+            "sha256": "c280d58fc1e0bb5c466cb7546e6b69069e7f762f0154ce2545aa26fd77e64901",
+            "log": "left_outer_west-fallback3-compat-analysis.log",
+            "negative_log": "left_outer_west-fallback3-negative.log"
+          }
+        }
+      ],
       "acquisition": {
         "turn_origin_observation": {
           "entrypoint": "west_outer_runner.py",
@@ -193,6 +509,260 @@
         "test_log_sha256": "103fc03a16eab3e3ee07af9f11626e01b84a4dfbe91f371ed09865fff76a2a82",
         "saved_processing_receipt": "west-outer-saved-processing.json",
         "saved_processing_sha256": "103fc03a16eab3e3ee07af9f11626e01b84a4dfbe91f371ed09865fff76a2a82"
+      }
+    },
+    {
+      "case_id": "heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver__straight_center_east",
+      "kind": "delivery",
+      "construction": "construction-straight_center_east.json",
+      "construction_sha256": "16b8185c2716ae0d298160764a69269b79265f8c2ab6c233be3dfab94ef85132",
+      "measurement_procedure": {
+        "entrypoint": "straight_center_finalizer.py"
+      },
+      "measurement_contract": "measurement-contract-straight_center_east.json",
+      "fixture_recipe": "work/heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver/fixture-recipe-straight_center_east.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Connected straight exit or sustained center-lane occupancy may be absent; map designation and motion require Native review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-straight_center_east-fallback1.json",
+          "construction_sha256": "d49043ba2b5315c65f12b6617e47701fce2672dc7213ac01d2e01cb0cecbc032",
+          "trigger": {
+            "source": "Native marked-lane waypoint inventory",
+            "metric": "eligible marked approach at 2 m sampling",
+            "failure_condition": "primary 2 m sampling misses a short marked approach"
+          },
+          "changed_knobs": [
+            "waypoint spacing 2.0 m -> 1.0 m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver/execution-manifest.json --case heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver__straight_center_east --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c374648-straight_center_east-fallback1-v2/offline",
+            "exit_code": 0,
+            "log": "straight_center_east-fallback1-offline.log",
+            "log_sha256": "4ae410ece85b2a09cd4e9182a85ee0901aeddb1759edd3203e795338605d2e6f",
+            "construction_sha256": "d49043ba2b5315c65f12b6617e47701fce2672dc7213ac01d2e01cb0cecbc032"
+          },
+          "compatibility": {
+            "receipt": "straight_center_east-fallback1-compatibility.json",
+            "sha256": "0fd573966b42d06ad8d245af59b38d163eb6ac5663a665d5a5c5763d89359cd7",
+            "log": "straight_center_east-fallback1-compat-analysis.log",
+            "negative_log": "straight_center_east-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-straight_center_east-fallback2.json",
+          "construction_sha256": "729d7465c3148aee3dd1a770899b1643711c4964d4a7bb029ff9791318ca7140",
+          "trigger": {
+            "source": "Native marked-lane waypoint continuity",
+            "metric": "continuous marked approach length",
+            "failure_condition": "primary six-step approach does not fit the marked segment"
+          },
+          "changed_knobs": [
+            "approach steps 6 -> 4"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver/execution-manifest.json --case heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver__straight_center_east --candidate fallback2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c374648-straight_center_east-fallback2-v2/offline",
+            "exit_code": 0,
+            "log": "straight_center_east-fallback2-offline.log",
+            "log_sha256": "7bc5c78124147e73a568189bdb8febac3c0e5e2fdc262e7cd88989c490e593b5",
+            "construction_sha256": "729d7465c3148aee3dd1a770899b1643711c4964d4a7bb029ff9791318ca7140"
+          },
+          "compatibility": {
+            "receipt": "straight_center_east-fallback2-compatibility.json",
+            "sha256": "b5cbca86f0242d7b2b8213c2a9f3a9ecb2f5e89f766822e1d4862e67a851efb6",
+            "log": "straight_center_east-fallback2-compat-analysis.log",
+            "negative_log": "straight_center_east-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-straight_center_east-fallback3.json",
+          "construction_sha256": "060b819bae4967246f96f8da18871d347ba8b7d356c262eb6ecbed6104a06483",
+          "trigger": {
+            "source": "Native spawn/topology and four-camera preview for first candidate",
+            "metric": "first candidate spawn and camera sight-line suitability",
+            "failure_condition": "first candidate is physically obstructed or cannot spawn while a second connected marked candidate exists"
+          },
+          "changed_knobs": [
+            "sorted route candidate index 0 -> 1"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver/execution-manifest.json --case heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver__straight_center_east --candidate fallback3 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c374648-straight_center_east-fallback3-v2/offline",
+            "exit_code": 0,
+            "log": "straight_center_east-fallback3-offline.log",
+            "log_sha256": "3d25b145700fa9d8b924d430751870407355cb2971a58903b18568dd26fef39d",
+            "construction_sha256": "060b819bae4967246f96f8da18871d347ba8b7d356c262eb6ecbed6104a06483"
+          },
+          "compatibility": {
+            "receipt": "straight_center_east-fallback3-compatibility.json",
+            "sha256": "0da5db86c0ba02e2ff05ba95d7d10a85353f020524d9ab0c9ec09554caf34a8e",
+            "log": "straight_center_east-fallback3-compat-analysis.log",
+            "negative_log": "straight_center_east-fallback3-negative.log"
+          }
+        }
+      ],
+      "acquisition": {
+        "straight_use_observation": {
+          "entrypoint": "straight_center_runner.py",
+          "method": "20 Hz original Native lane/heading source recorder",
+          "evidence": "turn_origin_native.jsonl, case_context.json, trace.jsonl, video_frames.jsonl"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver/execution-manifest.json --case heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver__straight_center_east --output .runtime-work/c374648-straight-center-refreshed/offline",
+        "exit_code": 0,
+        "log": "straight-center-offline.log",
+        "log_sha256": "fb3e625344e34d7f0a1ce6b1ff6395783fe105b446b359f3be71e770abfe8316",
+        "construction_sha256": "16b8185c2716ae0d298160764a69269b79265f8c2ab6c233be3dfab94ef85132"
+      },
+      "compatibility": {
+        "receipt": "straight-center-compatibility.json",
+        "sha256": "a1e76de16d1de2dce0730b9c8c97db70604345362c9774d723f556c94bc92f80",
+        "log": "straight-center-compat-analysis.log",
+        "negative_log": "straight-center-negative.log"
+      },
+      "negative": {
+        "log": "straight-center-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver/execution-manifest.json --case heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver__straight_center_east --attempt \"$ATTEMPT\" --output \"$PROCESSING_OUTPUT\" --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSING_OUTPUT/v0001/feedback.json\"",
+        "test_log": "straight-center-saved.log",
+        "test_log_sha256": "ab1345a1d6da69f0cff1f9a039a2c8f4dec0799a0a5122515186eb26c0ee7aaf",
+        "saved_processing_receipt": "straight-center-saved-processing.json",
+        "saved_processing_sha256": "ab1345a1d6da69f0cff1f9a039a2c8f4dec0799a0a5122515186eb26c0ee7aaf"
+      }
+    },
+    {
+      "case_id": "heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver__straight_outer_east",
+      "kind": "delivery",
+      "construction": "construction-straight_outer_east.json",
+      "construction_sha256": "ea61aed60df370f9d38150fe390d1647c67250fe0834f8ff1104bb6420ed0c66",
+      "measurement_procedure": {
+        "entrypoint": "straight_outer_finalizer.py"
+      },
+      "measurement_contract": "measurement-contract-straight_outer_east.json",
+      "fixture_recipe": "work/heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver/fixture-recipe-straight_outer_east.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Connected straight exit or sustained outer-lane occupancy may be absent; map designation and motion require Native review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-straight_outer_east-fallback1.json",
+          "construction_sha256": "dd0f6dd05d1de13741b98884187609f17c828bcbc7f452c756972487eae36f32",
+          "trigger": {
+            "source": "Native marked-lane waypoint inventory",
+            "metric": "eligible marked approach at 2 m sampling",
+            "failure_condition": "primary 2 m sampling misses a short marked approach"
+          },
+          "changed_knobs": [
+            "waypoint spacing 2.0 m -> 1.0 m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver/execution-manifest.json --case heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver__straight_outer_east --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c374648-straight_outer_east-fallback1-v2/offline",
+            "exit_code": 0,
+            "log": "straight_outer_east-fallback1-offline.log",
+            "log_sha256": "4e6ca4231643d4e91d3a5ac18534d035cd78bf6e8320106db6e3196793e3d445",
+            "construction_sha256": "dd0f6dd05d1de13741b98884187609f17c828bcbc7f452c756972487eae36f32"
+          },
+          "compatibility": {
+            "receipt": "straight_outer_east-fallback1-compatibility.json",
+            "sha256": "c9506a9e5a60c1cdd5bf60cd2912bcf3459b29a99019ffd0881583b5ca953ff7",
+            "log": "straight_outer_east-fallback1-compat-analysis.log",
+            "negative_log": "straight_outer_east-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-straight_outer_east-fallback2.json",
+          "construction_sha256": "50996980344aaf2f8d46b3d7ac56d8ae949f3dfee3b7e96dbdf243106e53384b",
+          "trigger": {
+            "source": "Native marked-lane waypoint continuity",
+            "metric": "continuous marked approach length",
+            "failure_condition": "primary six-step approach does not fit the marked segment"
+          },
+          "changed_knobs": [
+            "approach steps 6 -> 4"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver/execution-manifest.json --case heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver__straight_outer_east --candidate fallback2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c374648-straight_outer_east-fallback2-v2/offline",
+            "exit_code": 0,
+            "log": "straight_outer_east-fallback2-offline.log",
+            "log_sha256": "dffd9c9e726b67ae714e62d9fe2829481971a7a0be759069a408e7df9015a18b",
+            "construction_sha256": "50996980344aaf2f8d46b3d7ac56d8ae949f3dfee3b7e96dbdf243106e53384b"
+          },
+          "compatibility": {
+            "receipt": "straight_outer_east-fallback2-compatibility.json",
+            "sha256": "8a1803b77e8a486396720d69723f6c003e7bc069a65186e14a69603235865ecf",
+            "log": "straight_outer_east-fallback2-compat-analysis.log",
+            "negative_log": "straight_outer_east-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-straight_outer_east-fallback3.json",
+          "construction_sha256": "c12db329a2f7b14a12ac3dff1c16d54f2b069c1dfefce41a391725b26f058e91",
+          "trigger": {
+            "source": "Native spawn/topology and four-camera preview for first candidate",
+            "metric": "first candidate spawn and camera sight-line suitability",
+            "failure_condition": "first candidate is physically obstructed or cannot spawn while a second connected marked candidate exists"
+          },
+          "changed_knobs": [
+            "sorted route candidate index 0 -> 1"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver/execution-manifest.json --case heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver__straight_outer_east --candidate fallback3 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c374648-straight_outer_east-fallback3-v2/offline",
+            "exit_code": 0,
+            "log": "straight_outer_east-fallback3-offline.log",
+            "log_sha256": "85c785323df429b83b5ded10126233a0c09933eb2f25935bd07543fcd41c86af",
+            "construction_sha256": "c12db329a2f7b14a12ac3dff1c16d54f2b069c1dfefce41a391725b26f058e91"
+          },
+          "compatibility": {
+            "receipt": "straight_outer_east-fallback3-compatibility.json",
+            "sha256": "24c61e7101b2f806ddcfb344b81a450b340a674fc8141c1cfc22316c07cf78a4",
+            "log": "straight_outer_east-fallback3-compat-analysis.log",
+            "negative_log": "straight_outer_east-fallback3-negative.log"
+          }
+        }
+      ],
+      "acquisition": {
+        "straight_use_observation": {
+          "entrypoint": "straight_outer_runner.py",
+          "method": "20 Hz original Native outer-lane/heading source recorder",
+          "evidence": "turn_origin_native.jsonl, case_context.json, trace.jsonl, video_frames.jsonl"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver/execution-manifest.json --case heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver__straight_outer_east --output .runtime-work/c374648-straight-outer-refreshed/offline",
+        "exit_code": 0,
+        "log": "straight-outer-offline.log",
+        "log_sha256": "308f0037b7a8fa7f06c494c8138c964ff800b4a8577528553ee7c9eb2f21e46a",
+        "construction_sha256": "ea61aed60df370f9d38150fe390d1647c67250fe0834f8ff1104bb6420ed0c66"
+      },
+      "compatibility": {
+        "receipt": "straight-outer-compatibility.json",
+        "sha256": "d336a2981c6ecdc05571991a7031cf6d9c6fd5a85229145df1ab4462f2f6a47d",
+        "log": "straight-outer-compat-analysis.log",
+        "negative_log": "straight-outer-negative.log"
+      },
+      "negative": {
+        "log": "straight-outer-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver/execution-manifest.json --case heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver__straight_outer_east --attempt \"$ATTEMPT\" --output \"$PROCESSING_OUTPUT\" --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSING_OUTPUT/v0001/feedback.json\"",
+        "test_log": "straight-outer-saved.log",
+        "test_log_sha256": "d1c6967cfc4edaf9302b21d5b0ffec3b000da93f0f460f3969fd3ef5952ac274",
+        "saved_processing_receipt": "straight-outer-saved-processing.json",
+        "saved_processing_sha256": "d1c6967cfc4edaf9302b21d5b0ffec3b000da93f0f460f3969fd3ef5952ac274"
       }
     }
   ]

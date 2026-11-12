@@ -14,7 +14,10 @@ import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'runtime'))
 from scenario_pipeline.worker_exchange import media
 
-CASE = 'heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__repeated_right_pass'
+CASES = {
+    'heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__repeated_right_pass': (2, 'candidate'),
+    'heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__single_right_pass': (1, 'unverified'),
+}
 CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 SOURCES = ('video_frames.jsonl', 'trace.jsonl', 'driving_trace.jsonl',
            'following_sources.jsonl', 'right_pass_sources.jsonl')
@@ -30,7 +33,7 @@ def rows(path):
 
 def audit(case, attempt, *, diagnostic_fixture=False):
     root = Path(attempt)
-    if case != CASE:
+    if case not in CASES:
         raise ValueError('Wrong exact C178759 delivery case')
     config = json.loads((root / 'config.json').read_text())
     report = json.loads((root / 'analysis-report.json').read_text())
@@ -75,6 +78,9 @@ def audit(case, attempt, *, diagnostic_fixture=False):
     if len(actor_ids) != 1:
         raise ValueError('Fixed ego and overtaken actor changed')
     episodes = measured.get('episodes', [])
+    expected_count, expected_status = CASES[case]
+    if len(episodes) != expected_count or measured.get('source_status') != expected_status:
+        raise ValueError('Exact right-pass candidate count differs')
     if measured.get('source_status') == 'candidate':
         if len(episodes) != 2 or episodes[0]['end_frame'] >= episodes[1]['start_frame']:
             raise ValueError('Two distinct ordered passing candidates absent')

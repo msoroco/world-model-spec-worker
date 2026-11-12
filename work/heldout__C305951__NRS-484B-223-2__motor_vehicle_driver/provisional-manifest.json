@@ -12,7 +12,86 @@
         "status": "physical",
         "reason": "Native marked three-lane route and four camera coverage may fail map and visibility checks"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-right-baseline-fallback1.json",
+          "construction_sha256": "6dab310aba2ea35c15b761b7b31c2dfb236e8e1417a276d7996229a4a1b50059",
+          "trigger": {
+            "source": "Native route/actor preflight",
+            "metric": "Native map spawn and waypoint readback",
+            "failure_condition": "no connected 40-step eastbound marked corridor"
+          },
+          "changed_knobs": [
+            "travel_direction"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C305951__NRS-484B-223-2__motor_vehicle_driver/provisional-manifest.json --case heldout__C305951__NRS-484B-223-2__motor_vehicle_driver__right_baseline --candidate fallback1 --output .runtime-work/c305951-right-baseline-fallback1-offline-return1 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "6dab310aba2ea35c15b761b7b31c2dfb236e8e1417a276d7996229a4a1b50059",
+            "log": "right-baseline-fallback1-offline.log",
+            "log_sha256": "15dbe03505bcc696bc21aaf450f7d6692c3aee41cbef16cf1db25819466a9ef8"
+          },
+          "compatibility": {
+            "receipt": "right-baseline-fallback1-compatibility-receipt.json",
+            "sha256": "7f0893710db0866ae13af98cddf9d73739fa5e1964fe36416b1412416b6d9e5b",
+            "log": "fallback-compatibility-analysis.log",
+            "negative_log": "right-baseline-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-right-baseline-fallback2.json",
+          "construction_sha256": "c9dd304d1b11a35ca36f4fb99eec01b93f6cb0d6c67d8456723f9cc23fbfd23e",
+          "trigger": {
+            "source": "Native route/actor preflight",
+            "metric": "Native selected route length and connected waypoint readback",
+            "failure_condition": "connected route ends before 40 steps"
+          },
+          "changed_knobs": [
+            "route_steps"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C305951__NRS-484B-223-2__motor_vehicle_driver/provisional-manifest.json --case heldout__C305951__NRS-484B-223-2__motor_vehicle_driver__right_baseline --candidate fallback2 --output .runtime-work/c305951-right-baseline-fallback2-offline-return1 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "c9dd304d1b11a35ca36f4fb99eec01b93f6cb0d6c67d8456723f9cc23fbfd23e",
+            "log": "right-baseline-fallback2-offline.log",
+            "log_sha256": "ebd7850d88cee2a4a37cacd13b1fcd49ec03f632fa0eb34ca89592877f8ceffa"
+          },
+          "compatibility": {
+            "receipt": "right-baseline-fallback2-compatibility-receipt.json",
+            "sha256": "457c95da6fa8f30cc127a23aed5b34a6ff51a0a8362d65639945355f120cfb3a",
+            "log": "fallback-compatibility-analysis.log",
+            "negative_log": "right-baseline-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-right-baseline-fallback3.json",
+          "construction_sha256": "26c5a633d87b243a33140cc9aa0bb82e0b0e8f2172cf2fc2d1e99f0f8e8b7232",
+          "trigger": {
+            "source": "Native route/actor preflight",
+            "metric": "Native blueprint lookup and subject spawn result",
+            "failure_condition": "Tesla model3 absent or spawn rejected"
+          },
+          "changed_knobs": [
+            "ego_blueprint"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C305951__NRS-484B-223-2__motor_vehicle_driver/provisional-manifest.json --case heldout__C305951__NRS-484B-223-2__motor_vehicle_driver__right_baseline --candidate fallback3 --output .runtime-work/c305951-right-baseline-fallback3-offline-return1 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "26c5a633d87b243a33140cc9aa0bb82e0b0e8f2172cf2fc2d1e99f0f8e8b7232",
+            "log": "right-baseline-fallback3-offline.log",
+            "log_sha256": "c948a68c4e6cb175ca350b4642a00afd7f5d44ce20ac45a4bc29580f6cc55d13"
+          },
+          "compatibility": {
+            "receipt": "right-baseline-fallback3-compatibility-receipt.json",
+            "sha256": "e3e18c85e071c264709e46f9a3b1cb6361a861e9db670d57bc24d54829707caa",
+            "log": "fallback-compatibility-analysis.log",
+            "negative_log": "right-baseline-fallback3-negative.log"
+          }
+        }
+      ],
       "measurement_contract": "right-baseline-measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "three_lane_finalizer.py"
@@ -33,7 +112,86 @@
         "status": "physical",
         "reason": "Extreme-left counterflow may fail lane acquisition, heading, map marking or camera coverage checks"
       },
-      "candidates": []
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-left-travel-fallback1.json",
+          "construction_sha256": "8431c6900d3d7ce9785d7d8a81b4abd58d382f6c636fb59da0c8dac1eb479e72",
+          "trigger": {
+            "source": "Native route/actor preflight",
+            "metric": "Native map spawn and waypoint readback",
+            "failure_condition": "eastbound marked corridor absent"
+          },
+          "changed_knobs": [
+            "travel_direction"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C305951__NRS-484B-223-2__motor_vehicle_driver/provisional-manifest.json --case heldout__C305951__NRS-484B-223-2__motor_vehicle_driver__left_travel --candidate fallback1 --output .runtime-work/c305951-left-travel-fallback1-offline-return1 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "8431c6900d3d7ce9785d7d8a81b4abd58d382f6c636fb59da0c8dac1eb479e72",
+            "log": "left-travel-fallback1-offline.log",
+            "log_sha256": "e99e9dcfb2cc454775d532dee5cf99ea85295938e649de72c869726bdde1dbef"
+          },
+          "compatibility": {
+            "receipt": "left-travel-fallback1-compatibility-receipt.json",
+            "sha256": "738e67f6cb06044717d669213d18119c2a352cd478e0488b08c5b9d3c849022b",
+            "log": "fallback-compatibility-analysis.log",
+            "negative_log": "left-travel-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-left-travel-fallback2.json",
+          "construction_sha256": "b02341d662f3cce860e6f40bc5d031455a0ed9eacf38c26a1519ae288a4f3a95",
+          "trigger": {
+            "source": "Native route/actor preflight",
+            "metric": "Native route length and connected waypoint readback",
+            "failure_condition": "mapped corridor ends before 40 steps"
+          },
+          "changed_knobs": [
+            "route_steps"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C305951__NRS-484B-223-2__motor_vehicle_driver/provisional-manifest.json --case heldout__C305951__NRS-484B-223-2__motor_vehicle_driver__left_travel --candidate fallback2 --output .runtime-work/c305951-left-travel-fallback2-offline-return1 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "b02341d662f3cce860e6f40bc5d031455a0ed9eacf38c26a1519ae288a4f3a95",
+            "log": "left-travel-fallback2-offline.log",
+            "log_sha256": "cb911b310ccb3daadcab815b43af6edf4c098f9348c2c9dd39e6de244666d0ae"
+          },
+          "compatibility": {
+            "receipt": "left-travel-fallback2-compatibility-receipt.json",
+            "sha256": "ac07290f9a59391b0eb081c804664753bcfe858febcca2acaef6b1e76fc49d80",
+            "log": "fallback-compatibility-analysis.log",
+            "negative_log": "left-travel-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-left-travel-fallback3.json",
+          "construction_sha256": "a78e52b50d503b20b07cf85cc6f033fbabc1fd7d34b941d428f29e41fc15ab3d",
+          "trigger": {
+            "source": "Native route/actor preflight",
+            "metric": "Native blueprint lookup and subject spawn result",
+            "failure_condition": "Tesla model3 missing or spawn rejected"
+          },
+          "changed_knobs": [
+            "ego_blueprint"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C305951__NRS-484B-223-2__motor_vehicle_driver/provisional-manifest.json --case heldout__C305951__NRS-484B-223-2__motor_vehicle_driver__left_travel --candidate fallback3 --output .runtime-work/c305951-left-travel-fallback3-offline-return1 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "a78e52b50d503b20b07cf85cc6f033fbabc1fd7d34b941d428f29e41fc15ab3d",
+            "log": "left-travel-fallback3-offline.log",
+            "log_sha256": "ebd7850d88cee2a4a37cacd13b1fcd49ec03f632fa0eb34ca89592877f8ceffa"
+          },
+          "compatibility": {
+            "receipt": "left-travel-fallback3-compatibility-receipt.json",
+            "sha256": "d908e2190d8be0a1c65be143afa8347fabcdc40cf449e306d3b5b8904ed016ad",
+            "log": "fallback-compatibility-analysis.log",
+            "negative_log": "left-travel-fallback3-negative.log"
+          }
+        }
+      ]
     },
     {
       "case_id": "heldout__C305951__NRS-484B-223-2__motor_vehicle_driver__center_no_exception",
@@ -49,7 +207,86 @@
         "status": "physical",
         "reason": "Native center-lane acquisition and physical paint may fail map or camera checks"
       },
-      "candidates": []
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-center-no-exception-fallback1.json",
+          "construction_sha256": "427e4026891d69cb1a081f142ff8571a41fb3f268fbfce9dfaf2943afc61c411",
+          "trigger": {
+            "source": "Native route/actor preflight",
+            "metric": "Native map spawn and waypoint readback",
+            "failure_condition": "no connected 40-step eastbound marked corridor"
+          },
+          "changed_knobs": [
+            "travel_direction"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C305951__NRS-484B-223-2__motor_vehicle_driver/provisional-manifest.json --case heldout__C305951__NRS-484B-223-2__motor_vehicle_driver__center_no_exception --candidate fallback1 --output .runtime-work/c305951-center-no-exception-fallback1-offline-return1 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "427e4026891d69cb1a081f142ff8571a41fb3f268fbfce9dfaf2943afc61c411",
+            "log": "center-no-exception-fallback1-offline.log",
+            "log_sha256": "e99e9dcfb2cc454775d532dee5cf99ea85295938e649de72c869726bdde1dbef"
+          },
+          "compatibility": {
+            "receipt": "center-no-exception-fallback1-compatibility-receipt.json",
+            "sha256": "e9d888a636a76b584efe433a0ee11583e2db762686c7ac460b045e707f186d9a",
+            "log": "fallback-compatibility-analysis.log",
+            "negative_log": "center-no-exception-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-center-no-exception-fallback2.json",
+          "construction_sha256": "d84233cc7e0cff7c2a822ffd665b805d700470ba885f726fe7cd3c1fbc2be5d7",
+          "trigger": {
+            "source": "Native route/actor preflight",
+            "metric": "Native selected route length and connected waypoint readback",
+            "failure_condition": "connected route ends before 40 steps"
+          },
+          "changed_knobs": [
+            "route_steps"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C305951__NRS-484B-223-2__motor_vehicle_driver/provisional-manifest.json --case heldout__C305951__NRS-484B-223-2__motor_vehicle_driver__center_no_exception --candidate fallback2 --output .runtime-work/c305951-center-no-exception-fallback2-offline-return1 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "d84233cc7e0cff7c2a822ffd665b805d700470ba885f726fe7cd3c1fbc2be5d7",
+            "log": "center-no-exception-fallback2-offline.log",
+            "log_sha256": "cb911b310ccb3daadcab815b43af6edf4c098f9348c2c9dd39e6de244666d0ae"
+          },
+          "compatibility": {
+            "receipt": "center-no-exception-fallback2-compatibility-receipt.json",
+            "sha256": "05c8debcaec6fb8e3fc8c6e17da55988d4ca9cccec91fbee0362616b350ba2fe",
+            "log": "fallback-compatibility-analysis.log",
+            "negative_log": "center-no-exception-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-center-no-exception-fallback3.json",
+          "construction_sha256": "7df8936cfe83710e97686348b53bc461295dcf45f9824f6907854ab7d8152bdf",
+          "trigger": {
+            "source": "Native route/actor preflight",
+            "metric": "Native blueprint lookup and subject spawn result",
+            "failure_condition": "Tesla model3 absent or spawn rejected"
+          },
+          "changed_knobs": [
+            "ego_blueprint"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C305951__NRS-484B-223-2__motor_vehicle_driver/provisional-manifest.json --case heldout__C305951__NRS-484B-223-2__motor_vehicle_driver__center_no_exception --candidate fallback3 --output .runtime-work/c305951-center-no-exception-fallback3-offline-return1 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "7df8936cfe83710e97686348b53bc461295dcf45f9824f6907854ab7d8152bdf",
+            "log": "center-no-exception-fallback3-offline.log",
+            "log_sha256": "b0a08a295b0eb95350538bdd949c7b42d30e4d0416988b205e6ac6c20a4a26b5"
+          },
+          "compatibility": {
+            "receipt": "center-no-exception-fallback3-compatibility-receipt.json",
+            "sha256": "072c5d81f006cbb8ea04d2e7286b13e8e7fe8ff905d7229a7c2c979d76f52795",
+            "log": "fallback-compatibility-analysis.log",
+            "negative_log": "center-no-exception-fallback3-negative.log"
+          }
+        }
+      ]
     },
     {
       "case_id": "heldout__C305951__NRS-484B-223-2__motor_vehicle_driver__center_pass_clear",
@@ -65,7 +302,86 @@
         "status": "physical",
         "reason": "Slower target, center gap, physical sight line, lane markings and camera visibility need Native review"
       },
-      "candidates": []
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-center-pass-clear-fallback1.json",
+          "construction_sha256": "2af1b7de13988a5ad5f4db9d0b6f1238f21e0be8aed7bf7f290d3907f6139812",
+          "trigger": {
+            "source": "Native route/actor preflight",
+            "metric": "Native map spawn and waypoint readback",
+            "failure_condition": "no connected marked eastbound corridor"
+          },
+          "changed_knobs": [
+            "travel_direction"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C305951__NRS-484B-223-2__motor_vehicle_driver/provisional-manifest.json --case heldout__C305951__NRS-484B-223-2__motor_vehicle_driver__center_pass_clear --candidate fallback1 --output .runtime-work/c305951-center-pass-clear-fallback1-offline-return1 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "2af1b7de13988a5ad5f4db9d0b6f1238f21e0be8aed7bf7f290d3907f6139812",
+            "log": "center-pass-clear-fallback1-offline.log",
+            "log_sha256": "021787544fa129edffe47668be6f32946460ef892afda39295c3804272c9fb51"
+          },
+          "compatibility": {
+            "receipt": "center-pass-clear-fallback1-compatibility-receipt.json",
+            "sha256": "25bb2b597f60dcd9ac850187f75234a9f8cc594d2f94e0b8887ab825caa5d1a0",
+            "log": "fallback-compatibility-analysis.log",
+            "negative_log": "center-pass-clear-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-center-pass-clear-fallback2.json",
+          "construction_sha256": "f04103403b22601ecae01b864e0df167e97244cb9e0b680300ca4366cb7640c3",
+          "trigger": {
+            "source": "Native route/actor preflight",
+            "metric": "Native ego blueprint lookup and spawn result",
+            "failure_condition": "Tesla model3 absent or spawn rejected"
+          },
+          "changed_knobs": [
+            "ego_blueprint"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C305951__NRS-484B-223-2__motor_vehicle_driver/provisional-manifest.json --case heldout__C305951__NRS-484B-223-2__motor_vehicle_driver__center_pass_clear --candidate fallback2 --output .runtime-work/c305951-center-pass-clear-fallback2-offline-return1 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "f04103403b22601ecae01b864e0df167e97244cb9e0b680300ca4366cb7640c3",
+            "log": "center-pass-clear-fallback2-offline.log",
+            "log_sha256": "c1eac33e4ff5276c58114401ba2c609852173b1a94b78cb0df32c2ffc2e44d0a"
+          },
+          "compatibility": {
+            "receipt": "center-pass-clear-fallback2-compatibility-receipt.json",
+            "sha256": "235d0eb1ae3603a8fdb77fc6838e0f3f2c945a7bd60f2582a38d5d2f104a64b9",
+            "log": "fallback-compatibility-analysis.log",
+            "negative_log": "center-pass-clear-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-center-pass-clear-fallback3.json",
+          "construction_sha256": "33a946852bffd0043fb5e3892bff5a2571a9d630665e7fd01a1266c16e3b07aa",
+          "trigger": {
+            "source": "Native route/actor preflight",
+            "metric": "Native secondary blueprint lookup and spawn result",
+            "failure_condition": "Audi TT absent or spawn rejected"
+          },
+          "changed_knobs": [
+            "target_blueprint"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C305951__NRS-484B-223-2__motor_vehicle_driver/provisional-manifest.json --case heldout__C305951__NRS-484B-223-2__motor_vehicle_driver__center_pass_clear --candidate fallback3 --output .runtime-work/c305951-center-pass-clear-fallback3-offline-return1 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "33a946852bffd0043fb5e3892bff5a2571a9d630665e7fd01a1266c16e3b07aa",
+            "log": "center-pass-clear-fallback3-offline.log",
+            "log_sha256": "00486fe52cb2d4dc3c08054b47b0b5ff66513e048586a519c6349f55936e4e7f"
+          },
+          "compatibility": {
+            "receipt": "center-pass-clear-fallback3-compatibility-receipt.json",
+            "sha256": "36c259a75c12e939c5999cbed0f88cbed6524810c9a8bac81e4f9f8141dccbf7",
+            "log": "fallback-compatibility-analysis.log",
+            "negative_log": "center-pass-clear-fallback3-negative.log"
+          }
+        }
+      ]
     },
     {
       "case_id": "heldout__C305951__NRS-484B-223-2__motor_vehicle_driver__center_pass_occluded",
@@ -81,7 +397,86 @@
         "status": "physical",
         "reason": "Static upright prop spawn, actual occlusion, sight line and camera coverage need Native review"
       },
-      "candidates": []
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-center-pass-occluded-fallback1.json",
+          "construction_sha256": "d5c0b68298bafc48c41cab53c0a9ac881c22a814c1d154a3fd9faba3aae96798",
+          "trigger": {
+            "source": "Native route/actor preflight",
+            "metric": "Native map spawn and waypoint readback",
+            "failure_condition": "no connected marked eastbound corridor"
+          },
+          "changed_knobs": [
+            "travel_direction"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C305951__NRS-484B-223-2__motor_vehicle_driver/provisional-manifest.json --case heldout__C305951__NRS-484B-223-2__motor_vehicle_driver__center_pass_occluded --candidate fallback1 --output .runtime-work/c305951-center-pass-occluded-fallback1-offline-return1 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "d5c0b68298bafc48c41cab53c0a9ac881c22a814c1d154a3fd9faba3aae96798",
+            "log": "center-pass-occluded-fallback1-offline.log",
+            "log_sha256": "81f9345fceb5c64bd3180faf9222de2c41adb43b9ef59145935884da5b881131"
+          },
+          "compatibility": {
+            "receipt": "center-pass-occluded-fallback1-compatibility-receipt.json",
+            "sha256": "61ae49d9c188daf0002eded19c3b1d20cab15b4b561f6038b0b1a1009d7e2a58",
+            "log": "fallback-compatibility-analysis.log",
+            "negative_log": "center-pass-occluded-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-center-pass-occluded-fallback2.json",
+          "construction_sha256": "260e34a8fc67dce6bf89d687d314db283a0f22738b71c9428c115609508b24a7",
+          "trigger": {
+            "source": "Native route/actor preflight",
+            "metric": "Native ego blueprint lookup and spawn result",
+            "failure_condition": "Tesla model3 absent or spawn rejected"
+          },
+          "changed_knobs": [
+            "ego_blueprint"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C305951__NRS-484B-223-2__motor_vehicle_driver/provisional-manifest.json --case heldout__C305951__NRS-484B-223-2__motor_vehicle_driver__center_pass_occluded --candidate fallback2 --output .runtime-work/c305951-center-pass-occluded-fallback2-offline-return1 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "260e34a8fc67dce6bf89d687d314db283a0f22738b71c9428c115609508b24a7",
+            "log": "center-pass-occluded-fallback2-offline.log",
+            "log_sha256": "1e5831a32e9da3669c367186c193165d13d875774c94f6bbaf565c174bb4da35"
+          },
+          "compatibility": {
+            "receipt": "center-pass-occluded-fallback2-compatibility-receipt.json",
+            "sha256": "544ab487d1eb7a9cfc7d5e9c2d433e3d0d3f91dd6648d14ef6e9e6a08b9040b2",
+            "log": "fallback-compatibility-analysis.log",
+            "negative_log": "center-pass-occluded-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-center-pass-occluded-fallback3.json",
+          "construction_sha256": "99a69f51ccddb5b11ac94c402e31afc883ec0121f427d3207e18bcfcfe995a17",
+          "trigger": {
+            "source": "Native route/actor preflight",
+            "metric": "Native secondary blueprint lookup and spawn result",
+            "failure_condition": "Audi TT absent or spawn rejected"
+          },
+          "changed_knobs": [
+            "target_blueprint"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C305951__NRS-484B-223-2__motor_vehicle_driver/provisional-manifest.json --case heldout__C305951__NRS-484B-223-2__motor_vehicle_driver__center_pass_occluded --candidate fallback3 --output .runtime-work/c305951-center-pass-occluded-fallback3-offline-return1 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "99a69f51ccddb5b11ac94c402e31afc883ec0121f427d3207e18bcfcfe995a17",
+            "log": "center-pass-occluded-fallback3-offline.log",
+            "log_sha256": "021787544fa129edffe47668be6f32946460ef892afda39295c3804272c9fb51"
+          },
+          "compatibility": {
+            "receipt": "center-pass-occluded-fallback3-compatibility-receipt.json",
+            "sha256": "e4f03d0045eb0b5bbd79583a14ad36cc6ca563ab4d3e577e505f58d9161cb876",
+            "log": "fallback-compatibility-analysis.log",
+            "negative_log": "center-pass-occluded-fallback3-negative.log"
+          }
+        }
+      ]
     },
     {
       "case_id": "heldout__C305951__NRS-484B-223-2__motor_vehicle_driver__center_prepare_left",
@@ -97,7 +492,276 @@
         "status": "physical",
         "reason": "Connected junction left exit, approach signal, marking visibility and motion need Native review"
       },
-      "candidates": []
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-center-prepare-left-fallback1.json",
+          "construction_sha256": "55136be4afcbda74ca1d2cd129ae3c29cec497db2da6e3800430153eb1ac7186",
+          "trigger": {
+            "source": "Native route/actor preflight",
+            "metric": "Native map spawn and waypoint readback",
+            "failure_condition": "no connected marked eastbound corridor"
+          },
+          "changed_knobs": [
+            "travel_direction"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C305951__NRS-484B-223-2__motor_vehicle_driver/provisional-manifest.json --case heldout__C305951__NRS-484B-223-2__motor_vehicle_driver__center_prepare_left --candidate fallback1 --output .runtime-work/c305951-center-prepare-left-fallback1-offline-return1 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "55136be4afcbda74ca1d2cd129ae3c29cec497db2da6e3800430153eb1ac7186",
+            "log": "center-prepare-left-fallback1-offline.log",
+            "log_sha256": "23d5b70966bbba27412bc57b71f1742fe7092ad4c8c74accb0a31bca74d706f0"
+          },
+          "compatibility": {
+            "receipt": "center-prepare-left-fallback1-compatibility-receipt.json",
+            "sha256": "86af4b2f3c4c61448c351b90bdebbc76beeeffa5d111312ae81aefbfafd4fa85",
+            "log": "fallback-compatibility-analysis.log",
+            "negative_log": "center-prepare-left-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-center-prepare-left-fallback2.json",
+          "construction_sha256": "7e6e2dbcb9e8f4bbb232cf5daacfc346b0222bd27b51e036a60cfd1e40ece9f2",
+          "trigger": {
+            "source": "Native route/actor preflight",
+            "metric": "Native ego blueprint lookup and spawn result",
+            "failure_condition": "Tesla model3 absent or spawn rejected"
+          },
+          "changed_knobs": [
+            "ego_blueprint"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C305951__NRS-484B-223-2__motor_vehicle_driver/provisional-manifest.json --case heldout__C305951__NRS-484B-223-2__motor_vehicle_driver__center_prepare_left --candidate fallback2 --output .runtime-work/c305951-center-prepare-left-fallback2-offline-return1 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "7e6e2dbcb9e8f4bbb232cf5daacfc346b0222bd27b51e036a60cfd1e40ece9f2",
+            "log": "center-prepare-left-fallback2-offline.log",
+            "log_sha256": "92f33dbe830c1260c382f6ed1abc0b484089b08767e8010459c169f7995afaad"
+          },
+          "compatibility": {
+            "receipt": "center-prepare-left-fallback2-compatibility-receipt.json",
+            "sha256": "6fcd625dc35369c0fd3ef319388bfd80285b777d042e97b00916e882ce5a1972",
+            "log": "fallback-compatibility-analysis.log",
+            "negative_log": "center-prepare-left-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-center-prepare-left-fallback3.json",
+          "construction_sha256": "c02ea08325daf16c4d5791340a7b93497445e10fbaa8fa92fec5f313ab59ab6f",
+          "trigger": {
+            "source": "Native route/actor preflight",
+            "metric": "Native center approach spawn and waypoint readback",
+            "failure_condition": "index-20 center-lane spawn blocked"
+          },
+          "changed_knobs": [
+            "approach_start_index"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C305951__NRS-484B-223-2__motor_vehicle_driver/provisional-manifest.json --case heldout__C305951__NRS-484B-223-2__motor_vehicle_driver__center_prepare_left --candidate fallback3 --output .runtime-work/c305951-center-prepare-left-fallback3-offline-return1 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "c02ea08325daf16c4d5791340a7b93497445e10fbaa8fa92fec5f313ab59ab6f",
+            "log": "center-prepare-left-fallback3-offline.log",
+            "log_sha256": "2ca01b395e1430576463ddf19b56bd5b58c56406e3ba46218be355b043a4e24d"
+          },
+          "compatibility": {
+            "receipt": "center-prepare-left-fallback3-compatibility-receipt.json",
+            "sha256": "bd4ca588e262ec21874bd0e8a9b7eb715b5929c111cf5361c6a2ea8ecf57bc90",
+            "log": "fallback-compatibility-analysis.log",
+            "negative_log": "center-prepare-left-fallback3-negative.log"
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "heldout__C305951__NRS-484B-223-2__motor_vehicle_driver__center_allocated_signed",
+      "kind": "delivery",
+      "construction": "construction-center-allocated-signed.json",
+      "construction_sha256": "7f3de76acefafc6d8e8cef97efb1bb76d7f29473b848e21b3c41e05622bd6f21",
+      "measurement_contract": "center-allocated-signed-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "three_lane_allocation_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C305951__NRS-484B-223-2__motor_vehicle_driver/center-allocated-signed-diagnostic-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Exclusive allocation authority, candidate sign notice text and physical visibility require Native review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-center-allocated-signed-fallback1.json",
+          "construction_sha256": "98f18db63ce360f487a6cf3770d52cbe58acf7ef0de03f52e24f82ffcbb7d0d0",
+          "trigger": {
+            "source": "Native route/actor preflight",
+            "metric": "Native map spawn and waypoint readback",
+            "failure_condition": "no connected marked eastbound corridor"
+          },
+          "changed_knobs": [
+            "travel_direction"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C305951__NRS-484B-223-2__motor_vehicle_driver/provisional-manifest.json --case heldout__C305951__NRS-484B-223-2__motor_vehicle_driver__center_allocated_signed --candidate fallback1 --output .runtime-work/c305951-center-allocated-signed-fallback1-offline-return1 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "98f18db63ce360f487a6cf3770d52cbe58acf7ef0de03f52e24f82ffcbb7d0d0",
+            "log": "center-allocated-signed-fallback1-offline.log",
+            "log_sha256": "4f60a2c9ce1ab522f198755170677b9bc93b112d593440a20c133acad2719394"
+          },
+          "compatibility": {
+            "receipt": "center-allocated-signed-fallback1-compatibility-receipt.json",
+            "sha256": "2b6ec8f777e39a33de51a7154423bff05593562202bd94a79dfd9cf2b1a09bad",
+            "log": "fallback-compatibility-analysis.log",
+            "negative_log": "center-allocated-signed-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-center-allocated-signed-fallback2.json",
+          "construction_sha256": "fc75d7ea9b70ac5ecfde1d8ab298a1df803253bb5faa2beb84d0d6efffaf8bc5",
+          "trigger": {
+            "source": "Native route/actor preflight",
+            "metric": "Native sign prop blueprint rank and spawned body dimensions",
+            "failure_condition": "first ranked sign prop missing, blocked or undersized"
+          },
+          "changed_knobs": [
+            "sign_blueprint_rank"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C305951__NRS-484B-223-2__motor_vehicle_driver/provisional-manifest.json --case heldout__C305951__NRS-484B-223-2__motor_vehicle_driver__center_allocated_signed --candidate fallback2 --output .runtime-work/c305951-center-allocated-signed-fallback2-offline-return1 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "fc75d7ea9b70ac5ecfde1d8ab298a1df803253bb5faa2beb84d0d6efffaf8bc5",
+            "log": "center-allocated-signed-fallback2-offline.log",
+            "log_sha256": "21b2edaafb65a0502fab9b56b42580528e39a225900a579715d35a6e05729506"
+          },
+          "compatibility": {
+            "receipt": "center-allocated-signed-fallback2-compatibility-receipt.json",
+            "sha256": "1ab7187ee033bcc60e1706e2af90b9a525b168d78875f18ced12f39051d811e5",
+            "log": "fallback-compatibility-analysis.log",
+            "negative_log": "center-allocated-signed-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-center-allocated-signed-fallback3.json",
+          "construction_sha256": "92b98146599fb4dc671747c006e07798667984889add278ac6d09e5517d9352b",
+          "trigger": {
+            "source": "Native route/actor preflight",
+            "metric": "Native ego blueprint lookup and spawn result",
+            "failure_condition": "Tesla model3 absent or spawn rejected"
+          },
+          "changed_knobs": [
+            "ego_blueprint"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C305951__NRS-484B-223-2__motor_vehicle_driver/provisional-manifest.json --case heldout__C305951__NRS-484B-223-2__motor_vehicle_driver__center_allocated_signed --candidate fallback3 --output .runtime-work/c305951-center-allocated-signed-fallback3-offline-return1 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "92b98146599fb4dc671747c006e07798667984889add278ac6d09e5517d9352b",
+            "log": "center-allocated-signed-fallback3-offline.log",
+            "log_sha256": "0d5f8346517fbbc9f8c76001a173ca4ace78dc0d43bc08446621d0299d7dcd04"
+          },
+          "compatibility": {
+            "receipt": "center-allocated-signed-fallback3-compatibility-receipt.json",
+            "sha256": "5d34adec2436e3be9e93f48fbfda8354d41c3f7cd2fd197a45609475ceefa34d",
+            "log": "fallback-compatibility-analysis.log",
+            "negative_log": "center-allocated-signed-fallback3-negative.log"
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "heldout__C305951__NRS-484B-223-2__motor_vehicle_driver__center_allocated_unsigned",
+      "kind": "delivery",
+      "construction": "construction-center-allocated-unsigned.json",
+      "construction_sha256": "26d02d839b9ee760bbca32c741bd6c4847671677a36d19683c761bb39b79ca93",
+      "measurement_contract": "center-allocated-unsigned-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "three_lane_allocation_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C305951__NRS-484B-223-2__motor_vehicle_driver/center-allocated-unsigned-diagnostic-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Exclusive allocation authority, candidate sign notice text and physical visibility require Native review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-center-allocated-unsigned-fallback1.json",
+          "construction_sha256": "8eba7679549bd471538cef6f6763092d50215999dfb73514bd22e3f2a7f23aae",
+          "trigger": {
+            "source": "Native route/actor preflight",
+            "metric": "Native map spawn and waypoint readback",
+            "failure_condition": "no connected marked eastbound corridor"
+          },
+          "changed_knobs": [
+            "travel_direction"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C305951__NRS-484B-223-2__motor_vehicle_driver/provisional-manifest.json --case heldout__C305951__NRS-484B-223-2__motor_vehicle_driver__center_allocated_unsigned --candidate fallback1 --output .runtime-work/c305951-center-allocated-unsigned-fallback1-offline-return1 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "8eba7679549bd471538cef6f6763092d50215999dfb73514bd22e3f2a7f23aae",
+            "log": "center-allocated-unsigned-fallback1-offline.log",
+            "log_sha256": "26f599755db571bd9b1e025f21092acc4379cafd3617fe7b8b69ba0155bf7fdf"
+          },
+          "compatibility": {
+            "receipt": "center-allocated-unsigned-fallback1-compatibility-receipt.json",
+            "sha256": "bf9ae3f1d33b5a3b7e16d576b5469ab610c38f99fc90602c99848a015f70a4f8",
+            "log": "fallback-compatibility-analysis.log",
+            "negative_log": "center-allocated-unsigned-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-center-allocated-unsigned-fallback2.json",
+          "construction_sha256": "b07a314bd49108ffb037bb35bb51d0865684a6515c19539394e0270ef4c6de5a",
+          "trigger": {
+            "source": "Native route/actor preflight",
+            "metric": "Native route length and connected waypoint readback",
+            "failure_condition": "mapped corridor ends before 40 steps"
+          },
+          "changed_knobs": [
+            "route_steps"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C305951__NRS-484B-223-2__motor_vehicle_driver/provisional-manifest.json --case heldout__C305951__NRS-484B-223-2__motor_vehicle_driver__center_allocated_unsigned --candidate fallback2 --output .runtime-work/c305951-center-allocated-unsigned-fallback2-offline-return1 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "b07a314bd49108ffb037bb35bb51d0865684a6515c19539394e0270ef4c6de5a",
+            "log": "center-allocated-unsigned-fallback2-offline.log",
+            "log_sha256": "21b2edaafb65a0502fab9b56b42580528e39a225900a579715d35a6e05729506"
+          },
+          "compatibility": {
+            "receipt": "center-allocated-unsigned-fallback2-compatibility-receipt.json",
+            "sha256": "a628efed896ceff444372dfaf62611f217b4ab71abfb255918c865e05a617a72",
+            "log": "fallback-compatibility-analysis.log",
+            "negative_log": "center-allocated-unsigned-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-center-allocated-unsigned-fallback3.json",
+          "construction_sha256": "5efeb3797a306e46f29148344df729755185c8bd38dcec3205ea8b0618db26cd",
+          "trigger": {
+            "source": "Native route/actor preflight",
+            "metric": "Native ego blueprint lookup and spawn result",
+            "failure_condition": "Tesla model3 absent or spawn rejected"
+          },
+          "changed_knobs": [
+            "ego_blueprint"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C305951__NRS-484B-223-2__motor_vehicle_driver/provisional-manifest.json --case heldout__C305951__NRS-484B-223-2__motor_vehicle_driver__center_allocated_unsigned --candidate fallback3 --output .runtime-work/c305951-center-allocated-unsigned-fallback3-offline-return1 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "5efeb3797a306e46f29148344df729755185c8bd38dcec3205ea8b0618db26cd",
+            "log": "center-allocated-unsigned-fallback3-offline.log",
+            "log_sha256": "4f60a2c9ce1ab522f198755170677b9bc93b112d593440a20c133acad2719394"
+          },
+          "compatibility": {
+            "receipt": "center-allocated-unsigned-fallback3-compatibility-receipt.json",
+            "sha256": "af2c0c53c3464a9ea7f64725fda083904c81c2e22da4ffd9ed0438f8a98323d3",
+            "log": "fallback-compatibility-analysis.log",
+            "negative_log": "center-allocated-unsigned-fallback3-negative.log"
+          }
+        }
+      ]
     }
   ]
 }

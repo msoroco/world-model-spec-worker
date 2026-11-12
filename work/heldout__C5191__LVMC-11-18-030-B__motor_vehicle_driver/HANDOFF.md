@@ -43,3 +43,5 @@ Canonical root `config.json`, `construction.json`, four-view camera plan and exa
 - `supplemental-ready-import-preflight.log` SHA-256 `0247d6d92e87487449d81a9635237daa98886a0b1e8eba280f5067fda4eb6328`
 
 Zero-byte synthetic diagnostic logs were source-preservingly compacted into `work/_shared/prune-history.json` (`compacted_zero_logs`) to respect the frozen return-file cap. Their exact former paths and empty-byte SHA256 are retained; restore them with `work/_shared/restore_compacted_zero_logs.py --assignment heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver` before its scoped strict proof sweep. The assignment remains partial.
+
+2026-11-12 further return-cap compaction: 51 small UTF-8 diagnostic logs are retained in `work/_shared/prune-history.json.compacted_text_files` with full path, text and SHA256. Scoped nonstrict preparation passes. Restore before future scoped strict with `.venv-cpu/bin/python work/_shared/restore_compacted_zero_logs.py --assignment heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver`. Status remains partial.
