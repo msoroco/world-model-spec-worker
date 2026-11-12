@@ -1,4 +1,5 @@
 """Bind independent positive shape and negative original delivery CPU proofs."""
+import argparse
 import hashlib
 import json
 import shlex
@@ -17,29 +18,29 @@ def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def main():
+def main(tag, source_tag):
     manifest_path = HERE / 'execution-manifest.json'
     manifest = json.loads(manifest_path.read_text())
     for entry in manifest['cases']:
         case = entry['case_id']
         suffix = case.removeprefix(HERE.name + '__')
-        base = ROOT / '.runtime-work/c111256-update022-selected' / suffix / 'primary'
+        base = ROOT / '.runtime-work' / f'c111256-{source_tag}-selected' / suffix / 'primary'
         common = [sys.executable, str(SCRIPT), '--case', case,
                   '--candidate', 'primary', '--attempt', str(base / 'selected-attempt'),
                   '--processing', str(base / 'processed/v0001/processing.json')]
-        positive = common + ['--output', str(HERE / f'update023-{suffix}-delivery-diagnostic.json'),
+        positive = common + ['--output', str(HERE / f'{tag}-{suffix}-delivery-diagnostic.json'),
                              '--diagnostic']
-        negative = common + ['--output', str(HERE / f'update023-{suffix}-delivery-negative.json')]
+        negative = common + ['--output', str(HERE / f'{tag}-{suffix}-delivery-negative.json')]
         logs = []
         for kind, command in (('positive', positive), ('negative', negative)):
             run = subprocess.run(command, cwd=ROOT, text=True,
                                  stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                                  timeout=180)
-            log = HERE / f'update023-{suffix}-delivery-{kind}.log'
+            log = HERE / f'{tag}-{suffix}-delivery-{kind}.log'
             log.write_text(run.stdout)
             logs.append((run.returncode, log))
         (positive_rc, positive_log), (negative_rc, negative_log) = logs
-        receipt = json.loads((HERE / f'update023-{suffix}-delivery-diagnostic.json').read_text())
+        receipt = json.loads((HERE / f'{tag}-{suffix}-delivery-diagnostic.json').read_text())
         if (positive_rc or receipt.get('passed') is not False or
                 receipt.get('source_shaped_unit_test') is not True or
                 negative_rc == 0 or
@@ -62,4 +63,8 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--tag', default='update023')
+    parser.add_argument('--source-tag', default='update022')
+    args = parser.parse_args()
+    main(args.tag, args.source_tag)

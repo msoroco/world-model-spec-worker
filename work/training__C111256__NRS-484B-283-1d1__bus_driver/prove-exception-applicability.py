@@ -9,7 +9,7 @@ from exception_applicability_audit import (QUESTIONS, SOURCES, audit_original,
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
-ATTEMPT = ROOT / '.runtime-work/c111256-update024-selected/reference/primary/selected-attempt'
+ATTEMPT = ROOT / '.runtime-work/c111256-update025-selected/reference/primary/selected-attempt'
 
 
 def reject(call, expected):
