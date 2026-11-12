@@ -196,12 +196,38 @@ def main():
             if not source.is_file():
                 raise ValueError("Missing beyond exact crest proof: " + log)
             tests[log] = {"command": command, "exit_code": 0, "log": log, "sha256": sha(source)}
+    for probe, short in (("short_of_500ft", "short"), ("at_500ft", "at"),
+                         ("beyond_500ft", "beyond")):
+        for direction, suffix in (("approach_a", "a"), ("approach_b", "b")):
+            name = "canonical-curve-" + short + "-" + suffix
+            case = AID + "__curve__" + probe + "__occluded_" + direction
+            manifest_name = PREFIX + "diagnostic-" + name + "-manifest.json"
+            base = ".runtime-work/c129731-" + name
+            decoder = " --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+            args = " --probe " + probe + " --direction " + direction
+            for log, command in (
+                (name + "-branch-build.log", ".venv-cpu/bin/python " + PREFIX + "build_curve_direction_proof.py" + args),
+                (name + "-plan.log", ".venv-cpu/bin/python " + PREFIX + "extend_curve_case_plan.py" + args),
+                (name + "-branch-offline.log", ".venv-cpu/bin/python runtime.py offline --manifest " + manifest_name + " --case " + case + " --output " + base + "-offline-v1"),
+                (name + "-branch-compatibility.json", "SCENARIO_PIPELINE_OUTPUT_ROOT=" + OUTPUT_ROOT + " .venv-cpu/bin/python runtime.py compatibility --manifest " + manifest_name + " --case " + case + " --output " + base + "-compat-v1" + decoder),
+                (name + "-branch-processing.json", "SCENARIO_PIPELINE_OUTPUT_ROOT=" + OUTPUT_ROOT + " .venv-cpu/bin/python runtime.py process-saved --manifest " + manifest_name + " --case " + case + " --attempt " + base + "-compat-v1 --output " + base + "-saved-v1" + decoder),
+                (name + "-proof.log", ".venv-cpu/bin/python " + PREFIX + "record_curve_direction_proof.py" + args),
+            ):
+                source = HERE / log
+                if not source.is_file():
+                    raise ValueError("Missing exact curve proof: " + log)
+                tests[log] = {"command": command, "exit_code": 0, "log": log, "sha256": sha(source)}
+        log = "canonical-curve-" + short + "-comparison-proof.log"
+        tests[log] = {"command": ".venv-cpu/bin/python " + PREFIX + "prove_curve_direction_comparison.py --probe " + probe,
+                      "exit_code": 0, "log": log, "sha256": sha(HERE / log)}
     for name in ("canonical-at-approach-b", "canonical-at-near-b", "canonical-at-approach-a",
                  "canonical-at-near-a", "canonical-short-approach-b", "canonical-short-near-b",
                  "canonical-short-approach-a", "canonical-short-near-a", "canonical-beyond-approach-b",
-                 "canonical-beyond-near-b", "canonical-beyond-approach-a", "canonical-beyond-near-a"):
+                 "canonical-beyond-near-b", "canonical-beyond-approach-a", "canonical-beyond-near-a",
+                 "canonical-curve-short-a", "canonical-curve-short-b", "canonical-curve-at-a",
+                 "canonical-curve-at-b", "canonical-curve-beyond-a", "canonical-curve-beyond-b"):
         case = json.loads((HERE / ("diagnostic-" + name + "-manifest.json")).read_text())["cases"][0]["case_id"]
-        if name.startswith(("canonical-short-", "canonical-beyond-")):
+        if name.startswith(("canonical-short-", "canonical-beyond-", "canonical-curve-")):
             for suffix, command in (("fallback-build", "build_promoted_crest_fallbacks.py"),
                                     ("fallback-proof", "record_promoted_crest_fallbacks.py"),
                                     ("physical-proof", "build_promoted_physical_proof.py")):

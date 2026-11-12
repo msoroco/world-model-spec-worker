@@ -19,6 +19,9 @@ PROMOTED = (
     "canonical-short-approach-b", "canonical-short-near-b", "canonical-short-approach-a",
     "canonical-short-near-a", "canonical-beyond-approach-b", "canonical-beyond-near-b",
     "canonical-beyond-approach-a", "canonical-beyond-near-a",
+    "canonical-curve-short-a", "canonical-curve-short-b",
+    "canonical-curve-at-a", "canonical-curve-at-b",
+    "canonical-curve-beyond-a", "canonical-curve-beyond-b",
 )
 
 

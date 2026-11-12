@@ -10,8 +10,9 @@ def main(name):
     manifest = "diagnostic-" + name + "-manifest.json"
     case_id = json.loads((HERE / manifest).read_text())["cases"][0]["case_id"]
     saved = name + "-branch-processing.json"
-    run_one(name, "crest", case_id.split("__crest__", 1)[1].split("__", 1)[0],
-            manifest, saved, case_id=case_id)
+    feature, rest = case_id.removeprefix(HERE.name + "__").split("__", 1)
+    probe = rest.split("__", 1)[0]
+    run_one(name, feature, probe, manifest, saved, case_id=case_id)
 
 
 if __name__ == "__main__":
