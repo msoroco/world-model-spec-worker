@@ -2,21 +2,9 @@
   "assignment_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver",
   "input_sha256": "b9c3172408c5b3ad4b1ab360d0dedf01e43e1976e64942d24ccab3d19378fe5c",
   "status": "partial",
-  "readiness_kind": "implementation_checkpoint",
+  "readiness_kind": "two_exact_cases_full_duration_source_comparison_checkpoint",
   "applied_update": 0,
   "tests": [
-    {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/tests -v",
-      "exit_code": 0,
-      "log": "cpu-tests.log",
-      "sha256": "94fa847441ec5c1d7eff9ec3aeb33920eee347f21b9864ce8c24824c3bb19ea4"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py preflight",
-      "exit_code": 0,
-      "log": "preflight-current.log",
-      "sha256": "e04d5365853f12cac9957eaf24164143eaa72f1e7eef3ba630d1670f003ca68d"
-    },
     {
       "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__source_verified_other_right_near_time --output .runtime-work/c125714-250-2-primary-offline-v9",
       "exit_code": 0,
@@ -40,10 +28,76 @@
       "exit_code": 0,
       "log": "primary-process-saved.log",
       "sha256": "ca08a014b23ac5aa52355a37b58c1117ef18c5d44ca1c10332100d978b22fed8"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-tests.log",
+      "sha256": "5c458568b642565a6116a55c2fa3e9928d20357072bf4fe6c219d0491f49ba29"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "preflight-current.log",
+      "sha256": "fbcef4b5877a9c1cf2522b09a78a247dee6883b3094e86deb9961067e5a2afdd"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__source_verified_other_left_near_time --output .runtime-work/c125714-left-near-offline-v1",
+      "exit_code": 0,
+      "log": "cases/source_verified_other_left_near_time/primary-offline.log",
+      "sha256": "4fd1a8bff0a185af03ef39085bebb2990df4d843daeedac0d2f6869ce15807c3"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__source_verified_other_left_near_time --output .runtime-work/c125714-left-near-compat-v2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cases/source_verified_other_left_near_time/primary-compatibility.log",
+      "sha256": "2bc6679b707bbe07a52530d8049b87300d23ec6996df79915bff3abe1fadcf85"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__source_verified_other_left_near_time --attempt .runtime-work/c125714-left-near-compat-v2 --output .runtime-work/c125714-left-near-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cases/source_verified_other_left_near_time/primary-process-saved.log",
+      "sha256": "4a9808cf9cb3c6e0c5216d8123f13d1d9d1fc0494d552b19fdfa5cc9246ef73e"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/prove_left_full_duration.py",
+      "exit_code": 0,
+      "log": "cases/source_verified_other_left_near_time/full-duration-proof.log",
+      "sha256": "f0e1a83800b62b30aa40c42857155ff011cbc42ef50e8caae13f8ac2a98dfdd0"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/prove_left_comparison.py",
+      "exit_code": 0,
+      "log": "cases/source_verified_other_left_near_time/comparison-proof.log",
+      "sha256": "0e7e5740ed07ff8e82bf4cbc937bfff98addc193334cbf58b6eb9b72d41dbe3e"
+    },
+    {
+      "command": "pinned two-case compatibility receipt verifier",
+      "exit_code": 0,
+      "log": "case-receipts-current.log",
+      "sha256": "e203152486f2e180b5a318850ef3202114d2dcc0dee1ba598153b7e61dad9ab7"
+    },
+    {
+      "command": "expanded-manifest right compatibility",
+      "exit_code": 0,
+      "log": "right-expanded-compatibility.log",
+      "sha256": "c1917b5c8653b54d39c75bbc0592fcb0ef9fcec47d3c4066aca69147a7751b76"
+    },
+    {
+      "command": "expanded-manifest right recorded-only saved processing",
+      "exit_code": 0,
+      "log": "right-expanded-saved.log",
+      "sha256": "22336bd97961e3bee8f6d73636c7ee276559bf5de27803270cd4e3531ecfe231"
+    },
+    {
+      "command": "expanded-manifest right offline",
+      "exit_code": 0,
+      "log": "right-expanded-offline.log",
+      "sha256": "b285adec73e737ca82fa3cee19b1cc3845d887abdcd680233dccfc9aa10577a4"
     }
   ],
   "remaining_gpu_checks": [
     "Actual intersection crossing, yielding, device state, same/different highway identity and four-camera visibility."
   ],
-  "reason": "The primary right-hand entry case now passes exact offline, selected-measurement and missing-controller negative compatibility, pinned conversion and Lean validation, complete rendered video decode, and a separate recorded-only process-saved run with original-source hashes preserved. Its 60-frame diagnostic uses a synthetic orthogonal OpenDRIVE crossing and reconstructed Native-shaped graph/index; it is software evidence, not an original CARLA capture or proof of physical/legal acceptance. The full-duration 1100-frame direct saved-source proof and 21 CPU tests pass. Worker-owned incomplete work remains: source-reviewed actual median site and device inventory, all seven other selected branches, three distinct physical-risk fallbacks per selected case, complete semantic proposals, comparisons and independent audits. Keep status partial until every exact-case/fallback CPU receipt and strict gate passes; see HANDOFF.md."
+  "reason": "Two of eight planned C125714 subsection-2 cases now have exact offline, positive/missing-source compatibility, and recorded-only saved processing under the expanded manifest. The new other-left near-time case has a distinct CPU-tested Native lane/heading plan, source-shaped 60-frame compatibility, 1100-frame saved-finalizer and four-camera decode diagnostics. Independent right-versus-left audits pass at 60 and 1100 frames and reject a changed crossing identity; the right primary was replayed under the expanded manifest. These synthetic sources prove software behavior only, not a reviewed median site, Native motion, camera visibility or legal priority. Six planned cases, three distinct fallbacks per selected case, canonical stage proposals, independent delivery audit, physical-preparation/lifecycle fixtures and shared branch/queue integration remain worker-owned CPU work. The strict delivery gate has not passed; all 43 returns remain partial."
 }
