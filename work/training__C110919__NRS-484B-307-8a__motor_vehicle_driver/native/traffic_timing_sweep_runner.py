@@ -217,7 +217,8 @@ def execute(config: dict,output: Path,host: str,port: int):
             'wheelbase_m':wheelbase,'max_steer_deg':steer,
             'initial_body_xy_m':body_xy(ego),'knobs':knobs,
             'authored_intent':'controlled signal-directed other-traffic conflict comparison after the same red-signal stop',
-            'traffic_policy':config['case_suffix'],
+            'traffic_policy':('traffic_yield_wait' if config['case_suffix']=='extreme_right_sweep'
+                              else config['case_suffix']),
             'traffic_launch_frame':config['traffic_launch_frame'],
             'lateral_right_offset_m':lateral.right_m,
             'physical_completion_claimed':False})
@@ -277,7 +278,9 @@ def execute(config: dict,output: Path,host: str,port: int):
                 if stop_needed:
                     command.update(throttle=0.0,brake=1.0,hand_brake=speed<.05)
                     if speed<.05 and max(p[1] for p in body_xy(ego))<stop_boundary:held+=1
-                yield_decision=decide('traffic_yield_wait' if config['case_suffix']=='extreme_right_sweep' else config['case_suffix'],
+                traffic_policy=('traffic_yield_wait' if config['case_suffix']=='extreme_right_sweep'
+                                else config['case_suffix'])
+                yield_decision=decide(traffic_policy,
                     red_stop_completed=held>=30,
                     in_merge_approach=pose.location.y>-10 and pose.location.x<10,
                     traffic_conflict_occupied=occupied,
@@ -323,7 +326,7 @@ def execute(config: dict,output: Path,host: str,port: int):
                         'traffic_conflict_occupied':traffic_occupied,
                         'signal_state_observed':str(signal_actor.get_state()),
                         'controller_request':command,
-                        'traffic_policy':config['case_suffix'],
+                        'traffic_policy':traffic_policy,
                         'traffic_launch_frame':config['traffic_launch_frame'],
                         'lateral_right_offset_m':lateral.right_m,
                         'traffic_decision_reason':yield_decision.reason}
