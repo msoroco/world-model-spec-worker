@@ -18,7 +18,7 @@ def sha(path: Path) -> str:
 
 def main() -> None:
     tests_command = [str(PYTHON), "-m", "unittest", "discover", "-s",
-                     str(HERE / "tests"), "-p", "test_comparison_audit.py", "-v"]
+                     str(HERE / "tests"), "-p", "test_comparison*.py", "-v"]
     tests = subprocess.run(tests_command, cwd=REPO, text=True, capture_output=True)
     (HERE / "comparison-cpu-tests.log").write_text(tests.stdout + tests.stderr)
     if tests.returncode:
@@ -47,7 +47,8 @@ def main() -> None:
              "original_comparison_accepted": False}
     (HERE / "comparison-audit-cpu-proof.json").write_text(
         json.dumps(proof, indent=2) + "\n")
-    print(json.dumps({"tests": 3, "nonoriginal_receipt_rejected": True,
+    print(json.dumps({"tests": (tests.stdout + tests.stderr).count(" ... ok"),
+                      "nonoriginal_receipt_rejected": True,
                       "proof_sha256": sha(HERE / "comparison-audit-cpu-proof.json")}))
 
 

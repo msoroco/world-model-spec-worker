@@ -135,11 +135,14 @@ def check_physical_result(result: dict, case_id: str) -> None:
 
 
 def check_native_boundary(attempt: Path, saved: Path, owner_receipt: Path,
-                          case_id: str, construction_sha256: str) -> dict:
+                          case_id: str, construction_sha256: str, *,
+                          test_shape: bool = False) -> dict:
     """Reject absent closure, changed original bytes, and derived false success."""
     attempt, saved = attempt.resolve(), saved.resolve()
     require((attempt / "capture-seal.json").is_file(), "Missing sealed Native capture")
     seal = read(attempt / "capture-seal.json")
+    require((seal.get("source_shaped_unit_test") is True) == test_shape,
+            "Source-shaped unit test cannot establish original Native capture")
     require(seal.get("format") == "worker-sealed-capture" and
             seal.get("provenance_kind") == "native" and
             seal.get("diagnostic_fixture") is False and
@@ -161,7 +164,8 @@ def check_native_boundary(attempt: Path, saved: Path, owner_receipt: Path,
     capture = read(attempt / "capture/manifest.json")
     require(capture.get("extraction_confirmed") is True and
             capture.get("frames") == 480 and
-            capture.get("synthetic_diagnostic") is not True,
+            capture.get("synthetic_diagnostic") is not True and
+            (capture.get("source_shaped_unit_test") is True) == test_shape,
             "Native extraction missing or synthetic")
     exit_record = read(attempt / "native-exit.json")
     require(exit_record.get("event") == "native_exit" and
@@ -174,7 +178,7 @@ def check_native_boundary(attempt: Path, saved: Path, owner_receipt: Path,
             owner.get("native_exit_sha256") == sha(attempt / "native-exit.json") and
             owner.get("native_construction_sha256") == construction_sha256,
             "Operator owner release absent or stale")
-    original = check_original_rows(attempt, 480)
+    original = check_original_rows(attempt, 480, test_shape=test_shape)
     processing = read(saved / "processing.json")
     require(processing.get("case_id") == case_id and
             processing.get("passed") is True and
@@ -189,11 +193,16 @@ def check_native_boundary(attempt: Path, saved: Path, owner_receipt: Path,
     require(saved in result_path.parents and result_path.is_file(),
             "Saved result escapes selected processing version")
     result = read(result_path)
+    require((result.get("source_shaped_unit_test") is True) == test_shape,
+            "Source-shaped result cannot establish original Native motion")
     check_physical_result(result,case_id)
     return {**original, "case_id": case_id, "result_sha256": sha(result_path),
+            "source_shaped_unit_test": test_shape,
             "capture_seal_sha256": sha(attempt / "capture-seal.json"),
             "owner_release_sha256": sha(owner_receipt),
-            "physical_completion": "measured; legal blocking judgment remains separate"}
+            "physical_completion": ("source-shaped CPU unit test only"
+                                    if test_shape else
+                                    "measured; legal blocking judgment remains separate")}
 
 
 def check_pixel_review(review_path: Path, case_id: str, attempt: Path,
@@ -248,12 +257,14 @@ def audit_complete(attempt: Path, saved: Path, owner_receipt: Path,
                    case_id: str, construction_sha256: str, pixel_review: Path,
                    access_review: Path,
                    primary_video: Path, core_trace: Path, decode_dir: Path,
-                   job_id: str, attempt_number: int, recording_id: str) -> dict:
+                   job_id: str, attempt_number: int, recording_id: str, *,
+                   test_shape: bool = False) -> dict:
     """Produce a local acceptance candidate only after every independent check."""
     attempt, primary_video, core_trace = (path.resolve() for path in
                                           (attempt, primary_video, core_trace))
     boundary = check_native_boundary(attempt, saved, owner_receipt,
-                                     case_id, construction_sha256)
+                                     case_id, construction_sha256,
+                                     test_shape=test_shape)
     require(primary_video.is_file() and core_trace.is_file() and
             attempt in primary_video.parents and attempt in core_trace.parents,
             "Primary video/Core trace must be promoted with the exact attempt")
@@ -266,8 +277,10 @@ def audit_complete(attempt: Path, saved: Path, owner_receipt: Path,
             all(scene.get("t") == round(frame["time_s"] * 1000)
                 for scene, frame in zip(scenes, mapping)),
             "Core trace does not join original Native frame map")
-    review = check_pixel_review(pixel_review, case_id, attempt, primary_video)
-    access = check_access_review(access_review, case_id, attempt)
+    review = check_pixel_review(pixel_review, case_id, attempt, primary_video,
+                                test_shape=test_shape)
+    access = check_access_review(access_review, case_id, attempt,
+                                 test_shape=test_shape)
     decode_dir.mkdir(parents=True, exist_ok=True)
     from scenario_pipeline.worker_exchange.media import audit as decode
     mapping_hash = sha(attempt / "video_frames.jsonl")
@@ -278,7 +291,8 @@ def audit_complete(attempt: Path, saved: Path, owner_receipt: Path,
     primary = decode(primary_video, 480, mapping_sha256=mapping_hash,
                      receipt=primary_receipt)
     return {
-        "format": "worker-delivery-audit", "passed": True,
+        "format": "worker-delivery-audit", "passed": not test_shape,
+        "source_shaped_unit_test": test_shape,
         "attempt_path": str(attempt), "saved_path": str(saved.resolve()),
         "owner_receipt_path": str(owner_receipt.resolve()),
         "owner_receipt_sha256": sha(owner_receipt),

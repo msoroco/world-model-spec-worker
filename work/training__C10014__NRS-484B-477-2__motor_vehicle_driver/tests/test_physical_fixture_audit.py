@@ -11,7 +11,7 @@ from test_lifecycle_audit import LifecycleAuditTests
 
 
 class PhysicalFixtureAuditTests(unittest.TestCase):
-    def make_chain(self, root, kind):
+    def make_chain(self, root, kind, case_id='case'):
         """Invented source-shaped rows exercise code only, never a Native receipt."""
         attempt, owner, processing, construction = LifecycleAuditTests().shape(root)
         body = [[-2, -3], [-2, -1], [2, -1], [2, -3]]
@@ -47,7 +47,8 @@ class PhysicalFixtureAuditTests(unittest.TestCase):
                   'missing_evidence': 'unverified'}[kind]
         result_path = root / 'saved/v0001/analysis/result.json'
         result = json.loads(result_path.read_text())
-        result.update({'accepted': False, 'legal_verdict_claimed': False,
+        result.update({'case_id': case_id,
+            'accepted': False, 'legal_verdict_claimed': False,
             'maneuver_completed': status == 'met',
             'realized_observables': {'test_only_overlap_m': 5.2} if status == 'met' else {},
             'physical_checks': {'maneuver': {'status': status,
@@ -68,6 +69,7 @@ class PhysicalFixtureAuditTests(unittest.TestCase):
         owner_record['native_exit_sha256'] = sha(exit_path)
         owner.write_text(json.dumps(owner_record))
         receipt = json.loads(processing.read_text())
+        receipt['case_id'] = case_id
         receipt['original_source_hashes'] = seal['sources']
         receipt['result_sha256'] = sha(result_path)
         receipt['missing_evidence'] = kind == 'missing_evidence'

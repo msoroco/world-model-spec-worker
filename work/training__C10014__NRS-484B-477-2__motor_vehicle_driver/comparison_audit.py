@@ -55,10 +55,13 @@ def compare_fixed_inputs(reference: dict, contrast: dict) -> dict:
             "declared_difference": "commanded_stop_station_m"}
 
 
-def load_original(audit_path: Path, expected_case: str) -> tuple[dict, dict]:
+def load_original(audit_path: Path, expected_case: str, *,
+                  test_shape: bool = False) -> tuple[dict, dict]:
     audit = read(audit_path)
     require(audit.get("format") == "worker-delivery-audit" and
-            audit.get("passed") is True and audit.get("case_id") == expected_case and
+            audit.get("passed") is (not test_shape) and
+            audit.get("case_id") == expected_case and
+            (audit.get("source_shaped_unit_test") is True) == test_shape and
             CHECKS <= {key for key, value in audit.get("checks", {}).items() if value is True} and
             audit.get("legal_blocking_verdict_claimed") is False,
             "Comparison needs independent original delivery acceptance")
@@ -74,7 +77,8 @@ def load_original(audit_path: Path, expected_case: str) -> tuple[dict, dict]:
             "Comparison owner release changed")
     boundary = check_native_boundary(attempt, saved, owner, expected_case,
                                     read(attempt / "capture-seal.json")
-                                    ["native_revision"]["construction_sha256"])
+                                    ["native_revision"]["construction_sha256"],
+                                    test_shape=test_shape)
     require(boundary["result_sha256"] == audit.get("source_result_sha256") and
             boundary["frame_map_sha256"] == audit.get("native_boundary", {})
             .get("frame_map_sha256") and
@@ -85,10 +89,11 @@ def load_original(audit_path: Path, expected_case: str) -> tuple[dict, dict]:
     require(sha(pixel) == audit.get("pixel_review_sha256"),
             "Comparison actual-pixel review changed")
     check_pixel_review(pixel, expected_case, attempt,
-                       attempt / audit["video"])
+                       attempt / audit["video"], test_shape=test_shape)
     access = Path(audit["access_review_path"]).resolve()
     require(sha(access) == audit.get("access_review_sha256") and
-            check_access_review(access, expected_case, attempt)
+            check_access_review(access, expected_case, attempt,
+                                test_shape=test_shape)
             ["property_access_id"] == audit.get("property_access_id"),
             "Comparison independent access review changed")
     from scenario_pipeline.worker_exchange.media import verify_receipt
@@ -116,7 +121,8 @@ def load_original(audit_path: Path, expected_case: str) -> tuple[dict, dict]:
                    "native_context": read(attempt / "native-construction-context.json")}
 
 
-def audit_pair(reference_audit: Path, contrast_audit: Path) -> dict:
+def audit_pair(reference_audit: Path, contrast_audit: Path, *,
+               test_shape: bool = False) -> dict:
     plan = read(HERE / "case-plan.json")
     proposal = read(HERE / "proposals/cases.json")
     comparison = plan["comparisons"][0]
@@ -133,7 +139,7 @@ def audit_pair(reference_audit: Path, contrast_audit: Path) -> dict:
              if assignments[0][key] != assignments[1][key]} ==
             {"commanded_stop_station_m"},
             "Canonical pair changed an undeclared variable")
-    audits, sources = zip(*(load_original(path, case) for path, case in
+    audits, sources = zip(*(load_original(path, case, test_shape=test_shape) for path, case in
                             zip((reference_audit, contrast_audit), expected)))
     fixed = compare_fixed_inputs(*sources)
     require(audits[0].get("property_access_id") ==
@@ -146,7 +152,9 @@ def audit_pair(reference_audit: Path, contrast_audit: Path) -> dict:
             abs(measured[0] - 0.0) <= .25 and
             abs(measured[1] - 5.2) <= .25 and measured[1] > measured[0],
             "Original stopped-footprint difference not measured as requested")
-    return {"format": "c10014-independent-comparison-audit", "passed": True,
+    return {"format": "c10014-independent-comparison-audit",
+            "passed": not test_shape,
+            "source_shaped_unit_test": test_shape,
             "comparison_id": comparison["comparison_id"],
             "case_ids": expected,
             "delivery_audit_sha256": [sha(reference_audit), sha(contrast_audit)],
