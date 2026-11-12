@@ -17,7 +17,17 @@ PY = ".venv-cpu/bin/python"
 
 
 def command(*args):
-    return shlex.join(args)
+    return " ".join(arg if arg.startswith("${") and arg.endswith("}") else shlex.quote(arg)
+                    for arg in args)
+
+
+def original_post_capture_command(case):
+    return command(PY, f"work/{HERE.name}/original_postprocess_handoff.py",
+                   "--manifest", f"work/{HERE.name}/execution-manifest.json",
+                   "--case", case, "--attempt", "${ATTEMPT_DIR}",
+                   "--output", "${PROCESSED_DIR}", "--library", "${DECODER_LIBRARY}",
+                   "--validator", "${VALIDATOR}",
+                   "--owner-release-receipt", "${OWNER_RELEASE_RECEIPT}")
 
 
 def acquisition(construction):
@@ -43,6 +53,12 @@ def build() -> dict:
     index = read(INDEX)
     if all("offline" in entry and "compatibility" in entry and
            "post_capture" in entry for entry in manifest["cases"]):
+        changed = False
+        for entry in manifest["cases"]:
+            intended = original_post_capture_command(entry["case_id"])
+            if entry["post_capture"].get("command") != intended:
+                entry["post_capture"]["command"] = intended
+                changed = True
         sys.path.insert(0, str(ROOT / "runtime/pipeline"))
         sys.path.insert(0, str(ROOT / "runtime/pipeline/scenario_pipeline"))
         from scenario_pipeline.worker_exchange.candidate_constructions import validate as validate_candidates
@@ -52,6 +68,8 @@ def build() -> dict:
             validate_candidates(HERE, entry, plan["law_id"], plan["cell_id"],
                                 required=True, require_alternate=True, candidate_count=4)
         check_receipts(ROOT, HERE, manifest)
+        if changed:
+            MANIFEST.write_text(json.dumps(manifest, indent=2) + "\n")
         return {"cases": len(manifest["cases"]),
                 "candidates": sum(1 + len(entry["candidates"]) for entry in manifest["cases"]),
                 "manifest_sha256": sha(MANIFEST), "physical_acceptance_claimed": False}
@@ -102,11 +120,7 @@ def build() -> dict:
                                      "log_sha256": sha(negative)}
                 entry["post_capture"] = {
                     "recorded_only": True,
-                    "command": command(PY, "runtime.py", "process-saved", "--manifest",
-                                       f"work/{HERE.name}/execution-manifest.json", "--case", case,
-                                       "--attempt", "${ATTEMPT_DIR}", "--output", "${PROCESSED_DIR}",
-                                       "--library", "${DECODER_LIBRARY}", "--validator", "${VALIDATOR}",
-                                       "--owner-release-receipt", "${OWNER_RELEASE_RECEIPT}"),
+                    "command": original_post_capture_command(case),
                     "feedback_command": command(PY, "-m", "json.tool",
                                                 "${PROCESSED_DIR}/v0001/feedback.json"),
                     "test_log": str(saved.relative_to(HERE)),

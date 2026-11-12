@@ -55,6 +55,8 @@ def check(fragment):
                 "Saved processing lost owner release binding")
         require("original_postprocess_handoff.py" in row["postprocessing_command"],
                 "Selected queue bypasses source-bound owner handoff")
+        require(row["postprocessing_command"] == entry["post_capture"]["command"],
+                "Selected queue and manifest post-capture commands differ")
     expected = [item for item in plan["comparisons"]
                 if item["comparison_id"].removeprefix(MODULE.AID + "__comparison_") in MODULE.PAIRS]
     comparisons = fragment["comparison_audit_commands"]
