@@ -14,7 +14,12 @@ CASES = (
     ("crest-at", "diagnostic-crest-at-manifest.json", "rebound-crest-at-offline.log", "rebound-crest-at-compatibility.json", "rebound-crest-at-negative-analysis.log", "rebound-crest-at-processing.json", "crest-at"),
     ("crest-beyond", "diagnostic-crest-beyond-manifest.json", "rebound-crest-beyond-offline.log", "rebound-crest-beyond-compatibility.json", "rebound-crest-beyond-negative-analysis.log", "rebound-crest-beyond-processing.json", "crest-beyond"),
 )
-PROMOTED = ("canonical-at-approach-b", "canonical-at-near-b")
+PROMOTED = (
+    "canonical-at-approach-b", "canonical-at-near-b", "canonical-at-approach-a", "canonical-at-near-a",
+    "canonical-short-approach-b", "canonical-short-near-b", "canonical-short-approach-a",
+    "canonical-short-near-a", "canonical-beyond-approach-b", "canonical-beyond-near-b",
+    "canonical-beyond-approach-a", "canonical-beyond-near-a",
+)
 
 
 def read(name):

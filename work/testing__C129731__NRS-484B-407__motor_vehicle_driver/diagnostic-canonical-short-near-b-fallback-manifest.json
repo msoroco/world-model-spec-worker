@@ -1,0 +1,86 @@
+{
+  "assignment_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver",
+  "cases": [
+    {
+      "acquisition": {
+        "approaching_actors": {
+          "entrypoint": "runner.py",
+          "evidence": "motion_history.jsonl",
+          "method": "original both approach actors"
+        },
+        "sight_distance": {
+          "entrypoint": "finalizer.py",
+          "evidence": "channels/sight_distance.jsonl",
+          "method": "pinned ray summary"
+        },
+        "st.sight_distance": {
+          "entrypoint": "runner.py",
+          "evidence": "capture/evidence.jsonl",
+          "method": "PipelineCapture original ray packet"
+        },
+        "u_turn_motion": {
+          "entrypoint": "runner.py",
+          "evidence": "motion_history.jsonl",
+          "method": "original pose and velocity"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Native occlusion and approach motion need measured confirmation",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "turn_target_speed_mps"
+          ],
+          "construction": "branch-proof-canonical-short-near-b/construction-fallback1.json",
+          "construction_sha256": "509d284c0e06f31560d4b83f9cde2980c4863290f77ba8704d899cda326cee35",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "exit distance remains above 2 m after heading reversal and braking",
+            "metric": "measured turn overshoots exit before stable stop",
+            "source": "turn_history.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "turn_lookahead_m"
+          ],
+          "construction": "branch-proof-canonical-short-near-b/construction-fallback2.json",
+          "construction_sha256": "e0855ee025f9d7941643c87c4dcc61f6ff6ccd417e6fc57cdf2b99e6e230ae83",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "recorded heading change remains below 150 engineering degrees",
+            "metric": "body cuts the planned return corner and fails heading reversal",
+            "source": "turn_history.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "approach_target_speed_mps"
+          ],
+          "construction": "branch-proof-canonical-short-near-b/construction-fallback3.json",
+          "construction_sha256": "fb14213456c2e000f52b6f65cccc7fbf48ad9fb22d8abf5680af64eaf05c2c99",
+          "id": "fallback3",
+          "trigger": {
+            "failure_condition": "either approach vehicle has no sustained approach trajectory",
+            "metric": "incoming actor has insufficient measured travel within 55 seconds",
+            "source": "motion_history.jsonl"
+          }
+        }
+      ],
+      "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_b",
+      "construction": "branch-proof-canonical-short-near-b/construction.json",
+      "construction_sha256": "2be378844205b8461354d595b60c35bd5c8de78f86bdbadf40488b3ec9b8f9b9",
+      "fixture_recipe": "work/testing__C129731__NRS-484B-407__motor_vehicle_driver/branch-proof-canonical-short-near-b/recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract-crest.json",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      }
+    }
+  ],
+  "format": "worker-execution-manifest",
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3",
+  "status": "diagnostic_incomplete"
+}

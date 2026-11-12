@@ -46,6 +46,15 @@ CLAIMS = (
     ("canonical-at-near-b-fallback-build.log", ".venv-cpu/bin/python " + PREFIX + "build_promoted_crest_fallbacks.py --name canonical-at-near-b"),
     ("canonical-at-near-b-fallback-proof.log", ".venv-cpu/bin/python " + PREFIX + "record_promoted_crest_fallbacks.py --name canonical-at-near-b"),
     ("canonical-at-near-b-physical-proof.log", ".venv-cpu/bin/python " + PREFIX + "build_promoted_physical_proof.py --name canonical-at-near-b"),
+    ("canonical-at-near-b-delivery-audit-proof.log", ".venv-cpu/bin/python " + PREFIX + "prove_promoted_delivery_audit.py --name canonical-at-near-b --version v1"),
+    ("canonical-at-approach-a-fallback-build.log", ".venv-cpu/bin/python " + PREFIX + "build_promoted_crest_fallbacks.py --name canonical-at-approach-a"),
+    ("canonical-at-approach-a-fallback-proof.log", ".venv-cpu/bin/python " + PREFIX + "record_promoted_crest_fallbacks.py --name canonical-at-approach-a"),
+    ("canonical-at-approach-a-physical-proof.log", ".venv-cpu/bin/python " + PREFIX + "build_promoted_physical_proof.py --name canonical-at-approach-a"),
+    ("canonical-at-approach-a-delivery-audit-proof.log", ".venv-cpu/bin/python " + PREFIX + "prove_promoted_delivery_audit.py --name canonical-at-approach-a --version v1"),
+    ("canonical-at-near-a-fallback-build.log", ".venv-cpu/bin/python " + PREFIX + "build_promoted_crest_fallbacks.py --name canonical-at-near-a"),
+    ("canonical-at-near-a-fallback-proof.log", ".venv-cpu/bin/python " + PREFIX + "record_promoted_crest_fallbacks.py --name canonical-at-near-a"),
+    ("canonical-at-near-a-physical-proof.log", ".venv-cpu/bin/python " + PREFIX + "build_promoted_physical_proof.py --name canonical-at-near-a"),
+    ("canonical-at-near-a-delivery-audit-proof.log", ".venv-cpu/bin/python " + PREFIX + "prove_promoted_delivery_audit.py --name canonical-at-near-a --version v1"),
     ("assignment-check.log", ".venv-cpu/bin/python worker_check.py --assignment " + AID + " --complete"),
 )
 
@@ -187,8 +196,21 @@ def main():
             if not source.is_file():
                 raise ValueError("Missing beyond exact crest proof: " + log)
             tests[log] = {"command": command, "exit_code": 0, "log": log, "sha256": sha(source)}
-    for name, case in (("canonical-at-approach-b", AID + "__crest__at_500ft__approach_to_crest__occluded_approach_b"),
-                       ("canonical-at-near-b", AID + "__crest__at_500ft__near_summit__occluded_approach_b")):
+    for name in ("canonical-at-approach-b", "canonical-at-near-b", "canonical-at-approach-a",
+                 "canonical-at-near-a", "canonical-short-approach-b", "canonical-short-near-b",
+                 "canonical-short-approach-a", "canonical-short-near-a", "canonical-beyond-approach-b",
+                 "canonical-beyond-near-b", "canonical-beyond-approach-a", "canonical-beyond-near-a"):
+        case = json.loads((HERE / ("diagnostic-" + name + "-manifest.json")).read_text())["cases"][0]["case_id"]
+        if name.startswith(("canonical-short-", "canonical-beyond-")):
+            for suffix, command in (("fallback-build", "build_promoted_crest_fallbacks.py"),
+                                    ("fallback-proof", "record_promoted_crest_fallbacks.py"),
+                                    ("physical-proof", "build_promoted_physical_proof.py")):
+                log = name + "-" + suffix + ".log"
+                source = HERE / log
+                if not source.is_file():
+                    raise ValueError("Missing promoted proof: " + log)
+                tests[log] = {"command": ".venv-cpu/bin/python " + PREFIX + command + " --name " + name,
+                              "exit_code": 0, "log": log, "sha256": sha(source)}
         manifest_name = PREFIX + "diagnostic-" + name + "-fallback-manifest.json"
         decoder = " --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
         for ident in ("fallback1", "fallback2", "fallback3"):
@@ -216,9 +238,9 @@ def main():
     result["status"] = "partial"
     result["readiness_kind"] = "delivery_preparation_in_progress"
     result["reason"] = (
-        "Seven canonical manifest cases and all 21 risk-triggered fallbacks have current offline, positive/negative "
-        "compatibility and recorded-only saved-processing proofs. Seven semantic stages, the seven-case canonical "
-        "execution manifest, seven physical classifier/lifecycle receipts and seven independent full-path diagnostic "
+        "Eighteen canonical manifest cases and all 54 risk-triggered fallbacks have current offline, positive/negative "
+        "compatibility and recorded-only saved-processing proofs. Seven semantic stages, the eighteen-case canonical "
+        "execution manifest, eighteen physical classifier/lifecycle receipts and eighteen independent full-path diagnostic "
         "delivery audit positive/negative proofs validate. Twelve CPU-tested diagnostic crest alternatives "
         "construct near-summit and approach-to-crest turn sites for all three 500-foot probes and both obscured "
         "approach directions. Their planned prop near faces align with the synthetic ray stations at 150, 152.4 "
@@ -228,7 +250,7 @@ def main():
         "plan checks six curve probe/direction sites. All twelve distinct crest placement/direction cases "
         "now have complete CPU paths and four source-audited controlled comparisons per boundary probe. "
         "Strict delivery readiness remains open: canonical manifest/delivery audits and justified risk "
-        "fallbacks for the other newer cases (the first at/approach/B case is now bound), remaining curve "
+        "remaining curve "
         "direction coverage, a completed judgment sweep, shared branch "
         "review/GPU queue/local integration proof, and full-batch "
         "ready packages are unfinished worker CPU work. Synthetic pixels/rays prove no physical or legal acceptance.")
