@@ -56,11 +56,51 @@ def run():
                        "offline_log_sha256": sha(STAGE / (label + "-offline.log")),
                        "compatibility_log_sha256": sha(STAGE / (label + "-compatibility.log")),
                        "saved_log_sha256": sha(STAGE / (label + "-saved.log"))})
+    physical_path = STAGE / "physical-proof-receipt.json"
+    physical = json.loads(physical_path.read_text())
+    if (physical.get("case_id") != entry["case_id"] or
+            physical.get("construction_sha256") != entry["construction_sha256"] or
+            physical.get("manifest_sha256") != sha(manifest_path) or
+            physical.get("physical_acceptance_claimed") is not False or
+            len(physical.get("fixtures", [])) != 4):
+        raise ValueError("Staged physical fixture binding failed")
+    for fixture in physical["fixtures"]:
+        if (fixture["log_sha256"] != sha(FOLDER / fixture["log"]) or
+                fixture["result_sha256"] != sha(FOLDER / fixture["result"])):
+            raise ValueError("Staged physical fixture changed: " + fixture["kind"])
+    far = REPO / ".runtime-work/c109749-clearance-guard-far-delivery/attempt"
+    delivery = json.loads((far / "far-diagnostic-audit.json").read_text())
+    if (delivery.get("case_id") != entry["case_id"] or
+            delivery.get("frames") != 900 or
+            delivery.get("software_checks_passed") is not True or
+            delivery.get("diagnostic_fixture") is not True or
+            delivery.get("physical_acceptance_claimed") is not False):
+        raise ValueError("Full-duration staged delivery audit failed")
+    negative = (STAGE / "delivery-negative.log").read_text()
+    if "ValueError: Sealed original source changed: overview.mkv" not in negative:
+        raise ValueError("Missing-camera negative rejection absent")
+    source_compare = REPO / ".runtime-work/c109749-clearance-guard-far-near-comparison/comparison-proof.json"
+    audited_compare = REPO / ".runtime-work/c109749-clearance-guard-audited-far-near/comparison.json"
+    source_proof = json.loads(source_compare.read_text())
+    audited_proof = json.loads(audited_compare.read_text())
+    if (source_proof.get("frames") != 900 or
+            audited_proof.get("far_delivery_audit_sha256") != sha(far / "far-diagnostic-audit.json") or
+            audited_proof.get("missing_camera_rejected") is not True or
+            audited_proof.get("physical_acceptance_claimed") is not False):
+        raise ValueError("Staged far/near comparison binding failed")
     result = {"format": "worker-staged-clearance-guard-proof",
               "case_id": entry["case_id"],
               "manifest_sha256": sha(manifest_path),
               "policy_sha256": sha(FOLDER / "hazard_sweep_policy.py"),
               "proofs": proofs,
+              "physical_proof_receipt_sha256": sha(physical_path),
+              "delivery_audit_sha256": sha(far / "far-diagnostic-audit.json"),
+              "delivery_positive_log_sha256": sha(STAGE / "delivery-positive.log"),
+              "delivery_negative_log_sha256": sha(STAGE / "delivery-negative.log"),
+              "far_near_source_comparison_sha256": sha(source_compare),
+              "far_near_source_comparison_log_sha256": sha(STAGE / "far-near-comparison.log"),
+              "far_near_audited_comparison_sha256": sha(audited_compare),
+              "far_near_audited_comparison_log_sha256": sha(STAGE / "audited-far-near-comparison.log"),
               "staged_exact_cpu_paths_passed": True,
               "canonical_selection": False,
               "native_feasibility_proven": False,
