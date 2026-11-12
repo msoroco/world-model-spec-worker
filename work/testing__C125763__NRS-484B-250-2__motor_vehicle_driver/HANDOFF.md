@@ -557,3 +557,60 @@ frozen assignment and current four-case execution manifest. The canonical
 semantic proposals remain drafts; no legal judgment or physical acceptance
 is inferred. Independent per-case delivery acceptance and final manifest
 refresh remain worker-owned.
+
+## Staged Native completion and delivery-auditor checkpoint, 2026-11-12
+
+`delivery_acceptance.py` now implements the prospective independent Native
+source seal, closure order, source-bound setup/target/maneuver checks,
+full four-camera decode, original-frame actor pixel review, and composed
+video decode. `tests/test_delivery_acceptance.py` exercises seal and
+provenance rejection, altered original source rejection, physical source
+hash rejection, blank actor ROI rejection, and stale pixel-review frame-map
+rejection. These are CPU boundary tests; no actual Native attempt or
+independent physical actor review has passed this auditor.
+
+The runtime's default NRS-484B-250-2 completion descriptor requests
+`ego_vertices_m`, while this runner records `ego.body_vertices_xy_m` in
+`crossing_history.jsonl`. `build_primary_bundle.py` now authors an explicit
+intersection-clearance descriptor using that real field and the authored
+`site.json` crossing polygon. To avoid invalidating the existing canonical
+manifest and exact-case receipts before reproof,
+`build_staged_physical.py` generated separate corrected constructions and
+isolated manifests for all four selected cases and all twelve fallbacks.
+
+The exact staged proof commands are:
+
+```
+.venv-cpu/bin/python work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/build_staged_physical.py
+.venv-cpu/bin/python work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/prove_staged_physical.py
+.venv-cpu/bin/python work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/prove_staged_fallbacks.py
+```
+
+`physical-{primary,right,separated,opposite}-{offline,compat,saved}-v1.log`
+and `staged-fallbacks-proof.log` record all four staged primaries and twelve
+staged alternatives passing exact offline, compatibility and recorded-only
+saved processing. `staged-physical-proof.log` records all four primaries
+with source-bound setup and selected target met, synthetic maneuver
+correctly not met, and missing original body history rejected as
+unverified. Staged alternatives are isolated diagnostic constructions,
+not yet the selected canonical candidate IDs; promoting them requires
+updating candidate manifests and replaying every affected exact-case,
+fallback, comparison, canonical-manifest and saved proof with new source
+hashes. Do not relabel the current canonical receipts as covering the staged
+construction.
+
+`runtime.py preflight` and all 38 assignment tests pass in `preflight.log`
+and `cpu-tests.log`. The semantic delivery test covers the complete current
+9-stage chain and four exact selected construction joins. The package
+remains partial pending canonical physical-descriptor promotion and reproof,
+source-bound positive/negative per-case delivery acceptance, and the full
+readiness gates. No frozen inputs, runtime, batch file or Git action was
+changed.
+
+Final rerun of `.venv-cpu/bin/python worker_check.py --updates` exits 0
+in `updates.log`; the scoped `worker_check.py --assignment
+testing__C125763__NRS-484B-250-2__motor_vehicle_driver --complete` exits
+0 in `assignment-check.log`. The full `.venv-cpu/bin/python worker_check.py
+--complete --require-delivery-ready` exits 1 in `strict-gate.log` with
+`Preparation acceptance failed: partial/missing packages remain`. This
+remains a worker-owned preparation checkpoint, not a delivery-ready result.

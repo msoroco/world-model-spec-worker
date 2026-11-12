@@ -22,13 +22,8 @@ def fixture_sources(root,entry):
     construction=read(ROOT/entry['construction'])
     config=json.loads(next(row['content'] for row in construction['files']
                            if row['path']=='config.json'))
-    config['physical_completion']={
-        'criterion':'intersection_clearance',
-        'motion_source':'crossing_history.jsonl',
-        'body_key':'ego.body_vertices_xy_m',
-        'intersection_polygon_xy_m':[[10,-3],[20,-3],[20,3],[10,3]],
-        'exit_axis':0,'exit_sign':1,
-        'context_sources':[]}
+    if config.get('physical_completion', {}).get('body_key') != 'ego.body_vertices_xy_m':
+        raise ValueError('Construction lacks original body-history criterion')
     write(root/'config.json',config)
     recipe=read(REPO/entry['fixture_recipe'])
     source=REPO/recipe['generator']['source']
@@ -79,10 +74,10 @@ def motion(entry,kind,output):
 
 
 def lifecycle(entry,output):
-    saved_name={'yield_ego_left_near_time':'primary-saved-receipt.json',
-                'yield_ego_right_near_time':'right-saved-receipt.json',
-                'yield_ego_left_separated':'separated-saved-receipt.json',
-                'yield_opposite_left_turn':'opposite-saved-receipt.json'}
+    saved_name={'yield_ego_left_near_time':'promoted-primary-primary-saved-receipt.json',
+                'yield_ego_right_near_time':'promoted-right-primary-saved-receipt.json',
+                'yield_ego_left_separated':'promoted-separated-primary-saved-receipt.json',
+                'yield_opposite_left_turn':'promoted-opposite-primary-saved-receipt.json'}
     suffix=entry['case_id'].split('__')[-1]
     saved_path=ROOT/saved_name[suffix]
     saved=read(saved_path)
