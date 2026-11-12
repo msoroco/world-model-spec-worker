@@ -1,0 +1,2319 @@
+{
+  "cell_id": "C109749",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "cases": [
+    {
+      "case_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver__baseline_context",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared authored junction and approach context; no separate selected recording or legal outcome.",
+      "variable_assignments": {
+        "controller_release_ttc_s": {
+          "kind": "controller",
+          "value": 4.0,
+          "unit": "s",
+          "note": "engineering release tuning, not an immediate-hazard definition"
+        },
+        "approach_speed_mps": {
+          "kind": "controller",
+          "value": 5.0,
+          "unit": "m/s"
+        },
+        "reciprocal_approach_speed_mps": {
+          "kind": "controller",
+          "value": 2.5,
+          "unit": "m/s"
+        },
+        "initial_opposing_in_intersection": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        },
+        "ego_turn_onset": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "frame"
+        },
+        "reciprocal_stop_outside": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 5.0,
+          "unit": "m/s",
+          "note": "engineering target, separate from observed ego_speed"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "left_turn_waypoint_chain",
+          "unit": "authored path",
+          "note": "Native path must be confirmed from original geometry"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        },
+        "later_opposing_braking_policy": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean",
+          "note": "exact runner policy; later opposing actor brake after subject turn onset"
+        },
+        "subject_yield_policy": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean",
+          "note": "authored subject wait policy; no legal verdict"
+        },
+        "left_signal_enabled": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean",
+          "note": "authored indicator policy; original readback required"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "method": "original ego Native velocity XY magnitude",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "oncoming_speed",
+            "unit": "m/s",
+            "method": "original initial opposing Native velocity XY magnitude",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "reciprocal_speed",
+            "unit": "m/s",
+            "method": "original later opposing Native velocity XY magnitude",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "ego_heading",
+            "unit": "deg",
+            "method": "original Native ego transform yaw",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "ego_left_indicator",
+            "unit": "boolean",
+            "method": "original Native ego light-state readback",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "ego_in_intersection",
+            "unit": "boolean",
+            "method": "original ego body overlap with Native junction envelope",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "initial_oncoming_in_intersection",
+            "unit": "boolean",
+            "method": "original initial opposing body overlap with Native junction envelope",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "reciprocal_in_intersection",
+            "unit": "boolean",
+            "method": "original later opposing body overlap with Native junction envelope",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "junction_context",
+            "unit": "structured record",
+            "method": "original Native junction bounding box and selected waypoint chain"
+          }
+        ],
+        "limitations": [
+          "Immediate hazard and right-of-way remain legal judgments.",
+          "Junction bounding-box geometry and actual visibility need original-source review."
+        ]
+      },
+      "unresolved_judgment_calls": []
+    },
+    {
+      "case_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield_after_turn",
+      "target_law_id": "NRS-484B-253",
+      "target_type": "judgment_sweep",
+      "rationale": "Measure initial opposing occupancy and clearance, signalled left-turn onset, and a distinct later opposing approach/stop without legal hazard or right-of-way labels.",
+      "variable_assignments": {
+        "controller_release_ttc_s": {
+          "kind": "controller",
+          "value": 4.0,
+          "unit": "s",
+          "note": "engineering release tuning, not an immediate-hazard definition"
+        },
+        "approach_speed_mps": {
+          "kind": "controller",
+          "value": 5.0,
+          "unit": "m/s"
+        },
+        "reciprocal_approach_speed_mps": {
+          "kind": "controller",
+          "value": 2.5,
+          "unit": "m/s"
+        },
+        "initial_opposing_in_intersection": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        },
+        "ego_turn_onset": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "frame"
+        },
+        "reciprocal_stop_outside": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 5.0,
+          "unit": "m/s",
+          "note": "engineering target, separate from observed ego_speed"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "left_turn_waypoint_chain",
+          "unit": "authored path",
+          "note": "Native path must be confirmed from original geometry"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        },
+        "later_opposing_braking_policy": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean",
+          "note": "exact runner policy; later opposing actor brake after subject turn onset"
+        },
+        "subject_yield_policy": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean",
+          "note": "authored subject wait policy; no legal verdict"
+        },
+        "left_signal_enabled": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean",
+          "note": "authored indicator policy; original readback required"
+        }
+      },
+      "paired_probe_id": "c109749-controlled-reciprocal",
+      "deliberate_differences": [
+        "later_opposing_braking_policy"
+      ],
+      "probe": {
+        "primary_variable": "later_opposing_braking_policy",
+        "comparison_or_standard": "post-yield reciprocal duty; legal judgment unresolved",
+        "target_value_or_branch": "initial opposing vehicle clears, then distinct later opposing vehicle stops outside while ego turns"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "method": "original ego Native velocity XY magnitude",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "oncoming_speed",
+            "unit": "m/s",
+            "method": "original initial opposing Native velocity XY magnitude",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "reciprocal_speed",
+            "unit": "m/s",
+            "method": "original later opposing Native velocity XY magnitude",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "ego_heading",
+            "unit": "deg",
+            "method": "original Native ego transform yaw",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "ego_left_indicator",
+            "unit": "boolean",
+            "method": "original Native ego light-state readback",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "ego_in_intersection",
+            "unit": "boolean",
+            "method": "original ego body overlap with Native junction envelope",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "initial_oncoming_in_intersection",
+            "unit": "boolean",
+            "method": "original initial opposing body overlap with Native junction envelope",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "reciprocal_in_intersection",
+            "unit": "boolean",
+            "method": "original later opposing body overlap with Native junction envelope",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "junction_context",
+            "unit": "structured record",
+            "method": "original Native junction bounding box and selected waypoint chain"
+          }
+        ],
+        "limitations": [
+          "Immediate hazard and right-of-way remain legal judgments.",
+          "Junction bounding-box geometry and actual visibility need original-source review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "immediate hazard",
+        "when and as required",
+        "yield the right-of-way"
+      ]
+    },
+    {
+      "case_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_continues_after_turn",
+      "target_law_id": "NRS-484B-253",
+      "target_type": "judgment_sweep",
+      "rationale": "Measure the later opposing actor continuing approach after subject yields, signals and begins the left turn; no legal failure-to-yield verdict.",
+      "variable_assignments": {
+        "controller_release_ttc_s": {
+          "kind": "controller",
+          "value": 4.0,
+          "unit": "s",
+          "note": "engineering release tuning, not an immediate-hazard definition"
+        },
+        "approach_speed_mps": {
+          "kind": "controller",
+          "value": 5.0,
+          "unit": "m/s"
+        },
+        "reciprocal_approach_speed_mps": {
+          "kind": "controller",
+          "value": 2.5,
+          "unit": "m/s"
+        },
+        "initial_opposing_in_intersection": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        },
+        "ego_turn_onset": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "frame"
+        },
+        "reciprocal_stop_outside": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 5.0,
+          "unit": "m/s",
+          "note": "engineering target, separate from observed ego_speed"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "left_turn_waypoint_chain",
+          "unit": "authored path",
+          "note": "Native path must be confirmed from original geometry"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        },
+        "later_opposing_braking_policy": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean",
+          "note": "exact runner policy; later opposing actor brake after subject turn onset"
+        },
+        "subject_yield_policy": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean",
+          "note": "authored subject wait policy; no legal verdict"
+        },
+        "left_signal_enabled": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean",
+          "note": "authored indicator policy; original readback required"
+        }
+      },
+      "paired_probe_id": "c109749-controlled-reciprocal",
+      "deliberate_differences": [
+        "later_opposing_braking_policy"
+      ],
+      "probe": {
+        "primary_variable": "later_opposing_braking_policy",
+        "comparison_or_standard": "post-yield reciprocal duty; legal judgment unresolved",
+        "target_value_or_branch": "later opposing actor continues measured approach after subject turn onset"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "method": "original ego Native velocity XY magnitude",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "oncoming_speed",
+            "unit": "m/s",
+            "method": "original initial opposing Native velocity XY magnitude",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "reciprocal_speed",
+            "unit": "m/s",
+            "method": "original later opposing Native velocity XY magnitude",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "ego_heading",
+            "unit": "deg",
+            "method": "original Native ego transform yaw",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "ego_left_indicator",
+            "unit": "boolean",
+            "method": "original Native ego light-state readback",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "ego_in_intersection",
+            "unit": "boolean",
+            "method": "original ego body overlap with Native junction envelope",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "initial_oncoming_in_intersection",
+            "unit": "boolean",
+            "method": "original initial opposing body overlap with Native junction envelope",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "reciprocal_in_intersection",
+            "unit": "boolean",
+            "method": "original later opposing body overlap with Native junction envelope",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "junction_context",
+            "unit": "structured record",
+            "method": "original Native junction bounding box and selected waypoint chain"
+          }
+        ],
+        "limitations": [
+          "Immediate hazard and right-of-way remain legal judgments.",
+          "Junction bounding-box geometry and actual visibility need original-source review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "immediate hazard",
+        "when and as required",
+        "yield the right-of-way"
+      ]
+    },
+    {
+      "case_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver__inside_yield",
+      "target_law_id": "NRS-484B-253",
+      "target_type": "judgment_sweep",
+      "rationale": "Initial opposing complete body inside the sourced junction; subject yields with indicator, then turns after clearance. Original telemetry supports a descriptive movement observation; legal priority is unresolved.",
+      "variable_assignments": {
+        "controller_release_ttc_s": {
+          "kind": "controller",
+          "value": 4.0,
+          "unit": "s",
+          "note": "engineering release tuning, not an immediate-hazard definition"
+        },
+        "approach_speed_mps": {
+          "kind": "controller",
+          "value": 5.0,
+          "unit": "m/s"
+        },
+        "reciprocal_approach_speed_mps": {
+          "kind": "controller",
+          "value": 2.5,
+          "unit": "m/s"
+        },
+        "initial_opposing_in_intersection": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        },
+        "ego_turn_onset": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "frame"
+        },
+        "reciprocal_stop_outside": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 5.0,
+          "unit": "m/s",
+          "note": "engineering target, separate from observed ego_speed"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "left_turn_waypoint_chain",
+          "unit": "authored path",
+          "note": "Native path must be confirmed from original geometry"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        },
+        "later_opposing_braking_policy": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean",
+          "note": "exact runner policy; later opposing actor brake after subject turn onset"
+        },
+        "subject_yield_policy": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean",
+          "note": "authored movement policy; no legal verdict"
+        },
+        "left_signal_enabled": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean",
+          "note": "authored indicator policy; original readback required"
+        }
+      },
+      "paired_probe_id": "c109749-controlled-inside-subject-response",
+      "deliberate_differences": [
+        "subject_yield_policy"
+      ],
+      "probe": {
+        "primary_variable": "subject_yield_policy",
+        "comparison_or_standard": "opposing complete body inside junction; legal judgment unresolved",
+        "target_value_or_branch": "Initial opposing complete body inside the sourced junction; subject yields with indicator, then turns after clearance."
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "method": "original ego Native velocity XY magnitude",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "oncoming_speed",
+            "unit": "m/s",
+            "method": "original initial opposing Native velocity XY magnitude",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "reciprocal_speed",
+            "unit": "m/s",
+            "method": "original later opposing Native velocity XY magnitude",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "ego_heading",
+            "unit": "deg",
+            "method": "original Native ego transform yaw",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "ego_left_indicator",
+            "unit": "boolean",
+            "method": "original Native ego light-state readback",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "ego_in_intersection",
+            "unit": "boolean",
+            "method": "original ego body overlap with Native junction envelope",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "initial_oncoming_in_intersection",
+            "unit": "boolean",
+            "method": "original initial opposing body overlap with Native junction envelope",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "reciprocal_in_intersection",
+            "unit": "boolean",
+            "method": "original later opposing body overlap with Native junction envelope",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "junction_context",
+            "unit": "structured record",
+            "method": "original Native junction bounding box and selected waypoint chain"
+          }
+        ],
+        "limitations": [
+          "Immediate hazard and right-of-way remain legal judgments.",
+          "Junction bounding-box geometry and actual visibility need original-source review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "immediate hazard",
+        "when and as required",
+        "yield the right-of-way"
+      ]
+    },
+    {
+      "case_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver__inside_no_yield",
+      "target_law_id": "NRS-484B-253",
+      "target_type": "judgment_sweep",
+      "rationale": "Initial opposing complete body inside the sourced junction; subject moves into the left turn before clearance. Original telemetry supports a descriptive movement observation; legal priority is unresolved.",
+      "variable_assignments": {
+        "controller_release_ttc_s": {
+          "kind": "controller",
+          "value": 4.0,
+          "unit": "s",
+          "note": "engineering release tuning, not an immediate-hazard definition"
+        },
+        "approach_speed_mps": {
+          "kind": "controller",
+          "value": 5.0,
+          "unit": "m/s"
+        },
+        "reciprocal_approach_speed_mps": {
+          "kind": "controller",
+          "value": 2.5,
+          "unit": "m/s"
+        },
+        "initial_opposing_in_intersection": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        },
+        "ego_turn_onset": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "frame"
+        },
+        "reciprocal_stop_outside": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 5.0,
+          "unit": "m/s",
+          "note": "engineering target, separate from observed ego_speed"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "left_turn_waypoint_chain",
+          "unit": "authored path",
+          "note": "Native path must be confirmed from original geometry"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        },
+        "later_opposing_braking_policy": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean",
+          "note": "exact runner policy; later opposing actor brake after subject turn onset"
+        },
+        "subject_yield_policy": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean",
+          "note": "authored movement policy; no legal verdict"
+        },
+        "left_signal_enabled": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean",
+          "note": "authored indicator policy; original readback required"
+        }
+      },
+      "paired_probe_id": "c109749-controlled-inside-subject-response",
+      "deliberate_differences": [
+        "subject_yield_policy"
+      ],
+      "probe": {
+        "primary_variable": "subject_yield_policy",
+        "comparison_or_standard": "opposing complete body inside junction; legal judgment unresolved",
+        "target_value_or_branch": "Initial opposing complete body inside the sourced junction; subject moves into the left turn before clearance."
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "method": "original ego Native velocity XY magnitude",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "oncoming_speed",
+            "unit": "m/s",
+            "method": "original initial opposing Native velocity XY magnitude",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "reciprocal_speed",
+            "unit": "m/s",
+            "method": "original later opposing Native velocity XY magnitude",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "ego_heading",
+            "unit": "deg",
+            "method": "original Native ego transform yaw",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "ego_left_indicator",
+            "unit": "boolean",
+            "method": "original Native ego light-state readback",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "ego_in_intersection",
+            "unit": "boolean",
+            "method": "original ego body overlap with Native junction envelope",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "initial_oncoming_in_intersection",
+            "unit": "boolean",
+            "method": "original initial opposing body overlap with Native junction envelope",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "reciprocal_in_intersection",
+            "unit": "boolean",
+            "method": "original later opposing body overlap with Native junction envelope",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "junction_context",
+            "unit": "structured record",
+            "method": "original Native junction bounding box and selected waypoint chain"
+          }
+        ],
+        "limitations": [
+          "Immediate hazard and right-of-way remain legal judgments.",
+          "Junction bounding-box geometry and actual visibility need original-source review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "immediate hazard",
+        "when and as required",
+        "yield the right-of-way"
+      ]
+    },
+    {
+      "case_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver__approaching_yield",
+      "target_law_id": "NRS-484B-253",
+      "target_type": "judgment_sweep",
+      "rationale": "Initial opposing complete body approaches outside the sourced junction; subject yields with indicator before entry, then turns after clearance. Original telemetry supports a descriptive movement observation; legal priority is unresolved.",
+      "variable_assignments": {
+        "controller_release_ttc_s": {
+          "kind": "controller",
+          "value": 4.0,
+          "unit": "s",
+          "note": "engineering release tuning, not an immediate-hazard definition"
+        },
+        "approach_speed_mps": {
+          "kind": "controller",
+          "value": 5.0,
+          "unit": "m/s"
+        },
+        "reciprocal_approach_speed_mps": {
+          "kind": "controller",
+          "value": 2.5,
+          "unit": "m/s"
+        },
+        "initial_opposing_in_intersection": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        },
+        "ego_turn_onset": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "frame"
+        },
+        "reciprocal_stop_outside": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 5.0,
+          "unit": "m/s",
+          "note": "engineering target, separate from observed ego_speed"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "left_turn_waypoint_chain",
+          "unit": "authored path",
+          "note": "Native path must be confirmed from original geometry"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        },
+        "later_opposing_braking_policy": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean",
+          "note": "exact runner policy; later opposing actor brake after subject turn onset"
+        },
+        "subject_yield_policy": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean",
+          "note": "authored movement policy; no legal verdict"
+        },
+        "left_signal_enabled": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean",
+          "note": "authored indicator policy; original readback required"
+        }
+      },
+      "paired_probe_id": "c109749-controlled-approaching-subject-response",
+      "deliberate_differences": [
+        "subject_yield_policy"
+      ],
+      "probe": {
+        "primary_variable": "subject_yield_policy",
+        "comparison_or_standard": "opposing complete body approaches outside junction; legal judgment unresolved",
+        "target_value_or_branch": "Initial opposing complete body approaches outside the sourced junction; subject yields with indicator before entry, then turns after clearance."
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "method": "original ego Native velocity XY magnitude",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "oncoming_speed",
+            "unit": "m/s",
+            "method": "original initial opposing Native velocity XY magnitude",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "reciprocal_speed",
+            "unit": "m/s",
+            "method": "original later opposing Native velocity XY magnitude",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "ego_heading",
+            "unit": "deg",
+            "method": "original Native ego transform yaw",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "ego_left_indicator",
+            "unit": "boolean",
+            "method": "original Native ego light-state readback",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "ego_in_intersection",
+            "unit": "boolean",
+            "method": "original ego body overlap with Native junction envelope",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "initial_oncoming_in_intersection",
+            "unit": "boolean",
+            "method": "original initial opposing body overlap with Native junction envelope",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "reciprocal_in_intersection",
+            "unit": "boolean",
+            "method": "original later opposing body overlap with Native junction envelope",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "junction_context",
+            "unit": "structured record",
+            "method": "original Native junction bounding box and selected waypoint chain"
+          }
+        ],
+        "limitations": [
+          "Immediate hazard and right-of-way remain legal judgments.",
+          "Junction bounding-box geometry and actual visibility need original-source review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "immediate hazard",
+        "when and as required",
+        "yield the right-of-way"
+      ]
+    },
+    {
+      "case_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver__approaching_no_yield",
+      "target_law_id": "NRS-484B-253",
+      "target_type": "judgment_sweep",
+      "rationale": "Initial opposing complete body approaches outside the sourced junction; subject begins the left turn before opposing entry. Original telemetry supports a descriptive movement observation; legal priority is unresolved.",
+      "variable_assignments": {
+        "controller_release_ttc_s": {
+          "kind": "controller",
+          "value": 4.0,
+          "unit": "s",
+          "note": "engineering release tuning, not an immediate-hazard definition"
+        },
+        "approach_speed_mps": {
+          "kind": "controller",
+          "value": 5.0,
+          "unit": "m/s"
+        },
+        "reciprocal_approach_speed_mps": {
+          "kind": "controller",
+          "value": 2.5,
+          "unit": "m/s"
+        },
+        "initial_opposing_in_intersection": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        },
+        "ego_turn_onset": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "frame"
+        },
+        "reciprocal_stop_outside": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 5.0,
+          "unit": "m/s",
+          "note": "engineering target, separate from observed ego_speed"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "left_turn_waypoint_chain",
+          "unit": "authored path",
+          "note": "Native path must be confirmed from original geometry"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        },
+        "later_opposing_braking_policy": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean",
+          "note": "exact runner policy; later opposing actor brake after subject turn onset"
+        },
+        "subject_yield_policy": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean",
+          "note": "authored movement policy; no legal verdict"
+        },
+        "left_signal_enabled": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean",
+          "note": "authored indicator policy; original readback required"
+        }
+      },
+      "paired_probe_id": "c109749-controlled-approaching-subject-response",
+      "deliberate_differences": [
+        "subject_yield_policy"
+      ],
+      "probe": {
+        "primary_variable": "subject_yield_policy",
+        "comparison_or_standard": "opposing complete body approaches outside junction; legal judgment unresolved",
+        "target_value_or_branch": "Initial opposing complete body approaches outside the sourced junction; subject begins the left turn before opposing entry."
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "method": "original ego Native velocity XY magnitude",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "oncoming_speed",
+            "unit": "m/s",
+            "method": "original initial opposing Native velocity XY magnitude",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "reciprocal_speed",
+            "unit": "m/s",
+            "method": "original later opposing Native velocity XY magnitude",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "ego_heading",
+            "unit": "deg",
+            "method": "original Native ego transform yaw",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "ego_left_indicator",
+            "unit": "boolean",
+            "method": "original Native ego light-state readback",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "ego_in_intersection",
+            "unit": "boolean",
+            "method": "original ego body overlap with Native junction envelope",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "initial_oncoming_in_intersection",
+            "unit": "boolean",
+            "method": "original initial opposing body overlap with Native junction envelope",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "reciprocal_in_intersection",
+            "unit": "boolean",
+            "method": "original later opposing body overlap with Native junction envelope",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "junction_context",
+            "unit": "structured record",
+            "method": "original Native junction bounding box and selected waypoint chain"
+          }
+        ],
+        "limitations": [
+          "Immediate hazard and right-of-way remain legal judgments.",
+          "Junction bounding-box geometry and actual visibility need original-source review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "immediate hazard",
+        "when and as required",
+        "yield the right-of-way"
+      ]
+    },
+    {
+      "case_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver__signal_omitted",
+      "target_law_id": "NRS-484B-253",
+      "target_type": "judgment_sweep",
+      "rationale": "Opposing body begins inside; subject yields and turns with omitted left indicator. Legal signal sufficiency remains unresolved.",
+      "variable_assignments": {
+        "controller_release_ttc_s": {
+          "kind": "controller",
+          "value": 4.0,
+          "unit": "s",
+          "note": "engineering release tuning, not an immediate-hazard definition"
+        },
+        "approach_speed_mps": {
+          "kind": "controller",
+          "value": 5.0,
+          "unit": "m/s"
+        },
+        "reciprocal_approach_speed_mps": {
+          "kind": "controller",
+          "value": 2.5,
+          "unit": "m/s"
+        },
+        "initial_opposing_in_intersection": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        },
+        "ego_turn_onset": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "frame"
+        },
+        "reciprocal_stop_outside": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 5.0,
+          "unit": "m/s",
+          "note": "engineering target, separate from observed ego_speed"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "left_turn_waypoint_chain",
+          "unit": "authored path",
+          "note": "Native path must be confirmed from original geometry"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        },
+        "later_opposing_braking_policy": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean",
+          "note": "exact runner policy; later opposing actor brake after subject turn onset"
+        },
+        "subject_yield_policy": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean",
+          "note": "authored movement policy; no legal verdict"
+        },
+        "left_signal_enabled": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean",
+          "note": "authored indicator policy; original readback required"
+        }
+      },
+      "paired_probe_id": "c109749-controlled-signal-after-yield",
+      "deliberate_differences": [
+        "left_signal_enabled"
+      ],
+      "probe": {
+        "primary_variable": "left_signal_enabled",
+        "comparison_or_standard": "same yield and turn with left indicator readback changed",
+        "target_value_or_branch": "omitted left signal"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "method": "original ego Native velocity XY magnitude",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "oncoming_speed",
+            "unit": "m/s",
+            "method": "original initial opposing Native velocity XY magnitude",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "reciprocal_speed",
+            "unit": "m/s",
+            "method": "original later opposing Native velocity XY magnitude",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "ego_heading",
+            "unit": "deg",
+            "method": "original Native ego transform yaw",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "ego_left_indicator",
+            "unit": "boolean",
+            "method": "original Native ego light-state readback",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "ego_in_intersection",
+            "unit": "boolean",
+            "method": "original ego body overlap with Native junction envelope",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "initial_oncoming_in_intersection",
+            "unit": "boolean",
+            "method": "original initial opposing body overlap with Native junction envelope",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "reciprocal_in_intersection",
+            "unit": "boolean",
+            "method": "original later opposing body overlap with Native junction envelope",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "junction_context",
+            "unit": "structured record",
+            "method": "original Native junction bounding box and selected waypoint chain"
+          }
+        ],
+        "limitations": [
+          "Immediate hazard and right-of-way remain legal judgments.",
+          "Junction bounding-box geometry and actual visibility need original-source review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "immediate hazard",
+        "when and as required",
+        "yield the right-of-way"
+      ]
+    },
+    {
+      "case_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield_matched",
+      "target_law_id": "NRS-484B-253",
+      "target_type": "judgment_sweep",
+      "rationale": "Matched later opposing actor stops outside while the subject turns; original Native motion, visibility, and legal meaning remain unverified.",
+      "variable_assignments": {
+        "controller_release_ttc_s": {
+          "kind": "controller",
+          "value": 4.0,
+          "unit": "s",
+          "note": "engineering release tuning, not an immediate-hazard definition"
+        },
+        "approach_speed_mps": {
+          "kind": "controller",
+          "value": 5.0,
+          "unit": "m/s"
+        },
+        "reciprocal_approach_speed_mps": {
+          "kind": "controller",
+          "value": 2.5,
+          "unit": "m/s"
+        },
+        "initial_opposing_in_intersection": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        },
+        "ego_turn_onset": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "frame"
+        },
+        "reciprocal_stop_outside": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 5.0,
+          "unit": "m/s",
+          "note": "engineering target, separate from observed ego_speed"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "left_turn_waypoint_chain",
+          "unit": "authored path",
+          "note": "Native path must be confirmed from original geometry"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        },
+        "later_opposing_braking_policy": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean",
+          "note": "exact runner policy; later opposing actor brake after subject turn onset"
+        },
+        "subject_yield_policy": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean",
+          "note": "authored subject wait policy; no legal verdict"
+        },
+        "left_signal_enabled": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean",
+          "note": "authored indicator policy; original readback required"
+        }
+      },
+      "paired_probe_id": "c109749-controlled-reciprocal-matched",
+      "deliberate_differences": [
+        "later_opposing_braking_policy"
+      ],
+      "probe": {
+        "primary_variable": "later_opposing_braking_policy",
+        "comparison_or_standard": "post-yield reciprocal duty; legal judgment unresolved",
+        "target_value_or_branch": "Matched later opposing actor stops outside while the subject turns; original Native motion, visibility, and legal meaning remain unverified."
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "method": "original ego Native velocity XY magnitude",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "oncoming_speed",
+            "unit": "m/s",
+            "method": "original initial opposing Native velocity XY magnitude",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "reciprocal_speed",
+            "unit": "m/s",
+            "method": "original later opposing Native velocity XY magnitude",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "ego_heading",
+            "unit": "deg",
+            "method": "original Native ego transform yaw",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "ego_left_indicator",
+            "unit": "boolean",
+            "method": "original Native ego light-state readback",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "ego_in_intersection",
+            "unit": "boolean",
+            "method": "original ego body overlap with Native junction envelope",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "initial_oncoming_in_intersection",
+            "unit": "boolean",
+            "method": "original initial opposing body overlap with Native junction envelope",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "reciprocal_in_intersection",
+            "unit": "boolean",
+            "method": "original later opposing body overlap with Native junction envelope",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "junction_context",
+            "unit": "structured record",
+            "method": "original Native junction bounding box and selected waypoint chain"
+          }
+        ],
+        "limitations": [
+          "Immediate hazard and right-of-way remain legal judgments.",
+          "Junction bounding-box geometry and actual visibility need original-source review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "immediate hazard",
+        "when and as required",
+        "yield the right-of-way"
+      ]
+    },
+    {
+      "case_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_no_yield",
+      "target_law_id": "NRS-484B-253",
+      "target_type": "judgment_sweep",
+      "rationale": "Matched later opposing actor enters the junction while the subject turns; original Native motion, visibility, and legal meaning remain unverified.",
+      "variable_assignments": {
+        "controller_release_ttc_s": {
+          "kind": "controller",
+          "value": 4.0,
+          "unit": "s",
+          "note": "engineering release tuning, not an immediate-hazard definition"
+        },
+        "approach_speed_mps": {
+          "kind": "controller",
+          "value": 5.0,
+          "unit": "m/s"
+        },
+        "reciprocal_approach_speed_mps": {
+          "kind": "controller",
+          "value": 2.5,
+          "unit": "m/s"
+        },
+        "initial_opposing_in_intersection": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        },
+        "ego_turn_onset": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "frame"
+        },
+        "reciprocal_stop_outside": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 5.0,
+          "unit": "m/s",
+          "note": "engineering target, separate from observed ego_speed"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "left_turn_waypoint_chain",
+          "unit": "authored path",
+          "note": "Native path must be confirmed from original geometry"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        },
+        "later_opposing_braking_policy": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean",
+          "note": "exact runner policy; later opposing actor brake after subject turn onset"
+        },
+        "subject_yield_policy": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean",
+          "note": "authored subject wait policy; no legal verdict"
+        },
+        "left_signal_enabled": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean",
+          "note": "authored indicator policy; original readback required"
+        }
+      },
+      "paired_probe_id": "c109749-controlled-reciprocal-matched",
+      "deliberate_differences": [
+        "later_opposing_braking_policy"
+      ],
+      "probe": {
+        "primary_variable": "later_opposing_braking_policy",
+        "comparison_or_standard": "post-yield reciprocal duty; legal judgment unresolved",
+        "target_value_or_branch": "Matched later opposing actor enters the junction while the subject turns; original Native motion, visibility, and legal meaning remain unverified."
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "method": "original ego Native velocity XY magnitude",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "oncoming_speed",
+            "unit": "m/s",
+            "method": "original initial opposing Native velocity XY magnitude",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "reciprocal_speed",
+            "unit": "m/s",
+            "method": "original later opposing Native velocity XY magnitude",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "ego_heading",
+            "unit": "deg",
+            "method": "original Native ego transform yaw",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "ego_left_indicator",
+            "unit": "boolean",
+            "method": "original Native ego light-state readback",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "ego_in_intersection",
+            "unit": "boolean",
+            "method": "original ego body overlap with Native junction envelope",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "initial_oncoming_in_intersection",
+            "unit": "boolean",
+            "method": "original initial opposing body overlap with Native junction envelope",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "reciprocal_in_intersection",
+            "unit": "boolean",
+            "method": "original later opposing body overlap with Native junction envelope",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "junction_context",
+            "unit": "structured record",
+            "method": "original Native junction bounding box and selected waypoint chain"
+          }
+        ],
+        "limitations": [
+          "Immediate hazard and right-of-way remain legal judgments.",
+          "Junction bounding-box geometry and actual visibility need original-source review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "immediate hazard",
+        "when and as required",
+        "yield the right-of-way"
+      ]
+    },
+    {
+      "case_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver__signal_advance_100_at",
+      "target_law_id": "NRS-484B-253",
+      "target_type": "judgment_sweep",
+      "rationale": "Observed continuous 30.48 m left indication before the occupied-junction yield turn; no legal sufficiency claim.",
+      "variable_assignments": {
+        "controller_release_ttc_s": {
+          "kind": "controller",
+          "value": 4.0,
+          "unit": "s",
+          "note": "engineering release tuning, not an immediate-hazard definition"
+        },
+        "approach_speed_mps": {
+          "kind": "controller",
+          "value": 5.0,
+          "unit": "m/s"
+        },
+        "reciprocal_approach_speed_mps": {
+          "kind": "controller",
+          "value": 2.5,
+          "unit": "m/s"
+        },
+        "initial_opposing_in_intersection": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        },
+        "ego_turn_onset": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "frame"
+        },
+        "reciprocal_stop_outside": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 5.0,
+          "unit": "m/s",
+          "note": "engineering target, separate from observed ego_speed"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "left_turn_waypoint_chain",
+          "unit": "authored path",
+          "note": "Native path must be confirmed from original geometry"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        },
+        "later_opposing_braking_policy": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean",
+          "note": "exact runner policy; later opposing actor brake after subject turn onset"
+        },
+        "subject_yield_policy": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean",
+          "note": "authored movement policy; no legal verdict"
+        },
+        "left_signal_enabled": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean",
+          "note": "authored indicator policy; original readback required"
+        }
+      },
+      "paired_probe_id": "c109749-controlled-signal-advance-100ft",
+      "deliberate_differences": [
+        "left_signal_enabled"
+      ],
+      "probe": {
+        "primary_variable": "subject_yield_policy",
+        "comparison_or_standard": "opposing complete body inside junction; legal judgment unresolved",
+        "target_value_or_branch": "Observed continuous 30.48 m left indication before the occupied-junction yield turn"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "method": "original ego Native velocity XY magnitude",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "oncoming_speed",
+            "unit": "m/s",
+            "method": "original initial opposing Native velocity XY magnitude",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "reciprocal_speed",
+            "unit": "m/s",
+            "method": "original later opposing Native velocity XY magnitude",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "ego_heading",
+            "unit": "deg",
+            "method": "original Native ego transform yaw",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "ego_left_indicator",
+            "unit": "boolean",
+            "method": "original Native ego light-state readback",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "ego_in_intersection",
+            "unit": "boolean",
+            "method": "original ego body overlap with Native junction envelope",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "initial_oncoming_in_intersection",
+            "unit": "boolean",
+            "method": "original initial opposing body overlap with Native junction envelope",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "reciprocal_in_intersection",
+            "unit": "boolean",
+            "method": "original later opposing body overlap with Native junction envelope",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "junction_context",
+            "unit": "structured record",
+            "method": "original Native junction bounding box and selected waypoint chain"
+          }
+        ],
+        "limitations": [
+          "Immediate hazard and right-of-way remain legal judgments.",
+          "Junction bounding-box geometry and actual visibility need original-source review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "immediate hazard",
+        "when and as required",
+        "yield the right-of-way"
+      ]
+    },
+    {
+      "case_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver__signal_advance_100_omitted",
+      "target_law_id": "NRS-484B-253",
+      "target_type": "judgment_sweep",
+      "rationale": "Matched occupied-junction yield turn with the extended approach and left indication omitted; no legal sufficiency claim.",
+      "variable_assignments": {
+        "controller_release_ttc_s": {
+          "kind": "controller",
+          "value": 4.0,
+          "unit": "s",
+          "note": "engineering release tuning, not an immediate-hazard definition"
+        },
+        "approach_speed_mps": {
+          "kind": "controller",
+          "value": 5.0,
+          "unit": "m/s"
+        },
+        "reciprocal_approach_speed_mps": {
+          "kind": "controller",
+          "value": 2.5,
+          "unit": "m/s"
+        },
+        "initial_opposing_in_intersection": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        },
+        "ego_turn_onset": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "frame"
+        },
+        "reciprocal_stop_outside": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 5.0,
+          "unit": "m/s",
+          "note": "engineering target, separate from observed ego_speed"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "left_turn_waypoint_chain",
+          "unit": "authored path",
+          "note": "Native path must be confirmed from original geometry"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        },
+        "later_opposing_braking_policy": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean",
+          "note": "exact runner policy; later opposing actor brake after subject turn onset"
+        },
+        "subject_yield_policy": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean",
+          "note": "authored movement policy; no legal verdict"
+        },
+        "left_signal_enabled": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean",
+          "note": "authored indicator policy; original readback required"
+        }
+      },
+      "paired_probe_id": "c109749-controlled-signal-advance-100ft",
+      "deliberate_differences": [
+        "left_signal_enabled"
+      ],
+      "probe": {
+        "primary_variable": "left_signal_enabled",
+        "comparison_or_standard": "same yield and turn with left indicator readback changed",
+        "target_value_or_branch": "Matched occupied-junction yield turn with the extended approach and left indication omitted"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "method": "original ego Native velocity XY magnitude",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "oncoming_speed",
+            "unit": "m/s",
+            "method": "original initial opposing Native velocity XY magnitude",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "reciprocal_speed",
+            "unit": "m/s",
+            "method": "original later opposing Native velocity XY magnitude",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "ego_heading",
+            "unit": "deg",
+            "method": "original Native ego transform yaw",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "ego_left_indicator",
+            "unit": "boolean",
+            "method": "original Native ego light-state readback",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "ego_in_intersection",
+            "unit": "boolean",
+            "method": "original ego body overlap with Native junction envelope",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "initial_oncoming_in_intersection",
+            "unit": "boolean",
+            "method": "original initial opposing body overlap with Native junction envelope",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "reciprocal_in_intersection",
+            "unit": "boolean",
+            "method": "original later opposing body overlap with Native junction envelope",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "junction_context",
+            "unit": "structured record",
+            "method": "original Native junction bounding box and selected waypoint chain"
+          }
+        ],
+        "limitations": [
+          "Immediate hazard and right-of-way remain legal judgments.",
+          "Junction bounding-box geometry and actual visibility need original-source review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "immediate hazard",
+        "when and as required",
+        "yield the right-of-way"
+      ]
+    },
+    {
+      "case_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver__approaching_far",
+      "target_law_id": "NRS-484B-253",
+      "target_type": "judgment_sweep",
+      "rationale": "Measured distant opposing body remains outside through subject turn start; time to conflict is an engineering observation, not a legal hazard cutoff.",
+      "variable_assignments": {
+        "controller_release_ttc_s": {
+          "kind": "controller",
+          "value": 4.0,
+          "unit": "s",
+          "note": "engineering release tuning, not an immediate-hazard definition"
+        },
+        "approach_speed_mps": {
+          "kind": "controller",
+          "value": 5.0,
+          "unit": "m/s"
+        },
+        "reciprocal_approach_speed_mps": {
+          "kind": "controller",
+          "value": 2.5,
+          "unit": "m/s"
+        },
+        "initial_opposing_in_intersection": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        },
+        "ego_turn_onset": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "frame"
+        },
+        "reciprocal_stop_outside": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 5.0,
+          "unit": "m/s",
+          "note": "engineering target, separate from observed ego_speed"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "left_turn_waypoint_chain",
+          "unit": "authored path",
+          "note": "Native path must be confirmed from original geometry"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        },
+        "later_opposing_braking_policy": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean",
+          "note": "exact runner policy; later opposing actor brake after subject turn onset"
+        },
+        "subject_yield_policy": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean",
+          "note": "authored movement policy; no legal verdict"
+        },
+        "left_signal_enabled": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean",
+          "note": "authored indicator policy; original readback required"
+        }
+      },
+      "paired_probe_id": "c109749-far-approach-engineering-sweep",
+      "deliberate_differences": [
+        "opposing_distance_at_turn",
+        "oncoming_closing_speed_mps",
+        "subject_control_policy"
+      ],
+      "probe": {
+        "primary_variable": "opposing_distance_at_turn",
+        "comparison_or_standard": "opposing complete body approaches outside junction; legal judgment unresolved",
+        "target_value_or_branch": "Subject turn starts before an opposing complete body enters the junction, with measured TTC above the engineering release setting."
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "method": "original ego Native velocity XY magnitude",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "oncoming_speed",
+            "unit": "m/s",
+            "method": "original initial opposing Native velocity XY magnitude",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "reciprocal_speed",
+            "unit": "m/s",
+            "method": "original later opposing Native velocity XY magnitude",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "ego_heading",
+            "unit": "deg",
+            "method": "original Native ego transform yaw",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "ego_left_indicator",
+            "unit": "boolean",
+            "method": "original Native ego light-state readback",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "ego_in_intersection",
+            "unit": "boolean",
+            "method": "original ego body overlap with Native junction envelope",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "initial_oncoming_in_intersection",
+            "unit": "boolean",
+            "method": "original initial opposing body overlap with Native junction envelope",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          },
+          {
+            "name": "reciprocal_in_intersection",
+            "unit": "boolean",
+            "method": "original later opposing body overlap with Native junction envelope",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "junction_context",
+            "unit": "structured record",
+            "method": "original Native junction bounding box and selected waypoint chain"
+          }
+        ],
+        "limitations": [
+          "Immediate hazard and right-of-way remain legal judgments.",
+          "Junction bounding-box geometry and actual visibility need original-source review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "immediate hazard",
+        "when and as required",
+        "yield the right-of-way"
+      ]
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "c109749-1",
+      "target_law_id": "NRS-484B-253",
+      "judgment_refs": [
+        {
+          "phrase": "immediate hazard",
+          "note": "No numeric legal time-to-conflict threshold is supplied."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Plan physical sampling without choosing a legal cutoff.",
+      "missing_inputs": [
+        "Document a feasible Native parameter range and spacing for this observable, then expand exact frozen sweep cases and prove them."
+      ]
+    },
+    {
+      "sweep_id": "c109749-2",
+      "target_law_id": "NRS-484B-253",
+      "judgment_refs": [
+        {
+          "phrase": "when and as required",
+          "note": "Signal sufficiency depends on other applicable signal rules and original context."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Plan physical sampling without choosing a legal cutoff.",
+      "missing_inputs": [
+        "Document a feasible Native parameter range and spacing for this observable, then expand exact frozen sweep cases and prove them."
+      ]
+    },
+    {
+      "sweep_id": "c109749-3",
+      "target_law_id": "NRS-484B-253",
+      "judgment_refs": [
+        {
+          "phrase": "yield the right-of-way",
+          "note": "Observed body and speed histories do not by themselves decide legal priority."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Plan physical sampling without choosing a legal cutoff.",
+      "missing_inputs": [
+        "Document a feasible Native parameter range and spacing for this observable, then expand exact frozen sweep cases and prove them."
+      ]
+    }
+  ],
+  "sweeps_expanded": true
+}
