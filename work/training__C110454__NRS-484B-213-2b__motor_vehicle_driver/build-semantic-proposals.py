@@ -1,7 +1,7 @@
 """Build source-bound draft semantic proposals for the selected CPU constructions.
 
 This does not assert Native behavior or alter the frozen assignment. The selected
-set lacks an at-100-foot rail probe, so the chain remains a draft until repaired.
+set includes an authored at-100-foot rail probe; original observations remain pending.
 """
 from __future__ import annotations
 
@@ -87,6 +87,7 @@ def assignments(crossing: str, one_way: bool, left: bool, distance: float) -> di
 specs = {
     "rail_reference": ("railroad_grade_crossing", False, True, 151.25, "rail_distance", "commanded_left_side_closest_distance_ft"),
     "rail_contrast": ("railroad_grade_crossing", False, True, 52.82, "rail_distance", "commanded_left_side_closest_distance_ft"),
+    "rail_at": ("railroad_grade_crossing", False, True, 100.0, "rail_distance", "commanded_left_side_closest_distance_ft"),
     "oneway_absent": ("intersection", False, True, 6.89, "oneway_exception", "one_way_designation"),
     "oneway_present": ("intersection", True, True, 6.89, "oneway_exception", "one_way_designation"),
     "traversal_reference": ("intersection", False, False, 0.0, "traversal_route", "commanded_left_side_route"),
@@ -116,11 +117,11 @@ for entry in entries:
                   "comparison_or_standard": "paired authored setting against exact statutory clause",
                   "target_value_or_branch": distance if group == "rail_distance" else one_way if group == "oneway_exception" else left,
                   **({"threshold_ref": "activation.numeric_conditions[0]", "operator": "<=", "unit": "ft", "test_value": distance} if group == "rail_distance" else {})},
-        **({"epsilon_used": "selected broad approach window; no at-boundary probe"} if group == "rail_distance" else {}),
+        **({"epsilon_used": "authored below, at and above 100 feet"} if group == "rail_distance" else {}),
     })
 case_stage = {"cell_id": CELL_ID, "actor": ACTOR, "status": "draft", "cases": cases, "sweep_specs": []}
 index = {"format": "worker-semantic-delivery", "assignment_id": HERE.name,
-         "status": "draft_incomplete_threshold_coverage", "stages": {
+         "status": "draft_seven_case_threshold_coverage", "stages": {
              "relevance_batch": write("relevance-batch.json", relevance),
              "relevance": write("relevance.json", relevance),
              "template": write("template.json", template),

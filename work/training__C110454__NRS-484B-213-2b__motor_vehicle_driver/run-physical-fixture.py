@@ -23,11 +23,14 @@ def main():
     parser.add_argument("--kind", choices=("complete_motion", "incomplete_motion",
                                            "missing_evidence", "lifecycle"), required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--manifest", type=Path, default=HERE / "execution-manifest.json")
+    parser.add_argument("--run-root", type=Path,
+                        default=ROOT / ".runtime-work/c110454-update025-six-selected")
     args = parser.parse_args()
     suffix = args.case.removeprefix(HERE.name + "__")
     if suffix == args.case:
         raise ValueError("Wrong selected assignment")
-    manifest = json.loads((HERE / "execution-manifest.json").read_text())
+    manifest = json.loads(args.manifest.read_text())
     entry = next((row for row in manifest["cases"] if row["case_id"] == args.case), None)
     if entry is None:
         raise ValueError("Unselected case")
@@ -45,7 +48,7 @@ def main():
         outcome.update({"cpu_fixture_mock": True, "original_owner_release_verified": False,
                         "construction_sha256": entry["construction_sha256"]})
     else:
-        attempt = ROOT / ".runtime-work/c110454-update025-six-selected" / suffix / "primary/compatibility"
+        attempt = args.run_root / suffix / "primary/compatibility"
         names = ("native_samples.jsonl", "road_geometry.json",
                  "context.json" if suffix.startswith("traversal_") else "statutory_context.json")
         samples = [json.loads(line) for line in (attempt / names[0]).read_text().splitlines()]

@@ -14,6 +14,7 @@ from source_join_audit import audit as audit_sources, read, require, rows, sha
 
 HERE = Path(__file__).resolve().parent
 EXPECTED = {"rail_reference": "outside_100_ft", "rail_contrast": "within_100_ft",
+            "rail_at": "within_100_ft",
             "oneway_absent": "within_100_ft", "oneway_present": "within_100_ft",
             "traversal_reference": "no_left_traversal", "traversal_contrast": "left_traversal"}
 
@@ -99,7 +100,7 @@ def measure_rows(samples: list[dict], survey: dict, suffix: str, context: dict |
     else:
         require(bool(left_approach), "Driven full-body left-side interval absent")
         nearest = min(left_approach)
-        relation = "within_100_ft" if nearest < 30.48 else "outside_100_ft"
+        relation = "within_100_ft" if nearest <= 30.48 + 1e-6 else "outside_100_ft"
         measured = {"left_driving_frames": len(left_approach),
                     "nearest_body_front_to_zone_m": nearest,
                     "100_ft_boundary_m": 30.48,
