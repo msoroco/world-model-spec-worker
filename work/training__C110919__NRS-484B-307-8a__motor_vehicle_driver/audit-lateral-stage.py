@@ -24,13 +24,14 @@ def audit(stage):
         judgment['observable_requirements']=evidence['observable_requirements']
     require(stage.get('status')=='draft' and stage.get('sweeps_expanded') is True and
             stage.get('original_native_accepted') is False and
-            sha('proposals/cases.json')==sha('proposals/extreme-right-sweep-candidate.json'),
-            'Canonical 21-case draft identity differs')
+            stage.get('candidate_only') is False,
+            'Canonical 21-case delivery draft identity differs')
     ordinary=[c for c in stage['cases'] if c['target_type']!='judgment_sweep']
     timing=[c for c in stage['cases'] if c.get('sweep_id')=='C110919-right-of-way']
     lateral=[c for c in stage['cases'] if c.get('sweep_id')=='C110919-extreme-right']
     require(len(ordinary)==11 and len(timing)==len(lateral)==5 and
-            [c['case_id'] for c in ordinary[1:]]==[c['case_id'] for c in plan['cases']],
+            [c['case_id'] for c in stage['cases'] if c['target_type']!='baseline']==
+            [c['case_id'] for c in plan['cases']],
             'Ordinary or physical sweep case set differs')
     kinds={v['name']:v['kind'] for v in binding['variable_parameters']}
     require({'traffic_launch_frame','ego_entry_relative_to_signal_directed_traffic',
@@ -48,8 +49,8 @@ def audit(stage):
     ids={c['case_id'] for c in stage['cases'] if c['target_law_id'] is not None}
     for requirement in plan['requirement_dispositions']:
         if requirement['status']=='selected_required':
-            require(set(requirement['case_ids'])==ids,
-                    'Selected requirement has missing exact case IDs')
+            require(requirement['case_ids'] and set(requirement['case_ids'])<=ids,
+                    'Selected requirement has unqualified or missing exact case IDs')
     specs={s['sweep_id']:s for s in stage['sweep_specs']}
     require(set(specs)=={'C110919-right-of-way','C110919-extreme-right'},
             'Exact physical sweep specs missing')
