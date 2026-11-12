@@ -99,7 +99,7 @@ def main():
              "original_native_motion_verified": 0,
              "original_recordings_or_comparisons_accepted": 0,
              "physical_or_legal_acceptance_claimed": False}
-    path = HERE / "update027-physical-outcomes-proof.json"
+    path = HERE / "update028-physical-outcomes-proof.json"
     path.write_text(json.dumps(proof, indent=2) + "\n")
     print(json.dumps({"selected_cases": len(outcomes), "outcomes_per_case": 5,
                       "lifecycle_rejections": proof["lifecycle_rejections"],
