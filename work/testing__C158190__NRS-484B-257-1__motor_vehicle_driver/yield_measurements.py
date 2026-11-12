@@ -11,8 +11,8 @@ import math
 from pathlib import Path
 
 
-REQUIRED = ("approach_history.jsonl", "visibility_samples.json", "road_context.json",
-            "video_frames.jsonl")
+REQUIRED = ("approach_history.jsonl", "visibility_samples.json", "visibility_rays.jsonl",
+            "road_context.json", "video_frames.jsonl")
 
 
 def _finite(value, label):
@@ -46,32 +46,64 @@ def analyze(root: Path) -> dict:
     samples = json.loads((root / "visibility_samples.json").read_text())
     if not isinstance(samples, list) or len(samples) < 2:
         raise ValueError("Insufficient approach visibility samples")
+    rays = _rows(root / "visibility_rays.jsonl")
+    ray_by_frame = {row.get("frame"): row for row in rays}
+    if len(ray_by_frame) != len(rays) or len(rays) != len(samples):
+        raise ValueError("Sight rays do not cover each approach sample once")
     visible = []
     for sample in samples:
         distance = _finite(sample.get("distance_to_intersection_m"), "sight-sample distance")
-        if distance < 0 or not sample.get("ray_source"):
+        if distance < 0 or sample.get("ray_source") != "visibility_rays.jsonl":
             raise ValueError("Visibility sample lacks spatial ray evidence")
+        frame = sample.get("frame")
+        ray = ray_by_frame.get(frame)
+        if (type(frame) is not int or ray is None
+                or ray.get("distance_to_intersection_m") != distance
+                or not isinstance(ray.get("observer_m"), list)
+                or not isinstance(ray.get("target_m"), list)
+                or not isinstance(ray.get("blockers"), list)
+                or type(ray.get("clear")) is not bool
+                or ray["clear"] != (not ray["blockers"])):
+            raise ValueError("Visibility sample does not join a complete original ray")
+        road_visible = sample.get("through_highway_visible")
+        if type(road_visible) is not bool or road_visible != ray["clear"]:
+            raise ValueError("Through-highway view differs from original ray")
         ids = sample.get("visible_through_vehicle_ids")
-        if not isinstance(ids, list):
+        if not isinstance(ids, list) or ids != ray.get("visible_through_vehicle_ids"):
             raise ValueError("Missing through-traffic visibility result")
-        if ids:
+        if ids and not road_visible:
+            raise ValueError("Visible through vehicle without a through-highway sight path")
+        if road_visible:
             visible.append({"distance_to_intersection_m": distance,
                             "visible_through_vehicle_ids": ids,
                             "ray_source": sample["ray_source"]})
     if not visible:
-        raise ValueError("No sourced view of through traffic")
+        raise ValueError("No sourced view of the through highway")
     closest = min(visible, key=lambda sample: sample["distance_to_intersection_m"])
     history, frames = _rows(root / "approach_history.jsonl"), _rows(root / "video_frames.jsonl")
-    if len(history) < 2 or len(history) != len(frames):
+    if len(history) < 2 or len(history) > len(frames):
         raise ValueError("Incomplete approach/frame history")
+    if {row.get("frame") for row in history} != set(ray_by_frame):
+        raise ValueError("Sight rays do not join original approach frames")
+    frame_by_id = {row.get("carla_frame"): row for row in frames}
+    if len(frame_by_id) != len(frames):
+        raise ValueError("Duplicate original camera frame")
+    frame_previous = (-1, -math.inf)
+    for index, frame in enumerate(frames):
+        fid, time = frame.get('carla_frame'), _finite(frame.get('time_s'), 'camera time')
+        if (type(fid) is not int or fid <= frame_previous[0] or time <= frame_previous[1]
+                or frame.get('video_frame') != index):
+            raise ValueError('Nonmonotone original camera frame map')
+        frame_previous = (fid, time)
     previous = (-1, -math.inf)
     speed_samples = []
-    for index, (row, frame) in enumerate(zip(history, frames)):
+    for row in history:
         fid, time = row.get("frame"), _finite(row.get("time_s"), "time")
         if type(fid) is not int or fid <= previous[0] or time <= previous[1]:
             raise ValueError("Nonmonotone original history")
         previous = (fid, time)
-        if frame.get("video_frame") != index or frame.get("carla_frame") != fid or frame.get("time_s") != time:
+        frame = frame_by_id.get(fid)
+        if frame is None or frame.get("time_s") != time:
             raise ValueError("Original frame join failed")
         if row.get("road_id") != context["approach_road_id"] or row.get("lane_id") != context["approach_lane_id"]:
             raise ValueError("Ego outside sign-governed approach")
@@ -79,6 +111,8 @@ def analyze(root: Path) -> dict:
         distance = _finite(row.get("distance_to_intersection_m"), "ego distance")
         if speed < 0 or distance < 0:
             raise ValueError("Invalid ego approach sample")
+        if distance != ray_by_frame[fid]['distance_to_intersection_m']:
+            raise ValueError('Sight ray and original ego distance differ')
         speed_samples.append({"frame": fid, "time_s": time,
                               "ego_speed_mps": speed,
                               "distance_to_intersection_m": distance})
