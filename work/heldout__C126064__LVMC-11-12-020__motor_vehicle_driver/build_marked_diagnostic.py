@@ -16,7 +16,11 @@ def put(path, value, compact=False):
 
 
 def build():
-    spec = json.loads((REPO / 'runtime/fixtures/example.json').read_text())
+    # The supplied example's trace is straight and remote from its video pixels.
+    # This previously proved textual fixture has a turn-shaped nine-frame trace;
+    # only the marked-course originals below serve this law's measurements.
+    spec = json.loads((REPO / 'work/heldout__C111610__NRS-484B-413-1__motor_vehicle_driver'
+                       / 'vehicle-indicator-diagnostic.json').read_text())
     frames = [json.loads(line) for line in spec['files']['video_frames.jsonl'].splitlines() if line]
     trace = [json.loads(line) for line in spec['files']['trace.jsonl'].splitlines() if line]
     if len(frames) != len(trace) or len(frames) < 3:
@@ -84,6 +88,39 @@ def build():
     entry = next(item for item in manifest['cases'] if item['case_id'] == CASE)
     entry['measurement_contract'] = 'indicated-measurement-contract.json'
     entry['fixture_recipe'] = f'work/{ROOT.name}/indicated-recipe.json'
+    divergent_case = ROOT.name + '__divergent_course'
+    divergent = json.loads(json.dumps(spec))
+    divergent_scene = dict(scene, case_id=divergent_case)
+    divergent['files']['marked_intersection.json'] = json.dumps(divergent_scene) + '\n'
+    divergent_bodies = [json.loads(line) for line in divergent['files']['turn_body.jsonl'].splitlines() if line]
+    divergent_trace = [json.loads(line) for line in divergent['files']['trace.jsonl'].splitlines() if line]
+    divergent_evidence = [json.loads(line) for line in divergent['files']['capture/evidence.jsonl'].splitlines() if line]
+    for body_row, trace_row, evidence_row in zip(divergent_bodies[-3:], divergent_trace[-3:], divergent_evidence[-3:]):
+        for corner in body_row['corners_xy_m']:
+            corner[1] += 2.0
+        trace_row['position_m'][1] += 2.0
+        trace_row['position']['y'] += 2.0
+        evidence_row['ego']['position_m'][1] += 2.0
+        for vertex in evidence_row['ego']['body_vertices_m']:
+            vertex[1] += 2.0
+    divergent['files']['turn_body.jsonl'] = ''.join(json.dumps(row) + '\n' for row in divergent_bodies)
+    divergent['files']['trace.jsonl'] = ''.join(json.dumps(row) + '\n' for row in divergent_trace)
+    divergent['files']['capture/evidence.jsonl'] = ''.join(json.dumps(row) + '\n' for row in divergent_evidence)
+    capture_manifest = json.loads(divergent['files']['capture/manifest.json'])
+    capture_manifest['sources']['trace.jsonl'] = sha256(divergent['files']['trace.jsonl'].encode()).hexdigest()
+    divergent['files']['capture/manifest.json'] = json.dumps(capture_manifest) + '\n'
+    divergent_path = ROOT / 'divergent-diagnostic.json'
+    divergent_hash = put(divergent_path, divergent, compact=True)
+    divergent_recipe = json.loads(json.dumps(recipe).replace('indicated-diagnostic.json', divergent_path.name))
+    for source in divergent_recipe['sources']:
+        source['sha256'] = divergent_hash
+    divergent_recipe['generator']['sha256'] = divergent_hash
+    put(ROOT / 'divergent-recipe.json', divergent_recipe)
+    divergent_contract = json.loads(json.dumps(contract).replace(CASE, divergent_case))
+    put(ROOT / 'divergent-measurement-contract.json', divergent_contract)
+    divergent_entry = next(item for item in manifest['cases'] if item['case_id'] == divergent_case)
+    divergent_entry['measurement_contract'] = 'divergent-measurement-contract.json'
+    divergent_entry['fixture_recipe'] = f'work/{ROOT.name}/divergent-recipe.json'
     put(manifest_path, manifest)
     construction = json.loads((ROOT / entry['construction']).read_text())
     config = json.loads(next(item['content'] for item in construction['files'] if item['path'] == 'config.json'))
@@ -94,10 +131,17 @@ def build():
             'rationale': 'Source-shaped indicated-course construction; municipal authority and original motion remain unverified.',
             'variable_assignments': {'turn_course': {'kind': 'controller', 'value': 'indicated'}},
             'unresolved_judgment_calls': ['authorized indications', 'disobey direction'],
-            'recording_description': config['case']['recording_description']}],
+            'recording_description': config['case']['recording_description']},
+            {'case_id': divergent_case, 'target_law_id': 'LVMC-11-12-020',
+             'target_type': 'boundary_probe',
+             'rationale': 'Source-shaped divergent body course with the same unverified marker and authority claim.',
+             'variable_assignments': {'turn_course': {'kind': 'controller', 'value': 'divergent'}},
+             'unresolved_judgment_calls': ['authorized indications', 'disobey direction'],
+             'recording_description': config['case']['recording_description']}],
         'sweep_specs': [], 'sweeps_expanded': False}
     put(ROOT / 'proposals/cases.json', proposal)
-    return {'case': CASE, 'diagnostic_sha256': diagnostic_hash}
+    return {'case': CASE, 'diagnostic_sha256': diagnostic_hash,
+            'divergent_case': divergent_case, 'divergent_diagnostic_sha256': divergent_hash}
 
 
 if __name__ == '__main__':

@@ -56,7 +56,7 @@ def build():
             'reference_frame': 'Native world coordinates and sourced intersection polygon',
             'uncertainty': 'municipal authorization, actual marker visibility and legal course conformance require original review'
         }],
-        'context_inputs': ['independently reviewed site/authority record supplied at capture'],
+        'context_inputs': [],
         'limitations': ['CPU construction checks do not verify municipal authority or Native motion.']
     }
     cameras = [
@@ -109,7 +109,9 @@ def build():
             entry.update({key: value for key, value in old[case].items() if key not in entry})
         cases.append(entry)
     manifest = {'format': 'worker-execution-manifest',
-                'assignment_id': ASSIGNMENT, 'cases': cases}
+                'assignment_id': ASSIGNMENT,
+                'runtime_manifest_sha256': json.loads((ROOT.parents[1] / 'batch.json').read_text())['runtime']['source_manifest_sha256'],
+                'cases': cases}
     (ROOT / 'execution-manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
     return {entry['case_id']: entry['construction_sha256'] for entry in cases}
 

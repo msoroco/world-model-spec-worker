@@ -10,8 +10,14 @@
       "gap_ids": [
         "authorized-course"
       ],
-      "construction_state": "exact_primary_offline_proved",
-      "purpose": "Turn along the source-authorized marked course."
+      "construction_state": "primary_and_three_fallbacks_offline_compatibility_saved_physical_delivery_cpu_proved",
+      "purpose": "Turn along the source-authorized marked course.",
+      "physical_risk": {
+        "risk": "Native marker spawn/readback, complete turn and four camera pixel visibility may fail",
+        "trigger_source": "original Native marker readback, body/trace path and four named camera streams",
+        "trigger_metric": "spawn success, marker pixel coverage and full turn through the sourced junction",
+        "failure_condition": "missing marker actor, incomplete turn or marker outside all camera views"
+      }
     },
     {
       "case_id": "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__divergent_course",
@@ -19,8 +25,14 @@
       "gap_ids": [
         "authorized-course"
       ],
-      "construction_state": "exact_primary_offline_proved",
-      "purpose": "Same turn and authorized markers with an intentionally divergent target path; actual source footprint decides realized relation."
+      "construction_state": "primary_and_three_fallbacks_offline_compatibility_saved_physical_delivery_cpu_proved",
+      "purpose": "Same turn and authorized markers with an intentionally divergent target path; actual source footprint decides realized relation.",
+      "physical_risk": {
+        "risk": "Native marker spawn/readback, complete turn and four camera pixel visibility may fail",
+        "trigger_source": "original Native marker readback, body/trace path and four named camera streams",
+        "trigger_metric": "spawn success, marker pixel coverage and full turn through the sourced junction",
+        "failure_condition": "missing marker actor, incomplete turn or marker outside all camera views"
+      }
     }
   ],
   "comparisons": [
@@ -39,7 +51,10 @@
         "measured vehicle footprint course relative to the source-indicated route"
       ],
       "audit_script": "comparison_audit.py",
-      "audit_status": "source_shaped_cpu_fixture_proved_original_attempts_pending"
+      "audit_status": "source_shaped_exact_diagnostic_proved_original_native_attempts_pending",
+      "audit_script_sha256": "66142f8b9f5b090d4b2f1d1b23811b6c7fd2b793256e52032f1b89a8afff7e47",
+      "audit_log": "comparison-audit-exact.log",
+      "audit_log_sha256": "9cb4b221c87bdf1e69defbbc6503912de3e7aa09aeb5cebcd1211f40f3275b2f"
     }
   ],
   "observations": [
@@ -127,5 +142,80 @@
       ],
       "evidence_or_gap": "No source-backed municipal authority or original marked-turn recording; CPU diagnostic is not legal or physical evidence."
     }
-  ]
+  ],
+  "source_observation_mapping": {
+    "dev.regulatory_sign": {
+      "evidence": "Physical marker actor readback is joined to an unverified authority record; no actual authorization inferred",
+      "channels": [
+        "original_marked_turn_course"
+      ],
+      "source_refs": [
+        "marked_intersection.json",
+        "authority_source_original.json",
+        "overview.mkv"
+      ]
+    },
+    "st.lane_marking": {
+      "evidence": "Source-indicated turn course and physical marker positions; no claim that a lane line is visible",
+      "channels": [
+        "original_marked_turn_course"
+      ],
+      "source_refs": [
+        "marked_intersection.json",
+        "authority_source_original.json",
+        "reference_corner.mkv"
+      ]
+    },
+    "dev.governs": {
+      "evidence": "Retained source claim associates the indicated marker with the intersection; municipal governance remains unverified",
+      "channels": [
+        "original_marked_turn_course"
+      ],
+      "source_refs": [
+        "authority_source_original.json",
+        "marked_intersection.json"
+      ]
+    },
+    "st.intersection": {
+      "evidence": "Original scene polygon and body positions place turn samples in the selected intersection",
+      "channels": [
+        "original_marked_turn_course"
+      ],
+      "source_refs": [
+        "marked_intersection.json",
+        "turn_body.jsonl"
+      ]
+    },
+    "drv.turning": {
+      "evidence": "Original body path and frame-joined trace measure course through the junction",
+      "channels": [
+        "original_marked_turn_course"
+      ],
+      "source_refs": [
+        "turn_body.jsonl",
+        "trace.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    "kin.path_length": {
+      "evidence": "Sampled full-body centre path from original frames, an engineering observation without a legal cutoff",
+      "channels": [
+        "original_marked_turn_course"
+      ],
+      "source_refs": [
+        "turn_body.jsonl",
+        "trace.jsonl"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Original four-corner body footprint relative to source intersection polygon and indicated course",
+      "channels": [
+        "original_marked_turn_course"
+      ],
+      "source_refs": [
+        "turn_body.jsonl",
+        "marked_intersection.json"
+      ]
+    }
+  }
 }
