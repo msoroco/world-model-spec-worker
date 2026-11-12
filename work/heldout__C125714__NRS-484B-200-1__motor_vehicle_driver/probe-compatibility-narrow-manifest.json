@@ -12,7 +12,91 @@
       "measurement_procedure": {
         "entrypoint": "width_finalizer.py"
       },
-      "fixture_recipe": "work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/narrow-diagnostic-recipe.json"
+      "fixture_recipe": "work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/narrow-diagnostic-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native spawn collision, lateral overshoot and route-target stall are separate measurable realization risks for this case."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-insufficient_width-fallback1.json",
+          "construction_sha256": "5768aafcd06ba109d892f2a3b43be60d0ed88e2239a3f6eba10b4f0dab0fd9a7",
+          "trigger": {
+            "source": "Native capture log",
+            "metric": "subject spawn success",
+            "failure_condition": "Native subject spawn fails at route start"
+          },
+          "changed_knobs": [
+            "Spawn subject at second connected waypoint on the same lane to avoid occupied start"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/probe-compatibility-narrow-manifest.json --case heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__insufficient_width --candidate fallback1 --output .runtime-work/c125714-insufficient_width-fallback1-offline-20261111a --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "5768aafcd06ba109d892f2a3b43be60d0ed88e2239a3f6eba10b4f0dab0fd9a7",
+            "log": "probe-insufficient_width-fallback1-offline.log",
+            "log_sha256": "d60360b8df8480b486c4f1ba43a67e336e51d49c64b4506ab38912734a452e85"
+          },
+          "compatibility": {
+            "receipt": "probe-insufficient_width-fallback1-receipt.json",
+            "sha256": "850343b90caa5ae72850802c8289a173b79177280f3db27db711a50496ad1f3c",
+            "log": "probe-insufficient_width-fallback1-analysis.log",
+            "negative_log": "probe-insufficient_width-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-insufficient_width-fallback2.json",
+          "construction_sha256": "aff3a03e5d1741b0ce10038d96d4bbadd6566062a9943f75bd5376ac6236d2f4",
+          "trigger": {
+            "source": "trace.jsonl and original roadway source",
+            "metric": "maximum lateral path overshoot m",
+            "failure_condition": "subject body exceeds the selected road edge before route completion"
+          },
+          "changed_knobs": [
+            "Reduce subject target speed to 3.5 m/s to contain lateral overshoot"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/probe-compatibility-narrow-manifest.json --case heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__insufficient_width --candidate fallback2 --output .runtime-work/c125714-insufficient_width-fallback2-offline-20261111a --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "aff3a03e5d1741b0ce10038d96d4bbadd6566062a9943f75bd5376ac6236d2f4",
+            "log": "probe-insufficient_width-fallback2-offline.log",
+            "log_sha256": "eb159ba559c39ece15fac1fb42659003449733fe81f2e987af7b0671ae035c75"
+          },
+          "compatibility": {
+            "receipt": "probe-insufficient_width-fallback2-receipt.json",
+            "sha256": "0b0e6e9895bab1c38296b25d47a18f70fe06460f39ea572e283181de1a044649",
+            "log": "probe-insufficient_width-fallback2-analysis.log",
+            "negative_log": "probe-insufficient_width-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-insufficient_width-fallback3.json",
+          "construction_sha256": "4b53ccddc81cfd5f3734626c85e6084bad1b6bb98dcc328225d8b5e8a9918868",
+          "trigger": {
+            "source": "trace.jsonl",
+            "metric": "forward route progress m",
+            "failure_condition": "subject advances less than 5 m during the first 4 s despite nonzero throttle"
+          },
+          "changed_knobs": [
+            "Advance controller waypoint lookahead by one connected sample to avoid route stall"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/probe-compatibility-narrow-manifest.json --case heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__insufficient_width --candidate fallback3 --output .runtime-work/c125714-insufficient_width-fallback3-offline-20261111a --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "4b53ccddc81cfd5f3734626c85e6084bad1b6bb98dcc328225d8b5e8a9918868",
+            "log": "probe-insufficient_width-fallback3-offline.log",
+            "log_sha256": "20a8447b95c5c121dd55d6b0a0ce703367603ede7284539252251c5a0de922c8"
+          },
+          "compatibility": {
+            "receipt": "probe-insufficient_width-fallback3-receipt.json",
+            "sha256": "86ea3fb018368a376d77ff750ca4d1128c9f497c63a155fcfa3f74db7a55cbb8",
+            "log": "probe-insufficient_width-fallback3-analysis.log",
+            "negative_log": "probe-insufficient_width-fallback3-negative.log"
+          }
+        }
+      ]
     }
   ]
 }

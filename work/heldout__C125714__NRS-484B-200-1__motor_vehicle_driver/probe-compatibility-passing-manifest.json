@@ -12,7 +12,91 @@
       "measurement_procedure": {
         "entrypoint": "passing_finalizer.py"
       },
-      "fixture_recipe": "work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/passing-diagnostic-recipe.json"
+      "fixture_recipe": "work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/passing-diagnostic-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native spawn collision, lateral overshoot and route-target stall are separate measurable realization risks for this case."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-passing_same_direction-fallback1.json",
+          "construction_sha256": "52f1f27ec45e2c50809b55927cf0d504e4bdb0e3b639beb4b8deb72555976cca",
+          "trigger": {
+            "source": "Native capture log",
+            "metric": "subject spawn success",
+            "failure_condition": "Native subject spawn fails at route start"
+          },
+          "changed_knobs": [
+            "Spawn subject at second connected waypoint on the same lane to avoid occupied start"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/probe-compatibility-passing-manifest.json --case heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__passing_same_direction --candidate fallback1 --output .runtime-work/c125714-passing_same_direction-fallback1-offline-20261111a --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "52f1f27ec45e2c50809b55927cf0d504e4bdb0e3b639beb4b8deb72555976cca",
+            "log": "probe-passing_same_direction-fallback1-offline.log",
+            "log_sha256": "6392dba631363d61aa496acf812a76d7a3a426e40ca87f993543869256b6fb88"
+          },
+          "compatibility": {
+            "receipt": "probe-passing_same_direction-fallback1-receipt.json",
+            "sha256": "05f625584e6360143c361719850a4af4f8ba2e1401bf1fc7925ba49fef568b8f",
+            "log": "probe-passing_same_direction-fallback1-analysis.log",
+            "negative_log": "probe-passing_same_direction-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-passing_same_direction-fallback2.json",
+          "construction_sha256": "1c40df5c3e9ae814e3f9bc450af74c60102db7e8d79c8f1588f217723f2a1d51",
+          "trigger": {
+            "source": "trace.jsonl and original roadway source",
+            "metric": "maximum lateral path overshoot m",
+            "failure_condition": "subject body exceeds the selected road edge before route completion"
+          },
+          "changed_knobs": [
+            "Reduce passing-subject target speed from 7.0 to 6.0 m/s while retaining lead speed and leftward path"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/probe-compatibility-passing-manifest.json --case heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__passing_same_direction --candidate fallback2 --output .runtime-work/c125714-passing_same_direction-fallback2-offline-20261111a --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "1c40df5c3e9ae814e3f9bc450af74c60102db7e8d79c8f1588f217723f2a1d51",
+            "log": "probe-passing_same_direction-fallback2-offline.log",
+            "log_sha256": "fa6d6274e0b555551c2b966b997d1670502e640e3d1be8e40f1e7832e24202a9"
+          },
+          "compatibility": {
+            "receipt": "probe-passing_same_direction-fallback2-receipt.json",
+            "sha256": "ff8a08a93df6f30cfe4af4359a859064798985b2ef66595533564c160c10062d",
+            "log": "probe-passing_same_direction-fallback2-analysis.log",
+            "negative_log": "probe-passing_same_direction-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-passing_same_direction-fallback3.json",
+          "construction_sha256": "f4a640129ef9dff8c529a65fba4c4b856d12fd418b814d8d0485630560344dc4",
+          "trigger": {
+            "source": "trace.jsonl",
+            "metric": "forward route progress m",
+            "failure_condition": "subject advances less than 5 m during the first 4 s despite nonzero throttle"
+          },
+          "changed_knobs": [
+            "Advance controller waypoint lookahead by one connected sample to avoid route stall"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/probe-compatibility-passing-manifest.json --case heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__passing_same_direction --candidate fallback3 --output .runtime-work/c125714-passing_same_direction-fallback3-offline-20261111a --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "f4a640129ef9dff8c529a65fba4c4b856d12fd418b814d8d0485630560344dc4",
+            "log": "probe-passing_same_direction-fallback3-offline.log",
+            "log_sha256": "604cebdfde63f60f2e3a510c441f808919060617f1014132ce15b37d96a499c7"
+          },
+          "compatibility": {
+            "receipt": "probe-passing_same_direction-fallback3-receipt.json",
+            "sha256": "925441eb9ecc168e722121c1f722062e345d6cb56e53d2fba2511aa19d16f091",
+            "log": "probe-passing_same_direction-fallback3-analysis.log",
+            "negative_log": "probe-passing_same_direction-fallback3-negative.log"
+          }
+        }
+      ]
     }
   ]
 }

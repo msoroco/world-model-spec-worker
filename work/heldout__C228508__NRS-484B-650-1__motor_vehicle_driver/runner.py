@@ -10,10 +10,12 @@ from following_construction import (PHASES, apply_feedback, phase_at,
                                     route_from_waypoints, spawn_pair,
                                     validate_schedule)
 from following_observations import sample, write_samples
+from event_candidates import write_candidates
 
 
 PREFIX = 'heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__'
-CASES = (PREFIX + 'repeated_following', PREFIX + 'one_secondary_act')
+CASES = (PREFIX + 'repeated_following', PREFIX + 'one_secondary_act',
+         PREFIX + 'no_speed')
 
 
 def check_config(config):
@@ -46,8 +48,11 @@ def check_config(config):
         raise ValueError('Unsupported lead spawn station')
     if engineering.get('closing_lead_speed_mps', 11) not in (11, 9):
         raise ValueError('Unsupported lead closing speed')
-    if engineering.get('requested_speed_cap_mps', 24) not in (24, 13):
+    speed_cap = engineering.get('requested_speed_cap_mps', 24)
+    if speed_cap not in (24, 13):
         raise ValueError('Unsupported ego speed cap')
+    if speed_cap != (13 if config['selected_case_id'].endswith('__no_speed') else 24):
+        raise ValueError('Wrong ego speed request for exact case')
     encounters = config.get('closing_encounters')
     if encounters != (1 if config['selected_case_id'].endswith('__one_secondary_act') else 2):
         raise ValueError('Wrong secondary-act count for exact case')
@@ -169,10 +174,10 @@ def run(output_dir, host, port):
             raise ValueError('Native world settings restoration differs')
     if not complete or len(frames) != config['frames']:
         raise ValueError('Native following capture incomplete')
-    write_samples(output/'following_sources.jsonl', bodies)
+    following_source = write_samples(output/'following_sources.jsonl', bodies)
     (output/'driving_trace.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in trace))
-    # No requested act is promoted to a reviewed legal predicate during capture.
-    (output/'event_annotations.json').write_text('[]\n')
+    # Original-source geometry yields unreviewed engineering frame candidates only.
+    write_candidates(following_source, output/'event_annotations.json')
     (output/'acquisition-provenance.json').write_text(json.dumps({
         'provenance_kind':'native', 'diagnostic_fixture':False,
         'original_frames':len(frames), 'unreviewed_event_annotations':True})+'\n')

@@ -7,7 +7,7 @@ import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from aggressive_finalizer import analyze
-from following_comparison_audit import PREFIX, audit_pair
+from following_comparison_audit import PREFIX, audit_pair, audit_speed_pair
 
 
 class ComparisonAuditTests(unittest.TestCase):
@@ -71,6 +71,24 @@ class ComparisonAuditTests(unittest.TestCase):
         report_path.write_text(json.dumps(report))
         with self.assertRaisesRegex(ValueError, 'Candidate window differs'):
             audit_pair(self.two, self.one)
+
+    def test_speed_request_comparison_and_confounder_rejection(self):
+        config_path = self.one / 'config.json'
+        config = json.loads(config_path.read_text())
+        config['selected_case_id'] = PREFIX + 'no_speed'
+        config['closing_encounters'] = 2
+        config['engineering'] = {'requested_speed_cap_mps': 13}
+        config_path.write_text(json.dumps(config))
+        events = json.loads((self.two / 'event_annotations.json').read_text())
+        (self.one / 'event_annotations.json').write_text(json.dumps(
+            [item for item in events if item['category'] != 'speed']))
+        (self.one / 'analysis-report.json').write_text(json.dumps(analyze(self.one)))
+        self.assertEqual(audit_speed_pair(self.two, self.one)['measured_window_present'],
+                         [True, False])
+        config['engineering']['route_candidate_index'] = 1
+        config_path.write_text(json.dumps(config))
+        with self.assertRaisesRegex(ValueError, 'confounded'):
+            audit_speed_pair(self.two, self.one)
 
 
 if __name__ == '__main__':

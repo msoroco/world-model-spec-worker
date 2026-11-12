@@ -1,0 +1,102 @@
+{
+  "format": "worker-compatibility-probe-manifest",
+  "assignment_id": "heldout__C125714__NRS-484B-200-1__motor_vehicle_driver",
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3",
+  "cases": [
+    {
+      "case_id": "heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__three_lane",
+      "kind": "diagnostic_probe",
+      "construction": "construction-probe-three-lane.json",
+      "construction_sha256": "00bee8ffb8e22fbbd05e91a6b74814a4fab56d34c1e92fdc5da0b776f70e3cd4",
+      "measurement_contract": "three-lane-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "three_lane_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/three-lane-diagnostic-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native spawn collision, lateral overshoot and route-target stall are separate measurable realization risks on the three-lane scene."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-three-lane-fallback1.json",
+          "construction_sha256": "0fdf9f48d85d3c4b9b8bff30e20e7758dfe6c6f614009b0e2a74c31e327cafc0",
+          "trigger": {
+            "source": "Native capture log",
+            "metric": "subject spawn success",
+            "failure_condition": "Native subject spawn fails at route start"
+          },
+          "changed_knobs": [
+            "Retain a distinct connected spawn waypoint to avoid an occupied start"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/probe-compatibility-three-lane-manifest.json --case heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__three_lane --candidate fallback1 --output .runtime-work/c125714-three-lane-fallback1-offline-20261111a --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "0fdf9f48d85d3c4b9b8bff30e20e7758dfe6c6f614009b0e2a74c31e327cafc0",
+            "log": "probe-three-lane-fallback1-offline.log",
+            "log_sha256": "b0a6eb35a1b63af1bb9ff37a68421f1ab613a74939d3db43ccfee47bff7f08bf"
+          },
+          "compatibility": {
+            "receipt": "probe-three-lane-fallback1-receipt.json",
+            "sha256": "12d6336537fab65d1ca0f6cd77cb0d10a481d875b58ff377bb075b2879480ced",
+            "log": "probe-three-lane-fallback1-analysis.log",
+            "negative_log": "probe-three-lane-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-three-lane-fallback2.json",
+          "construction_sha256": "31428dca48427ff921d8d893c37704c72d396268218cbf9ae1552ddd92fe02d1",
+          "trigger": {
+            "source": "trace.jsonl and three_lane_roadway.jsonl",
+            "metric": "maximum lateral path overshoot m",
+            "failure_condition": "subject body exceeds the selected three-lane road edge before route completion"
+          },
+          "changed_knobs": [
+            "Reduce subject speed to contain lateral overshoot"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/probe-compatibility-three-lane-manifest.json --case heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__three_lane --candidate fallback2 --output .runtime-work/c125714-three-lane-fallback2-offline-20261111a --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "31428dca48427ff921d8d893c37704c72d396268218cbf9ae1552ddd92fe02d1",
+            "log": "probe-three-lane-fallback2-offline.log",
+            "log_sha256": "3d96a51cf8f5bdbe51fbbd9b3f022dc986bf6a90312e2a10a348043e4d1044ee"
+          },
+          "compatibility": {
+            "receipt": "probe-three-lane-fallback2-receipt.json",
+            "sha256": "a7972eac2a5bf4131b0338c80ec7e45ca15c4bc98ceeb05e34b029e4c6e4de9b",
+            "log": "probe-three-lane-fallback2-analysis.log",
+            "negative_log": "probe-three-lane-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-three-lane-fallback3.json",
+          "construction_sha256": "0013d728042b5ca2d96db70c2775d063d2da6ee6f31bfada101c3be8383e4aef",
+          "trigger": {
+            "source": "trace.jsonl",
+            "metric": "forward route progress m",
+            "failure_condition": "subject advances less than 5 m during the first 4 s despite nonzero throttle"
+          },
+          "changed_knobs": [
+            "Advance lookahead to avoid route-target stall"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/probe-compatibility-three-lane-manifest.json --case heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__three_lane --candidate fallback3 --output .runtime-work/c125714-three-lane-fallback3-offline-20261111a --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "0013d728042b5ca2d96db70c2775d063d2da6ee6f31bfada101c3be8383e4aef",
+            "log": "probe-three-lane-fallback3-offline.log",
+            "log_sha256": "ff07ca9f68d0ee1661b4b8cfdd16483569841a88bbea5de4f8535bcdfbfed361"
+          },
+          "compatibility": {
+            "receipt": "probe-three-lane-fallback3-receipt.json",
+            "sha256": "a59e3cc86eca8b8ad1ecfc995c3de98c771ab4403f02d225755269a0195abb33",
+            "log": "probe-three-lane-fallback3-analysis.log",
+            "negative_log": "probe-three-lane-fallback3-negative.log"
+          }
+        }
+      ]
+    }
+  ]
+}

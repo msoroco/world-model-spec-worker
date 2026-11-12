@@ -302,6 +302,53 @@
           "Sign actor and same-direction lane topology do not establish official one-way designation, posting authority or physical visibility."
         ]
       }
+    },
+    {
+      "case_id": "heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__three_lane",
+      "target_law_id": "NRS-484B-200-1",
+      "target_type": "three_lane_observation_probe",
+      "rationale": "Construct three joined traffic lanes with right and center lanes same-direction and far-left lane opposing; retain original lane tangents, widths and body occupancy. Applicable lane rule remains unresolved.",
+      "variable_assignments": {
+        "lane_pattern": {
+          "kind": "world_setup",
+          "value": "east-east-west"
+        },
+        "requested_lane_fraction": {
+          "kind": "controller",
+          "value": 0.75
+        }
+      },
+      "unresolved_judgment_calls": [
+        "applicable lane-use law",
+        "actual three-lane Native map",
+        "realized leftward body motion"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "right_half_offset_m",
+            "unit": "m",
+            "method": "original Native directed center boundary and full body footprint",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "directed roadway center boundary",
+            "uncertainty": "Native map lane boundary and vehicle body precision"
+          },
+          {
+            "name": "three_lane_roadway_width_m",
+            "unit": "m",
+            "method": "original Native three-lane edge and lane-width readback",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "directed roadway",
+            "uncertainty": "map lane geometry and applicable lane rule unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Three-lane topology and body occupancy do not establish the applicable lane-use rule or physical motion."
+        ]
+      }
     }
   ]
 }

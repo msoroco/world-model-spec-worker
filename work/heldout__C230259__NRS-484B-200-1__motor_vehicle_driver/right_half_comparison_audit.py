@@ -31,11 +31,13 @@ def audit(right_root, left_root):
     right_rows, left_rows = (_rows(root / files[0]) for root in (right_root, left_root))
     if len(right_rows) != len(left_rows):
         raise ValueError("Baseline original frame count changed")
-    fixed = ("frame", "time_s", "road_id", "lane_id", "road_center_xy",
+    fixed = ("frame", "time_s", "road_id", "road_center_xy",
              "road_travel_tangent_xy", "road_width_m")
     for first, second in zip(right_rows, left_rows):
         if any(first.get(key) != second.get(key) for key in fixed):
             raise ValueError("Baseline road or original frame conditions changed")
+        if first.get("lane_id") == second.get("lane_id"):
+            raise ValueError("Baseline opposite-side lane identity did not change")
     right_obs, left_obs = right["observations"], left["observations"]
     if not all(row["whole_body_right_half"] for row in right_obs):
         raise ValueError("Right baseline body is not wholly on right half")

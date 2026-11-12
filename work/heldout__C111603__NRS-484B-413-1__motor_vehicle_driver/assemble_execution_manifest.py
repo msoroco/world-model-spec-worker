@@ -10,6 +10,7 @@ SOURCES = (
     'vehicle-indicator-manifest.json',
     'vehicle-no-indicator-manifest.json',
     'clearance-wide-manifest.json',
+    'clearance-mid-manifest.json',
     'clearance-narrow-manifest.json',
     'ped-no-horn-manifest.json',
     'ped-horn-manifest.json',

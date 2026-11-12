@@ -12,7 +12,91 @@
       "measurement_procedure": {
         "entrypoint": "right_half_finalizer.py"
       },
-      "fixture_recipe": "work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/left-diagnostic-recipe.json"
+      "fixture_recipe": "work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/left-diagnostic-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native spawn collision, lateral overshoot and route-target stall are separate measurable realization risks for this case."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-unexcepted_left-fallback1.json",
+          "construction_sha256": "8b5d1e846966b4c35b6408dc67bed586320aa840a936793e8fa0bc3c88b54bef",
+          "trigger": {
+            "source": "Native capture log",
+            "metric": "subject spawn success",
+            "failure_condition": "Native subject spawn fails at route start"
+          },
+          "changed_knobs": [
+            "Spawn subject at second connected waypoint on the same lane to avoid occupied start"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/probe-compatibility-left-manifest.json --case heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__unexcepted_left --candidate fallback1 --output .runtime-work/c125714-unexcepted_left-fallback1-offline-20261111a --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "8b5d1e846966b4c35b6408dc67bed586320aa840a936793e8fa0bc3c88b54bef",
+            "log": "probe-unexcepted_left-fallback1-offline.log",
+            "log_sha256": "c3ba4a62cf892ceec0ee90c673398d4a6ef5ba984599d8170406cbfeb5110492"
+          },
+          "compatibility": {
+            "receipt": "probe-unexcepted_left-fallback1-receipt.json",
+            "sha256": "a3e1f8fe7130745e202b11d60dacf194ca54b4eb4609cad39d29b7caeebb83ec",
+            "log": "probe-unexcepted_left-fallback1-analysis.log",
+            "negative_log": "probe-unexcepted_left-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-unexcepted_left-fallback2.json",
+          "construction_sha256": "de3201ebfc8b5a8d26a4981850f4c1baf5f4905094006b5a4217303d92957064",
+          "trigger": {
+            "source": "trace.jsonl and original roadway source",
+            "metric": "maximum lateral path overshoot m",
+            "failure_condition": "subject body exceeds the selected road edge before route completion"
+          },
+          "changed_knobs": [
+            "Reduce subject target speed to 3.5 m/s to contain lateral overshoot"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/probe-compatibility-left-manifest.json --case heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__unexcepted_left --candidate fallback2 --output .runtime-work/c125714-unexcepted_left-fallback2-offline-20261111a --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "de3201ebfc8b5a8d26a4981850f4c1baf5f4905094006b5a4217303d92957064",
+            "log": "probe-unexcepted_left-fallback2-offline.log",
+            "log_sha256": "d67674ec2805a5459e501c727dfe3c49f1e7ea091b91560d19a34eac7264cb5f"
+          },
+          "compatibility": {
+            "receipt": "probe-unexcepted_left-fallback2-receipt.json",
+            "sha256": "06823e41b0b50edb5066e95464cc9915ef7bca452c0ec79f4de1c70a034d7b82",
+            "log": "probe-unexcepted_left-fallback2-analysis.log",
+            "negative_log": "probe-unexcepted_left-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-unexcepted_left-fallback3.json",
+          "construction_sha256": "abe5b70f26f1323a6ac216eaeffb7c898e73c46970452b2edd5cf43b33b1e027",
+          "trigger": {
+            "source": "trace.jsonl",
+            "metric": "forward route progress m",
+            "failure_condition": "subject advances less than 5 m during the first 4 s despite nonzero throttle"
+          },
+          "changed_knobs": [
+            "Advance controller waypoint lookahead by one connected sample to avoid route stall"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/probe-compatibility-left-manifest.json --case heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__unexcepted_left --candidate fallback3 --output .runtime-work/c125714-unexcepted_left-fallback3-offline-20261111a --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "abe5b70f26f1323a6ac216eaeffb7c898e73c46970452b2edd5cf43b33b1e027",
+            "log": "probe-unexcepted_left-fallback3-offline.log",
+            "log_sha256": "dc9bf83883c7c0966e76c01df6c76d75294abaeadc2208e74527ad75cc0a8cfa"
+          },
+          "compatibility": {
+            "receipt": "probe-unexcepted_left-fallback3-receipt.json",
+            "sha256": "e3b3d105d655b15c66494c4953093c5678f5e58b802405fc9c4114aa8316d063",
+            "log": "probe-unexcepted_left-fallback3-analysis.log",
+            "negative_log": "probe-unexcepted_left-fallback3-negative.log"
+          }
+        }
+      ]
     }
   ]
 }

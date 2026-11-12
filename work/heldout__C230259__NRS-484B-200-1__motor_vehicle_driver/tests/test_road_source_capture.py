@@ -165,6 +165,12 @@ class RoadSourceCaptureTest(unittest.TestCase):
                 for frame in range(3):
                     recorder.append(Actor(body_y), pair("east"), frame, frame / 20)
                 recorder.close()
+                if label == "left":
+                    source = folder / "ego_road_frames.jsonl"
+                    lane_rows = [json.loads(line) for line in source.read_text().splitlines()]
+                    for lane_row in lane_rows:
+                        lane_row["lane_id"] = 1
+                    source.write_text("".join(json.dumps(row) + "\n" for row in lane_rows))
                 (folder / "road_exception_context.json").write_text(json.dumps(context))
             receipt = audit_baseline(root / "right", root / "left")
             self.assertEqual(receipt["frames"], 3)
@@ -226,7 +232,7 @@ class RoadSourceCaptureTest(unittest.TestCase):
                                  ["value"]["observations"]), 3)
             (root / "right_half_observation.jsonl").unlink()
             (root / "trace.jsonl").unlink()
-            with self.assertRaisesRegex(ValueError, "Missing required original source: trace.jsonl"):
+            with self.assertRaisesRegex(ValueError, "Missing required source: trace.jsonl"):
                 analyze_saved(root)
 
 

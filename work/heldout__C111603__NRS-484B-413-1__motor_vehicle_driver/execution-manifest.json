@@ -497,6 +497,161 @@
       }
     },
     {
+      "case_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__clearance_mid",
+      "kind": "delivery",
+      "construction": "clearance-mid-construction.json",
+      "construction_sha256": "04e29f624410266fc1cd78b7274aec74fd0a536d876e36f460dbcf03098eecfe",
+      "measurement_procedure": {
+        "entrypoint": "turn_finalizer.py"
+      },
+      "measurement_contract": "clearance-mid-measurement-contract.json",
+      "fixture_recipe": "work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/clearance-mid-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native connected turn and affected-vehicle offset may not realize a intermediate sampled gap"
+      },
+      "acquisition": {
+        "turn_signal_observation": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "original 20 Hz Native turn, indicator, intermediate placed affected vehicle and no-pedestrian-audio status",
+          "evidence": "ego_turn_motion, ego_signal_audio, affected_participants, participant_bodies and four videos"
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "clearance-mid-fallback1-construction.json",
+          "construction_sha256": "f522964e4273c6fc149f44e459daa9c1b891cdd195270599aa9ce4485c470907",
+          "trigger": {
+            "source": "Native connected left-turn route inventory",
+            "metric": "eligible routes at 2 m sampling",
+            "failure_condition": "Primary sampling finds no connected left turn"
+          },
+          "changed_knobs": [
+            "route sampling 2 m/6 steps to 1.5 m/8 steps"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/clearance-mid-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__clearance_mid --candidate fallback1 --output .runtime-work/c111603-clearance-mid-fallback1-offline-c --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "clearance-mid-fallback1-offline.log",
+            "log_sha256": "5b503caee3ee6bd6dba1db97b051e469350fa205dd28aa51fbce6fe6503ea190",
+            "construction_sha256": "f522964e4273c6fc149f44e459daa9c1b891cdd195270599aa9ce4485c470907"
+          },
+          "compatibility": {
+            "receipt": "clearance-mid-fallback1-receipt.json",
+            "sha256": "34f99b8076203616b4f5ad8639c6a436c199c9945c308e003f0b12b6f64924f4",
+            "log": "clearance-mid-fallback1-analysis.log",
+            "negative_log": "clearance-mid-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "clearance-mid-fallback2-construction.json",
+          "construction_sha256": "385776a3b0a0002bd3d7127ea4496212ffa057d2175de4ee14a542aea17b233e",
+          "trigger": {
+            "source": "Original ego speed, yaw and participant gap",
+            "metric": "speed settling and sampled turn gap",
+            "failure_condition": "Primary speed yields unstable clearance sample timing"
+          },
+          "changed_knobs": [
+            "target speed 5 to 4 m/s and gain .25 to .2"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/clearance-mid-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__clearance_mid --candidate fallback2 --output .runtime-work/c111603-clearance-mid-fallback2-offline-c --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "clearance-mid-fallback2-offline.log",
+            "log_sha256": "4cb435ce7ac760f377efee9cfd52b08856ee28de9f08413557e0289f3e46dc38",
+            "construction_sha256": "385776a3b0a0002bd3d7127ea4496212ffa057d2175de4ee14a542aea17b233e"
+          },
+          "compatibility": {
+            "receipt": "clearance-mid-fallback2-receipt.json",
+            "sha256": "900e64c76c97be118ea07e5639a6ae6715e8179b8e3958d22ad836ad3b6e316e",
+            "log": "clearance-mid-fallback2-analysis.log",
+            "negative_log": "clearance-mid-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "clearance-mid-fallback3-construction.json",
+          "construction_sha256": "d87c1875c3a6dba8438007ced6ce9879d65f95e8da61179bc6ce1423ce75c9b0",
+          "trigger": {
+            "source": "Original overview RGB decode",
+            "metric": "affected vehicle visible pixel count",
+            "failure_condition": "Primary overview mount crops affected vehicle"
+          },
+          "changed_knobs": [
+            "overview camera mount x -8 to -9 m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/clearance-mid-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__clearance_mid --candidate fallback3 --output .runtime-work/c111603-clearance-mid-fallback3-offline-c --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "clearance-mid-fallback3-offline.log",
+            "log_sha256": "8845251ca34472e8e2c515e55de21334804aa9defa32bdefb8dcb55030f32c7c",
+            "construction_sha256": "d87c1875c3a6dba8438007ced6ce9879d65f95e8da61179bc6ce1423ce75c9b0"
+          },
+          "compatibility": {
+            "receipt": "clearance-mid-fallback3-receipt.json",
+            "sha256": "bfd2660b27d25575bd6b065a4a3f09e4d2fed66fa2c7151c6edcbf4b0f7031c1",
+            "log": "clearance-mid-fallback3-analysis.log",
+            "negative_log": "clearance-mid-fallback3-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/clearance-mid-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__clearance_mid --output .runtime-work/c111603-clearance-mid-primary-offline-f --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "clearance-mid-offline.log",
+        "log_sha256": "42c5c1314c382206c6a26ee94467cf0696cb480de43cdcd22e10968cb25ff53e",
+        "construction_sha256": "04e29f624410266fc1cd78b7274aec74fd0a536d876e36f460dbcf03098eecfe"
+      },
+      "compatibility": {
+        "receipt": "clearance-mid-compatibility-receipt.json",
+        "sha256": "5a5e864e97e9bcd9b39947d1f45ab252735936eda43380d5153468478526af86",
+        "log": "clearance-mid-analysis.log"
+      },
+      "negative": {
+        "log": "clearance-mid-negative.log"
+      },
+      "saved_processing": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/clearance-mid-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__clearance_mid --attempt .runtime-work/c111603-clearance-mid-saved-attempt-c --output .runtime-work/c111603-clearance-mid-saved-c --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "exit_code": 0,
+        "log": "clearance-mid-saved.log",
+        "log_sha256": "490b8fb97173da0019583d6f055c6df6b458beb029115969e0961afc64ea40c9",
+        "receipt": "clearance-mid-saved-receipt.json",
+        "receipt_sha256": "490b8fb97173da0019583d6f055c6df6b458beb029115969e0961afc64ea40c9"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__clearance_mid",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "clearance_mid_audit.py",
+        "script_sha256": "00d1318894145c6b72f97b221248275a7132213997e7a70e7453316054f6ab2a",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/clearance_mid_audit.py --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__clearance_mid --attempt .runtime-work/c111603-clearance-mid-primary-compat-f --baseline .runtime-work/c111603-vehicle-indicator-compat-d --output work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/clearance-mid-audit.json",
+        "test_exit_code": 0,
+        "test_log": "clearance-mid-audit.log",
+        "test_log_sha256": "5d61416afb55ceaebec0ac3e4031ad2ecdb50a609c2d1146ed13fefe41993b2a",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/clearance_mid_audit.py --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__clearance_mid --attempt .runtime-work/c111603-clearance-mid-primary-compat-f --baseline .runtime-work/c111603-vehicle-indicator-compat-d --output work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/clearance-mid-audit.json --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Stale or missing original clearance source",
+        "negative_log": "clearance-mid-stale-audit.log",
+        "negative_log_sha256": "6bc8cf3d61482b2c13df1bebd46381ec6086fd9a70dc53c0ac6db5c2aa71d9c2"
+      }
+    },
+    {
       "case_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__clearance_narrow",
       "kind": "delivery",
       "construction": "clearance-narrow-construction.json",

@@ -32,6 +32,11 @@ class RunnerChecks(unittest.TestCase):
     def test_risk_knobs_and_route_selection(self):
         config = json.loads((Path(__file__).resolve().parents[1] / 'config.json').read_text())
         self.assertEqual(check_config(config), config['selected_case_id'])
+        config['selected_case_id'] = config['selected_case_id'].rsplit('__', 1)[0] + '__repeated_following'
+        config['case']['case_id'] = config['selected_case_id']
+        config['closing_encounters'] = 2
+        config['engineering'] = {}
+        self.assertEqual(check_config(config), config['selected_case_id'])
         one = json.loads(json.dumps(config))
         one['selected_case_id'] = one['selected_case_id'].replace('repeated_following', 'one_secondary_act')
         one['case']['case_id'] = one['selected_case_id']
@@ -40,6 +45,14 @@ class RunnerChecks(unittest.TestCase):
         one['closing_encounters'] = 2
         with self.assertRaisesRegex(ValueError, 'secondary-act count'):
             check_config(one)
+        slow = json.loads(json.dumps(config))
+        slow['selected_case_id'] = slow['selected_case_id'].replace('repeated_following', 'no_speed')
+        slow['case']['case_id'] = slow['selected_case_id']
+        slow['engineering'] = {'requested_speed_cap_mps': 13}
+        self.assertEqual(check_config(slow), slow['selected_case_id'])
+        slow['engineering'] = {}
+        with self.assertRaisesRegex(ValueError, 'ego speed request'):
+            check_config(slow)
         for knob, value in [('route_candidate_index', 1),
                             ('lead_spawn_station_m', 40),
                             ('closing_lead_speed_mps', 9)]:

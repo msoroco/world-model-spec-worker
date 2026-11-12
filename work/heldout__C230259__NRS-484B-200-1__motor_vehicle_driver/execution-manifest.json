@@ -1,0 +1,101 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "heldout__C230259__NRS-484B-200-1__motor_vehicle_driver",
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3",
+  "cases": [
+    {
+      "case_id": "heldout__C230259__NRS-484B-200-1__motor_vehicle_driver__baseline_right",
+      "kind": "delivery",
+      "construction": "construction.json",
+      "construction_sha256": "c440e71dbc805bd56ae6dd8cfdac443427c7f40824ff2eb3f5140340e4c0d5d7",
+      "measurement_procedure": {
+        "entrypoint": "right_half_finalizer.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Two-way map geometry, opposite-side motion and four-camera visibility need Native verification"
+      },
+      "candidates": [],
+      "measurement_contract": "measurement-contract-baseline_right.json",
+      "fixture_recipe": "work/heldout__C230259__NRS-484B-200-1__motor_vehicle_driver/fixture-recipe-baseline_right.json",
+      "acquisition": {
+        "right_half_observation": {
+          "entrypoint": "runner.py",
+          "method": "20 Hz Native full-body road reference recorder",
+          "evidence": "ego_road_frames.jsonl, road_exception_context.json, trace.jsonl, video_frames.jsonl"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C230259__NRS-484B-200-1__motor_vehicle_driver/execution-manifest.json --case heldout__C230259__NRS-484B-200-1__motor_vehicle_driver__baseline_right --output .runtime-work/c230259-baseline-right-offline-3",
+        "exit_code": 0,
+        "log": "baseline-right-offline-tests.log",
+        "log_sha256": "e6ec182765cd965f2837d8eeaef5a64af48a104f245cd1a0b7281559194c57c1",
+        "construction_sha256": "c440e71dbc805bd56ae6dd8cfdac443427c7f40824ff2eb3f5140340e4c0d5d7"
+      },
+      "compatibility": {
+        "receipt": "baseline-right-compatibility.json",
+        "sha256": "5f12c5c989c15c4ea602cee7abfe7d4feb35951040b71ebd061b7eac19908bf9",
+        "log": "baseline-right-compat-analysis.log",
+        "negative_log": "baseline-right-negative.log"
+      },
+      "negative": {
+        "log": "baseline-right-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C230259__NRS-484B-200-1__motor_vehicle_driver/execution-manifest.json --case heldout__C230259__NRS-484B-200-1__motor_vehicle_driver__baseline_right --attempt \"$ATTEMPT\" --output \"$PROCESSING_OUTPUT\" --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSING_OUTPUT/v0001/feedback.json\"",
+        "test_log": "baseline-right-saved-current.log",
+        "test_log_sha256": "b4117ce0f2b017dda0356e2f4c6b959d7e28fdb85a37c6fab0c22018dae9af89",
+        "test_exit_code": 0
+      }
+    },
+    {
+      "case_id": "heldout__C230259__NRS-484B-200-1__motor_vehicle_driver__baseline_left",
+      "kind": "delivery",
+      "construction": "construction-baseline_left.json",
+      "construction_sha256": "a06a0060df07c19b1e08f5c172d70c1a836dda0d898f1ae8cf53828b1454f7df",
+      "measurement_procedure": {
+        "entrypoint": "right_half_finalizer.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Opposite-side body motion, two-way map geometry and source-camera visibility require Native verification"
+      },
+      "candidates": [],
+      "measurement_contract": "measurement-contract-baseline_left.json",
+      "fixture_recipe": "work/heldout__C230259__NRS-484B-200-1__motor_vehicle_driver/fixture-recipe-baseline_left.json",
+      "acquisition": {
+        "right_half_observation": {
+          "entrypoint": "runner.py",
+          "method": "20 Hz Native full-body road reference recorder",
+          "evidence": "ego_road_frames.jsonl, road_exception_context.json, trace.jsonl, video_frames.jsonl"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C230259__NRS-484B-200-1__motor_vehicle_driver/execution-manifest.json --case heldout__C230259__NRS-484B-200-1__motor_vehicle_driver__baseline_left --output .runtime-work/c230259-baseline-left-offline-3",
+        "exit_code": 0,
+        "log": "baseline-left-offline-tests.log",
+        "log_sha256": "e6ec182765cd965f2837d8eeaef5a64af48a104f245cd1a0b7281559194c57c1",
+        "construction_sha256": "a06a0060df07c19b1e08f5c172d70c1a836dda0d898f1ae8cf53828b1454f7df"
+      },
+      "compatibility": {
+        "receipt": "baseline-left-compatibility.json",
+        "sha256": "e5b26e484bffada50adb7beef6e0f76a46669503968b5bb60cbbd8c79ffeffea",
+        "log": "baseline-left-compat-analysis.log",
+        "negative_log": "baseline-left-negative.log"
+      },
+      "negative": {
+        "log": "baseline-left-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C230259__NRS-484B-200-1__motor_vehicle_driver/execution-manifest.json --case heldout__C230259__NRS-484B-200-1__motor_vehicle_driver__baseline_left --attempt \"$ATTEMPT\" --output \"$PROCESSING_OUTPUT\" --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSING_OUTPUT/v0001/feedback.json\"",
+        "test_log": "baseline-left-saved-current.log",
+        "test_log_sha256": "2b097659fb5c2107ccbf668f7edfe05a1ab894f5e5e338ab066c17cd4bee6d0f",
+        "test_exit_code": 0
+      }
+    }
+  ]
+}

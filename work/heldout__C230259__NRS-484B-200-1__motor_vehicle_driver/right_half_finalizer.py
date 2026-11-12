@@ -13,7 +13,7 @@ PREFIX = "heldout__C230259__NRS-484B-200-1__motor_vehicle_driver__"
 def _required(root, name):
     path = Path(root) / name
     if not path.is_file() or not path.read_bytes():
-        raise ValueError("Missing required original source: " + name)
+        raise ValueError("Missing required source: " + name)
     return path, sha256(path.read_bytes()).hexdigest()
 
 
@@ -56,7 +56,7 @@ def analyze(attempt, *, write_channels=True):
             for row in value["observations"]))
     return {"format": "worker-analysis-report", "case_id": case,
             "measurements": {"right_half_observation": {
-                "method": "measure original full-body directed road geometry",
+                "method": "analyze",
                 "value": value, "sources": {name: item[1] for name, item in sources.items()}}},
             "limitations": ["Road width and exception premises remain separately reviewed observations; physical completion, camera pixels and legal sufficiency are unverified."],
             "physical_acceptance_claimed": False,
