@@ -134,13 +134,17 @@ def audit(attempt: Path, case_id: str, *, diagnostic: bool = False) -> dict:
         require(seal.get("format") == "worker-sealed-capture" and
                 seal.get("provenance_kind") == "native" and
                 seal.get("diagnostic_fixture") is False and
+                seal.get("frames") == int(config["duration_s"]*config["rate_hz"]) and
+                seal.get("events") == ["capture_finished", "encoders_closed",
+                                       "restoration_verified"] and
                 exit_record.get("event") == "native_exit" and
                 exit_record.get("native_process_exit_code") == 0 and
                 exit_record.get("capture_seal_sha256") == sha(seal_path),
                 "Original Native capture closure differs")
         sealed = seal.get("sources", {})
         require(set(SOURCES+CAMERAS) <= set(sealed) and
-                all((attempt/name).is_file() and sha(attempt/name) == digest
+                all(attempt in (attempt/name).resolve().parents and
+                    (attempt/name).is_file() and sha(attempt/name) == digest
                     for name, digest in sealed.items()),
                 "Sealed original source inventory differs")
     history, trace, evidence, mapping = (rows(attempt/name) for name in
@@ -148,7 +152,8 @@ def audit(attempt: Path, case_id: str, *, diagnostic: bool = False) -> dict:
          "video_frames.jsonl"))
     for movement, capture in zip(trace, evidence):
         speed = capture["ego"].get("speed_provenance")
-        require(speed == "synthetic_native_sample" if diagnostic else
+        require((speed == "synthetic_native_sample" and
+                 movement.get("speed_provenance") == "synthetic_native_sample") if diagnostic else
                 speed != "synthetic_native_sample" and
                 movement.get("speed_provenance") != "synthetic_native_sample",
                 "Synthetic velocity cannot prove original Native motion")
