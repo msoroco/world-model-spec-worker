@@ -3,7 +3,38 @@
   "cell_id": "C110779",
   "actor": "motor_vehicle_driver",
   "status": "draft",
-  "sweep_specs": [],
+  "sweep_specs": [
+    {
+      "sweep_id": "backing_safety_spacing",
+      "target_law_id": "NRS-484B-113-1",
+      "judgment_refs": [
+        {
+          "phrase": "reasonable safety",
+          "note": "No statutory numeric safety cutoff."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "A finite physical-spacing sweep must retain body-clearance measurements without defining a legal safety threshold.",
+      "missing_inputs": [
+        "Expand source-bound spacing points beyond the two constructed cases; bind each exact construction and saved proof."
+      ]
+    },
+    {
+      "sweep_id": "backing_traffic_response",
+      "target_law_id": "NRS-484B-113-1",
+      "judgment_refs": [
+        {
+          "phrase": "without interfering with other traffic",
+          "note": "Traffic interference requires independent original-source observations."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "A finite physical traffic-response sweep must retain original deceleration and contact observations without assigning a legal interference threshold.",
+      "missing_inputs": [
+        "Define numeric controller setpoints and source-measured deceleration axis; expand and prove its exact cases."
+      ]
+    }
+  ],
   "cases": [
     {
       "case_id": "heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__shared_baseline",
@@ -50,7 +81,7 @@
     {
       "case_id": "heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__backing_clear_vehicle",
       "target_law_id": "NRS-484B-113-1",
-      "target_type": "deterministic_probe",
+      "target_type": "judgment_sweep",
       "rationale": "Source-bound intersection backing with separately authored through traffic; reasonable safety unresolved",
       "variable_assignments": {
         "reverse_motion": {
@@ -90,12 +121,21 @@
         "limitations": [
           "Reasonable safety and traffic interference remain unresolved."
         ]
+      },
+      "paired_probe_id": "clearance_safety",
+      "deliberate_differences": [
+        "other_traffic_spacing"
+      ],
+      "probe": {
+        "primary_variable": "other_traffic_spacing",
+        "comparison_or_standard": "original-source physical comparison; statutory judgment unresolved",
+        "target_value_or_branch": 8.0
       }
     },
     {
       "case_id": "heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__backing_near_vehicle",
       "target_law_id": "NRS-484B-113-1",
-      "target_type": "deterministic_probe",
+      "target_type": "judgment_sweep",
       "rationale": "Same intersection reverse route and separately authored through traffic at narrower source-measured clearance; safety and interference unresolved",
       "variable_assignments": {
         "reverse_motion": {
@@ -135,12 +175,21 @@
         "limitations": [
           "Reasonable safety and traffic interference remain unresolved."
         ]
+      },
+      "paired_probe_id": "clearance_safety",
+      "deliberate_differences": [
+        "other_traffic_spacing"
+      ],
+      "probe": {
+        "primary_variable": "other_traffic_spacing",
+        "comparison_or_standard": "original-source physical comparison; statutory judgment unresolved",
+        "target_value_or_branch": 9.5
       }
     },
     {
       "case_id": "heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__backing_vehicle_brakes",
       "target_law_id": "NRS-484B-113-1",
-      "target_type": "deterministic_probe",
+      "target_type": "judgment_sweep",
       "rationale": "Same backing corridor and initial through-vehicle placement; other vehicle is commanded to brake, with actual response measured",
       "variable_assignments": {
         "reverse_motion": {
@@ -180,12 +229,21 @@
         "limitations": [
           "Reasonable safety and traffic interference remain unresolved."
         ]
+      },
+      "paired_probe_id": "traffic_response",
+      "deliberate_differences": [
+        "other_traffic_response"
+      ],
+      "probe": {
+        "primary_variable": "other_traffic_response",
+        "comparison_or_standard": "original-source physical comparison; statutory judgment unresolved",
+        "target_value_or_branch": "braking"
       }
     },
     {
       "case_id": "heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__backing_vehicle_contact",
       "target_law_id": "NRS-484B-113-1",
-      "target_type": "deterministic_probe",
+      "target_type": "judgment_sweep",
       "rationale": "Same near backing route, with a held other vehicle and an original Native collision sensor; contact is observed, not presumed",
       "variable_assignments": {
         "reverse_motion": {
@@ -225,12 +283,22 @@
         "limitations": [
           "Reasonable safety and traffic interference remain unresolved."
         ]
+      },
+      "paired_probe_id": "contact_observation",
+      "deliberate_differences": [
+        "other_traffic_response",
+        "other_traffic_spacing"
+      ],
+      "probe": {
+        "primary_variable": "other_traffic_response",
+        "comparison_or_standard": "original-source physical comparison; statutory judgment unresolved",
+        "target_value_or_branch": "held_for_contact"
       }
     },
     {
       "case_id": "heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__no_reverse_control",
       "target_law_id": "NRS-484B-113-1",
-      "target_type": "deterministic_probe",
+      "target_type": "judgment_sweep",
       "rationale": "Same corridor and other traffic with measured forward-only ego activation; no safety judgment inferred",
       "variable_assignments": {
         "reverse_motion": {
@@ -269,12 +337,21 @@
         "limitations": [
           "Reasonable safety and traffic interference remain unresolved."
         ]
+      },
+      "paired_probe_id": "backing_activation",
+      "deliberate_differences": [
+        "reverse_motion"
+      ],
+      "probe": {
+        "primary_variable": "reverse_motion",
+        "comparison_or_standard": "original-source physical comparison; statutory judgment unresolved",
+        "target_value_or_branch": null
       }
     },
     {
       "case_id": "heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__backing_pedestrian",
       "target_law_id": "NRS-484B-113-1",
-      "target_type": "deterministic_probe",
+      "target_type": "judgment_sweep",
       "rationale": "Same backing and vehicle traffic with an additionally sourced Native pedestrian crossing; observed motion is measured from originals",
       "variable_assignments": {
         "reverse_motion": {
@@ -314,6 +391,15 @@
         "limitations": [
           "Reasonable safety and traffic interference remain unresolved."
         ]
+      },
+      "paired_probe_id": "pedestrian_safety",
+      "deliberate_differences": [
+        "pedestrian_crossing"
+      ],
+      "probe": {
+        "primary_variable": "pedestrian_crossing",
+        "comparison_or_standard": "original-source physical comparison; statutory judgment unresolved",
+        "target_value_or_branch": true
       }
     }
   ],
