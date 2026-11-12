@@ -22,14 +22,16 @@ class TurnTest(unittest.TestCase):
             self.assertTrue(all(p[i+1][1]>=p[i][1]-1e-9 for i in range(1,len(p)-2)))
     def samples(self):
         return [{'time_s':0,'native_road_direction':'north','body_corners_xy':[[-5.4,-20],[-3.6,-20],[-3.6,-16],[-5.4,-16]],'observed_left_curb_x':-6,'source':'native/footprints.jsonl'},
+                {'time_s':.5,'native_road_direction':'turn','body_corners_xy':[[-5.4,-5.4],[-3.6,-5.4],[-3.6,-3.6],[-5.4,-3.6]],'turn_left_edge_polyline_xy':[[-6,-10],[-6,-6],[-10,-6]],'source':'native/footprints.jsonl'},
                 {'time_s':1,'native_road_direction':'west','body_corners_xy':[[-20,-5.4],[-16,-5.4],[-16,-3.6],[-20,-3.6]],'observed_left_curb_y':-6,'source':'native/footprints.jsonl'}]
     def test_independent_approach_and_departure_measurement(self):
         r=m.measure(self.samples())
         self.assertAlmostEqual(r['minimum_approach_gap_m'],.6)
         self.assertAlmostEqual(r['minimum_departure_gap_m'],.6)
+        self.assertGreater(r['minimum_turn_gap_m'],0)
         self.assertEqual(r['legal_practicability_judgment'],'unresolved')
         same=self.samples()[:1]*2; same[1]=dict(same[1],time_s=1)
-        with self.assertRaisesRegex(ValueError,'both required'):m.measure(same)
+        with self.assertRaisesRegex(ValueError,'all required'):m.measure(same)
     def test_comparison_checks_fixed_and_declared_differences(self):
         a=dict(samples=[1],map_hash='m',curb_geometry_hash='c',road_directions=['north','west'],
                controller_policy_hash='p',camera_plan_hash='v',duration_s=8,

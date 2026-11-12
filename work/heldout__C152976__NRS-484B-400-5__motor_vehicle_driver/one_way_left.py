@@ -4,7 +4,7 @@ Curb gaps are measured physical quantities, not a legal definition of
 'as close as practicable'. The two one-way directions are north and west.
 """
 from dataclasses import dataclass
-from math import cos, sin, pi, isfinite
+from math import cos, sin, pi, isfinite, hypot
 
 @dataclass(frozen=True)
 class Case:
@@ -58,7 +58,7 @@ def measure(samples):
         if any(len(p)!=2 or not all(isinstance(v,(int,float)) and isfinite(v) for v in p)
                for p in s['body_corners_xy']):
             raise ValueError('invalid measured body footprint')
-        if s.get('native_road_direction') not in ('north','west'):
+        if s.get('native_road_direction') not in ('north','turn','west'):
             raise ValueError('one-way direction unverified')
         if not isinstance(s.get('time_s'),(int,float)) or not isfinite(s['time_s']) or (last is not None and s['time_s']<=last):
             raise ValueError('nonmonotonic time')
@@ -68,18 +68,40 @@ def measure(samples):
                 raise ValueError('missing original approach curb')
             gap=min(p[0] for p in s['body_corners_xy'])-s['observed_left_curb_x']
             segment='approach'
-        else:
+        elif s['native_road_direction']=='west':
             if not isinstance(s.get('observed_left_curb_y'),(int,float)) or not isfinite(s['observed_left_curb_y']):
                 raise ValueError('missing original departure curb')
             gap=min(p[1] for p in s['body_corners_xy'])-s['observed_left_curb_y']
             segment='departure'
+        else:
+            polyline=s.get('turn_left_edge_polyline_xy')
+            if (not isinstance(polyline,list) or len(polyline)<2 or
+                    any(not isinstance(p,list) or len(p)!=2 or
+                        any(type(v) not in (int,float) or not isfinite(v) for v in p)
+                        for p in polyline)):
+                raise ValueError('missing surveyed turn curb polyline')
+            def signed_gap(point):
+                choices=[]
+                for a,b in zip(polyline,polyline[1:]):
+                    dx,dy=b[0]-a[0],b[1]-a[1]
+                    length2=dx*dx+dy*dy
+                    if length2<=1e-12:raise ValueError('degenerate turn curb polyline')
+                    t=max(0.,min(1.,((point[0]-a[0])*dx+(point[1]-a[1])*dy)/length2))
+                    px,py=a[0]+t*dx,a[1]+t*dy
+                    distance=hypot(point[0]-px,point[1]-py)
+                    cross=dx*(point[1]-py)-dy*(point[0]-px)
+                    choices.append((distance,distance if cross<=0 else -distance))
+                return min(choices)[1]
+            gap=min(signed_gap(p) for p in s['body_corners_xy'])
+            segment='turn'
         observed.append({'time_s':s['time_s'],'segment':segment,'left_body_to_curb_gap_m':gap,
                          'source':s['source']})
-    if {'approach','departure'}!={r['segment'] for r in observed}:
-        raise ValueError('approach and departure both required')
+    if {'approach','turn','departure'}!={r['segment'] for r in observed}:
+        raise ValueError('approach, turn and departure all required')
     return {'samples':observed,
             'minimum_approach_gap_m':min(r['left_body_to_curb_gap_m'] for r in observed if r['segment']=='approach'),
             'minimum_departure_gap_m':min(r['left_body_to_curb_gap_m'] for r in observed if r['segment']=='departure'),
+            'minimum_turn_gap_m':min((r['left_body_to_curb_gap_m'] for r in observed if r['segment']=='turn'),default=None),
             'legal_practicability_judgment':'unresolved'}
 
 

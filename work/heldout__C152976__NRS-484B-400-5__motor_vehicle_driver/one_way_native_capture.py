@@ -18,6 +18,12 @@ def read_curb_source(path, surveyed_map_hash):
     for field in ('approach_left_curb_x', 'departure_left_curb_y'):
         if type(site[field]) not in (int, float) or not isfinite(site[field]):
             raise ValueError('Original curb coordinate invalid')
+    polyline = site.get('turn_left_edge_polyline_xy')
+    if (not isinstance(polyline, list) or len(polyline) < 2 or
+            any(not isinstance(point, list) or len(point) != 2 or
+                any(type(v) not in (int, float) or not isfinite(v) for v in point)
+                for point in polyline)):
+        raise ValueError('Surveyed physical turn-edge polyline missing')
     site['site_file_sha256'] = sha256(source).hexdigest()
     return site
 
@@ -55,7 +61,8 @@ class OneWayNativeCapture:
         west_error = abs(((yaw-180+180)%360)-180)
         if min(north_error, west_error) > 45:
             raise ValueError('Original turn heading left north-to-west route')
-        direction = 'north' if north_error <= west_error else 'west'
+        direction = ('north' if north_error <= 15 else
+                     'west' if west_error <= 15 else 'turn')
         row = {'video_frame': self.frames.index, 'carla_frame': frame,
                'native_frame': frame, 'actor_id': self.ego.id,
                'road_id': int(wp.road_id), 'time_s': time_s,
@@ -67,7 +74,8 @@ class OneWayNativeCapture:
                 'curb_source': self.site['curb_source'],
                 'site_file_sha256': self.site['site_file_sha256'],
                 'observed_left_curb_x': self.site['approach_left_curb_x'],
-                'observed_left_curb_y': self.site['departure_left_curb_y']}
+                'observed_left_curb_y': self.site['departure_left_curb_y'],
+                'turn_left_edge_polyline_xy': self.site['turn_left_edge_polyline_xy']}
         self.bodies.write(json.dumps(row, allow_nan=False)+'\n'); self.bodies.flush()
         self.edges.write(json.dumps(edge, allow_nan=False)+'\n'); self.edges.flush()
         self.frames.append(frame, time_s, subject_actor_id=self.ego.id)

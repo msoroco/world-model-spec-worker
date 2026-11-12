@@ -24,7 +24,7 @@ def main():
     folder = Path(__file__).resolve().parent
     manifest = folder/'execution-manifest.json'
     stage = repo/'.runtime-work/c382420-stage'
-    output = repo/'.runtime-work/c382420-return-saved-all'
+    output = Path(sys.argv[1]).resolve() if len(sys.argv)>1 else repo/'.runtime-work/c382420-return-saved-all'
     output.mkdir(parents=True, exist_ok=True)
     rows = []
     for entry in json.loads(manifest.read_text())['cases']:

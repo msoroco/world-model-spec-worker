@@ -7,7 +7,7 @@ from pathlib import Path
 from one_way_finalizer import finalize
 
 CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
-SOURCES = ('video_frames.jsonl', 'native/footprints.jsonl', 'native/road_edges.jsonl')
+SOURCES = ('video_frames.jsonl', 'native/footprints.jsonl', 'native/road_edges.jsonl', 'site.json')
 
 def measure_original_one_way(root, case):
     root = Path(root)
@@ -48,9 +48,9 @@ def build_result(attempt, report):
     evidence = [{'name': 'one_way_curb_gap_m', 'unit': 'm', 'reference': channel.name,
                  'sha256': sha256(channel.read_bytes()).hexdigest()}]
     result = {'case_id': report['case_id'], 'measured_values': {'one_way_curb_history': measured},
-        'target_checks': [{'target': 'measured approach and departure body to left curb gaps',
+        'target_checks': [{'target': 'measured approach, turn and departure body to left curb gaps',
                            'requested': 'retained full-body one-way left turn',
-                           'measured': [measured['minimum_approach_gap_m'], measured['minimum_departure_gap_m']],
+                           'measured': [measured['minimum_approach_gap_m'], measured['minimum_turn_gap_m'], measured['minimum_departure_gap_m']],
                            'method': 'original body corners and sourced curb lines',
                            'tolerance': None, 'matched': False, 'physical_cause_confirmed': False,
                            'cause_evidence': 'Native curb provenance and physical turn review pending'}],
@@ -65,8 +65,9 @@ def build_result(attempt, report):
              'method': 'original full-body left edge relative to separately sourced approach/departure curbs',
              'time_window': 'all original frames', 'statistic': 'segment minima',
              'reference': channel.name,
-             'value': min(measured['minimum_approach_gap_m'],
-                          measured['minimum_departure_gap_m']),
+             'value': min(v for v in (measured['minimum_approach_gap_m'],
+                          measured['minimum_turn_gap_m'],
+                          measured['minimum_departure_gap_m']) if v is not None),
              'sample_window_s': [measured['samples'][0]['time_s'], measured['samples'][-1]['time_s']]}},
         'physical_acceptance_claimed': False, 'legal_acceptance_claimed': False}
     return result

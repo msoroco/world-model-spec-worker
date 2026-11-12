@@ -11,7 +11,7 @@ from pathlib import Path
 from one_way_left import measure
 
 
-REQUIRED = ('video_frames.jsonl', 'native/footprints.jsonl', 'native/road_edges.jsonl')
+REQUIRED = ('video_frames.jsonl', 'native/footprints.jsonl', 'native/road_edges.jsonl', 'site.json')
 
 
 def _rows(path):
@@ -47,6 +47,10 @@ def _index(rows, label):
 def finalize(source_dir):
     root = Path(source_dir)
     sources = {name: root / name for name in REQUIRED}
+    site = json.loads(sources['site.json'].read_text()) if sources['site.json'].is_file() else None
+    if not isinstance(site, dict) or not site.get('curb_source') or not site.get('one_way_source'):
+        raise ValueError('missing original source: site.json')
+    site_sha = hashlib.sha256(sources['site.json'].read_bytes()).hexdigest()
     frame_rows = _rows(sources['video_frames.jsonl'])
     bodies = _index(_rows(sources['native/footprints.jsonl']), 'footprint')
     edges = _index(_rows(sources['native/road_edges.jsonl']), 'road edge')
@@ -69,7 +73,12 @@ def finalize(source_dir):
             raise ValueError('original road identity differs')
         if not edge.get('one_way_source') or not edge.get('curb_source'):
             raise ValueError('original one-way or curb source absent')
-        if edge.get('native_road_direction') not in ('north', 'west'):
+        if (edge.get('site_file_sha256') != site_sha or
+                edge.get('turn_left_edge_polyline_xy') != site.get('turn_left_edge_polyline_xy') or
+                edge.get('curb_source') != site['curb_source'] or
+                edge.get('one_way_source') != site['one_way_source']):
+            raise ValueError('original curb/site source binding differs')
+        if edge.get('native_road_direction') not in ('north', 'turn', 'west'):
             raise ValueError('unverified one-way direction')
         observed.append({
             'time_s': t,
@@ -77,6 +86,7 @@ def finalize(source_dir):
             'body_corners_xy': body.get('body_corners_xy'),
             'observed_left_curb_x': edge.get('observed_left_curb_x'),
             'observed_left_curb_y': edge.get('observed_left_curb_y'),
+            'turn_left_edge_polyline_xy': edge.get('turn_left_edge_polyline_xy'),
             'source': 'native/footprints.jsonl + native/road_edges.jsonl',
         })
     result = measure(observed)

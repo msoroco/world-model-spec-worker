@@ -20,7 +20,8 @@ class TestOriginalTurnCapture(unittest.TestCase):
         path.write_text(json.dumps({'opendrive_sha256': 'map-hash', 'source_id': 'fixture-site',
             'one_way_source': 'fixture one-way map survey',
             'curb_source': 'fixture physical-edge survey',
-            'approach_left_curb_x': -6., 'departure_left_curb_y': -6.}))
+            'approach_left_curb_x': -6., 'departure_left_curb_y': -6.,
+            'turn_left_edge_polyline_xy': [[-6.,-10.],[-6.,-6.],[-10.,-6.]]}))
         return path
 
     def test_original_writer_joins_both_road_curb_samples(self):
@@ -34,14 +35,17 @@ class TestOriginalTurnCapture(unittest.TestCase):
             writer = OneWayNativeCapture(path, actor, world_map,
                 {'opendrive_sha256':'map-hash'}, site)
             writer.append(100, 0.)
-            transform.rotation.yaw = 180.
+            transform.rotation.yaw = 135.
             writer.append(101, .05)
+            transform.rotation.yaw = 180.
+            writer.append(102, .10)
             writer.close()
             measured = finalize(path)
             self.assertAlmostEqual(measured['minimum_approach_gap_m'], .6)
             self.assertAlmostEqual(measured['minimum_departure_gap_m'], .6)
+            self.assertGreater(measured['minimum_turn_gap_m'], 0)
             edge_rows = [json.loads(line) for line in (path/'native/road_edges.jsonl').read_text().splitlines()]
-            self.assertEqual([r['native_road_direction'] for r in edge_rows], ['north','west'])
+            self.assertEqual([r['native_road_direction'] for r in edge_rows], ['north','turn','west'])
             self.assertEqual(edge_rows[0]['site_file_sha256'], hashlib.sha256(site.read_bytes()).hexdigest())
 
     def test_rejects_stale_source_and_wrong_heading(self):
