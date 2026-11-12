@@ -57,7 +57,7 @@ def audit(clear, braking):
 
 
 def main():
-    clear = json.loads((WORK / 'diagnostic-clear-audit.json').read_text())
+    clear = json.loads((WORK / 'diagnostic-first-primary.json').read_text())
     braking = json.loads((WORK / 'diagnostic-braking-vehicle.json').read_text())
     proof = audit(json.loads(json.dumps(clear)), json.loads(json.dumps(braking)))
     changed = json.loads(json.dumps(braking))
