@@ -1,0 +1,163 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver",
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3",
+  "cases": [
+    {
+      "case_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__indicator_activation_4f",
+      "kind": "delivery",
+      "construction": "indicator-activation-4f-construction.json",
+      "construction_sha256": "5081d1c0c0843f7fa98828b69ae910c0d09f97afd3d9014368217576514a5ac8",
+      "measurement_procedure": {
+        "entrypoint": "turn_finalizer.py"
+      },
+      "measurement_contract": "indicator-activation-4f-measurement-contract.json",
+      "fixture_recipe": "work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/indicator-activation-4f-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native indicator activation index may not precede the measured turn onset or yield visible lamp pixels"
+      },
+      "acquisition": {
+        "turn_signal_observation": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "original 20 Hz Native turn with indicator readback after requested activation frame index",
+          "evidence": "ego_turn_motion, ego_signal_audio, affected_participants, participant_bodies and four videos"
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "indicator-activation-4f-fallback1-construction.json",
+          "construction_sha256": "de8cca7acf5d94bfaeb2c8d61bc98cb7496979843485a2b24f8895bf4975d3a9",
+          "trigger": {
+            "source": "Native connected left-turn route inventory",
+            "metric": "eligible routes at 2 m sampling",
+            "failure_condition": "Primary sampling finds no connected left turn"
+          },
+          "changed_knobs": [
+            "route sampling 2 m/6 steps to 1.5 m/8 steps"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/indicator-activation-4f-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__indicator_activation_4f --output .runtime-work/c111603-indicator-activation-4f-fallback1-offline-a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback1",
+            "exit_code": 0,
+            "log": "indicator-activation-4f-fallback1-offline.log",
+            "log_sha256": "0d1d2f36f97c05865d1d4b9f4382ca6ae5118ba61857e55b68da9f4c12ef6895",
+            "construction_sha256": "de8cca7acf5d94bfaeb2c8d61bc98cb7496979843485a2b24f8895bf4975d3a9"
+          },
+          "compatibility": {
+            "receipt": "indicator-activation-4f-fallback1-receipt.json",
+            "sha256": "02a3918eee686f077903490cf3447e8b2cdef8b3884a01f93f548e3c2b613d17",
+            "log": "indicator-activation-4f-fallback1-analysis.log",
+            "negative_log": "indicator-activation-4f-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "indicator-activation-4f-fallback2-construction.json",
+          "construction_sha256": "1e76e9167c9f2629130c9bf7265bbb078b69d7e67c7ec83f5809788afef5b2fa",
+          "trigger": {
+            "source": "Original ego speed, yaw and indicator readback",
+            "metric": "approach speed settling and sampled turn onset",
+            "failure_condition": "Primary speed destabilizes activation-index comparison timing"
+          },
+          "changed_knobs": [
+            "target speed 5 to 4 m/s and gain .25 to .2"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/indicator-activation-4f-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__indicator_activation_4f --output .runtime-work/c111603-indicator-activation-4f-fallback2-offline-a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback2",
+            "exit_code": 0,
+            "log": "indicator-activation-4f-fallback2-offline.log",
+            "log_sha256": "defe4c9a357121335982f825476b6fc3697ff893ffea2c10124d7b0c34773163",
+            "construction_sha256": "1e76e9167c9f2629130c9bf7265bbb078b69d7e67c7ec83f5809788afef5b2fa"
+          },
+          "compatibility": {
+            "receipt": "indicator-activation-4f-fallback2-receipt.json",
+            "sha256": "8e06aad7dcdc8c508340e4bbda4bc6bd33ec40aff213b7fd30a76fb20614ecc2",
+            "log": "indicator-activation-4f-fallback2-analysis.log",
+            "negative_log": "indicator-activation-4f-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "indicator-activation-4f-fallback3-construction.json",
+          "construction_sha256": "b3a287e815849ad70e0a894a55bf93cb8e45cdd91059ef4e0522b0170511641c",
+          "trigger": {
+            "source": "Original overview RGB decode",
+            "metric": "ego and affected vehicle visible pixel count",
+            "failure_condition": "Primary overview crops participant or lamp context"
+          },
+          "changed_knobs": [
+            "overview camera mount x -8 to -9 m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/indicator-activation-4f-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__indicator_activation_4f --output .runtime-work/c111603-indicator-activation-4f-fallback3-offline-a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback3",
+            "exit_code": 0,
+            "log": "indicator-activation-4f-fallback3-offline.log",
+            "log_sha256": "9b8dda336838ee173aaf33290309f24527f79a778e107596b9f40055694fbf3a",
+            "construction_sha256": "b3a287e815849ad70e0a894a55bf93cb8e45cdd91059ef4e0522b0170511641c"
+          },
+          "compatibility": {
+            "receipt": "indicator-activation-4f-fallback3-receipt.json",
+            "sha256": "ffde2eeaea7c256a2352aa0a6232c4e020aec3a0dfe813996d39a589dab78197",
+            "log": "indicator-activation-4f-fallback3-analysis.log",
+            "negative_log": "indicator-activation-4f-fallback3-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/indicator-activation-4f-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__indicator_activation_4f --output .runtime-work/c111603-indicator-activation-4f-primary-offline-a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "indicator-activation-4f-primary-offline.log",
+        "log_sha256": "efab79e9e11e6e4904c5304d6cdce5b97c5f255c7c684d61e09758f15e7b81fd",
+        "construction_sha256": "5081d1c0c0843f7fa98828b69ae910c0d09f97afd3d9014368217576514a5ac8"
+      },
+      "compatibility": {
+        "receipt": "indicator-activation-4f-primary-receipt.json",
+        "sha256": "7e493a2865966c37190b621a082cd0a64446b8b5e6d7393effdcfca00b0ba0e9",
+        "log": "indicator-activation-4f-primary-analysis.log",
+        "negative_log": "indicator-activation-4f-primary-negative.log"
+      },
+      "negative": {
+        "log": "indicator-activation-4f-primary-negative.log"
+      },
+      "saved_processing": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/indicator-activation-4f-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__indicator_activation_4f --attempt .runtime-work/c111603-indicator-activation-4f-saved-attempt-a --output .runtime-work/c111603-indicator-activation-4f-saved-a --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "exit_code": 0,
+        "log": "indicator-activation-4f-saved.log",
+        "log_sha256": "33cacb080d32b7ccc481ffe1f4e15150d4e24fe83b19cc9c43f5bb2dc54db05f",
+        "receipt": "indicator-activation-4f-saved-receipt.json",
+        "receipt_sha256": "33cacb080d32b7ccc481ffe1f4e15150d4e24fe83b19cc9c43f5bb2dc54db05f"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__indicator_activation_4f",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "indicator_activation_audit.py",
+        "script_sha256": "ac722d1cfeafdb771c3b8d8aa411f9b777b054cdae63492defcf93cee8860281",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/indicator_activation_audit.py --activation 4 --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__indicator_activation_4f --attempt .runtime-work/c111603-indicator-activation-4f-primary-compat-a --baseline .runtime-work/c111603-no-indicator-primary-compat-c --output work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/indicator-activation-4f-audit.json",
+        "test_exit_code": 0,
+        "test_log": "indicator-activation-4f-audit.log",
+        "test_log_sha256": "710cc2d13e9f0f461cc9ebbd43586c94a7824daf15912f4ee7ae4498a6ca24af",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/indicator_activation_audit.py --activation 4 --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__indicator_activation_4f --attempt .runtime-work/c111603-indicator-activation-4f-primary-compat-a --baseline .runtime-work/c111603-no-indicator-primary-compat-c --output work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/indicator-activation-4f-audit.json --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Stale or missing original indicator timing source",
+        "negative_log": "indicator-activation-4f-stale-audit.log",
+        "negative_log_sha256": "19c303ce429c556b257212d47ab93f10eb96c91a1117e61c7130fd4afd8e952b"
+      }
+    }
+  ]
+}

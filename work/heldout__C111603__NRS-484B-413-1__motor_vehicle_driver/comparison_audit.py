@@ -12,6 +12,7 @@ PREFIX = {
     'vehicle_left_indicator': 'vehicle-indicator',
     'vehicle_no_indicator': 'vehicle-no-indicator',
     'clearance_wide': 'clearance-wide',
+    'clearance_mid': 'clearance-mid',
     'clearance_narrow': 'clearance-narrow',
     'ped_horn_audio': 'ped-horn',
     'ped_no_horn_audio': 'ped-no-horn',
@@ -22,6 +23,7 @@ PREFIX = {
 CHANGED = {
     'pedestrian_listener_distance': {'participant_bodies.jsonl'},
     'reasonable_safety_clearance': {'participant_bodies.jsonl'},
+    'reasonable_safety_scalar_path': {'participant_bodies.jsonl'},
     'pedestrian_horn_audio': {'ego_signal_audio.jsonl', 'listener_audio_original.jsonl', 'horn_actuation.jsonl'},
     'vehicle_indicator': {'ego_signal_audio.jsonl'},
     'vehicle_signal_alternative': {'ego_signal_audio.jsonl', 'hand_signal_original.jsonl'},
@@ -68,6 +70,16 @@ def minimum_gap(files):
                for a, b in zip(motion, bodies))
 
 
+def onset_gap(files):
+    motion = rows(files, 'ego_turn_motion.jsonl')
+    bodies = rows(files, 'participant_bodies.jsonl')
+    first_yaw = motion[0]['ego_yaw_deg']
+    onset = next(i for i, row in enumerate(motion)
+                 if abs(row['ego_yaw_deg'] - first_yaw) > 1e-6)
+    a, b = motion[onset], bodies[onset]['bodies']['affected_vehicle']
+    return math.hypot(a['x_m'] - b['x_m'], a['y_m'] - b['y_m']) - a['body_radius_m'] - b['body_radius_m']
+
+
 def listener_energy(files):
     motion = rows(files, 'ego_turn_motion.jsonl')
     signals = rows(files, 'ego_signal_audio.jsonl')
@@ -101,6 +113,46 @@ def listener_energy(files):
 
 
 def audit(comparison_id, override_case=None, override=None):
+    if comparison_id == 'reasonable_safety_scalar_path':
+        plan = json.loads((HERE / 'case-plan.json').read_text())
+        comparison = next(row for row in plan['comparisons']
+                          if row['comparison_id'] == comparison_id)
+        cases = comparison['case_ids']
+        if len(cases) != 3 or [case.rsplit('__', 1)[-1] for case in cases] != [
+                'clearance_narrow', 'clearance_mid', 'clearance_wide']:
+            raise ValueError('Exact clearance scalar points differ')
+        loaded = [load_case(case, override if case == override_case else None)
+                  for case in cases]
+        fixed = FIXED
+        for name in fixed:
+            if any(name not in files or files[name] != loaded[0][0][name]
+                   for files, _, _ in loaded):
+                raise ValueError('Fixed original comparison source differs: ' + name)
+        if any(videos != loaded[0][1] for _, videos, _ in loaded):
+            raise ValueError('Fixed four-camera descriptions differ')
+        bodies = [rows(files, 'participant_bodies.jsonl') for files, _, _ in loaded]
+        for points in zip(*bodies):
+            xy = [(row['bodies']['affected_vehicle']['x_m'],
+                   row['bodies']['affected_vehicle']['y_m']) for row in points]
+            if xy != [(5, 4), (7, 7), (10, 10)]:
+                raise ValueError('Exact affected-vehicle scalar path differs')
+        minimum = [minimum_gap(files) for files, _, _ in loaded]
+        onset = [onset_gap(files) for files, _, _ in loaded]
+        if not (minimum[0] < minimum[1] <= minimum[2] and
+                onset[0] < onset[1] < onset[2]):
+            raise ValueError('Original clearance scalar measurements differ')
+        return {'format': 'worker-turn-comparison-audit',
+                'comparison_id': comparison_id, 'case_ids': cases,
+                'diagnostic_fixture': True,
+                'source_refs': [ref for _, _, ref in loaded],
+                'fixed_source_sha256': {name: sha_bytes(loaded[0][0][name])
+                                        for name in sorted(fixed)},
+                'declared_difference_sources': ['participant_bodies.jsonl'],
+                'measured_values': {'placement_scalar_m': [-1, 2, 5],
+                                    'minimum_sampled_gap_m': minimum,
+                                    'gap_at_turn_onset_m': onset},
+                'physical_acceptance_claimed': False,
+                'legal_acceptance_claimed': False}
     if comparison_id == 'pedestrian_listener_distance':
         from listener_sweep_audit import audit as listener_audit
         result = listener_audit()

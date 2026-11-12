@@ -96,6 +96,53 @@
         "test_log_sha256": "2b097659fb5c2107ccbf668f7edfe05a1ab894f5e5e338ab066c17cd4bee6d0f",
         "test_exit_code": 0
       }
+    },
+    {
+      "case_id": "heldout__C230259__NRS-484B-200-1__motor_vehicle_driver__passing_left",
+      "kind": "delivery",
+      "construction": "construction-passing_left.json",
+      "construction_sha256": "cdb0a29754ba2fceb5f5e071db5b4b8770131abe9f02e410cd0f0985ad20756c",
+      "measurement_procedure": {
+        "entrypoint": "right_half_finalizer.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Passing clearance, left excursion, right return and four-camera visibility need Native verification"
+      },
+      "candidates": [],
+      "measurement_contract": "measurement-contract-passing_left.json",
+      "fixture_recipe": "work/heldout__C230259__NRS-484B-200-1__motor_vehicle_driver/fixture-recipe-passing_left.json",
+      "acquisition": {
+        "right_half_observation": {
+          "entrypoint": "passing_runner.py",
+          "method": "160-frame Native full-body and directed road recorder with passing setup",
+          "evidence": "ego_road_frames.jsonl, road_exception_context.json, trace.jsonl, video_frames.jsonl"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C230259__NRS-484B-200-1__motor_vehicle_driver/execution-manifest.json --case heldout__C230259__NRS-484B-200-1__motor_vehicle_driver__passing_left --output .runtime-work/c230259-passing-left-offline-3",
+        "exit_code": 0,
+        "log": "passing-left-offline-tests.log",
+        "log_sha256": "921b60a7fd52e978fbb551cacd29df2d6708879400278e1fcc70fceeb0c6f8e0",
+        "construction_sha256": "cdb0a29754ba2fceb5f5e071db5b4b8770131abe9f02e410cd0f0985ad20756c"
+      },
+      "compatibility": {
+        "receipt": "passing-left-compatibility.json",
+        "sha256": "408f956b4504ec959ce82bae2cad82c680dc358aca8291f24c0733fd922da2d2",
+        "log": "passing-left-compat-analysis.log",
+        "negative_log": "passing-left-negative.log"
+      },
+      "negative": {
+        "log": "passing-left-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C230259__NRS-484B-200-1__motor_vehicle_driver/execution-manifest.json --case heldout__C230259__NRS-484B-200-1__motor_vehicle_driver__passing_left --attempt \"$ATTEMPT\" --output \"$PROCESSING_OUTPUT\" --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSING_OUTPUT/v0001/feedback.json\"",
+        "test_log": "passing-left-saved.log",
+        "test_log_sha256": "eba5492fd0354b9807b138ded3a0c9ac9aca73e7f37dc0bb1251e363a66380bc",
+        "test_exit_code": 0
+      }
     }
   ]
 }

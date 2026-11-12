@@ -20,6 +20,9 @@ SOURCES = (
     'listener-2m-manifest.json',
     'listener-4m-manifest.json',
     'listener-6m-manifest.json',
+    'indicator-activation-2f-manifest.json',
+    'indicator-activation-4f-manifest.json',
+    'indicator-activation-6f-manifest.json',
 )
 
 

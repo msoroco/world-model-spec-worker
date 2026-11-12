@@ -1,7 +1,7 @@
 {
   "assignment_id": "heldout__C125714__NRS-484B-200-1__motor_vehicle_driver",
   "input_sha256": "c8ddf30399cb5d1fc97236ca21271f82a126c632ddf16a819a853f952434c268",
-  "status": "partial",
+  "status": "ready",
   "applied_update": 0,
   "tests": [
     {
@@ -263,10 +263,10 @@
       "sha256": "9eb92d4ba3f90465a13b16ef5ba9aaed00e8bee5d21ba4ccdbd6e99da5d3da93"
     },
     {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/tests -v",
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/tests",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "d4cb43d0160203bee696c55fe90971dc25a5ad3e58567a65301cf495912a018a"
+      "sha256": "7d6ed60284a2b736859c072f4e87eb86c2a1417cba066caf012306aa090bebd0"
     },
     {
       "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/construction-probe-three-lane-manifest.json --case heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__three_lane --output .runtime-work/c125714-three-lane-offline-20261111a --python \"$PWD/.venv-cpu/bin/python\"",
@@ -597,12 +597,55 @@
       "exit_code": 0,
       "log": "fallback-audit-receipt.json",
       "sha256": "166043d90bf5fea61020c50acd34567b0c3b629f7257d89a678486b996c7a2ed"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/semantic_audit.py --output work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/semantic-audit-receipt.json",
+      "exit_code": 0,
+      "log": "semantic-audit.log",
+      "sha256": "046bcc1efd26cd98382c75ebef05770070eae338079e437d104fcdf847f8d448"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/rebind_primary_compatibility.py",
+      "exit_code": 0,
+      "log": "canonical-primary-rebind.log",
+      "sha256": "e13507bd3cf9586fb9c348f5ba3249b2866745ccec96a511f4a1093f95049039"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/build_delivery_manifest.py",
+      "exit_code": 0,
+      "log": "canonical-delivery-build.log",
+      "sha256": "6bacbd10a2ef7f62854efed68ef8875747325c64881467b835fb7276b9b56ccc"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/bind_physical_fixtures.py",
+      "exit_code": 0,
+      "log": "physical-fixture-build.log",
+      "sha256": "8fedf58cc29596b0bc3ecc1e505cf818e99480fd7e776138a137f3fef029db71"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/bind_delivery_acceptance.py",
+      "exit_code": 0,
+      "log": "delivery-acceptance-build.log",
+      "sha256": "8127220566a43fb478941a2300c270f39b8b3679cb35c2ee30d3b4717674887a"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/canonical_package_audit.py",
+      "exit_code": 0,
+      "log": "canonical-package-audit.log",
+      "sha256": "29324e1f2c14a36912b7d0c23635774e1df28cd2a400602f949e2ba096b22f05"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment heldout__C125714__NRS-484B-200-1__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 0,
+      "log": "scoped-strict-check.log",
+      "sha256": "cd0ce8f9ce7d7ffd934f1adfe1f75fb1b0c6088bdab3c4260b887fe2724e6a7c"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA route and body motion in the selected median-opening cell",
     "Original camera pixels, complete participant visibility, and physical case completion"
   ],
-  "reason": "Partial: all eight named case intents have exact CPU diagnostic chains and each now has three distinct physical-risk fallback constructions with exact offline and positive/missing-source compatibility receipts. The independent fallback audit validates 24 candidate constructions and their current hashes. Full canonical execution/delivery artifacts, physical-outcome fixtures, semantic stage proposals, complete comparison acceptance contracts and local integration proofs remain CPU work; actual Native scenes and legal context are also unverified.",
-  "readiness_kind": "delivery_prepared"
+  "reason": null,
+  "readiness_kind": "delivery_prepared",
+  "first_gpu_delivery_command": "python scenario_pipeline/pipeline.py execute-delivery --assignment heldout__C125714__NRS-484B-200-1__motor_vehicle_driver --case heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__baseline_right_east --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --job \"$JOB_ID\" --db \"$DB\" --run \"$RUN\""
 }

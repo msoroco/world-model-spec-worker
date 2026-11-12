@@ -1,0 +1,108 @@
+{
+  "format": "worker-inline-construction",
+  "case_id": "heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__baseline_right_east",
+  "cell_id": "C125714",
+  "law_id": "NRS-484B-200-1",
+  "actor": "motor_vehicle_driver",
+  "entrypoint": "runner.py",
+  "recording_description": {
+    "channels": [
+      {
+        "name": "right_half_offset_m",
+        "unit": "m",
+        "method": "original Native directed center boundary and full body footprint",
+        "sampling_rate_hz": 20,
+        "time_window": "all original frames",
+        "reference_frame": "directed roadway center boundary",
+        "uncertainty": "Native map lane boundary and vehicle body precision"
+      },
+      {
+        "name": "closure_cone_count",
+        "unit": "count",
+        "method": "original Native per-frame cone actor ID/transform readback",
+        "sampling_rate_hz": 20,
+        "time_window": "all original frames",
+        "reference_frame": "selected right-half lane",
+        "uncertainty": "Native static-prop spawn and physical occupancy"
+      },
+      {
+        "name": "passing_relative_longitudinal_m",
+        "unit": "m",
+        "method": "two original Native actor positions projected on selected travel tangent",
+        "sampling_rate_hz": 20,
+        "time_window": "all original frames",
+        "reference_frame": "directed roadway tangent",
+        "uncertainty": "Native actor pose and waypoint tangent precision"
+      },
+      {
+        "name": "roadway_width_m",
+        "unit": "m",
+        "method": "original Native directed road edges and body envelope",
+        "sampling_rate_hz": 20,
+        "time_window": "all original frames",
+        "reference_frame": "directed roadway cross-section",
+        "uncertainty": "mapped lane geometry and actor body dimensions"
+      },
+      {
+        "name": "one_way_sign_lateral_offset_m",
+        "unit": "m",
+        "method": "original Native one-way sign actor and mapped roadway centerline",
+        "sampling_rate_hz": 20,
+        "time_window": "all original frames",
+        "reference_frame": "directed roadway",
+        "uncertainty": "sign visible in pixels and official designation unverified"
+      },
+      {
+        "name": "three_lane_roadway_width_m",
+        "unit": "m",
+        "method": "original Native three-lane edge and lane-width readback",
+        "sampling_rate_hz": 20,
+        "time_window": "all original frames",
+        "reference_frame": "directed roadway",
+        "uncertainty": "map lane geometry and applicable lane rule unverified"
+      }
+    ],
+    "context_inputs": [],
+    "limitations": [
+      "Each exact construction has its own source-bound channels. This union is the assignment routing inventory, not a single recording claim.",
+      "Actual Native map, motion, pixels, legal width and exception authority remain unverified."
+    ]
+  },
+  "files": [
+    {
+      "path": "runner.py",
+      "source": "work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/runner.py",
+      "content": "\"\"\"Select one exact C125714 construction from the source-hashed delivery manifest.\"\"\"\n\nimport argparse\nimport json\nfrom pathlib import Path\nimport subprocess\nimport sys\nfrom tempfile import TemporaryDirectory\n\n\nHERE = Path(__file__).resolve().parent\nROOT = HERE.parents[1]\nsys.path.insert(0, str(ROOT / 'runtime/scenario_pipeline'))\nfrom worker_exchange.candidate_constructions import select\nfrom worker_exchange.runtime_cli import materialize\n\n\ndef dispatch(case, candidate, output, host, port, check_only):\n    manifest = HERE / 'execution-manifest.json'\n    entry, selected, construction = select(manifest, case, candidate)\n    if entry.get('kind') != 'delivery':\n        raise ValueError('Exact case is not a delivery construction')\n    config = json.loads((HERE / 'config.json').read_text())\n    if case not in config['supported_case_ids']:\n        raise ValueError('Case not supported by canonical configuration')\n    if check_only:\n        with TemporaryDirectory(prefix='c125714-check-', dir=ROOT / '.runtime-work') as temp:\n            target = Path(temp) / 'attempt'\n            materialize(manifest, case, target, candidate)\n            command = [sys.executable, str(target / construction['entrypoint']),\n                       '--check', '--config', str(target / 'config.json')]\n            subprocess.run(command, cwd=target, check=True)\n        return {'case_id': case, 'candidate': selected['id'], 'offline_checked': True}\n    if not output:\n        raise ValueError('Fresh Native output directory required')\n    target = Path(output).resolve()\n    materialize(manifest, case, target, candidate)\n    command = [sys.executable, str(target / construction['entrypoint']),\n               '--run', '--config', str(target / 'config.json'), '--output', str(target),\n               '--host', host, '--port', str(port)]\n    subprocess.run(command, cwd=target, check=True)\n    return {'case_id': case, 'candidate': selected['id'], 'native_output': str(target)}\n\n\ndef main():\n    parser = argparse.ArgumentParser()\n    parser.add_argument('--case', required=True)\n    parser.add_argument('--candidate', default='primary')\n    parser.add_argument('--check', action='store_true')\n    parser.add_argument('--output')\n    parser.add_argument('--host', default='127.0.0.1')\n    parser.add_argument('--port', type=int, default=2000)\n    args = parser.parse_args()\n    print(json.dumps(dispatch(args.case, args.candidate, args.output,\n                              args.host, args.port, args.check), indent=2))\n\n\nif __name__ == '__main__':\n    main()\n"
+    },
+    {
+      "path": "config.json",
+      "source": "work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/config.json",
+      "content": "{\n  \"selected_case_id\": \"heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__baseline_right_east\",\n  \"law_id\": \"NRS-484B-200-1\",\n  \"cell_id\": \"C125714\",\n  \"actor\": \"motor_vehicle_driver\",\n  \"rate_hz\": 20,\n  \"frames\": 80,\n  \"required_atoms\": [],\n  \"source_packets\": [],\n  \"duration_s\": 4,\n  \"cameras\": [\n    {\n      \"name\": \"overview\",\n      \"width\": 1920,\n      \"height\": 1080,\n      \"pose_strategy\": \"subject-mounted provisional right-half view\",\n      \"fov_deg\": 95\n    },\n    {\n      \"name\": \"approach\",\n      \"width\": 1280,\n      \"height\": 720,\n      \"pose_strategy\": \"subject-mounted provisional right-half view\",\n      \"fov_deg\": 90\n    },\n    {\n      \"name\": \"reference_corner\",\n      \"width\": 1280,\n      \"height\": 720,\n      \"pose_strategy\": \"subject-mounted provisional right-half view\",\n      \"fov_deg\": 100\n    },\n    {\n      \"name\": \"driver_reference\",\n      \"width\": 1280,\n      \"height\": 720,\n      \"pose_strategy\": \"subject-mounted provisional right-half view\",\n      \"fov_deg\": 85\n    }\n  ],\n  \"case\": {\n    \"case_id\": \"heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__baseline_right_east\",\n    \"recording_description\": {\n      \"channels\": [\n        {\n          \"name\": \"right_half_offset_m\",\n          \"unit\": \"m\",\n          \"method\": \"original Native directed center boundary and full body footprint\",\n          \"sampling_rate_hz\": 20,\n          \"time_window\": \"all original frames\",\n          \"reference_frame\": \"directed roadway center boundary\",\n          \"uncertainty\": \"Native map lane boundary and vehicle body precision\"\n        }\n      ],\n      \"context_inputs\": [],\n      \"limitations\": [\n        \"Physical median-opening geometry, legal sufficient width and all exceptions require separate review.\"\n      ]\n    }\n  },\n  \"travel_direction\": \"east\",\n  \"supported_case_ids\": [\n    \"heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__baseline_right_east\",\n    \"heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__baseline_right_west\",\n    \"heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__unexcepted_left\",\n    \"heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__right_half_closed\",\n    \"heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__passing_same_direction\",\n    \"heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__insufficient_width\",\n    \"heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__posted_one_way\",\n    \"heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__three_lane\"\n  ]\n}\n"
+    }
+  ],
+  "measurement_plan": {
+    "method": "Route each selected case to its immutable exact measurement contract in execution-manifest.json"
+  },
+  "static_checks": [
+    {
+      "name": "eight exact constructions",
+      "status": "passed"
+    }
+  ],
+  "termination_rules": [
+    "Every selected exact case retains its own frame, duration and physical completion checks."
+  ],
+  "mechanisms": {
+    "construction_status": "source_hashed_exact_dispatch",
+    "cases": [
+      "heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__baseline_right_east",
+      "heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__baseline_right_west",
+      "heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__unexcepted_left",
+      "heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__right_half_closed",
+      "heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__passing_same_direction",
+      "heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__insufficient_width",
+      "heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__posted_one_way",
+      "heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__three_lane"
+    ]
+  }
+}

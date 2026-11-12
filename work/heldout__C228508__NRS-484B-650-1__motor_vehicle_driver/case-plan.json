@@ -85,13 +85,13 @@
       "gap_ids": [
         "full-statute"
       ],
-      "description": "speed, device and marked-lane acts without an immediate-hazard event",
-      "construction_status": "planned_unconstructed",
+      "description": "same speed and repeated-following requests with adaptive lead response guarding short positive closing TTC",
+      "construction_status": "constructed_cpu_diagnostic",
       "physical_risk": {
-        "risk": "multiple acts and immediate-hazard participant may not remain in the same original one-mile driving window",
-        "trigger_source": "20 Hz original ego path, actor/event sources and four RGB camera streams",
-        "trigger_metric": "source-joined event frames, cumulative path length, participant visibility",
-        "failure_condition": "missing original event source, discontinuous driving trace, event window over one mile, or unobserved hazard participant"
+        "risk": "lead control lag may produce a hazard or prevent two distinct short-headway encounters",
+        "trigger_source": "original 20 Hz ego/lead body geometry and four RGB camera streams",
+        "trigger_metric": "original body headway, positive closing TTC and repeated phase separation",
+        "failure_condition": "Native TTC falls below 2 s review trigger or either distinct encounter is unobserved"
       }
     },
     {
@@ -190,13 +190,13 @@
       "gap_ids": [
         "full-statute"
       ],
-      "description": "same core events in reverse order within one continuous mile",
-      "construction_status": "planned_unconstructed",
+      "description": "two following requests before a late requested speed phase in one continuous road/follow drive",
+      "construction_status": "constructed_cpu_diagnostic",
       "physical_risk": {
-        "risk": "multiple acts and immediate-hazard participant may not remain in the same original one-mile driving window",
-        "trigger_source": "20 Hz original ego path, actor/event sources and four RGB camera streams",
-        "trigger_metric": "source-joined event frames, cumulative path length, participant visibility",
-        "failure_condition": "missing original event source, discontinuous driving trace, event window over one mile, or unobserved hazard participant"
+        "risk": "early cap may still exceed the governing physical speed source or late speed phase may not occur in the selected one-mile window",
+        "trigger_source": "original 20 Hz ego speed/path, sign/pixel sources and four RGB cameras",
+        "trigger_metric": "source-joined speed/following/hazard order and path span",
+        "failure_condition": "speed request is realized early, late speed phase absent, or original window exceeds one mile"
       }
     }
   ],
@@ -342,6 +342,32 @@
       ],
       "deliberate_differences": [
         "two distinct following closing requests versus one; legal too-close standard unresolved"
+      ]
+    },
+    {
+      "comparison_id": "following_hazard_required",
+      "case_ids": [
+        "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__repeated_following",
+        "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__no_hazard"
+      ],
+      "fixed_conditions": [
+        "same law, cell, actor, roadway, camera and duration, ego speed request and two following-request phases"
+      ],
+      "deliberate_differences": [
+        "adaptive lead TTC guard physically changes lead response to reduce short closing hazard"
+      ]
+    },
+    {
+      "comparison_id": "following_any_sequence",
+      "case_ids": [
+        "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__repeated_following",
+        "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__reverse_sequence"
+      ],
+      "fixed_conditions": [
+        "same law, cell, actor, road/follow route, lead policy, two following phases, cameras and duration"
+      ],
+      "deliberate_differences": [
+        "ego speed request capped before two following phases, then raised after them"
       ]
     }
   ],

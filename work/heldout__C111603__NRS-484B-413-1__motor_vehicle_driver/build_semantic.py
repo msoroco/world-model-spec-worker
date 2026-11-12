@@ -42,6 +42,7 @@ def main():
     ]
     parameters = [
         ('affected_vehicle_clearance_path_m', 'world_setup', 'engineering scalar s: affected vehicle offset (max(0,s),s) m at -1, 2 or 5; no legal safety cutoff'),
+        ('indicator_activation_frame_index', 'controller', 'requested Native capture frame index 2, 4 or 6 for left indicator; measured turn onset and appropriateness remain unresolved'),
         ('hand_signal_pose', 'controller', 'none or selected left-arm original Native bone pose'),
         ('horn_actuation', 'controller', 'none or identified relay request with separate listener PCM'),
         ('listener_route_lateral_offset_m', 'world_setup', 'engineering listener sidewalk offsets 2, 4 or 6 m; no legal audibility cutoff'),
@@ -92,10 +93,22 @@ def main():
             requirement['sweep_dimensions'].append({
                 'name': 'listener_route_lateral_offset_m', 'unit': 'm',
                 'description': 'Requested Native route-relative sidewalk listener position; original PCM remains separately measured.'})
+        if phrase == 'any pedestrian may be affected':
+            requirement['sweep_dimensions'].append({
+                'name': 'listener_route_lateral_offset_m', 'unit': 'm',
+                'description': 'Requested route-relative sidewalk pedestrian position; original pedestrian body gap is measured while possible effect remains unresolved.'})
+        if phrase == 'appropriate signal':
+            requirement['sweep_dimensions'].append({
+                'name': 'indicator_activation_frame_index', 'unit': 'frames',
+                'description': 'Requested Native left-indicator actuation index; original preturn readback frames and lamp pixels remain separate observations.'})
         if phrase == 'reasonable safety':
             requirement['sweep_dimensions'].append({
                 'name': 'affected_vehicle_clearance_path_m', 'unit': 'm',
                 'description': 'Engineering scalar for the exact affected-vehicle placement path; original turn-onset and minimum body gaps remain separate measurements.'})
+        if phrase == 'any other vehicle may be affected':
+            requirement['sweep_dimensions'].append({
+                'name': 'affected_vehicle_clearance_path_m', 'unit': 'm',
+                'description': 'Engineering scalar for the exact other-vehicle placement path; original body proximity is measured while actual effect remains unresolved.'})
         judgment_refs.append(write('judgment_' + str(index), {'template_id': TEMPLATE_ID,
                             'phrase': phrase, 'note': note, 'status': 'draft',
                             'observable_requirements': requirement}))
@@ -111,6 +124,7 @@ def main():
                                         'used_by_laws': [LAW_ID]} for name, kind, domain in parameters]}
     refs['bindings'] = write('bindings', binding)
     defaults = {'affected_vehicle_clearance_path_m': {'kind': 'world_setup', 'value': 'not_selected'},
+                'indicator_activation_frame_index': {'kind': 'controller', 'value': 'not_selected'},
                 'hand_signal_pose': {'kind': 'controller', 'value': 'none'},
                 'horn_actuation': {'kind': 'controller', 'value': 'none'},
                 'listener_route_lateral_offset_m': {'kind': 'world_setup', 'value': 'not_selected'},
@@ -123,6 +137,9 @@ def main():
         'clearance_wide': ('reasonable_safety_clearance', ['affected_vehicle_clearance_path_m']),
         'clearance_narrow': ('reasonable_safety_clearance', ['affected_vehicle_clearance_path_m']),
         'clearance_mid': ('reasonable_safety_clearance', ['affected_vehicle_clearance_path_m']),
+        'indicator_activation_2f': ('appropriate_signal_timing', ['indicator_activation_frame_index']),
+        'indicator_activation_4f': ('appropriate_signal_timing', ['indicator_activation_frame_index']),
+        'indicator_activation_6f': ('appropriate_signal_timing', ['indicator_activation_frame_index']),
         'ped_horn_audio': ('pedestrian_horn_audio', ['horn_actuation']),
         'ped_horn_listener_2m': ('pedestrian_listener_distance', ['listener_route_lateral_offset_m']),
         'ped_horn_listener_4m': ('pedestrian_listener_distance', ['listener_route_lateral_offset_m']),
@@ -149,7 +166,13 @@ def main():
             scalar = {'clearance_narrow': -1, 'clearance_mid': 2,
                       'clearance_wide': 5}[suffix]
             expected = [max(0, scalar), scalar] if scalar >= 0 else [0, scalar]
-            if original['affected_vehicle_exit_offset_m']['value'] != expected:
+            source = json.loads((HERE / (suffix.replace('_', '-') +
+                '-construction.json')).read_text())
+            runner = next(item['content'] for item in source['files']
+                          if item['path'] == 'runner.py')
+            if (f'carla.Location(x={expected[0]}, y={expected[1]})' not in runner or
+                    ('affected_vehicle_exit_offset_m' in original and
+                     original['affected_vehicle_exit_offset_m']['value'] != expected)):
                 raise ValueError('Clearance scalar path differs from exact construction')
             case['variable_assignments']['affected_vehicle_clearance_path_m'] = {
                 'kind': 'world_setup', 'value': scalar}
@@ -158,16 +181,21 @@ def main():
     safety_order = {'clearance_narrow': 0, 'clearance_wide': 1, 'clearance_mid': 2}
     listener_order = {'ped_horn_listener_2m': 0, 'ped_horn_listener_6m': 1,
                       'ped_horn_listener_4m': 2}
+    signal_order = {'indicator_activation_2f': 0, 'indicator_activation_6f': 1,
+                    'indicator_activation_4f': 2}
     selected.sort(key=lambda case: (0, safety_order[case['case_id'][len(HERE.name) + 2:]])
                   if case['case_id'][len(HERE.name) + 2:] in safety_order else
                   (1, listener_order[case['case_id'][len(HERE.name) + 2:]])
-                  if case['case_id'][len(HERE.name) + 2:] in listener_order else (-1, 0))
+                  if case['case_id'][len(HERE.name) + 2:] in listener_order else
+                  (2, signal_order[case['case_id'][len(HERE.name) + 2:]])
+                  if case['case_id'][len(HERE.name) + 2:] in signal_order else (-1, 0))
     safety_cases = [case for case in selected if case['case_id'][len(HERE.name) + 2:] in safety_order]
     if len(safety_cases) != 3:
         raise ValueError('Three exact safety sweep cases required')
     safety_spec = {'sweep_id': 'turn_clearance_path', 'target_law_id': LAW_ID,
-        'judgment_refs': [{'phrase': phrases[0][0], 'note': phrases[0][1]}],
-        'rationale': 'Finite -1/2/5 m engineering placement path with original turn-onset and minimum body gaps retained; no legal safety cutoff.',
+        'judgment_refs': [{'phrase': phrases[index][0], 'note': phrases[index][1]}
+                          for index in (0, 4)],
+        'rationale': 'Finite -1/2/5 m engineering placement path with original turn-onset and minimum body gaps retained for safety and other-vehicle effect review; no legal cutoff.',
         'status': 'complete', 'mode': 'one_dimensional',
         'axes': [{'variable': 'affected_vehicle_clearance_path_m',
             'observable': 'affected_vehicle_clearance_path_m', 'unit': 'm',
@@ -192,8 +220,9 @@ def main():
     if len(listener_cases) != 3:
         raise ValueError('Three exact listener sweep cases required')
     listener_spec = {'sweep_id': 'turn_listener_distance', 'target_law_id': LAW_ID,
-        'judgment_refs': [{'phrase': phrases[1][0], 'note': phrases[1][1]}],
-        'rationale': 'Finite 2/4/6 m engineering listener-distance grid with original PCM retained; no audibility cutoff.',
+        'judgment_refs': [{'phrase': phrases[index][0], 'note': phrases[index][1]}
+                          for index in (1, 2)],
+        'rationale': 'Finite 2/4/6 m engineering pedestrian/listener-distance grid with original PCM and pedestrian body gaps retained; no audibility or affected-party cutoff.',
         'status': 'complete', 'mode': 'one_dimensional',
         'axes': [{'variable': 'listener_route_lateral_offset_m',
             'observable': 'listener_route_lateral_offset_m', 'unit': 'm',
@@ -215,20 +244,47 @@ def main():
         case['sweep_spec_version'] = listener_spec['spec_version']
         case['sweep_point'] = {'listener_route_lateral_offset_m':
             float(suffix.rsplit('_', 1)[-1][:-1])}
+    signal_cases = [case for case in selected if case['case_id'][len(HERE.name) + 2:] in signal_order]
+    if len(signal_cases) != 3:
+        raise ValueError('Three exact indicator activation sweep cases required')
+    signal_spec = {'sweep_id': 'turn_indicator_activation_index',
+        'target_law_id': LAW_ID,
+        'judgment_refs': [{'phrase': phrases[3][0], 'note': phrases[3][1]}],
+        'rationale': 'Finite 2/4/6 frame Native indicator actuation-index grid with original readback; legal appropriateness and actual preturn timing remain unresolved.',
+        'status': 'complete', 'mode': 'one_dimensional',
+        'axes': [{'variable': 'indicator_activation_frame_index',
+            'observable': 'indicator_activation_frame_index', 'unit': 'frames',
+            'min': 2, 'max': 6, 'spacing': 2,
+            'range_rationale': 'Three exact Native runner constructions request left-indicator activation at capture indexes 2, 4 and 6.',
+            'spacing_rationale': 'Two-frame spacing changes source-backed diagnostic preturn readback counts from four to two to zero without a legal threshold.',
+            'feasibility_evidence': 'All three exact runner constructions pass offline and positive/missing-source CPU compatibility with original readback and four-camera diagnostics; real Native onset remains for local preflight.',
+            'measurement': {'method': 'Native indicator control and original readback joined to measured turn onset',
+                            'time_window': 'original capture frames', 'statistic': 'first'}}],
+        'landmarks': [],
+        'recording_description': deepcopy(signal_cases[0]['recording_description'])}
+    signal_spec['spec_version'] = hashlib.sha256(json.dumps(signal_spec, sort_keys=True,
+        separators=(',', ':'), ensure_ascii=False).encode()).hexdigest()
+    signal_spec['planned_case_count'] = 3
+    signal_spec['selection_order'] = [case['case_id'] for case in signal_cases]
+    for case in signal_cases:
+        suffix = case['case_id'][len(HERE.name) + 2:]
+        activation = int(suffix.rsplit('_', 1)[-1][:-1])
+        source = json.loads((HERE / (suffix.replace('_', '-') + '-construction.json')).read_text())
+        runner = next(item['content'] for item in source['files'] if item['path'] == 'runner.py')
+        if f'if index == {activation}:' not in runner:
+            raise ValueError('Indicator activation setpoint differs from exact runner')
+        case['target_type'] = 'judgment_sweep'
+        case['sweep_id'] = signal_spec['sweep_id']
+        case['sweep_spec_version'] = signal_spec['spec_version']
+        case['sweep_point'] = {'indicator_activation_frame_index': float(activation)}
     baseline = {'case_id': HERE.name + '__semantic_baseline', 'target_law_id': LAW_ID,
                 'target_type': 'baseline', 'rationale': 'Neutral semantic comparison anchor only; no additional recording or manifest entry.',
                 'variable_assignments': deepcopy(defaults),
                 'unresolved_judgment_calls': [phrase for phrase, _ in phrases],
                 'recording_description': deepcopy(selected[0]['recording_description'])}
-    missing = ['Source-backed finite affected-pedestrian and affected-vehicle status sweeps with controlled context',
-               'A listener PCM level contrast across the three distance points if feasible; diagnostic PCM is currently fixed',
-               'Original physical visibility, audibility and Native feasibility review without invented legal cutoffs']
-    sweep = {'sweep_id': 'turn_remaining_qualitative_observables', 'target_law_id': LAW_ID,
-             'judgment_refs': [{'phrase': phrase, 'note': note} for phrase, note in phrases if phrase not in ('clearly audible signal', 'reasonable safety')],
-             'status': 'incomplete', 'rationale': 'Thirteen selected points include three measured clearance levels and three signal mechanisms; affected-party and listener PCM level sweeps remain incomplete.',
-             'missing_inputs': missing}
     cases = {'cell_id': assignment['cell_id'], 'actor': assignment['actor'], 'status': 'draft',
-             'cases': [baseline] + selected, 'sweep_specs': [safety_spec, listener_spec, sweep],
+             'cases': [baseline] + selected,
+             'sweep_specs': [safety_spec, listener_spec, signal_spec],
              'sweeps_expanded': True}
     refs['cases'] = write('cases', cases)
     write('semantic-index', {'format': 'worker-semantic-delivery',

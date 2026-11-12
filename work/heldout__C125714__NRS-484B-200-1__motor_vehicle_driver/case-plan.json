@@ -280,20 +280,55 @@
     }
   ],
   "observations": [
-    "right_half_measurement.py measures original 20 Hz directed-road geometry and full-body occupancy without legal classification."
+    {
+      "name": "right_half_offset_m",
+      "mandatory": true,
+      "method": "original Native directed center boundary and full body footprint",
+      "source": "exact Native case source"
+    },
+    {
+      "name": "closure_cone_count",
+      "mandatory": true,
+      "method": "original Native per-frame cone actor ID/transform readback",
+      "source": "exact Native case source"
+    },
+    {
+      "name": "passing_relative_longitudinal_m",
+      "mandatory": true,
+      "method": "two original Native actor positions projected on selected travel tangent",
+      "source": "exact Native case source"
+    },
+    {
+      "name": "roadway_width_m",
+      "mandatory": true,
+      "method": "original Native directed road edges and body envelope",
+      "source": "exact Native case source"
+    },
+    {
+      "name": "one_way_sign_lateral_offset_m",
+      "mandatory": true,
+      "method": "original Native one-way sign actor and mapped roadway centerline",
+      "source": "exact Native case source"
+    },
+    {
+      "name": "three_lane_roadway_width_m",
+      "mandatory": true,
+      "method": "original Native three-lane edge and lane-width readback",
+      "source": "exact Native case source"
+    }
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
     "Physical geometry and exception source capture unverified.",
     "Exact construction, capture, finalization, compatibility, proposal and independent delivery proofs remain CPU work."
   ],
-  "source_observation_mapping": [
-    {
+  "source_observation_mapping": {
+    "st.highway": {
       "term": "st.highway",
       "measurement": "directed roadway footprint",
       "evidence": "original saved Native source and separately cited context where required",
       "channels": [
-        "directed_roadway_footprints.jsonl"
+        "right_half_offset_m"
       ],
       "source_refs": [
         {
@@ -302,12 +337,12 @@
         }
       ]
     },
-    {
+    "st.centre_line": {
       "term": "st.centre_line",
       "measurement": "center point and tangent",
       "evidence": "original saved Native source and separately cited context where required",
       "channels": [
-        "directed_roadway_footprints.jsonl"
+        "right_half_offset_m"
       ],
       "source_refs": [
         {
@@ -316,12 +351,12 @@
         }
       ]
     },
-    {
+    "rel.occupies": {
       "term": "rel.occupies",
       "measurement": "four-corner body occupancy",
       "evidence": "original saved Native source and separately cited context where required",
       "channels": [
-        "directed_roadway_footprints.jsonl"
+        "right_half_offset_m"
       ],
       "source_refs": [
         {
@@ -330,12 +365,12 @@
         }
       ]
     },
-    {
+    "drv.overtaking": {
       "term": "drv.overtaking",
       "measurement": "same-direction vehicle and lawful passing context",
       "evidence": "original saved Native source and separately cited context where required",
       "channels": [
-        "case_context.json"
+        "passing_relative_longitudinal_m"
       ],
       "source_refs": [
         {
@@ -344,12 +379,12 @@
         }
       ]
     },
-    {
+    "st.lane_adjacency": {
       "term": "st.lane_adjacency",
       "measurement": "lane topology and use rule",
       "evidence": "original saved Native source and separately cited context where required",
       "channels": [
-        "case_context.json"
+        "three_lane_roadway_width_m"
       ],
       "source_refs": [
         {
@@ -358,12 +393,12 @@
         }
       ]
     },
-    {
+    "st.one_way_roadway": {
       "term": "st.one_way_roadway",
       "measurement": "road designation",
       "evidence": "original saved Native source and separately cited context where required",
       "channels": [
-        "case_context.json"
+        "one_way_sign_lateral_offset_m"
       ],
       "source_refs": [
         {
@@ -372,12 +407,12 @@
         }
       ]
     },
-    {
+    "dev.regulatory_sign": {
       "term": "dev.regulatory_sign",
       "measurement": "posted sign",
       "evidence": "original saved Native source and separately cited context where required",
       "channels": [
-        "case_context.json"
+        "one_way_sign_lateral_offset_m"
       ],
       "source_refs": [
         {
@@ -386,12 +421,12 @@
         }
       ]
     },
-    {
+    "st.lane_width": {
       "term": "st.lane_width",
       "measurement": "road edges and vehicle envelope",
       "evidence": "original saved Native source and separately cited context where required",
       "channels": [
-        "directed_roadway_footprints.jsonl"
+        "roadway_width_m"
       ],
       "source_refs": [
         {
@@ -400,12 +435,12 @@
         }
       ]
     },
-    {
+    "dev.temporary_traffic_control": {
       "term": "dev.temporary_traffic_control",
       "measurement": "closure device and authority",
       "evidence": "original saved Native source and separately cited context where required",
       "channels": [
-        "case_context.json"
+        "closure_cone_count"
       ],
       "source_refs": [
         {
@@ -414,12 +449,12 @@
         }
       ]
     },
-    {
+    "st.obstruction": {
       "term": "st.obstruction",
       "measurement": "physical obstruction",
       "evidence": "original saved Native source and separately cited context where required",
       "channels": [
-        "case_context.json"
+        "closure_cone_count"
       ],
       "source_refs": [
         {
@@ -428,7 +463,7 @@
         }
       ]
     }
-  ],
+  },
   "requirement_dispositions": [
     {
       "requirement": "sufficient-width two-way right-half baseline, eastbound",
@@ -502,5 +537,35 @@
       ],
       "evidence_or_gap": "Three mapped traffic lanes and full-body occupation can be measured; applicable lane-use law remains unresolved context."
     }
-  ]
+  ],
+  "observation_notes": [
+    "right_half_measurement.py measures original 20 Hz directed-road geometry and full-body occupancy without legal classification."
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 4,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "subject body, relevant roadway and exception context",
+        "interval": "entire original case sequence"
+      },
+      {
+        "view": "approach",
+        "subject": "subject body, relevant roadway and exception context",
+        "interval": "entire original case sequence"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "subject body, relevant roadway and exception context",
+        "interval": "entire original case sequence"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "subject body, relevant roadway and exception context",
+        "interval": "entire original case sequence"
+      }
+    ]
+  }
 }

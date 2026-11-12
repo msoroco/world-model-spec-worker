@@ -37,10 +37,13 @@ def check_physical_outcome(case_id, measured, trace, camera_decodes, pixel_revie
                for p in (first, last)):
         return _outcome('unverified', 'Trace position absent', ())
     progress = hypot(last['x']-first['x'], last['y']-first['y'])
-    minimum = min(row['minimum_body_right_offset_m'] for row in observations)
+    offsets = [row['minimum_body_right_offset_m'] for row in observations]
+    if any(not isinstance(value, (int, float)) for value in offsets):
+        return _outcome('unverified', 'Original body offset absent', ())
+    minimum = min(offsets)
     sources = tuple(sorted(measured.get('sources', {}))) + ('four_original_camera_decodes', 'four_original_pixel_reviews')
-    if progress <= .25 or minimum >= 0:
-        return _outcome('not_met', 'Measured travel or leftward body occupancy incomplete', sources,
+    if progress <= .25 or offsets[0] < 0 or minimum >= 0:
+        return _outcome('not_met', 'Measured travel or right-to-left body crossing incomplete', sources,
                         progress, minimum)
     return _outcome('met', 'Measured travel and leftward body occupancy completed', sources,
                     progress, minimum)
@@ -49,7 +52,7 @@ def check_physical_outcome(case_id, measured, trace, camera_decodes, pixel_revie
 def _outcome(status, reason, sources, progress=None, minimum=None):
     return {'physical_checks': {'maneuver': {
         'status': status, 'method': 'original-frame trace, body geometry and four-camera pixel review',
-        'sources': list(sources), 'reason': reason,
+        'sources': list(sources) or ['original_sources_requested'], 'reason': reason,
         'measured_progress_m': progress, 'minimum_body_right_offset_m': minimum}},
         'maneuver_completed': status == 'met',
         'physical_acceptance_claimed': False, 'legal_acceptance_claimed': False}
