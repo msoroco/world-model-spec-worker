@@ -17,3 +17,20 @@ Eight unit tests pass in `cpu-tests.log`. The scoped strict gate passes:
 ```
 
 `result.json` declares `delivery_prepared` and provides the first canonical exact GPU command. This is CPU delivery readiness, not physical or legal acceptance. The later delivery operator must use actual Native recordings, full four-view original decodes, participant/time joins and measured maneuver completion to accept or reject each case.
+
+## 2026-11-12 proof-preserving return compaction
+
+Four root offline logs with the same SHA-256
+`c6352adff70a6982c739a1cd77bbb43d2425eefd2dc2112b92b0ceebf2a6ca31`
+were consolidated into retained `primary-nine-offline.log`:
+`fallback1-nine-offline.log`, `fallback2-nine-offline.log`,
+`fallback1-offline.log` and `fallback2-offline.log`. The manifest paths for the
+two bound fallback receipts now point to the byte-identical retained log; the
+other two were unbound historical copies. The assignment-scoped strict gate
+still passes. This frees return slots without changing any proof bytes.
+
+Two zero-byte root compatibility logs, `fallback2-compat.log` and
+`fallback3-compat.log`, were likewise consolidated into byte-identical
+`primary-nine-compat.log` (SHA-256
+`e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`).
+Manifest log paths were updated and the scoped strict gate still passes.

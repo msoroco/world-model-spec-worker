@@ -113,3 +113,55 @@ explicitly unverified diagnostic site source, a source-bound Native finalizer,
 and exact offline, positive/negative compatibility and saved-only proofs. Then
 construct the divergent case, fallbacks, proposals and independent audits.
 `result.json` remains partial; no physical or legal acceptance is claimed.
+
+### 2026-11-12 first exact construction and offline proof
+
+`build_indicated_bundle.py` packages `indicated-construction.json` and
+`execution-manifest.json` for exact case
+`heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__indicated_course`.
+The materialized entrypoint checks the exact identity, four named camera plan,
+20 Hz and 160 frames, then requires `MARKED_TURN_SITE_SOURCE` and
+`MARKED_TURN_SITE_SHA256` for a Native run. It never silently substitutes a
+fixture authority claim. The construction embeds the tested Native marker,
+route, source-recorder and measurement modules plus the 18 CPU source/geometry
+tests. The primary exact offline command recorded in the manifest passed;
+`indicated-offline.log` has SHA-256
+`de2152cc4311a225c6e383a1f1f8a4b6ad8990effabb9231ed22c598e26ba66a`.
+The scoped nonstrict gate is the next package check. This is a construction
+proof, not source-bound compatibility, saved processing or municipal approval.
+
+Next CPU action: connect the retained four original streams and authority/body
+sources to a Native-shaped diagnostic recipe and finalizer, run exact positive
+and missing-source compatibility followed by saved processing for this primary,
+then construct the divergent case and three independently proved physical-risk
+fallbacks per case. Implement semantic proposals and independent delivery and
+comparison audits before the scoped strict gate. Keep `result.json` partial until
+all these CPU proofs pass; original map geometry, authority, pixels, motion and
+legal course conformance remain unresolved.
+
+### 2026-11-12 linked divergent exact construction
+
+The same `build_indicated_bundle.py` now packages the linked
+`heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__divergent_course`
+in `divergent-construction.json`. It preserves the 20 Hz, 160-frame, four-camera
+contract, ordinary driver/vehicle and explicit site-source requirement while
+selecting the divergent target route from the same source. Its exact offline
+materialization and all 18 embedded CPU tests pass; `divergent-offline.log`
+SHA-256 is
+`4e95378db036ba04aa9544349e11ce744bb2eeb9a6a90508f94a16d73cb286d4`.
+Both exact primary constructions are in `execution-manifest.json`. These are
+requested route constructions; no original Native turn path has been observed.
+
+The scoped strict check still rejects the truthful partial status. Next CPU
+work is the source-bound diagnostic/finalizer compatibility and saved proof for
+each case, three risk-triggered fallback constructions per case, and independent
+delivery/comparison audits. Then complete semantic proposals and the scoped
+strict gate. Do not promote the package from these offline results alone.
+
+The final scoped nonstrict command
+`.venv-cpu/bin/python worker_check.py --assignment heldout__C126064__LVMC-11-12-020__motor_vehicle_driver --complete`
+passes after both constructions. The latest full batch strict command
+`.venv-cpu/bin/python worker_check.py --complete --require-delivery-ready`
+finished with exit 1 at `preparation.py:276`, `Preparation acceptance failed:
+partial/missing packages remain`. It passed the return-file cap. The package
+status and reason remain truthful partial.

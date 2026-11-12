@@ -9,7 +9,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 ASSIGNMENT = 'heldout__C126064__LVMC-11-12-020__motor_vehicle_driver'
-CASE = ASSIGNMENT + '__indicated_course'
+VARIANTS = ('indicated_course', 'divergent_course')
 
 ENTRY = '''"""Exact indicated-course entrypoint; site source is an explicit Native input."""
 import argparse
@@ -43,7 +43,7 @@ def main():
 
 if __name__ == '__main__':
     main()
-'''.replace('CASE_ID', CASE)
+'''
 
 
 def build():
@@ -64,44 +64,52 @@ def build():
          'pose_strategy': 'subject-mounted provisional marked-turn view', 'fov_deg': fov}
         for name, (_, _, size, fov) in __import__('marked_course_native').CAMERAS.items()
     ]
-    config = {
-        'selected_case_id': CASE, 'law_id': 'LVMC-11-12-020', 'cell_id': 'C126064',
-        'actor': 'motor_vehicle_driver', 'rate_hz': 20, 'frames': 160,
-        'duration_s': 8, 'required_atoms': [], 'source_packets': [],
-        'cameras': cameras, 'case': {'case_id': CASE, 'recording_description': description},
-        'engineering': {'target_speed_mps': 4.0, 'capture_frames': 160,
-                        'source_selection': 'explicit_site_path_and_sha256'}
-    }
-    files = [
-        {'path': 'config.json', 'content': json.dumps(config, indent=2) + '\n'},
-        {'path': 'runner.py', 'content': ENTRY},
-    ]
-    for name in ('native_runner.py', 'marked_course_native.py',
-                 'turn_source_recorder.py', 'marked_course_measurement.py'):
-        files.append({'path': name, 'content': (ROOT / name).read_text()})
-    for test in sorted((ROOT / 'tests').glob('test*.py')):
-        files.append({'path': 'tests/' + test.name, 'content': test.read_text()})
-    proposal = {
-        'format': 'worker-construction-proposal', 'case_id': CASE,
-        'law_id': 'LVMC-11-12-020', 'cell_id': 'C126064',
-        'actor': 'motor_vehicle_driver', 'entrypoint': 'runner.py',
-        'recording_description': description, 'files': files,
-    }
-    path = ROOT / 'indicated-construction.json'
-    path.write_text(json.dumps(proposal, indent=2) + '\n')
-    digest = hashlib.sha256(path.read_bytes()).hexdigest()
-    manifest = {
-        'format': 'worker-execution-manifest', 'assignment_id': ASSIGNMENT,
-        'cases': [{
-            'case_id': CASE, 'kind': 'delivery',
+    old_path = ROOT / 'execution-manifest.json'
+    old = {item['case_id']: item for item in json.loads(old_path.read_text())['cases']} if old_path.exists() else {}
+    cases = []
+    for variant in VARIANTS:
+        case = ASSIGNMENT + '__' + variant
+        config = {
+            'selected_case_id': case, 'law_id': 'LVMC-11-12-020', 'cell_id': 'C126064',
+            'actor': 'motor_vehicle_driver', 'rate_hz': 20, 'frames': 160,
+            'duration_s': 8, 'required_atoms': [], 'source_packets': [],
+            'cameras': cameras, 'case': {'case_id': case, 'recording_description': description},
+            'engineering': {'target_speed_mps': 4.0, 'capture_frames': 160,
+                            'source_selection': 'explicit_site_path_and_sha256'}
+        }
+        files = [
+            {'path': 'config.json', 'content': json.dumps(config, indent=2) + '\n'},
+            {'path': 'runner.py', 'content': ENTRY.replace('CASE_ID', case)},
+        ]
+        for name in ('native_runner.py', 'marked_course_native.py',
+                     'turn_source_recorder.py', 'marked_course_measurement.py'):
+            files.append({'path': name, 'content': (ROOT / name).read_text()})
+        for test in sorted((ROOT / 'tests').glob('test*.py')):
+            files.append({'path': 'tests/' + test.name, 'content': test.read_text()})
+        proposal = {
+            'format': 'worker-construction-proposal', 'case_id': case,
+            'law_id': 'LVMC-11-12-020', 'cell_id': 'C126064',
+            'actor': 'motor_vehicle_driver', 'entrypoint': 'runner.py',
+            'recording_description': description, 'files': files,
+        }
+        path = ROOT / ('indicated-construction.json' if variant == 'indicated_course'
+                       else 'divergent-construction.json')
+        path.write_text(json.dumps(proposal, indent=2) + '\n')
+        digest = hashlib.sha256(path.read_bytes()).hexdigest()
+        entry = {
+            'case_id': case, 'kind': 'delivery',
             'construction': path.name, 'construction_sha256': digest,
             'candidate_risk': {'status': 'physical',
                                'reason': 'Marker readback and full turn through the sourced junction require Native verification.'},
             'candidates': [],
-        }],
-    }
+        }
+        if case in old and old[case]['construction_sha256'] == digest:
+            entry.update({key: value for key, value in old[case].items() if key not in entry})
+        cases.append(entry)
+    manifest = {'format': 'worker-execution-manifest',
+                'assignment_id': ASSIGNMENT, 'cases': cases}
     (ROOT / 'execution-manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
-    return digest
+    return {entry['case_id']: entry['construction_sha256'] for entry in cases}
 
 
 if __name__ == '__main__':
