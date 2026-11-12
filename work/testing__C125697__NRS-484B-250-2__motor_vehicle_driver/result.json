@@ -6,176 +6,56 @@
   "applied_update": 0,
   "tests": [
     {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/tests -v",
+      "command": ".venv-cpu/bin/python work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/build_primary_bundle.py",
       "exit_code": 0,
-      "log": "cpu-tests.log",
-      "sha256": "5b02a12175c2454cd552960e7a5566564a56c676443d93e044cd0902324346cf"
+      "log": "primary-bundle-build-v4.log",
+      "sha256": "c17e45236fbf099c93e0cc350624b2e5448a09aed0aeb46d14b57c3a805c898f"
     },
     {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/tests -v",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver__off_ego_left_near_time --output .runtime-work/c125697-primary-offline-v3",
       "exit_code": 0,
-      "log": "cpu-tests-native-pair.log",
-      "sha256": "a3e98bbaf7b0918507a5301d813855ec3ccaef148f74a8e23fb5b1f102df7b42"
+      "log": "primary-offline-v3.log",
+      "sha256": "ce9ab025a5c47e0b5591b5a9552955f94e73bf8cea162644ec8082286012c8a2"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "command": ".venv-cpu/bin/python runtime.py fixture --recipe work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/diagnostic-recipe.json --output .runtime-work/c125697-primary-entry-v4",
       "exit_code": 0,
-      "log": "preflight-native-pair.log",
-      "sha256": "5ef25688bcf130fd96a2971e962d3c575af90a1e72daa9818093e7d01330b29d"
+      "log": "fixture-primary-entry-v4.log",
+      "sha256": "4fa180d4581eb38e13d8c1ca63172f8b5dc677b939da57ce9d8dfc2b270a5afe"
     },
     {
-      "command": ".venv-cpu/bin/python worker_check.py --updates",
+      "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/finalizer.py --attempt .runtime-work/c125697-primary-entry-v4 --output .runtime-work/c125697-primary-entry-analysis-v4.json",
       "exit_code": 0,
-      "log": "updates-native-pair.log",
-      "sha256": "bc028da1339a9f9c4509c1460ad99c683c6b6ac8b7b6af6b378e3ffa7cdbb287"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C125697__NRS-484B-250-2__motor_vehicle_driver --complete",
-      "exit_code": 0,
-      "log": "assignment-native-pair.log",
-      "sha256": "adcb565c905f7a7789c64fec5a01e06c63f2e6c4d5f976b310f91d2996f0bb68"
-    },
-    {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/tests -v",
-      "exit_code": 0,
-      "log": "cpu-tests-capture-sources.log",
-      "sha256": "45896bc708803304d33674b78d7ae9c9d5d60fa49c2a877d22e45018d7d9338f"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C125697__NRS-484B-250-2__motor_vehicle_driver --complete",
-      "exit_code": 0,
-      "log": "assignment-capture-sources.log",
-      "sha256": "adcb565c905f7a7789c64fec5a01e06c63f2e6c4d5f976b310f91d2996f0bb68"
-    },
-    {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/tests -v",
-      "exit_code": 0,
-      "log": "cpu-tests-finalizer-camera-encoder.log",
-      "sha256": "596256783f09cd609b50466d8c35d8d317e90c142a83013333f40994aafd0b34"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py preflight",
-      "exit_code": 0,
-      "log": "preflight-finalizer-camera.log",
-      "sha256": "7b3e8736a4dc5acfb5198e9ed0ac29ed09c0e38b67156da5e9d91721466e5538"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --updates",
-      "exit_code": 0,
-      "log": "updates-finalizer-camera.log",
-      "sha256": "bc028da1339a9f9c4509c1460ad99c683c6b6ac8b7b6af6b378e3ffa7cdbb287"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C125697__NRS-484B-250-2__motor_vehicle_driver --complete",
-      "exit_code": 0,
-      "log": "assignment-finalizer-camera.log",
-      "sha256": "adcb565c905f7a7789c64fec5a01e06c63f2e6c4d5f976b310f91d2996f0bb68"
-    },
-    {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/tests -v",
-      "exit_code": 0,
-      "log": "cpu-tests-route-control.log",
-      "sha256": "53a740d0f4a676c8ea8c95a4d8131c8df3812390b4a5d1818b5da4a44cfbaa31"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C125697__NRS-484B-250-2__motor_vehicle_driver --complete",
-      "exit_code": 0,
-      "log": "assignment-route-control.log",
-      "sha256": "adcb565c905f7a7789c64fec5a01e06c63f2e6c4d5f976b310f91d2996f0bb68"
-    },
-    {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/tests -v",
-      "exit_code": 0,
-      "log": "cpu-tests-runner.log",
-      "sha256": "51b7722fe7eaf6b398632eaa7754defc1a81a9ad5757b3e81610915d1c65cf1a"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py preflight",
-      "exit_code": 0,
-      "log": "preflight-runner.log",
-      "sha256": "6a48427bb2b2a2355f83af138435dcbf2d8d24a99c09cc2ef2f454eeb20978bd"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --updates",
-      "exit_code": 0,
-      "log": "updates-runner.log",
-      "sha256": "bc028da1339a9f9c4509c1460ad99c683c6b6ac8b7b6af6b378e3ffa7cdbb287"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C125697__NRS-484B-250-2__motor_vehicle_driver --complete",
-      "exit_code": 0,
-      "log": "assignment-runner.log",
-      "sha256": "adcb565c905f7a7789c64fec5a01e06c63f2e6c4d5f976b310f91d2996f0bb68"
-    },
-    {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/tests -v",
-      "exit_code": 0,
-      "log": "cpu-tests-site-packet.log",
-      "sha256": "74f326c9d965b4ce115fb35dc3e9ad9f5748c173481808f170afdcdc88e536b7"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py preflight",
-      "exit_code": 0,
-      "log": "preflight-site-packet.log",
-      "sha256": "0d2125a3f4c8c0b9b0714666915363cd80c366d3309b193d294e0e42f8b6d839"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --updates",
-      "exit_code": 0,
-      "log": "updates-site-packet.log",
-      "sha256": "bc028da1339a9f9c4509c1460ad99c683c6b6ac8b7b6af6b378e3ffa7cdbb287"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C125697__NRS-484B-250-2__motor_vehicle_driver --complete",
-      "exit_code": 0,
-      "log": "assignment-site-packet.log",
-      "sha256": "adcb565c905f7a7789c64fec5a01e06c63f2e6c4d5f976b310f91d2996f0bb68"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py fixture --recipe work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/diagnostic-recipe.json --output .runtime-work/c125697-primary-entry-v1",
-      "exit_code": 0,
-      "log": "fixture-primary-entry.log",
-      "sha256": "9153f3b19cb23d7f962c07b7217e38d462d7c144d3034a2cb972741c0d14dcb2"
-    },
-    {
-      "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/finalizer.py --attempt .runtime-work/c125697-primary-entry-v1 --output .runtime-work/c125697-primary-entry-analysis.json",
-      "exit_code": 0,
-      "log": "diagnostic-finalizer-runtime-env.log",
+      "log": "diagnostic-finalizer-v4.log",
       "sha256": "c1604b9cbb0279d4aa18f0519408c3f7896c6905cecf48a27ba2c33ab6e9fd02"
     },
     {
-      "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/diagnostic_receipt.py --root .runtime-work/c125697-primary-entry-v1 --negative .runtime-work/c125697-primary-entry-negative-v1",
+      "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/diagnostic_receipt.py --root .runtime-work/c125697-primary-entry-v4 --negative .runtime-work/c125697-primary-entry-negative-v4 --analysis .runtime-work/c125697-primary-entry-analysis-v4.json --negative-removed crossing_history.jsonl --negative-log work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/diagnostic-negative-history-v4.log",
       "exit_code": 0,
-      "log": "diagnostic-source-proof.log",
-      "sha256": "c4d86c2d0b00e76516aa46c5027b966c7810fbcdc5f8b3aea574e88d75a9d207"
+      "log": "diagnostic-source-proof-v4.log",
+      "sha256": "f2bf85c14a85f1f86f1c76fe9304fd52aab27c116704c505110861068be81e6f"
     },
     {
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/tests -v",
       "exit_code": 0,
-      "log": "cpu-tests-diagnostic.log",
-      "sha256": "7ea31fc554847741dc18f365ac5187471b51abd9ce7cb8e291512ddf7bc6a0dd"
+      "log": "cpu-tests-primary-bundle-v4.log",
+      "sha256": "d2610cdef31a4c20d2947d5efe68e953cdd4072df8e926dd90635a568b37c72c"
     },
     {
       "command": ".venv-cpu/bin/python runtime.py preflight",
       "exit_code": 0,
-      "log": "preflight-diagnostic.log",
-      "sha256": "ecad8933058d78401ca62c1f903c7ed98087e90e3feee8621fae4611ecc901c1"
+      "log": "preflight-primary-bundle-v4.log",
+      "sha256": "a233085629e03a4fb999b113d8f4082082d6a39bad1e85cff52c1caac8831dcf"
     },
     {
       "command": ".venv-cpu/bin/python worker_check.py --updates",
       "exit_code": 0,
-      "log": "updates-diagnostic.log",
+      "log": "updates-primary-bundle-v4.log",
       "sha256": "bc028da1339a9f9c4509c1460ad99c683c6b6ac8b7b6af6b378e3ffa7cdbb287"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C125697__NRS-484B-250-2__motor_vehicle_driver --complete",
-      "exit_code": 0,
-      "log": "assignment-diagnostic.log",
-      "sha256": "adcb565c905f7a7789c64fec5a01e06c63f2e6c4d5f976b310f91d2996f0bb68"
     }
   ],
   "remaining_gpu_checks": [
-    "Actual statutory crossing, two highways, relative approach geometry, complete inoperative signal, entry timing and camera visibility."
+    "Actual crossing and public-highway identities, median spacing, physical entry timing and source-camera visibility, all-device Off readback, observed yield and legal qualification."
   ],
-  "reason": "The first selected C125697 Off-state case now has a source-hashed textual diagnostic and recipe. Pinned fixture generation materializes original-frame context/body/trace/capture sources and four FFV1 videos. The saved finalizer derives channels and a Native result from those retained sources; an independent diagnostic receipt decodes all four cameras and checks entry timing/right-side geometry. A fresh negative diagnostic rejects a missing overview source before result creation. This is a three-frame synthetic software proof, not exact compatibility or recorded-only process-saved delivery. The real reviewed median site, exact config/construction, full saved-processing path, three tested fallbacks per selected case, other comparisons, proposals and independent audits remain worker-owned CPU work. No physical or legal acceptance claimed."
+  "reason": "The first Off-state C125697 case now has an exact materialized primary construction, bundled runner --check and bundle test; pinned runtime.py offline passes. Its source-hashed three-frame diagnostic and six-measurement contract still pass the direct positive/negative source proof, and 25 CPU tests pass. Exact runtime.py compatibility was attempted and fails during Core conversion because the diagnostic lacks capture/native/frames.jsonl and its corresponding graph/capture source packet (primary-compatibility-v5.log). The bundled median site is explicitly synthetic, so real source review, exact case compatibility and recorded-only process-saved remain worker-owned CPU work. Four other selected cases, three tested fallbacks per case, full semantic proposals and independent audits remain incomplete. No physical or legal acceptance is claimed."
 }

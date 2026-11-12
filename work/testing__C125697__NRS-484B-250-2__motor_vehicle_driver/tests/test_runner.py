@@ -92,6 +92,17 @@ class RunnerTests(unittest.TestCase):
         self.assertEqual(set(report['named_source_cameras']), set(runner.CAMERAS))
         self.assertFalse(report['carla_started'])
 
+    def test_materialized_offline_entrypoint_uses_local_config(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            value = config()
+            write_review(root, value)
+            (root / 'config.json').write_text(json.dumps(value))
+            completed = subprocess.run(
+                [sys.executable, str(ROOT / 'runner.py'), '--check'],
+                cwd=root, capture_output=True, text=True, check=True)
+            self.assertTrue(json.loads(completed.stdout)['cpu_check_passed'])
+
     def test_missing_camera_or_crossing_route_rejected(self):
         value = config()
         del value['site']['cameras']['overview']

@@ -47,7 +47,14 @@ def measure_signal_context(context, history):
                           any(head.get('state') != 'Off' for head in row['entrance_signal_states'])
                           for row in history):
         raise ValueError('All inventoried entrance heads must be Off at original frames')
+    first_ids = [head.get('actor_id') for head in history[0]['entrance_signal_states']]
+    if (len(first_ids) < 2 or any(identifier is None for identifier in first_ids) or
+            len(set(first_ids)) != len(first_ids) or
+            any([head.get('actor_id') for head in row['entrance_signal_states']] != first_ids
+                for row in history)):
+        raise ValueError('Stable distinct entrance head identities required')
     return {'captured_entrance_head_count': len(history[0]['entrance_signal_states']),
+            'captured_entrance_head_ids': first_ids,
             'all_sampled_states_off': True,
             'all_entrances_source': context['all_entrances_source'],
             'signal_governance_source': context['signal_governance_source'],

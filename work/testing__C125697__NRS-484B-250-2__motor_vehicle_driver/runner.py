@@ -235,7 +235,7 @@ def capture(args, config):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--config', required=True)
+    parser.add_argument('--config', default='config.json')
     parser.add_argument('--check', action='store_true')
     parser.add_argument('--output-dir')
     parser.add_argument('--host', default='127.0.0.1')

@@ -85,6 +85,15 @@ class FinalizerTests(unittest.TestCase):
             (stale / 'video_frames.jsonl').write_text(''.join(json.dumps(row) + '\n' for row in frames))
             with self.assertRaisesRegex(ValueError, 'frame join'):
                 finalizer.finalize(stale, root / 'stale-output.json')
+            changed_head = root / 'changed-head'
+            build(changed_head)
+            history = [json.loads(line) for line in
+                       (changed_head / 'crossing_history.jsonl').read_text().splitlines()]
+            history[1]['entrance_signal_states'][1]['actor_id'] = 99
+            (changed_head / 'crossing_history.jsonl').write_text(''.join(
+                json.dumps(row) + '\n' for row in history))
+            with self.assertRaisesRegex(ValueError, 'Stable distinct entrance head'):
+                finalizer.finalize(changed_head, root / 'changed-head-output.json')
 
 
 if __name__ == '__main__':
