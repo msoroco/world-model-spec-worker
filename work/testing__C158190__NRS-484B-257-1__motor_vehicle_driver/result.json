@@ -2,7 +2,7 @@
   "assignment_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver",
   "input_sha256": "82bba9f879337bcddb33ab873c7c954755b44b39881869d4282901c64c8aee18",
   "status": "partial",
-  "readiness_kind": "three_exact_cases_synthetic_saved_checkpoint",
+  "readiness_kind": "four_exact_cases_synthetic_saved_checkpoint",
   "applied_update": 0,
   "tests": [
     {
@@ -184,10 +184,52 @@
       "exit_code": 0,
       "log": "cases/clear/primary-saved-replay-current.log",
       "sha256": "fd24306769ed01c9978c82a012e19ce644e6400175e8feb29191a905e29b99c5"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_no_slow --output .runtime-work/c158190-no-slow-offline-v1",
+      "exit_code": 0,
+      "log": "cases/no_slow/primary-offline-receipt.log",
+      "sha256": "27a96a5576de690274b5c7a72126c9a1eccbb151fbaf8f00938f75e3288000ff"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/build_diagnostic_recipe.py --variant no_slow",
+      "exit_code": 0,
+      "log": "cases/no_slow/diagnostic-build.log",
+      "sha256": "4ce4e646459fe7d3465c0468d4854b0ddebcf7117ce726b478dd66febdab6e93"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/cases/no_slow/check_case.py",
+      "exit_code": 0,
+      "log": "cases/no_slow/case-proof.log",
+      "sha256": "ec3db712abe1b3c5d55c6ff31fd0eb30a6981267e02a4dbd4a2e71a62b1c9127"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c158190-output-root-20261111 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_no_slow --output .runtime-work/c158190-no-slow-compat-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cases/no_slow/primary-compatibility-current.log",
+      "sha256": "c43595ef2bcc68645ebd60c163ac38e2b9e783c3402ea71c94cc52309dd28396"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c158190-output-root-20261111 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_no_slow --attempt .runtime-work/c158190-no-slow-compat-v1 --output .runtime-work/c158190-no-slow-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cases/no_slow/primary-saved-current.log",
+      "sha256": "dd0a2d71b7132950a3539eb4d58120094decfd248d2ff40f4e5bf4de765e312b"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c158190-output-root-20261111 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_no_slow --output .runtime-work/c158190-no-slow-compat-v2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cases/no_slow/primary-compatibility-replay-current.log",
+      "sha256": "76939a8614f29c5bbb7b961a4c743ee4da8913465612e55d850afd045ae795f7"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c158190-output-root-20261111 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_no_slow --attempt .runtime-work/c158190-no-slow-compat-v2 --output .runtime-work/c158190-no-slow-saved-v2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cases/no_slow/primary-saved-replay-current.log",
+      "sha256": "b1d1c05d27b6c5c3a031e45867e5d4bc6cb5537662bd6e75b3e3f2711c47f03d"
     }
   ],
   "remaining_gpu_checks": [
     "Realized yield-sign governance, absence of line/crosswalk, visible through traffic, actual slowing and conflict behavior."
   ],
-  "reason": "Three exact C158190 cases have separate inline constructions and synthetic four-camera source fixtures; each passes pinned offline, positive/negative package compatibility, and recorded-only saved processing. The new clear case has no through actor across all 600 original interaction frames, matches its 4.0 m/s nearest-view target, fully exits the intersection, and leaves legal yielding unresolved. Its comparison with approaching traffic now declares the controller response as a deliberate difference rather than falsely claiming an identical ego speed profile. The no-slow exact case, three tested fallbacks per selected case, complete canonical semantic proposals, independent audits and full batch delivery remain worker-owned CPU work. No physical/legal acceptance is claimed; frozen stop_sign cell versus selected yield branch remains a scope tension."
+  "reason": "All four C158190 exact cases have distinct inline constructions and synthetic four-camera source fixtures; all pass pinned offline, positive/negative compatibility, recorded-only saved processing, and static receipt verification. Branch-specific source checks show through-entered occupancy at nearest view, clear absence with matched 4.0 m/s target, and no-slow through presence with matched 6.0 m/s target and no sampled slowing. The 600-frame synthetic proofs preserve originals and claim no physical/legal acceptance. Three distinct tested fallbacks per selected case, complete canonical semantic proposals, independent delivery/comparison audits, and full batch delivery remain worker-owned CPU work. Frozen stop_sign cell versus selected yield branch remains a scope tension."
 }
