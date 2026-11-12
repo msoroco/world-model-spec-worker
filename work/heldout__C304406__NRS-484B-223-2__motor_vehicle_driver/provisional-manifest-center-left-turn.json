@@ -16,7 +16,86 @@
         "status": "physical",
         "reason": "Connected junction left exit, approach signal, marking visibility and motion need Native review"
       },
-      "candidates": []
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-center-left-turn-fallback1.json",
+          "construction_sha256": "cadcca0467220fef00800ba6d001859f02cf83a7c351b10fcd6955209f97fb59",
+          "trigger": {
+            "source": "Native route/actor preflight",
+            "metric": "Native map spawn and waypoint readback",
+            "failure_condition": "no connected marked eastbound corridor"
+          },
+          "changed_knobs": [
+            "travel_direction"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C304406__NRS-484B-223-2__motor_vehicle_driver/provisional-manifest-center-left-turn.json --case heldout__C304406__NRS-484B-223-2__motor_vehicle_driver__center_left_turn --candidate fallback1 --output .runtime-work/c304406-center-left-turn-fallback1-offline2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "cadcca0467220fef00800ba6d001859f02cf83a7c351b10fcd6955209f97fb59",
+            "log": "center-left-turn-fallback1-offline.log",
+            "log_sha256": "ac9eef0857e0f8dafad41e646570fa99f004dd664f7fa7b1c983ff054a2c6467"
+          },
+          "compatibility": {
+            "receipt": "center-left-turn-fallback1-compatibility-receipt.json",
+            "sha256": "d7ccd2d4e6cc8f23a96e570c195e50dd70f43d10d55ba5d73550b7c8aa553bf7",
+            "log": "fallback-compatibility-analysis.log",
+            "negative_log": "center-left-turn-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-center-left-turn-fallback2.json",
+          "construction_sha256": "a73886549d1744400abef999a60dacdd9b8893d12114d6ed6581ff86797f0dd8",
+          "trigger": {
+            "source": "Native route/actor preflight",
+            "metric": "Native ego blueprint lookup and spawn result",
+            "failure_condition": "Tesla model3 absent or spawn rejected"
+          },
+          "changed_knobs": [
+            "ego_blueprint"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C304406__NRS-484B-223-2__motor_vehicle_driver/provisional-manifest-center-left-turn.json --case heldout__C304406__NRS-484B-223-2__motor_vehicle_driver__center_left_turn --candidate fallback2 --output .runtime-work/c304406-center-left-turn-fallback2-offline2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "a73886549d1744400abef999a60dacdd9b8893d12114d6ed6581ff86797f0dd8",
+            "log": "center-left-turn-fallback2-offline.log",
+            "log_sha256": "71f74f00a80fe3419b44037e22a4bffcdc06553a7b184e170ec6b8dfeb75b613"
+          },
+          "compatibility": {
+            "receipt": "center-left-turn-fallback2-compatibility-receipt.json",
+            "sha256": "1802f6fbce42bb78062b553a06a5ddb16c42b53293e408ed87dd1f92e2abdd65",
+            "log": "fallback-compatibility-analysis.log",
+            "negative_log": "center-left-turn-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-center-left-turn-fallback3.json",
+          "construction_sha256": "684caa21eaa8b9d403e3a14d93496ee305e12097d06be15dd68bd9101d14f87b",
+          "trigger": {
+            "source": "Native route/actor preflight",
+            "metric": "Native center approach spawn and waypoint readback",
+            "failure_condition": "index-20 center-lane spawn blocked"
+          },
+          "changed_knobs": [
+            "approach_start_index"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C304406__NRS-484B-223-2__motor_vehicle_driver/provisional-manifest-center-left-turn.json --case heldout__C304406__NRS-484B-223-2__motor_vehicle_driver__center_left_turn --candidate fallback3 --output .runtime-work/c304406-center-left-turn-fallback3-offline2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "684caa21eaa8b9d403e3a14d93496ee305e12097d06be15dd68bd9101d14f87b",
+            "log": "center-left-turn-fallback3-offline.log",
+            "log_sha256": "770d66e397748ea0a581d2ad9ef56dd49640dc13c17862c3191ac0d9fdfba7da"
+          },
+          "compatibility": {
+            "receipt": "center-left-turn-fallback3-compatibility-receipt.json",
+            "sha256": "59b8245a02ebe707a61e961fe68ea29137165585dff8e5275d7db5b9a4c0615f",
+            "log": "fallback-compatibility-analysis.log",
+            "negative_log": "center-left-turn-fallback3-negative.log"
+          }
+        }
+      ]
     }
   ],
   "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3"

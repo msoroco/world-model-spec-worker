@@ -32,6 +32,12 @@ class AllocationTests(unittest.TestCase):
                 self.assertIsNone(value['legal_allocation_verified'])
                 check_config(json.loads((root/'config.json').read_text()))
 
+    def test_invalid_sign_blueprint_rank_rejected(self):
+        config=json.loads(json.loads((HERE/'construction-center-allocated-posted.json').read_text())['files'][1]['content'])
+        config['sign_blueprint_rank']=3
+        with self.assertRaisesRegex(ValueError,'rank invalid'):
+            check_config(config)
+
     def test_missing_and_forged_sign_geometry_rejected(self):
         with TemporaryDirectory() as temporary:
             root=self.materialize(Path(temporary),True)

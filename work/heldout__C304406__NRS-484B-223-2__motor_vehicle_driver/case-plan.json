@@ -408,5 +408,123 @@
     "recording_ids": [],
     "law_partition": "heldout",
     "scenario_partition": "heldout"
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 8,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "full three-lane road, subject and relevant traffic or roadside sign candidate",
+        "interval": "all original frames"
+      },
+      {
+        "view": "approach",
+        "subject": "forward highway sight line, passing target, occluder or left junction approach",
+        "interval": "all original frames"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "lane markings, center occupancy and passing/turn reference geometry",
+        "interval": "all original frames"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "driver-side forward roadway and roadside sign candidate",
+        "interval": "all original frames"
+      }
+    ],
+    "unverified": "Actual pixel visibility and legibility require Native source audit"
+  },
+  "source_observation_mapping": {
+    "st.lane_adjacency": {
+      "evidence": "Mapped three-lane adjacency and markings; visual paint remains unverified",
+      "channels": [],
+      "source_refs": [
+        "three_lane_map_readback.json",
+        "three_lane_frames.jsonl"
+      ]
+    },
+    "drv.extreme_lane": {
+      "evidence": "Framewise extreme-left body occupancy",
+      "channels": [
+        "three_lane_observation"
+      ],
+      "source_refs": [
+        "three_lane_frames.jsonl"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Framewise subject body and ordered lane polygon overlap",
+      "channels": [
+        "three_lane_observation"
+      ],
+      "source_refs": [
+        "three_lane_frames.jsonl"
+      ]
+    },
+    "drv.overtaking": {
+      "evidence": "Passing target and subject path source; completed pass requires Native review",
+      "channels": [],
+      "source_refs": [
+        "passing_frames.jsonl",
+        "trace.jsonl"
+      ]
+    },
+    "st.sight_distance": {
+      "evidence": "Occluder body geometry and camera source for physical sight-line review",
+      "channels": [],
+      "source_refs": [
+        "occluder_frames.jsonl",
+        "approach.mkv"
+      ]
+    },
+    "rel.visible": {
+      "evidence": "Original camera and center traffic sources for physical visibility review",
+      "channels": [],
+      "source_refs": [
+        "approach.mkv",
+        "passing_frames.jsonl"
+      ]
+    },
+    "rel.oncoming": {
+      "evidence": "Original center-lane traffic body and gap source",
+      "channels": [],
+      "source_refs": [
+        "passing_frames.jsonl"
+      ]
+    },
+    "drv.turning": {
+      "evidence": "Connected mapped left exit, approach distance and body source",
+      "channels": [],
+      "source_refs": [
+        "left_turn_plan.json",
+        "left_turn_frames.jsonl"
+      ]
+    },
+    "sig.turn_indicator": {
+      "evidence": "Original 20 Hz left indicator readback",
+      "channels": [],
+      "source_refs": [
+        "left_turn_frames.jsonl"
+      ]
+    },
+    "dev.regulatory_sign": {
+      "evidence": "Candidate sign body and original camera; notice text/authority unverified",
+      "channels": [],
+      "source_refs": [
+        "allocation_frames.jsonl",
+        "driver_reference.mkv"
+      ]
+    },
+    "st.lane_direction": {
+      "evidence": "Mapped center and right lane direction readback",
+      "channels": [],
+      "source_refs": [
+        "three_lane_map_readback.json",
+        "allocation_plan.json"
+      ]
+    }
   }
 }

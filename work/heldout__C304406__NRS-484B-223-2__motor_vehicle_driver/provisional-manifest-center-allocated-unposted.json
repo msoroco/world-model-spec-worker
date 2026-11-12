@@ -6,7 +6,7 @@
       "case_id": "heldout__C304406__NRS-484B-223-2__motor_vehicle_driver__center_allocated_unposted",
       "kind": "delivery",
       "construction": "construction-center-allocated-unposted.json",
-      "construction_sha256": "1f01137f7e78b3e488438941139d10812a60f432bb6e492ee7eb84ebab46f007",
+      "construction_sha256": "059e22c494ca9fe362a740c9e73278f60d93b59ae0079f5275e2115fb04929f6",
       "measurement_contract": "center-allocated-unposted-measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "three_lane_allocation_finalizer.py"
@@ -16,7 +16,86 @@
         "status": "physical",
         "reason": "Exclusive allocation authority, candidate sign notice text and physical visibility require Native review"
       },
-      "candidates": []
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-center-allocated-unposted-fallback1.json",
+          "construction_sha256": "58f8a8f114811c11657b36656e331b6e31d57d6c10819f6c3529628f1400cc2c",
+          "trigger": {
+            "source": "Native route/actor preflight",
+            "metric": "Native map spawn and waypoint readback",
+            "failure_condition": "no connected marked eastbound corridor"
+          },
+          "changed_knobs": [
+            "travel_direction"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C304406__NRS-484B-223-2__motor_vehicle_driver/provisional-manifest-center-allocated-unposted.json --case heldout__C304406__NRS-484B-223-2__motor_vehicle_driver__center_allocated_unposted --candidate fallback1 --output .runtime-work/c304406-center-allocated-unposted-fallback1-offline2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "58f8a8f114811c11657b36656e331b6e31d57d6c10819f6c3529628f1400cc2c",
+            "log": "center-allocated-unposted-fallback1-offline.log",
+            "log_sha256": "d047833e963f9f69776da433ba127e4a93481e4c990bb772acd170f8f7a40092"
+          },
+          "compatibility": {
+            "receipt": "center-allocated-unposted-fallback1-compatibility-receipt.json",
+            "sha256": "d563cc07ca53b36a8e5939337160e6ecefd490a2f1016336f52178628b40cdcb",
+            "log": "fallback-compatibility-analysis.log",
+            "negative_log": "center-allocated-unposted-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-center-allocated-unposted-fallback2.json",
+          "construction_sha256": "dec433d26fa1ef419524152853f9425998fbb946805c0914601c049c2dcda301",
+          "trigger": {
+            "source": "Native route/actor preflight",
+            "metric": "Native route length and connected waypoint readback",
+            "failure_condition": "mapped corridor ends before 40 steps"
+          },
+          "changed_knobs": [
+            "route_steps"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C304406__NRS-484B-223-2__motor_vehicle_driver/provisional-manifest-center-allocated-unposted.json --case heldout__C304406__NRS-484B-223-2__motor_vehicle_driver__center_allocated_unposted --candidate fallback2 --output .runtime-work/c304406-center-allocated-unposted-fallback2-offline2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "dec433d26fa1ef419524152853f9425998fbb946805c0914601c049c2dcda301",
+            "log": "center-allocated-unposted-fallback2-offline.log",
+            "log_sha256": "c1db5044039932dbc7f77708858c74eefb4cf7b6d647c5bcdc05ca27bb48f1a2"
+          },
+          "compatibility": {
+            "receipt": "center-allocated-unposted-fallback2-compatibility-receipt.json",
+            "sha256": "d193ad13e95b2f3770975f1d63e5b936283261ee070106d34160badf6693fea1",
+            "log": "fallback-compatibility-analysis.log",
+            "negative_log": "center-allocated-unposted-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-center-allocated-unposted-fallback3.json",
+          "construction_sha256": "e0d6d9f153ef984bfe0abbd765a69605450cfea1922fd8d0bbc0452cb014d136",
+          "trigger": {
+            "source": "Native route/actor preflight",
+            "metric": "Native ego blueprint lookup and spawn result",
+            "failure_condition": "Tesla model3 absent or spawn rejected"
+          },
+          "changed_knobs": [
+            "ego_blueprint"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C304406__NRS-484B-223-2__motor_vehicle_driver/provisional-manifest-center-allocated-unposted.json --case heldout__C304406__NRS-484B-223-2__motor_vehicle_driver__center_allocated_unposted --candidate fallback3 --output .runtime-work/c304406-center-allocated-unposted-fallback3-offline2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "e0d6d9f153ef984bfe0abbd765a69605450cfea1922fd8d0bbc0452cb014d136",
+            "log": "center-allocated-unposted-fallback3-offline.log",
+            "log_sha256": "80ca9c68f5639f30a6d1fad145970aa3752fc70c816d265466360d98e88cefe6"
+          },
+          "compatibility": {
+            "receipt": "center-allocated-unposted-fallback3-compatibility-receipt.json",
+            "sha256": "7f20380d80fd13e685d381508ce2427f2079dc1b32292e16003dfe3a7d93148b",
+            "log": "fallback-compatibility-analysis.log",
+            "negative_log": "center-allocated-unposted-fallback3-negative.log"
+          }
+        }
+      ]
     }
   ],
   "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3"

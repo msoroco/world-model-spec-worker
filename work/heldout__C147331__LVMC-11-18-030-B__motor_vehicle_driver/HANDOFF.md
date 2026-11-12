@@ -372,3 +372,5 @@ The C147331 fixed travel cell cannot locally construct the lawful-turn-preparati
 - C5191 semantic index SHA-256 `669f28cedaae643cf505606fceef31006209f205ce815b82faad98fefd329b98`
 - C147331 case-plan SHA-256 `8942bc3e83a31667dc474ce52a35b98a3e360b964c354f67abdfcec355a67cb4`
 - C147331 semantic index SHA-256 `5d8ecbe5dee705fdc76192a1132710656e22b1b449591d596cd7d635220b2536`
+
+Zero-byte synthetic diagnostic logs were source-preservingly compacted into `work/_shared/prune-history.json` (`compacted_zero_logs`) to respect the frozen return-file cap. Their exact former paths and empty-byte SHA256 are retained; restore them with `work/_shared/restore_compacted_zero_logs.py --assignment heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver` before its scoped strict proof sweep. The assignment remains partial.

@@ -28,6 +28,8 @@ def check_config(config):
     if config.get('rate_hz') != 20 or config.get('frames', 0) < 80 or (
             config.get('duration_s') != config.get('frames') / 20):
         raise ValueError('Three-lane baseline needs 20 Hz fixed duration')
+    if config.get('sign_blueprint_rank',0) not in (0,1,2):
+        raise ValueError('Candidate sign blueprint rank invalid')
     cameras = config.get('cameras')
     if not isinstance(cameras, list) or {
             camera.get('name') for camera in cameras} != set(CAMERAS):
@@ -80,14 +82,15 @@ def run(config, output, host, port):
         if posted:
             choices = sorted((bp for bp in world.get_blueprint_library().filter('static.prop.*')
                               if 'sign' in bp.id.lower()), key=lambda bp: bp.id)
-            if not choices:
-                raise ValueError('No static sign prop blueprint available for posted allocation candidate')
+            rank=config.get('sign_blueprint_rank',0)
+            if len(choices)<=rank:
+                raise ValueError('No static sign prop blueprint available at selected candidate rank')
             tangent = route[0].transform.get_forward_vector()
             origin = route[0].transform.location
             sign_location = carla.Location(x=origin.x+18*tangent.x-5*tangent.y,
                                            y=origin.y+18*tangent.y+5*tangent.x,
                                            z=origin.z+0.5)
-            sign = world.try_spawn_actor(choices[0], carla.Transform(sign_location))
+            sign = world.try_spawn_actor(choices[rank], carla.Transform(sign_location))
             if sign is None or sign.bounding_box.extent.z*2 < 0.5:
                 raise ValueError('Native posted sign candidate spawn or dimension readback failed')
             owned.append(sign)
