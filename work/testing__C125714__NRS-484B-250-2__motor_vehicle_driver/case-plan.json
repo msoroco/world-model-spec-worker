@@ -139,14 +139,11 @@
     }
   ],
   "observations": [
-    "Native map junction identity and sourced polygon at both entries",
-    "Native lane/road IDs, approach headings and highway identity for each vehicle",
-    "first complete body entry into the same polygon from original frame-linked rows",
-    "time difference of measured body entry events; no legal simultaneity cutoff",
-    "oriented approach geometry and left/right relation at the junction",
-    "measured stop/clearance and entry order, without legal priority inference",
-    "Native device inventory, governance and operating state",
-    "authored intention bound to actor and measured trajectory"
+    {
+      "name": "yield_control",
+      "mandatory": true,
+      "source": "runner.py and saved source yield_control.jsonl; exact source requirements remain in source_observation_mapping and source_observation_requirements"
+    }
   ],
   "sources": [
     {
@@ -558,5 +555,43 @@
       "output_key": "median_crossing_geometry",
       "evidence_or_gap": "Synthetic CPU roadway polygons; physical and statutory identity unresolved"
     }
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 55,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "ego and crossing or opposite vehicle bodies, crossing boundary and devices",
+        "interval": "all 55 s"
+      },
+      {
+        "view": "approach",
+        "subject": "both approach paths and body entry order",
+        "interval": "all 55 s"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "right or opposite approach relation, intersection identity and median geometry",
+        "interval": "all 55 s"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "ego driver reference and relevant approaching body",
+        "interval": "all 55 s"
+      }
+    ],
+    "physical_validation": "Native sight lines, target pixels and coverage remain unverified until local capture."
+  },
+  "source_observation_requirements": [
+    "Native map junction identity and sourced polygon at both entries",
+    "Native lane/road IDs, approach headings and highway identity for each vehicle",
+    "first complete body entry into the same polygon from original frame-linked rows",
+    "time difference of measured body entry events; no legal simultaneity cutoff",
+    "oriented approach geometry and left/right relation at the junction",
+    "measured stop/clearance and entry order, without legal priority inference",
+    "Native device inventory, governance and operating state",
+    "authored intention bound to actor and measured trajectory"
   ]
 }
