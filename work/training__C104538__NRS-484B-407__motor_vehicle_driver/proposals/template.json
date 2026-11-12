@@ -1,0 +1,54 @@
+{
+  "template_id": "NRS-484B-407@motor_vehicle_driver",
+  "law_id": "NRS-484B-407",
+  "actor": "motor_vehicle_driver",
+  "quote": "A vehicle shall not be turned so as to proceed in the opposite direction upon any curve, or upon the approach to or near the crest of a grade, where such vehicle cannot be seen by the driver of any other vehicle approaching from either direction within 500 feet.",
+  "status": "draft",
+  "structure": {
+    "law_id": "NRS-484B-407",
+    "activation": {
+      "condition": "vehicle turned to proceed in the opposite direction upon a curve or upon the approach to or near a crest, with visibility evaluated from both approaching directions",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "do not make that opposite-direction turn when the stated visibility condition holds",
+      "type": "must_not",
+      "numeric_conditions": []
+    },
+    "exceptions": [],
+    "timing": {
+      "description": "evaluate the road geometry and visibility at the turn location and time",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "cannot be seen by the driver of any other vehicle approaching from either direction within 500 feet",
+        "note": "Driver-eye and target-body visibility must be reviewed for both approach directions; the authored sightline radius is not an observed legal result."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "authored_sightline_limit_ft",
+      "kind": "world_setup",
+      "range_or_domain": "physical sightline geometry setting in feet; not an observed visibility verdict"
+    },
+    {
+      "name": "observed_two_direction_body_visibility",
+      "kind": "subject_behavior",
+      "range_or_domain": [
+        true,
+        false,
+        null
+      ]
+    },
+    {
+      "name": "commanded_turn_path",
+      "kind": "controller",
+      "range_or_domain": [
+        "u_turn",
+        "through"
+      ]
+    }
+  ]
+}

@@ -4,115 +4,13 @@
   "status": "draft",
   "cases": [
     {
-      "case_id": "training__C104538__NRS-484B-407__motor_vehicle_driver__below_500_ft",
-      "target_law_id": "NRS-484B-407",
-      "target_type": "boundary_probe",
-      "rationale": "Unselected authored curve/crest and 500-foot sightline boundary probe; Native and original pixels still unverified.",
+      "case_id": "training__C104538__NRS-484B-407__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Neutral straight-through definition; not selected for new recording and accepted historical equivalence remains unverified.",
       "variable_assignments": {
         "authored_sightline_limit_ft": {
-          "kind": "environment",
-          "value": 450,
-          "unit": "ft"
-        },
-        "observed_two_direction_body_visibility": {
-          "kind": "subject_behavior",
-          "value": null,
-          "unit": "boolean"
-        }
-      },
-      "unresolved_judgment_calls": [
-        "Driver-eye/body visibility from both approaches requires original Native pixels",
-        "No universal legal threshold is inferred from the authored radius"
-      ],
-      "recording_description": {
-        "channels": [
-          {
-            "name": "drv.u_turn",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "original Native actor/map/channel source",
-            "time_window": "entire original 24 s / 480-frame attempt",
-            "reference_frame": "original Native frame and map readback",
-            "uncertainty": "physical visibility and pixels require independent audit"
-          },
-          {
-            "name": "st.curvature",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "original Native actor/map/channel source",
-            "time_window": "entire original 24 s / 480-frame attempt",
-            "reference_frame": "original Native frame and map readback",
-            "uncertainty": "physical visibility and pixels require independent audit"
-          },
-          {
-            "name": "st.grade",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "original Native actor/map/channel source",
-            "time_window": "entire original 24 s / 480-frame attempt",
-            "reference_frame": "original Native frame and map readback",
-            "uncertainty": "physical visibility and pixels require independent audit"
-          },
-          {
-            "name": "st.crest",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "original Native actor/map/channel source",
-            "time_window": "entire original 24 s / 480-frame attempt",
-            "reference_frame": "original Native frame and map readback",
-            "uncertainty": "physical visibility and pixels require independent audit"
-          },
-          {
-            "name": "st.sight_distance",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "original Native actor/map/channel source",
-            "time_window": "entire original 24 s / 480-frame attempt",
-            "reference_frame": "original Native frame and map readback",
-            "uncertainty": "physical visibility and pixels require independent audit"
-          },
-          {
-            "name": "rel.oncoming",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "original Native actor/map/channel source",
-            "time_window": "entire original 24 s / 480-frame attempt",
-            "reference_frame": "original Native frame and map readback",
-            "uncertainty": "physical visibility and pixels require independent audit"
-          },
-          {
-            "name": "drv.approaching",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "original Native actor/map/channel source",
-            "time_window": "entire original 24 s / 480-frame attempt",
-            "reference_frame": "original Native frame and map readback",
-            "uncertainty": "physical visibility and pixels require independent audit"
-          },
-          {
-            "name": "kin.position",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "original Native actor/map/channel source",
-            "time_window": "entire original 24 s / 480-frame attempt",
-            "reference_frame": "original Native frame and map readback",
-            "uncertainty": "physical visibility and pixels require independent audit"
-          }
-        ],
-        "context_inputs": [],
-        "limitations": [
-          "Physical and legal conditions require original Native measurement and independent pixel audit"
-        ]
-      }
-    },
-    {
-      "case_id": "training__C104538__NRS-484B-407__motor_vehicle_driver__at_500_ft",
-      "target_law_id": "NRS-484B-407",
-      "target_type": "boundary_probe",
-      "rationale": "Unselected authored curve/crest and 500-foot sightline boundary probe; Native and original pixels still unverified.",
-      "variable_assignments": {
-        "authored_sightline_limit_ft": {
-          "kind": "environment",
+          "kind": "world_setup",
           "value": 500,
           "unit": "ft"
         },
@@ -120,11 +18,15 @@
           "kind": "subject_behavior",
           "value": null,
           "unit": "boolean"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "through",
+          "unit": "categorical"
         }
       },
       "unresolved_judgment_calls": [
-        "Driver-eye/body visibility from both approaches requires original Native pixels",
-        "No universal legal threshold is inferred from the authored radius"
+        "cannot be seen by the driver of any other vehicle approaching from either direction within 500 feet"
       ],
       "recording_description": {
         "channels": [
@@ -208,25 +110,29 @@
       }
     },
     {
-      "case_id": "training__C104538__NRS-484B-407__motor_vehicle_driver__above_500_ft",
+      "case_id": "training__C104538__NRS-484B-407__motor_vehicle_driver__below_500_ft",
       "target_law_id": "NRS-484B-407",
       "target_type": "boundary_probe",
-      "rationale": "Unselected authored curve/crest and 500-foot sightline boundary probe; Native and original pixels still unverified.",
+      "rationale": "Controlled authored 450-foot geometry point; original Native visibility and legal outcome remain unresolved.",
       "variable_assignments": {
         "authored_sightline_limit_ft": {
-          "kind": "environment",
-          "value": 550,
+          "kind": "world_setup",
+          "value": 450,
           "unit": "ft"
         },
         "observed_two_direction_body_visibility": {
           "kind": "subject_behavior",
           "value": null,
           "unit": "boolean"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "u_turn",
+          "unit": "categorical"
         }
       },
       "unresolved_judgment_calls": [
-        "Driver-eye/body visibility from both approaches requires original Native pixels",
-        "No universal legal threshold is inferred from the authored radius"
+        "cannot be seen by the driver of any other vehicle approaching from either direction within 500 feet"
       ],
       "recording_description": {
         "channels": [
@@ -307,7 +213,409 @@
         "limitations": [
           "Physical and legal conditions require original Native measurement and independent pixel audit"
         ]
-      }
+      },
+      "paired_probe_id": "C104538_visibility_geometry",
+      "deliberate_differences": [
+        "authored_sightline_limit_ft"
+      ],
+      "probe": {
+        "primary_variable": "authored_sightline_limit_ft",
+        "comparison_or_standard": "source 500-foot distance as physical coverage anchor; no inferred legal result",
+        "target_value_or_branch": 450
+      },
+      "sweep_id": "C104538_visibility_geometry",
+      "sweep_point": {
+        "authored_sightline_limit_ft": 450.0
+      },
+      "sweep_spec_version": "34030297d7839ab8bade9707db5b6d5406b5ee64a41d27fc6ca7df6aeb455d71"
+    },
+    {
+      "case_id": "training__C104538__NRS-484B-407__motor_vehicle_driver__above_500_ft",
+      "target_law_id": "NRS-484B-407",
+      "target_type": "boundary_probe",
+      "rationale": "Controlled authored 550-foot geometry point; original Native visibility and legal outcome remain unresolved.",
+      "variable_assignments": {
+        "authored_sightline_limit_ft": {
+          "kind": "world_setup",
+          "value": 550,
+          "unit": "ft"
+        },
+        "observed_two_direction_body_visibility": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "u_turn",
+          "unit": "categorical"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "cannot be seen by the driver of any other vehicle approaching from either direction within 500 feet"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.u_turn",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor/map/channel source",
+            "time_window": "entire original 24 s / 480-frame attempt",
+            "reference_frame": "original Native frame and map readback",
+            "uncertainty": "physical visibility and pixels require independent audit"
+          },
+          {
+            "name": "st.curvature",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor/map/channel source",
+            "time_window": "entire original 24 s / 480-frame attempt",
+            "reference_frame": "original Native frame and map readback",
+            "uncertainty": "physical visibility and pixels require independent audit"
+          },
+          {
+            "name": "st.grade",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor/map/channel source",
+            "time_window": "entire original 24 s / 480-frame attempt",
+            "reference_frame": "original Native frame and map readback",
+            "uncertainty": "physical visibility and pixels require independent audit"
+          },
+          {
+            "name": "st.crest",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor/map/channel source",
+            "time_window": "entire original 24 s / 480-frame attempt",
+            "reference_frame": "original Native frame and map readback",
+            "uncertainty": "physical visibility and pixels require independent audit"
+          },
+          {
+            "name": "st.sight_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor/map/channel source",
+            "time_window": "entire original 24 s / 480-frame attempt",
+            "reference_frame": "original Native frame and map readback",
+            "uncertainty": "physical visibility and pixels require independent audit"
+          },
+          {
+            "name": "rel.oncoming",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor/map/channel source",
+            "time_window": "entire original 24 s / 480-frame attempt",
+            "reference_frame": "original Native frame and map readback",
+            "uncertainty": "physical visibility and pixels require independent audit"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor/map/channel source",
+            "time_window": "entire original 24 s / 480-frame attempt",
+            "reference_frame": "original Native frame and map readback",
+            "uncertainty": "physical visibility and pixels require independent audit"
+          },
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor/map/channel source",
+            "time_window": "entire original 24 s / 480-frame attempt",
+            "reference_frame": "original Native frame and map readback",
+            "uncertainty": "physical visibility and pixels require independent audit"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Physical and legal conditions require original Native measurement and independent pixel audit"
+        ]
+      },
+      "paired_probe_id": "C104538_visibility_geometry",
+      "deliberate_differences": [
+        "authored_sightline_limit_ft"
+      ],
+      "probe": {
+        "primary_variable": "authored_sightline_limit_ft",
+        "comparison_or_standard": "source 500-foot distance as physical coverage anchor; no inferred legal result",
+        "target_value_or_branch": 550
+      },
+      "sweep_id": "C104538_visibility_geometry",
+      "sweep_point": {
+        "authored_sightline_limit_ft": 550.0
+      },
+      "sweep_spec_version": "34030297d7839ab8bade9707db5b6d5406b5ee64a41d27fc6ca7df6aeb455d71"
+    },
+    {
+      "case_id": "training__C104538__NRS-484B-407__motor_vehicle_driver__at_500_ft",
+      "target_law_id": "NRS-484B-407",
+      "target_type": "boundary_probe",
+      "rationale": "Controlled authored 500-foot geometry point; original Native visibility and legal outcome remain unresolved.",
+      "variable_assignments": {
+        "authored_sightline_limit_ft": {
+          "kind": "world_setup",
+          "value": 500,
+          "unit": "ft"
+        },
+        "observed_two_direction_body_visibility": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "u_turn",
+          "unit": "categorical"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "cannot be seen by the driver of any other vehicle approaching from either direction within 500 feet"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.u_turn",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor/map/channel source",
+            "time_window": "entire original 24 s / 480-frame attempt",
+            "reference_frame": "original Native frame and map readback",
+            "uncertainty": "physical visibility and pixels require independent audit"
+          },
+          {
+            "name": "st.curvature",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor/map/channel source",
+            "time_window": "entire original 24 s / 480-frame attempt",
+            "reference_frame": "original Native frame and map readback",
+            "uncertainty": "physical visibility and pixels require independent audit"
+          },
+          {
+            "name": "st.grade",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor/map/channel source",
+            "time_window": "entire original 24 s / 480-frame attempt",
+            "reference_frame": "original Native frame and map readback",
+            "uncertainty": "physical visibility and pixels require independent audit"
+          },
+          {
+            "name": "st.crest",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor/map/channel source",
+            "time_window": "entire original 24 s / 480-frame attempt",
+            "reference_frame": "original Native frame and map readback",
+            "uncertainty": "physical visibility and pixels require independent audit"
+          },
+          {
+            "name": "st.sight_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor/map/channel source",
+            "time_window": "entire original 24 s / 480-frame attempt",
+            "reference_frame": "original Native frame and map readback",
+            "uncertainty": "physical visibility and pixels require independent audit"
+          },
+          {
+            "name": "rel.oncoming",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor/map/channel source",
+            "time_window": "entire original 24 s / 480-frame attempt",
+            "reference_frame": "original Native frame and map readback",
+            "uncertainty": "physical visibility and pixels require independent audit"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor/map/channel source",
+            "time_window": "entire original 24 s / 480-frame attempt",
+            "reference_frame": "original Native frame and map readback",
+            "uncertainty": "physical visibility and pixels require independent audit"
+          },
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor/map/channel source",
+            "time_window": "entire original 24 s / 480-frame attempt",
+            "reference_frame": "original Native frame and map readback",
+            "uncertainty": "physical visibility and pixels require independent audit"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Physical and legal conditions require original Native measurement and independent pixel audit"
+        ]
+      },
+      "paired_probe_id": "C104538_visibility_geometry",
+      "deliberate_differences": [
+        "authored_sightline_limit_ft"
+      ],
+      "probe": {
+        "primary_variable": "authored_sightline_limit_ft",
+        "comparison_or_standard": "source 500-foot distance as physical coverage anchor; no inferred legal result",
+        "target_value_or_branch": 500
+      },
+      "sweep_id": "C104538_visibility_geometry",
+      "sweep_point": {
+        "authored_sightline_limit_ft": 500.0
+      },
+      "sweep_spec_version": "34030297d7839ab8bade9707db5b6d5406b5ee64a41d27fc6ca7df6aeb455d71"
     }
-  ]
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "C104538_visibility_geometry",
+      "target_law_id": "NRS-484B-407",
+      "judgment_refs": [
+        {
+          "phrase": "cannot be seen by the driver of any other vehicle approaching from either direction within 500 feet",
+          "note": "Driver-eye and target-body visibility must be reviewed for both approach directions; the authored sightline radius is not an observed legal result."
+        }
+      ],
+      "status": "complete",
+      "mode": "one_dimensional",
+      "axes": [
+        {
+          "variable": "authored_sightline_limit_ft",
+          "observable": "authored_sightline_limit_ft",
+          "unit": "ft",
+          "min": 450,
+          "max": 550,
+          "spacing": 50,
+          "measurement": {
+            "method": "original Native map and obstruction readback checked against authored geometry",
+            "time_window": "at original U-turn location and the full recorded approach interval",
+            "statistic": "first"
+          },
+          "range_rationale": "Sample authored physical visibility geometry below, at and above the source 500-foot distance without asserting the measured outcome.",
+          "spacing_rationale": "A 50-foot geometry interval creates three distinct controlled settings; visibility remains independently observed.",
+          "feasibility_evidence": "Twelve exact primary/fallback offline and source-shaped compatibility chains in execution-manifest.json; original Native realization remains unverified."
+        }
+      ],
+      "landmarks": [
+        {
+          "name": "source 500-foot distance",
+          "value": 500,
+          "unit": "ft",
+          "source": "A vehicle shall not be turned so as to proceed in the opposite direction upon any curve, or upon the approach to or near the crest of a grade, where such vehicle cannot be seen by the driver of any other vehicle approaching from either direction within 500 feet.",
+          "verification_evidence": "Frozen law_record text in inputs/training__C104538__NRS-484B-407__motor_vehicle_driver/assignment.json",
+          "purpose": "coverage_landmark"
+        }
+      ],
+      "rationale": "Controlled geometry sweep retains unknown physical visibility and independent original-pixel review.",
+      "variable_assignments": {
+        "authored_sightline_limit_ft": {
+          "kind": "world_setup",
+          "value": 500,
+          "unit": "ft"
+        },
+        "observed_two_direction_body_visibility": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "u_turn",
+          "unit": "categorical"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.u_turn",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor/map/channel source",
+            "time_window": "entire original 24 s / 480-frame attempt",
+            "reference_frame": "original Native frame and map readback",
+            "uncertainty": "physical visibility and pixels require independent audit"
+          },
+          {
+            "name": "st.curvature",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor/map/channel source",
+            "time_window": "entire original 24 s / 480-frame attempt",
+            "reference_frame": "original Native frame and map readback",
+            "uncertainty": "physical visibility and pixels require independent audit"
+          },
+          {
+            "name": "st.grade",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor/map/channel source",
+            "time_window": "entire original 24 s / 480-frame attempt",
+            "reference_frame": "original Native frame and map readback",
+            "uncertainty": "physical visibility and pixels require independent audit"
+          },
+          {
+            "name": "st.crest",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor/map/channel source",
+            "time_window": "entire original 24 s / 480-frame attempt",
+            "reference_frame": "original Native frame and map readback",
+            "uncertainty": "physical visibility and pixels require independent audit"
+          },
+          {
+            "name": "st.sight_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor/map/channel source",
+            "time_window": "entire original 24 s / 480-frame attempt",
+            "reference_frame": "original Native frame and map readback",
+            "uncertainty": "physical visibility and pixels require independent audit"
+          },
+          {
+            "name": "rel.oncoming",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor/map/channel source",
+            "time_window": "entire original 24 s / 480-frame attempt",
+            "reference_frame": "original Native frame and map readback",
+            "uncertainty": "physical visibility and pixels require independent audit"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor/map/channel source",
+            "time_window": "entire original 24 s / 480-frame attempt",
+            "reference_frame": "original Native frame and map readback",
+            "uncertainty": "physical visibility and pixels require independent audit"
+          },
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor/map/channel source",
+            "time_window": "entire original 24 s / 480-frame attempt",
+            "reference_frame": "original Native frame and map readback",
+            "uncertainty": "physical visibility and pixels require independent audit"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Physical and legal conditions require original Native measurement and independent pixel audit"
+        ]
+      },
+      "spec_version": "34030297d7839ab8bade9707db5b6d5406b5ee64a41d27fc6ca7df6aeb455d71",
+      "planned_case_count": 3,
+      "selection_order": [
+        "training__C104538__NRS-484B-407__motor_vehicle_driver__below_500_ft",
+        "training__C104538__NRS-484B-407__motor_vehicle_driver__above_500_ft",
+        "training__C104538__NRS-484B-407__motor_vehicle_driver__at_500_ft"
+      ]
+    }
+  ],
+  "sweeps_expanded": true
 }

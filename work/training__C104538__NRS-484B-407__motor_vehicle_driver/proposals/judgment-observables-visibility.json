@@ -1,0 +1,45 @@
+{
+  "template_id": "NRS-484B-407@motor_vehicle_driver",
+  "phrase": "cannot be seen by the driver of any other vehicle approaching from either direction within 500 feet",
+  "note": "Driver-eye and target-body visibility must be reviewed for both approach directions; the authored sightline radius is not an observed legal result.",
+  "status": "draft",
+  "observable_requirements": {
+    "observables": [
+      {
+        "name": "st.sight_distance",
+        "unit": "structured",
+        "description": "Original saved approach-lane sight horizons and censoring for each direction."
+      },
+      {
+        "name": "kin.position",
+        "unit": "structured",
+        "description": "Original subject body position and timestamp at the reversal."
+      }
+    ],
+    "context_inputs": [],
+    "sweep_dimensions": [
+      {
+        "name": "authored_sightline_limit_ft",
+        "unit": "ft",
+        "description": "Physical geometry setting varied to sample visibility near the statutory distance; not a legal cutoff."
+      }
+    ],
+    "landmarks": [],
+    "recording_needs": [
+      {
+        "name": "st.sight_distance",
+        "unit": "structured",
+        "description": "Original two-direction lane/body visibility ray samples with route-limit censoring."
+      },
+      {
+        "name": "kin.position",
+        "unit": "structured",
+        "description": "Original target body samples aligned to every tested frame."
+      }
+    ],
+    "limitations": [
+      "Original Native driver-eye perception and RGB visibility require independent review.",
+      "An authored geometry radius or a virtual-observer ray alone does not establish the statutory condition."
+    ]
+  }
+}
