@@ -19,6 +19,10 @@ from ending_road_measurement import classify_approaches, measure
 from official_control_comparison_audit import audit_sources
 from arrival_timing_audit import audit as audit_arrival
 from qualitative_release_audit import audit as audit_release
+from highway_continuity_comparison_audit import audit_attempts as audit_continuity
+from official_phase_comparison_audit import audit as audit_phase
+from turn_release_sweep_audit import audit as audit_turn_release
+from shallow_turn_comparison_audit import audit as audit_shallow
 
 
 def digest(path):
@@ -35,11 +39,14 @@ def expect_rejection(action, text):
     raise ValueError('Tampered categorical source was accepted: ' + text)
 
 
-def audit(ending, official, turning, holding, separated, release_attempts):
-    ending, official, turning, holding, separated = map(
-        Path, (ending, official, turning, holding, separated))
+def audit(ending, official, turning, holding, separated, continuing, green,
+          shallow, release_attempts, turn_release_attempts):
+    ending, official, turning, holding, separated, continuing, green, shallow = map(
+        Path, (ending, official, turning, holding, separated, continuing, green, shallow))
     release_attempts = [Path(path) for path in release_attempts]
-    for folder in (ending, official, turning, holding, separated, *release_attempts):
+    turn_release_attempts = [Path(path) for path in turn_release_attempts]
+    for folder in (ending, official, turning, holding, separated, continuing,
+                   green, shallow, *release_attempts, *turn_release_attempts):
         if not folder.is_dir():
             raise ValueError('Missing selected source attempt: ' + str(folder))
     source_names = ('intersection_participants.jsonl', 'video_frames.jsonl',
@@ -60,12 +67,23 @@ def audit(ending, official, turning, holding, separated, release_attempts):
     if roles['subject']['continues_beyond_junction'] or not roles['other']['continues_beyond_junction']:
         raise ValueError('Ending/through Native highway categories missing')
     control = audit_sources(uncontrolled, controlled)
+    continuity = audit_continuity(ending, continuing)
+    phase = audit_phase(official, green)
+    if continuity['ending_subject_continues'] or not continuity['continuing_subject_continues']:
+        raise ValueError('Ending/continuing selected source contrast missing')
+    if phase['red_state_sha256'] == phase['green_state_sha256']:
+        raise ValueError('Official red/green selected source contrast missing')
     arrival = audit_arrival(ending, separated)
     release = audit_release(release_attempts)
+    turn_release = audit_turn_release(turn_release_attempts)
+    shallow_turn = audit_shallow(turning, shallow)
     if not arrival['passed']:
         raise ValueError('Arrival timing comparison did not pass')
     if len(release['points']) != 3:
         raise ValueError('Release timing sweep lacks three measured points')
+    heading_changes = [point['observed_change_rad'] for point in turn_release['points']]
+    if not (heading_changes[0] > heading_changes[2] > heading_changes[1]):
+        raise ValueError('Turn release sweep lacks measured heading contrast')
     topology = json.loads(uncontrolled['intersection_topology.json'])
     subject_exit = roles['subject']['exterior_lanes'][0]
     changed = json.loads(json.dumps(topology))
@@ -124,6 +142,10 @@ def audit(ending, official, turning, holding, separated, release_attempts):
             'observed_hold_heading_change_rad': hold['observed_turn_heading_change_rad'],
             'arrival_timing': arrival,
             'release_timing': release,
+            'turn_release_timing': turn_release,
+            'shallow_turn': shallow_turn,
+            'highway_continuity': continuity,
+            'official_phase': phase,
             'negative_rejections': [bad_ending, bad_through, bad_device,
                                     bad_opposite, bad_straight, bad_same_straight],
             'native_capture_claimed': False, 'legal_judgment_claimed': False}
@@ -131,12 +153,15 @@ def audit(ending, official, turning, holding, separated, release_attempts):
 
 def main():
     parser = argparse.ArgumentParser()
-    for name in ('ending', 'official', 'turning', 'holding', 'separated', 'output'):
+    for name in ('ending', 'official', 'turning', 'holding', 'separated',
+                 'continuing', 'green', 'shallow', 'output'):
         parser.add_argument('--' + name, required=True)
     parser.add_argument('--release-attempt', action='append', required=True)
+    parser.add_argument('--turn-release-attempt', action='append', required=True)
     args = parser.parse_args()
     result = audit(args.ending, args.official, args.turning, args.holding,
-                   args.separated, args.release_attempt)
+                   args.separated, args.continuing, args.green, args.shallow,
+                   args.release_attempt, args.turn_release_attempt)
     path = Path(args.output)
     path.write_text(json.dumps(result, indent=2) + '\n')
     print(json.dumps({'format': result['format'], 'negative_rejections':
