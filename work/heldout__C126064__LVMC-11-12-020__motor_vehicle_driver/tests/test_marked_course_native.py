@@ -6,7 +6,7 @@ from tempfile import TemporaryDirectory
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from marked_course_native import CAMERAS, FourCameraCapture, control_step, drive_turn, place_markers, turn_targets
+from marked_course_native import CAMERAS, FourCameraCapture, control_step, drive_turn, execute_marked_turn, place_markers, turn_targets
 
 
 class Location:
@@ -197,6 +197,73 @@ class NativeMarkerTests(unittest.TestCase):
         self.assertEqual([sample['frame'] for sample in samples], result['frames'])
         self.assertTrue(all(len(sample['corners_xy_m']) == 4 for sample in samples))
         self.assertEqual(ego.controls[-1]['brake'], 1.)
+
+    def test_marker_target_camera_and_original_source_orchestration(self):
+        with TemporaryDirectory() as td:
+            p, _ = self.source(Path(td))
+            record = json.loads(p.read_text())
+            record.update({'intersection_polygon_xy_m': [[0, 0], [10, 0], [10, 10], [0, 10]],
+                           'indicated_course_xy_m': [[-2, 5], [3, 5], [7, 7], [12, 7]],
+                           'divergent_course_xy_m': [[-2, 5], [3, 3], [7, 3], [12, 7]]})
+            p.write_text(json.dumps(record))
+            digest = hashlib.sha256(p.read_bytes()).hexdigest()
+            world = World()
+            events = []
+            class Recorder:
+                def record_scene(self, case_id, source, digest, markers, ego_id):
+                    events.append(('scene', case_id, ego_id))
+                def on_frame(self, name, image): events.append(('image', name))
+                def record_sample(self, sample): events.append(('body', sample['frame']))
+                def seal(self): events.append(('seal',)); return {'frames': 1}
+                def close(self): events.append(('recorder_close',))
+            class Cameras:
+                def __init__(self, world, carla, ego, callback):
+                    events.append(('camera_open',))
+                    self.callback = callback
+                def close(self): events.append(('camera_close',))
+            def fake_drive(world, carla, ego, plan, cameras, record_sample):
+                self.assertEqual(plan['variant'], 'divergent_course')
+                cameras.callback('overview', object())
+                record_sample({'frame': 1})
+                return {'frames': [1]}
+            ego = type('Ego', (), {'id': 7})()
+            result = execute_marked_turn(world, object(), ego, 'marked-turn-case', p, digest,
+                                         'divergent_course',
+                                         lambda x, y, z, yaw: Transform(x, y),
+                                         Recorder(), camera_factory=Cameras, drive=fake_drive)
+            self.assertEqual(result['physical_marker_xy_m'], [[1.0, 2.0]])
+            self.assertFalse(result['authority_verified'])
+            self.assertEqual(events[-2:], [('camera_close',), ('recorder_close',)])
+            self.assertTrue(world.actors[0].destroyed)
+
+    def test_orchestration_releases_owned_sources_after_turn_failure(self):
+        with TemporaryDirectory() as td:
+            p, _ = self.source(Path(td))
+            record = json.loads(p.read_text())
+            record.update({'intersection_polygon_xy_m': [[0, 0], [10, 0], [10, 10], [0, 10]],
+                           'indicated_course_xy_m': [[-2, 5], [3, 5], [7, 7], [12, 7]],
+                           'divergent_course_xy_m': [[-2, 5], [3, 3], [7, 3], [12, 7]]})
+            p.write_text(json.dumps(record))
+            digest = hashlib.sha256(p.read_bytes()).hexdigest()
+            world = World()
+            released = []
+            class Recorder:
+                def record_scene(self, case_id, source, digest, markers, ego_id): pass
+                def on_frame(self, name, image): pass
+                def record_sample(self, sample): pass
+                def close(self): released.append('recorder')
+            class Cameras:
+                def __init__(self, world, carla, ego, callback): pass
+                def close(self): released.append('cameras')
+            def failing_drive(*args): raise ValueError('Native target failed')
+            ego = type('Ego', (), {'id': 7})()
+            with self.assertRaisesRegex(ValueError, 'Native target failed'):
+                execute_marked_turn(world, object(), ego, 'marked-turn-case', p, digest,
+                                    'indicated_course',
+                                    lambda x, y, z, yaw: Transform(x, y),
+                                    Recorder(), camera_factory=Cameras, drive=failing_drive)
+            self.assertEqual(released, ['cameras', 'recorder'])
+            self.assertTrue(world.actors[0].destroyed)
 
 
 if __name__ == '__main__':

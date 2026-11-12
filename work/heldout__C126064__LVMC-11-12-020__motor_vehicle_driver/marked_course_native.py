@@ -279,3 +279,41 @@ def drive_turn(world, carla_module, ego, plan, cameras, record_sample,
     ego.apply_control(carla_module.VehicleControl(throttle=0., steer=0., brake=1.))
     return {'frames': frames, 'targets_reached': len(targets)-1,
             'actual_turn_observed': bool(frames)}
+
+
+def execute_marked_turn(world, carla_module, ego, case_id, source_path, source_sha256,
+                        variant, make_transform, recorder, *,
+                        camera_factory=FourCameraCapture, drive=drive_turn):
+    """Join physical markers, selected targets, cameras and original recorder.
+
+    The caller supplies a reviewed authority/site source and an already owned ego.
+    This routine owns only its spawned markers and cameras. A source-shaped CPU
+    call proves orchestration; it cannot establish municipal authorization.
+    """
+    markers = None
+    cameras = None
+    try:
+        markers = place_markers(world, source_path, source_sha256, make_transform)
+        plan = turn_targets(world, source_path, source_sha256, variant, make_transform)
+        if plan['intersection_id'] != markers['intersection_id']:
+            raise ValueError('Marker and turn plan intersection identities differ')
+        recorder.record_scene(case_id, source_path, source_sha256, markers, ego.id)
+        cameras = camera_factory(world, carla_module, ego, recorder.on_frame)
+        motion = drive(world, carla_module, ego, plan, cameras, recorder.record_sample)
+        sources = recorder.seal()
+        if sources['frames'] != len(motion['frames']):
+            raise ValueError('Original source count differs from Native turn')
+        return {'source_sha256': source_sha256,
+                'intersection_id': plan['intersection_id'],
+                'variant': variant,
+                'physical_marker_xy_m': markers['physical_marker_xy_m'],
+                'motion': motion, 'sources': sources,
+                'authority_verified': False,
+                'legal_conformance_assessed': False}
+    finally:
+        if cameras is not None:
+            cameras.close()
+        recorder.close()
+        if markers is not None:
+            for actor in reversed(markers['actors']):
+                actor.destroy()
