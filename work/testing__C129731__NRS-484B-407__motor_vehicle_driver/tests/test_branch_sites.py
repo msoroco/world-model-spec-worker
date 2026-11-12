@@ -36,6 +36,10 @@ class CrestBranchConstructionTests(unittest.TestCase):
         wrong["occluder"]["center_xyz_m"][1] = 20
         with self.assertRaisesRegex(ValueError, "does not intersect"):
             check_branch(wrong, "approach_to_crest", "approach_b")
+        early = copy.deepcopy(site)
+        early["occluder"]["center_xyz_m"][0] = site["turn_site_xyz_m"][0] + 100
+        with self.assertRaisesRegex(ValueError, "near face differs"):
+            check_branch(early, "approach_to_crest", "approach_b")
         with self.assertRaisesRegex(ValueError, "Wrong crest placement"):
             check_branch(site, "near_summit", "approach_b")
         source = PACKAGE / "branch-sites" / "approach_to_crest__occluded_approach_b.json"

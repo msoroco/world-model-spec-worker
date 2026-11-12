@@ -89,16 +89,13 @@ def main():
         "delivery audit positive/negative proofs validate. Four CPU-tested diagnostic crest alternatives now "
         "construct near-summit and approach-to-crest turn sites with either approach ray occluded; a separate "
         "source-bound OpenDRIVE crest road plan verifies lane stations and grade geometry; a separate curved "
-        "OpenDRIVE road plan verifies six source-bound curve probe/direction site packets. Strict delivery "
-        "readiness remains open: actual CARLA ingestion and Native asset/site review (a guarded loader has CPU "
-        "mock proofs), full positive/negative saved "
-        "processing proofs for the other new alternatives (all four short-probe crest placement/direction "
-        "branches now have full diagnostic offline, compatibility and recorded-only saved proofs), a "
-        "independent four-alternative source comparison passed its software checks and two negative tampering "
-        "proofs; a completed source-grounded judgment "
-        "sweep, shared branch review/GPU queue/local integration proof and "
-        "full-batch ready packages remain unfinished worker CPU work. Synthetic pixels/rays prove no physical or "
-        "legal acceptance.")
+        "OpenDRIVE road plan verifies six source-bound curve probe/direction site packets. The four short-probe "
+        "crest branch site plans now place the prop near face at the synthetic ray packet's 150 m first-occlusion "
+        "station and have current exact offline, positive/negative compatibility, recorded-only saved-processing "
+        "and independent comparison proofs. Strict delivery readiness remains open: source-grounded at/beyond "
+        "crest placement/direction alternatives, Native asset/site review and CARLA ingestion verification, "
+        "a completed judgment sweep, shared branch review/GPU queue/local integration proof, and full-batch "
+        "ready packages are unfinished worker CPU work. Synthetic pixels/rays prove no physical or legal acceptance.")
     path.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
     plan_path = HERE / "case-plan.json"
     plan = json.loads(plan_path.read_text())

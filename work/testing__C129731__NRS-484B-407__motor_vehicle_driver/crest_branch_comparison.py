@@ -13,6 +13,19 @@ NAMES = ("near-a", "near-b", "approach-a", "approach-b")
 REQUIRED = ("config.json", "diagnostic-site-crest-short.json", "motion_history.jsonl",
             "video_frames.jsonl", "trace.jsonl", "capture/evidence.jsonl",
             "turn_history.jsonl", "curve_context.json")
+PROBES = {"short_of_500ft": ("short", 150.0, [150.0, 150.125], False),
+          "at_500ft": ("at", 152.4, [152.4, 152.4], True),
+          "beyond_500ft": ("beyond", 160.0, [160.0, 160.125], True)}
+
+
+def names_for(probe):
+    suffix = PROBES[probe][0]
+    return NAMES if suffix == "short" else tuple(suffix + "-" + name for name in NAMES)
+
+
+def required_for(probe):
+    suffix = PROBES[probe][0]
+    return tuple(source.replace("crest-short", "crest-" + suffix) for source in REQUIRED)
 
 
 def sha(path):
@@ -41,21 +54,24 @@ def normalized_actor(actor, turn_x):
             "road_lane": actor["road_lane"]}
 
 
-def inspect(name, attempt):
-    if name not in NAMES:
+def inspect(name, attempt, probe="short_of_500ft"):
+    if name not in names_for(probe):
         raise ValueError("Unknown exact crest alternative")
     attempt = Path(attempt)
     config, result = read(attempt / "config.json"), read(attempt / "result.json")
-    if config.get("selected_case_id") != CASE or (config.get("rate_hz"), config.get("duration_s")) != (20, 55):
+    case = HERE.name + "__crest__" + probe
+    if config.get("selected_case_id") != case or (config.get("rate_hz"), config.get("duration_s")) != (20, 55):
         raise ValueError("Crest branch capture contract changed")
-    if result.get("case_id") != CASE or result.get("provenance_kind") != "synthetic_fixture" or result.get("physical_acceptance_claimed") is not False:
+    if result.get("case_id") != case or result.get("provenance_kind") != "synthetic_fixture" or result.get("physical_acceptance_claimed") is not False:
         raise ValueError("Crest branch diagnostic result identity differs")
     hashes = result.get("source_evidence_hashes", {})
-    for source in REQUIRED:
+    required = required_for(probe)
+    site_name = "diagnostic-site-crest-" + PROBES[probe][0] + ".json"
+    for source in required:
         if hashes.get(source) != sha(attempt / source):
             raise ValueError("Sealed comparison source changed: " + source)
-    site = read(attempt / "diagnostic-site-crest-short.json")
-    if config["site_source"]["sha256"] != sha(attempt / "diagnostic-site-crest-short.json"):
+    site = read(attempt / site_name)
+    if config["site_source"]["sha256"] != sha(attempt / site_name):
         raise ValueError("Config/site source binding differs")
     build = read(HERE / ("branch-proof-" + name) / "build-receipt.json")
     if build["site_sha256"] != config["site_source"]["sha256"]:
@@ -64,7 +80,7 @@ def inspect(name, attempt):
         raise ValueError("Branch falsely claims Native source review")
     if not check_source_geometry((HERE / "native-map-plan/crest-road.xodr").read_text(), site):
         raise ValueError("OpenDRIVE source geometry differs")
-    placement = "near_summit" if name.startswith("near-") else "approach_to_crest"
+    placement = "near_summit" if name.endswith("near-a") or name.endswith("near-b") else "approach_to_crest"
     direction = "approach_a" if name.endswith("-a") else "approach_b"
     turn_x = 0 if placement == "near_summit" else -40
     if (site["turn_site_xyz_m"][0] != turn_x or
@@ -73,8 +89,8 @@ def inspect(name, attempt):
         raise ValueError("Declared crest placement or obscured direction differs")
     center_x = site["occluder"]["center_xyz_m"][0]
     half_x = site["occluder"]["half_extent_xyz_m"][0]
-    if not math.isclose(abs(center_x - turn_x) - half_x, 150.0, abs_tol=1e-7):
-        raise ValueError("Planned prop near face differs from short-probe ray station")
+    if not math.isclose(abs(center_x - turn_x) - half_x, PROBES[probe][1], abs_tol=1e-7):
+        raise ValueError("Planned prop near face differs from probe ray station")
     context = read(attempt / "curve_context.json")
     if (context.get("site_source_sha256") != config["site_source"]["sha256"] or
             context.get("incoming_lanes") != site["incoming_lanes"] or
@@ -120,8 +136,8 @@ def inspect(name, attempt):
         clear = rays[next(iter(lane_ids - {blocked_lane}))]
         horizon = blocked.get("any_body_sight_horizon", {})
         bracket = horizon.get("bracket_m")
-        if (horizon.get("bound") != "first_sampled_occlusion" or bracket != [150.0, 150.125] or
-                blocked.get("any_sample_clear_at_probe") is not False or
+        if (horizon.get("bound") != "first_sampled_occlusion" or bracket != PROBES[probe][2] or
+                blocked.get("any_sample_clear_at_probe") is not PROBES[probe][3] or
                 clear.get("any_body_sight_horizon", {}).get("bound") != "at_least" or
                 clear.get("any_sample_clear_at_probe") is not True):
             raise ValueError("Direction-specific short-of-500ft sight source differs")
@@ -132,22 +148,23 @@ def inspect(name, attempt):
     return {"name": name, "placement": placement, "direction": direction,
             "fixed_config": fixed_config, "fixed_site": fixed_site,
             "normalized_motion": normalized, "worlds": worlds,
-            "source_sha256": {source: hashes[source] for source in REQUIRED},
+            "source_sha256": {source: hashes[source] for source in required},
             "physical_acceptance_claimed": False}
 
 
-def audit(attempts):
-    if set(attempts) != set(NAMES):
+def audit(attempts, probe="short_of_500ft"):
+    names = names_for(probe)
+    if set(attempts) != set(names):
         raise ValueError("Four declared crest branch attempts required")
-    views = {name: inspect(name, attempts[name]) for name in NAMES}
-    first = views[NAMES[0]]
+    views = {name: inspect(name, attempts[name], probe) for name in names}
+    first = views[names[0]]
     for name, view in views.items():
         for key in ("fixed_config", "fixed_site", "normalized_motion", "worlds"):
             if view[key] != first[key]:
                 raise ValueError("Unrelated fixed source condition differs: " + key + " in " + name)
     return {"format": "worker-crest-branch-comparison-diagnostic",
-            "case_id": CASE, "alternatives": list(NAMES),
-            "source_sha256": {name: views[name]["source_sha256"] for name in NAMES},
+            "case_id": HERE.name + "__crest__" + probe, "alternatives": list(names),
+            "source_sha256": {name: views[name]["source_sha256"] for name in names},
             "software_checks_passed": True, "passed": False,
             "physical_acceptance_claimed": False,
             "limitations": ["Synthetic rays and roads do not prove physical occlusion or driver recognition"]}

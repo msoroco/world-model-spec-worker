@@ -1,4 +1,4 @@
-"""Build a separate source-shaped approach-to-crest/B-occlusion diagnostic.
+"""Build source-shaped crest placement, direction and boundary diagnostics.
 
 This changes a textual CPU fixture only. It neither replays accepted sources
 nor claims that the planned road, prop or driver sight is physically realized.
@@ -22,15 +22,27 @@ SITE = HERE / "native-map-plan/approach_to_crest__occluded_approach_b.json"
 ROAD = HERE / "native-map-plan/crest-road.xodr"
 TURN_X = -40
 OCCLUDED = "approach_b"
+PROBE = "short_of_500ft"
+SUFFIX = "short"
 
 
-def configure(placement, direction):
-    global NAME, DEST, SITE, TURN_X, OCCLUDED
+def configure(placement, direction, probe="short_of_500ft"):
+    global NAME, DEST, SITE, TURN_X, OCCLUDED, BASE, PROBE, SUFFIX
     if placement not in ("near_summit", "approach_to_crest") or direction not in ("approach_a", "approach_b"):
         raise ValueError("Unknown crest branch")
+    if probe not in ("short_of_500ft", "at_500ft", "beyond_500ft"):
+        raise ValueError("Unknown crest boundary probe")
+    PROBE = probe
+    SUFFIX = {"short_of_500ft": "short", "at_500ft": "at", "beyond_500ft": "beyond"}[probe]
     NAME = ("near" if placement == "near_summit" else "approach") + ("-a" if direction == "approach_a" else "-b")
+    if probe != "short_of_500ft":
+        NAME = SUFFIX + "-" + NAME
     DEST = HERE / ("branch-proof-" + NAME)
-    SITE = HERE / "native-map-plan" / (placement + "__occluded_" + direction + ".json")
+    site_name = placement + "__occluded_" + direction + ".json"
+    if probe != "short_of_500ft":
+        site_name = probe + "__" + site_name
+    SITE = HERE / "native-map-plan" / site_name
+    BASE = HERE / ("diagnostic-sources-crest-" + SUFFIX)
     TURN_X = 0 if placement == "near_summit" else -40
     OCCLUDED = direction
 
@@ -153,15 +165,15 @@ def build():
         raise ValueError("Unexpected crest placement")
     check_source_geometry(ROAD.read_text(), site)
     DEST.mkdir(exist_ok=True)
-    site_path = DEST / "diagnostic-site-crest-short.json"
+    site_path = DEST / ("diagnostic-site-crest-" + SUFFIX + ".json")
     site_path.write_bytes(SITE.read_bytes())
     site_hash = sha(site_path)
-    config = json.loads((HERE / "config-crest-short.json").read_text())
+    config = json.loads((HERE / ("config-crest-" + SUFFIX + ".json")).read_text())
     config["site_source"] = {"path": site_path.name, "sha256": site_hash}
     config_path = DEST / "config.json"
     dump(config_path, config)
     sources = transform_sources(site, site_hash)
-    spec = copy.deepcopy(json.loads((HERE / "diagnostic-crest-short.json").read_text()))
+    spec = copy.deepcopy(json.loads((HERE / ("diagnostic-crest-" + SUFFIX + ".json")).read_text()))
     for graph in spec["graphs"]:
         obs = graph["attributes"].get("observed_evidence")
         if obs:
@@ -177,12 +189,12 @@ def build():
     recipe = {"format": "worker-fixture-recipe", "sources": items,
               "generator": {"source": str(spec_path.relative_to(ROOT)), "sha256": sha(spec_path)}}
     dump(DEST / "recipe.json", recipe)
-    construction = copy.deepcopy(json.loads((HERE / "construction-crest-short.json").read_text()))
+    construction = copy.deepcopy(json.loads((HERE / ("construction-crest-" + SUFFIX + ".json")).read_text()))
     for file in construction["files"]:
         if file["path"] == "config.json":
             file["content"] = config_path.read_text()
             file["source"] = str(config_path.relative_to(ROOT))
-        elif file["path"] == "diagnostic-site-crest-short.json":
+        elif file["path"] == site_path.name:
             file["content"] = site_path.read_text()
             file["source"] = str(site_path.relative_to(ROOT))
     construction["branch_engineering"] = {
@@ -191,7 +203,7 @@ def build():
         "source_status": "diagnostic_fixture", "physical_acceptance_claimed": False}
     construction_path = DEST / "construction.json"
     dump(construction_path, construction)
-    manifest = copy.deepcopy(json.loads((HERE / "diagnostic-crest-short-manifest.json").read_text()))
+    manifest = copy.deepcopy(json.loads((HERE / ("diagnostic-crest-" + SUFFIX + "-manifest.json")).read_text()))
     manifest["cases"][0]["construction"] = str(construction_path.relative_to(HERE))
     manifest["cases"][0]["construction_sha256"] = sha(construction_path)
     manifest["cases"][0]["fixture_recipe"] = str((DEST / "recipe.json").relative_to(ROOT))
@@ -199,6 +211,7 @@ def build():
     receipt = {"source_road_sha256": sha(ROAD), "site_sha256": site_hash,
                "construction_sha256": sha(construction_path), "fixture_recipe_sha256": sha(DEST / "recipe.json"),
                "case_id": config["selected_case_id"],
+               "probe": PROBE,
                "placement": "near_summit" if TURN_X == 0 else "approach_to_crest",
                "occluded_direction": OCCLUDED, "diagnostic_fixture": True,
                "physical_acceptance_claimed": False}
@@ -210,6 +223,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--placement", choices=("near_summit", "approach_to_crest"), default="approach_to_crest")
     parser.add_argument("--direction", choices=("approach_a", "approach_b"), default="approach_b")
+    parser.add_argument("--probe", choices=("short_of_500ft", "at_500ft", "beyond_500ft"),
+                        default="short_of_500ft")
     args = parser.parse_args()
-    configure(args.placement, args.direction)
+    configure(args.placement, args.direction, args.probe)
     build()

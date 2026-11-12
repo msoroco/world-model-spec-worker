@@ -10,7 +10,7 @@ import json
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-from build_branch_sites import BASE, OUT, check_branch, construct, grade
+from build_branch_sites import BASE, OUT, FACE_STATION_M, check_branch, construct, grade
 from site_construction import validate_site
 
 HERE = Path(__file__).resolve().parent
@@ -89,7 +89,7 @@ def bind_site(site, road_hash):
     occluded = site["occluder"]["target_direction"]
     far = site["incoming_lanes"][occluded]["stations"][-1]["xyz_m"]
     turn = site["turn_site_xyz_m"]
-    fraction = (150.0 + site["occluder"]["half_extent_xyz_m"][0]) / \
+    fraction = (FACE_STATION_M[site["probe"]] + site["occluder"]["half_extent_xyz_m"][0]) / \
         site["incoming_lanes"][occluded]["stations"][-1]["distance_to_turn_m"]
     site["occluder"]["center_xyz_m"] = [
         turn[0] + fraction * (far[0] - turn[0]),
@@ -133,17 +133,22 @@ def main():
     road = road_source()
     road_path = PLAN / "crest-road.xodr"
     road_path.write_text(road)
-    base = json.loads(BASE.read_text())
     rows = []
-    for placement in ("near_summit", "approach_to_crest"):
-        for direction in ("approach_a", "approach_b"):
-            site = bind_site(construct(base, placement, direction), sha(road_path))
-            check_branch(site, placement, direction)
-            check_source_geometry(road, site)
-            name = placement + "__occluded_" + direction
-            path = PLAN / (name + ".json")
-            path.write_text(json.dumps(site, indent=2, sort_keys=True) + "\n")
-            rows.append({"name": name, "path": str(path.relative_to(HERE)), "sha256": sha(path)})
+    for probe, source in (("short_of_500ft", BASE),
+                          ("at_500ft", HERE / "diagnostic-site-crest-at.json"),
+                          ("beyond_500ft", HERE / "diagnostic-site-crest-beyond.json")):
+        base = json.loads(source.read_text())
+        for placement in ("near_summit", "approach_to_crest"):
+            for direction in ("approach_a", "approach_b"):
+                site = bind_site(construct(base, placement, direction), sha(road_path))
+                check_branch(site, placement, direction)
+                check_source_geometry(road, site)
+                name = placement + "__occluded_" + direction
+                if probe != "short_of_500ft":
+                    name = probe + "__" + name
+                path = PLAN / (name + ".json")
+                path.write_text(json.dumps(site, indent=2, sort_keys=True) + "\n")
+                rows.append({"name": name, "path": str(path.relative_to(HERE)), "sha256": sha(path)})
     report = {"status": "cpu_geometry_plan_unverified_in_carla",
               "road": {"path": str(road_path.relative_to(HERE)), "sha256": sha(road_path)},
               "generator_sha256": sha(__file__), "sites": rows,

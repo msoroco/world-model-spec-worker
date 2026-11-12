@@ -15,6 +15,8 @@ from site_construction import _segment_intersects_box, validate_site
 HERE = Path(__file__).resolve().parent
 BASE = HERE / "diagnostic-site-crest-short.json"
 OUT = HERE / "branch-sites"
+FACE_STATION_M = {"short_of_500ft": 150.0, "at_500ft": 152.4,
+                  "beyond_500ft": 160.0}
 
 
 def digest(path):
@@ -31,9 +33,8 @@ def _place_occluder(site, direction):
     station = site["incoming_lanes"][direction]["stations"][-1]["xyz_m"]
     # The prop is placed inside the 500-foot probe, on this direction's
     # planned eye-to-body ray. This does not predict a real CARLA sight result.
-    # The short-probe ray packet first samples occlusion at 150 m. With the
-    # two-metre x half extent, put the planned prop's near face at that station.
-    fraction = (150.0 + 2.0) / station_distance(site, direction)
+    # Align the planned prop's near face with this probe's sampled ray station.
+    fraction = (FACE_STATION_M[site["probe"]] + 2.0) / station_distance(site, direction)
     eye = [station[0], station[1], station[2] + 1.4]
     body = [turn[0], turn[1], turn[2] + 1.5]
     center = [body[i] + fraction * (eye[i] - body[i]) for i in range(3)]
@@ -60,6 +61,11 @@ def construct(base, placement, direction):
                                  [220, 0, grade(220)]]
     turn_x = -40 if placement == "approach_to_crest" else 0
     site["turn_site_xyz_m"] = [turn_x, 0, grade(turn_x)]
+    if site["probe"] == "beyond_500ft":
+        for lane in site["incoming_lanes"].values():
+            farther = copy.deepcopy(lane["stations"][-1])
+            farther["distance_to_turn_m"] = 180
+            lane["stations"].append(farther)
     for sign, name in ((-1, "approach_a"), (1, "approach_b")):
         for station in site["incoming_lanes"][name]["stations"]:
             x = turn_x + sign * station["distance_to_turn_m"]
@@ -94,9 +100,9 @@ def check_branch(site, placement, direction):
     center = site["occluder"]["center_xyz_m"]
     extent = site["occluder"]["half_extent_xyz_m"]
     turn = site["turn_site_xyz_m"]
-    if site["probe"] == "short_of_500ft" and not math.isclose(
-            abs(center[0] - turn[0]) - extent[0], 150.0, abs_tol=1e-7):
-        raise ValueError("Planned prop near face differs from short-probe ray station")
+    if not math.isclose(abs(center[0] - turn[0]) - extent[0],
+                        FACE_STATION_M[site["probe"]], abs_tol=1e-7):
+        raise ValueError("Planned prop near face differs from probe ray station")
     target = [turn[0], turn[1], turn[2] + 1.5]
     observed = {}
     for name, lane in site["incoming_lanes"].items():
