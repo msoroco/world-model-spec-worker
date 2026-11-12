@@ -1,0 +1,56 @@
+{
+  "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__at_500ft__occluded_approach_b",
+  "exact_cpu_paths_passed": true,
+  "fallbacks": [
+    {
+      "changed_knobs": [
+        "turn_target_speed_mps"
+      ],
+      "compatibility_sha256": "efe185d008604be72826f0bd371b4b7026bd0f501fcafc3ba1cedcdc47398080",
+      "construction": "branch-proof-canonical-curve-at-b/construction-fallback1.json",
+      "construction_sha256": "5022b1f3297f7d4db76393d77d74c32bca7d6b0bdb543cfb750b06dc3cf8a48f",
+      "id": "fallback1",
+      "negative_sha256": "de3ed6163e8306478b67cc547a6842ee5844d1da4d7ff3e70e349ef36b50291c",
+      "saved_processing_sha256": "7e8273faac25a6d2f9e06eaa098af078531e932f08112b22951b7e5f7bf9ae7d",
+      "trigger": {
+        "failure_condition": "exit distance remains above 2 m after heading reversal and braking",
+        "metric": "measured turn overshoots exit before stable stop",
+        "source": "turn_history.jsonl"
+      }
+    },
+    {
+      "changed_knobs": [
+        "turn_lookahead_m"
+      ],
+      "compatibility_sha256": "5b58258f056192de983f448f2bab62463bea24d305e6915f58af77ee0db612fc",
+      "construction": "branch-proof-canonical-curve-at-b/construction-fallback2.json",
+      "construction_sha256": "d99356e02effd587e554db5aaa1bb50cbd9dd4bab20364a804dbe03dcb959f5c",
+      "id": "fallback2",
+      "negative_sha256": "e7eabef64eaffca5d47b71875eba2e4feea03fdc000b1940f64a9eaec207282b",
+      "saved_processing_sha256": "7d185414987bc36b2c3bd14e1ab8dfd71f69dde3ef6dbf1bffad36bd2eafaf40",
+      "trigger": {
+        "failure_condition": "recorded heading change remains below 150 engineering degrees",
+        "metric": "body cuts the planned return corner and fails heading reversal",
+        "source": "turn_history.jsonl"
+      }
+    },
+    {
+      "changed_knobs": [
+        "approach_target_speed_mps"
+      ],
+      "compatibility_sha256": "8a0970633166fe78b3c07100b908d3c50a9291146b97659c9fad2c5d931c3134",
+      "construction": "branch-proof-canonical-curve-at-b/construction-fallback3.json",
+      "construction_sha256": "46bd2fd1703e96bb386cf67d63ecc9e3b7a6785c3943ef368e9983158e14f04e",
+      "id": "fallback3",
+      "negative_sha256": "28a33991b6c2a882cb711c3f82ae030a7099a7344b684a9bbfc84e6f630139ca",
+      "saved_processing_sha256": "4335e7062eb50e82b0e0e24901bc0fc9962939aa96eceb8cb92b2b05bb6572f4",
+      "trigger": {
+        "failure_condition": "either approach vehicle has no sustained approach trajectory",
+        "metric": "incoming actor has insufficient measured travel within 55 seconds",
+        "source": "motion_history.jsonl"
+      }
+    }
+  ],
+  "physical_acceptance_claimed": false,
+  "primary_construction_sha256": "b809a4f546d72de0aba69c0d771abbbf769abb6ab61857e1e6edc69ed0098c54"
+}

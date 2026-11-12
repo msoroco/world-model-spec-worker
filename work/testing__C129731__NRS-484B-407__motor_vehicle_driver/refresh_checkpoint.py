@@ -264,9 +264,9 @@ def main():
     result["status"] = "partial"
     result["readiness_kind"] = "delivery_preparation_in_progress"
     result["reason"] = (
-        "Eighteen canonical manifest cases and all 54 risk-triggered fallbacks have current offline, positive/negative "
-        "compatibility and recorded-only saved-processing proofs. Seven semantic stages, the eighteen-case canonical "
-        "execution manifest, eighteen physical classifier/lifecycle receipts and eighteen independent full-path diagnostic "
+        "Twenty-four canonical manifest cases and all 72 risk-triggered fallbacks have current offline, positive/negative "
+        "compatibility and recorded-only saved-processing proofs. Seven semantic stages, the twenty-four-case canonical "
+        "execution manifest, twenty-four physical classifier/lifecycle receipts and twenty-four independent full-path diagnostic "
         "delivery audit positive/negative proofs validate. Twelve CPU-tested diagnostic crest alternatives "
         "construct near-summit and approach-to-crest turn sites for all three 500-foot probes and both obscured "
         "approach directions. Their planned prop near faces align with the synthetic ray stations at 150, 152.4 "
@@ -274,9 +274,10 @@ def main():
         "processing proofs; each four-branch probe group has an independent source comparison and two negative "
         "tampering proofs. A source-bound OpenDRIVE crest plan checks twelve lane/grade sites; a curved road "
         "plan checks six curve probe/direction sites. All twelve distinct crest placement/direction cases "
-        "now have complete CPU paths and four source-audited controlled comparisons per boundary probe. "
-        "Strict delivery readiness remains open: remaining curve "
-        "direction coverage, a completed judgment sweep, shared branch "
+        "have complete CPU paths and four source-audited controlled comparisons per boundary probe. "
+        "Six distinct curve probe/direction cases have complete CPU paths and one independently audited "
+        "direction comparison per probe, including swapped-identity rejection. "
+        "Strict delivery readiness remains open: a completed judgment sweep, shared branch "
         "review/GPU queue/local integration proof, and full-batch "
         "ready packages are unfinished worker CPU work. Synthetic pixels/rays prove no physical or legal acceptance.")
     path.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
