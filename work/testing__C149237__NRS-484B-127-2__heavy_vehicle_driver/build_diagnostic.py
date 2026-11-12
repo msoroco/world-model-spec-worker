@@ -8,26 +8,30 @@ FOLDER = Path(__file__).resolve().parent
 REPO = FOLDER.parents[1]
 TEMPLATE = REPO/'work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/diagnostic.json'
 GAPS = {'gap_below_500ft':150.0,'gap_at_500ft':152.4,'gap_above_500ft':155.0}
+WIDTH_CASES={'ego_width_below_80in':('ego',2.0),
+             'ego_width_at_80in':('ego',2.032),
+             'lead_width_below_80in':('lead',2.0)}
 
 
 def lines(items):
     return ''.join(json.dumps(item, separators=(',', ':'))+'\n' for item in items)
 
 
-def body(x, y=1.75):
-    return [[x-5, y-1.1, 0], [x-5, y+1.1, 0],
-            [x+5, y-1.1, 0], [x+5, y+1.1, 0],
-            [x-5, y-1.1, 2.8], [x-5, y+1.1, 2.8],
-            [x+5, y-1.1, 2.8], [x+5, y+1.1, 2.8]]
+def body(x, y=1.75, width=2.2):
+    half=width/2
+    return [[x-5, y-half, 0], [x-5, y+half, 0],
+            [x+5, y-half, 0], [x+5, y+half, 0],
+            [x-5, y-half, 2.8], [x-5, y+half, 2.8],
+            [x+5, y-half, 2.8], [x+5, y+half, 2.8]]
 
 
 def main():
     parser=argparse.ArgumentParser()
-    parser.add_argument('--gap',choices=GAPS,default='gap_below_500ft')
+    parser.add_argument('--gap',choices=tuple(GAPS)+tuple(WIDTH_CASES),default='gap_below_500ft')
     args=parser.parse_args()
     suffix=args.gap
     case=FOLDER.name+'__'+suffix
-    lead_offset=GAPS[suffix]+10.0
+    lead_offset=GAPS.get(suffix,152.4)+10.0
     spec = json.loads(TEMPLATE.read_text())
     evidence = [json.loads(line) for line in spec['files']['capture/evidence.jsonl'].splitlines()]
     trace = [json.loads(line) for line in spec['files']['trace.jsonl'].splitlines()]
@@ -39,7 +43,9 @@ def main():
         ego['blueprint_attributes']['base_type'] = 'truck'
         ego['blueprint_attributes']['ros_name'] = ego['blueprint']
         ego['position_m'] = [x, 1.75, 0]
-        ego['body_vertices_m'] = body(x)
+        ego_width=WIDTH_CASES[suffix][1] if suffix in WIDTH_CASES and WIDTH_CASES[suffix][0]=='ego' else 2.2
+        lead_width=WIDTH_CASES[suffix][1] if suffix in WIDTH_CASES and WIDTH_CASES[suffix][0]=='lead' else 2.2
+        ego['body_vertices_m'] = body(x,width=ego_width)
         ego['velocity_mps'] = [12, 0, 0]
         ego['speed_mps'] = 12
         row['ego'].update(position_m=ego['position_m'], speed_mps=12,
@@ -55,12 +61,13 @@ def main():
         lead['blueprint'] = 'vehicle.carlamotors.carlacola'
         lead['blueprint_attributes']['ros_name'] = lead['blueprint']
         lead['position_m'] = [x+lead_offset, 1.75, 0]
-        lead['body_vertices_m'] = body(x+lead_offset)
+        lead['body_vertices_m'] = body(x+lead_offset,width=lead_width)
         row['original_observations']['participants'] = [ego, lead]
         row['original_observations']['map_context']['core_assumptions'] = [['asm.public_highway', True]]
         def actor(a):
             return {'actor_id':a['actor_id'],'blueprint_id':a['blueprint'],
-                    'road_id':1,'lane_id':-1,'overall_width_m':2.2,
+                    'road_id':1,'lane_id':-1,
+                    'overall_width_m':ego_width if a['actor_id']==ego['actor_id'] else lead_width,
                     'is_truck_or_combination':True,
                     'body_vertices_xy_m':[[p[0],p[1]] for p in a['body_vertices_m'][:4]],
                     'velocity_mps':a['velocity_mps']}

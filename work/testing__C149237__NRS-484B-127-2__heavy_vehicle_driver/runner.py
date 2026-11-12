@@ -13,6 +13,7 @@ from truck_capture_sources import record_sample
 from truck_construction import spawn_exact_gap_pair
 from truck_follow_controller import apply_pair
 from truck_site import GAP_TARGETS_M, ROAD, validate_site
+from width_construction import CASES as WIDTH_CASES, spawn_width_control_pair
 
 
 ASSIGNMENT = 'testing__C149237__NRS-484B-127-2__heavy_vehicle_driver'
@@ -23,8 +24,9 @@ def validate_config(config):
     if config.get('law_id') != 'NRS-484B-127-2' or config.get('cell_id') != 'C149237' or config.get('actor') != 'heavy_vehicle_driver':
         raise ValueError('Wrong heavy-truck case identity')
     selected = config.get('selected_case_id', '')
-    if not selected.startswith(ASSIGNMENT + '__') or selected.removeprefix(ASSIGNMENT + '__') not in GAP_TARGETS_M:
-        raise ValueError('Runner supports only the three qualifying gap cases')
+    suffix=selected.removeprefix(ASSIGNMENT + '__')
+    if not selected.startswith(ASSIGNMENT + '__') or suffix not in GAP_TARGETS_M and suffix not in WIDTH_CASES:
+        raise ValueError('Runner supports only authored gap and width cases')
     if config.get('rate_hz') != 20 or config.get('duration_s') != 45:
         raise ValueError('Truck capture requires 20 Hz for 45 seconds')
     cameras = config.get('cameras')
@@ -34,6 +36,10 @@ def validate_config(config):
         raise ValueError('Wrong source camera dimensions')
     if config.get('blueprint_ids') != ['vehicle.carlamotors.european_hgv', 'vehicle.carlamotors.carlacola']:
         raise ValueError('Truck blueprint IDs changed')
+    if suffix in WIDTH_CASES and config.get('width_candidate_blueprint_ids') != [
+            'vehicle.carlamotors.carlacola', 'vehicle.carlamotors.firetruck',
+            'vehicle.tesla.cybertruck', 'vehicle.carlamotors.european_hgv']:
+        raise ValueError('Width case needs the pinned truck candidate search')
     if config.get('required_atoms') is None or config.get('source_packets') is None:
         raise ValueError('Missing Core observation contract')
     validate_site()
@@ -93,8 +99,13 @@ def capture(args, config):
         lead_bp.set_attribute('role_name', 'NRS-484B-127-2-heavy-lead')
         transform_at = lambda x,y,heading: carla.Transform(
             carla.Location(x=x,y=y,z=.5), carla.Rotation(yaw=heading))
-        gap_case = config['selected_case_id'].removeprefix(ASSIGNMENT + '__')
-        with spawn_exact_gap_pair(world, ego_bp, lead_bp, gap_case, transform_at) as pair:
+        selected_case=config['selected_case_id'].removeprefix(ASSIGNMENT + '__')
+        if selected_case in GAP_TARGETS_M:
+            pair_context=spawn_exact_gap_pair(world,ego_bp,lead_bp,selected_case,transform_at)
+        else:
+            varied=[bp.find(identifier) for identifier in config['width_candidate_blueprint_ids']]
+            pair_context=spawn_width_control_pair(world,selected_case,ego_bp,varied,transform_at)
+        with pair_context as pair:
             ego, lead = pair['ego'], pair['lead']
             context = {'native_map_id': mapping.name, 'road_id': pair['site']['road_id'],
                        'lane_id': pair['site']['lane_id'],

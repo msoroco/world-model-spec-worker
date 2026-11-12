@@ -10,6 +10,9 @@ from truck_measurements import analyze
 CAMERAS = ('overview.mkv', 'approach.mkv', 'reference_corner.mkv', 'driver_reference.mkv')
 GAP_TARGETS_M = {'gap_below_500ft': 150.0, 'gap_at_500ft': 152.4,
                  'gap_above_500ft': 155.0}
+WIDTH_CASES = {'ego_width_below_80in': ('ego','below'),
+               'ego_width_at_80in': ('ego','at'),
+               'lead_width_below_80in': ('lead','below')}
 
 
 def sha(path):
@@ -44,8 +47,8 @@ def finalize(attempt: Path, output: Path):
     config = json.loads((attempt/'config.json').read_text())
     case = config.get('selected_case_id', '')
     suffix = case.removeprefix('testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__')
-    if suffix not in GAP_TARGETS_M:
-        raise ValueError('Wrong exact qualifying truck case')
+    if suffix not in GAP_TARGETS_M and suffix not in WIDTH_CASES:
+        raise ValueError('Wrong exact truck case')
     report = analyze(attempt)
     samples = report['samples']
     if not samples:
@@ -79,17 +82,31 @@ def finalize(attempt: Path, output: Path):
                  'reference': 'channels/'+name+'.jsonl'} for name in values]
     evidence.append({'name': 'conditions_permitting', 'unit': 'source review',
                      'reference': 'channels/conditions_permitting.json'})
-    target = GAP_TARGETS_M[suffix]
+    if suffix in GAP_TARGETS_M:
+        target_check = {'target': 'minimum_sampled_body_gap_m',
+                        'requested': GAP_TARGETS_M[suffix], 'measured': minimum,
+                        'method': 'original body vertices projected on sourced lane tangent',
+                        'tolerance': 2.0,
+                        'matched': abs(minimum-GAP_TARGETS_M[suffix]) <= 2.0,
+                        'physical_cause_confirmed': False,
+                        'cause_evidence': ['truck_history.jsonl','video_frames.jsonl']}
+    else:
+        role, category = WIDTH_CASES[suffix]
+        threshold = 80 * .0254
+        value = widths[role]
+        requested = 2.0 if category=='below' else threshold
+        target_check = {'target': role+'_minimum_overall_width_m',
+                        'requested': requested, 'measured': value,
+                        'method': 'minimum original Native overall body width for '+role,
+                        'tolerance': .005,
+                        'matched': abs(value-requested) <= .005,
+                        'physical_cause_confirmed': False,
+                        'cause_evidence': ['truck_history.jsonl','video_frames.jsonl']}
     result = {'case_id': case,
               'measured_values': {'minimum_sampled_body_gap_m': minimum,
                                   'minimum_overall_width_m': widths,
                                   'same_direction_lane_count': report['native_road_context']['same_direction_lane_count']},
-              'target_checks': [{'target': 'minimum_sampled_body_gap_m', 'requested': target,
-                                 'measured': minimum,
-                                 'method': 'original body vertices projected on sourced lane tangent',
-                                 'tolerance': 2.0, 'matched': abs(minimum-target) <= 2.0,
-                                 'physical_cause_confirmed': False,
-                                 'cause_evidence': ['truck_history.jsonl', 'video_frames.jsonl']}],
+              'target_checks': [target_check],
               'setup_confirmed': False, 'behavior_attempted': False,
               'maneuver_completed': False,
               'termination_reason': 'saved truck source analysis; independent physical audit pending',

@@ -8,8 +8,11 @@ FOLDER = Path(__file__).resolve().parent
 REPO = FOLDER.parents[1]
 ASSIGNMENT = FOLDER.name
 CASE = ASSIGNMENT + '__gap_below_500ft'
+GAP_SUFFIXES = ('gap_below_500ft','gap_at_500ft','gap_above_500ft')
+WIDTH_SUFFIXES = ('ego_width_below_80in','ego_width_at_80in','lead_width_below_80in')
 FILES = ('runner.py', 'camera_setup.py', 'camera_encoder.py',
-         'truck_site.py', 'truck_construction.py', 'truck_follow_controller.py',
+         'truck_site.py', 'truck_construction.py', 'width_construction.py',
+         'truck_follow_controller.py',
          'truck_capture_sources.py', 'truck_measurements.py', 'finalizer.py',
          'native-map-plan/one-way-truck-road.xodr', 'tests/test_bundle.py',
          'config.json')
@@ -86,6 +89,31 @@ def main():
                                               'reason': 'realized truck body visibility and gap persistence can fail'},
                            'candidates': []}],
                 'status': 'partial_first_case_offline_only'}
+    (FOLDER/'gap-constructions').mkdir(exist_ok=True)
+    for suffix in GAP_SUFFIXES[1:]+WIDTH_SUFFIXES:
+        case_id=ASSIGNMENT+'__'+suffix
+        other_config=dict(config,selected_case_id=case_id)
+        if suffix in WIDTH_SUFFIXES:
+            other_config['width_candidate_blueprint_ids']=[
+                'vehicle.carlamotors.carlacola','vehicle.carlamotors.firetruck',
+                'vehicle.tesla.cybertruck','vehicle.carlamotors.european_hgv']
+        other_construction=dict(construction,case_id=case_id)
+        other_construction['files']=[dict(item,content=json.dumps(other_config,indent=2)+'\n')
+                                     if item['path']=='config.json' else item
+                                     for item in construction['files']]
+        relative='gap-constructions/'+suffix+'.json'
+        (FOLDER/relative).write_text(json.dumps(other_construction,indent=2)+'\n')
+        manifest['cases'].append({'case_id':case_id,'kind':'delivery',
+                                  'construction':relative,
+                                  'construction_sha256':sha(FOLDER/relative),
+                                  'measurement_procedure':{'entrypoint':'finalizer.py'},
+                                  'measurement_contract':'measurement-contract.json',
+                                  'fixture_recipe':str((FOLDER/('fixture-recipe-'+suffix+'.json')).relative_to(REPO)),
+                                  'candidate_risk':{'status':'physical',
+                                    'reason':('no pinned Native truck asset may meet the exact 80-inch width category' if suffix in WIDTH_SUFFIXES else
+                                              'realized truck body gap and visibility may diverge from the '+suffix+' target')},
+                                  'candidates':[]})
+    manifest['status']='partial_gap_and_width_primaries_unproved'
     (FOLDER/'execution-manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
 
 
