@@ -39,15 +39,16 @@ def build():
     crossing = [json.loads(row) for row in files['crossing_history.jsonl'].splitlines()]
     trace = [json.loads(row) for row in files['trace.jsonl'].splitlines()]
     context = json.loads(files['junction_context.json'])
-    if len(crossing) != len(trace) or len(crossing) != 3:
-        raise ValueError('Three aligned diagnostic source frames required')
+    if len(crossing) != len(trace) or len(crossing) < 3:
+        raise ValueError('At least three aligned diagnostic source frames required')
     for point in trace:
         position = point['position']
         point.update(position_m=[position['x'], position['y'], position['z']],
                      speed_mph=point['speed_mps']/.44704,
-                     velocity_mps=[0, 0, 0],
-                     control={'throttle': 0, 'steer': 0, 'brake': 1,
-                              'hand_brake': False, 'reverse': False})
+                     velocity_mps=point.get('velocity_mps', [0, 0, 0]),
+                     control=point.get('control',
+                                       {'throttle': 0, 'steer': 0, 'brake': 1,
+                                        'hand_brake': False, 'reverse': False}))
     files['trace.jsonl'] = lines(trace)
     native_frames, graphs, evidence = [], [], []
     for row, point in zip(crossing, trace):
@@ -63,7 +64,8 @@ def build():
             participants.append({
                 'actor_id': actor_id, 'blueprint': 'vehicle.tesla.model3',
                 'position_m': [x, y, 0], 'heading_deg': heading,
-                'speed_mps': 0, 'velocity_mps': [0, 0, 0],
+                'speed_mps': row[role].get('speed_mps', 0),
+                'velocity_mps': row[role].get('velocity_mps', [0, 0, 0]),
                 'body_vertices_m': body, 'accel_longitudinal_mps2': 0,
             })
         observations = {

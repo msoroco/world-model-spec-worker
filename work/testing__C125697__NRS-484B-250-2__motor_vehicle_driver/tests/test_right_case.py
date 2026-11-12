@@ -85,7 +85,9 @@ class RightCase(unittest.TestCase):
         ego_x = sum(p[0] for p in first['ego']['body_vertices_xy_m'])/4
         other_x = sum(p[0] for p in first['other']['body_vertices_xy_m'])/4
         self.assertEqual((ego_x, other_x), (15, 0))
-        receipt = json.loads((ROOT/'right-compatibility-receipt.json').read_text())
+        entry = next(row for row in json.loads((ROOT/'execution-manifest.json').read_text())['cases']
+                     if row['case_id'] == ROOT.name+'__off_ego_right_near_time')
+        receipt = json.loads((ROOT/entry['compatibility']['receipt']).read_text())
         side = receipt['measurement_examples']['relative_right_side']['value']
         timing = receipt['measurement_examples']['entry_timing']['value']
         self.assertIs(side['other_spatially_right_of_ego_approach'], False)

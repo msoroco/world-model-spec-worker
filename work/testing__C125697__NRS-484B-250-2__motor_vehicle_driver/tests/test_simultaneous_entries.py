@@ -69,6 +69,16 @@ class EntryTests(unittest.TestCase):
             self.fixture(root,10)
             self.assertFalse(measure.analyze(root)["other_spatially_right_of_ego_approach"])
 
+    def test_boundary_contact_precedes_complete_body_entry(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);self.fixture(root)
+            rows=[json.loads(r) for r in (root/"crossing_history.jsonl").read_text().splitlines()]
+            rows[1]["other"]=vehicle(9,0,2)
+            (root/"crossing_history.jsonl").write_text("".join(json.dumps(r)+"\n" for r in rows))
+            result=measure.analyze(root)
+            self.assertEqual(result["first_body_entry"]["other"]["frame"],102)
+            self.assertEqual(result["first_body_entry"]["ego"]["frame"],102)
+
     def test_operative_signal_and_stale_frame_rejected(self):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp);self.fixture(root)

@@ -73,7 +73,9 @@ def analyze(root:Path)->dict:
             actor=row.get(role)
             if not isinstance(actor,dict) or actor.get("intersection_id")!=ctx["intersection_id"] or actor.get("road_id")!=ctx[role+"_road_id"]:
                 raise ValueError("Participant crossing identity mismatch")
-            body=_body(actor);inside=body.intersects(polygon)
+            # The selected measurement is entry of the complete vehicle body.
+            # Boundary contact alone can precede that event by several frames.
+            body=_body(actor);inside=polygon.covers(body)
             if i==0:
                 if inside:raise ValueError("Missing pre-entry history")
                 start[role]=(body.centroid.x,body.centroid.y)
