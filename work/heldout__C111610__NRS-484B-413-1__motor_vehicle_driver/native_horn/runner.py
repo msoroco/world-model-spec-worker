@@ -1,9 +1,11 @@
 """CARLA-lazy exact pedestrian no-horn turn with source-bound participants."""
 import argparse
 import json
+from math import isfinite
 from pathlib import Path
 
-from turn_native_route import select_left_turn, route_targets, control_step
+from turn_native_route import (select_left_turn, route_targets, control_step,
+                               participant_spawn_transform)
 from turn_deferred_audio import DeferredTurnSourceRecorder
 from turn_listener_capture import ListenerCaptureProcess, require_microphone_device
 from turn_horn_relay import HornRelay, relay_endpoint_from_env
@@ -25,10 +27,16 @@ def check_config(config):
         raise ValueError('Exact turn four-camera profile differs')
     engineering = config.get('engineering', {})
     if set(engineering) - {'route_spacing_m', 'approach_steps', 'route_candidate_index',
-                           'target_speed_mps', 'speed_gain', 'overview_x_m'}:
+                           'target_speed_mps', 'speed_gain', 'overview_x_m',
+                           'pedestrian_along_m', 'pedestrian_left_m'}:
         raise ValueError('Unknown turn engineering control')
     if engineering.get('route_spacing_m', 2.) <= 0 or engineering.get('approach_steps', 6) < 4:
         raise ValueError('Invalid connected turn sampling')
+    for key, lower, upper in (('pedestrian_along_m', 0., 30.),
+                              ('pedestrian_left_m', -25., 25.)):
+        value = engineering.get(key, 6. if key == 'pedestrian_along_m' else 2.)
+        if isinstance(value, bool) or not isinstance(value, (int, float)) or not isfinite(value) or not lower <= value <= upper:
+            raise ValueError('Invalid Native pedestrian construction offset: ' + key)
     if not isinstance(config.get('case', {}).get('recording_description'), dict):
         raise ValueError('Missing exact recording description')
     return engineering
@@ -71,9 +79,11 @@ def run(output_dir, host, port):
         affected_vehicle = world.try_spawn_actor(library.find('vehicle.audi.tt'), distant_exit)
         if affected_vehicle is None:
             raise ValueError('Affected Native vehicle spawn failed')
-        ped_location = scene['approach'][0].transform.location + carla.Location(x=6, y=2, z=.5)
         pedestrian = world.try_spawn_actor(library.find('walker.pedestrian.0001'),
-                                           carla.Transform(ped_location, scene['approach'][0].transform.rotation))
+                                           participant_spawn_transform(
+                                               carla, scene['approach'][0],
+                                               along_m=engineering.get('pedestrian_along_m', 6.),
+                                               left_m=engineering.get('pedestrian_left_m', 2.)))
         if pedestrian is None:
             raise ValueError('Native pedestrian listener spawn failed')
         affected_vehicle.apply_control(carla.VehicleControl(hand_brake=True))

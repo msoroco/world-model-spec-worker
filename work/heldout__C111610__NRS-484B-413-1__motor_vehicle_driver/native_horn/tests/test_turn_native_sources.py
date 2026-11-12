@@ -1,4 +1,5 @@
 import json
+import importlib.util
 from pathlib import Path
 import sys
 import tempfile
@@ -10,6 +11,11 @@ sys.path.insert(0, str(ROOT))
 from turn_native_sources import TurnSourceRecorder
 from turn_signal_measurement import measure
 from turn_native_route import participant_offset_xy, participant_spawn_transform
+
+_runner_spec = importlib.util.spec_from_file_location('c111610_horn_runner', ROOT / 'runner.py')
+_runner = importlib.util.module_from_spec(_runner_spec)
+_runner_spec.loader.exec_module(_runner)
+check_config = _runner.check_config
 
 
 class Actor:
@@ -26,6 +32,18 @@ class Actor:
 
 
 class NativeTurnSourcesTests(unittest.TestCase):
+    def test_runner_accepts_bounded_pedestrian_sweep_offsets(self):
+        construction = json.loads((ROOT.parent / 'native-horn-primary-construction.json').read_text())
+        config = json.loads(next(item['content'] for item in construction['files']
+                                 if item['path'] == 'config.json'))
+        config['engineering']['pedestrian_along_m'] = 6.
+        config['engineering']['pedestrian_left_m'] = 14.
+        self.assertEqual(check_config(config)['pedestrian_left_m'], 14.)
+        for bad in (float('nan'), float('inf'), 26., True, '14'):
+            with self.subTest(bad=bad), self.assertRaises(ValueError):
+                config['engineering']['pedestrian_left_m'] = bad
+                check_config(config)
+
     def test_pedestrian_sweep_geometry_follows_both_approach_headings(self):
         def waypoint(dx, dy):
             transform = SimpleNamespace(location=SimpleNamespace(x=10., y=20.),
