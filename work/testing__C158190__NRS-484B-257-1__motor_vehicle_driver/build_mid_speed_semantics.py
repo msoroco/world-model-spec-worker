@@ -33,10 +33,11 @@ def main():
     write(TARGET / 'proposal-draft.json', case)
 
     plan = json.loads((HERE / 'case-plan.json').read_text())
-    plan['cases'].append({'case_id': CASE, 'target_law_id': 'NRS-484B-257-1',
-                          'purpose': 'Same-traffic 4 m/s commanded view-stage comparison draft'})
+    if CASE not in {row['case_id'] for row in plan['cases']}:
+        plan['cases'].append({'case_id': CASE, 'target_law_id': 'NRS-484B-257-1',
+                              'purpose': 'Same-traffic 4 m/s commanded view-stage comparison draft'})
     for row in plan['requirement_dispositions']:
-        if row['status'] == 'selected_required':
+        if row['status'] == 'selected_required' and CASE not in row['case_ids']:
             row['case_ids'].append(CASE)
     plan['planning_status'] = 'partial_draft_mid_speed_unselected'
     write(TARGET / 'case-plan-draft.json', plan)
