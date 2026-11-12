@@ -40,14 +40,19 @@ def main():
     subprocess.run([sys.executable, "-m", "unittest", "discover", "-s",
                     str(HERE / "native"), "-p", "test_yield_branch.py", "-v"],
                    check=True, capture_output=True, text=True)
+    subprocess.run([sys.executable, "-m", "unittest", "discover", "-s",
+                    str(HERE), "-p", "test_yield_branch_comparison.py", "-v"],
+                   check=True, capture_output=True, text=True)
     proof = {"format": "c110919-yield-branch-cpu-proof-v1",
              "construction_manifest_sha256": digest(MANIFEST),
              "candidate_checks": outputs, "policy_unit_tests_passed": 4,
+             "saved_source_comparison_tests_passed": 8,
              "native_imported": False, "original_capture_observed": False,
              "canonical_selected": False, "status": "draft_not_selected"}
     target = ROOT / "cpu-proof.json"
     target.write_text(json.dumps(proof, indent=2) + "\n")
     print(json.dumps({"candidate_checks": len(outputs), "policy_tests": 4,
+                      "saved_source_tests": 8,
                       "proof_sha256": digest(target), "canonical_selected": False}))
 
 

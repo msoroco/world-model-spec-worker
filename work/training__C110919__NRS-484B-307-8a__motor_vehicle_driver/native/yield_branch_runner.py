@@ -298,7 +298,7 @@ def execute(config: dict,output: Path,host: str,port: int):
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--check',action='store_true')
-    parser.add_argument('--config',type=Path,required=True)
+    parser.add_argument('--config',type=Path,default=ROOT/'config.json')
     parser.add_argument('--output-dir',type=Path)
     parser.add_argument('--host')
     parser.add_argument('--port',type=int)

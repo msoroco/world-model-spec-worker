@@ -21,7 +21,9 @@
         "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__absent_reference",
         "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__absent_reference_contrast",
         "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__green_release_wait",
-        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__green_release_red_turn"
+        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__green_release_red_turn",
+        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__yield_wait",
+        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__yield_conflict_entry"
       ]
     },
     {
@@ -47,7 +49,9 @@
         "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__absent_reference",
         "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__absent_reference_contrast",
         "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__green_release_wait",
-        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__green_release_red_turn"
+        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__green_release_red_turn",
+        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__yield_wait",
+        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__yield_conflict_entry"
       ]
     },
     {
@@ -61,7 +65,9 @@
         "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__absent_reference",
         "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__absent_reference_contrast",
         "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__green_release_wait",
-        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__green_release_red_turn"
+        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__green_release_red_turn",
+        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__yield_wait",
+        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__yield_conflict_entry"
       ]
     }
   ],
@@ -203,6 +209,48 @@
         "green_release_and_exceptions",
         "selected_delivery_comparison"
       ]
+    },
+    {
+      "case_id": "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__yield_wait",
+      "target_law_id": "NRS-484B-307-8a",
+      "planning_status": "unverified_definition",
+      "target_type": "boundary_probe",
+      "comparison_variable": "pedestrian_conflict_response",
+      "comparison_unit": "observed_body_pedestrian_overlap",
+      "requested_setting": "yield_wait",
+      "recorded_value": null,
+      "case_description": "After the same red-signal full-body stop, compare waiting for an occupied signal-directed pedestrian conflict zone with a deliberate entry probe; legal right-of-way remains unresolved.",
+      "fixed_context": "Hold marked-reference C110919 road, extreme-right approach, two-directional receiving highway, steady red, ego route, walker path, weather, capture profile and all noncompared controller knobs constant.",
+      "source_topic_ids": [
+        "text-0",
+        "text-1",
+        "text-2"
+      ],
+      "gap_ids": [
+        "right_turn_permission_and_yield",
+        "selected_delivery_comparison"
+      ]
+    },
+    {
+      "case_id": "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__yield_conflict_entry",
+      "target_law_id": "NRS-484B-307-8a",
+      "planning_status": "unverified_definition",
+      "target_type": "boundary_probe",
+      "comparison_variable": "pedestrian_conflict_response",
+      "comparison_unit": "observed_body_pedestrian_overlap",
+      "requested_setting": "yield_conflict_entry",
+      "recorded_value": null,
+      "case_description": "After the same red-signal full-body stop, compare waiting for an occupied signal-directed pedestrian conflict zone with a deliberate entry probe; legal right-of-way remains unresolved.",
+      "fixed_context": "Hold marked-reference C110919 road, extreme-right approach, two-directional receiving highway, steady red, ego route, walker path, weather, capture profile and all noncompared controller knobs constant.",
+      "source_topic_ids": [
+        "text-0",
+        "text-1",
+        "text-2"
+      ],
+      "gap_ids": [
+        "right_turn_permission_and_yield",
+        "selected_delivery_comparison"
+      ]
     }
   ],
   "comparisons": [
@@ -268,6 +316,29 @@
         "camera and capture profile"
       ],
       "status": "planned_unverified"
+    },
+    {
+      "comparison_id": "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__comparison_pedestrian_yield",
+      "case_ids": [
+        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__yield_wait",
+        "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__yield_conflict_entry"
+      ],
+      "deliberate_differences": [
+        "pedestrian_conflict_response"
+      ],
+      "fixed_conditions": [
+        "cell",
+        "actor",
+        "steady_red",
+        "marked_stop_reference",
+        "extreme_right_approach",
+        "two_directional_receiving_road",
+        "pedestrian_path_and_signal_direction",
+        "weather",
+        "noncompared_controller_settings",
+        "camera_and_capture_profile"
+      ],
+      "status": "planned_unverified"
     }
   ],
   "observations": [
@@ -288,6 +359,12 @@
       "unit": "bool",
       "mandatory": true,
       "purpose": "halt before legally applicable boundary versus entry without halt; right-turn yield separately"
+    },
+    {
+      "name": "body_pedestrian_conflict_overlap",
+      "unit": "frame_indices",
+      "mandatory": true,
+      "purpose": "Source-measured full-body and pedestrian-center occupancy in the destination conflict zone; not a legal yield verdict"
     }
   ],
   "source_observation_mapping": {
@@ -411,7 +488,8 @@
     "drv.yields_to": {
       "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
       "channels": [
-        "halt_before_nearest_boundary"
+        "halt_before_nearest_boundary",
+        "body_pedestrian_conflict_overlap"
       ],
       "source_refs": [
         "inputs/training__C110919__NRS-484B-307-8a__motor_vehicle_driver/assignment.json"
@@ -445,7 +523,8 @@
     "No original CARLA source recording establishes official signal governance, physical stop reference, receiving road direction, pedestrian/other-traffic precedence, or pixel visibility.",
     "Green-release, absent-reference, one-way-left and paragraph (c)/(d) exception branches remain open.",
     "Selected delivery comparison, independent acceptance audit and GPU queue are unfinished worker-owned tasks.",
-    "Absent-reference right-turn pair has runner/geometry/finalizer CPU branch proof only; exact selected offline, compatibility, saved processing, independent audits and original absence review remain pending."
+    "Absent-reference right-turn pair has runner/geometry/finalizer CPU branch proof only; exact selected offline, compatibility, saved processing, independent audits and original absence review remain pending.",
+    "Pedestrian-conflict pair has eight draft offline constructions and source-shaped comparison tests; exact compatibility, saved processing, original signal-directed walker timing and legal yield review remain unverified."
   ],
   "selection_targets": [
     "full-train"
