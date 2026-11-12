@@ -2050,6 +2050,1646 @@
         "test_log": "canonical-at-near-a-branch-processing.json",
         "test_log_sha256": "e82d9ca2c15b09fc89bbccb48cc4d38827daf3852ad2be39dfa074e1063882b0"
       }
+    },
+    {
+      "acquisition": {
+        "approaching_actors": {
+          "entrypoint": "runner.py",
+          "evidence": "motion_history.jsonl",
+          "method": "original both approach actors"
+        },
+        "sight_distance": {
+          "entrypoint": "finalizer.py",
+          "evidence": "channels/sight_distance.jsonl",
+          "method": "pinned ray summary"
+        },
+        "st.sight_distance": {
+          "entrypoint": "runner.py",
+          "evidence": "capture/evidence.jsonl",
+          "method": "PipelineCapture original ray packet"
+        },
+        "u_turn_motion": {
+          "entrypoint": "runner.py",
+          "evidence": "motion_history.jsonl",
+          "method": "original pose and velocity"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Native occlusion and approach motion need measured confirmation",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "turn_target_speed_mps"
+          ],
+          "compatibility": {
+            "log": "analysis.log",
+            "negative_log": "canonical-short-approach-b-fallback1-negative-analysis.log",
+            "receipt": "canonical-short-approach-b-fallback1-compatibility.json",
+            "sha256": "88bdd818a51cfa231300992a7c38fcbaae8bee2b8f189a7aefe2580f83310854"
+          },
+          "construction": "branch-proof-canonical-short-approach-b/construction-fallback1.json",
+          "construction_sha256": "73742f1b8b08a48afc6967a89bfe5478530d045c68f77c52c188d11a593bc2b5",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-short-approach-b-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__approach_to_crest__occluded_approach_b --candidate fallback1 --output .runtime-work/c129731-canonical-short-approach-b-fallback1-offline-v1",
+            "construction_sha256": "73742f1b8b08a48afc6967a89bfe5478530d045c68f77c52c188d11a593bc2b5",
+            "exit_code": 0,
+            "log": "canonical-short-approach-b-fallback1-offline.log",
+            "log_sha256": "34b3b96825ef9f3d9f33355494ad0f6e7af1d07cecae01aaabfe74be45ad8434"
+          },
+          "post_capture": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-short-approach-b-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__approach_to_crest__occluded_approach_b --attempt .runtime-work/c129731-canonical-short-approach-b-fallback1-compat-v1 --output .runtime-work/c129731-canonical-short-approach-b-fallback1-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat .runtime-work/c129731-canonical-short-approach-b-fallback1-saved-v1/v0001/feedback.json",
+            "recorded_only": true,
+            "test_exit_code": 0,
+            "test_log": "canonical-short-approach-b-fallback1-processing.json",
+            "test_log_sha256": "3aa9f9c5326b9783500d70a3e62b78fa7b0f71b381b431c2f7d7065ab5f43063"
+          },
+          "trigger": {
+            "failure_condition": "exit distance remains above 2 m after heading reversal and braking",
+            "metric": "measured turn overshoots exit before stable stop",
+            "source": "turn_history.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "turn_lookahead_m"
+          ],
+          "compatibility": {
+            "log": "analysis.log",
+            "negative_log": "canonical-short-approach-b-fallback2-negative-analysis.log",
+            "receipt": "canonical-short-approach-b-fallback2-compatibility.json",
+            "sha256": "92991b1af16b0d143fa0d799d34b63bc5b2cb2aef8a52d6742dffdde1fc35e2f"
+          },
+          "construction": "branch-proof-canonical-short-approach-b/construction-fallback2.json",
+          "construction_sha256": "8ce89d95809641c407a75d8925f093170be1c8e3f875cb92547b8eaadaebe487",
+          "id": "fallback2",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-short-approach-b-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__approach_to_crest__occluded_approach_b --candidate fallback2 --output .runtime-work/c129731-canonical-short-approach-b-fallback2-offline-v1",
+            "construction_sha256": "8ce89d95809641c407a75d8925f093170be1c8e3f875cb92547b8eaadaebe487",
+            "exit_code": 0,
+            "log": "canonical-short-approach-b-fallback2-offline.log",
+            "log_sha256": "513e82760513670873c322298d1317ed458271bd53e162b271ec0da5cbce2002"
+          },
+          "post_capture": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-short-approach-b-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__approach_to_crest__occluded_approach_b --attempt .runtime-work/c129731-canonical-short-approach-b-fallback2-compat-v1 --output .runtime-work/c129731-canonical-short-approach-b-fallback2-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat .runtime-work/c129731-canonical-short-approach-b-fallback2-saved-v1/v0001/feedback.json",
+            "recorded_only": true,
+            "test_exit_code": 0,
+            "test_log": "canonical-short-approach-b-fallback2-processing.json",
+            "test_log_sha256": "507a8e8f24bf3fc2020b9eef75419d6ceb766edb678755933436a9db8520dcc9"
+          },
+          "trigger": {
+            "failure_condition": "recorded heading change remains below 150 engineering degrees",
+            "metric": "body cuts the planned return corner and fails heading reversal",
+            "source": "turn_history.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "approach_target_speed_mps"
+          ],
+          "compatibility": {
+            "log": "analysis.log",
+            "negative_log": "canonical-short-approach-b-fallback3-negative-analysis.log",
+            "receipt": "canonical-short-approach-b-fallback3-compatibility.json",
+            "sha256": "691b55fc923599d6a35b953b1228f16e59d4c5e652dec53cf6e2fbb4898eb503"
+          },
+          "construction": "branch-proof-canonical-short-approach-b/construction-fallback3.json",
+          "construction_sha256": "1112b6755310c9b8ba6748245028d911b663f03574fb9f493662dce72ef3b095",
+          "id": "fallback3",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-short-approach-b-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__approach_to_crest__occluded_approach_b --candidate fallback3 --output .runtime-work/c129731-canonical-short-approach-b-fallback3-offline-v1",
+            "construction_sha256": "1112b6755310c9b8ba6748245028d911b663f03574fb9f493662dce72ef3b095",
+            "exit_code": 0,
+            "log": "canonical-short-approach-b-fallback3-offline.log",
+            "log_sha256": "4a486900d33e73217917355b6e5deb4ea6a42919783d13cff34fe5dc28bfa5de"
+          },
+          "post_capture": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-short-approach-b-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__approach_to_crest__occluded_approach_b --attempt .runtime-work/c129731-canonical-short-approach-b-fallback3-compat-v1 --output .runtime-work/c129731-canonical-short-approach-b-fallback3-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat .runtime-work/c129731-canonical-short-approach-b-fallback3-saved-v1/v0001/feedback.json",
+            "recorded_only": true,
+            "test_exit_code": 0,
+            "test_log": "canonical-short-approach-b-fallback3-processing.json",
+            "test_log_sha256": "3e299e9fcef7028201bba3b2413c72dbe93ece0cf5b79e0b15358a038291f1db"
+          },
+          "trigger": {
+            "failure_condition": "either approach vehicle has no sustained approach trajectory",
+            "metric": "incoming actor has insufficient measured travel within 55 seconds",
+            "source": "motion_history.jsonl"
+          }
+        }
+      ],
+      "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__approach_to_crest__occluded_approach_b",
+      "compatibility": {
+        "log": "analysis.log",
+        "negative_log": "canonical-short-approach-b-branch-negative-analysis.log",
+        "receipt": "canonical-short-approach-b-branch-compatibility.json",
+        "sha256": "99c980be23faa417b3bf6cb6c5f067aa925cb6b7c79b2f4900661d4c0010843e"
+      },
+      "construction": "branch-proof-canonical-short-approach-b/construction.json",
+      "construction_sha256": "c4cb12070b131c471e6b0a9aec3b4c7607ed4220aaba4cb06e63d92785f0b162",
+      "delivery_acceptance": {
+        "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__approach_to_crest__occluded_approach_b",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C129731__NRS-484B-407__motor_vehicle_driver/delivery_fixture_proof.py --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__approach_to_crest__occluded_approach_b --output-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c129731-delivery-diagnostic-canonical-short-approach-b-v1",
+        "diagnostic_audit": "delivery-proofs/canonical-short-approach-b/diagnostic-audit.json",
+        "diagnostic_audit_sha256": "bfe82f1434b3b9d65970f36f1006afd0d63d91dc7430298b6608d47af483abe6",
+        "diagnostic_decode_receipt": "delivery-proofs/canonical-short-approach-b/source-decode.json",
+        "diagnostic_decode_receipt_sha256": "6b912d5e504ffa442a30a6bf88130c7cfac952ff841cabf16be4d690a42c69e9",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C129731__NRS-484B-407__motor_vehicle_driver/delivery_fixture_proof.py --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__approach_to_crest__occluded_approach_b --output-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c129731-delivery-diagnostic-canonical-short-approach-b-negative-v1 --negative-source-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c129731-delivery-diagnostic-canonical-short-approach-b-v1 --negative-missing-source",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Sealed original source changed: capture/evidence.jsonl",
+        "negative_log": "delivery-proofs/canonical-short-approach-b/negative.log",
+        "negative_log_sha256": "eef8159d33e6892331590dbc5d88772c2e6b8e9dbdd33dddc627a56144ec8868",
+        "scope": "20-frame synthetic software audit only; no Native actor pixels or legal acceptance",
+        "script": "delivery_audit.py",
+        "script_sha256": "8e1ac2d8523773061f67a11aa3ba96d8f29ef89faf63b24f497fa1f7ec749262",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/canonical-short-approach-b/positive.log",
+        "test_log_sha256": "50a70fc5b38a2dffe56fbd3aa4558439d1af974fd70fa0f32c304982a6e02456"
+      },
+      "fixture_recipe": "work/testing__C129731__NRS-484B-407__motor_vehicle_driver/branch-proof-canonical-short-approach-b/recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract-crest.json",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "canonical-short-approach-b-branch-negative-analysis.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-short-approach-b-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__approach_to_crest__occluded_approach_b --output .runtime-work/c129731-canonical-short-approach-b-offline-v1",
+        "construction_sha256": "c4cb12070b131c471e6b0a9aec3b4c7607ed4220aaba4cb06e63d92785f0b162",
+        "exit_code": 0,
+        "log": "canonical-short-approach-b-branch-offline.log",
+        "log_sha256": "c87d0aba5ca46cfc7ce974ed322c51dd44050a66da0502d577ebe0fe64fc9254"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proofs/canonical-short-approach-b/receipt.json",
+        "sha256": "a15e0f50100b65dc2bc5229e07c74b4c300b632b8de1e45dab37553a075e8261"
+      },
+      "post_capture": {
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-short-approach-b-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__approach_to_crest__occluded_approach_b --attempt .runtime-work/c129731-canonical-short-approach-b-compat-v1 --output .runtime-work/c129731-canonical-short-approach-b-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat .runtime-work/c129731-canonical-short-approach-b-saved-v1/v0001/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "canonical-short-approach-b-branch-processing.json",
+        "test_log_sha256": "20c226fd455dcfa9cd59e071e1d16725b7133b8ad363a84ae908250ed439c378"
+      }
+    },
+    {
+      "acquisition": {
+        "approaching_actors": {
+          "entrypoint": "runner.py",
+          "evidence": "motion_history.jsonl",
+          "method": "original both approach actors"
+        },
+        "sight_distance": {
+          "entrypoint": "finalizer.py",
+          "evidence": "channels/sight_distance.jsonl",
+          "method": "pinned ray summary"
+        },
+        "st.sight_distance": {
+          "entrypoint": "runner.py",
+          "evidence": "capture/evidence.jsonl",
+          "method": "PipelineCapture original ray packet"
+        },
+        "u_turn_motion": {
+          "entrypoint": "runner.py",
+          "evidence": "motion_history.jsonl",
+          "method": "original pose and velocity"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Native occlusion and approach motion need measured confirmation",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "turn_target_speed_mps"
+          ],
+          "compatibility": {
+            "log": "analysis.log",
+            "negative_log": "canonical-short-near-b-fallback1-negative-analysis.log",
+            "receipt": "canonical-short-near-b-fallback1-compatibility.json",
+            "sha256": "67376621aacfe63e8b5f282237cf2ef2da9ebf1164f2698ec1cfbb38c5793786"
+          },
+          "construction": "branch-proof-canonical-short-near-b/construction-fallback1.json",
+          "construction_sha256": "509d284c0e06f31560d4b83f9cde2980c4863290f77ba8704d899cda326cee35",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-short-near-b-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_b --candidate fallback1 --output .runtime-work/c129731-canonical-short-near-b-fallback1-offline-v1",
+            "construction_sha256": "509d284c0e06f31560d4b83f9cde2980c4863290f77ba8704d899cda326cee35",
+            "exit_code": 0,
+            "log": "canonical-short-near-b-fallback1-offline.log",
+            "log_sha256": "6b3f3c1d587f007565b93168c59a08a58cee1f8bbfa2452a7c62a2382d13adf4"
+          },
+          "post_capture": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-short-near-b-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_b --attempt .runtime-work/c129731-canonical-short-near-b-fallback1-compat-v1 --output .runtime-work/c129731-canonical-short-near-b-fallback1-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat .runtime-work/c129731-canonical-short-near-b-fallback1-saved-v1/v0001/feedback.json",
+            "recorded_only": true,
+            "test_exit_code": 0,
+            "test_log": "canonical-short-near-b-fallback1-processing.json",
+            "test_log_sha256": "1b7f167521033a812406b87badfac89e2df3edd26a8dcd02fb3800b0251e12b0"
+          },
+          "trigger": {
+            "failure_condition": "exit distance remains above 2 m after heading reversal and braking",
+            "metric": "measured turn overshoots exit before stable stop",
+            "source": "turn_history.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "turn_lookahead_m"
+          ],
+          "compatibility": {
+            "log": "analysis.log",
+            "negative_log": "canonical-short-near-b-fallback2-negative-analysis.log",
+            "receipt": "canonical-short-near-b-fallback2-compatibility.json",
+            "sha256": "c202fe3e366dbf5c9417068c34a3e23a749e26d29b750dddfe1d4166448ef97a"
+          },
+          "construction": "branch-proof-canonical-short-near-b/construction-fallback2.json",
+          "construction_sha256": "e0855ee025f9d7941643c87c4dcc61f6ff6ccd417e6fc57cdf2b99e6e230ae83",
+          "id": "fallback2",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-short-near-b-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_b --candidate fallback2 --output .runtime-work/c129731-canonical-short-near-b-fallback2-offline-v1",
+            "construction_sha256": "e0855ee025f9d7941643c87c4dcc61f6ff6ccd417e6fc57cdf2b99e6e230ae83",
+            "exit_code": 0,
+            "log": "canonical-short-near-b-fallback2-offline.log",
+            "log_sha256": "79b801feb1da8b38e7f4ccf6bc1ea49eb2e0bedc61e11c5fb0fc6e3afc82dfdb"
+          },
+          "post_capture": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-short-near-b-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_b --attempt .runtime-work/c129731-canonical-short-near-b-fallback2-compat-v1 --output .runtime-work/c129731-canonical-short-near-b-fallback2-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat .runtime-work/c129731-canonical-short-near-b-fallback2-saved-v1/v0001/feedback.json",
+            "recorded_only": true,
+            "test_exit_code": 0,
+            "test_log": "canonical-short-near-b-fallback2-processing.json",
+            "test_log_sha256": "cd76eeb50c8e62bf38f85220ace00c891698cba25a45abbb24b555a0149c5e04"
+          },
+          "trigger": {
+            "failure_condition": "recorded heading change remains below 150 engineering degrees",
+            "metric": "body cuts the planned return corner and fails heading reversal",
+            "source": "turn_history.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "approach_target_speed_mps"
+          ],
+          "compatibility": {
+            "log": "analysis.log",
+            "negative_log": "canonical-short-near-b-fallback3-negative-analysis.log",
+            "receipt": "canonical-short-near-b-fallback3-compatibility.json",
+            "sha256": "2d1fc6c22d262007c2a1378d4c1398eb2df049f7fa8172c7e42631bee164185d"
+          },
+          "construction": "branch-proof-canonical-short-near-b/construction-fallback3.json",
+          "construction_sha256": "fb14213456c2e000f52b6f65cccc7fbf48ad9fb22d8abf5680af64eaf05c2c99",
+          "id": "fallback3",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-short-near-b-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_b --candidate fallback3 --output .runtime-work/c129731-canonical-short-near-b-fallback3-offline-v1",
+            "construction_sha256": "fb14213456c2e000f52b6f65cccc7fbf48ad9fb22d8abf5680af64eaf05c2c99",
+            "exit_code": 0,
+            "log": "canonical-short-near-b-fallback3-offline.log",
+            "log_sha256": "f2ee5829d790f08aa7e02051d190ddaaa11e2e81e963925d1d1143f5c0c0d013"
+          },
+          "post_capture": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-short-near-b-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_b --attempt .runtime-work/c129731-canonical-short-near-b-fallback3-compat-v1 --output .runtime-work/c129731-canonical-short-near-b-fallback3-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat .runtime-work/c129731-canonical-short-near-b-fallback3-saved-v1/v0001/feedback.json",
+            "recorded_only": true,
+            "test_exit_code": 0,
+            "test_log": "canonical-short-near-b-fallback3-processing.json",
+            "test_log_sha256": "635b62adaf20d900301202f27ebdfed202553285d12731f27a3d1ade94a462e7"
+          },
+          "trigger": {
+            "failure_condition": "either approach vehicle has no sustained approach trajectory",
+            "metric": "incoming actor has insufficient measured travel within 55 seconds",
+            "source": "motion_history.jsonl"
+          }
+        }
+      ],
+      "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_b",
+      "compatibility": {
+        "log": "analysis.log",
+        "negative_log": "canonical-short-near-b-branch-negative-analysis.log",
+        "receipt": "canonical-short-near-b-branch-compatibility.json",
+        "sha256": "fba096dfe837bd10b78bc30041a244ae50280660e84acbd3f35b47babbd8722a"
+      },
+      "construction": "branch-proof-canonical-short-near-b/construction.json",
+      "construction_sha256": "2be378844205b8461354d595b60c35bd5c8de78f86bdbadf40488b3ec9b8f9b9",
+      "delivery_acceptance": {
+        "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_b",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C129731__NRS-484B-407__motor_vehicle_driver/delivery_fixture_proof.py --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_b --output-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c129731-delivery-diagnostic-canonical-short-near-b-v1",
+        "diagnostic_audit": "delivery-proofs/canonical-short-near-b/diagnostic-audit.json",
+        "diagnostic_audit_sha256": "4c44536689d2a3954a9259c989302bde41f9bb45a3e3be1fd9b3dec0aa3cff94",
+        "diagnostic_decode_receipt": "delivery-proofs/canonical-short-near-b/source-decode.json",
+        "diagnostic_decode_receipt_sha256": "a04b734911202f069d1c702b505af0522cb832b2582aeb7b65dc2b8aa03f1b35",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C129731__NRS-484B-407__motor_vehicle_driver/delivery_fixture_proof.py --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_b --output-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c129731-delivery-diagnostic-canonical-short-near-b-negative-v1 --negative-source-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c129731-delivery-diagnostic-canonical-short-near-b-v1 --negative-missing-source",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Sealed original source changed: capture/evidence.jsonl",
+        "negative_log": "delivery-proofs/canonical-short-near-b/negative.log",
+        "negative_log_sha256": "eef8159d33e6892331590dbc5d88772c2e6b8e9dbdd33dddc627a56144ec8868",
+        "scope": "20-frame synthetic software audit only; no Native actor pixels or legal acceptance",
+        "script": "delivery_audit.py",
+        "script_sha256": "8e1ac2d8523773061f67a11aa3ba96d8f29ef89faf63b24f497fa1f7ec749262",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/canonical-short-near-b/positive.log",
+        "test_log_sha256": "bebe3a9b0d8a8da79ca5cd0880eefd2494e40d3d9f71d3aba149bc947aa074f5"
+      },
+      "fixture_recipe": "work/testing__C129731__NRS-484B-407__motor_vehicle_driver/branch-proof-canonical-short-near-b/recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract-crest.json",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "canonical-short-near-b-branch-negative-analysis.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-short-near-b-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_b --output .runtime-work/c129731-canonical-short-near-b-offline-v1",
+        "construction_sha256": "2be378844205b8461354d595b60c35bd5c8de78f86bdbadf40488b3ec9b8f9b9",
+        "exit_code": 0,
+        "log": "canonical-short-near-b-branch-offline.log",
+        "log_sha256": "dbda23852eb15d2f0b8fec302326d480cfbd42b3f7f24d0fb7913b62e1953a08"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proofs/canonical-short-near-b/receipt.json",
+        "sha256": "a0ab59760982ea2cdd324ae8c1b62b4ff88a09b63168a499ad1d631869583c90"
+      },
+      "post_capture": {
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-short-near-b-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_b --attempt .runtime-work/c129731-canonical-short-near-b-compat-v1 --output .runtime-work/c129731-canonical-short-near-b-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat .runtime-work/c129731-canonical-short-near-b-saved-v1/v0001/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "canonical-short-near-b-branch-processing.json",
+        "test_log_sha256": "684e30f8d3ba445e5a9c49e5dbbaf036a35aff83f26fa644d0a218998f57bef9"
+      }
+    },
+    {
+      "acquisition": {
+        "approaching_actors": {
+          "entrypoint": "runner.py",
+          "evidence": "motion_history.jsonl",
+          "method": "original both approach actors"
+        },
+        "sight_distance": {
+          "entrypoint": "finalizer.py",
+          "evidence": "channels/sight_distance.jsonl",
+          "method": "pinned ray summary"
+        },
+        "st.sight_distance": {
+          "entrypoint": "runner.py",
+          "evidence": "capture/evidence.jsonl",
+          "method": "PipelineCapture original ray packet"
+        },
+        "u_turn_motion": {
+          "entrypoint": "runner.py",
+          "evidence": "motion_history.jsonl",
+          "method": "original pose and velocity"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Native occlusion and approach motion need measured confirmation",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "turn_target_speed_mps"
+          ],
+          "compatibility": {
+            "log": "analysis.log",
+            "negative_log": "canonical-short-approach-a-fallback1-negative-analysis.log",
+            "receipt": "canonical-short-approach-a-fallback1-compatibility.json",
+            "sha256": "7e5b32d17b1d91426ba60ea5ccfe989007ea24845df7ceae93a8427cd1872a94"
+          },
+          "construction": "branch-proof-canonical-short-approach-a/construction-fallback1.json",
+          "construction_sha256": "7da1493dc8f85fd6288106ec386e400e68cb7f363fa7015c4b0cd9aa8a7e499f",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-short-approach-a-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__approach_to_crest__occluded_approach_a --candidate fallback1 --output .runtime-work/c129731-canonical-short-approach-a-fallback1-offline-v1",
+            "construction_sha256": "7da1493dc8f85fd6288106ec386e400e68cb7f363fa7015c4b0cd9aa8a7e499f",
+            "exit_code": 0,
+            "log": "canonical-short-approach-a-fallback1-offline.log",
+            "log_sha256": "8f22362842b1c96507632ce13017edca83e0cd20f17e746df33b4baf7d5008da"
+          },
+          "post_capture": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-short-approach-a-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__approach_to_crest__occluded_approach_a --attempt .runtime-work/c129731-canonical-short-approach-a-fallback1-compat-v1 --output .runtime-work/c129731-canonical-short-approach-a-fallback1-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat .runtime-work/c129731-canonical-short-approach-a-fallback1-saved-v1/v0001/feedback.json",
+            "recorded_only": true,
+            "test_exit_code": 0,
+            "test_log": "canonical-short-approach-a-fallback1-processing.json",
+            "test_log_sha256": "8debdaf583086e955f8da99cea370704052189feb0014b4a8cf690261fc34d87"
+          },
+          "trigger": {
+            "failure_condition": "exit distance remains above 2 m after heading reversal and braking",
+            "metric": "measured turn overshoots exit before stable stop",
+            "source": "turn_history.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "turn_lookahead_m"
+          ],
+          "compatibility": {
+            "log": "analysis.log",
+            "negative_log": "canonical-short-approach-a-fallback2-negative-analysis.log",
+            "receipt": "canonical-short-approach-a-fallback2-compatibility.json",
+            "sha256": "24ebefbf4ba21f8966a9be40935ee781ed5b72c3e5d5cc58783d40e321795ea5"
+          },
+          "construction": "branch-proof-canonical-short-approach-a/construction-fallback2.json",
+          "construction_sha256": "db249e10edf3675d9d85c456f5e396c3420e181d692d5489f317fb4317f416f4",
+          "id": "fallback2",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-short-approach-a-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__approach_to_crest__occluded_approach_a --candidate fallback2 --output .runtime-work/c129731-canonical-short-approach-a-fallback2-offline-v1",
+            "construction_sha256": "db249e10edf3675d9d85c456f5e396c3420e181d692d5489f317fb4317f416f4",
+            "exit_code": 0,
+            "log": "canonical-short-approach-a-fallback2-offline.log",
+            "log_sha256": "e29f8b4eea4979e5cf19d07d8c6a48f33c7f4b9bf3312a4ab3eea2648574b420"
+          },
+          "post_capture": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-short-approach-a-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__approach_to_crest__occluded_approach_a --attempt .runtime-work/c129731-canonical-short-approach-a-fallback2-compat-v1 --output .runtime-work/c129731-canonical-short-approach-a-fallback2-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat .runtime-work/c129731-canonical-short-approach-a-fallback2-saved-v1/v0001/feedback.json",
+            "recorded_only": true,
+            "test_exit_code": 0,
+            "test_log": "canonical-short-approach-a-fallback2-processing.json",
+            "test_log_sha256": "bfdd43789244fde5f83bc0e2f5e9fa9827aee93e2deede62f52c2e3306b09e75"
+          },
+          "trigger": {
+            "failure_condition": "recorded heading change remains below 150 engineering degrees",
+            "metric": "body cuts the planned return corner and fails heading reversal",
+            "source": "turn_history.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "approach_target_speed_mps"
+          ],
+          "compatibility": {
+            "log": "analysis.log",
+            "negative_log": "canonical-short-approach-a-fallback3-negative-analysis.log",
+            "receipt": "canonical-short-approach-a-fallback3-compatibility.json",
+            "sha256": "a85bd7bdd99373f7fc682f8d64116dd7f56851b1c7726dca8c76ffa3b45d3e7b"
+          },
+          "construction": "branch-proof-canonical-short-approach-a/construction-fallback3.json",
+          "construction_sha256": "b08886774c3a7dffc61825f09fbb6bec14d473f8501acaf9a4add389485b7edf",
+          "id": "fallback3",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-short-approach-a-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__approach_to_crest__occluded_approach_a --candidate fallback3 --output .runtime-work/c129731-canonical-short-approach-a-fallback3-offline-v1",
+            "construction_sha256": "b08886774c3a7dffc61825f09fbb6bec14d473f8501acaf9a4add389485b7edf",
+            "exit_code": 0,
+            "log": "canonical-short-approach-a-fallback3-offline.log",
+            "log_sha256": "251338d5e7154f448ad6acad8896e9c3e343e4e79c9adf503564207732fedd97"
+          },
+          "post_capture": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-short-approach-a-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__approach_to_crest__occluded_approach_a --attempt .runtime-work/c129731-canonical-short-approach-a-fallback3-compat-v1 --output .runtime-work/c129731-canonical-short-approach-a-fallback3-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat .runtime-work/c129731-canonical-short-approach-a-fallback3-saved-v1/v0001/feedback.json",
+            "recorded_only": true,
+            "test_exit_code": 0,
+            "test_log": "canonical-short-approach-a-fallback3-processing.json",
+            "test_log_sha256": "08a5678f3b7713f71aa582d9465ca3b50ad2be7f28abf6117c7b49e27bd39806"
+          },
+          "trigger": {
+            "failure_condition": "either approach vehicle has no sustained approach trajectory",
+            "metric": "incoming actor has insufficient measured travel within 55 seconds",
+            "source": "motion_history.jsonl"
+          }
+        }
+      ],
+      "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__approach_to_crest__occluded_approach_a",
+      "compatibility": {
+        "log": "analysis.log",
+        "negative_log": "canonical-short-approach-a-branch-negative-analysis.log",
+        "receipt": "canonical-short-approach-a-branch-compatibility.json",
+        "sha256": "48f7c379889fe840e98a4acf9d7d4dc449fbe35d29da521a58010eeeee5bbc43"
+      },
+      "construction": "branch-proof-canonical-short-approach-a/construction.json",
+      "construction_sha256": "fdbef7231de685a16eaeab1a4b33ebfdfacec85ddfdf3c19f04740f5d8db9dcd",
+      "delivery_acceptance": {
+        "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__approach_to_crest__occluded_approach_a",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C129731__NRS-484B-407__motor_vehicle_driver/delivery_fixture_proof.py --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__approach_to_crest__occluded_approach_a --output-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c129731-delivery-diagnostic-canonical-short-approach-a-v1",
+        "diagnostic_audit": "delivery-proofs/canonical-short-approach-a/diagnostic-audit.json",
+        "diagnostic_audit_sha256": "b6e229d3536d2c435cd34e7afdb333c99ae32353ca7d5d295bd2368e338b03ca",
+        "diagnostic_decode_receipt": "delivery-proofs/canonical-short-approach-a/source-decode.json",
+        "diagnostic_decode_receipt_sha256": "39648ce707b4b33daa00749731c19fcbeb72610b61cd5b9d2e5807c57e7d846b",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C129731__NRS-484B-407__motor_vehicle_driver/delivery_fixture_proof.py --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__approach_to_crest__occluded_approach_a --output-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c129731-delivery-diagnostic-canonical-short-approach-a-negative-v1 --negative-source-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c129731-delivery-diagnostic-canonical-short-approach-a-v1 --negative-missing-source",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Sealed original source changed: capture/evidence.jsonl",
+        "negative_log": "delivery-proofs/canonical-short-approach-a/negative.log",
+        "negative_log_sha256": "eef8159d33e6892331590dbc5d88772c2e6b8e9dbdd33dddc627a56144ec8868",
+        "scope": "20-frame synthetic software audit only; no Native actor pixels or legal acceptance",
+        "script": "delivery_audit.py",
+        "script_sha256": "8e1ac2d8523773061f67a11aa3ba96d8f29ef89faf63b24f497fa1f7ec749262",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/canonical-short-approach-a/positive.log",
+        "test_log_sha256": "45d5d27cb6c756973b3c77a7f7e0e835da1e78ee2cb2a23e6954be94b8135046"
+      },
+      "fixture_recipe": "work/testing__C129731__NRS-484B-407__motor_vehicle_driver/branch-proof-canonical-short-approach-a/recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract-crest.json",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "canonical-short-approach-a-branch-negative-analysis.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-short-approach-a-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__approach_to_crest__occluded_approach_a --output .runtime-work/c129731-canonical-short-approach-a-offline-v1",
+        "construction_sha256": "fdbef7231de685a16eaeab1a4b33ebfdfacec85ddfdf3c19f04740f5d8db9dcd",
+        "exit_code": 0,
+        "log": "canonical-short-approach-a-branch-offline.log",
+        "log_sha256": "c2b33a5d52b9a7fefe569d2a367fd476e1b15c790f734e92e4c6d2fa09b0f62b"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proofs/canonical-short-approach-a/receipt.json",
+        "sha256": "404820879d4568128f192f85b85d507dd02419fea76414d74abaa7e7b69061a0"
+      },
+      "post_capture": {
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-short-approach-a-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__approach_to_crest__occluded_approach_a --attempt .runtime-work/c129731-canonical-short-approach-a-compat-v1 --output .runtime-work/c129731-canonical-short-approach-a-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat .runtime-work/c129731-canonical-short-approach-a-saved-v1/v0001/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "canonical-short-approach-a-branch-processing.json",
+        "test_log_sha256": "48749e25b59b63c679e38eafb7fd5300179c6ca461d1e8b7b85c2123a64e0da2"
+      }
+    },
+    {
+      "acquisition": {
+        "approaching_actors": {
+          "entrypoint": "runner.py",
+          "evidence": "motion_history.jsonl",
+          "method": "original both approach actors"
+        },
+        "sight_distance": {
+          "entrypoint": "finalizer.py",
+          "evidence": "channels/sight_distance.jsonl",
+          "method": "pinned ray summary"
+        },
+        "st.sight_distance": {
+          "entrypoint": "runner.py",
+          "evidence": "capture/evidence.jsonl",
+          "method": "PipelineCapture original ray packet"
+        },
+        "u_turn_motion": {
+          "entrypoint": "runner.py",
+          "evidence": "motion_history.jsonl",
+          "method": "original pose and velocity"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Native occlusion and approach motion need measured confirmation",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "turn_target_speed_mps"
+          ],
+          "compatibility": {
+            "log": "analysis.log",
+            "negative_log": "canonical-short-near-a-fallback1-negative-analysis.log",
+            "receipt": "canonical-short-near-a-fallback1-compatibility.json",
+            "sha256": "cabd11a74096d322a0a90e4640b117bdee26d924b91226e6a3750a32bb326c16"
+          },
+          "construction": "branch-proof-canonical-short-near-a/construction-fallback1.json",
+          "construction_sha256": "33db1406884a9ca78f74097964fb8294ce9e23aa67c639b2d06a1414b292fce8",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-short-near-a-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_a --candidate fallback1 --output .runtime-work/c129731-canonical-short-near-a-fallback1-offline-v1",
+            "construction_sha256": "33db1406884a9ca78f74097964fb8294ce9e23aa67c639b2d06a1414b292fce8",
+            "exit_code": 0,
+            "log": "canonical-short-near-a-fallback1-offline.log",
+            "log_sha256": "baa40640b915f5bb7afc6eaee4efa3279aa3f6ee14591ed0061c293552873a0b"
+          },
+          "post_capture": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-short-near-a-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_a --attempt .runtime-work/c129731-canonical-short-near-a-fallback1-compat-v1 --output .runtime-work/c129731-canonical-short-near-a-fallback1-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat .runtime-work/c129731-canonical-short-near-a-fallback1-saved-v1/v0001/feedback.json",
+            "recorded_only": true,
+            "test_exit_code": 0,
+            "test_log": "canonical-short-near-a-fallback1-processing.json",
+            "test_log_sha256": "5c8728cae3ea56074293c2aae32ba33ac31f349721365dcf2c2faaeffe6a0bd9"
+          },
+          "trigger": {
+            "failure_condition": "exit distance remains above 2 m after heading reversal and braking",
+            "metric": "measured turn overshoots exit before stable stop",
+            "source": "turn_history.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "turn_lookahead_m"
+          ],
+          "compatibility": {
+            "log": "analysis.log",
+            "negative_log": "canonical-short-near-a-fallback2-negative-analysis.log",
+            "receipt": "canonical-short-near-a-fallback2-compatibility.json",
+            "sha256": "8f0c9897b5e61cb682c362f3062a41a20c1e72b69e7e998e062e843e915712df"
+          },
+          "construction": "branch-proof-canonical-short-near-a/construction-fallback2.json",
+          "construction_sha256": "b150cfe2ec816b0e702b7ecac27f1ae6f4b33290867fd3b81f78d516a4a6f023",
+          "id": "fallback2",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-short-near-a-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_a --candidate fallback2 --output .runtime-work/c129731-canonical-short-near-a-fallback2-offline-v1",
+            "construction_sha256": "b150cfe2ec816b0e702b7ecac27f1ae6f4b33290867fd3b81f78d516a4a6f023",
+            "exit_code": 0,
+            "log": "canonical-short-near-a-fallback2-offline.log",
+            "log_sha256": "ceec320cdbbb6544664d0ca83e34267e8394f6aa79afa58a3b5d31393e5f2ecb"
+          },
+          "post_capture": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-short-near-a-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_a --attempt .runtime-work/c129731-canonical-short-near-a-fallback2-compat-v1 --output .runtime-work/c129731-canonical-short-near-a-fallback2-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat .runtime-work/c129731-canonical-short-near-a-fallback2-saved-v1/v0001/feedback.json",
+            "recorded_only": true,
+            "test_exit_code": 0,
+            "test_log": "canonical-short-near-a-fallback2-processing.json",
+            "test_log_sha256": "9c6dac4014995343287103fb7496a58aeca004034a7f3974e063724c51f911b0"
+          },
+          "trigger": {
+            "failure_condition": "recorded heading change remains below 150 engineering degrees",
+            "metric": "body cuts the planned return corner and fails heading reversal",
+            "source": "turn_history.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "approach_target_speed_mps"
+          ],
+          "compatibility": {
+            "log": "analysis.log",
+            "negative_log": "canonical-short-near-a-fallback3-negative-analysis.log",
+            "receipt": "canonical-short-near-a-fallback3-compatibility.json",
+            "sha256": "ff877ecc0ac1e1ac41c1c9f1b472cf10244683c64828723561dbdd10339a6f36"
+          },
+          "construction": "branch-proof-canonical-short-near-a/construction-fallback3.json",
+          "construction_sha256": "d3079b403834459b5b2c676e4f1805dfe4172df54604317ab4560270a0698eaa",
+          "id": "fallback3",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-short-near-a-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_a --candidate fallback3 --output .runtime-work/c129731-canonical-short-near-a-fallback3-offline-v1",
+            "construction_sha256": "d3079b403834459b5b2c676e4f1805dfe4172df54604317ab4560270a0698eaa",
+            "exit_code": 0,
+            "log": "canonical-short-near-a-fallback3-offline.log",
+            "log_sha256": "784768bafdebd580c3b06bed2eb9f7e261e0f7213ec7b7772c7b3c40901ac54d"
+          },
+          "post_capture": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-short-near-a-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_a --attempt .runtime-work/c129731-canonical-short-near-a-fallback3-compat-v1 --output .runtime-work/c129731-canonical-short-near-a-fallback3-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat .runtime-work/c129731-canonical-short-near-a-fallback3-saved-v1/v0001/feedback.json",
+            "recorded_only": true,
+            "test_exit_code": 0,
+            "test_log": "canonical-short-near-a-fallback3-processing.json",
+            "test_log_sha256": "7521d0525eacad50b54f67366ef22f1987740e040fc2ed61cd384c0b3fb3af9a"
+          },
+          "trigger": {
+            "failure_condition": "either approach vehicle has no sustained approach trajectory",
+            "metric": "incoming actor has insufficient measured travel within 55 seconds",
+            "source": "motion_history.jsonl"
+          }
+        }
+      ],
+      "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_a",
+      "compatibility": {
+        "log": "analysis.log",
+        "negative_log": "canonical-short-near-a-branch-negative-analysis.log",
+        "receipt": "canonical-short-near-a-branch-compatibility.json",
+        "sha256": "36f5639219cd9d9fcda4d8359bcddc6c9eed6310fa32e4b77687fdbffc8274a1"
+      },
+      "construction": "branch-proof-canonical-short-near-a/construction.json",
+      "construction_sha256": "200fc975d481c6160b73dba47f7702873d5ba47993ed3baf487569164b5b0271",
+      "delivery_acceptance": {
+        "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_a",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C129731__NRS-484B-407__motor_vehicle_driver/delivery_fixture_proof.py --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_a --output-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c129731-delivery-diagnostic-canonical-short-near-a-v1",
+        "diagnostic_audit": "delivery-proofs/canonical-short-near-a/diagnostic-audit.json",
+        "diagnostic_audit_sha256": "34f42a4febff933b2c1a6f00300eaaa082839e7d1ab508613f94cad4682e29ab",
+        "diagnostic_decode_receipt": "delivery-proofs/canonical-short-near-a/source-decode.json",
+        "diagnostic_decode_receipt_sha256": "e20a344c630186d33c98640bb7ec701791de087442c88767f6323ca109f0c9b0",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C129731__NRS-484B-407__motor_vehicle_driver/delivery_fixture_proof.py --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_a --output-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c129731-delivery-diagnostic-canonical-short-near-a-negative-v1 --negative-source-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c129731-delivery-diagnostic-canonical-short-near-a-v1 --negative-missing-source",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Sealed original source changed: capture/evidence.jsonl",
+        "negative_log": "delivery-proofs/canonical-short-near-a/negative.log",
+        "negative_log_sha256": "eef8159d33e6892331590dbc5d88772c2e6b8e9dbdd33dddc627a56144ec8868",
+        "scope": "20-frame synthetic software audit only; no Native actor pixels or legal acceptance",
+        "script": "delivery_audit.py",
+        "script_sha256": "8e1ac2d8523773061f67a11aa3ba96d8f29ef89faf63b24f497fa1f7ec749262",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/canonical-short-near-a/positive.log",
+        "test_log_sha256": "757e345d9b8e3dc4da0d658bcfc8dcffca02ad68ab9ae6a9df799bde3e8c9b2c"
+      },
+      "fixture_recipe": "work/testing__C129731__NRS-484B-407__motor_vehicle_driver/branch-proof-canonical-short-near-a/recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract-crest.json",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "canonical-short-near-a-branch-negative-analysis.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-short-near-a-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_a --output .runtime-work/c129731-canonical-short-near-a-offline-v1",
+        "construction_sha256": "200fc975d481c6160b73dba47f7702873d5ba47993ed3baf487569164b5b0271",
+        "exit_code": 0,
+        "log": "canonical-short-near-a-branch-offline.log",
+        "log_sha256": "c730ad9cb638bf6effdb0236d56635b4cde90c435809a53b5080aa5e8164a32b"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proofs/canonical-short-near-a/receipt.json",
+        "sha256": "6d43bb1d1031bbbf2c4518147bca06eb7c733cadc1d869d1e700afaf1ad5ca7b"
+      },
+      "post_capture": {
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-short-near-a-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_a --attempt .runtime-work/c129731-canonical-short-near-a-compat-v1 --output .runtime-work/c129731-canonical-short-near-a-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat .runtime-work/c129731-canonical-short-near-a-saved-v1/v0001/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "canonical-short-near-a-branch-processing.json",
+        "test_log_sha256": "a29a3448b9ea5be408fdd58e34e6d60a69571afed2e11082b9d87034de1b2f07"
+      }
+    },
+    {
+      "acquisition": {
+        "approaching_actors": {
+          "entrypoint": "runner.py",
+          "evidence": "motion_history.jsonl",
+          "method": "original both approach actors"
+        },
+        "sight_distance": {
+          "entrypoint": "finalizer.py",
+          "evidence": "channels/sight_distance.jsonl",
+          "method": "pinned ray summary"
+        },
+        "st.sight_distance": {
+          "entrypoint": "runner.py",
+          "evidence": "capture/evidence.jsonl",
+          "method": "PipelineCapture original ray packet"
+        },
+        "u_turn_motion": {
+          "entrypoint": "runner.py",
+          "evidence": "motion_history.jsonl",
+          "method": "original pose and velocity"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Native occlusion and approach motion need measured confirmation",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "turn_target_speed_mps"
+          ],
+          "compatibility": {
+            "log": "analysis.log",
+            "negative_log": "canonical-beyond-approach-b-fallback1-negative-analysis.log",
+            "receipt": "canonical-beyond-approach-b-fallback1-compatibility.json",
+            "sha256": "1f1990010479c65dec591f73a58ffe5dfdc85bdad6946b169f3988983e81c5f0"
+          },
+          "construction": "branch-proof-canonical-beyond-approach-b/construction-fallback1.json",
+          "construction_sha256": "165fec8576ff59f4ede8130ec8265d3566cf32dc62ffc91c33117209cb68f77a",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-beyond-approach-b-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__approach_to_crest__occluded_approach_b --candidate fallback1 --output .runtime-work/c129731-canonical-beyond-approach-b-fallback1-offline-v1",
+            "construction_sha256": "165fec8576ff59f4ede8130ec8265d3566cf32dc62ffc91c33117209cb68f77a",
+            "exit_code": 0,
+            "log": "canonical-beyond-approach-b-fallback1-offline.log",
+            "log_sha256": "f89ba46ce0db11f8e0964f03c1f7e6852b02af789099b5901e244388c64b5059"
+          },
+          "post_capture": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-beyond-approach-b-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__approach_to_crest__occluded_approach_b --attempt .runtime-work/c129731-canonical-beyond-approach-b-fallback1-compat-v1 --output .runtime-work/c129731-canonical-beyond-approach-b-fallback1-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat .runtime-work/c129731-canonical-beyond-approach-b-fallback1-saved-v1/v0001/feedback.json",
+            "recorded_only": true,
+            "test_exit_code": 0,
+            "test_log": "canonical-beyond-approach-b-fallback1-processing.json",
+            "test_log_sha256": "003f3ba506d6081ff2932b4877bfcf72358c6f748905e4cca02b9ed945526fb3"
+          },
+          "trigger": {
+            "failure_condition": "exit distance remains above 2 m after heading reversal and braking",
+            "metric": "measured turn overshoots exit before stable stop",
+            "source": "turn_history.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "turn_lookahead_m"
+          ],
+          "compatibility": {
+            "log": "analysis.log",
+            "negative_log": "canonical-beyond-approach-b-fallback2-negative-analysis.log",
+            "receipt": "canonical-beyond-approach-b-fallback2-compatibility.json",
+            "sha256": "22ae98c22351a09a5dabc8f7c23e21ed7530b86db12c483685b6d5a9e8d96a9e"
+          },
+          "construction": "branch-proof-canonical-beyond-approach-b/construction-fallback2.json",
+          "construction_sha256": "ef8659b400d17fd35c6563e84aa38b52ec6f4f890aff91d40939f013be70776d",
+          "id": "fallback2",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-beyond-approach-b-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__approach_to_crest__occluded_approach_b --candidate fallback2 --output .runtime-work/c129731-canonical-beyond-approach-b-fallback2-offline-v1",
+            "construction_sha256": "ef8659b400d17fd35c6563e84aa38b52ec6f4f890aff91d40939f013be70776d",
+            "exit_code": 0,
+            "log": "canonical-beyond-approach-b-fallback2-offline.log",
+            "log_sha256": "27b21db4b78e47619bd33a61d394792e18b05899a3b81c6e75567e417e2798cc"
+          },
+          "post_capture": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-beyond-approach-b-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__approach_to_crest__occluded_approach_b --attempt .runtime-work/c129731-canonical-beyond-approach-b-fallback2-compat-v1 --output .runtime-work/c129731-canonical-beyond-approach-b-fallback2-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat .runtime-work/c129731-canonical-beyond-approach-b-fallback2-saved-v1/v0001/feedback.json",
+            "recorded_only": true,
+            "test_exit_code": 0,
+            "test_log": "canonical-beyond-approach-b-fallback2-processing.json",
+            "test_log_sha256": "d6c89c9acd99675726ea584cebaf5282f640ebcc40ac76cff3d8159dd82b7cb8"
+          },
+          "trigger": {
+            "failure_condition": "recorded heading change remains below 150 engineering degrees",
+            "metric": "body cuts the planned return corner and fails heading reversal",
+            "source": "turn_history.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "approach_target_speed_mps"
+          ],
+          "compatibility": {
+            "log": "analysis.log",
+            "negative_log": "canonical-beyond-approach-b-fallback3-negative-analysis.log",
+            "receipt": "canonical-beyond-approach-b-fallback3-compatibility.json",
+            "sha256": "45aaeb2322bd6e56da55b1600d74e4c3b58cf32cc6c07e50fd37138c86bedf75"
+          },
+          "construction": "branch-proof-canonical-beyond-approach-b/construction-fallback3.json",
+          "construction_sha256": "0d7d805717679f2ffaaed13f04db0aeb1af558c26340065afd9372bc67dad97e",
+          "id": "fallback3",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-beyond-approach-b-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__approach_to_crest__occluded_approach_b --candidate fallback3 --output .runtime-work/c129731-canonical-beyond-approach-b-fallback3-offline-v1",
+            "construction_sha256": "0d7d805717679f2ffaaed13f04db0aeb1af558c26340065afd9372bc67dad97e",
+            "exit_code": 0,
+            "log": "canonical-beyond-approach-b-fallback3-offline.log",
+            "log_sha256": "ac7b4e31036e0f210884d9b0a5158436b0d2c93ca8b9554a092aa44399c88c3e"
+          },
+          "post_capture": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-beyond-approach-b-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__approach_to_crest__occluded_approach_b --attempt .runtime-work/c129731-canonical-beyond-approach-b-fallback3-compat-v1 --output .runtime-work/c129731-canonical-beyond-approach-b-fallback3-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat .runtime-work/c129731-canonical-beyond-approach-b-fallback3-saved-v1/v0001/feedback.json",
+            "recorded_only": true,
+            "test_exit_code": 0,
+            "test_log": "canonical-beyond-approach-b-fallback3-processing.json",
+            "test_log_sha256": "1fe8ffe04014382f9050645ed3190ddab101bd1f2d2ee0a6e781d81f9cd6cdbe"
+          },
+          "trigger": {
+            "failure_condition": "either approach vehicle has no sustained approach trajectory",
+            "metric": "incoming actor has insufficient measured travel within 55 seconds",
+            "source": "motion_history.jsonl"
+          }
+        }
+      ],
+      "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__approach_to_crest__occluded_approach_b",
+      "compatibility": {
+        "log": "analysis.log",
+        "negative_log": "canonical-beyond-approach-b-branch-negative-analysis.log",
+        "receipt": "canonical-beyond-approach-b-branch-compatibility.json",
+        "sha256": "2dd88bcf80c92b225313541bea0588a351709e6e4ad9f84f1772de416e3f93f0"
+      },
+      "construction": "branch-proof-canonical-beyond-approach-b/construction.json",
+      "construction_sha256": "f8e8c82fef25fdf053f17118938a3783ce50fccb092a195ace63492df46e5644",
+      "delivery_acceptance": {
+        "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__approach_to_crest__occluded_approach_b",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C129731__NRS-484B-407__motor_vehicle_driver/delivery_fixture_proof.py --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__approach_to_crest__occluded_approach_b --output-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c129731-delivery-diagnostic-canonical-beyond-approach-b-v1",
+        "diagnostic_audit": "delivery-proofs/canonical-beyond-approach-b/diagnostic-audit.json",
+        "diagnostic_audit_sha256": "647df08c8d2251bd152581bc8385481ba45c5bbe9ad1b6f8643543888ce1bf7d",
+        "diagnostic_decode_receipt": "delivery-proofs/canonical-beyond-approach-b/source-decode.json",
+        "diagnostic_decode_receipt_sha256": "d7536bee9bdb3f316065ae526a593c84f3572f35914d19cabc05969b501d18d3",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C129731__NRS-484B-407__motor_vehicle_driver/delivery_fixture_proof.py --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__approach_to_crest__occluded_approach_b --output-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c129731-delivery-diagnostic-canonical-beyond-approach-b-negative-v1 --negative-source-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c129731-delivery-diagnostic-canonical-beyond-approach-b-v1 --negative-missing-source",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Sealed original source changed: capture/evidence.jsonl",
+        "negative_log": "delivery-proofs/canonical-beyond-approach-b/negative.log",
+        "negative_log_sha256": "eef8159d33e6892331590dbc5d88772c2e6b8e9dbdd33dddc627a56144ec8868",
+        "scope": "20-frame synthetic software audit only; no Native actor pixels or legal acceptance",
+        "script": "delivery_audit.py",
+        "script_sha256": "8e1ac2d8523773061f67a11aa3ba96d8f29ef89faf63b24f497fa1f7ec749262",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/canonical-beyond-approach-b/positive.log",
+        "test_log_sha256": "d3ce534f6e46ee18a26eb168c2ef1a83fd6ac9e32cdd00347a9a9378435a1de9"
+      },
+      "fixture_recipe": "work/testing__C129731__NRS-484B-407__motor_vehicle_driver/branch-proof-canonical-beyond-approach-b/recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract-crest.json",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "canonical-beyond-approach-b-branch-negative-analysis.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-beyond-approach-b-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__approach_to_crest__occluded_approach_b --output .runtime-work/c129731-canonical-beyond-approach-b-offline-v1",
+        "construction_sha256": "f8e8c82fef25fdf053f17118938a3783ce50fccb092a195ace63492df46e5644",
+        "exit_code": 0,
+        "log": "canonical-beyond-approach-b-branch-offline.log",
+        "log_sha256": "8a6d5770e6234b7e40547ec31f7cfddad21493d1286524d9f9896bcc3ea5b51f"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proofs/canonical-beyond-approach-b/receipt.json",
+        "sha256": "b3a491c7834bcbe19a31d8bb5f44756167c2d62e0609e91b08e538f807fbf647"
+      },
+      "post_capture": {
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-beyond-approach-b-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__approach_to_crest__occluded_approach_b --attempt .runtime-work/c129731-canonical-beyond-approach-b-compat-v1 --output .runtime-work/c129731-canonical-beyond-approach-b-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat .runtime-work/c129731-canonical-beyond-approach-b-saved-v1/v0001/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "canonical-beyond-approach-b-branch-processing.json",
+        "test_log_sha256": "1f4e29b9bd725c9e022f07dbc052880e101eeef621d3a25dc56a3c862394f62d"
+      }
+    },
+    {
+      "acquisition": {
+        "approaching_actors": {
+          "entrypoint": "runner.py",
+          "evidence": "motion_history.jsonl",
+          "method": "original both approach actors"
+        },
+        "sight_distance": {
+          "entrypoint": "finalizer.py",
+          "evidence": "channels/sight_distance.jsonl",
+          "method": "pinned ray summary"
+        },
+        "st.sight_distance": {
+          "entrypoint": "runner.py",
+          "evidence": "capture/evidence.jsonl",
+          "method": "PipelineCapture original ray packet"
+        },
+        "u_turn_motion": {
+          "entrypoint": "runner.py",
+          "evidence": "motion_history.jsonl",
+          "method": "original pose and velocity"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Native occlusion and approach motion need measured confirmation",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "turn_target_speed_mps"
+          ],
+          "compatibility": {
+            "log": "analysis.log",
+            "negative_log": "canonical-beyond-near-b-fallback1-negative-analysis.log",
+            "receipt": "canonical-beyond-near-b-fallback1-compatibility.json",
+            "sha256": "8d2a95e0cc0cb8788988c463486430115e60bd89533691ebd965925d016c285d"
+          },
+          "construction": "branch-proof-canonical-beyond-near-b/construction-fallback1.json",
+          "construction_sha256": "bdc22fa2941a498f93348eee4dc1c075b92b52374921f9ddd126292f12e775fa",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-beyond-near-b-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__near_summit__occluded_approach_b --candidate fallback1 --output .runtime-work/c129731-canonical-beyond-near-b-fallback1-offline-v1",
+            "construction_sha256": "bdc22fa2941a498f93348eee4dc1c075b92b52374921f9ddd126292f12e775fa",
+            "exit_code": 0,
+            "log": "canonical-beyond-near-b-fallback1-offline.log",
+            "log_sha256": "1d4f647d02bb90c07116c353e8820b2738c0e2aed3774a950c1162d7306bd5af"
+          },
+          "post_capture": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-beyond-near-b-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__near_summit__occluded_approach_b --attempt .runtime-work/c129731-canonical-beyond-near-b-fallback1-compat-v1 --output .runtime-work/c129731-canonical-beyond-near-b-fallback1-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat .runtime-work/c129731-canonical-beyond-near-b-fallback1-saved-v1/v0001/feedback.json",
+            "recorded_only": true,
+            "test_exit_code": 0,
+            "test_log": "canonical-beyond-near-b-fallback1-processing.json",
+            "test_log_sha256": "5782520fffc16f4a82ba7332c4d8d0282cdefeb92aa75eddd4b551a4ce6cfce3"
+          },
+          "trigger": {
+            "failure_condition": "exit distance remains above 2 m after heading reversal and braking",
+            "metric": "measured turn overshoots exit before stable stop",
+            "source": "turn_history.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "turn_lookahead_m"
+          ],
+          "compatibility": {
+            "log": "analysis.log",
+            "negative_log": "canonical-beyond-near-b-fallback2-negative-analysis.log",
+            "receipt": "canonical-beyond-near-b-fallback2-compatibility.json",
+            "sha256": "772063cb0d906032cef6b209444221de550967a0f98aa46f9c476dc1a515d8ed"
+          },
+          "construction": "branch-proof-canonical-beyond-near-b/construction-fallback2.json",
+          "construction_sha256": "4a935c9bd130129a6eef6c1da1cc3820a38d52bf279f3b1bbe183f08ed3540c0",
+          "id": "fallback2",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-beyond-near-b-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__near_summit__occluded_approach_b --candidate fallback2 --output .runtime-work/c129731-canonical-beyond-near-b-fallback2-offline-v1",
+            "construction_sha256": "4a935c9bd130129a6eef6c1da1cc3820a38d52bf279f3b1bbe183f08ed3540c0",
+            "exit_code": 0,
+            "log": "canonical-beyond-near-b-fallback2-offline.log",
+            "log_sha256": "3fc07002e0292436e846cd872d717cdb4be6672ce651bd21d42014553aa61ae0"
+          },
+          "post_capture": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-beyond-near-b-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__near_summit__occluded_approach_b --attempt .runtime-work/c129731-canonical-beyond-near-b-fallback2-compat-v1 --output .runtime-work/c129731-canonical-beyond-near-b-fallback2-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat .runtime-work/c129731-canonical-beyond-near-b-fallback2-saved-v1/v0001/feedback.json",
+            "recorded_only": true,
+            "test_exit_code": 0,
+            "test_log": "canonical-beyond-near-b-fallback2-processing.json",
+            "test_log_sha256": "1efeff40f89b4113b8968111ee46399425269837e4c7dd9b9e284c78ed76503b"
+          },
+          "trigger": {
+            "failure_condition": "recorded heading change remains below 150 engineering degrees",
+            "metric": "body cuts the planned return corner and fails heading reversal",
+            "source": "turn_history.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "approach_target_speed_mps"
+          ],
+          "compatibility": {
+            "log": "analysis.log",
+            "negative_log": "canonical-beyond-near-b-fallback3-negative-analysis.log",
+            "receipt": "canonical-beyond-near-b-fallback3-compatibility.json",
+            "sha256": "4e3a8095a99049da2484e98b073927705a225692ed7d61ba050c8fac6e03550c"
+          },
+          "construction": "branch-proof-canonical-beyond-near-b/construction-fallback3.json",
+          "construction_sha256": "a4cd3a50b86d1ba4c955da26b2ee0098c08c9268da4e1eac5e772a6c8786664d",
+          "id": "fallback3",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-beyond-near-b-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__near_summit__occluded_approach_b --candidate fallback3 --output .runtime-work/c129731-canonical-beyond-near-b-fallback3-offline-v1",
+            "construction_sha256": "a4cd3a50b86d1ba4c955da26b2ee0098c08c9268da4e1eac5e772a6c8786664d",
+            "exit_code": 0,
+            "log": "canonical-beyond-near-b-fallback3-offline.log",
+            "log_sha256": "67e23d2eedce0d415d4ecafbe9a35361b4fd9098c6c12ae54031fa8035c75889"
+          },
+          "post_capture": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-beyond-near-b-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__near_summit__occluded_approach_b --attempt .runtime-work/c129731-canonical-beyond-near-b-fallback3-compat-v1 --output .runtime-work/c129731-canonical-beyond-near-b-fallback3-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat .runtime-work/c129731-canonical-beyond-near-b-fallback3-saved-v1/v0001/feedback.json",
+            "recorded_only": true,
+            "test_exit_code": 0,
+            "test_log": "canonical-beyond-near-b-fallback3-processing.json",
+            "test_log_sha256": "f812082274fc18e4a9f55d4719b7fd51d3038519a0ac2c9d961df6e35b0a2a89"
+          },
+          "trigger": {
+            "failure_condition": "either approach vehicle has no sustained approach trajectory",
+            "metric": "incoming actor has insufficient measured travel within 55 seconds",
+            "source": "motion_history.jsonl"
+          }
+        }
+      ],
+      "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__near_summit__occluded_approach_b",
+      "compatibility": {
+        "log": "analysis.log",
+        "negative_log": "canonical-beyond-near-b-branch-negative-analysis.log",
+        "receipt": "canonical-beyond-near-b-branch-compatibility.json",
+        "sha256": "ded0c58a3055f2dce34ebc295d7a55b8cc136dd3364a761077d42a400a63c34f"
+      },
+      "construction": "branch-proof-canonical-beyond-near-b/construction.json",
+      "construction_sha256": "1452579e00dd24232bbf66bcc54b5dbafd9651d89da92c0fe9c25afbbcabd322",
+      "delivery_acceptance": {
+        "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__near_summit__occluded_approach_b",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C129731__NRS-484B-407__motor_vehicle_driver/delivery_fixture_proof.py --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__near_summit__occluded_approach_b --output-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c129731-delivery-diagnostic-canonical-beyond-near-b-v1",
+        "diagnostic_audit": "delivery-proofs/canonical-beyond-near-b/diagnostic-audit.json",
+        "diagnostic_audit_sha256": "afe1bf858ad14997b276d53830b44e4ef27c99679d2d4c23dd1854c8a24f3695",
+        "diagnostic_decode_receipt": "delivery-proofs/canonical-beyond-near-b/source-decode.json",
+        "diagnostic_decode_receipt_sha256": "c3005651a0a9b0068753dfd202288f9467319a4c610bb04af456adcfe6545608",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C129731__NRS-484B-407__motor_vehicle_driver/delivery_fixture_proof.py --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__near_summit__occluded_approach_b --output-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c129731-delivery-diagnostic-canonical-beyond-near-b-negative-v1 --negative-source-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c129731-delivery-diagnostic-canonical-beyond-near-b-v1 --negative-missing-source",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Sealed original source changed: capture/evidence.jsonl",
+        "negative_log": "delivery-proofs/canonical-beyond-near-b/negative.log",
+        "negative_log_sha256": "eef8159d33e6892331590dbc5d88772c2e6b8e9dbdd33dddc627a56144ec8868",
+        "scope": "20-frame synthetic software audit only; no Native actor pixels or legal acceptance",
+        "script": "delivery_audit.py",
+        "script_sha256": "8e1ac2d8523773061f67a11aa3ba96d8f29ef89faf63b24f497fa1f7ec749262",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/canonical-beyond-near-b/positive.log",
+        "test_log_sha256": "741bd1dab9e4f42e8880ff667276a29883a4dfc12d77a3a7391236ef002bcc32"
+      },
+      "fixture_recipe": "work/testing__C129731__NRS-484B-407__motor_vehicle_driver/branch-proof-canonical-beyond-near-b/recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract-crest.json",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "canonical-beyond-near-b-branch-negative-analysis.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-beyond-near-b-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__near_summit__occluded_approach_b --output .runtime-work/c129731-canonical-beyond-near-b-offline-v1",
+        "construction_sha256": "1452579e00dd24232bbf66bcc54b5dbafd9651d89da92c0fe9c25afbbcabd322",
+        "exit_code": 0,
+        "log": "canonical-beyond-near-b-branch-offline.log",
+        "log_sha256": "f4cd043f4e95a7795c8eefe9dd556c8fc25ea292734086e659460175f2505f15"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proofs/canonical-beyond-near-b/receipt.json",
+        "sha256": "28279dbddb3f71a1e5bc55e916f72d4f666a48d4268bfb3d2e81f500c14e2dfd"
+      },
+      "post_capture": {
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-beyond-near-b-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__near_summit__occluded_approach_b --attempt .runtime-work/c129731-canonical-beyond-near-b-compat-v1 --output .runtime-work/c129731-canonical-beyond-near-b-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat .runtime-work/c129731-canonical-beyond-near-b-saved-v1/v0001/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "canonical-beyond-near-b-branch-processing.json",
+        "test_log_sha256": "34dea742b7b8929731b72d58cfa6d36e5cecdccfcbad3798aa0ee4010599f0ea"
+      }
+    },
+    {
+      "acquisition": {
+        "approaching_actors": {
+          "entrypoint": "runner.py",
+          "evidence": "motion_history.jsonl",
+          "method": "original both approach actors"
+        },
+        "sight_distance": {
+          "entrypoint": "finalizer.py",
+          "evidence": "channels/sight_distance.jsonl",
+          "method": "pinned ray summary"
+        },
+        "st.sight_distance": {
+          "entrypoint": "runner.py",
+          "evidence": "capture/evidence.jsonl",
+          "method": "PipelineCapture original ray packet"
+        },
+        "u_turn_motion": {
+          "entrypoint": "runner.py",
+          "evidence": "motion_history.jsonl",
+          "method": "original pose and velocity"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Native occlusion and approach motion need measured confirmation",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "turn_target_speed_mps"
+          ],
+          "compatibility": {
+            "log": "analysis.log",
+            "negative_log": "canonical-beyond-approach-a-fallback1-negative-analysis.log",
+            "receipt": "canonical-beyond-approach-a-fallback1-compatibility.json",
+            "sha256": "2ebbe8edd3b219ed36af988ec953eb3c4a39b4ee5b47f855c3d24d6012f7e0d7"
+          },
+          "construction": "branch-proof-canonical-beyond-approach-a/construction-fallback1.json",
+          "construction_sha256": "6162a5c1657d63fc90f5f5fc6860fc247de0db768dfdfed259d9c48b6b2be374",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-beyond-approach-a-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__approach_to_crest__occluded_approach_a --candidate fallback1 --output .runtime-work/c129731-canonical-beyond-approach-a-fallback1-offline-v1",
+            "construction_sha256": "6162a5c1657d63fc90f5f5fc6860fc247de0db768dfdfed259d9c48b6b2be374",
+            "exit_code": 0,
+            "log": "canonical-beyond-approach-a-fallback1-offline.log",
+            "log_sha256": "f6d30158ecaffdc09333a916b8a65191479f0849a59ca97264a2306ce3000b5b"
+          },
+          "post_capture": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-beyond-approach-a-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__approach_to_crest__occluded_approach_a --attempt .runtime-work/c129731-canonical-beyond-approach-a-fallback1-compat-v1 --output .runtime-work/c129731-canonical-beyond-approach-a-fallback1-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat .runtime-work/c129731-canonical-beyond-approach-a-fallback1-saved-v1/v0001/feedback.json",
+            "recorded_only": true,
+            "test_exit_code": 0,
+            "test_log": "canonical-beyond-approach-a-fallback1-processing.json",
+            "test_log_sha256": "9d62e44eb826c36d0ffeab6f9d19e146d4a98109ab3cc8e4fb2fa7be6623f160"
+          },
+          "trigger": {
+            "failure_condition": "exit distance remains above 2 m after heading reversal and braking",
+            "metric": "measured turn overshoots exit before stable stop",
+            "source": "turn_history.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "turn_lookahead_m"
+          ],
+          "compatibility": {
+            "log": "analysis.log",
+            "negative_log": "canonical-beyond-approach-a-fallback2-negative-analysis.log",
+            "receipt": "canonical-beyond-approach-a-fallback2-compatibility.json",
+            "sha256": "53ba890e2f46b23afc21854bd5da0641379887dea3f75544b19896f99cc69778"
+          },
+          "construction": "branch-proof-canonical-beyond-approach-a/construction-fallback2.json",
+          "construction_sha256": "e4ed2ef6e4db243557e7186aa50c610cd51ce019b7f14d77d7fc599da35bdec4",
+          "id": "fallback2",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-beyond-approach-a-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__approach_to_crest__occluded_approach_a --candidate fallback2 --output .runtime-work/c129731-canonical-beyond-approach-a-fallback2-offline-v1",
+            "construction_sha256": "e4ed2ef6e4db243557e7186aa50c610cd51ce019b7f14d77d7fc599da35bdec4",
+            "exit_code": 0,
+            "log": "canonical-beyond-approach-a-fallback2-offline.log",
+            "log_sha256": "bfddd5d3fc864dbceeb397a66d14871f0d006bbb63771e1bade5d429b2090ca0"
+          },
+          "post_capture": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-beyond-approach-a-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__approach_to_crest__occluded_approach_a --attempt .runtime-work/c129731-canonical-beyond-approach-a-fallback2-compat-v1 --output .runtime-work/c129731-canonical-beyond-approach-a-fallback2-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat .runtime-work/c129731-canonical-beyond-approach-a-fallback2-saved-v1/v0001/feedback.json",
+            "recorded_only": true,
+            "test_exit_code": 0,
+            "test_log": "canonical-beyond-approach-a-fallback2-processing.json",
+            "test_log_sha256": "d783a4765163ff4877d444c4ab91675a7b97f347de1e8e3711d66768049c099b"
+          },
+          "trigger": {
+            "failure_condition": "recorded heading change remains below 150 engineering degrees",
+            "metric": "body cuts the planned return corner and fails heading reversal",
+            "source": "turn_history.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "approach_target_speed_mps"
+          ],
+          "compatibility": {
+            "log": "analysis.log",
+            "negative_log": "canonical-beyond-approach-a-fallback3-negative-analysis.log",
+            "receipt": "canonical-beyond-approach-a-fallback3-compatibility.json",
+            "sha256": "b5bd078b0c13a0f6424aaaaec08cc7a96efa1d26f27cff2a5af79b60684aabcc"
+          },
+          "construction": "branch-proof-canonical-beyond-approach-a/construction-fallback3.json",
+          "construction_sha256": "ea85700c33c2aa75b6f38ba5b5568715bfaa08e23d0d79e10a94793cff8ec008",
+          "id": "fallback3",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-beyond-approach-a-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__approach_to_crest__occluded_approach_a --candidate fallback3 --output .runtime-work/c129731-canonical-beyond-approach-a-fallback3-offline-v1",
+            "construction_sha256": "ea85700c33c2aa75b6f38ba5b5568715bfaa08e23d0d79e10a94793cff8ec008",
+            "exit_code": 0,
+            "log": "canonical-beyond-approach-a-fallback3-offline.log",
+            "log_sha256": "46450a3e9e078d015fd7b4290aaf87b4183b2da76192de1ad52a504b9a3b96f6"
+          },
+          "post_capture": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-beyond-approach-a-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__approach_to_crest__occluded_approach_a --attempt .runtime-work/c129731-canonical-beyond-approach-a-fallback3-compat-v1 --output .runtime-work/c129731-canonical-beyond-approach-a-fallback3-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat .runtime-work/c129731-canonical-beyond-approach-a-fallback3-saved-v1/v0001/feedback.json",
+            "recorded_only": true,
+            "test_exit_code": 0,
+            "test_log": "canonical-beyond-approach-a-fallback3-processing.json",
+            "test_log_sha256": "3acb33111676cebf89040906bc3695bd7850bf91761aa7b28307b49b6795f8c2"
+          },
+          "trigger": {
+            "failure_condition": "either approach vehicle has no sustained approach trajectory",
+            "metric": "incoming actor has insufficient measured travel within 55 seconds",
+            "source": "motion_history.jsonl"
+          }
+        }
+      ],
+      "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__approach_to_crest__occluded_approach_a",
+      "compatibility": {
+        "log": "analysis.log",
+        "negative_log": "canonical-beyond-approach-a-branch-negative-analysis.log",
+        "receipt": "canonical-beyond-approach-a-branch-compatibility.json",
+        "sha256": "0322d24e162edcff1d402a164c15f7370047253a9961144e26c9ba3a3b258a2a"
+      },
+      "construction": "branch-proof-canonical-beyond-approach-a/construction.json",
+      "construction_sha256": "ced156d443a8952bdbd82b0702362e7451ce742f7c99e0c102396d49ce5f254b",
+      "delivery_acceptance": {
+        "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__approach_to_crest__occluded_approach_a",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C129731__NRS-484B-407__motor_vehicle_driver/delivery_fixture_proof.py --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__approach_to_crest__occluded_approach_a --output-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c129731-delivery-diagnostic-canonical-beyond-approach-a-v1",
+        "diagnostic_audit": "delivery-proofs/canonical-beyond-approach-a/diagnostic-audit.json",
+        "diagnostic_audit_sha256": "b736e31b13013ea581b8f92631bcc376dd8849061b1c3b837bd1a45d069ff8fe",
+        "diagnostic_decode_receipt": "delivery-proofs/canonical-beyond-approach-a/source-decode.json",
+        "diagnostic_decode_receipt_sha256": "11d0f9ed0412bbe5cc3aca5d384815c108e922649c33e12c8149b7f18f97113d",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C129731__NRS-484B-407__motor_vehicle_driver/delivery_fixture_proof.py --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__approach_to_crest__occluded_approach_a --output-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c129731-delivery-diagnostic-canonical-beyond-approach-a-negative-v1 --negative-source-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c129731-delivery-diagnostic-canonical-beyond-approach-a-v1 --negative-missing-source",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Sealed original source changed: capture/evidence.jsonl",
+        "negative_log": "delivery-proofs/canonical-beyond-approach-a/negative.log",
+        "negative_log_sha256": "eef8159d33e6892331590dbc5d88772c2e6b8e9dbdd33dddc627a56144ec8868",
+        "scope": "20-frame synthetic software audit only; no Native actor pixels or legal acceptance",
+        "script": "delivery_audit.py",
+        "script_sha256": "8e1ac2d8523773061f67a11aa3ba96d8f29ef89faf63b24f497fa1f7ec749262",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/canonical-beyond-approach-a/positive.log",
+        "test_log_sha256": "9d6d6d3696215c6e0e9e66c989d481a6c31849e547f836526c6415ba40902ad5"
+      },
+      "fixture_recipe": "work/testing__C129731__NRS-484B-407__motor_vehicle_driver/branch-proof-canonical-beyond-approach-a/recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract-crest.json",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "canonical-beyond-approach-a-branch-negative-analysis.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-beyond-approach-a-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__approach_to_crest__occluded_approach_a --output .runtime-work/c129731-canonical-beyond-approach-a-offline-v1",
+        "construction_sha256": "ced156d443a8952bdbd82b0702362e7451ce742f7c99e0c102396d49ce5f254b",
+        "exit_code": 0,
+        "log": "canonical-beyond-approach-a-branch-offline.log",
+        "log_sha256": "4e446a9a39d65471a649d1e95bfc5dac592074797448479094ca6f900cd51041"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proofs/canonical-beyond-approach-a/receipt.json",
+        "sha256": "4eb97a2f48985c6b703452619f1f09377d9f9cbc6e2075a46e9da0b1eb94058a"
+      },
+      "post_capture": {
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-beyond-approach-a-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__approach_to_crest__occluded_approach_a --attempt .runtime-work/c129731-canonical-beyond-approach-a-compat-v1 --output .runtime-work/c129731-canonical-beyond-approach-a-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat .runtime-work/c129731-canonical-beyond-approach-a-saved-v1/v0001/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "canonical-beyond-approach-a-branch-processing.json",
+        "test_log_sha256": "09b4b056af45b0f08521e3e0acca99e36d6d726d313f159984fa6e6467c4901f"
+      }
+    },
+    {
+      "acquisition": {
+        "approaching_actors": {
+          "entrypoint": "runner.py",
+          "evidence": "motion_history.jsonl",
+          "method": "original both approach actors"
+        },
+        "sight_distance": {
+          "entrypoint": "finalizer.py",
+          "evidence": "channels/sight_distance.jsonl",
+          "method": "pinned ray summary"
+        },
+        "st.sight_distance": {
+          "entrypoint": "runner.py",
+          "evidence": "capture/evidence.jsonl",
+          "method": "PipelineCapture original ray packet"
+        },
+        "u_turn_motion": {
+          "entrypoint": "runner.py",
+          "evidence": "motion_history.jsonl",
+          "method": "original pose and velocity"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Native occlusion and approach motion need measured confirmation",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "turn_target_speed_mps"
+          ],
+          "compatibility": {
+            "log": "analysis.log",
+            "negative_log": "canonical-beyond-near-a-fallback1-negative-analysis.log",
+            "receipt": "canonical-beyond-near-a-fallback1-compatibility.json",
+            "sha256": "ae8123645a0c14022ca3bc374daf406d3919fde17576dfdff819dcd365ac6a2f"
+          },
+          "construction": "branch-proof-canonical-beyond-near-a/construction-fallback1.json",
+          "construction_sha256": "038a69af01188359f6d2a04defa7246e6945858de0944f95ccf5b1e0268d3da8",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-beyond-near-a-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__near_summit__occluded_approach_a --candidate fallback1 --output .runtime-work/c129731-canonical-beyond-near-a-fallback1-offline-v1",
+            "construction_sha256": "038a69af01188359f6d2a04defa7246e6945858de0944f95ccf5b1e0268d3da8",
+            "exit_code": 0,
+            "log": "canonical-beyond-near-a-fallback1-offline.log",
+            "log_sha256": "836434b266188532d9776edaddf010cfcfbebc9ff1df4c5bdb4573172d1a68e3"
+          },
+          "post_capture": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-beyond-near-a-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__near_summit__occluded_approach_a --attempt .runtime-work/c129731-canonical-beyond-near-a-fallback1-compat-v1 --output .runtime-work/c129731-canonical-beyond-near-a-fallback1-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat .runtime-work/c129731-canonical-beyond-near-a-fallback1-saved-v1/v0001/feedback.json",
+            "recorded_only": true,
+            "test_exit_code": 0,
+            "test_log": "canonical-beyond-near-a-fallback1-processing.json",
+            "test_log_sha256": "c8ccc15b499c26851f75ace864623f7bd853bf624923fc1ef03921f092e358fb"
+          },
+          "trigger": {
+            "failure_condition": "exit distance remains above 2 m after heading reversal and braking",
+            "metric": "measured turn overshoots exit before stable stop",
+            "source": "turn_history.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "turn_lookahead_m"
+          ],
+          "compatibility": {
+            "log": "analysis.log",
+            "negative_log": "canonical-beyond-near-a-fallback2-negative-analysis.log",
+            "receipt": "canonical-beyond-near-a-fallback2-compatibility.json",
+            "sha256": "8ed6f4c462009cd10be84239b03e5eb77183961f1b963cb5415568d037d70ae4"
+          },
+          "construction": "branch-proof-canonical-beyond-near-a/construction-fallback2.json",
+          "construction_sha256": "5fcb784bf02f5f607a36d8bca63b7af265bf4488de3efc71324221e53f632dd6",
+          "id": "fallback2",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-beyond-near-a-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__near_summit__occluded_approach_a --candidate fallback2 --output .runtime-work/c129731-canonical-beyond-near-a-fallback2-offline-v1",
+            "construction_sha256": "5fcb784bf02f5f607a36d8bca63b7af265bf4488de3efc71324221e53f632dd6",
+            "exit_code": 0,
+            "log": "canonical-beyond-near-a-fallback2-offline.log",
+            "log_sha256": "4718b211d08ec68508ca3a7db1d3570dc4daad870d8fa112fa4ddb4e90d0dcf0"
+          },
+          "post_capture": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-beyond-near-a-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__near_summit__occluded_approach_a --attempt .runtime-work/c129731-canonical-beyond-near-a-fallback2-compat-v1 --output .runtime-work/c129731-canonical-beyond-near-a-fallback2-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat .runtime-work/c129731-canonical-beyond-near-a-fallback2-saved-v1/v0001/feedback.json",
+            "recorded_only": true,
+            "test_exit_code": 0,
+            "test_log": "canonical-beyond-near-a-fallback2-processing.json",
+            "test_log_sha256": "fe1633b11bbb69013f55eb4d8f29ff2eea3f8436ed26e85304bdb4db43136a4a"
+          },
+          "trigger": {
+            "failure_condition": "recorded heading change remains below 150 engineering degrees",
+            "metric": "body cuts the planned return corner and fails heading reversal",
+            "source": "turn_history.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "approach_target_speed_mps"
+          ],
+          "compatibility": {
+            "log": "analysis.log",
+            "negative_log": "canonical-beyond-near-a-fallback3-negative-analysis.log",
+            "receipt": "canonical-beyond-near-a-fallback3-compatibility.json",
+            "sha256": "2520de50f8713adee0809fd56badef07788f628ffc9ea86cda551ab6db10d1bf"
+          },
+          "construction": "branch-proof-canonical-beyond-near-a/construction-fallback3.json",
+          "construction_sha256": "b68f927f5d38616e521cfc9242b0b17e4e42b9482853320f51f26f1a2c030e73",
+          "id": "fallback3",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-beyond-near-a-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__near_summit__occluded_approach_a --candidate fallback3 --output .runtime-work/c129731-canonical-beyond-near-a-fallback3-offline-v1",
+            "construction_sha256": "b68f927f5d38616e521cfc9242b0b17e4e42b9482853320f51f26f1a2c030e73",
+            "exit_code": 0,
+            "log": "canonical-beyond-near-a-fallback3-offline.log",
+            "log_sha256": "67914fef564a1d7ee8ff8601b0e90543069476b7fc2da4a443b87bb69c925f6b"
+          },
+          "post_capture": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-beyond-near-a-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__near_summit__occluded_approach_a --attempt .runtime-work/c129731-canonical-beyond-near-a-fallback3-compat-v1 --output .runtime-work/c129731-canonical-beyond-near-a-fallback3-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat .runtime-work/c129731-canonical-beyond-near-a-fallback3-saved-v1/v0001/feedback.json",
+            "recorded_only": true,
+            "test_exit_code": 0,
+            "test_log": "canonical-beyond-near-a-fallback3-processing.json",
+            "test_log_sha256": "45e8bde0165eb47d65ca40d665e13fda1391016f684e899c0fe77d400e4bdfc7"
+          },
+          "trigger": {
+            "failure_condition": "either approach vehicle has no sustained approach trajectory",
+            "metric": "incoming actor has insufficient measured travel within 55 seconds",
+            "source": "motion_history.jsonl"
+          }
+        }
+      ],
+      "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__near_summit__occluded_approach_a",
+      "compatibility": {
+        "log": "analysis.log",
+        "negative_log": "canonical-beyond-near-a-branch-negative-analysis.log",
+        "receipt": "canonical-beyond-near-a-branch-compatibility.json",
+        "sha256": "c5dfb4b8e476c55dbafbe45184ad5dc795082449c520ee723263a105673ac7df"
+      },
+      "construction": "branch-proof-canonical-beyond-near-a/construction.json",
+      "construction_sha256": "860f20497447760b9389b9a4f82ea7727153532e2dd6d8488165e087482cae62",
+      "delivery_acceptance": {
+        "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__near_summit__occluded_approach_a",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C129731__NRS-484B-407__motor_vehicle_driver/delivery_fixture_proof.py --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__near_summit__occluded_approach_a --output-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c129731-delivery-diagnostic-canonical-beyond-near-a-v1",
+        "diagnostic_audit": "delivery-proofs/canonical-beyond-near-a/diagnostic-audit.json",
+        "diagnostic_audit_sha256": "51f89bf07093d950385440206ba71dadbc0d89044f19e7be76fc5bea6d9d34ad",
+        "diagnostic_decode_receipt": "delivery-proofs/canonical-beyond-near-a/source-decode.json",
+        "diagnostic_decode_receipt_sha256": "9d2c4fcd083a4012d84d88389c208c152d043aae22dde48d748111b7f1584fd6",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C129731__NRS-484B-407__motor_vehicle_driver/delivery_fixture_proof.py --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__near_summit__occluded_approach_a --output-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c129731-delivery-diagnostic-canonical-beyond-near-a-negative-v1 --negative-source-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c129731-delivery-diagnostic-canonical-beyond-near-a-v1 --negative-missing-source",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Sealed original source changed: capture/evidence.jsonl",
+        "negative_log": "delivery-proofs/canonical-beyond-near-a/negative.log",
+        "negative_log_sha256": "eef8159d33e6892331590dbc5d88772c2e6b8e9dbdd33dddc627a56144ec8868",
+        "scope": "20-frame synthetic software audit only; no Native actor pixels or legal acceptance",
+        "script": "delivery_audit.py",
+        "script_sha256": "8e1ac2d8523773061f67a11aa3ba96d8f29ef89faf63b24f497fa1f7ec749262",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/canonical-beyond-near-a/positive.log",
+        "test_log_sha256": "dc1015bf32308be6cdc6e60c2d2f69c9cf2043cf322875e4baf0decca557ba1d"
+      },
+      "fixture_recipe": "work/testing__C129731__NRS-484B-407__motor_vehicle_driver/branch-proof-canonical-beyond-near-a/recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract-crest.json",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "canonical-beyond-near-a-branch-negative-analysis.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-beyond-near-a-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__near_summit__occluded_approach_a --output .runtime-work/c129731-canonical-beyond-near-a-offline-v1",
+        "construction_sha256": "860f20497447760b9389b9a4f82ea7727153532e2dd6d8488165e087482cae62",
+        "exit_code": 0,
+        "log": "canonical-beyond-near-a-branch-offline.log",
+        "log_sha256": "becb331ac5af79e20bf1b1232577a71ec5fe7a90328d38d03b1ba2aa32116ba2"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proofs/canonical-beyond-near-a/receipt.json",
+        "sha256": "d05ef02eec4c21832a47627801e5b4600f8c109d3b1002da1b253f2974b971f9"
+      },
+      "post_capture": {
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-beyond-near-a-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__beyond_500ft__near_summit__occluded_approach_a --attempt .runtime-work/c129731-canonical-beyond-near-a-compat-v1 --output .runtime-work/c129731-canonical-beyond-near-a-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat .runtime-work/c129731-canonical-beyond-near-a-saved-v1/v0001/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "canonical-beyond-near-a-branch-processing.json",
+        "test_log_sha256": "3c14ce01a755c0d3c02991ec56358b0954ecaa9ac803d7e24d769510aed51854"
+      }
     }
   ],
   "format": "worker-execution-manifest",

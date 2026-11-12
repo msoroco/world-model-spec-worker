@@ -249,8 +249,7 @@ def main():
         "tampering proofs. A source-bound OpenDRIVE crest plan checks twelve lane/grade sites; a curved road "
         "plan checks six curve probe/direction sites. All twelve distinct crest placement/direction cases "
         "now have complete CPU paths and four source-audited controlled comparisons per boundary probe. "
-        "Strict delivery readiness remains open: canonical manifest/delivery audits and justified risk "
-        "remaining curve "
+        "Strict delivery readiness remains open: remaining curve "
         "direction coverage, a completed judgment sweep, shared branch "
         "review/GPU queue/local integration proof, and full-batch "
         "ready packages are unfinished worker CPU work. Synthetic pixels/rays prove no physical or legal acceptance.")
