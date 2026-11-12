@@ -2,7 +2,7 @@
   "assignment_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver",
   "input_sha256": "b9c3172408c5b3ad4b1ab360d0dedf01e43e1976e64942d24ccab3d19378fe5c",
   "status": "partial",
-  "readiness_kind": "primary_full_duration_delivery_diagnostic_checkpoint",
+  "readiness_kind": "eight_cases_full_duration_delivery_diagnostics_checkpoint",
   "applied_update": 0,
   "tests": [
     {
@@ -117,13 +117,13 @@
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "33e16d45147997f0739d4127d88cde9d81e4ad2c82629a1358425a6e4b1d518a"
+      "sha256": "dbb6734062c37fb87d7d97e31c11f526342256fdd36aeb39f410200b6f7c0f88"
     },
     {
       "command": ".venv-cpu/bin/python runtime.py preflight",
       "exit_code": 0,
       "log": "preflight-current.log",
-      "sha256": "b6429a84a416d059aeec746ae35cdceb9b69568464ef281d1eac495a7fe73b67"
+      "sha256": "607f6cc16a3813f2eae76363199c5dc8927444e5d8d6d7d724e8638f42b0a03c"
     },
     {
       "command": ".venv-cpu/bin/python worker_check.py --updates",
@@ -708,20 +708,62 @@
       "sha256": "cf07cf65d74a5e081a4bb022f25fbdb12b77203a457dd7db97a53f2dda19a0e4"
     },
     {
-      "command": ".venv-cpu/bin/python work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/delivery_fixture_proof.py --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__source_verified_other_right_near_time --output-root .runtime-work/c125714-delivery-negative-v1 --negative-source-root .runtime-work/c125714-delivery-positive-v3",
-      "exit_code": 1,
-      "log": "delivery-primary-negative.log",
-      "sha256": "aa6d1bc13df42dfd74b04d82175728700ecc4dfa36b72487d5dd54e14488fd23"
-    },
-    {
       "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -c \"import json; from pathlib import Path; from worker_exchange.delivery_handoff import validate_case; w=Path('work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver'); m=json.loads((w/'execution-manifest.json').read_text()); e=m['cases'][0]; print(validate_case(w,e,['demo-test','full-test'])['case_id'])\"",
       "exit_code": 0,
       "log": "delivery-primary-contract.log",
       "sha256": "a0fefbc9a76daec68c4de588ca95eeaf8c83e53887c6f3bb6f6d99f249c3a669"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/delivery_remaining_fixture_proof.py --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__source_verified_other_left_near_time --output-root .runtime-work/c125714-delivery-left-positive-v1",
+      "exit_code": 0,
+      "log": "delivery-left-positive.log",
+      "sha256": "f4fa24000239e80a5e7ec362dedc283ab7cb35db1608ecf5fca49487b3a3a70a"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/delivery_remaining_fixture_proof.py --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__source_verified_other_right_earlier --output-root .runtime-work/c125714-delivery-earlier-positive-v1",
+      "exit_code": 0,
+      "log": "delivery-earlier-positive.log",
+      "sha256": "8074fad231b04f650fd7272ba30cbdcf3422b6b9df827394d8013879aca5ae0f"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/delivery_remaining_fixture_proof.py --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__source_verified_other_right_later --output-root .runtime-work/c125714-delivery-later-positive-v1",
+      "exit_code": 0,
+      "log": "delivery-later-positive.log",
+      "sha256": "380d55cefa00dbb33b833e23888c490bc0c34d12b5f380f4b20ad840b9af379a"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/delivery_remaining_fixture_proof.py --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__source_verified_opposite_straight --output-root .runtime-work/c125714-delivery-straight-positive-v1",
+      "exit_code": 0,
+      "log": "delivery-straight-positive.log",
+      "sha256": "af6690074219dfd158fdadaff229d6fe8dda609fda7d3e023aea33be91eb074a"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/delivery_remaining_fixture_proof.py --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__source_verified_opposite_intends_left --output-root .runtime-work/c125714-delivery-intends-positive-v1",
+      "exit_code": 0,
+      "log": "delivery-intends-positive.log",
+      "sha256": "c5ecba2511ffa7dd66d26eca332c172d06e21b3a5e090d2ded1cf909a1bad97e"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/delivery_remaining_fixture_proof.py --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__source_verified_opposite_makes_left --output-root .runtime-work/c125714-delivery-makes-positive-v1",
+      "exit_code": 0,
+      "log": "delivery-makes-positive.log",
+      "sha256": "8cc48a759c0a03178233bb5df162cd3f7e89660615bcbe2faa58d7389a77fa34"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/delivery_remaining_fixture_proof.py --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__source_verified_wide_separate_crossing --output-root .runtime-work/c125714-delivery-wide-positive-v1",
+      "exit_code": 0,
+      "log": "delivery-wide-positive.log",
+      "sha256": "c30705da5a2d2745ee20407ed84a4c231ea83b54f246913a3b19e701c62d6950"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/prove_all_delivery_contracts.py",
+      "exit_code": 0,
+      "log": "all-delivery-contracts.log",
+      "sha256": "271febe0bbabb4b2adacf68236fae3d06cc0266c794a4fc2fbf70af0a705720d"
     }
   ],
   "remaining_gpu_checks": [
     "Actual intersection crossing, yielding, device state, same/different highway identity and four-camera visibility."
   ],
-  "reason": "Primary C125714 exact case has a source-bound 1100-frame positive diagnostic delivery audit and a missing sealed-source negative proof, both bound to the current audit script and logs. The positive receipt explicitly has diagnostic_fixture=true, passed=false and physical_acceptance_claimed=false. Seven other exact cases still need equivalent positive/negative delivery acceptance receipts; root supported-case synchronization, shared branch/queue integration and final review remain worker-owned CPU work. Strict delivery gate has not passed; no external blocker is claimed."
+  "reason": "All eight exact C125714 selected cases now have source-bound 1100-frame synthetic delivery audit positive logs and missing sealed-source negative logs, bound by exact commands and hashes. Every positive receipt has diagnostic_fixture=true, software_checks_passed=true, passed=false, and physical_acceptance_claimed=false. This is CPU preparation only; root supported-case synchronization, shared branch/queue integration and final source review remain worker-owned. Strict scoped and batch delivery gates have not passed; no external blocker is claimed."
 }
