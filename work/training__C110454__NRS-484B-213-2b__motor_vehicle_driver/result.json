@@ -3,7 +3,7 @@
   "input_sha256": "0c9f45319324999edde627db7de2cb9826a05a8b9c276bf2484fe85508153bde",
   "status": "partial",
   "applied_update": 15,
-  "reason": "Update 016: all 32 current unselected candidate chains now pass an independent 480-frame source join against saved-processing hashes; synthetic-as-original, changed timing, and stale-source negatives reject. Eight cases remain unselected pending source-reviewed case selection and accepted-original equivalence. Complete delivery/pixel audits, physical preparation and canonical queue/local integration remain worker-owned CPU work. No Native capture, recording or comparison accepted.",
+  "reason": "Update 017: all 32 current unselected candidate chains pass source-bound four-camera hash and 480-frame inventory checks; two unique videos were fully decoded independently. Synthetic-as-original, missing camera, stale hash, and owner-release closure negatives reject. Eight cases remain unselected pending source-reviewed selection and accepted-original equivalence. Complete independent delivery/pixel/physical and comparison audits, selected proofs, and canonical queue/local integration remain worker-owned CPU work. No Native capture, recording or comparison accepted.",
   "readiness_kind": null,
   "cases_planned": 8,
   "cases_selected": 0,
@@ -57,6 +57,24 @@
       "exit_code": 0,
       "log": "update016-preflight.log",
       "sha256": "5929cfc751f06630ee9c7966b7a90a9c6e5ffab5ed7995b42a7efda2cf60ab3e"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C110454__NRS-484B-213-2b__motor_vehicle_driver/prove-camera-lifecycle.py",
+      "exit_code": 0,
+      "log": "update017-camera-lifecycle-proof.log",
+      "sha256": "16f009e1b24ebb32fbb42acb1030a1714d63cc68751a051cc9f1b8bf3d1e327b"
+    },
+    {
+      "command": "MPLCONFIGDIR=/tmp/c110454-mpl .venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "update017-preflight.log",
+      "sha256": "5929cfc751f06630ee9c7966b7a90a9c6e5ffab5ed7995b42a7efda2cf60ab3e"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s tests",
+      "exit_code": 0,
+      "log": "update017-root-tests.log",
+      "sha256": "d3604f1321ce5a0d015f6905b962252374fc789adb82b66dd2bfcd8a1f6ea179"
     }
   ],
   "current_source_join_cpu_proof": {
@@ -66,6 +84,17 @@
     "proof_sha256": "93b1eee961c24f89aab825af6011365835fad96eca0a39e9e331c46146ddfd73",
     "candidate_count": 32,
     "joined_frames": 15360,
+    "selected": false,
+    "delivery_accepted": false
+  },
+  "current_camera_lifecycle_cpu_proof": {
+    "script": "camera_lifecycle_audit.py",
+    "script_sha256": "100297227e338ae3bd29820a2814d0e1ccf811a12d14b99684b49a50ddd95026",
+    "proof": "update017-camera-lifecycle-proof.json",
+    "proof_sha256": "0655f49db102b65e2b0b4b6e865cd156dd2dc05750c889544f311acffc52d1c7",
+    "candidate_count": 32,
+    "camera_checks": 128,
+    "unique_full_decodes": 2,
     "selected": false,
     "delivery_accepted": false
   }
