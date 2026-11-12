@@ -8,6 +8,7 @@ from pathlib import Path
 import subprocess
 
 from measure_walk import analyze, read_rows, require
+from physical_walk_audit import audit_original as audit_original_physical
 
 CAMERAS=('overview','approach','reference_corner','driver_reference')
 CHANNELS=('dev.pedestrian_signal','st.crosswalk','ru.pedestrian','rel.occupies',
@@ -155,6 +156,12 @@ def finalize(attempt,output):
     expected=config['case_suffix']=='reference'
     no_simultaneous=measurement['simultaneous_conflict_frames']==0
     matched=no_simultaneous==expected and measurement['directed_pedestrian_conflict_frames']>0
+    original_physical=None
+    if not synthetic:
+        review=source(attempt,'official-walk-review.json')
+        original_physical=audit_original_physical(attempt,config['case_suffix'],review)
+    completed=original_physical is not None and \
+        original_physical['physical_checks']['maneuver']['status']=='met' and matched
     recording=[{'name':row['name'],'unit':row['unit'],
                 'reference':'channels/'+row['name']+'.jsonl'}
                for row in config['recording_description']['channels']]
@@ -164,12 +171,16 @@ def finalize(attempt,output):
             'requested':expected,'measured':no_simultaneous,
             'method':'source-hashed saved full-body and Walk frame join',
             'tolerance':0,'matched':matched,'physical_cause_confirmed':False,
-            'cause_evidence':['native_samples.jsonl','video_frames.jsonl','road_geometry.json']}],
-        'setup_confirmed':not synthetic,'behavior_attempted':not synthetic,
-        'maneuver_completed':False,
+            'cause_evidence':['native_samples.jsonl','video_frames.jsonl','road_geometry.json']+
+                (['official-walk-review.json'] if original_physical else [])}],
+        'setup_confirmed':original_physical is not None,
+        'behavior_attempted':original_physical is not None,
+        'maneuver_completed':completed,
         'termination_reason':'full original duration retained',
-        'physical_failure_flags':['official_Walk_pixels_governance_and_bus_control_need_independent_review']+
-            ([] if matched else ['controlled_crossing_behavior_unconfirmed']),
+        'physical_failure_flags':
+            (['official_Walk_pixels_governance_and_bus_control_need_independent_review'] if synthetic else [])+
+            ([] if completed or synthetic else ['controlled_crossing_behavior_unconfirmed'])+
+            ([] if matched else ['sampled_target_unmatched']),
         'trace_reference':'trace.jsonl','video_references':[name+'.mkv' for name in CAMERAS],
         'video_frame_map_reference':'video_frames.jsonl',
         'recording_description':config['recording_description'],
@@ -194,6 +205,7 @@ def finalize(attempt,output):
             'original_joins':joins,'video_frames':counts,
             'provenance_kind':result['provenance_kind'],
             'physical_acceptance_claimed':False,'legal_verdict_claimed':False,
+            'original_physical_audit':original_physical,
             'scope':'synthetic diagnostic' if synthetic else 'saved original Native sources pending independent audit'}
     output.write_text(json.dumps(report,indent=2,allow_nan=False)+'\n')
     with (attempt/'result.json').open('x') as stream:

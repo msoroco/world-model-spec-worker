@@ -73,7 +73,7 @@ def audit(manifest, matrix):
             require(row['diagnostic_only'] is True and
                     sha(HERE / row['log']) == row['log_sha256'],
                     'Selected saved processing log differs')
-            base = ROOT / '.runtime-work/c111256-update020-selected' / suffix / candidate_id
+            base = ROOT / '.runtime-work/c111256-update021-selected' / suffix / candidate_id
             processing = base / 'processed/v0001/processing.json'
             require(processing.is_file() and sha(processing) == row['processing_receipt_sha256'] and
                     read(processing)['physical_acceptance_claimed'] is False,
@@ -114,6 +114,6 @@ if __name__ == '__main__':
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
     result = audit(read(HERE / 'execution-manifest.json'),
-                   read(HERE / 'update020-selected-process-saved-matrix.json'))
+                   read(HERE / 'update021-selected-process-saved-matrix.json'))
     args.output.write_text(json.dumps(result, indent=2, sort_keys=True) + '\n')
     print(json.dumps(result, sort_keys=True))

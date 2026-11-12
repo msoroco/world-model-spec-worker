@@ -99,7 +99,8 @@ def run():
         base=make_attempt(OUTPUT/(suffix+'-base'),suffix)
         positive=OUTPUT/(suffix+'-positive');negative=OUTPUT/(suffix+'-negative')
         provenance=OUTPUT/(suffix+'-provenance-negative')
-        for target in (positive,negative,provenance):
+        no_review=OUTPUT/(suffix+'-original-review-negative')
+        for target in (positive,negative,provenance,no_review):
             if target.exists():shutil.rmtree(target)
             shutil.copytree(base,target)
         before=source_digest(positive)
@@ -125,14 +126,34 @@ def run():
         mixed=run_finalizer(provenance)
         if mixed.returncode==0 or 'Saved source provenance markers disagree' not in mixed.stderr:
             raise ValueError('Mixed provenance negative accepted: '+mixed.stderr)
+        capture=no_review/'capture/manifest.json'
+        capture_data=json.loads(capture.read_text());capture_data['synthetic_diagnostic']=False
+        capture.write_text(json.dumps(capture_data))
+        road=no_review/'road_geometry.json'
+        road_data=json.loads(road.read_text())
+        road_data.update(synthetic_diagnostic=False,signal_governance_verified=True,
+                         walk_pixels_verified=True)
+        road.write_text(json.dumps(road_data))
+        samples=no_review/'native_samples.jsonl'
+        sample_rows=[json.loads(line) for line in samples.read_text().splitlines()]
+        for row in sample_rows:
+            row.update(speed_provenance='native_measured',
+                       display_source='original_pixel_audit',
+                       pedestrian_facing_source='native_heading_measured')
+        write_rows(samples,sample_rows)
+        missing_review=run_finalizer(no_review)
+        if missing_review.returncode==0 or \
+           'Missing required source: official-walk-review.json' not in missing_review.stderr:
+            raise ValueError('Unreviewed original-shaped source accepted: '+missing_review.stderr)
         outputs.append({'case':suffix,'frames':480,'four_source_videos_decoded':True,
             'simultaneous_conflict_frames':observed['simultaneous_conflict_frames'],
             'analysis_sha256':sha(positive/'analysis-report.json'),
             'result_sha256':sha(positive/'result.json'),
             'original_sources_preserved':True,'missing_geometry_rejected':True,
-            'mixed_provenance_rejected':True,'synthetic_only':True})
+            'mixed_provenance_rejected':True,'missing_original_review_rejected':True,
+            'synthetic_only':True})
     return {'format':'c111256-saved-finalizer-proof','cases':outputs,
-            'positive_passed':2,'negative_rejections':4,
+            'positive_passed':2,'negative_rejections':6,
             'physical_acceptance_claimed':False}
 
 if __name__=='__main__':

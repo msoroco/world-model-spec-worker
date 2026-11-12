@@ -14,6 +14,8 @@ from cameras import camera_plan
 SOURCES={'runner.py':'runner.py','geometry.py':'geometry.py','controller.py':'controller.py',
          'engineering.py':'engineering.py','measure_walk.py':'measure_walk.py',
          'cameras.py':'cameras.py','finalize.py':'finalize.py',
+         'official_walk_source_audit.py':'official_walk_source_audit.py',
+         'physical_walk_audit.py':'physical_walk_audit.py',
          'tests/test_native.py':'test_native.py'}
 CHANNELS=('dev.pedestrian_signal','st.crosswalk','ru.pedestrian','rel.occupies',
           'drv.yields_to','kin.velocity','native_body_pose_control','camera_frame_join')

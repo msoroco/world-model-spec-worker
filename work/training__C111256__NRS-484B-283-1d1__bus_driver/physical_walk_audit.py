@@ -5,7 +5,12 @@ import json
 import sys
 from pathlib import Path
 
-from native.measure_walk import read_rows
+NATIVE_DIR = Path(__file__).resolve().parent / 'native'
+if not NATIVE_DIR.is_dir():
+    NATIVE_DIR = Path(__file__).resolve().parent
+if str(NATIVE_DIR) not in sys.path:
+    sys.path.insert(0, str(NATIVE_DIR))
+from measure_walk import read_rows
 
 LIFECYCLE = ('capture_finished', 'encoders_closed', 'restoration_verified',
              'native_exit', 'owner_released', 'saved_processing_started')
@@ -87,11 +92,8 @@ def check_lifecycle(events):
 
 def audit_original(attempt, suffix, review_path):
     """Use only original Native sources and independent official Walk pixel review."""
-    native_dir = str(Path(__file__).resolve().parent / 'native')
-    if native_dir not in sys.path:
-        sys.path.insert(0, native_dir)
-    from native.finalize import joined_sources, source
-    from native.official_walk_source_audit import audit_original as audit_walk
+    from finalize import joined_sources, source
+    from official_walk_source_audit import audit_original as audit_walk
 
     attempt = Path(attempt)
     capture = json.loads(source(attempt, 'capture/manifest.json').read_text())
