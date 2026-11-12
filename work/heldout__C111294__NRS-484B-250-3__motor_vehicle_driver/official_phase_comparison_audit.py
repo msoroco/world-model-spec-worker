@@ -4,6 +4,7 @@ import argparse
 from hashlib import sha256
 import json
 from pathlib import Path
+from official_geometry_source_audit import audit as audit_geometry
 
 
 def digest(path):
@@ -16,7 +17,11 @@ def rows(path):
 
 def audit(red_attempt, green_attempt):
     red, green = Path(red_attempt), Path(green_attempt)
+    red_geometry, green_geometry = audit_geometry(red), audit_geometry(green)
+    if red_geometry['geometry_sha256'] != green_geometry['geometry_sha256']:
+        raise ValueError('Official phase comparison geometry binding changed')
     fixed = ('intersection_topology.json', 'intersection_participants.jsonl',
+             'official_geometry_binding.json', 'road.xodr',
              'video_frames.jsonl', 'trace.jsonl',
              'overview.mkv', 'approach.mkv', 'reference_corner.mkv',
              'driver_reference.mkv')
@@ -53,6 +58,7 @@ def audit(red_attempt, green_attempt):
             'device_context_sha256': digest(red / context_name),
             'red_state_sha256': phases[0], 'green_state_sha256': phases[1],
             'frames': len(frame_map), 'native_capture_claimed': False,
+            'geometry_sha256': red_geometry['geometry_sha256'],
             'legal_device_status_claimed': False}
 
 

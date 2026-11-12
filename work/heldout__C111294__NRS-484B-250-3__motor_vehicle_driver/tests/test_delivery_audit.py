@@ -16,6 +16,7 @@ class DeliveryAuditTests(unittest.TestCase):
         for name in ('intersection_topology.json', 'intersection_participants.jsonl',
                      'video_frames.jsonl', 'trace.jsonl',
                      'official_device_context.json', 'official_device_states.jsonl',
+                     'official_geometry_binding.json', 'road.xodr',
                      'control_inventory.json'):
             if name in source:
                 (root / name).write_text(source[name])
@@ -35,12 +36,15 @@ class DeliveryAuditTests(unittest.TestCase):
         if official:
             from ending_road_official_finalizer import measure_official_device
             device_names = ('official_device_context.json', 'official_device_states.jsonl',
-                            'intersection_topology.json', 'video_frames.jsonl')
+                            'intersection_topology.json', 'video_frames.jsonl',
+                            'official_geometry_binding.json', 'road.xodr')
             measurements['official_device_observation'] = {
                 'value': measure_official_device(root / 'official_device_context.json',
                          root / 'official_device_states.jsonl',
                          root / 'intersection_topology.json', root / 'video_frames.jsonl'),
                 'sources': {name: digest(root / name) for name in device_names}}
+            from official_geometry_source_audit import audit as audit_geometry
+            measurements['official_geometry_source_audit'] = audit_geometry(root)
         return {'case_id': json.loads(config)['selected_case_id'], 'measurements': measurements}
 
 

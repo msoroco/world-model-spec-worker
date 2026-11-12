@@ -102,7 +102,7 @@ class OfficialGeometrySourceAuditTests(unittest.TestCase):
             audit(self.root)
         path.write_text(original)
         (self.root / 'official_geometry_binding.json').unlink()
-        with self.assertRaisesRegex(ValueError, 'Missing official original source'):
+        with self.assertRaisesRegex(ValueError, 'Missing required source: official_geometry_binding.json'):
             audit(self.root)
 
 

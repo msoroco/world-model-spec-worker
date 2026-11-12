@@ -9,6 +9,7 @@ from ending_road_finalizer import (analyze as analyze_intersection,
                                    build_result as build_intersection_result,
                                    measure_intersection as base_measure_intersection)
 from ending_road_runner import CASE
+from official_geometry_source_audit import audit as audit_official_geometry
 
 
 def measure_intersection(topology_path, participant_path):
@@ -52,6 +53,7 @@ def measure_official_device(context_path, states_path, topology_path, map_path):
 def analyze(attempt):
     root = Path(attempt)
     report = analyze_intersection(root)
+    geometry = audit_official_geometry(root)
     context, context_sha = _required(root, 'official_device_context.json')
     states, states_sha = _required(root, 'official_device_states.jsonl')
     topology, topology_sha = _required(root, 'intersection_topology.json')
@@ -62,7 +64,10 @@ def analyze(attempt):
         'sources': {'official_device_context.json': context_sha,
                     'official_device_states.jsonl': states_sha,
                     'intersection_topology.json': topology_sha,
-                    'video_frames.jsonl': mapping_sha}}
+                    'video_frames.jsonl': mapping_sha,
+                    'official_geometry_binding.json': sha256((root / 'official_geometry_binding.json').read_bytes()).hexdigest(),
+                    'road.xodr': sha256((root / 'road.xodr').read_bytes()).hexdigest()}}
+    report['measurements']['official_geometry_source_audit'] = geometry
     report['limitations'].append('Native signal association and state do not establish legal official status or resolve subsection 4.')
     return report
 

@@ -12,7 +12,7 @@ from official_geometry_binding import _digest
 def _read(root, name):
     path = root / name
     if not path.is_file() or not path.read_bytes():
-        raise ValueError('Missing official original source: ' + name)
+        raise ValueError('Missing required source: ' + name)
     return json.loads(path.read_text()) if name.endswith('.json') else path.read_bytes()
 
 

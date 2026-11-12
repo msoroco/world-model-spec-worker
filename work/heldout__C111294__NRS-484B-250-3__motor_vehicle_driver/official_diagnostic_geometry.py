@@ -82,6 +82,9 @@ def rebuild(diagnostic):
     binding['geometry_sha256'] = _digest(binding)
     import json
     files['road.xodr'] = xodr
+    capture_manifest = json.loads(files['capture/manifest.json'])
+    capture_manifest['sources']['road.xodr'] = binding['opendrive_sha256']
+    files['capture/manifest.json'] = json.dumps(capture_manifest, indent=2) + '\n'
     files['intersection_topology.json'] = json.dumps(topology, indent=2) + '\n'
     files['official_device_context.json'] = json.dumps(device, indent=2) + '\n'
     files['official_geometry_binding.json'] = json.dumps(binding, indent=2) + '\n'

@@ -11,7 +11,8 @@ from pathlib import Path
 CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 BASE_SOURCES = ('intersection_topology.json', 'intersection_participants.jsonl',
                 'video_frames.jsonl', 'trace.jsonl')
-DEVICE_SOURCES = ('official_device_context.json', 'official_device_states.jsonl')
+DEVICE_SOURCES = ('official_device_context.json', 'official_device_states.jsonl',
+                  'official_geometry_binding.json', 'road.xodr')
 
 
 def digest(path):
@@ -54,6 +55,10 @@ def audit_attempt(attempt, report, *, decoder=None):
                 any(inventory.get(key) for key in ('ending_landmarks', 'through_landmarks', 'junction_lights'))):
             raise ValueError('Original ordinary-route control inventory differs')
     if official:
+        from official_geometry_source_audit import audit as audit_geometry
+        geometry = audit_geometry(root)
+        if geometry != report['measurements'].get('official_geometry_source_audit'):
+            raise ValueError('Official geometry source audit differs from originals')
         from ending_road_official_finalizer import measure_official_device
         device = measure_official_device(root / 'official_device_context.json',
                  root / 'official_device_states.jsonl', root / 'intersection_topology.json',
