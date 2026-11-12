@@ -22,8 +22,8 @@ def main():
     for kind, suffixes in PAIRS.items():
         paths = []
         for suffix in suffixes:
-            attempt = root / ".runtime-work/c110454-update019-six-selected" / suffix / "primary/compatibility"
-            saved = HERE / "update019-selected-proofs" / suffix / "primary/process-saved.log"
+            attempt = root / ".runtime-work/c110454-update024-six-selected" / suffix / "primary/compatibility"
+            saved = HERE / "update024-selected-proofs" / suffix / "primary/process-saved.log"
             paths.extend((attempt, saved))
         result = audit(kind, *paths, diagnostic=True)
         assert result["source_comparison_passed"] and not result["passed"]
