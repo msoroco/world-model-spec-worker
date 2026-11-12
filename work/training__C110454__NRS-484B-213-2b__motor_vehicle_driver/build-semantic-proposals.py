@@ -92,6 +92,8 @@ specs = {
     "oneway_present": ("intersection", True, True, 6.89, "oneway_exception", "one_way_designation"),
     "traversal_reference": ("intersection", False, False, 0.0, "traversal_route", "commanded_left_side_route"),
     "traversal_contrast": ("intersection", False, True, 0.0, "traversal_route", "commanded_left_side_route"),
+    "reference": ("intersection", False, True, 112.2, "intersection_distance", "commanded_left_side_closest_distance_ft"),
+    "contrast": ("intersection", False, True, 7.2, "intersection_distance", "commanded_left_side_closest_distance_ft"),
 }
 entries = MANIFEST["cases"]
 assert {entry["case_id"].split("__")[-1] for entry in entries} == set(specs)
@@ -121,7 +123,7 @@ for entry in entries:
     })
 case_stage = {"cell_id": CELL_ID, "actor": ACTOR, "status": "draft", "cases": cases, "sweep_specs": []}
 index = {"format": "worker-semantic-delivery", "assignment_id": HERE.name,
-         "status": "draft_seven_case_threshold_coverage", "stages": {
+         "status": "draft_nine_case_threshold_coverage", "stages": {
              "relevance_batch": write("relevance-batch.json", relevance),
              "relevance": write("relevance.json", relevance),
              "template": write("template.json", template),

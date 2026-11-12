@@ -13,6 +13,7 @@ HERE = Path(__file__).resolve().parent
 AID = HERE.name
 MANIFEST = HERE / "execution-manifest.json"
 PAIRS = {"rail": ("rail_reference", "rail_contrast"),
+         "main": ("reference", "contrast"),
          "rail_at": ("rail_reference", "rail_at"),
          "oneway": ("oneway_absent", "oneway_present"),
          "traversal": ("traversal_reference", "traversal_contrast")}
@@ -125,9 +126,9 @@ def audit(kind: str, left_attempt: Path, left_saved: Path, right_attempt: Path,
             "Declared exact comparison pair differs")
     require(left["candidate_id"] == right["candidate_id"],
             "Paired candidates differ")
-    if kind == "traversal":
+    if kind in ("traversal", "main"):
         require(left["context"] == right["context"],
-                "Held traversal context differs")
+                "Held intersection context differs")
     observed = compare_sources(kind, left, right)
     accepted = []
     if not diagnostic:

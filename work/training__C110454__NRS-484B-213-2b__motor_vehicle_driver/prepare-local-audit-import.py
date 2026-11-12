@@ -42,7 +42,7 @@ def plan(manifest: dict | None = None, fragment: dict | None = None) -> dict:
     cases = manifest.get("cases", [])
     rows = fragment.get("cases", [])
     require(manifest.get("assignment_id") == fragment.get("assignment_id") == AID and
-            len(cases) == len(rows) == 7 and
+            len(cases) == len(rows) == 9 and
             fragment.get("manifest_sha256") == sha(manifest_path),
             "Local import selection or queue source differs")
     for case, row in zip(cases, rows):

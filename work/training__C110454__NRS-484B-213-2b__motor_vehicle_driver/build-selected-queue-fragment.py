@@ -11,7 +11,7 @@ AID = HERE.name
 PY = ".venv-cpu/bin/python"
 EXCHANGE = f"PYTHONPATH=runtime/pipeline/scenario_pipeline {PY} -m worker_exchange"
 MANIFEST = f"work/{AID}/execution-manifest.json"
-PAIRS = {"rail", "rail_at", "oneway", "traversal"}
+PAIRS = {"main", "rail", "rail_at", "oneway", "traversal"}
 
 
 def require(value, message):
@@ -34,8 +34,8 @@ def build():
     require(manifest.get("assignment_id") == plan.get("assignment_id") == AID,
             "Assignment identity differs")
     cases = manifest["cases"]
-    require(len(cases) == 7 and len({entry["case_id"] for entry in cases}) == 7,
-            "Expected seven distinct selected cases")
+    require(len(cases) == 9 and len({entry["case_id"] for entry in cases}) == 9,
+            "Expected nine distinct selected cases")
     planned = {case["case_id"] for case in plan["cases"]}
     require({entry["case_id"] for entry in cases} <= planned,
             "Selected case absent from plan")
@@ -116,16 +116,14 @@ def build():
                                                "--left-audit", "${LEFT_SOURCE_AUDIT}",
                                                "--right-audit", "${RIGHT_SOURCE_AUDIT}",
                                                "--output", "${COMPARISON_AUDIT}")})
-    require(len(comparisons) == 4, "Selected comparisons incomplete")
+    require(len(comparisons) == 5, "Selected comparisons incomplete")
     return {"format": "c110454-selected-queue-fragment-v1", "assignment_id": AID,
             "manifest_sha256": sha(manifest_path), "case_plan_sha256": sha(plan_path),
             "status": "partial", "dispatchable": False, "cases": rows,
             "comparison_audit_commands": comparisons,
-            "withheld_comparison_id": AID + "__comparison_main",
             "missing_to_dispatch": ["original Native delivery audits and pixel/context reviews",
                                     "original Native comparison receipts",
                                     "accepted-original 100-foot equivalence disposition",
-                                    "complete selected manifest proof fields",
                                     "canonical batch queue and local integration proof"]}
 
 
