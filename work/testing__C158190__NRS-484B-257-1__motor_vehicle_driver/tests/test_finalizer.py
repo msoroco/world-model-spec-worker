@@ -64,11 +64,11 @@ class FinalizerTests(unittest.TestCase):
         (root/'visibility_samples.json').write_text(json.dumps(samples))
         (root/'visibility_rays.jsonl').write_text(''.join(json.dumps(r)+'\n' for r in rays))
         (root/'trace.jsonl').write_text(''.join(json.dumps({'frame':r['frame'],'time_s':r['time_s'],
-            'position_m':[-20+i,-1.8,0]})+'\n' for i,r in enumerate(history)))
+            'position_m':[-20+i,1.8,0]})+'\n' for i,r in enumerate(history)))
         (root/'control_context.json').write_text(json.dumps({
             'intersection_xy_m': [[-8,-8],[8,-8],[8,8],[-8,8]]}))
         bodies=[{'frame': r['frame'], 'time_s': r['time_s'],
-                 'ego': {'body_vertices_m': [[-20+i+j*.01,-1.8,0] for j in range(8)]},
+                 'ego': {'body_vertices_m': [[-20+i+j*.01,1.8,0] for j in range(8)]},
                  'through': None} for i,r in enumerate(history)]
         (root/'interaction_history.jsonl').write_text(''.join(json.dumps(r)+'\n' for r in bodies))
 

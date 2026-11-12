@@ -12,14 +12,14 @@ PREFIX = 'testing__C158190__NRS-484B-257-1__motor_vehicle_driver__'
 
 class Map:
     name = 'OpenDriveMap'
-    lanes = {(-20, -1.8): (158190, -1, False),
-             (0, -1.8): (158192, -1, True),
-             (1.8, -20): (158194, -1, False),
+    lanes = {(-20, 1.8): (158190, -1, False),
+             (0, 1.8): (158192, -1, True),
+             (1.8, 20): (158194, -1, False),
              (1.8, 0): (158195, -1, True),
-             (-1.8, 20): (158196, 1, False),
-             (-60, -1.8): (158190, -1, False),
-             (1.8, -45): (158194, -1, False),
-             (1.8, -4): (158195, -1, True)}
+             (-1.8, -20): (158196, 1, False),
+             (-60, 1.8): (158190, -1, False),
+             (1.8, 45): (158194, -1, False),
+             (1.8, 4): (158195, -1, True)}
 
     def get_waypoint(self, point, project_to_road=False):
         assert project_to_road is False
@@ -32,7 +32,7 @@ class Actors:
     def filter(self, name):
         assert name == 'traffic.yield*'
         return [NS(id=500, trigger_volume=NS(contains=lambda point, transform:
-                                            (point.x, point.y) == (-20, -1.8)),
+                                            (point.x, point.y) == (-20, 1.8)),
                    get_transform=lambda: object())]
 
 
@@ -70,8 +70,8 @@ class ConstructionTests(unittest.TestCase):
 
     def test_approaching_entered_and_clear_roles_cleanup(self):
         for suffix, expected_road, expected_point in (
-                ('yield_nearest_view_through_approaches', 158194, (1.8, -45)),
-                ('yield_nearest_view_through_entered', 158195, (1.8, -4)),
+                ('yield_nearest_view_through_approaches', 158194, (1.8, 45)),
+                ('yield_nearest_view_through_entered', 158195, (1.8, 4)),
                 ('yield_nearest_view_clear', None, None)):
             with self.subTest(suffix=suffix):
                 world = World()

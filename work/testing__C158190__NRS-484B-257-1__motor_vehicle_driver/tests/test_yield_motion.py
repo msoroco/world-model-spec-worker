@@ -39,7 +39,7 @@ class MotionTests(unittest.TestCase):
         return kwargs
 
     def test_approach_slows_with_through_traffic_and_no_slow_differs(self):
-        ego, through = Actor(-20, -1.8), Actor(1.8, -30)
+        ego, through = Actor(-20, 1.8), Actor(1.8, 30)
         world = World()
         base = {'ego': ego, 'through': through}
         slow = apply_motion(world, dict(base, stage=Stage(PREFIX+'yield_nearest_view_through_approaches')),
@@ -54,22 +54,22 @@ class MotionTests(unittest.TestCase):
         self.assertEqual(ego.control['brake'], 0)
 
     def test_clear_road_and_entered_vehicle_clearance(self):
-        ego = Actor(-20, -1.8)
+        ego = Actor(-20, 1.8)
         stage = Stage(PREFIX+'yield_nearest_view_clear')
         clear = apply_motion(World(), {'ego': ego, 'through': None, 'stage': stage},
                              control_factory=self.control_factory)
         self.assertEqual(clear['ego_target_mps'], 4.)
-        entered = Actor(1.8, -4)
+        entered = Actor(1.8, 4)
         occupied = apply_motion(World(), {'ego': ego, 'through': entered, 'stage': stage},
                                 control_factory=self.control_factory)
         self.assertEqual(occupied['ego_target_mps'], 2.)
-        entered.point.y = 13
+        entered.point.y = -13
         after = apply_motion(World(), {'ego': ego, 'through': entered, 'stage': stage},
                              control_factory=self.control_factory)
         self.assertEqual(after['ego_target_mps'], 4.)
 
     def test_rejects_ego_off_route(self):
-        ego = Actor(-20, -1.8)
+        ego = Actor(-20, 1.8)
         world = World()
         world.get_waypoint = lambda *args, **kwargs: type('Waypoint', (), {'road_id': 99})()
         with self.assertRaisesRegex(ValueError, 'left the authored'):

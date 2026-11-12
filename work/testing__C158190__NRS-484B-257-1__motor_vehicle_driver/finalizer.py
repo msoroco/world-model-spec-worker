@@ -18,6 +18,11 @@ def _rows(path):
     return [json.loads(line) for line in Path(path).read_text().splitlines() if line.strip()]
 
 
+def measure_speed_at_closest_view(report):
+    """Return the sampled original ego speed at the closest clear sight ray."""
+    return report['speed_at_closest_view_mps']
+
+
 def finalize(attempt, output):
     attempt, output = Path(attempt), Path(output)
     if output.exists() or (attempt / 'result.json').exists() or (attempt / 'channels').exists():
@@ -62,7 +67,7 @@ def finalize(attempt, output):
         'review_scope': 'original camera frames named in rendered_marking_review.json',
         'physical_acceptance': False}}
     (channels / 'yield_site_review.json').write_text(json.dumps(site_review, indent=2) + '\n')
-    measured = report['speed_at_closest_view_mps']
+    measured = measure_speed_at_closest_view(report)
     requested = (stage.approach_speed_mps if case_id.endswith('__yield_nearest_view_no_slow')
                  else stage.clear_speed_mps if case_id.endswith('__yield_nearest_view_clear')
                  else stage.view_speed_mps)
@@ -109,7 +114,7 @@ def finalize(attempt, output):
     result = physical_result(attempt, result)
     analysis = {'format': 'worker-c158190-yield-analysis', 'case_id': case_id,
                 'measurements': {'speed_at_closest_view_mps': {
-                    'value': measured, 'method': target['method'],
+                    'value': measured, 'method': 'measure_speed_at_closest_view',
                     'sources': result['source_evidence_hashes']}},
                 'legal_conclusion': 'unresolved', 'source_report': report,
                 'source_review_sha256': context['source_review_sha256']}

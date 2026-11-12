@@ -28,24 +28,26 @@ class Map:
     def get_waypoint(self, point, project_to_road=False):
         assert project_to_road is False
         key = (point.x, point.y)
-        inventory = {(-20, -1.8): (158190, -1, False),
-                     (0, -1.8): (158192, -1, True),
-                     (1.8, -20): (158194, -1, False),
+        inventory = {(-20, 1.8): (158190, -1, False),
+                     (0, 1.8): (158192, -1, True),
+                     (1.8, 20): (158194, -1, False),
                      (1.8, 0): (158195, -1, True),
-                     (-1.8, 20): (158196, 1, False)}
+                     (-1.8, -20): (158196, 1, False)}
         road_id, lane_id, junction = self.override.get(key, inventory[key])
         return NS(road_id=road_id, lane_id=lane_id, is_junction=junction)
 
 
 def world(override=None, sign_present=True):
     sign = NS(id=301, trigger_volume=NS(contains=lambda point, transform:
-                                       sign_present and point.x == -20 and point.y == -1.8),
+                                       sign_present and point.x == -20 and point.y == 1.8),
               get_transform=lambda: object())
     return NS(get_map=lambda: Map(override), get_actors=lambda: Actors([sign]))
 
 
 class SiteTests(unittest.TestCase):
     def test_authored_junction_and_native_governance(self):
+        self.assertEqual(site.opendrive_to_carla(-20, -1.8), (-20., 1.8))
+        self.assertEqual(site.opendrive_to_carla(1.8, -20), (1.8, 20.))
         authored = site.validate_authored_site()
         self.assertEqual(authored['approach_lane_id'], -1)
         self.assertEqual(authored['through_road_ids'], [158194, 158195, 158196])

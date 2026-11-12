@@ -58,7 +58,7 @@ def build():
                  for i, row in enumerate(frames)]
         bodies = [{'frame': row['carla_frame'], 'time_s': row['time_s'],
                    'ego': {'body_vertices_m': body_vertices(trace[i]['position_m'][0], 1.8)},
-                   'through': {'body_vertices_m': body_vertices(1.8, -20+min(i, 60)*.5)}}
+                   'through': {'body_vertices_m': body_vertices(1.8, 20-min(i, 60)*.5)}}
                   for i, row in enumerate(frames)]
         for name, rows in (('video_frames.jsonl', frames),
                            ('control_inventory.jsonl', controls),
@@ -102,9 +102,9 @@ def build():
                        body_vertices_m=bodies[i]['ego']['body_vertices_m'],
                        speed_mps=trace[i]['speed_mps'],
                        velocity_mps=trace[i]['velocity_mps'])
-            through.update(actor_id=23, position_m=[1.8, -20+min(i, 60)*.5, 0],
+            through.update(actor_id=23, position_m=[1.8, 20-min(i, 60)*.5, 0],
                            body_vertices_m=bodies[i]['through']['body_vertices_m'],
-                           speed_mps=4, velocity_mps=[0, 4, 0])
+                           speed_mps=4, velocity_mps=[0, -4, 0])
             evidence.append(event)
             base = f'graphs/base/{frame:08d}.pkl'
             abstract = f'graphs/abstract/{frame:08d}.pkl'
@@ -120,7 +120,7 @@ def build():
                 sign = {'id': 'native-yield-sign',
                         'attributes': {'sem_class': 'traffic.yield',
                                        'landmark_type': '205', 'landmark_id': '12',
-                                       'vertex': [-10, -1.8, 0]}}
+                                       'vertex': [-20, 3.8, 0]}}
                 graphs.append({'path': 'capture/native/' + graph_name,
                                'attributes': attributes,
                                'nodes': [sign] if graph_name == base else [],

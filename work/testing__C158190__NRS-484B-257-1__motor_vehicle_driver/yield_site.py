@@ -16,6 +16,11 @@ APPROACH = 158190
 THROUGH = (158194, 158195, 158196)
 
 
+def opendrive_to_carla(x, y):
+    """CARLA's Native world reflects the OpenDRIVE map's Y axis."""
+    return (float(x), -float(y))
+
+
 def _lanes(road):
     section = road.find('./lanes/laneSection')
     if section is None:
@@ -92,14 +97,16 @@ def validate_native_site(world, *, location_factory=None):
                 (1.8, -20, 158194, -1, False),
                 (1.8, 0, 158195, -1, True),
                 (-1.8, 20, 158196, 1, False))
-    for x, y, road_id, lane_id, is_junction in expected:
+    for map_x, map_y, road_id, lane_id, is_junction in expected:
+        x, y = opendrive_to_carla(map_x, map_y)
         point = location_factory(x=x, y=y, z=.25)
         waypoint = road_map.get_waypoint(point, project_to_road=False)
         if (waypoint is None or waypoint.road_id != road_id
                 or waypoint.lane_id != lane_id
                 or bool(waypoint.is_junction) != is_junction):
             raise ValueError(f'Native road/lane/junction readback differs at {(x, y)}')
-    approach_point = location_factory(x=-20, y=-1.8, z=.25)
+    approach_x, approach_y = opendrive_to_carla(-20, -1.8)
+    approach_point = location_factory(x=approach_x, y=approach_y, z=.25)
     signs = [actor for actor in world.get_actors().filter('traffic.yield*')
              if actor.trigger_volume.contains(approach_point, actor.get_transform())]
     if len(signs) != 1:

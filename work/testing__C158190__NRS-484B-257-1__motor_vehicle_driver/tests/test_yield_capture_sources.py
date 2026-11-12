@@ -17,7 +17,7 @@ class Point:
 
 
 class Transform:
-    location = Point(-20, -1.8, .25)
+    location = Point(-20, 1.8, .25)
 
     def transform(self, point):
         return Point(self.location.x+point.x, self.location.y+point.y,

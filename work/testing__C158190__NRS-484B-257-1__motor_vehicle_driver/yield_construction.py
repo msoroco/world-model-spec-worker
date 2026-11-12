@@ -5,14 +5,14 @@ authored site. This module has no CARLA import or server contact at import time.
 """
 from contextlib import contextmanager
 
-from yield_site import validate_native_site
+from yield_site import opendrive_to_carla, validate_native_site
 from yield_controller import Stage, PREFIX
 
 EGO_BLUEPRINT = 'vehicle.tesla.model3'
 THROUGH_BLUEPRINT = 'vehicle.tesla.model3'
-EGO_POINT = (-60.0, -1.8)
-THROUGH_APPROACH = (1.8, -45.0)
-THROUGH_ENTERED = (1.8, -4.0)
+EGO_POINT = opendrive_to_carla(-60.0, -1.8)
+THROUGH_APPROACH = opendrive_to_carla(1.8, -45.0)
+THROUGH_ENTERED = opendrive_to_carla(1.8, -4.0)
 
 
 def _waypoint(world, location, road_id, lane_id):

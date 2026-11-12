@@ -9,10 +9,10 @@ import math
 from yield_controller import speed_control
 from yield_capture_sources import INTERSECTION_ENTRY_X
 
-THROUGH_CLEAR_Y_M = 12.0
+THROUGH_CLEAR_Y_M = -12.0
 THROUGH_TARGET_MPS = 7.0
 EGO_END_X_M = 55.0
-THROUGH_END_Y_M = 50.0
+THROUGH_END_Y_M = -50.0
 
 
 def _speed(actor):
@@ -37,7 +37,7 @@ def apply_motion(world, staging, *, control_factory=None):
         raise ValueError('Ego left the authored one-way approach/crossing route')
     within = waypoint.road_id in (158192, 158193)
     distance = max(0.0, INTERSECTION_ENTRY_X - ego_point.x)
-    through_clear = through is None or through.get_location().y >= THROUGH_CLEAR_Y_M
+    through_clear = through is None or through.get_location().y <= THROUGH_CLEAR_Y_M
     ego_target = stage.target(distance, within_intersection=within,
                               through_vehicle_clear=through_clear)
     if ego_point.x >= EGO_END_X_M:
@@ -46,7 +46,7 @@ def apply_motion(world, staging, *, control_factory=None):
     ego.apply_control(control_factory(**ego_command))
     through_command = None
     if through is not None:
-        through_target = (0.0 if through.get_location().y >= THROUGH_END_Y_M
+        through_target = (0.0 if through.get_location().y <= THROUGH_END_Y_M
                           else THROUGH_TARGET_MPS)
         through_command = speed_control(through_target, _speed(through))
         through.apply_control(control_factory(**through_command))
