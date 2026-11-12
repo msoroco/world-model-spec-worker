@@ -67,7 +67,7 @@ def main():
             require(static["native_imported"] is False and
                     static["physical_success_claimed"] is False,
                     "Sweep runner made physical claim during static check")
-        run = ROOT / ".runtime-work/c110919-update038-ten-case-matrix" / suffix / "primary"
+        run = ROOT / ".runtime-work/c110919-update038-ten-case-matrix" / sha(manifest_path)[:12] / suffix / "primary"
         attempt = run / "compatibility"
         saved_path = run / "saved/v0001/processing.json"
         saved = read(saved_path)
@@ -89,7 +89,8 @@ def main():
                         "saved_receipt_sha256": sha(saved_path), "measurement": measured})
     negatives = {}
     sample = [json.loads(line) for line in (
-        ROOT / ".runtime-work/c110919-update038-ten-case-matrix/traffic_yield_wait/primary/compatibility/native_samples.jsonl"
+        ROOT / ".runtime-work/c110919-update038-ten-case-matrix" / sha(manifest_path)[:12] /
+        "traffic_yield_wait/primary/compatibility/native_samples.jsonl"
     ).read_text().splitlines()]
     changed = copy.deepcopy(sample)
     changed[240]["traffic_conflict_occupied"] = False
@@ -101,7 +102,7 @@ def main():
     changed[240]["time_s"] += 1
     negatives["altered_time"] = reject(lambda: measure(changed, launch_frame=30))
     negatives["unsupported_launch"] = reject(lambda: TrafficLaunch(260))
-    finalizer_attempt = ROOT / ".runtime-work/c110919-update045-sweep-finalizer/compatibility"
+    finalizer_attempt = ROOT / ".runtime-work/c110919-update048-finalizer/compatibility"
     finalizer_report = read(finalizer_attempt / "analysis-report.json")
     finalizer_result = read(finalizer_attempt / "result.json")
     require(finalizer_report["case_id"] == "C110919-right-of-way-0000" and

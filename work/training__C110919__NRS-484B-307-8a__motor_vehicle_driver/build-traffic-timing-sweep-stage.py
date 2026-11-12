@@ -37,6 +37,14 @@ def build():
         raise ValueError("Sweep control source proof changed")
     source_case = next(c for c in stage["cases"] if
                        c["case_id"].endswith("__traffic_yield_wait"))
+    observed_name = "ego_entry_relative_to_signal_directed_traffic"
+    for ordinary in stage["cases"]:
+        ordinary["variable_assignments"].setdefault("traffic_launch_frame", {
+            "kind": "controller", "value": None,
+            "note": "Timing sweep control does not apply to this ordinary probe"})
+        ordinary["variable_assignments"].setdefault(observed_name, {
+            "kind": "subject_behavior", "value": None,
+            "note": "Observed only from retained Native motion; no authored value"})
     spec = next(s for s in stage["sweep_specs"] if
                 s["sweep_id"] == "C110919-right-of-way")
     if spec["status"] != "incomplete":
@@ -49,7 +57,7 @@ def build():
         "mode": "one_dimensional",
         "axes": [{
             "variable": "traffic_launch_frame",
-            "observable": "ego_minus_traffic_entry_s",
+            "observable": observed_name,
             "unit": "s",
             "min": 20, "max": 60, "spacing": 10,
             "measurement": {
@@ -65,7 +73,7 @@ def build():
             "name": "diagnostic_launch_30",
             "value": 30, "unit": "frame",
             "source": "update040-traffic-timing-sweep-proof.json",
-            "verification_evidence": sha(proof_path),
+            "verification_evidence": proof["outcomes"][0]["source_sha256"],
             "purpose": "coverage_landmark"
         }],
         "rationale": "Sample authored cross-traffic launch while holding ego yield policy and red-turn geometry fixed; measure realized precedence without a legal judgment.",
@@ -77,6 +85,10 @@ def build():
         "kind": "controller", "value": 20,
         "note": "Authored command frame; observed conflict timing comes only from retained Native sources"
     }
+    spec["variable_assignments"][observed_name] = {
+        "kind": "subject_behavior", "value": None,
+        "note": "Measured original ego-versus-traffic first-entry timing; never authored"
+    }
     spec["recording_description"]["context_inputs"].extend([
         {"name": "traffic_launch_frame", "unit": "frame",
          "method": "Selected exact config and every retained Native sample"},
@@ -86,13 +98,25 @@ def build():
          "method": "Full 480-frame source decode joined to Native frames"}
     ])
     spec["recording_description"]["channels"].append({
-        "name": "ego_minus_traffic_entry_s", "unit": "s",
+        "name": observed_name, "unit": "s",
         "sampling_rate_hz": 20,
         "method": "Postcapture source-derived first-entry difference repeated against each saved Native frame for exact frame joins",
         "time_window": "entire 24 s / 480-frame attempt",
         "reference_frame": "Native full-body conflict zone and exact original frame identity",
         "uncertainty": "50 ms sampling for each first entry; not a legal right-of-way threshold",
     })
+    spec["recording_description"]["channels"].extend([
+        {"name": name, "unit": "structured", "sampling_rate_hz": 20,
+         "method": method, "time_window": "entire 24 s / 480-frame attempt",
+         "reference_frame": "surveyed Native intersection and original frame identity",
+         "uncertainty": "50 ms sampling; original participant identity and body visibility require review"}
+        for name, method in (
+            ("native_pedestrian_paths", "Retained Native walker center and conflict occupancy per original frame"),
+            ("native_other_traffic_paths", "Retained Native traffic center, full body and speed per original frame"),
+            ("signal_state_observed", "Retained original governing and cross-traffic signal states per frame"))])
+    spec["recording_description"]["context_inputs"].append({
+        "name": "surveyed_C110919_intersection", "unit": "structured",
+        "method": "Native road geometry, lane and signal actor readback"})
     spec["recording_description"]["limitations"].append(
         "Original vehicle trajectories, directed-signal activation and camera visibility require independent review")
     if "traffic_launch_frame" not in {p["name"] for p in binding["variable_parameters"]}:
@@ -101,13 +125,18 @@ def build():
             "range_or_domain": [20, 30, 40, 50, 60],
             "used_by_laws": ["NRS-484B-307-8a"]
         })
+    if observed_name not in {p["name"] for p in binding["variable_parameters"]}:
+        binding["variable_parameters"].append({
+            "name": observed_name, "kind": "subject_behavior",
+            "range_or_domain": [-24, 24],
+            "used_by_laws": ["NRS-484B-307-8a"]
+        })
     validate_spec(spec)
     expand_sweeps(stage, [read(HERE / "proposals/template.json")], binding)
     selected = [c for c in stage["cases"] if c.get("sweep_id") == spec["sweep_id"]]
     if len(selected) != 5 or sorted(c["sweep_point"]["traffic_launch_frame"] for c in selected) != [20, 30, 40, 50, 60]:
         raise ValueError("Expanded sweep case set differs")
     stage["candidate_only"] = True
-    stage["source_proof_sha256"] = sha(proof_path)
     stage["original_native_accepted"] = False
     output = HERE / "proposals/right-of-way-sweep-candidate.json"
     output.write_text(json.dumps(stage, indent=2) + "\n")

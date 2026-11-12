@@ -229,7 +229,17 @@ def derive_channels(attempt: Path,config: dict,native: list[dict],mapping: list[
                              'legal_yield_verdict':None},
             'native_body_pose_control':sample,
             'camera_frame_join':frame,
-            'ego_minus_traffic_entry_s':timing['ego_minus_traffic_entry_s']}
+            'ego_entry_relative_to_signal_directed_traffic':timing['ego_minus_traffic_entry_s'],
+            'native_pedestrian_paths':{
+                'center_xy_m':sample['walker_center_xy_m'],
+                'conflict_occupied':sample['walker_conflict_occupied']},
+            'native_other_traffic_paths':{
+                'center_xy_m':sample['other_traffic_center_xy_m'],
+                'body_xy_m':sample['other_traffic_body_xy_m'],
+                'speed_mps':sample['other_traffic_speed_mps']},
+            'signal_state_observed':{
+                'ego':sample['signal_state_observed'],
+                'other_traffic':sample['other_traffic_signal_state_observed']}}
         if set(values)!=names:raise ValueError('Declared channels differ from raw derivation')
         for name,value in values.items():
             output[name].append(json.dumps({'time_s':frame['time_s'],'value':value},
@@ -293,7 +303,12 @@ def finalize(attempt: Path,output: Path):
         'directed_traffic_signal_and_lane':{
             'observed_signal_states':sorted({str(row['other_traffic_signal_state_observed']) for row in native}),
             'west_approach_lane':geometry['lanes']['west_traffic_right']},
-        'four_source_cameras':counts}
+        'four_source_cameras':counts,
+        'surveyed_C110919_intersection':{
+            'native_map_sha256':geometry['native_map_sha256'],
+            'signal_actor_id':geometry['signal_actor_id'],
+            'cross_traffic_signal_actor_id':geometry['cross_traffic_signal_actor_id'],
+            'lanes':geometry['lanes']}}
     context_folder=attempt/'context';context_folder.mkdir(exist_ok=True)
     for context in config['recording_description']['context_inputs']:
         name=context['name']
@@ -330,12 +345,12 @@ def finalize(attempt: Path,output: Path):
             'method':'source-hashed sampled full-body stopping-reference crossing',
             'time_window':'entire original 24 s attempt','statistic':'first',
             'reference':'native_samples.jsonl'},
-            'ego_minus_traffic_entry_s':{
+            'ego_entry_relative_to_signal_directed_traffic':{
             'value':timing['ego_minus_traffic_entry_s'],'unit':'s',
             'method':'saved Native ego and directed-traffic full-body first conflict entry difference',
             'time_window':'entire original 24 s attempt','statistic':'first',
             'sample_window_s':[mapping[0]['time_s'],mapping[-1]['time_s']],
-            'reference':'channels/ego_minus_traffic_entry_s.jsonl'}},
+            'reference':'channels/ego_entry_relative_to_signal_directed_traffic.jsonl'}},
         'provenance_kind':'synthetic_local_diagnostic' if diagnostic_fixture else 'native',
         'diagnostic_fixture':diagnostic_fixture,
         'accepted':False,'legal_verdict_claimed':False}

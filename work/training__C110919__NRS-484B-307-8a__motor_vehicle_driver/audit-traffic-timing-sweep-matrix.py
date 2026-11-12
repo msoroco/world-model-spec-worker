@@ -128,9 +128,11 @@ def audit(index, manifest):
                 saved["original_source_hashes"]["native_samples.jsonl"] == sha(raw),
                 "Source-measured timing or saved source hash differs")
         require({x["name"] for x in result["recording_evidence"]} >=
-                {"ego_minus_traffic_entry_s", "traffic_launch_frame",
-                 "directed_traffic_signal_and_lane", "four_source_cameras"} and
-                result["realized_observables"]["ego_minus_traffic_entry_s"]["value"] ==
+                {"ego_entry_relative_to_signal_directed_traffic", "traffic_launch_frame",
+                 "directed_traffic_signal_and_lane", "four_source_cameras",
+                 "native_pedestrian_paths", "native_other_traffic_paths",
+                 "signal_state_observed", "surveyed_C110919_intersection"} and
+                result["realized_observables"]["ego_entry_relative_to_signal_directed_traffic"]["value"] ==
                 timing["ego_minus_traffic_entry_s"],
                 "Timing recording evidence missing")
         require(set(result["video_references"]) == {name + ".mkv" for name in CAMERAS},
