@@ -4,6 +4,7 @@ import argparse
 import json
 from hashlib import sha256
 from pathlib import Path
+from xml.etree import ElementTree
 
 from official_geometry_binding import _digest
 
@@ -35,6 +36,45 @@ def _topology_path(topology, role):
         current = successors[0]
 
 
+def _check_opendrive(opendrive, binding):
+    """Verify that the bound lane IDs, junction and signal exist in the map bytes."""
+    try:
+        root = ElementTree.fromstring(opendrive)
+    except ElementTree.ParseError as exc:
+        raise ValueError('Official OpenDRIVE source is malformed') from exc
+    if root.tag != 'OpenDRIVE':
+        raise ValueError('Official OpenDRIVE root differs')
+    roads = {int(road.attrib['id']): road for road in root.findall('road')}
+    junction = str(binding['junction_id'])
+    if junction not in {item.get('id') for item in root.findall('junction')}:
+        raise ValueError('Official OpenDRIVE junction is missing')
+    for role in ('subject', 'other'):
+        for point in binding['routes'][role]:
+            road = roads.get(int(point['road_id']))
+            if road is None:
+                raise ValueError('Official OpenDRIVE route road is missing: ' + role)
+            expected_junction = point['junction_id']
+            if expected_junction is not None and road.get('junction') != junction:
+                raise ValueError('Official OpenDRIVE route junction differs: ' + role)
+            lane_id = str(point['lane_id'])
+            if not any(lane.get('id') == lane_id for lane in road.findall('.//laneSection//lane')):
+                raise ValueError('Official OpenDRIVE route lane is missing: ' + role)
+    governing = binding['governing_device']
+    road = roads.get(int(governing['affected_road_id']))
+    if road is None:
+        raise ValueError('Official OpenDRIVE governing road is missing')
+    signal_id = governing['opendrive_signal_id']
+    lane_id = int(governing['affected_lane_id'])
+    signals = [item for item in road.findall('.//signals/signal') +
+               road.findall('.//signals/signalReference')
+               if item.get('id') == signal_id]
+    if not signals:
+        raise ValueError('Official OpenDRIVE governing signal is missing')
+    if not any(any(int(valid.get('fromLane')) <= lane_id <= int(valid.get('toLane'))
+                   for valid in signal.findall('validity')) for signal in signals):
+        raise ValueError('Official OpenDRIVE governing signal lane differs')
+
+
 def audit(root):
     root = Path(root)
     binding = _read(root, 'official_geometry_binding.json')
@@ -45,13 +85,17 @@ def audit(root):
         raise ValueError('Official Native geometry binding is stale')
     if sha256(opendrive).hexdigest() != binding.get('opendrive_sha256'):
         raise ValueError('Official OpenDRIVE original source differs from binding')
+    _check_opendrive(opendrive, binding)
     junction = str(binding['junction_id'])
     if str(topology.get('junction_id')) != junction or str(device.get('junction_id')) != junction:
         raise ValueError('Official original junction differs from binding')
     for role, key in (('subject', 'subject'), ('other', 'other')):
         expected = [(int(row['road_id']), int(row['lane_id']), row['junction_id'])
                     for row in binding['routes'][key]]
-        if _topology_path(topology, role) != expected:
+        observed = _topology_path(topology, role)
+        # Capture extends selected exit routes beyond the junction to give the
+        # controller a target. The bound selection must be an exact prefix.
+        if len(observed) < len(expected) or observed[:len(expected)] != expected:
             raise ValueError('Official original route differs from binding: ' + role)
     governing = binding['governing_device']
     if (device.get('opendrive_signal_id') != governing['opendrive_signal_id'] or
