@@ -23,6 +23,56 @@ def build():
         anchor = 'hOffset="0"'
         assert road['content'].count(anchor) == 1
         road['content'] = road['content'].replace(anchor, f'hOffset="{angle:.2f}"')
+        # Each sign-angle capture retains the actual Native sign orientation in
+        # its original control-inventory rows. The authored hOffset remains a
+        # separate design input until CARLA and source-camera review confirm it.
+        control = files['yield_control_sources.py']
+        control['content'] = control['content'].replace('import json\n', 'import json\nimport math\n', 1)
+        transform_read = '    transform = sign.get_transform()\n'
+        assert control['content'].count(transform_read) == 1
+        control['content'] = control['content'].replace(
+            transform_read,
+            transform_read +
+            "    if not all(math.isfinite(float(getattr(transform.rotation, axis)))\n"
+            "               for axis in ('yaw', 'pitch', 'roll')):\n"
+            "        raise ValueError('Native yield sign rotation is not finite')\n")
+        pose_anchor = "'position_m': _xyz(transform.location),\n"
+        assert control['content'].count(pose_anchor) == 1
+        control['content'] = control['content'].replace(
+            pose_anchor,
+            pose_anchor +
+            "                           'native_rotation_deg': {\n"
+            "                               'yaw': float(transform.rotation.yaw),\n"
+            "                               'pitch': float(transform.rotation.pitch),\n"
+            "                               'roll': float(transform.rotation.roll)},\n")
+        controls_test = files['tests/test_yield_control_sources.py']
+        transform_anchor = "return type('Transform', (), {'location': Point()})()"
+        assert controls_test['content'].count(transform_anchor) == 1
+        controls_test['content'] = controls_test['content'].replace(
+            transform_anchor,
+            "return type('Transform', (), {'location': Point(), 'rotation': "
+            "type('Rotation', (), {'yaw': 12., 'pitch': 2., 'roll': -1.})()})()")
+        assertion_anchor = "self.assertEqual(row['yield_sign']['actor_id'], 12)"
+        assert controls_test['content'].count(assertion_anchor) == 1
+        controls_test['content'] = controls_test['content'].replace(
+            assertion_anchor,
+            assertion_anchor + "\n        self.assertEqual(row['yield_sign']['native_rotation_deg'], "
+            "{'yaw': 12., 'pitch': 2., 'roll': -1.})")
+        negative_anchor = "    def test_rejects_stale_frame_and_missing_sign(self):\n"
+        assert controls_test['content'].count(negative_anchor) == 1
+        controls_test['content'] = controls_test['content'].replace(
+            negative_anchor,
+            "    def test_rejects_nonfinite_native_rotation(self):\n"
+            "        class BadSign(Sign):\n"
+            "            def get_transform(self):\n"
+            "                transform = super().get_transform()\n"
+            "                transform.rotation.yaw = float('nan')\n"
+            "                return transform\n"
+            "        world = World()\n"
+            "        world.actors = [BadSign()]\n"
+            "        with self.assertRaisesRegex(ValueError, 'rotation is not finite'):\n"
+            "            observe_controls(world, 12, frame=100)\n\n" +
+            negative_anchor)
         config = json.loads(files['config.json']['content'])
         assert config['selected_case_id'] == PREFIX + suffix
         assert config['supported_case_ids'][0] == PREFIX + suffix
