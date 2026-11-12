@@ -1,4 +1,4 @@
-"""Copy and bind eight current v13 diagnostic CPU proofs to the partial package."""
+"""Copy and bind eight current v14 diagnostic CPU proofs to the partial package."""
 import hashlib
 import json
 import shutil
@@ -6,7 +6,7 @@ from pathlib import Path
 
 FOLDER = Path(__file__).resolve().parent
 ROOT = FOLDER.parents[1]
-VERSION = 'v13'
+VERSION = 'v14'
 
 
 def sha(path):
@@ -96,7 +96,7 @@ def main():
                       'exit_code': 0, 'log': log.name, 'sha256': sha(log)})
     result['tests'] = tests
     result['readiness_kind'] = 'eight_primaries_compatible_saved_checkpoint'
-    result['reason'] = ('All eight exact primary cases have current v13 exact offline, positive/negative '
+    result['reason'] = ('All eight exact primary cases have current v14 exact offline, positive/negative '
                         'synthetic compatibility and recorded-only saved-processing proofs. Gap, width, '
                         'two-lane and overtaking saved-source comparisons passed positive and missing/changed-source negatives. '
                         'Risk-triggered fallbacks, independent delivery audits, '

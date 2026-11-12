@@ -28,6 +28,21 @@ def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def physical_descriptor(overtaking=False):
+    descriptor = {
+        'criterion': 'following_progress',
+        'motion_source': 'truck_history.jsonl',
+        'body_key': 'ego.body_vertices_xy_m',
+        'other_body_key': 'lead.body_vertices_xy_m',
+        'context_sources': ['road_context.json'],
+        'minimum_samples': 2,
+        'minimum_progress_m': 20.0,
+        'completion_goal_method': 'Engineering finite motion floor for the 45-second capture; not a statutory distance or legal verdict'}
+    if overtaking:
+        descriptor.update(criterion='overtake_pass',lateral_transition_m=1.0)
+    return descriptor
+
+
 def main():
     plan = json.loads((FOLDER/'case-plan.json').read_text())
     description = {'channels': [
@@ -60,7 +75,8 @@ def main():
               'required_atoms': ['ru.subject', 'ru.truck', 'kin.position',
                                  'kin.velocity', 'kin.speed', 'st.lane',
                                  'rel.surface_gap', 'rel.ahead_behind_in_lane'],
-              'source_packets': [], 'recording_description': description}
+              'source_packets': [], 'recording_description': description,
+              'physical_completion': physical_descriptor()}
     (FOLDER/'config.json').write_text(json.dumps(config,indent=2)+'\n')
     construction = {'case_id': CASE, 'law_id': config['law_id'],
                     'cell_id': config['cell_id'], 'actor': config['actor'],
@@ -99,6 +115,9 @@ def main():
     for suffix in GAP_SUFFIXES[1:]+WIDTH_SUFFIXES+(TWO_LANE_SUFFIX,OVERTAKING_SUFFIX):
         case_id=ASSIGNMENT+'__'+suffix
         other_config=dict(config,selected_case_id=case_id)
+        if suffix==OVERTAKING_SUFFIX:
+            other_config['overtake']=True
+            other_config['physical_completion']=physical_descriptor(overtaking=True)
         if suffix in WIDTH_SUFFIXES:
             other_config['width_candidate_blueprint_ids']=[
                 'vehicle.carlamotors.carlacola','vehicle.carlamotors.firetruck',

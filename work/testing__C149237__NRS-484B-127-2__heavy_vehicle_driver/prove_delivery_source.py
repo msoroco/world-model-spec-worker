@@ -48,7 +48,9 @@ def main():
             lambda: source_join(root, args.case, expected_frames=900),
             'Original source frame count differs from planned capture')
         negatives['diagnostic_delivery'] = rejected(
-            lambda: require_native_delivery(root, args.case),
+            lambda: require_native_delivery(root, args.case, 'fixture-job', 1,
+                                            'fixture-recording', root/'review.json',
+                                            root/'delivery-audit.json',root.parent/'decode.json'),
             'Original source frame count differs from planned capture')
         path = root/'truck_history.jsonl'
         original = path.read_bytes()

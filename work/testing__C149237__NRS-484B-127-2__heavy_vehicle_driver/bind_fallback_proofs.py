@@ -1,4 +1,4 @@
-"""Bind exact v13 offline and positive/negative compatibility fallback proofs."""
+"""Bind exact v14 offline and positive/negative compatibility fallback proofs."""
 import hashlib
 import json
 import shutil
@@ -6,7 +6,7 @@ from pathlib import Path
 
 FOLDER = Path(__file__).resolve().parent
 ROOT = FOLDER.parents[1]
-VERSION = 'v13'
+VERSION = 'v14'
 
 
 def sha(path):
@@ -65,7 +65,7 @@ def main():
     manifest['status'] = 'partial_eight_primaries_and_three_fallbacks_proved_each'
     result['tests'] = tests
     result['readiness_kind'] = 'eight_primaries_and_24_fallbacks_compatible_checkpoint'
-    result['reason'] = ('All eight exact primary cases have current v13 exact offline, positive/negative '
+    result['reason'] = ('All eight exact primary cases have current v14 exact offline, positive/negative '
                         'synthetic compatibility and recorded-only saved-processing proofs. All 24 camera '
                         'fallback constructions pass exact offline and positive/negative compatibility checks; '
                         'four saved-source comparisons pass positive and negative controls. Independent delivery '

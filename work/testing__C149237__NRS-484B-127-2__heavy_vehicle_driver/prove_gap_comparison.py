@@ -9,7 +9,7 @@ from gap_comparison_audit import audit
 
 ROOT=Path(__file__).resolve().parents[2]
 SUFFIXES=('gap_below_500ft','gap_at_500ft','gap_above_500ft')
-PATHS={s:ROOT/'.runtime-work'/('c149237-'+s+'-saved-v13')/'v0001/analysis'
+PATHS={s:ROOT/'.runtime-work'/('c149237-'+s+'-saved-v14')/'v0001/analysis'
        for s in SUFFIXES}
 FILES=('config.json','result.json','analysis-report.json','road_context.json',
        'truck_history.jsonl','video_frames.jsonl')
