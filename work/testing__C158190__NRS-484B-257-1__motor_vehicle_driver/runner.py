@@ -15,7 +15,9 @@ from camera_encoder import FFV1Writer
 from camera_setup import SIZES, source_cameras
 from yield_capture_sources import ApproachSourceWriter
 from yield_construction import stage_case
+from yield_control_sources import ControlWriter, observe_controls
 from yield_controller import PREFIX, Stage
+from yield_interaction_sources import InteractionWriter, observe_interaction
 from yield_motion import apply_motion
 from yield_site import validate_authored_site
 
@@ -120,6 +122,8 @@ def capture(args, config):
                         encoders[name] = stack.enter_context(
                             FFV1Writer(output / (name + '.mkv'), width, height))
                     writer = ApproachSourceWriter(output)
+                    controls = ControlWriter(output)
+                    interactions = InteractionWriter(output)
                     helper = PipelineCapture(client, ego, output, config['selected_case_id'],
                                              required_observations=config['required_atoms'])
                     try:
@@ -132,6 +136,11 @@ def capture(args, config):
                                 encoders[name].write(bytes(image.raw_data))
                             helper.capture(snap.frame, snap.timestamp.elapsed_seconds,
                                            extra={'yield_construction_control': control})
+                            controls.add(observe_controls(world, site['native_yield_sign_id'],
+                                                          frame=snap.frame))
+                            interactions.add(observe_interaction(world, ego, through,
+                                                                 snap.frame,
+                                                                 snap.timestamp.elapsed_seconds))
                             ego_wp = world.get_map().get_waypoint(ego.get_location(), project_to_road=False)
                             if ego_wp is not None and ego_wp.road_id == 158190:
                                 writer.add(world, ego, through, snap.frame,

@@ -25,7 +25,7 @@ def _rows(path):
     return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
 
 
-def analyze(root: Path) -> dict:
+def analyze(root: Path, *, reviewed_context=None) -> dict:
     root = Path(root)
     sources = {}
     for name in REQUIRED:
@@ -33,7 +33,8 @@ def analyze(root: Path) -> dict:
         if not path.is_file():
             raise ValueError("Missing source: " + name)
         sources[name] = hashlib.sha256(path.read_bytes()).hexdigest()
-    context = json.loads((root / "road_context.json").read_text())
+    context = (json.loads((root / "road_context.json").read_text())
+               if reviewed_context is None else reviewed_context)
     for key in ("native_map_id", "intersection_id", "approach_road_id",
                 "approach_lane_id", "through_highway_id", "native_yield_sign_id",
                 "sign_governance_source", "marking_inventory_source"):
@@ -74,7 +75,7 @@ def analyze(root: Path) -> dict:
         if ids and not road_visible:
             raise ValueError("Visible through vehicle without a through-highway sight path")
         if road_visible:
-            visible.append({"distance_to_intersection_m": distance,
+            visible.append({"frame": frame, "distance_to_intersection_m": distance,
                             "visible_through_vehicle_ids": ids,
                             "ray_source": sample["ray_source"]})
     if not visible:
@@ -119,6 +120,8 @@ def analyze(root: Path) -> dict:
     return {"format": "worker-nearest-view-yield-observations", "sources": sources,
             "intersection_id": context["intersection_id"], "native_yield_sign_id": context["native_yield_sign_id"],
             "closest_sourced_visible_sample": closest,
+            "speed_at_closest_view_mps": next(row['ego_speed_mps'] for row in speed_samples
+                                              if row['frame'] == closest['frame']),
             "minimum_observed_approach_speed_mps": min(row["ego_speed_mps"] for row in speed_samples),
             "approach_speed_samples": speed_samples,
             "immediate_hazard_judgment": "unresolved; no legal time-to-conflict cutoff",

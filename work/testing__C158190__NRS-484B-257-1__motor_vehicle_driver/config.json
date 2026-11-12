@@ -12,16 +12,78 @@
   "rate_hz": 20,
   "duration_s": 30,
   "cameras": [
-    {"name": "overview", "width": 1920, "height": 1080, "fov_deg": 90, "pose_strategy": "fixed junction overview"},
-    {"name": "approach", "width": 1280, "height": 720, "fov_deg": 90, "pose_strategy": "fixed sign-governed approach"},
-    {"name": "reference_corner", "width": 1280, "height": 720, "fov_deg": 90, "pose_strategy": "fixed through-highway reference"},
-    {"name": "driver_reference", "width": 1280, "height": 720, "fov_deg": 90, "pose_strategy": "ego attached driver reference"}
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 90,
+      "pose_strategy": "fixed junction overview"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "fixed sign-governed approach"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "fixed through-highway reference"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "ego attached driver reference"
+    }
   ],
-  "required_atoms": ["ru.subject", "ru.vehicle", "kin.position", "kin.velocity", "kin.speed", "st.lane", "st.sight_distance", "rel.visible", "dev.yield_sign"],
+  "required_atoms": [
+    "ru.subject",
+    "ru.vehicle",
+    "kin.position",
+    "kin.velocity",
+    "kin.speed",
+    "st.lane",
+    "st.sight_distance",
+    "rel.visible",
+    "dev.yield_sign"
+  ],
   "source_packets": [],
   "recording_description": {
-    "purpose": "Source-bound nearest-view yield-sign engineering capture; no legal verdict",
-    "frame_rate_hz": 20,
-    "channels": ["original ego and through vehicle state", "Native map/sign facts", "through-road collision sight rays", "four named source-camera streams"]
+    "channels": [
+      {
+        "name": "ego_approach_speed",
+        "unit": "m/s",
+        "method": "original actor.get_velocity joined to camera frame",
+        "time_window": "sign-governed approach before intersection entry",
+        "reference_frame": "original Native frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "sampled collision/velocity evidence; between-frame state unresolved"
+      },
+      {
+        "name": "through_highway_sight_clear",
+        "unit": "count",
+        "method": "original collision ray to authored through-highway target, clear=1 blocked=0",
+        "time_window": "sign-governed approach before intersection entry",
+        "reference_frame": "original Native frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "sampled collision/velocity evidence; between-frame state unresolved"
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "yield_site_review",
+        "unit": "structured record",
+        "method": "authored OpenDRIVE, Native control/crosswalk inventory and hash-bound original camera review"
+      }
+    ],
+    "limitations": [
+      "sampled sight ray is not human recognition or nearest legal view point",
+      "sign face, marking absence and immediate-hazard judgment require real source review"
+    ]
   }
 }
