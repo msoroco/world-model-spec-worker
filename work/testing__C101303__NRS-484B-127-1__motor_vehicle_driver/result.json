@@ -2,7 +2,7 @@
   "assignment_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver",
   "input_sha256": "096771e13d349df8908ad57224be86aec127c3a7e1d7d7689f63d30a898c4d55",
   "status": "partial",
-  "readiness_kind": "source_geometry_draft_offline_partial",
+  "readiness_kind": "all_geometry_drafts_saved_partial",
   "applied_update": 0,
   "tests": [
     {
@@ -502,11 +502,59 @@
       "exit_code": 0,
       "log": "body-geometry-draft-offline.log",
       "sha256": "38d503aa9cddaa080360a455ede3d617f63b7edefe953b9f6f4efcd677d6e1e6"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/prepare_all_body_geometry_drafts.py",
+      "exit_code": 0,
+      "log": "body-geometry-all-draft-build.log",
+      "sha256": "eac5a0c82d7cdf3165b463fd30772942e45c016d5c09f3ff0e40c925e29bf852"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/prove_all_body_geometry_drafts.py",
+      "exit_code": 0,
+      "log": "body-geometry-all-draft-offline.log",
+      "sha256": "deefec91562afe87287fb57163d10661857e475950c18905d07d3c2bc1bc7e9e"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "preflight-body-geometry-all-draft.log",
+      "sha256": "8dd6d2d3b6599152e9f9ca0143b1c870d48ddb11119c4951d6cfae98cfe973ba"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --updates",
+      "exit_code": 0,
+      "log": "updates-body-geometry-all-draft.log",
+      "sha256": "bc028da1339a9f9c4509c1460ad99c683c6b6ac8b7b6af6b378e3ffa7cdbb287"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/tests",
+      "exit_code": 0,
+      "log": "cpu-tests-body-geometry-all-draft.log",
+      "sha256": "8cf968ec1e4c3609334eaa2cc60fa88c700bc785f9fa55fc0bdff1a06d79fd56"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/body-geometry-all-draft-manifest.json --case testing__C101303__NRS-484B-127-1__motor_vehicle_driver__source_verified_base --output .runtime-work/c101303-body-geometry-base-primary-compat-v2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "body-geometry-base-primary-compat.log",
+      "sha256": "de1679682e3ea7ef236f4edc8a5ce2416dfd5fc6ffaef27139725ed7bd604467"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/prove_all_body_geometry_compatibility_drafts.py",
+      "exit_code": 0,
+      "log": "body-geometry-all-draft-compatibility.log",
+      "sha256": "deefec91562afe87287fb57163d10661857e475950c18905d07d3c2bc1bc7e9e"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/prove_all_body_geometry_saved_drafts.py",
+      "exit_code": 0,
+      "log": "body-geometry-all-draft-saved.log",
+      "sha256": "deefec91562afe87287fb57163d10661857e475950c18905d07d3c2bc1bc7e9e"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, map/highway status, queued actor behavior, camera visibility and physical source review require a future authorized Native capture; legal reasonable-and-prudent judgment remains unresolved."
   ],
-  "reason": "Sealed diagnostic body vertices show a 2.0 m combined front/rear offset while selected runners use fixed +4 m. A Native bounding-box helper passes source-bound positive/negative CPU proof, and an isolated closer-case geometry-aware construction passes pinned offline materialization. The selected 8 cases and 24 fallbacks remain unchanged pending full geometry integration and every affected reproof; physically feasible judgment sweep, source review and shared delivery work remain worker-owned. No physical or legal acceptance claimed.",
+  "reason": "Sealed diagnostic body vertices show a 2.0 m combined front/rear offset while selected runners use fixed +4 m. A Native bounding-box helper passes source-bound CPU proof. Geometry-aware drafts for all 8 primaries and 24 fallbacks pass exact pinned offline, diagnostic compatibility with negative source checks, and recorded-only saved processing. The selected manifest/constructions/receipts remain unchanged pending promotion and current delivery/comparison audits. The physically feasible judgment sweep, independent law/source review and shared delivery work remain worker-owned. No physical or legal acceptance claimed.",
   "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline $CARLA_PYTHON -m worker_exchange execute-delivery --repo . --batch batch.json --db $DB --run $RUN --assignment testing__C101303__NRS-484B-127-1__motor_vehicle_driver --case testing__C101303__NRS-484B-127-1__motor_vehicle_driver__source_verified_base --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT"
 }
