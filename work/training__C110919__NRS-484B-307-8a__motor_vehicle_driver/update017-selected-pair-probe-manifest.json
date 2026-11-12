@@ -1,0 +1,126 @@
+{
+  "format": "worker-unselected-draft-construction-manifest-v1",
+  "assignment_id": "training__C110919__NRS-484B-307-8a__motor_vehicle_driver",
+  "status": "partial_selected_pair_probe",
+  "runtime_manifest_sha256": "ae635d487ae988b67925bacd5ba13210f31224fc6a1ae131d1836a5557ba8714",
+  "cases": [
+    {
+      "case_id": "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__reference",
+      "kind": "delivery",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Signal mapping, actor behavior, frame coverage and pixels need original Native evidence"
+      },
+      "measurement_contract": "draft-candidates/reference/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c110919-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-candidates/reference/fallback1/construction.json",
+          "construction_sha256": "7dcc88314d088141389618d7fb325d0ef42ea441923f579a5435ab796c45e5dd",
+          "trigger": {
+            "source": "original Native ego pose joined to authored route and map readback",
+            "metric": "max_route_cross_track_error_m",
+            "failure_condition": "> 0.45"
+          },
+          "changed_knobs": [
+            "route_tracking_lookahead_m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-candidates/reference/fallback2/construction.json",
+          "construction_sha256": "056cbf2c580ac455c0008a3e8914ee890c152d031bc40814b375ae0e4428cf09",
+          "trigger": {
+            "source": "original Native pedestrian and ego conflict-zone crossing times",
+            "metric": "min_pedestrian_clearance_s",
+            "failure_condition": "< 1.0"
+          },
+          "changed_knobs": [
+            "yield_clearance_margin_s"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-candidates/reference/fallback3/construction.json",
+          "construction_sha256": "bf4838b4c7355b0603a9985f37f958ec9b815ad7c9fa47e8ee6db3d1bbea4b7c",
+          "trigger": {
+            "source": "decoded original signal and body mask corners in overview video",
+            "metric": "min_signal_or_body_pixel_margin_px",
+            "failure_condition": "< 40"
+          },
+          "changed_knobs": [
+            "overview_fov_deg"
+          ]
+        }
+      ],
+      "fixture_recipe": "work/training__C110919__NRS-484B-307-8a__motor_vehicle_driver/update015-reference-recipe.json",
+      "construction": "draft-candidates/reference/primary/construction.json",
+      "construction_sha256": "49107a88d5fc794c969288451989d5980d63d8b84696a9f2054d1c0afa6c16ea",
+      "id": "primary",
+      "preparation_status": "selected_pair_cpu_proofs_pending"
+    },
+    {
+      "case_id": "training__C110919__NRS-484B-307-8a__motor_vehicle_driver__contrast",
+      "kind": "delivery",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Signal mapping, actor behavior, frame coverage and pixels need original Native evidence"
+      },
+      "measurement_contract": "draft-candidates/contrast/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c110919-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-candidates/contrast/fallback1/construction.json",
+          "construction_sha256": "22edf3762d4fd7467609a1b551b2d801673866cd4b037bcdeb15e13bd37185cd",
+          "trigger": {
+            "source": "original Native ego pose joined to authored route and map readback",
+            "metric": "max_route_cross_track_error_m",
+            "failure_condition": "> 0.45"
+          },
+          "changed_knobs": [
+            "route_tracking_lookahead_m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-candidates/contrast/fallback2/construction.json",
+          "construction_sha256": "bf04e158a12c252be5be292a977f72a8e3c66d4bd491e5e13470732baaed2ded",
+          "trigger": {
+            "source": "original Native pedestrian and ego conflict-zone crossing times",
+            "metric": "min_pedestrian_clearance_s",
+            "failure_condition": "< 1.0"
+          },
+          "changed_knobs": [
+            "yield_clearance_margin_s"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-candidates/contrast/fallback3/construction.json",
+          "construction_sha256": "ae795d0917f5ab104f89b815e43b3bc2399510540046952fd233dfdb6617ca07",
+          "trigger": {
+            "source": "decoded original signal and body mask corners in overview video",
+            "metric": "min_signal_or_body_pixel_margin_px",
+            "failure_condition": "< 40"
+          },
+          "changed_knobs": [
+            "overview_fov_deg"
+          ]
+        }
+      ],
+      "fixture_recipe": "work/training__C110919__NRS-484B-307-8a__motor_vehicle_driver/update015-contrast-recipe.json",
+      "construction": "draft-candidates/contrast/primary/construction.json",
+      "construction_sha256": "575fb15a580eb2af348f91643d48bdfb29ee071841ce1a1e5daaf8952ec6b5fe",
+      "id": "primary",
+      "preparation_status": "selected_pair_cpu_proofs_pending"
+    }
+  ]
+}
