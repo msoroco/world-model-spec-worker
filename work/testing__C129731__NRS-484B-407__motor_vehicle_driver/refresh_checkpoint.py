@@ -55,6 +55,8 @@ CLAIMS = (
     ("canonical-at-near-a-fallback-proof.log", ".venv-cpu/bin/python " + PREFIX + "record_promoted_crest_fallbacks.py --name canonical-at-near-a"),
     ("canonical-at-near-a-physical-proof.log", ".venv-cpu/bin/python " + PREFIX + "build_promoted_physical_proof.py --name canonical-at-near-a"),
     ("canonical-at-near-a-delivery-audit-proof.log", ".venv-cpu/bin/python " + PREFIX + "prove_promoted_delivery_audit.py --name canonical-at-near-a --version v1"),
+    ("judgment-sweep-build.log", ".venv-cpu/bin/python " + PREFIX + "build_judgment_sweep.py"),
+    ("semantic-current-validate.log", ".venv-cpu/bin/python " + PREFIX + "validate_semantic_current.py"),
     ("assignment-check.log", ".venv-cpu/bin/python worker_check.py --assignment " + AID + " --complete"),
 )
 
@@ -277,7 +279,9 @@ def main():
         "have complete CPU paths and four source-audited controlled comparisons per boundary probe. "
         "Six distinct curve probe/direction cases have complete CPU paths and one independently audited "
         "direction comparison per probe, including swapped-identity rejection. "
-        "Strict delivery readiness remains open: a completed judgment sweep, shared branch "
+        "A source-bound engineering judgment grid now lists all 18 distinct curve/crest direction points, "
+        "with legal thresholds unasserted and Native driver visibility still unverified. "
+        "Strict delivery readiness remains open: physical feasibility review for that grid and shared branch "
         "review/GPU queue/local integration proof, and full-batch "
         "ready packages are unfinished worker CPU work. Synthetic pixels/rays prove no physical or legal acceptance.")
     path.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")

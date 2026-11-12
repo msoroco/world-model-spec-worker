@@ -2,7 +2,7 @@
   "assignment_id": "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver",
   "input_sha256": "25b365e5565f5d528a89b79eea5ec05f76d91fe6a8d02e683d5a9a9edab8d9fc",
   "status": "partial",
-  "readiness_kind": "implementation_checkpoint",
+  "readiness_kind": "one_way_truck_site_and_exact_gap_spawn_checkpoint",
   "applied_update": 0,
   "tests": [
     {
@@ -10,10 +10,28 @@
       "exit_code": 0,
       "log": "cpu-tests.log",
       "sha256": "e7ffd9fef45826ec78f7b57cf06722d0c2b51684c5312bc36e58c10bbabcbfa8"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "preflight-current.log",
+      "sha256": "d34f0220360a23d39988beea74078244cfcd2f31ead1340b9f6282c706e0f699"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-tests-current.log",
+      "sha256": "8a24fe583ced8b8bcee54b13a6dd62eb210cd5016cc9ef3d4cc54a5e5e5d0092"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/truck_site.py work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/site-proof.json",
+      "exit_code": 0,
+      "log": "site-proof.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     }
   ],
   "remaining_gpu_checks": [
     "Realized qualifying truck dimensions, roadway topology, following gap, overtaking path and camera visibility."
   ],
-  "reason": "CPU-tested Native pair spawn/width/lane/order helper and source-bound body-gap measurement exist. Exact runner/controller, source-reviewed truck blueprints and map, combination width, four-camera capture, saved finalizer, three fallbacks per selected case, semantic proposals, exact offline/compatibility/saved-processing proofs and independent audits remain unfinished CPU work. See HANDOFF.md."
+  "reason": "The authored 800 m one-way road, pinned truck blueprint classification, and source-hashed three-gap site plan now have CPU proofs. A fake Native spawn test measures realized body half-lengths and moves the lead to below/at/above the 152.4 m target; narrow actors, altered lane topology and impossible dimensions are rejected. This does not prove actual CARLA class, width, movement, legal highway status, or source pixels. Exact manifest, four-camera capture, finalizer, all selected case/fallback offline and compatibility receipts, saved processing, semantic proposals, independent audits and shared branch/delivery artifacts remain worker-owned CPU work; see HANDOFF.md."
 }

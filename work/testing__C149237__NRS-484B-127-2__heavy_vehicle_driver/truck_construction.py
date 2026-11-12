@@ -7,7 +7,13 @@ a legal truck or measure a tractor/trailer combination.
 """
 
 from contextlib import contextmanager
+import importlib.util
 import math
+from pathlib import Path
+
+_site_spec = importlib.util.spec_from_file_location('truck_site', Path(__file__).with_name('truck_site.py'))
+_site = importlib.util.module_from_spec(_site_spec)
+_site_spec.loader.exec_module(_site)
 
 
 MIN_WIDTH_M = 80 * 0.0254
@@ -70,6 +76,50 @@ def spawn_qualifying_pair(world, ego_blueprint, lead_blueprint,
         yield {"ego": ego, "lead": lead, "initial_longitudinal_body_gap_m": gap,
                "realized_widths_m": {"ego": _width(ego), "lead": _width(lead)},
                "road_id": road_id, "lane_id": lane_id}
+    finally:
+        for actor in reversed(actors):
+            actor.destroy()
+
+
+@contextmanager
+def spawn_exact_gap_pair(world, ego_blueprint, lead_blueprint, gap_case, transform_at,
+                         tolerance_m=0.05):
+    """Place both actors from realized extents on the authored one-way lane.
+
+    `transform_at(x,y,heading_deg)` is supplied by the Native caller. The lead is
+    spawned at a safe staging point, then moved after its body length is known.
+    The caller must review actual vehicle class and width as well as the site.
+    """
+    site = _site.validate_site()
+    if tolerance_m <= 0 or not math.isfinite(tolerance_m):
+        raise ValueError('Invalid gap tolerance')
+    lane_y = -site['lane_width_m'] / 2
+    actors = []
+    try:
+        for blueprint, x in ((ego_blueprint, 100.0), (lead_blueprint, 600.0)):
+            actor = world.try_spawn_actor(blueprint, transform_at(x, lane_y, 0.0))
+            if actor is None:
+                raise ValueError('Native vehicle staging spawn failed')
+            actors.append(actor)
+        ego, lead = actors
+        if _width(ego) < MIN_WIDTH_M or _width(lead) < MIN_WIDTH_M:
+            raise ValueError('Spawned vehicle below 80-inch width')
+        ego_half = _projected_half_length(ego, (1.0, 0.0))
+        lead_half = _projected_half_length(lead, (1.0, 0.0))
+        placement = _site.initial_pair(gap_case, ego_half, lead_half)
+        lead.set_transform(transform_at(*placement['lead_center_xy_m'], placement['heading_deg']))
+        world.tick()
+        for actor in actors:
+            wp = world.get_map().get_waypoint(actor.get_location(), project_to_road=False)
+            if wp is None or (wp.road_id, wp.lane_id) != (site['road_id'], site['lane_id']):
+                raise ValueError('Spawned truck left authored following lane')
+        actual = (_position(lead, (1.0, 0.0)) - _projected_half_length(lead, (1.0, 0.0))
+                  - _position(ego, (1.0, 0.0)) - _projected_half_length(ego, (1.0, 0.0)))
+        if abs(actual - placement['planned_initial_body_gap_m']) > tolerance_m:
+            raise ValueError('Realized initial truck gap missed target')
+        yield {'ego': ego, 'lead': lead, 'site': site, 'initial_body_gap_m': actual,
+               'realized_widths_m': {'ego': _width(ego), 'lead': _width(lead)},
+               'physical_motion': 'unverified'}
     finally:
         for actor in reversed(actors):
             actor.destroy()

@@ -24,6 +24,9 @@ class Actor:
     def destroy(self):
         self.destroyed = True
 
+    def set_transform(self, transform):
+        self.location = transform
+
 
 class World:
     def __init__(self, widths=(2.1, 2.1), lanes=(-1, -1)):
@@ -66,6 +69,42 @@ class ConstructionTests(unittest.TestCase):
                                                      NS(x=5, y=0), 7, -1, [1, 0]):
                 pass
         self.assertTrue(all(actor.destroyed for actor in world.actors))
+
+    def test_realized_lengths_place_all_exact_gap_cases(self):
+        class AuthoredWorld(World):
+            def get_waypoint(self, location, project_to_road=False):
+                return NS(road_id=149237, lane_id=-1)
+
+            def tick(self):
+                pass
+
+        def transform_at(x, y, heading):
+            self.assertEqual(heading, 0)
+            return NS(x=x, y=y)
+
+        for name, target in construction._site.GAP_TARGETS_M.items():
+            world = AuthoredWorld()
+            with construction.spawn_exact_gap_pair(world, 'vehicle.carlamotors.european_hgv',
+                                                   'vehicle.carlamotors.carlacola', name,
+                                                   transform_at) as pair:
+                self.assertAlmostEqual(pair['initial_body_gap_m'], target)
+                self.assertEqual(pair['site']['same_direction_lane_count'], 1)
+            self.assertTrue(all(a.destroyed for a in world.actors))
+
+    def test_exact_gap_rejects_narrow_actor_and_cleans_up(self):
+        class AuthoredWorld(World):
+            def get_waypoint(self, location, project_to_road=False):
+                return NS(road_id=149237, lane_id=-1)
+
+            def tick(self):
+                pass
+
+        world = AuthoredWorld(widths=(2.1, 2.0))
+        with self.assertRaisesRegex(ValueError, '80-inch'):
+            with construction.spawn_exact_gap_pair(world, 'ego', 'lead', 'gap_at_500ft',
+                                                   lambda x, y, heading: NS(x=x, y=y)):
+                pass
+        self.assertTrue(all(a.destroyed for a in world.actors))
 
 
 if __name__ == "__main__":
