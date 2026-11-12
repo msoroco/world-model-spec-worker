@@ -1,0 +1,203 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C10316__NRS-484B-293__pedestrian",
+  "runtime_manifest_sha256": "ae635d487ae988b67925bacd5ba13210f31224fc6a1ae131d1836a5557ba8714",
+  "status": "partial_selected_cpu_proofs_pending",
+  "selection_review": {
+    "law_input_sha256": "ee81b0db951ad66b72ed9b30cef41c9a7385f030a60036216c23bf2c3c39f46e",
+    "conditional_witness_sha256": "9f09b6dea41dc5293d4c7780a63ae4f64e6fc698d63f192435a578f4b5eafb13",
+    "case_plan_sha256": "97ae024312c759fa55188b35cc618a1b052f446edb0def4c0c81365b48a1ebee",
+    "proposal_sha256": "0712053171bf1bce4fe0db9f9cf2e72cbce12a232b64dcd212b28788dde31bd1",
+    "accepted_full_train_memberships": 0,
+    "unresolved": [
+      "Native crosswalk designation and marked highway connection",
+      "passage-space, obstacle, other-pedestrian and signal facts",
+      "physical practicability and source-camera pixels"
+    ],
+    "scope": "Select exact cases for CPU preparation; no physical or legal acceptance"
+  },
+  "cases": [
+    {
+      "case_id": "training__C10316__NRS-484B-293__pedestrian__reference",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native walker path, crosswalk inventory, camera framing and practicability facts remain unverified"
+      },
+      "measurement_contract": "draft-crosswalk/reference/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c10316-saved-crosswalk-analysis-v1"
+      },
+      "fixture_recipe": "work/training__C10316__NRS-484B-293__pedestrian/diagnostic-reference-recipe.json",
+      "kind": "delivery",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-candidates/reference/fallback1/construction.json",
+          "construction_sha256": "8d8d3315eb28f7f1d6fc91dab524c343396fc1a16059f939ae8c6a14da8ae972",
+          "trigger": {
+            "source": "original_native_actor_and_crosswalk_geometry",
+            "metric": "native_spawn_clearance_m_below",
+            "failure_condition": "native_spawn_clearance_m_below 1.0"
+          },
+          "changed_knobs": [
+            "spawn start -4 to -6 m and 3 s pre-roll"
+          ],
+          "offline": {
+            "construction_sha256": "8d8d3315eb28f7f1d6fc91dab524c343396fc1a16059f939ae8c6a14da8ae972",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10316__NRS-484B-293__pedestrian/execution-manifest.json --case training__C10316__NRS-484B-293__pedestrian__reference --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10316-selected-offline-a5956i4c/reference-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "update016-selected-reference-fallback1-offline.log",
+            "log_sha256": "5a4f7f5395833c5b5478849be4a24ba01ca2ea697dc004602ccc82c4b91ccda4"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-candidates/reference/fallback2/construction.json",
+          "construction_sha256": "1c2ea609998aa671bb19a9d9a0fcded6f16b6ef19f03daada20f5a72e24d7313",
+          "trigger": {
+            "source": "original_native_pedestrian_pose_and_requested_path",
+            "metric": "native_path_tracking_error_m_above",
+            "failure_condition": "native_path_tracking_error_m_above 0.2"
+          },
+          "changed_knobs": [
+            "controller lookahead 0.5 to 0.25 s"
+          ],
+          "offline": {
+            "construction_sha256": "1c2ea609998aa671bb19a9d9a0fcded6f16b6ef19f03daada20f5a72e24d7313",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10316__NRS-484B-293__pedestrian/execution-manifest.json --case training__C10316__NRS-484B-293__pedestrian__reference --candidate fallback2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10316-selected-offline-a5956i4c/reference-fallback2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "update016-selected-reference-fallback2-offline.log",
+            "log_sha256": "c2b04804669725433e2369a119b01974f62c7a45e4d22127beced809c8411207"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-candidates/reference/fallback3/construction.json",
+          "construction_sha256": "a5b4837c43263cec15b5d69cc3cffda56cd9d83ece26e1c32da12a496585b074",
+          "trigger": {
+            "source": "four_synchronized_original_camera_streams",
+            "metric": "independent_original_pixel_visibility_below",
+            "failure_condition": "independent_original_pixel_visibility_below 0.95"
+          },
+          "changed_knobs": [
+            "overhead camera 6 to 9 m"
+          ],
+          "offline": {
+            "construction_sha256": "a5b4837c43263cec15b5d69cc3cffda56cd9d83ece26e1c32da12a496585b074",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10316__NRS-484B-293__pedestrian/execution-manifest.json --case training__C10316__NRS-484B-293__pedestrian__reference --candidate fallback3 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10316-selected-offline-a5956i4c/reference-fallback3 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "update016-selected-reference-fallback3-offline.log",
+            "log_sha256": "068f5071b8f55884bf0cc19c65011573a5bf6f9aba3c8e2a3d77ed496c99176d"
+          }
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "preparation_status": "selected; physical facts unverified",
+      "construction": "selected-candidates/reference/primary/construction.json",
+      "construction_sha256": "77e5bbaf9da98e3f6f7a8fbe9edad97409f4763d40da64ebbc03375d5ad94215",
+      "offline": {
+        "construction_sha256": "77e5bbaf9da98e3f6f7a8fbe9edad97409f4763d40da64ebbc03375d5ad94215",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10316__NRS-484B-293__pedestrian/execution-manifest.json --case training__C10316__NRS-484B-293__pedestrian__reference --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10316-selected-offline-a5956i4c/reference-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "update016-selected-reference-primary-offline.log",
+        "log_sha256": "3dbfed50ae47b2055ab8a30ec8d6bacf70704966e69467591a6a0d4804d9c58b"
+      }
+    },
+    {
+      "case_id": "training__C10316__NRS-484B-293__pedestrian__contrast",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native walker path, crosswalk inventory, camera framing and practicability facts remain unverified"
+      },
+      "measurement_contract": "draft-crosswalk/contrast/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c10316-saved-crosswalk-analysis-v1"
+      },
+      "fixture_recipe": "work/training__C10316__NRS-484B-293__pedestrian/diagnostic-contrast-recipe.json",
+      "kind": "delivery",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-candidates/contrast/fallback1/construction.json",
+          "construction_sha256": "349bff4766c711e90ea4c490ae390ab72e016a42d0837ca22304ceff2b74701b",
+          "trigger": {
+            "source": "original_native_actor_and_crosswalk_geometry",
+            "metric": "native_spawn_clearance_m_below",
+            "failure_condition": "native_spawn_clearance_m_below 1.0"
+          },
+          "changed_knobs": [
+            "spawn start -4 to -6 m and 3 s pre-roll"
+          ],
+          "offline": {
+            "construction_sha256": "349bff4766c711e90ea4c490ae390ab72e016a42d0837ca22304ceff2b74701b",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10316__NRS-484B-293__pedestrian/execution-manifest.json --case training__C10316__NRS-484B-293__pedestrian__contrast --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10316-selected-offline-a5956i4c/contrast-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "update016-selected-contrast-fallback1-offline.log",
+            "log_sha256": "37ed0d443ceb9900ac311dc871a66963a5cc09490a6654c35d0766aef08db42a"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-candidates/contrast/fallback2/construction.json",
+          "construction_sha256": "eeef13fd9e62090afdc240d93c863085c89110351f684b4670cea03114c70e21",
+          "trigger": {
+            "source": "original_native_pedestrian_pose_and_requested_path",
+            "metric": "native_path_tracking_error_m_above",
+            "failure_condition": "native_path_tracking_error_m_above 0.2"
+          },
+          "changed_knobs": [
+            "controller lookahead 0.5 to 0.25 s"
+          ],
+          "offline": {
+            "construction_sha256": "eeef13fd9e62090afdc240d93c863085c89110351f684b4670cea03114c70e21",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10316__NRS-484B-293__pedestrian/execution-manifest.json --case training__C10316__NRS-484B-293__pedestrian__contrast --candidate fallback2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10316-selected-offline-a5956i4c/contrast-fallback2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "update016-selected-contrast-fallback2-offline.log",
+            "log_sha256": "9b3b9bd2221e3207ee761d929fce2e5cf8c7c13f6d5facb4e3df22636ee8a5e1"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-candidates/contrast/fallback3/construction.json",
+          "construction_sha256": "40507a518fe99f0b8fb8ea292f8740ce7546c0442688a246feebf79487f6edcb",
+          "trigger": {
+            "source": "four_synchronized_original_camera_streams",
+            "metric": "independent_original_pixel_visibility_below",
+            "failure_condition": "independent_original_pixel_visibility_below 0.95"
+          },
+          "changed_knobs": [
+            "overhead camera 6 to 9 m"
+          ],
+          "offline": {
+            "construction_sha256": "40507a518fe99f0b8fb8ea292f8740ce7546c0442688a246feebf79487f6edcb",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10316__NRS-484B-293__pedestrian/execution-manifest.json --case training__C10316__NRS-484B-293__pedestrian__contrast --candidate fallback3 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10316-selected-offline-a5956i4c/contrast-fallback3 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "update016-selected-contrast-fallback3-offline.log",
+            "log_sha256": "a83ea842cfe666623bad804f6058c52e0871ce7031b8a0922da186119354c7ad"
+          }
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "preparation_status": "selected; physical facts unverified",
+      "construction": "selected-candidates/contrast/primary/construction.json",
+      "construction_sha256": "80c0da517ae7c4e4b2807ef4b0c72cc1bbaada05b93e7c154331a300da7b03a5",
+      "offline": {
+        "construction_sha256": "80c0da517ae7c4e4b2807ef4b0c72cc1bbaada05b93e7c154331a300da7b03a5",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C10316__NRS-484B-293__pedestrian/execution-manifest.json --case training__C10316__NRS-484B-293__pedestrian__contrast --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c10316-selected-offline-a5956i4c/contrast-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "update016-selected-contrast-primary-offline.log",
+        "log_sha256": "5495e5d8839de398c495b37149bb23c97d5da16308aaad09da79381003a446c2"
+      }
+    }
+  ]
+}
