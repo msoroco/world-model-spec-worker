@@ -102,7 +102,7 @@ def run(output_dir, host, port):
             frame_map.append(frame, time_s)
             frames.append(frame)
         cameras.verify(frames)
-        context_path.write_text(json.dumps({
+        context = {
             'format': 'worker-authored-turn-intent', 'case_id': case,
             'ego_actor_id': ego.id, 'target_exit_road_id': int(selected['exit'].road_id),
             'target_exit_lane_id': int(selected['exit'].lane_id),
@@ -112,7 +112,9 @@ def run(output_dir, host, port):
             'map_markings_observed': selected['candidate_markings_observed'],
             'designation_authority_verified': False,
             'physical_completion_verified': False,
-            'legal_acceptance_claimed': False}) + '\n')
+            'legal_acceptance_claimed': False}
+        context['case_context'] = {key: value for key, value in context.items()}
+        context_path.write_text(json.dumps(context) + '\n')
         complete = True
     finally:
         if frame_map is not None:

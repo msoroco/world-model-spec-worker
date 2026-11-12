@@ -100,6 +100,26 @@ def build_result(attempt, report):
         previous = row
     channel.write_text(''.join(json.dumps(row, allow_nan=False) + '\n'
                                for row in output))
+    actor_source, actor_sha = _required(root, 'following_sources.jsonl')
+    actor_context = root / 'original_actor_and_road_context.json'
+    if actor_context.exists():
+        raise ValueError('Retain prior actor and road context')
+    actor_context.write_text(json.dumps({'original_actor_and_road_context': {
+        'frame_count': len(trace),
+        'frame_map_sha256': sha256((root / 'video_frames.jsonl').read_bytes()).hexdigest(),
+        'actor_source': actor_source.name, 'actor_source_sha256': actor_sha,
+        'road_source': 'road.xodr' if (root / 'road.xodr').is_file() else None,
+        'road_source_sha256': sha256((root / 'road.xodr').read_bytes()).hexdigest()
+        if (root / 'road.xodr').is_file() else None,
+        'scope': 'original-source pointers; physical and legal review pending'
+    }}, indent=2) + '\n')
+    legal_context = root / 'governing_cross_referenced_rule.json'
+    if legal_context.exists():
+        raise ValueError('Retain prior cited-rule context')
+    legal_context.write_text(json.dumps({'governing_cross_referenced_rule': {
+        'source': 'frozen NRS 484B.650(1) assignment and its cited predicate provisions',
+        'status': 'independent review pending', 'legal_judgment': None
+    }}, indent=2) + '\n')
     observed = report['measurements']['aggressive_window_observation']['value']
     window = observed['candidate_window']
     return {
@@ -126,7 +146,13 @@ def build_result(attempt, report):
         'recording_evidence': [{
             'name': 'path_length_m', 'unit': 'm',
             'reference': 'path_length_m.jsonl',
-            'sha256': sha256(channel.read_bytes()).hexdigest()}],
+            'sha256': sha256(channel.read_bytes()).hexdigest()},
+            {'name': 'original_actor_and_road_context', 'unit': 'source packet',
+             'reference': actor_context.name,
+             'sha256': sha256(actor_context.read_bytes()).hexdigest()},
+            {'name': 'governing_cross_referenced_rule', 'unit': 'sourced legal context',
+             'reference': legal_context.name,
+             'sha256': sha256(legal_context.read_bytes()).hexdigest()}],
         'realized_observables': {
             'path_length_m': {'unit': 'm', 'method': 'original frame path integration',
                               'time_window': 'full original driving trace',

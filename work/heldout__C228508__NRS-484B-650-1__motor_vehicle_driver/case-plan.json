@@ -198,6 +198,21 @@
         "trigger_metric": "source-joined speed/following/hazard order and path span",
         "failure_condition": "speed request is realized early, late speed phase absent, or original window exceeds one mile"
       }
+    },
+    {
+      "case_id": "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__at_mile",
+      "target_law_id": "NRS-484B-650-1",
+      "gap_ids": [
+        "full-statute"
+      ],
+      "description": "exact 1609.344 m requested closing-event span for source-measured one-mile boundary; legal threshold and realized event frames unresolved",
+      "construction_status": "constructed_cpu_diagnostic",
+      "physical_risk": {
+        "risk": "Realized original event span may differ from the exact 1609.344 m requested schedule due sampling, vehicle response or route drift",
+        "trigger_source": "20 Hz original ego path, lead body, source-cited occurrence frames and four RGB streams",
+        "trigger_metric": "measured path length between first and second listed-act candidate frames",
+        "failure_condition": "original event span is not exactly at one mile within measured uncertainty or encounter visibility fails"
+      }
     }
   ],
   "comparisons": [
@@ -270,13 +285,14 @@
       "comparison_id": "one_mile_window",
       "case_ids": [
         "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__within_mile",
-        "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__beyond_mile"
+        "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__beyond_mile",
+        "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__at_mile"
       ],
       "fixed_conditions": [
         "same law, cell, driver, road/follow route, speed and lead policy, two following phases, cameras and duration"
       ],
       "deliberate_differences": [
-        "second following request interval at 1050\u20131170 m versus 1950\u20132070 m"
+        "below, exactly at, and above one-mile requested closing-event spans"
       ]
     },
     {
@@ -614,9 +630,10 @@
         "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__off_pavement_right_pass",
         "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__too_close",
         "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__yield",
-        "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__reverse_sequence"
+        "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__reverse_sequence",
+        "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__at_mile"
       ],
-      "evidence_or_gap": "No accepted recording; thirteen planned source-grounded cases including repeated-following primary and missing-element comparisons."
+      "evidence_or_gap": "No accepted recording; fourteen planned source-grounded cases including repeated-following primary and missing-element comparisons."
     }
   ],
   "selected_branch": "Speeding context plus repeated following conduct and causal hazard evidence"

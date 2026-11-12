@@ -10,6 +10,9 @@ from audit_center_passing_comparison import audit as compare
 from audit_center_passing_near_delivery import audit as audit_near
 from audit_center_passing_near_comparison import audit as compare_near
 from three_lane_passing_near_finalizer import analyze as analyze_near, build_result as build_near_result
+from three_lane_passing_occluded_finalizer import analyze as analyze_occluded, build_result as build_occluded_result
+from audit_center_passing_occluded_delivery import audit as audit_occluded
+from audit_center_passing_occluded_comparison import audit as compare_occluded
 from three_lane_finalizer import analyze as analyze_lanes, build_result as build_lane_result
 from three_lane_passing_finalizer import analyze as analyze_passing, build_result as build_passing_result
 
@@ -21,22 +24,24 @@ class PassingAuditsTests(unittest.TestCase):
         attempt = root / kind
         attempt.mkdir()
         spec = json.loads((HERE / (kind + '-diagnostic.json')).read_text())
-        for name in ('passing_frames.jsonl', 'three_lane_frames.jsonl',
+        for name in ('passing_frames.jsonl', 'occluder_frames.jsonl', 'three_lane_frames.jsonl',
                      'three_lane_context.json', 'three_lane_map_readback.json',
                      'trace.jsonl', 'video_frames.jsonl'):
             if name in spec['files']:
                 (attempt / name).write_text(spec['files'][name])
         construction_name = {'center-default':'construction-center-default.json',
             'center-passing-clear':'construction-center-passing-clear.json',
-            'center-passing-near-traffic':'construction-center-passing-near-traffic.json'}[kind]
+            'center-passing-near-traffic':'construction-center-passing-near-traffic.json',
+            'center-passing-occluded':'construction-center-passing-occluded.json'}[kind]
         construction = json.loads((HERE / construction_name).read_text())
         config = json.loads(next(row['content'] for row in construction['files']
                                  if row['path'] == 'config.json'))
         (attempt / 'config.json').write_text(json.dumps(config) + '\n')
         passing = kind == 'center-passing-clear'
         near = kind == 'center-passing-near-traffic'
-        report = analyze_near(attempt) if near else (analyze_passing(attempt) if passing else analyze_lanes(attempt))
-        result = build_near_result(attempt, report) if near else (build_passing_result(attempt, report) if passing else build_lane_result(attempt, report))
+        occluded = kind == 'center-passing-occluded'
+        report = analyze_occluded(attempt) if occluded else (analyze_near(attempt) if near else (analyze_passing(attempt) if passing else analyze_lanes(attempt)))
+        result = build_occluded_result(attempt, report) if occluded else (build_near_result(attempt, report) if near else (build_passing_result(attempt, report) if passing else build_lane_result(attempt, report)))
         saved = root / (kind + '-saved') / 'analysis'
         saved.mkdir(parents=True)
         (saved / 'analysis-report.json').write_text(json.dumps(report) + '\n')
@@ -75,6 +80,19 @@ class PassingAuditsTests(unittest.TestCase):
                 source.write('{}\n')
             with self.assertRaisesRegex(ValueError, 'original source differs'):
                 audit_near(near, n_receipt)
+
+    def test_occluder_source_and_fixed_comparison(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            clear, c_receipt = self.case(root, 'center-passing-clear')
+            occluded, o_receipt = self.case(root, 'center-passing-occluded')
+            self.assertFalse(audit_occluded(occluded, o_receipt)['physical_or_legal_acceptance_claimed'])
+            proof = compare_occluded(clear, c_receipt, occluded, o_receipt)
+            self.assertTrue(proof['static_occluder_source_added'])
+            with (occluded / 'occluder_frames.jsonl').open('a') as source:
+                source.write('{}\n')
+            with self.assertRaisesRegex(ValueError, 'original source differs'):
+                audit_occluded(occluded, o_receipt)
 
 
 if __name__ == '__main__':

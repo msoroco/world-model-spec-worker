@@ -56,10 +56,17 @@ def analyze(attempt, *, write_channels=True):
             'value': {'lane_id': row['lane_id'], 'road_id': row['road_id'],
                       'is_junction': row['is_junction']}}, allow_nan=False) + '\n'
             for row in native))
+    hashes = {name: item[1] for name, item in sources.items()}
+    center_use = {'candidate_center_lane_occupied_at_turn_origin':
+                  value['origin_matches_center_lane'],
+                  'authored_left_turn_intent': context['requested_maneuver'] == 'left turn',
+                  'designation_authority_verified': False,
+                  'legal_preparation_judgment': None}
     return {'format': 'worker-analysis-report', 'case_id': CASE,
             'measurements': {'turn_origin_observation': {
-                'method': 'analyze', 'value': value,
-                'sources': {name: item[1] for name, item in sources.items()}}},
+                'method': 'analyze', 'value': value, 'sources': hashes},
+                             'center_lane_use': {'method': 'analyze',
+                                                 'value': center_use, 'sources': hashes}},
             'limitations': ['Map markings and authored role do not verify statutory designation; source pixels and physical/legal acceptance require review.'],
             'physical_acceptance_claimed': False, 'legal_acceptance_claimed': False}
 
@@ -70,7 +77,8 @@ def build_result(attempt, report):
     value = report['measurements']['turn_origin_observation']['value']
     channel = 'turn_origin_observation.jsonl'
     return {'case_id': CASE,
-            'measured_values': {'turn_origin_observation': value},
+            'measured_values': {'turn_origin_observation': value,
+                                'center_lane_use': report['measurements']['center_lane_use']['value']},
             'target_checks': [{'target': 'left-turn origin in candidate center lane',
                                'requested': 'center lane with observed left deflection',
                                'measured': value['origin_matches_center_lane'],
@@ -94,9 +102,9 @@ def build_result(attempt, report):
                  'reference': 'case_context.json',
                  'sha256': _required(root, 'case_context.json')[1]}],
             'realized_observables': {'origin_matches_center_lane': {
-                'unit': 'boolean', 'method': 'last nonjunction original lane before entry',
+                'unit': 'indicator', 'method': 'last nonjunction original lane before entry',
                 'time_window': 'original approach and junction', 'statistic': 'origin',
-                'reference': channel, 'value': value['origin_matches_center_lane'],
+                'reference': channel, 'value': int(value['origin_matches_center_lane']),
                 'sample_window_s': [0, (value['frame_count']-1)/20]}},
             'physical_acceptance_claimed': False, 'legal_acceptance_claimed': False}
 

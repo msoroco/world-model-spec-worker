@@ -1,0 +1,42 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver__left_center_east",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "driving in designated center lane only while preparing for or making a left turn",
+      "source": "LVMC 11.12.100(C) full text in inputs/heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver/assignment.json",
+      "output_key": "center_lane_use",
+      "method": "analyze",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "turn_origin_native.jsonl",
+        "case_context.json",
+        "video_frames.jsonl",
+        "trace.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "left turn from the designated center lane rather than any other lane",
+      "source": "LVMC 11.12.100(C) full text in inputs/heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver/assignment.json",
+      "output_key": "turn_origin_observation",
+      "method": "analyze",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "turn_origin_native.jsonl",
+        "case_context.json",
+        "video_frames.jsonl",
+        "trace.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "turn_origin_native.jsonl"
+    ],
+    "error_contains": "Missing required source: turn_origin_native.jsonl"
+  }
+}

@@ -71,7 +71,7 @@
         "center-lane"
       ],
       "description": "same passing maneuver with constructed sight obstruction",
-      "construction_status": "provisional_native_runner_built_offline_pending",
+      "construction_status": "provisional_native_runner_offline_compatibility_saved_proven",
       "physical_risk": {
         "risk": "three-lane map ordering, lane markings, sight obstruction or posted sign may not be physically visible",
         "trigger_source": "original ego/lane polygons, source RGB views, sign/marking and traffic geometry",
@@ -101,7 +101,7 @@
         "center-lane"
       ],
       "description": "center-lane travel in preparation for a left turn",
-      "construction_status": "planned_unconstructed",
+      "construction_status": "provisional_native_runner_offline_compatibility_saved_proven",
       "physical_risk": {
         "risk": "three-lane map ordering, lane markings, sight obstruction or posted sign may not be physically visible",
         "trigger_source": "original ego/lane polygons, source RGB views, sign/marking and traffic geometry",
@@ -269,7 +269,7 @@
       }
     ]
   },
-  "review_status": "partial: five exact proof chains pass; occluded passing static-prop construction built but exact proofs pending; three other cases and fallbacks remain",
+  "review_status": "partial: seven exact CPU proof chains pass; allocated posted/unposted and fallbacks remain",
   "branch_inventory": [
     {
       "source": {
@@ -293,7 +293,7 @@
         "sha256": "f5fb9b129d7c026444219f3e595695032918e1bdf3c980a8143eab4133c3976d"
       },
       "requirement": "center lane overtaking/passing with clear visibility and safe-distance traffic gap",
-      "status": "passing_clear_and_near_traffic_source_geometry_cpu_proven_occluded_pending"
+      "status": "passing_clear_near_and_occluded_source_geometry_cpu_proven"
     },
     {
       "source": {
@@ -301,7 +301,7 @@
         "sha256": "f5fb9b129d7c026444219f3e595695032918e1bdf3c980a8143eab4133c3976d"
       },
       "requirement": "center lane preparation for left turn",
-      "status": "cases_planned_lane_geometry_cpu_tested_exact_bundle_pending"
+      "status": "left_turn_plan_indicator_and_center_occupancy_cpu_proven"
     },
     {
       "source": {
@@ -333,7 +333,7 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Pinned CPU preflight and two exact source-bound proof chains pass; seven selected case constructions and CPU proofs remain.",
+    "Pinned CPU preflight and seven exact source-bound proof chains pass; two selected allocation case constructions, fallbacks and remaining dispatch remain.",
     "Actual CARLA motion, participant visibility, and physical capture remain unverified."
   ],
   "requirement_dispositions": [
@@ -373,7 +373,16 @@
         "heldout__C304406__NRS-484B-223-2__motor_vehicle_driver__center_passing_near_traffic",
         "heldout__C304406__NRS-484B-223-2__motor_vehicle_driver__center_passing_occluded"
       ],
-      "evidence_or_gap": "No accepted recording; clear-target and near-center-traffic exact Native constructions, original body/gap sources, synthetic saved processing and independent fixed-source comparisons pass. Physical visibility and legal safe distance remain unknown."
+      "evidence_or_gap": "No accepted recording; clear, near-center-traffic and constructed-upright-occluder exact Native constructions, original body/gap/obstruction sources, synthetic saved processing and fixed-source comparisons pass. Physical visibility and legal safe distance remain unknown."
+    },
+    {
+      "requirement": "center lane preparation for left turn",
+      "source": "NRS 484B.223(2) full text in inputs/heldout__C304406__NRS-484B-223-2__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "case_ids": [
+        "heldout__C304406__NRS-484B-223-2__motor_vehicle_driver__center_left_turn"
+      ],
+      "evidence_or_gap": "No accepted recording; connected left-exit Native construction, original indicator/approach source, synthetic saved processing and independent comparison pass. Actual physical left-turn preparation remains unverified."
     }
   ],
   "selected_branch": {

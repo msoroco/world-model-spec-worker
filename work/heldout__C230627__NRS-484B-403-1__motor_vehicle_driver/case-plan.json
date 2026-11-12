@@ -213,7 +213,7 @@
       }
     ]
   },
-  "review_status": "partial: seven selected exact CPU-proven cases; 403(4) local-authority source and canonical physical/delivery handoff pending",
+  "review_status": "CPU delivery prepared: seven selected exact cases, three fallbacks each, physical-preparation and source-delivery receipts current; local Native and legal review pending",
   "branch_inventory": [
     {
       "source": {
@@ -221,7 +221,7 @@
         "sha256": "50905fa419a36c03cda9118e08894a85c86c7ab9e4a30c102c73d7777c2aa140"
       },
       "requirement": "U-turn with physical safety judgment retained",
-      "status": "cases_planned_u_turn_measurement_cpu_tested_exact_bundle_pending"
+      "status": "exact_cpu_bundle_proven_native_outcome_pending"
     },
     {
       "source": {
@@ -229,7 +229,7 @@
         "sha256": "50905fa419a36c03cda9118e08894a85c86c7ab9e4a30c102c73d7777c2aa140"
       },
       "requirement": "prohibition under NRS 484B.403(2) and (3)",
-      "status": "cases_planned_u_turn_measurement_cpu_tested_exact_bundle_pending"
+      "status": "exact_cpu_bundle_proven_native_outcome_pending"
     },
     {
       "source": {
@@ -237,7 +237,7 @@
         "sha256": "50905fa419a36c03cda9118e08894a85c86c7ab9e4a30c102c73d7777c2aa140"
       },
       "requirement": "prohibition under NRS 484B.227",
-      "status": "cases_planned_u_turn_measurement_cpu_tested_exact_bundle_pending"
+      "status": "exact_cpu_bundle_proven_native_outcome_pending"
     },
     {
       "source": {
@@ -245,7 +245,7 @@
         "sha256": "50905fa419a36c03cda9118e08894a85c86c7ab9e4a30c102c73d7777c2aa140"
       },
       "requirement": "prohibition under NRS 484B.363",
-      "status": "cases_planned_u_turn_measurement_cpu_tested_exact_bundle_pending"
+      "status": "exact_cpu_bundle_proven_native_outcome_pending"
     },
     {
       "source": {
@@ -253,7 +253,7 @@
         "sha256": "50905fa419a36c03cda9118e08894a85c86c7ab9e4a30c102c73d7777c2aa140"
       },
       "requirement": "prohibition under NRS 484B.407",
-      "status": "cases_planned_u_turn_measurement_cpu_tested_exact_bundle_pending"
+      "status": "exact_cpu_bundle_proven_native_outcome_pending"
     }
   ],
   "observations": [
@@ -348,5 +348,155 @@
       ],
       "evidence_or_gap": "Native/synthetic source-shaped candidate only; actual physical curve/crest occlusion and legal seeing remain unverified."
     }
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "fps": 20,
+    "duration_s": 8,
+    "composition": "synchronized_four_view_primary",
+    "sources": [
+      {
+        "name": "overview",
+        "size": [
+          1920,
+          1080
+        ],
+        "purpose": "whole U-turn, traffic and cited context"
+      },
+      {
+        "name": "approach",
+        "size": [
+          1280,
+          720
+        ],
+        "purpose": "both incoming route and participant approach"
+      },
+      {
+        "name": "reference_corner",
+        "size": [
+          1280,
+          720
+        ],
+        "purpose": "U-turn body clearance and cited device/zone context"
+      },
+      {
+        "name": "driver_reference",
+        "size": [
+          1280,
+          720
+        ],
+        "purpose": "driver-visible turn site, signs and opposing traffic"
+      }
+    ],
+    "coverage": [
+      {
+        "subject": "ego U-turn and surrounding users",
+        "interval": "all original frames through turn completion",
+        "view": "overview"
+      },
+      {
+        "subject": "opposite incoming approach and sight line",
+        "interval": "approach through completion",
+        "view": "approach"
+      },
+      {
+        "subject": "turn-site centerline, participants and cited context",
+        "interval": "all original frames",
+        "view": "reference_corner"
+      },
+      {
+        "subject": "driver-visible route, signs and opposing lane",
+        "interval": "all original frames",
+        "view": "driver_reference"
+      }
+    ],
+    "implementation": "u_turn_camera_capture.py",
+    "limitation": "Local Native pixels must establish actual physical completion, visibility and cited authority context."
+  },
+  "local_authority_context": {
+    "statute": "NRS 484B.403(4)",
+    "question": "Whether local authority or NDOT has prohibited U-turns at this location within its jurisdiction",
+    "status": "requires local source review",
+    "source_required": "effective authority order, jurisdiction and location; no legal prohibition inferred from CARLA map"
+  },
+  "source_observation_mapping": {
+    "drv.u_turn": {
+      "evidence": "Original 20 Hz ego pose and heading; finalizer checks turn onset and net angle, with physical completion separately checked from Native trace.",
+      "channels": [
+        "u_turn_observation"
+      ],
+      "source_refs": [
+        "u_turn_motion.jsonl",
+        "trace.jsonl"
+      ]
+    },
+    "st.roadway": {
+      "evidence": "Original Native road and lane IDs, selected turn geometry, and source context packets; statutory roadway classification remains a local judgment.",
+      "channels": [
+        "u_turn_observation"
+      ],
+      "source_refs": [
+        "u_turn_context.json",
+        "sight-route-extent.json"
+      ]
+    },
+    "drv.time_to_conflict": {
+      "evidence": "Original ego and participant positions, speeds, and body extents permit sampled conflict-time derivation; no legal safety verdict is asserted.",
+      "channels": [
+        "u_turn_observation"
+      ],
+      "source_refs": [
+        "u_turn_motion.jsonl"
+      ]
+    },
+    "rel.oncoming": {
+      "evidence": "Original opposite-lane actor identity and frame-aligned motion, with lane-role citation.",
+      "channels": [
+        "u_turn_observation"
+      ],
+      "source_refs": [
+        "u_turn_context.json",
+        "u_turn_motion.jsonl"
+      ]
+    },
+    "drv.following": {
+      "evidence": "Original same-approach lane actor identity and frame-aligned motion, with lane-role citation.",
+      "channels": [
+        "u_turn_observation"
+      ],
+      "source_refs": [
+        "u_turn_context.json",
+        "u_turn_motion.jsonl"
+      ]
+    },
+    "st.sight_distance": {
+      "evidence": "Original Native incoming-route geometry and 407 two-direction body-ray packets at the 152.4 m boundary; actual occlusion and legal recognizability remain local checks.",
+      "channels": [
+        "u_turn_observation"
+      ],
+      "source_refs": [
+        "sight-route-extent.json",
+        "capture/evidence.jsonl",
+        "u_turn_407_geometry.json"
+      ]
+    },
+    "kin.speed": {
+      "evidence": "Original sampled ego, oncoming and following velocity vectors at 20 Hz.",
+      "channels": [
+        "u_turn_observation"
+      ],
+      "source_refs": [
+        "u_turn_motion.jsonl"
+      ]
+    },
+    "drv.hard_deceleration": {
+      "evidence": "Original sampled participant velocity changes support a braking diagnostic; whether another user was forced to brake is unresolved.",
+      "channels": [
+        "u_turn_observation"
+      ],
+      "source_refs": [
+        "u_turn_motion.jsonl"
+      ]
+    }
+  }
 }

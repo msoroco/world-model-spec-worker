@@ -4,27 +4,55 @@
   "status": "draft",
   "cases": [
     {
-      "case_id": "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__repeated_following",
+      "case_id": "C228508__semantic_baseline_reference",
       "target_law_id": "NRS-484B-650-1",
-      "target_type": "boundary_probe",
-      "rationale": "Conjunct comparison with all legal predicates unresolved",
+      "target_type": "baseline",
+      "rationale": "Shared neutral source-observation reference for composite-offense comparisons; no constituent violation or hazard is asserted",
       "variable_assignments": {
-        "following_encounters": {
+        "commanded_approach_speed": {
           "kind": "controller",
-          "value": 2
+          "value": 0
         },
-        "ego_speed_cap_mps": {
+        "requested_following_encounters": {
           "kind": "controller",
-          "value": 24
+          "value": 0
         },
-        "predicate_violations": {
+        "ego_speed_mps": {
           "kind": "subject_behavior",
           "value": null
+        },
+        "path_length_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "following_time_gap_s": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "hazard_conflict_geometry": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "secondary_mechanism": {
+          "kind": "controller",
+          "value": "neutral"
+        },
+        "secondary_start_station_m": {
+          "kind": "controller",
+          "value": null
+        },
+        "hazard_target_request": {
+          "kind": "controller",
+          "value": "neutral"
+        },
+        "lead_speed_request_mps": {
+          "kind": "controller",
+          "value": 0
         }
       },
       "unresolved_judgment_calls": [
-        "speeding cross-reference",
         "too closely",
+        "Improper or unsafe",
         "immediate hazard"
       ],
       "recording_description": {
@@ -39,10 +67,111 @@
             "uncertainty": "Native pose sample resolution"
           }
         ],
-        "context_inputs": [],
+        "context_inputs": [
+          {
+            "name": "original_actor_and_road_context",
+            "unit": "source packet",
+            "method": "20 Hz original Native actor, junction, lane, road and camera source packets; identity and joins retained for independent review"
+          },
+          {
+            "name": "governing_cross_referenced_rule",
+            "unit": "sourced legal context",
+            "method": "frozen cited-rule identity retained for independent review; no automatic legal finding"
+          }
+        ],
         "limitations": [
           "No physical sign, predicate violation, immediate hazard or aggressive-driving legal judgment inferred from fixture or command."
         ]
+      }
+    },
+    {
+      "case_id": "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__repeated_following",
+      "target_law_id": "NRS-484B-650-1",
+      "target_type": "boundary_probe",
+      "rationale": "Conjunct comparison with all legal predicates unresolved",
+      "variable_assignments": {
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 24
+        },
+        "requested_following_encounters": {
+          "kind": "controller",
+          "value": 2
+        },
+        "ego_speed_mps": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "path_length_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "following_time_gap_s": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "hazard_conflict_geometry": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "secondary_mechanism": {
+          "kind": "controller",
+          "value": "repeated_following"
+        },
+        "secondary_start_station_m": {
+          "kind": "controller",
+          "value": null
+        },
+        "hazard_target_request": {
+          "kind": "controller",
+          "value": "vehicle"
+        },
+        "lead_speed_request_mps": {
+          "kind": "controller",
+          "value": 11
+        }
+      },
+      "unresolved_judgment_calls": [
+        "too closely",
+        "Improper or unsafe",
+        "immediate hazard"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "path_length_m",
+            "unit": "m",
+            "method": "integrated original ego positions",
+            "sampling_rate_hz": 20,
+            "time_window": "entire continuous original drive",
+            "reference_frame": "Native world ground plane",
+            "uncertainty": "Native pose sample resolution"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "original_actor_and_road_context",
+            "unit": "source packet",
+            "method": "20 Hz original Native actor, junction, lane, road and camera source packets; identity and joins retained for independent review"
+          },
+          {
+            "name": "governing_cross_referenced_rule",
+            "unit": "sourced legal context",
+            "method": "frozen cited-rule identity retained for independent review; no automatic legal finding"
+          }
+        ],
+        "limitations": [
+          "No physical sign, predicate violation, immediate hazard or aggressive-driving legal judgment inferred from fixture or command."
+        ]
+      },
+      "paired_probe_id": "speed_required",
+      "deliberate_differences": [
+        "secondary_mechanism"
+      ],
+      "probe": {
+        "primary_variable": "secondary_mechanism",
+        "comparison_or_standard": "paired exact source request; measured behavior and legal predicates remain unresolved",
+        "target_value_or_branch": "repeated_following"
       }
     },
     {
@@ -51,22 +180,50 @@
       "target_type": "boundary_probe",
       "rationale": "Conjunct comparison with all legal predicates unresolved",
       "variable_assignments": {
-        "following_encounters": {
-          "kind": "controller",
-          "value": 1
-        },
-        "ego_speed_cap_mps": {
+        "commanded_approach_speed": {
           "kind": "controller",
           "value": 24
         },
-        "predicate_violations": {
+        "requested_following_encounters": {
+          "kind": "controller",
+          "value": 1
+        },
+        "ego_speed_mps": {
           "kind": "subject_behavior",
           "value": null
+        },
+        "path_length_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "following_time_gap_s": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "hazard_conflict_geometry": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "secondary_mechanism": {
+          "kind": "controller",
+          "value": "one_secondary_act"
+        },
+        "secondary_start_station_m": {
+          "kind": "controller",
+          "value": null
+        },
+        "hazard_target_request": {
+          "kind": "controller",
+          "value": "vehicle"
+        },
+        "lead_speed_request_mps": {
+          "kind": "controller",
+          "value": 11
         }
       },
       "unresolved_judgment_calls": [
-        "speeding cross-reference",
         "too closely",
+        "Improper or unsafe",
         "immediate hazard"
       ],
       "recording_description": {
@@ -81,10 +238,30 @@
             "uncertainty": "Native pose sample resolution"
           }
         ],
-        "context_inputs": [],
+        "context_inputs": [
+          {
+            "name": "original_actor_and_road_context",
+            "unit": "source packet",
+            "method": "20 Hz original Native actor, junction, lane, road and camera source packets; identity and joins retained for independent review"
+          },
+          {
+            "name": "governing_cross_referenced_rule",
+            "unit": "sourced legal context",
+            "method": "frozen cited-rule identity retained for independent review; no automatic legal finding"
+          }
+        ],
         "limitations": [
           "No physical sign, predicate violation, immediate hazard or aggressive-driving legal judgment inferred from fixture or command."
         ]
+      },
+      "paired_probe_id": "two_acts_required",
+      "deliberate_differences": [
+        "requested_following_encounters"
+      ],
+      "probe": {
+        "primary_variable": "requested_following_encounters",
+        "comparison_or_standard": "paired exact source request; measured behavior and legal predicates remain unresolved",
+        "target_value_or_branch": 1
       }
     },
     {
@@ -93,22 +270,50 @@
       "target_type": "boundary_probe",
       "rationale": "Conjunct comparison with all legal predicates unresolved",
       "variable_assignments": {
-        "following_encounters": {
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 0
+        },
+        "requested_following_encounters": {
           "kind": "controller",
           "value": 2
         },
-        "ego_speed_cap_mps": {
-          "kind": "controller",
-          "value": 13
-        },
-        "predicate_violations": {
+        "ego_speed_mps": {
           "kind": "subject_behavior",
           "value": null
+        },
+        "path_length_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "following_time_gap_s": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "hazard_conflict_geometry": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "secondary_mechanism": {
+          "kind": "controller",
+          "value": "no_speed"
+        },
+        "secondary_start_station_m": {
+          "kind": "controller",
+          "value": null
+        },
+        "hazard_target_request": {
+          "kind": "controller",
+          "value": "vehicle"
+        },
+        "lead_speed_request_mps": {
+          "kind": "controller",
+          "value": 11
         }
       },
       "unresolved_judgment_calls": [
-        "speeding cross-reference",
         "too closely",
+        "Improper or unsafe",
         "immediate hazard"
       ],
       "recording_description": {
@@ -123,10 +328,30 @@
             "uncertainty": "Native pose sample resolution"
           }
         ],
-        "context_inputs": [],
+        "context_inputs": [
+          {
+            "name": "original_actor_and_road_context",
+            "unit": "source packet",
+            "method": "20 Hz original Native actor, junction, lane, road and camera source packets; identity and joins retained for independent review"
+          },
+          {
+            "name": "governing_cross_referenced_rule",
+            "unit": "sourced legal context",
+            "method": "frozen cited-rule identity retained for independent review; no automatic legal finding"
+          }
+        ],
         "limitations": [
           "No physical sign, predicate violation, immediate hazard or aggressive-driving legal judgment inferred from fixture or command."
         ]
+      },
+      "paired_probe_id": "speed_required",
+      "deliberate_differences": [
+        "commanded_approach_speed"
+      ],
+      "probe": {
+        "primary_variable": "commanded_approach_speed",
+        "comparison_or_standard": "paired exact source request; measured behavior and legal predicates remain unresolved",
+        "target_value_or_branch": 0
       }
     },
     {
@@ -135,26 +360,50 @@
       "target_type": "boundary_probe",
       "rationale": "Physical lead-response guard requests two separated short-headway encounters without a short positive TTC; original evidence and legal hazard remain unresolved",
       "variable_assignments": {
-        "following_encounters": {
-          "kind": "controller",
-          "value": 2
-        },
-        "ego_speed_cap_mps": {
+        "commanded_approach_speed": {
           "kind": "controller",
           "value": 24
         },
-        "predicate_violations": {
+        "requested_following_encounters": {
+          "kind": "controller",
+          "value": 2
+        },
+        "ego_speed_mps": {
           "kind": "subject_behavior",
           "value": null
         },
-        "hazard_guard_ttc_s": {
+        "path_length_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "following_time_gap_s": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "hazard_conflict_geometry": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "secondary_mechanism": {
           "kind": "controller",
-          "value": 3.0
+          "value": "no_hazard"
+        },
+        "secondary_start_station_m": {
+          "kind": "controller",
+          "value": null
+        },
+        "hazard_target_request": {
+          "kind": "controller",
+          "value": "vehicle"
+        },
+        "lead_speed_request_mps": {
+          "kind": "controller",
+          "value": 11
         }
       },
       "unresolved_judgment_calls": [
-        "speeding cross-reference",
         "too closely",
+        "Improper or unsafe",
         "immediate hazard"
       ],
       "recording_description": {
@@ -169,10 +418,30 @@
             "uncertainty": "Native pose sample resolution"
           }
         ],
-        "context_inputs": [],
+        "context_inputs": [
+          {
+            "name": "original_actor_and_road_context",
+            "unit": "source packet",
+            "method": "20 Hz original Native actor, junction, lane, road and camera source packets; identity and joins retained for independent review"
+          },
+          {
+            "name": "governing_cross_referenced_rule",
+            "unit": "sourced legal context",
+            "method": "frozen cited-rule identity retained for independent review; no automatic legal finding"
+          }
+        ],
         "limitations": [
           "No physical sign, predicate violation, immediate hazard or aggressive-driving legal judgment inferred from fixture or command."
         ]
+      },
+      "paired_probe_id": "immediate_hazard_required",
+      "deliberate_differences": [
+        "secondary_mechanism"
+      ],
+      "probe": {
+        "primary_variable": "secondary_mechanism",
+        "comparison_or_standard": "paired exact source request; measured behavior and legal predicates remain unresolved",
+        "target_value_or_branch": "no_hazard"
       }
     },
     {
@@ -181,26 +450,50 @@
       "target_type": "boundary_probe",
       "rationale": "Reverse ordering request: two following phases precede the late requested speed phase; original physical and legal facts remain unresolved",
       "variable_assignments": {
-        "following_encounters": {
-          "kind": "controller",
-          "value": 2
-        },
-        "ego_speed_cap_mps": {
+        "commanded_approach_speed": {
           "kind": "controller",
           "value": 24
         },
-        "predicate_violations": {
+        "requested_following_encounters": {
+          "kind": "controller",
+          "value": 2
+        },
+        "ego_speed_mps": {
           "kind": "subject_behavior",
           "value": null
         },
-        "speed_phase_start_station_m": {
+        "path_length_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "following_time_gap_s": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "hazard_conflict_geometry": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "secondary_mechanism": {
           "kind": "controller",
-          "value": 660
+          "value": "reverse_sequence"
+        },
+        "secondary_start_station_m": {
+          "kind": "controller",
+          "value": 180
+        },
+        "hazard_target_request": {
+          "kind": "controller",
+          "value": "vehicle"
+        },
+        "lead_speed_request_mps": {
+          "kind": "controller",
+          "value": 11
         }
       },
       "unresolved_judgment_calls": [
-        "speeding cross-reference",
         "too closely",
+        "Improper or unsafe",
         "immediate hazard"
       ],
       "recording_description": {
@@ -215,10 +508,30 @@
             "uncertainty": "Native pose sample resolution"
           }
         ],
-        "context_inputs": [],
+        "context_inputs": [
+          {
+            "name": "original_actor_and_road_context",
+            "unit": "source packet",
+            "method": "20 Hz original Native actor, junction, lane, road and camera source packets; identity and joins retained for independent review"
+          },
+          {
+            "name": "governing_cross_referenced_rule",
+            "unit": "sourced legal context",
+            "method": "frozen cited-rule identity retained for independent review; no automatic legal finding"
+          }
+        ],
         "limitations": [
           "No physical sign, predicate violation, immediate hazard or aggressive-driving legal judgment inferred from fixture or command."
         ]
+      },
+      "paired_probe_id": "any_sequence",
+      "deliberate_differences": [
+        "secondary_start_station_m"
+      ],
+      "probe": {
+        "primary_variable": "secondary_start_station_m",
+        "comparison_or_standard": "paired exact source request; measured behavior and legal predicates remain unresolved",
+        "target_value_or_branch": 180
       }
     },
     {
@@ -227,29 +540,50 @@
       "target_type": "boundary_probe",
       "rationale": "Request two following encounters separated by more than one mile of route travel; physical realization and legal facts unresolved",
       "variable_assignments": {
-        "following_encounters": {
-          "kind": "controller",
-          "value": 2
-        },
-        "ego_speed_cap_mps": {
+        "commanded_approach_speed": {
           "kind": "controller",
           "value": 24
         },
-        "predicate_violations": {
+        "requested_following_encounters": {
+          "kind": "controller",
+          "value": 2
+        },
+        "ego_speed_mps": {
           "kind": "subject_behavior",
           "value": null
         },
-        "following_phase_starts_m": {
+        "path_length_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "following_time_gap_s": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "hazard_conflict_geometry": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "secondary_mechanism": {
           "kind": "controller",
-          "value": [
-            180,
-            1950
-          ]
+          "value": "two_following_closings"
+        },
+        "secondary_start_station_m": {
+          "kind": "controller",
+          "value": 1950
+        },
+        "hazard_target_request": {
+          "kind": "controller",
+          "value": "vehicle"
+        },
+        "lead_speed_request_mps": {
+          "kind": "controller",
+          "value": 11
         }
       },
       "unresolved_judgment_calls": [
-        "speeding cross-reference",
         "too closely",
+        "Improper or unsafe",
         "immediate hazard"
       ],
       "recording_description": {
@@ -264,10 +598,39 @@
             "uncertainty": "Native pose sample resolution"
           }
         ],
-        "context_inputs": [],
+        "context_inputs": [
+          {
+            "name": "original_actor_and_road_context",
+            "unit": "source packet",
+            "method": "20 Hz original Native actor, junction, lane, road and camera source packets; identity and joins retained for independent review"
+          },
+          {
+            "name": "governing_cross_referenced_rule",
+            "unit": "sourced legal context",
+            "method": "frozen cited-rule identity retained for independent review; no automatic legal finding"
+          }
+        ],
         "limitations": [
           "No physical sign, predicate violation, immediate hazard or aggressive-driving legal judgment inferred from fixture or command."
         ]
+      },
+      "paired_probe_id": "C228508_one_mile_boundary",
+      "deliberate_differences": [
+        "secondary_start_station_m"
+      ],
+      "probe": {
+        "primary_variable": "path_length_m",
+        "comparison_or_standard": "source-measured continuous one-mile event-window threshold; requested span only",
+        "target_value_or_branch": "beyond_mile",
+        "threshold_ref": "timing.numeric_conditions[0]",
+        "test_value": 1.1743915533285612,
+        "operator": "<=",
+        "unit": "mile"
+      },
+      "epsilon_used": {
+        "value": 0.001,
+        "unit": "mile",
+        "rationale": "Requested engineering margin for source-measured physical uncertainty; not a legal tolerance"
       }
     },
     {
@@ -276,29 +639,50 @@
       "target_type": "boundary_probe",
       "rationale": "Request first and second following phases wholly within one mile of route travel; physical and legal findings unresolved",
       "variable_assignments": {
-        "following_encounters": {
-          "kind": "controller",
-          "value": 2
-        },
-        "ego_speed_cap_mps": {
+        "commanded_approach_speed": {
           "kind": "controller",
           "value": 24
         },
-        "predicate_violations": {
+        "requested_following_encounters": {
+          "kind": "controller",
+          "value": 2
+        },
+        "ego_speed_mps": {
           "kind": "subject_behavior",
           "value": null
         },
-        "following_phase_starts_m": {
+        "path_length_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "following_time_gap_s": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "hazard_conflict_geometry": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "secondary_mechanism": {
           "kind": "controller",
-          "value": [
-            180,
-            1050
-          ]
+          "value": "two_following_closings"
+        },
+        "secondary_start_station_m": {
+          "kind": "controller",
+          "value": 1050
+        },
+        "hazard_target_request": {
+          "kind": "controller",
+          "value": "vehicle"
+        },
+        "lead_speed_request_mps": {
+          "kind": "controller",
+          "value": 11
         }
       },
       "unresolved_judgment_calls": [
-        "speeding cross-reference",
         "too closely",
+        "Improper or unsafe",
         "immediate hazard"
       ],
       "recording_description": {
@@ -313,10 +697,39 @@
             "uncertainty": "Native pose sample resolution"
           }
         ],
-        "context_inputs": [],
+        "context_inputs": [
+          {
+            "name": "original_actor_and_road_context",
+            "unit": "source packet",
+            "method": "20 Hz original Native actor, junction, lane, road and camera source packets; identity and joins retained for independent review"
+          },
+          {
+            "name": "governing_cross_referenced_rule",
+            "unit": "sourced legal context",
+            "method": "frozen cited-rule identity retained for independent review; no automatic legal finding"
+          }
+        ],
         "limitations": [
           "No physical sign, predicate violation, immediate hazard or aggressive-driving legal judgment inferred from fixture or command."
         ]
+      },
+      "paired_probe_id": "C228508_one_mile_boundary",
+      "deliberate_differences": [
+        "secondary_start_station_m"
+      ],
+      "probe": {
+        "primary_variable": "path_length_m",
+        "comparison_or_standard": "source-measured continuous one-mile event-window threshold; requested span only",
+        "target_value_or_branch": "within_mile",
+        "threshold_ref": "timing.numeric_conditions[0]",
+        "test_value": 0.6151574803149606,
+        "operator": "<=",
+        "unit": "mile"
+      },
+      "epsilon_used": {
+        "value": 0.001,
+        "unit": "mile",
+        "rationale": "Requested engineering margin for source-measured physical uncertainty; not a legal tolerance"
       }
     },
     {
@@ -325,26 +738,50 @@
       "target_type": "boundary_probe",
       "rationale": "Request speed plus red governed device crossing and marked-lane body excursion with vehicle hazard candidate; legal predicates unresolved",
       "variable_assignments": {
-        "traffic_control_device": {
-          "kind": "source_bound_native_map",
-          "value": "OpenDRIVE-linked traffic light"
-        },
-        "signal_state_request": {
+        "commanded_approach_speed": {
           "kind": "controller",
-          "value": "Red"
+          "value": 24
         },
-        "marked_lane_excursion_fraction": {
+        "requested_following_encounters": {
           "kind": "controller",
-          "value": 0.6
+          "value": 2
         },
-        "predicate_violations": {
+        "ego_speed_mps": {
           "kind": "subject_behavior",
           "value": null
+        },
+        "path_length_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "following_time_gap_s": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "hazard_conflict_geometry": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "secondary_mechanism": {
+          "kind": "controller",
+          "value": "red_device_marked_lane"
+        },
+        "secondary_start_station_m": {
+          "kind": "controller",
+          "value": null
+        },
+        "hazard_target_request": {
+          "kind": "controller",
+          "value": "vehicle"
+        },
+        "lead_speed_request_mps": {
+          "kind": "controller",
+          "value": 11
         }
       },
       "unresolved_judgment_calls": [
-        "speeding cross-reference",
         "too closely",
+        "Improper or unsafe",
         "immediate hazard"
       ],
       "recording_description": {
@@ -359,10 +796,30 @@
             "uncertainty": "Native pose sample resolution"
           }
         ],
-        "context_inputs": [],
+        "context_inputs": [
+          {
+            "name": "original_actor_and_road_context",
+            "unit": "source packet",
+            "method": "20 Hz original Native actor, junction, lane, road and camera source packets; identity and joins retained for independent review"
+          },
+          {
+            "name": "governing_cross_referenced_rule",
+            "unit": "sourced legal context",
+            "method": "frozen cited-rule identity retained for independent review; no automatic legal finding"
+          }
+        ],
         "limitations": [
           "No physical sign, predicate violation, immediate hazard or aggressive-driving legal judgment inferred from fixture or command."
         ]
+      },
+      "paired_probe_id": "different_vs_repeated",
+      "deliberate_differences": [
+        "secondary_mechanism"
+      ],
+      "probe": {
+        "primary_variable": "secondary_mechanism",
+        "comparison_or_standard": "paired exact source request; measured behavior and legal predicates remain unresolved",
+        "target_value_or_branch": "red_device_marked_lane"
       }
     },
     {
@@ -371,26 +828,50 @@
       "target_type": "boundary_probe",
       "rationale": "Request speed plus two distinct OpenDRIVE-linked red device crossing candidates with vehicle hazard review; legal predicates unresolved",
       "variable_assignments": {
-        "traffic_control_device": {
-          "kind": "source_bound_native_map",
-          "value": "OpenDRIVE-linked traffic light"
-        },
-        "signal_state_request": {
+        "commanded_approach_speed": {
           "kind": "controller",
-          "value": "Red"
+          "value": 24
         },
-        "predicate_violations": {
+        "requested_following_encounters": {
+          "kind": "controller",
+          "value": 2
+        },
+        "ego_speed_mps": {
           "kind": "subject_behavior",
           "value": null
         },
-        "second_traffic_control_device": {
-          "kind": "source_bound_native_map",
-          "value": "second distinct OpenDRIVE-linked traffic light on same continuous route"
+        "path_length_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "following_time_gap_s": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "hazard_conflict_geometry": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "secondary_mechanism": {
+          "kind": "controller",
+          "value": "two_red_devices"
+        },
+        "secondary_start_station_m": {
+          "kind": "controller",
+          "value": null
+        },
+        "hazard_target_request": {
+          "kind": "controller",
+          "value": "vehicle"
+        },
+        "lead_speed_request_mps": {
+          "kind": "controller",
+          "value": 11
         }
       },
       "unresolved_judgment_calls": [
-        "speeding cross-reference",
         "too closely",
+        "Improper or unsafe",
         "immediate hazard"
       ],
       "recording_description": {
@@ -405,10 +886,30 @@
             "uncertainty": "Native pose sample resolution"
           }
         ],
-        "context_inputs": [],
+        "context_inputs": [
+          {
+            "name": "original_actor_and_road_context",
+            "unit": "source packet",
+            "method": "20 Hz original Native actor, junction, lane, road and camera source packets; identity and joins retained for independent review"
+          },
+          {
+            "name": "governing_cross_referenced_rule",
+            "unit": "sourced legal context",
+            "method": "frozen cited-rule identity retained for independent review; no automatic legal finding"
+          }
+        ],
         "limitations": [
           "No physical sign, predicate violation, immediate hazard or aggressive-driving legal judgment inferred from fixture or command."
         ]
+      },
+      "paired_probe_id": "different_vs_repeated",
+      "deliberate_differences": [
+        "secondary_mechanism"
+      ],
+      "probe": {
+        "primary_variable": "secondary_mechanism",
+        "comparison_or_standard": "paired exact source request; measured behavior and legal predicates remain unresolved",
+        "target_value_or_branch": "two_red_devices"
       }
     },
     {
@@ -417,30 +918,50 @@
       "target_type": "boundary_probe",
       "rationale": "Same device and marked-lane requests with a person crossing hazard target; physical and legal hazard judgment unresolved",
       "variable_assignments": {
-        "traffic_control_device": {
-          "kind": "source_bound_native_map",
-          "value": "OpenDRIVE-linked traffic light"
-        },
-        "signal_state_request": {
+        "commanded_approach_speed": {
           "kind": "controller",
-          "value": "Red"
+          "value": 24
         },
-        "marked_lane_excursion_fraction": {
+        "requested_following_encounters": {
           "kind": "controller",
-          "value": 0.6
+          "value": 2
         },
-        "predicate_violations": {
+        "ego_speed_mps": {
           "kind": "subject_behavior",
           "value": null
         },
-        "hazard_target": {
-          "kind": "source_bound_native_actor",
-          "value": "walker.pedestrian actor crossing from road edge"
+        "path_length_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "following_time_gap_s": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "hazard_conflict_geometry": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "secondary_mechanism": {
+          "kind": "controller",
+          "value": "person_hazard"
+        },
+        "secondary_start_station_m": {
+          "kind": "controller",
+          "value": null
+        },
+        "hazard_target_request": {
+          "kind": "controller",
+          "value": "person"
+        },
+        "lead_speed_request_mps": {
+          "kind": "controller",
+          "value": 11
         }
       },
       "unresolved_judgment_calls": [
-        "speeding cross-reference",
         "too closely",
+        "Improper or unsafe",
         "immediate hazard"
       ],
       "recording_description": {
@@ -455,10 +976,30 @@
             "uncertainty": "Native pose sample resolution"
           }
         ],
-        "context_inputs": [],
+        "context_inputs": [
+          {
+            "name": "original_actor_and_road_context",
+            "unit": "source packet",
+            "method": "20 Hz original Native actor, junction, lane, road and camera source packets; identity and joins retained for independent review"
+          },
+          {
+            "name": "governing_cross_referenced_rule",
+            "unit": "sourced legal context",
+            "method": "frozen cited-rule identity retained for independent review; no automatic legal finding"
+          }
+        ],
         "limitations": [
           "No physical sign, predicate violation, immediate hazard or aggressive-driving legal judgment inferred from fixture or command."
         ]
+      },
+      "paired_probe_id": "hazard_target",
+      "deliberate_differences": [
+        "hazard_target_request"
+      ],
+      "probe": {
+        "primary_variable": "hazard_target_request",
+        "comparison_or_standard": "paired exact source request; measured behavior and legal predicates remain unresolved",
+        "target_value_or_branch": "person"
       }
     },
     {
@@ -467,30 +1008,50 @@
       "target_type": "boundary_probe",
       "rationale": "Request ego right-of-driving-edge target and lead overtaking; actual unpaved surface and statutory pass remain source/pixel reviewed",
       "variable_assignments": {
-        "traffic_control_device": {
-          "kind": "source_bound_native_map",
-          "value": "OpenDRIVE-linked traffic light"
-        },
-        "signal_state_request": {
+        "commanded_approach_speed": {
           "kind": "controller",
-          "value": "Red"
+          "value": 24
         },
-        "marked_lane_excursion_fraction": {
+        "requested_following_encounters": {
           "kind": "controller",
-          "value": 0.6
+          "value": 2
         },
-        "predicate_violations": {
+        "ego_speed_mps": {
           "kind": "subject_behavior",
           "value": null
         },
-        "right_pass": {
+        "path_length_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "following_time_gap_s": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "hazard_conflict_geometry": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "secondary_mechanism": {
           "kind": "controller",
-          "value": "right-of-driving-edge target during lead overtake window"
+          "value": "right_edge_overtaking"
+        },
+        "secondary_start_station_m": {
+          "kind": "controller",
+          "value": null
+        },
+        "hazard_target_request": {
+          "kind": "controller",
+          "value": "vehicle"
+        },
+        "lead_speed_request_mps": {
+          "kind": "controller",
+          "value": 11
         }
       },
       "unresolved_judgment_calls": [
-        "speeding cross-reference",
         "too closely",
+        "Improper or unsafe",
         "immediate hazard"
       ],
       "recording_description": {
@@ -505,10 +1066,30 @@
             "uncertainty": "Native pose sample resolution"
           }
         ],
-        "context_inputs": [],
+        "context_inputs": [
+          {
+            "name": "original_actor_and_road_context",
+            "unit": "source packet",
+            "method": "20 Hz original Native actor, junction, lane, road and camera source packets; identity and joins retained for independent review"
+          },
+          {
+            "name": "governing_cross_referenced_rule",
+            "unit": "sourced legal context",
+            "method": "frozen cited-rule identity retained for independent review; no automatic legal finding"
+          }
+        ],
         "limitations": [
           "No physical sign, predicate violation, immediate hazard or aggressive-driving legal judgment inferred from fixture or command."
         ]
+      },
+      "paired_probe_id": "listed_off_pavement",
+      "deliberate_differences": [
+        "secondary_mechanism"
+      ],
+      "probe": {
+        "primary_variable": "secondary_mechanism",
+        "comparison_or_standard": "paired exact source request; measured behavior and legal predicates remain unresolved",
+        "target_value_or_branch": "right_edge_overtaking"
       }
     },
     {
@@ -517,30 +1098,50 @@
       "target_type": "boundary_probe",
       "rationale": "Request closer same-lane lead following and red device, without a marked-lane excursion; legal too-close status remains independently reviewed",
       "variable_assignments": {
-        "traffic_control_device": {
-          "kind": "source_bound_native_map",
-          "value": "OpenDRIVE-linked traffic light"
-        },
-        "signal_state_request": {
+        "commanded_approach_speed": {
           "kind": "controller",
-          "value": "Red"
+          "value": 24
         },
-        "predicate_violations": {
+        "requested_following_encounters": {
+          "kind": "controller",
+          "value": 2
+        },
+        "ego_speed_mps": {
           "kind": "subject_behavior",
           "value": null
         },
-        "lead_spawn_station_m": {
-          "kind": "controller",
-          "value": 25
+        "path_length_m": {
+          "kind": "subject_behavior",
+          "value": null
         },
-        "closing_lead_speed_mps": {
+        "following_time_gap_s": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "hazard_conflict_geometry": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "secondary_mechanism": {
+          "kind": "controller",
+          "value": "too_close"
+        },
+        "secondary_start_station_m": {
+          "kind": "controller",
+          "value": null
+        },
+        "hazard_target_request": {
+          "kind": "controller",
+          "value": "vehicle"
+        },
+        "lead_speed_request_mps": {
           "kind": "controller",
           "value": 7
         }
       },
       "unresolved_judgment_calls": [
-        "speeding cross-reference",
         "too closely",
+        "Improper or unsafe",
         "immediate hazard"
       ],
       "recording_description": {
@@ -555,10 +1156,30 @@
             "uncertainty": "Native pose sample resolution"
           }
         ],
-        "context_inputs": [],
+        "context_inputs": [
+          {
+            "name": "original_actor_and_road_context",
+            "unit": "source packet",
+            "method": "20 Hz original Native actor, junction, lane, road and camera source packets; identity and joins retained for independent review"
+          },
+          {
+            "name": "governing_cross_referenced_rule",
+            "unit": "sourced legal context",
+            "method": "frozen cited-rule identity retained for independent review; no automatic legal finding"
+          }
+        ],
         "limitations": [
           "No physical sign, predicate violation, immediate hazard or aggressive-driving legal judgment inferred from fixture or command."
         ]
+      },
+      "paired_probe_id": "listed_following",
+      "deliberate_differences": [
+        "lead_speed_request_mps"
+      ],
+      "probe": {
+        "primary_variable": "lead_speed_request_mps",
+        "comparison_or_standard": "paired exact source request; measured behavior and legal predicates remain unresolved",
+        "target_value_or_branch": 7
       }
     },
     {
@@ -567,27 +1188,50 @@
       "target_type": "boundary_probe",
       "rationale": "Request speed plus red governed device crossing and original cross-highway junction encounter with vehicle hazard candidate; priority and legal predicates unresolved",
       "variable_assignments": {
-        "traffic_control_device": {
-          "kind": "source_bound_native_map",
-          "value": "OpenDRIVE-linked traffic light"
-        },
-        "signal_state_request": {
+        "commanded_approach_speed": {
           "kind": "controller",
-          "value": "Red"
+          "value": 24
         },
-        "predicate_violations": {
+        "requested_following_encounters": {
+          "kind": "controller",
+          "value": 2
+        },
+        "ego_speed_mps": {
           "kind": "subject_behavior",
           "value": null
         },
-        "cross_traffic": {
-          "kind": "source_bound_native_actor",
-          "value": "different-road governed junction vehicle entering before ego"
+        "path_length_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "following_time_gap_s": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "hazard_conflict_geometry": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "secondary_mechanism": {
+          "kind": "controller",
+          "value": "cross_highway_yield"
+        },
+        "secondary_start_station_m": {
+          "kind": "controller",
+          "value": null
+        },
+        "hazard_target_request": {
+          "kind": "controller",
+          "value": "vehicle"
+        },
+        "lead_speed_request_mps": {
+          "kind": "controller",
+          "value": 11
         }
       },
       "unresolved_judgment_calls": [
-        "speeding cross-reference",
-        "traffic-control predicate",
-        "failure-to-yield priority",
+        "too closely",
+        "Improper or unsafe",
         "immediate hazard"
       ],
       "recording_description": {
@@ -602,13 +1246,178 @@
             "uncertainty": "Native pose sample resolution"
           }
         ],
-        "context_inputs": [],
+        "context_inputs": [
+          {
+            "name": "original_actor_and_road_context",
+            "unit": "source packet",
+            "method": "20 Hz original Native actor, junction, lane, road and camera source packets; identity and joins retained for independent review"
+          },
+          {
+            "name": "governing_cross_referenced_rule",
+            "unit": "sourced legal context",
+            "method": "frozen cited-rule identity retained for independent review; no automatic legal finding"
+          }
+        ],
         "limitations": [
           "No physical sign, predicate violation, immediate hazard or aggressive-driving legal judgment inferred from fixture or command."
         ]
+      },
+      "paired_probe_id": "listed_yield",
+      "deliberate_differences": [
+        "secondary_mechanism"
+      ],
+      "probe": {
+        "primary_variable": "secondary_mechanism",
+        "comparison_or_standard": "paired exact source request; measured behavior and legal predicates remain unresolved",
+        "target_value_or_branch": "cross_highway_yield"
+      }
+    },
+    {
+      "case_id": "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__at_mile",
+      "target_law_id": "NRS-484B-650-1",
+      "target_type": "boundary_probe",
+      "rationale": "Request two closing encounters with first-request start to second-request end exactly 1609.344 m apart; original measured event span and legal threshold remain unresolved",
+      "variable_assignments": {
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 24
+        },
+        "requested_following_encounters": {
+          "kind": "controller",
+          "value": 2
+        },
+        "ego_speed_mps": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "path_length_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "following_time_gap_s": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "hazard_conflict_geometry": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "secondary_mechanism": {
+          "kind": "controller",
+          "value": "two_following_closings"
+        },
+        "secondary_start_station_m": {
+          "kind": "controller",
+          "value": 1669.344
+        },
+        "hazard_target_request": {
+          "kind": "controller",
+          "value": "vehicle"
+        },
+        "lead_speed_request_mps": {
+          "kind": "controller",
+          "value": 11
+        }
+      },
+      "unresolved_judgment_calls": [
+        "too closely",
+        "Improper or unsafe",
+        "immediate hazard"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "path_length_m",
+            "unit": "m",
+            "method": "integrated original ego positions",
+            "sampling_rate_hz": 20,
+            "time_window": "entire continuous original drive",
+            "reference_frame": "Native world ground plane",
+            "uncertainty": "Native pose sample resolution"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "original_actor_and_road_context",
+            "unit": "source packet",
+            "method": "20 Hz original Native actor, junction, lane, road and camera source packets; identity and joins retained for independent review"
+          },
+          {
+            "name": "governing_cross_referenced_rule",
+            "unit": "sourced legal context",
+            "method": "frozen cited-rule identity retained for independent review; no automatic legal finding"
+          }
+        ],
+        "limitations": [
+          "No physical sign, predicate violation, immediate hazard or aggressive-driving legal judgment inferred from fixture or command."
+        ]
+      },
+      "paired_probe_id": "C228508_one_mile_boundary",
+      "deliberate_differences": [
+        "secondary_start_station_m"
+      ],
+      "probe": {
+        "primary_variable": "path_length_m",
+        "comparison_or_standard": "source-measured continuous one-mile event-window threshold; requested span only",
+        "target_value_or_branch": "at_mile",
+        "threshold_ref": "timing.numeric_conditions[0]",
+        "test_value": 1.0,
+        "operator": "<=",
+        "unit": "mile"
+      },
+      "epsilon_used": {
+        "value": 0.001,
+        "unit": "mile",
+        "rationale": "Requested engineering margin for source-measured physical uncertainty; not a legal tolerance"
       }
     }
   ],
-  "sweep_specs": [],
+  "sweep_specs": [
+    {
+      "sweep_id": "C228508_0_judgment_sweep",
+      "target_law_id": "NRS-484B-650-1",
+      "judgment_refs": [
+        {
+          "phrase": "too closely",
+          "note": "The referenced following provisions require separate source-grounded review; a headway sample is not a legal threshold."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Finite original-source judgment sweep requires Native actor/road geometry and reviewed lawful predicate context",
+      "missing_inputs": [
+        "Native original actor/road geometry and governing cross-referenced predicate review"
+      ]
+    },
+    {
+      "sweep_id": "C228508_1_judgment_sweep",
+      "target_law_id": "NRS-484B-650-1",
+      "judgment_refs": [
+        {
+          "phrase": "Improper or unsafe",
+          "note": "The referenced marked-lane provisions require independent activation, context and judgment."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Finite original-source judgment sweep requires Native actor/road geometry and reviewed lawful predicate context",
+      "missing_inputs": [
+        "Native original actor/road geometry and governing cross-referenced predicate review"
+      ]
+    },
+    {
+      "sweep_id": "C228508_2_judgment_sweep",
+      "target_law_id": "NRS-484B-650-1",
+      "judgment_refs": [
+        {
+          "phrase": "immediate hazard",
+          "note": "Duration is irrelevant under this clause; original participant and conflict evidence still require independent review."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Finite original-source judgment sweep requires Native actor/road geometry and reviewed lawful predicate context",
+      "missing_inputs": [
+        "Native original actor/road geometry and governing cross-referenced predicate review"
+      ]
+    }
+  ],
   "sweeps_expanded": true
 }

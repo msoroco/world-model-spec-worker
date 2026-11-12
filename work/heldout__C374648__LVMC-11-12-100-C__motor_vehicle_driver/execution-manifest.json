@@ -1,0 +1,55 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver",
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3",
+  "cases": [
+    {
+      "case_id": "heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver__left_center_east",
+      "kind": "delivery",
+      "construction": "construction.json",
+      "construction_sha256": "58a850545225168531d88ad650351f9d2ce825dc78bea0389e45c0c0cf131c1c",
+      "measurement_procedure": {
+        "entrypoint": "turn_origin_finalizer.py"
+      },
+      "measurement_contract": "measurement-contract-left_center_east.json",
+      "fixture_recipe": "work/heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver/fixture-recipe-left_center_east.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Actual center-lane designation, map suitability, turn motion and camera visibility require Native review"
+      },
+      "candidates": [],
+      "acquisition": {
+        "turn_origin_observation": {
+          "entrypoint": "runner.py",
+          "method": "20 Hz original Native lane/heading source recorder",
+          "evidence": "turn_origin_native.jsonl, case_context.json, trace.jsonl, video_frames.jsonl"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver/execution-manifest.json --case heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver__left_center_east --output .runtime-work/c374648-first-offline-5",
+        "exit_code": 0,
+        "log": "first-offline.log",
+        "log_sha256": "7ed3be9a3e85f7040f421c0a860124269c8f57b3120d90c3acc1f610aa64c415",
+        "construction_sha256": "58a850545225168531d88ad650351f9d2ce825dc78bea0389e45c0c0cf131c1c"
+      },
+      "compatibility": {
+        "receipt": "first-compatibility.json",
+        "sha256": "95bf2dce0b6d36d2cf0eae7c818c370e243656a52a3abf20d27bc7c32f5c5752",
+        "log": "first-compat-analysis.log",
+        "negative_log": "first-negative.log"
+      },
+      "negative": {
+        "log": "first-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver/execution-manifest.json --case heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver__left_center_east --attempt \"$ATTEMPT\" --output \"$PROCESSING_OUTPUT\" --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSING_OUTPUT/v0001/feedback.json\"",
+        "test_log": "first-saved.log",
+        "test_log_sha256": "aeec48756b7c96abbb2477a9a73c1eaf486e9fa8f3f6d307c6e9d65b072a9c94",
+        "saved_processing_receipt": "first-saved-processing.json",
+        "saved_processing_sha256": "aeec48756b7c96abbb2477a9a73c1eaf486e9fa8f3f6d307c6e9d65b072a9c94"
+      }
+    }
+  ]
+}
