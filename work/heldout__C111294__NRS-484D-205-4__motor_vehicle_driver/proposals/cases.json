@@ -381,6 +381,100 @@
       "sweep_spec_version": "fa688d2fab48d3806ed63a1a4837bc066708d632432207f753886275dc457abe",
       "planned_case_count": 2,
       "selection_rank": 1
+    },
+    {
+      "case_id": "heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__forward_combined_backup_lamp_off",
+      "target_law_id": "NRS-484D-205-4",
+      "target_type": "boundary_probe",
+      "rationale": "Source-inspected combined backup/other lamp housing at one installed backup lamp, with actual forward Native lamp state off and emitted pixels pending review.",
+      "variable_assignments": {
+        "installed_backup_lamps": {
+          "kind": "world_setup",
+          "value": 1
+        },
+        "command_backup_lamp_on": {
+          "kind": "controller",
+          "value": 0
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "native_backup_lamp_on",
+            "unit": "boolean",
+            "method": "saved original Native frame join",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world and original frame identity",
+            "uncertainty": "Native state does not establish emitted pixels or legal outcome"
+          },
+          {
+            "name": "forward_motion_observed",
+            "unit": "boolean",
+            "method": "saved original Native frame join",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world and original frame identity",
+            "uncertainty": "Native state does not establish emitted pixels or legal outcome"
+          },
+          {
+            "name": "longitudinal_speed_mps",
+            "unit": "m/s",
+            "method": "saved original Native frame join",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world and original frame identity",
+            "uncertainty": "Native state does not establish emitted pixels or legal outcome"
+          },
+          {
+            "name": "other_vehicle_center_xy_m",
+            "unit": "m",
+            "method": "saved original Native frame join",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world and original frame identity",
+            "uncertainty": "Native state does not establish emitted pixels or legal outcome"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "installed_backup_lamps",
+            "unit": "source record",
+            "method": "independent source-backed equipment inventory including separate or combined hardware"
+          },
+          {
+            "name": "other_vehicle_context",
+            "unit": "source record",
+            "method": "original actor identity, position, velocity and reviewed travel purpose"
+          },
+          {
+            "name": "original_motion_equipment_and_four_cameras",
+            "unit": "original sources",
+            "method": "retain original motion, equipment, light state, frame map and four named RGB streams; original source review required before acceptance"
+          },
+          {
+            "name": "original_rear_lamp_pixels",
+            "unit": "review record",
+            "method": "independent full decode of original rear-view camera frames and pixel review; original source review required before acceptance"
+          }
+        ],
+        "limitations": [
+          "Actual emitted pixels, asset equipment classification and legal outcome require independent original-source review."
+        ]
+      },
+      "sweep_measurements": [],
+      "paired_probe_id": "housing_arrangement",
+      "deliberate_differences": [
+        "lamp_arrangement"
+      ],
+      "probe": {
+        "primary_variable": "installed_backup_lamps",
+        "comparison_or_standard": "same installed count with separate-versus-combined source arrangement held in original equipment inventory",
+        "target_value_or_branch": "forward_combined_backup_lamp_off"
+      },
+      "unresolved_judgment_calls": [
+        "lighted"
+      ]
     }
   ],
   "sweep_specs": [

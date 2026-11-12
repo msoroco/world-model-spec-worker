@@ -10,7 +10,10 @@ from lamp_source_capture import LampSourceRecorder
 from lamp_camera_capture import CAMERAS, FFmpegSourceSink, LampCameraCapture
 
 
-CASES = {'forward_combined_backup_lamp_off': (1, False)}
+CASES = {'no_backup_lamp_installed': (0, False),
+         'forward_backup_lamp_off': (1, False),
+         'forward_backup_lamp_on': (1, True),
+         'forward_combined_backup_lamp_off': (1, False)}
 
 
 def check_config(config):
@@ -21,7 +24,7 @@ def check_config(config):
     if branch not in CASES or not config.get('selected_case_id', '').endswith('__'+branch):
         raise ValueError('Unknown exact backup-lamp case')
     count, lamp_on = CASES[branch]
-    if (config.get('installed_backup_lamp_count'), config.get('command_backup_lamp_on')) != (count, lamp_on) or config.get('lamp_arrangement') != 'combined':
+    if (config.get('installed_backup_lamp_count'), config.get('command_backup_lamp_on')) != (count, lamp_on) or (branch == 'forward_combined_backup_lamp_off' and config.get('lamp_arrangement') != 'combined'):
         raise ValueError('Exact combined case equipment or lamp setting differs')
     if config.get('rate_hz') != 20 or config.get('frames') != 160 or config.get('duration_s') != 8:
         raise ValueError('Exact case requires 160 frames at 20 Hz')
@@ -52,6 +55,8 @@ def run(output, host, port):
     output = Path(output)
     config = json.loads((output/'config.json').read_text())
     check_config(config)
+    if config['case_branch'] != 'forward_combined_backup_lamp_off':
+        raise ValueError('Combined runner requires its exact combined case')
     client = carla.Client(host, port); client.set_timeout(30.)
     world = client.get_world(); original = world.get_settings()
     scene = camera = pipeline = recorder = frame_map = None

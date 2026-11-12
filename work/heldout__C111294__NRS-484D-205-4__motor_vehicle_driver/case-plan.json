@@ -30,6 +30,15 @@
       ],
       "construction_state": "planned",
       "purpose": "Backup lamps installed and intentionally illuminated during measured forward motion; actual emission must be checked independently from a commanded light-state bit."
+    },
+    {
+      "case_id": "heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__forward_combined_backup_lamp_off",
+      "target_law_id": "NRS-484D-205-4",
+      "gap_ids": [
+        "actual-forward-lamp-state"
+      ],
+      "construction_state": "cpu_constructed_pending_exact_proofs",
+      "purpose": "One installed backup lamp shares a source-inspected physical housing with another lamp function; Native forward lamp state remains off. Retained equipment and independent rear-pixel review are required before physical or legal claims."
     }
   ],
   "comparisons": [
@@ -86,6 +95,33 @@
         ],
         "diagnostic_only": true,
         "negative_test": ".venv-cpu/bin/python -m unittest discover -s work/heldout__C111294__NRS-484D-205-4__motor_vehicle_driver/tests -p test_lamp_comparison_audit.py -v"
+      }
+    },
+    {
+      "comparison_id": "separate_vs_combined_housing",
+      "case_ids": [
+        "heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__forward_backup_lamp_off",
+        "heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__forward_combined_backup_lamp_off"
+      ],
+      "fixed_conditions": [
+        "same selected motor-vehicle role and intersection route",
+        "forward-motion controller, Native backup-lamp off command and other-vehicle context",
+        "four named source cameras, 20 Hz and eight-second duration"
+      ],
+      "deliberate_differences": [
+        "independently inspected separate versus shared housing arrangement for installed backup lamp"
+      ],
+      "comparison_audit": {
+        "script": "combined_comparison_audit.py",
+        "script_sha256": "1d05ecdcdf849d84a622be1e254d82e09457fd8629bce7a293ee81d53edfcc13",
+        "proof": "comparison-separate_vs_combined_housing-proof.json",
+        "proof_sha256": "9241e27c941f7566c1d7065fcc0316c464de3f39c2adb0c7674c4092b2fa0aa5",
+        "attempt_paths": [
+          ".runtime-work/c111294-semantic-reproof/proofs-returned-v1/forward_backup_lamp_off-primary-saved/v0001/analysis",
+          ".runtime-work/c111294-combined-reproof-v7/primary-compatibility"
+        ],
+        "diagnostic_only": true,
+        "negative_test": ".venv-cpu/bin/python -m unittest discover -s work/heldout__C111294__NRS-484D-205-4__motor_vehicle_driver/tests -p test_combined_comparison_audit.py -v"
       }
     }
   ],
@@ -180,7 +216,8 @@
       "case_ids": [
         "heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__no_backup_lamp_installed",
         "heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__forward_backup_lamp_off",
-        "heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__forward_backup_lamp_on"
+        "heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__forward_backup_lamp_on",
+        "heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__forward_combined_backup_lamp_off"
       ],
       "evidence_or_gap": "actual-forward-lamp-state"
     }

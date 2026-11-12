@@ -6,7 +6,7 @@
     {
       "case_id": "heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__forward_backup_lamp_off",
       "kind": "delivery",
-      "construction": "construction.json",
+      "construction": "cases/forward_backup_lamp_off/primary-construction.json",
       "construction_sha256": "8e9ab294dd106541e6876950216027e4ab1398f2941b509c84e541d535836c6d",
       "measurement_procedure": {
         "entrypoint": "lamp_finalizer.py"
@@ -601,6 +601,197 @@
       },
       "negative": {
         "log": "forward_backup_lamp_on-primary-negative.log"
+      }
+    },
+    {
+      "case_id": "heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__forward_combined_backup_lamp_off",
+      "kind": "delivery",
+      "construction": "cases/forward_combined_backup_lamp_off/primary-construction.json",
+      "construction_sha256": "f47745021b9aee76cf1edb9a4ff1971ea3ad228f4261880bbeb7f34728ea7b8b",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The selected Native blueprint may not expose a reviewed shared lamp housing, and the through-route or forward-motion controller may fail physical readback."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/forward_combined_backup_lamp_off/fallback1-construction.json",
+          "construction_sha256": "c4b235532501614d7273e8bcc81422eb8da02dd3559ee53b0324522be9971f50",
+          "trigger": {
+            "source": "original map route and ego spawn readback",
+            "metric": "approach route uniqueness and collision-free spawn",
+            "failure_condition": "primary 45 m approach cannot be spawned or has ambiguous route"
+          },
+          "changed_knobs": [
+            "approach_m: 40"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484D-205-4__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__forward_combined_backup_lamp_off --candidate fallback1 --output .runtime-work/c111294-combined-reproof-v6/fallback1-offline --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "forward_combined_backup_lamp_off-fallback1-offline.log",
+            "log_sha256": "084be0b897fc080ce8a21f517058490226856a5e50e6ac80365344d8d3872bf6",
+            "construction_sha256": "c4b235532501614d7273e8bcc81422eb8da02dd3559ee53b0324522be9971f50"
+          },
+          "compatibility": {
+            "receipt": "forward_combined_backup_lamp_off-fallback1-receipt.json",
+            "sha256": "1dce973bddb1275bf0c17415c675cdaba5d8864a33dc1d07d5fba7d432a2609e",
+            "log": "forward_backup_lamp_off-primary-analysis.log",
+            "negative_log": "forward_combined_backup_lamp_off-fallback1-negative.log"
+          },
+          "saved_processing_proof": {
+            "command": ".venv-cpu/bin/python work/heldout__C111294__NRS-484D-205-4__motor_vehicle_driver/lifecycle_combined.py --case heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__forward_combined_backup_lamp_off --candidate fallback1",
+            "exit_code": 0,
+            "log": "forward_combined_backup_lamp_off-fallback1-saved.log",
+            "log_sha256": "df7376f88b255d00771a33aa3ef5892474c3e67d1067a039663cb1678b995501"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/forward_combined_backup_lamp_off/fallback2-construction.json",
+          "construction_sha256": "314e75ff6fbba9d44a9e1757c7dc343d639e86f624ed65076739442c7aa5ccbb",
+          "trigger": {
+            "source": "original map route and full forward trace",
+            "metric": "downstream exit completion",
+            "failure_condition": "primary 35 m exit leaves the vehicle outside reviewed camera interval"
+          },
+          "changed_knobs": [
+            "exit_m: 30"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484D-205-4__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__forward_combined_backup_lamp_off --candidate fallback2 --output .runtime-work/c111294-combined-reproof-v6/fallback2-offline --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "forward_combined_backup_lamp_off-fallback2-offline.log",
+            "log_sha256": "dc85e72f51efd3e73812cfe239bf57c2aeadeff965c3ed91eec80356aee3008c",
+            "construction_sha256": "314e75ff6fbba9d44a9e1757c7dc343d639e86f624ed65076739442c7aa5ccbb"
+          },
+          "compatibility": {
+            "receipt": "forward_combined_backup_lamp_off-fallback2-receipt.json",
+            "sha256": "c2b3887fbec5e59fff83cb9002ead88c892ed275dda12410f70005f149333dba",
+            "log": "forward_backup_lamp_off-primary-analysis.log",
+            "negative_log": "forward_combined_backup_lamp_off-fallback2-negative.log"
+          },
+          "saved_processing_proof": {
+            "command": ".venv-cpu/bin/python work/heldout__C111294__NRS-484D-205-4__motor_vehicle_driver/lifecycle_combined.py --case heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__forward_combined_backup_lamp_off --candidate fallback2",
+            "exit_code": 0,
+            "log": "forward_combined_backup_lamp_off-fallback2-saved.log",
+            "log_sha256": "df7376f88b255d00771a33aa3ef5892474c3e67d1067a039663cb1678b995501"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/forward_combined_backup_lamp_off/fallback3-construction.json",
+          "construction_sha256": "3a0db20ef8b9655db6a858b35eb25db6b1a20d0c655eda2b46848a0de8563315",
+          "trigger": {
+            "source": "original forward speed and control readback",
+            "metric": "speed tracking and overshoot",
+            "failure_condition": "primary controller gain produces unstable measured forward speed"
+          },
+          "changed_knobs": [
+            "speed_gain: 0.16"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484D-205-4__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__forward_combined_backup_lamp_off --candidate fallback3 --output .runtime-work/c111294-combined-reproof-v6/fallback3-offline --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "forward_combined_backup_lamp_off-fallback3-offline.log",
+            "log_sha256": "063fb5f9ef35dd62a371bb35f9805f7cfc6a64d3eff0d7d92a0d17ea25b76524",
+            "construction_sha256": "3a0db20ef8b9655db6a858b35eb25db6b1a20d0c655eda2b46848a0de8563315"
+          },
+          "compatibility": {
+            "receipt": "forward_combined_backup_lamp_off-fallback3-receipt.json",
+            "sha256": "16d23931d2ea2a800edf64c0d67e4b1e8e927dae6334d6275a64738d622b21fa",
+            "log": "forward_backup_lamp_off-primary-analysis.log",
+            "negative_log": "forward_combined_backup_lamp_off-fallback3-negative.log"
+          },
+          "saved_processing_proof": {
+            "command": ".venv-cpu/bin/python work/heldout__C111294__NRS-484D-205-4__motor_vehicle_driver/lifecycle_combined.py --case heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__forward_combined_backup_lamp_off --candidate fallback3",
+            "exit_code": 0,
+            "log": "forward_combined_backup_lamp_off-fallback3-saved.log",
+            "log_sha256": "df7376f88b255d00771a33aa3ef5892474c3e67d1067a039663cb1678b995501"
+          }
+        }
+      ],
+      "measurement_contract": "backup-lamp-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "lamp_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C111294__NRS-484D-205-4__motor_vehicle_driver/diagnostic-recipe-combined.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484D-205-4__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__forward_combined_backup_lamp_off --candidate primary --output .runtime-work/c111294-combined-reproof-v6/primary-offline --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "log": "forward_combined_backup_lamp_off-primary-offline.log",
+        "log_sha256": "dc85e72f51efd3e73812cfe239bf57c2aeadeff965c3ed91eec80356aee3008c",
+        "construction_sha256": "f47745021b9aee76cf1edb9a4ff1971ea3ad228f4261880bbeb7f34728ea7b8b"
+      },
+      "compatibility": {
+        "receipt": "forward_combined_backup_lamp_off-primary-receipt.json",
+        "sha256": "6abf1021324235c0b6e7b538d1577a4552da74d43731ba696cfe9e953a4ff406",
+        "log": "forward_backup_lamp_off-primary-analysis.log",
+        "negative_log": "forward_combined_backup_lamp_off-primary-negative.log"
+      },
+      "negative": {
+        "log": "forward_combined_backup_lamp_off-primary-negative.log"
+      },
+      "acquisition": {
+        "native_backup_lamp_on": {
+          "entrypoint": "lamp_source_capture.py",
+          "method": "Read original Native reverse-light bit each synchronized frame",
+          "evidence": "motion.jsonl and video_frames.jsonl"
+        },
+        "forward_motion_observed": {
+          "entrypoint": "backup_lamp_measurement.py",
+          "method": "Project original velocity on measured heading",
+          "evidence": "motion.jsonl and video_frames.jsonl"
+        },
+        "longitudinal_speed_mps": {
+          "entrypoint": "backup_lamp_measurement.py",
+          "method": "Original heading-dot-velocity projection",
+          "evidence": "motion.jsonl and video_frames.jsonl"
+        },
+        "other_vehicle_center_xy_m": {
+          "entrypoint": "runner.py",
+          "method": "Read separately spawned participant transform each tick",
+          "evidence": "other_vehicle.jsonl and video_frames.jsonl"
+        }
+      },
+      "saved_processing_proof": {
+        "command": ".venv-cpu/bin/python work/heldout__C111294__NRS-484D-205-4__motor_vehicle_driver/lifecycle_combined.py --case heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__forward_combined_backup_lamp_off --candidate primary",
+        "exit_code": 0,
+        "log": "forward_combined_backup_lamp_off-primary-saved.log",
+        "log_sha256": "df7376f88b255d00771a33aa3ef5892474c3e67d1067a039663cb1678b995501"
+      },
+      "physical_preparation": {
+        "receipt": "physical/forward_combined_backup_lamp_off-proof.json",
+        "sha256": "46d55bbea502c4a40591a0a7bc6c20dee5ee1f308b2af787f198e0a010365c89"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__forward_combined_backup_lamp_off",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit_combined.py",
+        "script_sha256": "6f3302c69424b8949f4d9eca9546d61f1bf8575acb42d4b8ca46bf445bd754ec",
+        "command": ".venv-cpu/bin/python work/heldout__C111294__NRS-484D-205-4__motor_vehicle_driver/delivery_audit_combined.py --case heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__forward_combined_backup_lamp_off --attempt .runtime-work/c111294-combined-reproof-v7/primary-compatibility --diagnostic-fixture",
+        "test_exit_code": 0,
+        "test_log": "delivery-audit-forward_combined_backup_lamp_off-positive.log",
+        "test_log_sha256": "28c0e5b0e88193fc92eb7f47d6ac55e7f904ba7e03697d9588d15371849603d1",
+        "negative_command": ".venv-cpu/bin/python work/heldout__C111294__NRS-484D-205-4__motor_vehicle_driver/delivery_audit_combined.py --case heldout__C111294__NRS-484D-205-4__motor_vehicle_driver__forward_combined_backup_lamp_off --attempt .runtime-work/c111294-combined-reproof-v7/primary-compatibility --diagnostic-fixture --remove-source asset-inspection.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original combined asset inspection",
+        "negative_log": "delivery-audit-forward_combined_backup_lamp_off-negative.log",
+        "negative_log_sha256": "e85fa745a76b32168a44184a248b1ff6c599984988136b7a11643b8f8851a74e"
       }
     }
   ]
