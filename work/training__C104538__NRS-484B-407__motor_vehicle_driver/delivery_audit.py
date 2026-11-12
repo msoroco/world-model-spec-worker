@@ -84,6 +84,13 @@ def joined_observer_distances(mapping: list[dict], trace: list[dict],
     return distances
 
 
+def check_rgb_frame(frame, mapping: list[dict], camera: str) -> None:
+    require(camera in CAMERAS and 0 <= frame.index < len(mapping) and
+            hashlib.sha256(frame.pixels).hexdigest() ==
+                mapping[frame.index].get("original_rgb_sha256", {}).get(camera),
+            "Decoded original RGB frame differs from frame map: " + camera)
+
+
 def check_pixel_review(review: dict, source_hashes: dict, mapping: list[dict],
                        case_id: str, *, diagnostic: bool,
                        observed_distances: dict | None = None) -> dict:
@@ -111,8 +118,12 @@ def check_pixel_review(review: dict, source_hashes: dict, mapping: list[dict],
                 item.get("limitations") is not None,
                 "Original camera pixels unreviewed: " + camera)
         visible_subjects.update(item["subjects_visible"])
-    require({"ego_body", "opposing_vehicle", "obstruction"} <= visible_subjects,
-            "Original pixel review omits scene participants")
+    if diagnostic:
+        require(not visible_subjects,
+                "Diagnostic pixels cannot claim visible scene participants")
+    else:
+        require({"ego_body", "opposing_vehicle", "obstruction"} <= visible_subjects,
+                "Original pixel review omits scene participants")
     observations = review.get("directions", {})
     require(set(observations) == set(DIRECTIONS),
             "Original opposing approaches not both reviewed")
@@ -120,9 +131,14 @@ def check_pixel_review(review: dict, source_hashes: dict, mapping: list[dict],
         item = observations[direction]
         frame = item.get("video_frame")
         distance = item.get("observer_distance_ft")
+        rgb_hash = (mapping[frame].get("original_rgb_sha256", {}).get(item.get("camera"))
+                    if type(frame) is int and 0 <= frame < 480 else None)
         require(type(frame) is int and 0 <= frame < 480 and
                 item.get("native_frame") == mapping[frame]["native_frame"] and
                 item.get("camera") in CAMERAS and
+                isinstance(rgb_hash, str) and len(rgb_hash) == 64 and
+                all(character in "0123456789abcdef" for character in rgb_hash) and
+                item.get("original_rgb_sha256") == rgb_hash and
                 type(distance) in (int, float) and math.isfinite(distance) and
                 abs(distance - 500) <= 1 and
                 all(item.get(key) in (True, False) for key in
@@ -212,8 +228,11 @@ def audit(attempt: Path, saved: Path, owner_receipt: Path, case_id: str,
     decode_receipts = {}
     for camera in CAMERAS:
         path = decode_dir/(camera + ".json")
+        def check_rgb(frame, camera=camera):
+            check_rgb_frame(frame, mapping, camera)
         decode(attempt/(camera + ".mkv"), 480, receipt=path,
-               mapping_sha256=source_hashes["video_frames.jsonl"])
+               mapping_sha256=source_hashes["video_frames.jsonl"],
+               checkers={"original_rgb_sha256": (sha(Path(__file__)), check_rgb)})
         decode_receipts[camera] = {"path": str(path), "sha256": sha(path)}
     primary_receipt = decode_dir/"primary.json"
     decoded = decode(primary_video, 480, receipt=primary_receipt,
