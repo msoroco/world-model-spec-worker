@@ -36,8 +36,19 @@ def audit(attempts):
         topology_raw = _bytes(root, "intersection_topology.json")
         rows_raw = _bytes(root, "intersection_participants.jsonl")
         rows = [json.loads(line) for line in rows_raw.splitlines() if line.strip()]
-        if not rows:
-            raise ValueError("Empty original participant history")
+        planned_frames = config.get("frames")
+        if type(planned_frames) is not int or planned_frames < 164 or len(rows) != planned_frames:
+            raise ValueError("Original release sweep does not span the planned frame window")
+        frame_map = [json.loads(line) for line in _bytes(root, "video_frames.jsonl").splitlines() if line.strip()]
+        trace = [json.loads(line) for line in _bytes(root, "trace.jsonl").splitlines() if line.strip()]
+        if len(frame_map) != len(rows) or len(trace) != len(rows):
+            raise ValueError("Release sweep original frame-map or trace length differs")
+        for index, (row, video, motion) in enumerate(zip(rows, frame_map, trace)):
+            identity = (row.get("frame"), row.get("time_s"))
+            if (video.get("video_frame") != index or
+                    (video.get("carla_frame"), video.get("time_s")) != identity or
+                    (motion.get("frame"), motion.get("time_s")) != identity):
+                raise ValueError("Release sweep original frame-map or trace join failed")
         topology_hash = sha256(topology_raw).hexdigest()
         if fixed_topology is None:
             fixed_topology = topology_hash

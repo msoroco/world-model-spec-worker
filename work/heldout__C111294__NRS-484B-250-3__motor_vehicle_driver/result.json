@@ -8,8 +8,8 @@
       "command": ".venv-cpu/bin/python -m unittest discover -s work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests-latest.log",
-      "sha256": "df13beae5630833a7673d023e955c28d49dae106be5e04185b489ebb0d26106e",
-      "passed": 68
+      "sha256": "0a25ad70916c29f5e3d9c8f31680b9e832dc4895cbbfeae74a3acb5d7b7366f4",
+      "passed": 70
     },
     {
       "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python pinned execution_manifest.validate and package_compatibility.check_receipts",
@@ -18,16 +18,22 @@
       "sha256": "5a45d5f14dc8a229243dacebea25fd524ad9387d5abaed7ca2294c2b8e471d79"
     },
     {
-      "command": ".venv-cpu/bin/python source-joined qualitative_release_audit against current three saved attempts (expected rejection)",
+      "command": ".venv-cpu/bin/python qualitative_release_audit.py against current three saved attempts (expected rejection of incomplete 9-frame originals)",
       "exit_code": 0,
       "log": "qualitative-release-current-negative.log",
-      "sha256": "172f4ab2ed885101c3487c49601212198ebfbe8d61eb764cddd707e266890f8c"
+      "sha256": "e4f6a75f97adf49809e5d0a6cb587325d756b3a67e43f35bb17ccf81a422b94b"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/build_release_window.py --output .runtime-work/c111294-release-window --receipt work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/qualitative-release-window-proof.json",
+      "exit_code": 0,
+      "log": "qualitative-release-window-build.log",
+      "sha256": "e53627256e63dc67bc5bf60c7435515ff55174286dddd5b9f6e54b5bb8553660"
     }
   ],
   "remaining_gpu_checks": [
     "Actual map suitability, two-vehicle motion and body clearance",
     "Physical camera visibility and capture quality"
   ],
-  "reason": "Partial: 68 CPU tests pass. Nine selected cases and 27 fallbacks retain their current exact offline, compatibility and synthetic saved-processing proofs. A new original-body release audit passes on constructed varying source-shaped histories and rejects the current selected 0/80/160-frame saved attempts: all three contain the same measured entry frame despite distinct controller setpoints. Refresh those three source-consistent diagnostics and rerun affected exact compatibility, saved, delivery, physical and comparison proofs. Complete the remaining source-supported qualitative law sweep, ordered batch GPU queue, local integration proof and independent full-law review before scoped strict readiness. Actual Native motion, pixels and legal judgments remain unverified.",
+  "reason": "Partial: 70 CPU tests pass. A source-shaped synthetic 320-frame release-window builder now yields three measured original-body entry frames at 0/80/160-frame offsets, with complete frame-map/trace joins and tamper rejection. The generated packets live under .runtime-work and pass the independent qualitative audit, but the three selected diagnostic recipes and saved attempts still use nine-frame sources. Incorporate source-consistent full-window packets into their complete Native-shaped diagnostic recipes, rerun all affected exact compatibility, saved, delivery, physical and comparison proofs, then finish remaining qualitative branches, shared GPU queue, local integration proof and full-law review. No physical or legal outcome is claimed.",
   "readiness_kind": "delivery_prepared"
 }
