@@ -115,6 +115,16 @@ class RunnerTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError,'differs from reviewed source'):
                 load_config(config)
 
+    def test_changed_approach_route_rejected_by_source_binding(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);config,packet,cfg,site=self.packet(root)
+            site['approaches']['other']['route_xy_m']=[[15,15],[15,0],[15,-15]]
+            packet.write_text(json.dumps(site))
+            cfg['site_packet']['sha256']=hashlib.sha256(packet.read_bytes()).hexdigest()
+            config.write_text(json.dumps(cfg))
+            with self.assertRaisesRegex(ValueError,'differs from reviewed source'):
+                load_config(config)
+
     def test_unstructured_packet_rejected(self):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp);config,packet,cfg,site=self.packet(root)

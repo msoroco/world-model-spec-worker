@@ -37,6 +37,7 @@ def build():
         _,_,config,_=module.RunnerTests().packet(temp)
         config['frames']=60
         config['duration_s']=3
+        config['other_release_frame']=20
         config['required_atoms']=['ru.subject','ru.motor_vehicle','kin.position',
                                   'kin.velocity','kin.speed','st.intersection',
                                   'rel.bearing']

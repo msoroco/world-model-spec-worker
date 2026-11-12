@@ -161,29 +161,25 @@ now loads materialized `config.json` by default, as required by the runtime
 offline invocation.
 
 `build_primary_bundle.py` builds
-`cases/yield_ego_left_near_time/construction.json` and its isolated
-`candidate-manifest.json` from an explicitly synthetic five-document yield
+`cases/yield_ego_left_near_time/construction.json` and an isolated
+`primary-candidate-manifest.json` from an explicitly synthetic five-document yield
 site packet. Rebuild with:
 
 ```
 .venv-cpu/bin/python work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/build_primary_bundle.py
 ```
 
-The exact offline command below passed (`primary-offline-v2.log` and
-`.runtime-work/c125763-yield-left-primary-offline-v2/offline.log`), with all
+The exact offline command below passed (`primary-offline-v4.log` and
+`.runtime-work/c125763-yield-left-primary-offline-v4/offline.log`), with all
 four named cameras, one materialized CPU test and `carla_started: false`:
 
 ```
-.venv-cpu/bin/python runtime.py offline --manifest work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/cases/yield_ego_left_near_time/candidate-manifest.json --case testing__C125763__NRS-484B-250-2__motor_vehicle_driver__yield_ego_left_near_time --output .runtime-work/c125763-yield-left-primary-offline-v2
+.venv-cpu/bin/python runtime.py offline --manifest work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/primary-candidate-manifest.json --case testing__C125763__NRS-484B-250-2__motor_vehicle_driver__yield_ego_left_near_time --output .runtime-work/c125763-yield-left-primary-offline-v4
 ```
 
 This is an isolated partial primary diagnostic. The synthetic packet does not
 establish an actual reviewed median opening, an official sign or physical
-camera visibility. This candidate manifest also lacks a diagnostic fixture
-recipe and does not yet satisfy the full execution-manifest and compatibility
-contract. Construct that recipe from retained source-shaped capture data,
-place an exact manifest at assignment root when all selected cases are ready,
-then run exact compatibility and recorded-only saved-processing proofs. Extend
+camera visibility. Extend
 the construction/configuration to the other three selected cases, implement
 three distinct tested fallback constructions for each, complete canonical
 proposals and compare all declared pairs. These are unfinished worker CPU
@@ -203,3 +199,120 @@ packages remain`. `worker_check.py --updates` reports version 0, no notices
 and no paused assignments. `result.json` remains partial and binds the
 current 28-test log hash. No frozen inputs, runtime, batch file or Git action
 was changed.
+
+## Primary compatibility and saved processing checkpoint, 2026-11-12
+
+`build_primary_diagnostic.py` now writes `diagnostic.json` and its SHA-bound
+`diagnostic-recipe.json`. The diagnostic has 60 original-frame crossing,
+controller, frame-map, trace, Native frame and capture-evidence rows, compact
+per-frame graphs, a capture manifest, and four generated 20 Hz camera sources.
+All are synthetic software inputs, with no physical or legal acceptance claim.
+`build_primary_bundle.py` now emits the current exact construction and root
+`primary-candidate-manifest.json` with 60 frames. The proposal at
+`proposals/cases.json` describes this isolated primary diagnostic; it is not a
+complete four-case stage proposal.
+
+The exact primary compatibility command passed in `primary-compat-v6.log`:
+
+```
+.venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/primary-candidate-manifest.json --case testing__C125763__NRS-484B-250-2__motor_vehicle_driver__yield_ego_left_near_time --output .runtime-work/c125763-yield-left-primary-compat-v6 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck
+```
+
+Its retained `primary-compatibility-receipt.json`, `primary-analysis.log` and
+`primary-negative-analysis.log` bind actual finalization, Native validation,
+the required observations, Lean decoder, four source cameras, final video
+decode, selected measurements and rejection when
+`controller_history.jsonl` is removed. `finalizer.py` now wraps the saved
+instance context under the required `entry_context` field. The current
+28-test `cpu-tests.log` passes after that change.
+
+Recorded-only saved processing of the same retained positive attempt also
+passes in `primary-saved-v1.log`:
+
+```
+.venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/primary-candidate-manifest.json --case testing__C125763__NRS-484B-250-2__motor_vehicle_driver__yield_ego_left_near_time --attempt .runtime-work/c125763-yield-left-primary-compat-v6 --output .runtime-work/c125763-yield-left-primary-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck
+```
+
+`primary-saved-receipt.json` reports `passed: true`, `recorded_only: true`,
+`originals_preserved: true`, `physical_acceptance_claimed: false`. The
+isolated primary manifest binds its current construction hash, offline log and
+compatibility receipt. It is deliberately not the complete
+`execution-manifest.json`: three other selected cases, their tested fallbacks,
+complete canonical proposals, audits of all real comparison pairs and full
+assignment readiness still need CPU construction and proof. Preserve partial
+status until those proofs pass. Rebuilds change hashes and require rerunning
+the affected offline, compatibility and saved checks. No frozen inputs,
+runtime, batch file or Git action was changed.
+
+After these changes, `.venv-cpu/bin/python worker_check.py --assignment
+testing__C125763__NRS-484B-250-2__motor_vehicle_driver --complete` exits 0
+in `assignment-check.log`. The final full
+`.venv-cpu/bin/python worker_check.py --complete --require-delivery-ready`
+exits 1 in `strict-gate.log` with `Preparation acceptance failed:
+partial/missing packages remain`. This is the current batch status; the
+primary synthetic proof is a partial checkpoint only.
+
+## Source-bound right-side case and comparison checkpoint, 2026-11-12
+
+`site_packet.py` now includes both approach routes and the ego yield line in
+the hash-bound crossing source document. The new
+`test_changed_approach_route_rejected_by_source_binding` rejects a route edit
+when its review source has not changed; the assignment suite now passes **29
+tests** in `cpu-tests.log`. Rebuilding the primary changed its construction
+hash, so its exact offline, compatibility and saved-processing proofs were all
+rerun. The current primary logs are `primary-offline-v5.log`,
+`primary-compat-v7.log` and `primary-saved-v2.log`; the corresponding current
+receipt is `primary-compatibility-receipt.json`.
+
+`build_right_case.py` constructs
+`testing__C125763__NRS-484B-250-2__motor_vehicle_driver__yield_ego_right_near_time`
+with the other approach routed from the north through the same synthetic
+crossing, a reversed approach heading and a reviewed-source hash updated for
+that route. Its diagnostic moves the original pre-entry other body to the
+opposite side while holding the first complete-body entry-time difference
+fixed. `right-candidate-manifest.json` binds its current construction and
+recipe. Build it after the primary bundle and diagnostic:
+
+```
+.venv-cpu/bin/python work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/build_primary_bundle.py
+.venv-cpu/bin/python work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/build_primary_diagnostic.py
+.venv-cpu/bin/python work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/build_right_case.py
+```
+
+The right case passes exact `runtime.py offline` in `right-offline-v1.log`,
+positive and missing-`controller_history.jsonl` negative compatibility in
+`right-compat-v1.log`, and recorded-only `runtime.py process-saved` in
+`right-saved-v1.log`. The retained right compatibility and saved receipts are
+`right-compatibility-receipt.json` and `right-saved-receipt.json`.
+`audit_comparisons.py` now reads the actual `analysis-report.json` emitted by
+compatibility and passes the exact `yield_sign_relative_side` pair in
+`relative-side-audit-v1.log`, using the current primary attempt
+`.runtime-work/c125763-yield-left-primary-compat-v7` and right attempt
+`.runtime-work/c125763-yield-right-compat-v1`. Both measured entry-time
+differences are 0.05 s; the measured relative side changes as declared.
+This is software evidence from synthetic sources, not physical or legal
+acceptance.
+
+The next selected construction is
+`testing__C125763__NRS-484B-250-2__motor_vehicle_driver__yield_ego_left_separated`:
+retain the sourced crossing, sign, lanes and left-side approach; change the
+other release timing and build a source-shaped diagnostic that demonstrates a
+larger measured complete-body entry-time difference without assigning a legal
+cutoff. Then prove offline, compatibility, saved processing and the declared
+`yield_sign_entry_timing` comparison. The opposite-direction left-turn case,
+all required tested fallbacks, full canonical proposals and delivery audit
+remain worker-owned CPU work. Both near-time manifests are isolated partial
+diagnostics; neither is a complete assignment execution manifest. No status
+was marked ready and no frozen input, runtime, batch file or Git action was
+changed.
+
+The final recheck for this two-case checkpoint passed pinned
+`runtime.py preflight` (`preflight.log`), the 29-test assignment suite
+(`cpu-tests.log`), and scoped `worker_check.py --assignment
+testing__C125763__NRS-484B-250-2__motor_vehicle_driver --complete`
+(`assignment-check.log`). `worker_check.py --updates` reports version 0 and
+no paused assignments (`updates.log`). Full
+`.venv-cpu/bin/python worker_check.py --complete --require-delivery-ready`
+still exits 1 in `strict-gate.log` with `Preparation acceptance failed:
+partial/missing packages remain`. `result.json` stays partial and binds the
+current CPU test log hash.

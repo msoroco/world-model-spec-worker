@@ -20,10 +20,12 @@ def require(ok,message):
 
 def _load(root):
     root=Path(root)
-    proof=audit_delivery(root)
+    analysis_name=('analysis-report.json' if (root/'analysis-report.json').is_file()
+                   else 'saved-analysis.json')
+    proof=audit_delivery(root,analysis_name=analysis_name)
     cfg=json.loads((root/'config.json').read_text())
     ctx=json.loads((root/'junction_context.json').read_text())
-    measurements=json.loads((root/'saved-analysis.json').read_text())['measurements']
+    measurements=json.loads((root/analysis_name).read_text())['measurements']
     return {'proof':proof,'config':cfg,'context':ctx,
             'values':{key:value['value'] for key,value in measurements.items()}}
 
@@ -89,3 +91,13 @@ def audit(root,attempts):
             'software_comparisons_passed':True,'comparisons':results,
             'physical_acceptance_claimed':False,'legal_acceptance_claimed':False,
             'delivery_ready':False}
+
+
+if __name__=='__main__':
+    import argparse
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--name',choices=sorted(EXPECTED),required=True)
+    parser.add_argument('--left',type=Path,required=True)
+    parser.add_argument('--right',type=Path,required=True)
+    args=parser.parse_args()
+    print(json.dumps(audit_pair(args.name,args.left,args.right),indent=2))

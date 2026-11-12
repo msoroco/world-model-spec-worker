@@ -10,7 +10,8 @@ from pathlib import Path
 
 SOURCE_CLAIMS = {
     'crossing_geometry_source': ('native_map_name', 'intersection_id',
-                                 'crossing_polygon_xy_m', 'same_statutory_crossing'),
+                                 'crossing_polygon_xy_m', 'same_statutory_crossing',
+                                 'approaches', 'ego_yield_line_xy_m'),
     'all_entrances_source': ('intersection_id', 'all_entrance_road_lanes'),
     'sign_governance_source': ('yield_sign', 'all_entrance_road_lanes'),
     'sign_face_video_source': ('yield_sign',),

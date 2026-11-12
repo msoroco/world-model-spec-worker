@@ -27,8 +27,11 @@ def build():
         root=Path(temporary)
         module.FinalizerTests().attempt(root)
         templates=[json.loads(s) for s in (root/'crossing_history.jsonl').read_text().splitlines()]
-        context=json.loads((root/'junction_context.json').read_text())
-        context['diagnostic_source']='synthetic software test; no actual site review'
+    construction=json.loads((HERE/'cases/yield_ego_left_near_time/construction.json').read_text())
+    site=json.loads(next(f['content'] for f in construction['files'] if f['path']=='site.json'))
+    import runner
+    context=runner._context(site)
+    context['diagnostic_source']='synthetic software test; no actual site review'
     example_spec=json.loads((REPO/'runtime/fixtures/example.json').read_text())
     example=example_spec['files']
     trace_base=json.loads(example['trace.jsonl'].splitlines()[0])
