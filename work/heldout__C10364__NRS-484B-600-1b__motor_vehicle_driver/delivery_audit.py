@@ -67,6 +67,37 @@ def _visibility(root, case_id, frame_count, cameras):
     return {'path': path.name, 'sha256': digest(path), 'reviewer': review['reviewer']}
 
 
+def verify_native_alley_sources(root, config, case_id):
+    original_survey = (root / 'alley-survey-original.json').read_bytes()
+    survey = json.loads(original_survey)
+    verification = json.loads((root / 'alley-survey-verification.json').read_text())
+    if (survey.get('format') != 'worker-native-alley-survey-v1' or
+            survey.get('verified_alley') is not True or
+            survey.get('map_name') != verification.get('map_name') or
+            survey.get('opendrive_sha256') != verification.get('opendrive_sha256') or
+            survey.get('polygon_xy') != verification.get('polygon_xy') or
+            survey.get('alley_width_m') != verification.get('alley_width_m') or
+            survey.get('routes', {}).get(verification.get('selected_direction')) !=
+            verification.get('selected_route') or
+            verification.get('selected_direction') != config.get('alley_direction') or
+            verification.get('verified') is not True or
+            verification.get('operator_manifest_sha256') != sha256(original_survey).hexdigest() or
+            not survey.get('reviewer') or not survey.get('evidence_reference')):
+        raise ValueError('Original Native alley survey is absent or differs')
+    probe = json.loads((root / 'construction-probe.json').read_text())
+    route = probe.get('route', {})
+    selected_route = verification['selected_route']
+    if (probe.get('case_id') != case_id or
+            probe.get('native_survey') != verification or
+            route.get('map_name') != verification['map_name'] or
+            route.get('road_id') != selected_route['road_id'] or
+            route.get('lane_id') != selected_route['lane_id'] or
+            abs(route.get('start_s', float('inf')) - selected_route['start_s']) > .1 or
+            route.get('polygon_source_sha256') != verification['operator_manifest_sha256']):
+        raise ValueError('Native alley route differs from reviewed survey')
+    return verification
+
+
 def audit(case_id, attempt, *, report_path=None, diagnostic_fixture=False):
     root = Path(attempt)
     config = json.loads((root / 'config.json').read_text())
@@ -111,6 +142,9 @@ def audit(case_id, attempt, *, report_path=None, diagnostic_fixture=False):
             raise ValueError('Diagnostic audit needs an explicitly marked unsealed fixture')
         scope = 'synthetic diagnostic source and media audit only'
     else:
+        if (root / 'fixture-provenance.json').exists():
+            raise ValueError('Native alley audit rejects diagnostic fixture')
+        verify_native_alley_sources(root, config, case_id)
         seal_path = root / 'capture-seal.json'
         exit_path = root / 'native-exit.json'
         if not seal_path.is_file() or not exit_path.is_file():
@@ -122,7 +156,9 @@ def audit(case_id, attempt, *, report_path=None, diagnostic_fixture=False):
                 or owner_exit.get('event') != 'native_exit'
                 or owner_exit.get('capture_seal_sha256') != digest(seal_path)):
             raise ValueError('Native capture closure or owner exit is unverified')
-        if any(seal.get('sources', {}).get(name) != digest(root / name) for name in SOURCES):
+        if any(seal.get('sources', {}).get(name) != digest(root / name) for name in
+               (*SOURCES, 'alley-survey-original.json', 'alley-survey-verification.json',
+                'construction-probe.json')):
             raise ValueError('Sealed original source hash differs')
         if len(frame_map) != int(config['duration_s'] * config['rate_hz']):
             raise ValueError('Native original duration is incomplete')

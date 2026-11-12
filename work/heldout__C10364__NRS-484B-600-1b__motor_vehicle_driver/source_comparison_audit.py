@@ -40,9 +40,31 @@ def read_saved(root):
     polygon = config['alley_polygon_source']
     if polygon['sha256'] != digest(root / polygon['path']):
         raise ValueError('Comparison alley polygon source hash differs')
+    if (root / 'fixture-provenance.json').is_file():
+        native_source = None
+    else:
+        original = root / 'alley-survey-original.json'
+        verification = root / 'alley-survey-verification.json'
+        seal = json.loads((root / 'capture-seal.json').read_text())
+        manifest = json.loads(original.read_text())
+        receipt = json.loads(verification.read_text())
+        if (manifest.get('format') != 'worker-native-alley-survey-v1' or
+                manifest.get('verified_alley') is not True or
+                receipt.get('verified') is not True or
+                receipt.get('operator_manifest_sha256') != digest(original) or
+                receipt.get('map_name') != manifest.get('map_name') or
+                receipt.get('opendrive_sha256') != manifest.get('opendrive_sha256') or
+                receipt.get('polygon_xy') != manifest.get('polygon_xy') or
+                seal.get('provenance_kind') != 'native' or
+                seal.get('sources', {}).get(original.name) != digest(original) or
+                seal.get('sources', {}).get(verification.name) != digest(verification)):
+            raise ValueError('Comparison Native alley source differs')
+        native_source = digest(original)
     if report.get('physical_acceptance_claimed') or report.get('legal_acceptance_claimed'):
         raise ValueError('Comparison source claims unsupported acceptance')
-    return {'config': config, 'observed': observed, 'report_sha256': digest(report_path)}
+    return {'config': config, 'observed': observed,
+            'report_sha256': digest(report_path),
+            'native_source_sha256': native_source}
 
 
 def audit(comparison_id, roots):
@@ -58,6 +80,9 @@ def audit(comparison_id, roots):
     for key in FIXED:
         if any(config[key] != configs[0][key] for config in configs[1:]):
             raise ValueError('Comparison fixed condition differs: ' + key)
+    native_sources = [item['native_source_sha256'] for item in items]
+    if any(value != native_sources[0] for value in native_sources[1:]):
+        raise ValueError('Comparison Native alley source differs across cases')
     for key in ('target_speed_mps', 'protected_interest', 'pedestrian_offset_m'):
         values = [config[key] for config in configs]
         if key == variable:
@@ -92,6 +117,7 @@ def audit(comparison_id, roots):
             'requested_values': [config[variable] for config in configs],
             'report_sha256': [item['report_sha256'] for item in items],
             'original_source_sha256': [item['source_sha256'] for item in observed],
+            'native_alley_source_sha256': native_sources[0],
             'measured_maximum_speed_mps': speeds,
             'measured_minimum_pedestrian_gap_m': person_gaps,
             'measured_minimum_property_gap_m': property_gaps,

@@ -23,7 +23,7 @@ def item(suffix, speed, interest='person', offset=1.8):
                 'maximum_observed_speed_mps': speed,
                 'minimum_pedestrian_gap_m': 1.0,
                 'minimum_property_gap_m': 2.0}
-    return {'config': config, 'observed': observed, 'report_sha256': 'b' * 64}
+    return {'config': config, 'observed': observed, 'report_sha256': 'b' * 64, 'native_source_sha256': None}
 
 
 class SourceComparisonAuditTest(unittest.TestCase):
@@ -46,6 +46,15 @@ class SourceComparisonAuditTest(unittest.TestCase):
         rows[1]['config']['target_speed_mps'] = 3
         with patch.object(module, 'read_saved', side_effect=rows):
             with self.assertRaisesRegex(ValueError, 'deliberate variable did not differ'):
+                module.audit('person_speed_sweep', ['a', 'b', 'c'])
+
+    def test_mixed_native_alley_sources_rejected(self):
+        rows = [item(f'person_{speed}mps', speed) for speed in (3, 5, 7)]
+        for row in rows:
+            row['native_source_sha256'] = 'a' * 64
+        rows[1]['native_source_sha256'] = 'b' * 64
+        with patch.object(module, 'read_saved', side_effect=rows):
+            with self.assertRaisesRegex(ValueError, 'Native alley source differs'):
                 module.audit('person_speed_sweep', ['a', 'b', 'c'])
 
     def test_original_source_tamper_rejected(self):

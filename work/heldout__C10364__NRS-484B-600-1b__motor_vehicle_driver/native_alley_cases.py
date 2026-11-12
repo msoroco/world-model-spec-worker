@@ -8,6 +8,7 @@ from alley_camera import CAMERAS, AlleyCameraCapture, LosslessSourceSink
 from alley_case_setup import case_settings, participant_positions, verify_polygon_source
 from alley_route import control_step, select_alley_route
 from alley_source_capture import AlleySourceRecorder
+from native_alley_survey import load_and_verify, validate_placement
 
 
 def check_config(config):
@@ -29,6 +30,8 @@ def run(config, output, host, port):
     client = carla.Client(host, port)
     client.set_timeout(30.)
     world = client.get_world()
+    surveyed, survey_receipt = load_and_verify(world.get_map(), output,
+                                                exact['direction'])
     previous = world.get_settings()
     actors = []
     recorder = pipeline = frame_map = cameras = None
@@ -42,12 +45,14 @@ def run(config, output, host, port):
         settings.fixed_delta_seconds = .05
         world.apply_settings(settings)
         route = select_alley_route(
-            world.get_map(), exact['polygon_xy'],
+            world.get_map(), surveyed['polygon_xy'],
             direction=exact['direction'],
-            polygon_source=exact['polygon_source']['path'],
-            minimum_steps=12)
-        placement = participant_positions(route, alley_width_m=exact['alley_width_m'],
+            polygon_source='alley-survey-original.json',
+            minimum_steps=12,
+            route_reference=surveyed['route_reference'])
+        placement = participant_positions(route, alley_width_m=surveyed['alley_width_m'],
                                           pedestrian_offset_m=exact['pedestrian_offset_m'])
+        validate_placement(surveyed, placement)
         library = world.get_blueprint_library()
         person = world.try_spawn_actor(library.find('walker.pedestrian.0001'),
             carla.Transform(carla.Location(x=placement.pedestrian.x,
@@ -82,7 +87,9 @@ def run(config, output, host, port):
         route_identity = {'map_name': world.get_map().name,
                           'road_id': route[0].road_id,
                           'lane_id': route[0].lane_id,
-                          'polygon_source': exact['polygon_source']}
+                          'start_s': route[0].s,
+                          'polygon_source': 'alley-survey-original.json',
+                          'polygon_source_sha256': survey_receipt['operator_manifest_sha256']}
         start = None
         for index in range(config['frames']):
             person.apply_control(carla.WalkerControl(speed=0))
@@ -115,7 +122,8 @@ def run(config, output, host, port):
             'format': 'worker-alley-construction-probe',
             'case_id': config['selected_case_id'],
             'route': route_identity, 'frames': frames,
-            'requested_settings': exact, 'delivery_ready': False}, indent=2) + '\n')
+            'requested_settings': exact, 'native_survey': survey_receipt,
+            'delivery_ready': False}, indent=2) + '\n')
         completed = True
     finally:
         if frame_map is not None:
@@ -143,6 +151,7 @@ def run(config, output, host, port):
                          errors=[], encoder_exit_codes={name: 0 for name in sinks},
                          context={'route': route_identity,
                                   'requested_settings': exact,
+                                  'native_survey': survey_receipt,
                                   'source': 'original Native construction observation'})
 
 

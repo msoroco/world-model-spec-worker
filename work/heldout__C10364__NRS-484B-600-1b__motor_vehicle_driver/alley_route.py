@@ -11,7 +11,7 @@ from shapely.geometry import Point as ShapelyPoint, Polygon
 
 def select_alley_route(world_map, polygon_xy, *, direction, polygon_source,
                        minimum_steps=12, step_m=2.5, vehicle_width_m=1.8,
-                       edge_margin_m=0.25):
+                       edge_margin_m=0.25, route_reference=None):
     if direction not in ('east', 'west'):
         raise ValueError('Alley route requires east or west direction')
     if not polygon_source or not isinstance(polygon_source, str):
@@ -28,9 +28,20 @@ def select_alley_route(world_map, polygon_xy, *, direction, polygon_source,
         location = waypoint.transform.location
         return safe.covers(ShapelyPoint(location.x, location.y))
 
-    for transform in world_map.get_spawn_points():
-        start = world_map.get_waypoint(transform.location)
+    if route_reference is None:
+        starts = [world_map.get_waypoint(transform.location)
+                  for transform in world_map.get_spawn_points()]
+    else:
+        starts = [world_map.get_waypoint_xodr(
+            route_reference['road_id'], route_reference['lane_id'],
+            route_reference['start_s'])]
+    for start in starts:
         if start is None or start.is_junction or not inside(start):
+            continue
+        if route_reference is not None and (
+                start.road_id != route_reference['road_id'] or
+                start.lane_id != route_reference['lane_id'] or
+                abs(start.s - route_reference['start_s']) > .1):
             continue
         forward = start.transform.get_forward_vector()
         if forward.x * sign < .8 or start.lane_width < vehicle_width_m + 2*edge_margin_m:

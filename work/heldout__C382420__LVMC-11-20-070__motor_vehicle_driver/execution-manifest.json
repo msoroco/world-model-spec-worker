@@ -18,7 +18,233 @@
         "status": "physical",
         "reason": "Native marked crosswalk, pedestrian path or receiving-space geometry may not be realized"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-crosswalk_clear_downstream-fallback1.json",
+          "construction_sha256": "6be35519279c5a37bc218446c3aba582e671bb819534140353ac47acdd8a4b4d",
+          "trigger": {
+            "source": "Native connected route geometry",
+            "metric": "sampled junction and marked-crosswalk intersection",
+            "failure_condition": "2 m route sampling fails to retain an unambiguous connected crossing"
+          },
+          "changed_knobs": [
+            "route_step_m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-crosswalk_clear_downstream-fallback2.json",
+          "construction_sha256": "9f3ce481c4ec56345a731732c9a3b35d777b423d82a1ed5c9918a843ce3d24f9",
+          "trigger": {
+            "source": "Original Native ego trajectory",
+            "metric": "first body entry frame within 160 samples",
+            "failure_condition": "subject fails to reach selected boundary before capture ends"
+          },
+          "changed_knobs": [
+            "ego_throttle"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-crosswalk_clear_downstream-fallback3.json",
+          "construction_sha256": "fce1b8e53460f4662dfb7f8aa09ffc81eeea1008344da37814804bffcc3f2293",
+          "trigger": {
+            "source": "Original four-view pixels",
+            "metric": "overview shows ego, marking, receiving space and pedestrian",
+            "failure_condition": "overview mount loses entry boundary or far-side participant"
+          },
+          "changed_knobs": [
+            "overview_height_delta_m"
+          ]
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
+    },
+    {
+      "case_id": "heldout__C382420__LVMC-11-20-070__motor_vehicle_driver__crosswalk_blocked_downstream",
+      "kind": "delivery",
+      "construction": "construction-crosswalk_blocked_downstream-primary.json",
+      "construction_sha256": "f2061163711eb7f66fb79a671cb3cc2498ec3560a93fef376603f82571be3f21",
+      "measurement_contract": "measurement-contract-crosswalk_blocked_downstream.json",
+      "fixture_recipe": "work/heldout__C382420__LVMC-11-20-070__motor_vehicle_driver/diagnostic-recipe-crosswalk_blocked_downstream.json",
+      "measurement_procedure": {
+        "entrypoint": "space_finalizer.py",
+        "output": "analysis-report.json"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native receiving corridor and standing downstream vehicle may not be physically realized"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-crosswalk_blocked_downstream-fallback1.json",
+          "construction_sha256": "54dbb09dcc4355bad58c7e1d4397ebed47e7b72e366bf2b826019b5f77ea152c",
+          "trigger": {
+            "source": "Native connected route geometry",
+            "metric": "sampled junction and marked-crosswalk intersection",
+            "failure_condition": "2 m route sampling fails to retain an unambiguous connected crossing"
+          },
+          "changed_knobs": [
+            "route_step_m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-crosswalk_blocked_downstream-fallback2.json",
+          "construction_sha256": "49bdf9f0c480e526b80a33fc00b20a8bc15b42aa9d6745611ca11365ef00fa04",
+          "trigger": {
+            "source": "Original Native ego trajectory",
+            "metric": "first body entry frame within 160 samples",
+            "failure_condition": "subject fails to reach selected boundary before capture ends"
+          },
+          "changed_knobs": [
+            "ego_throttle"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-crosswalk_blocked_downstream-fallback3.json",
+          "construction_sha256": "cc54916c2c18efa77e3c298a280f726a3fa3f3fd466a5237c52806ed1e963d9b",
+          "trigger": {
+            "source": "Original four-view pixels",
+            "metric": "overview shows ego, marking, receiving space and pedestrian",
+            "failure_condition": "overview mount loses entry boundary or far-side participant"
+          },
+          "changed_knobs": [
+            "overview_height_delta_m"
+          ]
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
+    },
+    {
+      "case_id": "heldout__C382420__LVMC-11-20-070__motor_vehicle_driver__intersection_clear_downstream",
+      "kind": "delivery",
+      "construction": "construction-intersection_clear_downstream-primary.json",
+      "construction_sha256": "e1f301dae01eaeeebbe3c12b5be556f9dcc486cad664b3023ae756018b68c171",
+      "measurement_contract": "measurement-contract-intersection_clear_downstream.json",
+      "fixture_recipe": "work/heldout__C382420__LVMC-11-20-070__motor_vehicle_driver/diagnostic-recipe-intersection_clear_downstream.json",
+      "measurement_procedure": {
+        "entrypoint": "space_finalizer.py",
+        "output": "analysis-report.json"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native junction geometry, pedestrian passage and receiving corridor may not be realized"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-intersection_clear_downstream-fallback1.json",
+          "construction_sha256": "d68194e332dbc8f57dd60f954345a5044d672525122c71f6b0c8e08c525e21cd",
+          "trigger": {
+            "source": "connected intersection route geometry",
+            "metric": "junction and entry intersection",
+            "failure_condition": "2 m waypoint sampling loses boundary continuity"
+          },
+          "changed_knobs": [
+            "route_step_m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-intersection_clear_downstream-fallback2.json",
+          "construction_sha256": "1fd3f846ada406b8a6fc5df2945777263c1491e88523ef23e91c96517cefa8b7",
+          "trigger": {
+            "source": "original ego trajectory",
+            "metric": "entry before frame 160",
+            "failure_condition": "ego fails to enter before capture ends"
+          },
+          "changed_knobs": [
+            "ego_throttle"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-intersection_clear_downstream-fallback3.json",
+          "construction_sha256": "de7b52c7cbfd82aad5edd5c85c900d6a4927c23b957cc38bfebaf89055832929",
+          "trigger": {
+            "source": "original four-view pixels",
+            "metric": "entry and far side visible",
+            "failure_condition": "overview mount loses entry/participant view"
+          },
+          "changed_knobs": [
+            "overview_height_delta_m"
+          ]
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
+    },
+    {
+      "case_id": "heldout__C382420__LVMC-11-20-070__motor_vehicle_driver__intersection_blocked_downstream",
+      "kind": "delivery",
+      "construction": "construction-intersection_blocked_downstream-primary.json",
+      "construction_sha256": "b39b55260cb5a307ee2acc2d7f5b384a4329b42f89775fe6133620a8f8b74c2b",
+      "measurement_contract": "measurement-contract-intersection_blocked_downstream.json",
+      "fixture_recipe": "work/heldout__C382420__LVMC-11-20-070__motor_vehicle_driver/diagnostic-recipe-intersection_blocked_downstream.json",
+      "measurement_procedure": {
+        "entrypoint": "space_finalizer.py",
+        "output": "analysis-report.json"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native junction geometry, pedestrian passage and receiving corridor may not be realized"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-intersection_blocked_downstream-fallback1.json",
+          "construction_sha256": "2cee2fd8e09b3895bd250a8b8e1b884b03492574b2dc9f7dc30f9a7bd4454beb",
+          "trigger": {
+            "source": "connected intersection route geometry",
+            "metric": "junction and entry intersection",
+            "failure_condition": "2 m waypoint sampling loses boundary continuity"
+          },
+          "changed_knobs": [
+            "route_step_m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-intersection_blocked_downstream-fallback2.json",
+          "construction_sha256": "22bf9bc58d2bbf9f6400f527309424474a4f8c130ffd042ebb5afae65b2a60ed",
+          "trigger": {
+            "source": "original ego trajectory",
+            "metric": "entry before frame 160",
+            "failure_condition": "ego fails to enter before capture ends"
+          },
+          "changed_knobs": [
+            "ego_throttle"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-intersection_blocked_downstream-fallback3.json",
+          "construction_sha256": "f993980d8d1352d31b718f062b1eff3f8852a17a5013937fa76cafe85648f3c2",
+          "trigger": {
+            "source": "original four-view pixels",
+            "metric": "entry and far side visible",
+            "failure_condition": "overview mount loses entry/participant view"
+          },
+          "changed_knobs": [
+            "overview_height_delta_m"
+          ]
+        }
+      ],
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",

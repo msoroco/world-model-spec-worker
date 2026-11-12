@@ -267,7 +267,26 @@
       ]
     }
   ],
-  "observations": [],
+  "observations": [
+    {
+      "name": "participant_footprints",
+      "mandatory": true,
+      "source": "participant_footprints.jsonl",
+      "purpose": "Original participant identity, body geometry and separation"
+    },
+    {
+      "name": "pedestrian_gap_m",
+      "mandatory": true,
+      "source": "participant_footprints.jsonl",
+      "purpose": "Original ego to pedestrian surface gap"
+    },
+    {
+      "name": "property_gap_m",
+      "mandatory": true,
+      "source": "participant_footprints.jsonl",
+      "purpose": "Original ego to property surface gap"
+    }
+  ],
   "sources": [
     {
       "path": "inputs/heldout__C10364__NRS-484B-600-1b__motor_vehicle_driver/assignment.json",
@@ -354,5 +373,105 @@
       ],
       "evidence_or_gap": "Six exact engineering contrasts planned; diagnostic originals test measurement only; Native physical and legal acceptance remain unverified."
     }
-  ]
+  ],
+  "source_observation_mapping": {
+    "kin.speed": {
+      "evidence": "Original ego velocity vectors, not a legal threshold",
+      "channels": [],
+      "source_refs": [
+        "ego_motion.jsonl",
+        "trace.jsonl"
+      ]
+    },
+    "drv.time_to_conflict": {
+      "evidence": "Derived time to conflict from original ego motion and participant gap when closing; undefined when not closing",
+      "channels": [],
+      "source_refs": [
+        "ego_motion.jsonl",
+        "participant_footprints.jsonl"
+      ]
+    },
+    "rel.surface_gap": {
+      "evidence": "Original body polygon separation to pedestrian and property",
+      "channels": [
+        "pedestrian_gap_m",
+        "property_gap_m"
+      ],
+      "source_refs": [
+        "participant_footprints.jsonl"
+      ]
+    },
+    "ru.pedestrian": {
+      "evidence": "Retained stationary Native pedestrian actor and original body/pixel sources",
+      "channels": [
+        "participant_footprints"
+      ],
+      "source_refs": [
+        "participant_footprints.jsonl",
+        "overview.mkv"
+      ]
+    },
+    "drv.vulnerable_road_user": {
+      "evidence": "Pedestrian actor class and original body/pixel sources",
+      "channels": [
+        "participant_footprints"
+      ],
+      "source_refs": [
+        "participant_footprints.jsonl",
+        "overview.mkv"
+      ]
+    },
+    "drv.stopping_distance": {
+      "evidence": "Engineering estimate from original velocity and acceleration; no statutory cutoff",
+      "channels": [],
+      "source_refs": [
+        "ego_motion.jsonl"
+      ]
+    },
+    "rel.contact": {
+      "evidence": "Contact state from original Native trace and retained actor history",
+      "channels": [],
+      "source_refs": [
+        "trace.jsonl",
+        "participant_footprints.jsonl"
+      ]
+    },
+    "st.obstruction": {
+      "evidence": "Owned property actor geometry and original pixels",
+      "channels": [
+        "participant_footprints"
+      ],
+      "source_refs": [
+        "participant_footprints.jsonl",
+        "overview.mkv"
+      ]
+    }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "composition": "synchronized_four_view_primary",
+    "duration_s": 8,
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "ego, pedestrian and owned property",
+        "interval": "startup through final observation"
+      },
+      {
+        "view": "approach",
+        "subject": "ego approach and pedestrian gap",
+        "interval": "approach through passage"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "pedestrian and owned property in alley",
+        "interval": "startup through final observation"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "driver route and participant appearance",
+        "interval": "approach through passage"
+      }
+    ]
+  }
 }
