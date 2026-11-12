@@ -25,9 +25,9 @@ def main() -> None:
     if tests.returncode:
         raise RuntimeError("Assignment CPU tests failed: root-tests.log")
     negative = [str(PYTHON), str(HERE / "delivery_audit.py"),
-        "--attempt", str(REPO / ".runtime-work/c10014-update020-reference-primary-compat"),
-        "--saved", str(REPO / ".runtime-work/c10014-update020-reference-primary-saved/v0001"),
-        "--owner-receipt", str(REPO / ".runtime-work/c10014-update020-reference-primary-compat/owner-release.json"),
+        "--attempt", str(REPO / ".runtime-work/c10014-update021-reference-primary-compat"),
+        "--saved", str(REPO / ".runtime-work/c10014-update021-reference-primary-saved/v0001"),
+        "--owner-receipt", str(REPO / ".runtime-work/c10014-update021-reference-primary-compat/owner-release.json"),
         "--case", case_id,
         "--construction-sha256", selected["construction_sha256"]]
     rejected = subprocess.run(negative, cwd=REPO, text=True, capture_output=True)

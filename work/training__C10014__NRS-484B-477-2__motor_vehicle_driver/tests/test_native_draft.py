@@ -8,10 +8,27 @@ from controller import EngineeringKnobs,PathController
 from engineering import TRIGGERS,parameters
 from geometry import STOP_X_M,check,route
 from measure_entrance import entrance_overlap_m
+from finalize import physical_checks
 from runner import seal_after_release,weather_readback
 
 
 class AlleyDraftTests(unittest.TestCase):
+    def test_physical_checks_do_not_promote_synthetic_motion(self):
+        observed={'source_sha256':{'native_samples.jsonl':'source',
+                                   'road_geometry.json':'map'},
+                  'stop_first_frame':40,'stop_last_frame':100,
+                  'stop_duration_s':3.05,'max_entrance_overlap_m':5.2,
+                  'native_design_verified':False,'original_frames':480}
+        synthetic=physical_checks(observed,True,True)
+        self.assertEqual({v['status'] for v in synthetic.values()},{'unverified'})
+        native=physical_checks(observed,True,False)
+        self.assertEqual(native['setup']['status'],'unverified')
+        self.assertEqual(native['maneuver']['status'],'met')
+        self.assertEqual(native['attempt']['status'],'met')
+        self.assertEqual(native['maneuver']['sources'],observed['source_sha256'])
+        self.assertEqual(physical_checks(observed,False,False)['maneuver']['status'],
+                         'not_met')
+
     def test_native_weather_readback_is_actual_and_finite(self):
         from types import SimpleNamespace
         observed=SimpleNamespace(sun_altitude_angle=74.2,cloudiness=13.0)

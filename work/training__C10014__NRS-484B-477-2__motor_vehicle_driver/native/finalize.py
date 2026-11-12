@@ -129,6 +129,33 @@ def alley_stop_context(attempt):
             'sources':result['source_sha256']}
 
 
+def physical_checks(observed,matched,synthetic):
+    """Describe measured motion separately from independent access review."""
+    sources=observed['source_sha256']
+    interval=[{'first_frame':observed['stop_first_frame'],
+               'last_frame':observed['stop_last_frame']}]
+    common={'sources':sources,'intervals':interval,
+            'legal_verdict_claimed':False,'physical_causation_claimed':False}
+    def check(status,method,details):
+        return {**common,'status':status,'method':method,'details':details}
+    observed_motion=not synthetic
+    return {
+      'setup':check('unverified','Native lane survey; independent property-access designation pending',
+                    {'native_design_verified':observed['native_design_verified']}),
+      'target':check('unverified' if synthetic else ('met' if matched else 'not_met'),
+                     'original sampled stationary body overlap against authored geometric target',
+                     {'max_entrance_overlap_m':observed['max_entrance_overlap_m'],
+                      'matched':matched,'engineering_target_not_legal_threshold':True}),
+      'maneuver':check('unverified' if synthetic else ('met' if matched else 'not_met'),
+                       'original sampled alley stop lasting at least two seconds with measured body overlap',
+                       {'stop_duration_s':observed['stop_duration_s'],
+                        'max_entrance_overlap_m':observed['max_entrance_overlap_m'],
+                        'matched':matched,'native_motion_observed':observed_motion}),
+      'attempt':check('unverified' if synthetic else 'met',
+                      'full source-joined 480-frame capture; independent review remains separate',
+                      {'original_frames':observed['original_frames']})}
+
+
 def finalize(attempt,output):
     attempt=Path(attempt).resolve();output=Path(output).resolve()
     if output.exists() or (attempt/'result.json').exists():
@@ -178,8 +205,9 @@ def finalize(attempt,output):
         'tolerance':'absolute overlap difference <= 0.25 m, with at least 2 s sampled stop',
         'matched':matched,'physical_cause_confirmed':False,
         'cause_evidence':['road_geometry.json','native_samples.jsonl']}],
-      'setup_confirmed':not synthetic and observed['native_design_verified'],
+      'setup_confirmed':False,
       'behavior_attempted':not synthetic,'maneuver_completed':not synthetic and matched,
+      'physical_checks':physical_checks(observed,matched,synthetic),
       'termination_reason':'full original duration retained',
       'physical_failure_flags':['alley_access_design_and_pixels_unverified']+
           ([] if matched else ['requested_stop_overlap_not_measured']),

@@ -8,10 +8,27 @@ import unittest
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from delivery_audit import (VIEW_SUBJECTS, check_access_review,
                             check_native_boundary, check_original_rows,
-                            check_pixel_review)
+                            check_pixel_review, check_physical_result)
 
 
 class DeliveryAuditBoundaryTest(unittest.TestCase):
+    def test_original_physical_result_waits_for_access_review(self):
+        source={'native_samples.jsonl':'source','road_geometry.json':'map'}
+        result={'case_id':'case','provenance_kind':'native','accepted':False,
+                'legal_verdict_claimed':False,'maneuver_completed':True,
+                'setup_confirmed':False,
+                'physical_checks':{name:{'status':status,'sources':source}
+                    for name,status in [('setup','unverified'),('target','met'),
+                                        ('maneuver','met'),('attempt','met')]}}
+        check_physical_result(result,'case')
+        result['provenance_kind']='synthetic_fixture'
+        with self.assertRaisesRegex(ValueError,'Physical completion'):
+            check_physical_result(result,'case')
+        result['provenance_kind']='native'
+        result['physical_checks']['maneuver']['status']='not_met'
+        with self.assertRaisesRegex(ValueError,'Physical completion'):
+            check_physical_result(result,'case')
+
     def make_rows(self, folder, synthetic=False):
         sample = [
             {"time_s": i / 20, "native_frame": i + 100,

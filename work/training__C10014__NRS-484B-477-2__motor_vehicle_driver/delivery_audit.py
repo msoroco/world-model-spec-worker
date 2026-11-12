@@ -92,6 +92,21 @@ def check_original_rows(attempt: Path, expected_frames: int) -> dict:
             "frame_map_sha256": sha(attempt / "video_frames.jsonl")}
 
 
+def check_physical_result(result: dict, case_id: str) -> None:
+    checks = result.get("physical_checks", {})
+    require(result.get("case_id") == case_id and
+            result.get("provenance_kind") == "native" and
+            result.get("accepted") is False and
+            result.get("legal_verdict_claimed") is False and
+            result.get("maneuver_completed") is True and
+            result.get("setup_confirmed") is False and
+            checks.get("setup", {}).get("status") == "unverified" and
+            checks["setup"].get("sources") and
+            all(checks.get(name, {}).get("status") == "met" and
+                checks[name].get("sources") for name in ("target", "maneuver", "attempt")),
+            "Physical completion lacks original measured support")
+
+
 def check_native_boundary(attempt: Path, saved: Path, owner_receipt: Path,
                           case_id: str, construction_sha256: str) -> dict:
     """Reject absent closure, changed original bytes, and derived false success."""
@@ -147,15 +162,7 @@ def check_native_boundary(attempt: Path, saved: Path, owner_receipt: Path,
     require(saved in result_path.parents and result_path.is_file(),
             "Saved result escapes selected processing version")
     result = read(result_path)
-    checks = result.get("physical_checks", {})
-    require(result.get("case_id") == case_id and
-            result.get("provenance_kind") == "native" and
-            result.get("accepted") is False and
-            result.get("legal_verdict_claimed") is False and
-            result.get("maneuver_completed") is True and
-            all(checks.get(name, {}).get("status") == "met" and
-                checks[name].get("sources") for name in ("setup", "target", "maneuver", "attempt")),
-            "Physical completion lacks original measured support")
+    check_physical_result(result,case_id)
     return {**original, "case_id": case_id, "result_sha256": sha(result_path),
             "capture_seal_sha256": sha(attempt / "capture-seal.json"),
             "owner_release_sha256": sha(owner_receipt),
