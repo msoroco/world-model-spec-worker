@@ -43,3 +43,41 @@ The current assignment tests pass in `cpu-tests.log` (21 tests). They include an
 The opposite-direction exception now requires `junction_context.json.turn_intent_source` to name `controller_history.jsonl` and verifies every joined controller row records `other_left_turn_intended: true`. The revised 22-test suite passes its positive opposite case and rejects missing controller intention. This proves source binding in the CPU fixture, not actual turn motion or statutory application.
 The final test log executes 22 distinct tests; the temporary 26-run log duplicated four imported tests and was replaced. The result log hash now matches the 22-test run.
 Final pinned preflight (`preflight.log`) and scoped `--complete` (`assignment-check.log`) exit 0. The final `.venv-cpu/bin/python worker_check.py --complete --require-delivery-ready` exits 1 in `strict-gate.log` at `Preparation acceptance failed: partial/missing packages remain`. This is unfinished package preparation, not an external dependency; C125745 remains partial. No frozen input, runtime, batch file or Git action was changed.
+
+## Independent software delivery and comparison audits, 2026-11-12
+
+`audit_delivery.py` independently rehashes all original sources named by the Native result and six saved measurements, verifies exact C125745 case identity, complete original frame count/join and stable governing stop-sign ID, and rejects missing or altered sources. It returns `software_source_integrity_passed: true` but `delivery_ready: false`; it does not claim actual pixels, full decode or physical completion. `audit_comparisons.py` checks both declared `stop_sign_relative_side` and `stop_sign_entry_timing` comparisons against source-audited saved attempts. It enforces fixed crossing, ego approach/sign, actor, rate, duration and required observation contract, then verifies the declared side or ordered time difference without a legal cutoff.
+
+The 25-test assignment suite in `cpu-tests.log` passes. Its audit fixtures call the real finalizer and pinned Native writer, then prove rejection of stale camera bytes, a changed crossing with freshly bound sources, and a missing comparison attempt. The camera bytes are synthetic placeholders; these are software source and comparison tests only. The full `worker-delivery-audit` acceptance receipt, real media decode, exact construction/compatibility/saved proofs, and physical/canonical review remain unfinished. This work is **partial**, not a GPU or external blocker.
+Current `preflight.log` and `assignment-check.log` exit 0. The final full strict `.venv-cpu/bin/python worker_check.py --complete --require-delivery-ready` exits 1 in `strict-gate.log` at `Preparation acceptance failed: partial/missing packages remain`. `result.json` remains partial with the current 25-test log hash. No frozen input, runtime, batch file or Git action was changed.
+
+## Source-bound site construction checkpoint, 2026-11-12
+
+`site_packet.py` requires a structured reviewed candidate packet and five
+retained, source-hashed review documents. Each document identifies its role,
+review basis, and exact crossing, entrance, sign, face-video or median-spacing
+claims. `runner.load_config` rejects changed or mismatched sources before Native
+capture. These checks establish source integrity and internal consistency;
+the actual reviewed Native median site packet is still to be constructed.
+
+`runner._native_approaches` checks both spawn road/lane identities and the ego
+stop-entrance road/lane. The Native sign trigger is checked at the stop entrance
+instead of the potentially distant ego spawn. The 28 CPU tests in
+`cpu-tests.log` cover a changed review source, a changed sign claim, an
+unreviewed packet, wrong other approach, and wrong stop entrance. The pinned
+`runtime.py preflight` passes in `preflight.log`.
+
+Next CPU work: construct a genuine reviewed median site packet with its five
+retained source documents; bind exact case configs and manifests; author three
+distinct physical-risk fallbacks per selected case and source-bound diagnostic
+recipes; run exact offline, compatibility, saved-processing and comparison
+proofs. The synthetic test packet is only a CPU fixture. Status remains partial.
+
+Final checks for this checkpoint: pinned preflight and all 28 CPU tests pass;
+`worker_check.py --assignment testing__C125745__NRS-484B-250-2__motor_vehicle_driver --complete`
+exits 0 in `assignment-check.log`. The full
+`worker_check.py --complete --require-delivery-ready` exits 1 in
+`strict-gate.log` with `Preparation acceptance failed: partial/missing packages
+remain`. The batch delivery gate has not passed. `result.json` retains partial
+status and the current CPU test-log hash. No frozen inputs, runtime, batch file,
+or Git action was changed.

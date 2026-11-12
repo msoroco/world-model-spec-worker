@@ -19,7 +19,8 @@ class FinalizerTests(unittest.TestCase):
         cfg={'assignment_id':ASSIGNMENT,'law_id':'NRS-484B-250-2',
              'cell_id':'C125745','actor':'motor_vehicle_driver',
              'selected_case_id':ASSIGNMENT+'__stop_ego_left_near_time',
-             'duration_s':.15,'rate_hz':20,'recording_description':{}}
+             'duration_s':.15,'rate_hz':20,'required_atoms':[],
+             'recording_description':{}}
         (root/'config.json').write_text(json.dumps(cfg))
         (root/'trace.jsonl').write_text('')
         (root/'capture').mkdir()

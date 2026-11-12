@@ -17,3 +17,30 @@ Resume commands:
 Pinned CPU preflight and repository tests pass. No frozen input, runtime or batch file was edited. Assignment and full-gate output are retained in `assignment-check.log` and `strict-gate.log` after this checkpoint.
 
 Checkpoint: assignment-scoped `worker_check.py --complete` passed. The complete strict gate next reports missing result `testing__C144550__NRS-484B-223-1b__motor_vehicle_driver` in `strict-gate.log`. This is unfinished worker preparation, not an external dependency.
+
+## Median yield route construction checkpoint, 2026-11-12
+
+`median_yield_route.py` now requires both declared routes to traverse the
+interior of one source-reviewed median polygon. It checks different highways
+for the ordinary comparison, or one highway with opposing headings and an
+explicit other-driver left-turn intention for the exception case. It binds the
+Native yield sign to ego's entrance lane and places the yield line before the
+crossing. Its CPU controller brakes for an observed conflict, rejects passage
+past the yield line into an uncleared conflict, and releases when clear. This
+is a construction/controller component; no actual reviewed Native site or
+physical sign status has been established.
+
+Seven CPU tests pass in `cpu-tests.log`, including both approach routes,
+opposite headings, wrong sign lane, wrong yield line, braking and release.
+Next CPU work is the reviewed site packet, lazy Native actor/camera runner,
+saved finalizer, diagnostic media, three distinct fallbacks per selected case,
+semantic proposals and exact offline/compatibility/saved proofs. Status remains
+partial and the work is worker-owned.
+
+The latest assignment `worker_check.py --complete` exits 0 in
+`assignment-check.log`. The final full
+`worker_check.py --complete --require-delivery-ready` exits 1 in
+`strict-gate.log` with `Preparation acceptance failed: partial/missing packages
+remain`. The batch delivery gate has not passed. `result.json` remains partial
+with the current seven-test log hash. No frozen inputs, runtime, batch file or
+Git action was changed.

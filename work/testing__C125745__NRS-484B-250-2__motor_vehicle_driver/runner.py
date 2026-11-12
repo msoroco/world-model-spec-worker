@@ -1,6 +1,5 @@
 """Config-driven C125745 stop-sign Native capture; --check stays CPU-only."""
 import argparse
-import hashlib
 import json
 import math
 from contextlib import ExitStack
@@ -13,6 +12,7 @@ from camera_encoder import FFV1Writer
 from capture_sources import CAMERAS, record_sample, source_cameras
 from median_route_control import validate_scene
 from native_pair import construct_pair, step_pair
+from site_packet import verify_site_packet
 
 ASSIGNMENT='testing__C125745__NRS-484B-250-2__motor_vehicle_driver'
 CASE_IDS={ASSIGNMENT+'__'+suffix for suffix in (
@@ -40,16 +40,7 @@ def load_config(path):
         raise ValueError('Pinned required atoms list required')
     if not isinstance(config.get('recording_description'),dict):
         raise ValueError('Recording description required')
-    source=config.get('site_packet')
-    if not isinstance(source,dict) or set(source)!={'path','sha256'}:
-        raise ValueError('Source-hashed reviewed site packet required')
-    site_path=(path.parent/source['path']).resolve()
-    if not site_path.is_relative_to(path.parent.resolve()) or not site_path.is_file():
-        raise ValueError('Site packet must be local to assignment')
-    data=site_path.read_bytes()
-    if hashlib.sha256(data).hexdigest()!=source['sha256']:
-        raise ValueError('Reviewed site packet SHA mismatch')
-    scene=json.loads(data)
+    scene=verify_site_packet(config,path.parent)
     validate_scene(scene)
     if not scene.get('native_map_name') or type(scene.get('intersection_id')) is not int:
         raise ValueError('Native map and junction identity required')
@@ -114,6 +105,26 @@ def _context(scene):
             'legal_conclusion':'unresolved'}
 
 
+def _native_approaches(world_map, poses, scene, carla):
+    """Match both spawn lanes and locate the sign check at the stop entrance."""
+    waypoints={}
+    for role in ('ego','other'):
+        expected=scene['approaches'][role]
+        waypoint=world_map.get_waypoint(poses[role].location,project_to_road=False)
+        if (waypoint is None or waypoint.road_id!=expected['road_id'] or
+                waypoint.lane_id!=expected['lane_id']):
+            raise ValueError(role+' Native spawn road/lane differs from reviewed site')
+        waypoints[role]=waypoint
+    stop=scene['ego_stop_line_xy_m']
+    stop_location=carla.Location(x=stop[0],y=stop[1],z=poses['ego'].location.z)
+    entrance=world_map.get_waypoint(stop_location,project_to_road=False)
+    if (entrance is None or
+            entrance.road_id!=scene['approaches']['ego']['road_id'] or
+            entrance.lane_id!=scene['approaches']['ego']['lane_id']):
+        raise ValueError('Native stop entrance road/lane differs from reviewed site')
+    return waypoints,entrance
+
+
 def capture(args,config,scene):
     import carla
     from pipeline_capture import PipelineCapture
@@ -133,13 +144,11 @@ def capture(args,config,scene):
         if world_map.name!=scene['native_map_name']:
             raise ValueError('Native map differs from reviewed site packet')
         poses={role:_transform(carla,scene['approaches'][role]['spawn_pose']) for role in ('ego','other')}
-        ego_waypoint=world_map.get_waypoint(poses['ego'].location,project_to_road=False)
-        if ego_waypoint is None or ego_waypoint.lane_id!=scene['approaches']['ego']['lane_id']:
-            raise ValueError('Ego spawn lane differs from reviewed site')
+        _,stop_entrance=_native_approaches(world_map,poses,scene,carla)
         blueprints=world.get_blueprint_library().filter('vehicle.*')
         if not blueprints:raise ValueError('Native vehicle blueprint missing')
         polygon=Polygon(scene['crossing_polygon_xy_m'])
-        with construct_pair(world,scene,blueprints[0],blueprints[0],poses['ego'],poses['other'],ego_waypoint) as (ego,other,sign):
+        with construct_pair(world,scene,blueprints[0],blueprints[0],poses['ego'],poses['other'],stop_entrance) as (ego,other,sign):
             (output/'junction_context.json').write_text(json.dumps(_context(scene),indent=2)+'\n')
             camera_poses={name:_transform(carla,pose) for name,pose in scene['camera_poses'].items()}
             with source_cameras(world,ego,camera_poses) as sensors:
