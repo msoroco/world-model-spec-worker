@@ -80,6 +80,8 @@ def main():
                            'construction': 'construction.json',
                            'construction_sha256': sha(FOLDER/'construction.json'),
                            'measurement_procedure': {'entrypoint': 'finalizer.py'},
+                           'measurement_contract': 'measurement-contract.json',
+                           'fixture_recipe': str((FOLDER/'fixture-recipe.json').relative_to(REPO)),
                            'candidate_risk': {'status': 'physical',
                                               'reason': 'realized truck body visibility and gap persistence can fail'},
                            'candidates': []}],

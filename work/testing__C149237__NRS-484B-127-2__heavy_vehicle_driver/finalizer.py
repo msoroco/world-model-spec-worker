@@ -8,10 +8,27 @@ from truck_measurements import analyze
 
 
 CAMERAS = ('overview.mkv', 'approach.mkv', 'reference_corner.mkv', 'driver_reference.mkv')
+GAP_TARGETS_M = {'gap_below_500ft': 150.0, 'gap_at_500ft': 152.4,
+                 'gap_above_500ft': 155.0}
 
 
 def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def measure_minimum_truck_body_gap(report):
+    """Minimum sampled longitudinal surface gap, in metres."""
+    return min(sample['longitudinal_body_gap_m'] for sample in report['samples'])
+
+
+def measure_truck_widths(report):
+    """Smallest original overall width for each observed vehicle, in metres."""
+    return {role: min(sample[role]['width_m'] for sample in report['samples'])
+            for role in ('ego', 'lead')}
+
+
+def measure_lane_count(report):
+    return report['native_road_context']['same_direction_lane_count']
 
 
 def finalize(attempt: Path, output: Path):
@@ -26,15 +43,15 @@ def finalize(attempt: Path, output: Path):
             raise ValueError('Missing required source: ' + name)
     config = json.loads((attempt/'config.json').read_text())
     case = config.get('selected_case_id', '')
-    if not case.endswith('__gap_below_500ft'):
+    suffix = case.removeprefix('testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__')
+    if suffix not in GAP_TARGETS_M:
         raise ValueError('Wrong exact qualifying truck case')
     report = analyze(attempt)
     samples = report['samples']
     if not samples:
         raise ValueError('Missing source-bound truck following interval')
-    minimum = min(sample['longitudinal_body_gap_m'] for sample in samples)
-    widths = {'ego': min(sample['ego']['width_m'] for sample in samples),
-              'lead': min(sample['lead']['width_m'] for sample in samples)}
+    minimum = measure_minimum_truck_body_gap(report)
+    widths = measure_truck_widths(report)
     channels = attempt/'channels'
     if channels.exists():
         raise ValueError('Retain prior derived truck channels')
@@ -51,9 +68,18 @@ def finalize(attempt: Path, output: Path):
                 stream.write(json.dumps({'original_frame': sample['frame'],
                                          'time_s': sample['time_s'], 'value': number},
                                         allow_nan=False)+'\n')
+    (channels/'conditions_permitting.json').write_text(json.dumps({
+        'conditions_permitting': {
+            'judgment': 'unresolved',
+            'road_context_reference': 'road_context.json',
+            'original_observations_reference': 'capture/evidence.jsonl',
+            'traffic_and_visibility_require_source_review': True}},
+        indent=2)+'\n')
     evidence = [{'name': name, 'unit': ('count' if name == 'same_direction_lane_count' else 'm'),
                  'reference': 'channels/'+name+'.jsonl'} for name in values]
-    target = 150.0
+    evidence.append({'name': 'conditions_permitting', 'unit': 'source review',
+                     'reference': 'channels/conditions_permitting.json'})
+    target = GAP_TARGETS_M[suffix]
     result = {'case_id': case,
               'measured_values': {'minimum_sampled_body_gap_m': minimum,
                                   'minimum_overall_width_m': widths,

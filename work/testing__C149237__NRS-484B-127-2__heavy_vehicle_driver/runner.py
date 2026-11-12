@@ -100,7 +100,7 @@ def capture(args, config):
                        'lane_id': pair['site']['lane_id'],
                        'same_direction_lane_count': pair['site']['same_direction_lane_count'],
                        'lane_forward_xy': [1.0, 0.0],
-                       'lane_count_source': 'authored OpenDRIVE plus per-frame Native lane readback',
+                       'lane_count_source': 'authored OpenDRIVE single driving lane; per-frame Native actor lane identity only',
                        'authored_road_sha256': pair['site']['road_sha256'],
                        'native_opendrive_sha256': hashlib.sha256(mapping.to_opendrive().encode()).hexdigest(),
                        'legal_highway_status': 'source review required',
