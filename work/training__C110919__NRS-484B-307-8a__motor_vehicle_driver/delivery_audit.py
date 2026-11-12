@@ -46,15 +46,21 @@ def frames(path):
 
 
 def audit(case_id, construction_sha256, attempt, processing, *, diagnostic, source_review=None):
-    manifest_path = HERE / "update017-selected-pair-probe-manifest.json"
+    suffix = case_id.removeprefix(HERE.name + "__")
+    if suffix in ("reference", "contrast"):
+        manifest_path = HERE / "update017-selected-pair-probe-manifest.json"
+    elif suffix in ("absent_reference", "absent_reference_contrast"):
+        manifest_path = HERE / "draft-absent-reference-execution-manifest.json"
+    elif suffix in ("green_release_wait", "green_release_red_turn"):
+        manifest_path = HERE / "draft-green-release-execution-manifest.json"
+    else:
+        raise ValueError("Wrong statutory right-turn case")
     manifest = read(manifest_path)
     entry = next((x for x in manifest["cases"] if x["case_id"] == case_id), None)
     require(entry is not None, "Unselected delivery case")
     require(entry["construction_sha256"] == construction_sha256 and
             sha(HERE / entry["construction"]) == construction_sha256,
             "Delivery construction differs from selected manifest")
-    suffix = case_id.removeprefix(HERE.name + "__")
-    require(suffix in ("reference", "contrast"), "Wrong statutory right-turn case")
     attempt = attempt.resolve()
     processing = processing.resolve()
     require(attempt.is_dir() and processing.is_file() and
@@ -99,6 +105,31 @@ def audit(case_id, construction_sha256, attempt, processing, *, diagnostic, sour
             result.get("case_id") == case_id and result.get("accepted") is False and
             result.get("legal_verdict_claimed") is False,
             "Saved Native result changed or claims acceptance")
+    road = read(attempt / "road_geometry.json")
+    if suffix.startswith("absent_reference"):
+        require(road.get("stopping_reference_kind") == "intersection_boundary" and
+                road.get("stopping_reference_y_m") == road.get("intersection_near_y_m") == -7.0 and
+                road.get("stop_line_y_m") is None and
+                road.get("nearest_crosswalk_y_m") is None,
+                "Absent-reference road source still has a stopping object")
+    elif suffix.startswith("green_release"):
+        require(road.get("stopping_reference_kind") == "marked_stop_line" and
+                road.get("stopping_reference_y_m") == road.get("stop_line_y_m") == -14.0 and
+                all(row.get("signal_state_observed") in ("Red", "TrafficLightState.Red")
+                    for row in native[:160]) and
+                all(row.get("signal_state_observed") in ("Green", "TrafficLightState.Green")
+                    for row in native[160:]),
+                "Green-release marked line or observed signal transition differs")
+        from green_release_physical import classify as classify_green_release
+        physical = classify_green_release(native, road, suffix,
+                                          provenance_kind=result.get("provenance_kind"),
+                                          diagnostic_fixture=diagnostic)
+        expected_status = "unverified" if diagnostic else "met"
+        require(physical["physical_checks"]["green_release_right_turn"]["status"] == expected_status,
+                "Green-release original physical completion or diagnostic provenance differs")
+    else:
+        require(road.get("stopping_reference_y_m", road.get("stop_line_y_m")) == -14.0,
+                "Marked stopping reference differs")
     synthetic = any(row.get("synthetic_diagnostic") is True or
                     row.get("speed_provenance") == "synthetic_native_sample" for row in native)
     if diagnostic:
@@ -140,6 +171,13 @@ def audit(case_id, construction_sha256, attempt, processing, *, diagnostic, sour
             review.get("native_owner_released") is True and
             review.get("legal_verdict_claimed") is False,
             "Independent original signal, actor, road or pixel review incomplete")
+    if suffix.startswith("absent_reference"):
+        require(review.get("nearest_side_reference_absence_confirmed") is True,
+                "Original crosswalk, sign and marking absence review missing")
+    if suffix.startswith("green_release"):
+        require(review.get("green_signal_transition_confirmed") is True and
+                review.get("stop_and_release_timing_confirmed") is True,
+                "Original green transition or release timing review missing")
     return {"format": "worker-delivery-audit", "case_id": case_id,
             "candidate_id": "primary", "passed": True,
             "checks": {name: True for name in CHECKS},
