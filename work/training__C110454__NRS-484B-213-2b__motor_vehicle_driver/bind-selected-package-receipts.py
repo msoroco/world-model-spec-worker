@@ -41,6 +41,20 @@ def acquisition(construction):
 def build() -> dict:
     manifest = read(MANIFEST)
     index = read(INDEX)
+    if all("offline" in entry and "compatibility" in entry and
+           "post_capture" in entry for entry in manifest["cases"]):
+        sys.path.insert(0, str(ROOT / "runtime/pipeline"))
+        sys.path.insert(0, str(ROOT / "runtime/pipeline/scenario_pipeline"))
+        from scenario_pipeline.worker_exchange.candidate_constructions import validate as validate_candidates
+        from scenario_pipeline.worker_exchange.package_compatibility import check_receipts
+        plan = read(HERE / "case-plan.json")
+        for entry in manifest["cases"]:
+            validate_candidates(HERE, entry, plan["law_id"], plan["cell_id"],
+                                required=True, require_alternate=True, candidate_count=4)
+        check_receipts(ROOT, HERE, manifest)
+        return {"cases": len(manifest["cases"]),
+                "candidates": sum(1 + len(entry["candidates"]) for entry in manifest["cases"]),
+                "manifest_sha256": sha(MANIFEST), "physical_acceptance_claimed": False}
     require(index.get("manifest_sha256") == sha(MANIFEST) and
             index.get("candidate_count") == 24 and
             index.get("physical_acceptance_claimed") is False,

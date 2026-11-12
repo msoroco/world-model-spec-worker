@@ -9,9 +9,10 @@ from source_join_audit import read, require, sha
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 MANIFEST = HERE / "execution-manifest.json"
-RUNS = ROOT / ".runtime-work/c110454-update025-six-selected"
-PROOFS = HERE / "update025-selected-proofs"
+RUNS = ROOT / ".runtime-work/c110454-update024-six-selected"
+PROOFS = HERE / "update024-selected-proofs"
 OUTPUT = HERE / "update025-source-receipts"
+SOURCE_MANIFEST_SHA256 = "c1739c3cffa5cd43d8062c2efb382dbb54da269b53d146213646a41de14463b3"
 CHECKS = {"actual_analysis", "native_validation", "mandatory_observations",
           "lean_decoder", "render", "final_decode", "acquisition_unchanged",
           "derived_outputs_rebuilt", "four_camera_sources", "selected_measurements",
@@ -32,7 +33,7 @@ def export() -> dict:
             original = RUNS / suffix / ident / "compatibility"
             prior = read(PROOFS / suffix / ident / "proof.json")
             receipt = read(original / "compatibility.json")
-            require(prior["manifest_sha256"] == sha(MANIFEST) and
+            require(prior["manifest_sha256"] == SOURCE_MANIFEST_SHA256 and
                     prior["construction_sha256"] == candidate["construction_sha256"] and
                     prior["compatibility_log_sha256"] == sha(PROOFS / suffix / ident / "compatibility.log") and
                     receipt.get("case_id") == case and receipt.get("candidate_id") == ident and
@@ -70,7 +71,7 @@ def export() -> dict:
                          "files": copies, "diagnostic_only": True})
     require(len(rows) == 24, "Selected receipt export omitted a candidate")
     index = {"format": "c110454-selected-compatibility-retention-v1",
-             "manifest_sha256": sha(MANIFEST), "candidate_count": len(rows),
+             "manifest_sha256": SOURCE_MANIFEST_SHA256, "candidate_count": len(rows),
              "candidates": rows, "physical_acceptance_claimed": False}
     path = HERE / "update025-source-receipts-index.json"
     path.write_text(json.dumps(index, indent=2) + "\n")

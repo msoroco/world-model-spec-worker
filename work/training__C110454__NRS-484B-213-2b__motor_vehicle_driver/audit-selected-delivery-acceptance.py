@@ -44,7 +44,7 @@ def audit() -> dict:
 
 if __name__ == "__main__":
     proof = audit()
-    path = HERE / "update024-selected-delivery-acceptance-proof.json"
+    path = HERE / "update025-selected-delivery-acceptance-proof.json"
     path.write_text(json.dumps(proof, indent=2) + "\n")
     print(json.dumps({"case_count": proof["case_count"],
                       "proof_sha256": hashlib.sha256(path.read_bytes()).hexdigest()}))
