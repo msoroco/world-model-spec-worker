@@ -183,6 +183,12 @@ def execute(config: dict,output: Path,host: str,port: int):
         owned.append(ego)
         ego.apply_control(carla.VehicleControl(brake=1,hand_brake=True))
         for _ in range(40):world.tick()
+        if config['case_suffix']=='extreme_right_sweep':
+            body=body_xy(ego)
+            edge=readback['approach_lateral_geometry']['right_edge_x_m']
+            left=edge-readback['approach_lateral_geometry']['lane_width_m']
+            if max(p[0] for p in body)>edge or min(p[0] for p in body)<left:
+                raise RuntimeError('Native full body does not fit selected approach-lane offset')
         physics=ego.get_physics_control();wheels=physics.wheels
         if len(wheels)!=4:raise RuntimeError('Native four-wheel geometry absent')
         wheelbase=(max(w.position.x for w in wheels)-min(w.position.x for w in wheels))/100

@@ -7,6 +7,7 @@ import math
 from pathlib import Path
 import subprocess
 from traffic_timing_sweep import TrafficLaunch, measure as measure_timing
+from extreme_right_sweep import LateralOffset, measure_approach
 
 def sha(path: Path):return hashlib.sha256(path.read_bytes()).hexdigest()
 def rows(path: Path):
@@ -199,11 +200,11 @@ def video_frames(path: Path):
     return int(completed.stdout.strip())
 
 
-def derive_channels(attempt: Path,config: dict,native: list[dict],mapping: list[dict],geometry: dict,timing: dict):
+def derive_channels(attempt: Path,config: dict,native: list[dict],mapping: list[dict],geometry: dict,timing: dict,lateral: dict|None=None):
     """Rebuild observations from retained raw rows rather than incoming channels."""
     names={item['name'] for item in config['recording_description']['channels']}
     output={name:[] for name in names}
-    if len(native)!=len(mapping)!=480:raise ValueError('Original channel source counts differ')
+    if len(native)!=480 or len(mapping)!=480:raise ValueError('Original channel source counts differ')
     for sample,frame in zip(native,mapping):
         if sample['native_frame']!=frame['native_frame'] or abs(sample['time_s']-frame['time_s'])>1e-4:
             raise ValueError('Original channel frame/time join differs')
@@ -240,8 +241,16 @@ def derive_channels(attempt: Path,config: dict,native: list[dict],mapping: list[
             'signal_state_observed':{
                 'ego':sample['signal_state_observed'],
                 'other_traffic':sample['other_traffic_signal_state_observed']}}
+        if lateral is not None:
+            values['native_lane_geometry']=sample['native_lane_geometry']
+            values['full_body_lateral_position_in_highway']=(
+                geometry['approach_lateral_geometry']['right_edge_x_m']-
+                max(p[0] for p in sample['native_body_xy_m'])
+                if sample['native_lane_geometry']['road_id']==1 else None)
         if set(values)!=names:raise ValueError('Declared channels differ from raw derivation')
         for name,value in values.items():
+            if name=='full_body_lateral_position_in_highway' and value is None:
+                continue
             output[name].append(json.dumps({'time_s':frame['time_s'],'value':value},
                                           allow_nan=False)+'\n')
     folder=attempt/'channels';folder.mkdir(exist_ok=True)
@@ -274,8 +283,14 @@ def finalize(attempt: Path,output: Path):
                        for row in evidence):
             raise ValueError('Synthetic speed must retain diagnostic provenance')
     suffix=config['case_suffix']
-    if suffix != 'traffic_yield_wait' or config.get('sweep_id') != 'C110919-right-of-way':
-        raise ValueError('Use exact right-of-way timing sweep')
+    lateral_case=(suffix=='extreme_right_sweep' and
+                  config.get('sweep_id')=='C110919-extreme-right')
+    if not lateral_case and (suffix!='traffic_yield_wait' or
+                            config.get('sweep_id')!='C110919-right-of-way'):
+        raise ValueError('Use exact judgment sweep')
+    lateral_offset=LateralOffset(config.get('lateral_right_offset_m',0))
+    if not lateral_case and lateral_offset.right_m!=0:
+        raise ValueError('Unexpected lateral control on timing sweep')
     launch=TrafficLaunch(config.get('traffic_launch_frame'))
     if not all(row.get('traffic_launch_frame') == launch.start_frame for row in native):
         raise ValueError('Saved traffic launch command differs from selected sweep')
@@ -284,15 +299,20 @@ def finalize(attempt: Path,output: Path):
     green_release=(measure_green_release(attempt,native,signal,stop)
                    if suffix in ('green_release_wait','green_release_red_turn') else None)
     turn=measure_turn_yield(attempt,native,geometry)
-    traffic_branch=measure_traffic_branch(attempt,native,suffix)
+    traffic_branch=measure_traffic_branch(attempt,native,
+        'traffic_yield_wait' if lateral_case else suffix)
     timing=measure_timing(native,launch_frame=launch.start_frame)
+    lateral=measure_approach(native,geometry) if lateral_case else None
+    if lateral_case and not all(row.get('lateral_right_offset_m')==lateral_offset.right_m
+                                for row in native):
+        raise ValueError('Saved lateral route control differs from selected sweep')
     videos=[f'{name}.mkv' for name in ('overview','approach','reference_corner','driver_reference')]
     counts={name:video_frames(attempt/name) for name in videos}
     if any(value!=count for value in counts.values()):
         raise ValueError('Original source video frame count differs')
     expected=True
     observed=stop['value']['halt_before_nearest_boundary']
-    derive_channels(attempt,config,native,mapping,geometry,timing)
+    derive_channels(attempt,config,native,mapping,geometry,timing,lateral)
     recording=[]
     for channel in config['recording_description']['channels']:
         name=channel['name'];relative='channels/'+name+'.jsonl'
@@ -309,6 +329,12 @@ def finalize(attempt: Path,output: Path):
             'signal_actor_id':geometry['signal_actor_id'],
             'cross_traffic_signal_actor_id':geometry['cross_traffic_signal_actor_id'],
             'lanes':geometry['lanes']}}
+    if lateral_case:
+        context_values['lateral_right_offset_m']=lateral_offset.right_m
+        context_values['approach_lane_and_highway_width']={
+            'lane_width_m':lateral['surveyed_lane_width_m'],
+            'highway_width_m':lateral['surveyed_highway_width_m'],
+            'native_map_sha256':geometry['native_map_sha256']}
     context_folder=attempt/'context';context_folder.mkdir(exist_ok=True)
     for context in config['recording_description']['context_inputs']:
         name=context['name']
@@ -320,6 +346,7 @@ def finalize(attempt: Path,output: Path):
         'measured_values':{'signal':signal['value'],'stop':stop['value'],'turn_yield':turn['value'],
                            'traffic_branch':traffic_branch['value'],
                            'traffic_timing_sweep':timing,
+                           **({'extreme_right_lateral_sweep':lateral} if lateral_case else {}),
                            **({'green_release':green_release['value']} if green_release else {})},
         'target_checks':[{'target':'authored controlled halt before marked stopping reference',
             'requested':expected,'measured':observed,'method':'saved original full body, speed and signal before stopping-reference crossing',
@@ -350,7 +377,15 @@ def finalize(attempt: Path,output: Path):
             'method':'saved Native ego and directed-traffic full-body first conflict entry difference',
             'time_window':'entire original 24 s attempt','statistic':'first',
             'sample_window_s':[mapping[0]['time_s'],mapping[-1]['time_s']],
-            'reference':'channels/ego_entry_relative_to_signal_directed_traffic.jsonl'}},
+            'reference':'channels/ego_entry_relative_to_signal_directed_traffic.jsonl'},
+            **({'full_body_lateral_position_in_highway':{
+                'value':lateral['minimum_right_edge_clearance_m'],'unit':'m',
+                'method':'saved Native full-body rightmost extent relative to surveyed approach highway right edge',
+                'time_window':'all original south-approach frames before turn','statistic':'min',
+                'sample_window_s':[mapping[lateral['first']['index']]['time_s'],
+                                   mapping[lateral['last']['index']]['time_s']],
+                'reference':'channels/full_body_lateral_position_in_highway.jsonl'}}
+               if lateral_case else {})},
         'provenance_kind':'synthetic_local_diagnostic' if diagnostic_fixture else 'native',
         'diagnostic_fixture':diagnostic_fixture,
         'accepted':False,'legal_verdict_claimed':False}
@@ -363,6 +398,11 @@ def finalize(attempt: Path,output: Path):
                             'signal_directed_traffic_branch':traffic_branch,
                             'traffic_timing_sweep':{'value':timing,'method':'measure_timing',
                                 'sources':{'native_samples.jsonl':sha(source(attempt,'native_samples.jsonl'))}},
+                            **({'extreme_right_lateral_sweep':{'value':lateral,
+                                'method':'measure_approach',
+                                'sources':{'native_samples.jsonl':sha(source(attempt,'native_samples.jsonl')),
+                                           'road_geometry.json':sha(source(attempt,'road_geometry.json'))}}}
+                               if lateral_case else {}),
                             **({'green_release':green_release} if green_release else {})},
             'original_joins':original,'video_frames':counts,
             'provenance_kind':result['provenance_kind'],

@@ -75,7 +75,10 @@ def measure_approach(samples, geometry):
         # Road 1 is the south approach. Ignore turn/receiving-road rows here;
         # the runner retains their own per-frame Native lane readback.
         lane = row.get("native_lane_geometry")
-        if not isinstance(lane, dict) or lane.get("road_id") != 1:
+        center_xy = row.get("native_center_xy_m")
+        if not isinstance(center_xy, list) or len(center_xy) != 2:
+            raise ValueError("Original Native center absent")
+        if not isinstance(lane, dict) or lane.get("road_id") != 1 or center_xy[1] > -14:
             continue
         if lane.get("lane_id") != -1 or \
                 abs(lane.get("lane_width_m", float("nan")) - width) > .05:

@@ -46,6 +46,7 @@ def main():
         "runner.py": "traffic_timing_sweep_runner.py",
         "finalize.py": "traffic_timing_sweep_finalize.py",
         "traffic_timing_sweep.py": "traffic_timing_sweep.py",
+        "extreme_right_sweep.py": "extreme_right_sweep.py",
     }
     manifest = {
         "format": "c110919-timing-sweep-exact-candidates-v1",
