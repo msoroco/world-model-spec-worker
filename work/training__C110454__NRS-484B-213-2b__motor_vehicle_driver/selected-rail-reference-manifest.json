@@ -1,0 +1,88 @@
+{
+  "format": "worker-unselected-draft-construction-manifest-v1",
+  "assignment_id": "training__C110454__NRS-484B-213-2b__motor_vehicle_driver",
+  "runtime_manifest_sha256": "ae635d487ae988b67925bacd5ba13210f31224fc6a1ae131d1836a5557ba8714",
+  "status": "partial_selected_stage",
+  "selection_review": {
+    "law_input_sha256": "0c9f45319324999edde627db7de2cb9826a05a8b9c276bf2484fe85508153bde",
+    "case_plan_sha256": "2a6cdc1955c1a252dfd2d7fce96830b858a82245bdd36ab14a456c0de28bc60f",
+    "draft_manifest_sha256": "a410da9a30af936952ecdebb52692d767e2320af80d8ea46cc17946941a53054",
+    "selected_case_id": "training__C110454__NRS-484B-213-2b__motor_vehicle_driver__rail_reference",
+    "reason": "Railroad approach alternative has no accepted source-backed coverage in the export; preserve the 101/100/99-foot intersection originals.",
+    "accepted_intersection_recording_ids": [
+      "bfc318538dd7e29c8c7d4f2d03c48746f829ae14ccabc9b7c3e6ddd5ded1e1bd",
+      "00ec5da5deff009d5aa9d6264099b83da1f52d6b720ddc1e4d5910eacfd1e737",
+      "a2e1f9e59aa5433d488a16a3cade3a30deb6cbb68d74a1ee499a8ca3f258a07c"
+    ],
+    "accepted_railroad_equivalence_receipt": null,
+    "source_review": "Frozen NRS 484B.213(2)(b),(3), assignment membership rows and case-plan evidence review",
+    "physical_or_legal_acceptance_claimed": false
+  },
+  "cases": [
+    {
+      "case_id": "training__C110454__NRS-484B-213-2b__motor_vehicle_driver__rail_reference",
+      "kind": "delivery",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native railroad object/one-way lane readback, route realization and original video require physical review"
+      },
+      "measurement_contract": "draft-statutory-contracts/rail_reference/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c110454-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-statutory-candidates/rail_reference/fallback1/construction.json",
+          "construction_sha256": "6fd6cde7d4cfdbc9505e91a5033ab6d73e2d9a973b330a2f0c6a20f5b80c9fd5",
+          "trigger": {
+            "metric": "max_route_cross_track_error_m",
+            "op": ">",
+            "threshold": 0.45,
+            "source": "original Native ego pose joined to authored route and map readback",
+            "failure_condition": "max_route_cross_track_error_m > 0.45"
+          },
+          "changed_knobs": [
+            "route_tracking_lookahead_m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-statutory-candidates/rail_reference/fallback2/construction.json",
+          "construction_sha256": "460da462826cc6523c67e6084715ed4f4414b5835bb1030a8a7f09fe82bf6de7",
+          "trigger": {
+            "metric": "parking_endpoint_speed_m_s",
+            "op": ">",
+            "threshold": 0.3,
+            "source": "original Native velocity at surveyed parking endpoint",
+            "failure_condition": "parking_endpoint_speed_m_s > 0.3"
+          },
+          "changed_knobs": [
+            "parking_brake_start_m"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-statutory-candidates/rail_reference/fallback3/construction.json",
+          "construction_sha256": "8f99f706770253b8da5c0b065b69e4aead352ee6b0ec620fc366e5595af33786",
+          "trigger": {
+            "metric": "min_ego_pixel_margin_px",
+            "op": "<",
+            "threshold": 40,
+            "source": "decoded original overview video and original body-mask corners",
+            "failure_condition": "min_ego_pixel_margin_px < 40"
+          },
+          "changed_knobs": [
+            "overview_fov_deg"
+          ]
+        }
+      ],
+      "fixture_recipe": "work/training__C110454__NRS-484B-213-2b__motor_vehicle_driver/update015-rail_reference-recipe.json",
+      "id": "primary",
+      "construction": "draft-statutory-candidates/rail_reference/primary/construction.json",
+      "construction_sha256": "d78c84500b0ea0f8274d32f3d51c7a761a2e554ffec41b48854a1a4bae96444e",
+      "preparation_status": "selected_stage_needs_current_proofs"
+    }
+  ]
+}

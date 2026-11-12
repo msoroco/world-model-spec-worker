@@ -95,8 +95,8 @@ def load_side(group, suffix, manifest, root_name, *, diagnostic):
             "Current construction hash differs")
     attempt = ROOT / ".runtime-work" / root_name / suffix / "primary" / "compatibility"
     processing = HERE / f"update015-{group}-proofs" / suffix / "primary" / "process-saved.json"
-    camera_audit(attempt, processing, case, "primary", construction_sha,
-                 diagnostic=diagnostic)
+    camera = camera_audit(attempt, processing, case, "primary", construction_sha,
+                          diagnostic=diagnostic)
     saved = read(processing)
     paths = ("road_geometry.json", "road.xodr") + (("statutory_context.json",)
               if group == "statutory" else ())
@@ -109,6 +109,9 @@ def load_side(group, suffix, manifest, root_name, *, diagnostic):
               "evidence": rows(attempt / "capture/evidence.jsonl"),
               "frames": rows(attempt / "video_frames.jsonl"),
               "road_xodr_sha256": sha(attempt / "road.xodr"),
+              "joined_source_hashes": camera["source_join_sha256"],
+              "camera_source_sha256": {name: item["sha256"] for name, item in
+                                       camera["camera_sources"].items()},
               "source_sha256": {name: sha(attempt / name) for name in paths},
               "saved_processing_sha256": sha(processing),
               "construction_sha256": construction_sha}
@@ -134,7 +137,8 @@ def audit_pair(kind, *, diagnostic=False):
             "comparison_id": comparison_id, "case_ids": comparison["case_ids"],
             "declared_differences": comparison["deliberate_differences"],
             "source_bindings": [{key: side[key] for key in
-                                 ("source_sha256", "saved_processing_sha256",
+                                 ("source_sha256", "joined_source_hashes",
+                                  "camera_source_sha256", "saved_processing_sha256",
                                   "construction_sha256")} for side in (left, right)],
             **observed, "source_comparison_passed": True,
             "diagnostic_fixture": diagnostic, "passed": False,
