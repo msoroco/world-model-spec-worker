@@ -64,10 +64,11 @@ def build():
         y = other_y(index)
         row['other']['position_xy_m'] = [0, y]
         row['other']['body_vertices_xy_m'] = box(y)
-        seen = index > 0 and other_y(index - 1) >= -5.3
-        control['other_inside_before_tick'] = seen
-        control['other_entered_once'] = seen
-        control['ego_control']['hold'] = not seen
+        entered_once = index > 0 and other_y(index - 1) >= -5.3
+        inside_before_tick = index > 0 and abs(other_y(index - 1)) <= 5.3
+        control['other_inside_before_tick'] = inside_before_tick
+        control['other_entered_once'] = entered_once
+        control['ego_control']['hold'] = not entered_once
         participant = next(p for p in source['original_observations']['participants'] if p['actor_id'] == 102)
         participant['position_m'] = [0, y, 0]
         participant['body_vertices_m'] = body3(y)

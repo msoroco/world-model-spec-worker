@@ -42,17 +42,18 @@ def build():
     native_frames, graphs = [], []
     for i in range(FRAMES):
         frame, t = 1000+i, i/20
-        ex = -8 if i < 20 else min(8, -8 + .8*(i-20))
-        oy = -8 if i < 10 else min(8, -8 + .8*(i-10))
-        previous = -8 if i <= 10 else min(8, -8 + .8*(i-11))
-        seen = previous >= -5.3
+        ex = -8 if i < 30 else min(8, -8 + .8*(i-30))
+        oy = -8 if i < 20 else min(8, -8 + .8*(i-20))
+        previous = -8 if i <= 20 else min(8, -8 + .8*(i-21))
+        seen = i > 20 and previous >= -5.3
+        inside = i > 20 and abs(previous) <= 5.3
         crossing.append({"frame":frame,"time_s":t,"ego_vertices_m":box(ex,0),
                          "ego":{"position_xy_m":[ex,0],"body_vertices_xy_m":box(ex,0)},
                          "other":{"position_xy_m":[0,oy],"body_vertices_xy_m":box(0,oy)}})
-        controller.append({"frame":frame,"time_s":t,"other_inside_before_tick":seen,
+        controller.append({"frame":frame,"time_s":t,"other_inside_before_tick":inside,
                            "other_entered_once":seen,"ego_control":{"hold":not seen}})
         mapping.append({"video_frame":i,"carla_frame":frame,"time_s":t})
-        speed = 16 if 20 < i < 40 else 0
+        speed = 16 if 30 < i < 50 else 0
         trace.append({"frame":frame,"time_s":t,"position":{"x":ex,"y":0,"z":0},
                       "position_m":[ex,0,0],"heading_deg":0,"speed_mps":speed,
                       "speed_mph":speed/.44704,"velocity_mps":[speed,0,0],
@@ -64,7 +65,7 @@ def build():
                        "accel_longitudinal_mps2":0}
                       for aid,x,y,heading,v,velocity in
                       ((101,ex,0,0,speed,[speed,0,0]),
-                       (102,0,oy,90,16 if 10<i<30 else 0,[0,16 if 10<i<30 else 0,0]))]
+                       (102,0,oy,90,16 if 20<i<40 else 0,[0,16 if 20<i<40 else 0,0]))]
         observations={"frame":frame,"time_s":t,"participants":participants,"devices":[],
                       "relations":[],"participant_inventory":"synthetic two-actor diagnostic",
                       "map_context":{}}
@@ -133,7 +134,8 @@ def build():
     proposals=HERE/"proposals"
     proposals.mkdir(exist_ok=True)
     construction=json.loads((HERE/"construction.json").read_text())
-    (proposals/"cases.json").write_text(dump({"cell_id":"C125714","actor":"motor_vehicle_driver",
+    if not (proposals/"cases.json").exists():
+        (proposals/"cases.json").write_text(dump({"cell_id":"C125714","actor":"motor_vehicle_driver",
         "status":"draft","cases":[{"case_id":CASE,"target_law_id":"NRS-484B-250-2",
         "target_type":"delivery","rationale":"Source-verified right approach and first body entry, synthetic diagnostic only",
         "variable_assignments":{},"recording_description":construction["recording_description"],

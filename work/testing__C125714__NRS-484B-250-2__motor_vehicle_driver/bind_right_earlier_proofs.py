@@ -9,8 +9,8 @@ ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
 CASE = ROOT.name + '__source_verified_other_right_earlier'
 FOLDER = ROOT / 'cases/source_verified_other_right_earlier'
-ATTEMPT = REPO / '.runtime-work/c125714-right-earlier-compat-v1'
-SAVED = REPO / '.runtime-work/c125714-right-earlier-saved-v1/v0001/processing.json'
+ATTEMPT = REPO / '.runtime-work/c125714-earlier-compat-v3'
+SAVED = REPO / '.runtime-work/c125714-earlier-saved-v3/v0001/processing.json'
 
 
 def sha(path):
@@ -37,7 +37,7 @@ def main():
     shutil.copyfile(SAVED, FOLDER / 'primary-processing-receipt.json')
     offline = FOLDER / 'primary-offline.log'
     entry['offline'] = {
-        'command': f'.venv-cpu/bin/python runtime.py offline --manifest work/{ROOT.name}/execution-manifest.json --case {CASE} --output .runtime-work/c125714-right-earlier-offline-v1',
+        'command': f'.venv-cpu/bin/python runtime.py offline --manifest work/{ROOT.name}/execution-manifest.json --case {CASE} --output .runtime-work/c125714-earlier-offline-v3',
         'exit_code': 0, 'construction_sha256': entry['construction_sha256'],
         'log': str(offline.relative_to(ROOT)), 'log_sha256': sha(offline)}
     receipt = FOLDER / 'primary-compatibility-receipt.json'

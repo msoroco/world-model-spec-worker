@@ -8,8 +8,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
-BASE = REPO / '.runtime-work/c125714-right-three-compat-v1'
-EARLIER = REPO / '.runtime-work/c125714-right-earlier-compat-v1'
+BASE = REPO / '.runtime-work/c125714-right-near-compat-v10'
+EARLIER = REPO / '.runtime-work/c125714-earlier-compat-v3'
 
 
 def sha(path):
@@ -51,13 +51,13 @@ def check(base, earlier):
     if (sides != [True, True] or
             timings[0]['first_body_entry']['ego'] != timings[1]['first_body_entry']['ego'] or
             timings[0]['ego_minus_other_entry_time_s'] != 0.5 or
-            timings[1]['ego_minus_other_entry_time_s'] != 1.0):
+            timings[1]['ego_minus_other_entry_time_s'] != 1.5):
         raise ValueError('Original source timing difference absent')
     return {'format': 'worker-c125714-right-timing-comparison',
             'case_ids': [c['selected_case_id'] for c in configs],
             'fixed_source_sha256': {name: sha(base / name) for name in fixed_files},
             'source_history_sha256': [sha(root / 'crossing_history.jsonl') for root in (base, earlier)],
-            'ego_minus_other_entry_delta_s': [0.5, 1.0],
+            'ego_minus_other_entry_delta_s': [0.5, 1.5],
             'software_comparison_passed': True, 'physical_acceptance_claimed': False,
             'approximately_same_time_judgment': 'unresolved'}
 

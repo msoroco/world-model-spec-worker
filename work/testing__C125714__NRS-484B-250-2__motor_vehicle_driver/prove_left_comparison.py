@@ -9,8 +9,8 @@ from comparison_audit import check
 
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
-RIGHT = REPO / '.runtime-work/c125714-right-three-compat-v1'
-LEFT = REPO / '.runtime-work/c125714-left-three-compat-v1'
+RIGHT = REPO / '.runtime-work/c125714-right-near-compat-v10'
+LEFT = REPO / '.runtime-work/c125714-left-compat-v3'
 
 
 def main():
