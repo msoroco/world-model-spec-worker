@@ -9,6 +9,7 @@ AID = HERE.name
 PREFIX = "work/" + AID + "/"
 OUTPUT_ROOT = str(ROOT / ".runtime-work/pipeline-output")
 CLAIMS = (
+    ("cpu-tests.log", ".venv-cpu/bin/python -m unittest discover -s " + PREFIX + "tests"),
     ("preflight-current.log", ".venv-cpu/bin/python runtime.py preflight"),
     ("root-cpu-tests-current.log", ".venv-cpu/bin/python -m unittest discover -s tests"),
     ("cpu-tests-current.log", ".venv-cpu/bin/python -m unittest discover -s " + PREFIX + "tests -v"),
@@ -35,6 +36,7 @@ CLAIMS = (
     ("canonical-at-approach-b-branch-compatibility.json", "SCENARIO_PIPELINE_OUTPUT_ROOT=" + OUTPUT_ROOT + " .venv-cpu/bin/python runtime.py compatibility --manifest " + PREFIX + "diagnostic-canonical-at-approach-b-manifest.json --case " + AID + "__crest__at_500ft__approach_to_crest__occluded_approach_b --output .runtime-work/c129731-canonical-at-approach-b-compat-v3 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"),
     ("canonical-at-approach-b-branch-processing.json", "SCENARIO_PIPELINE_OUTPUT_ROOT=" + OUTPUT_ROOT + " .venv-cpu/bin/python runtime.py process-saved --manifest " + PREFIX + "diagnostic-canonical-at-approach-b-manifest.json --case " + AID + "__crest__at_500ft__approach_to_crest__occluded_approach_b --attempt .runtime-work/c129731-canonical-at-approach-b-compat-v3 --output .runtime-work/c129731-canonical-at-approach-b-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"),
     ("canonical-at-approach-b-proof.log", ".venv-cpu/bin/python " + PREFIX + "record_promoted_crest_case.py"),
+    ("canonical-at-comparison-proof.log", ".venv-cpu/bin/python " + PREFIX + "prove_canonical_crest_comparison.py"),
     ("assignment-check.log", ".venv-cpu/bin/python worker_check.py --assignment " + AID + " --complete"),
 )
 
@@ -106,6 +108,34 @@ def main():
                 if not source.is_file():
                     raise ValueError("Missing passed crest probe branch proof: " + log)
                 tests[log] = {"command": command, "exit_code": 0, "log": log, "sha256": sha(source)}
+    for name, placement, direction in (("canonical-at-near-a", "near_summit", "approach_a"),
+                                       ("canonical-at-near-b", "near_summit", "approach_b"),
+                                       ("canonical-at-approach-a", "approach_to_crest", "approach_a")):
+        manifest = PREFIX + "diagnostic-" + name + "-manifest.json"
+        case = AID + "__crest__at_500ft__" + placement + "__occluded_" + direction
+        base = ".runtime-work/c129731-" + name
+        decoder = " --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+        branch_claims = (
+            (name + "-branch-build.log", ".venv-cpu/bin/python " + PREFIX +
+             "build_approach_branch_proof.py --probe at_500ft --placement " + placement + " --direction " + direction + " --canonical"),
+            (name + "-plan.log", ".venv-cpu/bin/python " + PREFIX +
+             "extend_crest_case_plan.py --probe at_500ft --placement " + placement + " --direction " + direction),
+            (name + "-branch-offline.log", ".venv-cpu/bin/python runtime.py offline --manifest " +
+             manifest + " --case " + case + " --output " + base + "-offline-v1"),
+            (name + "-branch-compatibility.json", "SCENARIO_PIPELINE_OUTPUT_ROOT=" + OUTPUT_ROOT + " "
+             ".venv-cpu/bin/python runtime.py compatibility --manifest " + manifest + " --case " + case +
+             " --output " + base + "-compat-v1" + decoder),
+            (name + "-branch-processing.json", "SCENARIO_PIPELINE_OUTPUT_ROOT=" + OUTPUT_ROOT + " "
+             ".venv-cpu/bin/python runtime.py process-saved --manifest " + manifest + " --case " + case +
+             " --attempt " + base + "-compat-v1 --output " + base + "-saved-v1" + decoder),
+            (name + "-proof.log", ".venv-cpu/bin/python " + PREFIX +
+             "record_promoted_crest_case.py --placement " + placement + " --direction " + direction + " --probe at_500ft"),
+        )
+        for log, command in branch_claims:
+            source = HERE / log
+            if not source.is_file():
+                raise ValueError("Missing distinct exact crest proof: " + log)
+            tests[log] = {"command": command, "exit_code": 0, "log": log, "sha256": sha(source)}
     manifest = json.loads((HERE / "execution-manifest.json").read_text())
     for entry in manifest["cases"]:
         proof = entry["delivery_acceptance"]
@@ -131,9 +161,10 @@ def main():
         "tampering proofs. A source-bound OpenDRIVE crest plan checks twelve lane/grade sites; a curved road "
         "plan checks six curve probe/direction sites. Strict delivery readiness remains open: Native asset/site "
         "review and CARLA ingestion verification, the remaining distinct exact case IDs and controlled "
-        "comparisons for the statute's approach-to/near-crest and either-direction alternatives (one "
-        "approach-to-crest/B case at 500 feet now has a separate ID and complete CPU path; its comparison is "
-        "still pending), any justified risk fallbacks, a completed judgment sweep, shared branch "
+        "comparisons for the statute's approach-to/near-crest and either-direction alternatives (four "
+        "distinct 500-foot cases now have complete CPU paths and four source-audited controlled comparisons; "
+        "the short/beyond exact branch matrices remain), any justified risk fallbacks, "
+        "canonical manifest/delivery audits for the new cases, a completed judgment sweep, shared branch "
         "review/GPU queue/local integration proof, and full-batch "
         "ready packages are unfinished worker CPU work. Synthetic pixels/rays prove no physical or legal acceptance.")
     path.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")

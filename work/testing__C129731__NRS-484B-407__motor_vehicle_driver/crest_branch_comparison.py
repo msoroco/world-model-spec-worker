@@ -54,12 +54,17 @@ def normalized_actor(actor, turn_x):
             "road_lane": actor["road_lane"]}
 
 
-def inspect(name, attempt, probe="short_of_500ft"):
-    if name not in names_for(probe):
+def inspect(name, attempt, probe="short_of_500ft", canonical=False):
+    branch_name = name.removeprefix("canonical-") if canonical else name
+    if branch_name not in names_for(probe):
         raise ValueError("Unknown exact crest alternative")
     attempt = Path(attempt)
     config, result = read(attempt / "config.json"), read(attempt / "result.json")
+    placement = "near_summit" if branch_name.endswith("near-a") or branch_name.endswith("near-b") else "approach_to_crest"
+    direction = "approach_a" if branch_name.endswith("-a") else "approach_b"
     case = HERE.name + "__crest__" + probe
+    if canonical:
+        case += "__" + placement + "__occluded_" + direction
     if config.get("selected_case_id") != case or (config.get("rate_hz"), config.get("duration_s")) != (20, 55):
         raise ValueError("Crest branch capture contract changed")
     if result.get("case_id") != case or result.get("provenance_kind") != "synthetic_fixture" or result.get("physical_acceptance_claimed") is not False:
@@ -80,8 +85,6 @@ def inspect(name, attempt, probe="short_of_500ft"):
         raise ValueError("Branch falsely claims Native source review")
     if not check_source_geometry((HERE / "native-map-plan/crest-road.xodr").read_text(), site):
         raise ValueError("OpenDRIVE source geometry differs")
-    placement = "near_summit" if name.endswith("near-a") or name.endswith("near-b") else "approach_to_crest"
-    direction = "approach_a" if name.endswith("-a") else "approach_b"
     turn_x = 0 if placement == "near_summit" else -40
     if (site["turn_site_xyz_m"][0] != turn_x or
             site["occluder"]["target_direction"] != direction or
@@ -103,7 +106,8 @@ def inspect(name, attempt, probe="short_of_500ft"):
     turns = rows(attempt / "turn_history.jsonl")
     if any(len(collection) != 1100 for collection in (mapping, motion, trace, evidence, turns)):
         raise ValueError("Crest branch source duration differs")
-    fixed_config = {k: v for k, v in config.items() if k != "site_source"}
+    excluded = {"site_source", "selected_case_id", "supported_case_ids"} if canonical else {"site_source"}
+    fixed_config = {k: v for k, v in config.items() if k not in excluded}
     fixed_site = {k: v for k, v in site.items() if k not in
                   ("turn_site_xyz_m", "incoming_lanes", "u_turn_route_xyz_m", "camera_poses", "occluder")}
     lane_ids = {lane["lane_id"] for lane in site["incoming_lanes"].values()}
@@ -145,7 +149,7 @@ def inspect(name, attempt, probe="short_of_500ft"):
                            "approach_a": normalized_actor(actors["approaches"]["approach_a"], turn_x),
                            "approach_b": normalized_actor(actors["approaches"]["approach_b"], turn_x)})
         worlds.append(ray.get("world"))
-    return {"name": name, "placement": placement, "direction": direction,
+    return {"name": name, "case_id": case, "placement": placement, "direction": direction,
             "fixed_config": fixed_config, "fixed_site": fixed_site,
             "normalized_motion": normalized, "worlds": worlds,
             "source_sha256": {source: hashes[source] for source in required},
@@ -164,6 +168,33 @@ def audit(attempts, probe="short_of_500ft"):
                 raise ValueError("Unrelated fixed source condition differs: " + key + " in " + name)
     return {"format": "worker-crest-branch-comparison-diagnostic",
             "case_id": HERE.name + "__crest__" + probe, "alternatives": list(names),
+            "source_sha256": {name: views[name]["source_sha256"] for name in names},
+            "software_checks_passed": True, "passed": False,
+            "physical_acceptance_claimed": False,
+            "limitations": ["Synthetic rays and roads do not prove physical occlusion or driver recognition"]}
+
+
+def audit_canonical_pairs(attempts):
+    names = ("canonical-at-approach-b", "canonical-at-near-b", "canonical-at-approach-a", "canonical-at-near-a")
+    if set(attempts) != set(names):
+        raise ValueError("Four distinct exact 500-foot crest attempts required")
+    views = {name: inspect(name, attempts[name], "at_500ft", canonical=True) for name in names}
+    pairs = ((names[0], names[1], "site_placement"), (names[0], names[2], "occluded_direction"),
+             (names[2], names[3], "site_placement"), (names[1], names[3], "occluded_direction"))
+    for left, right, variable in pairs:
+        a, b = views[left], views[right]
+        fixed_variable = "direction" if variable == "site_placement" else "placement"
+        if a[variable.replace("site_placement", "placement").replace("occluded_direction", "direction")] == b[variable.replace("site_placement", "placement").replace("occluded_direction", "direction")]:
+            raise ValueError("Declared comparison variable did not change")
+        if a[fixed_variable] != b[fixed_variable]:
+            raise ValueError("Controlled comparison changed second site variable")
+        for key in ("fixed_config", "fixed_site", "normalized_motion", "worlds"):
+            if a[key] != b[key]:
+                raise ValueError("Unrelated fixed source condition differs: " + key)
+    return {"format": "worker-crest-exact-comparison-diagnostic",
+            "comparisons": [
+                {"case_ids": [views[left]["case_id"], views[right]["case_id"]], "deliberate_difference": variable}
+                for left, right, variable in pairs],
             "source_sha256": {name: views[name]["source_sha256"] for name in names},
             "software_checks_passed": True, "passed": False,
             "physical_acceptance_claimed": False,
