@@ -51,3 +51,7 @@ Status is **partial**. No executable case, fallback, source measurement, or save
 Resume gate: `.venv-cpu/bin/python worker_check.py --assignment heldout__C126064__LVMC-11-12-020__motor_vehicle_driver --complete --require-delivery-ready`.
 
 The external CARLA run is a later operator action; remaining CPU omissions above are not external blockers. No GPU command has been executed.
+
+## 2026-11-12 source-hashed Native marker construction checkpoint
+
+`marked_course_native.py` implements CARLA-lazy physical turn-course marker placement from a SHA-256-bound authority record: it requires intersection/median-opening identity, checks that each marker maps to a Native junction, creates each configured marker blueprint, reads back actual x/y placement within 0.05 m and destroys partially spawned markers on failure. Four CPU tests now pass (`cpu-tests.log` SHA-256 `21e5b4282a47f75c7f16c5359a8cb27311fa6e2179003b6588f1f7a79877626b`), including source-tamper, non-junction and readback-mismatch rejection. The authority document in the fake test is a fixture claim, not real municipal authorization. The exact runner must supply a reviewed source file and site/map match, connect the indicated and divergent turn routes to this placement, retain four cameras and original bodies, then run exact offline/compatibility/saved and independent audits. Status remains partial; no physical or legal acceptance is claimed.

@@ -40,6 +40,7 @@ class OneWayNativeCapture:
         self.frames = FrameMap(self.root/'video_frames.jsonl')
         self.bodies = (self.root/'native/footprints.jsonl').open('x')
         self.edges = (self.root/'native/road_edges.jsonl').open('x')
+        self.motion = (self.root/'native/turn_motion.jsonl').open('x')
         self.previous = None
 
     def append(self, frame, time_s):
@@ -78,9 +79,12 @@ class OneWayNativeCapture:
                 'turn_left_edge_polyline_xy': self.site['turn_left_edge_polyline_xy']}
         self.bodies.write(json.dumps(row, allow_nan=False)+'\n'); self.bodies.flush()
         self.edges.write(json.dumps(edge, allow_nan=False)+'\n'); self.edges.flush()
+        motion = {'frame': frame, 'time_s': time_s, 'body_vertices_m': corners,
+                  'heading_deg': yaw, 'road_id': int(wp.road_id)}
+        self.motion.write(json.dumps(motion, allow_nan=False)+'\n'); self.motion.flush()
         self.frames.append(frame, time_s, subject_actor_id=self.ego.id)
         self.previous = frame, time_s
         return row, edge
 
     def close(self):
-        self.frames.close(); self.bodies.close(); self.edges.close()
+        self.frames.close(); self.bodies.close(); self.edges.close(); self.motion.close()
