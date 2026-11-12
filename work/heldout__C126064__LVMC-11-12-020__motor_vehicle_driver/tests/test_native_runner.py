@@ -24,6 +24,7 @@ class NativeRunnerTests(unittest.TestCase):
             'intersection_source': 'CPU fixture only',
             'authorization_source': 'CPU fixture only',
             'intersection_id': 'fixture-junction',
+            'map_name': 'fixture-map',
             'median_opening_with_intersecting_road': True,
             'indicated_course_xy_m': [[-2, 5], [3, 5], [7, 7], [12, 7]],
             'divergent_course_xy_m': [[-2, 5], [3, 6], [7, 8], [12, 7]],
@@ -57,7 +58,8 @@ class NativeRunnerTests(unittest.TestCase):
             world = types.SimpleNamespace(
                 get_settings=lambda: settings,
                 apply_settings=lambda value: restored.append('settings'),
-                get_map=lambda: types.SimpleNamespace(get_waypoint=lambda location: waypoint),
+                get_map=lambda: types.SimpleNamespace(name='fixture-map',
+                                                      get_waypoint=lambda location: waypoint),
                 get_blueprint_library=lambda: types.SimpleNamespace(find=lambda name: name),
                 try_spawn_actor=lambda blueprint, transform: ego)
             client = types.SimpleNamespace(set_timeout=lambda seconds: None,
@@ -87,6 +89,9 @@ class NativeRunnerTests(unittest.TestCase):
             self.assertFalse(settings.synchronous_mode)
             self.assertIsNone(settings.fixed_delta_seconds)
             self.assertTrue((Path(directory) / 'attempt/native-turn-result.json').is_file())
+            with patch.dict(sys.modules, {'carla': fake_carla}):
+                with self.assertRaisesRegex(ValueError, 'does not match Native map'):
+                    module.run(dict(plan, map_name='different-map'), Path(directory) / 'wrong-map')
             restored.clear()
             with patch.dict(sys.modules, {'carla': fake_carla}), \
                     patch.object(module, 'SourceRecorder', return_value=recorder), \

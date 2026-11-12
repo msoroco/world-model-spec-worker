@@ -9,6 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from turn_native_sources import TurnSourceRecorder
 from turn_signal_measurement import measure
+from turn_native_route import participant_offset_xy, participant_spawn_transform
 
 
 class Actor:
@@ -25,6 +26,36 @@ class Actor:
 
 
 class NativeTurnSourcesTests(unittest.TestCase):
+    def test_pedestrian_sweep_geometry_follows_both_approach_headings(self):
+        def waypoint(dx, dy):
+            transform = SimpleNamespace(location=SimpleNamespace(x=10., y=20.),
+                                        get_forward_vector=lambda: SimpleNamespace(x=dx, y=dy))
+            return SimpleNamespace(transform=transform)
+
+        for direction, expected in [((1., 0.), (16., 22.)),
+                                    ((-1., 0.), (4., 18.)),
+                                    ((0., 1.), (8., 26.)),
+                                    ((0., -1.), (12., 14.))]:
+            with self.subTest(direction=direction):
+                near = participant_offset_xy(waypoint(*direction), along_m=6., left_m=2.)
+                far = participant_offset_xy(waypoint(*direction), along_m=6., left_m=14.)
+                self.assertAlmostEqual(near[0], expected[0])
+                self.assertAlmostEqual(near[1], expected[1])
+                self.assertAlmostEqual((far[0]-near[0])**2 + (far[1]-near[1])**2, 144.)
+        with self.assertRaises(ValueError):
+            participant_offset_xy(waypoint(1., 0.), along_m=6., left_m=float('nan'))
+
+        fake_carla = SimpleNamespace(Location=lambda **fields: SimpleNamespace(**fields),
+                                     Transform=lambda location, rotation: SimpleNamespace(
+                                         location=location, rotation=rotation))
+        east = waypoint(1., 0.)
+        east.transform.location.z = 1.
+        east.transform.rotation = SimpleNamespace(yaw=0.)
+        spawned = participant_spawn_transform(fake_carla, east, along_m=6., left_m=14.)
+        self.assertEqual((spawned.location.x, spawned.location.y, spawned.location.z),
+                         (16., 34., 1.5))
+        self.assertIs(spawned.rotation, east.transform.rotation)
+
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)

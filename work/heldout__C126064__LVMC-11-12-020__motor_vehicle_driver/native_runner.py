@@ -26,7 +26,7 @@ def prepare(case_id, source_path, expected_sha256):
     record = json.loads(raw)
     for key in ('authority_document', 'municipal_jurisdiction_source',
                 'intersection_source', 'authorization_source', 'intersection_id',
-                'indicated_course_xy_m', 'divergent_course_xy_m', 'markers'):
+                'map_name', 'indicated_course_xy_m', 'divergent_course_xy_m', 'markers'):
         if not record.get(key):
             raise ValueError('Marked-turn site source lacks ' + key)
     if record.get('median_opening_with_intersecting_road') is not True:
@@ -40,6 +40,7 @@ def prepare(case_id, source_path, expected_sha256):
     heading = degrees(atan2(second[1] - first[1], second[0] - first[0]))
     return {'case_id': case_id, 'variant': case_id.split('__')[-1],
             'source_path': str(path), 'source_sha256': expected_sha256,
+            'map_name': record['map_name'],
             'approach_xy_m': first, 'approach_heading_deg': heading,
             'authority_verified': False}
 
@@ -52,6 +53,8 @@ def run(plan, output, host='127.0.0.1', port=2000):
     client = carla.Client(host, int(port))
     client.set_timeout(30.)
     world = client.get_world()
+    if world.get_map().name != plan['map_name']:
+        raise ValueError('Marked-turn site source does not match Native map')
     prior_settings = world.get_settings()
     prior_sync = prior_settings.synchronous_mode
     prior_delta = prior_settings.fixed_delta_seconds

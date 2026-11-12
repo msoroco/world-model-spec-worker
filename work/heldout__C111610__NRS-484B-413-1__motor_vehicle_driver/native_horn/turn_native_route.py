@@ -64,6 +64,32 @@ def route_targets(scene):
             (*scene['approach'], scene['junction'], scene['exit'])]
 
 
+def participant_offset_xy(waypoint, *, along_m, left_m):
+    """Place a participant relative to the selected approach, including reverse headings.
+
+    Positive left_m is left of travel. The caller must record the resulting Native
+    actor transform; this planned location is never an observed clearance.
+    """
+    if not all(isfinite(v) for v in (along_m, left_m)):
+        raise ValueError('Nonfinite participant construction offset')
+    x, y = _xy(waypoint)
+    heading = _heading(waypoint)
+    from math import cos, sin
+    return (x + along_m * cos(heading) - left_m * sin(heading),
+            y + along_m * sin(heading) + left_m * cos(heading))
+
+
+def participant_spawn_transform(carla, waypoint, *, along_m, left_m, height_m=.5):
+    """Build the concrete Native transform for a controlled pedestrian sweep."""
+    if not isfinite(height_m) or height_m < 0:
+        raise ValueError('Invalid participant height')
+    x, y = participant_offset_xy(waypoint, along_m=along_m, left_m=left_m)
+    origin = waypoint.transform
+    return carla.Transform(carla.Location(x=x, y=y,
+                                          z=float(origin.location.z) + height_m),
+                           origin.rotation)
+
+
 def control_step(position_xy, forward_xy, velocity_xy, target_xy,
                  *, target_speed_mps=5., heading_gain=1.4, speed_gain=.25):
     points = [tuple(float(value) for value in pair)
