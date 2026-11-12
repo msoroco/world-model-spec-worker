@@ -49,9 +49,9 @@ class FinalizerTests(unittest.TestCase):
                   'no_traffic_signal_control': True}
         (root/'rendered_marking_review.json').write_text(json.dumps(review))
         history = [{'frame': 100, 'time_s': 5, 'road_id': 158190, 'lane_id': -1,
-                    'ego_speed_mps': 4, 'distance_to_intersection_m': 15},
+                    'ego_speed_mps': 4, 'distance_to_intersection_m': 12},
                    {'frame': 101, 'time_s': 5.05, 'road_id': 158190, 'lane_id': -1,
-                    'ego_speed_mps': 2, 'distance_to_intersection_m': 3}]
+                    'ego_speed_mps': 2, 'distance_to_intersection_m': 11.9}]
         samples = [{'frame': r['frame'], 'distance_to_intersection_m': r['distance_to_intersection_m'],
                     'through_highway_visible': i==1, 'visible_through_vehicle_ids': [23] if i==1 else [],
                     'ray_source': 'visibility_rays.jsonl'} for i,r in enumerate(history)]
@@ -64,11 +64,11 @@ class FinalizerTests(unittest.TestCase):
         (root/'visibility_samples.json').write_text(json.dumps(samples))
         (root/'visibility_rays.jsonl').write_text(''.join(json.dumps(r)+'\n' for r in rays))
         (root/'trace.jsonl').write_text(''.join(json.dumps({'frame':r['frame'],'time_s':r['time_s'],
-            'position_m':[-20+i,1.8,0]})+'\n' for i,r in enumerate(history)))
+            'position_m':[-20+i*.1,1.8,0]})+'\n' for i,r in enumerate(history)))
         (root/'control_context.json').write_text(json.dumps({
             'intersection_xy_m': [[-8,-8],[8,-8],[8,8],[-8,8]]}))
         bodies=[{'frame': r['frame'], 'time_s': r['time_s'],
-                 'ego': {'body_vertices_m': [[-20+i+j*.01,1.8,0] for j in range(8)]},
+                 'ego': {'body_vertices_m': [[-20+i*.1+j*.01,1.8,0] for j in range(8)]},
                  'through': None} for i,r in enumerate(history)]
         (root/'interaction_history.jsonl').write_text(''.join(json.dumps(r)+'\n' for r in bodies))
 

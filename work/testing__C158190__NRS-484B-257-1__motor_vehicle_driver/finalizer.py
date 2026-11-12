@@ -23,6 +23,60 @@ def measure_speed_at_closest_view(report):
     return report['speed_at_closest_view_mps']
 
 
+def measure_sign_governance(context):
+    """Report the reviewed Native sign, retaining its source scope."""
+    return {'native_yield_sign_id': context['native_yield_sign_id'],
+            'approach_road_id': context['approach_road_id'],
+            'approach_lane_id': context['approach_lane_id'],
+            'sign_governance_source': context['sign_governance_source'],
+            'source_review_sha256': context['source_review_sha256']}
+
+
+def measure_stopping_reference_absence(context):
+    return {'reviewed_no_stop_line': context['no_stop_line'],
+            'reviewed_no_near_crosswalk': context['no_near_crosswalk'],
+            'marking_inventory_source': context['marking_inventory_source'],
+            'source_review_sha256': context['source_review_sha256']}
+
+
+def measure_control_exceptions(context):
+    return {'reviewed_no_police_control': context['police_control'] is False,
+            'reviewed_no_signal_control': context['traffic_signal_control'] is False,
+            'source_review_sha256': context['source_review_sha256']}
+
+
+def measure_slowness_before_entry(attempt, report):
+    """Compare sampled approach speed with first full-body junction contact."""
+    from shapely.geometry import MultiPoint, Polygon
+
+    intersection = Polygon(json.loads((attempt/'control_context.json').read_text())
+                           ['intersection_xy_m'])
+    if not intersection.is_valid or intersection.area <= 0:
+        raise ValueError('Invalid sourced intersection polygon')
+    history = _rows(attempt/'interaction_history.jsonl')
+    entry = None
+    for row in history:
+        points = row.get('ego', {}).get('body_vertices_m')
+        if not isinstance(points, list) or len(points) < 4:
+            raise ValueError('Missing original ego body vertices')
+        body = MultiPoint([(point[0], point[1]) for point in points]).convex_hull
+        if body.intersects(intersection):
+            entry = {'frame': row['frame'], 'time_s': row['time_s']}
+            break
+    samples = report['approach_speed_samples']
+    nearest = report['closest_sourced_visible_sample']
+    at_view = next(row for row in samples if row['frame'] == nearest['frame'])
+    first = samples[0]
+    before_entry = entry is not None and at_view['time_s'] < entry['time_s']
+    return {'first_body_entry': entry, 'closest_view_frame': nearest['frame'],
+            'closest_view_before_entry': before_entry,
+            'initial_sampled_speed_mps': first['ego_speed_mps'],
+            'view_sampled_speed_mps': at_view['ego_speed_mps'],
+            'sampled_slowness_before_entry': before_entry and
+            at_view['ego_speed_mps'] < first['ego_speed_mps'],
+            'legal_adequacy_assessed': False}
+
+
 def finalize(attempt, output):
     attempt, output = Path(attempt), Path(output)
     if output.exists() or (attempt / 'result.json').exists() or (attempt / 'channels').exists():
@@ -112,10 +166,32 @@ def finalize(attempt, output):
                                'runtime/scenario_pipeline'))
         from worker_exchange.native_output import physical_result, write_result
     result = physical_result(attempt, result)
+    context_sources = {name: _sha(attempt/name) for name in
+                       ('road.xodr', 'road_context.json', 'control_inventory.jsonl',
+                        'capture/native_map_facts.json', 'rendered_marking_review.json',
+                        'video_frames.jsonl', *CAMERAS)}
     analysis = {'format': 'worker-c158190-yield-analysis', 'case_id': case_id,
                 'measurements': {'speed_at_closest_view_mps': {
                     'value': measured, 'method': 'measure_speed_at_closest_view',
-                    'sources': result['source_evidence_hashes']}},
+                    'sources': result['source_evidence_hashes']},
+                    'sign_governance': {'value': measure_sign_governance(context),
+                                        'method': 'measure_sign_governance',
+                                        'sources': context_sources},
+                    'stopping_reference_absence': {
+                        'value': measure_stopping_reference_absence(context),
+                        'method': 'measure_stopping_reference_absence',
+                        'sources': context_sources},
+                    'control_exceptions': {'value': measure_control_exceptions(context),
+                                           'method': 'measure_control_exceptions',
+                                           'sources': context_sources},
+                    'slowness_before_entry': {
+                        'value': measure_slowness_before_entry(attempt, report),
+                        'method': 'measure_slowness_before_entry',
+                        'sources': {name: _sha(attempt/name) for name in
+                                    ('interaction_history.jsonl', 'control_context.json',
+                                     'approach_history.jsonl', 'visibility_samples.json',
+                                     'visibility_rays.jsonl', 'video_frames.jsonl',
+                                     'road_context.json')}}},
                 'legal_conclusion': 'unresolved', 'source_report': report,
                 'source_review_sha256': context['source_review_sha256']}
     write_result(attempt, result)

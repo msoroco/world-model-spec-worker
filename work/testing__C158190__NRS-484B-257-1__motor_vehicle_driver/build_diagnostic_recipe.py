@@ -30,6 +30,18 @@ def body_vertices(x, y):
             for dy in (-.7, .7) for z in (0, 1.5)]
 
 
+def ego_x(i):
+    return -20.0 if i == 0 else -19.9 + min(i-1, 550)*.15
+
+
+def ego_speed(i):
+    return 4.0 if i == 0 else 2.0 if i == 1 else 3.0 if i <= 551 else 0.0
+
+
+def through_y(i):
+    return 20.0 - min(i, 300)*.2
+
+
 def build():
     spec_path = HERE / 'tests/test_finalizer.py'
     loader = importlib.util.spec_from_file_location('c158190_test_finalizer', spec_path)
@@ -48,17 +60,17 @@ def build():
                      'native_crosswalk_vertices_m': [], 'competing_controls': []}
                     for row in frames]
         trace = [{'frame': row['carla_frame'], 'time_s': row['time_s'],
-                  'position_m': [-20+min(i, 40)*.5, 1.8, 0],
-                  'position': {'x': -20+min(i, 40)*.5, 'y': 1.8, 'z': 0},
-                  'heading_deg': 0, 'speed_mps': 4 if i == 0 else 2 if i == 1 else 0,
-                  'speed_mph': (4 if i == 0 else 2 if i == 1 else 0) / .44704,
-                  'velocity_mps': [4 if i == 0 else 2 if i == 1 else 0, 0, 0],
+                  'position_m': [ego_x(i), 1.8, 0],
+                  'position': {'x': ego_x(i), 'y': 1.8, 'z': 0},
+                  'heading_deg': 0, 'speed_mps': ego_speed(i),
+                  'speed_mph': ego_speed(i) / .44704,
+                  'velocity_mps': [ego_speed(i), 0, 0],
                   'control': {'throttle': 0, 'steer': 0, 'brake': 0,
                               'hand_brake': False, 'reverse': False}}
                  for i, row in enumerate(frames)]
         bodies = [{'frame': row['carla_frame'], 'time_s': row['time_s'],
                    'ego': {'body_vertices_m': body_vertices(trace[i]['position_m'][0], 1.8)},
-                   'through': {'body_vertices_m': body_vertices(1.8, 20-min(i, 60)*.5)}}
+                   'through': {'body_vertices_m': body_vertices(1.8, through_y(i))}}
                   for i, row in enumerate(frames)]
         for name, rows in (('video_frames.jsonl', frames),
                            ('control_inventory.jsonl', controls),
@@ -77,8 +89,11 @@ def build():
             event['ego'].update(position_m=trace[i]['position_m'],
                                 speed_mps=trace[i]['speed_mps'],
                                 body_vertices_m=bodies[i]['ego']['body_vertices_m'])
-            event['world']['road_projection'].update(road_id=158190, lane_id=-1,
-                                                      s_m=max(0, 20+trace[i]['position_m'][0]))
+            x = trace[i]['position_m'][0]
+            road_id = 158190 if x < -8 else 158192 if x < 8 else 158193
+            station = x+80 if road_id == 158190 else x+8 if road_id == 158192 else x-8
+            event['world']['road_projection'].update(road_id=road_id, lane_id=-1,
+                                                      s_m=station)
             observed = event['original_observations']
             observed.update(frame=frame, time_s=time_s,
                             world_settings={'no_rendering_mode': False},
@@ -92,7 +107,7 @@ def build():
                 'eye_height_m': 1.5, 'scan_step_m': 1,
                 'horizon_tolerance_m': 1, 'probe_distance_m': 20,
                 'ego_body_samples_m': samples,
-                'ego_projection': {'road_id': 158190 if trace[i]['position_m'][0] < -8 else 158192},
+                'ego_projection': {'road_id': road_id},
                 'required_lane_ids': [-1],
                 'approaches': [{'lane_id': -1, 'any_sample_clear_at_probe': True,
                                 'any_body_sight_horizon': {'bound': 'at_least',
@@ -102,9 +117,10 @@ def build():
                        body_vertices_m=bodies[i]['ego']['body_vertices_m'],
                        speed_mps=trace[i]['speed_mps'],
                        velocity_mps=trace[i]['velocity_mps'])
-            through.update(actor_id=23, position_m=[1.8, 20-min(i, 60)*.5, 0],
+            through.update(actor_id=23, position_m=[1.8, through_y(i), 0],
                            body_vertices_m=bodies[i]['through']['body_vertices_m'],
-                           speed_mps=4, velocity_mps=[0, -4, 0])
+                           speed_mps=4 if i <= 300 else 0,
+                           velocity_mps=[0, -4 if i <= 300 else 0, 0])
             evidence.append(event)
             base = f'graphs/base/{frame:08d}.pkl'
             abstract = f'graphs/abstract/{frame:08d}.pkl'
