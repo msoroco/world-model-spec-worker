@@ -52,6 +52,20 @@ class ComparisonAuditTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'samples are invalid'):
             audit('pedestrian_horn_audio', case, {'listener_audio_original.jsonl': ''.join(json.dumps(row) + '\n' for row in packets)})
 
+    def test_indicator_activation_sweep_rejects_changed_setpoint_and_fixed_motion(self):
+        report = audit('indicator_activation_timing')
+        self.assertEqual(report['measured_values']['activation_frame_index'], [2, 4, 6])
+        self.assertEqual(report['measured_values']['diagnostic_pre_turn_indicator_frames'], [4, 2, 0])
+        middle = report['case_ids'][1]
+        files, _, _ = load_case(middle)
+        signals = [json.loads(row) for row in files['ego_signal_audio.jsonl'].splitlines()]
+        signals[4]['indicator_readback'] = 'off'
+        with self.assertRaisesRegex(ValueError, 'activation index differs'):
+            audit('indicator_activation_timing', middle,
+                  {'ego_signal_audio.jsonl': ''.join(json.dumps(row) + '\n' for row in signals)})
+        with self.assertRaisesRegex(ValueError, 'Fixed original indicator source differs'):
+            audit('indicator_activation_timing', middle, {'ego_turn_motion.jsonl': '{}\n'})
+
 
 if __name__ == '__main__':
     unittest.main()

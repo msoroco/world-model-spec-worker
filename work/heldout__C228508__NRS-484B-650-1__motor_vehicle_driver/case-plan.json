@@ -115,13 +115,13 @@
       "gap_ids": [
         "full-statute"
       ],
-      "description": "core event sequence spanning less than one measured mile",
-      "construction_status": "planned_unconstructed",
+      "description": "two repeated-following request intervals whose combined route span is 990 m",
+      "construction_status": "constructed_cpu_diagnostic",
       "physical_risk": {
-        "risk": "multiple acts and immediate-hazard participant may not remain in the same original one-mile driving window",
-        "trigger_source": "20 Hz original ego path, actor/event sources and four RGB camera streams",
-        "trigger_metric": "source-joined event frames, cumulative path length, participant visibility",
-        "failure_condition": "missing original event source, discontinuous driving trace, event window over one mile, or unobserved hazard participant"
+        "risk": "realized speed, path or actor response may fail to produce two distinct following occurrences within one mile",
+        "trigger_source": "original 20 Hz ego path, body phases and four RGB cameras",
+        "trigger_metric": "original path span between source-distinct following occurrences",
+        "failure_condition": "either occurrence absent or original path span exceeds 1609.344 m"
       }
     },
     {
@@ -130,13 +130,13 @@
       "gap_ids": [
         "full-statute"
       ],
-      "description": "same core event sequence spanning more than one measured mile",
-      "construction_status": "planned_unconstructed",
+      "description": "two repeated-following requests whose route intervals are separated by at least 1650 m",
+      "construction_status": "constructed_cpu_diagnostic",
       "physical_risk": {
-        "risk": "multiple acts and immediate-hazard participant may not remain in the same original one-mile driving window",
-        "trigger_source": "20 Hz original ego path, actor/event sources and four RGB camera streams",
-        "trigger_metric": "source-joined event frames, cumulative path length, participant visibility",
-        "failure_condition": "missing original event source, discontinuous driving trace, event window over one mile, or unobserved hazard participant"
+        "risk": "vehicle may not reach second encounter or realized encounters may be closer than planned route stations",
+        "trigger_source": "original 20 Hz ego path, body phases and four RGB cameras",
+        "trigger_metric": "original path distance between source-distinct following occurrences",
+        "failure_condition": "second occurrence absent or original path separation does not exceed 1609.344 m"
       }
     },
     {
@@ -273,10 +273,10 @@
         "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__beyond_mile"
       ],
       "fixed_conditions": [
-        "same law/cell/driver, roadway, vehicle plan, first listed act and camera/duration contract except declared difference"
+        "same law, cell, driver, road/follow route, speed and lead policy, two following phases, cameras and duration"
       ],
       "deliberate_differences": [
-        "measured path window below versus above one mile"
+        "second following request interval at 1050\u20131170 m versus 1950\u20132070 m"
       ]
     },
     {
@@ -368,6 +368,19 @@
       ],
       "deliberate_differences": [
         "ego speed request capped before two following phases, then raised after them"
+      ]
+    },
+    {
+      "comparison_id": "following_one_mile_window",
+      "case_ids": [
+        "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__repeated_following",
+        "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__beyond_mile"
+      ],
+      "fixed_conditions": [
+        "same law, cell, actor, road/follow route, speed request, lead policy, cameras and duration"
+      ],
+      "deliberate_differences": [
+        "second following request moved beyond a mile from first request interval"
       ]
     }
   ],

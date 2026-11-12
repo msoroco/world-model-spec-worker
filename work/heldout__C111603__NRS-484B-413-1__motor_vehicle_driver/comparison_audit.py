@@ -14,6 +14,9 @@ PREFIX = {
     'clearance_wide': 'clearance-wide',
     'clearance_mid': 'clearance-mid',
     'clearance_narrow': 'clearance-narrow',
+    'indicator_activation_2f': 'indicator-activation-2f',
+    'indicator_activation_4f': 'indicator-activation-4f',
+    'indicator_activation_6f': 'indicator-activation-6f',
     'ped_horn_audio': 'ped-horn',
     'ped_no_horn_audio': 'ped-no-horn',
     'vehicle_hand_signal': 'hand-signal',
@@ -24,6 +27,7 @@ CHANGED = {
     'pedestrian_listener_distance': {'participant_bodies.jsonl'},
     'reasonable_safety_clearance': {'participant_bodies.jsonl'},
     'reasonable_safety_scalar_path': {'participant_bodies.jsonl'},
+    'indicator_activation_timing': {'ego_signal_audio.jsonl'},
     'pedestrian_horn_audio': {'ego_signal_audio.jsonl', 'listener_audio_original.jsonl', 'horn_actuation.jsonl'},
     'vehicle_indicator': {'ego_signal_audio.jsonl'},
     'vehicle_signal_alternative': {'ego_signal_audio.jsonl', 'hand_signal_original.jsonl'},
@@ -113,6 +117,43 @@ def listener_energy(files):
 
 
 def audit(comparison_id, override_case=None, override=None):
+    if comparison_id == 'indicator_activation_timing':
+        plan = json.loads((HERE / 'case-plan.json').read_text())
+        comparison = next(row for row in plan['comparisons']
+                          if row['comparison_id'] == comparison_id)
+        cases = comparison['case_ids']
+        if [case.rsplit('__', 1)[-1] for case in cases] != [
+                'indicator_activation_2f', 'indicator_activation_4f',
+                'indicator_activation_6f']:
+            raise ValueError('Exact indicator activation cases differ')
+        loaded = [load_case(case, override if case == override_case else None)
+                  for case in cases]
+        fixed = FIXED | {'participant_bodies.jsonl'}
+        for name in fixed:
+            if any(name not in files or files[name] != loaded[0][0][name]
+                   for files, _, _ in loaded):
+                raise ValueError('Fixed original indicator source differs: ' + name)
+        if any(videos != loaded[0][1] for _, videos, _ in loaded):
+            raise ValueError('Fixed four-camera descriptions differ')
+        readback = []
+        for activation, (files, _, _) in zip((2, 4, 6), loaded):
+            signal = rows(files, 'ego_signal_audio.jsonl')
+            states = [row['indicator_readback'] for row in signal]
+            if states != ['off' if index < activation else 'left'
+                          for index in range(len(states))]:
+                raise ValueError('Original indicator activation index differs')
+            readback.append(states)
+        return {'format': 'worker-turn-comparison-audit',
+                'comparison_id': comparison_id, 'case_ids': cases,
+                'diagnostic_fixture': True,
+                'source_refs': [ref for _, _, ref in loaded],
+                'fixed_source_sha256': {name: sha_bytes(loaded[0][0][name])
+                                        for name in sorted(fixed)},
+                'declared_difference_sources': ['ego_signal_audio.jsonl'],
+                'measured_values': {'activation_frame_index': [2, 4, 6],
+                                    'diagnostic_pre_turn_indicator_frames': [4, 2, 0]},
+                'physical_acceptance_claimed': False,
+                'legal_acceptance_claimed': False}
     if comparison_id == 'reasonable_safety_scalar_path':
         plan = json.loads((HERE / 'case-plan.json').read_text())
         comparison = next(row for row in plan['comparisons']

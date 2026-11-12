@@ -110,6 +110,34 @@ def select_no_u_turn_device(carla_map, scene, *, max_distance_m=30.0):
             'pixel_visibility_status': None}
 
 
+def verify_incoming_sight_extent(carla_map, scene, route, projector, *, required_m=230.0):
+    """Check every planned turn station has both incoming lane routes available.
+
+    This screens route extent for a later per-frame nine-body-ray measurement;
+    it does not measure a sight horizon or legal visibility.
+    """
+    if not isfinite(required_m) or required_m <= 152.4:
+        raise ValueError('Sight route extent must exceed the 500 ft probe')
+    lane_ids = (scene['approach_lane_id'], scene['opposite_lane_id'])
+    checked = []
+    for index, point in enumerate(route['targets_xy_m']):
+        anchor = projector(float(point[0]), float(point[1]))
+        if (anchor is None or int(anchor.road_id) != scene['road_id'] or
+                not isfinite(float(anchor.s))):
+            raise ValueError('U-turn sight route projection missing at target '+str(index))
+        for lane_id in lane_ids:
+            lane = carla_map.get_waypoint_xodr(scene['road_id'], lane_id, anchor.s)
+            if lane is None or not _driving(lane):
+                raise ValueError('U-turn incoming sight lane unavailable at target '+str(index))
+            previous = lane.previous(required_m)
+            if len(previous) != 1 or previous[0] is None or not _driving(previous[0]):
+                raise ValueError('U-turn incoming sight route shorter or ambiguous at target '+str(index))
+            checked.append({'target_index': index, 'lane_id': lane_id,
+                            'upstream_distance_m': required_m})
+    return {'method': 'Native upstream route availability at each planned target',
+            'checked': checked, 'sight_horizon_measured': False}
+
+
 def u_turn_targets(scene, *, arc_extension_m=6.0, samples=24):
     """Request a forward-entry, reverse-heading cubic arc between lane centers."""
     if (not isfinite(arc_extension_m) or arc_extension_m <= 0 or

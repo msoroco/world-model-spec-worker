@@ -115,7 +115,7 @@
       "acquisition": {
         "right_half_observation": {
           "entrypoint": "passing_runner.py",
-          "method": "160-frame Native full-body and directed road recorder with passing setup",
+          "method": "80-frame Native full-body and directed road recorder with passing setup",
           "evidence": "ego_road_frames.jsonl, road_exception_context.json, trace.jsonl, video_frames.jsonl"
         }
       },
@@ -141,6 +141,53 @@
         "feedback_command": "cat \"$PROCESSING_OUTPUT/v0001/feedback.json\"",
         "test_log": "passing-left-saved.log",
         "test_log_sha256": "eba5492fd0354b9807b138ded3a0c9ac9aca73e7f37dc0bb1251e363a66380bc",
+        "test_exit_code": 0
+      }
+    },
+    {
+      "case_id": "heldout__C230259__NRS-484B-200-1__motor_vehicle_driver__closure_left",
+      "kind": "delivery",
+      "construction": "construction-closure_left.json",
+      "construction_sha256": "9cd0405e4a1300623503619a1d54b1ffb197e9268049af2e740965f4d42165f5",
+      "measurement_procedure": {
+        "entrypoint": "right_half_finalizer.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native cone placement, left-half motion, four-camera visibility and closure authority need verification"
+      },
+      "candidates": [],
+      "measurement_contract": "measurement-contract-closure_left.json",
+      "fixture_recipe": "work/heldout__C230259__NRS-484B-200-1__motor_vehicle_driver/fixture-recipe-closure_left.json",
+      "acquisition": {
+        "right_half_observation": {
+          "entrypoint": "closure_runner.py",
+          "method": "80-frame Native full-body/directed-road and three-device closure readback",
+          "evidence": "ego_road_frames.jsonl, closure_devices.jsonl, road_exception_context.json, trace.jsonl, video_frames.jsonl"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C230259__NRS-484B-200-1__motor_vehicle_driver/execution-manifest.json --case heldout__C230259__NRS-484B-200-1__motor_vehicle_driver__closure_left --output .runtime-work/c230259-closure-left-offline-2",
+        "exit_code": 0,
+        "log": "closure-left-offline-tests.log",
+        "log_sha256": "921b60a7fd52e978fbb551cacd29df2d6708879400278e1fcc70fceeb0c6f8e0",
+        "construction_sha256": "9cd0405e4a1300623503619a1d54b1ffb197e9268049af2e740965f4d42165f5"
+      },
+      "compatibility": {
+        "receipt": "closure-left-compatibility.json",
+        "sha256": "7beb96dd87f932d585e3799563cf7a651734ca926a2f550c372d2537d13e33ac",
+        "log": "closure-left-compat-analysis.log",
+        "negative_log": "closure-left-negative.log"
+      },
+      "negative": {
+        "log": "closure-left-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C230259__NRS-484B-200-1__motor_vehicle_driver/execution-manifest.json --case heldout__C230259__NRS-484B-200-1__motor_vehicle_driver__closure_left --attempt \"$ATTEMPT\" --output \"$PROCESSING_OUTPUT\" --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSING_OUTPUT/v0001/feedback.json\"",
+        "test_log": "closure-left-saved.log",
+        "test_log_sha256": "3b6a257215e04f516a27a5bf09e8d412eeab2a7f3a7271a26f9a698f51f874e7",
         "test_exit_code": 0
       }
     }

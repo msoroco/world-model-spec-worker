@@ -25,7 +25,7 @@ def bind():
     saved=json.loads((HERE/'passing-left-saved-processing.json').read_text())
     if saved['missing_evidence'] or not saved['originals_preserved']:raise ValueError('Passing saved analysis incomplete')
     entry['acquisition']={'right_half_observation':{
-       'entrypoint':'passing_runner.py','method':'160-frame Native full-body and directed road recorder with passing setup',
+       'entrypoint':'passing_runner.py','method':'80-frame Native full-body and directed road recorder with passing setup',
        'evidence':'ego_road_frames.jsonl, road_exception_context.json, trace.jsonl, video_frames.jsonl'}}
     entry['offline']={'command':f'.venv-cpu/bin/python runtime.py offline --manifest work/{HERE.name}/execution-manifest.json --case {CASE} --output .runtime-work/c230259-passing-left-offline-3',
        'exit_code':0,'log':'passing-left-offline-tests.log','log_sha256':sha(HERE/'passing-left-offline-tests.log'),

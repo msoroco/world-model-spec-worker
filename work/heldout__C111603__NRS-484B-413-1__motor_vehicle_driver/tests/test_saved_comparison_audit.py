@@ -20,7 +20,7 @@ def write(path, value):
 class SavedComparisonAuditTest(unittest.TestCase):
     def test_current_saved_comparisons(self):
         result = audit(HERE)
-        self.assertEqual(len(result['comparisons']), 7)
+        self.assertEqual(len(result['comparisons']), 8)
         self.assertFalse(result['physical_acceptance_claimed'])
 
     def test_changed_fixed_source_is_rejected_even_with_rehashed_receipt(self):

@@ -7,7 +7,8 @@ from types import SimpleNamespace
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from u_turn_construction import (participant_placement, select_u_turn_scene,
                                  u_turn_targets, control_step,
-                                 select_no_u_turn_device)
+                                 select_no_u_turn_device,
+                                 verify_incoming_sight_extent)
 from runner import CAMERAS, PREFIX, check_config
 
 
@@ -127,6 +128,28 @@ class ConstructionTests(unittest.TestCase):
         scene_map.landmarks = [SimpleNamespace(**{**vars(device), 'name': 'speed_limit'})]
         with self.assertRaisesRegex(ValueError, 'No source-mapped'):
             select_no_u_turn_device(scene_map, scene)
+
+    def test_incoming_sight_extent_both_lanes_all_targets(self):
+        scene = select_u_turn_scene(self.scene())
+        route = u_turn_targets(scene)
+        class SightMap:
+            short_lane = None
+            def get_waypoint_xodr(self, road, lane, station):
+                self.count += 1
+                return SimpleNamespace(lane_type='Driving',
+                    previous=lambda distance: [] if lane == self.short_lane else
+                    [SimpleNamespace(lane_type='Driving')])
+        mapping = SightMap()
+        mapping.count = 0
+        project = lambda x,y: SimpleNamespace(road_id=7, s=100.0)
+        result = verify_incoming_sight_extent(mapping, scene, route, project)
+        self.assertEqual(mapping.count, 2*len(route['targets_xy_m']))
+        self.assertFalse(result['sight_horizon_measured'])
+        mapping.short_lane = scene['opposite_lane_id']
+        with self.assertRaisesRegex(ValueError, 'shorter or ambiguous'):
+            verify_incoming_sight_extent(mapping, scene, route, project)
+        with self.assertRaisesRegex(ValueError, 'projection missing'):
+            verify_incoming_sight_extent(mapping, scene, route, lambda x,y: None)
 
 
 if __name__ == '__main__':

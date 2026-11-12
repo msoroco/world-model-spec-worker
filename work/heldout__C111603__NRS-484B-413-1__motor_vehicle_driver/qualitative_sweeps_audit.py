@@ -20,7 +20,8 @@ def audit(folder=HERE):
     saved=json.loads((folder/'saved-comparison-proof.json').read_text())
     covered=saved['comparisons']
     needed=('reasonable_safety_clearance','vehicle_indicator','vehicle_signal_alternative',
-            'pedestrian_horn_audio','both_affected_conjunction','pedestrian_listener_distance')
+            'pedestrian_horn_audio','both_affected_conjunction','pedestrian_listener_distance',
+            'indicator_activation_timing')
     require(all(key in covered for key in needed),'Current saved comparison sweep proofs missing')
     span=json.loads((folder/'clearance-span-audit.json').read_text())
     require(span['original_source_pair_audits_passed'] is True and
@@ -55,6 +56,10 @@ def audit(folder=HERE):
             mechanisms['vehicle_left_indicator']['indicator_readback']!=['off'] and
             mechanisms['vehicle_hand_signal']['hand_source_frames']>0,
             'Three signal mechanisms lack original readback contrast')
+    timing=compare('indicator_activation_timing')
+    require(timing['measured_values']['activation_frame_index']==[2,4,6] and
+            timing['measured_values']['diagnostic_pre_turn_indicator_frames']==[4,2,0],
+            'Indicator activation timing sweep lacks exact source contrast')
     listener=listener_sweep(folder)
     pedestrian_points=listener['points']
     require([point['offset_m'] for point in pedestrian_points]==[2,4,6] and
@@ -75,6 +80,10 @@ def audit(folder=HERE):
                 'clearance_span_sha256':sha(folder/'clearance-span-audit.json'),
                 'comparison_proof_sha256':sha(folder/'comparison-reasonable_safety_clearance-proof.json')},
             'appropriate_signal':{'mechanisms':mechanisms,
+                'indicator_activation_frame_index':[2,4,6],
+                'diagnostic_pre_turn_indicator_frames':[4,2,0],
+                'native_preturn_timing_verified':False,
+                'activation_comparison_sha256':sha(folder/'comparison-indicator_activation_timing-proof.json'),
                 'indicator_comparison_sha256':sha(folder/'comparison-vehicle_indicator-proof.json'),
                 'hand_comparison_sha256':sha(folder/'comparison-vehicle_signal_alternative-proof.json')},
             'clearly_audible_signal':{'pre_turn_listener_rms_horn_and_no_horn':horn_rms,

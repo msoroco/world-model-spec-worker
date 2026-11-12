@@ -12,8 +12,8 @@ from assemble_execution_manifest import SOURCES, assemble
 class AssemblyTests(unittest.TestCase):
     def test_all_nine_current_constructions_and_stale_source_rejection(self):
         combined = assemble(ROOT)
-        self.assertEqual(len(combined['cases']), 13)
-        self.assertEqual(len({case['case_id'] for case in combined['cases']}), 13)
+        self.assertEqual(len(combined['cases']), 16)
+        self.assertEqual(len({case['case_id'] for case in combined['cases']}), 16)
         with tempfile.TemporaryDirectory() as directory:
             target = Path(directory)
             (target / 'case-plan.json').write_bytes((ROOT / 'case-plan.json').read_bytes())

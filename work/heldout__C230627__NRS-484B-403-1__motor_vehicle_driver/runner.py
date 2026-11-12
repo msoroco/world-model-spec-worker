@@ -8,7 +8,7 @@ from pathlib import Path
 from u_turn_camera_capture import CAMERAS, LaneCameraCapture, LosslessSourceSink
 from u_turn_construction import (control_step, participant_placement,
                                  select_u_turn_scene, u_turn_targets,
-                                 select_no_u_turn_device)
+                                 select_no_u_turn_device, verify_incoming_sight_extent)
 from u_turn_originals import UTurnSourceRecorder
 
 
@@ -98,6 +98,15 @@ def run(output_dir, host, port):
                   if config['selected_case_id'].endswith('__prohibition_403_2')
                   else None)
         route = u_turn_targets(scene, arc_extension_m=engineering.get('arc_extension_m', 6.))
+        if 'st.sight_distance' in config.get('required_atoms', []):
+            def project(x, y):
+                return world.get_map().get_waypoint(
+                    carla.Location(x=x, y=y, z=scene['approach'].transform.location.z),
+                    project_to_road=True, lane_type=carla.LaneType.Driving)
+            sight_extent = verify_incoming_sight_extent(
+                world.get_map(), scene, route, project, required_m=230.0)
+        else:
+            sight_extent = None
         placement = participant_placement(
             scene, oncoming_distance_m=engineering.get('oncoming_distance_m', 24.),
             following_distance_m=engineering.get('following_distance_m', 18.))
@@ -119,6 +128,8 @@ def run(output_dir, host, port):
                                    required_observations=config.get('required_atoms', []))
         recorder = UTurnSourceRecorder(output, ego, participants, scene,
                                        device=device)
+        if sight_extent is not None:
+            (output/'sight-route-extent.json').write_text(json.dumps(sight_extent, indent=2)+'\n')
         frame_map = FrameMap(output/'video_frames.jsonl')
         target_index = 1
         start_time = None

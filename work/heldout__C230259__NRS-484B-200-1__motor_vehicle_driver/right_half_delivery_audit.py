@@ -31,7 +31,8 @@ def audit(attempt, report):
     config = json.loads(_source(root, 'config.json').read_text())
     case = config.get('selected_case_id')
     if case not in (PREFIX + 'right', PREFIX + 'left',
-                    PREFIX.replace('baseline_', '') + 'passing_left'):
+                    PREFIX.replace('baseline_', '') + 'passing_left',
+                    PREFIX.replace('baseline_', '') + 'closure_left'):
         raise ValueError('Wrong exact baseline delivery identity')
     report_value = json.loads(Path(report).read_text())
     if report_value.get('case_id') != case:
@@ -66,6 +67,37 @@ def audit(attempt, report):
         wanted = 'right_to_left_to_right_excursion'
     elif not all(row[wanted] for row in value['observations']):
         raise ValueError('Original body did not occupy requested baseline half')
+    closure_sha = None
+    if case.endswith('__closure_left'):
+        closure = _source(root, 'closure_devices.jsonl')
+        closure_sha = _hash(closure)
+        device_rows = _rows(closure)
+        setup = json.loads(sources['road_exception_context.json'].read_text()).get('closure_setup')
+        if (len(device_rows) != len(road) or not isinstance(setup, dict) or
+                setup.get('right_half_closure_authority') != 'undecided' or
+                setup.get('subject_path') != 'left_half'):
+            raise ValueError('Original closure setup/source missing')
+        expected_ids = [str(item) for item in setup.get('device_actor_ids', [])]
+        positions = None
+        for body, row in zip(road, device_rows):
+            devices = row.get('devices', [])
+            if (row.get('frame'), row.get('time_s')) != (body['frame'], body['time_s']) or row.get('authority_verified') is not False:
+                raise ValueError('Original closure frame or authority differs')
+            if len(devices) != 3 or [item.get('actor_id') for item in devices] != expected_ids:
+                raise ValueError('Original closure actor IDs differ')
+            current = [item.get('position_m') for item in devices]
+            if positions is None:
+                positions = current
+            elif current != positions:
+                raise ValueError('Original closure devices moved between frames')
+            center = body['road_center_xy']
+            tangent = body['road_travel_tangent_xy']
+            width = body['road_width_m']
+            for point in current:
+                lateral = tangent[0] * (point[1] - center[1]) - tangent[1] * (point[0] - center[0])
+                if not -width / 2 < lateral < 0:
+                    raise ValueError('Original closure device outside right half')
+        wanted = 'whole_body_left_half_beside_three_right_half_devices'
     videos = {}
     for name in CAMERAS:
         path = _source(root, name + '.mkv')
@@ -84,7 +116,8 @@ def audit(attempt, report):
         videos[name] = _hash(path)
     return {'format': 'worker-right-half-delivery-audit', 'case_id': case,
             'frames': len(road), 'source_sha256': {name: _hash(path) for name,path in sources.items()},
-            'source_video_sha256': videos, 'body_side_observed': wanted,
+            'source_video_sha256': videos, 'closure_source_sha256': closure_sha,
+            'body_side_observed': wanted,
             'originals_joined': True, 'analysis_recomputed': True,
             'four_camera_full_decode': True,
             'physical_acceptance_claimed': False, 'legal_acceptance_claimed': False}

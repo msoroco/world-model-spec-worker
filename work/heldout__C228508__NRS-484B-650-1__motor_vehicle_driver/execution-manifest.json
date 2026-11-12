@@ -752,6 +752,306 @@
         "negative_log": "reverse_sequence-delivery-audit-negative.log",
         "negative_log_sha256": "84a98e11d1e31a15bde04d607363b4de412bdfa5707c78e79e01ef35d0a9b09b"
       }
+    },
+    {
+      "case_id": "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__beyond_mile",
+      "kind": "delivery",
+      "construction": "cases/beyond_mile/construction.json",
+      "construction_sha256": "42589ee5756d7150eeeb22b42974a71b278a5728e31778868eb545813dd6153c",
+      "measurement_procedure": {
+        "entrypoint": "aggressive_finalizer.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Second request near route end may not be reached or produce a source-distinct following event."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "trigger": {
+            "source": "Original route and four RGB sources",
+            "metric": "route continuity and participant visibility",
+            "failure_condition": "primary route/participant camera coverage fails"
+          },
+          "changed_knobs": [
+            "route_candidate_index"
+          ],
+          "construction": "cases/beyond_mile/fallback1/construction.json",
+          "construction_sha256": "263ea6fb7c11385502d1ef6421053d6b254dd366bde9580300ef90688d05d9cd",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/execution-manifest.json --case heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__beyond_mile --candidate fallback1 --output .runtime-work/c228508-beyond_mile-fallback1-offline-v2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "263ea6fb7c11385502d1ef6421053d6b254dd366bde9580300ef90688d05d9cd",
+            "log": "beyond_mile-fallback1-offline.log",
+            "log_sha256": "404e3ede6372af82c4c59ae50e7e0200973613bf5443cee8bc04b33de393cdcc"
+          },
+          "compatibility": {
+            "receipt": "beyond_mile-fallback1-compatibility.json",
+            "sha256": "f23db219d6e8a67321f0e12e233fcf6b019c4d696aa9db74807c4d6449e3e827",
+            "log": "beyond_mile-fallback1-compat-analysis.log"
+          },
+          "negative": {
+            "log": "beyond_mile-fallback1-negative.log",
+            "log_sha256": "a1a918c254a3e754919240caa315f6fa223f681df0673eb9c1afc6a47fa6aa80"
+          }
+        },
+        {
+          "id": "fallback2",
+          "trigger": {
+            "source": "Native actor spawn and first body frames",
+            "metric": "spawn success and body nonoverlap",
+            "failure_condition": "lead actor cannot spawn or body envelopes overlap"
+          },
+          "changed_knobs": [
+            "lead_spawn_station_m"
+          ],
+          "construction": "cases/beyond_mile/fallback2/construction.json",
+          "construction_sha256": "c07e7657360f742b9dd3cd7ee5fa6fbab096bc9d513d4b66c0e38c4c690b7d06",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/execution-manifest.json --case heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__beyond_mile --candidate fallback2 --output .runtime-work/c228508-beyond_mile-fallback2-offline-v2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "c07e7657360f742b9dd3cd7ee5fa6fbab096bc9d513d4b66c0e38c4c690b7d06",
+            "log": "beyond_mile-fallback2-offline.log",
+            "log_sha256": "404e3ede6372af82c4c59ae50e7e0200973613bf5443cee8bc04b33de393cdcc"
+          },
+          "compatibility": {
+            "receipt": "beyond_mile-fallback2-compatibility.json",
+            "sha256": "7c144ba4375e0511ca263226f792340b702e3d7c1449d657518b26d5f8147178",
+            "log": "beyond_mile-fallback2-compat-analysis.log"
+          },
+          "negative": {
+            "log": "beyond_mile-fallback2-negative.log",
+            "log_sha256": "01ef3c97f515f8487006f17f6e2899d931c704f934802b4cf88fb24da50e5258"
+          }
+        },
+        {
+          "id": "fallback3",
+          "trigger": {
+            "source": "Original 20 Hz ego/lead body speed and gap",
+            "metric": "source-distinct closing encounter count",
+            "failure_condition": "requested closing response does not produce the selected encounter count"
+          },
+          "changed_knobs": [
+            "closing_lead_speed_mps"
+          ],
+          "construction": "cases/beyond_mile/fallback3/construction.json",
+          "construction_sha256": "7936be93bfdd0362bb29140486a11dfbddfd9bd6a39fd47fc69c04b8eeee04a3",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/execution-manifest.json --case heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__beyond_mile --candidate fallback3 --output .runtime-work/c228508-beyond_mile-fallback3-offline-v2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "7936be93bfdd0362bb29140486a11dfbddfd9bd6a39fd47fc69c04b8eeee04a3",
+            "log": "beyond_mile-fallback3-offline.log",
+            "log_sha256": "404e3ede6372af82c4c59ae50e7e0200973613bf5443cee8bc04b33de393cdcc"
+          },
+          "compatibility": {
+            "receipt": "beyond_mile-fallback3-compatibility.json",
+            "sha256": "9492b52ab66b22f12edcc346c751ced8707d4f3052981a63acd2a1761760d68a",
+            "log": "beyond_mile-fallback3-compat-analysis.log"
+          },
+          "negative": {
+            "log": "beyond_mile-fallback3-negative.log",
+            "log_sha256": "8c64853484994d4a71a66ce69054e026ab9c67783c25811ece453a99593c422d"
+          }
+        }
+      ],
+      "measurement_contract": "cases/beyond_mile/measurement-contract.json",
+      "fixture_recipe": "work/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/cases/beyond_mile/diagnostic-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/execution-manifest.json --case heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__beyond_mile --candidate primary --output .runtime-work/c228508-beyond_mile-primary-offline-v2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "42589ee5756d7150eeeb22b42974a71b278a5728e31778868eb545813dd6153c",
+        "log": "beyond_mile-primary-offline.log",
+        "log_sha256": "404e3ede6372af82c4c59ae50e7e0200973613bf5443cee8bc04b33de393cdcc"
+      },
+      "compatibility": {
+        "receipt": "beyond_mile-primary-compatibility.json",
+        "sha256": "edb9bb86f269c28d2ab4c06f9be5e877f3b8576c610885eeec0b2e110a6176a4",
+        "log": "beyond_mile-primary-compat-analysis.log"
+      },
+      "negative": {
+        "log": "beyond_mile-primary-negative.log",
+        "log_sha256": "fac36879ca6063fa975b85a4fe36c8ad335d6d72a054c238b5bfa0cac44dfa4b"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__beyond_mile",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/delivery_audit.py --case heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__beyond_mile --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c228508-beyond_mile-primary-compat-v4 --diagnostic-fixture",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/delivery_audit.py --case heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__beyond_mile --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c228508-beyond_mile-primary-compat-v4",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Sealed Native source and owner exit missing",
+        "script": "delivery_audit.py",
+        "script_sha256": "8ef368556c4b7607b7a8f369c372318afa770318a585b1c007d896281506e659",
+        "test_log": "beyond_mile-delivery-audit-positive.log",
+        "test_log_sha256": "2515a2e2d58459668526d740afd934f7a47743b7a9af3767fd18ea4a32f15b1e",
+        "negative_log": "beyond_mile-delivery-audit-negative.log",
+        "negative_log_sha256": "84a98e11d1e31a15bde04d607363b4de412bdfa5707c78e79e01ef35d0a9b09b"
+      }
+    },
+    {
+      "case_id": "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__within_mile",
+      "kind": "delivery",
+      "construction": "cases/within_mile/construction.json",
+      "construction_sha256": "cdd9d33a67dd856675f1e2d3ae54a0a2642c8473ae95e130e6f3c727fa0851dc",
+      "measurement_procedure": {
+        "entrypoint": "aggressive_finalizer.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native vehicle response may not yield two source-distinct following occurrences within one mile."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "trigger": {
+            "source": "Original route and four RGB sources",
+            "metric": "route continuity and participant visibility",
+            "failure_condition": "primary route/participant camera coverage fails"
+          },
+          "changed_knobs": [
+            "route_candidate_index"
+          ],
+          "construction": "cases/within_mile/fallback1/construction.json",
+          "construction_sha256": "6dc866c2eff451db23d983af7f1d09dad8fc98f2df8de257a88f240d914068e6",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/execution-manifest.json --case heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__within_mile --candidate fallback1 --output .runtime-work/c228508-within_mile-fallback1-offline-v1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "6dc866c2eff451db23d983af7f1d09dad8fc98f2df8de257a88f240d914068e6",
+            "log": "within_mile-fallback1-offline.log",
+            "log_sha256": "404e3ede6372af82c4c59ae50e7e0200973613bf5443cee8bc04b33de393cdcc"
+          },
+          "compatibility": {
+            "receipt": "within_mile-fallback1-compatibility.json",
+            "sha256": "0f7df0f54d26144df16f0f5e2a4aabe98455dfed9aee1995d4e39b383f37909f",
+            "log": "within_mile-fallback1-compat-analysis.log"
+          },
+          "negative": {
+            "log": "within_mile-fallback1-negative.log",
+            "log_sha256": "da9af5b581604e5a06cec8faa080704dada0fc648b1a0f0e94632c2b0adc1a08"
+          }
+        },
+        {
+          "id": "fallback2",
+          "trigger": {
+            "source": "Native actor spawn and first body frames",
+            "metric": "spawn success and body nonoverlap",
+            "failure_condition": "lead actor cannot spawn or body envelopes overlap"
+          },
+          "changed_knobs": [
+            "lead_spawn_station_m"
+          ],
+          "construction": "cases/within_mile/fallback2/construction.json",
+          "construction_sha256": "7c8b9622ce2d48bcf6159c8c94e7ca0802fe87550e15ac90d38a98008b90d9fa",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/execution-manifest.json --case heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__within_mile --candidate fallback2 --output .runtime-work/c228508-within_mile-fallback2-offline-v1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "7c8b9622ce2d48bcf6159c8c94e7ca0802fe87550e15ac90d38a98008b90d9fa",
+            "log": "within_mile-fallback2-offline.log",
+            "log_sha256": "404e3ede6372af82c4c59ae50e7e0200973613bf5443cee8bc04b33de393cdcc"
+          },
+          "compatibility": {
+            "receipt": "within_mile-fallback2-compatibility.json",
+            "sha256": "0d49dbe2630318328ac111d9782e89b037dd35b94b3463eac652adf6bb4aa3c0",
+            "log": "within_mile-fallback2-compat-analysis.log"
+          },
+          "negative": {
+            "log": "within_mile-fallback2-negative.log",
+            "log_sha256": "45e90e9858faaf89986e305bff1b219c39547392c3311a3974dae3c224626266"
+          }
+        },
+        {
+          "id": "fallback3",
+          "trigger": {
+            "source": "Original 20 Hz ego/lead body speed and gap",
+            "metric": "source-distinct closing encounter count",
+            "failure_condition": "requested closing response does not produce the selected encounter count"
+          },
+          "changed_knobs": [
+            "closing_lead_speed_mps"
+          ],
+          "construction": "cases/within_mile/fallback3/construction.json",
+          "construction_sha256": "1e11f72c398b1af8c7e5124226ece896ec32ec8e1365820bcce90800e7e2f2e2",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/execution-manifest.json --case heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__within_mile --candidate fallback3 --output .runtime-work/c228508-within_mile-fallback3-offline-v1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "1e11f72c398b1af8c7e5124226ece896ec32ec8e1365820bcce90800e7e2f2e2",
+            "log": "within_mile-fallback3-offline.log",
+            "log_sha256": "404e3ede6372af82c4c59ae50e7e0200973613bf5443cee8bc04b33de393cdcc"
+          },
+          "compatibility": {
+            "receipt": "within_mile-fallback3-compatibility.json",
+            "sha256": "6bfb3a4d99323176a1b9b57ef79bcfa2046b8462f9920294c5236d4d0229d484",
+            "log": "within_mile-fallback3-compat-analysis.log"
+          },
+          "negative": {
+            "log": "within_mile-fallback3-negative.log",
+            "log_sha256": "e1cc5ea368b40ba793a3e85fb5bf4f10d9f0a82e402e58fa9e7d07209e9f8f90"
+          }
+        }
+      ],
+      "measurement_contract": "cases/within_mile/measurement-contract.json",
+      "fixture_recipe": "work/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/cases/within_mile/diagnostic-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/execution-manifest.json --case heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__within_mile --candidate primary --output .runtime-work/c228508-within_mile-primary-offline-v1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "cdd9d33a67dd856675f1e2d3ae54a0a2642c8473ae95e130e6f3c727fa0851dc",
+        "log": "within_mile-primary-offline.log",
+        "log_sha256": "404e3ede6372af82c4c59ae50e7e0200973613bf5443cee8bc04b33de393cdcc"
+      },
+      "compatibility": {
+        "receipt": "within_mile-primary-compatibility.json",
+        "sha256": "5972e6132a9bd0f655b3aced191e7bf2ba47715396c4f9a45e26eea5922db067",
+        "log": "within_mile-primary-compat-analysis.log"
+      },
+      "negative": {
+        "log": "within_mile-primary-negative.log",
+        "log_sha256": "c992260d20efd427356fa64a8d38c9c45ae9ff6dad60e911ba536db2ef62423b"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__within_mile",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/delivery_audit.py --case heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__within_mile --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c228508-within_mile-primary-compat-v1 --diagnostic-fixture",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/delivery_audit.py --case heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__within_mile --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c228508-within_mile-primary-compat-v1",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Sealed Native source and owner exit missing",
+        "script": "delivery_audit.py",
+        "script_sha256": "8ef368556c4b7607b7a8f369c372318afa770318a585b1c007d896281506e659",
+        "test_log": "within_mile-delivery-audit-positive.log",
+        "test_log_sha256": "ece271082a8e956d1c07dc2d070753b7140ee6c4bdec8037f5ddfa2ee9b82d9f",
+        "negative_log": "within_mile-delivery-audit-negative.log",
+        "negative_log_sha256": "84a98e11d1e31a15bde04d607363b4de412bdfa5707c78e79e01ef35d0a9b09b"
+      }
     }
   ]
 }
