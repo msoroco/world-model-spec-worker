@@ -1,0 +1,256 @@
+{
+  "law_id": "NRS-484B-253",
+  "cell_id": "C109749",
+  "actor": "motor_vehicle_driver",
+  "selected_case_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver__approaching_far",
+  "supported_case_ids": [
+    "testing__C109749__NRS-484B-253__motor_vehicle_driver__approaching_far"
+  ],
+  "rate_hz": 20,
+  "duration_s": 45,
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "pose_strategy": "fixed elevated junction overview; verified body coverage required",
+      "fov_deg": 90
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "fixed opposing approach toward conflict region",
+      "fov_deg": 75
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "fixed intersection corner showing turn and opposing entry",
+      "fov_deg": 75
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "ego-attached forward driver reference with indicator pixel audit",
+      "fov_deg": 90
+    }
+  ],
+  "required_atoms": [
+    "kin.position",
+    "kin.speed",
+    "st.intersection",
+    "st.lane_enters",
+    "sig.turn_indicator",
+    "rel.oncoming"
+  ],
+  "source_packets": [],
+  "controller_release_ttc_s": 4.0,
+  "approach_speed_mps": 5.0,
+  "authored_test_context": {
+    "district": "business_or_residential",
+    "signal_advance_requirement_source": "NRS 484B.413(2); inputs/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/assignment.json",
+    "signal_advance_distance_m": 30.48,
+    "planning_assumptions": [
+      "Conventional human-driven vehicles",
+      "Same identified intersection for both approaches",
+      "No legal immediate-hazard cutoff assigned"
+    ],
+    "core_assumptions": []
+  },
+  "reciprocal_approach_speed_mps": 2.5,
+  "physical_completion": {
+    "criterion": "turn",
+    "motion_source": "interaction_history.jsonl",
+    "body_key": "ego.body_vertices_xy_m",
+    "heading_key": "ego_heading_deg",
+    "turn_degrees": 90,
+    "turn_tolerance_deg": 30,
+    "turn_sign": -1,
+    "context_sources": [
+      "intersection_geometry.json"
+    ],
+    "minimum_progress_m": 0.25,
+    "completion_goal_method": "Original ego body center moves and Native heading changes left by approximately 90 degrees; engineering completion only, not statutory judgment."
+  },
+  "recording_description": {
+    "channels": [
+      {
+        "name": "ego_speed",
+        "unit": "m/s",
+        "method": "original ego Native velocity XY magnitude",
+        "time_window": "entire captured interval",
+        "reference_frame": "original Native frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+      },
+      {
+        "name": "oncoming_speed",
+        "unit": "m/s",
+        "method": "original initial opposing Native velocity XY magnitude",
+        "time_window": "entire captured interval",
+        "reference_frame": "original Native frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+      },
+      {
+        "name": "reciprocal_speed",
+        "unit": "m/s",
+        "method": "original later opposing Native velocity XY magnitude",
+        "time_window": "entire captured interval",
+        "reference_frame": "original Native frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+      },
+      {
+        "name": "ego_heading",
+        "unit": "deg",
+        "method": "original Native ego transform yaw",
+        "time_window": "entire captured interval",
+        "reference_frame": "original Native frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+      },
+      {
+        "name": "ego_left_indicator",
+        "unit": "boolean",
+        "method": "original Native ego light-state readback",
+        "time_window": "entire captured interval",
+        "reference_frame": "original Native frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+      },
+      {
+        "name": "ego_in_intersection",
+        "unit": "boolean",
+        "method": "original ego body overlap with Native junction envelope",
+        "time_window": "entire captured interval",
+        "reference_frame": "original Native frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+      },
+      {
+        "name": "initial_oncoming_in_intersection",
+        "unit": "boolean",
+        "method": "original initial opposing body overlap with Native junction envelope",
+        "time_window": "entire captured interval",
+        "reference_frame": "original Native frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+      },
+      {
+        "name": "reciprocal_in_intersection",
+        "unit": "boolean",
+        "method": "original later opposing body overlap with Native junction envelope",
+        "time_window": "entire captured interval",
+        "reference_frame": "original Native frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "junction_context",
+        "unit": "structured record",
+        "method": "original Native junction bounding box and selected waypoint chain"
+      }
+    ],
+    "limitations": [
+      "Immediate hazard and right-of-way remain legal judgments.",
+      "Junction bounding-box geometry and actual visibility need original-source review."
+    ]
+  },
+  "case": {
+    "recording_description": {
+      "channels": [
+        {
+          "name": "ego_speed",
+          "unit": "m/s",
+          "method": "original ego Native velocity XY magnitude",
+          "time_window": "entire captured interval",
+          "reference_frame": "original Native frame",
+          "sampling_rate_hz": 20,
+          "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+        },
+        {
+          "name": "oncoming_speed",
+          "unit": "m/s",
+          "method": "original initial opposing Native velocity XY magnitude",
+          "time_window": "entire captured interval",
+          "reference_frame": "original Native frame",
+          "sampling_rate_hz": 20,
+          "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+        },
+        {
+          "name": "reciprocal_speed",
+          "unit": "m/s",
+          "method": "original later opposing Native velocity XY magnitude",
+          "time_window": "entire captured interval",
+          "reference_frame": "original Native frame",
+          "sampling_rate_hz": 20,
+          "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+        },
+        {
+          "name": "ego_heading",
+          "unit": "deg",
+          "method": "original Native ego transform yaw",
+          "time_window": "entire captured interval",
+          "reference_frame": "original Native frame",
+          "sampling_rate_hz": 20,
+          "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+        },
+        {
+          "name": "ego_left_indicator",
+          "unit": "boolean",
+          "method": "original Native ego light-state readback",
+          "time_window": "entire captured interval",
+          "reference_frame": "original Native frame",
+          "sampling_rate_hz": 20,
+          "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+        },
+        {
+          "name": "ego_in_intersection",
+          "unit": "boolean",
+          "method": "original ego body overlap with Native junction envelope",
+          "time_window": "entire captured interval",
+          "reference_frame": "original Native frame",
+          "sampling_rate_hz": 20,
+          "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+        },
+        {
+          "name": "initial_oncoming_in_intersection",
+          "unit": "boolean",
+          "method": "original initial opposing body overlap with Native junction envelope",
+          "time_window": "entire captured interval",
+          "reference_frame": "original Native frame",
+          "sampling_rate_hz": 20,
+          "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+        },
+        {
+          "name": "reciprocal_in_intersection",
+          "unit": "boolean",
+          "method": "original later opposing body overlap with Native junction envelope",
+          "time_window": "entire captured interval",
+          "reference_frame": "original Native frame",
+          "sampling_rate_hz": 20,
+          "uncertainty": "sampled at 20 Hz; between-frame state and actual actor visibility unresolved"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "junction_context",
+          "unit": "structured record",
+          "method": "original Native junction bounding box and selected waypoint chain"
+        }
+      ],
+      "limitations": [
+        "Immediate hazard and right-of-way remain legal judgments.",
+        "Junction bounding-box geometry and actual visibility need original-source review."
+      ]
+    }
+  },
+  "hazard_sweep_role": "far_approach_control_probe",
+  "hazard_legal_threshold": null
+}

@@ -2,14 +2,14 @@
   "assignment_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver",
   "input_sha256": "912e2ac429853e443ff83b2d323134aca9fc59f31fecef23b322dcc620d3aef4",
   "status": "partial",
-  "readiness_kind": "eleven_case_canonical_partial_cpu_checkpoint",
+  "readiness_kind": "far_approach_draft_offline_partial",
   "applied_update": 0,
   "tests": [
     {
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C109749__NRS-484B-253__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "bde1a7f0fe35db3d7c0702d9c3f6a55af8b80e82694afebf817b267ea443e47e"
+      "sha256": "416f3c28ba570480e555092e50065085c558331c0cb0800a7d6fb8fb437754f1"
     },
     {
       "command": "PYTHONPATH=runtime/scenario_pipeline:runtime/python .venv-cpu/bin/python -m worker_exchange.atom_preflight --runtime runtime --config work/testing__C109749__NRS-484B-253__motor_vehicle_driver/config.json",
@@ -1444,11 +1444,83 @@
       "exit_code": 0,
       "log": "cases/signal_advance_100_omitted/proofs/fallback3/exact-compatibility-command.log",
       "sha256": "a1e91c238fa871acc7e4eb526c95bf38049d04cbb3231e32da2bdf50da707476"
+    },
+    {
+      "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -c \"from pathlib import Path; from worker_exchange.execution_manifest import validate; print('validated',len(validate(Path('.').resolve(),'testing__C109749__NRS-484B-253__motor_vehicle_driver')['cases']))\"",
+      "exit_code": 0,
+      "log": "manifest-current.log",
+      "sha256": "dbee41de699ea1be8b9e53cae24e83c981a8adac7a53c4871a6a8ad2de28bb70"
+    },
+    {
+      "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -c \"import json; from pathlib import Path; from worker_exchange.package_compatibility import check_receipts; repo=Path('.').resolve(); w=repo/'work/testing__C109749__NRS-484B-253__motor_vehicle_driver'; m=json.loads((w/'execution-manifest.json').read_text()); check_receipts(repo,w,m); print('validated',len(m['cases']))\"",
+      "exit_code": 0,
+      "log": "package-compatibility-current.log",
+      "sha256": "dbee41de699ea1be8b9e53cae24e83c981a8adac7a53c4871a6a8ad2de28bb70"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C109749__NRS-484B-253__motor_vehicle_driver/probe_hazard_controller.py --output work/testing__C109749__NRS-484B-253__motor_vehicle_driver/hazard-controller-probe.json",
+      "exit_code": 0,
+      "log": "hazard-controller-probe.log",
+      "sha256": "80403b31431d66fb87d0755a98168295f780ae1ea0ad2f479ab6e941e7ed5d11"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C109749__NRS-484B-253__motor_vehicle_driver/prove_hazard_sweep_policy.py --output work/testing__C109749__NRS-484B-253__motor_vehicle_driver/hazard-sweep-policy-proof.json",
+      "exit_code": 0,
+      "log": "hazard-sweep-policy-proof.log",
+      "sha256": "c91f3fedf5f2d67538099856961e73b2c16a09619601adc3cfff9ccfcbe191b5"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "preflight-current.log",
+      "sha256": "cb73400e28b77334841909d96f7e7ee3667e23cca0f60745cc14742ba34c5936"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --updates",
+      "exit_code": 0,
+      "log": "updates-current.log",
+      "sha256": "bc028da1339a9f9c4509c1460ad99c683c6b6ac8b7b6af6b378e3ffa7cdbb287"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C109749__NRS-484B-253__motor_vehicle_driver/build_far_approach_draft.py",
+      "exit_code": 0,
+      "log": "cases/approaching_far-build.log",
+      "sha256": "5abe145cc77fc3ce4582154147e7cc424ad67bfd1d30fdab4b3d4327f3a28ad7"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/cases/approaching_far/draft-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__approaching_far --output .runtime-work/c109749-approaching-far-offline-v4",
+      "exit_code": 0,
+      "log": "cases/approaching_far/offline.log",
+      "sha256": "891b04f229c15b9ad2ffd0e7510647f87a34842cdcf609bc23a0eb3af2ff6c21"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/cases/approaching_far/draft-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__approaching_far --candidate primary --output .runtime-work/c109749-approaching-far-primary-v5",
+      "exit_code": 0,
+      "log": "cases/approaching_far/offline-primary.log",
+      "sha256": "7619c92d139f7cb4c6dce60c9d0c19d5eb90fa613e662a39ed481ff1bdc90205"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/cases/approaching_far/draft-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__approaching_far --candidate fallback1 --output .runtime-work/c109749-approaching-far-fallback1-v5",
+      "exit_code": 0,
+      "log": "cases/approaching_far/offline-fallback1.log",
+      "sha256": "ebd9f13041fe26979d4606b4e32205b250f1231771a4e0d38075e7f797722690"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/cases/approaching_far/draft-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__approaching_far --candidate fallback2 --output .runtime-work/c109749-approaching-far-fallback2-v5",
+      "exit_code": 0,
+      "log": "cases/approaching_far/offline-fallback2.log",
+      "sha256": "a8ffbadf7679e2e963f51ecdd1f52e4a8b85b644dd94f6f60966999688ecccd8"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/cases/approaching_far/draft-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__approaching_far --candidate fallback3 --output .runtime-work/c109749-approaching-far-fallback3-v5",
+      "exit_code": 0,
+      "log": "cases/approaching_far/offline-fallback3.log",
+      "sha256": "cd67e90cd8fbdc934c8e4f01cfd535d2e7a835c61f2d9e573caec79fea9e43c8"
     }
   ],
   "remaining_gpu_checks": [
     "Actual opposing approach and subject motion, signal pixels and four-camera visibility."
   ],
-  "reason": "Eleven C109749 exact cases, each with three physical-risk fallbacks, are in the canonical case plan, semantic proposal and execution manifest. All 44 exact constructions pass current canonical offline, positive/negative compatibility and recorded-only saved processing. The new 30.48 m signalled case measures 30.4800001 m from a sealed source; its matched omitted-signal companion differs only in indicator state across 900 diagnostic samples. Both new cases pass independent 900-frame four-camera CPU delivery audits and missing sealed-source rejection, and the controlled comparison passes positive and negative tests. Physical classifier and lifecycle CPU fixtures pass for all eleven cases. All diagnostic delivery receipts explicitly say passed false and claim no physical or legal acceptance. The three physical-judgment sweep specs and other statutory alternatives still lack complete selected constructions and CPU proofs. Accepted-original equivalence, actual Native motion and camera visibility remain unverified. This and the other partial assignments are unfinished worker-owned CPU work, with no dependency or tool blocker. See HANDOFF.md for exact sources, commands and resume actions.",
+  "reason": "Eleven canonical cases retain their CPU proof receipts. An isolated exact far-approach draft now has a source-bound turn-before-entry observation, dedicated saved finalizer, and six passing materialized tests across primary and three risk-triggered offline constructions. The draft remains outside the canonical manifest pending a 900-frame source-shaped diagnostic, positive/negative compatibility, recorded-only saved processing, independent delivery/comparison audits and compatibility/saved/delivery/comparison proofs for its three offline-proved risk fallbacks. Judgment sweeps and shared branch/queue/final-review work remain worker-owned; no physical or legal acceptance claimed.",
   "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline $CARLA_PYTHON -m worker_exchange execute-delivery --repo . --batch batch.json --db $DB --run $RUN --assignment testing__C109749__NRS-484B-253__motor_vehicle_driver --case testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield_after_turn --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT"
 }

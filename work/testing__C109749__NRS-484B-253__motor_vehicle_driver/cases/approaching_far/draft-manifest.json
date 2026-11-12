@@ -1,0 +1,59 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver",
+  "cases": [
+    {
+      "case_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver__approaching_far",
+      "construction": "construction.json",
+      "construction_sha256": "13d2a95e0da5e6dd9917075fdf349dfbff7543b8ef98c706ec34481b01bc9535",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native opposing and subject paths may not realize the intended far approach"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback1-construction.json",
+          "construction_sha256": "335e156b6f4f8ec44d52da93ff80e9ba959eb9745cd969c6a0212a73a382ea41",
+          "trigger": {
+            "source": "interaction_history.jsonl and intersection_geometry.json",
+            "metric": "controller_release_ttc_s physical-risk observation",
+            "failure_condition": "measured opposing closing motion leaves too little engineered release margin before subject turn"
+          },
+          "changed_knobs": [
+            "controller_release_ttc_s"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "fallback2-construction.json",
+          "construction_sha256": "a66f05cda86b6fad7f0877719b42e16cee2e37ea620745c3451855e0ae506280",
+          "trigger": {
+            "source": "interaction_history.jsonl and intersection_geometry.json",
+            "metric": "approach_speed_mps physical-risk observation",
+            "failure_condition": "subject reaches the hold or conflict region at excessive measured speed"
+          },
+          "changed_knobs": [
+            "approach_speed_mps"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "fallback3-construction.json",
+          "construction_sha256": "bb85b12c450866787756c7478e97af316587c0048626dc784ffd13f1414507c3",
+          "trigger": {
+            "source": "interaction_history.jsonl and intersection_geometry.json",
+            "metric": "reciprocal_approach_speed_mps physical-risk observation",
+            "failure_condition": "later opposing body reaches the junction during the subject's incomplete turn"
+          },
+          "changed_knobs": [
+            "reciprocal_approach_speed_mps"
+          ]
+        }
+      ]
+    }
+  ],
+  "canonical_selection": false,
+  "saved_source_proved": false,
+  "comparison_proved": false
+}
