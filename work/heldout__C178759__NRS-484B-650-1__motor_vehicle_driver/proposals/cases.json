@@ -168,14 +168,23 @@
           "Speeding, two lawful predicate violations, immediate hazard and aggressive-driving legal judgment remain independent review."
         ]
       },
-      "paired_probe_id": "repeated_right_pass_required",
+      "paired_probe_id": "C178759_one_mile_boundary",
       "deliberate_differences": [
-        "second_right_pass_request"
+        "second_pass_station_m"
       ],
       "probe": {
-        "primary_variable": "second_right_pass_request",
-        "comparison_or_standard": "one versus two requested mapped-edge right passes of the same fixed vehicle; legal act count remains independent review",
-        "target_value_or_branch": "two requested passes"
+        "primary_variable": "path_length_m",
+        "comparison_or_standard": "source-measured continuous one-mile event-window threshold; requested span only",
+        "target_value_or_branch": "within_mile",
+        "threshold_ref": "timing.numeric_conditions[0]",
+        "test_value": 0.38,
+        "operator": "<=",
+        "unit": "mile"
+      },
+      "epsilon_used": {
+        "value": 0.001,
+        "unit": "mile",
+        "rationale": "Requested engineering margin for source-measured physical uncertainty; not a legal tolerance"
       }
     },
     {
@@ -268,6 +277,208 @@
         "primary_variable": "second_right_pass_request",
         "comparison_or_standard": "one versus two requested mapped-edge right passes of the same fixed vehicle; legal act count remains independent review",
         "target_value_or_branch": "one requested pass"
+      }
+    },
+    {
+      "case_id": "heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__at_mile",
+      "target_law_id": "NRS-484B-650-1",
+      "target_type": "boundary_probe",
+      "rationale": "Request second pass near the one-mile event-envelope station after fixed first pass and lead reset; source path length and legal predicates remain independent",
+      "variable_assignments": {
+        "first_right_pass_request": {
+          "kind": "controller",
+          "value": "right_of_mapped_outer_edge"
+        },
+        "second_right_pass_request": {
+          "kind": "controller",
+          "value": "right_of_mapped_outer_edge"
+        },
+        "fixed_overtaken_actor_id": {
+          "kind": "world_setup",
+          "value": "one fixed Native other-vehicle actor selected at spawn"
+        },
+        "ego_speed_mps": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "path_length_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "mapped_road_edge_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "hazard_conflict_geometry": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "off the paved portion of the highway",
+        "immediate hazard"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "path_length_m",
+            "unit": "m",
+            "method": "cumulative original 20 Hz ego world positions",
+            "sampling_rate_hz": 20,
+            "time_window": "entire continuous source drive",
+            "reference_frame": "Native world ground plane",
+            "uncertainty": "Native pose sample resolution"
+          },
+          {
+            "name": "mapped_road_edge_clearance_m",
+            "unit": "m",
+            "method": "signed original ego position against retained OpenDRIVE driving and shoulder outer edges",
+            "sampling_rate_hz": 20,
+            "time_window": "both pass requests and intervening reset",
+            "reference_frame": "Native road ground plane",
+            "uncertainty": "Map geometry does not establish pavement material"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "fixed_overtaken_vehicle",
+            "unit": "Native actor ID",
+            "method": "same lead actor ID retained with per-frame ego and lead positions and speed"
+          },
+          {
+            "name": "paved_versus_traveled_boundary",
+            "unit": "source geometry and RGB pixels",
+            "method": "driving-lane and mapped road edges retained separately; paved surface requires independent original-pixel review"
+          },
+          {
+            "name": "governing_cross_referenced_rule",
+            "unit": "sourced legal context",
+            "method": "NRS 484B.210 and 484B.650 source identity retained; no automatic violation finding"
+          }
+        ],
+        "limitations": [
+          "Mapped road edge is a physical controller proxy, not proof of the paved portion.",
+          "Speeding, two lawful predicate violations, immediate hazard and aggressive-driving legal judgment remain independent review."
+        ]
+      },
+      "paired_probe_id": "C178759_one_mile_boundary",
+      "deliberate_differences": [
+        "second_pass_station_m"
+      ],
+      "probe": {
+        "primary_variable": "path_length_m",
+        "comparison_or_standard": "source-measured continuous one-mile event-window threshold; requested span only",
+        "target_value_or_branch": "at_mile",
+        "threshold_ref": "timing.numeric_conditions[0]",
+        "test_value": 1.0,
+        "operator": "<=",
+        "unit": "mile"
+      },
+      "epsilon_used": {
+        "value": 0.001,
+        "unit": "mile",
+        "rationale": "Requested engineering margin for source-measured physical uncertainty; not a legal tolerance"
+      }
+    },
+    {
+      "case_id": "heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__beyond_mile",
+      "target_law_id": "NRS-484B-650-1",
+      "target_type": "boundary_probe",
+      "rationale": "Request second right-side pass beyond one-mile event-envelope station while preserving fixed first pass and lead reset; original path and judgments remain independent",
+      "variable_assignments": {
+        "first_right_pass_request": {
+          "kind": "controller",
+          "value": "right_of_mapped_outer_edge"
+        },
+        "second_right_pass_request": {
+          "kind": "controller",
+          "value": "right_of_mapped_outer_edge"
+        },
+        "fixed_overtaken_actor_id": {
+          "kind": "world_setup",
+          "value": "one fixed Native other-vehicle actor selected at spawn"
+        },
+        "ego_speed_mps": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "path_length_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "mapped_road_edge_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "hazard_conflict_geometry": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "off the paved portion of the highway",
+        "immediate hazard"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "path_length_m",
+            "unit": "m",
+            "method": "cumulative original 20 Hz ego world positions",
+            "sampling_rate_hz": 20,
+            "time_window": "entire continuous source drive",
+            "reference_frame": "Native world ground plane",
+            "uncertainty": "Native pose sample resolution"
+          },
+          {
+            "name": "mapped_road_edge_clearance_m",
+            "unit": "m",
+            "method": "signed original ego position against retained OpenDRIVE driving and shoulder outer edges",
+            "sampling_rate_hz": 20,
+            "time_window": "both pass requests and intervening reset",
+            "reference_frame": "Native road ground plane",
+            "uncertainty": "Map geometry does not establish pavement material"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "fixed_overtaken_vehicle",
+            "unit": "Native actor ID",
+            "method": "same lead actor ID retained with per-frame ego and lead positions and speed"
+          },
+          {
+            "name": "paved_versus_traveled_boundary",
+            "unit": "source geometry and RGB pixels",
+            "method": "driving-lane and mapped road edges retained separately; paved surface requires independent original-pixel review"
+          },
+          {
+            "name": "governing_cross_referenced_rule",
+            "unit": "sourced legal context",
+            "method": "NRS 484B.210 and 484B.650 source identity retained; no automatic violation finding"
+          }
+        ],
+        "limitations": [
+          "Mapped road edge is a physical controller proxy, not proof of the paved portion.",
+          "Speeding, two lawful predicate violations, immediate hazard and aggressive-driving legal judgment remain independent review."
+        ]
+      },
+      "paired_probe_id": "C178759_one_mile_boundary",
+      "deliberate_differences": [
+        "second_pass_station_m"
+      ],
+      "probe": {
+        "primary_variable": "path_length_m",
+        "comparison_or_standard": "source-measured continuous one-mile event-window threshold; requested span only",
+        "target_value_or_branch": "beyond_mile",
+        "threshold_ref": "timing.numeric_conditions[0]",
+        "test_value": 1.0936132983377078,
+        "operator": "<=",
+        "unit": "mile"
+      },
+      "epsilon_used": {
+        "value": 0.001,
+        "unit": "mile",
+        "rationale": "Requested engineering margin for source-measured physical uncertainty; not a legal tolerance"
       }
     }
   ],

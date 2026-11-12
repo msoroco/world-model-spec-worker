@@ -1,0 +1,31 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__beyond_mile",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Single continuous one-mile window with one speeding act, two separately sourced off-pavement right passes of the fixed other vehicle, and immediate hazard to vehicle or person",
+      "source": "inputs/heldout__C178759__NRS-484B-650-1__motor_vehicle_driver/assignment.json",
+      "output_key": "two_right_pass_observation",
+      "method": "measure_two_right_passes",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "video_frames.jsonl",
+        "driving_trace.jsonl",
+        "right_pass_sources.jsonl",
+        "following_sources.jsonl",
+        "overview.mkv",
+        "approach.mkv",
+        "reference_corner.mkv",
+        "driver_reference.mkv"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "right_pass_sources.jsonl"
+    ],
+    "error_contains": "Missing required source: right_pass_sources.jsonl"
+  }
+}

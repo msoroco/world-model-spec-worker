@@ -184,7 +184,7 @@
       },
       "physical_preparation": {
         "receipt": "physical/repeated_right_pass-proof.json",
-        "sha256": "54027fd140fd44cb7c8b5b12f955a5eb24f6e79e25ce4946c484b6ada52ac01b"
+        "sha256": "388af1e4c4b0f2138c1b30b9a120276e5c2be8f495b0c703134ee899af129b2d"
       },
       "acquisition": {
         "path_length_m": {
@@ -380,7 +380,7 @@
       },
       "physical_preparation": {
         "receipt": "physical/single_right_pass-proof.json",
-        "sha256": "ad22e0b0fe64d9e97bfe8345ba975ecc66d57f822625df156efcf17bea5518cc"
+        "sha256": "5e52d278c4b8b404715d9339be136e86d740071ad9f7fb94082b3b2d54fdb520"
       },
       "acquisition": {
         "path_length_m": {
@@ -393,6 +393,314 @@
           "method": "20 Hz original ego world x/y against separately retained Native driving and outer-road edge geometry in right_pass_sources.jsonl",
           "evidence": "Original signed clearance is recomputed from ego_xy_m, mapped_road_edge_xy_m and right_axis_xy; no paved-surface finding is asserted."
         }
+      }
+    },
+    {
+      "case_id": "heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__at_mile",
+      "kind": "delivery",
+      "construction": "cases/at_mile/construction.json",
+      "construction_sha256": "6593c2c590fd9c8dd13b210f5234f9556b532b373abc828d5c3c1d4b6700fd55",
+      "measurement_contract": "cases/at_mile/measurement-contract.json",
+      "fixture_recipe": "work/heldout__C178759__NRS-484B-650-1__motor_vehicle_driver/cases/at_mile/diagnostic-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "two_pass_finalizer.py",
+        "output": "analysis-report.json"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The same fixed lead may fail to reclaim its position, either mapped-road-edge pass may fail, or the requested trajectory may not create an immediate hazard in original Native motion."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/at_mile/fallback1/construction.json",
+          "construction_sha256": "85112dcda9be88383d386e4113f3078f6546ff53ed29fff3035dbefabd4177ca",
+          "trigger": {
+            "source": "Original Native route geometry and synchronized RGB",
+            "metric": "route continuity and participant visibility",
+            "failure_condition": "route continuity or four-camera coverage fails"
+          },
+          "changed_knobs": [
+            "route_candidate_index"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C178759__NRS-484B-650-1__motor_vehicle_driver/execution-manifest.json --case heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__at_mile --candidate fallback1 --output .runtime-work/c178759-refresh-source-v3/at-mile-fallback1/offline",
+            "exit_code": 0,
+            "construction_sha256": "85112dcda9be88383d386e4113f3078f6546ff53ed29fff3035dbefabd4177ca",
+            "log": "at-mile-fallback1-offline.log",
+            "log_sha256": "670a39115e7523a8984e4842e16547cb2094b03fad392b037b4b9dc8b2656e62"
+          },
+          "compatibility": {
+            "receipt": "at-mile-fallback1-compatibility.json",
+            "sha256": "9bb9da3ba58c4ba82d663e4dfadb52210fd16f068d5f589e9eddb5efea130b68",
+            "log": "at-mile-fallback1-compat-analysis.log",
+            "negative_log": "at-mile-fallback1-negative.log"
+          },
+          "negative": {
+            "log": "at-mile-fallback1-negative.log",
+            "log_sha256": "9e07b79da5df2bc03d668ade73fb9448bcff341f31b5623ee6a93c952987781a"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "cpu_saved_receipt": "at-mile-fallback1-saved-receipt.json",
+            "cpu_saved_receipt_sha256": "9db38970534107eddba91d881dd71d2013affd555bb60b79653b0c9a32fc9407"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/at_mile/fallback2/construction.json",
+          "construction_sha256": "c9aa19e35e78337846313d15bc561c925f247c0b46c553872835640d15b9af22",
+          "trigger": {
+            "source": "Original 20 Hz ego/lead signed route progress",
+            "metric": "inter-pass lead reclaim and second reset",
+            "failure_condition": "the fixed lead does not regain position before the second pass"
+          },
+          "changed_knobs": [
+            "reclaim_lead_speed_mps"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C178759__NRS-484B-650-1__motor_vehicle_driver/execution-manifest.json --case heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__at_mile --candidate fallback2 --output .runtime-work/c178759-refresh-source-v3/at-mile-fallback2/offline",
+            "exit_code": 0,
+            "construction_sha256": "c9aa19e35e78337846313d15bc561c925f247c0b46c553872835640d15b9af22",
+            "log": "at-mile-fallback2-offline.log",
+            "log_sha256": "670a39115e7523a8984e4842e16547cb2094b03fad392b037b4b9dc8b2656e62"
+          },
+          "compatibility": {
+            "receipt": "at-mile-fallback2-compatibility.json",
+            "sha256": "f0e8114ea33eaf9d38de83b9f36f836b2e49aea9bdf9471338cb3772b7789e5c",
+            "log": "at-mile-fallback2-compat-analysis.log",
+            "negative_log": "at-mile-fallback2-negative.log"
+          },
+          "negative": {
+            "log": "at-mile-fallback2-negative.log",
+            "log_sha256": "9d97956a003b55fe6d7d11e58c43cd0cca21a16d9b4b64b40d2b32d4831dc5dc"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "cpu_saved_receipt": "at-mile-fallback2-saved-receipt.json",
+            "cpu_saved_receipt_sha256": "8aa0cc551eef8e6891b5c1e110ea94fbd90a8e9b9c8965ae7d8d24b3bf16807f"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/at_mile/fallback3/construction.json",
+          "construction_sha256": "76e001c65ae0cb4f7b7083deb06dff7b247d6acff68c8b1c1abc5a0ec8c38dd4",
+          "trigger": {
+            "source": "Original mapped outer-road-edge signed clearance and synchronized RGB",
+            "metric": "two separate mapped-edge crossings",
+            "failure_condition": "the ego does not cross the mapped outer road edge on either pass"
+          },
+          "changed_knobs": [
+            "beyond_mapped_edge_m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C178759__NRS-484B-650-1__motor_vehicle_driver/execution-manifest.json --case heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__at_mile --candidate fallback3 --output .runtime-work/c178759-refresh-source-v3/at-mile-fallback3/offline",
+            "exit_code": 0,
+            "construction_sha256": "76e001c65ae0cb4f7b7083deb06dff7b247d6acff68c8b1c1abc5a0ec8c38dd4",
+            "log": "at-mile-fallback3-offline.log",
+            "log_sha256": "670a39115e7523a8984e4842e16547cb2094b03fad392b037b4b9dc8b2656e62"
+          },
+          "compatibility": {
+            "receipt": "at-mile-fallback3-compatibility.json",
+            "sha256": "97695ac30d52e13dbf82ba6247c01f855653b7f5345a2b40721c00d820046c4d",
+            "log": "at-mile-fallback3-compat-analysis.log",
+            "negative_log": "at-mile-fallback3-negative.log"
+          },
+          "negative": {
+            "log": "at-mile-fallback3-negative.log",
+            "log_sha256": "165af79cd82ff3ff79950a9cfa9b74ec2f795df113d654cc75cc3706d9286c2d"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "cpu_saved_receipt": "at-mile-fallback3-saved-receipt.json",
+            "cpu_saved_receipt_sha256": "bb07250a2bf56f08bc0d540b99969d61ad070d4296588c150a4c95d5d5cd2d91"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C178759__NRS-484B-650-1__motor_vehicle_driver/execution-manifest.json --case heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__at_mile --candidate primary --output .runtime-work/c178759-refresh-source-v3/at-mile-primary/offline",
+        "exit_code": 0,
+        "construction_sha256": "6593c2c590fd9c8dd13b210f5234f9556b532b373abc828d5c3c1d4b6700fd55",
+        "log": "at-mile-primary-offline.log",
+        "log_sha256": "670a39115e7523a8984e4842e16547cb2094b03fad392b037b4b9dc8b2656e62"
+      },
+      "compatibility": {
+        "receipt": "at-mile-primary-compatibility.json",
+        "sha256": "786d25cd8377760f3c7b9a01f48f8cbc664e480ad007cdf67c58c0afdab8609d",
+        "log": "at-mile-primary-compat-analysis.log",
+        "negative_log": "at-mile-primary-negative.log"
+      },
+      "negative": {
+        "log": "at-mile-primary-negative.log",
+        "log_sha256": "e7692f19f8dfd8dfd4b26f1530ff75a8a4e0dfa9dd86d3f28cb624da57c23f30"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "cpu_saved_receipt": "at-mile-primary-saved-receipt.json",
+        "cpu_saved_receipt_sha256": "9908e0d62ceb8c30cde8dafe18815b2a25dd04dc22274a5b37c3756796eab1a0"
+      },
+      "physical_preparation": {
+        "receipt": "physical/at_mile-proof.json",
+        "sha256": "9a2d564124101c92f908c13bc084b206aab5dc248bb9776c5ea3557f0452cab3"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
+    },
+    {
+      "case_id": "heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__beyond_mile",
+      "kind": "delivery",
+      "construction": "cases/beyond_mile/construction.json",
+      "construction_sha256": "0c947a5f71422982a2e90390082dd380c62f124989cf771ce67c3d84d7e55a49",
+      "measurement_contract": "cases/beyond_mile/measurement-contract.json",
+      "fixture_recipe": "work/heldout__C178759__NRS-484B-650-1__motor_vehicle_driver/cases/beyond_mile/diagnostic-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "two_pass_finalizer.py",
+        "output": "analysis-report.json"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The same fixed lead may fail to reclaim its position, either mapped-road-edge pass may fail, or the requested trajectory may not create an immediate hazard in original Native motion."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/beyond_mile/fallback1/construction.json",
+          "construction_sha256": "59e40576d15eefb48a54eda79c0522dc9fcf531dc674beba7a0cbea66fffc953",
+          "trigger": {
+            "source": "Original Native route geometry and synchronized RGB",
+            "metric": "route continuity and participant visibility",
+            "failure_condition": "route continuity or four-camera coverage fails"
+          },
+          "changed_knobs": [
+            "route_candidate_index"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C178759__NRS-484B-650-1__motor_vehicle_driver/execution-manifest.json --case heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__beyond_mile --candidate fallback1 --output .runtime-work/c178759-refresh-source-v4/beyond-mile-fallback1/offline",
+            "exit_code": 0,
+            "construction_sha256": "59e40576d15eefb48a54eda79c0522dc9fcf531dc674beba7a0cbea66fffc953",
+            "log": "beyond-mile-fallback1-offline.log",
+            "log_sha256": "670a39115e7523a8984e4842e16547cb2094b03fad392b037b4b9dc8b2656e62"
+          },
+          "compatibility": {
+            "receipt": "beyond-mile-fallback1-compatibility.json",
+            "sha256": "ed3a0d63aadf668a86a16b1a3efac292d47c7ab89af90cf66a5ed467039d99a1",
+            "log": "beyond-mile-fallback1-compat-analysis.log",
+            "negative_log": "beyond-mile-fallback1-negative.log"
+          },
+          "negative": {
+            "log": "beyond-mile-fallback1-negative.log",
+            "log_sha256": "9c47498198b95da6bff4e3c18fbebf696ccdbb2469869e641b900bca9aa7bcdb"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "cpu_saved_receipt": "beyond-mile-fallback1-saved-receipt.json",
+            "cpu_saved_receipt_sha256": "b4a41e113bd4cd2c04f1aa71db6550e69201223cb355794e49114dc6f951844d"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/beyond_mile/fallback2/construction.json",
+          "construction_sha256": "1bce217fd3876c1539995865c9266bdaa338e576f7e899ff5b418d92ae605358",
+          "trigger": {
+            "source": "Original 20 Hz ego/lead signed route progress",
+            "metric": "inter-pass lead reclaim and second reset",
+            "failure_condition": "the fixed lead does not regain position before the second pass"
+          },
+          "changed_knobs": [
+            "reclaim_lead_speed_mps"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C178759__NRS-484B-650-1__motor_vehicle_driver/execution-manifest.json --case heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__beyond_mile --candidate fallback2 --output .runtime-work/c178759-refresh-source-v4/beyond-mile-fallback2/offline",
+            "exit_code": 0,
+            "construction_sha256": "1bce217fd3876c1539995865c9266bdaa338e576f7e899ff5b418d92ae605358",
+            "log": "beyond-mile-fallback2-offline.log",
+            "log_sha256": "670a39115e7523a8984e4842e16547cb2094b03fad392b037b4b9dc8b2656e62"
+          },
+          "compatibility": {
+            "receipt": "beyond-mile-fallback2-compatibility.json",
+            "sha256": "fba2ce5f8afb7d285f3766c3fdeed09f493f2a96efddff7001cb2388d82e78c1",
+            "log": "beyond-mile-fallback2-compat-analysis.log",
+            "negative_log": "beyond-mile-fallback2-negative.log"
+          },
+          "negative": {
+            "log": "beyond-mile-fallback2-negative.log",
+            "log_sha256": "54f3ef734e6ab9b37e2b1a40c17b25645c3ce79024a39da746a0d5dda3f88abb"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "cpu_saved_receipt": "beyond-mile-fallback2-saved-receipt.json",
+            "cpu_saved_receipt_sha256": "22d548da66975175c11934d460d4860c98790a0cb9234bc41e031a797c664d7e"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/beyond_mile/fallback3/construction.json",
+          "construction_sha256": "1d17420471798df73778ead5b0ddc72ac26d6798c13254b1b57ea5ba6342b46c",
+          "trigger": {
+            "source": "Original mapped outer-road-edge signed clearance and synchronized RGB",
+            "metric": "two separate mapped-edge crossings",
+            "failure_condition": "the ego does not cross the mapped outer road edge on either pass"
+          },
+          "changed_knobs": [
+            "beyond_mapped_edge_m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C178759__NRS-484B-650-1__motor_vehicle_driver/execution-manifest.json --case heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__beyond_mile --candidate fallback3 --output .runtime-work/c178759-refresh-source-v4/beyond-mile-fallback3/offline",
+            "exit_code": 0,
+            "construction_sha256": "1d17420471798df73778ead5b0ddc72ac26d6798c13254b1b57ea5ba6342b46c",
+            "log": "beyond-mile-fallback3-offline.log",
+            "log_sha256": "670a39115e7523a8984e4842e16547cb2094b03fad392b037b4b9dc8b2656e62"
+          },
+          "compatibility": {
+            "receipt": "beyond-mile-fallback3-compatibility.json",
+            "sha256": "9f9a14611f0a8190cc78b8585d09c5c7e7d909d334167fe5e10350af7850a717",
+            "log": "beyond-mile-fallback3-compat-analysis.log",
+            "negative_log": "beyond-mile-fallback3-negative.log"
+          },
+          "negative": {
+            "log": "beyond-mile-fallback3-negative.log",
+            "log_sha256": "d895e17ca0a54579410ba25c7b2eb290ce45a1253638f9857c29e9355c8a65f4"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "cpu_saved_receipt": "beyond-mile-fallback3-saved-receipt.json",
+            "cpu_saved_receipt_sha256": "b236c6c966c97ab7097aebc04c50f5e9a403aaf5e36541e22faf588f3b9eaa61"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C178759__NRS-484B-650-1__motor_vehicle_driver/execution-manifest.json --case heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__beyond_mile --candidate primary --output .runtime-work/c178759-refresh-source-v3/beyond-mile-primary/offline",
+        "exit_code": 0,
+        "construction_sha256": "0c947a5f71422982a2e90390082dd380c62f124989cf771ce67c3d84d7e55a49",
+        "log": "beyond-mile-primary-offline.log",
+        "log_sha256": "670a39115e7523a8984e4842e16547cb2094b03fad392b037b4b9dc8b2656e62"
+      },
+      "compatibility": {
+        "receipt": "beyond-mile-primary-compatibility.json",
+        "sha256": "a19ac68265af9d2541336fd3bdd01cf1f33330e4df68abed0a0517b5a81086c0",
+        "log": "beyond-mile-primary-compat-analysis.log",
+        "negative_log": "beyond-mile-primary-negative.log"
+      },
+      "negative": {
+        "log": "beyond-mile-primary-negative.log",
+        "log_sha256": "20ef2a2a1b80b29758069ebcfb25b4fdb28dbd2c308c39577b98c85faaddbe85"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "cpu_saved_receipt": "beyond-mile-primary-saved-receipt.json",
+        "cpu_saved_receipt_sha256": "3ba3daeee92a098c58c39bf4884d8e19ce11a92f49b38f187f6d59e22eee8945"
+      },
+      "physical_preparation": {
+        "receipt": "physical/beyond_mile-proof.json",
+        "sha256": "9bc6ab4ddc7dca5af926d3ee3d2442894fe257b029f17c98033ec1c27b38d126"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
       }
     }
   ]

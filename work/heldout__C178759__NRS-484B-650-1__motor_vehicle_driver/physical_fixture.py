@@ -72,7 +72,7 @@ def evaluate(case, kind):
     if {x['path'] for x in diagnostic['videos']} != {
             'overview.mkv', 'approach.mkv', 'reference_corner.mkv', 'driver_reference.mkv'}:
         raise ValueError('Four source-camera fixture specification missing')
-    expected = 2 if case.endswith('__repeated_right_pass') else 1
+    expected = 1 if case.endswith('__single_right_pass') else 2
     if kind == 'missing_evidence':
         passing = None
     elif kind == 'incomplete_motion':

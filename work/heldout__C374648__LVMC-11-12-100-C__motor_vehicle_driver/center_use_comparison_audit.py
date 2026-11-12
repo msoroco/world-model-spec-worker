@@ -1,4 +1,4 @@
-"""Independent saved-original audit of the eastbound center/outer straight-travel pair."""
+"""Independent saved-original audit of center-lane turn versus straight use."""
 
 import argparse
 from hashlib import sha256
@@ -7,6 +7,7 @@ from pathlib import Path
 import subprocess
 
 from straight_use_measurement import measure
+from turn_origin_comparison_audit import _source as turn_source
 
 PREFIX = 'heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver__'
 CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
@@ -62,49 +63,53 @@ def _source(root, expected_case, *, decode_video):
             'rows': rows, 'hashes': hashes}
 
 
-def audit(center_root, outer_root, *, decode_video=True):
-    center = _source(center_root, PREFIX+'straight_center_east', decode_video=decode_video)
-    outer = _source(outer_root, PREFIX+'straight_outer_east', decode_video=decode_video)
-    a, b = center['measurement'], outer['measurement']
-    if (not a['origin_matches_center_lane'] or b['origin_matches_center_lane'] or
-            a['approach_road_id'] != b['approach_road_id'] or
-            a['center_turn_lane_id'] != b['center_turn_lane_id'] or
-            a['approach_lane_id'] == b['approach_lane_id'] or
-            a['center_marking_source_ids'] != b['center_marking_source_ids'] or
-            a['designation_source'] != b['designation_source']):
-        raise ValueError('Center/outer origin or fixed marking condition differs')
-    fixed_context = ('target_exit_road_id',
-                     'requested_maneuver', 'designation_authority_verified')
-    if any(center['context'].get(key) != outer['context'].get(key) for key in fixed_context):
-        raise ValueError('Straight target road or authored fixed condition differs')
-    if ([(r['is_junction'], r['time_s']-center['rows'][0]['time_s']) for r in center['rows']] !=
-            [(r['is_junction'], r['time_s']-outer['rows'][0]['time_s']) for r in outer['rows']]):
-        raise ValueError('Original straight comparison junction/time schedule differs')
-    for source in (center, outer):
+def audit(left_root, straight_root, *, decode_video=True):
+    left = turn_source(left_root, PREFIX+'left_center_east',
+                       decode_video=decode_video)
+    straight = _source(straight_root, PREFIX+'straight_center_east',
+                       decode_video=decode_video)
+    a, b = left['measurement'], straight['measurement']
+    fixed = ('approach_road_id', 'approach_lane_id', 'center_turn_lane_id',
+             'center_marking_source_ids', 'designation_source')
+    if (not a['origin_matches_center_lane'] or
+            not b['origin_matches_center_lane'] or
+            any(a.get(key) != b.get(key) for key in fixed)):
+        raise ValueError('Center-lane original fixed source condition differs')
+    if (left['context'].get('requested_maneuver') != 'left turn' or
+            straight['context'].get('requested_maneuver') != 'straight' or
+            a['maximum_left_deflection_deg'] < 60 or
+            not b['straight_motion_observed']):
+        raise ValueError('Center-lane turn/straight difference not observed')
+    if ([(r['is_junction'], r['time_s']-left['rows'][0]['time_s']) for r in left['rows']] !=
+            [(r['is_junction'], r['time_s']-straight['rows'][0]['time_s']) for r in straight['rows']]):
+        raise ValueError('Original center-use junction/time schedule differs')
+    for source in (left, straight):
         if [cam['name'] for cam in source['config']['cameras']] != list(CAMERAS):
             raise ValueError('Original four-camera contract differs')
     return {'format': 'worker-independent-comparison-audit',
             'comparison_id': 'center_use',
-            'center_case_id': PREFIX+'straight_center_east',
-            'outer_case_id': PREFIX+'straight_outer_east',
-            'center_source_hashes': center['hashes'],
-            'outer_source_hashes': outer['hashes'],
+            'left_case_id': PREFIX+'left_center_east',
+            'straight_case_id': PREFIX+'straight_center_east',
+            'left_source_hashes': left['hashes'],
+            'straight_source_hashes': straight['hashes'],
             'fixed_conditions': ['candidate center road/lane and map-marking references',
-                                 'authored straight target road and original junction/time schedule',
+                                 'original junction/time schedule',
                                  'four named full-decoded camera sources'],
-            'observed_difference': {'center_origin_lane_id': a['approach_lane_id'],
-                                    'outer_origin_lane_id': b['approach_lane_id']},
+            'observed_difference': {'left_maneuver': left['context']['requested_maneuver'],
+                                    'straight_maneuver': straight['context']['requested_maneuver'],
+                                    'left_deflection_deg': a['maximum_left_deflection_deg'],
+                                    'straight_deflection_deg': b['maximum_deflection_deg']},
             'physical_acceptance_claimed': False,
             'legal_acceptance_claimed': False}
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--center', required=True)
-    parser.add_argument('--outer', required=True)
+    parser.add_argument('--left', required=True)
+    parser.add_argument('--straight', required=True)
     parser.add_argument('--output', required=True)
     args = parser.parse_args()
-    result = audit(args.center, args.outer)
+    result = audit(args.left, args.straight)
     output = Path(args.output)
     if output.exists():
         raise ValueError('Retain prior comparison proof')
