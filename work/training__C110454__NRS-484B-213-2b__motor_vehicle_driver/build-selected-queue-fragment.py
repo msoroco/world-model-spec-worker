@@ -71,7 +71,7 @@ def build():
                                               "--output", "${PROCESSED_DIR}", "--library", "${DECODER_LIBRARY}",
                                               "--validator", "${VALIDATOR}",
                                               "--owner-release-receipt", "${OWNER_RELEASE_RECEIPT}"),
-            "owner_release_command": command(PY, "runtime.py", "owner-released", "--attempt", "${ATTEMPT_DIR}",
+            "owner_release_command": command("CASE_ID=" + case, PY, "runtime.py", "owner-released", "--attempt", "${ATTEMPT_DIR}",
                                              "--receipt", "${OWNER_RELEASE_RECEIPT}",
                                              "--acknowledge-owner-released"),
             "additional_source_audit_command": command(PY, f"work/{AID}/delivery_audit.py",
@@ -100,7 +100,11 @@ def build():
                 "Selected comparison references unselected case")
         comparisons.append({"assignment_id": AID, "comparison_id": item["comparison_id"],
                             "case_ids": item["case_ids"], "status": "partial", "dispatchable": False,
-                            "command": command(PY, f"work/{AID}/selected_comparison_audit.py", kind)})
+                            "command": command(PY, f"work/{AID}/comparison_audit.py", "--kind", kind,
+                                               "--left-attempt", "${LEFT_ATTEMPT_DIR}",
+                                               "--left-saved", "${LEFT_PROCESSED_DIR}",
+                                               "--right-attempt", "${RIGHT_ATTEMPT_DIR}",
+                                               "--right-saved", "${RIGHT_PROCESSED_DIR}")})
     require(len(comparisons) == 3, "Selected comparisons incomplete")
     return {"format": "c110454-selected-queue-fragment-v1", "assignment_id": AID,
             "manifest_sha256": sha(manifest_path), "case_plan_sha256": sha(plan_path),
@@ -108,6 +112,7 @@ def build():
             "comparison_audit_commands": comparisons,
             "withheld_comparison_id": AID + "__comparison_main",
             "missing_to_dispatch": ["original-mode delivery_audit.py and negative proofs",
+                                    "original-mode comparison_audit.py",
                                     "accepted-original 100-foot equivalence disposition",
                                     "complete selected manifest proof fields",
                                     "canonical batch queue and local integration proof"]}
