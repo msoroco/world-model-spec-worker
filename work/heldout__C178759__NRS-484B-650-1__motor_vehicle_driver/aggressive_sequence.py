@@ -62,7 +62,8 @@ def measure_sequence(frames, right_pass_episodes, speeding_frames, hazard_frames
         if before >= 0 or after <= 0 or rightward <= 0:
             raise ValueError("Rightward order reversal is not source-supported")
         if (not isinstance(off_pavement, list) or not off_pavement
-                or any(type(frame) is not int or not start <= frame <= end for frame in off_pavement)):
+                or any(type(frame) is not int or frame not in index or
+                       not start <= frame <= end for frame in off_pavement)):
             raise ValueError("Off-pavement source frames missing from episode")
         episodes.append({"start_frame": start, "end_frame": end,
                          "target_vehicle_id": event["target_vehicle_id"],
@@ -70,6 +71,8 @@ def measure_sequence(frames, right_pass_episodes, speeding_frames, hazard_frames
     episodes.sort(key=lambda event: event["start_frame"])
     if any(a["end_frame"] >= b["start_frame"] for a, b in zip(episodes, episodes[1:])):
         raise ValueError("Passing episodes overlap or lack a separating frame")
+    if len(episodes) >= 2 and len({event["target_vehicle_id"] for event in episodes}) != 1:
+        raise ValueError("Fixed overtaken vehicle differs between right-passing episodes")
     for label, values in (("speeding", speeding_frames), ("hazard", hazard_frames)):
         if not isinstance(values, list) or any(type(frame) is not int or frame not in index for frame in values):
             raise ValueError(label + " source frame missing")

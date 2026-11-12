@@ -4,7 +4,7 @@ Curb gaps are measured physical quantities, not a legal definition of
 'as close as practicable'. The two one-way directions are north and west.
 """
 from dataclasses import dataclass
-from math import cos, sin, pi
+from math import cos, sin, pi, isfinite
 
 @dataclass(frozen=True)
 class Case:
@@ -55,15 +55,22 @@ def measure(samples):
     for s in samples:
         if not s.get('body_corners_xy') or len(s['body_corners_xy'])<4:
             raise ValueError('missing measured body footprint')
+        if any(len(p)!=2 or not all(isinstance(v,(int,float)) and isfinite(v) for v in p)
+               for p in s['body_corners_xy']):
+            raise ValueError('invalid measured body footprint')
         if s.get('native_road_direction') not in ('north','west'):
             raise ValueError('one-way direction unverified')
-        if s.get('time_s') is None or (last is not None and s['time_s']<=last):
+        if not isinstance(s.get('time_s'),(int,float)) or not isfinite(s['time_s']) or (last is not None and s['time_s']<=last):
             raise ValueError('nonmonotonic time')
         last=s['time_s']
         if s['native_road_direction']=='north':
+            if not isinstance(s.get('observed_left_curb_x'),(int,float)) or not isfinite(s['observed_left_curb_x']):
+                raise ValueError('missing original approach curb')
             gap=min(p[0] for p in s['body_corners_xy'])-s['observed_left_curb_x']
             segment='approach'
         else:
+            if not isinstance(s.get('observed_left_curb_y'),(int,float)) or not isfinite(s['observed_left_curb_y']):
+                raise ValueError('missing original departure curb')
             gap=min(p[1] for p in s['body_corners_xy'])-s['observed_left_curb_y']
             segment='departure'
         observed.append({'time_s':s['time_s'],'segment':segment,'left_body_to_curb_gap_m':gap,

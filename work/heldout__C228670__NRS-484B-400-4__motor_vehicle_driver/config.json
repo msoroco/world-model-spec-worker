@@ -1,0 +1,95 @@
+{
+  "law_id": "NRS-484B-400-4",
+  "cell_id": "C228670",
+  "actor": "motor_vehicle_driver",
+  "selected_case_id": "heldout__C228670__NRS-484B-400-4__motor_vehicle_driver__approach_near_depart_right",
+  "supported_case_ids": [
+    "heldout__C228670__NRS-484B-400-4__motor_vehicle_driver__approach_near_depart_right",
+    "heldout__C228670__NRS-484B-400-4__motor_vehicle_driver__approach_far_depart_right",
+    "heldout__C228670__NRS-484B-400-4__motor_vehicle_driver__approach_near_depart_left"
+  ],
+  "required_atoms": [],
+  "source_packets": [],
+  "rate_hz": 20,
+  "duration_s": 8,
+  "frames": 160,
+  "route_step_m": 2.0,
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "pose_strategy": "subject-mounted original turn, curb and entered-road view",
+      "fov_deg": 95
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "subject-mounted original turn, curb and entered-road view",
+      "fov_deg": 90
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "subject-mounted original turn, curb and entered-road view",
+      "fov_deg": 100
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "subject-mounted original turn, curb and entered-road view",
+      "fov_deg": 85
+    }
+  ],
+  "case": {
+    "case_id": "heldout__C228670__NRS-484B-400-4__motor_vehicle_driver__approach_near_depart_right",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "approach_left_curb_distance_m",
+          "unit": "m",
+          "method": "original four-corner body position relative to one-way source left curb",
+          "sampling_rate_hz": 20,
+          "time_window": "approach frames",
+          "reference_frame": "Native map ground plane",
+          "uncertainty": "lane-edge map geometry and sampled body corners"
+        },
+        {
+          "name": "departure_centerline_signed_m",
+          "unit": "m",
+          "method": "original four-corner body position relative to entered road directed centerline",
+          "sampling_rate_hz": 20,
+          "time_window": "leaving-intersection frames",
+          "reference_frame": "Native map ground plane",
+          "uncertainty": "road-center map geometry and sampled body corners"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "road_geometry",
+          "unit": "structured record",
+          "method": "original OpenDRIVE lane directionality and map curb/centerline readback"
+        },
+        {
+          "name": "body_footprints",
+          "unit": "structured record",
+          "method": "original joined subject ground-body corners and approach/departure phases"
+        }
+      ],
+      "limitations": [
+        "Practicability and actual right-of-centerline visibility require independent physical/legal review."
+      ]
+    }
+  },
+  "physical_completion": {
+    "criterion": "left_turn_entry_and_departure",
+    "motion_source": "body_footprints.jsonl",
+    "position_key": "ground_corners",
+    "context_sources": [
+      "road_geometry.json"
+    ]
+  }
+}

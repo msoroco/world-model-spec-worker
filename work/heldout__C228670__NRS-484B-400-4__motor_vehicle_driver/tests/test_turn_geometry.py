@@ -28,6 +28,12 @@ class GeometryTests(unittest.TestCase):
   self.assertTrue(audit([p1,p2],"approach_curb_position")["comparison_complete"])
   second["departure_all_corners_right_of_centerline"]=False;self.write("second.json",second)
   with self.assertRaisesRegex(ValueError,"held departure"):audit([p1,p2],"approach_curb_position")
+  second["departure_all_corners_right_of_centerline"]=True
+  second["departure_centerline_min_signed_m"]+=.5;self.write("second.json",second)
+  with self.assertRaisesRegex(ValueError,"held departure"):audit([p1,p2],"approach_curb_position")
+  second["departure_centerline_min_signed_m"]-=.5
+  second["geometry_sha256"]="changed";self.write("second.json",second)
+  with self.assertRaisesRegex(ValueError,"fixed geometry"):audit([p1,p2],"approach_curb_position")
  def test_departure_comparison_and_held_approach(self):
   first=self.measure();self.b["frames"][1]["ground_corners"]=[[1,1],[2,1],[2,2],[1,2]]
   second=self.measure();p1=self.write("first.json",first);p2=self.write("second.json",second)

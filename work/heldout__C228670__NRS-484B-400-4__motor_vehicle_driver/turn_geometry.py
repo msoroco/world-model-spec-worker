@@ -2,6 +2,7 @@
 from __future__ import annotations
 from math import hypot
 import json
+import hashlib
 from pathlib import Path
 
 def _load(p):
@@ -50,9 +51,13 @@ def measure(geometry_path, body_path):
     # Positive is left of directed centerline; negative is right. Direction is the entered road's travel direction.
     departure_side=[_signed(p,center) for r in departure for p in corners(r)]
     return {"subject_id":b["subject_id"],"intersection_id":g["intersection_id"],
+            "geometry_sha256":hashlib.sha256(Path(geometry_path).read_bytes()).hexdigest(),
+            "body_sha256":hashlib.sha256(Path(body_path).read_bytes()).hexdigest(),
             "source_directionality":"one_way","destination_directionality":"two_directional",
             "maneuver":"left_turn","approach_left_curb_nearest_m":min(approach_curb),
             "approach_left_curb_farthest_m":max(approach_curb),
+            "approach_left_curb_min_signed_m":min(_signed(p,curb) for r in approach for p in corners(r)),
+            "approach_left_curb_max_signed_m":max(_signed(p,curb) for r in approach for p in corners(r)),
             "departure_centerline_min_signed_m":min(departure_side),
             "departure_centerline_max_signed_m":max(departure_side),
             "departure_all_corners_right_of_centerline":max(departure_side)<0,

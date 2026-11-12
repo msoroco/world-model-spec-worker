@@ -35,6 +35,12 @@ class SequenceTests(unittest.TestCase):
         overlapping[1]["start_frame"] = 2
         with self.assertRaisesRegex(ValueError, "overlap"):
             measure_sequence(sample(100), overlapping, [0], [6])
+        wrong_target = episodes()
+        wrong_target[1]["target_vehicle_id"] = 10
+        with self.assertRaisesRegex(ValueError, "Fixed overtaken vehicle"):
+            measure_sequence(sample(100), wrong_target, [0], [6])
+        with self.assertRaisesRegex(ValueError, "Off-pavement source frames"):
+            measure_sequence(sample(100), [dict(episodes()[0], off_pavement_frames=[999])], [0], [6])
 
 
 if __name__ == "__main__":
