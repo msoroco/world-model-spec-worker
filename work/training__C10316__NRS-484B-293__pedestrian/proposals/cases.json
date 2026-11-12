@@ -1,11 +1,39 @@
 {
+  "cell_id": "C10316",
+  "actor": "pedestrian",
+  "status": "draft",
   "cases": [
     {
-      "case_id": "training__C10316__NRS-484B-293__pedestrian__reference",
-      "target_law_id": "NRS-484B-293",
-      "target_type": "planned_delivery_comparison",
-      "cell_id": "C10316",
-      "actor": "pedestrian",
+      "case_id": "training__C10316__NRS-484B-293__pedestrian__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared setup definition; no baseline recording selected.",
+      "variable_assignments": {
+        "crosswalk_geometry": {
+          "kind": "world_setup",
+          "value": "authored crosswalk; original Native marking pending"
+        },
+        "passage_obstructions": {
+          "kind": "world_setup",
+          "value": "authored unobstructed context; original practicability pending"
+        },
+        "pedestrian_trajectory": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "commanded_lateral_offset_m": {
+          "kind": "controller",
+          "value": -0.65
+        },
+        "commanded_walk_speed_mps": {
+          "kind": "controller",
+          "value": 1.2
+        },
+        "camera_policy": {
+          "kind": "controller",
+          "value": "four_view_nominal"
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -67,20 +95,144 @@
           "Source camera pixels and pedestrian physics require independent saved audit"
         ]
       },
-      "sweep_measurements": [],
-      "comparison_variable": "pedestrian_lateral_crosswalk_half",
-      "requested_setting": "right",
-      "requested_lateral_offset_m": -0.65,
-      "status": "draft_not_selected",
-      "practicability_judgment": "unresolved",
-      "legal_verdict_claimed": false
+      "unresolved_judgment_calls": []
+    },
+    {
+      "case_id": "training__C10316__NRS-484B-293__pedestrian__reference",
+      "target_law_id": "NRS-484B-293",
+      "target_type": "boundary_probe",
+      "rationale": "Descriptive requested right/left half comparison; no legal practicability verdict.",
+      "variable_assignments": {
+        "crosswalk_geometry": {
+          "kind": "world_setup",
+          "value": "authored crosswalk; original Native marking pending"
+        },
+        "passage_obstructions": {
+          "kind": "world_setup",
+          "value": "authored unobstructed context; original practicability pending"
+        },
+        "pedestrian_trajectory": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "commanded_lateral_offset_m": {
+          "kind": "controller",
+          "value": -0.65
+        },
+        "commanded_walk_speed_mps": {
+          "kind": "controller",
+          "value": 1.2
+        },
+        "camera_policy": {
+          "kind": "controller",
+          "value": "four_view_nominal"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.position",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Original Native pedestrian center and footprint",
+            "time_window": "entire original 12 s / 240-frame attempt",
+            "reference_frame": "Native map and pedestrian/crosswalk coordinates",
+            "uncertainty": "50 ms frame interval; Native footprint and pixel audit required"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "unit vector",
+            "sampling_rate_hz": 20,
+            "method": "Original Native pedestrian transform forward",
+            "time_window": "entire original 12 s / 240-frame attempt",
+            "reference_frame": "Native map and pedestrian/crosswalk coordinates",
+            "uncertainty": "50 ms frame interval; Native footprint and pixel audit required"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original footprint and named crosswalk geometry",
+            "time_window": "entire original 12 s / 240-frame attempt",
+            "reference_frame": "Native map and pedestrian/crosswalk coordinates",
+            "uncertainty": "50 ms frame interval; Native footprint and pixel audit required"
+          },
+          {
+            "name": "native_pedestrian_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original body, pose, heading and velocity",
+            "time_window": "entire original 12 s / 240-frame attempt",
+            "reference_frame": "Native map and pedestrian/crosswalk coordinates",
+            "uncertainty": "50 ms frame interval; Native footprint and pixel audit required"
+          },
+          {
+            "name": "camera_frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Four camera frames joined to Native frame/time",
+            "time_window": "entire original 12 s / 240-frame attempt",
+            "reference_frame": "Native map and pedestrian/crosswalk coordinates",
+            "uncertainty": "50 ms frame interval; Native footprint and pixel audit required"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "practicability_facts",
+            "unit": "structured",
+            "method": "Original Native obstruction and pedestrian inventory plus independent review"
+          }
+        ],
+        "limitations": [
+          "Right-half count is descriptive, not a practicability verdict",
+          "Authored OpenDRIVE crosswalk is not proof of Native crosswalk inventory",
+          "Source camera pixels and pedestrian physics require independent saved audit"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "whenever practicable"
+      ],
+      "paired_probe_id": "crosswalk_half_pair",
+      "deliberate_differences": [
+        "commanded_lateral_offset_m"
+      ],
+      "probe": {
+        "primary_variable": "commanded_lateral_offset_m",
+        "comparison_or_standard": "paired observed pedestrian passage at the same authored crosswalk",
+        "target_value_or_branch": -0.65
+      }
     },
     {
       "case_id": "training__C10316__NRS-484B-293__pedestrian__contrast",
       "target_law_id": "NRS-484B-293",
-      "target_type": "planned_delivery_comparison",
-      "cell_id": "C10316",
-      "actor": "pedestrian",
+      "target_type": "boundary_probe",
+      "rationale": "Descriptive requested right/left half comparison; no legal practicability verdict.",
+      "variable_assignments": {
+        "crosswalk_geometry": {
+          "kind": "world_setup",
+          "value": "authored crosswalk; original Native marking pending"
+        },
+        "passage_obstructions": {
+          "kind": "world_setup",
+          "value": "authored unobstructed context; original practicability pending"
+        },
+        "pedestrian_trajectory": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "commanded_lateral_offset_m": {
+          "kind": "controller",
+          "value": 0.65
+        },
+        "commanded_walk_speed_mps": {
+          "kind": "controller",
+          "value": 1.2
+        },
+        "camera_policy": {
+          "kind": "controller",
+          "value": "four_view_nominal"
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -142,13 +294,37 @@
           "Source camera pixels and pedestrian physics require independent saved audit"
         ]
       },
-      "sweep_measurements": [],
-      "comparison_variable": "pedestrian_lateral_crosswalk_half",
-      "requested_setting": "left",
-      "requested_lateral_offset_m": 0.65,
-      "status": "draft_not_selected",
-      "practicability_judgment": "unresolved",
-      "legal_verdict_claimed": false
+      "unresolved_judgment_calls": [
+        "whenever practicable"
+      ],
+      "paired_probe_id": "crosswalk_half_pair",
+      "deliberate_differences": [
+        "commanded_lateral_offset_m"
+      ],
+      "probe": {
+        "primary_variable": "commanded_lateral_offset_m",
+        "comparison_or_standard": "paired observed pedestrian passage at the same authored crosswalk",
+        "target_value_or_branch": 0.65
+      }
     }
-  ]
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "right_half_practicability",
+      "target_law_id": "NRS-484B-293",
+      "judgment_refs": [
+        {
+          "phrase": "whenever practicable",
+          "note": "Feasibility of right-half movement depends on observed passage and obstruction context; no legal numeric cutoff."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Selected pair is descriptive; a fixed physical feasibility sweep needs original range and context.",
+      "missing_inputs": [
+        "Original Native marked-crosswalk and usable-width survey",
+        "Original obstruction and other-pedestrian context plus feasible lateral range"
+      ]
+    }
+  ],
+  "sweeps_expanded": true
 }
