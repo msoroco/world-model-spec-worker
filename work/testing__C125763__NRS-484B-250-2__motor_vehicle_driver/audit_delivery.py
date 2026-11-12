@@ -5,6 +5,7 @@ completion need later independent local review before delivery acceptance.
 """
 import hashlib
 import json
+import sys
 from pathlib import Path
 
 from capture_sources import CAMERAS
@@ -18,7 +19,7 @@ def require(ok,message):
     if not ok:raise ValueError(message)
 
 
-def audit(attempt,analysis_name='saved-analysis.json'):
+def audit(attempt,analysis_name='saved-analysis.json',*,decode=False,expected_case=None):
     root=Path(attempt)
     required=('config.json','result.json','junction_context.json',
               'crossing_history.jsonl','controller_history.jsonl','video_frames.jsonl',
@@ -33,6 +34,8 @@ def audit(attempt,analysis_name='saved-analysis.json'):
     require(cfg.get('assignment_id')==ASSIGNMENT and case in CASE_IDS and
             result.get('case_id')==case and report.get('case_id')==case,
             'Exact C125763 case identity differs')
+    if expected_case is not None:
+        require(case==expected_case,'Requested exact C125763 case differs')
     require(result.get('physical_acceptance_claimed') is False and
             report.get('physical_acceptance_claimed') is False and
             report.get('format')=='worker-c125763-yield-sign-saved-analysis',
@@ -63,16 +66,34 @@ def audit(attempt,analysis_name='saved-analysis.json'):
     require(context.get('native_yield_sign_id') and all(
         row.get('governing_yield_sign_id')==context['native_yield_sign_id'] for row in history),
         'Governing sign ID changed in original frames')
+    decoded={}
+    if decode:
+        sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'runtime'/'scenario_pipeline'))
+        from worker_exchange import media
+        mapping_sha256=hashes['video_frames.jsonl']
+        media.check_four_view_sources({name:root/(name+'.mkv') for name in CAMERAS})
+        for name,dimensions in CAMERAS.items():
+            receipt=media.audit(root/(name+'.mkv'),len(frames),mapping_sha256=mapping_sha256)
+            require(receipt['dimensions']==list(dimensions),
+                    'Decoded original camera dimensions differ: '+name)
+            decoded[name]={'frames':receipt['frames'],
+                           'rgb_sequence_sha256':receipt['rgb_sequence_sha256'],
+                           'source_sha256':receipt['video_sha256']}
     return {'format':'worker-c125763-software-delivery-audit',
             'case_id':case,'software_source_integrity_passed':True,
+            'full_video_decode_passed':bool(decode),'decoded_cameras':decoded,
             'original_frame_count':len(frames),'source_hashes':hashes,
             'measurement_keys':sorted(measurements),
             'physical_acceptance_claimed':False,'legal_acceptance_claimed':False,
             'delivery_ready':False,
-            'remaining':'Full video decode, actual pixels and physical completion need independent local review'}
+            'remaining':('Actual actor pixels and physical completion need independent local review'
+                         if decode else 'Full video decode, actual actor pixels and physical completion need independent local review')}
 
 
 if __name__=='__main__':
     import argparse
     parser=argparse.ArgumentParser();parser.add_argument('--attempt',type=Path,required=True)
-    args=parser.parse_args();print(json.dumps(audit(args.attempt),indent=2))
+    parser.add_argument('--analysis',default='saved-analysis.json')
+    parser.add_argument('--case');parser.add_argument('--decode',action='store_true')
+    args=parser.parse_args();print(json.dumps(audit(args.attempt,args.analysis,
+                            decode=args.decode,expected_case=args.case),indent=2))

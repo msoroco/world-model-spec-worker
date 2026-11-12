@@ -34,13 +34,20 @@ def build():
     module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
     with tempfile.TemporaryDirectory() as temporary:
         temp=Path(temporary)
-        _,_,config,_=module.RunnerTests().packet(temp)
+        _,_,config,site=module.RunnerTests().packet(temp)
         config['frames']=60
         config['duration_s']=3
         config['other_release_frame']=20
         config['required_atoms']=['ru.subject','ru.motor_vehicle','kin.position',
                                   'kin.velocity','kin.speed','st.intersection',
                                   'rel.bearing']
+        config['physical_completion']={
+            'criterion':'intersection_clearance',
+            'motion_source':'crossing_history.jsonl',
+            'body_key':'ego.body_vertices_xy_m',
+            'intersection_polygon_xy_m':site['crossing_polygon_xy_m'],
+            'exit_axis':0,'exit_sign':1,
+            'context_sources':['site.json']}
         config['recording_description']={
             'channels':[{'name':'entry_timing','unit':'structured record',
                          'method':'complete body entry joined to original frames',

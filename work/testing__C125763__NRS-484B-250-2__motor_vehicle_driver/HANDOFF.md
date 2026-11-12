@@ -484,3 +484,76 @@ and refreshing `canonical-proof-index.json`. The assignment suite now passes
 all receipts still explicitly retain partial/software scope.
 
 The final checkpoint rerun passes `worker_check.py --updates` in `updates.log` and the scoped `worker_check.py --assignment testing__C125763__NRS-484B-250-2__motor_vehicle_driver --complete` in `assignment-check.log`. The full `.venv-cpu/bin/python worker_check.py --complete --require-delivery-ready` exits 1 in `strict-gate.log` with `Preparation acceptance failed: partial/missing packages remain`. The goal and this package remain active/partial.
+
+## Four-camera independent CPU decode checkpoint, 2026-11-12
+
+`audit_delivery.py` now optionally checks the exact requested case, probes all
+four named original streams and fully decodes all 60 frames in each stream,
+binding the decoded RGB sequence and source SHA to the joined frame map.
+`prove_delivery_decode.py` ran this check on all four retained canonical
+compatibility attempts and then rejected an attempt missing `approach.mkv`
+for each case. The exact command is:
+
+```
+.venv-cpu/bin/python work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/prove_delivery_decode.py
+```
+
+`delivery-decode-proof.log` holds four positive/negative results. The
+`full-decode-{primary,right,separated,opposite}.log` files hold decoded
+source hashes and frame counts. `runtime.py preflight` and the 33-test
+assignment suite pass in `preflight.log` and `cpu-tests.log`. These CPU
+proofs establish source integrity and complete decoding of synthetic
+retained videos. Independent actor-pixel review, actual Native motion,
+physical completion and a per-case delivery acceptance contract still need
+authored proofs. The package remains partial and delivery_ready is false.
+No frozen inputs, runtime, batch file or Git action was changed.
+
+The same-law and same-actor canonical `proposals/template.json` is now
+authored by source-backed reuse from C125714. `template-validation.log`
+confirms it passes the frozen `batch_pipeline.stages.validate('template', ...)`
+contract with C125763's exact law record. The relevance, observables,
+bindings, cases and semantic index remain to be assembled and validated.
+
+`proposals/relevance-batch.json` and `proposals/relevance.json` now bind
+the same-law review to C125763's exact median-opening cell and actor.
+`relevance-validation.log` records both canonical stage validators passing.
+The other semantic stages and the aggregate index are still pending.
+
+Final gate rerun: `.venv-cpu/bin/python worker_check.py --assignment
+testing__C125763__NRS-484B-250-2__motor_vehicle_driver --complete`
+exits 0 in `assignment-check.log`. The full `.venv-cpu/bin/python
+worker_check.py --complete --require-delivery-ready` exits 1 in
+`strict-gate.log` with `Preparation acceptance failed: partial/missing
+packages remain`. Continue from the remaining semantic stage chain and
+independent delivery acceptance checks; retain partial until their CPU
+proofs and both readiness gates pass.
+
+Four same-law `proposals/judgment-observables-{1,2,3,4}.json` files and
+exact-cell `proposals/bindings.json` now pass their stage validators in
+`observables-bindings-validation.log`. A cases-stage validation of the
+existing C125763 diagnostic draft was attempted in
+`cases-stage-validation.log`; the validator requires the missing declared
+controller/behavior variables, a shared baseline, and a complete recording
+description. The cases file was not changed by this failed trial. Author
+those missing case details without changing exact selected case IDs or their
+construction recording descriptions, then build and validate the semantic
+index.
+
+## Canonical semantic-stage checkpoint, 2026-11-12
+
+`build_semantic_cases.py` now fills the four exact case proposals with all
+declared binding variables, a separate shared baseline, honest comparison
+differences, and four unresolved qualitative sweep plans. The case IDs and
+recording descriptions remain exactly those in the four construction files.
+C125763's judgment observables now name the actual `entry_timing` stream
+and source-hashed `entry_context` packet produced by its finalizer; the packet
+contains crossing, approach, device, turn-intent and yield-control
+measurements derived from retained original sources.
+
+The aggregate `proposals/semantic-index.json` binds all stage hashes.
+`semantic-validation.log` records
+`worker_exchange.semantic_delivery.validate(...)` passing for the exact
+frozen assignment and current four-case execution manifest. The canonical
+semantic proposals remain drafts; no legal judgment or physical acceptance
+is inferred. Independent per-case delivery acceptance and final manifest
+refresh remain worker-owned.
