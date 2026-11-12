@@ -99,6 +99,9 @@ def require_retained_pair_bindings(ending_binding, continuing_binding):
             raise ValueError('Stale controlled Native route-pair binding')
         if set(binding.get('routes', {})) != {'ending', 'continuing', 'other'}:
             raise ValueError('Incomplete controlled Native route-pair binding')
+        if (not isinstance(binding.get('opendrive_sha256'), str) or
+                len(binding['opendrive_sha256']) != 64):
+            raise ValueError('Missing controlled Native OpenDRIVE binding')
     if bindings[0]['route_pair_sha256'] != bindings[1]['route_pair_sha256']:
         raise ValueError('Changed controlled Native route-pair binding')
     return bindings[0]['route_pair_sha256']

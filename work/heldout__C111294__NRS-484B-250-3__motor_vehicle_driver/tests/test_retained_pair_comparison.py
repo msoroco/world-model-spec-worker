@@ -12,14 +12,16 @@ from test_controlled_pair_binding import pair
 
 class RetainedPairComparisonTests(unittest.TestCase):
     def test_matching_original_bindings_and_rejections(self):
-        binding = bind_pair(pair())
+        source_pair = pair()
+        source_pair['opendrive_sha256'] = '0' * 64
+        binding = bind_pair(source_pair)
         self.assertEqual(require_retained_pair_bindings(binding, copy.deepcopy(binding)),
                          binding['route_pair_sha256'])
         changed = copy.deepcopy(binding)
         changed['routes']['other'][1]['lane_id'] = -2
         with self.assertRaisesRegex(ValueError, 'Stale'):
             require_retained_pair_bindings(binding, changed)
-        changed = bind_pair(pair())
+        changed = bind_pair(source_pair)
         changed['map_name'] = 'DifferentMap'
         import hashlib, json
         payload = {key: value for key, value in changed.items()
