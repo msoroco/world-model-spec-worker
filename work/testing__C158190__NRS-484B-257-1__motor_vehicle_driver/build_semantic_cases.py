@@ -86,12 +86,30 @@ def main():
         }
         item['unresolved_judgment_calls'] = phrase_names
         cases.append(item)
+    missing_by_phrase = {
+        'proper signs': [
+            'Add a scalar world_setup sign-face angle or placement parameter with a sourced Native readback and independent original-pixel face check.',
+            'Document an engineering-feasible angle range and spacing; the current categorical sign_type cannot form a scalar sweep axis.',
+        ],
+        'point nearest the intersection where the driver has a view of approaching traffic on the through highway': [
+            'Bind measured ego_distance_to_junction_m as a canonical observable and add a controllable view-location world_setup axis.',
+            'Verify the sampled ray scan against original cameras, then source a feasible view-location range and spacing without claiming human recognition.',
+        ],
+        'immediate hazard': [
+            'Add a through-vehicle speed controller target and canonical measured through_vehicle_speed binding, with original through-body and time evidence.',
+            'Source a feasible speed range and spacing while keeping the statute free of any numeric hazard cutoff.',
+        ],
+        'yield the right-of-way': [
+            'Complete a fixed commanded_view_speed sweep with through_vehicle_state held approaching; the current 4 m/s case has an absent through actor.',
+            'Construct and prove the missing same-traffic 4 m/s exact case, then document source-grounded range and spacing without legal labels.',
+        ],
+    }
     sweeps = [{
         'sweep_id': f'c158190-judgment-{index}', 'target_law_id': LAW,
         'judgment_refs': [{'phrase': judgment['phrase'], 'note': judgment['note']}],
         'status': 'incomplete',
         'rationale': 'The selected four cases do not constitute a fixed physical sweep for this unresolved judgment.',
-        'missing_inputs': ['Document a feasible sourced range, spacing, controller-to-observable mapping and measurement statistic; expand exact cases and prove their constructions.'],
+        'missing_inputs': missing_by_phrase[judgment['phrase']],
     } for index, judgment in enumerate(TEMPLATE['structure']['judgment_calls_needed'], 1)]
     output = {'cell_id': BINDINGS['cell_id'], 'actor': BINDINGS['actor'],
               'status': 'draft', 'cases': cases, 'sweep_specs': sweeps,
