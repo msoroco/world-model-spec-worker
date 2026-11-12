@@ -79,6 +79,7 @@ def junction_context(site, plan):
         raise ValueError('One median-opening statutory crossing required')
     approaches = plan['approaches']
     yaw = math.radians(approaches['ego']['heading_deg'])
+    other_yaw = math.radians(approaches['other']['heading_deg'])
     return {'native_map_id': plan['native_map_name'],
             'intersection_id': plan['native_junction_id'],
             'ego_highway_id': plan['ego_highway_id'],
@@ -93,5 +94,7 @@ def junction_context(site, plan):
             'same_statutory_crossing': True,
             'intersection_polygon_xy_m': plan['crossing_polygon_xy_m'],
             'ego_approach_forward_xy': [math.cos(yaw), math.sin(yaw)],
+            'other_approach_forward_xy': [math.cos(other_yaw), math.sin(other_yaw)],
+            'opposite_approach_with_left_turn': False,
             'physical_acceptance_claimed': False,
             'legal_priority_judgment': 'unresolved'}

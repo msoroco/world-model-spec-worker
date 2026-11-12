@@ -25,12 +25,19 @@ def build(root):
     ctx_path = root / 'junction_context.json'
     ctx = json.loads(ctx_path.read_text())
     ctx['physical_acceptance_claimed'] = False
+    ctx['opposite_approach_with_left_turn'] = False
     ctx_path.write_text(json.dumps(ctx))
     history_path = root / 'crossing_history.jsonl'
     rows = [json.loads(line) for line in history_path.read_text().splitlines()]
     for row in rows:
         row['ego_vertices_m'] = row['ego']['body_vertices_xy_m']
+        row['entrance_signal_states'] = [{'actor_id': 17, 'state': 'Off'},
+                                         {'actor_id': 18, 'state': 'Off'}]
     history_path.write_text(''.join(json.dumps(row) + '\n' for row in rows))
+    (root / 'controller_history.jsonl').write_text(''.join(
+        json.dumps({'frame': row['frame'], 'time_s': row['time_s'],
+                    'ego_held': i == 0, 'other_held': False}) + '\n'
+        for i, row in enumerate(rows)))
     (root / 'config.json').write_text(json.dumps({
         'law_id': 'NRS-484B-250-2', 'cell_id': 'C125697',
         'actor': 'motor_vehicle_driver', 'rate_hz': 20, 'duration_s': 45,
@@ -60,6 +67,8 @@ class FinalizerTests(unittest.TestCase):
             self.assertFalse(result['target_checks'][0]['physical_cause_confirmed'])
             self.assertEqual(len((attempt / 'channels/entry_timing.jsonl').read_text().splitlines()), 3)
             self.assertFalse(json.loads(output.read_text())['physical_acceptance_claimed'])
+            report = json.loads(output.read_text())
+            self.assertEqual(report['measurements']['yield_observation']['value']['ego_hold_frames'], [100])
 
     def test_missing_source_and_stale_join_rejected(self):
         with tempfile.TemporaryDirectory() as temporary:

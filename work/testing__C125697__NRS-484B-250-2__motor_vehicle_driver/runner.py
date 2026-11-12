@@ -11,6 +11,7 @@ from camera_setup import PROFILE, source_cameras
 from capture_sources import junction_context, record_crossing_sample
 from controlled_pair import construct_off_pair
 from route_control import steering_command, validate_route, validate_pair_routes
+from site_packet import verify_site_packet
 
 
 PRIMARY = 'testing__C125697__NRS-484B-250-2__motor_vehicle_driver__off_ego_left_near_time'
@@ -26,7 +27,7 @@ def _numbers(values, size, label):
     return values
 
 
-def validate_config(config):
+def validate_config(config, base_dir=Path.cwd()):
     if (config.get('selected_case_id') != PRIMARY or
             config.get('law_id') != 'NRS-484B-250-2' or
             config.get('cell_id') != 'C125697' or
@@ -86,6 +87,7 @@ def validate_config(config):
         speed = config.get(key)
         if type(speed) not in (int, float) or not math.isfinite(speed) or not 0 < speed <= 20:
             raise ValueError('Finite positive target speed required')
+    verify_site_packet(config, base_dir)
     return config
 
 
@@ -239,7 +241,8 @@ def main():
     parser.add_argument('--host', default='127.0.0.1')
     parser.add_argument('--port', type=int, default=2000)
     args = parser.parse_args()
-    config = validate_config(json.loads(Path(args.config).read_text()))
+    config = validate_config(json.loads(Path(args.config).read_text()),
+                             Path(args.config).parent)
     if args.check:
         print(json.dumps({'case_id': PRIMARY, 'planned_frames': 900,
                           'named_source_cameras': list(CAMERAS),

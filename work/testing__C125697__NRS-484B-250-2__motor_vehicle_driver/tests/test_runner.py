@@ -1,4 +1,5 @@
 import json
+import hashlib
 import subprocess
 import sys
 import tempfile
@@ -44,11 +45,45 @@ def config():
     }
 
 
+def write_review(root, value, omit_claim=None):
+    site = value['site']
+    claims = {
+        'crossing_polygon_source': ['native_map_name', 'crossing_id',
+                                    'crossing_polygon_xy_m', 'same_statutory_crossing'],
+        'approach_geometry_source': ['ego_highway_id', 'other_highway_id'],
+        'median_spacing_source': ['same_statutory_crossing'],
+        'all_entrances_source': ['entrance_road_lanes'],
+        'signal_governance_source': ['entrance_road_lanes'],
+        'signal_head_video_source': ['entrance_road_lanes'],
+    }
+    docs = {}
+    for field, keys in claims.items():
+        filename = field + '.json'
+        site[field] = filename
+        reviewed = {key: site[key] for key in keys if (field, key) != omit_claim}
+        path = root / filename
+        path.write_text(json.dumps({'format': 'worker-median-site-source',
+                                    'source_role': field,
+                                    'review_basis': 'synthetic CPU schema test',
+                                    'reviewed_site_fields': reviewed}))
+        docs[field] = {'path': filename,
+                       'sha256': hashlib.sha256(path.read_bytes()).hexdigest()}
+    packet = root / 'site-review.json'
+    packet.write_text(json.dumps({'format': 'worker-median-site-review',
+                                  'review_status': 'reviewed_candidate',
+                                  'site': site, 'source_documents': docs}))
+    value['site_review'] = {'path': packet.name,
+                            'sha256': hashlib.sha256(packet.read_bytes()).hexdigest()}
+    return packet
+
+
 class RunnerTests(unittest.TestCase):
     def test_cpu_check_exact_primary_is_lazy(self):
         with tempfile.TemporaryDirectory() as temporary:
             path = Path(temporary) / 'config.json'
-            path.write_text(json.dumps(config()))
+            value = config()
+            write_review(path.parent, value)
+            path.write_text(json.dumps(value))
             completed = subprocess.run(
                 [sys.executable, str(ROOT / 'runner.py'), '--config', str(path), '--check'],
                 capture_output=True, text=True, check=True)
@@ -96,6 +131,21 @@ class RunnerTests(unittest.TestCase):
         self.assertEqual(vehicle.last.brake, 0.0)
         self.assertGreater(vehicle.last.throttle, 0.0)
         self.assertEqual(vehicle.last.steer, -.25)
+
+    def test_site_packet_rejects_changed_source_and_missing_claim(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            value = config()
+            write_review(root, value)
+            runner.validate_config(value, root)
+            (root / value['site']['median_spacing_source']).write_text('{}')
+            with self.assertRaisesRegex(ValueError, 'missing or changed'):
+                runner.validate_config(value, root)
+            value = config()
+            write_review(root, value, omit_claim=('all_entrances_source',
+                                                  'entrance_road_lanes'))
+            with self.assertRaisesRegex(ValueError, 'Missing reviewed source claims'):
+                runner.validate_config(value, root)
 
 
 if __name__ == '__main__':
