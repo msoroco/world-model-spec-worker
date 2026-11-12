@@ -1,4 +1,4 @@
-"""Pinned offline, source-negative compatibility and saved proof for 24 bundles."""
+"""Pinned offline, source-negative compatibility and saved proof for 32 bundles."""
 import concurrent.futures
 import hashlib
 import json
