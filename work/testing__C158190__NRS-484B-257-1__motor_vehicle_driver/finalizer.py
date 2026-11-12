@@ -3,6 +3,7 @@
 import argparse
 import hashlib
 import json
+import math
 from pathlib import Path
 
 from yield_context import CAMERAS, derive_context
@@ -186,17 +187,57 @@ def finalize(attempt, output):
     by_frame = {row['frame']: row for row in rays}
     if len(history) != len(rays) or len(by_frame) != len(rays):
         raise ValueError('Approach and original sight rays differ')
+    interactions = _rows(attempt / 'interaction_history.jsonl')
+    frames = _rows(attempt / 'video_frames.jsonl')
+    frame_times = {row['carla_frame']: row['time_s'] for row in frames}
+    if (len(interactions) != len(frames) or
+            [row.get('frame') for row in interactions] != [row['carla_frame'] for row in frames]):
+        raise ValueError('Original actor-body history does not join every camera frame')
     channels = attempt / 'channels'
     channels.mkdir()
-    values = {'ego_approach_speed': [row['ego_speed_mps'] for row in history],
-              'through_highway_sight_clear': [int(by_frame[row['frame']]['clear'])
-                                              for row in history]}
-    for name, numbers in values.items():
+    def sample(frame, value):
+        return {'original_frame': frame, 'time_s': frame_times[frame], 'value': value}
+    def center(body):
+        points = body['body_vertices_m']
+        if len(points) != 8:
+            raise ValueError('Original actor body needs eight corners')
+        return [sum(point[axis] for point in points) / len(points) for axis in (0, 1)]
+    through_centers = [None if row.get('through') is None else center(row['through'])
+                       for row in interactions]
+    through_speeds = []
+    for index, point in enumerate(through_centers):
+        previous = through_centers[index - 1] if index else None
+        if point is None:
+            through_speeds.append(None)
+        elif previous is None:
+            through_speeds.append(0.0)
+        else:
+            interval = interactions[index]['time_s'] - interactions[index - 1]['time_s']
+            if interval <= 0:
+                raise ValueError('Nonmonotone original actor-body time')
+            through_speeds.append(math.hypot(point[0] - previous[0],
+                                             point[1] - previous[1]) / interval)
+    values = {
+        'ego_approach_speed': [sample(row['frame'], row['ego_speed_mps']) for row in history],
+        'through_highway_sight_clear': [sample(row['frame'], int(by_frame[row['frame']]['clear']))
+                                        for row in history],
+        'ego_distance_to_junction_m': [sample(row['frame'], row['distance_to_intersection_m'])
+                                       for row in history],
+        'through_vehicle_position': [sample(row['frame'], {'present': point is not None,
+                                                          'position_m': point})
+                                     for row, point in zip(interactions, through_centers)],
+        'through_vehicle_speed': [sample(row['frame'], {'present': speed is not None,
+                                                       'speed_mps': speed})
+                                  for row, speed in zip(interactions, through_speeds)],
+        'ego_crossing_body': [sample(row['frame'], {'body_vertices_m': row['ego']['body_vertices_m'],
+                                                  'road_id': row['ego'].get('road_id'),
+                                                  'lane_id': row['ego'].get('lane_id')})
+                              for row in interactions],
+    }
+    for name, samples in values.items():
         with (channels / (name + '.jsonl')).open('x') as stream:
-            for row, number in zip(history, numbers):
-                stream.write(json.dumps({'original_frame': row['frame'],
-                                         'time_s': row['time_s'], 'value': number},
-                                        allow_nan=False) + '\n')
+            for observation in samples:
+                stream.write(json.dumps(observation, allow_nan=False) + '\n')
     site_review = {'yield_site_review': {
         'authored_site_sha256': context['authored_site_sha256'],
         'source_review_sha256': context['source_review_sha256'],
@@ -216,7 +257,10 @@ def finalize(attempt, output):
               'physical_cause_confirmed': False,
               'cause_evidence': ['approach_history.jsonl', 'visibility_rays.jsonl',
                                  'video_frames.jsonl', 'rendered_marking_review.json']}
-    evidence = [{'name': name, 'unit': ('m/s' if name == 'ego_approach_speed' else 'count'),
+    units = {'ego_approach_speed': 'm/s', 'through_highway_sight_clear': 'count',
+             'ego_distance_to_junction_m': 'm', 'through_vehicle_position': 'structured record',
+             'through_vehicle_speed': 'structured record', 'ego_crossing_body': 'structured record'}
+    evidence = [{'name': name, 'unit': units[name],
                  'reference': 'channels/' + name + '.jsonl'} for name in values]
     evidence.append({'name': 'yield_site_review', 'unit': 'structured record',
                      'reference': 'channels/yield_site_review.json'})
