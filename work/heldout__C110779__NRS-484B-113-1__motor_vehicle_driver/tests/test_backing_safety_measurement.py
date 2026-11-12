@@ -59,6 +59,41 @@ class BackingTests(unittest.TestCase):
         result = self.result()
         self.assertIsNone(result['minimum_sampled_time_to_conflict_during_backing_s']['other_1'])
 
+    def test_finite_surrounding_user_sweep_keeps_judgment_open(self):
+        for situation in ('clear_vehicle', 'near_vehicle', 'braking_vehicle',
+                          'contact_vehicle', 'pedestrian'):
+            with self.subTest(situation=situation):
+                self.motion = [dict(row, participants={
+                    'other_1': dict(row['participants']['other_1'])})
+                    for row in self.motion]
+                self.contacts = [dict(row, contact_actor_ids=[])
+                                 for row in self.contacts]
+                self.context['participants']['other_1']['kind'] = (
+                    'pedestrian' if situation == 'pedestrian' else 'vehicle')
+                for i, row in enumerate(self.motion):
+                    other = row['participants']['other_1']
+                    other['x_m'] = (-20 if situation == 'clear_vehicle' else -8) - i
+                    other['speed_mps'] = (6 - i if situation == 'braking_vehicle' else 6)
+                if situation == 'contact_vehicle':
+                    self.contacts[-1]['contact_actor_ids'] = ['other_1']
+                self.write()
+                observed = self.result()
+                self.assertEqual(observed['backing_onset_frame'], 30)
+                self.assertEqual(len(observed['observations']), 4)
+                self.assertEqual(observed['contact_frames_during_backing'],
+                                 [33] if situation == 'contact_vehicle' else [])
+                self.assertEqual(observed['participant_context']['other_1']['kind'],
+                                 'pedestrian' if situation == 'pedestrian' else 'vehicle')
+                self.assertIsNone(observed['reasonable_safety_legal_judgment'])
+                self.assertIsNone(observed['interference_legal_judgment'])
+                if situation == 'braking_vehicle':
+                    self.assertLess(observed[
+                        'minimum_sampled_surrounding_acceleration_during_backing_mps2'
+                    ]['other_1'], 0)
+                if situation == 'clear_vehicle':
+                    self.assertGreater(observed['minimum_surface_gap_during_backing_m'][
+                        'other_1'], 10)
+
     def test_rejects_contact_join_and_uncited_traffic_context(self):
         self.contacts[1]['frame'] = 40
         self.write()
