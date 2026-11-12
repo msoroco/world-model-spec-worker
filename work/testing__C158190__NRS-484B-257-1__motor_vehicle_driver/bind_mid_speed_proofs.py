@@ -26,7 +26,8 @@ def main():
         target = FOLDER if ident == 'primary' else FOLDER / 'fallbacks'
         prefix = '' if ident == 'primary' else ident + '-'
         receipt = target / (prefix + 'compatibility.json')
-        log = target / (prefix + 'compatibility-analysis.log')
+        log = target / ('primary-compatibility-analysis.log' if ident == 'primary' else
+                        prefix + 'compatibility-analysis.log')
         negative = target / (prefix + 'negative-analysis.log')
         for name, output in (('compatibility.json', receipt),
                              ('compatibility-analysis.log', log),

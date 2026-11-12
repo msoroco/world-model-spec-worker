@@ -15,6 +15,7 @@ ATTEMPTS = {
     'yield_nearest_view_through_entered': '.runtime-work/c158190-yield_nearest_view_through_entered-primary-compat-v4',
     'yield_nearest_view_clear': '.runtime-work/c158190-yield_nearest_view_clear-primary-compat-v4',
     'yield_nearest_view_no_slow': '.runtime-work/c158190-yield_nearest_view_no_slow-primary-compat-v4',
+    'yield_nearest_view_mid_speed': '.runtime-work/c158190-mid-stable-primary-compat-v2',
 }
 
 

@@ -15,7 +15,7 @@ def main():
     manifest_sha = hashlib.sha256(stable.MANIFEST.read_bytes()).hexdigest()
     entry = json.loads(stable.MANIFEST.read_text())['cases'][0]
     with ThreadPoolExecutor(max_workers=2) as pool:
-        futures = {pool.submit(stable.run_one, entry, candidate['id'], manifest_sha): candidate['id']
+        futures = {pool.submit(stable.run_one, entry, candidate['id'], manifest_sha, version='v2'): candidate['id']
                    for candidate in entry['candidates']}
         for future in as_completed(futures):
             print(json.dumps(future.result()), flush=True)

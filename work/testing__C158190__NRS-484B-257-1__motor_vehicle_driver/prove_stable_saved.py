@@ -13,9 +13,9 @@ MANIFEST = ROOT / 'execution-manifest.json'
 VALIDATOR = REPO / '.runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck'
 
 
-def run_one(entry, ident, manifest_sha):
+def run_one(entry, ident, manifest_sha, *, version='v1'):
     suffix = entry['case_id'].rsplit('__', 1)[-1]
-    stem = f'c158190-{suffix}-{ident}-stable-v1'
+    stem = f'c158190-{suffix}-{ident}-stable-{version}'
     attempt = REPO / '.runtime-work' / (stem + '-compat')
     output = REPO / '.runtime-work' / (stem + '-saved')
     folder = (ROOT / (entry['construction'] if ident == 'primary' else

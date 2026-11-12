@@ -19,10 +19,10 @@ def main():
     results = []
     for ident in ('primary', 'fallback1', 'fallback2', 'fallback3'):
         if ident == 'primary':
-            saved = REPO / '.runtime-work/c158190-mid-stable-primary-saved-v1/v0001/processing.json'
-            compatibility = REPO / '.runtime-work/c158190-mid-stable-primary-compat-v1/compatibility.json'
+            saved = REPO / '.runtime-work/c158190-mid-stable-primary-saved-v2/v0001/processing.json'
+            compatibility = REPO / '.runtime-work/c158190-mid-stable-primary-compat-v2/compatibility.json'
         else:
-            stem = f'c158190-yield_nearest_view_mid_speed-{ident}-stable-v1'
+            stem = f'c158190-yield_nearest_view_mid_speed-{ident}-stable-v2'
             saved = REPO / '.runtime-work' / (stem + '-saved/v0001/processing.json')
             compatibility = REPO / '.runtime-work' / (stem + '-compat/compatibility.json')
         result = json.loads(saved.read_text())

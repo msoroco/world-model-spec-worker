@@ -40,6 +40,16 @@ def main():
                            'construction_sha256': sha(path),
                            'trigger': plan['trigger'],
                            'changed_knobs': plan['changed_knobs']})
+    if entry.get('candidates'):
+        existing = {item['id']: item for item in entry['candidates']}
+        if set(existing) != {item['id'] for item in candidates}:
+            raise ValueError('Existing fallback inventory changed')
+        for candidate in candidates:
+            prior = existing[candidate['id']]
+            for key in ('construction', 'construction_sha256', 'trigger', 'changed_knobs'):
+                if prior.get(key) != candidate[key]:
+                    raise ValueError('Existing fallback proof binding changed: ' + key)
+        candidates = [existing[item['id']] for item in candidates]
     entry['candidates'] = candidates
     MANIFEST.write_text(json.dumps(manifest, indent=2) + '\n')
     print(json.dumps({'case_id': entry['case_id'],

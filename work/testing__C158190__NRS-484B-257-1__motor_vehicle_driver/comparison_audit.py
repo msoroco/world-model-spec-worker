@@ -1,4 +1,4 @@
-"""Independent original-source comparison of the three C158190 case pairs."""
+"""Independent original-source comparison of the C158190 case pairs."""
 
 import argparse
 import hashlib
@@ -13,6 +13,7 @@ PAIRS = {
     'approaching_traffic_vs_clear': ('through_approaches', 'clear'),
     'slowed_vs_no_slow': ('through_approaches', 'no_slow'),
     'approaching_vs_already_entered': ('through_approaches', 'through_entered'),
+    'same_approaching_traffic_view_speed_2_vs_4': ('through_approaches', 'mid_speed'),
 }
 
 
@@ -26,6 +27,31 @@ def read(path):
 
 def rows(path):
     return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
+
+
+def same_support_logic(left, right, name):
+    """Permit only the audited extension that registers the fifth case ID."""
+    old, new = ((root / name).read_text() for root in (left, right))
+    if name == 'runner.py':
+        new = new.replace(
+            "'yield_nearest_view_clear', 'yield_nearest_view_no_slow',\n            'yield_nearest_view_mid_speed')",
+            "'yield_nearest_view_clear', 'yield_nearest_view_no_slow')")
+        new = new.replace(
+            "    supported = [PREFIX + suffix for suffix in SUFFIXES]\n"
+            "    declared = config.get('supported_case_ids')\n"
+            "    if case_id == PREFIX + 'yield_nearest_view_mid_speed':\n"
+            "        valid = declared == supported\n"
+            "    else:\n"
+            "        valid = declared in (supported, supported[:-1])\n"
+            "    if not valid:\n"
+            "        raise ValueError('Selected case support list differs')",
+            "    if config.get('supported_case_ids') != [PREFIX + suffix for suffix in SUFFIXES]:\n"
+            "        raise ValueError('Four exact case IDs required')")
+    elif name == 'yield_controller.py':
+        new = new.replace(
+            "'yield_nearest_view_no_slow',\n                   'yield_nearest_view_mid_speed')",
+            "'yield_nearest_view_no_slow')")
+    return old == new
 
 
 def audit(left, right, comparison_id):
@@ -42,10 +68,15 @@ def audit(left, right, comparison_id):
             raise ValueError('Comparison capture profile changed')
     if configs[0]['cameras'] != configs[1]['cameras']:
         raise ValueError('Fixed source-camera profile changed')
+    speed_pair = comparison_id == 'same_approaching_traffic_view_speed_2_vs_4'
     for name in ('road.xodr', 'road_context.json', 'control_context.json',
                  'capture/native_map_facts.json', 'runner.py', 'yield_controller.py',
                  'video_frames.jsonl'):
-        if sha(left / name) != sha(right / name):
+        if speed_pair and name in ('runner.py', 'yield_controller.py'):
+            fixed = same_support_logic(left, right, name)
+        else:
+            fixed = sha(left / name) == sha(right / name)
+        if not fixed:
             raise ValueError('Fixed comparison source changed: ' + name)
     contract = read(ROOT / 'measurement-contract.json')
     reports = [read(root / 'analysis-report.json') for root in (left, right)]
@@ -69,6 +100,11 @@ def audit(left, right, comparison_id):
                        for key in ('road_id', 'lane_id', 'body_vertices_m'))
                 or speeds != [2.0, 6.0]):
             raise ValueError('Slowed versus no-slow source difference absent')
+    elif comparison_id == 'same_approaching_traffic_view_speed_2_vs_4':
+        if (speeds != [2.0, 4.0]
+                or not all(row.get('through') for rows_ in bodies for row in rows_)
+                or any(a['through'] != b['through'] for a, b in zip(*bodies))):
+            raise ValueError('Same-traffic speed source difference absent')
     else:
         if (bodies[0][0]['through']['road_id'] != 158194
                 or bodies[1][0]['through']['road_id'] != 158195
@@ -81,6 +117,10 @@ def audit(left, right, comparison_id):
                                      'control_context.json', 'capture/native_map_facts.json',
                                      'runner.py', 'yield_controller.py',
                                      'video_frames.jsonl')},
+            'case_support_extension_only': speed_pair,
+            'right_support_source_hashes': ({name: sha(right / name) for name in
+                                             ('runner.py', 'yield_controller.py')}
+                                            if speed_pair else {}),
             'analysis_sha256': [sha(root / 'analysis-report.json') for root in (left, right)],
             'actor_history_sha256': [sha(root / 'interaction_history.jsonl')
                                      for root in (left, right)],
