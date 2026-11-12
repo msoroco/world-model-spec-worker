@@ -36,9 +36,16 @@ def main():
             "candidate_commands": {candidate["id"]: f"{CLI} prepare-delivery {common} --candidate {candidate['id']}"
                                    for candidate in entry["candidates"]}})
     plan = json.loads((HERE / "case-plan.json").read_text())
-    comparisons = [{"assignment_id": AID, "comparison_id": x["comparison_id"],
-                    "command": f"python3.11 work/{AID}/audit-selected-delivery-acceptance.py"}
-                   for x in plan["comparisons"]]
+    comparisons = []
+    for item in plan["comparisons"]:
+        ident = item["comparison_id"]
+        script = ("prove-selected-timing-comparison.py" if ident.endswith("right_of_way")
+                  else "prove-selected-lateral-comparison.py" if ident.endswith("extreme_right")
+                  else "prove-selected-ordinary-comparisons.py")
+        comparisons.append({"assignment_id": AID, "comparison_id": ident,
+                            "status": "cpu_diagnostic_only",
+                            "command": f"python3.11 work/{AID}/{script}",
+                            "original_comparison_acceptance_pending": True})
     out = {"format": "worker-exact-delivery-queue-fragment", "assignment_id": AID,
            "execution_manifest_sha256": sha(path), "status": "cpu_prepared_partial",
            "dispatchable": False, "cases": rows,
