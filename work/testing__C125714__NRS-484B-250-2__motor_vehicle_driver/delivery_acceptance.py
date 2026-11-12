@@ -160,8 +160,9 @@ def audit(attempt, case_id, pixel_review, output, diagnostic=False):
             result.get('diagnostic_fixture', False) is not diagnostic):
         raise ValueError('Native result provenance differs')
     verify_physical(result, attempt)
-    source_audit = audit_sources(case_id, attempt, ROOT, diagnostic=diagnostic)
-    frames = 60 if diagnostic else 1100
+    source_audit = audit_sources(case_id, attempt, ROOT, diagnostic=diagnostic,
+                                 diagnostic_frames=1100)
+    frames = 1100
     review_hash = verify_review(attempt, case_id, pixel_review, frames)
     mapping = rows(attempt / 'video_frames.jsonl')
     scenes = read(attempt / 'converted/trace.json').get('scenes', [])

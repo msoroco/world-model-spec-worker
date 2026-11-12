@@ -30,7 +30,7 @@ def _rows(path):
     return [json.loads(line) for line in Path(path).read_text().splitlines() if line.strip()]
 
 
-def audit(case_id, attempt, package, diagnostic=False):
+def audit(case_id, attempt, package, diagnostic=False, diagnostic_frames=60):
     attempt, package = Path(attempt), Path(package)
     manifest = _read(package / 'execution-manifest.json')
     matches = [entry for entry in manifest['cases'] if entry['case_id'] == case_id]
@@ -68,7 +68,9 @@ def audit(case_id, attempt, package, diagnostic=False):
         raise ValueError('Original trace source hash differs')
     mapping = _rows(attempt / 'video_frames.jsonl')
     frames = len(mapping)
-    if frames != (60 if diagnostic else 1100):
+    if diagnostic and diagnostic_frames not in (60, 1100):
+        raise ValueError('Unsupported diagnostic frame count')
+    if frames != (diagnostic_frames if diagnostic else 1100):
         raise ValueError('Original frame count differs from audit profile')
     previous_frame, previous_time = -1, -math.inf
     for index, row in enumerate(mapping):
@@ -79,7 +81,7 @@ def audit(case_id, attempt, package, diagnostic=False):
         if index and abs(time - previous_time - .05) > 1e-3:
             raise ValueError('Original sources are not 20 Hz')
         previous_frame, previous_time = frame, time
-    if not diagnostic and abs(mapping[-1]['time_s'] - mapping[0]['time_s'] - 54.95) > .001:
+    if frames == 1100 and abs(mapping[-1]['time_s'] - mapping[0]['time_s'] - 54.95) > .001:
         raise ValueError('Full planned capture duration missing')
     for name in ('trace.jsonl', 'crossing_history.jsonl', 'controller_history.jsonl'):
         rows = _rows(attempt / name)
