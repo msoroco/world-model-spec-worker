@@ -16,7 +16,10 @@ def digest(path):
 
 
 def build_one(row, label, helper, draft):
-    source = ROOT / row['construction']
+    source = (ROOT / 'body-geometry-draft/pre-promotion-base-construction.json'
+              if row['construction'] == 'construction.json' and
+              (ROOT / 'body-geometry-draft/pre-promotion-base-construction.json').exists()
+              else ROOT / row['construction'])
     if digest(source) != row['construction_sha256']:
         raise ValueError('Selected construction hash changed: ' + str(source))
     bundle = json.loads(source.read_text())
@@ -45,7 +48,10 @@ def build_one(row, label, helper, draft):
 
 
 def main():
-    original = json.loads((ROOT / 'execution-manifest.json').read_text())
+    baseline = (ROOT / 'body-geometry-draft/pre-promotion-execution-manifest.json'
+                if (ROOT / 'body-geometry-draft/pre-promotion-execution-manifest.json').exists()
+                else ROOT / 'execution-manifest.json')
+    original = json.loads(baseline.read_text())
     manifest = copy.deepcopy(original)
     helper_path = ROOT / 'body_gap_geometry.py'
     helper = helper_path.read_text()
@@ -63,7 +69,7 @@ def main():
     output.write_text(json.dumps(manifest, indent=2) + '\n')
     print(json.dumps({'construction_count': len(built), 'manifest': str(output),
                       'manifest_sha256': digest(output), 'helper_sha256': digest(helper_path),
-                      'selected_manifest_sha256': digest(ROOT / 'execution-manifest.json')},
+                      'selected_manifest_sha256': digest(baseline)},
                      sort_keys=True))
 
 

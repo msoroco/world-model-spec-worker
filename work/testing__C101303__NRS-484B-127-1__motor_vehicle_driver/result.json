@@ -2,7 +2,7 @@
   "assignment_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver",
   "input_sha256": "096771e13d349df8908ad57224be86aec127c3a7e1d7d7689f63d30a898c4d55",
   "status": "partial",
-  "readiness_kind": "geometry_draft_full_source_comparisons_partial",
+  "readiness_kind": "geometry_integrated_judgment_sweep_partial",
   "applied_update": 0,
   "tests": [
     {
@@ -586,11 +586,89 @@
       "exit_code": 0,
       "log": "cpu-tests-body-geometry-comparisons.log",
       "sha256": "1731a9ce5de2cd62d60eb591cd9432b912e6310556a7c45f5b2c1b544a0c4d0a"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/prove_all_body_geometry_physical_drafts.py",
+      "exit_code": 0,
+      "log": "body-geometry-all-draft-physical.log",
+      "sha256": "4e936704335da2f4dcae0ae8a92471aedb5a89f05cc323a250c4296fb0d094ac"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/prepare_body_geometry_promotion.py",
+      "exit_code": 0,
+      "log": "body-geometry-promotion-build.log",
+      "sha256": "06049e0085616dd4aa574e8befb802b3ee91df8c11fc68719dd457730fbcf75c"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/tests",
+      "exit_code": 0,
+      "log": "cpu-tests-body-geometry-promoted.log",
+      "sha256": "ebbdc00b13f7ceeadb1717b2a707f0f5dc28e097dc13bed35be1a35358d46fbc"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/validate_body_geometry_promotion.py",
+      "exit_code": 0,
+      "log": "body-geometry-promotion-validate.log",
+      "sha256": "c642c5ddc58d09439102afc11a590bc72c1185aadc7a3d21d208bdd311a9fe1d"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "preflight-body-geometry-promoted.log",
+      "sha256": "5ec53fe1e10430c97b9b906776c0dbcd58a0c367458d505f0ac7032a11cb6247"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --updates",
+      "exit_code": 0,
+      "log": "updates-body-geometry-promoted.log",
+      "sha256": "bc028da1339a9f9c4509c1460ad99c683c6b6ac8b7b6af6b378e3ffa7cdbb287"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/source_calibrated_sweep.py --config work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/config.json --manifest work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/execution-manifest.json --base-root .runtime-work/c101303-full-duration/base-positive-v1/attempt --closer-root .runtime-work/c101303-full-duration/closer-positive-v1/attempt --output work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/source-calibrated-sweep.json",
+      "exit_code": 0,
+      "log": "source-calibrated-sweep.log",
+      "sha256": "00652598ce1d5c44ac1e935b8657f629aa1c666f7021151c4142c6c17b9ce585"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/review_original_sources.py",
+      "exit_code": 0,
+      "log": "independent-law-source-inventory.log",
+      "sha256": "927fceccc9c154738f003ee3eac2e35942341f98582fb03675fa527f7d844a32"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "preflight-source-calibrated.log",
+      "sha256": "89861ff0a020826e5956a581b06124a8dabdf51f22720ed2542a7653fc2e1b36"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --updates",
+      "exit_code": 0,
+      "log": "updates-source-calibrated.log",
+      "sha256": "bc028da1339a9f9c4509c1460ad99c683c6b6ac8b7b6af6b378e3ffa7cdbb287"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-tests-source-calibrated.log",
+      "sha256": "2ce840657fc818993181b0db6021ba3a8e9d3984f7afe7e8120f61b06cb4295c"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/validate_body_geometry_promotion.py",
+      "exit_code": 0,
+      "log": "body-geometry-promotion-validate-source-calibrated.log",
+      "sha256": "c642c5ddc58d09439102afc11a590bc72c1185aadc7a3d21d208bdd311a9fe1d"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C101303__NRS-484B-127-1__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "assignment-source-calibrated.log",
+      "sha256": "887b30b325ad7ce0b4e52930d7ffea24858d3efc676139847c210a95a0b3347f"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, map/highway status, queued actor behavior, camera visibility and physical source review require a future authorized Native capture; legal reasonable-and-prudent judgment remains unresolved."
   ],
-  "reason": "Geometry-aware drafts for all 8 primaries and 24 fallbacks pass pinned offline, diagnostic compatibility with negative source checks, and recorded-only saved processing. All 7 primary and 21 fallback source comparisons pass against draft construction hashes; a 32-bundle equivalence proof shows the draft changes only runner spacing and the added helper, leaving diagnostic source, camera and finalizer inputs unchanged. The selected manifest and receipts still bind the old +4 m runners. Promote and rebind the new construction/proof hashes, then complete the physically feasible judgment sweep, independent law/source review and shared delivery work. No physical or legal acceptance claimed.",
+  "reason": "All 8 selected primaries and 24 fallbacks use measured Native actor body offset and retain passing exact offline, diagnostic compatibility, saved-processing, and comparison receipts. A new source-calibrated 900-frame CPU trajectory probe checks the 7.0/8.5/10.0 m grid against sealed synthetic body geometry and current selected base/closer runners; independent review verifies the exact assigned law and all eight accepted metadata exports. The physically feasible Native hill-crest judgment sweep, original accepted actor-trace review, and shared branch/delivery integration remain worker-owned CPU preparation. The synthetic model and metadata do not prove Native motion, camera visibility, or legal judgment. No physical or legal acceptance claimed.",
   "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline $CARLA_PYTHON -m worker_exchange execute-delivery --repo . --batch batch.json --db $DB --run $RUN --assignment testing__C101303__NRS-484B-127-1__motor_vehicle_driver --case testing__C101303__NRS-484B-127-1__motor_vehicle_driver__source_verified_base --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT"
 }

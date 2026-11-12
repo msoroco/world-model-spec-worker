@@ -23,7 +23,9 @@ def file_map(bundle):
 
 
 def main():
-    selected_path = ROOT / 'execution-manifest.json'
+    selected_path = (ROOT / 'body-geometry-draft/pre-promotion-execution-manifest.json'
+                     if (ROOT / 'body-geometry-draft/pre-promotion-execution-manifest.json').exists()
+                     else ROOT / 'execution-manifest.json')
     draft_path = ROOT / 'body-geometry-all-draft-manifest.json'
     selected = json.loads(selected_path.read_text())
     draft = json.loads(draft_path.read_text())
@@ -38,7 +40,11 @@ def main():
                                                                for row in new_rows]:
             raise ValueError('Draft changed candidate inventory')
         for old_row, new_row in zip(old_rows, new_rows):
-            old_path, new_path = ROOT / old_row['construction'], ROOT / new_row['construction']
+            old_path = (ROOT / 'body-geometry-draft/pre-promotion-base-construction.json'
+                        if old_row['construction'] == 'construction.json' and
+                        (ROOT / 'body-geometry-draft/pre-promotion-base-construction.json').exists()
+                        else ROOT / old_row['construction'])
+            new_path = ROOT / new_row['construction']
             if (digest(old_path) != old_row['construction_sha256'] or
                     digest(new_path) != new_row['construction_sha256']):
                 raise ValueError('Selected or draft construction hash changed')
