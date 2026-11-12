@@ -133,7 +133,7 @@ def main():
         sweep_specs.append(spec)
     refs['cases'] = write('cases.json', {
         'cell_id': 'C125714', 'actor': assignment['actor'], 'status': 'draft',
-        'cases': cases, 'sweep_specs': sweep_specs, 'sweeps_expanded': []})
+        'cases': cases, 'sweep_specs': sweep_specs, 'sweeps_expanded': True})
     write('semantic-index.json', {'assignment_id': AID, 'format': 'worker-semantic-delivery', 'stages': refs})
 
 
