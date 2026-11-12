@@ -1473,7 +1473,7 @@
       "command": ".venv-cpu/bin/python runtime.py preflight",
       "exit_code": 0,
       "log": "preflight-current.log",
-      "sha256": "cb73400e28b77334841909d96f7e7ee3667e23cca0f60745cc14742ba34c5936"
+      "sha256": "57db9aef3c8e210cd4dc748dc40ad2a2cdf84a26648c5f85ca2c3b5ae8a967d4"
     },
     {
       "command": ".venv-cpu/bin/python worker_check.py --updates",
@@ -1496,31 +1496,49 @@
     {
       "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/cases/approaching_far/draft-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__approaching_far --candidate primary --output .runtime-work/c109749-approaching-far-primary-v5",
       "exit_code": 0,
-      "log": "cases/approaching_far/offline-primary.log",
+      "log": "cases/approaching_far/primary-offline-check.log",
       "sha256": "7619c92d139f7cb4c6dce60c9d0c19d5eb90fa613e662a39ed481ff1bdc90205"
     },
     {
       "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/cases/approaching_far/draft-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__approaching_far --candidate fallback1 --output .runtime-work/c109749-approaching-far-fallback1-v5",
       "exit_code": 0,
-      "log": "cases/approaching_far/offline-fallback1.log",
+      "log": "cases/approaching_far/fallback1-offline-check.log",
       "sha256": "ebd9f13041fe26979d4606b4e32205b250f1231771a4e0d38075e7f797722690"
     },
     {
       "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/cases/approaching_far/draft-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__approaching_far --candidate fallback2 --output .runtime-work/c109749-approaching-far-fallback2-v5",
       "exit_code": 0,
-      "log": "cases/approaching_far/offline-fallback2.log",
+      "log": "cases/approaching_far/fallback2-offline-check.log",
       "sha256": "a8ffbadf7679e2e963f51ecdd1f52e4a8b85b644dd94f6f60966999688ecccd8"
     },
     {
       "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/cases/approaching_far/draft-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__approaching_far --candidate fallback3 --output .runtime-work/c109749-approaching-far-fallback3-v5",
       "exit_code": 0,
-      "log": "cases/approaching_far/offline-fallback3.log",
+      "log": "cases/approaching_far/fallback3-offline-check.log",
       "sha256": "cd67e90cd8fbdc934c8e4f01cfd535d2e7a835c61f2d9e573caec79fea9e43c8"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C109749__NRS-484B-253__motor_vehicle_driver/prove_far_approach_history.py --output .runtime-work/c109749-far-history-v1",
+      "exit_code": 0,
+      "log": "far-history-proof.log",
+      "sha256": "e8032b2e5923a527346d925e7e81ef934b243e0fd40e3c19ac2eae648200ec02"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C109749__NRS-484B-253__motor_vehicle_driver/prove_far_finalizer.py --output .runtime-work/c109749-far-finalizer-v2",
+      "exit_code": 0,
+      "log": "far-finalizer-proof.log",
+      "sha256": "560f84f5fc7910f48816b7864c77df81dd048024f22384f7b60d5012f0512ffc"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C109749__NRS-484B-253__motor_vehicle_driver/prove_far_measurement_contract.py --fixture .runtime-work/c109749-far-finalizer-v2/positive",
+      "exit_code": 0,
+      "log": "far-measurement-contract-proof.log",
+      "sha256": "d79063fda758da00d77b372eb578fea07528215ca6e673fe6474457a46b86e4a"
     }
   ],
   "remaining_gpu_checks": [
     "Actual opposing approach and subject motion, signal pixels and four-camera visibility."
   ],
-  "reason": "Eleven canonical cases retain their CPU proof receipts. An isolated exact far-approach draft now has a source-bound turn-before-entry observation, dedicated saved finalizer, and six passing materialized tests across primary and three risk-triggered offline constructions. The draft remains outside the canonical manifest pending a 900-frame source-shaped diagnostic, positive/negative compatibility, recorded-only saved processing, independent delivery/comparison audits and compatibility/saved/delivery/comparison proofs for its three offline-proved risk fallbacks. Judgment sweeps and shared branch/queue/final-review work remain worker-owned; no physical or legal acceptance claimed.",
+  "reason": "Eleven canonical cases retain CPU receipts. The isolated far-approach draft has four offline-proved constructions, a 900-frame source-history proof, a finalizer proof regenerating eight original-source channels with missing-source rejection, and a draft three-requirement measurement contract validated against source hashes. Camera bytes in the finalizer test are placeholders; exact compatibility, recorded-only saved processing, source media/delivery, comparisons, canonical selection, judgment sweeps and shared batch review remain worker-owned. No physical or legal acceptance claimed.",
   "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline $CARLA_PYTHON -m worker_exchange execute-delivery --repo . --batch batch.json --db $DB --run $RUN --assignment testing__C109749__NRS-484B-253__motor_vehicle_driver --case testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield_after_turn --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT"
 }
