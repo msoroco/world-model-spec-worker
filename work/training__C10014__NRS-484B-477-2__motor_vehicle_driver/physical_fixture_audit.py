@@ -31,13 +31,15 @@ def sha(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def check_result(result: dict, kind: str, case_id: str) -> dict:
+def check_result(result: dict, kind: str, case_id: str, *,
+                 test_shape: bool = False) -> dict:
     require(kind in EXPECTED, "Unknown physical outcome kind")
     check = result.get("physical_checks", {}).get("maneuver", {})
     expected = EXPECTED[kind]
     require(result.get("case_id") == case_id and
             result.get("provenance_kind") == "native" and
             result.get("diagnostic_fixture") in (None, False) and
+            (result.get("source_shaped_unit_test") is True) == test_shape and
             result.get("accepted") is not True and
             result.get("legal_verdict_claimed") is not True,
             "Synthetic or accepted result cannot prove Native physical outcome")
@@ -52,7 +54,8 @@ def check_result(result: dict, kind: str, case_id: str) -> dict:
 
 
 def audit(attempt: Path, owner_receipt: Path, processing_path: Path,
-          kind: str, case_id: str, construction_sha256: str) -> dict:
+          kind: str, case_id: str, construction_sha256: str, *,
+          test_shape: bool = False) -> dict:
     attempt = attempt.resolve()
     processing_path = processing_path.resolve()
     processing = read(processing_path)
@@ -61,7 +64,7 @@ def audit(attempt: Path, owner_receipt: Path, processing_path: Path,
             processing.get("result_sha256") == sha(result_path),
             "Saved physical result missing or changed")
     result = read(result_path)
-    outcome = check_result(result, kind, case_id)
+    outcome = check_result(result, kind, case_id, test_shape=test_shape)
     require(processing.get("case_id") == case_id and
             processing.get("passed") is True and
             processing.get("native_revision", {}).get("construction_sha256") ==
@@ -83,12 +86,14 @@ def audit(attempt: Path, owner_receipt: Path, processing_path: Path,
                 "Physical source missing or changed: " + name)
     if kind != "missing_evidence":
         closure = audit_lifecycle(attempt, owner_receipt, processing_path,
-                                  case_id, construction_sha256)
-        original = check_original_rows(attempt, 480)
+                                  case_id, construction_sha256,
+                                  test_shape=test_shape)
+        original = check_original_rows(attempt, 480, test_shape=test_shape)
     else:
         if (attempt / "capture-seal.json").is_file():
             closure = audit_lifecycle(attempt, owner_receipt, processing_path,
-                                      case_id, construction_sha256)
+                                      case_id, construction_sha256,
+                                      test_shape=test_shape)
         else:
             # A failed acquisition can lack a seal. Require its Native failure
             # record instead of accepting an unmarked synthetic missing source.
@@ -104,6 +109,7 @@ def audit(attempt: Path, owner_receipt: Path, processing_path: Path,
             closure = None
         original = None
     return {"kind": kind, "case_id": case_id,
+            "source_shaped_unit_test": test_shape,
             "construction_sha256": construction_sha256,
             "result_sha256": sha(result_path),
             "processing_sha256": sha(processing_path),

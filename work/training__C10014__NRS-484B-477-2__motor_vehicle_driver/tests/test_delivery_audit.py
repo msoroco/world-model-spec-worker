@@ -73,6 +73,17 @@ class DeliveryAuditBoundaryTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "Synthetic diagnostic"):
                 check_original_rows(folder, 2)
 
+    def test_source_shaped_row_rejected_in_original_mode(self):
+        with tempfile.TemporaryDirectory() as directory:
+            folder = Path(directory)
+            self.make_rows(folder)
+            path = folder / "trace.jsonl"
+            records = [json.loads(line) for line in path.read_text().splitlines()]
+            records[0]["source_shaped_unit_test"] = True
+            path.write_text("".join(json.dumps(row) + "\n" for row in records))
+            with self.assertRaisesRegex(ValueError, "Source-shaped rows"):
+                check_original_rows(folder, 2)
+
     def test_missing_and_mismatched_native_rows_rejected(self):
         with tempfile.TemporaryDirectory() as directory:
             folder = Path(directory)

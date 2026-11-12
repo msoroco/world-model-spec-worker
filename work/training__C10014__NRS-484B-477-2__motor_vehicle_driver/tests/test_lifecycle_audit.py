@@ -19,7 +19,8 @@ class LifecycleAuditTests(unittest.TestCase):
         construction = sha(attempt / 'construction.json')
         sources = {p.name: sha(p) for p in attempt.iterdir() if p.is_file()}
         seal = {'format':'worker-sealed-capture', 'provenance_kind':'native',
-                'diagnostic_fixture':False, 'frames':480, 'events':EVENTS[:3],
+                'diagnostic_fixture':False, 'source_shaped_unit_test':True,
+                'frames':480, 'events':EVENTS[:3],
                 'restoration':{'restored':True},
                 'encoder_exit_codes':{camera:0 for camera in CAMERAS},
                 'native_revision':{'construction_sha256':construction,
@@ -37,9 +38,11 @@ class LifecycleAuditTests(unittest.TestCase):
             'native_construction_sha256':construction}))
         result = saved / 'analysis/result.json'
         result.write_text(json.dumps({'case_id':'case','provenance_kind':'native',
-                                      'diagnostic_fixture':False}))
+                                      'diagnostic_fixture':False,
+                                      'source_shaped_unit_test':True}))
         processing = saved / 'processing.json'
         processing.write_text(json.dumps({'format':'worker-saved-processing',
+            'source_shaped_unit_test':True,
             'case_id':'case','passed':True,'recorded_only':True,
             'originals_preserved':True,'native_revision':
             {'construction_sha256':construction},
@@ -53,7 +56,8 @@ class LifecycleAuditTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             attempt, owner, processing, construction = self.shape(root)
-            proof = audit(attempt, owner, processing, 'case', construction)
+            proof = audit(attempt, owner, processing, 'case', construction,
+                          test_shape=True)
             self.assertEqual(proof['events'], EVENTS)
             self.assertEqual(proof['exit_code'], 0)
             # The selected finalizer omits this optional field on a real run.
@@ -64,14 +68,18 @@ class LifecycleAuditTests(unittest.TestCase):
             receipt = json.loads(processing.read_text())
             receipt['result_sha256'] = sha(result)
             processing.write_text(json.dumps(receipt))
-            self.assertEqual(audit(attempt, owner, processing, 'case', construction)
+            self.assertEqual(audit(attempt, owner, processing, 'case', construction,
+                                   test_shape=True)
                              ['events'], EVENTS)
+            with self.assertRaisesRegex(ValueError, 'Source-shaped unit test'):
+                audit(attempt, owner, processing, 'case', construction)
             # The shape test never writes a physical preparation receipt.
             value = json.loads(owner.read_text())
             value['native_exit_sha256'] = '0' * 64
             owner.write_text(json.dumps(value))
             with self.assertRaisesRegex(ValueError, 'Owner release'):
-                audit(attempt, owner, processing, 'case', construction)
+                audit(attempt, owner, processing, 'case', construction,
+                      test_shape=True)
 
     def test_synthetic_or_changed_source_rejected(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -85,10 +93,12 @@ class LifecycleAuditTests(unittest.TestCase):
             value['result_sha256'] = sha(result)
             processing.write_text(json.dumps(value))
             with self.assertRaisesRegex(ValueError, 'synthetic'):
-                audit(attempt, owner, processing, 'case', construction)
+                audit(attempt, owner, processing, 'case', construction,
+                      test_shape=True)
             (attempt / 'native_samples.jsonl').write_text('changed')
             with self.assertRaisesRegex(ValueError, 'Sealed original source changed'):
-                audit(attempt, owner, processing, 'case', construction)
+                audit(attempt, owner, processing, 'case', construction,
+                      test_shape=True)
 
 
 if __name__ == '__main__':

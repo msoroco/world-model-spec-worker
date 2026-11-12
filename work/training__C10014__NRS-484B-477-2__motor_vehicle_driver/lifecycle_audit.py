@@ -29,7 +29,7 @@ def sha(path: Path) -> str:
 
 
 def audit(attempt: Path, owner_receipt: Path, processing_path: Path,
-          case_id: str, construction_sha256: str) -> dict:
+          case_id: str, construction_sha256: str, *, test_shape: bool = False) -> dict:
     attempt = attempt.resolve()
     processing_path = processing_path.resolve()
     seal_path = attempt / "capture-seal.json"
@@ -38,6 +38,9 @@ def audit(attempt: Path, owner_receipt: Path, processing_path: Path,
             "Original Native capture seal or exit missing")
     seal, exit_record, owner, processing = (read(path) for path in
         (seal_path, exit_path, owner_receipt, processing_path))
+    require((seal.get("source_shaped_unit_test") is True) == test_shape and
+            (processing.get("source_shaped_unit_test") is True) == test_shape,
+            "Source-shaped unit test cannot establish original Native lifecycle")
     revision = seal.get("native_revision", {})
     require(seal.get("format") == "worker-sealed-capture" and
             seal.get("provenance_kind") == "native" and
@@ -91,16 +94,20 @@ def audit(attempt: Path, owner_receipt: Path, processing_path: Path,
     result = read(result_path)
     require(result.get("case_id") == case_id and
             result.get("provenance_kind") == "native" and
-            result.get("diagnostic_fixture") in (None, False),
+            result.get("diagnostic_fixture") in (None, False) and
+            (result.get("source_shaped_unit_test") is True) == test_shape,
             "Saved result is synthetic or for another case")
     return {"case_id": case_id, "construction_sha256": construction_sha256,
             "events": EVENTS, "exit_code": 0,
+            "source_shaped_unit_test": test_shape,
             "capture_seal_sha256": sha(seal_path),
             "native_exit_sha256": sha(exit_path),
             "owner_release_sha256": sha(owner_receipt),
             "saved_processing_sha256": sha(processing_path),
             "result_sha256": sha(result_path),
-            "scope": "original Native closure and source preservation; no physical or legal acceptance"}
+            "scope": ("source-shaped CPU unit test only; no original Native, physical or legal acceptance"
+                      if test_shape else
+                      "original Native closure and source preservation; no physical or legal acceptance")}
 
 
 def main() -> None:

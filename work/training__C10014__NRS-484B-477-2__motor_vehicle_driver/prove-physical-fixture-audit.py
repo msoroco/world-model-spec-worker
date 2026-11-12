@@ -46,7 +46,8 @@ def main():
            'original_native_outcome_proven':False,
            'complete_physical_preparation_proven':False}
     (HERE/'physical-fixture-audit-cpu-proof.json').write_text(json.dumps(proof,indent=2)+'\n')
-    print(json.dumps({'tests':2,'synthetic_rejected':True,
+    print(json.dumps({'tests':(run.stdout+run.stderr).count(' ... ok'),
+                      'synthetic_rejected':True,
                       'proof_sha256':sha(HERE/'physical-fixture-audit-cpu-proof.json')}))
 
 

@@ -43,7 +43,8 @@ def rows(path: Path) -> list[dict]:
     return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
 
 
-def check_original_rows(attempt: Path, expected_frames: int) -> dict:
+def check_original_rows(attempt: Path, expected_frames: int, *,
+                        test_shape: bool = False) -> dict:
     """Independently join Native body, trace, evidence, and camera map rows."""
     sources = {name: rows(attempt / name) for name in ORIGINALS[:5]}
     require(all(len(source) == expected_frames for source in sources.values()),
@@ -51,6 +52,9 @@ def check_original_rows(attempt: Path, expected_frames: int) -> dict:
     trace, evidence, mapping, motion, body = (sources[name] for name in ORIGINALS[:5])
     previous_frame, previous_time = -1, -math.inf
     for index, (t, e, m, n, b) in enumerate(zip(trace, evidence, mapping, motion, body)):
+        require(all((row.get("source_shaped_unit_test") is True) == test_shape
+                    for row in (t, e, m, n, b)),
+                "Source-shaped rows cannot establish original Native motion")
         frame, time_s = m.get("native_frame"), m.get("time_s")
         require(type(frame) is int and frame > previous_frame and
                 type(time_s) in (int, float) and math.isfinite(time_s) and
