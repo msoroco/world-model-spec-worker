@@ -36,3 +36,35 @@ def listener_points(route, lateral_offsets_m=(2.0, 4.0, 6.0)):
                        'nearest_sampled_route_m': nearest,
                        'anchor_index': centre})
     return result
+
+
+def spawnable_listener_points(carla_map, carla, route, lateral_offsets_m=(2.0, 4.0, 6.0),
+                              max_projection_m=0.75):
+    """Resolve route-relative points to actual sidewalk waypoints before spawning.
+
+    This is lazy with respect to CARLA and rejects a sweep point when the map
+    cannot place a listener sufficiently close to the requested coordinate.
+    Callers must still confirm the selected turn route and actual capture.
+    """
+    if not math.isfinite(max_projection_m) or max_projection_m < 0:
+        raise ValueError('Invalid sidewalk projection tolerance')
+    resolved = []
+    for point in listener_points(route, lateral_offsets_m):
+        waypoint = carla_map.get_waypoint(
+            carla.Location(x=point['point_x_m'], y=point['point_y_m'], z=0.5),
+            project_to_road=False, lane_type=carla.LaneType.Sidewalk)
+        if waypoint is None:
+            raise ValueError('Listener sweep point has no Native sidewalk waypoint')
+        location = waypoint.transform.location
+        displacement = math.hypot(location.x - point['point_x_m'],
+                                  location.y - point['point_y_m'])
+        if not math.isfinite(displacement) or displacement > max_projection_m:
+            raise ValueError('Listener sweep sidewalk projection exceeds tolerance')
+        resolved.append({**point, 'spawn_x_m': location.x, 'spawn_y_m': location.y,
+                         'spawn_z_m': location.z,
+                         'sidewalk_projection_m': displacement,
+                         'lane_id': waypoint.lane_id,
+                         'road_id': waypoint.road_id})
+    if len({(row['spawn_x_m'], row['spawn_y_m']) for row in resolved}) != len(resolved):
+        raise ValueError('Listener sweep points collapse to one Native spawn')
+    return resolved

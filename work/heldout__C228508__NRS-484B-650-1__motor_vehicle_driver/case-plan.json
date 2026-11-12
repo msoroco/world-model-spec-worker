@@ -20,6 +20,21 @@
       }
     },
     {
+      "case_id": "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__repeated_following",
+      "target_law_id": "NRS-484B-650-1",
+      "gap_ids": [
+        "full-statute"
+      ],
+      "description": "road/follow cell primary: speed hypothesis, two distinct close-following event hypotheses, one-frame vehicle hazard hypothesis in a continuous path under one mile",
+      "construction_status": "following schedule, map-route and feedback primitives CPU-tested; Native capture and exact bundle pending",
+      "physical_risk": {
+        "risk": "two separate following encounters and a visible immediate-hazard participant may not realize in the same original one-mile path window",
+        "trigger_source": "original 20 Hz ego/lead body paths, governing speed source and four RGB camera streams",
+        "trigger_metric": "two source-joined headway encounters, candidate hazard geometry, path span and participant visibility",
+        "failure_condition": "missing original speed/lead/hazard source, route discontinuity, over-mile window, or unobserved hazard participant"
+      }
+    },
+    {
       "case_id": "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__repeated_device",
       "target_law_id": "NRS-484B-650-1",
       "gap_ids": [
@@ -315,6 +330,19 @@
       "deliberate_differences": [
         "event order reversed"
       ]
+    },
+    {
+      "comparison_id": "repeated_following_vs_single",
+      "case_ids": [
+        "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__repeated_following",
+        "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__one_secondary_act"
+      ],
+      "fixed_conditions": [
+        "same road/follow cell, actor, two-vehicle geometry, speed and hazard requests, camera and duration contract"
+      ],
+      "deliberate_differences": [
+        "two distinct following closing requests versus one; legal too-close standard unresolved"
+      ]
     }
   ],
   "sources": [
@@ -340,7 +368,7 @@
       }
     ]
   },
-  "review_status": "partial: controlled full-text cases planned; source-bound one-mile event-window component CPU-tested; exact construction and legal predicate evidence pending",
+  "review_status": "partial: road/follow primary construction primitives and saved-only window finalizer CPU tested; exact Native capture, source packets and delivery proofs pending",
   "branch_inventory": [
     {
       "source": {
@@ -409,7 +437,8 @@
         "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__off_pavement_right_pass",
         "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__too_close",
         "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__yield",
-        "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__reverse_sequence"
+        "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__reverse_sequence",
+        "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__repeated_following"
       ]
     }
   ],
@@ -417,5 +446,137 @@
   "runtime_uncertainties": [
     "Pinned CPU preflight now passes. Exact construction and saved-processing proofs have not yet been run for this partial assignment.",
     "Actual CARLA motion, participant visibility, and physical capture remain unverified."
+  ],
+  "source_observation_mapping": {
+    "kin.path_length": {
+      "evidence": "Retained original Native source and source-cited event hypothesis; governing predicate and hazard judgment reserved for independent review",
+      "channels": [
+        "path_length_m"
+      ],
+      "source_refs": [
+        "inputs/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "kin.speed": {
+      "evidence": "Retained original Native source and source-cited event hypothesis; governing predicate and hazard judgment reserved for independent review",
+      "channels": [
+        "ego_speed_mps"
+      ],
+      "source_refs": [
+        "inputs/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "dev.speed_limit_sign": {
+      "evidence": "Retained original Native source and source-cited event hypothesis; governing predicate and hazard judgment reserved for independent review",
+      "channels": [
+        "governing_speed_source"
+      ],
+      "source_refs": [
+        "inputs/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "dev.traffic_signal": {
+      "evidence": "Retained original Native source and source-cited event hypothesis; governing predicate and hazard judgment reserved for independent review",
+      "channels": [
+        "device_state"
+      ],
+      "source_refs": [
+        "inputs/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.overtaking": {
+      "evidence": "Retained original Native source and source-cited event hypothesis; governing predicate and hazard judgment reserved for independent review",
+      "channels": [
+        "right_pass_geometry"
+      ],
+      "source_refs": [
+        "inputs/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.shoulder": {
+      "evidence": "Retained original Native source and source-cited event hypothesis; governing predicate and hazard judgment reserved for independent review",
+      "channels": [
+        "pavement_boundary"
+      ],
+      "source_refs": [
+        "inputs/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.lane_change": {
+      "evidence": "Retained original Native source and source-cited event hypothesis; governing predicate and hazard judgment reserved for independent review",
+      "channels": [
+        "lane_footprints"
+      ],
+      "source_refs": [
+        "inputs/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.following": {
+      "evidence": "Retained original Native source and source-cited event hypothesis; governing predicate and hazard judgment reserved for independent review",
+      "channels": [
+        "ego_lead_footprints"
+      ],
+      "source_refs": [
+        "inputs/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.time_gap": {
+      "evidence": "Retained original Native source and source-cited event hypothesis; governing predicate and hazard judgment reserved for independent review",
+      "channels": [
+        "headway_s"
+      ],
+      "source_refs": [
+        "inputs/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.yields_to": {
+      "evidence": "Retained original Native source and source-cited event hypothesis; governing predicate and hazard judgment reserved for independent review",
+      "channels": [
+        "yield_relation"
+      ],
+      "source_refs": [
+        "inputs/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.time_to_conflict": {
+      "evidence": "Retained original Native source and source-cited event hypothesis; governing predicate and hazard judgment reserved for independent review",
+      "channels": [
+        "conflict_geometry"
+      ],
+      "source_refs": [
+        "inputs/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "kin.time": {
+      "evidence": "Retained original Native source and source-cited event hypothesis; governing predicate and hazard judgment reserved for independent review",
+      "channels": [
+        "path_length_m"
+      ],
+      "source_refs": [
+        "inputs/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/assignment.json"
+      ]
+    }
+  },
+  "requirement_dispositions": [
+    {
+      "requirement": "Continuous one-mile window containing one speeding act, two listed acts or one repeated listed act, and immediate hazard to person or vehicle, in any sequence",
+      "source": "inputs/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "case_ids": [
+        "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__core_device_lane",
+        "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__repeated_following",
+        "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__repeated_device",
+        "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__no_speed",
+        "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__one_secondary_act",
+        "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__no_hazard",
+        "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__person_hazard",
+        "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__within_mile",
+        "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__beyond_mile",
+        "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__off_pavement_right_pass",
+        "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__too_close",
+        "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__yield",
+        "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__reverse_sequence"
+      ]
+    }
   ]
 }
