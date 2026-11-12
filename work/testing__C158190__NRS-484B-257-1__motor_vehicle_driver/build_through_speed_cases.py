@@ -54,6 +54,7 @@ def build():
         assert f'THROUGH_TARGET_MPS = {target:.1f}' in motion['content']
         path = ROOT / f'cases/through_speed_{speed}/construction.json'
         path.parent.mkdir(parents=True, exist_ok=True)
+        (path.parent / 'config.json').write_text(files['config.json']['content'])
         path.write_text(json.dumps(construction, indent=2) + '\n')
         cases.append({'case_id': PREFIX + suffix,
                       'construction': str(path.relative_to(ROOT)),

@@ -43,12 +43,21 @@ def through_y(i):
 
 
 def build(variant=None):
-    if variant not in (None, 'through_entered', 'clear', 'no_slow', 'through_mid'):
+    if variant not in (None, 'through_entered', 'clear', 'no_slow', 'through_mid',
+                       'through_speed_3', 'through_speed_7', 'through_speed_11'):
         raise ValueError('Unsupported exact diagnostic variant')
     target_root = HERE if variant is None else HERE / 'cases' / variant
     config_path = target_root / 'config.json'
+    speed_target = (float(variant.removeprefix('through_speed_'))
+                    if variant and variant.startswith('through_speed_') else None)
     def actor_y(i):
+        if speed_target is not None:
+            return max(-40.0, 20.0 - i * speed_target * .05)
         return 4.0 - min(i, 220)*.2 if variant == 'through_entered' else through_y(i)
+    def actor_speed(i):
+        if speed_target is not None:
+            return speed_target if actor_y(i) > -40.0 else 0.0
+        return 4.0 if i <= (220 if variant == 'through_entered' else 300) else 0.0
     def subject_x(i):
         return (-20.0 + min(i, 375)*.2 if variant == 'clear' else
                 -20.0 + min(i, 250)*.3 if variant == 'no_slow' else ego_x(i))
@@ -164,8 +173,8 @@ def build(variant=None):
                 through = observed['participants'][1]
                 through.update(actor_id=23, position_m=[1.8, actor_y(i), 0],
                                body_vertices_m=bodies[i]['through']['body_vertices_m'],
-                               speed_mps=4 if i <= (220 if variant == 'through_entered' else 300) else 0,
-                               velocity_mps=[0, -4 if i <= (220 if variant == 'through_entered' else 300) else 0, 0])
+                               speed_mps=actor_speed(i),
+                               velocity_mps=[0, -actor_speed(i), 0])
             evidence.append(event)
             base = f'graphs/base/{frame:08d}.pkl'
             abstract = f'graphs/abstract/{frame:08d}.pkl'
@@ -243,7 +252,7 @@ def build(variant=None):
                                 'sha256': sha(diagnostic_path)}}
         recipe_path = target_root / 'diagnostic-recipe.json'
         recipe_path.write_text(json.dumps(recipe, indent=2) + '\n')
-    if variant == 'through_mid':
+    if variant == 'through_mid' or speed_target is not None:
         return {'recipe': str(recipe_path.relative_to(ROOT)),
                 'source_count': len(items), 'frame_count': frame_count,
                 'scope': '600-frame synthetic saved-source protocol only; physical acceptance unclaimed'}
@@ -272,6 +281,7 @@ def build(variant=None):
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('--variant', choices=('through_entered', 'clear', 'no_slow', 'through_mid'))
+    parser.add_argument('--variant', choices=('through_entered', 'clear', 'no_slow', 'through_mid',
+                                              'through_speed_3', 'through_speed_7', 'through_speed_11'))
     args = parser.parse_args()
     print(json.dumps(build(args.variant), indent=2))
