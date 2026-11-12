@@ -7,15 +7,237 @@
       "case_id": "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__repeated_following",
       "kind": "delivery",
       "construction": "construction.json",
-      "construction_sha256": "c9081ca25a38e0b95b4a1339edc1be9914b65ff2cb7bf371c97c9a439370d62d",
+      "construction_sha256": "482519800599c0587b490ccb40df3e0a621551625ff909d531c9d2ebdd0b2c96",
       "measurement_procedure": {
         "entrypoint": "aggressive_finalizer.py"
       },
       "candidate_risk": {
         "status": "physical",
-        "reason": "Two following encounters and hazard may not co-occur within one mile"
+        "reason": "Route, initial spawn and realized lead response can defeat the selected following comparison."
       },
-      "candidates": []
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/repeated_following/fallback1/construction.json",
+          "construction_sha256": "6091920f6b14c4826f246ea3cf6bd7a4c75259d38c5964494505781c9e8309c8",
+          "trigger": {
+            "source": "Original route and four RGB sources",
+            "metric": "route continuity and participant visibility",
+            "failure_condition": "primary route/participant camera coverage fails"
+          },
+          "changed_knobs": [
+            "route_candidate_index"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/execution-manifest.json --case heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__repeated_following --candidate fallback1 --output .runtime-work/c228508-repeated_following-fallback1-offline-v4 --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "repeated_following-fallback1-offline.log",
+            "log_sha256": "21b2edaafb65a0502fab9b56b42580528e39a225900a579715d35a6e05729506",
+            "construction_sha256": "6091920f6b14c4826f246ea3cf6bd7a4c75259d38c5964494505781c9e8309c8"
+          },
+          "compatibility": {
+            "receipt": "repeated_following-fallback1-compatibility.json",
+            "sha256": "a979c179aaff1fac12995746a4ce717db9062ee2d2c578eb3c881af9231d3465",
+            "log": "repeated_following-fallback1-compat-analysis.log",
+            "negative_log": "repeated_following-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/repeated_following/fallback2/construction.json",
+          "construction_sha256": "6f9e7413b68226a1be54efa695275183468c6a747a097226a322da420bb222a3",
+          "trigger": {
+            "source": "Native actor spawn and first body frames",
+            "metric": "spawn success and body nonoverlap",
+            "failure_condition": "lead actor cannot spawn or body envelopes overlap"
+          },
+          "changed_knobs": [
+            "lead_spawn_station_m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/execution-manifest.json --case heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__repeated_following --candidate fallback2 --output .runtime-work/c228508-repeated_following-fallback2-offline-v4 --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "repeated_following-fallback2-offline.log",
+            "log_sha256": "21b2edaafb65a0502fab9b56b42580528e39a225900a579715d35a6e05729506",
+            "construction_sha256": "6f9e7413b68226a1be54efa695275183468c6a747a097226a322da420bb222a3"
+          },
+          "compatibility": {
+            "receipt": "repeated_following-fallback2-compatibility.json",
+            "sha256": "f5d9e4c1e11f9bfcdd44afb828d1ca399d7d04a801b4db2a0f711a40e9ed0109",
+            "log": "repeated_following-fallback2-compat-analysis.log",
+            "negative_log": "repeated_following-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/repeated_following/fallback3/construction.json",
+          "construction_sha256": "1c186e95b80ce4ea42330e8f570536d1e9782fa26360f8c02ccb15c828064709",
+          "trigger": {
+            "source": "Original 20 Hz ego/lead body speed and gap",
+            "metric": "source-distinct closing encounter count",
+            "failure_condition": "requested closing response does not produce the selected encounter count"
+          },
+          "changed_knobs": [
+            "closing_lead_speed_mps"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/execution-manifest.json --case heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__repeated_following --candidate fallback3 --output .runtime-work/c228508-repeated_following-fallback3-offline-v4 --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "repeated_following-fallback3-offline.log",
+            "log_sha256": "21b2edaafb65a0502fab9b56b42580528e39a225900a579715d35a6e05729506",
+            "construction_sha256": "1c186e95b80ce4ea42330e8f570536d1e9782fa26360f8c02ccb15c828064709"
+          },
+          "compatibility": {
+            "receipt": "repeated_following-fallback3-compatibility.json",
+            "sha256": "c09290b1d73927327241e3ae522810ba9d308d1ac0f353b01f3d346ed9f459a0",
+            "log": "repeated_following-fallback3-compat-analysis.log",
+            "negative_log": "repeated_following-fallback3-negative.log"
+          }
+        }
+      ],
+      "measurement_contract": "measurement-contract-repeated-following.json",
+      "fixture_recipe": "work/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/diagnostic-recipe-repeated-following.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/execution-manifest.json --case heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__repeated_following --candidate primary --output .runtime-work/c228508-repeated_following-primary-offline-v4 --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "repeated_following-primary-offline.log",
+        "log_sha256": "21b2edaafb65a0502fab9b56b42580528e39a225900a579715d35a6e05729506",
+        "construction_sha256": "482519800599c0587b490ccb40df3e0a621551625ff909d531c9d2ebdd0b2c96"
+      },
+      "compatibility": {
+        "receipt": "repeated_following-primary-compatibility.json",
+        "sha256": "da1c4707a32d3d5ea7d1f25b585dbf7e3500d5a3deb29fafa2a9e612aa9071ee",
+        "log": "repeated_following-primary-compat-analysis.log",
+        "negative_log": "repeated_following-primary-negative.log"
+      },
+      "negative": {
+        "log": "repeated_following-primary-negative.log",
+        "exit_code": 1,
+        "expected_error": "Missing required source: event_annotations.json"
+      }
+    },
+    {
+      "case_id": "heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__one_secondary_act",
+      "kind": "delivery",
+      "construction": "cases/one_secondary_act/construction.json",
+      "construction_sha256": "73c136a2009b8d07476a4669aca6fffa31e7b7235bc4423fc615daab685b9252",
+      "measurement_procedure": {
+        "entrypoint": "aggressive_finalizer.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Route, initial spawn and realized lead response can defeat the selected following comparison."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/one_secondary_act/fallback1/construction.json",
+          "construction_sha256": "13bf675ec5eadadeb065268b1a9163d1b5f8a55cbf4e87288d378d219fc46ee7",
+          "trigger": {
+            "source": "Original route and four RGB sources",
+            "metric": "route continuity and participant visibility",
+            "failure_condition": "primary route/participant camera coverage fails"
+          },
+          "changed_knobs": [
+            "route_candidate_index"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/execution-manifest.json --case heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__one_secondary_act --candidate fallback1 --output .runtime-work/c228508-one_secondary_act-fallback1-offline-v4 --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "one_secondary_act-fallback1-offline.log",
+            "log_sha256": "0d5f8346517fbbc9f8c76001a173ca4ace78dc0d43bc08446621d0299d7dcd04",
+            "construction_sha256": "13bf675ec5eadadeb065268b1a9163d1b5f8a55cbf4e87288d378d219fc46ee7"
+          },
+          "compatibility": {
+            "receipt": "one_secondary_act-fallback1-compatibility.json",
+            "sha256": "56da1160b6571adca4f2b43afd22b8fda09b95b00405091c6fea98a92fecc2df",
+            "log": "one_secondary_act-fallback1-compat-analysis.log",
+            "negative_log": "one_secondary_act-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/one_secondary_act/fallback2/construction.json",
+          "construction_sha256": "47484767a579e2d53b2e4c34061092a355b7787d1abb1699b1642499e5437ab3",
+          "trigger": {
+            "source": "Native actor spawn and first body frames",
+            "metric": "spawn success and body nonoverlap",
+            "failure_condition": "lead actor cannot spawn or body envelopes overlap"
+          },
+          "changed_knobs": [
+            "lead_spawn_station_m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/execution-manifest.json --case heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__one_secondary_act --candidate fallback2 --output .runtime-work/c228508-one_secondary_act-fallback2-offline-v4 --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "one_secondary_act-fallback2-offline.log",
+            "log_sha256": "21b2edaafb65a0502fab9b56b42580528e39a225900a579715d35a6e05729506",
+            "construction_sha256": "47484767a579e2d53b2e4c34061092a355b7787d1abb1699b1642499e5437ab3"
+          },
+          "compatibility": {
+            "receipt": "one_secondary_act-fallback2-compatibility.json",
+            "sha256": "844cb54bbe58c3cd55e7ed9c02b20cd59bec538c4ce4d33b07b0ce9c88255cd3",
+            "log": "one_secondary_act-fallback2-compat-analysis.log",
+            "negative_log": "one_secondary_act-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/one_secondary_act/fallback3/construction.json",
+          "construction_sha256": "5aaf6d7ca6b6ce3fe36f885aa2423f5b059f481e7cc2191540eb0d3fef9fb54d",
+          "trigger": {
+            "source": "Original 20 Hz ego/lead body speed and gap",
+            "metric": "source-distinct closing encounter count",
+            "failure_condition": "requested closing response does not produce the selected encounter count"
+          },
+          "changed_knobs": [
+            "closing_lead_speed_mps"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/execution-manifest.json --case heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__one_secondary_act --candidate fallback3 --output .runtime-work/c228508-one_secondary_act-fallback3-offline-v4 --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "one_secondary_act-fallback3-offline.log",
+            "log_sha256": "21b2edaafb65a0502fab9b56b42580528e39a225900a579715d35a6e05729506",
+            "construction_sha256": "5aaf6d7ca6b6ce3fe36f885aa2423f5b059f481e7cc2191540eb0d3fef9fb54d"
+          },
+          "compatibility": {
+            "receipt": "one_secondary_act-fallback3-compatibility.json",
+            "sha256": "b4aeabc19e7df73d0c07ad51586851dd03af2b5b7f3d3e2916e01cb5aec2f899",
+            "log": "one_secondary_act-fallback3-compat-analysis.log",
+            "negative_log": "one_secondary_act-fallback3-negative.log"
+          }
+        }
+      ],
+      "measurement_contract": "cases/one_secondary_act/measurement-contract.json",
+      "fixture_recipe": "work/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/cases/one_secondary_act/diagnostic-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/execution-manifest.json --case heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__one_secondary_act --candidate primary --output .runtime-work/c228508-one_secondary_act-primary-offline-v4 --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "one_secondary_act-primary-offline.log",
+        "log_sha256": "21b2edaafb65a0502fab9b56b42580528e39a225900a579715d35a6e05729506",
+        "construction_sha256": "73c136a2009b8d07476a4669aca6fffa31e7b7235bc4423fc615daab685b9252"
+      },
+      "compatibility": {
+        "receipt": "one_secondary_act-primary-compatibility.json",
+        "sha256": "c1f80ec32438dd4b7d128e89d187cab7a52712fa38d3b06d65eb425562619b68",
+        "log": "one_secondary_act-primary-compat-analysis.log",
+        "negative_log": "one_secondary_act-primary-negative.log"
+      },
+      "negative": {
+        "log": "one_secondary_act-primary-negative.log",
+        "exit_code": 1,
+        "expected_error": "Missing required source: event_annotations.json"
+      }
     }
   ]
 }

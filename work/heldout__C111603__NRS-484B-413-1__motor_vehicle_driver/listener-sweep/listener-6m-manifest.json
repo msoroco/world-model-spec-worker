@@ -1,0 +1,54 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver",
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3",
+  "cases": [
+    {
+      "case_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_horn_listener_6m",
+      "kind": "delivery",
+      "construction": "listener-6m-construction.json",
+      "construction_sha256": "ae931e9f6eac6798a667809dd3f79b44664e485950b4931d238439317b0b8e7b",
+      "measurement_procedure": {
+        "entrypoint": "turn_finalizer.py"
+      },
+      "measurement_contract": "listener-6m-measurement-contract.json",
+      "fixture_recipe": "work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/listener-sweep/listener-6m-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Route-relative 6 m listener sidewalk may be absent or physically unsuitable; audio and affected status require original-source review"
+      },
+      "acquisition": {
+        "turn_signal_observation": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "original Native turn and participant frames joined to relay acknowledgement and independent listener PCM",
+          "evidence": "ego_turn_motion, ego_signal_audio, affected_participants, participant_bodies and four videos"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "turn_signal_observation",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original ego yaw, Native indicator readback, participant bounds and independently captured listener PCM",
+            "time_window": "all 8 s original frames",
+            "reference_frame": "Native world and ego vehicle",
+            "uncertainty": "microphone alignment, physical relay sound and legal audibility require original-source review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Source-shaped CPU diagnostic cannot verify physical lamp visibility, affected status, safety or legal appropriateness."
+        ]
+      },
+      "negative": {
+        "log": "ped-horn-negative.log"
+      }
+    }
+  ]
+}

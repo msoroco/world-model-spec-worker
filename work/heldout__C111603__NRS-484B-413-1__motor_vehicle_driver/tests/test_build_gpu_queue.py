@@ -20,8 +20,8 @@ class QueueTests(unittest.TestCase):
         plan = json.loads((HERE / "case-plan.json").read_text())
         self.assertEqual([row["case_id"] for row in queue["cases"]],
                          [row["case_id"] for row in plan["cases"]])
-        self.assertEqual([row["order"] for row in queue["cases"]], list(range(1, 10)))
-        self.assertEqual(len(queue["comparisons"]), 5)
+        self.assertEqual([row["order"] for row in queue["cases"]], list(range(1, 13)))
+        self.assertEqual(len(queue["comparisons"]), 6)
         for row in queue["cases"]:
             self.assertEqual(set(row["candidate_commands"]),
                              {"fallback1", "fallback2", "fallback3"})

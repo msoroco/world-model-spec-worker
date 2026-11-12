@@ -108,7 +108,8 @@ def build_result(attempt, report):
         'target_checks': [{
             'target': 'candidate events within one continuous mile',
             'requested': 'speed, two listed acts and immediate hazard hypothesis',
-            'measured': window,
+            'measured': {'candidate_window': window,
+                         'total_driving_path_m': observed['total_driving_path_m']},
             'method': 'source-cited original 20 Hz path and event frame join',
             'tolerance': None, 'matched': False,
             'physical_cause_confirmed': False,

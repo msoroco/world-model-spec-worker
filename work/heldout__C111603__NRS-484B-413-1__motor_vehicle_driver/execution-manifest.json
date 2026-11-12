@@ -1571,6 +1571,558 @@
         "test_log_sha256": "88936119a6b16815f5fdd7970250d15c0faa8e6f741826b34b3b6d1a27da6b3c",
         "test_exit_code": 0
       }
+    },
+    {
+      "case_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_horn_listener_2m",
+      "kind": "delivery",
+      "construction": "listener-2m-construction.json",
+      "construction_sha256": "b4f75445500d119d3665ec1f6d15774c0b1115de28c83b2b5a1aa88c35af4cd7",
+      "measurement_procedure": {
+        "entrypoint": "turn_finalizer.py"
+      },
+      "measurement_contract": "listener-2m-measurement-contract.json",
+      "fixture_recipe": "work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/listener-2m-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Route-relative 2 m listener sidewalk may be absent or physically unsuitable; audio and affected status require original-source review"
+      },
+      "acquisition": {
+        "turn_signal_observation": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "original Native turn and participant frames joined to relay acknowledgement and independent listener PCM",
+          "evidence": "ego_turn_motion, ego_signal_audio, affected_participants, participant_bodies and four videos"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "turn_signal_observation",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original ego yaw, Native indicator readback, participant bounds and independently captured listener PCM",
+            "time_window": "all 8 s original frames",
+            "reference_frame": "Native world and ego vehicle",
+            "uncertainty": "microphone alignment, physical relay sound and legal audibility require original-source review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Source-shaped CPU diagnostic cannot verify physical lamp visibility, affected status, safety or legal appropriateness."
+        ]
+      },
+      "negative": {
+        "log": "listener-2m-negative.log"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "listener-2m-fallback1-construction.json",
+          "construction_sha256": "b8b6f9f0b52866cbcc089960e59c8eaecefb5206a798d481b7fe32d7e371a982",
+          "trigger": {
+            "source": "Native connected-route and sidewalk waypoint inventory",
+            "metric": "spawnable sidewalk waypoint at requested route-relative offset",
+            "failure_condition": "Primary selected route has no suitable sidewalk listener spawn"
+          },
+          "changed_knobs": [
+            "connected left-turn route candidate index 0 to 1; requested listener offset fixed"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/listener-2m-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_horn_listener_2m --candidate fallback1 --output .runtime-work/c111603-listener-2m-fallback1-offline --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "listener-2m-fallback1-offline.log",
+            "log_sha256": "cc6be7d28c16053c6d42b2f1a94ad168336838770fd28b4273c370bb30f7bdf2",
+            "construction_sha256": "b8b6f9f0b52866cbcc089960e59c8eaecefb5206a798d481b7fe32d7e371a982"
+          },
+          "compatibility": {
+            "receipt": "listener-2m-fallback1-receipt.json",
+            "sha256": "bf6afed5700dde6b27144085716a4f4126f9fde2f10b871f483552a81090d0b3",
+            "log": "listener-2m-fallback1-analysis.log",
+            "negative_log": "listener-2m-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "listener-2m-fallback2-construction.json",
+          "construction_sha256": "25b9b5d133b5346ff4d09a7814fb2973f2a3d66fb44d155ccd473e205b21e961",
+          "trigger": {
+            "source": "Original listener microphone PCM",
+            "metric": "20 Hz listener audio packet continuity",
+            "failure_condition": "Primary capture device loses or misaligns original listener PCM"
+          },
+          "changed_knobs": [
+            "listener PCM rate 16000 to 32000 Hz"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/listener-2m-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_horn_listener_2m --candidate fallback2 --output .runtime-work/c111603-listener-2m-fallback2-offline --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "listener-2m-fallback2-offline.log",
+            "log_sha256": "4ad2eef433d89e3cae2f99bc78881a8dfefc0c75a40f7b410b8b326646acb2c3",
+            "construction_sha256": "25b9b5d133b5346ff4d09a7814fb2973f2a3d66fb44d155ccd473e205b21e961"
+          },
+          "compatibility": {
+            "receipt": "listener-2m-fallback2-receipt.json",
+            "sha256": "4d78354067737547b1c9c2eb88e44fd6f00ec899bbe898a09f8b2f9a150c9f6d",
+            "log": "listener-2m-fallback2-analysis.log",
+            "negative_log": "listener-2m-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "listener-2m-fallback3-construction.json",
+          "construction_sha256": "98a08531e376fd08d9dec635dc0e30bf989ee8f1259da736eb640f90548ac408",
+          "trigger": {
+            "source": "Original overview RGB stream",
+            "metric": "pedestrian visible pixel coverage",
+            "failure_condition": "Primary overview crops the sidewalk listener"
+          },
+          "changed_knobs": [
+            "overview camera mount x -8 to -9 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/listener-2m-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_horn_listener_2m --candidate fallback3 --output .runtime-work/c111603-listener-2m-fallback3-offline --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "listener-2m-fallback3-offline.log",
+            "log_sha256": "7e931a397558ff042bef050808a4659f28bea39b0d2005c7242b5ec7520199b9",
+            "construction_sha256": "98a08531e376fd08d9dec635dc0e30bf989ee8f1259da736eb640f90548ac408"
+          },
+          "compatibility": {
+            "receipt": "listener-2m-fallback3-receipt.json",
+            "sha256": "bf57d84e0571ad9a9e7202091cc9a853b1618d02979670ba04d677efbee73ac8",
+            "log": "listener-2m-fallback3-analysis.log",
+            "negative_log": "listener-2m-fallback3-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/listener-2m-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_horn_listener_2m --output .runtime-work/c111603-listener-2m-offline-b --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "listener-2m-offline.log",
+        "log_sha256": "3b9fefc72486987c00b462beaa6195b41a351557db9c1c2b73c60f57ae14dc53",
+        "construction_sha256": "b4f75445500d119d3665ec1f6d15774c0b1115de28c83b2b5a1aa88c35af4cd7"
+      },
+      "compatibility": {
+        "receipt": "listener-2m-compatibility-receipt.json",
+        "sha256": "98acf224ad4fc5d57b3278cb0723a94ff89375fc795325303483b1293e243635",
+        "log": "listener-2m-analysis.log"
+      },
+      "saved_processing": {
+        "command": ".venv-cpu/bin/python work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/prove_listener_sweep_saved_staged.py",
+        "exit_code": 0,
+        "log": "listener-sweep-saved-proof.log",
+        "log_sha256": "ad8375f6a6d1ac58a82eddc7c4a5a9136577679ff44f8d45d257899ada98dcc9",
+        "receipt": "listener-2m-saved-receipt.json",
+        "receipt_sha256": "8df70cd8c08a2b0f480de93978975db991ee4c8376e711c16d390d1a3dacaf35"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_horn_listener_2m",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "listener_delivery_audit.py",
+        "script_sha256": "bdeabca692b9ce42441dba0dc0d0ac99fcfc3be59ff2d83869427e5919589ae8",
+        "command": ".venv-cpu/bin/python work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/listener_delivery_audit.py --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_horn_listener_2m --attempt .runtime-work/c111603-listener-2m-delivery-attempt --output work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/listener-2m-delivery-audit.json",
+        "test_exit_code": 0,
+        "test_log": "listener-2m-delivery-audit.log",
+        "test_log_sha256": "042230cda99fbcdf528dbaad147b597904ea5b72c353539be612ed0752f2aa57",
+        "negative_command": ".venv-cpu/bin/python work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/listener_delivery_audit.py --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_horn_listener_2m --attempt .runtime-work/c111603-listener-2m-delivery-attempt --output work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/listener-2m-delivery-audit.json --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Stale or missing original listener body source",
+        "negative_log": "listener-2m-delivery-negative.log",
+        "negative_log_sha256": "ec2e89785de295b4d881f54198e4a3b7cba9edcfd156131b6d60c7c65be1c561"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/execution-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_horn_listener_2m --attempt \"$ATTEMPT\" --output \"$PROCESSING_OUTPUT\" --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSING_OUTPUT/feedback.json\"",
+        "test_log": "listener-sweep-saved-proof.log",
+        "test_log_sha256": "ad8375f6a6d1ac58a82eddc7c4a5a9136577679ff44f8d45d257899ada98dcc9",
+        "test_exit_code": 0
+      },
+      "physical_preparation": {
+        "receipt": "physical/ped_horn_listener_2m-proof.json",
+        "sha256": "1628ebfc5fe71eab1167a740262c64f0a0060f1a9b00a4c911de57b062b1b844"
+      }
+    },
+    {
+      "case_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_horn_listener_4m",
+      "kind": "delivery",
+      "construction": "listener-4m-construction.json",
+      "construction_sha256": "eb5234dd9389fdad62bce3e86cbfdf28b1abcd466aaa4855a59e4634819cf531",
+      "measurement_procedure": {
+        "entrypoint": "turn_finalizer.py"
+      },
+      "measurement_contract": "listener-4m-measurement-contract.json",
+      "fixture_recipe": "work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/listener-4m-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Route-relative 4 m listener sidewalk may be absent or physically unsuitable; audio and affected status require original-source review"
+      },
+      "acquisition": {
+        "turn_signal_observation": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "original Native turn and participant frames joined to relay acknowledgement and independent listener PCM",
+          "evidence": "ego_turn_motion, ego_signal_audio, affected_participants, participant_bodies and four videos"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "turn_signal_observation",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original ego yaw, Native indicator readback, participant bounds and independently captured listener PCM",
+            "time_window": "all 8 s original frames",
+            "reference_frame": "Native world and ego vehicle",
+            "uncertainty": "microphone alignment, physical relay sound and legal audibility require original-source review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Source-shaped CPU diagnostic cannot verify physical lamp visibility, affected status, safety or legal appropriateness."
+        ]
+      },
+      "negative": {
+        "log": "listener-4m-negative.log"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "listener-4m-fallback1-construction.json",
+          "construction_sha256": "5c545435318e0663bfeba58958c05721250d2b5d41d1ae202b6bb854d9fe12ff",
+          "trigger": {
+            "source": "Native connected-route and sidewalk waypoint inventory",
+            "metric": "spawnable sidewalk waypoint at requested route-relative offset",
+            "failure_condition": "Primary selected route has no suitable sidewalk listener spawn"
+          },
+          "changed_knobs": [
+            "connected left-turn route candidate index 0 to 1; requested listener offset fixed"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/listener-4m-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_horn_listener_4m --candidate fallback1 --output .runtime-work/c111603-listener-4m-fallback1-offline --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "listener-4m-fallback1-offline.log",
+            "log_sha256": "a18ca36ead658e600d3816d76eba5098db40b91f42f5798e7c751cfe652a263c",
+            "construction_sha256": "5c545435318e0663bfeba58958c05721250d2b5d41d1ae202b6bb854d9fe12ff"
+          },
+          "compatibility": {
+            "receipt": "listener-4m-fallback1-receipt.json",
+            "sha256": "fb3d9034a97d7ad0d30312f4b17f3e861ee6396ba063fab816f4cde599cc77b7",
+            "log": "listener-4m-fallback1-analysis.log",
+            "negative_log": "listener-4m-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "listener-4m-fallback2-construction.json",
+          "construction_sha256": "9b3a0a20a26b55effa2094c1305c61f39ec0681a41879a78506345227d6a85eb",
+          "trigger": {
+            "source": "Original listener microphone PCM",
+            "metric": "20 Hz listener audio packet continuity",
+            "failure_condition": "Primary capture device loses or misaligns original listener PCM"
+          },
+          "changed_knobs": [
+            "listener PCM rate 16000 to 32000 Hz"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/listener-4m-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_horn_listener_4m --candidate fallback2 --output .runtime-work/c111603-listener-4m-fallback2-offline --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "listener-4m-fallback2-offline.log",
+            "log_sha256": "f9275ccd29266170ae8b4f04627c62bdfeead875efc8818b6fd2940bd6a4f591",
+            "construction_sha256": "9b3a0a20a26b55effa2094c1305c61f39ec0681a41879a78506345227d6a85eb"
+          },
+          "compatibility": {
+            "receipt": "listener-4m-fallback2-receipt.json",
+            "sha256": "dee3462b370c69d7e6c22d817271e8aafacc5ad36c9da348f4a2fbaad8fcd439",
+            "log": "listener-4m-fallback2-analysis.log",
+            "negative_log": "listener-4m-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "listener-4m-fallback3-construction.json",
+          "construction_sha256": "ed70caf6ce7cec1251873747ad83baf5b1c110c44cab19e6390b05a99554ff07",
+          "trigger": {
+            "source": "Original overview RGB stream",
+            "metric": "pedestrian visible pixel coverage",
+            "failure_condition": "Primary overview crops the sidewalk listener"
+          },
+          "changed_knobs": [
+            "overview camera mount x -8 to -9 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/listener-4m-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_horn_listener_4m --candidate fallback3 --output .runtime-work/c111603-listener-4m-fallback3-offline --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "listener-4m-fallback3-offline.log",
+            "log_sha256": "206b4c9fe8adc8ec0d402c48340625de4fe673b97a18a68fc69093759ff3b457",
+            "construction_sha256": "ed70caf6ce7cec1251873747ad83baf5b1c110c44cab19e6390b05a99554ff07"
+          },
+          "compatibility": {
+            "receipt": "listener-4m-fallback3-receipt.json",
+            "sha256": "ba95fd289a9cc859cfb660ea0b82d529a13e55e44268b337783a493258385b56",
+            "log": "listener-4m-fallback3-analysis.log",
+            "negative_log": "listener-4m-fallback3-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/listener-4m-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_horn_listener_4m --output .runtime-work/c111603-listener-4m-offline-b --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "listener-4m-offline.log",
+        "log_sha256": "fe75abb47922ddf9bffe9c5f3c4dfbd92484abe97b2ff15d015a72605a58cbe5",
+        "construction_sha256": "eb5234dd9389fdad62bce3e86cbfdf28b1abcd466aaa4855a59e4634819cf531"
+      },
+      "compatibility": {
+        "receipt": "listener-4m-compatibility-receipt.json",
+        "sha256": "0e0706eab39212f593769eacf9d2c4a78271fd6b2852db22e08cb9352d604250",
+        "log": "listener-4m-analysis.log"
+      },
+      "saved_processing": {
+        "command": ".venv-cpu/bin/python work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/prove_listener_sweep_saved_staged.py",
+        "exit_code": 0,
+        "log": "listener-sweep-saved-proof.log",
+        "log_sha256": "ad8375f6a6d1ac58a82eddc7c4a5a9136577679ff44f8d45d257899ada98dcc9",
+        "receipt": "listener-4m-saved-receipt.json",
+        "receipt_sha256": "7352755e4896f83d250740407f692b7af258f1549ebc05111142740d5f253342"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_horn_listener_4m",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "listener_delivery_audit.py",
+        "script_sha256": "bdeabca692b9ce42441dba0dc0d0ac99fcfc3be59ff2d83869427e5919589ae8",
+        "command": ".venv-cpu/bin/python work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/listener_delivery_audit.py --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_horn_listener_4m --attempt .runtime-work/c111603-listener-4m-delivery-attempt --output work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/listener-4m-delivery-audit.json",
+        "test_exit_code": 0,
+        "test_log": "listener-4m-delivery-audit.log",
+        "test_log_sha256": "107a9403a3addd64938a1b5aad1ef8d68049bda5d27a1582721603ce424eb773",
+        "negative_command": ".venv-cpu/bin/python work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/listener_delivery_audit.py --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_horn_listener_4m --attempt .runtime-work/c111603-listener-4m-delivery-attempt --output work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/listener-4m-delivery-audit.json --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Stale or missing original listener body source",
+        "negative_log": "listener-4m-delivery-negative.log",
+        "negative_log_sha256": "ec2e89785de295b4d881f54198e4a3b7cba9edcfd156131b6d60c7c65be1c561"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/execution-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_horn_listener_4m --attempt \"$ATTEMPT\" --output \"$PROCESSING_OUTPUT\" --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSING_OUTPUT/feedback.json\"",
+        "test_log": "listener-sweep-saved-proof.log",
+        "test_log_sha256": "ad8375f6a6d1ac58a82eddc7c4a5a9136577679ff44f8d45d257899ada98dcc9",
+        "test_exit_code": 0
+      },
+      "physical_preparation": {
+        "receipt": "physical/ped_horn_listener_4m-proof.json",
+        "sha256": "72426a81ed4558a628e797af5d8bbf1514d432cc19bd6049ac0b5fabc1b3377b"
+      }
+    },
+    {
+      "case_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_horn_listener_6m",
+      "kind": "delivery",
+      "construction": "listener-6m-construction.json",
+      "construction_sha256": "ae931e9f6eac6798a667809dd3f79b44664e485950b4931d238439317b0b8e7b",
+      "measurement_procedure": {
+        "entrypoint": "turn_finalizer.py"
+      },
+      "measurement_contract": "listener-6m-measurement-contract.json",
+      "fixture_recipe": "work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/listener-6m-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Route-relative 6 m listener sidewalk may be absent or physically unsuitable; audio and affected status require original-source review"
+      },
+      "acquisition": {
+        "turn_signal_observation": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "original Native turn and participant frames joined to relay acknowledgement and independent listener PCM",
+          "evidence": "ego_turn_motion, ego_signal_audio, affected_participants, participant_bodies and four videos"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "turn_signal_observation",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original ego yaw, Native indicator readback, participant bounds and independently captured listener PCM",
+            "time_window": "all 8 s original frames",
+            "reference_frame": "Native world and ego vehicle",
+            "uncertainty": "microphone alignment, physical relay sound and legal audibility require original-source review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Source-shaped CPU diagnostic cannot verify physical lamp visibility, affected status, safety or legal appropriateness."
+        ]
+      },
+      "negative": {
+        "log": "listener-6m-negative.log"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "listener-6m-fallback1-construction.json",
+          "construction_sha256": "b361f7e304e1e8b4633fa6f3393c315d1033db83bd310fc0647b28cb30b00c6d",
+          "trigger": {
+            "source": "Native connected-route and sidewalk waypoint inventory",
+            "metric": "spawnable sidewalk waypoint at requested route-relative offset",
+            "failure_condition": "Primary selected route has no suitable sidewalk listener spawn"
+          },
+          "changed_knobs": [
+            "connected left-turn route candidate index 0 to 1; requested listener offset fixed"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/listener-6m-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_horn_listener_6m --candidate fallback1 --output .runtime-work/c111603-listener-6m-fallback1-offline --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "listener-6m-fallback1-offline.log",
+            "log_sha256": "2a952534f55276de307f71700d42eab5eb94b8dd0aa2fa48bf2efdbb01c60f5d",
+            "construction_sha256": "b361f7e304e1e8b4633fa6f3393c315d1033db83bd310fc0647b28cb30b00c6d"
+          },
+          "compatibility": {
+            "receipt": "listener-6m-fallback1-receipt.json",
+            "sha256": "bc73d6016a6a45765e269a605e449a678258f041f9932448a52c7acd6f37ff04",
+            "log": "listener-6m-fallback1-analysis.log",
+            "negative_log": "listener-6m-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "listener-6m-fallback2-construction.json",
+          "construction_sha256": "72a0c08895f225299564a8ce9a0a5bab95ac50dcacc29ad90f46b3640995a0de",
+          "trigger": {
+            "source": "Original listener microphone PCM",
+            "metric": "20 Hz listener audio packet continuity",
+            "failure_condition": "Primary capture device loses or misaligns original listener PCM"
+          },
+          "changed_knobs": [
+            "listener PCM rate 16000 to 32000 Hz"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/listener-6m-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_horn_listener_6m --candidate fallback2 --output .runtime-work/c111603-listener-6m-fallback2-offline --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "listener-6m-fallback2-offline.log",
+            "log_sha256": "0170bfd20faf63ed8b27797f7d7556bc80875e2f3919517a9a07528c1604e206",
+            "construction_sha256": "72a0c08895f225299564a8ce9a0a5bab95ac50dcacc29ad90f46b3640995a0de"
+          },
+          "compatibility": {
+            "receipt": "listener-6m-fallback2-receipt.json",
+            "sha256": "fe3ab6fa16c4572f8a8d0879cee8722016c8091f1cbe7161789d5bd4bf17f141",
+            "log": "listener-6m-fallback2-analysis.log",
+            "negative_log": "listener-6m-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "listener-6m-fallback3-construction.json",
+          "construction_sha256": "3be5d4d3625e8af21cd1a869ee0ed721416fd982135565285b0c146027112b6a",
+          "trigger": {
+            "source": "Original overview RGB stream",
+            "metric": "pedestrian visible pixel coverage",
+            "failure_condition": "Primary overview crops the sidewalk listener"
+          },
+          "changed_knobs": [
+            "overview camera mount x -8 to -9 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/listener-6m-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_horn_listener_6m --candidate fallback3 --output .runtime-work/c111603-listener-6m-fallback3-offline --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "listener-6m-fallback3-offline.log",
+            "log_sha256": "ad204b328afd80caa4e6218d968c1b224ca0812acc45570b2f1e401241ce6573",
+            "construction_sha256": "3be5d4d3625e8af21cd1a869ee0ed721416fd982135565285b0c146027112b6a"
+          },
+          "compatibility": {
+            "receipt": "listener-6m-fallback3-receipt.json",
+            "sha256": "da86ffefec8e83fd5f44a56cb8f56a268c9571f91f80a5d0a19f1c523ea773b3",
+            "log": "listener-6m-fallback3-analysis.log",
+            "negative_log": "listener-6m-fallback3-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/listener-6m-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_horn_listener_6m --output .runtime-work/c111603-listener-6m-offline-b --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "listener-6m-offline.log",
+        "log_sha256": "be5068ea6e66eceb3aef14e4d865f2987e7cb9ac8ca2a86967785faeef9ef8da",
+        "construction_sha256": "ae931e9f6eac6798a667809dd3f79b44664e485950b4931d238439317b0b8e7b"
+      },
+      "compatibility": {
+        "receipt": "listener-6m-compatibility-receipt.json",
+        "sha256": "e525152d79f8a2d68a5090c957caa58525dd7e3de63073dd0981d2922f3756c0",
+        "log": "listener-6m-analysis.log"
+      },
+      "saved_processing": {
+        "command": ".venv-cpu/bin/python work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/prove_listener_sweep_saved_staged.py",
+        "exit_code": 0,
+        "log": "listener-sweep-saved-proof.log",
+        "log_sha256": "ad8375f6a6d1ac58a82eddc7c4a5a9136577679ff44f8d45d257899ada98dcc9",
+        "receipt": "listener-6m-saved-receipt.json",
+        "receipt_sha256": "44d49feb0e709aed3244cc9b594b2e374c6c23487a06dbde22da5564c3a78e1d"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_horn_listener_6m",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "listener_delivery_audit.py",
+        "script_sha256": "bdeabca692b9ce42441dba0dc0d0ac99fcfc3be59ff2d83869427e5919589ae8",
+        "command": ".venv-cpu/bin/python work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/listener_delivery_audit.py --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_horn_listener_6m --attempt .runtime-work/c111603-listener-6m-delivery-attempt --output work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/listener-6m-delivery-audit.json",
+        "test_exit_code": 0,
+        "test_log": "listener-6m-delivery-audit.log",
+        "test_log_sha256": "674d78abe4f505a86cc3d5a065b119a91bcbb0ce7974b573723a3f259b575dc1",
+        "negative_command": ".venv-cpu/bin/python work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/listener_delivery_audit.py --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_horn_listener_6m --attempt .runtime-work/c111603-listener-6m-delivery-attempt --output work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/listener-6m-delivery-audit.json --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Stale or missing original listener body source",
+        "negative_log": "listener-6m-delivery-negative.log",
+        "negative_log_sha256": "ec2e89785de295b4d881f54198e4a3b7cba9edcfd156131b6d60c7c65be1c561"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/execution-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__ped_horn_listener_6m --attempt \"$ATTEMPT\" --output \"$PROCESSING_OUTPUT\" --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSING_OUTPUT/feedback.json\"",
+        "test_log": "listener-sweep-saved-proof.log",
+        "test_log_sha256": "ad8375f6a6d1ac58a82eddc7c4a5a9136577679ff44f8d45d257899ada98dcc9",
+        "test_exit_code": 0
+      },
+      "physical_preparation": {
+        "receipt": "physical/ped_horn_listener_6m-proof.json",
+        "sha256": "5336f5eecb95ca98b0ab9b7ad0b9dbabc42a7efb48c166be2e50ae8c450db7cf"
+      }
     }
   ]
 }

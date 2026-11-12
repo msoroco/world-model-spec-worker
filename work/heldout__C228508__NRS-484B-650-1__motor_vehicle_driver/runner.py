@@ -12,12 +12,13 @@ from following_construction import (PHASES, apply_feedback, phase_at,
 from following_observations import sample, write_samples
 
 
-CASE = 'heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__repeated_following'
+PREFIX = 'heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__'
+CASES = (PREFIX + 'repeated_following', PREFIX + 'one_secondary_act')
 
 
 def check_config(config):
-    if (config.get('selected_case_id') != CASE or
-            config.get('case', {}).get('case_id') != CASE or
+    if (config.get('selected_case_id') not in CASES or
+            config.get('case', {}).get('case_id') != config.get('selected_case_id') or
             (config.get('law_id'), config.get('cell_id'), config.get('actor')) !=
             ('NRS-484B-650-1', 'C228508', 'motor_vehicle_driver')):
         raise ValueError('Wrong C228508 exact case identity')
@@ -35,20 +36,39 @@ def check_config(config):
             raise ValueError('Source camera profile differs')
     if config.get('required_atoms') != [] or config.get('source_packets') != []:
         raise ValueError('Unimplemented atom or packet request')
+    engineering = config.get('engineering', {})
+    if set(engineering) - {'route_candidate_index', 'lead_spawn_station_m',
+                           'closing_lead_speed_mps', 'requested_speed_cap_mps'}:
+        raise ValueError('Unknown following engineering knob')
+    if engineering.get('route_candidate_index', 0) not in (0, 1):
+        raise ValueError('Unsupported route candidate index')
+    if engineering.get('lead_spawn_station_m', 30) not in (30, 40):
+        raise ValueError('Unsupported lead spawn station')
+    if engineering.get('closing_lead_speed_mps', 11) not in (11, 9):
+        raise ValueError('Unsupported lead closing speed')
+    if engineering.get('requested_speed_cap_mps', 24) not in (24, 13):
+        raise ValueError('Unsupported ego speed cap')
+    encounters = config.get('closing_encounters')
+    if encounters != (1 if config['selected_case_id'].endswith('__one_secondary_act') else 2):
+        raise ValueError('Wrong secondary-act count for exact case')
     validate_schedule()
-    return CASE
+    return config['selected_case_id']
 
 
-def _select_route(map_object):
+def _select_route(map_object, *, candidate_index=0):
+    eligible = []
     for transform in map_object.get_spawn_points():
         start = map_object.get_waypoint(transform.location)
         if start is None or start.is_junction:
             continue
         try:
-            return route_from_waypoints(start, length_m=2200)
+            route = route_from_waypoints(start, length_m=2200)
+            eligible.append(route)
+            if len(eligible) > candidate_index:
+                return eligible[candidate_index]
         except ValueError:
             continue
-    raise ValueError('No 2.2 km continuous same-lane route on supplied Native map')
+    raise ValueError('No requested 2.2 km continuous same-lane route on supplied Native map')
 
 
 def _station(route, distance, vehicle):
@@ -67,6 +87,7 @@ def run(output_dir, host, port):
     output = Path(output_dir)
     config = json.loads((output/'config.json').read_text())
     check_config(config)
+    engineering = config.get('engineering', {})
     client = carla.Client(host, port)
     client.set_timeout(30.)
     world = client.get_world()
@@ -81,13 +102,16 @@ def run(output_dir, host, port):
         settings.synchronous_mode = True
         settings.fixed_delta_seconds = .05
         world.apply_settings(settings)
-        route, distance = _select_route(world.get_map())
+        route, distance = _select_route(world.get_map(),
+                         candidate_index=engineering.get('route_candidate_index', 0))
+        lead_index = min(range(len(distance)),
+                         key=lambda index: abs(distance[index] - engineering.get('lead_spawn_station_m', 30)))
         ego, lead = spawn_pair(world, world.get_blueprint_library(),
-                               route[0].transform, route[6].transform)
+                               route[0].transform, route[lead_index].transform)
         actors.extend((ego, lead))
         sinks = {name: LosslessSourceSink(output, name) for name in CAMERAS}
         cameras = FollowingCameraCapture(world, carla, ego, sinks)
-        pipeline = PipelineCapture(client, ego, output, CASE,
+        pipeline = PipelineCapture(client, ego, output, config['selected_case_id'],
                                    required_observations=config['required_atoms'])
         frame_map = FrameMap(output/'video_frames.jsonl')
         start_time = None
@@ -95,12 +119,19 @@ def run(output_dir, host, port):
             ego_station, ego_index = _station(route, distance, ego)
             lead_station, lead_index = _station(route, distance, lead)
             phase = phase_at(min(ego_station, PHASES[-1].end_m - .001))
+            suppressed = (config['closing_encounters'] == 1 and
+                          phase.label == 'second_closing_request')
+            phase_label = 'second_encounter_suppressed' if suppressed else phase.label
             ego_target = route[min(ego_index + 3, len(route)-1)].transform.location
             lead_target = route[min(lead_index + 3, len(route)-1)].transform.location
             apply_feedback(ego, carla, (ego_target.x, ego_target.y),
-                           phase.ego_target_mps)
+                           min(phase.ego_target_mps,
+                               engineering.get('requested_speed_cap_mps', 24)))
             apply_feedback(lead, carla, (lead_target.x, lead_target.y),
-                           phase.lead_target_mps)
+                           (18 if suppressed else
+                            engineering.get('closing_lead_speed_mps', 11)
+                            if 'closing_request' in phase.label
+                            else phase.lead_target_mps))
             frame = world.tick()
             snapshot = world.get_snapshot()
             if snapshot.frame != frame:
@@ -115,7 +146,7 @@ def run(output_dir, host, port):
             trace.append({'frame':frame, 'time_s':time_s,
                           'x_m':float(ego_location.x), 'y_m':float(ego_location.y)})
             bodies.append(sample(frame, time_s, ego, lead,
-                                 requested_phase=phase.label,
+                                 requested_phase=phase_label,
                                  map_speed_limit_kmh=float(ego.get_speed_limit())))
             frames.append(frame)
         cameras.verify(frames)

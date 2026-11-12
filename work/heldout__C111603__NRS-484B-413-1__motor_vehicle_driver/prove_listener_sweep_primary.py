@@ -23,8 +23,8 @@ for offset in (2, 4, 6):
     prefix = f'listener-{offset}m'
     case = HERE.name + f'__ped_horn_listener_{offset}m'
     manifest_path = HERE / f'{prefix}-manifest.json'
-    attempt = ROOT / f'.runtime-work/c111603-{prefix}-saved-attempt-b'
-    output = ROOT / f'.runtime-work/c111603-{prefix}-saved-output-b'
+    attempt = ROOT / f'.runtime-work/c111603-{prefix}-saved-attempt-f'
+    output = ROOT / f'.runtime-work/c111603-{prefix}-saved-output-f'
     materialize(manifest_path, case, attempt)
     with tempfile.TemporaryDirectory(prefix=f'c111603-{prefix}-fixture-', dir=ROOT / '.runtime-work') as temp:
         fixture = Path(temp) / 'fixture'

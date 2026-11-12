@@ -16,6 +16,9 @@ SOURCES = (
     'both-signals-manifest.json',
     'both-indicator-only-manifest.json',
     'hand-signal-manifest.json',
+    'listener-2m-manifest.json',
+    'listener-4m-manifest.json',
+    'listener-6m-manifest.json',
 )
 
 

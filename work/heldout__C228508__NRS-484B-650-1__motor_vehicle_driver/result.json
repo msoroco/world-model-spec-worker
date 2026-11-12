@@ -14,19 +14,49 @@
       "command": ".venv-cpu/bin/python -m unittest discover -s work/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "1e12d0cc8ee8ba608d4ead6ab95134eaa206476d281e8996df3f1f59795c5d10",
-      "passed": 12
+      "sha256": "ec6fd706b111ca91d883b2267d955b9034bac789cb2f8538203f91fb3842929f",
+      "passed": 15
     },
     {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment heldout__C228508__NRS-484B-650-1__motor_vehicle_driver --complete",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/execution-manifest.json --case heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__repeated_following --candidate primary --output .runtime-work/c228508-repeated_following-primary-offline-v4 --python $PWD/.venv-cpu/bin/python",
       "exit_code": 0,
-      "log": "worker-check.log",
-      "sha256": "28c0f967d5108545d0bf7f73ad755989516ec6a76b55af7513fd658e8d13e5c6"
+      "log": "repeated_following-primary-offline.log",
+      "sha256": "21b2edaafb65a0502fab9b56b42580528e39a225900a579715d35a6e05729506"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/execution-manifest.json --case heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__repeated_following --candidate primary --output .runtime-work/c228508-repeated_following-primary-compat-v4 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "repeated_following-primary-compatibility.json",
+      "sha256": "da1c4707a32d3d5ea7d1f25b585dbf7e3500d5a3deb29fafa2a9e612aa9071ee"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/prove_saved.py (repeated_following primary)",
+      "exit_code": 0,
+      "log": "repeated_following-primary-saved-proof.json",
+      "sha256": "a00b769d643e18adcae08b470de1c21161c328e99fa4bf1c195c8be5d409947f"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/execution-manifest.json --case heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__one_secondary_act --candidate primary --output .runtime-work/c228508-one_secondary_act-primary-offline-v4 --python $PWD/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "one_secondary_act-primary-offline.log",
+      "sha256": "21b2edaafb65a0502fab9b56b42580528e39a225900a579715d35a6e05729506"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/execution-manifest.json --case heldout__C228508__NRS-484B-650-1__motor_vehicle_driver__one_secondary_act --candidate primary --output .runtime-work/c228508-one_secondary_act-primary-compat-v4 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "one_secondary_act-primary-compatibility.json",
+      "sha256": "c1f80ec32438dd4b7d128e89d187cab7a52712fa38d3b06d65eb425562619b68"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/heldout__C228508__NRS-484B-650-1__motor_vehicle_driver/prove_saved.py (one_secondary_act primary)",
+      "exit_code": 0,
+      "log": "one_secondary_act-primary-saved-proof.json",
+      "sha256": "0b5bc2d89e6475bb160c77facb22ac70e3ba829b3669f49a22a2907af4ec67b5"
     }
   ],
   "remaining_gpu_checks": [
     "Actual Native road and 1.8 km same-lane route availability, two following encounters, governing speed sign, visible hazard and four camera coverage must be verified after CPU preparation."
   ],
-  "reason": "Partial: updated CPU preflight passes and 12 source-shaped tests pass. Saved-only frame-joined event-window finalizer, original following body sampler, four source-camera creation, map-route/spawn/controller primitives and independent source audit are implemented. Exact Native runner/case bundles, source-derived event hypotheses, all selected cases and fallbacks, compatibility/saved-processing receipts, semantic proposals and full delivery/comparison audits remain CPU work; strict delivery gate fails because status is partial.",
+  "reason": "Partial: preflight and 15 CPU tests pass. Two exact road/follow cases (two versus one requested closing encounters), each with primary plus three distinct physical-risk fallbacks, pass current offline, positive/negative compatibility, and saved-only diagnostic processing. Eleven other exact cases and their fallbacks, complete semantic proposals and full independent delivery/comparison audits remain CPU work. Fixture labels and Native requests do not establish legal predicates or immediate hazard. Independent two-versus-one source comparison audit passes and rejects changed fixed config/source and stale reports; full delivery/comparison audit is still pending.",
   "readiness_kind": "delivery_prepared"
 }

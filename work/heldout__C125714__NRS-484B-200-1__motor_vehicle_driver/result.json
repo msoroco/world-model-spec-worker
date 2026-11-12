@@ -11,12 +11,6 @@
       "sha256": "7feabaf5d96c022506590fd4154be3e4d7ca9b5f8e727f7be80dd1ba280db31c"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py preflight",
-      "exit_code": 0,
-      "log": "preflight.log",
-      "sha256": "f724756096ac38765b21dd9f41ca6c8fc5b3158cb10ee148012f2bc566cf8e14"
-    },
-    {
       "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/probe-compatibility-manifest.json --case heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__baseline_right_east --output .runtime-work/c125714-compatibility-probe-20261111e --library runtime/library --validator .runtime-work/c125714-validator/.lake/build/bin/adapterCheck",
       "exit_code": 0,
       "log": "probe-compatibility.log",
@@ -113,12 +107,6 @@
       "sha256": "53a55483d27e46addd8492bfba1f11254b376f03e0865cbb5439b946ae3113c0"
     },
     {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/tests",
-      "exit_code": 0,
-      "log": "cpu-tests.log",
-      "sha256": "7c40a0bd98d494f32f2d9482a8c08be820ff5e66c2306fff4bf5b9a6d0228867"
-    },
-    {
       "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/construction-probe-closure-manifest.json --case heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__right_half_closed --output .runtime-work/c125714-closure-probe-offline-20261111c --python $PWD/.venv-cpu/bin/python",
       "exit_code": 0,
       "log": "probe-closure-offline.log",
@@ -153,12 +141,138 @@
       "exit_code": 0,
       "log": "probe-closure-comparison-receipt.json",
       "sha256": "2f37ec1e1b56c3a7bccc6b5aab196dcf4787760b32d81555548e71d674ef0534"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "preflight.log",
+      "sha256": "a72dbcba1e0fa6b27eddb5e039317d91b4a1e792b824f19bb365c2c055bd3324"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/construction-probe-passing-manifest.json --case heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__passing_same_direction --output .runtime-work/c125714-passing-probe-offline-20261111b --python \"$PWD/.venv-cpu/bin/python\"",
+      "exit_code": 0,
+      "log": "probe-passing-offline.log",
+      "sha256": "6259b630e32b04d643b8415282a17d63310af8f98aa0f765bbab0fc0c6612483"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/probe-compatibility-passing-manifest.json --case heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__passing_same_direction --output .runtime-work/c125714-passing-compat-offline-20261111c --python \"$PWD/.venv-cpu/bin/python\"",
+      "exit_code": 0,
+      "log": "probe-passing-compat-offline.log",
+      "sha256": "f0a2011f1a21590bdcf872ae92c77342696b5f300fd65b27de98bc01df01a4c1"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/probe-compatibility-passing-manifest.json --case heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__passing_same_direction --output .runtime-work/c125714-passing-compat-20261111i --library runtime/library --validator .runtime-work/c125714-validator/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "probe-passing-compatibility.log",
+      "sha256": "c7bba32e8578dc1c14f6e57e73a2955c324f6435256447aeea293f6640fe5ed3"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/probe-compatibility-passing-manifest.json --case heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__passing_same_direction --attempt .runtime-work/c125714-passing-saved-attempt-20261111a --output .runtime-work/c125714-passing-saved-output-20261111a --library runtime/library --validator .runtime-work/c125714-validator/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "probe-passing-saved.log",
+      "sha256": "e12fd0e53c697e81933c5ec2d03be5667a6ca76f1391a1d4f09b376ad1b5cef5"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/passing_source_audit.py --attempt .runtime-work/c125714-passing-saved-attempt-20261111a --output work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/probe-passing-source-receipt.json",
+      "exit_code": 0,
+      "log": "probe-passing-source-receipt.json",
+      "sha256": "bb3c934fdf0e3835fe95d6a813e5a7ef4184b53c919ded5768f107c2e017403f"
+    },
+    {
+      "command": "PYTHONPATH=runtime/scenario_pipeline:work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver .venv-cpu/bin/python work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c125714-passing-saved-attempt-20261111a --analysis .runtime-work/c125714-passing-saved-output-20261111a/v0001/analysis/analysis-report.json --output work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/probe-passing-delivery-receipt.json",
+      "exit_code": 0,
+      "log": "probe-passing-delivery-receipt.json",
+      "sha256": "2b87cc65d2f18019cb28bdd5c08b2022753c051cff46d609384d894d9ea964d6"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/passing_comparison_audit.py --left-attempt .runtime-work/c125714-left-saved-attempt-20261111b --passing-attempt .runtime-work/c125714-passing-saved-attempt-20261111a --output work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/probe-passing-comparison-receipt.json",
+      "exit_code": 0,
+      "log": "probe-passing-comparison-receipt.json",
+      "sha256": "ba0f87f2bf458f0fae99f04322dec38b075e4725b4b5a682852a5cdbcf2837e8"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/construction-probe-narrow-manifest.json --case heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__insufficient_width --output .runtime-work/c125714-narrow-offline-20261111b --python \"$PWD/.venv-cpu/bin/python\"",
+      "exit_code": 0,
+      "log": "probe-narrow-offline.log",
+      "sha256": "79e0da8d61d096e1118cfbd2f5528a09ab1dc8fb937939aec5748f881f26c777"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/probe-compatibility-narrow-manifest.json --case heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__insufficient_width --output .runtime-work/c125714-narrow-compat-offline-20261111a --python \"$PWD/.venv-cpu/bin/python\"",
+      "exit_code": 0,
+      "log": "probe-narrow-compat-offline.log",
+      "sha256": "b8860f3cfc68d66cc0559318455a61db7dc48dcef9e802a4c8102d4509dab90e"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/probe-compatibility-narrow-manifest.json --case heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__insufficient_width --output .runtime-work/c125714-narrow-compat-20261111a --library runtime/library --validator .runtime-work/c125714-validator/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "probe-narrow-compatibility.log",
+      "sha256": "102d9644cc55063708f888f4d8438c54368622313a2ebe7567e88380b48e5c26"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/probe-compatibility-narrow-manifest.json --case heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__insufficient_width --attempt .runtime-work/c125714-narrow-saved-attempt-20261111a --output .runtime-work/c125714-narrow-saved-output-20261111a --library runtime/library --validator .runtime-work/c125714-validator/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "probe-narrow-saved.log",
+      "sha256": "8f76c9658bce578b1ef43807327fa57f6dc92ab7ae0b8f77885156ea05c1db5f"
+    },
+    {
+      "command": "PYTHONPATH=runtime/scenario_pipeline:work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver .venv-cpu/bin/python work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c125714-narrow-saved-attempt-20261111a --analysis .runtime-work/c125714-narrow-saved-output-20261111a/v0001/analysis/analysis-report.json --output work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/probe-narrow-delivery-receipt.json",
+      "exit_code": 0,
+      "log": "probe-narrow-delivery-receipt.json",
+      "sha256": "0b20cdacd99ffb6cd6a0a7de77dbdf322d8cf9285279ef6e8932e23dad6900ab"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/width_comparison_audit.py --left-attempt .runtime-work/c125714-left-saved-attempt-20261111b --narrow-attempt .runtime-work/c125714-narrow-saved-attempt-20261111a --output work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/probe-narrow-comparison-receipt.json",
+      "exit_code": 0,
+      "log": "probe-narrow-comparison-receipt.json",
+      "sha256": "90aa6fd689b1d0ff5dc377bb7d669cf6050dbf1dfb113d95f322a39f5429d8bd"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-tests.log",
+      "sha256": "ea52e4b832b39e8291f48f87bf96113a7bbc808f390d7ba4dc8b853a28c97de8"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/construction-probe-one-way-manifest.json --case heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__posted_one_way --output .runtime-work/c125714-one-way-offline-20261111a --python \"$PWD/.venv-cpu/bin/python\"",
+      "exit_code": 0,
+      "log": "probe-one-way-offline.log",
+      "sha256": "77ee75ece1f5567544e8b6c399a610816768c77d857e0fc59b2bcc90989f6a2e"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/probe-compatibility-one-way-manifest.json --case heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__posted_one_way --output .runtime-work/c125714-one-way-compat-offline-20261111a --python \"$PWD/.venv-cpu/bin/python\"",
+      "exit_code": 0,
+      "log": "probe-one-way-compat-offline.log",
+      "sha256": "7e637bdaaad787855bd456aed3d2f607064f2999b6ef034b47002769635a8084"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/probe-compatibility-one-way-manifest.json --case heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__posted_one_way --output .runtime-work/c125714-one-way-compat-20261111a --library runtime/library --validator .runtime-work/c125714-validator/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "probe-one-way-compatibility.log",
+      "sha256": "b617fe8155ffa8c02e790dae6e3b360d9641264fb72390a6e0310848ead97017"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/probe-compatibility-one-way-manifest.json --case heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__posted_one_way --attempt .runtime-work/c125714-one-way-saved-attempt-20261111a --output .runtime-work/c125714-one-way-saved-output-20261111a --library runtime/library --validator .runtime-work/c125714-validator/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "probe-one-way-saved.log",
+      "sha256": "0a14b634149763a1c16a1878714160b88c64854e041e0cbb51ba9a0d96940d95"
+    },
+    {
+      "command": "PYTHONPATH=runtime/scenario_pipeline:work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver .venv-cpu/bin/python work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/one_way_delivery_audit.py --attempt .runtime-work/c125714-one-way-saved-attempt-20261111a --analysis .runtime-work/c125714-one-way-saved-output-20261111a/v0001/analysis/analysis-report.json --output work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/probe-one-way-delivery-receipt.json",
+      "exit_code": 0,
+      "log": "probe-one-way-delivery-receipt.json",
+      "sha256": "33009d6f5dc351779b7a7fdc7ed5c69097b2d9586f297910c07c9b209c54658f"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/one_way_comparison_audit.py --left-attempt .runtime-work/c125714-left-saved-attempt-20261111b --one-way-attempt .runtime-work/c125714-one-way-saved-attempt-20261111a --output work/heldout__C125714__NRS-484B-200-1__motor_vehicle_driver/probe-one-way-comparison-receipt.json",
+      "exit_code": 0,
+      "log": "probe-one-way-comparison-receipt.json",
+      "sha256": "9eb92d4ba3f90465a13b16ef5ba9aaed00e8bee5d21ba4ccdbd6e99da5d3da93"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA route and body motion in the selected median-opening cell",
     "Original camera pixels, complete participant visibility, and physical case completion"
   ],
-  "reason": "Partial: baseline east/west and unexcepted-left diagnostics remain CPU-proven as previously recorded. Right-half-closed now has a 48-test suite, exact offline, positive/missing-original compatibility, synthetic process-saved and independent closure/roadway/video source audits plus a baseline/closure original-source comparison. The three-cone scene and selected median-opening reference are synthetic CPU constructions; no selected-map Native scene, public authority for closure, physical or legal exception acceptance is established. Four other exception cases, fallbacks and semantic stages remain incomplete.",
+  "reason": "Partial: baseline east/west, unexcepted-left, engineered closure, passing, narrow-road and posted-one-way CPU diagnostics now have source-bound proof chains. One-way exact offline, positive/missing-sign compatibility, synthetic saved processing, independent four-camera delivery and fixed-body comparison pass; official designation, posting authority and actual sign availability/visibility are unverified. Three-lane exception, three risk-triggered fallbacks per selected case and complete semantic stage proposals remain CPU work.",
   "readiness_kind": "delivery_prepared"
 }

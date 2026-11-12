@@ -20,6 +20,7 @@ PREFIX = {
     'both_indicator_only': 'both-indicator-only',
 }
 CHANGED = {
+    'pedestrian_listener_distance': {'participant_bodies.jsonl'},
     'reasonable_safety_clearance': {'participant_bodies.jsonl'},
     'pedestrian_horn_audio': {'ego_signal_audio.jsonl', 'listener_audio_original.jsonl', 'horn_actuation.jsonl'},
     'vehicle_indicator': {'ego_signal_audio.jsonl'},
@@ -100,6 +101,20 @@ def listener_energy(files):
 
 
 def audit(comparison_id, override_case=None, override=None):
+    if comparison_id == 'pedestrian_listener_distance':
+        from listener_sweep_audit import audit as listener_audit
+        result = listener_audit()
+        points = result['points']
+        return {'format': 'worker-turn-comparison-audit', 'comparison_id': comparison_id,
+                'case_ids': [item['case_id'] for item in points],
+                'diagnostic_fixture': True,
+                'source_refs': [{'path': f'listener-{item["offset_m"]}m-diagnostic.json',
+                                 'sha256': item['source_sha256']} for item in points],
+                'fixed_source_sha256': points[0]['fixed_source_sha256'],
+                'declared_difference_sources': ['participant_bodies.jsonl'],
+                'measured_values': {'minimum_sampled_ped_gap_m':
+                    [item['minimum_sampled_ped_gap_m'] for item in points]},
+                'physical_acceptance_claimed': False, 'legal_acceptance_claimed': False}
     plan = json.loads((HERE / 'case-plan.json').read_text())
     comparison = next((item for item in plan['comparisons']
                        if item['comparison_id'] == comparison_id), None)

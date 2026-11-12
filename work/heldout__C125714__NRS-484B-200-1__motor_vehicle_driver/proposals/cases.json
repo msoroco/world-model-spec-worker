@@ -207,6 +207,101 @@
           "Physical median-opening geometry, same-direction pass completion and governing passing-law conditions require separate review."
         ]
       }
+    },
+    {
+      "case_id": "heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__insufficient_width",
+      "target_law_id": "NRS-484B-200-1",
+      "target_type": "insufficient_width_observation_probe",
+      "rationale": "Observe original mapped roadway width and subject body envelope on a sourced median-opening route with an engineered narrower cross-section; no legal cutoff is inferred.",
+      "variable_assignments": {
+        "max_total_width_m": {
+          "kind": "world_setup",
+          "value": 4.5
+        },
+        "requested_lane_fraction": {
+          "kind": "controller",
+          "value": 0.75
+        }
+      },
+      "unresolved_judgment_calls": [
+        "legal sufficiency of width",
+        "actual selected-map narrow median-opening route",
+        "realized leftward path"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "right_half_offset_m",
+            "unit": "m",
+            "method": "original Native directed center boundary and full body footprint",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "directed roadway center boundary",
+            "uncertainty": "Native map lane boundary and vehicle body precision"
+          },
+          {
+            "name": "roadway_width_m",
+            "unit": "m",
+            "method": "original Native directed road edges and body envelope",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "directed roadway cross-section",
+            "uncertainty": "mapped lane geometry and actor body dimensions"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Engineering width target 4.5 m is not a statutory sufficiency cutoff; physical median opening and legal sufficiency require separate review."
+        ]
+      }
+    },
+    {
+      "case_id": "heldout__C125714__NRS-484B-200-1__motor_vehicle_driver__posted_one_way",
+      "target_law_id": "NRS-484B-200-1",
+      "target_type": "posted_one_way_observation_probe",
+      "rationale": "Construct two joined same-direction lanes and a Native one-way sign actor, retain original frames and leftward body occupancy; official designation remains unresolved.",
+      "variable_assignments": {
+        "one_way_sign_actor": {
+          "kind": "world_setup",
+          "value": "Native one-way sign blueprint"
+        },
+        "requested_lane_fraction": {
+          "kind": "controller",
+          "value": 0.75
+        }
+      },
+      "unresolved_judgment_calls": [
+        "official one-way designation",
+        "posting authority",
+        "actual sign visibility",
+        "legal sufficient width"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "right_half_offset_m",
+            "unit": "m",
+            "method": "original Native directed center boundary and full body footprint",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "directed roadway center boundary",
+            "uncertainty": "Native map lane boundary and vehicle body precision"
+          },
+          {
+            "name": "one_way_sign_lateral_offset_m",
+            "unit": "m",
+            "method": "original Native one-way sign actor and mapped roadway centerline",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "directed roadway",
+            "uncertainty": "sign visible in pixels and official designation unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Sign actor and same-direction lane topology do not establish official one-way designation, posting authority or physical visibility."
+        ]
+      }
     }
   ]
 }

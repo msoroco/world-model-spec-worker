@@ -9,6 +9,8 @@ sys.path.insert(0, str(HERE))
 from road_source_capture import RoadSourceRecorder, sample_two_way_baseline
 from right_half_measurement import measure
 from right_half_route import baseline_targets, control_step, select_two_way_route
+from right_half_comparison_audit import audit as audit_baseline
+from right_half_finalizer import analyze as analyze_saved, build_result
 
 
 class Point:
@@ -149,6 +151,83 @@ class RoadSourceCaptureTest(unittest.TestCase):
             rows = [json.loads(line) for line in
                     (Path(temporary) / "ego_road_frames.jsonl").read_text().splitlines()]
             self.assertEqual([row["frame"] for row in rows], [21, 22])
+
+    def test_independent_baseline_comparison_holds_road_fixed(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            context = {key: {"value": None, "source_ref": None} for key in
+                       ("passing_same_direction", "right_half_closed", "three_lane_highway",
+                        "posted_one_way", "insufficient_width")}
+            for label, body_y in (("right", -2), ("left", 2)):
+                folder = root / label
+                folder.mkdir()
+                recorder = RoadSourceRecorder(folder)
+                for frame in range(3):
+                    recorder.append(Actor(body_y), pair("east"), frame, frame / 20)
+                recorder.close()
+                (folder / "road_exception_context.json").write_text(json.dumps(context))
+            receipt = audit_baseline(root / "right", root / "left")
+            self.assertEqual(receipt["frames"], 3)
+            self.assertLess(receipt["right_maximum_lateral_m"], 0)
+            self.assertGreater(receipt["left_minimum_lateral_m"], 0)
+            self.assertFalse(receipt["legal_exception_or_compliance_claimed"])
+            left_file = root / "left/ego_road_frames.jsonl"
+            rows = [json.loads(line) for line in left_file.read_text().splitlines()]
+            rows[1]["road_width_m"] = 9
+            left_file.write_text("".join(json.dumps(row) + "\n" for row in rows))
+            with self.assertRaisesRegex(ValueError, "road or original frame"):
+                audit_baseline(root / "right", root / "left")
+            rows[1]["road_width_m"] = 8
+            for row in rows:
+                row["ego_corners_xy"] = sample_two_way_baseline(
+                    Actor(-2), pair("east"), row["frame"], row["time_s"])["ego_corners_xy"]
+            left_file.write_text("".join(json.dumps(row) + "\n" for row in rows))
+            with self.assertRaisesRegex(ValueError, "Left baseline body"):
+                audit_baseline(root / "right", root / "left")
+
+    def test_saved_finalizer_joins_original_frames_and_rejects_missing_source(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            case = "heldout__C230259__NRS-484B-200-1__motor_vehicle_driver__baseline_right"
+            (root / "config.json").write_text(json.dumps({
+                "selected_case_id": case, "law_id": "NRS-484B-200-1",
+                "cell_id": "C230259", "actor": "motor_vehicle_driver",
+                "case": {"recording_description": {"channels": [{
+                    "name": "right_half_observation", "unit": "m", "sampling_rate_hz": 20,
+                    "method": "original Native full-body directed road geometry",
+                    "time_window": "all frames", "reference_frame": "road centerline",
+                    "uncertainty": "Native map and body precision"}]}}}))
+            recorder = RoadSourceRecorder(root)
+            mapping, trace = [], []
+            for index in range(3):
+                frame = 100 + index
+                time_s = index / 20
+                recorder.append(Actor(-2), pair("east"), frame, time_s)
+                mapping.append({"video_frame": index, "carla_frame": frame,
+                                "time_s": time_s})
+                trace.append({"frame": frame, "time_s": time_s})
+            recorder.close()
+            (root / "video_frames.jsonl").write_text(
+                "".join(json.dumps(row) + "\n" for row in mapping))
+            (root / "trace.jsonl").write_text(
+                "".join(json.dumps(row) + "\n" for row in trace))
+            (root / "road_exception_context.json").write_text(json.dumps({
+                key: {"value": None, "source_ref": None} for key in
+                ("passing_same_direction", "right_half_closed", "three_lane_highway",
+                 "posted_one_way", "insufficient_width")}))
+            report = analyze_saved(root)
+            result = build_result(root, report)
+            self.assertTrue(result["recording_evidence"])
+            self.assertFalse(result["legal_acceptance_claimed"])
+            sys.path.insert(0, str(HERE.parents[1] / "runtime/scenario_pipeline"))
+            from worker_exchange.native_output import validate_result
+            validate_result(result)
+            self.assertEqual(len(report["measurements"]["right_half_observation"]
+                                 ["value"]["observations"]), 3)
+            (root / "right_half_observation.jsonl").unlink()
+            (root / "trace.jsonl").unlink()
+            with self.assertRaisesRegex(ValueError, "Missing required original source: trace.jsonl"):
+                analyze_saved(root)
 
 
 if __name__ == "__main__":
