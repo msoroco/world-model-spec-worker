@@ -1,0 +1,146 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Sample original ego speed at the closest retained clear ray from the governed approach to through-highway traffic, with original camera frame and time join",
+      "source": "NRS 484B.257(1); inputs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/assignment.json",
+      "output_key": "speed_at_closest_view_mps",
+      "method": "measure_speed_at_closest_view",
+      "value_type": "number",
+      "kind": "measured",
+      "inputs": [
+        "approach_history.jsonl",
+        "visibility_samples.json",
+        "visibility_rays.jsonl",
+        "road_context.json",
+        "video_frames.jsonl",
+        "road.xodr",
+        "control_inventory.jsonl",
+        "interaction_history.jsonl",
+        "control_context.json",
+        "rendered_marking_review.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Establish proper yield-sign erection and governance of the subject approach",
+      "source": "NRS 484B.257(1); inputs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/assignment.json",
+      "output_key": "sign_governance",
+      "method": "measure_sign_governance",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "road.xodr",
+        "road_context.json",
+        "control_inventory.jsonl",
+        "capture/native_map_facts.json",
+        "rendered_marking_review.json",
+        "video_frames.jsonl",
+        "overview.mkv",
+        "approach.mkv",
+        "reference_corner.mkv",
+        "driver_reference.mkv"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Establish absence of a clearly marked stop line and near-side crosswalk, including any sidewalk-derived crossing",
+      "source": "NRS 484B.257(1); inputs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/assignment.json",
+      "output_key": "stopping_reference_absence",
+      "method": "measure_stopping_reference_absence",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "road.xodr",
+        "road_context.json",
+        "control_inventory.jsonl",
+        "capture/native_map_facts.json",
+        "rendered_marking_review.json",
+        "video_frames.jsonl",
+        "overview.mkv",
+        "approach.mkv",
+        "reference_corner.mkv",
+        "driver_reference.mkv"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "Measure through-highway vehicle entry or close approach during the full time the subject moves across or within the intersection",
+      "source": "NRS 484B.257(1); inputs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/assignment.json",
+      "output_key": "through_interaction",
+      "method": "measure_through_interaction",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "interaction_history.jsonl",
+        "control_context.json",
+        "road_context.json",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 4,
+      "requirement": "Measure whether the subject slows or stops at the sampled nearest-view reference before entering",
+      "source": "NRS 484B.257(1); inputs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/assignment.json",
+      "output_key": "slowness_before_entry",
+      "method": "measure_slowness_before_entry",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "interaction_history.jsonl",
+        "control_context.json",
+        "approach_history.jsonl",
+        "visibility_samples.json",
+        "visibility_rays.jsonl",
+        "video_frames.jsonl",
+        "road_context.json"
+      ]
+    },
+    {
+      "disposition_index": 5,
+      "requirement": "Exclude actual police-officer or traffic-signal control of the movement",
+      "source": "NRS 484B.257(1); inputs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/assignment.json",
+      "output_key": "control_exceptions",
+      "method": "measure_control_exceptions",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "road.xodr",
+        "road_context.json",
+        "control_inventory.jsonl",
+        "capture/native_map_facts.json",
+        "rendered_marking_review.json",
+        "video_frames.jsonl",
+        "overview.mkv",
+        "approach.mkv",
+        "reference_corner.mkv",
+        "driver_reference.mkv"
+      ]
+    },
+    {
+      "disposition_index": 6,
+      "requirement": "Measure the subject and through vehicle crossing relation after slowing or stopping without defining a numeric legal yield cutoff",
+      "source": "NRS 484B.257(1); inputs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/assignment.json",
+      "output_key": "yield_relation",
+      "method": "measure_yield_relation",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "interaction_history.jsonl",
+        "control_context.json",
+        "road_context.json",
+        "video_frames.jsonl",
+        "approach_history.jsonl",
+        "visibility_samples.json",
+        "visibility_rays.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "visibility_rays.jsonl"
+    ],
+    "error_contains": "Missing required source: visibility_rays.jsonl"
+  }
+}

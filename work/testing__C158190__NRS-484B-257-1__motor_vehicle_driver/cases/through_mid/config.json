@@ -1,0 +1,126 @@
+{
+  "law_id": "NRS-484B-257-1",
+  "cell_id": "C158190",
+  "actor": "motor_vehicle_driver",
+  "selected_case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_mid_speed",
+  "supported_case_ids": [
+    "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_approaches",
+    "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_entered",
+    "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_clear",
+    "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_no_slow",
+    "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_mid_speed"
+  ],
+  "rate_hz": 20,
+  "duration_s": 30,
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 90,
+      "pose_strategy": "fixed junction overview"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "fixed sign-governed approach"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "fixed through-highway reference"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "ego attached driver reference"
+    }
+  ],
+  "required_atoms": [
+    "ru.subject",
+    "ru.motor_vehicle",
+    "kin.position",
+    "kin.velocity",
+    "kin.speed",
+    "st.lane",
+    "st.sight_distance",
+    "rel.visible",
+    "dev.yield_sign"
+  ],
+  "source_packets": [],
+  "recording_description": {
+    "channels": [
+      {
+        "name": "ego_approach_speed",
+        "unit": "m/s",
+        "method": "original actor.get_velocity joined to camera frame",
+        "time_window": "sign-governed approach before intersection entry",
+        "reference_frame": "original Native frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "sampled collision/velocity evidence; between-frame state unresolved"
+      },
+      {
+        "name": "through_highway_sight_clear",
+        "unit": "count",
+        "method": "original collision ray to authored through-highway target, clear=1 blocked=0",
+        "time_window": "sign-governed approach before intersection entry",
+        "reference_frame": "original Native frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "sampled collision/velocity evidence; between-frame state unresolved"
+      },
+      {
+        "name": "ego_distance_to_junction_m",
+        "unit": "m",
+        "method": "original approach-history position joined to sight rays",
+        "time_window": "entire original capture",
+        "reference_frame": "original Native frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "sampled source history; between-frame state and legal meaning remain unresolved"
+      },
+      {
+        "name": "through_vehicle_position",
+        "unit": "structured record",
+        "method": "original through-actor body-center position and explicit absent-actor state",
+        "time_window": "entire original capture",
+        "reference_frame": "original Native frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "sampled source history; between-frame state and legal meaning remain unresolved"
+      },
+      {
+        "name": "through_vehicle_speed",
+        "unit": "structured record",
+        "method": "measured finite-difference through-actor body-center speed and explicit absent-actor state",
+        "time_window": "entire original capture",
+        "reference_frame": "original Native frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "sampled source history; between-frame state and legal meaning remain unresolved"
+      },
+      {
+        "name": "ego_crossing_body",
+        "unit": "structured record",
+        "method": "original ego body vertices and sourced junction overlap history",
+        "time_window": "entire original capture",
+        "reference_frame": "original Native frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "sampled source history; between-frame state and legal meaning remain unresolved"
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "yield_site_review",
+        "unit": "structured record",
+        "method": "authored OpenDRIVE, Native control/crosswalk inventory and hash-bound original camera review"
+      }
+    ],
+    "limitations": [
+      "sampled sight ray is not human recognition or nearest legal view point",
+      "sign face, marking absence and immediate-hazard judgment require real source review"
+    ]
+  }
+}

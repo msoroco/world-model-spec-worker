@@ -43,7 +43,7 @@ def through_y(i):
 
 
 def build(variant=None):
-    if variant not in (None, 'through_entered', 'clear', 'no_slow'):
+    if variant not in (None, 'through_entered', 'clear', 'no_slow', 'through_mid'):
         raise ValueError('Unsupported exact diagnostic variant')
     target_root = HERE if variant is None else HERE / 'cases' / variant
     config_path = target_root / 'config.json'
@@ -54,7 +54,9 @@ def build(variant=None):
                 -20.0 + min(i, 250)*.3 if variant == 'no_slow' else ego_x(i))
     def subject_speed(i):
         return ((4.0 if i <= 375 else 0.0) if variant == 'clear' else
-                (6.0 if i <= 250 else 0.0) if variant == 'no_slow' else ego_speed(i))
+                (6.0 if i <= 250 else 0.0) if variant == 'no_slow' else
+                (6.0 if i == 0 else 4.0 if i <= 551 else 0.0)
+                if variant == 'through_mid' else ego_speed(i))
     spec_path = HERE / 'tests/test_finalizer.py'
     loader = importlib.util.spec_from_file_location('c158190_test_finalizer', spec_path)
     module = importlib.util.module_from_spec(loader)
@@ -63,17 +65,18 @@ def build(variant=None):
         source = Path(temp) / 'source'
         source.mkdir()
         module.FinalizerTests().sources(source)
-        if variant in ('clear', 'no_slow'):
+        if variant in ('clear', 'no_slow', 'through_mid'):
             approach = [json.loads(line) for line in (source/'approach_history.jsonl').read_text().splitlines()]
             approach[0]['ego_speed_mps'] = 4.0 if variant == 'clear' else 6.0
-            approach[1]['ego_speed_mps'] = 4.0 if variant == 'clear' else 6.0
-            approach[1]['distance_to_intersection_m'] = 11.8 if variant == 'clear' else 11.7
+            approach[1]['ego_speed_mps'] = 4.0 if variant in ('clear', 'through_mid') else 6.0
+            approach[1]['distance_to_intersection_m'] = (11.8 if variant == 'clear' else
+                                                          11.9 if variant == 'through_mid' else 11.7)
             (source/'approach_history.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in approach))
             samples = json.loads((source/'visibility_samples.json').read_text())
-            samples[1]['distance_to_intersection_m'] = 11.8 if variant == 'clear' else 11.7
+            samples[1]['distance_to_intersection_m'] = approach[1]['distance_to_intersection_m']
             (source/'visibility_samples.json').write_text(json.dumps(samples))
             rays = [json.loads(line) for line in (source/'visibility_rays.jsonl').read_text().splitlines()]
-            rays[1]['distance_to_intersection_m'] = 11.8 if variant == 'clear' else 11.7
+            rays[1]['distance_to_intersection_m'] = approach[1]['distance_to_intersection_m']
             (source/'visibility_rays.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in rays))
         frame_count = 600
         frames = [{'video_frame': i, 'carla_frame': 100+i,
@@ -240,6 +243,10 @@ def build(variant=None):
                                 'sha256': sha(diagnostic_path)}}
         recipe_path = target_root / 'diagnostic-recipe.json'
         recipe_path.write_text(json.dumps(recipe, indent=2) + '\n')
+    if variant == 'through_mid':
+        return {'recipe': str(recipe_path.relative_to(ROOT)),
+                'source_count': len(items), 'frame_count': frame_count,
+                'scope': '600-frame synthetic saved-source protocol only; physical acceptance unclaimed'}
     with tempfile.TemporaryDirectory(dir=ROOT / '.runtime-work') as temp:
         fixture = Path(temp) / 'fixture'
         receipt = materialize(ROOT, recipe_path, fixture)
@@ -265,6 +272,6 @@ def build(variant=None):
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('--variant', choices=('through_entered', 'clear', 'no_slow'))
+    parser.add_argument('--variant', choices=('through_entered', 'clear', 'no_slow', 'through_mid'))
     args = parser.parse_args()
     print(json.dumps(build(args.variant), indent=2))
