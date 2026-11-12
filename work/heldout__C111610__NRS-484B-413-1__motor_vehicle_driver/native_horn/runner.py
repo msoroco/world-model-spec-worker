@@ -29,7 +29,8 @@ def check_config(config):
     if set(engineering) - {'route_spacing_m', 'approach_steps', 'route_candidate_index',
                            'target_speed_mps', 'speed_gain', 'overview_x_m',
                            'pedestrian_along_m', 'pedestrian_left_m',
-                           'vehicle_along_m', 'vehicle_left_m'}:
+                           'vehicle_along_m', 'vehicle_left_m',
+                           'horn_request_frame'}:
         raise ValueError('Unknown turn engineering control')
     if engineering.get('route_spacing_m', 2.) <= 0 or engineering.get('approach_steps', 6) < 4:
         raise ValueError('Invalid connected turn sampling')
@@ -42,6 +43,9 @@ def check_config(config):
         value = engineering.get(key, defaults[key])
         if isinstance(value, bool) or not isinstance(value, (int, float)) or not isfinite(value) or not lower <= value <= upper:
             raise ValueError('Invalid Native participant construction offset: ' + key)
+    horn_frame = engineering.get('horn_request_frame', 20)
+    if isinstance(horn_frame, bool) or not isinstance(horn_frame, int) or not 0 <= horn_frame < config['frames']:
+        raise ValueError('Invalid Native horn request frame')
     if not isinstance(config.get('case', {}).get('recording_description'), dict):
         raise ValueError('Missing exact recording description')
     return engineering
@@ -146,7 +150,7 @@ def run(output_dir, host, port):
             time_s = snapshot.timestamp.elapsed_seconds - start
             cameras.wait_for_frame(frame)
             pipeline.capture(frame, time_s)
-            if index == 20:
+            if index == engineering.get('horn_request_frame', 20):
                 horn_events.append(horn_relay.request(frame=frame, time_s=time_s,
                                                       vehicle_actor_id=ego.id))
             recorder.append(frame, time_s)

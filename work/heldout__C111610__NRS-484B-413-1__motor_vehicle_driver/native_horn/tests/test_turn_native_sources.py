@@ -32,6 +32,19 @@ class Actor:
 
 
 class NativeTurnSourcesTests(unittest.TestCase):
+    def test_horn_request_frame_is_a_bounded_native_control(self):
+        construction = json.loads((ROOT.parent / 'native-horn-primary-construction.json').read_text())
+        config = json.loads(next(item['content'] for item in construction['files']
+                                 if item['path'] == 'config.json'))
+        self.assertEqual(check_config(config).get('horn_request_frame', 20), 20)
+        for frame in (0, 20, 120, 159):
+            config['engineering']['horn_request_frame'] = frame
+            self.assertEqual(check_config(config)['horn_request_frame'], frame)
+        for bad in (-1, 160, 20.0, True, '20'):
+            with self.subTest(bad=bad), self.assertRaises(ValueError):
+                config['engineering']['horn_request_frame'] = bad
+                check_config(config)
+
     def test_runner_accepts_bounded_pedestrian_sweep_offsets(self):
         construction = json.loads((ROOT.parent / 'native-horn-primary-construction.json').read_text())
         config = json.loads(next(item['content'] for item in construction['files']
