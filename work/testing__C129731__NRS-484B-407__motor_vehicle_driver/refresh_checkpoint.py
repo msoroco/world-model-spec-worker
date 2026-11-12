@@ -26,6 +26,9 @@ CLAIMS = (
     ("approach-branch-processing.json", "SCENARIO_PIPELINE_OUTPUT_ROOT=" + OUTPUT_ROOT + " .venv-cpu/bin/python runtime.py process-saved --manifest " + PREFIX + "diagnostic-approach-b-manifest.json --case " + AID + "__crest__short_of_500ft --attempt .runtime-work/c129731-approach-b-compat-v5 --output .runtime-work/c129731-approach-b-saved-v2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"),
     ("crest-branch-proof-record.log", ".venv-cpu/bin/python " + PREFIX + "record_crest_branch_proofs.py"),
     ("crest-branch-comparison-proof.log", ".venv-cpu/bin/python " + PREFIX + "prove_crest_branch_comparison.py"),
+    ("crest-probe-branch-proof-record.log", ".venv-cpu/bin/python " + PREFIX + "record_crest_probe_branch_proofs.py"),
+    ("crest-at-branch-comparison-proof.log", ".venv-cpu/bin/python " + PREFIX + "prove_crest_branch_comparison.py --probe at_500ft"),
+    ("crest-beyond-branch-comparison-proof.log", ".venv-cpu/bin/python " + PREFIX + "prove_crest_branch_comparison.py --probe beyond_500ft"),
     ("assignment-check.log", ".venv-cpu/bin/python worker_check.py --assignment " + AID + " --complete"),
 )
 
@@ -69,6 +72,34 @@ def main():
             if not source.is_file():
                 raise ValueError("Missing passed crest branch proof: " + log)
             tests[log] = {"command": command, "exit_code": 0, "log": log, "sha256": sha(source)}
+    for probe, suffix in (("at_500ft", "at"), ("beyond_500ft", "beyond")):
+        for placement, direction, branch in (("near_summit", "approach_a", "near-a"),
+                                             ("near_summit", "approach_b", "near-b"),
+                                             ("approach_to_crest", "approach_a", "approach-a"),
+                                             ("approach_to_crest", "approach_b", "approach-b")):
+            name = suffix + "-" + branch
+            manifest = PREFIX + "diagnostic-" + name + "-manifest.json"
+            case = AID + "__crest__" + probe
+            base = ".runtime-work/c129731-" + name
+            decoder = " --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+            branch_claims = (
+                (name + "-branch-build.log", ".venv-cpu/bin/python " + PREFIX +
+                 "build_approach_branch_proof.py --probe " + probe + " --placement " + placement +
+                 " --direction " + direction),
+                (name + "-branch-offline.log", ".venv-cpu/bin/python runtime.py offline --manifest " +
+                 manifest + " --case " + case + " --output " + base + "-offline-v1"),
+                (name + "-branch-compatibility.json", "SCENARIO_PIPELINE_OUTPUT_ROOT=" + OUTPUT_ROOT + " "
+                 ".venv-cpu/bin/python runtime.py compatibility --manifest " + manifest + " --case " + case +
+                 " --output " + base + "-compat-v1" + decoder),
+                (name + "-branch-processing.json", "SCENARIO_PIPELINE_OUTPUT_ROOT=" + OUTPUT_ROOT + " "
+                 ".venv-cpu/bin/python runtime.py process-saved --manifest " + manifest + " --case " + case +
+                 " --attempt " + base + "-compat-v1 --output " + base + "-saved-v1" + decoder),
+            )
+            for log, command in branch_claims:
+                source = HERE / log
+                if not source.is_file():
+                    raise ValueError("Missing passed crest probe branch proof: " + log)
+                tests[log] = {"command": command, "exit_code": 0, "log": log, "sha256": sha(source)}
     manifest = json.loads((HERE / "execution-manifest.json").read_text())
     for entry in manifest["cases"]:
         proof = entry["delivery_acceptance"]

@@ -17,9 +17,9 @@ class CrestOpenDriveSourceTests(unittest.TestCase):
         cls.root = PACKAGE / "native-map-plan"
         cls.road = (cls.root / "crest-road.xodr").read_text()
 
-    def test_all_four_sites_bind_driving_lane_and_grade_source(self):
+    def test_all_boundary_and_direction_sites_bind_driving_lane_and_grade_source(self):
         rows = json.loads((self.root / "source-review.json").read_text())["sites"]
-        self.assertEqual(len(rows), 4)
+        self.assertEqual(len(rows), 12)
         for row in rows:
             path = PACKAGE / row["path"]
             with self.subTest(path=path.name):

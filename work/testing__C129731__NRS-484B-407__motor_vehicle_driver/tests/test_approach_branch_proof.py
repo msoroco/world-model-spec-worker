@@ -12,6 +12,36 @@ from site_construction import validate_site
 
 
 class ApproachBranchProofTests(unittest.TestCase):
+    def test_at_and_beyond_branch_sources_bind_geometry_and_distinct_rays(self):
+        for suffix, station, bracket in (("at", 152.4, [152.4, 152.4]),
+                                         ("beyond", 160.0, [160.0, 160.125])):
+            for branch in ("near-a", "near-b", "approach-a", "approach-b"):
+                name = suffix + "-" + branch
+                with self.subTest(name=name):
+                    folder = PACKAGE / ("branch-proof-" + name)
+                    site_path = folder / ("diagnostic-site-crest-" + suffix + ".json")
+                    site = validate_site(json.loads(site_path.read_text()))
+                    self.assertAlmostEqual(
+                        abs(site["occluder"]["center_xyz_m"][0] - site["turn_site_xyz_m"][0])
+                        - site["occluder"]["half_extent_xyz_m"][0], station)
+                    self.assertEqual(site["source_status"], "diagnostic_fixture")
+                    self.assertTrue(check_source_geometry(
+                        (PACKAGE / "native-map-plan/crest-road.xodr").read_text(), site))
+                    if suffix == "beyond":
+                        for lane in site["incoming_lanes"].values():
+                            self.assertEqual(lane["stations"][-1]["distance_to_turn_m"], 180)
+                    source = folder / "sources/capture/evidence.jsonl"
+                    lines = source.read_text().splitlines()
+                    self.assertEqual(len(lines), 1100)
+                    direction = site["occluder"]["target_direction"]
+                    blocked_lane = site["incoming_lanes"][direction]["lane_id"]
+                    for index in (0, 400, 1099):
+                        packet = json.loads(lines[index])
+                        rays = {row["lane_id"]: row for row in packet["visibility"]["approaches"]}
+                        self.assertEqual(set(rays), {-1, 1})
+                        self.assertEqual(rays[blocked_lane]["any_body_sight_horizon"]["bracket_m"], bracket)
+                        self.assertTrue(rays[blocked_lane]["any_sample_clear_at_probe"])
+
     def test_transformed_sources_bind_all_crest_placements_and_directions(self):
         index = json.loads((PACKAGE / "crest-branch-proof-index.json").read_text())
         self.assertEqual(len(index["branches"]), 4)
