@@ -1,0 +1,81 @@
+{
+  "template_id": "NRS-484B-213-2b@motor_vehicle_driver",
+  "law_id": "NRS-484B-213-2b",
+  "actor": "motor_vehicle_driver",
+  "quote": "A vehicle must not be driven to the left side of the highway at any time: When approaching within 100 feet or traversing any intersection or railroad grade crossing. Subsection 2 does not apply upon a one-way highway.",
+  "status": "draft",
+  "structure": {
+    "law_id": "NRS-484B-213-2b",
+    "activation": {
+      "condition": "Vehicle is driven left of highway center while approaching or traversing an intersection or railroad grade crossing on a highway that is not one-way.",
+      "numeric_conditions": [
+        {
+          "variable": "observed_left_side_closest_distance_ft",
+          "operator": "<=",
+          "value": 100,
+          "unit": "ft"
+        }
+      ]
+    },
+    "obligation": {
+      "type": "must_not",
+      "description": "Do not drive to the left side of the highway in the stated zone."
+    },
+    "exceptions": [
+      {
+        "source_clause": "Subsection 2 does not apply upon a one-way highway.",
+        "description": "The subsection is inapplicable on a one-way highway."
+      }
+    ],
+    "timing": {
+      "description": "At any time while within 100 feet of approach or while traversing either named feature.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": []
+  },
+  "parameter_refs": [
+    {
+      "name": "crossing_kind",
+      "kind": "world_setup",
+      "range_or_domain": [
+        "intersection",
+        "railroad_grade_crossing"
+      ]
+    },
+    {
+      "name": "one_way_designation",
+      "kind": "world_setup",
+      "range_or_domain": [
+        false,
+        true
+      ]
+    },
+    {
+      "name": "commanded_left_side_route",
+      "kind": "controller",
+      "range_or_domain": [
+        false,
+        true
+      ]
+    },
+    {
+      "name": "commanded_left_side_closest_distance_ft",
+      "kind": "controller",
+      "range_or_domain": "nonnegative minimum feet across the left-side interval; must be checked against Native geometry"
+    },
+    {
+      "name": "observed_left_side_closest_distance_ft",
+      "kind": "subject_behavior",
+      "range_or_domain": "Native minimum body distance in feet while left of center, initially unknown"
+    },
+    {
+      "name": "observed_left_side_occupancy",
+      "kind": "subject_behavior",
+      "range_or_domain": [
+        false,
+        true,
+        null
+      ]
+    }
+  ]
+}
