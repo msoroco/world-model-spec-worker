@@ -15,6 +15,7 @@ from ending_road_control_inventory import ungoverned_route_pair, original_ungove
 from ending_road_runner import (choose_control_targets, conflict_polygon,
                                 control_to_waypoint, extend_exit)
 from highway_continuity_source import ContinuitySourceRecorder, topology_from_pair
+from native_pair_preflight import select_bound_pair
 
 ASSIGNMENT = 'heldout__C111294__NRS-484B-250-3__motor_vehicle_driver'
 CASE = ASSIGNMENT + '__continuing_highway'
@@ -48,7 +49,7 @@ def select_native_pair(world_map, lights, *, max_spawns=300):
     return pair
 
 
-def run(config, output, host='127.0.0.1', port=2000):
+def run(config, output, host='127.0.0.1', port=2000, expected_pair=None):
     check_config(config)
     import carla
     from pipeline_capture import PipelineCapture
@@ -57,7 +58,8 @@ def run(config, output, host='127.0.0.1', port=2000):
     output = Path(output)
     output.mkdir(parents=True, exist_ok=True)
     original_files = ('highway_pair_topology.json', 'intersection_participants.jsonl',
-                      'trace.jsonl', 'video_frames.jsonl', 'control_inventory.json')
+                      'trace.jsonl', 'video_frames.jsonl', 'control_inventory.json',
+                      'controlled_route_pair.json')
     if any((output / name).exists() for name in original_files):
         raise FileExistsError('Retain prior original highway-continuity acquisition')
     config_path = output / 'config.json'
@@ -78,8 +80,14 @@ def run(config, output, host='127.0.0.1', port=2000):
         settings.fixed_delta_seconds = .05
         world.apply_settings(settings)
         lights = list(world.get_actors().filter('traffic.traffic_light*'))
-        pair = select_native_pair(world.get_map(), lights,
-                                  max_spawns=config.get('max_spawns', 300))
+        if expected_pair is None:
+            raise ValueError('Expected controlled Native route-pair binding is required')
+        pair, binding = select_bound_pair(world.get_map(), lights,
+            max_spawns=config.get('max_spawns', 300), expected=expected_pair)
+        (output / 'controlled_route_pair.json').write_text(
+            json.dumps(binding, indent=2, allow_nan=False) + '\n')
+        for name in ('ending', 'continuing', 'other'):
+            pair[name] = extend_exit(pair[name])
         subject_path, other_path = pair['continuing'], pair['other']
         inventory = original_ungoverned_inventory(
             {'path': subject_path, 'junction_id': pair['junction_id']},
@@ -160,6 +168,7 @@ def main():
     parser.add_argument('--output-dir')
     parser.add_argument('--host', default='127.0.0.1')
     parser.add_argument('--port', type=int, default=2000)
+    parser.add_argument('--expected-pair')
     parser.add_argument('--run', action='store_true')
     parser.add_argument('--check', action='store_true')
     args = parser.parse_args()
@@ -168,7 +177,10 @@ def main():
     if not args.check:
         if not args.output_dir:
             raise ValueError('Fresh Native output directory required')
-        run(config, args.output_dir, args.host, args.port)
+        if not args.expected_pair:
+            raise ValueError('--expected-pair is required for Native capture')
+        run(config, args.output_dir, args.host, args.port,
+            json.loads(Path(args.expected_pair).read_text()))
 
 
 if __name__ == '__main__':

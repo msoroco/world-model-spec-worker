@@ -1,0 +1,88 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver",
+  "cases": [
+    {
+      "case_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__continuing_highway",
+      "construction": "construction-continuing-bound-pair-provisional.json",
+      "construction_sha256": "5c2a9ce8fa340d73dc9031bbddd6fe864e05b1c883eebb536d44dba02fd7ce54",
+      "kind": "delivery",
+      "measurement_procedure": {
+        "entrypoint": "highway_continuity_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/diagnostic-recipe-highway-continuing.json",
+      "measurement_contract": "measurement-contract-highway-continuing.json",
+      "candidate_risk": {
+        "status": "none",
+        "reason": "Provisional primary proof only; canonical risk candidates remain in selected manifest"
+      },
+      "candidates": [],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/highway-continuing-provisional-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__continuing_highway --output .runtime-work/c111294-continuing-provisional-offline6 --python .venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "highway-continuing-provisional-offline6.log",
+        "log_sha256": "960871495318c8982421c9585f68622a527c9dff49292fc7ef348edc5888aaef",
+        "construction_sha256": "6908a9ac7ccfa84f4ab146a62241037c976e471eae39e932421f5e7010fff54c"
+      },
+      "compatibility": {
+        "receipt": "highway-continuing-final-primary-compatibility.json",
+        "sha256": "f117b1ae3f3b7274621622c74b3d748a25d0d64301f504bdfc57ce864070fdd2",
+        "log": "highway-continuing-final-primary-analysis.log",
+        "negative_log": "highway-continuing-final-primary-negative.log"
+      },
+      "negative": {
+        "log": "highway-continuing-final-primary-negative.log"
+      },
+      "acquisition": {
+        "intersection_occupancy": {
+          "entrypoint": "highway_continuity_finalizer.py",
+          "method": "original Native body polygon overlap against retained conflict polygon",
+          "evidence": "highway_pair_topology.json, intersection_participants.jsonl, trace.jsonl and video_frames.jsonl joined by original frame identity"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "physical/continuing_highway-proof.json",
+        "sha256": "4c6d42ae9026741355358f30a6bf4930efa814f04a8d7d6f87f9a8348164d9f3"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__continuing_highway",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "continuity_delivery_audit.py",
+        "script_sha256": "06e1ea9e43e36a821d5213089f2eead22f753ac89866a2b26051721226abfe82",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/continuity_delivery_audit.py --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__continuing_highway --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c111294-continuing-final3-primary --report /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c111294-continuing-final3-primary/analysis-report.json",
+        "test_exit_code": 0,
+        "test_log": "continuing-delivery-audit-positive.log",
+        "test_log_sha256": "4bec74e334c159ad1538ee57a30a00b0035fb661b51a7b789219883bec330330",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/continuity_delivery_audit.py --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__continuing_highway --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c111294-continuing-audit-negative3 --report /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c111294-continuing-final3-primary/analysis-report.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Continuing-highway original source hash differs",
+        "negative_log": "continuing-delivery-audit-negative.log",
+        "negative_log_sha256": "1052243ed3faa065819c336e764e304edcadf936c4235a7d39078e00b6da2c10"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__continuing_highway --attempt \"$ATTEMPT\" --output \"$PROCESSING_OUTPUT\" --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSING_OUTPUT/feedback.json\"",
+        "test_log": "continuing-saved-processing-gate.log",
+        "test_log_sha256": "721588220e6ba053a7314e008aaf345ade7e5d41bc0ffda9327a4153b45b7bf7",
+        "test_exit_code": 0
+      }
+    }
+  ],
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3"
+}

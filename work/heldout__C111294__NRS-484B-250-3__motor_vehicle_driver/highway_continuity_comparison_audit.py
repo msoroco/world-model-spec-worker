@@ -84,10 +84,30 @@ def audit(ending_path, continuing_path):
     return audit_files(ending, continuing, ending_hash, continuing_hash)
 
 
+def require_retained_pair_bindings(ending_binding, continuing_binding):
+    """Validate both original binding hashes and require one selected Native pair."""
+    bindings = (ending_binding, continuing_binding)
+    for binding in bindings:
+        if not isinstance(binding, dict) or binding.get('format') != 'worker-controlled-highway-route-pair':
+            raise ValueError('Missing controlled Native route-pair binding')
+        digest = binding.get('route_pair_sha256')
+        payload = {key: value for key, value in binding.items()
+                   if key != 'route_pair_sha256'}
+        actual = sha256(json.dumps(payload, sort_keys=True, separators=(',', ':'),
+                                   allow_nan=False).encode()).hexdigest()
+        if actual != digest:
+            raise ValueError('Stale controlled Native route-pair binding')
+        if set(binding.get('routes', {})) != {'ending', 'continuing', 'other'}:
+            raise ValueError('Incomplete controlled Native route-pair binding')
+    if bindings[0]['route_pair_sha256'] != bindings[1]['route_pair_sha256']:
+        raise ValueError('Changed controlled Native route-pair binding')
+    return bindings[0]['route_pair_sha256']
+
+
 def audit_attempts(ending_attempt, continuing_attempt):
     """Check retained original sources from two saved Native attempts."""
     names = ('intersection_participants.jsonl', 'video_frames.jsonl',
-             'control_inventory.json')
+             'control_inventory.json', 'controlled_route_pair.json')
     roots = (Path(ending_attempt), Path(continuing_attempt))
     required = (names + ('intersection_topology.json',),
                 names + ('highway_pair_topology.json',))
@@ -102,6 +122,22 @@ def audit_attempts(ending_attempt, continuing_attempt):
     result = audit_files(files[0], files[1],
                          sha256(''.join(files[0].values()).encode()).hexdigest(),
                          sha256(''.join(files[1].values()).encode()).hexdigest())
+    binding = json.loads(files[0]['controlled_route_pair.json'])
+    result['controlled_route_pair_sha256'] = require_retained_pair_bindings(
+        binding, json.loads(files[1]['controlled_route_pair.json']))
+    ending_topology = json.loads(files[0]['intersection_topology.json'])
+    continuing_topology = json.loads(files[1]['highway_pair_topology.json'])
+    if (str(ending_topology['junction_id']) != binding['junction_id'] or
+            str(continuing_topology['junction_id']) != binding['junction_id'] or
+            continuing_topology['map_name'] != binding['map_name']):
+        raise ValueError('Controlled route-pair map or junction differs from originals')
+    for name, selected in binding['routes'].items():
+        observed = continuing_topology['routes'][name]
+        if observed[:len(selected)] != selected:
+            raise ValueError('Controlled route-pair path differs from original topology: ' + name)
+    subject_lane = ending_topology['lanes'][ending_topology['subject_approach_lane']]
+    if subject_lane['highway_id'] != 'native-road:' + str(binding['routes']['ending'][0]['road_id']):
+        raise ValueError('Ending original approach differs from controlled route pair')
     result['attempt_source_hashes'] = [
         {name: sha256((root / name).read_bytes()).hexdigest() for name in needed}
         for root, needed in zip(roots, required)]

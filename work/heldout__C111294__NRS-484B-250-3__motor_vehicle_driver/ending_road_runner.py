@@ -7,7 +7,7 @@ from pathlib import Path
 
 from ending_road_camera import CAMERAS, EndingRoadCameraCapture, LosslessSourceSink
 from ending_road_control_inventory import ungoverned_route_pair, original_ungoverned_inventory
-from ending_road_route import select_t_routes
+from native_pair_preflight import select_bound_pair
 from ending_road_source_capture import EndingRoadSourceRecorder, topology_from_native, _body
 
 ASSIGNMENT = 'heldout__C111294__NRS-484B-250-3__motor_vehicle_driver'
@@ -88,7 +88,7 @@ def extend_exit(path, *, steps=12):
     return extended
 
 
-def run(config, output, host='127.0.0.1', port=2000):
+def run(config, output, host='127.0.0.1', port=2000, expected_pair=None):
     check_config(config)
     import carla
     from pipeline_capture import PipelineCapture
@@ -98,7 +98,8 @@ def run(config, output, host='127.0.0.1', port=2000):
     output.mkdir(parents=True, exist_ok=True)
     if any((output / name).exists() for name in
            ('intersection_topology.json', 'intersection_participants.jsonl',
-            'trace.jsonl', 'video_frames.jsonl', 'control_inventory.json')):
+            'trace.jsonl', 'video_frames.jsonl', 'control_inventory.json',
+            'controlled_route_pair.json')):
         raise FileExistsError('Retain prior original ending-road acquisition')
     config_path = output / 'config.json'
     if config_path.exists():
@@ -118,8 +119,14 @@ def run(config, output, host='127.0.0.1', port=2000):
         settings.fixed_delta_seconds = .05
         world.apply_settings(settings)
         lights = list(world.get_actors().filter('traffic.traffic_light*'))
-        routes = select_t_routes(world.get_map(), route_accept=lambda ending, through:
-                                 ungoverned_route_pair(ending, through, lights))
+        if expected_pair is None:
+            raise ValueError('Expected controlled Native route-pair binding is required')
+        pair, binding = select_bound_pair(world.get_map(), lights,
+            max_spawns=config.get('max_spawns', 300), expected=expected_pair)
+        routes = {'subject': pair['ending'], 'other': pair['other'],
+                  'junction_id': pair['junction_id'], 'map_name': pair['map_name']}
+        (output / 'controlled_route_pair.json').write_text(
+            json.dumps(binding, indent=2, allow_nan=False) + '\n')
         subject_path = extend_exit(routes['subject'])
         other_path = extend_exit(routes['other'])
         routes['subject'], routes['other'] = subject_path, other_path
@@ -204,6 +211,7 @@ def main():
     parser.add_argument('--output-dir')
     parser.add_argument('--host', default='127.0.0.1')
     parser.add_argument('--port', type=int, default=2000)
+    parser.add_argument('--expected-pair')
     parser.add_argument('--run', action='store_true')
     parser.add_argument('--check', action='store_true')
     args = parser.parse_args()
@@ -211,7 +219,10 @@ def main():
     check_config(config)
     if not args.check:
         if not args.output_dir: raise ValueError('Fresh Native output directory required')
-        run(config, args.output_dir, args.host, args.port)
+        if not args.expected_pair:
+            raise ValueError('--expected-pair is required for Native capture')
+        run(config, args.output_dir, args.host, args.port,
+            json.loads(Path(args.expected_pair).read_text()))
 
 
 if __name__ == '__main__':

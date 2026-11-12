@@ -5,7 +5,7 @@ import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from controlled_pair_binding import bind_pair, require_same_pair, require_expected_binding
-from native_pair_preflight import select_and_bind
+from native_pair_preflight import select_and_bind, select_bound_pair
 
 
 class Point:
@@ -99,6 +99,10 @@ class ControlledPairBindingTests(unittest.TestCase):
         world.get_waypoint = lambda location: starts[id(location)]
         world.to_opendrive = lambda: '<OpenDRIVE source="fixed" />'
         binding = select_and_bind(world, [])
+        selected, retained = select_bound_pair(world, [], expected=binding)
+        self.assertEqual(retained, binding)
+        self.assertEqual(selected['ending'][0].road_id, ending[0].road_id)
+        self.assertEqual(selected['other'][0].road_id, through[0].road_id)
         self.assertEqual(binding['routes']['other'][0]['road_id'], 2)
         self.assertEqual(select_and_bind(world, [], expected=binding), binding)
         world.to_opendrive = lambda: '<OpenDRIVE source="changed" />'
@@ -106,6 +110,27 @@ class ControlledPairBindingTests(unittest.TestCase):
             select_and_bind(world, [], expected=binding)
         with self.assertRaisesRegex(ValueError, 'positive'):
             select_and_bind(world, [], max_spawns=0)
+
+    def test_shared_capture_selection_rejects_changed_fixed_route(self):
+        from test_categorical_highway_points import native_map
+        world, ending, through = native_map(subject_continues=False)
+        continuing = [Point(7, -1, -8, 4), Point(8, -1, 0, 4, True),
+                      Point(7, -1, 8, 4)]
+        continuing[0].successors = [continuing[1]]
+        continuing[1].successors = [continuing[2]]
+        starts = {id(p.transform.location): p
+                  for p in (ending[0], through[0], continuing[0])}
+        world.get_spawn_points = lambda: [NS(location=p.transform.location)
+                                          for p in (ending[0], through[0], continuing[0])]
+        world.get_waypoint = lambda location: starts[id(location)]
+        world.to_opendrive = lambda: '<OpenDRIVE source="fixed" />'
+        first_pair, binding = select_bound_pair(world, [])
+        second_pair, checked = select_bound_pair(world, [], expected=binding)
+        self.assertEqual(first_pair['other'][0].road_id, second_pair['other'][0].road_id)
+        self.assertEqual(checked['route_pair_sha256'], binding['route_pair_sha256'])
+        through[1].lane_id = -2
+        with self.assertRaisesRegex(ValueError, 'differs'):
+            select_bound_pair(world, [], expected=binding)
 
 
 if __name__ == '__main__':

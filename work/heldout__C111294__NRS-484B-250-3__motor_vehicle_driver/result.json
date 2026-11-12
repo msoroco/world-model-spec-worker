@@ -72,12 +72,6 @@
       "sha256": "a133468874ac412991e2988da24c6e84f0856afea8bbc3b3553b430e9bb87d53"
     },
     {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment heldout__C111294__NRS-484B-250-3__motor_vehicle_driver --complete",
-      "exit_code": 0,
-      "log": "worker-check-latest.log",
-      "sha256": "bf2dae36def332eca71b5cc39ea603d4ab388271e395331d28b4faa2fa64368a"
-    },
-    {
       "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/highway-continuing-provisional-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__continuing_highway --candidate fallback1 --output .runtime-work/c111294-continuing-fallback1-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
       "exit_code": 0,
       "log": "highway-continuing-fallback1-offline.log",
@@ -141,12 +135,54 @@
       "command": ".venv-cpu/bin/python -m unittest discover -s work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests-latest.log",
-      "sha256": "299586e637ea6bf35c28b88517de9083ffd8e582e2414d27b554754cdb40b414"
+      "sha256": "a026452568449441d06dc9c9b5d3583c0016f7049cf8b2d19a46509fd957f1dd"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/bound-pair-provisional-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_yields --output .runtime-work/c111294-bound-pair-offline --python \"$PWD/.venv-cpu/bin/python\"",
+      "exit_code": 0,
+      "log": "bound-pair-provisional-offline.log",
+      "sha256": "79ee9e285f4f1b1a355b9b3f5c3168657de3fa8014a612579c87c80f222486b4"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/bound-pair-provisional-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_yields --output .runtime-work/c111294-bound-pair-compat --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "bound-pair-provisional-compat.log",
+      "sha256": "bc7fbf3ed8c4eadbe2c05e818c26d07f7ec7130041a73ed716b48d7eb60f520a"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/prove_bound_pair_saved.py",
+      "exit_code": 0,
+      "log": "bound-pair-provisional-saved-command.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment heldout__C111294__NRS-484B-250-3__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "worker-check-latest.log",
+      "sha256": "bf2dae36def332eca71b5cc39ea603d4ab388271e395331d28b4faa2fa64368a"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/continuing-bound-pair-provisional-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__continuing_highway --output .runtime-work/c111294-continuing-bound-pair-offline --python \"$PWD/.venv-cpu/bin/python\"",
+      "exit_code": 0,
+      "log": "continuing-bound-pair-provisional-offline.log",
+      "sha256": "50c8256b21ac58eae5c96acbe8141f554e831dbaf49d490bc2e04e209d9b174e"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/continuing-bound-pair-provisional-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__continuing_highway --output .runtime-work/c111294-continuing-bound-pair-compat --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "continuing-bound-pair-provisional-compat.log",
+      "sha256": "01fefdb1edbfd1d5996cfbe81471a1c582469c27376df87ac013f9814079d60a"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/prove_continuing_bound_pair_saved.py",
+      "exit_code": 0,
+      "log": "continuing-bound-pair-provisional-saved-command.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     }
   ],
   "remaining_gpu_checks": [
     "Actual map suitability, two-vehicle motion and body clearance",
     "Physical camera visibility and capture quality"
   ],
-  "reason": "Nine exact cases retain their prior CPU receipts. A new Native route-pair preflight binds map OpenDRIVE, junction, all ending/continuing/fixed-through waypoint identities and geometry; 51 tests pass, including stale binding and changed through-route rejection. This preflight is not yet wired into both selected runners, so current exact-case receipts do not establish a shared selected Native pair. Full qualitative sweep, runner integration, affected exact/fallback/saved reproof, remaining independent comparisons and batch queue/integration proofs remain worker-owned CPU work. No physical or legal acceptance is claimed."
+  "reason": "Nine selected exact cases retain prior receipts. Both root category runners now require the same expected Native route-pair binding, and the independent saved-attempt comparison auditor requires matching hashed binding sources joined to original topology. Provisional revised ending-yields and continuing-highway primary bundles each pass exact offline, positive/missing-source compatibility and saved-only processing; 54 local CPU tests pass. The canonical nine-case inline constructions and existing receipts still embed older runners, so affected primary/fallback proofs, saved-processing, independent audits, qualitative branch sweep and batch integration remain worker-owned CPU work. No physical or legal acceptance claimed."
 }

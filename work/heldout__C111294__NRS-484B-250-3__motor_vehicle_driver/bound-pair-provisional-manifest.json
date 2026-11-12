@@ -1,0 +1,88 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver",
+  "cases": [
+    {
+      "case_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_yields",
+      "construction": "construction-ending-yields-bound-pair-provisional.json",
+      "construction_sha256": "34a07656cdfba7a40da6e56a4abf5e6c7371667343e5ffa2fbdfeb4e6d76ba26",
+      "kind": "delivery",
+      "measurement_procedure": {
+        "entrypoint": "ending_road_finalizer.py"
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "Provisional primary proof only; canonical risk candidates remain in selected manifest"
+      },
+      "candidates": [],
+      "measurement_contract": "measurement-contract-ending-yields.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_yields --output .runtime-work/c111294-same_arrival_ending_yields-primary-offline-ctrlsrc --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "log": "same_arrival_ending_yields-primary-offline-ctrlsrc.log",
+        "log_sha256": "c8e3b716058c60471a69710ca45cdf2e8b728aea38608a72a4117c9ec2b06e4c",
+        "construction_sha256": "877e7c1c3a0e1c3f7dad5b0953f4c52fd7f031aec5f70ce575ebe5001bf9643c"
+      },
+      "fixture_recipe": "work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/diagnostic-recipe-ending-yields.json",
+      "acquisition": {
+        "intersection_occupancy": {
+          "entrypoint": "ending_road_finalizer.py",
+          "method": "original Native body polygon overlap against retained conflict polygon",
+          "evidence": "intersection_topology.json, intersection_participants.jsonl, trace.jsonl and video_frames.jsonl joined by original frame identity"
+        }
+      },
+      "compatibility": {
+        "receipt": "same_arrival_ending_yields-primary-compatibility.json",
+        "sha256": "0984a580407f9b839eb9e488daa0305c6a67bf300996faf0a1b89a1ae5e5313c",
+        "log": "same_arrival_ending_yields-primary-compat-analysis.log",
+        "negative_log": "same_arrival_ending_yields-primary-negative.log"
+      },
+      "negative": {
+        "log": "same_arrival_ending_yields-primary-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_yields --attempt \"$ATTEMPT\" --output \"$PROCESSING_OUTPUT\" --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSING_OUTPUT/feedback.json\"",
+        "test_log": "ending-yields-saved-processing-gate.log",
+        "test_log_sha256": "11907fb592e9abf8a3211844fee9c97662abedc401a06925f9fdca49b3036254",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_yields",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "1a828161c9008ad9d1bb7facfdfb3d325ba845df8f9f8b63473bc1036d97c8b1",
+        "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/delivery_audit.py --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_yields --attempt .runtime-work/c111294-same_arrival_ending_yields-fallback1-compat-ctrlsrc --report .runtime-work/c111294-same_arrival_ending_yields-fallback1-compat-ctrlsrc/analysis-report.json",
+        "test_exit_code": 0,
+        "test_log": "same_arrival_ending_yields-delivery-audit-positive.log",
+        "test_log_sha256": "7aacc629fdeb4474c1afb39f35d9f7efc1f7f27f44098eff5b7067c2635aa18d",
+        "negative_command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/delivery_audit.py --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_yields --attempt .runtime-work/c111294-same_arrival_ending_yields-fallback1-compat-ctrlsrc --report .runtime-work/c111294-same_arrival_ending_yields-negative-audit-report.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "hash differs",
+        "negative_log": "same_arrival_ending_yields-delivery-audit-negative.log",
+        "negative_log_sha256": "5c1d378170085b44dc0a8d14781077c77b888c20f98ac12cff3d00e57fde9db6"
+      },
+      "physical_preparation": {
+        "receipt": "physical/same_arrival_ending_yields-proof.json",
+        "sha256": "72db9a60f3952b04d35452f56142298f4ed4f54f0723829b9b7ce32bc09b8cc0"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
+    }
+  ],
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3"
+}

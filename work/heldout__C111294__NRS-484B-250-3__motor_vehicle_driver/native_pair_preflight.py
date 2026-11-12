@@ -14,7 +14,7 @@ from controlled_pair_binding import bind_pair, require_expected_binding
 from ending_road_control_inventory import ungoverned_route_pair
 
 
-def select_and_bind(world_map, lights, *, max_spawns=300, expected=None):
+def select_bound_pair(world_map, lights, *, max_spawns=300, expected=None):
     if type(max_spawns) is not int or max_spawns <= 0:
         raise ValueError('Native route search bound must be positive')
     pair = select_controlled_pair(
@@ -22,7 +22,13 @@ def select_and_bind(world_map, lights, *, max_spawns=300, expected=None):
         route_accept=lambda subject, other: ungoverned_route_pair(subject, other, lights))
     pair = dict(pair)
     pair['opendrive_sha256'] = hashlib.sha256(world_map.to_opendrive().encode()).hexdigest()
-    return require_expected_binding(pair, expected) if expected is not None else bind_pair(pair)
+    binding = require_expected_binding(pair, expected) if expected is not None else bind_pair(pair)
+    return pair, binding
+
+
+def select_and_bind(world_map, lights, *, max_spawns=300, expected=None):
+    return select_bound_pair(world_map, lights, max_spawns=max_spawns,
+                             expected=expected)[1]
 
 
 def main():
