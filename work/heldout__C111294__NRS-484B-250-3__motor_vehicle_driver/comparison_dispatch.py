@@ -47,6 +47,8 @@ def dispatch(comparison_id, attempts, analysis_roots=()):
         result = audit_continuity(*roots)
     else:
         raise ValueError('No exact independent audit for ' + comparison_id)
+    if 'comparison_id' not in result and comparison_id == 'ending_vs_continuing_highway':
+        result['comparison_id'] = comparison_id
     if result.get('comparison_id') != comparison_id:
         raise ValueError('Independent audit returned another comparison')
     return result

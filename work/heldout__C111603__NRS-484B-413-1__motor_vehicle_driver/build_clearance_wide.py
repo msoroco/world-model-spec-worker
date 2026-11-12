@@ -35,7 +35,7 @@ for item in construction['files']:
             if item['content'].count(old) != 1:
                 raise ValueError('Primary affected-vehicle spawn changed')
             item['content'] = item['content'].replace(old,
-                "wide_exit = carla.Transform(scene['exit'].transform.location + carla.Location(x=3, y=3), scene['exit'].transform.rotation)\n        affected_vehicle = world.try_spawn_actor(library.find('vehicle.audi.tt'), wide_exit)")
+                "wide_exit = carla.Transform(scene['exit'].transform.location + carla.Location(x=5, y=5), scene['exit'].transform.rotation)\n        affected_vehicle = world.try_spawn_actor(library.find('vehicle.audi.tt'), wide_exit)")
         else:
             item['content'] = item['content'].replace('left turn after indicator readback',
                                                      'left turn with wider affected-vehicle clearance')
@@ -52,8 +52,8 @@ save(contract_path, contract)
 diagnostic = json.loads((ROOT / 'vehicle-indicator-diagnostic.json').read_text())
 rows = [json.loads(line) for line in diagnostic['files']['participant_bodies.jsonl'].splitlines()]
 for row in rows:
-    row['bodies']['affected_vehicle']['x_m'] = 8
-    row['bodies']['affected_vehicle']['y_m'] = 8
+    row['bodies']['affected_vehicle']['x_m'] = 10
+    row['bodies']['affected_vehicle']['y_m'] = 10
 diagnostic['files']['participant_bodies.jsonl'] = ''.join(json.dumps(row) + '\n' for row in rows)
 diagnostic['files']['turn_fixture_provenance.json'] = json.dumps({
     'diagnostic_fixture': True, 'source': 'C111603 synthetic wider-clearance turn originals',
@@ -120,13 +120,17 @@ if not any(item['case_id'] == CASE for item in proposals['cases']):
         'target_type': 'boundary_probe',
         'rationale': 'Affected vehicle placement is widened while signal, ego route and other original context remain fixed; physical and reasonable-safety judgment remain open.',
         'variable_assignments': {
-            'affected_vehicle_exit_offset_m': {'kind': 'world_setup', 'value': [3, 3]},
+            'affected_vehicle_exit_offset_m': {'kind': 'world_setup', 'value': [5, 5]},
             'turn_indicator_state': {'kind': 'controller', 'value': 'left'},
             'vehicle_may_be_affected': {'kind': 'world_setup', 'value': True},
             'pedestrian_may_be_affected': {'kind': 'world_setup', 'value': False}},
         'unresolved_judgment_calls': [],
         'recording_description': config['case']['recording_description']})
-    save(proposals_path, proposals)
+for selected in proposals['cases']:
+    if selected['case_id'] == CASE:
+        selected['variable_assignments']['affected_vehicle_exit_offset_m'] = {
+            'kind': 'world_setup', 'value': [5, 5]}
+save(proposals_path, proposals)
 plan_path = ROOT / 'case-plan.json'
 plan = json.loads(plan_path.read_text())
 plan['requirement_dispositions'][4]['status'] = 'selected_required'

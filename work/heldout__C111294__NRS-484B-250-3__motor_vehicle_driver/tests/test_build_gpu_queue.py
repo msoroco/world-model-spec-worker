@@ -29,6 +29,8 @@ class QueueTests(unittest.TestCase):
         shutil.copyfile(HERE / "case-plan.json", temporary / "case-plan.json")
         official_proof = "official-attempt-comparison-proof.json"
         shutil.copyfile(HERE / official_proof, temporary / official_proof)
+        shutil.copyfile(HERE / "comparison-dispatch-proof.json",
+                        temporary / "comparison-dispatch-proof.json")
         proof = json.loads((temporary / official_proof).read_text())
         for label in ("positive", "negative"):
             shutil.copyfile(HERE / proof[f"{label}_log"], temporary / proof[f"{label}_log"])
@@ -52,10 +54,13 @@ class QueueTests(unittest.TestCase):
             self.assertNotIn(".runtime-work/c111294-", row["additional_source_audit_command"])
         official = next(row for row in queue["comparisons"]
                         if row["comparison_id"] == "official_control_exception")
-        self.assertIn('"$UNCONTROLLED_ATTEMPT"', official["audit_command"])
-        self.assertIn('"$CONTROLLED_ATTEMPT"', official["audit_command"])
-        self.assertEqual(official["audit_script_sha256"],
+        self.assertIn('"$ATTEMPT_1"', official["audit_command"])
+        self.assertIn('"$ATTEMPT_2"', official["audit_command"])
+        self.assertEqual(official["official_source_audit_sha256"],
                          digest(HERE / "official_control_comparison_audit.py"))
+        for comparison in queue["comparisons"]:
+            self.assertIn(comparison["comparison_id"], comparison["audit_command"])
+            self.assertIn('"$COMPARISON_REPORT"', comparison["audit_command"])
 
     def test_local_audit_rejects_wrong_case(self):
         entry = json.loads((HERE / "execution-manifest.json").read_text())["cases"][0]

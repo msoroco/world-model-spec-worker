@@ -51,8 +51,8 @@ def audit(attempt, baseline, *, negative=False):
     if len(first) != len(second) or len(first) != wide['frame_count']:
         raise ValueError('Clearance pair frame counts differ')
     for a, b in zip(first, second):
-        if b['bodies']['affected_vehicle']['x_m'] != a['bodies']['affected_vehicle']['x_m'] + 3 or \
-           b['bodies']['affected_vehicle']['y_m'] != a['bodies']['affected_vehicle']['y_m'] + 3:
+        if b['bodies']['affected_vehicle']['x_m'] != a['bodies']['affected_vehicle']['x_m'] + 5 or \
+           b['bodies']['affected_vehicle']['y_m'] != a['bodies']['affected_vehicle']['y_m'] + 5:
             raise ValueError('Affected vehicle offset differs')
         a = json.loads(json.dumps(a)); b = json.loads(json.dumps(b))
         a['bodies']['affected_vehicle']['x_m'] = b['bodies']['affected_vehicle']['x_m']

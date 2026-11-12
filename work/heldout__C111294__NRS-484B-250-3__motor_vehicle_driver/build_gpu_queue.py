@@ -16,6 +16,7 @@ MANIFEST = HERE / "execution-manifest.json"
 PLAN = HERE / "case-plan.json"
 OUTPUT = HERE / "gpu-queue.json"
 AUDIT_SCRIPT = HERE / "official_control_comparison_audit.py"
+DISPATCH_SCRIPT = HERE / "comparison_dispatch.py"
 SAVED_PROOFS = {
     "same_arrival_ending_yields": "ending-yields-saved-proof.json",
     "same_arrival_ending_enters_first": "ending-enters-first-saved-proof.json",
@@ -114,10 +115,33 @@ def build(manifest_path=MANIFEST, plan_path=PLAN):
             "candidate_selection_rule": "Use only the candidate's declared physical trigger; preserve the case and comparison variable.",
         })
     comparisons = []
+    dispatch_proof_path = manifest_path.parent / "comparison-dispatch-proof.json"
+    dispatch_proof = json.loads(dispatch_proof_path.read_text())
+    if (dispatch_proof.get("manifest_sha256") != manifest_hash or
+            dispatch_proof.get("case_plan_sha256") != digest(plan_path) or
+            dispatch_proof.get("dispatcher_sha256") != digest(DISPATCH_SCRIPT) or
+            dispatch_proof.get("negative_exit_code") == 0):
+        raise ValueError("Exact comparison dispatch proof is stale")
+    proven = {row["comparison_id"]: row for row in dispatch_proof["comparisons"]}
     for item in plan["comparisons"]:
         if not set(item["case_ids"]) <= set(selected):
             raise ValueError("Queue comparison names an unselected case")
+        receipt = proven.get(item["comparison_id"])
+        if not receipt or receipt["case_ids"] != item["case_ids"] or receipt["exit_code"] != 0:
+            raise ValueError("Queue lacks exact passing comparison dispatch proof")
+        for case_id, proof_hash in zip(item["case_ids"], receipt["saved_proof_sha256"]):
+            if digest(manifest_path.parent / SAVED_PROOFS[case_id.rsplit("__", 1)[-1]]) != proof_hash:
+                raise ValueError("Queue comparison saved proof is stale")
         row = {"comparison_id": item["comparison_id"], "case_ids": item["case_ids"]}
+        row["audit_script_sha256"] = digest(DISPATCH_SCRIPT)
+        row["audit_proof_sha256"] = digest(dispatch_proof_path)
+        command = [f'.venv-cpu/bin/python {DISPATCH_SCRIPT.relative_to(ROOT)}',
+                   f'--comparison {item["comparison_id"]}']
+        command.extend(f'--attempt "$ATTEMPT_{i}"' for i in range(1, len(item["case_ids"]) + 1))
+        if item["comparison_id"] == "yield_release_delay_sweep":
+            command.extend(f'--analysis-root "$ANALYSIS_{i}"' for i in range(1, len(item["case_ids"]) + 1))
+        command.append('--output "$COMPARISON_REPORT"')
+        row["audit_command"] = " ".join(command)
         if item["comparison_id"] == "official_control_exception":
             proof = json.loads((manifest_path.parent / "official-attempt-comparison-proof.json").read_text())
             if (proof.get("auditor_sha256") != digest(AUDIT_SCRIPT) or
@@ -127,14 +151,8 @@ def build(manifest_path=MANIFEST, plan_path=PLAN):
             for label in ("positive", "negative"):
                 if digest(manifest_path.parent / proof[f"{label}_log"]) != proof[f"{label}_log_sha256"]:
                     raise ValueError("Official-control attempt comparison log is stale")
-            row["audit_script_sha256"] = digest(AUDIT_SCRIPT)
-            row["audit_proof_sha256"] = digest(manifest_path.parent / "official-attempt-comparison-proof.json")
-            row["audit_command"] = (
-                f'.venv-cpu/bin/python {AUDIT_SCRIPT.relative_to(ROOT)} '
-                '--uncontrolled-attempt "$UNCONTROLLED_ATTEMPT" '
-                '--controlled-attempt "$CONTROLLED_ATTEMPT" '
-                '--output "$COMPARISON_REPORT"'
-            )
+            row["official_source_audit_sha256"] = digest(AUDIT_SCRIPT)
+            row["official_source_proof_sha256"] = digest(manifest_path.parent / "official-attempt-comparison-proof.json")
         comparisons.append(row)
     return {
         "format": "worker-assignment-ordered-gpu-queue",
