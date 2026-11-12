@@ -26,13 +26,13 @@
       "command": ".venv-cpu/bin/python -m unittest discover -s work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "a0f89c440f9479a2c67607ba9c116aa3ba59d2bb33c32bb84d861d27b7302aaa",
-      "passed": 30
+      "sha256": "9d760af974cdb33bf365d5af277b8500f81ddb93dd60d4e65089354af88ce618",
+      "passed": 31
     },
     {
       "command": ".venv-cpu/bin/python work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/prove_aggregate_saved.py",
       "exit_code": 0,
-      "log": "aggregate-saved.log",
+      "log": "aggregate-saved-reproof.log",
       "sha256": "9ba30186ddf9b0afe7f032d3a07d8ee7024204a7e4f7addaddc6db8b440d34b1"
     },
     {
@@ -64,11 +64,41 @@
       "exit_code": 0,
       "log": "queued-comparison-audits.log",
       "sha256": "cea0edd687199aff41fd7db7defe183c6a0fc43704edce36dbcc21f08c8cca36"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/clearance-wide-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__clearance_wide --output .runtime-work/c111603-clearance-wide-primary-offline-c --python $PWD/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "clearance-wide-offline.log",
+      "sha256": "8a8c638ded1463eed16ae65a17cdfc30bd4a2fb17ec4565babc333addd1bb409"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/clearance-wide-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__clearance_wide --output .runtime-work/c111603-clearance-wide-primary-compat-c --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "clearance-wide-compatibility.log",
+      "sha256": "d09ff8d9e890a2986bfc39404c6e1d38ee7cf5e2c3e25763e87ba43235ed7a80"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/prove_clearance_wide.py",
+      "exit_code": 0,
+      "log": "wide-reproof.log",
+      "sha256": "28d0139de6a7c4a12cbe96560e6c845e8e05602c438171b9072620baa1a62dd7"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/clearance_span_audit.py --baseline .runtime-work/c111603-vehicle-indicator-compat-d --wide .runtime-work/c111603-clearance-wide-primary-compat-c --narrow .runtime-work/c111603-clearance-narrow-primary-compat-c --output work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/clearance-span-audit.json",
+      "exit_code": 0,
+      "log": "clearance-span-audit.log",
+      "sha256": "d7082a30878a35ca050a3f8f62bae130f8ba2a51436412c614b7002902aeb102"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/build_gpu_queue.py",
+      "exit_code": 0,
+      "log": "gpu-queue-build.log",
+      "sha256": "3ba0b94811859fb7506438ff1e44877ff96f575595cd951f2b81ea0943155e6d"
     }
   ],
   "remaining_gpu_checks": [
     "Actual Native hand pose and four-camera hand pixels",
     "Actual turn, affected road user, and legal signal adequacy"
   ],
-  "reason": "Partial: nine selected exact turn-signal cases, 27 fallbacks and five controlled comparisons retain their current pinned software proofs. The assignment ordered execution queue now binds every selected construction, fallback and aggregate saved receipt to current hashes; 30 CPU tests pass, including changed saved-log rejection. Five qualitative judgment sweeps, canonical batch GPU queue/local integration, and scoped strict readiness remain worker-owned CPU work. No physical, audible, pixel or legal outcome is claimed."
+  "reason": "Partial: nine exact turn-signal cases, 27 fallbacks and five comparisons pass current pinned software validations. The revised clearance-wide Native offset and original-shaped diagnostic produce +2.072 m sampled body gap; baseline and narrow diagnostics retain measured overlaps. All affected wide primary/fallback offline, positive/missing-source compatibility, saved, delivery, aggregate, physical, comparison and queue proofs were rerun; 31 CPU tests pass. The five qualitative judgment sweeps, full canonical batch queue/local integration and scoped strict readiness remain worker-owned CPU work. No physical, audible, pixel or legal outcome is claimed."
 }
