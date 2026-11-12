@@ -1,0 +1,131 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver",
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3",
+  "cases": [
+    {
+      "case_id": "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__pedestrian_horn_before_turn",
+      "kind": "delivery",
+      "construction": "native-horn-primary-construction.json",
+      "construction_sha256": "2413c171163941437708cbe0b91b021ee7b09da1363125481c8509384dc72b77",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Pedestrian listener microphone alignment, independent horn relay emission and Native turn/visibility require physical readback."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "pedestrian-horn-fallback1-construction.json",
+          "construction_sha256": "e3a6ac3b9dfc479ed46fbf300c5f9a23b478268e6db89f36bee308edb9dede70",
+          "trigger": {
+            "source": "Native pedestrian and connected-route inventory",
+            "metric": "pedestrian distance to sampled route",
+            "failure_condition": "Primary placement does not make pedestrian potentially affected"
+          },
+          "changed_knobs": [
+            "pedestrian route-side offset 6/2 to 5/1.5 m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111610__NRS-484B-413-1__motor_vehicle_driver/execution-manifest.json --case heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__pedestrian_horn_before_turn --candidate fallback1 --output .runtime-work/c111610-horn-fallback1-offline-v1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "pedestrian-horn-fallback1-offline.log",
+            "log_sha256": "d613c8eec210c7e06c7d7e7f62dd7df8f048b9c44c8e6ce395271071cb54ad68",
+            "construction_sha256": "e3a6ac3b9dfc479ed46fbf300c5f9a23b478268e6db89f36bee308edb9dede70"
+          },
+          "compatibility": {
+            "receipt": "pedestrian-horn-fallback1-receipt.json",
+            "sha256": "0078a98db795dc7bef1dbfb5453e56e560afed38bb5206d6105fb694ed6096e7",
+            "log": "pedestrian-horn-fallback1-analysis.log",
+            "negative_log": "pedestrian-horn-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "pedestrian-horn-fallback2-construction.json",
+          "construction_sha256": "230acfd6a48ed5fa949ae517ffc75fa1d847934157e004995b7a7d508853ed54",
+          "trigger": {
+            "source": "Original listener microphone PCM",
+            "metric": "20 Hz audio packet continuity",
+            "failure_condition": "Primary ALSA device loses or misaligns a listener packet"
+          },
+          "changed_knobs": [
+            "listener PCM rate 16000 to 32000 Hz"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111610__NRS-484B-413-1__motor_vehicle_driver/execution-manifest.json --case heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__pedestrian_horn_before_turn --candidate fallback2 --output .runtime-work/c111610-horn-fallback2-offline-v1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "pedestrian-horn-fallback2-offline.log",
+            "log_sha256": "14fe3fe03c3636168359cbae45be82b03d4ee3fe5ed9ffa4076f21d4ee740cb4",
+            "construction_sha256": "230acfd6a48ed5fa949ae517ffc75fa1d847934157e004995b7a7d508853ed54"
+          },
+          "compatibility": {
+            "receipt": "pedestrian-horn-fallback2-receipt.json",
+            "sha256": "c17b41799a8065c9a1d86675618e446f1557c78383828092b4e87b3904d635d5",
+            "log": "pedestrian-horn-fallback2-analysis.log",
+            "negative_log": "pedestrian-horn-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "pedestrian-horn-fallback3-construction.json",
+          "construction_sha256": "fd11832b86b67a2258d0859ad29dabd9af520ac1bbfb935cb1b45a2ad019ead9",
+          "trigger": {
+            "source": "Original overview RGB decode",
+            "metric": "pedestrian visible pixel count",
+            "failure_condition": "Primary overview crops the potentially affected pedestrian"
+          },
+          "changed_knobs": [
+            "overview camera mount x -8 to -9 m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111610__NRS-484B-413-1__motor_vehicle_driver/execution-manifest.json --case heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__pedestrian_horn_before_turn --candidate fallback3 --output .runtime-work/c111610-horn-fallback3-offline-v1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "pedestrian-horn-fallback3-offline.log",
+            "log_sha256": "5d69ad241660874434d9765f6ade9d5f44b21470e78eeec999cdfab607da26f7",
+            "construction_sha256": "fd11832b86b67a2258d0859ad29dabd9af520ac1bbfb935cb1b45a2ad019ead9"
+          },
+          "compatibility": {
+            "receipt": "pedestrian-horn-fallback3-receipt.json",
+            "sha256": "d3a740d83ecae948a1ab69620929a40941647a98e8b7f606ff8e90d6eab0c4c5",
+            "log": "pedestrian-horn-fallback3-analysis.log",
+            "negative_log": "pedestrian-horn-fallback3-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111610__NRS-484B-413-1__motor_vehicle_driver/execution-manifest.json --case heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__pedestrian_horn_before_turn --candidate primary --output .runtime-work/c111610-horn-primary-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "log": "pedestrian-horn-primary-offline.log",
+        "log_sha256": "31e6742ae2150dc0f316461dccbcb964de451177aa97b6363a1f9edffac0bdc3",
+        "construction_sha256": "2413c171163941437708cbe0b91b021ee7b09da1363125481c8509384dc72b77"
+      },
+      "measurement_contract": "pedestrian-horn-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "turn_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C111610__NRS-484B-413-1__motor_vehicle_driver/pedestrian-horn-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "pedestrian-horn-primary-receipt.json",
+        "sha256": "d037c8ced7e64417cc334aef239a9f02b86bbbb6628b85c012015cd423c1088d",
+        "log": "pedestrian-horn-primary-analysis.log",
+        "negative_log": "pedestrian-horn-primary-negative.log"
+      },
+      "negative": {
+        "log": "pedestrian-horn-primary-negative.log"
+      },
+      "saved_processing": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111610__NRS-484B-413-1__motor_vehicle_driver/execution-manifest.json --case heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__pedestrian_horn_before_turn --attempt .runtime-work/c111610-horn-primary-saved-attempt-v1 --output .runtime-work/c111610-horn-primary-saved-v1 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "exit_code": 0,
+        "log": "pedestrian-horn-primary-saved.log",
+        "log_sha256": "5b947777ebab6483cf11fd1cad6c24b62fcf11f54098334dd1572c827ec28bb8",
+        "receipt": "pedestrian-horn-primary-saved-receipt.json",
+        "receipt_sha256": "5b947777ebab6483cf11fd1cad6c24b62fcf11f54098334dd1572c827ec28bb8"
+      }
+    }
+  ]
+}

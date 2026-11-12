@@ -60,10 +60,10 @@
         "script": "lamp_comparison_audit.py",
         "script_sha256": "77a68e81c7d921c872508367ec008833de17e702b4af87f4767d03cac73611dc",
         "proof": "comparison-optional_equipment-proof.json",
-        "proof_sha256": "3c143b7b7fbf9fe940d696ec16af0e2ccee172f6bd0390540bc1f94642eb74a8",
+        "proof_sha256": "6d10d0d0e638627ecb6c2e512bd88c30606ce578f6b6d75a61c8c8a3917e1b92",
         "attempt_paths": [
           ".runtime-work/c111294-semantic-reproof/proofs-returned-v1/no_backup_lamp_installed-primary-saved/v0001/analysis",
-          ".runtime-work/c111294-semantic-reproof/proofs-returned-v1/forward_backup_lamp_off-primary-saved/v0001/analysis"
+          ".runtime-work/c111294-forward-off-reproof-v8/compatibility"
         ],
         "diagnostic_only": true,
         "negative_test": ".venv-cpu/bin/python -m unittest discover -s work/heldout__C111294__NRS-484D-205-4__motor_vehicle_driver/tests -p test_lamp_comparison_audit.py -v"
@@ -88,9 +88,9 @@
         "script": "lamp_comparison_audit.py",
         "script_sha256": "77a68e81c7d921c872508367ec008833de17e702b4af87f4767d03cac73611dc",
         "proof": "comparison-forward_illumination-proof.json",
-        "proof_sha256": "3d7681ce552e04a9514b76ef84c6de1bf4ed9458b09166855ba9de90d46b6661",
+        "proof_sha256": "9fc2ab2bdf3d97e05663e048222c21c50fc244d8fdf751128291afeb7f85d40f",
         "attempt_paths": [
-          ".runtime-work/c111294-semantic-reproof/proofs-returned-v1/forward_backup_lamp_off-primary-saved/v0001/analysis",
+          ".runtime-work/c111294-forward-off-reproof-v8/compatibility",
           ".runtime-work/c111294-semantic-reproof/proofs-returned-v1/forward_backup_lamp_on-primary-saved/v0001/analysis"
         ],
         "diagnostic_only": true,
@@ -117,7 +117,7 @@
         "proof": "comparison-separate_vs_combined_housing-proof.json",
         "proof_sha256": "9241e27c941f7566c1d7065fcc0316c464de3f39c2adb0c7674c4092b2fa0aa5",
         "attempt_paths": [
-          ".runtime-work/c111294-semantic-reproof/proofs-returned-v1/forward_backup_lamp_off-primary-saved/v0001/analysis",
+          ".runtime-work/c111294-forward-off-reproof-v8/compatibility",
           ".runtime-work/c111294-combined-reproof-v7/primary-compatibility"
         ],
         "diagnostic_only": true,
@@ -127,28 +127,28 @@
   ],
   "observations": [
     {
-      "name": "installed_backup_lamps",
-      "unit": "count and location",
+      "name": "native_backup_lamp_on",
+      "unit": "boolean",
       "mandatory": true,
-      "method": "Inspect and record actual blueprint equipment configuration; retain source identity."
+      "method": "Retain original per-frame Native reverse-light bit; independent rear pixels remain a separate physical review."
     },
     {
-      "name": "ego_forward_motion",
+      "name": "forward_motion_observed",
+      "unit": "boolean",
+      "mandatory": true,
+      "method": "Project original velocity onto body heading throughout synchronized forward interval."
+    },
+    {
+      "name": "longitudinal_speed_mps",
       "unit": "m/s",
       "mandatory": true,
-      "method": "Project velocity onto measured forward body heading per synchronized frame, preserving raw velocity and orientation."
+      "method": "Retain signed forward speed derived from original heading and velocity."
     },
     {
-      "name": "backup_lamp_emission",
-      "unit": "state and pixels",
+      "name": "other_vehicle_center_xy_m",
+      "unit": "m",
       "mandatory": true,
-      "method": "Join Native vehicle light state to full decoded rear-facing source pixels for all forward-motion frames; preserve uncertainty."
-    },
-    {
-      "name": "other_vehicle_context",
-      "unit": "pose and motion",
-      "mandatory": true,
-      "method": "Record separate vehicle position, speed, priority and scene purpose."
+      "method": "Retain separate vehicle original position and speed with source-cited scene purpose."
     }
   ],
   "sources": [
@@ -222,5 +222,103 @@
       "evidence_or_gap": "actual-forward-lamp-state"
     }
   ],
-  "review_status": "partial: three exact cases and all 12 current candidates CPU-proven; separate-versus-combined installed backup-lamp alternative still needs constructed exact comparison and proofs"
+  "review_status": "partial: three exact cases and all 12 current candidates CPU-proven; separate-versus-combined installed backup-lamp alternative still needs constructed exact comparison and proofs",
+  "required_context_observations": [
+    {
+      "name": "installed_backup_lamps",
+      "source_refs": [
+        "asset-inspection.json",
+        "equipment.json"
+      ],
+      "method": "Independently reviewed asset inspection is required for physical acceptance; synthetic fixture is software proof only."
+    },
+    {
+      "name": "backup_lamp_emission",
+      "source_refs": [
+        "reference_corner.mkv",
+        "driver_reference.mkv",
+        "lamp-pixel-review.json"
+      ],
+      "method": "Actual emitted rear-lamp pixels require independent original-camera review; Native bit alone is not emission."
+    }
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 8,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "intersection and both vehicle bodies",
+        "interval": "all original 8 s frames"
+      },
+      {
+        "view": "approach",
+        "subject": "ego forward motion and other vehicle",
+        "interval": "all original 8 s frames"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "rear lamp housings and shared asset arrangement",
+        "interval": "all original 8 s frames"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "rear lamp pixels and surrounding context",
+        "interval": "all original 8 s frames"
+      }
+    ],
+    "source_review": "Full source decodes and frame joins are CPU checked; actual emitted pixels, installed equipment and physical motion require original Native review."
+  },
+  "source_observation_mapping": {
+    "sig.reverse_lamp": {
+      "evidence": "Original equipment inventory and Native reverse-light bit are retained; combined housing requires source-hashed independent asset inspection and rear-pixel review.",
+      "channels": [
+        "native_backup_lamp_on"
+      ],
+      "source_refs": [
+        "equipment.json",
+        "asset-inspection.json",
+        "reference_corner.mkv",
+        "driver_reference.mkv"
+      ]
+    },
+    "kin.velocity": {
+      "evidence": "Original vehicle velocity vector is sampled each Native frame and joined to the frame map.",
+      "channels": [
+        "longitudinal_speed_mps"
+      ],
+      "source_refs": [
+        "motion.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    "drv.backing": {
+      "evidence": "Original heading/velocity sign distinguishes forward motion from backing for the statutory forward-only condition.",
+      "channels": [
+        "forward_motion_observed"
+      ],
+      "source_refs": [
+        "motion.jsonl"
+      ]
+    },
+    "kin.heading": {
+      "evidence": "Original body forward vector is retained per frame for signed velocity projection.",
+      "channels": [
+        "longitudinal_speed_mps"
+      ],
+      "source_refs": [
+        "motion.jsonl"
+      ]
+    },
+    "kin.speed": {
+      "evidence": "Signed original heading-dot-velocity projection supplies forward speed without a legal cutoff.",
+      "channels": [
+        "longitudinal_speed_mps"
+      ],
+      "source_refs": [
+        "motion.jsonl"
+      ]
+    }
+  }
 }
