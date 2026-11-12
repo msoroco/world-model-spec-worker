@@ -47,11 +47,12 @@ def exercise(entry,folder,kind,output):
         print(json.dumps({'case_id':entry['case_id'],'fixture':kind,'status':actual,
                           'diagnostic_fixture':True,'source_hashes':result['physical_checks']['maneuver']['sources']}))
 
-def lifecycle(entry,folder,output):
+def lifecycle(entry,folder,output,saved_override=None):
     construction=read(folder/entry['construction'])
-    saved=folder/('primary-saved-processing.json' if entry['construction']=='construction.json' else
-                  'cases/'+entry['case_id'].rsplit('source_verified_',1)[-1]+'/primary-saved-processing.json')
-    if not saved.is_file():
+    saved=Path(saved_override).resolve() if saved_override else folder/(
+        'primary-saved-processing.json' if entry['construction']=='construction.json' else
+        'cases/'+entry['case_id'].rsplit('source_verified_',1)[-1]+'/primary-saved-processing.json')
+    if not saved_override and not saved.is_file():
         saved=folder/'cases'/('source_verified_'+entry['case_id'].rsplit('source_verified_',1)[-1])/'primary-saved-processing.json'
     receipt=read(saved)
     if (receipt.get('format')!='worker-saved-processing' or receipt.get('passed') is not True
@@ -90,9 +91,10 @@ def main():
     parser.add_argument('--case',required=True)
     parser.add_argument('--kind',choices=('complete_motion','incomplete_motion','missing_evidence','lifecycle'),required=True)
     parser.add_argument('--output',required=True)
+    parser.add_argument('--saved-receipt')
     args=parser.parse_args();manifest=Path(args.manifest).resolve();folder=manifest.parent
     entry=next(e for e in read(manifest)['cases'] if e['case_id']==args.case)
     output=Path(args.output);output.parent.mkdir(parents=True,exist_ok=True)
-    if args.kind=='lifecycle':lifecycle(entry,folder,output)
+    if args.kind=='lifecycle':lifecycle(entry,folder,output,args.saved_receipt)
     else:exercise(entry,folder,args.kind,output)
 if __name__=='__main__':main()

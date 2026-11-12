@@ -10,6 +10,7 @@ from pathlib import Path
 from queue import Queue, Empty
 from contextlib import ExitStack
 from following_controller import FollowingController
+from body_gap_geometry import native_body_offset
 from native_following_setup import discover_hill_crest_route, spawn_following_pair
 from camera_setup import source_cameras, SIZES
 from camera_encoder import FFV1Writer
@@ -91,7 +92,8 @@ def capture(args,config):
             (output/'road_context.json').write_text(json.dumps(context,indent=2)+'\n')
             control=FollowingController(carla.VehicleControl,
                 target_speed_mps=config['ego_target_speed_mps'],
-                target_center_spacing_m=config['requested_engineering_gap_m']+4,
+                target_center_spacing_m=config['requested_engineering_gap_m']+native_body_offset(
+                     ego,lead,context['following_forward_xy']),
                 lane_change_start_m=max(1,route['corridor_length_m']*.55),
                 lane_change_end_m=max(2,route['corridor_length_m']*.70),
                 lead_speed_mps=config['lead_target_speed_mps'])
