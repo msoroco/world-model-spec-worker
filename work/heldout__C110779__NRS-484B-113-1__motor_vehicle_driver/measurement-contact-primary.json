@@ -1,0 +1,28 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__backing_vehicle_contact",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "The driver shall not back unless movement can be made with reasonable safety and without interfering with other traffic.",
+      "source": "inputs/heldout__C110779__NRS-484B-113-1__motor_vehicle_driver/assignment.json",
+      "output_key": "backing_safety_observation",
+      "method": "analyze",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "backing_motion.jsonl",
+        "backing_contacts.jsonl",
+        "backing_context.json",
+        "backing_corridor_original.json",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "backing_motion.jsonl"
+    ],
+    "error_contains": "Missing required source: backing_motion.jsonl"
+  }
+}
