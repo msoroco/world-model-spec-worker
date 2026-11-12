@@ -1,0 +1,213 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C104538__NRS-484B-407__motor_vehicle_driver",
+  "runtime_manifest_sha256": "ae635d487ae988b67925bacd5ba13210f31224fc6a1ae131d1836a5557ba8714",
+  "status": "partial_selected_cpu_proofs_pending",
+  "selection_review": {
+    "law_input_sha256": "677c723c3a1d6aaeeb0874ab1f92edb545f9cea26822ae5aca0cf32be0ca8ed9",
+    "case_plan_sha256": "7fd94b6e3747cecd795bcc9676121a6c6baa792f034ad9d939b773116a66e3f8",
+    "proposal_sha256": "349e9a11edfdc94205e9a430c4e0451071080aae880ce06c421cacce32e46d19",
+    "historical_accepted_recording_ids": [
+      "118d30dca38a76184dda043948eb6e79fe5f0f3a27b4df5998905137c0eba02d",
+      "da9c52e53f1fb223f7169031ea0cf016e38cc6c0e1b5b03d3911d775b652ca6f"
+    ],
+    "historical_reuse_receipt": null,
+    "unresolved": [
+      "accepted straight/U-turn equivalence lacks source-hashed review in export",
+      "original 500-foot driver-eye, body and pixel visibility from both directions",
+      "Native road/obstruction geometry, physical reversal and source-camera pixels"
+    ],
+    "scope": "Select distinct authored sweep cases for CPU preparation; no replay or physical/legal acceptance"
+  },
+  "cases": [
+    {
+      "case_id": "training__C104538__NRS-484B-407__motor_vehicle_driver__below_500_ft",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native crest, obstruction geometry, physical opacity, driver-eye pixels and turn completion remain unmeasured"
+      },
+      "measurement_contract": "draft-candidates/below_500_ft/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c104538-saved-analysis-v1"
+      },
+      "fixture_recipe": "work/training__C104538__NRS-484B-407__motor_vehicle_driver/update015-below_500_ft-primary-recipe.json",
+      "kind": "delivery",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-candidates/below_500_ft/fallback1/construction.json",
+          "construction_sha256": "c1a5f214560b656e3551738d82505711ce1462c5588e8432e0e16ab0964224ae",
+          "trigger": {
+            "source": "original Native map waypoint/elevation readback",
+            "metric": "maximum crest mesh height error against authored profile, m",
+            "failure_condition": "> 0.15 m"
+          },
+          "changed_knobs": [
+            "opendrive_vertex_distance_m: 0.25 to 0.1"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-candidates/below_500_ft/fallback2/construction.json",
+          "construction_sha256": "d48ba024a8ac219269b0070aa56a3a7ffb86c33d095722529d5a8d139f9809cb",
+          "trigger": {
+            "source": "original Native obstruction actor polygon/readback",
+            "metric": "maximum radial gap in inner obstruction, m",
+            "failure_condition": "> 0.05 m"
+          },
+          "changed_knobs": [
+            "obstruction_segment_length_m: 2.0 to 1.0"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-candidates/below_500_ft/fallback3/construction.json",
+          "construction_sha256": "6256dde05ed04f7d246f469e8af3dd7d5f42a28f4bcb2a1974eae77b1e2b63d8",
+          "trigger": {
+            "source": "independent original-pixel visibility audit at 500 ft, both directions",
+            "metric": "fraction of target body/pixel frames with audited line of sight",
+            "failure_condition": "< 0.95"
+          },
+          "changed_knobs": [
+            "reference_camera_height_m: 4.0 to 6.0"
+          ]
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "preparation_status": "selected; original visibility and equivalence unverified",
+      "construction": "selected-candidates/below_500_ft/primary/construction.json",
+      "construction_sha256": "61ee4473469c2893f5f2f9d42f2353a2503da11f8ca048260890208dd1fb2ea7"
+    },
+    {
+      "case_id": "training__C104538__NRS-484B-407__motor_vehicle_driver__at_500_ft",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native crest, obstruction geometry, physical opacity, driver-eye pixels and turn completion remain unmeasured"
+      },
+      "measurement_contract": "draft-candidates/at_500_ft/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c104538-saved-analysis-v1"
+      },
+      "fixture_recipe": "work/training__C104538__NRS-484B-407__motor_vehicle_driver/update015-at_500_ft-primary-recipe.json",
+      "kind": "delivery",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-candidates/at_500_ft/fallback1/construction.json",
+          "construction_sha256": "7a262aa98fd10c03709b4aaf650f4bbc986c80cd218e233d2b47b93416ab8632",
+          "trigger": {
+            "source": "original Native map waypoint/elevation readback",
+            "metric": "maximum crest mesh height error against authored profile, m",
+            "failure_condition": "> 0.15 m"
+          },
+          "changed_knobs": [
+            "opendrive_vertex_distance_m: 0.25 to 0.1"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-candidates/at_500_ft/fallback2/construction.json",
+          "construction_sha256": "e334a1f1d13aa40b8e54ea539011db92b5255fb97ee9a6d464f4cc64b6780fb9",
+          "trigger": {
+            "source": "original Native obstruction actor polygon/readback",
+            "metric": "maximum radial gap in inner obstruction, m",
+            "failure_condition": "> 0.05 m"
+          },
+          "changed_knobs": [
+            "obstruction_segment_length_m: 2.0 to 1.0"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-candidates/at_500_ft/fallback3/construction.json",
+          "construction_sha256": "f68b9799a711e6f71cc2bf6e3ad4b47a17695b920426cef3913d8c3d645dd42c",
+          "trigger": {
+            "source": "independent original-pixel visibility audit at 500 ft, both directions",
+            "metric": "fraction of target body/pixel frames with audited line of sight",
+            "failure_condition": "< 0.95"
+          },
+          "changed_knobs": [
+            "reference_camera_height_m: 4.0 to 6.0"
+          ]
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "preparation_status": "selected; original visibility and equivalence unverified",
+      "construction": "selected-candidates/at_500_ft/primary/construction.json",
+      "construction_sha256": "67b87c8009f38c094300dd59f28d61c782a5e14593f70985162aac7f7ec601a0"
+    },
+    {
+      "case_id": "training__C104538__NRS-484B-407__motor_vehicle_driver__above_500_ft",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native crest, obstruction geometry, physical opacity, driver-eye pixels and turn completion remain unmeasured"
+      },
+      "measurement_contract": "draft-candidates/above_500_ft/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c104538-saved-analysis-v1"
+      },
+      "fixture_recipe": "work/training__C104538__NRS-484B-407__motor_vehicle_driver/update015-above_500_ft-primary-recipe.json",
+      "kind": "delivery",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-candidates/above_500_ft/fallback1/construction.json",
+          "construction_sha256": "d6fcfc12dbf281c7b39c9b31ddcebe0e41f7810ae882b46007cce4892a231c6e",
+          "trigger": {
+            "source": "original Native map waypoint/elevation readback",
+            "metric": "maximum crest mesh height error against authored profile, m",
+            "failure_condition": "> 0.15 m"
+          },
+          "changed_knobs": [
+            "opendrive_vertex_distance_m: 0.25 to 0.1"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-candidates/above_500_ft/fallback2/construction.json",
+          "construction_sha256": "719d2e0c9f1fd6ae78a71329293dda271243a12f8ea276354a57ece3aff69615",
+          "trigger": {
+            "source": "original Native obstruction actor polygon/readback",
+            "metric": "maximum radial gap in inner obstruction, m",
+            "failure_condition": "> 0.05 m"
+          },
+          "changed_knobs": [
+            "obstruction_segment_length_m: 2.0 to 1.0"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-candidates/above_500_ft/fallback3/construction.json",
+          "construction_sha256": "69ee7ff7284911dc93f394c34a93ef9459be570752fb448ae2e107008f487d5e",
+          "trigger": {
+            "source": "independent original-pixel visibility audit at 500 ft, both directions",
+            "metric": "fraction of target body/pixel frames with audited line of sight",
+            "failure_condition": "< 0.95"
+          },
+          "changed_knobs": [
+            "reference_camera_height_m: 4.0 to 6.0"
+          ]
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "preparation_status": "selected; original visibility and equivalence unverified",
+      "construction": "selected-candidates/above_500_ft/primary/construction.json",
+      "construction_sha256": "d65a22225889f7e2adf3ae6b0ebdb6539ebaae48830f3ea9e0ee92cd4a1fd581"
+    }
+  ]
+}
