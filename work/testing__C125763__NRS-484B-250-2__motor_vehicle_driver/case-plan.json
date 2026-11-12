@@ -168,5 +168,95 @@
       ],
       "evidence_or_gap": "Saved finalizer reads the listed original source files; physical crossing, sign status and legal application remain unverified."
     }
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 3,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "both vehicles, median crossing and governing yield sign",
+        "interval": "startup through complete exit"
+      },
+      {
+        "view": "approach",
+        "subject": "ego yield entrance and approach body",
+        "interval": "startup through complete exit"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "other approach and crossing conflict area",
+        "interval": "startup through complete exit"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "ego driver reference and governing entrance",
+        "interval": "startup through complete exit"
+      }
+    ],
+    "limitations": [
+      "Prospective camera placement; Native visibility and sign legibility require physical review"
+    ]
+  },
+  "source_observation_mapping": {
+    "st.intersection": {
+      "evidence": "Reviewed site packet and Native map/intersection ID",
+      "channels": [],
+      "source_refs": [
+        "site_packet.py"
+      ]
+    },
+    "st.lane_enters": {
+      "evidence": "Original Native road/lane IDs for both complete bodies",
+      "channels": [],
+      "source_refs": [
+        "capture_sources.py"
+      ]
+    },
+    "drv.entering_intersection": {
+      "evidence": "Complete body vertices per original Native frame",
+      "channels": [],
+      "source_refs": [
+        "capture_sources.py"
+      ]
+    },
+    "drv.arrival_order": {
+      "evidence": "Body entry frames and entry-time difference; legal tolerance unresolved",
+      "channels": [
+        "entry_timing"
+      ],
+      "source_refs": [
+        "finalizer.py"
+      ]
+    },
+    "rel.bearing": {
+      "evidence": "Both original positions and approach forward vectors; right-side relation requires site review",
+      "channels": [],
+      "source_refs": [
+        "capture_sources.py"
+      ]
+    },
+    "drv.yields_to": {
+      "evidence": "Original controller speed/brake and conflict hold; legal yielding unresolved",
+      "channels": [],
+      "source_refs": [
+        "native_pair.py"
+      ]
+    },
+    "dev.traffic_signal": {
+      "evidence": "Governance source review; actual official device status remains unverified",
+      "channels": [],
+      "source_refs": [
+        "site_packet.py"
+      ]
+    },
+    "drv.turning": {
+      "evidence": "Opposite-direction left-turn controller intention and Native route history",
+      "channels": [],
+      "source_refs": [
+        "runner.py"
+      ]
+    }
+  }
 }

@@ -25,6 +25,8 @@ def fixture_sources(root,entry):
     if config.get('physical_completion', {}).get('body_key') != 'ego.body_vertices_xy_m':
         raise ValueError('Construction lacks original body-history criterion')
     write(root/'config.json',config)
+    (root/'site.json').write_text(next(row['content'] for row in construction['files']
+                                       if row['path'] == 'site.json'))
     recipe=read(REPO/entry['fixture_recipe'])
     source=REPO/recipe['generator']['source']
     if sha(source)!=recipe['generator']['sha256']:

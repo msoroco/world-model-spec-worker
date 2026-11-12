@@ -614,3 +614,36 @@ testing__C125763__NRS-484B-250-2__motor_vehicle_driver --complete` exits
 --complete --require-delivery-ready` exits 1 in `strict-gate.log` with
 `Preparation acceptance failed: partial/missing packages remain`. This
 remains a worker-owned preparation checkpoint, not a delivery-ready result.
+
+## Corrected physical criterion promoted and reproved (2026-11-12)
+
+`promote_physical_candidates.py` binds `physical-construction.json` and each
+`fallbackN-physical-construction.json` into the four named candidate manifests.
+All sixteen exact candidate IDs passed offline, positive/negative compatibility,
+and recorded-only saved processing using the current pinned CPU environment.
+Logs and receipts are `promoted-{primary,right,separated,opposite}-{primary,fallback1,fallback2,fallback3}-*`
+in this assignment directory. The primary saved receipts are
+`promoted-{primary,right,separated,opposite}-primary-saved-receipt.json`.
+The fixture proof now reads each construction's actual `physical_completion`
+descriptor and retained `site.json`; `build_physical_proofs.py` passed three
+physical outcomes plus lifecycle ordering for every selected case.
+`build_execution_manifest.py` assembled the current four-case manifest, then
+`refresh_canonical_proofs.py` reran exact compatibility and recorded-only saved
+processing for all four cases against that manifest SHA.
+`canonical-proof-index.json` binds the current combined manifest and these
+canonical receipts. Diagnostic evidence claims no physical acceptance.
+
+Reproduce the package checks:
+
+```sh
+.venv-cpu/bin/python -m unittest discover -s work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/tests
+.venv-cpu/bin/python worker_check.py --assignment testing__C125763__NRS-484B-250-2__motor_vehicle_driver --complete
+```
+
+Both pass (38 tests; static checks passed). The assignment strict readiness
+check still rejects status `partial`. Next CPU work: run and bind exact-case
+positive/negative independent delivery-acceptance auditor proofs for all four
+selected cases, then rerun canonical snapshot proofs after the manifest changes,
+review original law/coverage and comparisons, and rerun assignment and batch
+strict readiness gates. The Native motion, camera/pixel visibility and official
+intersection geometry remain physical checks only.
