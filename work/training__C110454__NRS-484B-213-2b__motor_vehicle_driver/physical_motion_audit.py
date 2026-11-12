@@ -16,7 +16,8 @@ HERE = Path(__file__).resolve().parent
 EXPECTED = {"rail_reference": "outside_100_ft", "rail_contrast": "within_100_ft",
             "rail_at": "within_100_ft",
             "oneway_absent": "within_100_ft", "oneway_present": "within_100_ft",
-            "traversal_reference": "no_left_traversal", "traversal_contrast": "left_traversal"}
+            "traversal_reference": "no_left_traversal", "traversal_contrast": "left_traversal",
+            "reference": "outside_100_ft", "contrast": "within_100_ft"}
 
 
 def number(value):
@@ -36,7 +37,8 @@ def measure_rows(samples: list[dict], survey: dict, suffix: str, context: dict |
             all(point(value) for value in directions.values()),
             "Native road-direction survey incomplete")
     one_way = suffix == "oneway_present"
-    require(survey.get("one_way_native_readback") is one_way if not suffix.startswith("traversal_") else
+    intersection = suffix in ("reference", "contrast")
+    require(survey.get("one_way_native_readback") is one_way if not (suffix.startswith("traversal_") or intersection) else
             sum(a*b for a, b in zip(directions["approach_forward"],
                                     directions["approach_opposing"])) < -.98,
             "Native roadway designation differs")
@@ -45,7 +47,11 @@ def measure_rows(samples: list[dict], survey: dict, suffix: str, context: dict |
                 isinstance(survey.get("railroad_crossing_object_id"), str) and
                 bool(survey["railroad_crossing_object_id"]),
                 "Native railroad object readback missing")
-    if suffix.startswith("traversal_"):
+    if intersection:
+        require(point(survey.get("intersection_entry_point_native_m")) and
+                context is not None and context.get("surveyed_two_way_intersection") == survey,
+                "Native intersection context differs")
+    elif suffix.startswith("traversal_"):
         require(survey.get("intersection_polygon_xy_m") == [[-7, -7], [7, -7], [7, 7], [-7, 7]],
                 "Native intersection polygon differs")
         require(context is not None and
@@ -78,9 +84,10 @@ def measure_rows(samples: list[dict], survey: dict, suffix: str, context: dict |
                 row.get("two_way_native_survey") is (not one_way),
                 "Original Native speed or direction sample differs")
         if not suffix.startswith("traversal_"):
-            require(row.get("one_way_native_survey") is one_way,
-                    "Native one-way sample differs")
-            boundary = survey["approach_boundary_x_m"]
+            if not intersection:
+                require(row.get("one_way_native_survey") is one_way,
+                        "Native one-way sample differs")
+            boundary = survey["intersection_entry_point_native_m"][0] if intersection else survey["approach_boundary_x_m"]
             require(number(boundary), "Native zone boundary missing")
             if min(p[1] for p in body) > 0 and max(p[0] for p in body) < boundary and speed > .05:
                 left_approach.append(boundary - max(p[0] for p in body))
@@ -104,7 +111,7 @@ def measure_rows(samples: list[dict], survey: dict, suffix: str, context: dict |
         measured = {"left_driving_frames": len(left_approach),
                     "nearest_body_front_to_zone_m": nearest,
                     "100_ft_boundary_m": 30.48,
-                    "zone_kind": survey["approach_zone_kind"],
+                    "zone_kind": "intersection" if intersection else survey["approach_zone_kind"],
                     "one_way_native_survey": one_way}
     if enforce_target:
         require(relation == EXPECTED[suffix], "Native motion differs from selected case")
@@ -122,7 +129,7 @@ def audit(attempt: Path, processing: Path, case_id: str, candidate_id: str,
     joined = audit_sources(attempt, processing, case_id, candidate_id,
                            construction_sha256, diagnostic=diagnostic)
     survey_path = attempt / "road_geometry.json"
-    context_path = attempt / ("context.json" if suffix.startswith("traversal_") else
+    context_path = attempt / ("context.json" if suffix.startswith("traversal_") or suffix in ("reference", "contrast") else
                               "statutory_context.json")
     require(survey_path.is_file() and context_path.is_file(), "Native road or context source missing")
     saved = read(processing)

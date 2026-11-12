@@ -23,7 +23,8 @@ from physical_motion_audit import EXPECTED, audit as audit_motion  # noqa: E402
 from source_join_audit import read, require, rows, sha  # noqa: E402
 TARGET = {"rail_reference": "railroad_crossing", "rail_contrast": "railroad_crossing",
           "oneway_absent": "roadway", "oneway_present": "roadway",
-          "traversal_reference": "intersection", "traversal_contrast": "intersection"}
+          "traversal_reference": "intersection", "traversal_contrast": "intersection",
+          "reference": "intersection", "contrast": "intersection"}
 ZONE_KIND = {suffix: ("railroad_crossing" if suffix.startswith("rail_") else "intersection")
              for suffix in EXPECTED}
 CHECKS = ("native_source", "all_participants", "time_join", "full_video_decode",
@@ -86,7 +87,7 @@ def check_pixel_review(review: dict, case_id: str, source_hashes: dict,
 def check_context_review(review: dict, attempt: Path, case_id: str,
                          *, diagnostic: bool) -> dict:
     suffix = case_id.removeprefix(AID + "__")
-    context_name = "context.json" if suffix.startswith("traversal_") else "statutory_context.json"
+    context_name = "context.json" if suffix.startswith("traversal_") or suffix in ("reference", "contrast") else "statutory_context.json"
     survey = read(attempt / "road_geometry.json")
     require(review.get("format") == "c110454-original-road-context-review-v1" and
             review.get("case_id") == case_id and review.get("source_kind") ==
@@ -106,7 +107,7 @@ def check_context_review(review: dict, attempt: Path, case_id: str,
                 review.get("zone_kind") == ZONE_KIND[suffix] and
                 review.get("observations") and review.get("limitations") is not None,
                 "Original Native designation or scene review incomplete")
-        if suffix.startswith("traversal_"):
+        if suffix.startswith("traversal_") or suffix in ("reference", "contrast"):
             require(review.get("two_way_native_readback") is True,
                     "Original two-way intersection designation unconfirmed")
         else:

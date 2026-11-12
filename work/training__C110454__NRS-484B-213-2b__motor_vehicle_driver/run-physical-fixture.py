@@ -50,7 +50,7 @@ def main():
     else:
         attempt = args.run_root / suffix / "primary/compatibility"
         names = ("native_samples.jsonl", "road_geometry.json",
-                 "context.json" if suffix.startswith("traversal_") else "statutory_context.json")
+                 "context.json" if suffix.startswith("traversal_") or suffix in ("reference", "contrast") else "statutory_context.json")
         samples = [json.loads(line) for line in (attempt / names[0]).read_text().splitlines()]
         survey = json.loads((attempt / names[1]).read_text())
         context = json.loads((attempt / names[2]).read_text())
