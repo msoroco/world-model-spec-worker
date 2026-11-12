@@ -1,13 +1,47 @@
 """Selected separated-entry source and proof contract."""
 import json
+import sys
 import unittest
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parents[1]
 CASE = HERE.name+'__off_ego_left_separated'
+sys.path.insert(0, str(HERE.parents[1]/'runtime'))
+from scenario_pipeline.worker_exchange.candidate_constructions import validate as validate_candidates
 
 
 class SeparatedCase(unittest.TestCase):
+    def test_three_fallbacks_change_distinct_engineering_causes(self):
+        manifest = json.loads((HERE/'execution-manifest.json').read_text())
+        entry = next(row for row in manifest['cases'] if row['case_id'] == CASE)
+        self.assertEqual(validate_candidates(HERE, entry, 'NRS-484B-250-2', 'C125697',
+                                             required=True, require_alternate=True,
+                                             candidate_count=4)['fallbacks'],
+                         ['fallback1', 'fallback2', 'fallback3'])
+        original = json.loads(next(item['content'] for item in
+                                   json.loads((HERE/entry['construction']).read_text())['files']
+                                   if item['path'] == 'config.json'))
+        for candidate in entry['candidates']:
+            cfg = json.loads(next(item['content'] for item in
+                                  json.loads((HERE/candidate['construction']).read_text())['files']
+                                  if item['path'] == 'config.json'))
+            ident = candidate['id']
+            if ident == 'fallback1':
+                self.assertEqual(cfg['site']['ego_approach'][0], -4)
+                self.assertEqual(cfg['site']['routes']['ego'][0][0], -4)
+                cfg['site']['ego_approach'] = original['site']['ego_approach']
+                cfg['site']['routes']['ego'][0] = original['site']['routes']['ego'][0]
+            elif ident == 'fallback2':
+                self.assertNotEqual(cfg['site']['cameras']['approach'], original['site']['cameras']['approach'])
+                cfg['site']['cameras']['approach'] = original['site']['cameras']['approach']
+            else:
+                self.assertEqual(cfg['other_release_frame'], 64)
+                cfg['other_release_frame'] = original['other_release_frame']
+            cfg.pop('site_review')
+            fixed = dict(original)
+            fixed.pop('site_review')
+            self.assertEqual(cfg, fixed)
+
     def test_continuous_source_matches_release_and_complete_body_timing(self):
         manifest = json.loads((HERE/'execution-manifest.json').read_text())
         entry = next(row for row in manifest['cases'] if row['case_id'] == CASE)

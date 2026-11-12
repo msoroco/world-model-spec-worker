@@ -9,7 +9,7 @@ REPO = HERE.parents[1]
 SUFFIXES = (
     ('left', 'off_ego_left_near_time', True),
     ('right', 'off_ego_right_near_time', True),
-    ('separated', 'off_ego_left_separated', False),
+    ('separated', 'off_ego_left_separated', True),
 )
 
 
