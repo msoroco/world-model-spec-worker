@@ -45,8 +45,12 @@ def compare_sources(kind, left, right):
                 ex.get("world", {}).get("weather") == ey.get("world", {}).get("weather")
                 for x, y, fx, fy, ex, ey in zip(sa, sb, fa, fb, ea, eb)),
             "Held frame/time map or weather differs")
-    require(all(x["native_center_xy_m"][0] == y["native_center_xy_m"][0]
-                for x, y in zip(sa, sb)), "Held longitudinal route differs")
+    longitudinal = sum(x["native_center_xy_m"][0] != y["native_center_xy_m"][0]
+                       for x, y in zip(sa, sb))
+    if kind == "rail_at":
+        require(longitudinal > 0, "Rail boundary approach distance did not change")
+    else:
+        require(longitudinal == 0, "Held longitudinal route differs")
     lateral = sum(x["native_center_xy_m"][1] != y["native_center_xy_m"][1]
                   for x, y in zip(sa, sb))
     speed = sum(x["speed_m_s"] != y["speed_m_s"] for x, y in zip(sa, sb))
@@ -60,21 +64,20 @@ def compare_sources(kind, left, right):
                 "One-way designation contrast or fixed route differs")
         allowed_context = {"case_suffix", "one_way", "road_directions_native"}
     else:
-        require(ra == rb and
-                left["road_xodr_sha256"] == right["road_xodr_sha256"] and
-                lateral > 0, "Held road or lateral contrast differs")
+        require(ra == rb and left["road_xodr_sha256"] == right["road_xodr_sha256"] and
+                (lateral > 0 or kind == "rail_at"), "Held road or route contrast differs")
         require(speed > 0 if kind == "traversal" else speed == 0,
                 "Paired speed consequence or fixed schedule differs")
         if kind == "traversal":
             require(sa[-1]["native_center_xy_m"] == sb[-1]["native_center_xy_m"],
                     "Held traversal parking endpoint differs")
         allowed_context = {"case_suffix"}
-    if kind in ("rail", "oneway"):
+    if kind in ("rail", "rail_at", "oneway"):
         ca, cb = left["statutory"], right["statutory"]
         require({key for key in ca if ca[key] != cb.get(key)} <= allowed_context and
                 ca.get("native_map_sha256") == cb.get("native_map_sha256"),
                 "Held statutory context differs")
-        if kind == "rail":
+        if kind in ("rail", "rail_at"):
             require(ca.get("railroad_crossing") is True and
                     ca.get("railroad_crossing_object_id") ==
                     cb.get("railroad_crossing_object_id") == "701",
@@ -82,9 +85,18 @@ def compare_sources(kind, left, right):
         else:
             require(ca.get("one_way") is False and cb.get("one_way") is True,
                     "One-way statutory context contrast absent")
-    return {"lateral_changed_frames": lateral, "speed_changed_frames": speed,
+    if kind == "rail_at":
+        from physical_motion_audit import measure_rows
+        reference = measure_rows(sa, ra, "rail_reference", left["statutory"])
+        boundary = measure_rows(sb, rb, "rail_at", right["statutory"])
+        reference_m = reference["measured"]["nearest_body_front_to_zone_m"]
+        boundary_m = boundary["measured"]["nearest_body_front_to_zone_m"]
+        require(reference_m > 30.48 + 1e-6 and abs(boundary_m - 30.48) <= .01,
+                "Rail boundary source measurements differ")
+    return {"lateral_changed_frames": lateral, "longitudinal_changed_frames": longitudinal,
+            "speed_changed_frames": speed,
             "held_frame_time_weather": True, "held_capture_config": True,
-            "held_longitudinal_route": True}
+            "held_longitudinal_route": kind != "rail_at"}
 
 
 def load_side(group, suffix, manifest, root_name, *, diagnostic):

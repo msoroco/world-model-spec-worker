@@ -319,7 +319,7 @@
         "unit": "ft",
         "test_value": 151.25
       },
-      "epsilon_used": "selected broad approach window; no at-boundary probe"
+      "epsilon_used": "authored below, at and above 100 feet"
     },
     {
       "case_id": "training__C110454__NRS-484B-213-2b__motor_vehicle_driver__rail_contrast",
@@ -485,7 +485,7 @@
         "unit": "ft",
         "test_value": 52.82
       },
-      "epsilon_used": "selected broad approach window; no at-boundary probe"
+      "epsilon_used": "authored below, at and above 100 feet"
     },
     {
       "case_id": "training__C110454__NRS-484B-213-2b__motor_vehicle_driver__oneway_absent",
@@ -1130,6 +1130,172 @@
         "comparison_or_standard": "paired authored setting against exact statutory clause",
         "target_value_or_branch": true
       }
+    },
+    {
+      "case_id": "training__C110454__NRS-484B-213-2b__motor_vehicle_driver__rail_at",
+      "target_law_id": "NRS-484B-213-2b",
+      "target_type": "boundary_probe",
+      "rationale": "Selected authored setting; observed distance, lane designation and left-side occupancy remain unverified until Native capture.",
+      "variable_assignments": {
+        "crossing_kind": {
+          "kind": "world_setup",
+          "value": "railroad_grade_crossing",
+          "unit": "categorical"
+        },
+        "one_way_designation": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "commanded_left_side_route": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        },
+        "commanded_left_side_closest_distance_ft": {
+          "kind": "controller",
+          "value": 100.0,
+          "unit": "ft"
+        },
+        "observed_left_side_closest_distance_ft": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "ft"
+        },
+        "observed_left_side_occupancy": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map/road asset, full body and synchronized video; statutory_context source join",
+            "time_window": "original 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame",
+            "uncertainty": "50 ms samples; original physical map/pixels remain unobserved"
+          },
+          {
+            "name": "drv.in_intersection",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map/road asset, full body and synchronized video; statutory_context source join",
+            "time_window": "original 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame",
+            "uncertainty": "50 ms samples; original physical map/pixels remain unobserved"
+          },
+          {
+            "name": "st.intersection",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map/road asset, full body and synchronized video; statutory_context source join",
+            "time_window": "original 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame",
+            "uncertainty": "50 ms samples; original physical map/pixels remain unobserved"
+          },
+          {
+            "name": "st.railway_crossing",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map/road asset, full body and synchronized video; statutory_context source join",
+            "time_window": "original 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame",
+            "uncertainty": "50 ms samples; original physical map/pixels remain unobserved"
+          },
+          {
+            "name": "st.centre_line",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map/road asset, full body and synchronized video; statutory_context source join",
+            "time_window": "original 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame",
+            "uncertainty": "50 ms samples; original physical map/pixels remain unobserved"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map/road asset, full body and synchronized video; statutory_context source join",
+            "time_window": "original 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame",
+            "uncertainty": "50 ms samples; original physical map/pixels remain unobserved"
+          },
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map/road asset, full body and synchronized video; statutory_context source join",
+            "time_window": "original 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame",
+            "uncertainty": "50 ms samples; original physical map/pixels remain unobserved"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map/road asset, full body and synchronized video; statutory_context source join",
+            "time_window": "original 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame",
+            "uncertainty": "50 ms samples; original physical map/pixels remain unobserved"
+          },
+          {
+            "name": "st.one_way_roadway",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map/road asset, full body and synchronized video; statutory_context source join",
+            "time_window": "original 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame",
+            "uncertainty": "50 ms samples; original physical map/pixels remain unobserved"
+          },
+          {
+            "name": "native_body_pose_control",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map/road asset, full body and synchronized video; statutory_context source join",
+            "time_window": "original 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame",
+            "uncertainty": "50 ms samples; original physical map/pixels remain unobserved"
+          },
+          {
+            "name": "camera_frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map/road asset, full body and synchronized video; statutory_context source join",
+            "time_window": "original 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame",
+            "uncertainty": "50 ms samples; original physical map/pixels remain unobserved"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "surveyed_statutory_approach",
+            "unit": "structured",
+            "method": "Native OpenDRIVE railroad object and one-way lane direction readback"
+          }
+        ],
+        "limitations": [
+          "CPU construction and synthetic fixtures do not establish physical behavior or legal exception"
+        ]
+      },
+      "paired_probe_id": "rail_distance",
+      "deliberate_differences": [
+        "commanded_left_side_closest_distance_ft"
+      ],
+      "probe": {
+        "primary_variable": "commanded_left_side_closest_distance_ft",
+        "comparison_or_standard": "paired authored setting against exact statutory clause",
+        "target_value_or_branch": 100.0,
+        "threshold_ref": "activation.numeric_conditions[0]",
+        "operator": "<=",
+        "unit": "ft",
+        "test_value": 100.0
+      },
+      "epsilon_used": "authored below, at and above 100 feet"
     }
   ],
   "sweep_specs": []

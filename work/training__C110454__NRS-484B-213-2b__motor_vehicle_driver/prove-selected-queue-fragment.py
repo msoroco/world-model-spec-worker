@@ -31,7 +31,7 @@ def check(fragment):
             "Queue source hash changed")
     rows = fragment["cases"]
     require([row["case_id"] for row in rows] == [item["case_id"] for item in manifest["cases"]] and
-            [row["order"] for row in rows] == list(range(1, 7)),
+            [row["order"] for row in rows] == list(range(1, 8)),
             "Selected case order or coverage changed")
     for row, entry in zip(rows, manifest["cases"]):
         case = entry["case_id"]
@@ -60,7 +60,7 @@ def check(fragment):
     expected = [item for item in plan["comparisons"]
                 if item["comparison_id"].removeprefix(MODULE.AID + "__comparison_") in MODULE.PAIRS]
     comparisons = fragment["comparison_audit_commands"]
-    require(len(comparisons) == len(expected) == 3 and
+    require(len(comparisons) == len(expected) == 4 and
             [(item["comparison_id"], item["case_ids"]) for item in comparisons] ==
             [(item["comparison_id"], item["case_ids"]) for item in expected],
             "Selected comparison coverage changed")

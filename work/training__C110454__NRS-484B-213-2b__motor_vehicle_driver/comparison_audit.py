@@ -13,6 +13,7 @@ HERE = Path(__file__).resolve().parent
 AID = HERE.name
 MANIFEST = HERE / "execution-manifest.json"
 PAIRS = {"rail": ("rail_reference", "rail_contrast"),
+         "rail_at": ("rail_reference", "rail_at"),
          "oneway": ("oneway_absent", "oneway_present"),
          "traversal": ("traversal_reference", "traversal_contrast")}
 CHECKS = {"native_source", "all_participants", "time_join", "full_video_decode",
