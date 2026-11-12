@@ -82,7 +82,8 @@ def build():
             {'path': 'runner.py', 'content': ENTRY.replace('CASE_ID', case)},
         ]
         for name in ('native_runner.py', 'marked_course_native.py',
-                     'turn_source_recorder.py', 'marked_course_measurement.py'):
+                     'turn_source_recorder.py', 'marked_course_measurement.py',
+                     'marked_course_finalizer.py'):
             files.append({'path': name, 'content': (ROOT / name).read_text()})
         for test in sorted((ROOT / 'tests').glob('test*.py')):
             files.append({'path': 'tests/' + test.name, 'content': test.read_text()})
@@ -99,6 +100,7 @@ def build():
         entry = {
             'case_id': case, 'kind': 'delivery',
             'construction': path.name, 'construction_sha256': digest,
+            'measurement_procedure': {'entrypoint': 'marked_course_finalizer.py'},
             'candidate_risk': {'status': 'physical',
                                'reason': 'Marker readback and full turn through the sourced junction require Native verification.'},
             'candidates': [],

@@ -54,6 +54,9 @@ class SourceRecorderTests(unittest.TestCase):
                 (Path(temp) / result['authority_source']).read_bytes()).hexdigest())
             self.assertTrue((Path(temp) / 'turn_body.jsonl').is_file())
             self.assertTrue((Path(temp) / 'video_frames.jsonl').is_file())
+            self.assertEqual(result['original_trace_source'], 'trace.jsonl')
+            trace = [json.loads(line) for line in (Path(temp) / 'trace.jsonl').read_text().splitlines()]
+            self.assertEqual([row['position_m'] for row in trace], [[3.0, 5.0]] * 2)
             measurement_spec = importlib.util.spec_from_file_location(
                 'marked_course_measurement', HERE / 'marked_course_measurement.py')
             measurement = importlib.util.module_from_spec(measurement_spec)

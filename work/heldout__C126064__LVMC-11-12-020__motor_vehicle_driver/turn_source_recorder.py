@@ -133,6 +133,14 @@ class SourceRecorder:
         with (self.output / 'turn_body.jsonl').open('w') as stream:
             for row in self.body_rows:
                 stream.write(json.dumps(row) + '\n')
+        with (self.output / 'trace.jsonl').open('w') as stream:
+            for row in self.body_rows:
+                corners = row['corners_xy_m']
+                if len(corners) != 4:
+                    raise ValueError('Original body trace needs four corners')
+                centre = [sum(point[axis] for point in corners) / 4 for axis in (0, 1)]
+                stream.write(json.dumps({'frame': row['frame'], 'time_s': row['time_s'],
+                                         'position_m': centre}) + '\n')
         with (self.output / 'video_frames.jsonl').open('w') as stream:
             for index, body in enumerate(self.body_rows):
                 stream.write(json.dumps({'video_frame': index,
@@ -140,6 +148,7 @@ class SourceRecorder:
                                          'time_s': body['time_s']}) + '\n')
         return {'frames': len(frames), 'sources': sorted(self.frame_rows),
                 'original_body_source': 'turn_body.jsonl',
+                'original_trace_source': 'trace.jsonl',
                 'frame_map_source': 'video_frames.jsonl',
                 'scene_source': 'marked_intersection.json',
                 'authority_source': 'authority_source_original.json',
