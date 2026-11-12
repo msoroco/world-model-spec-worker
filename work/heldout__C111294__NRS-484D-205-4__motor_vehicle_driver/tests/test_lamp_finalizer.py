@@ -48,6 +48,8 @@ def fixture(path, branch='forward_backup_lamp_off'):
         streams['trace.jsonl'].append({'frame': frame, 'time_s': time_s})
     for name, rows in streams.items():
         (path/name).write_text(''.join(json.dumps(row)+'\n' for row in rows))
+    for camera in ('overview','approach','reference_corner','driver_reference'):
+        (path/(camera+'.mkv')).write_bytes(b'synthetic unit-test source')
     return config
 
 

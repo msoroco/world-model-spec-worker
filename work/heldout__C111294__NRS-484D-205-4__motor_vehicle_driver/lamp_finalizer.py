@@ -93,12 +93,34 @@ def build_result(attempt, report):
     description = config.get('case', {}).get('recording_description')
     if not isinstance(description, dict) or not description.get('channels'):
         raise ValueError('Exact recording description missing')
+    # Derived context files cite original bytes; actual emitted-pixel review remains pending.
+    originals = ['motion.jsonl','equipment.json','video_frames.jsonl','other_vehicle.jsonl',
+                 'intersection_context.json','trace.jsonl','overview.mkv','approach.mkv',
+                 'reference_corner.mkv','driver_reference.mkv']
+    source_hashes = {name: sha256(_source(root, name).read_bytes()).hexdigest() for name in originals}
+    contexts = {
+        'installed_backup_lamps': {'installed_backup_lamps': json.loads((root/'equipment.json').read_text())['installed_backup_lamps'],
+                                   'equipment_source_sha256': source_hashes['equipment.json']},
+        'other_vehicle_context': {'other_vehicle_context': json.loads((root/'intersection_context.json').read_text()),
+                                  'original_other_motion_sha256': source_hashes['other_vehicle.jsonl']},
+        'original_motion_equipment_and_four_cameras': {'original_motion_equipment_and_four_cameras': source_hashes},
+        'original_rear_lamp_pixels': {'original_rear_lamp_pixels': {'status':'pending_independent_original_pixel_review',
+                                    'camera_sha256': {k:source_hashes[k] for k in originals if k.endswith('.mkv')},
+                                    'emission_observed': None}},
+    }
+    for name, value in contexts.items():
+        target = root/(name+'.json')
+        if target.exists(): raise ValueError('Retain prior derived context: '+name)
+        target.write_text(json.dumps(value, indent=2)+'\n')
     evidence = []
     for item in description['channels']:
         name = item['name']
         path = _source(root, name+'.jsonl')
         evidence.append({'name': name, 'unit': item['unit'],
                          'reference': path.name, 'sha256': sha256(path.read_bytes()).hexdigest()})
+    for item in description.get('context_inputs', []):
+        name = item['name']; path = _source(root, name+'.json')
+        evidence.append({'name':name, 'unit':item['unit'], 'reference':path.name, 'sha256':sha256(path.read_bytes()).hexdigest()})
     value = report['measurements']['backup_lamp_forward']['value']
     return {'case_id': report['case_id'],
             'measured_values': {'backup_lamp_forward': value},
