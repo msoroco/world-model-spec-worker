@@ -1136,8 +1136,8 @@
       "status": "incomplete",
       "rationale": "The exact law requires judgment across gap, speeds, traffic and road condition without numeric cutoff.",
       "missing_inputs": [
-        "Complete the source-backed physically feasible engineering-gap judgment sweep; the current CPU model and sealed synthetic geometry do not establish selected Native hill-crest response.",
-        "Review original accepted Native actor traces and complete-body geometry to bound realized gap and verify the 7.0\u201310.0 m engineering grid and 1.5 m spacing on the selected hill crest; only metadata was exported here."
+        "Original Native captures at the three selected engineering setpoints are needed to measure realized body gaps, velocities, following duration and road conditions. Accepted-recording metadata does not contain the original actor histories.",
+        "Local original-source review must decide physical realization and reasonable-and-prudent judgment; the CPU response model supplies no legal cutoff."
       ],
       "engineering_grid_draft": {
         "axis": "requested_engineering_gap_m",
@@ -1155,7 +1155,7 @@
         "cpu_envelope_path": "sweep-controller-envelope.json",
         "cpu_envelope_sha256": "0185c4d36b6a518b1f4c15f181fb6230ab1f4d74b1ccfba8a690ae35b1dbe85e",
         "source_calibrated_cpu_probe_path": "source-calibrated-sweep.json",
-        "source_calibrated_cpu_probe_sha256": "eab0606445d4597cc0216aad56c4a2e756ba9a220fddeffe7831be1d1d4bd436",
+        "source_calibrated_cpu_probe_sha256": "9102a6f914d4e557a7aea3fef2f7336b83b5e3323dbebfa1b21d44b8c1fa3a99",
         "source_calibrated_interpretation": "Selected base, midpoint and closer runners derive center spacing from Native body geometry. Three sealed 900-frame synthetic histories give a 2.0 m projected offset, so the 7.0/8.5/10.0 m engineering grid commands 9.0/10.5/12.0 m center spacing. The CPU response model separates setpoints, but the synthetic fixtures change lane too early to establish an original Native hill-crest judgment sweep or a legal cutoff.",
         "independent_law_source_inventory_path": "independent-law-source-inventory.json",
         "independent_law_source_inventory_sha256": "d55eb7fa1a0694cdcc6359bb55e1a3af8a00223bebdaf882da2cb1522418a255"
@@ -1195,6 +1195,27 @@
           }
         },
         "selected_manifest_sha256": "04d7dc9914c37fa6dc5d90605041a3c0a02581217e9b1f011ac3b9b0cede6599"
+      },
+      "native_realization_handoff": {
+        "audit_script": "sweep_realization_audit.py",
+        "audit_script_sha256": "5122e3d0c3526a4e275986645980e48cf959ba076cf5dd5e7a08706707e3cb32",
+        "selected_points": [
+          {
+            "requested_engineering_gap_m": 7.0,
+            "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__source_verified_closer"
+          },
+          {
+            "requested_engineering_gap_m": 8.5,
+            "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__source_verified_midpoint"
+          },
+          {
+            "requested_engineering_gap_m": 10.0,
+            "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__source_verified_base"
+          }
+        ],
+        "command_template": ".venv-cpu/bin/python sweep_realization_audit.py --gap7 ORIGINAL_CLOSER_ATTEMPT --gap8-5 ORIGINAL_MIDPOINT_ATTEMPT --gap10 ORIGINAL_BASE_ATTEMPT --output ORIGINAL_SWEEP_AUDIT_JSON",
+        "acceptance_scope": "Native provenance, sealed source hashes, complete 900-frame original histories, >=20 pre-change following frames, common road and controller conditions, measured complete-body gap and both speeds; legal judgment stays unresolved",
+        "diagnostic_limitation": "Existing synthetic base has only seven pre-change following frames and cannot pass Native realization."
       }
     }
   ],
