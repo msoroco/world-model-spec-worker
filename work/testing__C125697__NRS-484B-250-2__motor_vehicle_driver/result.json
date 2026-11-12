@@ -6,56 +6,68 @@
   "applied_update": 0,
   "tests": [
     {
+      "command": ".venv-cpu/bin/python work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/augment_diagnostic_capture.py",
+      "exit_code": 0,
+      "log": "diagnostic-capture-build-v2.log",
+      "sha256": "8b7b5f4c767dddadc161304aecd969c41bd2f86d8daddcec16c040a7de417e71"
+    },
+    {
       "command": ".venv-cpu/bin/python work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/build_primary_bundle.py",
       "exit_code": 0,
-      "log": "primary-bundle-build-v4.log",
-      "sha256": "c17e45236fbf099c93e0cc350624b2e5448a09aed0aeb46d14b57c3a805c898f"
+      "log": "primary-bundle-build-v5.log",
+      "sha256": "a5f1cc8661aa8a834211a632844a1ae9788df6371f951e478757592cd46573ce"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver__off_ego_left_near_time --output .runtime-work/c125697-primary-offline-v3",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125697__NRS-484B-250-2__motor_vehicle_driver__off_ego_left_near_time --output .runtime-work/c125697-primary-offline-v4",
       "exit_code": 0,
-      "log": "primary-offline-v3.log",
-      "sha256": "ce9ab025a5c47e0b5591b5a9552955f94e73bf8cea162644ec8082286012c8a2"
+      "log": "primary-offline-v4.log",
+      "sha256": "5627264f27f5ecf032e42b30c7fc436ba9fb1f274b261fdb0dbff08d4ce20b06"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py fixture --recipe work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/diagnostic-recipe.json --output .runtime-work/c125697-primary-entry-v4",
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125697__NRS-484B-250-2__motor_vehicle_driver__off_ego_left_near_time --output .runtime-work/c125697-primary-compatibility-v7 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
       "exit_code": 0,
-      "log": "fixture-primary-entry-v4.log",
-      "sha256": "4fa180d4581eb38e13d8c1ca63172f8b5dc677b939da57ce9d8dfc2b270a5afe"
+      "log": "primary-compatibility-v7.log",
+      "sha256": "2b62b2bcc52cb1120940c7d0b187b6ae26d163c0f193c0a1cdbe71ea2b68bacf"
     },
     {
-      "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/finalizer.py --attempt .runtime-work/c125697-primary-entry-v4 --output .runtime-work/c125697-primary-entry-analysis-v4.json",
+      "command": ".venv-cpu/bin/python work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/bind_primary_proofs.py",
       "exit_code": 0,
-      "log": "diagnostic-finalizer-v4.log",
-      "sha256": "c1604b9cbb0279d4aa18f0519408c3f7896c6905cecf48a27ba2c33ab6e9fd02"
+      "log": "primary-proof-bind-v1.log",
+      "sha256": "56c36b685da0bc420c05b9ba17d402d1763cc993214174b1bc05696cd0c02c01"
     },
     {
-      "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/diagnostic_receipt.py --root .runtime-work/c125697-primary-entry-v4 --negative .runtime-work/c125697-primary-entry-negative-v4 --analysis .runtime-work/c125697-primary-entry-analysis-v4.json --negative-removed crossing_history.jsonl --negative-log work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/diagnostic-negative-history-v4.log",
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125697__NRS-484B-250-2__motor_vehicle_driver__off_ego_left_near_time --output .runtime-work/c125697-primary-compatibility-v8 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
       "exit_code": 0,
-      "log": "diagnostic-source-proof-v4.log",
-      "sha256": "f2bf85c14a85f1f86f1c76fe9304fd52aab27c116704c505110861068be81e6f"
+      "log": "primary-compatibility-v8.log",
+      "sha256": "9a72c99573fe5635491484bc9616b423184061e8aedbe634bd15b713d8069540"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125697__NRS-484B-250-2__motor_vehicle_driver__off_ego_left_near_time --attempt .runtime-work/c125697-primary-compatibility-v8 --output .runtime-work/c125697-primary-saved-v2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "primary-saved-v2.log",
+      "sha256": "f577386314df37df4e95daab48fb3a9b294ef18f40eb7ee2148238daed472208"
     },
     {
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/tests -v",
       "exit_code": 0,
-      "log": "cpu-tests-primary-bundle-v4.log",
-      "sha256": "d2610cdef31a4c20d2947d5efe68e953cdd4072df8e926dd90635a568b37c72c"
+      "log": "cpu-tests-capture-packet-v1.log",
+      "sha256": "94c4da96432314eab450bd0fe87bbea3160e2f7673a41848c4f1887386d33008"
     },
     {
       "command": ".venv-cpu/bin/python runtime.py preflight",
       "exit_code": 0,
-      "log": "preflight-primary-bundle-v4.log",
-      "sha256": "a233085629e03a4fb999b113d8f4082082d6a39bad1e85cff52c1caac8831dcf"
+      "log": "preflight-capture-packet-v1.log",
+      "sha256": "363faaf53b237d1b2ad7717fbabd71c39b9fb68f3fc680abc673daf311a81657"
     },
     {
       "command": ".venv-cpu/bin/python worker_check.py --updates",
       "exit_code": 0,
-      "log": "updates-primary-bundle-v4.log",
+      "log": "updates-capture-packet-v1.log",
       "sha256": "bc028da1339a9f9c4509c1460ad99c683c6b6ac8b7b6af6b378e3ffa7cdbb287"
     }
   ],
   "remaining_gpu_checks": [
     "Actual crossing and public-highway identities, median spacing, physical entry timing and source-camera visibility, all-device Off readback, observed yield and legal qualification."
   ],
-  "reason": "The first Off-state C125697 case now has an exact materialized primary construction, bundled runner --check and bundle test; pinned runtime.py offline passes. Its source-hashed three-frame diagnostic and six-measurement contract still pass the direct positive/negative source proof, and 25 CPU tests pass. Exact runtime.py compatibility was attempted and fails during Core conversion because the diagnostic lacks capture/native/frames.jsonl and its corresponding graph/capture source packet (primary-compatibility-v5.log). The bundled median site is explicitly synthetic, so real source review, exact case compatibility and recorded-only process-saved remain worker-owned CPU work. Four other selected cases, three tested fallbacks per case, full semantic proposals and independent audits remain incomplete. No physical or legal acceptance is claimed."
+  "reason": "The first selected C125697 Off-state case has a source-hashed synthetic Native capture packet, exact construction and measurement contract. Pinned exact offline, positive/negative compatibility, independent static receipt verification and recorded-only process-saved now pass for this first case; the 25-test CPU suite, preflight and updates also pass. The diagnostic is only three synthetic frames with no physical or statutory site acceptance. The other four selected cases, three distinct tested fallback constructions per selected case, full source-grounded site review, semantic stage proposals and independent delivery/comparison audits remain worker-owned CPU work. The full strict delivery gate still fails partial/missing packages; status is partial and no physical or legal acceptance is claimed."
 }

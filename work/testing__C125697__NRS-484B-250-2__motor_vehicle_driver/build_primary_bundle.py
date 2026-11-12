@@ -32,6 +32,10 @@ def build():
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     config = module.config()
+    config['required_atoms'] = [
+        'ru.subject', 'ru.motor_vehicle', 'kin.position', 'kin.velocity',
+        'kin.speed', 'st.intersection', 'rel.bearing',
+    ]
     config['recording_description'] = {
         'channels': [
             {'name': 'entry_timing', 'unit': 'structured record',
