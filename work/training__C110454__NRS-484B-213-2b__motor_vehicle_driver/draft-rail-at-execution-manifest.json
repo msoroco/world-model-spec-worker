@@ -1,0 +1,101 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C110454__NRS-484B-213-2b__motor_vehicle_driver",
+  "runtime_manifest_sha256": "ae635d487ae988b67925bacd5ba13210f31224fc6a1ae131d1836a5557ba8714",
+  "status": "draft_unselected_rail_at_boundary",
+  "selection_review": {
+    "law_input_sha256": "0c9f45319324999edde627db7de2cb9826a05a8b9c276bf2484fe85508153bde",
+    "case_plan_sha256": "869adba96c458cc0195156d15d9cfa304b1edf2d5bcb598418ffa89644d6b707",
+    "draft_manifest_sha256": {
+      "draft-statutory-execution-manifest.json": "a410da9a30af936952ecdebb52692d767e2320af80d8ea46cc17946941a53054",
+      "draft-traversal-execution-manifest.json": "a2ad685772cbc3edffae4b25d93f4c7204c48b2a4b557e2b1ffe89fd30d9f046"
+    },
+    "selected_case_ids": [
+      "training__C110454__NRS-484B-213-2b__motor_vehicle_driver__rail_reference",
+      "training__C110454__NRS-484B-213-2b__motor_vehicle_driver__rail_contrast",
+      "training__C110454__NRS-484B-213-2b__motor_vehicle_driver__oneway_absent",
+      "training__C110454__NRS-484B-213-2b__motor_vehicle_driver__oneway_present",
+      "training__C110454__NRS-484B-213-2b__motor_vehicle_driver__traversal_reference",
+      "training__C110454__NRS-484B-213-2b__motor_vehicle_driver__traversal_contrast"
+    ],
+    "withheld_intersection_case_ids": [
+      "training__C110454__NRS-484B-213-2b__motor_vehicle_driver__reference",
+      "training__C110454__NRS-484B-213-2b__motor_vehicle_driver__contrast"
+    ],
+    "accepted_intersection_recording_ids": [
+      "bfc318538dd7e29c8c7d4f2d03c48746f829ae14ccabc9b7c3e6ddd5ded1e1bd",
+      "00ec5da5deff009d5aa9d6264099b83da1f52d6b720ddc1e4d5910eacfd1e737",
+      "a2e1f9e59aa5433d488a16a3cade3a30deb6cbb68d74a1ee499a8ca3f258a07c"
+    ],
+    "accepted_100ft_equivalence_receipt": null,
+    "reason": "No accepted source-backed railroad, one-way or moving intersection-traversal coverage is supplied. The accepted 101/100/99-foot intersection originals are preserved pending source-equivalence review.",
+    "physical_or_legal_acceptance_claimed": false
+  },
+  "cases": [
+    {
+      "case_id": "training__C110454__NRS-484B-213-2b__motor_vehicle_driver__rail_at",
+      "kind": "statutory_numeric_boundary_draft",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native railroad object/one-way lane readback, route realization and original video require physical review"
+      },
+      "measurement_contract": "draft-statutory-contracts/rail_contrast/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c110454-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-rail-at-candidates/fallback1/construction.json",
+          "construction_sha256": "c64f3891c7b111fa2e284f4922d2f7ea52da9001ff997d65122610cac2f4a703",
+          "trigger": {
+            "metric": "max_route_cross_track_error_m",
+            "op": ">",
+            "threshold": 0.45,
+            "source": "original Native ego pose joined to authored route and map readback",
+            "failure_condition": "max_route_cross_track_error_m > 0.45"
+          },
+          "changed_knobs": [
+            "route_tracking_lookahead_m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-rail-at-candidates/fallback2/construction.json",
+          "construction_sha256": "5e5855dc84a8cbc9d83f4388ebee4f1c7a5bd984faf28f9b816e32620f4e1e2d",
+          "trigger": {
+            "metric": "parking_endpoint_speed_m_s",
+            "op": ">",
+            "threshold": 0.3,
+            "source": "original Native velocity at surveyed parking endpoint",
+            "failure_condition": "parking_endpoint_speed_m_s > 0.3"
+          },
+          "changed_knobs": [
+            "parking_brake_start_m"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-rail-at-candidates/fallback3/construction.json",
+          "construction_sha256": "0aeb18023756351cda75613338d95f379e8efd4cd672903d77503793bf91560b",
+          "trigger": {
+            "metric": "min_ego_pixel_margin_px",
+            "op": "<",
+            "threshold": 40,
+            "source": "decoded original overview video and original body-mask corners",
+            "failure_condition": "min_ego_pixel_margin_px < 40"
+          },
+          "changed_knobs": [
+            "overview_fov_deg"
+          ]
+        }
+      ],
+      "fixture_recipe": "work/training__C110454__NRS-484B-213-2b__motor_vehicle_driver/update015-rail_contrast-recipe.json",
+      "id": "primary",
+      "construction": "draft-rail-at-candidates/primary/construction.json",
+      "construction_sha256": "01fffb083b6e52f2db4fb9b7cc361d7ee6703736cfc0f33280f4abc7e84198e7",
+      "preparation_status": "draft_offline_proof_pending"
+    }
+  ]
+}
