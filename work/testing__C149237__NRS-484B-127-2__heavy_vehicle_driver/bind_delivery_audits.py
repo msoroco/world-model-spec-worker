@@ -23,8 +23,8 @@ def run(command, log):
 def main():
     manifest_path=HERE/'execution-manifest.json'
     manifest=json.loads(manifest_path.read_text())
-    batch=json.loads((ROOT/'batch.json').read_text())
-    sets=batch['assignments'][HERE.name]['set_ids']
+    assignment=json.loads((ROOT/'inputs'/HERE.name/'assignment.json').read_text())
+    sets=assignment['selection_targets']
     script='delivery_audit.py'
     script_hash=sha(HERE/script)
     checks=['native_source','all_participants','time_join','full_video_decode',

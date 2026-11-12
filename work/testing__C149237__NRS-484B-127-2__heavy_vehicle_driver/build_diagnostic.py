@@ -10,7 +10,10 @@ TEMPLATE = REPO/'work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/dia
 GAPS = {'gap_below_500ft':150.0,'gap_at_500ft':152.4,'gap_above_500ft':155.0}
 WIDTH_CASES={'ego_width_below_80in':('ego',2.0),
              'ego_width_at_80in':('ego',2.032),
-             'lead_width_below_80in':('lead',2.0)}
+             'ego_width_above_80in':('ego',2.1),
+             'lead_width_below_80in':('lead',2.0),
+             'lead_width_at_80in':('lead',2.032),
+             'lead_width_above_80in':('lead',2.1)}
 
 
 def lines(items):

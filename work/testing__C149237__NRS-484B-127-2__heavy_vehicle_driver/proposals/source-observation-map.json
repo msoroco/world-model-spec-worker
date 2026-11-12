@@ -1,0 +1,18 @@
+{
+  "format": "worker-source-observation-mapping-draft",
+  "assignment_id": "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver",
+  "law_id": "NRS-484B-127-2",
+  "scope": "CPU source wiring only; no legal or physical acceptance",
+  "terms": [
+    {"term": "ru.truck", "source": ["truck_history.jsonl:ego.blueprint_id", "truck_history.jsonl:lead.blueprint_id", "capture/evidence.jsonl:original_observations.participants"], "method": "Compare both actor identities to the pinned truck class map; confirm actual vehicle status in Native review", "status": "supported_as_classification_proposal"},
+    {"term": "ru.trailer_or_combination", "source": [], "method": "No trailer or combination actor is constructed; do not infer combination status from a single truck blueprint", "status": "not_claimed_by_selected_constructions"},
+    {"term": "kin.extent", "source": ["truck_history.jsonl:ego.body_vertices_xy_m", "truck_history.jsonl:lead.body_vertices_xy_m", "truck_history.jsonl:ego.overall_width_m", "truck_history.jsonl:lead.overall_width_m"], "method": "Retain Native bounding-box readback and per-frame complete body vertices; generated fixture dimensions are synthetic", "status": "source_bound_native_requirement"},
+    {"term": "drv.following", "source": ["truck_history.jsonl", "road_context.json", "video_frames.jsonl", "channels/longitudinal_body_gap.jsonl"], "method": "Sample positive longitudinal body gap and same sourced lane while both vehicles move; driver intent and legal following remain review questions", "status": "measured_motion_proxy_only"},
+    {"term": "rel.surface_gap", "source": ["truck_history.jsonl:ego.body_vertices_xy_m", "truck_history.jsonl:lead.body_vertices_xy_m", "road_context.json:lane_forward_xy", "channels/longitudinal_body_gap.jsonl"], "method": "Project complete body vertices onto sourced lane tangent and subtract ego front from lead rear at each original frame", "status": "source_bound_measurement"},
+    {"term": "rel.ahead_behind_in_lane", "source": ["truck_history.jsonl:ego.lane_id", "truck_history.jsonl:lead.lane_id", "channels/longitudinal_body_gap.jsonl"], "method": "Compare original road/lane IDs and signed sampled surface gap; passing case preserves opposing-lane transition", "status": "source_bound_measurement"},
+    {"term": "drv.laned_roadway", "source": ["road_context.json:same_direction_lane_count", "road_context.json:authored_road_sha256", "truck_history.jsonl:ego.lane_id"], "method": "Parse authored OpenDRIVE lane inventory and verify Native readback; legal highway status requires source review", "status": "authored_geometry_with_native_confirmation_pending"},
+    {"term": "st.lane_adjacency", "source": ["road_context.json:same_direction_lane_count", "road_context.json:lane_count_source"], "method": "Count lanes available in the same direction from the actual loaded road, rather than treating an opposing lane as an exemption", "status": "source_bound_native_requirement"},
+    {"term": "drv.overtaking", "source": ["truck_history.jsonl:ego.lane_id", "truck_history.jsonl:ego.body_vertices_xy_m", "truck_history.jsonl:lead.body_vertices_xy_m", "road_context.json:passing_lane_id"], "method": "Check ordered behind, opposing-lane pass, ahead and return phases in original frame join; safety and legal overtaking remain unresolved", "status": "measured_motion_proxy_only"}
+  ],
+  "unresolved_judgments": ["conditions permitting", "overtaking vehicle may enter and occupy such space without danger", "actual truck or combination qualification", "legal highway status"]
+}

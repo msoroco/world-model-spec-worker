@@ -1,0 +1,115 @@
+{
+  "template_id": "NRS-484B-127-2@heavy_vehicle_driver",
+  "law_id": "NRS-484B-127-2",
+  "actor": "heavy_vehicle_driver",
+  "status": "draft",
+  "quote": "The driver of any truck or combination of vehicles 80 inches or more in overall width, which is following a truck, or combination of vehicles 80 inches or more in overall width, shall, whenever conditions permit, leave a space of 500 feet so that an overtaking vehicle may enter and occupy such space without danger, but this shall not prevent a truck or combination of vehicles from overtaking and passing any vehicle or combination of vehicles. This subsection does not apply to any vehicle or combination of vehicles while moving on a highway on which there are two or more lanes available for traffic moving in the same direction.",
+  "structure": {
+    "law_id": "NRS-484B-127-2",
+    "activation": {
+      "condition": "Ego is a truck or combination at least 80 inches overall and follows a truck or combination at least 80 inches overall.",
+      "numeric_conditions": [
+        {
+          "variable": "ego_overall_width",
+          "operator": ">=",
+          "value": 80,
+          "unit": "in"
+        },
+        {
+          "variable": "lead_overall_width",
+          "operator": ">=",
+          "value": 80,
+          "unit": "in"
+        }
+      ]
+    },
+    "obligation": {
+      "description": "Whenever conditions permit, leave 500 feet so an overtaking vehicle may enter and occupy the space without danger.",
+      "type": "must",
+      "numeric_conditions": [
+        {
+          "variable": "longitudinal_body_gap",
+          "operator": ">=",
+          "value": 500,
+          "unit": "ft"
+        }
+      ]
+    },
+    "exceptions": [
+      {
+        "source_clause": "but this shall not prevent a truck or combination of vehicles from overtaking and passing any vehicle or combination of vehicles",
+        "description": "Overtaking and passing remains permitted."
+      },
+      {
+        "source_clause": "This subsection does not apply to any vehicle or combination of vehicles while moving on a highway on which there are two or more lanes available for traffic moving in the same direction.",
+        "description": "Two or more same-direction lanes on a highway exclude this subsection."
+      }
+    ],
+    "timing": {
+      "description": "While the qualifying following relation and conditions persist.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "whenever conditions permit",
+        "note": "Road, traffic, visibility, and continuity require original-source review."
+      },
+      {
+        "phrase": "without danger",
+        "note": "Safe entry and occupancy by an overtaking vehicle require original-source review."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "requested_body_gap_m",
+      "kind": "world_setup",
+      "range_or_domain": "positive engineering metres"
+    },
+    {
+      "name": "ego_target_speed_mps",
+      "kind": "controller",
+      "range_or_domain": "positive engineering m/s"
+    },
+    {
+      "name": "lead_target_speed_mps",
+      "kind": "controller",
+      "range_or_domain": "positive engineering m/s"
+    },
+    {
+      "name": "same_direction_lane_count",
+      "kind": "world_setup",
+      "range_or_domain": "positive integer"
+    },
+    {
+      "name": "requested_ego_width_m",
+      "kind": "world_setup",
+      "range_or_domain": "engineering candidate width in metres"
+    },
+    {
+      "name": "requested_lead_width_m",
+      "kind": "world_setup",
+      "range_or_domain": "engineering candidate width in metres"
+    },
+    {
+      "name": "passing_lane_id",
+      "kind": "world_setup",
+      "range_or_domain": "engineering lane identifier for pass exception"
+    },
+    {
+      "name": "longitudinal_body_gap",
+      "kind": "subject_behavior",
+      "range_or_domain": "observed metres; never commanded"
+    },
+    {
+      "name": "ego_overall_width",
+      "kind": "subject_behavior",
+      "range_or_domain": "observed metres; never commanded"
+    },
+    {
+      "name": "lead_overall_width",
+      "kind": "subject_behavior",
+      "range_or_domain": "observed metres; never commanded"
+    }
+  ]
+}

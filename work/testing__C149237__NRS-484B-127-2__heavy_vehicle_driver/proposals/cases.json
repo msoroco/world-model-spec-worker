@@ -1,9 +1,122 @@
 {
   "cases": [
     {
+      "case_id": "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__baseline",
+      "target_law_id": "NRS-484B-127-2",
+      "target_type": "baseline",
+      "rationale": "Shared engineering setup, with legal status unresolved.",
+      "variable_assignments": {
+        "requested_body_gap_m": {
+          "kind": "world_setup",
+          "value": 152.4,
+          "unit": "m"
+        },
+        "ego_target_speed_mps": {
+          "kind": "controller",
+          "value": 12.0,
+          "unit": "m/s"
+        },
+        "lead_target_speed_mps": {
+          "kind": "controller",
+          "value": 12.0,
+          "unit": "m/s"
+        },
+        "same_direction_lane_count": {
+          "kind": "world_setup",
+          "value": 1,
+          "unit": "count"
+        },
+        "requested_ego_width_m": {
+          "kind": "world_setup",
+          "value": 2.032,
+          "unit": "m"
+        },
+        "requested_lead_width_m": {
+          "kind": "world_setup",
+          "value": 2.032,
+          "unit": "m"
+        },
+        "passing_lane_id": {
+          "kind": "world_setup",
+          "value": 0,
+          "unit": "id"
+        },
+        "longitudinal_body_gap": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "ego_overall_width": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "lead_overall_width": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "longitudinal_body_gap",
+            "unit": "m",
+            "method": "source-bound projection of both truck bodies",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled only; between-frame state unresolved"
+          },
+          {
+            "name": "ego_overall_width",
+            "unit": "m",
+            "method": "Native single-vehicle bounding box",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled only; between-frame state unresolved"
+          },
+          {
+            "name": "lead_overall_width",
+            "unit": "m",
+            "method": "Native single-vehicle bounding box",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled only; between-frame state unresolved"
+          },
+          {
+            "name": "same_direction_lane_count",
+            "unit": "count",
+            "method": "authored map and Native lane readback",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled only; between-frame state unresolved"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "conditions_permitting",
+            "unit": "source review",
+            "method": "road, traffic and camera source review; unresolved"
+          }
+        ],
+        "limitations": [
+          "physical truck dimensions, following and visibility unverified",
+          "safe overtaker occupancy and legal judgment unresolved"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "whenever conditions permit",
+        "without danger"
+      ]
+    },
+    {
       "case_id": "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_below_500ft",
       "target_law_id": "NRS-484B-127-2",
-      "target_type": "delivery",
+      "target_type": "boundary_probe",
       "rationale": "Diagnostic software path for qualifying truck following at 150.0 m engineering target; legal status unresolved.",
       "variable_assignments": {
         "requested_body_gap_m": {
@@ -25,6 +138,36 @@
           "kind": "world_setup",
           "value": 1,
           "unit": "count"
+        },
+        "requested_ego_width_m": {
+          "kind": "world_setup",
+          "value": 2.032,
+          "unit": "m"
+        },
+        "requested_lead_width_m": {
+          "kind": "world_setup",
+          "value": 2.032,
+          "unit": "m"
+        },
+        "passing_lane_id": {
+          "kind": "world_setup",
+          "value": 0,
+          "unit": "id"
+        },
+        "longitudinal_body_gap": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "ego_overall_width": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "lead_overall_width": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
         }
       },
       "recording_description": {
@@ -79,15 +222,32 @@
         ]
       },
       "unresolved_judgment_calls": [
-        "conditions permitting",
-        "safe overtaker occupancy",
-        "legal truck qualification"
-      ]
+        "whenever conditions permit",
+        "without danger"
+      ],
+      "paired_probe_id": "truck_follow_gap",
+      "deliberate_differences": [
+        "requested_body_gap_m"
+      ],
+      "epsilon_used": {
+        "value": 1,
+        "unit": "ft",
+        "rationale": "Engineering sampling margin; no legal tolerance."
+      },
+      "probe": {
+        "primary_variable": "longitudinal_body_gap",
+        "comparison_or_standard": "exact statutory boundary; physical value awaits Native readback",
+        "target_value_or_branch": "below",
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": ">=",
+        "unit": "ft",
+        "test_value": 492.1259842519685
+      }
     },
     {
       "case_id": "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_at_500ft",
       "target_law_id": "NRS-484B-127-2",
-      "target_type": "delivery",
+      "target_type": "boundary_probe",
       "rationale": "Diagnostic software path for qualifying truck following at 152.4 m engineering target; legal status unresolved.",
       "variable_assignments": {
         "requested_body_gap_m": {
@@ -109,6 +269,36 @@
           "kind": "world_setup",
           "value": 1,
           "unit": "count"
+        },
+        "requested_ego_width_m": {
+          "kind": "world_setup",
+          "value": 2.032,
+          "unit": "m"
+        },
+        "requested_lead_width_m": {
+          "kind": "world_setup",
+          "value": 2.032,
+          "unit": "m"
+        },
+        "passing_lane_id": {
+          "kind": "world_setup",
+          "value": 0,
+          "unit": "id"
+        },
+        "longitudinal_body_gap": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "ego_overall_width": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "lead_overall_width": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
         }
       },
       "recording_description": {
@@ -163,15 +353,32 @@
         ]
       },
       "unresolved_judgment_calls": [
-        "conditions permitting",
-        "safe overtaker occupancy",
-        "legal truck qualification"
-      ]
+        "whenever conditions permit",
+        "without danger"
+      ],
+      "paired_probe_id": "truck_follow_gap",
+      "deliberate_differences": [
+        "requested_body_gap_m"
+      ],
+      "epsilon_used": {
+        "value": 1,
+        "unit": "ft",
+        "rationale": "Engineering sampling margin; no legal tolerance."
+      },
+      "probe": {
+        "primary_variable": "longitudinal_body_gap",
+        "comparison_or_standard": "exact statutory boundary; physical value awaits Native readback",
+        "target_value_or_branch": "at",
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": ">=",
+        "unit": "ft",
+        "test_value": 500
+      }
     },
     {
       "case_id": "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_above_500ft",
       "target_law_id": "NRS-484B-127-2",
-      "target_type": "delivery",
+      "target_type": "boundary_probe",
       "rationale": "Diagnostic software path for qualifying truck following at 155.0 m engineering target; legal status unresolved.",
       "variable_assignments": {
         "requested_body_gap_m": {
@@ -193,6 +400,36 @@
           "kind": "world_setup",
           "value": 1,
           "unit": "count"
+        },
+        "requested_ego_width_m": {
+          "kind": "world_setup",
+          "value": 2.032,
+          "unit": "m"
+        },
+        "requested_lead_width_m": {
+          "kind": "world_setup",
+          "value": 2.032,
+          "unit": "m"
+        },
+        "passing_lane_id": {
+          "kind": "world_setup",
+          "value": 0,
+          "unit": "id"
+        },
+        "longitudinal_body_gap": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "ego_overall_width": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "lead_overall_width": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
         }
       },
       "recording_description": {
@@ -247,15 +484,32 @@
         ]
       },
       "unresolved_judgment_calls": [
-        "conditions permitting",
-        "safe overtaker occupancy",
-        "legal truck qualification"
-      ]
+        "whenever conditions permit",
+        "without danger"
+      ],
+      "paired_probe_id": "truck_follow_gap",
+      "deliberate_differences": [
+        "requested_body_gap_m"
+      ],
+      "epsilon_used": {
+        "value": 1,
+        "unit": "ft",
+        "rationale": "Engineering sampling margin; no legal tolerance."
+      },
+      "probe": {
+        "primary_variable": "longitudinal_body_gap",
+        "comparison_or_standard": "exact statutory boundary; physical value awaits Native readback",
+        "target_value_or_branch": "above",
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": ">=",
+        "unit": "ft",
+        "test_value": 508.5301837270341
+      }
     },
     {
       "case_id": "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__ego_width_below_80in",
       "target_law_id": "NRS-484B-127-2",
-      "target_type": "delivery",
+      "target_type": "boundary_probe",
       "rationale": "Source-measured ego truck overall-width ego_width_below_80in control around 80 inches; no legal classification or verdict is inferred.",
       "variable_assignments": {
         "requested_body_gap_m": {
@@ -282,6 +536,31 @@
           "kind": "world_setup",
           "value": 2.0,
           "unit": "m"
+        },
+        "requested_lead_width_m": {
+          "kind": "world_setup",
+          "value": 2.032,
+          "unit": "m"
+        },
+        "passing_lane_id": {
+          "kind": "world_setup",
+          "value": 0,
+          "unit": "id"
+        },
+        "longitudinal_body_gap": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "ego_overall_width": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "lead_overall_width": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
         }
       },
       "recording_description": {
@@ -336,15 +615,32 @@
         ]
       },
       "unresolved_judgment_calls": [
-        "conditions permitting",
-        "safe overtaker occupancy",
-        "legal truck qualification"
-      ]
+        "whenever conditions permit",
+        "without danger"
+      ],
+      "paired_probe_id": "truck_follow_ego_width",
+      "deliberate_differences": [
+        "requested_ego_width_m"
+      ],
+      "epsilon_used": {
+        "value": 0.5,
+        "unit": "in",
+        "rationale": "Engineering sampling margin; no legal tolerance."
+      },
+      "probe": {
+        "primary_variable": "ego_overall_width",
+        "comparison_or_standard": "exact statutory boundary; physical value awaits Native readback",
+        "target_value_or_branch": "below",
+        "threshold_ref": "activation.numeric_conditions[0]",
+        "operator": ">=",
+        "unit": "in",
+        "test_value": 78.74015748031496
+      }
     },
     {
       "case_id": "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__ego_width_at_80in",
       "target_law_id": "NRS-484B-127-2",
-      "target_type": "delivery",
+      "target_type": "boundary_probe",
       "rationale": "Source-measured ego truck overall-width ego_width_at_80in control around 80 inches; no legal classification or verdict is inferred.",
       "variable_assignments": {
         "requested_body_gap_m": {
@@ -371,6 +667,31 @@
           "kind": "world_setup",
           "value": 2.032,
           "unit": "m"
+        },
+        "requested_lead_width_m": {
+          "kind": "world_setup",
+          "value": 2.032,
+          "unit": "m"
+        },
+        "passing_lane_id": {
+          "kind": "world_setup",
+          "value": 0,
+          "unit": "id"
+        },
+        "longitudinal_body_gap": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "ego_overall_width": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "lead_overall_width": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
         }
       },
       "recording_description": {
@@ -425,15 +746,32 @@
         ]
       },
       "unresolved_judgment_calls": [
-        "conditions permitting",
-        "safe overtaker occupancy",
-        "legal truck qualification"
-      ]
+        "whenever conditions permit",
+        "without danger"
+      ],
+      "paired_probe_id": "truck_follow_ego_width",
+      "deliberate_differences": [
+        "requested_ego_width_m"
+      ],
+      "epsilon_used": {
+        "value": 0.5,
+        "unit": "in",
+        "rationale": "Engineering sampling margin; no legal tolerance."
+      },
+      "probe": {
+        "primary_variable": "ego_overall_width",
+        "comparison_or_standard": "exact statutory boundary; physical value awaits Native readback",
+        "target_value_or_branch": "at",
+        "threshold_ref": "activation.numeric_conditions[0]",
+        "operator": ">=",
+        "unit": "in",
+        "test_value": 80
+      }
     },
     {
       "case_id": "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__lead_width_below_80in",
       "target_law_id": "NRS-484B-127-2",
-      "target_type": "delivery",
+      "target_type": "boundary_probe",
       "rationale": "Source-measured lead truck overall-width lead_width_below_80in control around 80 inches; no legal classification or verdict is inferred.",
       "variable_assignments": {
         "requested_body_gap_m": {
@@ -456,9 +794,34 @@
           "value": 1,
           "unit": "count"
         },
+        "requested_ego_width_m": {
+          "kind": "world_setup",
+          "value": 2.032,
+          "unit": "m"
+        },
         "requested_lead_width_m": {
           "kind": "world_setup",
           "value": 2.0,
+          "unit": "m"
+        },
+        "passing_lane_id": {
+          "kind": "world_setup",
+          "value": 0,
+          "unit": "id"
+        },
+        "longitudinal_body_gap": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "ego_overall_width": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "lead_overall_width": {
+          "kind": "subject_behavior",
+          "value": null,
           "unit": "m"
         }
       },
@@ -514,15 +877,32 @@
         ]
       },
       "unresolved_judgment_calls": [
-        "conditions permitting",
-        "safe overtaker occupancy",
-        "legal truck qualification"
-      ]
+        "whenever conditions permit",
+        "without danger"
+      ],
+      "paired_probe_id": "truck_follow_lead_width",
+      "deliberate_differences": [
+        "requested_lead_width_m"
+      ],
+      "epsilon_used": {
+        "value": 0.5,
+        "unit": "in",
+        "rationale": "Engineering sampling margin; no legal tolerance."
+      },
+      "probe": {
+        "primary_variable": "lead_overall_width",
+        "comparison_or_standard": "exact statutory boundary; physical value awaits Native readback",
+        "target_value_or_branch": "below",
+        "threshold_ref": "activation.numeric_conditions[1]",
+        "operator": ">=",
+        "unit": "in",
+        "test_value": 78.74015748031496
+      }
     },
     {
       "case_id": "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__two_same_direction_lanes",
       "target_law_id": "NRS-484B-127-2",
-      "target_type": "delivery",
+      "target_type": "judgment_sweep",
       "rationale": "Controlled two-available-same-direction-lanes exception with same qualifying truck pair and 150 m initial engineering gap; legal status unresolved.",
       "variable_assignments": {
         "requested_body_gap_m": {
@@ -544,6 +924,36 @@
           "kind": "world_setup",
           "value": 2,
           "unit": "count"
+        },
+        "requested_ego_width_m": {
+          "kind": "world_setup",
+          "value": 2.032,
+          "unit": "m"
+        },
+        "requested_lead_width_m": {
+          "kind": "world_setup",
+          "value": 2.032,
+          "unit": "m"
+        },
+        "passing_lane_id": {
+          "kind": "world_setup",
+          "value": 0,
+          "unit": "id"
+        },
+        "longitudinal_body_gap": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "ego_overall_width": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "lead_overall_width": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
         }
       },
       "recording_description": {
@@ -598,15 +1008,27 @@
         ]
       },
       "unresolved_judgment_calls": [
-        "conditions permitting",
-        "safe overtaker occupancy",
-        "legal truck qualification"
-      ]
+        "whenever conditions permit",
+        "without danger"
+      ],
+      "paired_probe_id": "truck_follow_exceptions",
+      "deliberate_differences": [
+        "same_direction_lane_count",
+        "ego_target_speed_mps",
+        "lead_target_speed_mps",
+        "passing_lane_id",
+        "requested_body_gap_m"
+      ],
+      "probe": {
+        "primary_variable": "same_direction_lane_count",
+        "comparison_or_standard": "source-law exception branch",
+        "target_value_or_branch": "two_same_direction_lanes"
+      }
     },
     {
       "case_id": "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__overtaking",
       "target_law_id": "NRS-484B-127-2",
-      "target_type": "delivery",
+      "target_type": "judgment_sweep",
       "rationale": "Prospective one-forward-lane overtaking exception: subject uses the opposing lane to pass the qualifying lead, then returns ahead; safe occupancy and legal status unresolved.",
       "variable_assignments": {
         "requested_body_gap_m": {
@@ -629,10 +1051,35 @@
           "value": 1,
           "unit": "count"
         },
+        "requested_ego_width_m": {
+          "kind": "world_setup",
+          "value": 2.032,
+          "unit": "m"
+        },
+        "requested_lead_width_m": {
+          "kind": "world_setup",
+          "value": 2.032,
+          "unit": "m"
+        },
         "passing_lane_id": {
           "kind": "world_setup",
           "value": 1,
           "unit": "Native lane id"
+        },
+        "longitudinal_body_gap": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "ego_overall_width": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "lead_overall_width": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
         }
       },
       "recording_description": {
@@ -687,9 +1134,45 @@
         ]
       },
       "unresolved_judgment_calls": [
-        "conditions permitting",
-        "safe overtaker occupancy",
-        "legal truck qualification"
+        "whenever conditions permit",
+        "without danger"
+      ],
+      "paired_probe_id": "truck_follow_exceptions",
+      "deliberate_differences": [
+        "same_direction_lane_count",
+        "ego_target_speed_mps",
+        "lead_target_speed_mps",
+        "passing_lane_id",
+        "requested_body_gap_m"
+      ],
+      "probe": {
+        "primary_variable": "passing_lane_id",
+        "comparison_or_standard": "source-law exception branch",
+        "target_value_or_branch": "overtaking"
+      }
+    }
+  ],
+  "cell_id": "C149237",
+  "actor": "heavy_vehicle_driver",
+  "status": "draft",
+  "sweep_specs": [
+    {
+      "sweep_id": "truck_follow_qualitative_review",
+      "target_law_id": "NRS-484B-127-2",
+      "judgment_refs": [
+        {
+          "phrase": "whenever conditions permit",
+          "note": "Road, traffic, visibility, and continuity require original-source review."
+        },
+        {
+          "phrase": "without danger",
+          "note": "Safe entry and occupancy by an overtaking vehicle require original-source review."
+        }
+      ],
+      "rationale": "Original-source judgment review remains to be physically sampled.",
+      "status": "incomplete",
+      "missing_inputs": [
+        "Native physical capture, reviewed overtaker occupancy, and verified road context"
       ]
     }
   ]
