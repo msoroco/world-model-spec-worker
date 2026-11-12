@@ -11,7 +11,7 @@ import unittest
 HERE = Path(__file__).resolve().parents[1]
 ROOT = HERE.parents[1]
 sys.path.insert(0, str(HERE))
-from build_gpu_queue import build, digest  # noqa: E402
+from build_gpu_queue import build, digest, local_audit_command  # noqa: E402
 
 
 class QueueTests(unittest.TestCase):
@@ -27,6 +27,17 @@ class QueueTests(unittest.TestCase):
                              {"fallback1", "fallback2", "fallback3"})
             self.assertIn('"$CARLA_PYTHON"', row["capture_command"])
             self.assertIn("process-saved", row["postprocessing_command"])
+            self.assertIn('"$ATTEMPT"', row["additional_source_audit_command"])
+            self.assertNotIn(".runtime-work/c111603-", row["additional_source_audit_command"])
+
+    def test_local_audit_rejects_wrong_case_and_preserves_pair(self):
+        case = HERE.name + "__clearance_wide"
+        manifest = json.loads((HERE / "execution-manifest.json").read_text())
+        entry = next(row for row in manifest["cases"] if row["case_id"] == case)
+        command = local_audit_command(entry["delivery_acceptance"], case)
+        self.assertIn('"$BASELINE_ATTEMPT"', command)
+        with self.assertRaisesRegex(ValueError, "selects another case"):
+            local_audit_command(entry["delivery_acceptance"], HERE.name + "__other")
 
     def test_changed_saved_log_rejects_queue(self):
         with tempfile.TemporaryDirectory(dir=ROOT / ".runtime-work") as location:

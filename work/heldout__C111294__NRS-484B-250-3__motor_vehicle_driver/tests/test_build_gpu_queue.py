@@ -11,7 +11,7 @@ import unittest
 HERE = Path(__file__).resolve().parents[1]
 ROOT = HERE.parents[1]
 sys.path.insert(0, str(HERE))
-from build_gpu_queue import SAVED_PROOFS, build, digest  # noqa: E402
+from build_gpu_queue import SAVED_PROOFS, build, digest, local_audit_command  # noqa: E402
 
 
 class QueueTests(unittest.TestCase):
@@ -42,6 +42,14 @@ class QueueTests(unittest.TestCase):
                              {candidate["id"] for candidate in entry["candidates"]})
             self.assertIn("--python \"$CARLA_PYTHON\"", row["capture_command"])
             self.assertIn("process-saved", row["postprocessing_command"])
+            self.assertIn('"$ATTEMPT"', row["additional_source_audit_command"])
+            self.assertIn('"$ANALYSIS_REPORT"', row["additional_source_audit_command"])
+            self.assertNotIn(".runtime-work/c111294-", row["additional_source_audit_command"])
+
+    def test_local_audit_rejects_wrong_case(self):
+        entry = json.loads((HERE / "execution-manifest.json").read_text())["cases"][0]
+        with self.assertRaisesRegex(ValueError, "selects another case"):
+            local_audit_command(entry["delivery_acceptance"], HERE.name + "__other")
 
     def test_changed_construction_rejects_queue(self):
         with tempfile.TemporaryDirectory(dir=ROOT / ".runtime-work") as location:

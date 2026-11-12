@@ -3,6 +3,7 @@
 from hashlib import sha256
 import json
 from pathlib import Path
+import shlex
 
 
 HERE = Path(__file__).resolve().parent
@@ -11,6 +12,30 @@ ROOT = HERE.parents[1]
 
 def digest(path):
     return sha256(Path(path).read_bytes()).hexdigest()
+
+
+def local_audit_command(acceptance, case_id):
+    """Turn a proven diagnostic audit invocation into an exact local attempt command."""
+    tokens = shlex.split(acceptance["command"])
+    if tokens[0].endswith("/.venv-cpu/bin/python"):
+        tokens[0] = ".venv-cpu/bin/python"
+    if "--case" not in tokens or tokens[tokens.index("--case") + 1] != case_id:
+        raise ValueError("Delivery auditor selects another case: " + case_id)
+    replacements = {"--attempt": '"$ATTEMPT"',
+                    "--output": '"$AUDIT_OUTPUT"',
+                    "--positive": '"$BASELINE_ATTEMPT"',
+                    "--baseline": '"$BASELINE_ATTEMPT"',
+                    "--no-horn": '"$BASELINE_ATTEMPT"'}
+    for option, value in replacements.items():
+        if option in tokens:
+            position = tokens.index(option) + 1
+            if position >= len(tokens):
+                raise ValueError("Audit option lacks value: " + option)
+            tokens[position] = value
+    if "--attempt" not in tokens or "--output" not in tokens:
+        raise ValueError("Delivery audit needs an exact local attempt and output: " + case_id)
+    return " ".join(token if token.startswith('"$') else shlex.quote(token)
+                    for token in tokens)
 
 
 def build(folder=HERE):
@@ -71,6 +96,8 @@ def build(folder=HERE):
             ),
             "candidate_commands": candidates,
             "postprocessing_command": post["command"],
+            "additional_source_audit_command": local_audit_command(
+                entry["delivery_acceptance"], case_id),
             "candidate_selection_rule": "Select only on the declared physical-risk trigger.",
         })
     comparisons = []
@@ -78,7 +105,11 @@ def build(folder=HERE):
         if not set(comparison["case_ids"]) <= set(selected):
             raise ValueError("Queue comparison refers to an unselected case")
         comparisons.append({"comparison_id": comparison["comparison_id"],
-                            "case_ids": comparison["case_ids"]})
+                            "case_ids": comparison["case_ids"],
+                            "audit_command": (
+                                f'.venv-cpu/bin/python work/{assignment}/saved_comparison_audit.py '
+                                f'--comparison {comparison["comparison_id"]} '
+                                f'--output "$COMPARISON_AUDIT_OUTPUT"')})
     return {"format": "worker-assignment-ordered-gpu-queue",
             "assignment_id": assignment, "execution_manifest_sha256": manifest_hash,
             "case_plan_sha256": digest(plan_path),

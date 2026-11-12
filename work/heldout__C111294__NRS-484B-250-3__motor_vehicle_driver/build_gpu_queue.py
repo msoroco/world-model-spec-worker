@@ -7,6 +7,7 @@ candidate's physical trigger has occurred.
 import json
 from hashlib import sha256
 from pathlib import Path
+import shlex
 
 
 HERE = Path(__file__).resolve().parent
@@ -28,6 +29,23 @@ SAVED_PROOFS = {
 
 def digest(path):
     return sha256(Path(path).read_bytes()).hexdigest()
+
+
+def local_audit_command(acceptance, case_id):
+    tokens = shlex.split(acceptance["command"])
+    if tokens[0].endswith("/.venv-cpu/bin/python"):
+        tokens[0] = ".venv-cpu/bin/python"
+    if tokens[1].startswith(str(ROOT / "work")):
+        tokens[1] = str(Path(tokens[1]).relative_to(ROOT))
+    if "--case" not in tokens or tokens[tokens.index("--case") + 1] != case_id:
+        raise ValueError("Delivery audit selects another case: " + case_id)
+    for option, value in (("--attempt", '"$ATTEMPT"'),
+                          ("--report", '"$ANALYSIS_REPORT"')):
+        if option not in tokens or tokens.index(option) + 1 >= len(tokens):
+            raise ValueError("Delivery audit lacks exact local source: " + case_id)
+        tokens[tokens.index(option) + 1] = value
+    return " ".join(token if token.startswith('"$') else shlex.quote(token)
+                    for token in tokens)
 
 
 def build(manifest_path=MANIFEST, plan_path=PLAN):
@@ -90,6 +108,8 @@ def build(manifest_path=MANIFEST, plan_path=PLAN):
             ),
             "candidate_commands": candidates,
             "postprocessing_command": post["command"],
+            "additional_source_audit_command": local_audit_command(
+                entry["delivery_acceptance"], case_id),
             "candidate_selection_rule": "Use only the candidate's declared physical trigger; preserve the case and comparison variable.",
         })
     comparisons = []

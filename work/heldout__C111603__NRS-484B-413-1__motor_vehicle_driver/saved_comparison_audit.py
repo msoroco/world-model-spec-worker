@@ -95,8 +95,13 @@ def audit(folder=HERE):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--output', type=Path)
+    parser.add_argument('--comparison')
     args = parser.parse_args()
     result = audit()
+    if args.comparison:
+        require(args.comparison in result['comparisons'],
+                'Unknown selected comparison: ' + args.comparison)
+        result['comparisons'] = {args.comparison: result['comparisons'][args.comparison]}
     if args.output:
         args.output.write_text(json.dumps(result, indent=2) + '\n')
     print('saved_comparison_audit_passed', len(result['comparisons']))
