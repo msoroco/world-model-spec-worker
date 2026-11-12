@@ -7,7 +7,7 @@
     {
       "case_id": "heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver__left_center_east",
       "requirement": "Eastbound left turn from designated center lane",
-      "status": "planned_unimplemented",
+      "status": "primary_cpu_proved",
       "candidate_risk": {
         "status": "physical",
         "reason": "center turn lane route or marking may be absent"
@@ -18,12 +18,17 @@
           "sha256": "6366d357ca323359ec0aaf0fd375c7bd4c9bd7c058a0f693e378c42cb0fff23b"
         }
       ],
-      "target_law_id": "LVMC-11-12-100-C"
+      "target_law_id": "LVMC-11-12-100-C",
+      "cpu_proofs": {
+        "offline_log": "first-offline.log",
+        "compatibility_receipt": "first-compatibility.json",
+        "saved_processing_receipt": "first-saved-processing.json"
+      }
     },
     {
       "case_id": "heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver__left_outer_east",
       "requirement": "Eastbound left turn from adjacent outer lane",
-      "status": "planned_unimplemented",
+      "status": "primary_cpu_proved",
       "candidate_risk": {
         "status": "physical",
         "reason": "controller may cross into center lane before turn"
@@ -34,7 +39,12 @@
           "sha256": "6366d357ca323359ec0aaf0fd375c7bd4c9bd7c058a0f693e378c42cb0fff23b"
         }
       ],
-      "target_law_id": "LVMC-11-12-100-C"
+      "target_law_id": "LVMC-11-12-100-C",
+      "cpu_proofs": {
+        "offline_log": "outer-offline.log",
+        "compatibility_receipt": "outer-compatibility.json",
+        "saved_processing_receipt": "outer-saved-processing.json"
+      }
     },
     {
       "case_id": "heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver__left_center_west",
@@ -110,13 +120,14 @@
       ],
       "fixed_conditions": "same left-turn target, designation, subject type, cameras and observation method",
       "deliberate_differences": "lane occupied at junction entry",
-      "status": "planned_unimplemented",
+      "status": "cpu_proved",
       "source_refs": [
         {
           "path": "inputs/heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver/assignment.json",
           "sha256": "6366d357ca323359ec0aaf0fd375c7bd4c9bd7c058a0f693e378c42cb0fff23b"
         }
-      ]
+      ],
+      "proof": "east-turn-origin-comparison-proof.json"
     },
     {
       "comparison_id": "west_turn_origin",
@@ -300,8 +311,8 @@
       ]
     }
   },
-  "implemented_measurement": "turn_origin_measurement.py measures original lane of origin and observed left deflection; turn_origin_capture.py retains Native actor/map lane and heading rows; turn_origin_finalizer.py derives the first exact case channel from retained raw sources. Exact offline/compatibility/saved proof remains pending.",
-  "review_status": "partial; first eastbound center-turn Native runner/finalizer authored and CPU-tested, six exact cases and five comparisons not delivery prepared",
+  "implemented_measurement": "turn_origin_measurement.py and turn_origin_capture.py source-bind lane of origin and observed left deflection; turn_origin_finalizer.py derives the first exact case channel from retained raw sources. First exact offline, positive/negative compatibility and clean saved processing pass.",
+  "review_status": "partial; eastbound center and outer left-turn exact primaries plus independent original-source comparison pass CPU; four other exact cases, all fallbacks and remaining comparisons remain",
   "observations": [
     {
       "name": "turn_origin_observation",

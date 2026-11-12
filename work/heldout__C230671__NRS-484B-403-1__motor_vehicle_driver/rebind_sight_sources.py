@@ -1,0 +1,69 @@
+"""Rebind every exact inline construction after sight-route implementation edits."""
+
+from hashlib import sha256
+import json
+from pathlib import Path
+
+
+HERE = Path(__file__).resolve().parent
+MANIFEST = HERE / 'execution-manifest.json'
+SOURCES = {name: (HERE / name).read_text()
+           for name in ('runner.py', 'u_turn_construction.py',
+                        'u_turn_finalizer.py',
+                        'tests/test_u_turn_construction.py',
+                        'u_turn_407_geometry.py',
+                        'tests/test_u_turn_407_geometry.py',
+                        'u_turn_407_measurement.py',
+                        'tests/test_u_turn_407_measurement.py',
+                        'u_turn_403_3_frontage.py',
+                        'tests/test_u_turn_403_3_frontage.py',
+                        'tests/test_u_turn_403_3_runner.py',
+                        'u_turn_227_divider.py',
+                        'tests/test_u_turn_227_divider.py',
+                        'u_turn_363_school.py',
+                        'tests/test_u_turn_363_school.py')}
+ADDED = {'u_turn_407_geometry.py', 'tests/test_u_turn_407_geometry.py',
+         'u_turn_407_measurement.py', 'tests/test_u_turn_407_measurement.py',
+         'u_turn_403_3_frontage.py', 'tests/test_u_turn_403_3_frontage.py',
+         'tests/test_u_turn_403_3_runner.py', 'u_turn_227_divider.py',
+         'tests/test_u_turn_227_divider.py',
+         'u_turn_363_school.py', 'tests/test_u_turn_363_school.py'}
+
+
+def digest(path):
+    return sha256(path.read_bytes()).hexdigest()
+
+
+def update(source):
+    path = HERE / source
+    construction = json.loads(path.read_text())
+    found = set()
+    for item in construction['files']:
+        if item['path'] in SOURCES:
+            item['content'] = SOURCES[item['path']]
+            found.add(item['path'])
+    if not set(SOURCES)-ADDED <= found:
+        raise ValueError('Exact construction omits affected source: ' + source)
+    for name in sorted(ADDED-found):
+        construction['files'].append({'path': name, 'content': SOURCES[name]})
+    path.write_text(json.dumps(construction, indent=2) + '\n')
+    return digest(path)
+
+
+def main():
+    manifest = json.loads(MANIFEST.read_text())
+    for entry in manifest['cases']:
+        entry['construction_sha256'] = update(entry['construction'])
+        for key in ('offline', 'compatibility', 'negative', 'delivery_acceptance',
+                    'physical_preparation'):
+            entry.pop(key, None)
+        for candidate in entry['candidates']:
+            candidate['construction_sha256'] = update(candidate['construction'])
+            for key in ('offline', 'compatibility'):
+                candidate.pop(key, None)
+        print(entry['case_id'], 'sources rebound')
+    MANIFEST.write_text(json.dumps(manifest, indent=2) + '\n')
+
+
+if __name__ == '__main__':
+    main()

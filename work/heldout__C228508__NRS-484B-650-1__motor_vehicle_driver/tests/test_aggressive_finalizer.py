@@ -34,6 +34,10 @@ class FinalizerTests(unittest.TestCase):
             json.dumps(row) + '\n' for row in self.trace))
         (self.root / 'video_frames.jsonl').write_text(''.join(
             json.dumps(row) + '\n' for row in self.mapping))
+        (self.root / 'following_sources.jsonl').write_text(''.join(
+            json.dumps({'frame': row['frame'], 'time_s': row['time_s'],
+                        'ego_station_m': row['x_m']}) + '\n'
+            for row in self.trace))
         digest = sha256((self.root / 'driving_trace.jsonl').read_bytes()).hexdigest()
         events = [{'frame': 100 + i, 'category': category,
                    'occurrence_id': str(i), 'source_ref': 'driving_trace.jsonl',

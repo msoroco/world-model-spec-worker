@@ -16,7 +16,86 @@
         "status": "physical",
         "reason": "Extreme-left counterflow may fail lane acquisition, heading, map marking or camera coverage checks"
       },
-      "candidates": []
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-extreme-left-fallback1.json",
+          "construction_sha256": "a53eedc2e09c6c3d217d232c266adbc30902e687a634dc09f9af3c1a504339af",
+          "trigger": {
+            "source": "Native route/actor preflight",
+            "metric": "Native map spawn and waypoint readback",
+            "failure_condition": "eastbound marked corridor absent"
+          },
+          "changed_knobs": [
+            "travel_direction"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C304406__NRS-484B-223-2__motor_vehicle_driver/provisional-manifest-extreme-left.json --case heldout__C304406__NRS-484B-223-2__motor_vehicle_driver__extreme_left --candidate fallback1 --output .runtime-work/c304406-extreme-left-fallback1-offline1 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "a53eedc2e09c6c3d217d232c266adbc30902e687a634dc09f9af3c1a504339af",
+            "log": "extreme-left-fallback1-offline.log",
+            "log_sha256": "47b174b3a71785c8c1ff7dce1932d9af8782d36010360f3f8f7efc5a95d07233"
+          },
+          "compatibility": {
+            "receipt": "extreme-left-fallback1-compatibility-receipt.json",
+            "sha256": "9e4cad814288a2dc37cd4ce22eddcf237e130dec2817766c8490de9913cde328",
+            "log": "fallback-compatibility-analysis.log",
+            "negative_log": "extreme-left-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-extreme-left-fallback2.json",
+          "construction_sha256": "8d638babb5efb29b98ab227574dcab2df19d6cdccc85d260979a71412e4be15f",
+          "trigger": {
+            "source": "Native route/actor preflight",
+            "metric": "Native route length and connected waypoint readback",
+            "failure_condition": "mapped corridor ends before 40 steps"
+          },
+          "changed_knobs": [
+            "route_steps"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C304406__NRS-484B-223-2__motor_vehicle_driver/provisional-manifest-extreme-left.json --case heldout__C304406__NRS-484B-223-2__motor_vehicle_driver__extreme_left --candidate fallback2 --output .runtime-work/c304406-extreme-left-fallback2-offline1 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "8d638babb5efb29b98ab227574dcab2df19d6cdccc85d260979a71412e4be15f",
+            "log": "extreme-left-fallback2-offline.log",
+            "log_sha256": "75d72f09c79ef175ac1ea6c01e189eb7362ca3a5cac5206fd8be09fe3ada0fd3"
+          },
+          "compatibility": {
+            "receipt": "extreme-left-fallback2-compatibility-receipt.json",
+            "sha256": "ae9ac835eeba8eb90391cdae3b08a8e2d46ea31a8bfc44d09a079c2dab0ee2ad",
+            "log": "fallback-compatibility-analysis.log",
+            "negative_log": "extreme-left-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-extreme-left-fallback3.json",
+          "construction_sha256": "464a402527d9e844a293f87ea5bd645aa82e5a046044d61fc272a147c06b6297",
+          "trigger": {
+            "source": "Native route/actor preflight",
+            "metric": "Native blueprint lookup and subject spawn result",
+            "failure_condition": "Tesla model3 missing or spawn rejected"
+          },
+          "changed_knobs": [
+            "ego_blueprint"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C304406__NRS-484B-223-2__motor_vehicle_driver/provisional-manifest-extreme-left.json --case heldout__C304406__NRS-484B-223-2__motor_vehicle_driver__extreme_left --candidate fallback3 --output .runtime-work/c304406-extreme-left-fallback3-offline1 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "464a402527d9e844a293f87ea5bd645aa82e5a046044d61fc272a147c06b6297",
+            "log": "extreme-left-fallback3-offline.log",
+            "log_sha256": "1e538100e3932c46bb75cd780493bc43a7a2d8ce09f4511f340ea59d3cb245f5"
+          },
+          "compatibility": {
+            "receipt": "extreme-left-fallback3-compatibility-receipt.json",
+            "sha256": "ee85974ce78d95915a435e3a537e7bacb466df257a484dcb47d7d3a6fda24f24",
+            "log": "fallback-compatibility-analysis.log",
+            "negative_log": "extreme-left-fallback3-negative.log"
+          }
+        }
+      ]
     }
   ],
   "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3"
