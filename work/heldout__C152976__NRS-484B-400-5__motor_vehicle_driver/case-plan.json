@@ -65,7 +65,20 @@
       ],
       "deliberate_differences": [
         "approach lateral body position relative to measured left-hand curb"
-      ]
+      ],
+      "comparison_acceptance": {
+        "script": "one_way_comparison_audit.py",
+        "script_sha256": "3dc87a4f5deeb5795a0ce76213022f96da45f3d2fe7d5b9242e85286959d52f4",
+        "positive_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Fixed condition differs: target_speed_mps",
+        "positive_command": ".venv-cpu/bin/python work/heldout__C152976__NRS-484B-400-5__motor_vehicle_driver/prove_comparison_audit.py --comparison approach_left_edge",
+        "positive_log": "approach_left_edge-comparison-positive.log",
+        "positive_log_sha256": "a2322d8dc2cc54c4de9e4d13b40b985422141b26b62e266b0bee08f3ea9cc1eb",
+        "negative_command": ".venv-cpu/bin/python work/heldout__C152976__NRS-484B-400-5__motor_vehicle_driver/prove_comparison_audit.py --comparison approach_left_edge --negative",
+        "negative_log": "approach_left_edge-comparison-negative.log",
+        "negative_log_sha256": "9e6956b7090b9d4a41e541c31c0c99859e6dade9d2d3165b1a196df668d08b94"
+      }
     },
     {
       "comparison_id": "departure_left_edge",
@@ -81,10 +94,29 @@
       ],
       "deliberate_differences": [
         "departure lateral body position relative to measured left-hand curb and corresponding turn transition"
-      ]
+      ],
+      "comparison_acceptance": {
+        "script": "one_way_comparison_audit.py",
+        "script_sha256": "3dc87a4f5deeb5795a0ce76213022f96da45f3d2fe7d5b9242e85286959d52f4",
+        "positive_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Fixed condition differs: target_speed_mps",
+        "positive_command": ".venv-cpu/bin/python work/heldout__C152976__NRS-484B-400-5__motor_vehicle_driver/prove_comparison_audit.py --comparison departure_left_edge",
+        "positive_log": "departure_left_edge-comparison-positive.log",
+        "positive_log_sha256": "f02145f679e351c967e19195899975efbb03e820a596087e2760908e014c9365",
+        "negative_command": ".venv-cpu/bin/python work/heldout__C152976__NRS-484B-400-5__motor_vehicle_driver/prove_comparison_audit.py --comparison departure_left_edge --negative",
+        "negative_log": "departure_left_edge-comparison-negative.log",
+        "negative_log_sha256": "9e6956b7090b9d4a41e541c31c0c99859e6dade9d2d3165b1a196df668d08b94"
+      }
     }
   ],
-  "observations": [],
+  "observations": [
+    {
+      "name": "one_way_curb_gap_m",
+      "mandatory": true,
+      "source": "original full-body footprint and source-hashed approach, turn and departure left edges at 20 Hz"
+    }
+  ],
   "sources": [
     {
       "path": "inputs/heldout__C152976__NRS-484B-400-5__motor_vehicle_driver/assignment.json",
@@ -135,78 +167,70 @@
     }
   ],
   "review_status": "partial_cpu_construction",
-  "source_observation_mapping": [
-    {
-      "term": "drv.turning",
-      "measurement": "original Native one-way lane directions, body footprint and physical curb geometry along approach or departure",
+  "source_observation_mapping": {
+    "drv.turning": {
+      "evidence": "Original source identity and geometry, pending local physical verification; no legal practicability cutoff inferred.",
+      "channels": [],
       "source_refs": [
-        "native/lanes.jsonl",
-        "native/footprints.jsonl",
+        "native/turn_motion.jsonl",
         "video_frames.jsonl"
-      ],
-      "limitation": "Left-edge gap is descriptive; it does not define the legal practicability standard."
+      ]
     },
-    {
-      "term": "st.one_way_roadway",
-      "measurement": "original Native one-way lane directions, body footprint and physical curb geometry along approach or departure",
+    "st.one_way_roadway": {
+      "evidence": "Original source identity and geometry, pending local physical verification; no legal practicability cutoff inferred.",
+      "channels": [],
       "source_refs": [
-        "native/lanes.jsonl",
-        "native/footprints.jsonl",
-        "video_frames.jsonl"
-      ],
-      "limitation": "Left-edge gap is descriptive; it does not define the legal practicability standard."
+        "site.json",
+        "road.xodr"
+      ]
     },
-    {
-      "term": "st.road_edge",
-      "measurement": "original Native one-way lane directions, body footprint and physical curb geometry along approach or departure",
-      "source_refs": [
-        "native/lanes.jsonl",
-        "native/footprints.jsonl",
-        "video_frames.jsonl"
+    "st.road_edge": {
+      "evidence": "Original source identity and geometry, pending local physical verification; no legal practicability cutoff inferred.",
+      "channels": [
+        "one_way_curb_gap_m"
       ],
-      "limitation": "Left-edge gap is descriptive; it does not define the legal practicability standard."
+      "source_refs": [
+        "site.json",
+        "native/road_edges.jsonl"
+      ]
     },
-    {
-      "term": "rel.occupies",
-      "measurement": "original Native one-way lane directions, body footprint and physical curb geometry along approach or departure",
-      "source_refs": [
-        "native/lanes.jsonl",
-        "native/footprints.jsonl",
-        "video_frames.jsonl"
+    "rel.occupies": {
+      "evidence": "Original source identity and geometry, pending local physical verification; no legal practicability cutoff inferred.",
+      "channels": [
+        "one_way_curb_gap_m"
       ],
-      "limitation": "Left-edge gap is descriptive; it does not define the legal practicability standard."
+      "source_refs": [
+        "native/footprints.jsonl",
+        "native/road_edges.jsonl"
+      ]
     },
-    {
-      "term": "kin.position",
-      "measurement": "original Native one-way lane directions, body footprint and physical curb geometry along approach or departure",
+    "kin.position": {
+      "evidence": "Original source identity and geometry, pending local physical verification; no legal practicability cutoff inferred.",
+      "channels": [
+        "one_way_curb_gap_m"
+      ],
       "source_refs": [
-        "native/lanes.jsonl",
         "native/footprints.jsonl",
         "video_frames.jsonl"
-      ],
-      "limitation": "Left-edge gap is descriptive; it does not define the legal practicability standard."
+      ]
     },
-    {
-      "term": "st.intersection",
-      "measurement": "original Native one-way lane directions, body footprint and physical curb geometry along approach or departure",
+    "st.intersection": {
+      "evidence": "Original source identity and geometry, pending local physical verification; no legal practicability cutoff inferred.",
+      "channels": [],
       "source_refs": [
-        "native/lanes.jsonl",
-        "native/footprints.jsonl",
-        "video_frames.jsonl"
-      ],
-      "limitation": "Left-edge gap is descriptive; it does not define the legal practicability standard."
+        "site.json",
+        "road.xodr"
+      ]
     },
-    {
-      "term": "st.lane_enters",
-      "measurement": "original Native one-way lane directions, body footprint and physical curb geometry along approach or departure",
+    "st.lane_enters": {
+      "evidence": "Original source identity and geometry, pending local physical verification; no legal practicability cutoff inferred.",
+      "channels": [],
       "source_refs": [
-        "native/lanes.jsonl",
-        "native/footprints.jsonl",
-        "video_frames.jsonl"
-      ],
-      "limitation": "Left-edge gap is descriptive; it does not define the legal practicability standard."
+        "site.json",
+        "road.xodr"
+      ]
     }
-  ],
+  },
   "requirement_dispositions": [
     {
       "requirement": "For a left turn where both intersecting highways are one-way, make both the approach and turn as close as practicable to the left-hand curb or edge.",
@@ -219,5 +243,69 @@
         "heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__departure_shifted_right"
       ]
     }
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "fps": 20,
+    "duration_s": 8,
+    "composition": "synchronized_four_view_primary",
+    "sources": [
+      {
+        "name": "overview",
+        "size": [
+          1920,
+          1080
+        ],
+        "purpose": "subject and one-way intersection turn"
+      },
+      {
+        "name": "approach",
+        "size": [
+          1280,
+          720
+        ],
+        "purpose": "approach body and left road edge"
+      },
+      {
+        "name": "reference_corner",
+        "size": [
+          1280,
+          720
+        ],
+        "purpose": "turn and departure left road edge"
+      },
+      {
+        "name": "driver_reference",
+        "size": [
+          1280,
+          720
+        ],
+        "purpose": "driver-visible route and direction sign"
+      }
+    ],
+    "coverage": [
+      {
+        "subject": "subject, one-way intersection and route",
+        "interval": "all original frames",
+        "view": "overview"
+      },
+      {
+        "subject": "approach body and left edge",
+        "interval": "all original frames",
+        "view": "approach"
+      },
+      {
+        "subject": "turn and departure body and left edge",
+        "interval": "all original frames",
+        "view": "reference_corner"
+      },
+      {
+        "subject": "driver-visible direction sign and route",
+        "interval": "all original frames",
+        "view": "driver_reference"
+      }
+    ],
+    "implementation": "one_way_camera.py",
+    "limitation": "Actual source pixel visibility and direction-sign authority require local original capture review."
+  }
 }

@@ -6,6 +6,7 @@ readback establish only physical construction, never municipal authority.
 
 from hashlib import sha256
 import json
+from math import atan2, hypot, isfinite
 from pathlib import Path
 
 
@@ -56,3 +57,79 @@ def place_markers(world, source_path, expected_sha256, make_transform):
         for actor in reversed(actors):
             actor.destroy()
         raise
+
+
+def _inside(point, polygon):
+    x, y = point
+    result = False
+    for a, b in zip(polygon, polygon[1:] + polygon[:1]):
+        if (a[1] > y) != (b[1] > y):
+            crossing = a[0] + (y-a[1])*(b[0]-a[0])/(b[1]-a[1])
+            if x < crossing:
+                result = not result
+    return result
+
+
+def turn_targets(world, source_path, expected_sha256, variant, make_transform):
+    """Map-check a sourced turn course before a Native feedback controller uses it.
+
+    The returned points are construction targets. The eventual recorded body
+    footprints, rather than the requested targets, determine the actual course.
+    """
+    if variant not in ('indicated_course', 'divergent_course'):
+        raise ValueError('Unknown marked turn variant')
+    raw = Path(source_path).read_bytes()
+    if sha256(raw).hexdigest() != expected_sha256:
+        raise ValueError('Turn-course source hash changed')
+    record = json.loads(raw)
+    if (not record.get('authority_document') or not record.get('intersection_id')
+            or record.get('median_opening_with_intersecting_road') is not True):
+        raise ValueError('Turn-course source identity incomplete')
+    polygon = record.get('intersection_polygon_xy_m')
+    indicated = record.get('indicated_course_xy_m')
+    targets = record.get(variant + '_xy_m')
+    if not isinstance(polygon, list) or len(polygon) < 3:
+        raise ValueError('Sourced intersection polygon missing')
+    for route in (indicated, targets):
+        if (not isinstance(route, list) or len(route) < 3
+                or any(not isinstance(p, list) or len(p) != 2
+                       or not all(isinstance(v, (int, float)) and isfinite(v) for v in p)
+                       for p in route)
+                or any(hypot(b[0]-a[0], b[1]-a[1]) < .2
+                       for a, b in zip(route, route[1:]))):
+            raise ValueError('Turn course lacks finite distinct targets')
+        if (_inside(route[0], polygon) or _inside(route[-1], polygon)
+                or not any(_inside(p, polygon) for p in route[1:-1])):
+            raise ValueError('Turn course does not cross sourced intersection')
+    if targets[0] != indicated[0] or targets[-1] != indicated[-1]:
+        raise ValueError('Compared turn must retain approach and exit')
+    if variant == 'divergent_course' and targets == indicated:
+        raise ValueError('Divergent turn has no different target')
+    road_map = world.get_map()
+    for point in targets[1:-1]:
+        if not _inside(point, polygon):
+            continue
+        wp = road_map.get_waypoint(make_transform(point[0], point[1], 0., 0.).location)
+        if wp is None or not wp.is_junction:
+            raise ValueError('Native map does not identify turn target as junction')
+    return {'intersection_id': record['intersection_id'], 'variant': variant,
+            'targets_xy_m': targets, 'source_sha256': expected_sha256,
+            'actual_turn_observed': False}
+
+
+def control_step(position_xy, heading_xy, velocity_xy, target_xy, *, target_speed_mps=4.):
+    """Bounded feedback for one authored target, never a motion receipt."""
+    values = (*position_xy, *heading_xy, *velocity_xy, *target_xy, target_speed_mps)
+    if not all(isfinite(v) for v in values):
+        raise ValueError('Nonfinite Native turn feedback')
+    dx, dy = target_xy[0]-position_xy[0], target_xy[1]-position_xy[1]
+    length = hypot(dx, dy)
+    heading_length = hypot(*heading_xy)
+    if length < .2 or heading_length < .1 or not 0 < target_speed_mps <= 10:
+        raise ValueError('Invalid Native turn target or engineering speed')
+    hx, hy = heading_xy[0]/heading_length, heading_xy[1]/heading_length
+    error = atan2(hx*dy-hy*dx, hx*dx+hy*dy)
+    speed = hypot(*velocity_xy)
+    return {'steer': max(-.5, min(.5, .8*error)),
+            'throttle': max(0., min(.4, .22*(target_speed_mps-speed))),
+            'brake': max(0., min(.4, .16*(speed-target_speed_mps)))}

@@ -7,7 +7,7 @@
       "case_id": "heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__left_edge_reference",
       "kind": "delivery",
       "construction": "construction.json",
-      "construction_sha256": "3092bbb95366a28a4d7482fb9916ec5b24b0a8bee6a13eb5dd72bd30fdd417f3",
+      "construction_sha256": "0b9f8646df82ceab98c8826fcdb3b14e9ccba2efb5ec0cd0c12dfabc2f4d023c",
       "measurement_procedure": {
         "entrypoint": "one_way_saved.py"
       },
@@ -125,11 +125,11 @@
         "exit_code": 0,
         "log": "left_edge_reference-primary-offline-v4.log",
         "log_sha256": "132a520e1627c5aa869bfa30374e56c1950c25ce9dd12cbc5e57686b39d6ebdf",
-        "construction_sha256": "3092bbb95366a28a4d7482fb9916ec5b24b0a8bee6a13eb5dd72bd30fdd417f3"
+        "construction_sha256": "0b9f8646df82ceab98c8826fcdb3b14e9ccba2efb5ec0cd0c12dfabc2f4d023c"
       },
       "compatibility": {
         "receipt": "left_edge_reference-primary-compatibility.json",
-        "sha256": "f8aa65f608e6f93c8fd46e202f10ae75b8d2402f355a4fa20858a383e63cab9c",
+        "sha256": "ad3de48bc461a1d955099337c9e05019beb23a1c8901dcdc9d32949603d24ea1",
         "log": "left_edge_reference-primary-analysis.log",
         "negative_log": "left_edge_reference-primary-negative.log"
       },
@@ -137,14 +137,14 @@
         "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C152976__NRS-484B-400-5__motor_vehicle_driver/execution-manifest.json --case heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__left_edge_reference --attempt .runtime-work/c152976-left_edge_reference-primary-saved-attempt-v3 --output .runtime-work/c152976-left_edge_reference-primary-saved-proof-v3 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
         "exit_code": 0,
         "log": "left_edge_reference-primary-saved-v2.log",
-        "log_sha256": "dcfa9a784662d9630e1314043045fd9a61fc855cb363f4e70ddb42db360fd6a7"
+        "log_sha256": "62138693e57086ce4059af3a8efa6ce29e5c6ea2c8abcd9f6ed6f4a308fdcbaa"
       },
       "post_capture": {
         "recorded_only": true,
         "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C152976__NRS-484B-400-5__motor_vehicle_driver/execution-manifest.json --case heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__left_edge_reference --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
         "feedback_command": "cat \"$PROCESSED\"/v*/feedback.json",
         "test_log": "left_edge_reference-primary-saved-v2.log",
-        "test_log_sha256": "dcfa9a784662d9630e1314043045fd9a61fc855cb363f4e70ddb42db360fd6a7",
+        "test_log_sha256": "62138693e57086ce4059af3a8efa6ce29e5c6ea2c8abcd9f6ed6f4a308fdcbaa",
         "test_exit_code": 0
       },
       "acquisition": {
@@ -156,7 +156,35 @@
       },
       "physical_preparation": {
         "receipt": "left_edge_reference-physical-preparation.json",
-        "sha256": "87d7fada5b289dc7fa6d51000d52565d7f3f6050ae83860921653524b207fb59"
+        "sha256": "ed5d96d8db6aad1b1d7f39b6d4a0dedf7841aa005c4f9be44e7971c5c51f1480"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__left_edge_reference",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "ef63fef1dcff8a035edc2cf834de2e9ced467089f82b87f8ac2a4a3facb8f5e0",
+        "command": ".venv-cpu/bin/python work/heldout__C152976__NRS-484B-400-5__motor_vehicle_driver/prove_delivery_audit.py --case heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__left_edge_reference",
+        "test_exit_code": 0,
+        "test_log": "left_edge_reference-delivery-positive.log",
+        "test_log_sha256": "b9a9ea68f894ae7ffd65e4b0aa4fe8c153f568c793e5353f285b7c1e82190154",
+        "negative_command": ".venv-cpu/bin/python work/heldout__C152976__NRS-484B-400-5__motor_vehicle_driver/prove_delivery_audit.py --case heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__left_edge_reference --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing audited original source: native/road_edges.jsonl",
+        "negative_log": "left_edge_reference-delivery-negative.log",
+        "negative_log_sha256": "262b68eba9b9d0888eb7c17771e8c6c338f9015b736a3ee7383da42c6e26b185"
+      },
+      "negative": {
+        "log": "left_edge_reference-primary-negative.log"
       }
     },
     {
@@ -309,6 +337,38 @@
           "method": "Original Native full-body footprint and sourced one-way curb joined in one_way_saved.py",
           "evidence": "native/footprints.jsonl, native/road_edges.jsonl, video_frames.jsonl and original camera pixels"
         }
+      },
+      "physical_preparation": {
+        "receipt": "approach_shifted_right-physical-preparation.json",
+        "sha256": "1fd0a1a840c709ddd3bb7853dd4eea7ae660e314b57c358fa42a36816bdebb47"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__approach_shifted_right",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "ef63fef1dcff8a035edc2cf834de2e9ced467089f82b87f8ac2a4a3facb8f5e0",
+        "command": ".venv-cpu/bin/python work/heldout__C152976__NRS-484B-400-5__motor_vehicle_driver/prove_delivery_audit.py --case heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__approach_shifted_right",
+        "test_exit_code": 0,
+        "test_log": "approach_shifted_right-delivery-positive.log",
+        "test_log_sha256": "48c556fa5c2379d0a280dc309b46a19608014c1dacc7dfaf4321974be3888dae",
+        "negative_command": ".venv-cpu/bin/python work/heldout__C152976__NRS-484B-400-5__motor_vehicle_driver/prove_delivery_audit.py --case heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__approach_shifted_right --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing audited original source: native/road_edges.jsonl",
+        "negative_log": "approach_shifted_right-delivery-negative.log",
+        "negative_log_sha256": "262b68eba9b9d0888eb7c17771e8c6c338f9015b736a3ee7383da42c6e26b185"
+      },
+      "negative": {
+        "log": "approach_shifted_right-primary-negative.log"
       }
     },
     {
@@ -461,6 +521,38 @@
           "method": "Original Native full-body footprint and sourced one-way curb joined in one_way_saved.py",
           "evidence": "native/footprints.jsonl, native/road_edges.jsonl, video_frames.jsonl and original camera pixels"
         }
+      },
+      "physical_preparation": {
+        "receipt": "departure_shifted_right-physical-preparation.json",
+        "sha256": "c6384a9e2b009ec4d02d6ee70ad5fd80450229b476b4cd996f80a9bacd88b5d7"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__departure_shifted_right",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "ef63fef1dcff8a035edc2cf834de2e9ced467089f82b87f8ac2a4a3facb8f5e0",
+        "command": ".venv-cpu/bin/python work/heldout__C152976__NRS-484B-400-5__motor_vehicle_driver/prove_delivery_audit.py --case heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__departure_shifted_right",
+        "test_exit_code": 0,
+        "test_log": "departure_shifted_right-delivery-positive.log",
+        "test_log_sha256": "c6999856249f94185dd9b30b4cca57dad7d5aad94312cb1bfc5f1fb6157e9c92",
+        "negative_command": ".venv-cpu/bin/python work/heldout__C152976__NRS-484B-400-5__motor_vehicle_driver/prove_delivery_audit.py --case heldout__C152976__NRS-484B-400-5__motor_vehicle_driver__departure_shifted_right --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing audited original source: native/road_edges.jsonl",
+        "negative_log": "departure_shifted_right-delivery-negative.log",
+        "negative_log_sha256": "262b68eba9b9d0888eb7c17771e8c6c338f9015b736a3ee7383da42c6e26b185"
+      },
+      "negative": {
+        "log": "departure_shifted_right-primary-negative.log"
       }
     }
   ]
