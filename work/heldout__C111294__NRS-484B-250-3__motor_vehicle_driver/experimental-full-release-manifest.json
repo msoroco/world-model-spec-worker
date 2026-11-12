@@ -1,0 +1,1497 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver",
+  "cases": [
+    {
+      "case_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_yields",
+      "construction": "construction-ending-yields.json",
+      "construction_sha256": "34a07656cdfba7a40da6e56a4abf5e6c7371667343e5ffa2fbdfeb4e6d76ba26",
+      "kind": "delivery",
+      "measurement_procedure": {
+        "entrypoint": "ending_road_finalizer.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native topology, realized yield timing and four-camera visibility may fail"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-same_arrival_ending_yields-fallback1.json",
+          "construction_sha256": "715fd7cd2ac0585a086c8141b1b93058479d18bd50fa7647fd0e94606e5d6ed8",
+          "trigger": {
+            "source": "original Native route selection",
+            "metric": "eligible connected route pairs",
+            "failure_condition": "primary search finds no admissible connected route"
+          },
+          "changed_knobs": [
+            "Native route search max_spawns 300 to 600"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_yields --candidate fallback1 --output .runtime-work/c111294-same_arrival_ending_yields-bound-canonical-fallback1-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "same_arrival_ending_yields-bound-canonical-fallback1-offline.log",
+            "log_sha256": "84411b81819d9798ea093527efebbad8be1992f1d72706b21991e790c353736a",
+            "construction_sha256": "715fd7cd2ac0585a086c8141b1b93058479d18bd50fa7647fd0e94606e5d6ed8"
+          },
+          "compatibility": {
+            "receipt": "same_arrival_ending_yields-compact-fallback1-compatibility.json",
+            "sha256": "01b65d655d9dccab3dd2b8c7d1331ac6513b9c33ed6014e589e264c1e3eb2382",
+            "log": "same_arrival_ending_yields-compact-fallback1-analysis.log",
+            "negative_log": "same_arrival_ending_yields-compact-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-same_arrival_ending_yields-fallback2.json",
+          "construction_sha256": "ccfea94f02d7721fb3bb66af0b431dc37857f26e1d918d92c662702e9d6d62ad",
+          "trigger": {
+            "source": "original Native speed and body trace",
+            "metric": "speed settling and frame-to-frame acceleration",
+            "failure_condition": "primary gain produces unstable approach speed or misses authored entry timing"
+          },
+          "changed_knobs": [
+            "speed controller proportional gain 0.22 to 0.18"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_yields --candidate fallback2 --output .runtime-work/c111294-same_arrival_ending_yields-bound-canonical-fallback2-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "same_arrival_ending_yields-bound-canonical-fallback2-offline.log",
+            "log_sha256": "0dbb1fb339760a0659fe61b73d9b38db50a88048cd338bb9364a1ad33818cc1f",
+            "construction_sha256": "ccfea94f02d7721fb3bb66af0b431dc37857f26e1d918d92c662702e9d6d62ad"
+          },
+          "compatibility": {
+            "receipt": "same_arrival_ending_yields-compact-fallback2-compatibility.json",
+            "sha256": "53894fa009036f0ee5320a9a34e6d8d5e09ff9418c31a0cb9c3973a333505542",
+            "log": "same_arrival_ending_yields-compact-fallback2-analysis.log",
+            "negative_log": "same_arrival_ending_yields-compact-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-same_arrival_ending_yields-fallback3.json",
+          "construction_sha256": "381aa7ed1bc9246c9578c061a38ffaa9b699d0ebf50d8d228771e5d9bdf737c3",
+          "trigger": {
+            "source": "full-resolution overview source decode",
+            "metric": "both actor bodies visible in overview pixels",
+            "failure_condition": "primary overview mount crops either participant"
+          },
+          "changed_knobs": [
+            "overview mount x -9 m to -10 m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_yields --candidate fallback3 --output .runtime-work/c111294-same_arrival_ending_yields-bound-canonical-fallback3-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "same_arrival_ending_yields-bound-canonical-fallback3-offline.log",
+            "log_sha256": "64a04c9de976a5e56c5e01c4590d65d3e80dfdb335294c675e8da0a2ed5ddf50",
+            "construction_sha256": "381aa7ed1bc9246c9578c061a38ffaa9b699d0ebf50d8d228771e5d9bdf737c3"
+          },
+          "compatibility": {
+            "receipt": "same_arrival_ending_yields-compact-fallback3-compatibility.json",
+            "sha256": "4ddd1052b558e148dbef74407251af9a29502e0b5323b7011537df0a8e0d0cef",
+            "log": "same_arrival_ending_yields-compact-fallback3-analysis.log",
+            "negative_log": "same_arrival_ending_yields-compact-fallback3-negative.log"
+          }
+        }
+      ],
+      "measurement_contract": "measurement-contract-ending-yields.json",
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_yields --output .runtime-work/c111294-same_arrival_ending_yields-bound-canonical-offline-venv --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "same_arrival_ending_yields-bound-canonical-offline.log",
+        "log_sha256": "d46adeec844455f94754ac12b9d7d5af9efaa20bfe5bc7f81ff4bb5b5ce0eb75",
+        "construction_sha256": "34a07656cdfba7a40da6e56a4abf5e6c7371667343e5ffa2fbdfeb4e6d76ba26"
+      },
+      "fixture_recipe": "work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/diagnostic-recipe-ending-yields.json",
+      "acquisition": {
+        "intersection_occupancy": {
+          "entrypoint": "ending_road_finalizer.py",
+          "method": "original Native body polygon overlap against retained conflict polygon",
+          "evidence": "intersection_topology.json, intersection_participants.jsonl, trace.jsonl and video_frames.jsonl joined by original frame identity"
+        }
+      },
+      "compatibility": {
+        "receipt": "same_arrival_ending_yields-compact-primary-compatibility.json",
+        "sha256": "c7eda60d6a3879cfd952f8f118f56e11608a9c48d53e2700c1ac2b81894348fa",
+        "log": "same_arrival_ending_yields-compact-primary-analysis.log",
+        "negative_log": "same_arrival_ending_yields-compact-primary-negative.log"
+      },
+      "negative": {
+        "log": "same_arrival_ending_yields-compact-primary-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_yields --attempt \"$ATTEMPT\" --output \"$PROCESSING_OUTPUT\" --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSING_OUTPUT/feedback.json\"",
+        "test_log": "ending-yields-saved-processing-gate.log",
+        "test_log_sha256": "11907fb592e9abf8a3211844fee9c97662abedc401a06925f9fdca49b3036254",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_yields",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "1f8931d0d20ddf7194dc96cc9cdf147fbef98025a343ba0b3de7ee76ec2115c9",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/delivery_audit.py --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_yields --attempt .runtime-work/c111294-same_arrival_ending_yields-compact-primary-compatibility --report .runtime-work/c111294-same_arrival_ending_yields-compact-primary-compatibility/analysis-report.json",
+        "test_exit_code": 0,
+        "test_log": "same_arrival_ending_yields-compact-delivery-positive.log",
+        "test_log_sha256": "7aacc629fdeb4474c1afb39f35d9f7efc1f7f27f44098eff5b7067c2635aa18d",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/delivery_audit.py --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_yields --attempt .runtime-work/c111294-same_arrival_ending_yields-compact-primary-compatibility --report .runtime-work/same_arrival_ending_yields-compact-tampered-report.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "hash differs",
+        "negative_log": "same_arrival_ending_yields-compact-delivery-negative.log",
+        "negative_log_sha256": "9245d34976280f95db2e47f577f85720b0f175f55a282849527d1636df33d267"
+      },
+      "physical_preparation": {
+        "receipt": "physical/same_arrival_ending_yields-proof.json",
+        "sha256": "ba8d9ef33fb3512056a533e13ed41f66e634d5aa12d375c66e58376cb4dc8f4c"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
+    },
+    {
+      "case_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_enters_first",
+      "construction": "construction-ending-enters-first.json",
+      "construction_sha256": "a15f62556b1551012ec8cd4017b911750991a9e940e3277d96dbf7d28f097dd5",
+      "kind": "delivery",
+      "measurement_procedure": {
+        "entrypoint": "ending_road_finalizer.py"
+      },
+      "measurement_contract": "measurement-contract-ending-enters-first.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Entry-order release may not produce a realized original-body contrast"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-same_arrival_ending_enters_first-fallback1.json",
+          "construction_sha256": "0fa935049aba75930ab9cdc9bf75ee07c487826ce84b84ff9c06daea4d0a8684",
+          "trigger": {
+            "source": "original Native route selection",
+            "metric": "eligible connected route pairs",
+            "failure_condition": "primary search finds no admissible connected route"
+          },
+          "changed_knobs": [
+            "Native route search max_spawns 300 to 600"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_enters_first --candidate fallback1 --output .runtime-work/c111294-same_arrival_ending_enters_first-pair2-fallback1-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "same_arrival_ending_enters_first-pair2-fallback1-offline.log",
+            "log_sha256": "353db6d73c04021666d030fff99eeaa740491deca1bcd8abc356347fb5792642",
+            "construction_sha256": "0fa935049aba75930ab9cdc9bf75ee07c487826ce84b84ff9c06daea4d0a8684"
+          },
+          "compatibility": {
+            "receipt": "same_arrival_ending_enters_first-pair-source-fallback1-compatibility.json",
+            "sha256": "dfd3f5798807a7c0b4913dbd3d4105f4ea98e023e569bd874a0aaa305dd6e5fb",
+            "log": "same_arrival_ending_enters_first-pair-source-fallback1-analysis.log",
+            "negative_log": "same_arrival_ending_enters_first-pair-source-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-same_arrival_ending_enters_first-fallback2.json",
+          "construction_sha256": "0e9fc598748524fc15871e658cfa6db54f83b5e8e8b88959cdced46151aecbf1",
+          "trigger": {
+            "source": "original Native speed and body trace",
+            "metric": "speed settling and frame-to-frame acceleration",
+            "failure_condition": "primary gain produces unstable approach speed or misses authored entry timing"
+          },
+          "changed_knobs": [
+            "speed controller proportional gain 0.22 to 0.18"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_enters_first --candidate fallback2 --output .runtime-work/c111294-same_arrival_ending_enters_first-pair2-fallback2-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "same_arrival_ending_enters_first-pair2-fallback2-offline.log",
+            "log_sha256": "9ad2dbf178a7741ef9a9d6162e946e3c710e365acb2c1d8e60e8232d4d9e2dda",
+            "construction_sha256": "0e9fc598748524fc15871e658cfa6db54f83b5e8e8b88959cdced46151aecbf1"
+          },
+          "compatibility": {
+            "receipt": "same_arrival_ending_enters_first-pair-source-fallback2-compatibility.json",
+            "sha256": "83736c5fdbbca4991e845dbd4ab76f9ae7bb965fb7b6ef49a5de8b79195a1bc4",
+            "log": "same_arrival_ending_enters_first-pair-source-fallback2-analysis.log",
+            "negative_log": "same_arrival_ending_enters_first-pair-source-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-same_arrival_ending_enters_first-fallback3.json",
+          "construction_sha256": "e260d6917b4517ed39446def8bad36061dedcde1679873fd09d3b09691fade85",
+          "trigger": {
+            "source": "full-resolution overview source decode",
+            "metric": "both actor bodies visible in overview pixels",
+            "failure_condition": "primary overview mount crops either participant"
+          },
+          "changed_knobs": [
+            "overview mount x -9 m to -10 m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_enters_first --candidate fallback3 --output .runtime-work/c111294-same_arrival_ending_enters_first-pair2-fallback3-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "same_arrival_ending_enters_first-pair2-fallback3-offline.log",
+            "log_sha256": "8da0d21426ee040a9463c76eb7a89ff58f7633325e2b1d344a13d2406ccc4388",
+            "construction_sha256": "e260d6917b4517ed39446def8bad36061dedcde1679873fd09d3b09691fade85"
+          },
+          "compatibility": {
+            "receipt": "same_arrival_ending_enters_first-pair-source-fallback3-compatibility.json",
+            "sha256": "decc36eb43b55b9a617447a148509956e2f3259ab4540b9768cd901d058141a1",
+            "log": "same_arrival_ending_enters_first-pair-source-fallback3-analysis.log",
+            "negative_log": "same_arrival_ending_enters_first-pair-source-fallback3-negative.log"
+          }
+        }
+      ],
+      "acquisition": {
+        "intersection_occupancy": {
+          "entrypoint": "ending_road_finalizer.py",
+          "method": "original Native body polygon overlap against retained conflict polygon",
+          "evidence": "intersection_topology.json, intersection_participants.jsonl, trace.jsonl and video_frames.jsonl joined by original frame identity"
+        }
+      },
+      "fixture_recipe": "work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/diagnostic-recipe-ending-enters-first.json",
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_enters_first --candidate primary --output .runtime-work/c111294-same_arrival_ending_enters_first-pair2-primary-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "same_arrival_ending_enters_first-pair2-primary-offline.log",
+        "log_sha256": "443436ddaea673e9e707713b70933ed1ac7f922a67d6750f8e4692da8149775d",
+        "construction_sha256": "a15f62556b1551012ec8cd4017b911750991a9e940e3277d96dbf7d28f097dd5"
+      },
+      "compatibility": {
+        "receipt": "same_arrival_ending_enters_first-pair-source-primary-compatibility.json",
+        "sha256": "9012b0d28946207767b1f22d018a3d9d43a17d79ebba672186ae82b04ed36e7d",
+        "log": "same_arrival_ending_enters_first-pair-source-primary-analysis.log",
+        "negative_log": "same_arrival_ending_enters_first-pair-source-primary-negative.log"
+      },
+      "negative": {
+        "log": "same_arrival_ending_enters_first-pair-source-primary-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_enters_first --attempt \"$ATTEMPT\" --output \"$PROCESSING_OUTPUT\" --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSING_OUTPUT/feedback.json\"",
+        "test_log": "ending-enters-first-saved-processing-gate.log",
+        "test_log_sha256": "6e5bbab9141903cbb1d80a9dc01d9c675d6e0264503dd6b3a215b562e239e6e6",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_enters_first",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "1f8931d0d20ddf7194dc96cc9cdf147fbef98025a343ba0b3de7ee76ec2115c9",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/delivery_audit.py --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_enters_first --attempt .runtime-work/c111294-same_arrival_ending_enters_first-pair-source-primary-compatibility --report .runtime-work/c111294-same_arrival_ending_enters_first-pair-source-primary-compatibility/analysis-report.json",
+        "test_exit_code": 0,
+        "test_log": "same_arrival_ending_enters_first-pair-source-delivery-positive.log",
+        "test_log_sha256": "2cdee7f0e1e5273394ea6f82036f23cdcd8d2f0905612386403fdc938334fc5a",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/delivery_audit.py --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__same_arrival_ending_enters_first --attempt .runtime-work/c111294-same_arrival_ending_enters_first-pair-source-primary-compatibility --report .runtime-work/same_arrival_ending_enters_first-pair-source-tampered-report.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "hash differs",
+        "negative_log": "same_arrival_ending_enters_first-pair-source-delivery-negative.log",
+        "negative_log_sha256": "9245d34976280f95db2e47f577f85720b0f175f55a282849527d1636df33d267"
+      },
+      "physical_preparation": {
+        "receipt": "physical/same_arrival_ending_enters_first-proof.json",
+        "sha256": "c122e76a4a42e9af8099daf25264bcd3c51758cf40798840107d3e799ed902bc"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
+    },
+    {
+      "case_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__separated_arrival",
+      "construction": "construction-separated-arrival.json",
+      "construction_sha256": "dbb74940f0221cf9f9a9dab0490055b1ac6d416ba6917127a3b98fd73af1ee10",
+      "kind": "delivery",
+      "measurement_procedure": {
+        "entrypoint": "ending_road_finalizer.py"
+      },
+      "measurement_contract": "measurement-contract-separated-arrival.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Delayed release may not realize a distinct original-body arrival interval"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-separated_arrival-fallback1.json",
+          "construction_sha256": "556500f3742edd251fdbdae10b69ea7b596a427dc33a53e4cc2c8c05be52bc9b",
+          "trigger": {
+            "source": "original Native route selection",
+            "metric": "eligible connected route pairs",
+            "failure_condition": "primary search finds no admissible connected route"
+          },
+          "changed_knobs": [
+            "Native route search max_spawns 300 to 600"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__separated_arrival --candidate fallback1 --output .runtime-work/c111294-separated_arrival-pair2-fallback1-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "separated_arrival-pair2-fallback1-offline.log",
+            "log_sha256": "b37c4cb8ac9997a57bbc90322a76b7a4dc73b91e85690dcfb40ae59059187130",
+            "construction_sha256": "556500f3742edd251fdbdae10b69ea7b596a427dc33a53e4cc2c8c05be52bc9b"
+          },
+          "compatibility": {
+            "receipt": "separated_arrival-pair-source-fallback1-compatibility.json",
+            "sha256": "823b63caeac46d178f8dfb74db8995efaf247637e70a1100edd602a0daaddbc2",
+            "log": "separated_arrival-pair-source-fallback1-analysis.log",
+            "negative_log": "separated_arrival-pair-source-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-separated_arrival-fallback2.json",
+          "construction_sha256": "f9859b34ce889ffb020ad38efa66047e92a845baabdf88ea391bb03dae417f43",
+          "trigger": {
+            "source": "original Native speed and body trace",
+            "metric": "speed settling and frame-to-frame acceleration",
+            "failure_condition": "primary gain produces unstable approach speed or misses authored entry timing"
+          },
+          "changed_knobs": [
+            "speed controller proportional gain 0.22 to 0.18"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__separated_arrival --candidate fallback2 --output .runtime-work/c111294-separated_arrival-pair2-fallback2-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "separated_arrival-pair2-fallback2-offline.log",
+            "log_sha256": "178660dfef134020114d2919e7a1ee276e47887091ce09fbe7136c65bfa0be1d",
+            "construction_sha256": "f9859b34ce889ffb020ad38efa66047e92a845baabdf88ea391bb03dae417f43"
+          },
+          "compatibility": {
+            "receipt": "separated_arrival-pair-source-fallback2-compatibility.json",
+            "sha256": "8ed8095704e1ce6fa2286b67df9ffc1337d65b1e3ed978f0802badf61dd19e58",
+            "log": "separated_arrival-pair-source-fallback2-analysis.log",
+            "negative_log": "separated_arrival-pair-source-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-separated_arrival-fallback3.json",
+          "construction_sha256": "4ee9a7faee73ab7061ed5fc1467c53f12cead0383c0339149eb31d4b5b1d7061",
+          "trigger": {
+            "source": "full-resolution overview source decode",
+            "metric": "both actor bodies visible in overview pixels",
+            "failure_condition": "primary overview mount crops either participant"
+          },
+          "changed_knobs": [
+            "overview mount x -9 m to -10 m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__separated_arrival --candidate fallback3 --output .runtime-work/c111294-separated_arrival-pair2-fallback3-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "separated_arrival-pair2-fallback3-offline.log",
+            "log_sha256": "228a76398e1449b618e5856099b5b63b2a98b25c90490ecd27c91870abfd5b32",
+            "construction_sha256": "4ee9a7faee73ab7061ed5fc1467c53f12cead0383c0339149eb31d4b5b1d7061"
+          },
+          "compatibility": {
+            "receipt": "separated_arrival-pair-source-fallback3-compatibility.json",
+            "sha256": "c92c3d99e584601f4a3968540f6518cebf7861157cdb5af66aa00d9caf24d395",
+            "log": "separated_arrival-pair-source-fallback3-analysis.log",
+            "negative_log": "separated_arrival-pair-source-fallback3-negative.log"
+          }
+        }
+      ],
+      "acquisition": {
+        "intersection_occupancy": {
+          "entrypoint": "ending_road_finalizer.py",
+          "method": "original Native body polygon overlap against retained conflict polygon",
+          "evidence": "intersection_topology.json, intersection_participants.jsonl, trace.jsonl and video_frames.jsonl joined by original frame identity"
+        }
+      },
+      "fixture_recipe": "work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/diagnostic-recipe-separated-arrival.json",
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__separated_arrival --candidate primary --output .runtime-work/c111294-separated_arrival-pair2-primary-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "separated_arrival-pair2-primary-offline.log",
+        "log_sha256": "db39c302257f94d59096ab0d4361d3ddd03b34c8da43a5cac45a2c543f9a64ad",
+        "construction_sha256": "dbb74940f0221cf9f9a9dab0490055b1ac6d416ba6917127a3b98fd73af1ee10"
+      },
+      "compatibility": {
+        "receipt": "separated_arrival-pair-source-primary-compatibility.json",
+        "sha256": "560cd5a5413eb3c154e349f4a62224f8db611d60d26c0d424d75e13d0d1c12b3",
+        "log": "separated_arrival-pair-source-primary-analysis.log",
+        "negative_log": "separated_arrival-pair-source-primary-negative.log"
+      },
+      "negative": {
+        "log": "separated_arrival-pair-source-primary-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__separated_arrival --attempt \"$ATTEMPT\" --output \"$PROCESSING_OUTPUT\" --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSING_OUTPUT/feedback.json\"",
+        "test_log": "separated-arrival-saved-processing-gate.log",
+        "test_log_sha256": "3012249e1b7dd2216b4893c4744358b2d010a1c39748df10d7b92f1b23ff3cd0",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__separated_arrival",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "1f8931d0d20ddf7194dc96cc9cdf147fbef98025a343ba0b3de7ee76ec2115c9",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/delivery_audit.py --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__separated_arrival --attempt .runtime-work/c111294-separated_arrival-pair-source-primary-compatibility --report .runtime-work/c111294-separated_arrival-pair-source-primary-compatibility/analysis-report.json",
+        "test_exit_code": 0,
+        "test_log": "separated_arrival-pair-source-delivery-positive.log",
+        "test_log_sha256": "42c1e7e5a812d476af40cfed703781e868663f8402601e8b9b0b49ef710418c5",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/delivery_audit.py --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__separated_arrival --attempt .runtime-work/c111294-separated_arrival-pair-source-primary-compatibility --report .runtime-work/separated_arrival-pair-source-tampered-report.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "hash differs",
+        "negative_log": "separated_arrival-pair-source-delivery-negative.log",
+        "negative_log_sha256": "9245d34976280f95db2e47f577f85720b0f175f55a282849527d1636df33d267"
+      },
+      "physical_preparation": {
+        "receipt": "physical/separated_arrival-proof.json",
+        "sha256": "0d4c00e4802ae7eeda82dafb013bb20b8135f14d22de2279beef6a10b93ec584"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
+    },
+    {
+      "case_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__official_device_control",
+      "construction": "construction-official-device.json",
+      "construction_sha256": "5674948ee34a7db24d8f5d37cbeae37ca166efc09254b8bd29c621217762b586",
+      "kind": "delivery",
+      "measurement_procedure": {
+        "entrypoint": "ending_road_official_finalizer.py"
+      },
+      "measurement_contract": "measurement-contract-official-device.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native map may lack a uniquely governed ending approach or visible signal"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-official_device_control-fallback1.json",
+          "construction_sha256": "eebc6261327df9aae535131b6a8c5f634e1eb4cc20a43d35846c629d827634fa",
+          "trigger": {
+            "source": "original Native route selection",
+            "metric": "eligible connected route pairs",
+            "failure_condition": "primary search finds no admissible connected route"
+          },
+          "changed_knobs": [
+            "Native route search max_spawns 300 to 600"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__official_device_control --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/official_device_control-geometry-fallback1-offline-1794447027176854481 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "official_device_control-geometry-fallback1-offline.log",
+            "log_sha256": "fb184ea57734512b1f088f9181209901b9cd46df3eb7eaa2500ea9e48dde20b5",
+            "construction_sha256": "eebc6261327df9aae535131b6a8c5f634e1eb4cc20a43d35846c629d827634fa"
+          },
+          "compatibility": {
+            "receipt": "official_device_control-geometry-fallback1-compatibility.json",
+            "sha256": "de86c3c2af8705f3a388014879576d014d4a60e402ff5d0c484fcf0b63c25f06",
+            "log": "official_device_control-geometry-fallback1-analysis.log",
+            "negative_log": "official_device_control-geometry-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-official_device_control-fallback2.json",
+          "construction_sha256": "fbb652792cf9f6b030ce3884858b766d9364c8de5176709b7198f53b7eda4a5f",
+          "trigger": {
+            "source": "original Native speed and body trace",
+            "metric": "speed settling and frame-to-frame acceleration",
+            "failure_condition": "primary gain produces unstable approach speed or misses authored entry timing"
+          },
+          "changed_knobs": [
+            "speed controller proportional gain 0.22 to 0.18"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__official_device_control --candidate fallback2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/official_device_control-geometry-fallback2-offline-1794447031281176804 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "official_device_control-geometry-fallback2-offline.log",
+            "log_sha256": "fb184ea57734512b1f088f9181209901b9cd46df3eb7eaa2500ea9e48dde20b5",
+            "construction_sha256": "fbb652792cf9f6b030ce3884858b766d9364c8de5176709b7198f53b7eda4a5f"
+          },
+          "compatibility": {
+            "receipt": "official_device_control-geometry-fallback2-compatibility.json",
+            "sha256": "45bb517b19e1a6e5847ce433ecc7c5465adcb89c3ab0d79da6ff6abfd3ebf69e",
+            "log": "official_device_control-geometry-fallback2-analysis.log",
+            "negative_log": "official_device_control-geometry-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-official_device_control-fallback3.json",
+          "construction_sha256": "8279cca4e8237c19fd22caae7b9c9edd769a030a16d41aa5bd94a8f78a0ed8f6",
+          "trigger": {
+            "source": "full-resolution overview source decode",
+            "metric": "both actor bodies visible in overview pixels",
+            "failure_condition": "primary overview mount crops either participant"
+          },
+          "changed_knobs": [
+            "overview mount x -9 m to -10 m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__official_device_control --candidate fallback3 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/official_device_control-geometry-fallback3-offline-1794447035018549543 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "official_device_control-geometry-fallback3-offline.log",
+            "log_sha256": "fb184ea57734512b1f088f9181209901b9cd46df3eb7eaa2500ea9e48dde20b5",
+            "construction_sha256": "8279cca4e8237c19fd22caae7b9c9edd769a030a16d41aa5bd94a8f78a0ed8f6"
+          },
+          "compatibility": {
+            "receipt": "official_device_control-geometry-fallback3-compatibility.json",
+            "sha256": "7fb5af71febd8d341827e2b93864c1cf795545a1b92d977bb69037d214c12d80",
+            "log": "official_device_control-geometry-fallback3-analysis.log",
+            "negative_log": "official_device_control-geometry-fallback3-negative.log"
+          }
+        }
+      ],
+      "acquisition": {
+        "intersection_occupancy": {
+          "entrypoint": "ending_road_finalizer.py",
+          "method": "original Native body polygon overlap against retained conflict polygon",
+          "evidence": "intersection_topology.json, intersection_participants.jsonl, trace.jsonl and video_frames.jsonl joined by original frame identity"
+        },
+        "official_device_state": {
+          "entrypoint": "ending_road_device.py",
+          "method": "Native signal state readback joined to original frames",
+          "evidence": "official_device_context.json and official_device_states.jsonl"
+        },
+        "official_geometry_binding": {
+          "entrypoint": "official_geometry_source_audit.py",
+          "method": "hash and map/source route/device join on retained originals",
+          "evidence": "official_geometry_binding.json, road.xodr, intersection_topology.json and official_device_context.json"
+        }
+      },
+      "fixture_recipe": "work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/diagnostic-recipe-official-device.json",
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__official_device_control --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/official_device_control-geometry-primary-offline-1794447023732142923 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "official_device_control-geometry-primary-offline.log",
+        "log_sha256": "fb184ea57734512b1f088f9181209901b9cd46df3eb7eaa2500ea9e48dde20b5",
+        "construction_sha256": "5674948ee34a7db24d8f5d37cbeae37ca166efc09254b8bd29c621217762b586"
+      },
+      "compatibility": {
+        "receipt": "official_device_control-geometry-primary-compatibility.json",
+        "sha256": "fc50bd5b1a72b68a3e7f2c452c36f92883ac41688b0f91c0023f709824dd2bcc",
+        "log": "official_device_control-geometry-primary-analysis.log",
+        "negative_log": "official_device_control-geometry-primary-negative.log"
+      },
+      "negative": {
+        "log": "official_device_control-geometry-primary-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__official_device_control --attempt \"$ATTEMPT\" --output \"$PROCESSING_OUTPUT\" --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSING_OUTPUT/feedback.json\"",
+        "test_log": "official-device-saved-processing-gate.log",
+        "test_log_sha256": "c5202c54d7a53d29a21907379aeb74efa079e24a92e26601938cc8a6155a7bb3",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__official_device_control",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "1f8931d0d20ddf7194dc96cc9cdf147fbef98025a343ba0b3de7ee76ec2115c9",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/delivery_audit.py --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__official_device_control --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c111294-official-device-saved-1794446658472498192-attempt --report /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c111294-official-device-saved-1794446658472498192-processing/v0001/analysis/analysis-report.json",
+        "test_exit_code": 0,
+        "test_log": "official_device_control-attached-delivery-positive.log",
+        "test_log_sha256": "30bdd9f417bb4c63c592fa5c92325c1dd968bfcb799d3477399c78d9e7c82484",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/delivery_audit.py --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__official_device_control --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c111294-official-device-saved-1794446658472498192-attempt --report /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/official_device_control-attached-tampered-report.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "hash differs",
+        "negative_log": "official_device_control-attached-delivery-negative.log",
+        "negative_log_sha256": "9245d34976280f95db2e47f577f85720b0f175f55a282849527d1636df33d267"
+      },
+      "physical_preparation": {
+        "receipt": "physical/official_device_control-proof.json",
+        "sha256": "4c2200843dcdb22ab44ff6a521dbb944d08db7802f329ac1073491f496e7f113"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
+    },
+    {
+      "case_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay-0000",
+      "construction": "construction-yield-sweep-0000.json",
+      "construction_sha256": "d105c50480bb67f353677f17322b84fe895325c745186d4cf4d637806908bffa",
+      "kind": "delivery",
+      "measurement_procedure": {
+        "entrypoint": "ending_road_finalizer.py"
+      },
+      "measurement_contract": "measurement-contract-yield-sweep-0000.json",
+      "fixture_recipe": "work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/diagnostic-recipe-yield-sweep-0000-full.json",
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay-0000 --candidate primary --output .runtime-work/c111294-yield_release_delay-0000-pair2-primary-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "yield_release_delay-0000-pair2-primary-offline.log",
+        "log_sha256": "9339068729c91e4b667ee89ebdcb71f66f2cb4fd52d0e5d92111fc4227c68af5",
+        "construction_sha256": "d105c50480bb67f353677f17322b84fe895325c745186d4cf4d637806908bffa"
+      },
+      "acquisition": {
+        "intersection_occupancy": {
+          "entrypoint": "ending_road_finalizer.py",
+          "method": "original Native body polygon overlap against retained conflict polygon",
+          "evidence": "intersection_topology.json, intersection_participants.jsonl, trace.jsonl and video_frames.jsonl joined by original frame identity"
+        },
+        "subject_displacement_m": {
+          "entrypoint": "ending_road_finalizer.py",
+          "method": "original body-center displacement from retained participant frames",
+          "evidence": "subject_displacement_m.jsonl derived solely from original intersection_participants.jsonl"
+        },
+        "subject_entry_elapsed_s": {
+          "entrypoint": "ending_road_finalizer.py",
+          "method": "saved original body conflict entry latch",
+          "evidence": "subject_entry_elapsed_s.jsonl derived solely from original intersection participant/topology frames"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native through clearance, delayed release and camera visibility may fail at the fixed physical setpoint"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-yield-sweep-0000-fallback1.json",
+          "construction_sha256": "a581f35d2223147c15d8ce856c25e1d0716441339da87289923cc98b3aeaa2e1",
+          "trigger": {
+            "source": "original Native route selection",
+            "metric": "eligible connected ending/through route pairs",
+            "failure_condition": "primary search finds no admissible connected ending/through route"
+          },
+          "changed_knobs": [
+            "Native route search max_spawns 300 to 600"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay-0000 --candidate fallback1 --output .runtime-work/c111294-yield_release_delay-0000-pair2-fallback1-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "yield_release_delay-0000-pair2-fallback1-offline.log",
+            "log_sha256": "7831b25e98363cd7693260e52df33d71963938252b04c302ebdabdf349abf905",
+            "construction_sha256": "a581f35d2223147c15d8ce856c25e1d0716441339da87289923cc98b3aeaa2e1"
+          },
+          "compatibility": {
+            "receipt": "yield_release_delay-0000-pair-source-fallback1-compatibility.json",
+            "sha256": "1600ba749bdcc53d6d213d556d053cd665ac3dfa86ef7a87e0403c11f90c7fe8",
+            "log": "yield_release_delay-0000-pair-source-fallback1-analysis.log",
+            "negative_log": "yield_release_delay-0000-pair-source-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-yield-sweep-0000-fallback2.json",
+          "construction_sha256": "1f08bff913fff3d034241766b12e91cbe89fd853747c3358810d90a4e6e3e238",
+          "trigger": {
+            "source": "original Native speed and body trace",
+            "metric": "speed settling and frame-to-frame acceleration",
+            "failure_condition": "primary gain produces unstable approach speed or misses authored release timing"
+          },
+          "changed_knobs": [
+            "speed controller gain 0.22 to 0.18"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay-0000 --candidate fallback2 --output .runtime-work/c111294-yield_release_delay-0000-pair2-fallback2-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "yield_release_delay-0000-pair2-fallback2-offline.log",
+            "log_sha256": "0e7df890490a3fcd8640e02079091ec7c9e35c394125faffab784a6f60046df8",
+            "construction_sha256": "1f08bff913fff3d034241766b12e91cbe89fd853747c3358810d90a4e6e3e238"
+          },
+          "compatibility": {
+            "receipt": "yield_release_delay-0000-pair-source-fallback2-compatibility.json",
+            "sha256": "9750ab2d455c043cff1615f07107d4eb0221add69bedbfae4eff09b07d1d2cab",
+            "log": "yield_release_delay-0000-pair-source-fallback2-analysis.log",
+            "negative_log": "yield_release_delay-0000-pair-source-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-yield-sweep-0000-fallback3.json",
+          "construction_sha256": "f12ea1c2174a66793dba1b3c29bcd0def858a3b2730719b3fb03c18e4963e4a1",
+          "trigger": {
+            "source": "full-resolution overview source decode",
+            "metric": "both participant bodies visible in overview pixels",
+            "failure_condition": "primary overview mount crops either participant"
+          },
+          "changed_knobs": [
+            "overview mount x -9 m to -10 m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay-0000 --candidate fallback3 --output .runtime-work/c111294-yield_release_delay-0000-pair2-fallback3-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "yield_release_delay-0000-pair2-fallback3-offline.log",
+            "log_sha256": "1443d4859aebe17337feafca5b06abe3984d7b9cfb7ebd0a073fb78151e7988f",
+            "construction_sha256": "f12ea1c2174a66793dba1b3c29bcd0def858a3b2730719b3fb03c18e4963e4a1"
+          },
+          "compatibility": {
+            "receipt": "yield_release_delay-0000-pair-source-fallback3-compatibility.json",
+            "sha256": "f9be1fd04a70ba8c5ed581d42a33799c13608d04c7652219dd401e8acd088967",
+            "log": "yield_release_delay-0000-pair-source-fallback3-analysis.log",
+            "negative_log": "yield_release_delay-0000-pair-source-fallback3-negative.log"
+          }
+        }
+      ],
+      "compatibility": {
+        "receipt": "yield_release_delay-0000-pair-source-primary-compatibility.json",
+        "sha256": "877bfd41399003f07418145fc0e359189c58efc723d76fe878e69a79afa08881",
+        "log": "yield_release_delay-0000-pair-source-primary-analysis.log",
+        "negative_log": "yield_release_delay-0000-pair-source-primary-negative.log"
+      },
+      "negative": {
+        "log": "yield_release_delay-0000-pair-source-primary-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay-0000 --attempt \"$ATTEMPT\" --output \"$PROCESSING_OUTPUT\" --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSING_OUTPUT/feedback.json\"",
+        "test_log": "yield_release_delay-0000-saved-processing-gate.log",
+        "test_log_sha256": "f16cb073b7083c2063bb45f4ed8ed756b3ca9257b69115d4fe5e5ccdd850f99a",
+        "test_exit_code": 0
+      },
+      "physical_preparation": {
+        "receipt": "physical/yield-sweep-0000-proof.json",
+        "sha256": "dbf0869fce0ee1c74a7fb2f0ddb409e01633c09a26e59ef0cac557548544eae9"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay-0000",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "yield_sweep_delivery_audit.py",
+        "script_sha256": "abf323b6ed400d4e66bde77c77a42451365446fa0f6fb997f02daef22ac336a4",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/yield_sweep_delivery_audit.py --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay-0000 --attempt .runtime-work/c111294-yield_release_delay-0000-pair-source-primary-compatibility --report .runtime-work/c111294-yield_release_delay-0000-pair-source-primary-compatibility/analysis-report.json",
+        "test_exit_code": 0,
+        "test_log": "yield_release_delay-0000-pair-source-delivery-positive.log",
+        "test_log_sha256": "cc87019d80539c9d3bf480acc8a46f8c9afadde0948b373fd1cc3c251fe567d8",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/yield_sweep_delivery_audit.py --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay-0000 --attempt .runtime-work/c111294-yield_release_delay-0000-pair-source-primary-compatibility --report .runtime-work/yield_release_delay-0000-pair-source-tampered-report.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "hash differs",
+        "negative_log": "yield_release_delay-0000-pair-source-delivery-negative.log",
+        "negative_log_sha256": "18a3448be65a601ff0cf20bd10c6b9fb8f40968a06e1a6fb2521affd8e4717ee"
+      }
+    },
+    {
+      "case_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay-0001",
+      "construction": "construction-yield-sweep-0001.json",
+      "construction_sha256": "1d04e5bfabd2cb139ffbe304af199c88cd1f0c98876920652144598b5c7b9c5b",
+      "kind": "delivery",
+      "measurement_procedure": {
+        "entrypoint": "ending_road_finalizer.py"
+      },
+      "measurement_contract": "measurement-contract-yield-sweep-0001.json",
+      "fixture_recipe": "work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/diagnostic-recipe-yield-sweep-0001.json",
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay-0001 --candidate primary --output .runtime-work/c111294-yield_release_delay-0001-pair2-primary-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "yield_release_delay-0001-pair2-primary-offline.log",
+        "log_sha256": "b55748611759c95fe88ed4831a25d16cab9ee26735ef38e883651564a026b2e7",
+        "construction_sha256": "1d04e5bfabd2cb139ffbe304af199c88cd1f0c98876920652144598b5c7b9c5b"
+      },
+      "acquisition": {
+        "intersection_occupancy": {
+          "entrypoint": "ending_road_finalizer.py",
+          "method": "original Native body polygon overlap against retained conflict polygon",
+          "evidence": "intersection_topology.json, intersection_participants.jsonl, trace.jsonl and video_frames.jsonl joined by original frame identity"
+        },
+        "subject_displacement_m": {
+          "entrypoint": "ending_road_finalizer.py",
+          "method": "original body-center displacement from retained participant frames",
+          "evidence": "subject_displacement_m.jsonl derived solely from original intersection_participants.jsonl"
+        },
+        "subject_entry_elapsed_s": {
+          "entrypoint": "ending_road_finalizer.py",
+          "method": "saved original body conflict entry latch",
+          "evidence": "subject_entry_elapsed_s.jsonl derived solely from original intersection participant/topology frames"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native through clearance, delayed release and camera visibility may fail at the fixed physical setpoint"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-yield-sweep-0001-fallback1.json",
+          "construction_sha256": "349dcbb2f81315c464a01e30bff7474908a234131d03c71c0e087e92c820e917",
+          "trigger": {
+            "source": "original Native route selection",
+            "metric": "eligible connected ending/through route pairs",
+            "failure_condition": "primary search finds no admissible connected ending/through route"
+          },
+          "changed_knobs": [
+            "Native route search max_spawns 300 to 600"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay-0001 --candidate fallback1 --output .runtime-work/c111294-yield_release_delay-0001-pair2-fallback1-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "yield_release_delay-0001-pair2-fallback1-offline.log",
+            "log_sha256": "88f92f4d83fd53e34ccdb1ab958f5e25e570edf392d92b6080dc2a54f17bc083",
+            "construction_sha256": "349dcbb2f81315c464a01e30bff7474908a234131d03c71c0e087e92c820e917"
+          },
+          "compatibility": {
+            "receipt": "yield_release_delay-0001-pair-source-fallback1-compatibility.json",
+            "sha256": "f4ed8f66d1a0ae5b3b325510d9fcce7d42429bb1dfef01e561c97f9118bf59b1",
+            "log": "yield_release_delay-0001-pair-source-fallback1-analysis.log",
+            "negative_log": "yield_release_delay-0001-pair-source-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-yield-sweep-0001-fallback2.json",
+          "construction_sha256": "e0f89035518b2bddac0742c435e3d55e87c3cadfa54c3b6c9f223243d450cf8d",
+          "trigger": {
+            "source": "original Native speed and body trace",
+            "metric": "speed settling and frame-to-frame acceleration",
+            "failure_condition": "primary gain produces unstable approach speed or misses authored release timing"
+          },
+          "changed_knobs": [
+            "speed controller gain 0.22 to 0.18"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay-0001 --candidate fallback2 --output .runtime-work/c111294-yield_release_delay-0001-pair2-fallback2-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "yield_release_delay-0001-pair2-fallback2-offline.log",
+            "log_sha256": "0b21599bcf50ec751e3baba2703e74146e9487b301981fcab6bed1f21ff01bb6",
+            "construction_sha256": "e0f89035518b2bddac0742c435e3d55e87c3cadfa54c3b6c9f223243d450cf8d"
+          },
+          "compatibility": {
+            "receipt": "yield_release_delay-0001-pair-source-fallback2-compatibility.json",
+            "sha256": "1bd83a5d20615031b78de623b582665d1a2acedae16912b7596a0163319ea6f8",
+            "log": "yield_release_delay-0001-pair-source-fallback2-analysis.log",
+            "negative_log": "yield_release_delay-0001-pair-source-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-yield-sweep-0001-fallback3.json",
+          "construction_sha256": "75b2ae2720dae1020a75886c2fd2f81300b802f219afad46d1941198ec4d7ef9",
+          "trigger": {
+            "source": "full-resolution overview source decode",
+            "metric": "both participant bodies visible in overview pixels",
+            "failure_condition": "primary overview mount crops either participant"
+          },
+          "changed_knobs": [
+            "overview mount x -9 m to -10 m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay-0001 --candidate fallback3 --output .runtime-work/c111294-yield_release_delay-0001-pair2-fallback3-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "yield_release_delay-0001-pair2-fallback3-offline.log",
+            "log_sha256": "5659eb7df543f542a51d4386e0d011889abe11be06b2cde68434118aac5cc540",
+            "construction_sha256": "75b2ae2720dae1020a75886c2fd2f81300b802f219afad46d1941198ec4d7ef9"
+          },
+          "compatibility": {
+            "receipt": "yield_release_delay-0001-pair-source-fallback3-compatibility.json",
+            "sha256": "92787ebdc54acd609c46d2e9e5de391a1921dedff2e9675632f3815819bbb45d",
+            "log": "yield_release_delay-0001-pair-source-fallback3-analysis.log",
+            "negative_log": "yield_release_delay-0001-pair-source-fallback3-negative.log"
+          }
+        }
+      ],
+      "compatibility": {
+        "receipt": "yield_release_delay-0001-pair-source-primary-compatibility.json",
+        "sha256": "e68016e93a97d0f391a0b51386d28b8bd63c886af46ad28072c63e9d81566143",
+        "log": "yield_release_delay-0001-pair-source-primary-analysis.log",
+        "negative_log": "yield_release_delay-0001-pair-source-primary-negative.log"
+      },
+      "negative": {
+        "log": "yield_release_delay-0001-pair-source-primary-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay-0001 --attempt \"$ATTEMPT\" --output \"$PROCESSING_OUTPUT\" --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSING_OUTPUT/feedback.json\"",
+        "test_log": "yield_release_delay-0001-saved-processing-gate.log",
+        "test_log_sha256": "f16cb073b7083c2063bb45f4ed8ed756b3ca9257b69115d4fe5e5ccdd850f99a",
+        "test_exit_code": 0
+      },
+      "physical_preparation": {
+        "receipt": "physical/yield-sweep-0001-proof.json",
+        "sha256": "cea55986aece12ef9429fb4468c21e4efdeebdd19f84e100365e666b7289512a"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay-0001",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "yield_sweep_delivery_audit.py",
+        "script_sha256": "abf323b6ed400d4e66bde77c77a42451365446fa0f6fb997f02daef22ac336a4",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/yield_sweep_delivery_audit.py --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay-0001 --attempt .runtime-work/c111294-yield_release_delay-0001-pair-source-primary-compatibility --report .runtime-work/c111294-yield_release_delay-0001-pair-source-primary-compatibility/analysis-report.json",
+        "test_exit_code": 0,
+        "test_log": "yield_release_delay-0001-pair-source-delivery-positive.log",
+        "test_log_sha256": "0afa93f654f77be97ae562dcf8826601a993d2bb961e63d3db8bc8b134f56c07",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/yield_sweep_delivery_audit.py --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay-0001 --attempt .runtime-work/c111294-yield_release_delay-0001-pair-source-primary-compatibility --report .runtime-work/yield_release_delay-0001-pair-source-tampered-report.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "hash differs",
+        "negative_log": "yield_release_delay-0001-pair-source-delivery-negative.log",
+        "negative_log_sha256": "18a3448be65a601ff0cf20bd10c6b9fb8f40968a06e1a6fb2521affd8e4717ee"
+      }
+    },
+    {
+      "case_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay-0002",
+      "construction": "construction-yield-sweep-0002.json",
+      "construction_sha256": "c03d7b3e44332069945ae1661c64270e07a85a6e48479b165de52cd4d9a851e4",
+      "kind": "delivery",
+      "measurement_procedure": {
+        "entrypoint": "ending_road_finalizer.py"
+      },
+      "measurement_contract": "measurement-contract-yield-sweep-0002.json",
+      "fixture_recipe": "work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/diagnostic-recipe-yield-sweep-0002.json",
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay-0002 --candidate primary --output .runtime-work/c111294-yield_release_delay-0002-pair2-primary-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "yield_release_delay-0002-pair2-primary-offline.log",
+        "log_sha256": "4bef94f738e141385626b50818b84fda5f110e9c18d491b210b0b0b302403663",
+        "construction_sha256": "c03d7b3e44332069945ae1661c64270e07a85a6e48479b165de52cd4d9a851e4"
+      },
+      "acquisition": {
+        "intersection_occupancy": {
+          "entrypoint": "ending_road_finalizer.py",
+          "method": "original Native body polygon overlap against retained conflict polygon",
+          "evidence": "intersection_topology.json, intersection_participants.jsonl, trace.jsonl and video_frames.jsonl joined by original frame identity"
+        },
+        "subject_displacement_m": {
+          "entrypoint": "ending_road_finalizer.py",
+          "method": "original body-center displacement from retained participant frames",
+          "evidence": "subject_displacement_m.jsonl derived solely from original intersection_participants.jsonl"
+        },
+        "subject_entry_elapsed_s": {
+          "entrypoint": "ending_road_finalizer.py",
+          "method": "saved original body conflict entry latch",
+          "evidence": "subject_entry_elapsed_s.jsonl derived solely from original intersection participant/topology frames"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native through clearance, delayed release and camera visibility may fail at the fixed physical setpoint"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-yield-sweep-0002-fallback1.json",
+          "construction_sha256": "1b8fcfb702dd273bc73882e3c0f393b3051cbc8572f7b60596a4810fcdec359d",
+          "trigger": {
+            "source": "original Native route selection",
+            "metric": "eligible connected ending/through route pairs",
+            "failure_condition": "primary search finds no admissible connected ending/through route"
+          },
+          "changed_knobs": [
+            "Native route search max_spawns 300 to 600"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay-0002 --candidate fallback1 --output .runtime-work/c111294-yield_release_delay-0002-pair2-fallback1-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "yield_release_delay-0002-pair2-fallback1-offline.log",
+            "log_sha256": "c765c38592e12e010ed63ff8425607ba9ddb1dc9d4fc969e0497cabb66685d52",
+            "construction_sha256": "1b8fcfb702dd273bc73882e3c0f393b3051cbc8572f7b60596a4810fcdec359d"
+          },
+          "compatibility": {
+            "receipt": "yield_release_delay-0002-pair-source-fallback1-compatibility.json",
+            "sha256": "d686ae68eada9c8d2f30aec9d9e45b3cdf4c48c17dfecad084a342a33af5ee10",
+            "log": "yield_release_delay-0002-pair-source-fallback1-analysis.log",
+            "negative_log": "yield_release_delay-0002-pair-source-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-yield-sweep-0002-fallback2.json",
+          "construction_sha256": "346a2e5527f0ad6e8345847ddebfd88ef1771dc46248e74e3e85a148512d4499",
+          "trigger": {
+            "source": "original Native speed and body trace",
+            "metric": "speed settling and frame-to-frame acceleration",
+            "failure_condition": "primary gain produces unstable approach speed or misses authored release timing"
+          },
+          "changed_knobs": [
+            "speed controller gain 0.22 to 0.18"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay-0002 --candidate fallback2 --output .runtime-work/c111294-yield_release_delay-0002-pair2-fallback2-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "yield_release_delay-0002-pair2-fallback2-offline.log",
+            "log_sha256": "2d4905a8ff92cbc081784a9c92673b821081d9c011fd0e8ab64e9212be2c4f98",
+            "construction_sha256": "346a2e5527f0ad6e8345847ddebfd88ef1771dc46248e74e3e85a148512d4499"
+          },
+          "compatibility": {
+            "receipt": "yield_release_delay-0002-pair-source-fallback2-compatibility.json",
+            "sha256": "7813be5229ceb8f224f884e4c7d444bd6c833601dda990cca7741d702b31a830",
+            "log": "yield_release_delay-0002-pair-source-fallback2-analysis.log",
+            "negative_log": "yield_release_delay-0002-pair-source-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-yield-sweep-0002-fallback3.json",
+          "construction_sha256": "f280c665a94e57cdbc06c52f8d410c322d3a11c9383553c6353ecdcff72a960b",
+          "trigger": {
+            "source": "full-resolution overview source decode",
+            "metric": "both participant bodies visible in overview pixels",
+            "failure_condition": "primary overview mount crops either participant"
+          },
+          "changed_knobs": [
+            "overview mount x -9 m to -10 m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay-0002 --candidate fallback3 --output .runtime-work/c111294-yield_release_delay-0002-pair2-fallback3-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "yield_release_delay-0002-pair2-fallback3-offline.log",
+            "log_sha256": "fdedac42c06b088d094aaeb6962fb99df30c0f0f8bb5857833a066715751efa7",
+            "construction_sha256": "f280c665a94e57cdbc06c52f8d410c322d3a11c9383553c6353ecdcff72a960b"
+          },
+          "compatibility": {
+            "receipt": "yield_release_delay-0002-pair-source-fallback3-compatibility.json",
+            "sha256": "5d9093e8c0575143b7f751e1857bcaddd665ca0171b0ad2d069f7caf8b0ea588",
+            "log": "yield_release_delay-0002-pair-source-fallback3-analysis.log",
+            "negative_log": "yield_release_delay-0002-pair-source-fallback3-negative.log"
+          }
+        }
+      ],
+      "compatibility": {
+        "receipt": "yield_release_delay-0002-pair-source-primary-compatibility.json",
+        "sha256": "6428ccfadf91168a4569362bfc1e7967ba0d1d3441fe9f18a3362e8b6497a0df",
+        "log": "yield_release_delay-0002-pair-source-primary-analysis.log",
+        "negative_log": "yield_release_delay-0002-pair-source-primary-negative.log"
+      },
+      "negative": {
+        "log": "yield_release_delay-0002-pair-source-primary-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay-0002 --attempt \"$ATTEMPT\" --output \"$PROCESSING_OUTPUT\" --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSING_OUTPUT/feedback.json\"",
+        "test_log": "yield_release_delay-0002-saved-processing-gate.log",
+        "test_log_sha256": "f16cb073b7083c2063bb45f4ed8ed756b3ca9257b69115d4fe5e5ccdd850f99a",
+        "test_exit_code": 0
+      },
+      "physical_preparation": {
+        "receipt": "physical/yield-sweep-0002-proof.json",
+        "sha256": "10bd1d6c857da264d115613e13649b1b09f7737c79980ff0a1cb8a6dd72e101c"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay-0002",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "yield_sweep_delivery_audit.py",
+        "script_sha256": "abf323b6ed400d4e66bde77c77a42451365446fa0f6fb997f02daef22ac336a4",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/yield_sweep_delivery_audit.py --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay-0002 --attempt .runtime-work/c111294-yield_release_delay-0002-pair-source-primary-compatibility --report .runtime-work/c111294-yield_release_delay-0002-pair-source-primary-compatibility/analysis-report.json",
+        "test_exit_code": 0,
+        "test_log": "yield_release_delay-0002-pair-source-delivery-positive.log",
+        "test_log_sha256": "4ccf20d50a00d9dd8bb2eae2836101d53e839904b1303bc853835429082d31d3",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/yield_sweep_delivery_audit.py --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay-0002 --attempt .runtime-work/c111294-yield_release_delay-0002-pair-source-primary-compatibility --report .runtime-work/yield_release_delay-0002-pair-source-tampered-report.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "hash differs",
+        "negative_log": "yield_release_delay-0002-pair-source-delivery-negative.log",
+        "negative_log_sha256": "18a3448be65a601ff0cf20bd10c6b9fb8f40968a06e1a6fb2521affd8e4717ee"
+      }
+    },
+    {
+      "case_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__official_device_green_phase",
+      "construction": "construction-official-green.json",
+      "construction_sha256": "51f7dc450c01452d5fdb9e64b686234f13f9f6425021c46d93dcfcccff9857b3",
+      "kind": "delivery",
+      "measurement_procedure": {
+        "entrypoint": "ending_road_official_finalizer.py"
+      },
+      "measurement_contract": "measurement-contract-official-green.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native signal may not retain commanded Green state through synchronous ticks; route and four-camera visibility may fail"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-official_green_phase-fallback1.json",
+          "construction_sha256": "6b99c1542e86f74ecd215a65688f30cf631ffcfd3cdaa5b68b785e2c1a0ad179",
+          "trigger": {
+            "source": "original Native route selection",
+            "metric": "eligible connected route pairs",
+            "failure_condition": "primary search finds no admissible connected route"
+          },
+          "changed_knobs": [
+            "Native route search max_spawns 300 to 600"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__official_device_green_phase --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/official_device_green_phase-geometry-fallback1-offline-1794447042770827127 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "official_device_green_phase-geometry-fallback1-offline.log",
+            "log_sha256": "fb184ea57734512b1f088f9181209901b9cd46df3eb7eaa2500ea9e48dde20b5",
+            "construction_sha256": "6b99c1542e86f74ecd215a65688f30cf631ffcfd3cdaa5b68b785e2c1a0ad179"
+          },
+          "compatibility": {
+            "receipt": "official_device_green_phase-geometry-fallback1-compatibility.json",
+            "sha256": "8f63cf8444ca5d580310ac753b2cdef867cb857f1b1fb7ceadf6de9d6c01df45",
+            "log": "official_device_green_phase-geometry-fallback1-analysis.log",
+            "negative_log": "official_device_green_phase-geometry-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-official_green_phase-fallback2.json",
+          "construction_sha256": "a1900d798e69b8281613f16f1367b12da5714f3a008fb417b370093ab3e45448",
+          "trigger": {
+            "source": "original Native speed and body trace",
+            "metric": "speed settling and frame-to-frame acceleration",
+            "failure_condition": "primary gain produces unstable approach speed or misses authored entry timing"
+          },
+          "changed_knobs": [
+            "speed controller proportional gain 0.22 to 0.18"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__official_device_green_phase --candidate fallback2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/official_device_green_phase-geometry-fallback2-offline-1794447046517654982 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "official_device_green_phase-geometry-fallback2-offline.log",
+            "log_sha256": "fb184ea57734512b1f088f9181209901b9cd46df3eb7eaa2500ea9e48dde20b5",
+            "construction_sha256": "a1900d798e69b8281613f16f1367b12da5714f3a008fb417b370093ab3e45448"
+          },
+          "compatibility": {
+            "receipt": "official_device_green_phase-geometry-fallback2-compatibility.json",
+            "sha256": "4f496b93946f5dbd71a259958af91b6d48aec89d55d59df9ba4fab643a73ea84",
+            "log": "official_device_green_phase-geometry-fallback2-analysis.log",
+            "negative_log": "official_device_green_phase-geometry-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-official_green_phase-fallback3.json",
+          "construction_sha256": "b5ba1195dfec2ce588861026769bfab32076bc377489dc0ff5abb6face72aab8",
+          "trigger": {
+            "source": "full-resolution overview source decode",
+            "metric": "both actor bodies visible in overview pixels",
+            "failure_condition": "primary overview mount crops either participant"
+          },
+          "changed_knobs": [
+            "overview mount x -9 m to -10 m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__official_device_green_phase --candidate fallback3 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/official_device_green_phase-geometry-fallback3-offline-1794447050416109017 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "official_device_green_phase-geometry-fallback3-offline.log",
+            "log_sha256": "fb184ea57734512b1f088f9181209901b9cd46df3eb7eaa2500ea9e48dde20b5",
+            "construction_sha256": "b5ba1195dfec2ce588861026769bfab32076bc377489dc0ff5abb6face72aab8"
+          },
+          "compatibility": {
+            "receipt": "official_device_green_phase-geometry-fallback3-compatibility.json",
+            "sha256": "9d3129f06f7655c3f13bde8140ae30c3a2c9c780ceeadb76165a4ee4896787f5",
+            "log": "official_device_green_phase-geometry-fallback3-analysis.log",
+            "negative_log": "official_device_green_phase-geometry-fallback3-negative.log"
+          }
+        }
+      ],
+      "acquisition": {
+        "intersection_occupancy": {
+          "entrypoint": "ending_road_finalizer.py",
+          "method": "original Native body polygon overlap against retained conflict polygon",
+          "evidence": "intersection_topology.json, intersection_participants.jsonl, trace.jsonl and video_frames.jsonl joined by original frame identity"
+        },
+        "official_device_state": {
+          "entrypoint": "ending_road_device.py",
+          "method": "Native signal state readback joined to original frames",
+          "evidence": "official_device_context.json and official_device_states.jsonl"
+        },
+        "official_geometry_binding": {
+          "entrypoint": "official_geometry_source_audit.py",
+          "method": "hash and map/source route/device join on retained originals",
+          "evidence": "official_geometry_binding.json, road.xodr, intersection_topology.json and official_device_context.json"
+        }
+      },
+      "fixture_recipe": "work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/diagnostic-recipe-official-green.json",
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__official_device_green_phase --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/official_device_green_phase-geometry-primary-offline-1794447038889349788 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "official_device_green_phase-geometry-primary-offline.log",
+        "log_sha256": "fb184ea57734512b1f088f9181209901b9cd46df3eb7eaa2500ea9e48dde20b5",
+        "construction_sha256": "51f7dc450c01452d5fdb9e64b686234f13f9f6425021c46d93dcfcccff9857b3"
+      },
+      "compatibility": {
+        "receipt": "official_device_green_phase-geometry-primary-compatibility.json",
+        "sha256": "8cba00a14aeceb72cb7573bf93614979150adb6d61d993d2fb44814695444e1a",
+        "log": "official_device_green_phase-geometry-primary-analysis.log",
+        "negative_log": "official_device_green_phase-geometry-primary-negative.log"
+      },
+      "negative": {
+        "log": "official_device_green_phase-geometry-primary-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__official_device_green_phase --attempt \"$ATTEMPT\" --output \"$PROCESSING_OUTPUT\" --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSING_OUTPUT/feedback.json\"",
+        "test_log": "official-green-saved-processing-gate.log",
+        "test_log_sha256": "c5202c54d7a53d29a21907379aeb74efa079e24a92e26601938cc8a6155a7bb3",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__official_device_green_phase",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "1f8931d0d20ddf7194dc96cc9cdf147fbef98025a343ba0b3de7ee76ec2115c9",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/delivery_audit.py --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__official_device_green_phase --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c111294-official-green-saved-1794446661686018060-attempt --report /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c111294-official-green-saved-1794446661686018060-processing/v0001/analysis/analysis-report.json",
+        "test_exit_code": 0,
+        "test_log": "official_device_green_phase-attached-delivery-positive.log",
+        "test_log_sha256": "5a78df5aebeab0f50eb8f971f871e192bc4b4082bdb81f490b4f403d0c644019",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/delivery_audit.py --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__official_device_green_phase --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c111294-official-green-saved-1794446661686018060-attempt --report /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/official_device_green_phase-attached-tampered-report.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "hash differs",
+        "negative_log": "official_device_green_phase-attached-delivery-negative.log",
+        "negative_log_sha256": "9245d34976280f95db2e47f577f85720b0f175f55a282849527d1636df33d267"
+      },
+      "physical_preparation": {
+        "receipt": "physical/official_device_green_phase-proof.json",
+        "sha256": "71eac1ea7c48981d9975e77650704ca45061c6aada9495a28202b4b316df8aa0"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
+    },
+    {
+      "case_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__continuing_highway",
+      "construction": "construction-highway-continuing-provisional.json",
+      "construction_sha256": "5c2a9ce8fa340d73dc9031bbddd6fe864e05b1c883eebb536d44dba02fd7ce54",
+      "kind": "delivery",
+      "measurement_procedure": {
+        "entrypoint": "highway_continuity_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/diagnostic-recipe-highway-continuing.json",
+      "measurement_contract": "measurement-contract-highway-continuing.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native connected route selection, stable approach motion and overview visibility can fail at the selected junction"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-highway-continuing-fallback1.json",
+          "construction_sha256": "844dd68c68b136f5b6931acc0381dbef0c8688a8fb9ae363f88a1943d948eef6",
+          "trigger": {
+            "source": "Native route inventory",
+            "metric": "eligible connected continuing/through pairs",
+            "failure_condition": "Primary search cap exhausts before finding an eligible pair"
+          },
+          "changed_knobs": [
+            "Native route search cap 300 to 600"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__continuing_highway --candidate fallback1 --output .runtime-work/c111294-continuing_highway-bound-canonical-fallback1-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "continuing_highway-bound-canonical-fallback1-offline.log",
+            "log_sha256": "332a4374f419d34546616393c686a4f3a26f956fbc1847d8646b43600be32303",
+            "construction_sha256": "844dd68c68b136f5b6931acc0381dbef0c8688a8fb9ae363f88a1943d948eef6"
+          },
+          "compatibility": {
+            "receipt": "continuing_highway-compact-fallback1-compatibility.json",
+            "sha256": "49b7f4394f8951845f075af943d9382f3c8039df046da61e2990623815e9d10f",
+            "log": "continuing_highway-compact-fallback1-analysis.log",
+            "negative_log": "continuing_highway-compact-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-highway-continuing-fallback2.json",
+          "construction_sha256": "5c43720948c7aebbb2afc617b50c6602b7c3150c963851eccda34807fb686c6c",
+          "trigger": {
+            "source": "original 20 Hz vehicle speed and body trace",
+            "metric": "speed settling and acceleration",
+            "failure_condition": "Primary speed gain produces unstable approach or misses planned entry window"
+          },
+          "changed_knobs": [
+            "speed controller proportional gain 0.22 to 0.18"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__continuing_highway --candidate fallback2 --output .runtime-work/c111294-continuing_highway-bound-canonical-fallback2-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "continuing_highway-bound-canonical-fallback2-offline.log",
+            "log_sha256": "480e6785a00bcffe03b4b40e29d2c22fd1a68a51c1bb19fc6b3da652b12de4d8",
+            "construction_sha256": "5c43720948c7aebbb2afc617b50c6602b7c3150c963851eccda34807fb686c6c"
+          },
+          "compatibility": {
+            "receipt": "continuing_highway-compact-fallback2-compatibility.json",
+            "sha256": "dc1da0150d1098dae844902694ba13f4677db674ec48d8dc721726c69ce26106",
+            "log": "continuing_highway-compact-fallback2-analysis.log",
+            "negative_log": "continuing_highway-compact-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-highway-continuing-fallback3.json",
+          "construction_sha256": "ad2a412fc3ac1c0aa600b002234210a56a5eaf5f77b48198828673a20ae3432b",
+          "trigger": {
+            "source": "original overview video pixels",
+            "metric": "both actor bodies visible throughout turn window",
+            "failure_condition": "Primary overview mount crops one participant"
+          },
+          "changed_knobs": [
+            "overview mount x -9 m to -10 m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__continuing_highway --candidate fallback3 --output .runtime-work/c111294-continuing_highway-bound-canonical-fallback3-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "continuing_highway-bound-canonical-fallback3-offline.log",
+            "log_sha256": "fc7298d50b6f9cc3df32f6a62b7cb406a565dfcf28e0862fa2a7810d75d6d0df",
+            "construction_sha256": "ad2a412fc3ac1c0aa600b002234210a56a5eaf5f77b48198828673a20ae3432b"
+          },
+          "compatibility": {
+            "receipt": "continuing_highway-compact-fallback3-compatibility.json",
+            "sha256": "7f7eaa3dc86ee39eb543d0ed5f4a4b1641f893b5c89517b17d911e9b0c2a4bcf",
+            "log": "continuing_highway-compact-fallback3-analysis.log",
+            "negative_log": "continuing_highway-compact-fallback3-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__continuing_highway --output .runtime-work/c111294-continuing_highway-bound-canonical-offline-venv --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "continuing_highway-bound-canonical-offline.log",
+        "log_sha256": "9d0ed99c3bbe35566f105de847ea748f2d5e8168e70e1b9b0181b6dc390b1052",
+        "construction_sha256": "5c2a9ce8fa340d73dc9031bbddd6fe864e05b1c883eebb536d44dba02fd7ce54"
+      },
+      "compatibility": {
+        "receipt": "continuing_highway-compact-primary-compatibility.json",
+        "sha256": "96c8dc2cff21469667cf32f6223b93cffc0996722e8b667939f0e8d2b421d98f",
+        "log": "continuing_highway-compact-primary-analysis.log",
+        "negative_log": "continuing_highway-compact-primary-negative.log"
+      },
+      "negative": {
+        "log": "continuing_highway-compact-primary-negative.log"
+      },
+      "acquisition": {
+        "intersection_occupancy": {
+          "entrypoint": "highway_continuity_finalizer.py",
+          "method": "original Native body polygon overlap against retained conflict polygon",
+          "evidence": "highway_pair_topology.json, intersection_participants.jsonl, trace.jsonl and video_frames.jsonl joined by original frame identity"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "physical/continuing_highway-proof.json",
+        "sha256": "6eb7ebb4f3226919ea0f439e2744e74df36fa28b005e76be82a1bce58b7f4199"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__continuing_highway",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "continuity_delivery_audit.py",
+        "script_sha256": "06e1ea9e43e36a821d5213089f2eead22f753ac89866a2b26051721226abfe82",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/continuity_delivery_audit.py --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__continuing_highway --attempt .runtime-work/c111294-continuing_highway-compact-primary-compatibility --report .runtime-work/c111294-continuing_highway-compact-primary-compatibility/analysis-report.json",
+        "test_exit_code": 0,
+        "test_log": "continuing_highway-compact-delivery-positive.log",
+        "test_log_sha256": "4bec74e334c159ad1538ee57a30a00b0035fb661b51a7b789219883bec330330",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/continuity_delivery_audit.py --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__continuing_highway --attempt .runtime-work/c111294-continuing_highway-compact-primary-compatibility --report .runtime-work/continuing_highway-compact-tampered-report.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "hash differs",
+        "negative_log": "continuing_highway-compact-delivery-negative.log",
+        "negative_log_sha256": "fab9287e7696401ef3952c5657efff4be4884c7db3aeb86ba2d2aef0c8a393ba"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__continuing_highway --attempt \"$ATTEMPT\" --output \"$PROCESSING_OUTPUT\" --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSING_OUTPUT/feedback.json\"",
+        "test_log": "continuing-saved-processing-gate.log",
+        "test_log_sha256": "721588220e6ba053a7314e008aaf345ade7e5d41bc0ffda9327a4153b45b7bf7",
+        "test_exit_code": 0
+      }
+    }
+  ],
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3"
+}

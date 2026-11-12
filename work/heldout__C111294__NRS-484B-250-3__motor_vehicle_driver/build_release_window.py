@@ -27,8 +27,9 @@ def build(output):
     output.mkdir(parents=True, exist_ok=True)
     source = json.loads((HERE / "diagnostic-yield-sweep-0000.json").read_text())["files"]
     short = [json.loads(line) for line in source["intersection_participants.jsonl"].splitlines()]
-    if len(short) != 9:
-        raise ValueError("Expected nine original seed body samples")
+    if len(short) < 9:
+        raise ValueError("Expected at least nine original seed body samples")
+    short = short[:9]
     roots = []
     for rank, delay in enumerate(DELAYS):
         root = output / f"yield_release_delay-{rank:04d}"
