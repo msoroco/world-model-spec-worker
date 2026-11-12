@@ -202,8 +202,11 @@ def execute(config: dict,output: Path,host: str,port: int):
                     yaw_rad=math.radians(pose.rotation.yaw),speed_mps=speed,dt_s=.05)
                 pedestrian=walker.get_transform().location
                 occupied=8<=pedestrian.x<=12 and -4<=pedestrian.y<=4
-                if 115<=index<=195:
-                    walker.apply_control(carla.WalkerControl(direction=carla.Vector3D(0,-1,0),speed=3.0))
+                # Launch the same walker late enough to exercise the turn.
+                # The 4 m/s crossing is a physical proposal; saved Native
+                # occupancy, rather than this schedule, determines the result.
+                if 215<=index<=260:
+                    walker.apply_control(carla.WalkerControl(direction=carla.Vector3D(0,-1,0),speed=4.0))
                 else:
                     walker.apply_control(carla.WalkerControl(direction=carla.Vector3D(0,0,0),speed=0.0))
                 full_stop=True

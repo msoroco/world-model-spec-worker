@@ -1,4 +1,4 @@
-"""Source-grounded draft semantic stages for the six C110919 delivery cases."""
+"""Source-grounded draft semantic stages for eight C110919 cases."""
 import hashlib
 import json
 from pathlib import Path
@@ -31,8 +31,8 @@ def main():
     if (law != "NRS-484B-307-8a" or assignment["cell_id"] != "C110919" or
             actor != "motor_vehicle_driver" or plan["source_law_text"] != quote or
             [row["case_id"] for row in cases["cases"]] != expected_cases or
-            len(expected_cases) != 6 or len(plan["comparisons"]) != 3):
-        raise ValueError("Frozen law, scope, six cases or comparisons changed")
+            len(expected_cases) != 8 or len(plan["comparisons"]) != 4):
+        raise ValueError("Frozen law, scope, eight cases or comparisons changed")
     relevance = {"cell_id": "C110919", "actor": actor, "status": "draft",
                  "relevant_laws": [{"law_id": law, "quote": quote,
                                     "applies_to": [actor], "relevance_type": "direct",
@@ -98,7 +98,8 @@ def main():
                 "variable_parameters": [
                     {"name": "halt_before_nearest_boundary", "kind": "subject_behavior", "range_or_domain": [True, False], "used_by_laws": [law]},
                     {"name": "halt_before_intersection_when_no_crosswalk_sign_or_marking", "kind": "subject_behavior", "range_or_domain": [True, False], "used_by_laws": [law]},
-                    {"name": "remain_stopped_until_green", "kind": "subject_behavior", "range_or_domain": [True, False], "used_by_laws": [law]}]}
+                    {"name": "remain_stopped_until_green", "kind": "subject_behavior", "range_or_domain": [True, False], "used_by_laws": [law]},
+                    {"name": "pedestrian_conflict_response", "kind": "controller", "range_or_domain": ["yield_wait", "yield_conflict_entry"], "used_by_laws": [law]}]}
     bindings_ref = write("bindings.json", bindings)
     cases_ref = {"path": "proposals/cases.json", "sha256": sha(OUT / "cases.json")}
     index = {"format": "worker-semantic-delivery", "assignment_id": HERE.name,
@@ -108,7 +109,7 @@ def main():
                         "bindings": bindings_ref, "cases": cases_ref}}
     path = OUT / "semantic-index.json"
     path.write_text(json.dumps(index, indent=2) + "\n")
-    print(json.dumps({"six_cases": len(expected_cases), "comparisons": 3,
+    print(json.dumps({"cases": len(expected_cases), "comparisons": 4,
                       "stages": 7, "semantic_index_sha256": sha(path),
                       "canonical_selected": False}))
 
