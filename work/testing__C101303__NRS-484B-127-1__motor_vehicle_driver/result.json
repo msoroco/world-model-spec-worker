@@ -2,7 +2,7 @@
   "assignment_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver",
   "input_sha256": "096771e13d349df8908ad57224be86aec127c3a7e1d7d7689f63d30a898c4d55",
   "status": "partial",
-  "readiness_kind": "all_exact_case_full_duration_diagnostic_delivery_checkpoint",
+  "readiness_kind": "source_geometry_draft_offline_partial",
   "applied_update": 0,
   "tests": [
     {
@@ -466,11 +466,47 @@
       "exit_code": 0,
       "log": "package-compatibility-current.log",
       "sha256": "8758f9092f153adc9546a760a82089fd53257f2869d3ed1ef18f3bad4018d577"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/prove_body_gap_geometry.py --base-root .runtime-work/c101303-full-duration/base-positive-v1/attempt --closer-root .runtime-work/c101303-full-duration/closer-positive-v1/attempt --output work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/body-gap-geometry-proof.json",
+      "exit_code": 0,
+      "log": "body-gap-geometry-proof.log",
+      "sha256": "4f1cd8b91e98d109fced40a88f99502ad1fbc264dc697d8132d9b65f6cb95cac"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "preflight-body-geometry.log",
+      "sha256": "10393fa009fb9d8c39e71b676d7797f47a4acee6a4c9cdf27fc31b33e2670a09"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --updates",
+      "exit_code": 0,
+      "log": "updates-body-geometry.log",
+      "sha256": "bc028da1339a9f9c4509c1460ad99c683c6b6ac8b7b6af6b378e3ffa7cdbb287"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-tests-body-geometry.log",
+      "sha256": "9bb09232a2d4e6072e9a5ac53c5dd44771224356dc4124080a99c4fe51f22a3d"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/prepare_body_geometry_draft.py",
+      "exit_code": 0,
+      "log": "body-geometry-draft-build.log",
+      "sha256": "669412b7c532ab56beb578ca9fa80b1be56dad0ae8fe748afb05d2483e9ec932"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/body-geometry-draft/execution-manifest.json --case testing__C101303__NRS-484B-127-1__motor_vehicle_driver__source_verified_closer --output .runtime-work/c101303-body-geometry-closer-draft-v1",
+      "exit_code": 0,
+      "log": "body-geometry-draft-offline.log",
+      "sha256": "38d503aa9cddaa080360a455ede3d617f63b7edefe953b9f6f4efcd677d6e1e6"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, map/highway status, queued actor behavior, camera visibility and physical source review require a future authorized Native capture; legal reasonable-and-prudent judgment remains unresolved."
   ],
-  "reason": "All eight C101303 conditional cases and 24 fallbacks retain exact offline and compatibility proofs. All eight primaries and all 24 fallbacks have recorded-only saved-processing proofs, with the 21 remaining fallback paths freshly rerun against their exact constructions. Their independent delivery audit now passes eight full 900-frame synthetic source, classifier, four-camera, composed-video and Core-join software paths, with eight missing-sealed-history negative proofs plus base actor-identity, unsealed-source and unverified-physical-status rejection. Seven primary comparisons pass against the 900-frame diagnostic sources, and 21 fallback comparisons pass with candidate-bound 900-frame synthetic projections; a changed candidate source is rejected. These projections bind construction knobs and do not establish realized fallback motion. an altered fixed surface, skipped frame, relative-time drift and unrelated initial lead velocity are rejected. The faster-ego diagnostic source was corrected so its lead initial velocity matches the base; its four exact compatibility and recorded-only saved paths, 900-frame delivery audit and linked comparisons were rerun. All diagnostic audits explicitly report passed=false and no physical acceptance. The three-point 7.0/8.5/10.0 m controller probe verifies command response only; a 42-state CPU envelope finds 19 states with distinct commands and exposes saturation at larger spacing. A 900-frame, 20 Hz simple-dynamics trajectory probe keeps assumed four-metre bodies separate for all three proposed gaps and yields increasing mean modeled gaps, but uses an assumed response and does not establish CARLA or hill-crest feasibility. The complete physically feasible judgment sweep, actual fallback and other Native-source comparisons, independent final review and shared branch/delivery queue/integration remain worker-owned CPU work. Actual Native motion, source pixels and legal judgment remain unverified. See HANDOFF.md. Current return-contract repair binds eight negative compatibility logs and source acquisition maps plus the exact first GPU command; pinned manifest and package compatibility validation pass. In-memory local ready-path probe passes, but on-disk result stays partial pending complete physical-feasibility sweep, independent final review and shared branch/queue integration.",
+  "reason": "Sealed diagnostic body vertices show a 2.0 m combined front/rear offset while selected runners use fixed +4 m. A Native bounding-box helper passes source-bound positive/negative CPU proof, and an isolated closer-case geometry-aware construction passes pinned offline materialization. The selected 8 cases and 24 fallbacks remain unchanged pending full geometry integration and every affected reproof; physically feasible judgment sweep, source review and shared delivery work remain worker-owned. No physical or legal acceptance claimed.",
   "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline $CARLA_PYTHON -m worker_exchange execute-delivery --repo . --batch batch.json --db $DB --run $RUN --assignment testing__C101303__NRS-484B-127-1__motor_vehicle_driver --case testing__C101303__NRS-484B-127-1__motor_vehicle_driver__source_verified_base --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT"
 }

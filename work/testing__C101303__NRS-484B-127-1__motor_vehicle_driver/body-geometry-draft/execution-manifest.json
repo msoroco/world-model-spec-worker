@@ -1,0 +1,154 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver",
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3",
+  "cases": [
+    {
+      "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__source_verified_closer",
+      "kind": "delivery",
+      "construction": "closer-construction.json",
+      "construction_sha256": "ef43710a773fe821a5ef56024aade05469e4ee6c4cf780d8028d5dae598dd955",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/cases/source_verified_closer/diagnostic-recipe.json",
+      "candidate_risk": {
+        "status": "none",
+        "reason": "Isolated primary offline construction draft only"
+      },
+      "candidates": [],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/execution-manifest.json --case testing__C101303__NRS-484B-127-1__motor_vehicle_driver__source_verified_closer --output .runtime-work/c101303-final-v3/closer-primary-offline",
+        "exit_code": 0,
+        "log": "cases/source_verified_closer/primary-offline.log",
+        "log_sha256": "05c0f49b8b61f780c452ae22870c318a9aa07b2f57ff5b6bbc2b7599af6c0b5c",
+        "construction_sha256": "6614fbe3af5291e12a862b06a6e6e3072c391edcf4302d6ed03ce1468f47e0d1"
+      },
+      "compatibility": {
+        "receipt": "cases/source_verified_closer/primary-compatibility.json",
+        "sha256": "30f458fcaa0b7024044cb1fa1890ec0a0bc130e756fc1789917f6b4452fdcadf",
+        "log": "cases/source_verified_closer/primary-compatibility-analysis.log",
+        "negative_log": "cases/source_verified_closer/primary-negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/execution-manifest.json --case testing__C101303__NRS-484B-127-1__motor_vehicle_driver__source_verified_closer --attempt .runtime-work/c101303-final-v3/closer-primary-compat --output .runtime-work/c101303-final-v3/closer-saved --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat .runtime-work/c101303-final-v3/closer-saved/v0001/feedback.json",
+        "test_log": "final-v3-closer-saved.log",
+        "test_log_sha256": "c0ff7c296c983960287051db2289b1f593e676d8db9dfe03c803c3c8d149d234",
+        "test_exit_code": 0
+      },
+      "physical_preparation": {
+        "receipt": "physical-proofs/closer/receipt.json",
+        "sha256": "9d539d52e86aa428ef15a4e63d723e92b836d8df537bbffc62a73f995e3e3384"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C101303__NRS-484B-127-1__motor_vehicle_driver__source_verified_closer",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "ac349c19d93b53e30141e1232c1bfcd397a2ace2a444cce36f303afec3287836",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/delivery_fixture_proof.py --case testing__C101303__NRS-484B-127-1__motor_vehicle_driver__source_verified_closer --output-root .runtime-work/c101303-full-duration/closer-positive-v1",
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/closer/positive.log",
+        "test_log_sha256": "411d9b27006feb8b985113fbaab704f59434cd2bdd7ed8a8b6b641bdbed56c30",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C101303__NRS-484B-127-1__motor_vehicle_driver/delivery_fixture_proof.py --case testing__C101303__NRS-484B-127-1__motor_vehicle_driver__source_verified_closer --output-root .runtime-work/c101303-full-duration/closer-negative-v2 --negative-missing-source --negative-source-root .runtime-work/c101303-full-duration/closer-positive-v1",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Sealed original source changed: vehicle_history.jsonl",
+        "negative_log": "delivery-proofs/closer/negative.log",
+        "negative_log_sha256": "dd7aee3afec29926f2255d270d25656aa58f54a60d54206703453e834ac4bec8",
+        "scope": "diagnostic CPU software path only; audit result passed=false, physical acceptance unclaimed",
+        "diagnostic_audit": "delivery-proofs/closer/diagnostic-audit.json",
+        "diagnostic_audit_sha256": "ab33b82842c1d7e364e021917fa2070d4386fd1ddc3ba3666794825aa6338a84",
+        "diagnostic_decode_receipt": "delivery-proofs/closer/source-decode.json",
+        "diagnostic_decode_receipt_sha256": "3c9551082ce0a0f780c70be153b7183ebfa67511a57c8bf0e87f527d5476dd9d"
+      },
+      "negative": {
+        "log": "cases/source_verified_closer/primary-negative-analysis.log"
+      },
+      "acquisition": {
+        "ru.subject": {
+          "entrypoint": "capture_sources.py",
+          "method": "record_sample binds exact ego and lead actor IDs to original Native frame",
+          "evidence": "vehicle_history.jsonl"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "vehicle blueprint selection and spawned ego/lead actors",
+          "evidence": "capture/evidence.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "capture_sources.py",
+          "method": "get_world_vertices records complete body at each Native frame",
+          "evidence": "vehicle_history.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "capture_sources.py",
+          "method": "get_velocity records both actor velocity vectors",
+          "evidence": "vehicle_history.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "following_measurements.py",
+          "method": "velocity-vector magnitude for ego and lead on joined original frames",
+          "evidence": "vehicle_history.jsonl"
+        },
+        "st.highway": {
+          "entrypoint": "runner.py",
+          "method": "Native route road ID and original road context",
+          "evidence": "road_context.json"
+        },
+        "st.lane": {
+          "entrypoint": "capture_sources.py",
+          "method": "Native route lane IDs joined to both original actor histories",
+          "evidence": "vehicle_history.jsonl"
+        },
+        "st.crest": {
+          "entrypoint": "native_following_setup.py",
+          "method": "Native waypoint elevation and crest rise discovery",
+          "evidence": "road_context.json"
+        },
+        "rel.surface_gap": {
+          "entrypoint": "following_measurements.py",
+          "method": "oriented complete-body longitudinal gap on original joined frames",
+          "evidence": "vehicle_history.jsonl"
+        },
+        "rel.ahead_behind_in_lane": {
+          "entrypoint": "following_measurements.py",
+          "method": "body ordering and lane relationship on original joined frames",
+          "evidence": "vehicle_history.jsonl"
+        },
+        "ego_speed": {
+          "entrypoint": "finalizer.py",
+          "method": "emit measured ego speed from original vehicle history",
+          "evidence": "vehicle_history.jsonl"
+        },
+        "lead_speed": {
+          "entrypoint": "finalizer.py",
+          "method": "emit measured lead speed from original vehicle history",
+          "evidence": "vehicle_history.jsonl"
+        },
+        "longitudinal_body_gap": {
+          "entrypoint": "finalizer.py",
+          "method": "emit complete-body longitudinal gap from original vehicle history",
+          "evidence": "vehicle_history.jsonl"
+        }
+      }
+    }
+  ]
+}
