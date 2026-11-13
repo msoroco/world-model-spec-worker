@@ -1,0 +1,84 @@
+{
+  "template_id": "NRS-484B-283-1d1@bus_driver",
+  "law_id": "NRS-484B-283-1d1",
+  "actor": "bus_driver",
+  "status": "draft",
+  "quote": "Except as otherwise provided in NRS 484B.287 [NRS-484B-287-1c, NRS-484B-287-1d, NRS-484B-287-1e, LVMC-11-30-060-A, LVMC-11-30-060-B], 484B.290 [LVMC-11-30-140-B] and 484B.350 [LVMC-11-46-030]: Whenever signals exhibiting the words “Walk,” “Don’t Walk,” “Wait” or similar symbols are in place, such signals indicate as follows: While the “Walk” indication or walking person symbol is illuminated, pedestrians facing the signal may proceed across the highway in the direction of the signal and must be given the right-of-way by the drivers of all vehicles.",
+  "structure": {
+    "activation": {
+      "condition": "official Walk indication illuminated for a pedestrian facing the signal and proceeding in its direction",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "type": "must",
+      "description": "drivers of all vehicles give the pedestrian right-of-way",
+      "source_clause": "the right-of-way by the drivers of all vehicles.",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "trigger": "cited NRS 484B.287, 484B.290 or 484B.350 may govern the scene",
+        "effect": "independent source-backed applicability review required",
+        "replacement_obligation": "unresolved until the cited provision and original scene are reviewed",
+        "source_clause": "Except as otherwise provided in NRS 484B.287 [NRS-484B-287-1c, NRS-484B-287-1d, NRS-484B-287-1e, LVMC-11-30-060-A, LVMC-11-30-060-B], 484B.290 [LVMC-11-30-140-B] and 484B.350 [LVMC-11-46-030]:"
+      }
+    ],
+    "timing": {
+      "description": "while the Walk indication or walking person symbol is illuminated",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "must be given the right-of-way",
+        "note": "Driver response is descriptive until original pedestrian-facing Walk, crossing, governing control and cited exceptions are reviewed."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "walk_signal_context",
+      "kind": "world_setup",
+      "range_or_domain": "official pedestrian signal identity, direction, display and governing crosswalk"
+    },
+    {
+      "name": "crosswalk_geometry",
+      "kind": "world_setup",
+      "range_or_domain": "Native marked crosswalk and bus lane geometry"
+    },
+    {
+      "name": "pedestrian_route_context",
+      "kind": "world_setup",
+      "range_or_domain": "west-to-east proposed crossing; original direction pending"
+    },
+    {
+      "name": "cited_exception_context",
+      "kind": "world_setup",
+      "range_or_domain": "NRS 484B.287, 484B.290 and 484B.350 applicability unresolved"
+    },
+    {
+      "name": "pedestrian_body_history",
+      "kind": "subject_behavior",
+      "range_or_domain": "observed original full-body route and heading"
+    },
+    {
+      "name": "bus_body_history",
+      "kind": "subject_behavior",
+      "range_or_domain": "observed original full-body trajectory and speed"
+    },
+    {
+      "name": "bus_response_mode",
+      "kind": "controller",
+      "range_or_domain": "predeclared hold or continue request during source-labelled Walk"
+    },
+    {
+      "name": "crosswalk_hold_margin_m",
+      "kind": "controller",
+      "range_or_domain": "engineering stop margin; no statutory cutoff"
+    },
+    {
+      "name": "camera_policy",
+      "kind": "controller",
+      "range_or_domain": "four synchronized source cameras"
+    }
+  ]
+}

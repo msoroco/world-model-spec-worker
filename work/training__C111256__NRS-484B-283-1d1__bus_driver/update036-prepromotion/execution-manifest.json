@@ -1,0 +1,425 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C111256__NRS-484B-283-1d1__bus_driver",
+  "runtime_manifest_sha256": "ae635d487ae988b67925bacd5ba13210f31224fc6a1ae131d1836a5557ba8714",
+  "cases": [
+    {
+      "case_id": "training__C111256__NRS-484B-283-1d1__bus_driver__reference",
+      "kind": "delivery",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Bus stopping, pedestrian Walk display and original camera framing require Native/pixel source review"
+      },
+      "measurement_contract": "draft-candidates/reference/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c111256-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-candidates/reference/fallback1/construction.json",
+          "construction_sha256": "3b499c4b036280e8a63ff683d557388c3c02444f8255ae7719f4d9688f28d31d",
+          "trigger": {
+            "source": "native_samples.jsonl",
+            "metric": "observed_bus_cross_track_error_m",
+            "failure_condition": "> 0.45"
+          },
+          "changed_knobs": [
+            "route_tracking_lookahead_m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111256__NRS-484B-283-1d1__bus_driver/execution-manifest.json --case training__C111256__NRS-484B-283-1d1__bus_driver__reference --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111256-update022-selected-proof/reference/fallback1/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "3b499c4b036280e8a63ff683d557388c3c02444f8255ae7719f4d9688f28d31d",
+            "log": "update022-reference-fallback1-offline.log",
+            "log_sha256": "93b88d121066e6b5206bd65543d87a54c74e85c7a17c7cda10823c53cfb90576"
+          },
+          "compatibility": {
+            "receipt": "update022-selected-proofs/reference/fallback1/compatibility.json",
+            "sha256": "be154c6ad91aff2c41fcbf42244d576439b629868fabfa7732f877bdb581963a",
+            "log": "update022-selected-proofs/reference/fallback1/analysis.log",
+            "negative_log": "update022-selected-proofs/reference/fallback1/negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-candidates/reference/fallback2/construction.json",
+          "construction_sha256": "ba0ad766157bd54c1471bf31de562bf921adf4ff14eb7f204a91877d8ee20cc5",
+          "trigger": {
+            "source": "native_samples.jsonl",
+            "metric": "bus_front_margin_before_walk_crosswalk_m",
+            "failure_condition": "< 1.0"
+          },
+          "changed_knobs": [
+            "crosswalk_hold_margin_m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111256__NRS-484B-283-1d1__bus_driver/execution-manifest.json --case training__C111256__NRS-484B-283-1d1__bus_driver__reference --candidate fallback2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111256-update022-selected-proof/reference/fallback2/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "ba0ad766157bd54c1471bf31de562bf921adf4ff14eb7f204a91877d8ee20cc5",
+            "log": "update022-reference-fallback2-offline.log",
+            "log_sha256": "e29188df6e99b920820884653579d8c9c7903c0aa70a5c449fee996af8ac2e4a"
+          },
+          "compatibility": {
+            "receipt": "update022-selected-proofs/reference/fallback2/compatibility.json",
+            "sha256": "f85eb160945b87c7e52a1485b3c21af427ce3d7d1a59552ee017b2c46b37fda9",
+            "log": "update022-selected-proofs/reference/fallback2/analysis.log",
+            "negative_log": "update022-selected-proofs/reference/fallback2/negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-candidates/reference/fallback3/construction.json",
+          "construction_sha256": "431bd6e9ae3e29539065b2389e7d3219995fc2520473f77f56d19d59a8aca99b",
+          "trigger": {
+            "source": "reference_corner.mkv",
+            "metric": "walk_display_pixel_margin_px",
+            "failure_condition": "< 40"
+          },
+          "changed_knobs": [
+            "overview_fov_deg"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111256__NRS-484B-283-1d1__bus_driver/execution-manifest.json --case training__C111256__NRS-484B-283-1d1__bus_driver__reference --candidate fallback3 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111256-update022-selected-proof/reference/fallback3/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "431bd6e9ae3e29539065b2389e7d3219995fc2520473f77f56d19d59a8aca99b",
+            "log": "update022-reference-fallback3-offline.log",
+            "log_sha256": "cccd898bd446cf76383d323b8b53dcfe65a2677aaf146fa5ad50e6ebb1ae5517"
+          },
+          "compatibility": {
+            "receipt": "update022-selected-proofs/reference/fallback3/compatibility.json",
+            "sha256": "20e1f48ba68742ca95fd9eddeb13b186ce07ea858e6897cdbcbae9d469a3a78e",
+            "log": "update022-selected-proofs/reference/fallback3/analysis.log",
+            "negative_log": "update022-selected-proofs/reference/fallback3/negative.log"
+          }
+        }
+      ],
+      "fixture_recipe": "work/training__C111256__NRS-484B-283-1d1__bus_driver/update015-reference-recipe.json",
+      "construction": "draft-candidates/reference/primary/construction.json",
+      "construction_sha256": "2000326a93c2328c08f82617ffd20b26a11b8bd0155be4d43f275e44684cea36",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "preparation_status": "selected; finalizer changed; current CPU proofs pending",
+      "acquisition": {
+        "st.crosswalk": {
+          "entrypoint": "geometry.py",
+          "method": "Authored marked crosswalk geometry and Native readback from road_geometry.json",
+          "evidence": "Original Native source and independent Walk pixel review required; CPU fixture has synthetic_native_sample provenance"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "Measured original bus pose/full body in trace.jsonl and capture/evidence.jsonl",
+          "evidence": "Original Native source and independent Walk pixel review required; CPU fixture has synthetic_native_sample provenance"
+        },
+        "dev.pedestrian_signal": {
+          "entrypoint": "finalize.py",
+          "method": "Saved native_samples.jsonl Walk actor/display joined to independent original pixel and governance review",
+          "evidence": "Original Native source and independent Walk pixel review required; CPU fixture has synthetic_native_sample provenance"
+        },
+        "ru.pedestrian": {
+          "entrypoint": "measure_walk.py",
+          "method": "Saved original pedestrian full-body and heading observations by Native frame",
+          "evidence": "Original Native source and independent Walk pixel review required; CPU fixture has synthetic_native_sample provenance"
+        },
+        "rel.occupies": {
+          "entrypoint": "measure_walk.py",
+          "method": "Measured bus/pedestrian full-body overlap with source crosswalk geometry",
+          "evidence": "Original Native source and independent Walk pixel review required; CPU fixture has synthetic_native_sample provenance"
+        },
+        "drv.yields_to": {
+          "entrypoint": "finalize.py",
+          "method": "Sampled source-joined bus/pedestrian crossing conflict; no legal yield verdict",
+          "evidence": "Original Native source and independent Walk pixel review required; CPU fixture has synthetic_native_sample provenance"
+        },
+        "kin.velocity": {
+          "entrypoint": "measure_walk.py",
+          "method": "Measured Native bus speed with explicit provenance and trace/evidence join",
+          "evidence": "Original Native source and independent Walk pixel review required; CPU fixture has synthetic_native_sample provenance"
+        },
+        "native_body_pose_control": {
+          "entrypoint": "runner.py",
+          "method": "Retained original bus and pedestrian body/control source rows",
+          "evidence": "Original Native source and independent Walk pixel review required; CPU fixture has synthetic_native_sample provenance"
+        },
+        "camera_frame_join": {
+          "entrypoint": "cameras.py",
+          "method": "Four named source-camera videos joined by video_frames.jsonl",
+          "evidence": "Original Native source and independent Walk pixel review required; CPU fixture has synthetic_native_sample provenance"
+        }
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111256__NRS-484B-283-1d1__bus_driver/execution-manifest.json --case training__C111256__NRS-484B-283-1d1__bus_driver__reference --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111256-update022-selected-proof/reference/primary/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "2000326a93c2328c08f82617ffd20b26a11b8bd0155be4d43f275e44684cea36",
+        "log": "update022-reference-primary-offline.log",
+        "log_sha256": "31935c31091adcde1f04d30945c838ff5d279727e71732e2111ae3ea9ab44188"
+      },
+      "compatibility": {
+        "receipt": "update022-selected-proofs/reference/primary/compatibility.json",
+        "sha256": "20942df445fdd715c32d5d43d6877069125802452ab2a7dda5fe08e9529aaa5f",
+        "log": "update022-selected-proofs/reference/primary/analysis.log",
+        "negative_log": "update022-selected-proofs/reference/primary/negative.log"
+      },
+      "negative": {
+        "log": "update022-selected-proofs/reference/primary/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "update018-selected-physical/reference/proof.json",
+        "sha256": "25a8c84f3a6705ff7b42d910ad413a9ddd770ef1102dabdde036c4167531045f"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C111256__NRS-484B-283-1d1__bus_driver__reference",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "76ee7a24ad116c9eff8ba46798b843b2d21a1e7ff8e4b428a47bc7b00db074cd",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111256__NRS-484B-283-1d1__bus_driver/delivery_audit.py --case training__C111256__NRS-484B-283-1d1__bus_driver__reference --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111256-update024-selected/reference/primary/selected-attempt --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111256-update024-selected/reference/primary/processed/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111256__NRS-484B-283-1d1__bus_driver/update025-reference-delivery-diagnostic.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "update025-reference-delivery-positive.log",
+        "test_log_sha256": "a4e1f6ba081e1172e2ac5c9b23821a167db0eb2498d49c6d214ed2fd62e7ab45",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111256__NRS-484B-283-1d1__bus_driver/delivery_audit.py --case training__C111256__NRS-484B-283-1d1__bus_driver__reference --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111256-update024-selected/reference/primary/selected-attempt --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111256-update024-selected/reference/primary/processed/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111256__NRS-484B-283-1d1__bus_driver/update025-reference-delivery-negative.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original Native Walk source required",
+        "negative_log": "update025-reference-delivery-negative.log",
+        "negative_log_sha256": "760fe11cfc814dc84897f2426fefb32987e17e746f072f7c70c302616eaa4b7f"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111256__NRS-484B-283-1d1__bus_driver/execution-manifest.json --case training__C111256__NRS-484B-283-1d1__bus_driver__reference --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime/pipeline/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/decoder-update015-c10316/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "update023-selected-reference-primary-process-saved.log",
+        "test_log_sha256": "ab0f2903f9e73f97f1aff7c6efa080721d910df3acb6fd8f9fb30ad9aae3b17c"
+      }
+    },
+    {
+      "case_id": "training__C111256__NRS-484B-283-1d1__bus_driver__contrast",
+      "kind": "delivery",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Bus stopping, pedestrian Walk display and original camera framing require Native/pixel source review"
+      },
+      "measurement_contract": "draft-candidates/contrast/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c111256-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-candidates/contrast/fallback1/construction.json",
+          "construction_sha256": "d85f58388bf8ff5f5ca3248f581ea1278ef1b4824aca1e0a67a972fa7186d038",
+          "trigger": {
+            "source": "native_samples.jsonl",
+            "metric": "observed_bus_cross_track_error_m",
+            "failure_condition": "> 0.45"
+          },
+          "changed_knobs": [
+            "route_tracking_lookahead_m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111256__NRS-484B-283-1d1__bus_driver/execution-manifest.json --case training__C111256__NRS-484B-283-1d1__bus_driver__contrast --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111256-update022-selected-proof/contrast/fallback1/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "d85f58388bf8ff5f5ca3248f581ea1278ef1b4824aca1e0a67a972fa7186d038",
+            "log": "update022-contrast-fallback1-offline.log",
+            "log_sha256": "b3d10c525e4c939266ba3d74e6c24ae1fdb2961874f062885a40d9333e1abedb"
+          },
+          "compatibility": {
+            "receipt": "update022-selected-proofs/contrast/fallback1/compatibility.json",
+            "sha256": "774c52c5ee57ce8b2b81f5b85ca4fdc7c87054bdbf3b3f90e9144bfae2c60217",
+            "log": "update022-selected-proofs/contrast/fallback1/analysis.log",
+            "negative_log": "update022-selected-proofs/contrast/fallback1/negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-candidates/contrast/fallback2/construction.json",
+          "construction_sha256": "570db48b970c3e8db71160bf872704d58b0ff6a71743db3be512898685a09a90",
+          "trigger": {
+            "source": "native_samples.jsonl",
+            "metric": "bus_front_margin_before_walk_crosswalk_m",
+            "failure_condition": "< 1.0"
+          },
+          "changed_knobs": [
+            "crosswalk_hold_margin_m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111256__NRS-484B-283-1d1__bus_driver/execution-manifest.json --case training__C111256__NRS-484B-283-1d1__bus_driver__contrast --candidate fallback2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111256-update022-selected-proof/contrast/fallback2/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "570db48b970c3e8db71160bf872704d58b0ff6a71743db3be512898685a09a90",
+            "log": "update022-contrast-fallback2-offline.log",
+            "log_sha256": "353d58924d2806014bf06c57c8e750a0adea2a330fbe3ef8bc627193ba788804"
+          },
+          "compatibility": {
+            "receipt": "update022-selected-proofs/contrast/fallback2/compatibility.json",
+            "sha256": "e4d94c2397ee057cd87e2fe31670d07661fbff7a4d3b82918f614a93a87046ee",
+            "log": "update022-selected-proofs/contrast/fallback2/analysis.log",
+            "negative_log": "update022-selected-proofs/contrast/fallback2/negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-candidates/contrast/fallback3/construction.json",
+          "construction_sha256": "6980d2049abb36dbdf2f28cd9466c60423fad36d511a45ecb276c764a70f170e",
+          "trigger": {
+            "source": "reference_corner.mkv",
+            "metric": "walk_display_pixel_margin_px",
+            "failure_condition": "< 40"
+          },
+          "changed_knobs": [
+            "overview_fov_deg"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111256__NRS-484B-283-1d1__bus_driver/execution-manifest.json --case training__C111256__NRS-484B-283-1d1__bus_driver__contrast --candidate fallback3 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111256-update022-selected-proof/contrast/fallback3/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "6980d2049abb36dbdf2f28cd9466c60423fad36d511a45ecb276c764a70f170e",
+            "log": "update022-contrast-fallback3-offline.log",
+            "log_sha256": "de2dd1627f8ceed47aaa62d09f96c1af689d5dac7f61d6e04dca69deff5f1fdb"
+          },
+          "compatibility": {
+            "receipt": "update022-selected-proofs/contrast/fallback3/compatibility.json",
+            "sha256": "da358072f17e40b75823d10763858c44d0e57f9724c56f64f5fe4ec8a367221d",
+            "log": "update022-selected-proofs/contrast/fallback3/analysis.log",
+            "negative_log": "update022-selected-proofs/contrast/fallback3/negative.log"
+          }
+        }
+      ],
+      "fixture_recipe": "work/training__C111256__NRS-484B-283-1d1__bus_driver/update015-contrast-recipe.json",
+      "construction": "draft-candidates/contrast/primary/construction.json",
+      "construction_sha256": "be4538cd76d5a0e6ad16507ebf0c55566687030f076336140bf8f8e0e2a6d767",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "preparation_status": "selected; finalizer changed; current CPU proofs pending",
+      "acquisition": {
+        "st.crosswalk": {
+          "entrypoint": "geometry.py",
+          "method": "Authored marked crosswalk geometry and Native readback from road_geometry.json",
+          "evidence": "Original Native source and independent Walk pixel review required; CPU fixture has synthetic_native_sample provenance"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "Measured original bus pose/full body in trace.jsonl and capture/evidence.jsonl",
+          "evidence": "Original Native source and independent Walk pixel review required; CPU fixture has synthetic_native_sample provenance"
+        },
+        "dev.pedestrian_signal": {
+          "entrypoint": "finalize.py",
+          "method": "Saved native_samples.jsonl Walk actor/display joined to independent original pixel and governance review",
+          "evidence": "Original Native source and independent Walk pixel review required; CPU fixture has synthetic_native_sample provenance"
+        },
+        "ru.pedestrian": {
+          "entrypoint": "measure_walk.py",
+          "method": "Saved original pedestrian full-body and heading observations by Native frame",
+          "evidence": "Original Native source and independent Walk pixel review required; CPU fixture has synthetic_native_sample provenance"
+        },
+        "rel.occupies": {
+          "entrypoint": "measure_walk.py",
+          "method": "Measured bus/pedestrian full-body overlap with source crosswalk geometry",
+          "evidence": "Original Native source and independent Walk pixel review required; CPU fixture has synthetic_native_sample provenance"
+        },
+        "drv.yields_to": {
+          "entrypoint": "finalize.py",
+          "method": "Sampled source-joined bus/pedestrian crossing conflict; no legal yield verdict",
+          "evidence": "Original Native source and independent Walk pixel review required; CPU fixture has synthetic_native_sample provenance"
+        },
+        "kin.velocity": {
+          "entrypoint": "measure_walk.py",
+          "method": "Measured Native bus speed with explicit provenance and trace/evidence join",
+          "evidence": "Original Native source and independent Walk pixel review required; CPU fixture has synthetic_native_sample provenance"
+        },
+        "native_body_pose_control": {
+          "entrypoint": "runner.py",
+          "method": "Retained original bus and pedestrian body/control source rows",
+          "evidence": "Original Native source and independent Walk pixel review required; CPU fixture has synthetic_native_sample provenance"
+        },
+        "camera_frame_join": {
+          "entrypoint": "cameras.py",
+          "method": "Four named source-camera videos joined by video_frames.jsonl",
+          "evidence": "Original Native source and independent Walk pixel review required; CPU fixture has synthetic_native_sample provenance"
+        }
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111256__NRS-484B-283-1d1__bus_driver/execution-manifest.json --case training__C111256__NRS-484B-283-1d1__bus_driver__contrast --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111256-update022-selected-proof/contrast/primary/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "be4538cd76d5a0e6ad16507ebf0c55566687030f076336140bf8f8e0e2a6d767",
+        "log": "update022-contrast-primary-offline.log",
+        "log_sha256": "b5895e620af7f8ac94e40c03d8724d900ec8cdf43c334d7518a828f56888cc09"
+      },
+      "compatibility": {
+        "receipt": "update022-selected-proofs/contrast/primary/compatibility.json",
+        "sha256": "143d843a28026c710e0e74457ef618105705e06959cceaf4faa67077194bc295",
+        "log": "update022-selected-proofs/contrast/primary/analysis.log",
+        "negative_log": "update022-selected-proofs/contrast/primary/negative.log"
+      },
+      "negative": {
+        "log": "update022-selected-proofs/contrast/primary/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "update018-selected-physical/contrast/proof.json",
+        "sha256": "fafae765fe1bf60568283f8726877ebe5f3be901c1ebca726315b51254130414"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C111256__NRS-484B-283-1d1__bus_driver__contrast",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "76ee7a24ad116c9eff8ba46798b843b2d21a1e7ff8e4b428a47bc7b00db074cd",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111256__NRS-484B-283-1d1__bus_driver/delivery_audit.py --case training__C111256__NRS-484B-283-1d1__bus_driver__contrast --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111256-update024-selected/contrast/primary/selected-attempt --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111256-update024-selected/contrast/primary/processed/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111256__NRS-484B-283-1d1__bus_driver/update025-contrast-delivery-diagnostic.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "update025-contrast-delivery-positive.log",
+        "test_log_sha256": "0e7fa67c7118643efa7b678544646771b276bcdf60035ca8f43fb8f2dd3e61a4",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111256__NRS-484B-283-1d1__bus_driver/delivery_audit.py --case training__C111256__NRS-484B-283-1d1__bus_driver__contrast --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111256-update024-selected/contrast/primary/selected-attempt --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111256-update024-selected/contrast/primary/processed/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111256__NRS-484B-283-1d1__bus_driver/update025-contrast-delivery-negative.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original Native Walk source required",
+        "negative_log": "update025-contrast-delivery-negative.log",
+        "negative_log_sha256": "760fe11cfc814dc84897f2426fefb32987e17e746f072f7c70c302616eaa4b7f"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111256__NRS-484B-283-1d1__bus_driver/execution-manifest.json --case training__C111256__NRS-484B-283-1d1__bus_driver__contrast --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime/pipeline/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/decoder-update015-c10316/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "update023-selected-contrast-primary-process-saved.log",
+        "test_log_sha256": "ecfdc50afa60b7fe7dcfbb7948a6e75a55518b6253ca6dc00f303ff69ccb44d9"
+      }
+    }
+  ],
+  "status": "partial_selected_offline_and_delivery_proofs_pending",
+  "selection_review": {
+    "law_input_sha256": "47d5ff622c688cd9ef0330826a828a814688089197aae49a87c8f020a48ca079",
+    "witness_sha256": "28f1a0af1ca59d3521444cca217d28f15f540711ddd83339a4e2e74ae89d195f",
+    "case_plan_sha256": "a813f27ed83dde0becfe5275369f40f58727de242c93d7e5cd45059ef7df69c2",
+    "draft_proposal_sha256": "f0a9648f103363b861c18309d90fda26eebf95f04b3038e4e7ed545229a9a77b",
+    "accepted_memberships": 0,
+    "unresolved": [
+      "introductory NRS 484B.287, 484B.290 and 484B.350 exception applicability",
+      "official pedestrian-facing Walk and governing crosswalk pixels",
+      "original bus and pedestrian motion and source-camera coverage"
+    ],
+    "scope": "Two exact CPU delivery cases selected for construction and proof; no original physical or legal acceptance"
+  }
+}

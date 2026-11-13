@@ -23,6 +23,7 @@ def main(tag):
     manifest_path = HERE / 'execution-manifest.json'
     manifest = json.loads(manifest_path.read_text())
     bound_sha = sha(manifest_path)
+    expected_bundles = sum(1 + len(entry['candidates']) for entry in manifest['cases'])
     validator = ROOT / '.runtime-work/decoder-update015-c10316/.lake/build/bin/adapterCheck'
     if not validator.is_file():
         raise ValueError('Pinned validator missing')
@@ -66,7 +67,7 @@ def main(tag):
                          'diagnostic_only': True})
             matrix_path.write_text(json.dumps({
                 'format': 'c111256-selected-process-saved-matrix-v1',
-                'status': 'complete_diagnostic' if len(rows) == 8 else 'partial',
+                'status': 'complete_diagnostic' if len(rows) == expected_bundles else 'partial',
                 'manifest_sha256': bound_sha, 'rows': rows,
                 'original_physical_acceptance_claimed': False}, indent=2) + '\n')
     print(json.dumps({'selected_saved_processing_passed': len(rows),
