@@ -7,7 +7,7 @@ against the loaded Native map before a construction may use them.
 
 import hashlib
 import json
-from math import hypot, isfinite
+from math import cos, hypot, isfinite, pi, sin
 from pathlib import Path
 
 
@@ -72,4 +72,42 @@ def verify_native_route(world_map, survey, driving_lane_type):
         raise ValueError("Surveyed route has no interior Native junction")
     if waypoints[0].road_id == waypoints[-1].road_id:
         raise ValueError("Turn does not enter a different road")
+    _verify_road_directions(world_map, waypoints, driving_lane_type)
     return waypoints
+
+
+def _heading(waypoint):
+    angle = waypoint.transform.rotation.yaw * pi / 180
+    return cos(angle), sin(angle)
+
+
+def _dot(a, b):
+    return a[0] * b[0] + a[1] * b[1]
+
+
+def _verify_road_directions(world_map, route, driving_lane_type):
+    """Inventory Native driving lanes on each selected road by heading.
+
+    The map's lane inventory is a physical topology check. Public access and
+    applicable highway operation still need original source review.
+    """
+    inventory = [waypoint for waypoint in world_map.generate_waypoints(2.0)
+                 if waypoint.lane_type == driving_lane_type and not waypoint.is_junction]
+    approach_road = route[0].road_id
+    destination_road = route[-1].road_id
+    approach = [waypoint for waypoint in inventory if waypoint.road_id == approach_road]
+    destination = [waypoint for waypoint in inventory if waypoint.road_id == destination_road]
+    if not approach or not destination:
+        raise ValueError("Native direction inventory lacks selected roads")
+    incoming = _heading(route[0])
+    outgoing = _heading(route[-1])
+    if not any(_dot(_heading(wp), incoming) > .7 for wp in approach):
+        raise ValueError("Native approach has no incoming driving direction")
+    if not any(_dot(_heading(wp), incoming) < -.7 for wp in approach):
+        raise ValueError("Native approach lacks opposing driving direction")
+    if not any(_dot(_heading(wp), outgoing) > .7 for wp in destination):
+        raise ValueError("Native exit has no departing driving direction")
+    if any(_dot(_heading(wp), outgoing) < -.7 for wp in destination):
+        raise ValueError("Native exit has opposing driving direction")
+    if any(abs(_dot(_heading(wp), outgoing)) <= .7 for wp in destination):
+        raise ValueError("Native exit has ambiguous driving direction")

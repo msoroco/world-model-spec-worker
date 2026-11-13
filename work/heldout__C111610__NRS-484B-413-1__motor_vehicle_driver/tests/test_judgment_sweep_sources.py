@@ -69,6 +69,24 @@ class JudgmentSourceConstructionTests(unittest.TestCase):
         for name in ('ego_turn_motion.jsonl', 'affected_participants.json', 'participant_bodies.jsonl'):
             self.assertEqual(baseline['sources'][name], changed['sources'][name])
 
+    def test_draft_sweep_setpoints_match_exact_pedestrian_constructions(self):
+        proposal = json.loads((ROOT / 'proposals/cases.json').read_text())
+        binding = json.loads((ROOT / 'proposals/bindings.json').read_text())
+        axis = proposal['sweep_specs'][0]['axes'][0]
+        self.assertEqual(axis['variable'], 'listener_route_lateral_offset_m')
+        self.assertEqual(axis['observable'], axis['variable'])
+        self.assertIn(axis['variable'], {v['name'] for v in binding['variable_parameters']})
+        self.assertEqual((axis['min'], axis['max'], axis['spacing']), (2.0, 14.0, 12.0))
+        for suffix, construction, expected in (
+            ('pedestrian_horn_before_turn', 'construction.json', 2.0),
+            ('pedestrian_farther_horn_before_turn', 'pedestrian-farther-horn-construction.json', 14.0),
+        ):
+            case = next(c for c in proposal['cases'] if c['case_id'].endswith('__' + suffix))
+            self.assertEqual(case['variable_assignments'][axis['variable']]['value'], expected)
+            bundle = json.loads((ROOT / construction).read_text())
+            config = json.loads(next(f['content'] for f in bundle['files'] if f['path'] == 'config.json'))
+            self.assertEqual(config['engineering'].get('pedestrian_left_m', 2.0), expected)
+
 
 if __name__ == '__main__':
     unittest.main()

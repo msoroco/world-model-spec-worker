@@ -34,15 +34,31 @@ def source():
 class Map:
     name = "fixture-map"
 
-    def __init__(self, junction=True, shift=0):
+    def __init__(self, junction=True, shift=0, opposing_approach=True, opposing_exit=False):
         self.junction, self.shift = junction, shift
+        self.opposing_approach, self.opposing_exit = opposing_approach, opposing_exit
+
+    def _waypoint(self, road_id, x, y, yaw, junction=False):
+        return SimpleNamespace(road_id=road_id, lane_type="Driving",
+            is_junction=junction,
+            transform=SimpleNamespace(location=SimpleNamespace(x=x, y=y),
+                                      rotation=SimpleNamespace(yaw=yaw)))
 
     def get_waypoint_xodr(self, road_id, lane_id, s):
         positions = {(1, 1): (0, -8), (1, 8): (0, -1), (2, 2): (-6, 0)}
         x, y = positions[(road_id, s)]
-        return SimpleNamespace(road_id=road_id, lane_type="Driving",
-            is_junction=self.junction and s == 8,
-            transform=SimpleNamespace(location=SimpleNamespace(x=x + self.shift, y=y)))
+        return self._waypoint(road_id, x + self.shift, y,
+                              90 if road_id == 1 else 180,
+                              self.junction and s == 8)
+
+    def generate_waypoints(self, spacing):
+        assert spacing == 2.0
+        lanes = [self._waypoint(1, 0, -8, 90), self._waypoint(2, -6, 0, 180)]
+        if self.opposing_approach:
+            lanes.append(self._waypoint(1, 2, -8, 270))
+        if self.opposing_exit:
+            lanes.append(self._waypoint(2, -6, 2, 0))
+        return lanes
 
 
 class RouteSurveyTests(unittest.TestCase):
@@ -60,6 +76,10 @@ class RouteSurveyTests(unittest.TestCase):
             survey_module.verify_native_route(Map(junction=False), survey, "Driving")
         with self.assertRaisesRegex(ValueError, "differs from source"):
             survey_module.verify_native_route(Map(shift=1), survey, "Driving")
+        with self.assertRaisesRegex(ValueError, "lacks opposing"):
+            survey_module.verify_native_route(Map(opposing_approach=False), survey, "Driving")
+        with self.assertRaisesRegex(ValueError, "exit has opposing"):
+            survey_module.verify_native_route(Map(opposing_exit=True), survey, "Driving")
 
     def test_rejects_unproved_layout_and_stale_source(self):
         value = source()
