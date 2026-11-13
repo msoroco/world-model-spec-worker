@@ -143,7 +143,29 @@ def _inside(point, polygon):
     return result
 
 
-def turn_targets(world, source_path, expected_sha256, variant, make_transform):
+def interpolate_course(indicated, divergent, blend):
+    """Build a numeric construction target between two sourced turn routes.
+
+    The blend is an engineering setpoint. Recorded body motion, not this route,
+    supplies any eventual measurement of the realized course.
+    """
+    if not isinstance(blend, (int, float)) or isinstance(blend, bool) or not isfinite(blend) or not 0 <= blend <= 1:
+        raise ValueError('Course blend must be finite in [0, 1]')
+    if (not isinstance(indicated, list) or not isinstance(divergent, list)
+            or len(indicated) != len(divergent) or len(indicated) < 3):
+        raise ValueError('Sourced course routes need matching point counts')
+    for a, b in zip(indicated, divergent):
+        if (not isinstance(a, list) or not isinstance(b, list) or len(a) != 2 or len(b) != 2
+                or not all(isinstance(v, (int, float)) and not isinstance(v, bool) and isfinite(v)
+                           for v in (*a, *b))):
+            raise ValueError('Sourced course coordinates must be finite XY points')
+    if indicated[0] != divergent[0] or indicated[-1] != divergent[-1]:
+        raise ValueError('Course blend must retain the sourced approach and exit')
+    return [[(1-blend)*a[0]+blend*b[0], (1-blend)*a[1]+blend*b[1]]
+            for a, b in zip(indicated, divergent)]
+
+
+def turn_targets(world, source_path, expected_sha256, variant, make_transform, *, course_blend=None):
     """Map-check a sourced turn course before a Native feedback controller uses it.
 
     The returned points are construction targets. The eventual recorded body
@@ -151,6 +173,8 @@ def turn_targets(world, source_path, expected_sha256, variant, make_transform):
     """
     if variant not in ('indicated_course', 'divergent_course'):
         raise ValueError('Unknown marked turn variant')
+    if course_blend is not None and variant != 'indicated_course':
+        raise ValueError('Numeric course blend requires the indicated-course source variant')
     raw = Path(source_path).read_bytes()
     if sha256(raw).hexdigest() != expected_sha256:
         raise ValueError('Turn-course source hash changed')
@@ -160,7 +184,8 @@ def turn_targets(world, source_path, expected_sha256, variant, make_transform):
         raise ValueError('Turn-course source identity incomplete')
     polygon = record.get('intersection_polygon_xy_m')
     indicated = record.get('indicated_course_xy_m')
-    targets = record.get(variant + '_xy_m')
+    targets = (record.get(variant + '_xy_m') if course_blend is None else
+               interpolate_course(indicated, record.get('divergent_course_xy_m'), course_blend))
     if not isinstance(polygon, list) or len(polygon) < 3:
         raise ValueError('Sourced intersection polygon missing')
     for route in (indicated, targets):
@@ -176,7 +201,7 @@ def turn_targets(world, source_path, expected_sha256, variant, make_transform):
             raise ValueError('Turn course does not cross sourced intersection')
     if targets[0] != indicated[0] or targets[-1] != indicated[-1]:
         raise ValueError('Compared turn must retain approach and exit')
-    if variant == 'divergent_course' and targets == indicated:
+    if variant == 'divergent_course' and targets == indicated and course_blend is None:
         raise ValueError('Divergent turn has no different target')
     road_map = world.get_map()
     for point in targets[1:-1]:
@@ -186,6 +211,7 @@ def turn_targets(world, source_path, expected_sha256, variant, make_transform):
         if wp is None or not wp.is_junction:
             raise ValueError('Native map does not identify turn target as junction')
     return {'intersection_id': record['intersection_id'], 'variant': variant,
+            'course_blend': course_blend,
             'targets_xy_m': targets, 'source_sha256': expected_sha256,
             'actual_turn_observed': False}
 

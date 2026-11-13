@@ -8,7 +8,7 @@ from types import SimpleNamespace
 from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from marked_course_native import CAMERAS, FourCameraCapture, control_step, drive_turn, execute_marked_turn, execute_indication_turn, place_markers, place_course_indications, turn_targets
+from marked_course_native import CAMERAS, FourCameraCapture, control_step, drive_turn, execute_marked_turn, execute_indication_turn, place_markers, place_course_indications, turn_targets, interpolate_course
 from turn_source_recorder import SourceRecorder
 
 
@@ -57,6 +57,49 @@ class World:
 
 
 class NativeMarkerTests(unittest.TestCase):
+    def test_numeric_course_grid_retains_sourced_endpoints(self):
+        indicated = [[-2., 5.], [3., 5.], [7., 7.], [12., 7.]]
+        divergent = [[-2., 5.], [3., 3.], [7., 3.], [12., 7.]]
+        self.assertEqual(interpolate_course(indicated, divergent, 0), indicated)
+        self.assertEqual(interpolate_course(indicated, divergent, 1), divergent)
+        self.assertEqual(interpolate_course(indicated, divergent, .5),
+                         [[-2., 5.], [3., 4.], [7., 5.], [12., 7.]])
+        for bad in (-.1, 1.1, float('nan'), float('inf'), True):
+            with self.subTest(bad=bad), self.assertRaisesRegex(ValueError, 'Course blend'):
+                interpolate_course(indicated, divergent, bad)
+        with self.assertRaisesRegex(ValueError, 'matching point counts'):
+            interpolate_course(indicated, divergent[:-1], .5)
+        with self.assertRaisesRegex(ValueError, 'approach and exit'):
+            interpolate_course(indicated, divergent[:-1] + [[13., 7.]], .5)
+
+    def test_numeric_course_grid_uses_source_and_native_junction(self):
+        with TemporaryDirectory() as td:
+            path = Path(td) / 'course.json'
+            path.write_text(json.dumps({
+                'authority_document': 'unverified fixture claim',
+                'intersection_id': 'junction-7',
+                'median_opening_with_intersecting_road': True,
+                'intersection_polygon_xy_m': [[0, 0], [10, 0], [10, 10], [0, 10]],
+                'indicated_course_xy_m': [[-2, 5], [3, 5], [7, 7], [12, 7]],
+                'divergent_course_xy_m': [[-2, 5], [3, 3], [7, 3], [12, 7]]}))
+            digest = hashlib.sha256(path.read_bytes()).hexdigest()
+            make = lambda x, y, z, yaw: Transform(x, y)
+            plan = turn_targets(World(), path, digest, 'indicated_course', make,
+                                course_blend=.5)
+            self.assertEqual(plan['targets_xy_m'],
+                             [[-2., 5.], [3., 4.], [7., 5.], [12., 7.]])
+            self.assertEqual(plan['course_blend'], .5)
+            self.assertFalse(plan['actual_turn_observed'])
+            with self.assertRaisesRegex(ValueError, 'source hash changed'):
+                turn_targets(World(), path, '0' * 64, 'indicated_course', make,
+                             course_blend=.5)
+            with self.assertRaisesRegex(ValueError, 'Native map'):
+                turn_targets(World(junction=False), path, digest, 'indicated_course', make,
+                             course_blend=.5)
+            with self.assertRaisesRegex(ValueError, 'indicated-course source variant'):
+                turn_targets(World(), path, digest, 'divergent_course', make,
+                             course_blend=.5)
+
     def test_nonmarker_native_orchestration_and_original_scene(self):
         with TemporaryDirectory() as td:
             root = Path(td)
