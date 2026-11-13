@@ -50,6 +50,17 @@ def build():
                     item['content'] = item['content'].replace(
                         'Exact 30.48 m signal probe required',
                         f'Exact {distance:.1f} m signal probe required')
+                elif item['path'] == 'finalizer.py' and distance < 30.48:
+                    # The shortfall is an expected diagnostic observation, not
+                    # a successful 30.48 m result or a legal finding.
+                    anchor = "{'target':'continuous_left_signal_at_least_30_48_m',\n                        'requested':True,"
+                    replacement = "{'target':'continuous_left_signal_at_least_30_48_m',\n                        'requested':False,"
+                    expression = "signal_advance['probes']['30.48']['observable_distance_met'] and signal_advance['probes']['30.48']['full_signal_onset_observed']"
+                    matched = "'matched':" + expression
+                    if item['content'].count(anchor) != 1 or item['content'].count(matched) != 1:
+                        raise ValueError('Source finalizer signal target changed')
+                    item['content'] = item['content'].replace(anchor, replacement)
+                    item['content'] = item['content'].replace(matched, "'matched':not (" + expression + ")")
             path = folder / filename
             write(path, case)
             variants.append({'id': candidate, 'construction': str(path.relative_to(ROOT)),
