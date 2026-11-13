@@ -66,6 +66,25 @@ def main():
                   'content': test.read_text()})
     files.append({'path': 'config.json', 'content': (HERE / 'config.json').read_text()})
     sweep_bundle = read(HERE / sweep['construction'])
+    recording = json.loads(json.dumps(sweep_bundle['recording_description']))
+    channels = recording['channels']
+    names = {channel['name'] for channel in channels}
+    required = {observation['name']: observation['unit']
+                for observation in plan['observations'] if observation.get('mandatory', True)}
+    mapped = {name for item in plan.get('source_observation_mapping', {}).values()
+              for name in item['channels']}
+    units = {'ego_pose': 'm,deg', 'ego_speed': 'm/s',
+             'driver_yield_to_walk_pedestrian': 'bool', 'time_s': 's',
+             'native_frame': 'frame', 'bus_body_xy_m': 'm',
+             'pedestrian_body_xy_m': 'm'}
+    for name in sorted((set(required) | mapped) - names):
+        channels.append({'name': name, 'unit': units.get(name, required.get(name, 'structured')),
+                         'sampling_rate_hz': 20,
+                         'method': ('Retained original Native sample/trace or surveyed road '
+                                    'geometry source; derived interpretation requires saved processing'),
+                         'time_window': '24 s / 480-frame attempt',
+                         'reference_frame': 'Native frame/time and surveyed crossing',
+                         'uncertainty': 'Original source and pixel coverage require later review'})
     construction = {'format': 'c111256-portable-six-case-catalog-v1',
                     'case_id': reference['case_id'], 'cell_id': plan['cell_id'],
                     'law_id': plan['law_id'], 'actor': plan['actor'],
@@ -75,7 +94,7 @@ def main():
                                          'per_case_contracts': {
                                              entry['case_id']: entry['measurement_contract']
                                              for entry in manifest['cases']}},
-                    'recording_description': sweep_bundle['recording_description'],
+                    'recording_description': recording,
                     'static_checks': ['exact six-case identity', 'four source cameras',
                                       'full-body bus and pedestrian source joins',
                                       'official Walk pixel review before original acceptance'],

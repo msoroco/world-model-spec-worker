@@ -34,7 +34,9 @@ def intersects(a, b):
 
 
 def classify(samples, mapping, geometry, suffix):
-    require(suffix in ('reference', 'contrast'), 'Unknown Walk response case')
+    require(suffix in ('reference', 'contrast') or
+            suffix.startswith('right_of_way_physical_context-'),
+            'Unknown Walk response case')
     require(len(samples) == len(mapping) == 480 and
             geometry.get('crosswalk_y_range_m') == [-12.0, -10.0] and
             geometry.get('bus_lane_x_range_m') == [0.0, 3.5],
@@ -73,7 +75,7 @@ def classify(samples, mapping, geometry, suffix):
                 overlapping.append(index)
     traversed = pedestrian_positions[0][1] < strip[0] and \
         pedestrian_positions[-1][0] > strip[1]
-    bus_response = not overlapping if suffix == 'reference' else bool(overlapping)
+    bus_response = bool(overlapping) if suffix == 'contrast' else not overlapping
     status = 'met' if traversed and directed and bus_response else 'not_met'
     return {'status': status, 'frames': 480,
             'pedestrian_crossing_completed': traversed,
