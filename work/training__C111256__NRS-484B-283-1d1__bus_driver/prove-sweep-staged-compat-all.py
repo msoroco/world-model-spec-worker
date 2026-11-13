@@ -83,14 +83,16 @@ def main():
                 if (value['passed'] is not True or value['case_id'] != case['case_id'] or
                         value['candidate_id'] != candidate or not required <= set(value['checks'])):
                     raise ValueError('Pinned compatibility checks incomplete')
-                for name in ('compatibility.json', 'compatibility-analysis.log',
-                             'negative-analysis.log'):
-                    shutil.copy2(output / name, dest / name)
+                for source_name, returned_name in (
+                        ('compatibility.json', 'compatibility.json'),
+                        ('compatibility-analysis.log', 'positive-analysis.log'),
+                        ('negative-analysis.log', 'negative-analysis.log')):
+                    shutil.copy2(output / source_name, dest / returned_name)
                 rows.append({'case_id': case['case_id'], 'candidate_id': candidate,
                              'construction_sha256': value['construction_sha256'],
                              'receipt': (dest / 'compatibility.json').relative_to(HERE).as_posix(),
                              'receipt_sha256': sha(dest / 'compatibility.json'),
-                             'positive_log_sha256': sha(dest / 'compatibility-analysis.log'),
+                             'positive_log_sha256': sha(dest / 'positive-analysis.log'),
                              'negative_log_sha256': sha(dest / 'negative-analysis.log'),
                              'runtime_command_log_sha256': sha(dest / 'runtime-command.log')})
                 write(matrix_path, {'format': 'c111256-staged-sweep-compat-matrix-v1',
