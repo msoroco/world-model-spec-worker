@@ -53,7 +53,7 @@ def main():
         row["candidate_commands"] = {candidate: "prepare-delivery " + case + " " + candidate
                                      for candidate in ("primary", "fallback1")}
         write(repo / "work/_shared/gpu-queue.json",
-              {"format": "worker-ordered-gpu-queue-v1", "cases": [row],
+              {"format": "worker-ordered-gpu-queue", "cases": [row],
                "comparison_audit_commands": []})
         target = repo / "work/_shared/local-integration-proof.json"
         write(target, proof)

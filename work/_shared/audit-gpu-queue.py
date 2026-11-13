@@ -1,4 +1,4 @@
-"""Independent current-plan audit of the blocked ordered GPU intent queue."""
+"""Independent current-plan audit of the nondispatchable ordered GPU intent queue."""
 import argparse
 import copy
 import hashlib
@@ -10,15 +10,25 @@ HERE = Path(__file__).resolve().parent
 QUEUE = HERE / "gpu-queue.json"
 def expected_identities():
     batch = json.loads((ROOT / "batch.json").read_text())
-    expected_cases = set()
-    expected_comparisons = set()
+    expected_cases = {}
+    expected_comparisons = {}
     for aid in batch["assignments"]:
         result = json.loads((ROOT / "work" / aid / "result.json").read_text())
-        if result.get("status") != "blocked" or result.get("selected_case_count", 0) != 0:
-            raise ValueError("Blocked queue hides a selected or ready case")
+        status = result.get("status")
+        if status not in ("blocked", "partial"):
+            raise ValueError("Intent queue requires a truthful incomplete result")
         plan = json.loads((ROOT / "work" / aid / "case-plan.json").read_text())
-        expected_cases.update((aid, case["case_id"]) for case in plan["cases"])
-        expected_comparisons.update((aid, item["comparison_id"]) for item in plan["comparisons"])
+        selected_path = ROOT / "work" / aid / "execution-manifest.json"
+        selected = json.loads(selected_path.read_text()) if selected_path.is_file() else {"cases": []}
+        selected_ids = {item["case_id"] for item in selected["cases"]}
+        if len(selected_ids) != len(selected["cases"]) or result.get("cases_selected", 0) != len(selected_ids):
+            raise ValueError("Result and selected manifest differ")
+        for case in plan["cases"]:
+            expected_cases[(aid, case["case_id"])] = (status, case["case_id"] in selected_ids)
+        if not selected_ids <= {case["case_id"] for case in plan["cases"]}:
+            raise ValueError("Selected manifest has a case outside current plan")
+        for item in plan["comparisons"]:
+            expected_comparisons[(aid, item["comparison_id"])] = (status, set(item["case_ids"]) <= selected_ids)
     return expected_cases, expected_comparisons
 
 
@@ -27,12 +37,12 @@ def check(queue, expected_cases, expected_comparisons):
     comparisons = queue["comparison_audit_commands"]
     if ([row["order"] for row in rows] != list(range(1, len(rows) + 1))
             or len({(r["assignment_id"], r["case_id"]) for r in rows}) != len(rows)
-            or {(r["assignment_id"], r["case_id"]) for r in rows} != expected_cases
+            or {(r["assignment_id"], r["case_id"]) for r in rows} != set(expected_cases)
             or len({(r["assignment_id"], r["comparison_id"]) for r in comparisons}) != len(comparisons)
-            or {(r["assignment_id"], r["comparison_id"]) for r in comparisons} != expected_comparisons
-            or any(r["dispatchable"] or r["status"] != "blocked" for r in rows)
-            or any(r["dispatchable"] or r["status"] != "blocked" for r in comparisons)):
-        raise ValueError("Queue order, uniqueness or blocked state invalid")
+            or {(r["assignment_id"], r["comparison_id"]) for r in comparisons} != set(expected_comparisons)
+            or any(r["dispatchable"] or (r["status"], r["selected"]) != expected_cases[(r["assignment_id"], r["case_id"])] for r in rows)
+            or any(r["dispatchable"] or (r["status"], r["selected"]) != expected_comparisons[(r["assignment_id"], r["comparison_id"])] for r in comparisons)):
+        raise ValueError("Queue order, uniqueness or incomplete state invalid")
     for row in rows:
         case = row["case_id"]
         for key in ("capture_command", "postprocessing_command", "owner_release_command",
@@ -73,13 +83,22 @@ def run(case=None, comparison=None):
         pass
     else:
         raise AssertionError("Unproved dispatch passed queue audit")
+    selected = copy.deepcopy(queue)
+    selected["cases"][0]["selected"] = not selected["cases"][0]["selected"]
+    try:
+        check(selected, expected_cases, expected_comparisons)
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("Altered selected-case identity passed queue audit")
     return {
         "passed": True, "assignments": len(json.loads((ROOT / "batch.json").read_text())["assignments"]),
         "ordered_cases": cases, "comparison_rows": comparisons,
         "dispatchable_cases": 0, "missing_case_rejected": True,
         "unproved_dispatch_rejected": True,
+        "altered_selection_rejected": True,
         "queue_sha256": hashlib.sha256(QUEUE.read_bytes()).hexdigest(),
-        "scope": "Blocked intent queue only; exact execution manifests, selected cases and physical acceptance absent",
+        "scope": "Current planned and selected intent only; no dispatch or physical acceptance",
     }
 
 

@@ -13,12 +13,22 @@ def build(root=ROOT):
     comparisons = []
     for aid in sorted(batch["assignments"]):
         result = json.loads((root / "work" / aid / "result.json").read_text())
-        if (result.get("status") != "blocked" or result.get("selected_case_count", 0) != 0):
-            raise ValueError("Blocked queue would hide a selected or ready case: " + aid)
+        status = result.get("status")
+        if status not in ("blocked", "partial"):
+            raise ValueError("Intent queue requires a truthful incomplete result: " + aid)
         plan = json.loads((root / "work" / aid / "case-plan.json").read_text())
         case_ids = [case["case_id"] for case in plan["cases"]]
         if len(case_ids) != len(set(case_ids)):
             raise ValueError("Duplicate planned case: " + aid)
+        manifest_path = root / "work" / aid / "execution-manifest.json"
+        selected_ids = set()
+        if manifest_path.is_file():
+            selected = json.loads(manifest_path.read_text())
+            selected_ids = {case["case_id"] for case in selected["cases"]}
+            if len(selected_ids) != len(selected["cases"]) or not selected_ids <= set(case_ids):
+                raise ValueError("Selected cases differ from current plan: " + aid)
+        if result.get("cases_selected", 0) != len(selected_ids):
+            raise ValueError("Result selected count differs from manifest: " + aid)
         manifest = "work/" + aid + "/execution-manifest.json"
         for case_id in sorted(case_ids):
             prefix = "PYTHONPATH=runtime/pipeline/scenario_pipeline python3.11 -m worker_exchange"
@@ -27,7 +37,8 @@ def build(root=ROOT):
                 "order": len(rows) + 1,
                 "assignment_id": aid,
                 "case_id": case_id,
-                "status": "blocked",
+                "status": status,
+                "selected": case_id in selected_ids,
                 "dispatchable": False,
                 "capture_command": "python3.11 runtime.py capture --manifest " + manifest
                     + " --case " + case_id + " --output ${ATTEMPT_DIR} --host ${CARLA_HOST}"
@@ -62,7 +73,8 @@ def build(root=ROOT):
             comparisons.append({
                 "assignment_id": aid,
                 "comparison_id": item["comparison_id"],
-                "status": "blocked",
+                "status": status,
+                "selected": set(item["case_ids"]) <= selected_ids,
                 "dispatchable": False,
                 "command": "python3.11 work/_shared/audit-gpu-queue.py --comparison "
                     + item["comparison_id"],
@@ -70,10 +82,10 @@ def build(root=ROOT):
     return {
         "format": "worker-ordered-gpu-queue-v1",
         "batch_id": batch["batch_id"],
-        "status": "blocked",
+        "status": "partial" if any(row["status"] == "partial" for row in rows) else "blocked",
         "cases": rows,
         "comparison_audit_commands": comparisons,
-        "reason": "All planned exact case IDs are ordered; none is selected or dispatchable."
+        "reason": "All current planned exact case IDs are ordered; incomplete work is nondispatchable."
     }
 
 

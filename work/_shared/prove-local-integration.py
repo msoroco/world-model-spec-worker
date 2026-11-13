@@ -32,7 +32,8 @@ def main():
                  "selected_saved_processing_negative"):
         assert rows[name]["exit_code"] == 0 and rows[name]["executed"] is True
     campaign = rows["primary_fallback_preparation_exact_dispatch_rejected_audit_and_testing_and_training_acceptance"]
-    assert campaign["executed"] is True and campaign["tests_run"] == 4
+    assert (campaign["executed"] is True and campaign["tests_run"] == 4
+            and campaign["training_review_materialization_mocked"] is True)
     saved = rows["saved_processing"]
     assert saved["rerun_on_current_host"] is True
     assert saved["positive"] == saved["negative"] == 2
@@ -40,7 +41,7 @@ def main():
     saved_script = ROOT / "work/training__C382355__NRS-484B-400-1__motor_vehicle_driver/saved-fixture-proof.py"
     assert saved["script_sha256"] == sha(saved_script)
     proof = {
-        "format": "worker-local-integration-proof-v1",
+        "format": "worker-local-integration-proof",
         "passed": True,
         "exit_code": run.returncode,
         "command": "python3.11 work/_shared/prove-local-integration.py",
@@ -52,6 +53,9 @@ def main():
         "synthetic_only": True,
         "original_native_executed": False,
         "physical_validation_mocked": True,
+        "portable_pipeline_and_skill_stubs": True,
+        "training_review_materialization_mocked": True,
+        "unadapted_training_review_materialization_passed": False,
         "accepted_recordings_claimed": False,
         "observed_test_methods": 4,
         "saved_positive": 2,

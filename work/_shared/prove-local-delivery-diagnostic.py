@@ -6,6 +6,8 @@ import os
 import subprocess
 import sys
 import tempfile
+import types
+import time
 import unittest
 from pathlib import Path
 from unittest.mock import patch
@@ -75,6 +77,8 @@ def run_campaign():
                 {"law_id": "LAW-1", "cell_id": "C1", "actor": "motor_vehicle_driver"}]})
             write(root / "sets/full-train/selection.json",
                   {"frozen": True, "members": [], "selection_version": "before"})
+            write(root / "work/index.json",
+                  {"format": "set-review-workspaces-v2", "entries": [], "sets": []})
             rid = "b" * 64
             attempt = root / "recordings" / rid / "evidence"
             attempt.mkdir(parents=True)
@@ -82,19 +86,35 @@ def run_campaign():
                   "job_id": 7, "attempt": 1, "cell_id": "C1", "actor": "motor_vehicle_driver",
                   "case_id": case, "status": "recording", "phases": {}})
             write(attempt / "result.json", {"completion": {"binding": {}}})
-            write(attempt / "trace.json", {"scenes": [{"t": 50}]})
-            (attempt / "video.webm").write_bytes(b"synthetic-fixture-video")
+            write(attempt / "traffic_spec/trace.json", {"scenes": [{"t": 50}]})
+            (attempt / "raw.mkv").write_bytes(b"synthetic-fixture-video")
             (attempt / "video_frames.jsonl").write_text(json.dumps(
                 {"video_frame": 0, "time_s": 0.05}) + "\n")
-            audit = {"format": "worker-delivery-audit-v1", "passed": True,
+            auditor = root / "state/operations/worker_exchange/batch/audit/delivery_audit.py"
+            auditor.parent.mkdir(parents=True, exist_ok=True)
+            auditor.write_text("AUDITOR_VERSION = 1\n")
+            audit = {"format": "worker-delivery-audit", "passed": True,
                      "case_id": case, "job_id": 7, "attempt": 1,
                      "recording_id": rid, "frames": 1,
                      "source_result_sha256": sha(attempt / "result.json"),
-                     "video": "video.webm", "video_sha256": sha(attempt / "video.webm"),
-                     "trace": "trace.json", "trace_sha256": sha(attempt / "trace.json"),
+                     "auditor_sha256": sha(auditor),
+                     "video": "raw.mkv", "video_sha256": sha(attempt / "raw.mkv"),
+                     "trace": "traffic_spec/trace.json",
+                     "trace_sha256": sha(attempt / "traffic_spec/trace.json"),
                      "checks": {key: True for key in (
                          "native_source", "all_participants", "time_join",
                          "full_video_decode", "actual_pixels", "physical_completion")}}
+            from worker_exchange import media
+            decode_path = auditor.parent / "source-decode.json"
+            write(decode_path, {"format": "source-decode", "passed": True,
+                  "auditor_sha256": sha(Path(media.__file__)),
+                  "video_sha256": audit["video_sha256"], "frames": 1,
+                  "mapping_sha256": sha(attempt / "video_frames.jsonl"),
+                  "checks": {"frame_count": "all-decoded-frames"}})
+            audit.update(auditor_path=str(auditor),
+                         source_decode_receipt_path=str(decode_path),
+                         source_decode_receipt_sha256=sha(decode_path),
+                         source_decode_auditor_sha256=sha(Path(media.__file__)))
             write(attempt / "audit.json", audit)
             job = {"id": 7, "stage": "execution", "status": "completed", "attempts": 1,
                    "actor": "motor_vehicle_driver", "artifact_id": "artifact",
@@ -118,7 +138,9 @@ def run_campaign():
                   patch("recording_store.stored_attempt_path", return_value=attempt),
                   patch("batch_pipeline.completion.verify"),
                   patch("worker_exchange.media.audit"),
-                  patch("organize_work.refresh_workspaces")):
+                  patch("worker_exchange.review_materialization.materialize") as materialize_review,
+                  patch.dict(sys.modules, {"review_workspaces": types.SimpleNamespace(
+                      refresh_workspaces=lambda _root: None)})):
                 audit["passed"] = False
                 write(attempt / "audit.json", audit)
                 with self.assertRaisesRegex(ValueError, "audit incomplete"):
@@ -129,6 +151,7 @@ def run_campaign():
                 write(attempt / "audit.json", audit)
                 accepted = accept(root, self.repo, "batch", db, "run", self.aid,
                                   case, 7, 1, attempt / "audit.json")
+                materialize_review.assert_called_once()
             self.assertEqual(accepted["accepted_in"], ["full-train"])
             self.assertEqual(read(root / "sets/full-train/selection.json")["members"][0]["recording_id"], rid)
 
@@ -137,14 +160,30 @@ def run_campaign():
     suite.addTest(ScopedAcceptance(acceptance))
     suite.addTest(ScopedAcceptance("test_training_target_acceptance"))
     output = io.StringIO()
+    pipeline_module = types.ModuleType("pipeline")
+    pipeline_module.import_catalog = lambda *_args: None
+    def create_run(store, run, catalog_id, output, summary, _workers, _mode,
+                   **paths):
+        law = json.loads(Path(paths["laws"]).read_text())
+        config = {"judgment_policy": "fixed_sweeps",
+                  "law_scope": {"records": {law["id"]: law}},
+                  "summaries": {law["id"]: json.loads(Path(summary).read_text())}}
+        store.db.execute("INSERT INTO runs VALUES(?,?,?,?,?)",
+                         (run, catalog_id, str(output), json.dumps(config), time.time()))
+    pipeline_module.create_run = create_run
     with tempfile.TemporaryDirectory(prefix="worker-local-delivery-lock-") as temporary:
-        with patch.object(runtime_dependencies, "lock_path",
-                          return_value=Path(temporary) / "runtime-edit.lock"):
+        with (patch.object(runtime_dependencies, "lock_path",
+                           return_value=Path(temporary) / "runtime-edit.lock"),
+              patch("batch_pipeline.stages.skill", return_value="fixture skill"),
+              patch.dict(sys.modules, {"pipeline": pipeline_module,
+                                       "review_workspaces": types.SimpleNamespace(
+                                           refresh_workspaces=lambda _root: None)})):
             result = unittest.TextTestRunner(stream=output, verbosity=2).run(suite)
     if result.errors or result.failures or result.skipped or result.testsRun != 4:
         raise RuntimeError("Local campaign integration did not execute and pass:\n" + output.getvalue())
     return {"scenario": "primary_fallback_preparation_exact_dispatch_rejected_audit_and_testing_and_training_acceptance",
             "executed": True, "tests_run": result.testsRun,
+            "training_review_materialization_mocked": True,
             "synthetic_fixture": True, "output_tail": output.getvalue().strip().splitlines()[-1]}
 
 
