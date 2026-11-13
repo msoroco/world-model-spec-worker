@@ -14,7 +14,7 @@ CANDIDATES = (
      'target_speed_mps=3.5):',
      'target_speed_mps', 3.5,
      'Original Native turn body and controller history', 'target overshoot or turn completion',
-     'Primary 4 m/s target overshoots a marked course target before the fixed capture ends'),
+     'Primary 4 m/s target overshoots the source-indicated course target before the fixed capture ends'),
     ('fallback3', 'marked_course_native.py', "'overview': ((-8, 0, 8)",
      "'overview': ((-10, 0, 8)",
      'overview_x_m', -10,
@@ -37,6 +37,10 @@ def build():
         existing = {item['id']: item for item in entry.get('candidates', [])}
         candidates = []
         for candidate_id, module, before, after, knob, value, source, metric, failure in CANDIDATES:
+            form = ('button' if '__button_' in entry['case_id'] else
+                    'other indication' if '__other_indication_' in entry['case_id'] else 'marker')
+            metric = metric.replace('physical marker', 'physical ' + form)
+            failure = failure.replace('physical indicated marker', 'physical indicated ' + form)
             proposal = json.loads(json.dumps(base))
             files = {item['path']: item for item in proposal['files']}
             text = files[module]['content']
@@ -55,6 +59,9 @@ def build():
                          'changed_knobs': [f'{knob}={value}'],
                          'trigger': {'source': source, 'metric': metric,
                                      'failure_condition': failure}}
+            else:
+                prior['trigger'] = {'source': source, 'metric': metric,
+                                    'failure_condition': failure}
             candidates.append(prior)
         entry['candidates'] = candidates
     put(manifest_path, manifest)
