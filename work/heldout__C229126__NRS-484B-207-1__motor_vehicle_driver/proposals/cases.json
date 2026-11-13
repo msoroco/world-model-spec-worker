@@ -1,0 +1,78 @@
+{
+  "cell_id": "C229126",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "cases": [
+    {
+      "case_id": "heldout__C229126__NRS-484B-207-1__motor_vehicle_driver__left_pass_wide",
+      "target_law_id": "NRS-484B-207-1",
+      "target_type": "boundary_probe",
+      "rationale": "Source-joined same-direction left pass and rightward return; safe distance and safely clear remain unresolved legal judgments.",
+      "variable_assignments": {
+        "target_left_gap_m": {
+          "kind": "controller",
+          "value": 1.5
+        },
+        "requested_return_clearance_m": {
+          "kind": "controller",
+          "value": 1.0
+        },
+        "left_pass_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "return_clearance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "safe distance",
+        "safely clear"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "left_pass_clearance_m",
+            "unit": "m",
+            "method": "original Native body polygon separation",
+            "sampling_rate_hz": 20,
+            "time_window": "abreast frames",
+            "reference_frame": "world ground plane",
+            "uncertainty": "Native bounding-box precision"
+          },
+          {
+            "name": "return_clearance_m",
+            "unit": "m",
+            "method": "original Native body longitudinal projection",
+            "sampling_rate_hz": 20,
+            "time_window": "first rightward return",
+            "reference_frame": "road tangent",
+            "uncertainty": "Native bounding-box precision"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "No legal safe-distance threshold or physical acceptance inferred from CPU sources."
+        ]
+      },
+      "paired_probe_id": "left_pass_clearance_pair",
+      "deliberate_differences": [
+        "target_left_gap_m"
+      ],
+      "probe": {
+        "primary_variable": "target_left_gap_m",
+        "comparison_or_standard": "controlled physical observation; legal judgment unresolved",
+        "target_value_or_branch": 2
+      },
+      "sweep_id": "left_pass_clearance_pair",
+      "sweep_point": {
+        "target_left_gap_m": 2.0
+      },
+      "sweep_spec_version": "50b41da8d0ac7942b10465c6a5b63ab8d352209200834c9918f41733cdcb9040",
+      "selection_rank": 1
+    }
+  ],
+  "sweep_specs": [],
+  "sweeps_expanded": true
+}

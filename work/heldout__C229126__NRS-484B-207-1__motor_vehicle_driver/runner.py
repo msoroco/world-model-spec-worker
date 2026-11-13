@@ -161,7 +161,7 @@ def run(config, output, host, port):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--config', required=True)
+    parser.add_argument('--config', default='config.json')
     parser.add_argument('--check', action='store_true')
     parser.add_argument('--run', action='store_true')
     parser.add_argument('--output-dir', '--output', dest='output')

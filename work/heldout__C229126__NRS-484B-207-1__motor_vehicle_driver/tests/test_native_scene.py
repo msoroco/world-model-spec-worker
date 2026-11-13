@@ -82,7 +82,7 @@ class SceneTests(unittest.TestCase):
             self.assertEqual(len(result['recording_evidence']), 2)
             self.assertFalse(result['physical_acceptance_claimed'])
             (root / 'participant_footprints.jsonl').unlink()
-            with self.assertRaisesRegex(ValueError, 'Missing required original source'):
+            with self.assertRaisesRegex(ValueError, 'Missing required source: participant_footprints.jsonl'):
                 analyze(root)
 
     def test_exact_runner_identity_and_camera_contract(self):

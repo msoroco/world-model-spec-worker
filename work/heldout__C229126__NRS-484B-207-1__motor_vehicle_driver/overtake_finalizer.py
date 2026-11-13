@@ -12,7 +12,7 @@ from runner import check_config
 def _source(root, name):
     path = root / name
     if not path.is_file() or not path.read_bytes():
-        raise ValueError('Missing required original source: ' + name)
+        raise ValueError('Missing required source: ' + name)
     return path, sha256(path.read_bytes()).hexdigest()
 
 
@@ -42,10 +42,10 @@ def analyze(attempt):
     return {'format': 'worker-analysis-report',
             'case_id': config['selected_case_id'],
             'measurements': {'overtake_sequence': {
-                'method': 'measure original actor body, lane and speed rows',
+                'method': 'analyze',
                 'value': observation,
-                'sources': {'config.json': config_sha,
-                            'video_frames.jsonl': frame_sha,
+                'configuration_sha256': config_sha,
+                'sources': {'video_frames.jsonl': frame_sha,
                             'trace.jsonl': trace_sha,
                             'participant_footprints.jsonl': body_sha}}},
             'limitations': ['Observed body gap and return timing do not decide statutory safe distance or safely clear.'],

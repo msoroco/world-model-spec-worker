@@ -132,3 +132,13 @@ The updated environment preflight and this assignment's scoped nonstrict gate
 pass. C229126 remains a truthful partial CPU construction, and 16 of the 51
 batch assignments remain partial. Resume with the exact first-case bundle and
 proof work listed above, then rerun scoped strict and the complete strict gate.
+
+## 2026-11-12 first exact bundle and source-bound proofs
+
+`left_pass_wide` now has a C229126-specific `config.json`, inline `construction.json`, frozen `delivery-construction-manifest.json`, `measurement-contract.json`, and source-hashed `diagnostic-recipe.json`. The construction bundles the CARLA-lazy runner, same-direction scene and controller, original body/lane/speed recorder, four named camera streams, finalizer and 18 CPU tests. The 1.5 m planned left gap and 1.0 m return threshold are engineering targets, not statutory cutoffs.
+
+Exact primary construction SHA-256: `e4e2477231e45d564034103eded1a8f0dd48661207967d2adf5910423b2b98cb`. `first-primary-proof.json` SHA-256: `b26b87113743c406bd7d993adb34d52e6acd0af0589aa59dd1c944416033a9c2`. That compact UTF-8 proof retains the exact offline test log, positive compatibility receipt and analysis log, deleted-`participant_footprints.jsonl` negative log, and saved-only processing receipt/log with their SHA-256 values. It is compacted into one returned file to stay within the frozen 10,200-file cap; generated diagnostic media remain under `.runtime-work/`.
+
+The current exact commands are the `offline.command`, `compatibility.command` and `saved_processing.command` entries in `first-primary-proof.json`; all exited 0. Compatibility passed Native validation, Lean decoding, full video decode and four-camera checks. Saved processing reported `passed=true`, `originals_preserved=true`, `missing_evidence=false`. This synthetic CPU fixture does not show actual safe distance, clearance, visibility or legal acceptance.
+
+The scoped nonstrict `worker_check.py --assignment heldout__C229126__NRS-484B-207-1__motor_vehicle_driver --complete` passes. Remain **partial**: complete the other three exact cases, three risk-triggered fallback constructions per selected case, independent delivery and comparison audits, canonical semantic proposals, all exact-case saved proofs and the scoped strict gate. Rebind this first case if its construction, fixture, contract or runtime hash changes.
