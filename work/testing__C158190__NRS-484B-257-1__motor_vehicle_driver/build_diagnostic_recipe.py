@@ -43,11 +43,21 @@ def through_y(i):
 
 
 def build(variant=None):
+    sign_variant = variant is not None and variant.startswith('sign_angle_')
     if variant not in (None, 'through_entered', 'clear', 'no_slow', 'through_mid',
-                       'through_speed_3', 'through_speed_7', 'through_speed_11'):
+                       'through_speed_3', 'through_speed_7', 'through_speed_11',
+                       'sign_angle_minus_015', 'sign_angle_zero', 'sign_angle_plus_015'):
         raise ValueError('Unsupported exact diagnostic variant')
     target_root = HERE if variant is None else HERE / 'cases' / variant
     config_path = target_root / 'config.json'
+    if sign_variant:
+        draft = json.loads((target_root / 'construction.json').read_text())
+        embedded = {item['path']: item['content'] for item in draft['files']}
+        configuration = json.loads(embedded['config.json'])
+        sign_angle = float(variant.removeprefix('sign_angle_').replace('minus_015', '-0.15')
+                           .replace('plus_015', '0.15').replace('zero', '0'))
+    else:
+        configuration = json.loads(config_path.read_text())
     speed_target = (float(variant.removeprefix('through_speed_'))
                     if variant and variant.startswith('through_speed_') else None)
     def actor_y(i):
@@ -74,6 +84,8 @@ def build(variant=None):
         source = Path(temp) / 'source'
         source.mkdir()
         module.FinalizerTests().sources(source)
+        if sign_variant:
+            (source / 'road.xodr').write_text(embedded['native-map-plan/yield-nearest-view.xodr'])
         if variant in ('clear', 'no_slow', 'through_mid'):
             approach = [json.loads(line) for line in (source/'approach_history.jsonl').read_text().splitlines()]
             approach[0]['ego_speed_mps'] = 4.0 if variant == 'clear' else 6.0
@@ -92,7 +104,10 @@ def build(variant=None):
                    'time_s': round(5+i*.05, 6)} for i in range(frame_count)]
         controls = [{'frame': row['carla_frame'],
                      'yield_sign': {'actor_id': 12, 'blueprint': 'traffic.yield',
-                                    'trigger_vertices_m': [[0, 0, 0]]*4},
+                                   'trigger_vertices_m': [[0, 0, 0]]*4,
+                                   **({'native_rotation_deg': {'yaw': sign_angle * 180 / 3.141592653589793,
+                                                                 'pitch': 0.0, 'roll': 0.0}}
+                                      if sign_variant else {})},
                      'native_crosswalk_vertices_m': [], 'competing_controls': []}
                     for row in frames]
         trace = [{'frame': row['carla_frame'], 'time_s': row['time_s'],
@@ -201,7 +216,6 @@ def build(variant=None):
         (source / 'capture/native/frames.jsonl').write_text(''.join(json.dumps(e,separators=(',', ':'))+'\n'
                                                                  for e in frame_index))
         (source / 'capture/recorder_info.txt').write_text(reference['files']['capture/recorder_info.txt'])
-        configuration = json.loads(config_path.read_text())
         manifest = {'status': 'draft', 'acquisition': 'synthetic_diagnostic',
                     'case_id': configuration['selected_case_id'],
                     'map': 'Carla/Maps/OpenDriveMap', 'frames': frame_count,
@@ -239,12 +253,25 @@ def build(variant=None):
             if str(relative) == 'config.json':
                 continue
             target = targets / relative
-            target.parent.mkdir(parents=True, exist_ok=True)
-            target.write_bytes(file.read_bytes())
-            items.append({'path': str(relative), 'source': str(target.relative_to(ROOT)),
-                          'sha256': sha(target)})
+            reused = None
+            if sign_variant:
+                for candidate in (HERE / 'diagnostic-sources' / relative,
+                                  HERE / 'cases/sign_angle_minus_015/diagnostic-sources' / relative):
+                    if candidate.is_file() and sha(candidate) == sha(file):
+                        reused = candidate
+                        break
+            if reused is None:
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_bytes(file.read_bytes())
+                reused = target
+            items.append({'path': str(relative), 'source': str(reused.relative_to(ROOT)),
+                          'sha256': sha(reused)})
         diagnostic_path = target_root / 'diagnostic.json'
-        diagnostic_path.write_text(json.dumps(diagnostic, separators=(',', ':')) + '\n')
+        diagnostic_content = json.dumps(diagnostic, separators=(',', ':')) + '\n'
+        if sign_variant and (HERE / 'diagnostic.json').read_text() == diagnostic_content:
+            diagnostic_path = HERE / 'diagnostic.json'
+        else:
+            diagnostic_path.write_text(diagnostic_content)
         if diagnostic_path.stat().st_size > 2 * 1024 * 1024:
             raise ValueError('Diagnostic specification exceeds worker file size limit')
         recipe = {'format': 'worker-fixture-recipe', 'sources': items,
@@ -252,7 +279,7 @@ def build(variant=None):
                                 'sha256': sha(diagnostic_path)}}
         recipe_path = target_root / 'diagnostic-recipe.json'
         recipe_path.write_text(json.dumps(recipe, indent=2) + '\n')
-    if variant == 'through_mid' or speed_target is not None:
+    if variant == 'through_mid' or speed_target is not None or sign_variant:
         return {'recipe': str(recipe_path.relative_to(ROOT)),
                 'source_count': len(items), 'frame_count': frame_count,
                 'scope': '600-frame synthetic saved-source protocol only; physical acceptance unclaimed'}
@@ -282,6 +309,7 @@ if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument('--variant', choices=('through_entered', 'clear', 'no_slow', 'through_mid',
-                                              'through_speed_3', 'through_speed_7', 'through_speed_11'))
+                                              'through_speed_3', 'through_speed_7', 'through_speed_11',
+                                              'sign_angle_minus_015', 'sign_angle_zero', 'sign_angle_plus_015'))
     args = parser.parse_args()
     print(json.dumps(build(args.variant), indent=2))
