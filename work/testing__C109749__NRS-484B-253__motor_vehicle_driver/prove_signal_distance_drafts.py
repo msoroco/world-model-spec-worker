@@ -68,7 +68,7 @@ def main():
                 require("'matched':not (signal_advance['probes']['30.48']" in files['finalizer.py'],
                         'Saved shortfall must be preserved as a negative observation')
             label = 'below' if row['signal_target_m'] == 25.0 else 'above'
-            output = f'.runtime-work/c109749-signal-distance-{label}-{variant["id"]}-offline-v3'
+            output = f'.runtime-work/c109749-signal-distance-{label}-{variant["id"]}-offline-v5'
             command = [str(REPO / '.venv-cpu/bin/python'), 'runtime.py', 'offline',
                        '--manifest', str(MANIFEST.relative_to(REPO)),
                        '--case', row['case_id'], '--output', output]

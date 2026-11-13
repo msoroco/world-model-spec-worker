@@ -89,32 +89,6 @@ def build():
             'deliberate_differences': ['authored onset distance 25, 30.48 or 36 m'],
             'source_review_status': 'diagnostic construction only; original Native onset and legal meaning unverified'})
     plan_path.write_text(json.dumps(plan, indent=2) + '\n')
-    proposal_path = ROOT / 'proposals/cases.json'
-    proposals = json.loads(proposal_path.read_text())
-    template_proposal = next(row for row in proposals['cases']
-                             if row['case_id'].endswith('__signal_advance_100_at'))
-    for entry in manifest['cases']:
-        if any(row['case_id'] == entry['case_id'] for row in proposals['cases']):
-            continue
-        row = copy.deepcopy(template_proposal)
-        row['case_id'] = entry['case_id']
-        row['rationale'] = (f'Authored {entry["signal_target_m"]:.1f} m indicator-onset '
-                            'diagnostic around the 30.48 m reference; original Native '
-                            'distance and legal sufficiency remain unverified.')
-        row['paired_probe_id'] = 'c109749-signal-distance-25-30_48-36'
-        row['deliberate_differences'] = ['signal_target_m']
-        row['variable_assignments']['signal_target_m'] = {
-            'kind': 'controller', 'value': entry['signal_target_m'], 'unit': 'm',
-            'note': 'authored onset probe; observed distance measured from original history'}
-        row['probe'] = {'primary_variable': 'signal_target_m',
-                        'comparison_or_standard': 'observed 30.48 m reference; no legal verdict',
-                        'target_value_or_branch': entry['signal_target_m']}
-        proposals['cases'].append(row)
-    proposal_path.write_text(json.dumps(proposals, indent=2) + '\n')
-    semantic_path = ROOT / 'proposals/semantic-index.json'
-    semantic = json.loads(semantic_path.read_text())
-    semantic['stages']['cases']['sha256'] = sha(proposal_path)
-    semantic_path.write_text(json.dumps(semantic, indent=2) + '\n')
     return evidence
 
 

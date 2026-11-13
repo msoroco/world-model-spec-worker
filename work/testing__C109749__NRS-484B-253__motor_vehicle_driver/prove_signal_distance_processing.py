@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+import copy
 import subprocess
 from pathlib import Path
 
@@ -28,7 +29,7 @@ def run(command):
     return json.loads(process.stdout)
 
 
-def main():
+def run_proofs():
     manifest = json.loads(MANIFEST.read_text())
     proofs = []
     for entry in manifest['cases']:
@@ -37,8 +38,8 @@ def main():
         label = 'below' if distance == 25.0 else 'above'
         for ident in ('primary', 'fallback1', 'fallback2', 'fallback3'):
             suffix = f'c109749-signal-distance-{label}-{ident}'
-            compat_dir = REPO / f'.runtime-work/{suffix}-compat-v4'
-            saved_dir = REPO / f'.runtime-work/{suffix}-saved-v4'
+            compat_dir = REPO / f'.runtime-work/{suffix}-compat-v5'
+            saved_dir = REPO / f'.runtime-work/{suffix}-saved-v5'
             command = [str(REPO / '.venv-cpu/bin/python'), 'runtime.py', 'compatibility',
                        '--manifest', str(MANIFEST.relative_to(REPO)), '--case', case,
                        '--output', str(compat_dir.relative_to(REPO)),
@@ -89,6 +90,32 @@ def main():
                       'manifest_sha256': sha(MANIFEST), 'proofs': proofs,
                       'source_kind': 'synthetic software diagnostics',
                       'native_or_legal_acceptance_claimed': False}, indent=2))
+
+
+def main():
+    # Compatibility needs a matching proposal for each isolated diagnostic.
+    # Keep canonical proposals byte-for-byte identical outside this proof run.
+    proposal_path = ROOT / 'proposals/cases.json'
+    original = proposal_path.read_bytes()
+    proposals = json.loads(original)
+    template = next(row for row in proposals['cases']
+                    if row['case_id'].endswith('__signal_advance_100_at'))
+    manifest = json.loads(MANIFEST.read_text())
+    for entry in manifest['cases']:
+        row = copy.deepcopy(template)
+        row['case_id'] = entry['case_id']
+        row['rationale'] = 'Staged source-measured signal-onset diagnostic; no legal verdict.'
+        row['paired_probe_id'] = 'c109749-signal-distance-25-30_48-36'
+        row['deliberate_differences'] = ['authored signal onset distance']
+        row['probe'] = {'primary_variable': 'left_signal_enabled',
+                        'comparison_or_standard': 'observed 30.48 m reference',
+                        'target_value_or_branch': entry['signal_target_m']}
+        proposals['cases'].append(row)
+    try:
+        proposal_path.write_text(json.dumps(proposals, indent=2) + '\n')
+        run_proofs()
+    finally:
+        proposal_path.write_bytes(original)
 
 
 if __name__ == '__main__':
