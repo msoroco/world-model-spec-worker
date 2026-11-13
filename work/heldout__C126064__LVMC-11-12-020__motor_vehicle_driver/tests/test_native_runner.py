@@ -46,6 +46,27 @@ class NativeRunnerTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'hash changed'):
                 module.prepare(module.ASSIGNMENT + '__indicated_course', path, digest)
 
+    def test_prepare_button_and_other_indication_require_matching_original_form(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path, _ = self.source(directory)
+            source = json.loads(path.read_text())
+            source.pop('markers')
+            for form in ('button', 'other_indication'):
+                source['indication_form'] = form
+                source['indications'] = [{'form': form, 'x': 3, 'y': 5,
+                                          'blueprint_id': 'static.prop.trafficcone01'}]
+                path.write_text(json.dumps(source))
+                digest = hashlib.sha256(path.read_bytes()).hexdigest()
+                for variant in module.VARIANTS:
+                    plan = module.prepare(module.ASSIGNMENT + '__' + form + '_' + variant,
+                                          path, digest)
+                    self.assertEqual((plan['indication_form'], plan['variant']),
+                                     (form, variant))
+                other = 'button' if form == 'other_indication' else 'other_indication'
+                with self.assertRaisesRegex(ValueError, 'exact indication form'):
+                    module.prepare(module.ASSIGNMENT + '__' + other + '_indicated_course',
+                                   path, digest)
+
     def test_native_wiring_passes_same_source_and_restores_owned_resources(self):
         with tempfile.TemporaryDirectory() as directory:
             path, digest = self.source(directory)

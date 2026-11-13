@@ -9,16 +9,30 @@ import json
 from math import atan2, degrees
 from pathlib import Path
 
-from marked_course_native import CAMERAS, execute_marked_turn
+from marked_course_native import CAMERAS, execute_marked_turn, execute_indication_turn
 from turn_source_recorder import SourceRecorder
 
 ASSIGNMENT = 'heldout__C126064__LVMC-11-12-020__motor_vehicle_driver'
 VARIANTS = ('indicated_course', 'divergent_course')
+FORMS = {'button': 'button', 'other_indication': 'other_indication'}
+
+
+def case_form_variant(case_id):
+    prefix = ASSIGNMENT + '__'
+    if not case_id.startswith(prefix):
+        raise ValueError('Unknown exact marked-turn case')
+    suffix = case_id[len(prefix):]
+    if suffix in VARIANTS:
+        return 'marker', suffix
+    for form in FORMS:
+        lead = form + '_'
+        if suffix.startswith(lead) and suffix[len(lead):] in VARIANTS:
+            return form, suffix[len(lead):]
+    raise ValueError('Unknown exact marked-turn case')
 
 
 def prepare(case_id, source_path, expected_sha256):
-    if case_id not in tuple(ASSIGNMENT + '__' + name for name in VARIANTS):
-        raise ValueError('Unknown exact marked-turn case')
+    form, variant = case_form_variant(case_id)
     path = Path(source_path)
     raw = path.read_bytes()
     if sha256(raw).hexdigest() != expected_sha256:
@@ -26,9 +40,14 @@ def prepare(case_id, source_path, expected_sha256):
     record = json.loads(raw)
     for key in ('authority_document', 'municipal_jurisdiction_source',
                 'intersection_source', 'authorization_source', 'intersection_id',
-                'map_name', 'indicated_course_xy_m', 'divergent_course_xy_m', 'markers'):
+                'map_name', 'indicated_course_xy_m', 'divergent_course_xy_m'):
         if not record.get(key):
             raise ValueError('Marked-turn site source lacks ' + key)
+    if form == 'marker':
+        if not record.get('markers'):
+            raise ValueError('Marked-turn site source lacks markers')
+    elif record.get('indication_form') != form or not record.get('indications'):
+        raise ValueError('Marked-turn site source lacks exact indication form')
     if record.get('median_opening_with_intersecting_road') is not True:
         raise ValueError('Marked-turn site lacks intersecting-road median opening')
     route = record['indicated_course_xy_m']
@@ -38,7 +57,7 @@ def prepare(case_id, source_path, expected_sha256):
     if any(not isinstance(point, list) or len(point) != 2 for point in (first, second)):
         raise ValueError('Marked-turn approach coordinates incomplete')
     heading = degrees(atan2(second[1] - first[1], second[0] - first[0]))
-    return {'case_id': case_id, 'variant': case_id.split('__')[-1],
+    return {'case_id': case_id, 'variant': variant, 'indication_form': form,
             'source_path': str(path), 'source_sha256': expected_sha256,
             'map_name': record['map_name'],
             'approach_xy_m': first, 'approach_heading_deg': heading,
@@ -80,9 +99,15 @@ def run(plan, output, host='127.0.0.1', port=2000):
         def make_transform(x, y, z, yaw):
             return carla.Transform(carla.Location(x=x, y=y, z=z), carla.Rotation(yaw=yaw))
 
-        result = execute_marked_turn(world, carla, ego, plan['case_id'], plan['source_path'],
-                                     plan['source_sha256'], plan['variant'], make_transform,
-                                     recorder)
+        if plan['indication_form'] == 'marker':
+            result = execute_marked_turn(world, carla, ego, plan['case_id'], plan['source_path'],
+                                         plan['source_sha256'], plan['variant'], make_transform,
+                                         recorder)
+        else:
+            result = execute_indication_turn(world, carla, ego, plan['case_id'],
+                                             plan['source_path'], plan['source_sha256'],
+                                             plan['indication_form'], plan['variant'],
+                                             make_transform, recorder)
         (output / 'native-turn-result.json').write_text(json.dumps(result, indent=2) + '\n')
         return result
     finally:

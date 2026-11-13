@@ -1,4 +1,5 @@
 import json
+from hashlib import sha256
 from pathlib import Path
 import sys
 from tempfile import TemporaryDirectory
@@ -53,6 +54,35 @@ class MarkedCourseFinalizerTests(unittest.TestCase):
             (root / 'trace.jsonl').write_text(''.join(json.dumps(row) + '\n' for row in trace))
             with self.assertRaisesRegex(ValueError, 'trace join differs'):
                 analyze(root)
+
+    def test_nonmarker_forms_use_original_readback_and_exact_identity(self):
+        for form in ('button', 'other_indication'):
+            with self.subTest(form=form), TemporaryDirectory() as directory:
+                root = Path(directory)
+                self.prepare(root)
+                case = ASSIGNMENT + '__' + form + '_indicated_course'
+                scene = json.loads((root / 'marked_intersection.json').read_text())
+                scene['case_id'] = case
+                scene.pop('physical_markers_xy_m')
+                scene['indication_form'] = form
+                scene['physical_indications_xy_m'] = [[1.0, 1.0]]
+                authority = json.loads((root / 'authority_source_original.json').read_text())
+                authority['indication_form'] = form
+                authority['indications'] = [{'form': form, 'x': 1, 'y': 1}]
+                original = json.dumps(authority).encode()
+                (root / 'authority_source_original.json').write_bytes(original)
+                scene['authority_source_sha256'] = sha256(original).hexdigest()
+                (root / 'marked_intersection.json').write_text(json.dumps(scene))
+                config = json.loads((root / 'config.json').read_text())
+                config['selected_case_id'] = case
+                (root / 'config.json').write_text(json.dumps(config))
+                report = analyze(root)
+                self.assertEqual(report['measurements']['original_marked_turn_course']['value']['indication_form'], form)
+                self.assertIn(form, build_result(root, report)['target_checks'][0]['method'])
+                scene['indication_form'] = 'marker'
+                (root / 'marked_intersection.json').write_text(json.dumps(scene))
+                with self.assertRaisesRegex(ValueError, 'non-marker readback'):
+                    analyze(root, write_channel=False)
 
 
 if __name__ == '__main__':

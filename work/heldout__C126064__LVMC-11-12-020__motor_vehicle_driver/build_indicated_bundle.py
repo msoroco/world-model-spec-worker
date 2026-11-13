@@ -4,6 +4,7 @@ This packages source code and CPU tests. A real site/authority record remains a
 required capture input; no diagnostic claim is silently used for Native capture.
 """
 import hashlib
+import argparse
 import json
 from pathlib import Path
 
@@ -117,4 +118,53 @@ def build():
 
 
 if __name__ == '__main__':
-    print(build())
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--nonmarker-form', choices=('button', 'other_indication'))
+    parser.add_argument('--variant', choices=VARIANTS, default='indicated_course')
+    args = parser.parse_args()
+    if args.nonmarker_form:
+        form, variant = args.nonmarker_form, args.variant
+        case = ASSIGNMENT + '__' + form + '_' + variant
+        manifest_path = ROOT / 'execution-manifest.json'
+        manifest = json.loads(manifest_path.read_text())
+        if any(item['case_id'] == case for item in manifest['cases']):
+            raise ValueError('Exact non-marker construction already exists')
+        template = json.loads((ROOT / 'indicated-construction.json').read_text())
+        config = json.loads(next(item['content'] for item in template['files']
+                                 if item['path'] == 'config.json'))
+        config['selected_case_id'] = case
+        config['case']['case_id'] = case
+        description = config['case']['recording_description']
+        description['channels'][0]['method'] = (
+            'source-hashed physical ' + form + ' readback, original four-camera images '
+            'and joined full-body turn footprints')
+        description['channels'][0]['uncertainty'] = (
+            'municipal authorization, actual ' + form + ' visibility and legal course '
+            'conformance require original review')
+        template['case_id'] = case
+        template['recording_description'] = description
+        for item in template['files']:
+            if item['path'] == 'config.json':
+                item['content'] = json.dumps(config, indent=2) + '\n'
+            elif item['path'] == 'runner.py':
+                item['content'] = ENTRY.replace('CASE_ID', case)
+            elif item['path'] in ('native_runner.py', 'marked_course_native.py',
+                                  'turn_source_recorder.py', 'marked_course_measurement.py',
+                                  'marked_course_finalizer.py'):
+                item['content'] = (ROOT / item['path']).read_text()
+            elif item['path'].startswith('tests/'):
+                item['content'] = (ROOT / item['path']).read_text()
+        path = ROOT / (form + '-' + variant + '-construction.json')
+        path.write_text(json.dumps(template, indent=2) + '\n')
+        digest = hashlib.sha256(path.read_bytes()).hexdigest()
+        manifest['cases'].append({
+            'case_id': case, 'kind': 'delivery', 'construction': path.name,
+            'construction_sha256': digest,
+            'measurement_procedure': {'entrypoint': 'marked_course_finalizer.py'},
+            'candidate_risk': {'status': 'physical',
+                               'reason': 'Physical ' + form + ' readback, pixels and turn completion require Native verification.'},
+            'candidates': []})
+        manifest_path.write_text(json.dumps(manifest, indent=2) + '\n')
+        print({case: digest})
+    else:
+        print(build())

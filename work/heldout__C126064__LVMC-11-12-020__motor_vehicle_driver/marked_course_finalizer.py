@@ -10,6 +10,12 @@ ASSIGNMENT = 'heldout__C126064__LVMC-11-12-020__motor_vehicle_driver'
 CAMERAS = ('overview.mkv', 'approach.mkv', 'reference_corner.mkv', 'driver_reference.mkv')
 SOURCES = ('marked_intersection.json', 'authority_source_original.json',
            'turn_body.jsonl', 'video_frames.jsonl', 'trace.jsonl', *CAMERAS)
+CASE_FORMS = {
+    'indicated_course': 'marker', 'divergent_course': 'marker',
+    'button_indicated_course': 'button', 'button_divergent_course': 'button',
+    'other_indication_indicated_course': 'other_indication',
+    'other_indication_divergent_course': 'other_indication',
+}
 
 
 def required(root, name):
@@ -31,13 +37,16 @@ def analyze(attempt, *, write_channel=True):
     root = Path(attempt)
     config = json.loads(required(root, 'config.json').read_text())
     case = config.get('selected_case_id')
-    if (case not in (ASSIGNMENT + '__indicated_course', ASSIGNMENT + '__divergent_course')
+    suffix = case.removeprefix(ASSIGNMENT + '__') if isinstance(case, str) else ''
+    if (case != ASSIGNMENT + '__' + suffix or suffix not in CASE_FORMS
             or config.get('law_id') != 'LVMC-11-12-020'
             or config.get('cell_id') != 'C126064'
             or config.get('actor') != 'motor_vehicle_driver'):
         raise ValueError('Wrong exact marked-turn analysis identity')
     paths = {name: required(root, name) for name in SOURCES}
     observation = measure_marked_course(root, case)
+    if observation['indication_form'] != CASE_FORMS[suffix]:
+        raise ValueError('Original indication form differs from exact case')
     mapping = rows(paths['video_frames.jsonl'])
     trace = rows(paths['trace.jsonl'])
     body = rows(paths['turn_body.jsonl'])
@@ -60,7 +69,7 @@ def analyze(attempt, *, write_channel=True):
     return {'format': 'worker-analysis-report', 'case_id': case,
             'measurements': {'original_marked_turn_course': {
                 'method': 'measure_marked_course', 'value': observation, 'sources': source_hashes}},
-            'limitations': ['Original municipal authority and marker visibility need independent review; sampled course distances are not legal cutoffs.'],
+            'limitations': ['Original municipal authority and indication visibility need independent review; sampled course distances are not legal cutoffs.'],
             'physical_acceptance_claimed': False, 'legal_acceptance_claimed': False}
 
 
@@ -69,15 +78,16 @@ def build_result(attempt, report):
     config = json.loads((root / 'config.json').read_text())
     description = config['case']['recording_description']
     observation = report['measurements']['original_marked_turn_course']['value']
+    form = observation['indication_form']
     channel = required(root, 'original_marked_turn_course.jsonl')
     evidence = [{'name': 'original_marked_turn_course', 'unit': 'structured',
                  'reference': channel.name, 'sha256': sha256(channel.read_bytes()).hexdigest()}]
     return {'case_id': report['case_id'],
             'measured_values': {'original_marked_turn_course': observation},
-            'target_checks': [{'target': 'marked municipal turning course',
-                'requested': 'original full-body course relative to sourced physical markers',
+            'target_checks': [{'target': 'municipal turning course with ' + form,
+                'requested': 'original full-body course relative to sourced physical ' + form,
                 'measured': observation['frame_count'],
-                'method': 'source-hashed intersection, physical marker and frame-joined body measurement',
+                'method': 'source-hashed intersection, physical ' + form + ' readback and frame-joined body measurement',
                 'tolerance': None, 'matched': False, 'physical_cause_confirmed': False,
                 'cause_evidence': 'Original source join measured; authority, pixels and legal course conformance pending'}],
             'setup_confirmed': False, 'behavior_attempted': True,
