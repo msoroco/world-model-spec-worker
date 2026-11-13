@@ -71,7 +71,7 @@
     {
       "case_id": "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__pedestrian_horn_before_turn",
       "target_law_id": "NRS-484B-413-1",
-      "target_type": "boundary_probe",
+      "target_type": "judgment_sweep",
       "rationale": "Possibly affected pedestrian with original turn source, independent listener PCM and horn relay actuation; actual audibility and safety remain unresolved.",
       "variable_assignments": {
         "affected_vehicle_clearance_path_m": {
@@ -131,15 +131,34 @@
           "Source-shaped CPU diagnostic cannot verify physical lamp visibility, affected status, safety or legal appropriateness."
         ]
       },
-      "paired_probe_id": "pedestrian_horn_audio",
+      "paired_probe_id": "c111610_unexpanded_judgment_dimensions",
       "deliberate_differences": [
-        "horn_actuation"
+        "listener_route_lateral_offset_m"
       ],
       "probe": {
-        "primary_variable": "horn_actuation",
-        "comparison_or_standard": "controlled original-source contrast; legal judgment unresolved",
-        "target_value_or_branch": "ped_horn_audio"
-      }
+        "primary_variable": "listener_route_lateral_offset_m",
+        "comparison_or_standard": "physical listener-distance coverage; legal audibility unresolved",
+        "target_value_or_branch": {
+          "listener_route_lateral_offset_m": 2.0
+        }
+      },
+      "sweep_id": "c111610_unexpanded_judgment_dimensions",
+      "sweep_point": {
+        "listener_route_lateral_offset_m": 2.0
+      },
+      "selection_rank": 0,
+      "sweep_measurements": [
+        {
+          "observable": "listener_route_lateral_offset_m",
+          "unit": "m",
+          "measurement": {
+            "method": "source-joined independent listener PCM, participant bodies and ego turn motion",
+            "time_window": "original frames before measured turn onset",
+            "statistic": "max"
+          }
+        }
+      ],
+      "sweep_spec_version": "1c2abaea667681371b859348e2845893612372ef7aa3539a90ff288453a412fc"
     },
     {
       "case_id": "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__pedestrian_no_horn_before_turn",
@@ -363,7 +382,7 @@
     {
       "case_id": "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__pedestrian_farther_horn_before_turn",
       "target_law_id": "NRS-484B-413-1",
-      "target_type": "boundary_probe",
+      "target_type": "judgment_sweep",
       "rationale": "Possibly affected pedestrian with original turn source, independent listener PCM and horn relay actuation; actual audibility and safety remain unresolved.",
       "variable_assignments": {
         "affected_vehicle_clearance_path_m": {
@@ -423,15 +442,34 @@
           "Source-shaped CPU diagnostic cannot verify physical lamp visibility, affected status, safety or legal appropriateness."
         ]
       },
-      "paired_probe_id": "pedestrian_horn_audio",
+      "paired_probe_id": "c111610_unexpanded_judgment_dimensions",
       "deliberate_differences": [
-        "horn_actuation"
+        "listener_route_lateral_offset_m"
       ],
       "probe": {
-        "primary_variable": "horn_actuation",
-        "comparison_or_standard": "controlled original-source contrast; legal judgment unresolved",
-        "target_value_or_branch": "ped_horn_audio"
-      }
+        "primary_variable": "listener_route_lateral_offset_m",
+        "comparison_or_standard": "physical listener-distance coverage; legal audibility unresolved",
+        "target_value_or_branch": {
+          "listener_route_lateral_offset_m": 14.0
+        }
+      },
+      "sweep_id": "c111610_unexpanded_judgment_dimensions",
+      "sweep_point": {
+        "listener_route_lateral_offset_m": 14.0
+      },
+      "selection_rank": 1,
+      "sweep_measurements": [
+        {
+          "observable": "listener_route_lateral_offset_m",
+          "unit": "m",
+          "measurement": {
+            "method": "source-joined independent listener PCM, participant bodies and ego turn motion",
+            "time_window": "original frames before measured turn onset",
+            "statistic": "max"
+          }
+        }
+      ],
+      "sweep_spec_version": "1c2abaea667681371b859348e2845893612372ef7aa3539a90ff288453a412fc"
     },
     {
       "case_id": "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__vehicle_clearance_near_before_turn",
@@ -752,11 +790,8 @@
           "note": "Retain original vehicle body path and turn corridor; effect remains a judgment."
         }
       ],
-      "rationale": "Five finite source-bound judgment dimensions map to nine exact C111610 cases, eight controlled comparisons and the same-law C111603 hand-signal alternative. Near/far pedestrian cases bracket received audio by constructed listener distance while retaining the horn protocol. Each source measurement and reviewer condition is explicit; no legal or physical outcome is assigned.",
-      "status": "incomplete",
-      "missing_inputs": [
-        "Freeze two canonical judgment sweep members with exact setpoints 2 and 14 m, the shared recording description and complete source-bound case proofs before marking this specification complete. Existing near/far delivery cases remain independent until those canonical member identities and proofs are built."
-      ],
+      "rationale": "Five finite source-bound judgment dimensions map to nine exact C111610 cases, eight controlled comparisons and the same-law C111603 hand-signal alternative. Near/far pedestrian cases bracket received audio by constructed listener distance while retaining the horn protocol. Each source measurement and reviewer condition is explicit; no legal or physical outcome is assigned. The two already selected near/far exact case identities serve as canonical sweep members; their primary, three fallbacks, saved and independent audit proofs remain bound in execution-manifest.json.",
+      "status": "complete",
       "finite_grid": [
         {
           "phrase": "reasonable safety",
@@ -909,7 +944,65 @@
           }
         }
       ],
-      "landmarks": []
+      "landmarks": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "turn_signal_observation",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original ego yaw, Native indicator readback, participant bounds and independently captured listener PCM",
+            "time_window": "all 8 s original frames",
+            "reference_frame": "Native world and ego vehicle",
+            "uncertainty": "microphone alignment, physical relay sound and legal audibility require original-source review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Source-shaped CPU diagnostic cannot verify physical lamp visibility, affected status, safety or legal appropriateness."
+        ]
+      },
+      "variable_assignments": {
+        "affected_vehicle_clearance_path_m": {
+          "kind": "world_setup",
+          "value": "not_selected"
+        },
+        "indicator_activation_frame_index": {
+          "kind": "controller",
+          "value": "not_selected"
+        },
+        "hand_signal_pose": {
+          "kind": "controller",
+          "value": "none"
+        },
+        "horn_actuation": {
+          "kind": "controller",
+          "value": "relay_request"
+        },
+        "pedestrian_may_be_affected": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "turn_indicator_state": {
+          "kind": "controller",
+          "value": "off"
+        },
+        "vehicle_may_be_affected": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "listener_route_lateral_offset_m": {
+          "kind": "world_setup",
+          "value": 2.0,
+          "note": "Fixed route-relative listener construction setpoint; original body and PCM determine observed outcome"
+        }
+      },
+      "spec_version": "1c2abaea667681371b859348e2845893612372ef7aa3539a90ff288453a412fc",
+      "planned_case_count": 2,
+      "selection_order": [
+        "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__pedestrian_horn_before_turn",
+        "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__pedestrian_farther_horn_before_turn"
+      ]
     }
   ],
   "sweeps_expanded": true

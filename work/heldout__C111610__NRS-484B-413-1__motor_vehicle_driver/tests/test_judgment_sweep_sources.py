@@ -1,4 +1,4 @@
-"""Construct source-shaped probes for the unexpanded judgment dimensions.
+"""Check source-shaped judgment probes and the frozen listener sweep.
 
 These probes test measurement sensitivity only. They are not selected cases or
 evidence of physical audibility, affectedness, or reasonable safety.
@@ -33,6 +33,24 @@ class JudgmentSourceConstructionTests(unittest.TestCase):
                 path.write_text(files[name])
                 paths.append(path)
             return measurement.measure(*paths)
+
+    def test_structured_capture_channel_retains_all_required_components(self):
+        plan = json.loads((ROOT / 'case-plan.json').read_text())
+        construction = json.loads((ROOT / 'construction.json').read_text())
+        observation = plan['observations'][0]
+        self.assertEqual([o['name'] for o in plan['observations']], ['turn_signal_observation'])
+        self.assertEqual(observation['name'], construction['recording_description']['channels'][0]['name'])
+        self.assertTrue(observation['mandatory'])
+        self.assertEqual({part['name'] for part in observation['required_components']},
+                         {'turn_onset', 'pedestrian_possible_effect', 'vehicle_possible_effect',
+                          'horn_received', 'vehicle_signal'})
+        self.assertTrue(all(part['mandatory'] and part['method'] for part in observation['required_components']))
+        measured = self.measure()
+        self.assertIn('turn_onset_frame', measured)
+        self.assertIn('pedestrian_may_be_affected', measured)
+        self.assertIn('vehicle_may_be_affected', measured)
+        self.assertIn('max_pre_turn_listener_audio_rms', measured)
+        self.assertIn('pre_turn_indicator_frames', measured)
 
     def test_pedestrian_clearance_construction_changes_only_original_body_path(self):
         baseline = self.measure()
@@ -69,10 +87,14 @@ class JudgmentSourceConstructionTests(unittest.TestCase):
         for name in ('ego_turn_motion.jsonl', 'affected_participants.json', 'participant_bodies.jsonl'):
             self.assertEqual(baseline['sources'][name], changed['sources'][name])
 
-    def test_draft_sweep_setpoints_match_exact_pedestrian_constructions(self):
+    def test_frozen_sweep_members_match_exact_pedestrian_constructions(self):
         proposal = json.loads((ROOT / 'proposals/cases.json').read_text())
         binding = json.loads((ROOT / 'proposals/bindings.json').read_text())
-        axis = proposal['sweep_specs'][0]['axes'][0]
+        sweep = proposal['sweep_specs'][0]
+        axis = sweep['axes'][0]
+        self.assertEqual(sweep['status'], 'complete')
+        self.assertEqual(sweep['planned_case_count'], 2)
+        self.assertEqual(len(sweep['selection_order']), 2)
         self.assertEqual(axis['variable'], 'listener_route_lateral_offset_m')
         self.assertEqual(axis['observable'], axis['variable'])
         self.assertIn(axis['variable'], {v['name'] for v in binding['variable_parameters']})
@@ -82,6 +104,11 @@ class JudgmentSourceConstructionTests(unittest.TestCase):
             ('pedestrian_farther_horn_before_turn', 'pedestrian-farther-horn-construction.json', 14.0),
         ):
             case = next(c for c in proposal['cases'] if c['case_id'].endswith('__' + suffix))
+            self.assertEqual(case['case_id'], sweep['selection_order'][0 if expected == 2.0 else 1])
+            self.assertEqual(case['target_type'], 'judgment_sweep')
+            self.assertEqual(case['sweep_spec_version'], sweep['spec_version'])
+            self.assertEqual(case['sweep_point'], {axis['variable']: expected})
+            self.assertEqual(case['recording_description'], sweep['recording_description'])
             self.assertEqual(case['variable_assignments'][axis['variable']]['value'], expected)
             bundle = json.loads((ROOT / construction).read_text())
             config = json.loads(next(f['content'] for f in bundle['files'] if f['path'] == 'config.json'))
