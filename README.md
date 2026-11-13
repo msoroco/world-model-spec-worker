@@ -20,3 +20,7 @@ A successful `scripts/run-worker.sh` exit shows that Codex and the final checkpo
 For each assignment, prove one primary selected case through saved processing first, then prove its three distinct fallbacks and comparison cases. Diagnostic fixtures must contain all four named camera streams. Required observation channels must be reproducible from retained raw sources; fixture-only derived `channels/` are insufficient. Keep generated diagnostic media under ignored `.runtime-work/`. After changing construction or finalization code, rerun the affected proofs and bind current hashes.
 
 Continue independent CPU work after partial checkpoints. Record exact failures and resume commands for genuine blockers. The worker does not run CARLA or claim physical or legal acceptance.
+
+## Resume after runtime repair
+
+Resume the existing 43 assignments from their latest pushed work. The launcher puts generated CPU files under ignored `.runtime-work/`; keep `runtime/` frozen. Finish and strictly check one assignment at a time; do not wait for the whole batch before recording an individually verified ready result. A stale fixture receipt means rerun and rebind its exact proof before claiming readiness.

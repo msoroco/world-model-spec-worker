@@ -18,6 +18,7 @@ mkdir -p .runtime-work/tmp
 # namespaces; it is ignored and never enters the worker return.
 export TMPDIR="$repo_root/.runtime-work/tmp"
 run_dir="$(mktemp -d .runtime-work/worker-run.XXXXXXXX)"
+export SCENARIO_PIPELINE_OUTPUT_ROOT="$repo_root/$run_dir/adapter"
 trap 'touch "$run_dir/codex-exited"' EXIT
 scripts/auto-checkpoint.sh "$interval" "$run_dir" &
 checkpoint_pid=$!
