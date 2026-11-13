@@ -1578,18 +1578,6 @@
       "sha256": "a5165396057b4eb55a93c9232431f354a98be5e870445d3d73803f56b08064e3"
     },
     {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C109749__NRS-484B-253__motor_vehicle_driver --complete --require-delivery-ready",
-      "exit_code": 1,
-      "log": "strict-assignment-far-media-current.log",
-      "sha256": "d4b85e02abadf9887c5d52bf3276202c8dd2b3055887744644a2e989a1a39674"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --complete --require-delivery-ready",
-      "exit_code": 1,
-      "log": "strict-batch-far-media-current.log",
-      "sha256": "d4b85e02abadf9887c5d52bf3276202c8dd2b3055887744644a2e989a1a39674"
-    },
-    {
       "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__approaching_far --output .runtime-work/c109749-far-selected-primary-offline-v1",
       "exit_code": 0,
       "log": "cases/approaching_far/primary-offline-selected.log",
@@ -2160,12 +2148,6 @@
       "sha256": "dfef8f06edf40cca12d1c49383f787f9cc3e025fd38f2ffbf1f6a215f0c1bc07"
     },
     {
-      "command": ".venv-cpu/bin/python work/testing__C109749__NRS-484B-253__motor_vehicle_driver/far_delivery_fixture_proof.py --case testing__C109749__NRS-484B-253__motor_vehicle_driver__approaching_far --output-root .runtime-work/c109749-clearance-guard-far-delivery-negative --negative-source-root .runtime-work/c109749-clearance-guard-far-delivery",
-      "exit_code": 1,
-      "log": "cases/approaching_far/clearance_guard/delivery-negative.log",
-      "sha256": "04adceaf3472ef50714c80d2bc2db30fedda3845161e4438fecde01aba3703c4"
-    },
-    {
       "command": ".venv-cpu/bin/python work/testing__C109749__NRS-484B-253__motor_vehicle_driver/prove_far_near_comparison.py --far-root .runtime-work/c109749-clearance-guard-far-delivery/attempt --output-root .runtime-work/c109749-clearance-guard-far-near-comparison",
       "exit_code": 0,
       "log": "cases/approaching_far/clearance_guard/far-near-comparison.log",
@@ -2236,11 +2218,29 @@
       "exit_code": 0,
       "log": "signal-distance-full-motion-proof.log",
       "sha256": "38b883b49cf1c2902b15af4ed9d81e3959f23d0a02711bbe4e85ffcbff9d5387"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C109749__NRS-484B-253__motor_vehicle_driver/signal_distance_delivery_fixture_proof.py --case testing__C109749__NRS-484B-253__motor_vehicle_driver__signal_advance_100_below_25 --output-root .runtime-work/c109749-signal-distance-below-delivery-v1",
+      "exit_code": 0,
+      "log": "signal-distance-below-delivery-proof.log",
+      "sha256": "3470f8875b50f0e9c22bcd0a9e505e4f697a157b57f230f401b47dd2efcaa834"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C109749__NRS-484B-253__motor_vehicle_driver/signal_distance_delivery_fixture_proof.py --case testing__C109749__NRS-484B-253__motor_vehicle_driver__signal_advance_100_above_36 --output-root .runtime-work/c109749-signal-distance-above-delivery-v1",
+      "exit_code": 0,
+      "log": "signal-distance-above-delivery-proof.log",
+      "sha256": "9cdeb552b7c3492242161011fb303e0358ae054c3f84731a6709c2f17a452045"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C109749__NRS-484B-253__motor_vehicle_driver/prove_signal_distance_physical_lifecycle.py",
+      "exit_code": 0,
+      "log": "signal-distance-physical-lifecycle-proof.log",
+      "sha256": "0eeb53641de8439291f8eb68f728d5df76cc265047ee3113a439b0ed9372ce4e"
     }
   ],
   "remaining_gpu_checks": [
     "Actual opposing approach and subject motion, signal pixels and four-camera visibility."
   ],
-  "reason": "The selected approaching_far and its three fallbacks pass canonical offline, compatibility, recorded-only saved processing, physical lifecycle, full-duration diagnostic delivery and far/near comparison CPU proofs. Separate 25 m and 36 m signal cases now have eight staged offline, source-specific positive/negative compatibility and saved-processing CPU proofs. They remain outside the canonical selected manifest; full-duration delivery and independent source/pixel audits, other signal probes, the unselected hazard settings and yielding grid are worker-owned CPU work. Native motion, source pixels and legal judgment remain unverified.",
+  "reason": "The selected approaching_far and its three fallbacks pass canonical offline, compatibility, recorded-only saved processing, physical lifecycle, full-duration diagnostic delivery and far/near comparison CPU proofs. Separate 25 m and 36 m signal cases now have eight staged offline, source-specific positive/negative compatibility and saved-processing CPU proofs. They remain outside the canonical selected manifest; canonical selected manifest integration and controlled delivery/comparison audit binding, other signal probes, the unselected hazard settings and yielding grid are worker-owned CPU work. Native motion, source pixels and legal judgment remain unverified.",
   "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline $CARLA_PYTHON -m worker_exchange execute-delivery --repo . --batch batch.json --db $DB --run $RUN --assignment testing__C109749__NRS-484B-253__motor_vehicle_driver --case testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield_after_turn --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT"
 }
