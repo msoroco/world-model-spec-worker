@@ -79,7 +79,7 @@ def main():
              'pedestrian_body_xy_m': 'm'}
     for name in sorted((set(required) | mapped) - names):
         channels.append({'name': name, 'unit': units.get(name, required.get(name, 'structured')),
-                         'sampling_rate_hz': 20,
+                         'sampling_rate_hz': 0 if name == 'road_geometry.json' else 20,
                          'method': ('Retained original Native sample/trace or surveyed road '
                                     'geometry source; derived interpretation requires saved processing'),
                          'time_window': '24 s / 480-frame attempt',
