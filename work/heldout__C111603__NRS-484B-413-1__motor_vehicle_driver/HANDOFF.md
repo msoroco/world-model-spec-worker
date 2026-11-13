@@ -294,3 +294,7 @@ The strict scoped gate now passes: `.venv-cpu/bin/python worker_check.py --assig
 Twenty byte-identical compatibility analysis logs were deduplicated within this package. Only `execution-manifest.json` log paths changed; retained logs have identical bytes and the assignment-scoped strict gate still exits 0. This returned-file compaction does not change case construction or evidence claims.
 
 A further 12 and then 25 byte-identical analysis logs were compacted using retained same-byte log paths in `execution-manifest.json`. The scoped strict gate was rerun after each change and remains passing.
+
+### 2026-11-12 proof-preserving analysis consolidation
+
+Six byte-identical empty compatibility analysis logs were consolidated with execution-manifest paths repointed to the identical retained bytes. The assignment-scoped strict gate passed afterward; ready status is unchanged.

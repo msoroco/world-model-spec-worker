@@ -100,17 +100,25 @@ def build():
 
     plan_path = ROOT / 'case-plan.json'
     plan = json.loads(plan_path.read_text())
+    previous_case = next((item for item in plan['cases'] if item['case_id'] == NEW), None)
     variant = json.loads(json.dumps(next(case for case in plan['cases'] if case['case_id'] == OLD)).replace(OLD, NEW))
     variant['purpose'] = ('Request the horn after the diagnostic turn onset while holding the pedestrian path, '
                           'turn and cameras fixed; compare measured timing without a legal audibility finding.')
-    variant['construction_state'] = 'primary_pending_cpu_proofs'
+    variant['construction_state'] = (previous_case or {}).get('construction_state', 'primary_pending_cpu_proofs')
     plan['cases'] = [case for case in plan['cases'] if case['case_id'] != NEW] + [variant]
+    previous_comparison = next((item for item in plan['comparisons']
+                                if item['comparison_id'] == 'horn_request_timing_sweep'), None)
     plan['comparisons'] = [item for item in plan['comparisons'] if item['comparison_id'] != 'horn_request_timing_sweep']
-    plan['comparisons'].append({'comparison_id': 'horn_request_timing_sweep',
+    comparison = {'comparison_id': 'horn_request_timing_sweep',
         'case_ids': [OLD, NEW],
         'fixed_conditions': ['same turn route, pedestrian body path, horn relay, 20 Hz duration and four cameras'],
         'deliberate_differences': ['horn request at Native frame 20 versus frame 120 in the late construction; '
-                                  'diagnostic actuation at source frame 38035 versus 38040']})
+                                  'diagnostic actuation at source frame 38035 versus 38040']}
+    if previous_comparison:
+        for key in ('audit_script', 'audit_script_sha256', 'audit_log', 'audit_log_sha256'):
+            if key in previous_comparison:
+                comparison[key] = previous_comparison[key]
+    plan['comparisons'].append(comparison)
     for item in plan['requirement_dispositions']:
         if item['status'] == 'selected_required' and NEW not in item['case_ids']:
             item['case_ids'].append(NEW)
@@ -120,6 +128,10 @@ def build():
     proposal = json.loads(json.dumps(next(item for item in proposals['cases'] if item['case_id'] == OLD)).replace(OLD, NEW))
     proposals['cases'] = [item for item in proposals['cases'] if item['case_id'] != NEW] + [proposal]
     save(proposal_path, proposals)
+    index_path = ROOT / 'proposals/semantic-index.json'
+    index = json.loads(index_path.read_text())
+    index['stages']['cases']['sha256'] = sha256(proposal_path.read_bytes()).hexdigest()
+    save(index_path, index)
     return NEW, construction_hash, diagnostic_hash
 
 
