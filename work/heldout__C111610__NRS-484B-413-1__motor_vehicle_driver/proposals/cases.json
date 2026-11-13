@@ -752,11 +752,164 @@
           "note": "Retain original vehicle body path and turn corridor; effect remains a judgment."
         }
       ],
-      "rationale": "Nine exact cases now construct pedestrian/vehicle clearance, early/no/late horn timing, combined-user and safety-only distant-user contrasts with source-joined measurements. The same-law C111603 vehicle-signal-alternative branch constructs indicator and hand-signal alternatives. The final finite judgment grid and independent original-law review remain incomplete; no legal cutoff or physical outcome is asserted.",
+      "rationale": "Five finite source-bound judgment dimensions map to nine exact C111610 cases, eight controlled comparisons and the same-law C111603 hand-signal alternative. Near/far pedestrian cases bracket received audio by constructed listener distance while retaining the horn protocol. Each source measurement and reviewer condition is explicit; no legal or physical outcome is assigned.",
       "status": "incomplete",
       "missing_inputs": [
-        "Complete the source-backed finite judgment grid and independent original-law review, including signal appropriateness and effect conditions, without claiming fixture labels as physical findings."
-      ]
+        "Canonical judgment sweep expansion is required: add sweep_id, sweep_spec_version and sweep_point to exact canonical cases; freeze planned_case_count and selection_order; bind the matching source-backed sweep dimensions and recording description, then rerun full exact proof paths. Existing delivery comparisons alone do not satisfy batch_pipeline.validation.coverage."
+      ],
+      "finite_grid": [
+        {
+          "phrase": "reasonable safety",
+          "case_ids": [
+            "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__vehicle_clearance_near_before_turn",
+            "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__vehicle_clearance_far_before_turn",
+            "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__safety_only_distant_users"
+          ],
+          "comparison_ids": [
+            "vehicle_clearance_sweep",
+            "safety_only_condition"
+          ],
+          "original_sources": [
+            "ego_turn_motion.jsonl",
+            "participant_bodies.jsonl",
+            "affected_participants.json"
+          ],
+          "measurements": [
+            "participant_clearance.*.minimum_sampled_surface_gap_m",
+            "participant_clearance.*.constant_velocity_proxy_at_turn_onset",
+            "turn_onset_frame"
+          ],
+          "review_rule": "Inspect realized motion, all participant paths and source pixels; preserve reasonable safety as an independent judgment. No gap or time proxy is a legal cutoff.",
+          "construction_state": "exact_cpu_proved"
+        },
+        {
+          "phrase": "clearly audible signal",
+          "case_ids": [
+            "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__pedestrian_horn_before_turn",
+            "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__pedestrian_farther_horn_before_turn",
+            "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__pedestrian_no_horn_before_turn",
+            "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__pedestrian_horn_after_onset"
+          ],
+          "comparison_ids": [
+            "pedestrian_horn_timing",
+            "horn_request_timing_sweep",
+            "pedestrian_clearance_sweep"
+          ],
+          "original_sources": [
+            "ego_signal_audio.jsonl",
+            "horn_actuation.jsonl",
+            "affected_participants.json",
+            "participant_bodies.jsonl"
+          ],
+          "measurements": [
+            "max_pre_turn_listener_audio_rms",
+            "turn_onset_frame",
+            "observations[*].listener_audio_rms"
+          ],
+          "review_rule": "Compare actual emitted horn and original listener PCM before realized onset at near and farther listener placements with the same horn protocol and ambient acquisition. This brackets received audio by constructed distance; audibility remains an independent judgment with no invented level cutoff.",
+          "construction_state": "exact_cpu_proved_presence_timing_and_listener_distance"
+        },
+        {
+          "phrase": "any pedestrian may be affected",
+          "case_ids": [
+            "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__pedestrian_no_horn_before_turn",
+            "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__safety_only_distant_users",
+            "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__pedestrian_farther_horn_before_turn"
+          ],
+          "comparison_ids": [
+            "pedestrian_clearance_sweep",
+            "safety_only_condition"
+          ],
+          "original_sources": [
+            "affected_participants.json",
+            "participant_bodies.jsonl",
+            "ego_turn_motion.jsonl"
+          ],
+          "measurements": [
+            "pedestrian_may_be_affected",
+            "participant_clearance.*.minimum_sampled_surface_gap_m",
+            "participant_clearance.*.surface_gap_at_turn_onset_m"
+          ],
+          "review_rule": "Compare actual pedestrian trajectory and turn corridor; a construction hypothesis or distance alone does not establish possible effect.",
+          "construction_state": "exact_cpu_proved"
+        },
+        {
+          "phrase": "appropriate signal",
+          "case_ids": [
+            "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__other_vehicle_signal_before_turn",
+            "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__both_users_both_signals"
+          ],
+          "comparison_ids": [
+            "affected_user_branch",
+            "combined_user_duties"
+          ],
+          "same_law_reuse": {
+            "assignment_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver",
+            "comparison_id": "vehicle_signal_alternative",
+            "case_suffixes": [
+              "vehicle_left_indicator",
+              "vehicle_hand_signal"
+            ]
+          },
+          "original_sources": [
+            "ego_signal_audio.jsonl",
+            "affected_participants.json",
+            "participant_bodies.jsonl",
+            "four original camera streams"
+          ],
+          "measurements": [
+            "pre_turn_indicator_frames",
+            "turn_direction",
+            "turn_onset_frame"
+          ],
+          "review_rule": "Review realized direction, timing, visible signal or original hand pose and affected vehicle context; appropriateness is not decided by fixture readback.",
+          "construction_state": "exact_cpu_proved_with_same_law_signal_alternative"
+        },
+        {
+          "phrase": "any other vehicle may be affected",
+          "case_ids": [
+            "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__vehicle_clearance_near_before_turn",
+            "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__vehicle_clearance_far_before_turn",
+            "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__other_vehicle_signal_before_turn"
+          ],
+          "comparison_ids": [
+            "vehicle_clearance_near",
+            "vehicle_clearance_sweep"
+          ],
+          "original_sources": [
+            "affected_participants.json",
+            "participant_bodies.jsonl",
+            "ego_turn_motion.jsonl"
+          ],
+          "measurements": [
+            "vehicle_may_be_affected",
+            "participant_clearance.*.minimum_sampled_surface_gap_m",
+            "participant_clearance.*.constant_velocity_proxy_at_turn_onset"
+          ],
+          "review_rule": "Compare actual other-vehicle path and turn corridor; retain possible effect as a judgment.",
+          "construction_state": "exact_cpu_proved"
+        }
+      ],
+      "mode": "one_dimensional",
+      "axes": [
+        {
+          "variable": "pedestrian_left_m",
+          "observable": "received listener PCM and pedestrian surface gap",
+          "unit": "m",
+          "min": 2.0,
+          "max": 14.0,
+          "spacing": 12.0,
+          "range_rationale": "The two already constructed exact pedestrian placements test near and farther listener geometry; these are engineering examples, not legal bounds.",
+          "spacing_rationale": "Both endpoints are exact selected cases with source-bound proofs; the two-point grid does not interpolate a legal judgment.",
+          "feasibility_evidence": "execution-manifest.json pedestrian_horn_before_turn and pedestrian_farther_horn_before_turn exact construction/offline/compatibility receipts",
+          "measurement": {
+            "method": "source-joined independent listener PCM, participant bodies and ego turn motion",
+            "time_window": "original frames before measured turn onset",
+            "statistic": "max"
+          }
+        }
+      ],
+      "landmarks": []
     }
   ],
   "sweeps_expanded": true

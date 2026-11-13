@@ -4,9 +4,12 @@ from pathlib import Path
 import sys
 from tempfile import TemporaryDirectory
 import unittest
+from types import SimpleNamespace
+from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from marked_course_native import CAMERAS, FourCameraCapture, control_step, drive_turn, execute_marked_turn, place_markers, place_course_indications, turn_targets
+from marked_course_native import CAMERAS, FourCameraCapture, control_step, drive_turn, execute_marked_turn, execute_indication_turn, place_markers, place_course_indications, turn_targets
+from turn_source_recorder import SourceRecorder
 
 
 class Location:
@@ -54,6 +57,59 @@ class World:
 
 
 class NativeMarkerTests(unittest.TestCase):
+    def test_nonmarker_native_orchestration_and_original_scene(self):
+        with TemporaryDirectory() as td:
+            root = Path(td)
+            source = root / 'site.json'
+            source.write_text(json.dumps({
+                'authority_document': 'unverified fixture claim',
+                'municipal_jurisdiction_source': 'fixture jurisdiction',
+                'intersection_source': 'fixture junction',
+                'authorization_source': 'fixture authorization',
+                'intersection_id': 'junction-7', 'map_name': 'Town05',
+                'median_opening_with_intersecting_road': True,
+                'intersection_polygon_xy_m': [[0, 0], [10, 0], [10, 10], [0, 10]],
+                'indicated_course_xy_m': [[-2, 5], [3, 5], [7, 7], [12, 7]],
+                'divergent_course_xy_m': [[-2, 5], [3, 3], [7, 3], [12, 7]],
+                'indication_form': 'button'}))
+            digest = hashlib.sha256(source.read_bytes()).hexdigest()
+            recorder = SourceRecorder.__new__(SourceRecorder)
+            recorder.output = root
+            readback = {'indication_form': 'button', 'physical_xy_m': [[3.0, 5.0]],
+                        'source_sha256': digest}
+            scene = recorder.record_indication_scene('fixture__button', source, digest,
+                                                     readback, 17)
+            self.assertEqual(scene['indication_form'], 'button')
+            self.assertNotIn('physical_markers_xy_m', scene)
+            self.assertEqual(json.loads((root / 'marked_intersection.json').read_text())
+                             ['physical_indications_xy_m'], [[3.0, 5.0]])
+            with self.assertRaisesRegex(ValueError, 'form differs'):
+                recorder.record_indication_scene('fixture__other', source, digest,
+                                                 dict(readback, indication_form='other_indication'), 17)
+
+            events = []
+            actor = SimpleNamespace(destroy=lambda: events.append('indication_destroyed'))
+            placed = dict(readback, actors=[actor], intersection_id='junction-7')
+            camera = SimpleNamespace(close=lambda: events.append('cameras_closed'))
+            fake_recorder = SimpleNamespace(
+                record_indication_scene=lambda *args: events.append('scene_recorded'),
+                on_frame=lambda *args: None,
+                record_sample=lambda *args: None,
+                seal=lambda: {'frames': 2},
+                close=lambda: events.append('recorder_closed'))
+            with patch('marked_course_native.place_course_indications', return_value=placed), \
+                    patch('marked_course_native.turn_targets', return_value={
+                        'intersection_id': 'junction-7', 'variant': 'indicated_course'}):
+                result = execute_indication_turn(None, None, SimpleNamespace(id=17),
+                    'fixture__button', source, digest, 'button', 'indicated_course',
+                    lambda *args: None, fake_recorder,
+                    camera_factory=lambda *args: camera,
+                    drive=lambda *args: {'frames': [1, 2]})
+            self.assertEqual(result['physical_indications_xy_m'], [[3.0, 5.0]])
+            self.assertFalse(result['authority_verified'])
+            self.assertEqual(events[-3:], ['cameras_closed', 'recorder_closed',
+                                           'indication_destroyed'])
+
     def test_button_and_other_indication_spawn_readback_and_rejection(self):
         class FormWorld(World):
             name = 'Town05'

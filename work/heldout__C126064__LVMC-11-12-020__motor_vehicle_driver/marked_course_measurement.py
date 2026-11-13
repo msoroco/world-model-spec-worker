@@ -3,7 +3,7 @@
 import argparse
 from hashlib import sha256
 import json
-from math import hypot
+from math import hypot, isfinite
 from pathlib import Path
 
 
@@ -58,9 +58,37 @@ def measure(source_dir, case_id):
             or scene.get('median_opening_with_intersecting_road') is not True):
         raise ValueError('Authorized municipal median-opening intersection source incomplete')
     polygon = scene['intersection_polygon_xy_m']
-    markers = scene['physical_markers_xy_m']
-    if len(polygon) < 3 or not markers or not all(_inside(p, polygon) for p in markers):
-        raise ValueError('Physical markers are not inside sourced intersection')
+    form = scene.get('indication_form', 'marker')
+    if form == 'marker':
+        points = scene.get('physical_markers_xy_m')
+        if scene.get('physical_indications_xy_m'):
+            raise ValueError('Marker scene contains a non-marker readback')
+    elif form in ('button', 'other_indication'):
+        if authority.get('indication_form') != form or scene.get('physical_markers_xy_m'):
+            raise ValueError('Original indication form differs from captured scene')
+        points = scene.get('physical_indications_xy_m')
+        expected = authority.get('indications')
+        if (not isinstance(points, list) or not points
+                or any(not isinstance(p, list) or len(p) != 2
+                       or any(isinstance(v, bool) or not isinstance(v, (int, float))
+                              or not isfinite(v) for v in p) for p in points)
+                or not isinstance(expected, list) or not expected
+                or len(expected) != len(points)):
+            raise ValueError('Physical indication inventory differs from authority source')
+        for point, item in zip(points, expected):
+            if (not isinstance(item, dict) or item.get('form') != form or
+                    any(isinstance(item.get(k), bool) or not isinstance(item.get(k), (int, float))
+                        or not isfinite(item[k]) for k in ('x', 'y')) or
+                    any(abs(point[i] - item[k]) > .05 for i, k in enumerate(('x', 'y')))):
+                raise ValueError('Physical indication readback differs from original source')
+    else:
+        raise ValueError('Unsupported original indication form')
+    if (len(polygon) < 3 or not isinstance(points, list) or not points
+            or any(not isinstance(p, list) or len(p) != 2
+                   or any(isinstance(v, bool) or not isinstance(v, (int, float))
+                          or not isfinite(v) for v in p) for p in points)
+            or not all(_inside(p, polygon) for p in points)):
+        raise ValueError('Physical indications are not inside sourced intersection')
     course = scene['indicated_course_xy_m']
     bodies = [json.loads(line) for line in paths[names[1]].read_text().splitlines() if line.strip()]
     frames = [json.loads(line) for line in paths[names[2]].read_text().splitlines() if line.strip()]
@@ -82,7 +110,9 @@ def measure(source_dir, case_id):
                      'corner_to_indicated_course_m': [_distance(p, course) for p in corners]})
     if not any(row['inside_intersection'] for row in rows):
         raise ValueError('No original turn frame inside intersection')
-    return {'case_id': case_id, 'frame_count': len(rows), 'observations': rows,
+    return {'case_id': case_id, 'indication_form': form,
+            'physical_indications_xy_m': points,
+            'frame_count': len(rows), 'observations': rows,
             'source_sha256': {name: sha256(path.read_bytes()).hexdigest()
                               for name, path in paths.items()},
             'direction_disobedience_legal_judgment': None}

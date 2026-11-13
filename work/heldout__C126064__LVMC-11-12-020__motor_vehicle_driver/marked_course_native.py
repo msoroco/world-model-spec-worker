@@ -387,3 +387,41 @@ def execute_marked_turn(world, carla_module, ego, case_id, source_path, source_s
         if markers is not None:
             for actor in reversed(markers['actors']):
                 actor.destroy()
+
+
+def execute_indication_turn(world, carla_module, ego, case_id, source_path,
+                            source_sha256, form, variant, make_transform, recorder, *,
+                            camera_factory=FourCameraCapture, drive=drive_turn):
+    """Construct a button or other-indication turn and retain its own source form.
+
+    This is the Native construction path for future exact form cases. The saved
+    finalizer and delivery receipts must be extended before selecting such a case.
+    """
+    placed = None
+    cameras = None
+    try:
+        placed = place_course_indications(world, source_path, source_sha256,
+                                          form, make_transform)
+        plan = turn_targets(world, source_path, source_sha256, variant, make_transform)
+        if plan['intersection_id'] != placed['intersection_id']:
+            raise ValueError('Indication and turn plan intersection identities differ')
+        recorder.record_indication_scene(case_id, source_path, source_sha256,
+                                         placed, ego.id)
+        cameras = camera_factory(world, carla_module, ego, recorder.on_frame)
+        motion = drive(world, carla_module, ego, plan, cameras, recorder.record_sample)
+        sources = recorder.seal()
+        if sources['frames'] != len(motion['frames']):
+            raise ValueError('Original indication source count differs from Native turn')
+        return {'source_sha256': source_sha256,
+                'intersection_id': plan['intersection_id'],
+                'indication_form': form, 'variant': variant,
+                'physical_indications_xy_m': placed['physical_xy_m'],
+                'motion': motion, 'sources': sources,
+                'authority_verified': False, 'legal_conformance_assessed': False}
+    finally:
+        if cameras is not None:
+            cameras.close()
+        recorder.close()
+        if placed is not None:
+            for actor in reversed(placed['actors']):
+                actor.destroy()

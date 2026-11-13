@@ -36,6 +36,33 @@ def fixture(root):
 
 
 class MarkedCourseTests(unittest.TestCase):
+    def test_button_source_readback_is_measured_as_button(self):
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            scene, _ = fixture(root)
+            authority = json.loads((root / 'authority_source_original.json').read_text())
+            authority['indication_form'] = 'button'
+            authority['indications'] = [{'form': 'button', 'x': 1, 'y': 1}]
+            original = json.dumps(authority).encode()
+            (root / 'authority_source_original.json').write_bytes(original)
+            scene.pop('physical_markers_xy_m')
+            scene['indication_form'] = 'button'
+            scene['physical_indications_xy_m'] = [[1.0, 1.0]]
+            scene['authority_source_sha256'] = sha256(original).hexdigest()
+            (root / 'marked_intersection.json').write_text(json.dumps(scene))
+            result = measure(root, 'case')
+            self.assertEqual(result['indication_form'], 'button')
+            self.assertEqual(result['physical_indications_xy_m'], [[1.0, 1.0]])
+            scene['physical_indications_xy_m'] = [[1.2, 1.0]]
+            (root / 'marked_intersection.json').write_text(json.dumps(scene))
+            with self.assertRaisesRegex(ValueError, 'readback differs'):
+                measure(root, 'case')
+            scene['physical_indications_xy_m'] = [[1.0, 1.0]]
+            scene['indication_form'] = 'other_indication'
+            (root / 'marked_intersection.json').write_text(json.dumps(scene))
+            with self.assertRaisesRegex(ValueError, 'form differs'):
+                measure(root, 'case')
+
     def test_original_footprint_and_authorized_marker_join(self):
         with TemporaryDirectory() as directory:
             root = Path(directory)

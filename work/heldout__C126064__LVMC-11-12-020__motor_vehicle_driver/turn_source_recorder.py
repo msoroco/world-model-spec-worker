@@ -98,6 +98,39 @@ class SourceRecorder:
         (self.output / 'marked_intersection.json').write_text(json.dumps(scene, indent=2) + '\n')
         return scene
 
+    def record_indication_scene(self, case_id, authority_source, expected_sha256,
+                                indications, ego_actor_id):
+        """Retain a non-marker form without relabeling its readback as markers."""
+        raw = Path(authority_source).read_bytes()
+        if sha256(raw).hexdigest() != expected_sha256:
+            raise ValueError('Indication intersection source hash changed')
+        source = json.loads(raw)
+        form = indications.get('indication_form')
+        if form not in ('button', 'other_indication') or source.get('indication_form') != form:
+            raise ValueError('Indication form differs from original source')
+        for field in ('municipal_jurisdiction_source', 'intersection_source',
+                      'authorization_source', 'intersection_polygon_xy_m',
+                      'indicated_course_xy_m'):
+            if not source.get(field):
+                raise ValueError('Indication intersection citation missing: ' + field)
+        if indications.get('source_sha256') != expected_sha256 or not indications.get('physical_xy_m'):
+            raise ValueError('Physical indication readback missing or stale')
+        (self.output / 'authority_source_original.json').write_bytes(raw)
+        scene = {'case_id': case_id, 'ego_actor_id': ego_actor_id,
+                 'municipal_jurisdiction_source': source['municipal_jurisdiction_source'],
+                 'intersection_source': source['intersection_source'],
+                 'authorization_source': source['authorization_source'],
+                 'median_opening_with_intersecting_road': source.get('median_opening_with_intersecting_road'),
+                 'intersection_polygon_xy_m': source['intersection_polygon_xy_m'],
+                 'indicated_course_xy_m': source['indicated_course_xy_m'],
+                 'indication_form': form,
+                 'physical_indications_xy_m': indications['physical_xy_m'],
+                 'authority_source_sha256': expected_sha256,
+                 'authorization_verified_by_worker': False,
+                 'visible_pixels_verified': False}
+        (self.output / 'marked_intersection.json').write_text(json.dumps(scene, indent=2) + '\n')
+        return scene
+
     def close(self):
         if self.closed:
             return
