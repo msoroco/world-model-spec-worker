@@ -1,9 +1,17 @@
 """Static package checks only; does not execute any returned implementation."""
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
-sys.path.insert(0, str(Path(__file__).resolve().parent / 'runtime' / 'pipeline' / 'scenario_pipeline'))
+root=Path(__file__).resolve().parent
+private=(root/'.runtime-work').resolve()
+configured=os.environ.get('SCENARIO_PIPELINE_OUTPUT_ROOT')
+output=(Path(configured).expanduser().resolve() if configured else private/'adapter'/'checker')
+if output != private and private not in output.parents:
+    raise ValueError('Worker output root must be under '+str(private))
+os.environ['SCENARIO_PIPELINE_OUTPUT_ROOT']=str(output)
+sys.path.insert(0, str(root / 'runtime' / 'pipeline' / 'scenario_pipeline'))
 from worker_exchange.preparation import check
 
 if __name__ == '__main__':

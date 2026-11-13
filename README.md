@@ -18,3 +18,7 @@ The launcher defaults to GPT-6-sol with medium reasoning. To use GPT-6.1-sol wit
 A separate timer commits and pushes changed `work/` files about every 15 minutes; see `.runtime-work/worker-run.*/checkpoint.log` for publication failures. A successful launcher exit means Codex and its final checkpoint ended. **Delivery readiness requires** current case proofs and `.venv-cpu/bin/python worker_check.py --complete --require-delivery-ready` to pass.
 
 Prove a primary case through saved processing before its fallback sweep. The four named source-camera videos and observation channels derived from retained raw inputs must survive that path. Regenerate affected fallback and comparison proofs after changing construction or finalization code. Keep generated diagnostic media under ignored `.runtime-work/`. The CPU gate does not claim CARLA execution or physical acceptance.
+
+## Resume after runtime repair
+
+The numbered law-field migration preserves all 253 assignments and prior work. Each assignment input now has one canonical `law` object with unchanged text. Old input-bound proofs remain historical; rerun affected checks before readiness. The launcher puts generated CPU files under ignored `.runtime-work/`; keep `runtime/` frozen. Finish and strictly check one assignment at a time; do not wait for the whole batch before recording an individually verified ready result.
