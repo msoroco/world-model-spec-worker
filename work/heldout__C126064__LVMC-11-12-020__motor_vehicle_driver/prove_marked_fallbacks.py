@@ -5,6 +5,7 @@ from pathlib import Path
 import shutil
 import subprocess
 from uuid import uuid4
+import argparse
 
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
@@ -21,10 +22,12 @@ def run(command, log):
         subprocess.run(command, cwd=REPO, stdout=stream, stderr=subprocess.STDOUT, check=True)
 
 
-def prove():
+def prove(*, button_only=False):
     manifest = json.loads(MANIFEST.read_text())
     for entry in manifest['cases']:
         case = entry['case_id']
+        if button_only and '__button_' not in case:
+            continue
         short = case.rsplit('__', 1)[-1]
         for candidate in entry['candidates']:
             candidate_id = candidate['id']
@@ -65,4 +68,6 @@ def prove():
 
 
 if __name__ == '__main__':
-    print(prove())
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--button-only', action='store_true')
+    print(prove(button_only=parser.parse_args().button_only))

@@ -31,16 +31,23 @@ def audit(indicated, divergent, *, expected_frames=None):
         raise ValueError('Compared turns changed original authority or site source')
     scene_a = json.loads(_source(indicated, 'marked_intersection.json'))
     scene_b = json.loads(_source(divergent, 'marked_intersection.json'))
-    if (scene_a.get('case_id'), scene_b.get('case_id')) != (INDICATED, DIVERGENT):
+    form = scene_a.get('indication_form', 'marker')
+    if form not in ('marker', 'button', 'other_indication'):
+        raise ValueError('Compared indication form is unsupported')
+    prefix = '' if form == 'marker' else form + '_'
+    selected_a = ASSIGNMENT + '__' + prefix + 'indicated_course'
+    selected_b = ASSIGNMENT + '__' + prefix + 'divergent_course'
+    if (scene_a.get('case_id'), scene_b.get('case_id')) != (selected_a, selected_b):
         raise ValueError('Compared exact case identities changed')
     for key in ('municipal_jurisdiction_source', 'intersection_source',
                 'authorization_source', 'median_opening_with_intersecting_road',
                 'intersection_polygon_xy_m', 'indicated_course_xy_m',
-                'physical_markers_xy_m', 'authority_source_sha256'):
+                'physical_markers_xy_m', 'physical_indications_xy_m',
+                'indication_form', 'authority_source_sha256'):
         if scene_a.get(key) != scene_b.get(key):
             raise ValueError('Compared turns changed fixed site or marker: ' + key)
-    left = measure(indicated, INDICATED)
-    right = measure(divergent, DIVERGENT)
+    left = measure(indicated, selected_a)
+    right = measure(divergent, selected_b)
     if left['frame_count'] != right['frame_count']:
         raise ValueError('Compared turns changed original capture duration')
     if expected_frames is not None and left['frame_count'] != expected_frames:
@@ -61,8 +68,8 @@ def audit(indicated, divergent, *, expected_frames=None):
     if distances_a == distances_b:
         raise ValueError('Compared turns lack measured course contrast')
     return {'format': 'worker-marked-turn-comparison-audit',
-            'comparison_id': 'marked_turn_course',
-            'case_ids': [INDICATED, DIVERGENT],
+            'comparison_id': 'marked_turn_course' if form == 'marker' else form + '_turn_course',
+            'case_ids': [selected_a, selected_b],
             'source_sha256': sha256(authority_a).hexdigest(),
             'frame_count': left['frame_count'],
             'measured_centroid_distance_m': [distances_a, distances_b],
