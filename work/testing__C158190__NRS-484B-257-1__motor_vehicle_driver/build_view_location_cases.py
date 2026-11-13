@@ -23,6 +23,12 @@ def projected_crossing_y(ego_x, ego_y, target_x=1.8, target_y=20.0):
         raise ValueError('Sight segment does not cross obstruction station')
     return ego_y + (target_y - ego_y) * (X_M - ego_x) / (target_x - ego_x)
 
+def projected_ego_x(center_y):
+    fraction = (center_y - 1.8) / (20.0 - 1.8)
+    if not 0.0 < fraction < 1.0:
+        raise ValueError('Obstruction center lies outside authored sight fan')
+    return (X_M - fraction * 1.8) / (1.0 - fraction)
+
 @contextmanager
 def view_occluder(world, center_y, *, location_factory=None, rotation_factory=None,
                   transform_factory=None):
@@ -43,8 +49,24 @@ def view_occluder(world, center_y, *, location_factory=None, rotation_factory=No
         actual = actor.get_transform().location
         if actor.type_id != BLUEPRINT or abs(actual.x-X_M) > .25 or abs(actual.y-center_y) > .25:
             raise ValueError('Native roadside obstruction differs from authored pose')
+        vertices = list(actor.bounding_box.get_world_vertices(actor.get_transform()))
+        if len(vertices) < 8 or not all(math.isfinite(float(getattr(v, axis)))
+                                           for v in vertices for axis in ('x', 'y', 'z')):
+            raise ValueError('Native roadside obstruction has invalid body geometry')
+        limits = {axis: (min(float(getattr(v, axis)) for v in vertices),
+                         max(float(getattr(v, axis)) for v in vertices))
+                  for axis in ('x', 'y', 'z')}
+        ego_x = projected_ego_x(center_y)
+        fraction = (X_M - ego_x) / (1.8 - ego_x)
+        ray_z = 1.75 - .25 * fraction
+        if not (limits['x'][0] <= X_M <= limits['x'][1]
+                and limits['y'][0] <= center_y <= limits['y'][1]
+                and limits['z'][0] <= ray_z <= limits['z'][1]):
+            raise ValueError('Native roadside obstruction cannot intersect authored eye ray')
         yield {'actor_id': actor.id, 'blueprint': BLUEPRINT,
                'native_location_m': [float(actual.x), float(actual.y), float(actual.z)],
+               'body_bounds_m': {axis: list(pair) for axis, pair in limits.items()},
+               'projected_eye_ray_height_m': ray_z,
                'projected_crossing_y_m': projected_crossing_y(-20., 1.8)}
     finally:
         actor.destroy()
@@ -58,10 +80,14 @@ class World:
     def __init__(self):
         self.actor = None
         self.blueprint = 'static.prop.streetbarrier'
+        self.top_z = 2.0
     def get_blueprint_library(self):
         return NS(find=lambda name: self.blueprint if name == self.blueprint else None)
     def try_spawn_actor(self, blueprint, pose):
         self.actor = NS(type_id=blueprint, id=99, get_transform=lambda: pose,
+                        bounding_box=NS(get_world_vertices=lambda transform:
+                            [NS(x=transform.location.x+dx, y=transform.location.y+dy, z=z)
+                             for dx in (-.5,.5) for dy in (-.5,.5) for z in (0., self.top_z)]),
                         destroy=lambda: setattr(self.actor, 'destroyed', True), destroyed=False)
         return self.actor
 
@@ -74,7 +100,16 @@ class ViewLocationTests(unittest.TestCase):
             self.assertEqual(row['actor_id'], 99)
             self.assertEqual(row['native_location_m'][:2], [-4., CENTER_Y])
             self.assertAlmostEqual(row['projected_crossing_y_m'], projected_crossing_y(-20., 1.8))
+            self.assertGreater(row['body_bounds_m']['z'][1], row['projected_eye_ray_height_m'])
             self.assertFalse(world.actor.destroyed)
+        self.assertTrue(world.actor.destroyed)
+    def test_short_body_rejected_and_destroyed(self):
+        world = World(); world.top_z = 1.0
+        with self.assertRaisesRegex(ValueError, 'cannot intersect authored eye ray'):
+            with view_occluder(world, CENTER_Y, location_factory=lambda **kw: NS(**kw),
+                               rotation_factory=lambda **kw: NS(**kw),
+                               transform_factory=lambda location, rotation: NS(location=location, rotation=rotation)):
+                pass
         self.assertTrue(world.actor.destroyed)
     def test_missing_blueprint_rejected(self):
         world = World(); world.blueprint = None
