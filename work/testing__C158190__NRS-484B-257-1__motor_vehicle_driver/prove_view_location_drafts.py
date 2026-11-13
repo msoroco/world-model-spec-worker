@@ -1,6 +1,7 @@
 """Bind the three unselected view-location drafts to returned offline receipts."""
 import hashlib
 import json
+import copy
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
@@ -30,6 +31,34 @@ def require_same_sources(expected, actual):
     if expected != actual:
         raise ValueError('Undeclared embedded source change in view-location comparison')
 
+def compare_diagnostic_sources(baseline, candidate, case_id, center):
+    """Permit only the authored case ID and roadside center in original-source fixtures."""
+    baseline_sources = {item['path']: item for item in baseline['sources']}
+    sources = {item['path']: item for item in candidate['sources']}
+    if len(baseline_sources) != len(baseline['sources']) or len(sources) != len(candidate['sources']):
+        raise ValueError('Duplicate diagnostic source path')
+    if set(sources) != set(baseline_sources):
+        raise ValueError('Diagnostic source inventory changed')
+    variable = {'road_context.json', 'capture/manifest.json'}
+    for name in sources.keys() - variable:
+        if sources[name] != baseline_sources[name]:
+            raise ValueError('Undeclared diagnostic source changed: ' + name)
+    if candidate['generator'] != baseline['generator']:
+        raise ValueError('Diagnostic generator changed')
+    context = json.loads((REPO / sources['road_context.json']['source']).read_text())
+    original = json.loads((REPO / baseline_sources['road_context.json']['source']).read_text())
+    expected_context = copy.deepcopy(original)
+    expected_context['view_occluder']['actor_id'] = 900 + center
+    expected_context['view_occluder']['native_location_m'][1] = float(center)
+    if context != expected_context:
+        raise ValueError('Road context changed beyond occluder center')
+    capture = json.loads((REPO / sources['capture/manifest.json']['source']).read_text())
+    original_capture = json.loads((REPO / baseline_sources['capture/manifest.json']['source']).read_text())
+    expected_capture = dict(original_capture, case_id=case_id)
+    if capture != expected_capture:
+        raise ValueError('Capture manifest changed beyond case identity')
+    return len(sources) - len(variable)
+
 def validate():
     manifest = json.loads((ROOT / 'view-location-draft-manifest.json').read_text())
     compat_manifest = json.loads((ROOT / 'view-location-compatibility-manifest.json').read_text())
@@ -49,6 +78,8 @@ def validate():
     assert 0 < projected[0] < projected[1] < projected[2] < 52
     sources = []
     fixed = None
+    fixed_recipe = None
+    fixed_diagnostic_source_count = None
     for row, compat_entry in zip(rows, compat_manifest['cases']):
         center = int(row['occluder_center_y_m'])
         path = ROOT / row['construction']
@@ -81,6 +112,12 @@ def validate():
         recipe_path = REPO / compat_entry['fixture_recipe']
         recipe = json.loads(recipe_path.read_text())
         assert len(recipe['sources']) == 16
+        if fixed_recipe is None:
+            fixed_recipe = recipe
+        fixed_count = compare_diagnostic_sources(fixed_recipe, recipe, row['case_id'], center)
+        if fixed_diagnostic_source_count is None:
+            fixed_diagnostic_source_count = fixed_count
+        assert fixed_count == fixed_diagnostic_source_count
         for source in recipe['sources']:
             assert sha(REPO / source['source']) == source['sha256']
         assert sha(REPO / recipe['generator']['source']) == recipe['generator']['sha256']
@@ -124,8 +161,18 @@ def validate():
         pass
     else:
         raise AssertionError('Changed fixed road escaped comparison audit')
+    changed_recipe = copy.deepcopy(fixed_recipe)
+    next(item for item in changed_recipe['sources'] if item['path'] == 'road.xodr')['sha256'] = '0'*64
+    try:
+        compare_diagnostic_sources(fixed_recipe, changed_recipe, rows[0]['case_id'], 12)
+    except ValueError as exc:
+        assert 'Undeclared diagnostic source changed' in str(exc)
+    else:
+        raise AssertionError('Changed fixed diagnostic source escaped comparison audit')
     return {'status': 'pass', 'drafts': sources,
             'fixed_source_count': len(fixed),
+            'fixed_diagnostic_source_count': fixed_diagnostic_source_count,
+            'negative_diagnostic_change_rejected': True,
             'projected_ego_distance_to_junction_m': projected,
             'limit': 'Native prop spawn and observed ray/camera occlusion still require CARLA.'}
 
