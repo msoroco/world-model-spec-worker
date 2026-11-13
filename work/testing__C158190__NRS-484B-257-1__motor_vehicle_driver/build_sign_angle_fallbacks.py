@@ -88,6 +88,36 @@ def main():
                                'changed_knobs': plan['changed_knobs']})
         entry['candidates'] = candidates
     MANIFEST.write_text(json.dumps(manifest, indent=2) + '\n')
+    source_manifest = copy.deepcopy(manifest)
+    for entry in source_manifest['cases']:
+        candidate = next(c for c in entry['candidates'] if c['id'] == 'fallback1')
+        construction = json.loads((ROOT / candidate['construction']).read_text())
+        embedded = {item['path']: item['content'] for item in construction['files']}
+        label = entry['case_id'].split('sign_angle_')[1]
+        folder = ROOT / f'cases/sign_angle_{label}/fallbacks/fallback1-sources'
+        folder.mkdir(parents=True, exist_ok=True)
+        road = folder / 'road.xodr'
+        road.write_text(embedded['native-map-plan/yield-nearest-view.xodr'])
+        primary_recipe = json.loads((ROOT.parents[1] / entry['fixture_recipe']).read_text())
+        sources = {item['path']: item for item in primary_recipe['sources']}
+        original_manifest = json.loads((ROOT.parents[1] / sources['capture/manifest.json']['source']).read_text())
+        original_manifest['sources']['road.xodr'] = hashlib.sha256(road.read_bytes()).hexdigest()
+        source_manifest_path = folder / 'capture-manifest.json'
+        source_manifest_path.write_text(json.dumps(original_manifest, indent=2) + '\n')
+        for name, path in (('road.xodr', road), ('capture/manifest.json', source_manifest_path)):
+            sources[name] = {'path': name,
+                             'source': str(path.relative_to(ROOT.parents[1])),
+                             'sha256': hashlib.sha256(path.read_bytes()).hexdigest()}
+        primary_recipe['sources'] = list(sources.values())
+        recipe = folder / 'diagnostic-recipe.json'
+        recipe.write_text(json.dumps(primary_recipe, indent=2) + '\n')
+        entry['fixture_recipe'] = str(recipe.relative_to(ROOT.parents[1]))
+        candidate['source_equivalence'] = {
+            'road_sha256': hashlib.sha256(road.read_bytes()).hexdigest(),
+            'capture_manifest_sha256': hashlib.sha256(source_manifest_path.read_bytes()).hexdigest(),
+            'fixture_recipe_sha256': hashlib.sha256(recipe.read_bytes()).hexdigest()}
+    (ROOT / 'sign-angle-fallback1-source-manifest.json').write_text(
+        json.dumps(source_manifest, indent=2) + '\n')
     print(json.dumps({'cases': 3, 'fallbacks': 9}))
 
 
