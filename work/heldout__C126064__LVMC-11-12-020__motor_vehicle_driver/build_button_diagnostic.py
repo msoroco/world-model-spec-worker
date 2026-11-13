@@ -6,6 +6,7 @@ physical indication readbacks remain unverified until original capture review.
 from hashlib import sha256
 import json
 from pathlib import Path
+import argparse
 
 ROOT = Path(__file__).resolve().parent
 ASSIGNMENT = ROOT.name
@@ -16,22 +17,25 @@ def write(path, value):
     return sha256(path.read_bytes()).hexdigest()
 
 
-def build():
+def build(form='button'):
+    if form not in ('button', 'other_indication'):
+        raise ValueError('Unsupported indication form')
     manifest_path = ROOT / 'execution-manifest.json'
     manifest = json.loads(manifest_path.read_text())
     proposal_path = ROOT / 'proposals/cases.json'
     proposal = json.loads(proposal_path.read_text())
     built = {}
-    for variant, stem in (('indicated_course', 'button-indicated'),
-                          ('divergent_course', 'button-divergent')):
-        case_id = ASSIGNMENT + '__button_' + variant
+    for variant, tail in (('indicated_course', 'indicated'),
+                          ('divergent_course', 'divergent')):
+        stem = form.replace('_', '-') + '-' + tail
+        case_id = ASSIGNMENT + '__' + form + '_' + variant
         source_stem = 'indicated' if variant == 'indicated_course' else 'divergent'
         spec = json.loads((ROOT / (source_stem + '-diagnostic.json')).read_text())
         files = spec['files']
         authority = json.loads(files['authority_source_original.json'])
-        authority['authorization_source'] = 'CPU diagnostic button claim; unverified'
-        authority['indication_form'] = 'button'
-        authority['indications'] = [{'form': 'button', 'x': 0.0, 'y': 0.0}]
+        authority['authorization_source'] = f'CPU diagnostic {form} claim; unverified'
+        authority['indication_form'] = form
+        authority['indications'] = [{'form': form, 'x': 0.0, 'y': 0.0}]
         original = json.dumps(authority, sort_keys=True) + '\n'
         scene = json.loads(files['marked_intersection.json'])
         scene.update({key: authority[key] for key in
@@ -64,7 +68,7 @@ def build():
                         if c['case_id'] == ASSIGNMENT + '__' + variant)
         selected = json.loads(json.dumps(exemplar))
         selected['case_id'] = case_id
-        selected['rationale'] = ('Source-shaped button-indicated course; original '
+        selected['rationale'] = (f'Source-shaped {form} indicated course; original '
                                  'municipal authority, pixels and motion remain unverified.')
         construction = json.loads((ROOT / entry['construction']).read_text())
         config = json.loads(next(f['content'] for f in construction['files']
@@ -75,8 +79,24 @@ def build():
         built[case_id] = digest
     manifest_path.write_text(json.dumps(manifest, indent=2) + '\n')
     proposal_path.write_text(json.dumps(proposal, indent=2) + '\n')
+    plan_path = ROOT / 'case-plan.json'
+    plan = json.loads(plan_path.read_text())
+    for variant in ('indicated_course', 'divergent_course'):
+        case_id = ASSIGNMENT + '__' + form + '_' + variant
+        if not any(c['case_id'] == case_id for c in plan['cases']):
+            exemplar = next(c for c in plan['cases']
+                            if c['case_id'] == ASSIGNMENT + '__button_' + variant)
+            selected = json.loads(json.dumps(exemplar))
+            selected['case_id'] = case_id
+            selected['purpose'] = selected['purpose'].replace('button', form).replace('Button', form)
+            selected['construction_state'] = 'primary_offline_only'
+            plan['cases'].append(selected)
+    plan['requirement_dispositions'][0]['case_ids'] = [c['case_id'] for c in plan['cases']]
+    plan_path.write_text(json.dumps(plan, indent=2) + '\n')
     return built
 
 
 if __name__ == '__main__':
-    print(json.dumps(build(), indent=2))
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--form', choices=('button', 'other_indication'), default='button')
+    print(json.dumps(build(parser.parse_args().form), indent=2))

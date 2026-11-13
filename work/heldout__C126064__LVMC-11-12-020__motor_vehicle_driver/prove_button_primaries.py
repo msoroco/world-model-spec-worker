@@ -7,6 +7,7 @@ import subprocess
 import sys
 import tempfile
 from uuid import uuid4
+import argparse
 
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
@@ -27,13 +28,16 @@ def run(command, log):
                        stderr=subprocess.STDOUT, check=True)
 
 
-def prove():
+def prove(form='button'):
+    if form not in ('button', 'other_indication'):
+        raise ValueError('Unsupported indication form')
     manifest = json.loads(MANIFEST.read_text())
     token = uuid4().hex[:10]
     results = {}
-    for variant, stem in (('indicated_course', 'button-indicated'),
-                          ('divergent_course', 'button-divergent')):
-        case = ROOT.name + '__button_' + variant
+    for variant, tail in (('indicated_course', 'indicated'),
+                          ('divergent_course', 'divergent')):
+        stem = form.replace('_', '-') + '-' + tail
+        case = ROOT.name + '__' + form + '_' + variant
         entry = next(e for e in manifest['cases'] if e['case_id'] == case)
         output = REPO / f'.runtime-work/c126064-{stem}-compat-{token}'
         compat = [PY, 'runtime.py', 'compatibility', '--manifest',
@@ -90,4 +94,6 @@ def prove():
 
 
 if __name__ == '__main__':
-    print(json.dumps(prove(), indent=2))
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--form', choices=('button', 'other_indication'), default='button')
+    print(json.dumps(prove(parser.parse_args().form), indent=2))
