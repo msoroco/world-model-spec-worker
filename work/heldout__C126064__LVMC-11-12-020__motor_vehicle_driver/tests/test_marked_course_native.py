@@ -6,7 +6,7 @@ from tempfile import TemporaryDirectory
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from marked_course_native import CAMERAS, FourCameraCapture, control_step, drive_turn, execute_marked_turn, place_markers, turn_targets
+from marked_course_native import CAMERAS, FourCameraCapture, control_step, drive_turn, execute_marked_turn, place_markers, place_course_indications, turn_targets
 
 
 class Location:
@@ -54,6 +54,48 @@ class World:
 
 
 class NativeMarkerTests(unittest.TestCase):
+    def test_button_and_other_indication_spawn_readback_and_rejection(self):
+        class FormWorld(World):
+            name = 'Town05'
+            def find(self, name):
+                if name not in {'static.prop.road_button', 'static.prop.turn_arrow'}:
+                    raise ValueError('Unknown physical indication blueprint')
+                return name
+        for form, blueprint in [('button', 'static.prop.road_button'),
+                                ('other_indication', 'static.prop.turn_arrow')]:
+            with self.subTest(form=form), TemporaryDirectory() as td:
+                path = Path(td) / 'indication.json'
+                record = {'authority_document': 'unverified municipal source claim',
+                          'intersection_id': 'junction-7', 'map_name': 'Town05',
+                          'median_opening_with_intersecting_road': True,
+                          'intersection_polygon_xy_m': [[0, 0], [10, 0], [10, 10], [0, 10]],
+                          'indication_form': form,
+                          'form_blueprints': {form: [blueprint]},
+                          'indications': [{'form': form, 'blueprint_id': blueprint,
+                                           'x': 2, 'y': 3, 'z': 0, 'yaw': 90}]}
+                path.write_text(json.dumps(record))
+                digest = hashlib.sha256(path.read_bytes()).hexdigest()
+                make = lambda x, y, z, yaw: Transform(x, y)
+                world = FormWorld()
+                value = place_course_indications(world, path, digest, form, make)
+                self.assertEqual(value['physical_xy_m'], [[2.0, 3.0]])
+                self.assertFalse(value['authorization_verified_by_worker'])
+                self.assertFalse(value['visible_pixels_verified'])
+                with self.assertRaisesRegex(ValueError, 'hash changed'):
+                    place_course_indications(FormWorld(), path, '0' * 64, form, make)
+                with self.assertRaisesRegex(ValueError, 'map differs'):
+                    wrong_map = FormWorld(); wrong_map.name = 'Town03'
+                    place_course_indications(wrong_map, path, digest, form, make)
+                with self.assertRaisesRegex(ValueError, 'readback'):
+                    shifted = FormWorld(offset=1)
+                    place_course_indications(shifted, path, digest, form, make)
+                self.assertTrue(shifted.actors[0].destroyed)
+                record['indications'][0]['x'] = 12
+                path.write_text(json.dumps(record))
+                digest = hashlib.sha256(path.read_bytes()).hexdigest()
+                with self.assertRaisesRegex(ValueError, 'outside sourced intersection'):
+                    place_course_indications(FormWorld(), path, digest, form, make)
+
     def source(self, root):
         p = root / 'authorized-course.json'
         p.write_text(json.dumps({'authority_document': 'reviewed city plan',

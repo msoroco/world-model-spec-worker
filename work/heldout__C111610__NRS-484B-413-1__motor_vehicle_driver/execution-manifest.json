@@ -1346,6 +1346,174 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       }
+    },
+    {
+      "kind": "delivery",
+      "measurement_procedure": {
+        "entrypoint": "turn_finalizer.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "A distant pedestrian may still intersect the turn or fall outside the original camera view."
+      },
+      "acquisition": {
+        "turn_signal_observation": {
+          "entrypoint": "turn_finalizer.py",
+          "method": "finalize original frame-joined turn, participant body, signal and listener sources",
+          "evidence": "ego_turn_motion.jsonl, participant_bodies.jsonl, ego_signal_audio.jsonl, listener_audio_original.jsonl, affected_participants.json, video_frames.jsonl and four original camera MKVs"
+        }
+      },
+      "case_id": "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__safety_only_distant_users",
+      "construction": "safety-only-distant-construction.json",
+      "construction_sha256": "60f100dabb120c8232b7451c3b48610b4697a92a0c173066f4bcfaeeb0f60899",
+      "measurement_contract": "safety-only-distant-measurement-contract.json",
+      "fixture_recipe": "work/heldout__C111610__NRS-484B-413-1__motor_vehicle_driver/safety-only-distant-recipe.json",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "safety-only-distant-fallback1-construction.json",
+          "construction_sha256": "bc55e95b17a0a0438f2577ecd47c74bf0c5e810af3ae5dd2b71387d0c57b0b79",
+          "trigger": {
+            "source": "original Native participant bodies and turn route",
+            "metric": "minimum pedestrian-route clearance",
+            "failure_condition": "Primary distant placement still intersects the turn corridor"
+          },
+          "changed_knobs": [
+            "pedestrian approach-relative left offset 14 to 17 m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111610__NRS-484B-413-1__motor_vehicle_driver/execution-manifest.json --case heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__safety_only_distant_users --candidate fallback1 --output .runtime-work/c111610-safety-only-distant-fallback1-offline-3f5bc25d36 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "safety-only-distant-fallback1-offline.log",
+            "log_sha256": "e812b6485cd79f702e530eabd90f99de5c4803c6da539af16dc3c274de9ceed5",
+            "construction_sha256": "bc55e95b17a0a0438f2577ecd47c74bf0c5e810af3ae5dd2b71387d0c57b0b79"
+          },
+          "compatibility": {
+            "receipt": "safety-only-distant-fallback1-receipt.json",
+            "sha256": "1bc29aaeb348236325aa3fcfb8078cf96439e36d355774d3070d3083a5ffd595",
+            "log": "safety-only-distant-fallback1-analysis.log",
+            "negative_log": "safety-only-distant-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "safety-only-distant-fallback2-construction.json",
+          "construction_sha256": "869c786eb272abec7215ee3830ef9b70bc83317a37990f15071090f8f8062b38",
+          "trigger": {
+            "source": "original listener microphone PCM",
+            "metric": "20 Hz audio packet continuity",
+            "failure_condition": "Primary listener device loses or misaligns a source packet"
+          },
+          "changed_knobs": [
+            "listener PCM rate 16000 to 32000 Hz"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111610__NRS-484B-413-1__motor_vehicle_driver/execution-manifest.json --case heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__safety_only_distant_users --candidate fallback2 --output .runtime-work/c111610-safety-only-distant-fallback2-offline-8ffd68cca5 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "safety-only-distant-fallback2-offline.log",
+            "log_sha256": "3784773586a069b80de9e9a8a46ebdfbf742d4ee5eb0d4070d585fb8a4d6361b",
+            "construction_sha256": "869c786eb272abec7215ee3830ef9b70bc83317a37990f15071090f8f8062b38"
+          },
+          "compatibility": {
+            "receipt": "safety-only-distant-fallback2-receipt.json",
+            "sha256": "1f1d7de04c76c9cb36ae4e674080f8d0e40e6cb9df52d1494366412d4c3f773c",
+            "log": "safety-only-distant-fallback2-analysis.log",
+            "negative_log": "safety-only-distant-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "safety-only-distant-fallback3-construction.json",
+          "construction_sha256": "c154be844442aa32897fd64b3f00fa7e6245edb6b4d406ade1b7f7f4c1989bd3",
+          "trigger": {
+            "source": "original overview RGB decode",
+            "metric": "distant pedestrian visible pixel count",
+            "failure_condition": "Primary overview crops the distant pedestrian"
+          },
+          "changed_knobs": [
+            "overview camera mount x -8 to -9 m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111610__NRS-484B-413-1__motor_vehicle_driver/execution-manifest.json --case heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__safety_only_distant_users --candidate fallback3 --output .runtime-work/c111610-safety-only-distant-fallback3-offline-5cf3f290e2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "safety-only-distant-fallback3-offline.log",
+            "log_sha256": "64929001c7469236404d5264ab97f212a5e1d67464248a99d82cad2120fdbc27",
+            "construction_sha256": "c154be844442aa32897fd64b3f00fa7e6245edb6b4d406ade1b7f7f4c1989bd3"
+          },
+          "compatibility": {
+            "receipt": "safety-only-distant-fallback3-receipt.json",
+            "sha256": "8905339ef1a21b75e0508d53719c320d6143c049acad0e96c8475e4516ac3d1c",
+            "log": "safety-only-distant-fallback3-analysis.log",
+            "negative_log": "safety-only-distant-fallback3-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111610__NRS-484B-413-1__motor_vehicle_driver/execution-manifest.json --case heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__safety_only_distant_users --output .runtime-work/c111610-safety-only-distant-primary-offline-60f100dabb --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "safety-only-distant-primary-offline.log",
+        "log_sha256": "f636e73f00d9bec2de9e8109f4cd5bf8b928477ff9b452b33a6322cf3b295bd4",
+        "construction_sha256": "60f100dabb120c8232b7451c3b48610b4697a92a0c173066f4bcfaeeb0f60899"
+      },
+      "compatibility": {
+        "receipt": "safety-only-distant-primary-receipt.json",
+        "sha256": "a351a5d07edb24a991406cae714386cb324a502991cbe94ea64a448e54632211",
+        "log": "safety-only-distant-primary-analysis.log",
+        "negative_log": "safety-only-distant-primary-negative.log"
+      },
+      "negative": {
+        "log": "safety-only-distant-primary-negative.log"
+      },
+      "saved_processing": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111610__NRS-484B-413-1__motor_vehicle_driver/execution-manifest.json --case heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__safety_only_distant_users --attempt .runtime-work/c111610-safety-only-distant-primary-attempt-60f100dabb --output .runtime-work/c111610-safety-only-distant-primary-saved-60f100dabb --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "exit_code": 0,
+        "log": "safety-only-distant-primary-saved.log",
+        "log_sha256": "3ba6130da663f05367c4dd9f67dcc35077f6349fa4a5e3e457961f140d9e5540",
+        "receipt": "safety-only-distant-primary-saved-receipt.json",
+        "receipt_sha256": "3ba6130da663f05367c4dd9f67dcc35077f6349fa4a5e3e457961f140d9e5540"
+      },
+      "physical_preparation": {
+        "receipt": "physical/safety_only_distant_users-proof.json",
+        "sha256": "f3275f31a88f4ac719a74e871e7b54400c59d0e14c04f26467ded23368678ea2"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__safety_only_distant_users",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "turn_delivery_audit.py",
+        "script_sha256": "da60d349e35d548c46e6abcf68be5e82901a8137e176106c1d9061eae8bc7f13",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111610__NRS-484B-413-1__motor_vehicle_driver/turn_delivery_audit.py --case heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__safety_only_distant_users --attempt .runtime-work/c111610-safety-only-distant-primary-attempt-60f100dabb --processed .runtime-work/c111610-safety-only-distant-primary-saved-60f100dabb",
+        "test_exit_code": 0,
+        "test_log": "safety-only-delivery-positive.log",
+        "test_log_sha256": "f6d5bcd2247c4f8e84f089e8da2adbd6da26958c357aa16da0182bb57e46691e",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python work/heldout__C111610__NRS-484B-413-1__motor_vehicle_driver/turn_delivery_audit.py --case heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__safety_only_distant_users --attempt .runtime-work/c111610-safety-only-distant-primary-attempt-60f100dabb --processed .runtime-work/c111610-safety-only-distant-primary-saved-60f100dabb --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Stale or missing original listener source: listener_audio_original.jsonl",
+        "negative_log": "safety-only-delivery-negative.log",
+        "negative_log_sha256": "d6000e5c7d228eb14265c4f34c2b98aa1073f380e4af60bdf1323c26e7cdfd8c"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111610__NRS-484B-413-1__motor_vehicle_driver/execution-manifest.json --case heldout__C111610__NRS-484B-413-1__motor_vehicle_driver__safety_only_distant_users --attempt \"$ATTEMPT\" --output \"$PROCESSING_OUTPUT\" --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSING_OUTPUT/feedback.json\"",
+        "test_log": "safety-only-distant-primary-saved.log",
+        "test_log_sha256": "3ba6130da663f05367c4dd9f67dcc35077f6349fa4a5e3e457961f140d9e5540",
+        "test_exit_code": 0
+      }
     }
   ]
 }

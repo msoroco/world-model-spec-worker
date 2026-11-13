@@ -80,3 +80,7 @@ Next CPU action: implement and run independent exact-case delivery audits agains
 ## Scoped strict delivery pass
 
 All six independent delivery audits passed against their exact saved attempts and reject changed original source hashes. The audit decodes all four original source cameras per case and joins original lane, trace and frame rows; `delivery-positive.log` SHA-256 `0f380ec1767d52515f07d33b23a1ea81e96b8738826e1a3384d914cd1559a719`, `delivery-negative.log` SHA-256 `fe103a0800543ee9542f67ff14c81072cb673b1a49af0729b966788fd52c5457`. The six physical receipts, seven-stage semantic chain, 18 distinct fallback constructions and all compatibility receipts passed the scoped strict validator. `.venv-cpu/bin/python worker_check.py --assignment heldout__C374648__LVMC-11-12-100-C__motor_vehicle_driver --complete --require-delivery-ready` exited zero. Current `execution-manifest.json` SHA-256 `46e2b243fbb98783c635a71e11784be0806bd14c3049c65b0e8069452fe250bc`; current semantic index SHA-256 `e0b3a10ae52afa09b43d18c5d2b128cb0856406620802e1cdd7e7cabfe2323f8`. Status: ready/delivery_prepared. CPU diagnostics do not establish realized CARLA motion, designation authority, visible road features, or a legal verdict; those remain local review checks.
+
+### 2026-11-12 proof-preserving return compaction
+
+Twenty-three byte-identical empty compatibility analysis logs were consolidated with execution-manifest paths repointed to identical retained bytes. The assignment-scoped strict ready gate passed afterward; ready status is unchanged.

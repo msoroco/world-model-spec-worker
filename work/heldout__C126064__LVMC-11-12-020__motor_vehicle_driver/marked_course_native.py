@@ -69,6 +69,69 @@ def place_markers(world, source_path, expected_sha256, make_transform):
         raise
 
 
+def place_course_indications(world, source_path, expected_sha256, form, make_transform):
+    """Place sourced buttons or other indications with map and pose readback.
+
+    The caller retains ownership of the returned actors. A source authorization
+    claim and successful spawn do not verify municipal authorization or pixels.
+    """
+    if form not in ('button', 'other_indication'):
+        raise ValueError('Unsupported non-marker indication form')
+    raw = Path(source_path).read_bytes()
+    if sha256(raw).hexdigest() != expected_sha256:
+        raise ValueError('Indication source hash changed')
+    record = json.loads(raw)
+    if (not record.get('authority_document') or not record.get('intersection_id')
+            or record.get('median_opening_with_intersecting_road') is not True
+            or record.get('indication_form') != form or not record.get('map_name')):
+        raise ValueError('Indication authority, intersection, form or map missing')
+    polygon = record.get('intersection_polygon_xy_m')
+    if (not isinstance(polygon, list) or len(polygon) < 3
+            or any(not isinstance(point, list) or len(point) != 2
+                   or any(isinstance(v, bool) or not isinstance(v, (int, float))
+                          or not isfinite(v) for v in point) for point in polygon)):
+        raise ValueError('Sourced indication intersection polygon missing')
+    indications = record.get('indications')
+    allowed = record.get('form_blueprints', {}).get(form)
+    if not isinstance(indications, list) or not indications or not isinstance(allowed, list) or not allowed:
+        raise ValueError('Physical indication form or blueprint inventory missing')
+    road_map = world.get_map()
+    if road_map.name != record['map_name']:
+        raise ValueError('Native indication map differs from source')
+    actors = []
+    try:
+        for item in indications:
+            if item.get('form') != form or item.get('blueprint_id') not in allowed:
+                raise ValueError('Physical indication form or blueprint differs from source')
+            if any(key not in item or isinstance(item[key], bool)
+                   or not isinstance(item[key], (int, float)) or not isfinite(item[key])
+                   for key in ('x', 'y', 'z', 'yaw')):
+                raise ValueError('Nonfinite physical indication placement')
+            if not _inside([item['x'], item['y']], polygon):
+                raise ValueError('Physical indication outside sourced intersection')
+            transform = make_transform(*(item[key] for key in ('x', 'y', 'z', 'yaw')))
+            waypoint = road_map.get_waypoint(transform.location)
+            if waypoint is None or not waypoint.is_junction:
+                raise ValueError('Physical indication does not occupy a Native junction')
+            actor = world.try_spawn_actor(world.get_blueprint_library().find(item['blueprint_id']), transform)
+            if actor is None:
+                raise ValueError('Native indication spawn failed')
+            actors.append(actor)
+            actual = actor.get_transform().location
+            if max(abs(float(getattr(actual, axis)) - float(item[axis]))
+                   for axis in ('x', 'y')) > .05:
+                raise ValueError('Native indication position readback differs')
+        return {'actors': actors, 'intersection_id': record['intersection_id'],
+                'indication_form': form, 'source_sha256': expected_sha256,
+                'physical_xy_m': [_xy(actor.get_transform().location) for actor in actors],
+                'authorization_verified_by_worker': False,
+                'visible_pixels_verified': False}
+    except BaseException:
+        for actor in reversed(actors):
+            actor.destroy()
+        raise
+
+
 def _inside(point, polygon):
     x, y = point
     result = False

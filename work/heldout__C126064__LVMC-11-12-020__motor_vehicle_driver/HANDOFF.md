@@ -219,3 +219,15 @@ The latest bounded complete strict command, `timeout 300s .venv-cpu/bin/python w
 ### 2026-11-12 proof-preserving return compaction
 
 Seven byte-identical empty compatibility analysis logs were consolidated with execution-manifest paths repointed to the retained identical bytes. The scoped nonstrict complete gate passed afterward; status remains partial for the already listed CPU omissions.
+
+### 2026-11-12 button and other-indication Native placement step
+
+`marked_course_native.place_course_indications` now constructs source-hashed physical buttons and other indications as separate forms. It requires the claimed authority document, exact intersection/map identity, median-opening relation, sourced intersection polygon, form-specific blueprint inventory and in-junction placement. It checks Native map identity, blueprint selection, spawn success and x/y pose readback, and destroys owned actors on failure. Its result explicitly leaves municipal authorization and visible pixels unverified. This prospective helper does not alter the two previously proved marker bundles; no button/other exact case is yet claimed.
+
+`tests/test_marked_course_native.py` exercises both forms with fake Native blueprint/spawn/readback calls, hash/map/outside-polygon rejection and cleanup after pose mismatch. `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/heldout__C126064__LVMC-11-12-020__motor_vehicle_driver/tests -v` passes 21 tests; `cpu-tests.log` SHA-256 `58aed195ae6548ee8e6c578fd557ba2bb440348ac3d2be7096f5741507e1aaf1`. The scoped nonstrict complete gate passes.
+
+Status remains **partial**. Next CPU construction is a source-backed button exact bundle using this helper, a source-matched finalizer/diagnostic and primary offline, positive/negative compatibility and saved-only processing; then build the other-indication branch and each case's three risk-triggered fallbacks, physical/delivery/comparison audits and canonical semantic proposals. Original municipal authorization, real pixels and motion remain unverified.
+
+### 2026-11-12 final scoped and batch strict check
+
+The assignment-scoped `worker_check.py --complete` exits 0; adding `--require-delivery-ready` exits 1 at `preparation.py:276` because this assignment result remains truthfully partial. The full `.venv-cpu/bin/python worker_check.py --complete --require-delivery-ready` also completed with exit 1 at the same partial/missing-package check. Updated pinned CPU preflight passes; the return is 10,194/10,200 files and frozen assignment statuses are 35 ready / 16 partial. Resume the worker-owned CPU actions above, not a missing-dependency diagnosis.
