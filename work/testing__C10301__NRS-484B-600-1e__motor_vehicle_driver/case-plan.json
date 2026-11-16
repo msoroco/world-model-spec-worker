@@ -48,7 +48,7 @@
       "comparison_id": "absolute_80_mph_boundary",
       "diagnostic_audit": {
         "receipt": "diagnostic-comparison.json",
-        "sha256": "3ca863c7c55539d0c3ef7d5e07239b969fd032f74e032208b7afbdda05995832",
+        "sha256": "304be102087369420f952859d0203231c30b7cf04244523d709e194cef46a1e8",
         "positive_log": "diagnostic-comparison-positive.log",
         "positive_log_sha256": "a031c594325243a4922664c6a5376f5d95d9ab06bb1bb4053ef4f1547433b31d",
         "negative_receipt": "diagnostic-comparison-negative.json",
@@ -61,11 +61,36 @@
     }
   ],
   "observations": [
-    "Original actor.get_velocity vector and calculated 3D speed at every source frame",
-    "exact 80 mph = 35.7632 m/s threshold, below/at/above probes",
-    "Native actor ID, blueprint and operation context",
-    "Native map route, alley and access-aisle identification with source-camera context",
-    "full frame map; report sampled maximum and between-sample uncertainty"
+    {
+      "name": "kin.speed",
+      "mandatory": true,
+      "description": "Original actor.get_velocity vector and calculated 3D speed at every source frame",
+      "source": "original actor.get_velocity and exact frame map"
+    },
+    {
+      "name": "speed_boundary",
+      "mandatory": false,
+      "description": "exact 80 mph = 35.7632 m/s threshold, below/at/above probes",
+      "derivation": "computed from kin.speed; 80 mph = 35.7632 m/s"
+    },
+    {
+      "name": "actor_identity",
+      "mandatory": false,
+      "description": "Native actor ID, blueprint and operation context",
+      "source": "retained Native actor and blueprint context"
+    },
+    {
+      "name": "road_context",
+      "mandatory": false,
+      "description": "Native map route, alley and access-aisle identification with source-camera context",
+      "source": "road_context.json and four source cameras; legal authority unresolved"
+    },
+    {
+      "name": "frame_map",
+      "mandatory": false,
+      "description": "full frame map; report sampled maximum and between-sample uncertainty",
+      "source": "video_frames.jsonl and subject_motion.jsonl"
+    }
   ],
   "sources": [
     {
