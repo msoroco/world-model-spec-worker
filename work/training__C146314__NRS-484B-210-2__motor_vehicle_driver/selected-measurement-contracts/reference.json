@@ -1,0 +1,31 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C146314__NRS-484B-210-2__motor_vehicle_driver__reference",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "text-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "measured_pass_body_clearance_m",
+      "method": "measure_pass_clearance",
+      "value_type": "number",
+      "kind": "measured",
+      "inputs": ["native-raw-actors.jsonl", "video_frames.jsonl"]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "minimum_positive_time_to_lead_center_s",
+      "method": "measure_time_to_conflict",
+      "value_type": "number",
+      "kind": "measured",
+      "inputs": ["native-raw-actors.jsonl", "video_frames.jsonl"]
+    }
+  ],
+  "negative": {
+    "remove": ["native-raw-actors.jsonl"],
+    "error_contains": "Missing required source: native-raw-actors.jsonl"
+  },
+  "scope": "Source-bound engineering clearance and closing-time measures; no numeric legal safety threshold or legal verdict"
+}
