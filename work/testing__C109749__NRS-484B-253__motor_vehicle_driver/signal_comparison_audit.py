@@ -34,6 +34,34 @@ def original(root):
     return [json.loads(line) for line in (root / 'interaction_history.jsonl').read_text().splitlines() if line]
 
 
+def check_fixed_construction(signalled_files, omitted_files, signalled_config, omitted_config):
+    shared = set(signalled_files) & set(omitted_files)
+    for path in shared - {'config.json', 'runner.py', 'finalizer.py'}:
+        if signalled_files[path] != omitted_files[path]:
+            raise ValueError('Fixed shared construction differs: ' + path)
+    excluded = {'selected_case_id', 'supported_case_ids', 'signal_policy'}
+    if ({key: value for key, value in signalled_config.items() if key not in excluded} !=
+            {key: value for key, value in omitted_config.items() if key not in excluded}):
+        raise ValueError('Fixed full construction config differs')
+    if 'signal_policy' in signalled_config or omitted_config.get('signal_policy') != 'omit':
+        raise ValueError('Declared omitted-signal policy missing')
+    left = signalled_files['runner.py'].replace(signalled_config['selected_case_id'], '<CASE>')
+    right = omitted_files['runner.py'].replace(omitted_config['selected_case_id'], '<CASE>')
+    variants = (
+        ("if 'sig.turn_indicator' not in config.get('required_atoms',[]):",
+         "if config.get('signal_policy') != 'omit' or 'sig.turn_indicator' not in config.get('required_atoms',[]):"),
+        ("light = carla.VehicleLightState.LeftBlinker if command['left_indicator'] else carla.VehicleLightState.NONE",
+         'light = carla.VehicleLightState.NONE  # authored omitted-signal policy; read back from actor'),
+    )
+    for index, (normal, omitted) in enumerate(variants):
+        if left.count(normal) != 1 or right.count(omitted) != 1:
+            raise ValueError('Declared signal runner policy missing')
+        marker = '<DECLARED_SIGNAL_POLICY_' + str(index) + '>'
+        left, right = left.replace(normal, marker), right.replace(omitted, marker)
+    if left != right:
+        raise ValueError('Runner differs beyond declared signal policy')
+
+
 def compare(signalled, omitted):
     signalled, omitted = Path(signalled), Path(omitted)
     left, right = original(signalled), original(omitted)
@@ -52,6 +80,11 @@ def compare(signalled, omitted):
             raise ValueError('Omitted branch has left indicator at frame ' + str(index))
     configs = [json.loads((ROOT / 'cases' / name / 'config.json').read_text())
                for name in ('inside_yield', 'signal_omitted')]
+    constructions = [json.loads((ROOT / 'cases' / name / 'construction.json').read_text())
+                     for name in ('inside_yield', 'signal_omitted')]
+    embedded = [{item['path']: item['content'] for item in construction['files']}
+                for construction in constructions]
+    check_fixed_construction(*embedded, *configs)
     for field in set(configs[0]) & set(configs[1]):
         if field not in ('selected_case_id', 'supported_case_ids') and configs[0][field] != configs[1][field]:
             raise ValueError('Fixed construction config differs: ' + field)

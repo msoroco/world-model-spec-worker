@@ -64,6 +64,24 @@ def _observe(files, observer):
         return observer(root)
 
 
+def check_fixed_construction(yield_files, no_yield_files, yield_config, no_yield_config):
+    """The authored policy contrast may not carry unrelated construction changes."""
+    shared = set(yield_files) & set(no_yield_files)
+    for path in shared - {'config.json', 'runner.py', 'finalizer.py'}:
+        if yield_files[path] != no_yield_files[path]:
+            raise ValueError('Fixed shared construction differs: ' + path)
+    if ('from controller import LeftTurnController' not in yield_files['runner.py'] or
+            'from inside_no_yield_controller import ProceedBeforeClearanceController'
+            not in no_yield_files['runner.py']):
+        raise ValueError('Declared inside controller policy difference missing')
+    excluded = {'selected_case_id', 'supported_case_ids', 'proceed_turn_distance_m'}
+    if ({k: v for k, v in yield_config.items() if k not in excluded} !=
+            {k: v for k, v in no_yield_config.items() if k not in excluded}):
+        raise ValueError('Fixed construction configuration differs')
+    if no_yield_config.get('proceed_turn_distance_m') != 4.0 or 'proceed_turn_distance_m' in yield_config:
+        raise ValueError('Declared proceed distance contrast missing')
+
+
 def compare(yield_recipe, no_yield_recipe):
     yfiles, nfiles = _load(yield_recipe), _load(no_yield_recipe)
     if yfiles['intersection_geometry.json'] != nfiles['intersection_geometry.json']:
@@ -86,6 +104,11 @@ def compare(yield_recipe, no_yield_recipe):
                 raise ValueError('Fixed pre-turn subject trajectory differs: ' + field)
     yc = json.loads((YIELD / 'config.json').read_text())
     nc = json.loads((NO_YIELD / 'config.json').read_text())
+    yconstruction = json.loads((YIELD / 'construction.json').read_text())
+    nconstruction = json.loads((NO_YIELD / 'construction.json').read_text())
+    yembedded = {item['path']: item['content'] for item in yconstruction['files']}
+    nembedded = {item['path']: item['content'] for item in nconstruction['files']}
+    check_fixed_construction(yembedded, nembedded, yc, nc)
     for field in ('law_id', 'cell_id', 'actor', 'rate_hz', 'duration_s', 'cameras',
                   'required_atoms', 'inside_oncoming_travel_m',
                   'approach_speed_mps', 'reciprocal_approach_speed_mps',

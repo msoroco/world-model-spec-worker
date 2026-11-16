@@ -64,6 +64,16 @@ def _observe(files, observer):
         return observer(root)
 
 
+def check_fixed_config(yield_config, no_yield_config):
+    excluded = {'selected_case_id', 'supported_case_ids', 'proceed_turn_distance_m'}
+    if ({key: value for key, value in yield_config.items() if key not in excluded} !=
+            {key: value for key, value in no_yield_config.items() if key not in excluded}):
+        raise ValueError('Fixed full construction configuration differs')
+    if ('proceed_turn_distance_m' in yield_config or
+            no_yield_config.get('proceed_turn_distance_m') != 4.0):
+        raise ValueError('Declared proceed distance contrast missing')
+
+
 def compare(yield_recipe, no_yield_recipe):
     yfiles, nfiles = _load(yield_recipe), _load(no_yield_recipe)
     if yfiles['intersection_geometry.json'] != nfiles['intersection_geometry.json']:
@@ -86,6 +96,7 @@ def compare(yield_recipe, no_yield_recipe):
                 raise ValueError('Fixed pre-turn subject trajectory differs: ' + field)
     yc = json.loads((YIELD / 'config.json').read_text())
     nc = json.loads((NO_YIELD / 'config.json').read_text())
+    check_fixed_config(yc, nc)
     yconstruction = json.loads((YIELD / 'construction.json').read_text())
     nconstruction = json.loads((NO_YIELD / 'construction.json').read_text())
     yfiles_construction = {item['path']: item['content'] for item in yconstruction['files']}

@@ -9,7 +9,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 REPO = ROOT.parent.parent
 sys.path.insert(0, str(ROOT))
-from signal_comparison_audit import compare
+from signal_comparison_audit import check_fixed_construction, compare
 
 
 def sha(path):
@@ -17,6 +17,30 @@ def sha(path):
 
 
 class SignalComparisonTests(unittest.TestCase):
+    def test_rejects_undeclared_signal_pair_construction_change(self):
+        def load(name):
+            case = ROOT / 'cases' / name
+            construction = json.loads((case / 'construction.json').read_text())
+            files = {item['path']: item['content'] for item in construction['files']}
+            return files, json.loads((case / 'config.json').read_text())
+
+        signalled_files, signalled_config = load('inside_yield')
+        omitted_files, omitted_config = load('signal_omitted')
+        check_fixed_construction(signalled_files, omitted_files,
+                                 signalled_config, omitted_config)
+        changed = dict(omitted_files, **{'camera_setup.py': omitted_files['camera_setup.py'] + '\n# changed\n'})
+        with self.assertRaisesRegex(ValueError, 'Fixed shared construction differs: camera_setup.py'):
+            check_fixed_construction(signalled_files, changed,
+                                     signalled_config, omitted_config)
+        changed = dict(omitted_files, **{'runner.py': omitted_files['runner.py'] + '\n# changed\n'})
+        with self.assertRaisesRegex(ValueError, 'Runner differs beyond declared signal policy'):
+            check_fixed_construction(signalled_files, changed,
+                                     signalled_config, omitted_config)
+        changed_config = dict(omitted_config, duration_s=46)
+        with self.assertRaisesRegex(ValueError, 'Fixed full construction config differs'):
+            check_fixed_construction(signalled_files, omitted_files,
+                                     signalled_config, changed_config)
+
     def test_rejects_changed_fixed_subject_trajectory(self):
         signalled = REPO / '.runtime-work/c109749-inside-yield-delivery-v2/attempt'
         omitted = REPO / '.runtime-work/c109749-signal-omitted-delivery-v1/attempt'
