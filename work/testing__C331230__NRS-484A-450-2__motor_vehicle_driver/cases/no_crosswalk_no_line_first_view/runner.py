@@ -1,4 +1,4 @@
-"""Exact marked-crosswalk stop case; Native capture requires a reviewed site.
+"""Exact first-observed-view stop case; Native capture requires a reviewed site.
 
 The bundled site is a synthetic CPU schema fixture. Runtime refuses a map/sign
 or crosswalk that does not match it. Physical and legal acceptance remain open.
@@ -192,7 +192,7 @@ def capture(root,host,port):
        'tolerance':0,'matched':ordered,'physical_cause_confirmed':False,
        'cause_evidence':['approach_context.json','stop_history.jsonl','video_frames.jsonl','sight_history.jsonl']}],
     'setup_confirmed':False,'behavior_attempted':False,'maneuver_completed':False,
-    'physical_failure_flags':[] if ordered else ['crosswalk halt ordering unconfirmed'],
+    'physical_failure_flags':[] if ordered else ['first-view halt ordering unconfirmed'],
     'recording_description':cfg['recording_description'],
     'trace_reference':'trace.jsonl','video_frame_map_reference':'video_frames.jsonl',
     'video_references':[name+'.mkv' for name in CAMERAS],

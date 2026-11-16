@@ -10,6 +10,16 @@ from runner import CAMERAS,CASE,load_config
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 def write(path,value):Path(path).write_text(json.dumps(value,indent=2,allow_nan=False)+'\n')
 
+def measure_crosswalk_halt(attempt,report):
+ names=('approach_context.json','stop_history.jsonl','video_frames.jsonl')
+ return {'value':{'selected_reference':report['selected_reference'],
+   'first_full_halt':report['first_full_halt_before_crosswalk'],
+   'first_crosswalk_entry':report['first_crosswalk_entry'],
+   'first_intersection_entry':report['first_intersection_entry'],
+   'halt_before_crosswalk_and_junction_observed':report['full_halt_before_crosswalk_and_junction_observed']},
+   'method':'measure_crosswalk_halt',
+   'sources':{name:sha(Path(attempt)/name) for name in names}}
+
 def finalize(attempt,output):
  from worker_exchange.native_output import physical_result,write_result
  attempt=Path(attempt);output=Path(output)
@@ -19,13 +29,13 @@ def finalize(attempt,output):
  required=('approach_context.json','stop_history.jsonl','video_frames.jsonl',
            'trace.jsonl','capture/evidence.jsonl',*(name+'.mkv' for name in CAMERAS))
  for name in required:
-  if not (attempt/name).is_file():raise ValueError('Missing original source: '+name)
+  if not (attempt/name).is_file():raise ValueError('Missing required source: '+name)
  report=analyze(attempt)
  ctx=json.loads((attempt/'approach_context.json').read_text())
  if ctx.get('physical_acceptance_claimed') is not False or ctx['crosswalk_origin']!='marked':
   raise ValueError('Original crosswalk context differs')
  sources={name:sha(attempt/name) for name in required}
- measurements={
+ measurements={'crosswalk_halt_observation':measure_crosswalk_halt(attempt,report),
   'crosswalk_reference':{'value':report['selected_reference'],'method':'source-bound near-side crosswalk geometry',
     'sources':{name:sources[name] for name in ('approach_context.json','stop_history.jsonl')}},
   'halt_ordering':{'value':{'first_halt':report['first_full_halt_before_crosswalk'],

@@ -1,25 +1,86 @@
-Traceback (most recent call last):
-  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py", line 23, in <module>
-    if __name__=='__main__':main()
-                            ^^^^^^
-  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/runtime_cli.py", line 194, in main
-    result=run(args.manifest,args.case,args.output,args.library,args.validator,args.candidate)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/package_compatibility.py", line 87, in run
-    receipt=_process_fixture(manifest,case,fixture,output,library,validator,candidate)
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/package_compatibility.py", line 60, in _process_fixture
-    process(output,output/'converted',library,validator,diagnostic_fixture=True)
-  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/runtime_cli.py", line 134, in process
-    report=convert(attempt/'capture',attempt,Path(library),output,diagnostic_fixture=diagnostic_fixture)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/traffic_spec_adapter/adapter.py", line 472, in convert
-    evidence=rows(capture/'evidence.jsonl'); telemetry=rows(original/'trace.jsonl');frames=rows(capture/'native/frames.jsonl')
-                                                                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/traffic_spec_adapter/adapter.py", line 101, in rows
-    with Path(path).open() as f:return [json.loads(line) for line in f if line.strip()]
-         ^^^^^^^^^^^^^^^^^
-  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/lib/python3.11/pathlib.py", line 1044, in open
-    return io.open(self, mode, buffering, encoding, errors, newline)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-FileNotFoundError: [Errno 2] No such file or directory: '/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c331230-stop-line-compat-v4/capture/native/frames.jsonl'
+{
+  "format": "worker-package-compatibility",
+  "case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__no_crosswalk_marked_stop_line",
+  "candidate_id": "primary",
+  "construction_sha256": "60a9e671903e0387eed5564ea9fa6cff1475a8b5a41bdaf90d505fd0663f1fcf",
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3",
+  "fixture_sha256": "cff913da392e093231b072fe7ccb5ae314dbbe1164382b9250523600182d811e",
+  "passed": true,
+  "checks": [
+    "acquisition_unchanged",
+    "actual_analysis",
+    "derived_outputs_rebuilt",
+    "final_decode",
+    "four_camera_sources",
+    "lean_decoder",
+    "mandatory_observations",
+    "native_validation",
+    "render",
+    "selected_measurements",
+    "negative_case_source"
+  ],
+  "scope": "diagnostic software compatibility only",
+  "analysis_sha256": "db99c57653f4bbed7f7924a92d2aebee28460be1a1900d0ffd6faccb2b4efae9",
+  "fixture_manifest": {
+    "approach.mkv": "48fbe127cad98719cf9195449d85395287062049928a4cd4984b28484bc066ea",
+    "approach_context.json": "8d89dbabf53342d7320ef9c052aa590d35b329635fd755489f760b73711b8057",
+    "capture/evidence.jsonl": "5bf2e0004b2fe70ad12d74b4ae9503b3f31bf2419b9cecdbb69282c311be8661",
+    "capture/manifest.json": "41531015ccbcc40707c0ce2617e40ac3fc233094376c5da7f300d7e14a1edfe3",
+    "capture/native/frames.jsonl": "79bad2f27837b748242876b7e67cee4c187ffc8e603a06c87330277bd9f10c1a",
+    "capture/native/graphs/abstract/00000100.pkl": "fd11b95b0e4a4f32f01a45384e9f26edd2f863badf75b3c587e980fc23ddabcd",
+    "capture/native/graphs/abstract/00000101.pkl": "a2c578c3f678e4d0f999128682eb98b932495b5f39e7a56d60d07f1d7683d2ea",
+    "capture/native/graphs/abstract/00000102.pkl": "a1ed0a7e4ef5efb63dcfa8dbede3d44ab7aa8d7e22a950ad9170156689b9118f",
+    "capture/native/graphs/abstract/00000103.pkl": "29484dfea8659b50150be17b0daf8871be312237c3d876a4fe763f85fd1de90e",
+    "capture/native/graphs/base/00000100.pkl": "4affcb68b5f01af5de1f38b6d667c6a70758252509bd234846efa742a12a8274",
+    "capture/native/graphs/base/00000101.pkl": "da904d927d180f3d21dcbcc58a5620e7372cb225635657f6ef4f79a17e36a415",
+    "capture/native/graphs/base/00000102.pkl": "a03e432458b04686fec87d3fe398dd975934c299f645d8ada093becb22904e2e",
+    "capture/native/graphs/base/00000103.pkl": "a38650c260c58a566864176c332ca65f0d6fee84eb4380a518feb9c0fa0ec965",
+    "capture/recorder_info.txt": "4f07e658140d99eb24f7c9f14dcb7a23b80139fad3fb702ed57b8862b914de3e",
+    "diagnostic-input.json": "78d61c68404d9ead74d65be9cc518d406c926d4209b9266943fc369bb75fee0e",
+    "driver_reference.mkv": "48fbe127cad98719cf9195449d85395287062049928a4cd4984b28484bc066ea",
+    "overview.mkv": "0fdfcecab502871df1b4b9ee3a7ea7a868b3b6c3515a4b30831636081edec025",
+    "reference_corner.mkv": "48fbe127cad98719cf9195449d85395287062049928a4cd4984b28484bc066ea",
+    "road.xodr": "69eb46c35a2def4ca707636fa2d7105d275610ece405697e2e9c1a86b104652a",
+    "stop_history.jsonl": "004ab06a5e1ed13e4f99c4ba43d3a3cd11e839655d980fa8794a91014c1ddee8",
+    "trace.jsonl": "69b9828014a6c8cb06860e865b4ec27810a7a6075fd17c9383c3336c9a556204",
+    "video_frames.jsonl": "3ae42c7ebe2d9be8e2452e13dc3de99ffb3de5f7d48f10b9ddce33c12900a975"
+  },
+  "log_sha256": "206ca7fc9ae710bdd7c92299d1d01f96d0e60ca366008e1283193489db9b200e",
+  "fixture_generator_sha256": "ff9c6874b0547a0cf503639616f3a61204229e7cbf06b4aee8287c9a6774b1a7",
+  "fixture_recipe_sha256": "15f6c324a04bd1816a98e17119f9939448a64475c012aed460a8062b48677fff",
+  "measurement_contract_sha256": "2dec3b9004a3a669f26aa10915cfc6cbe7cd2693dfa47443c1f13a02174839f4",
+  "analysis_report_sha256": "3653a8f1bf2e0de1fa6fda30a51f8e4abdd8c17afa8e4abe0223739489fa5610",
+  "measurement_keys": [
+    "stop_line_halt_observation"
+  ],
+  "measurement_examples": {
+    "stop_line_halt_observation": {
+      "value": {
+        "selected_reference": "marked_stop_line",
+        "first_full_halt": {
+          "frame": 101,
+          "time_s": 1.05,
+          "before_reference": true
+        },
+        "first_reference": {
+          "frame": 102,
+          "time_s": 1.1
+        },
+        "first_intersection_entry": {
+          "frame": 103,
+          "time_s": 1.15
+        },
+        "halt_before_reference_and_junction_observed": true
+      },
+      "method": "measure_stop_line_halt",
+      "sources": {
+        "approach_context.json": "8d89dbabf53342d7320ef9c052aa590d35b329635fd755489f760b73711b8057",
+        "stop_history.jsonl": "004ab06a5e1ed13e4f99c4ba43d3a3cd11e839655d980fa8794a91014c1ddee8",
+        "video_frames.jsonl": "3ae42c7ebe2d9be8e2452e13dc3de99ffb3de5f7d48f10b9ddce33c12900a975"
+      }
+    }
+  },
+  "negative_removed": "stop_history.jsonl",
+  "negative_error_contains": "Missing required source: stop_history.jsonl",
+  "negative_log_sha256": "374b38661e3a62ad01131796217128b53fea5a89669d82d58f4ce51e03833be1"
+}

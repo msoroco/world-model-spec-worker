@@ -34,4 +34,20 @@ class StopReferenceTests(unittest.TestCase):
    with self.assertRaisesRegex(ValueError,'No-crosswalk branch'):mod.analyze(root)
    self.fixture(root,line=False);p=root/'sight_history.jsonl';rows=[json.loads(x) for x in p.read_text().splitlines()];rows[2]['frame']=999;write_rows(p,rows)
    with self.assertRaisesRegex(ValueError,'sight frame join'):mod.analyze(root)
+ def test_independent_stop_line_vs_first_view_source_comparison(self):
+  repo=ROOT.parents[1]
+  sys.path.insert(0,str(repo/'runtime/scenario_pipeline'))
+  from worker_exchange.fixture_recipe import materialize
+  from stop_reference_comparison import compare
+  line=ROOT/'cases/no_crosswalk_marked_stop_line/diagnostic-recipe.json'
+  view=ROOT/'cases/no_crosswalk_no_line_first_view/diagnostic-recipe.json'
+  with tempfile.TemporaryDirectory() as tmp:
+   root=Path(tmp);line_root=root/'line';view_root=root/'view'
+   materialize(repo,line,line_root);materialize(repo,view,view_root)
+   receipt=compare(line_root,view_root)
+   self.assertTrue(receipt['diagnostic_comparison_passed'])
+   self.assertFalse(receipt['physical_acceptance_claimed'])
+   ctx_path=view_root/'approach_context.json';ctx=json.loads(ctx_path.read_text())
+   ctx['native_stop_sign_id']=999;ctx_path.write_text(json.dumps(ctx))
+   with self.assertRaisesRegex(ValueError,'native_stop_sign_id'):compare(line_root,view_root)
 if __name__=='__main__':unittest.main()

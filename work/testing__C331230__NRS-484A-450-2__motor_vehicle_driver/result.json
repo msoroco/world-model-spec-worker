@@ -42,32 +42,56 @@
       "sha256": "196493dde1ba8e1f6e2552a6ee6ee474a86aa9e6ffd661a1d5beacca285c2a7a"
     },
     {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/tests -v",
-      "exit_code": 0,
-      "log": "cpu-tests-stop-reference.log",
-      "sha256": "2abe4a776f2e6e87196357c69f96cd92af970a59efa5b8074fe1bd8544653b77"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__no_crosswalk_marked_stop_line --output .runtime-work/c331230-stop-line-offline-v5",
-      "exit_code": 0,
-      "log": "stop-line-offline.log",
-      "sha256": "460dac87598f93d8cf67cf742f945f52e57780c3d365e1ea886dcbd225fdf2ba"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__no_crosswalk_no_line_first_view --output .runtime-work/c331230-first-view-offline-v3",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__no_crosswalk_no_line_first_view --output .runtime-work/c331230-first-view-offline-v4",
       "exit_code": 0,
       "log": "first-view-offline.log",
       "sha256": "af76fc9d8906709b8aaf58f036e124c61649571f3e50f0e1fe7b04a15397920b"
     },
     {
-      "command": "PYTHONPATH=work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver:runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/stop_reference_finalizer.py --attempt .runtime-work/c331230-first-view-fixture-v7 --output .runtime-work/c331230-first-view-fixture-v7/analysis.json",
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__no_crosswalk_no_line_first_view --output .runtime-work/c331230-first-view-compat-v4 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "first-view-compatibility-attempt.log",
+      "sha256": "3446d9517f88d0e78904521bc88d904ee4be20c95c7931a15ff9c51c84a45095"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__no_crosswalk_no_line_first_view --attempt .runtime-work/c331230-first-view-compat-v4 --output .runtime-work/c331230-first-view-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
       "exit_code": 0,
       "log": "first-view-saved-only.log",
-      "sha256": "fc2c1e0b141efd00569fc673d7f75187a88b2ae8d2a56bf9c081ca752270d0c1"
+      "sha256": "3c420f0e34d236d4e577699ed23af2d5a69a8835d02a8bcba0620ca82a313ab4"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__no_crosswalk_marked_stop_line --output .runtime-work/c331230-stop-line-offline-v7",
+      "exit_code": 0,
+      "log": "stop-line-offline.log",
+      "sha256": "7b51d820b81b9c033a95386b5c58d4e8b6e9db3b6127153c5f37e3a4bd85e761"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__no_crosswalk_marked_stop_line --output .runtime-work/c331230-stop-line-compat-v5 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "stop-line-compatibility-attempt.log",
+      "sha256": "0706c71666c6066015f9e192a0b72e17a15570a354f2bff1d6a8d0b60fb146b0"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__no_crosswalk_marked_stop_line --attempt .runtime-work/c331230-stop-line-compat-v5 --output .runtime-work/c331230-stop-line-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "stop-line-process-saved.json",
+      "sha256": "3812242f74e049181c90e2234522640872939b238d9cc4ffed8ab8d427aca4d6"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-tests-stop-reference.log",
+      "sha256": "7e0db63dd9981e30a8e6a9cb8bf650e4dc3023716b4a832cb27d7abadc50f2a8"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/stop_reference_comparison.py --line .runtime-work/c331230-stop-line-compat-v5 --view .runtime-work/c331230-first-view-compat-v4 --output work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/stop-reference-comparison.json",
+      "exit_code": 0,
+      "log": "stop-reference-comparison.json",
+      "sha256": "5b254403004247229ea4160cc54d6f06220dd855cb48b85c7ce5782d8ca5beb9"
     }
   ],
   "remaining_gpu_checks": [
     "Actual proper sign, marked/unmarked near-side crosswalk, stop line, full halt, body entry and camera visibility."
   ],
-  "reason": "Three exact primary cases now have offline CPU materialization: marked crosswalk, no-crosswalk marked stop line, and no-crosswalk/no-line first observed view. The first-view four-camera synthetic fixture passes saved-only finalization with halt frame 101, first sampled view frame 102 and junction frame 103; missing sight_history.jsonl is rejected. Exact compatibility for both no-crosswalk cases reaches the pinned converter but lacks case-consistent capture/native/frames.jsonl and graph packet; see first-view-compatibility-attempt.log and stop-line-compatibility-attempt.log. First-view saved-only fixture finalization is not runtime process-saved. Other selected cases, three fallbacks per selected case, canonical semantic proposals, delivery/comparison audits and source-reviewed Native geometry remain worker-owned. Synthetic sight proxy does not establish the legal nearest driver-view point. See HANDOFF.md."
+  "reason": "The no-crosswalk marked-stop-line and no-crosswalk/no-line first-view primaries each pass exact offline, pinned synthetic compatibility with four cameras and case-specific source-frame/graph packet, negative missing-source analysis, and recorded-only process-saved. An independent source comparison confirms the fixed sign/approach/halt/camera sources and the deliberate StopLine versus first-view change; nine CPU tests pass, including a mismatched-sign negative. Synthetic fixtures do not establish an accepted physical sign, marked line or legally nearest driver-view point. Marked-crosswalk and three other selected cases still need complete exact proofs; all selected cases need three fallbacks, semantic proposals and remaining delivery/comparison audits. See HANDOFF.md."
 }

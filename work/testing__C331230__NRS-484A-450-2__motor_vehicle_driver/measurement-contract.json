@@ -1,0 +1,25 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 2,
+      "requirement": "Every driver approaching a stop intersection indicated by a stop sign shall stop before entering the crosswalk on the near side of the intersection",
+      "source": "NRS 484A.450(2)",
+      "output_key": "crosswalk_halt_observation",
+      "method": "measure_crosswalk_halt",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "approach_context.json",
+        "stop_history.jsonl",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "approach_context.json"
+    ],
+    "error_contains": "Missing required source: approach_context.json"
+  }
+}

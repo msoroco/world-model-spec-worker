@@ -52,7 +52,7 @@ def build():
  runner=change(runner,"'method':'original complete-body speed and crosswalk geometry'","'method':'original complete-body speed and marked-line geometry'")
  (D/'runner.py').write_text(runner)
  (D/'finalizer.py').write_text((F/'stop_reference_finalizer.py').read_text())
- cfg=json.loads((F/'config.json').read_text());cfg['selected_case_id']=CASE;cfg['required_atoms']=[a for a in cfg['required_atoms'] if a!='st.crosswalk'];cfg['site_packet']['sha256']=sha(D/'site.json')
+ cfg=json.loads((F/'config.json').read_text());cfg['selected_case_id']=CASE;cfg['required_atoms']=[a for a in cfg['required_atoms'] if a!='st.crosswalk']+['st.stop_line'];cfg['site_packet']['sha256']=sha(D/'site.json')
  cfg['recording_description']['context_inputs'][0]['method']='source-bound Native sign, no-crosswalk inventory and marked stop line'
  cfg['recording_description']['limitations']=['Synthetic no-crosswalk/stop-line site; Native and legal review pending']
  cfg['physical_completion']['intersection_polygon_xy_m']=site['intersection_polygon_xy_m']

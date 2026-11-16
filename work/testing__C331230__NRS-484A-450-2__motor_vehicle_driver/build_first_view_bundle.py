@@ -43,6 +43,7 @@ def build():
 
     runner = (SOURCE / 'runner.py').read_text()
     runner = replace_once(runner, SOURCE.name, TARGET.name)
+    runner = replace_once(runner, 'Exact marked-crosswalk stop case; Native capture requires a reviewed site.', 'Exact first-observed-view stop case; Native capture requires a reviewed site.')
     runner = replace_once(runner, "site.get('stop_line_exists') is not True or\n     not site.get('stop_line_marking_source')", "site.get('stop_line_exists') is not False or\n     not site.get('stop_line_absence_source') or\n     not site.get('sight_observer_source') or\n     not site.get('approaching_traffic_source')")
     runner = replace_once(runner, "line=site['stop_line_segment_xy_m'];junction=site['intersection_polygon_xy_m']\n if (len(line)!=2 or len(junction)<4 or\n     max(x for x,y in line)>=min(x for x,y in junction) or\n     site['ego_spawn_pose'][0]>=min(x for x,y in line) or\n     not (min(y for x,y in line)<=site['ego_spawn_pose'][1]<=max(y for x,y in line))):\n  raise ValueError('Marked stop line must precede junction and spawn')", "junction=site['intersection_polygon_xy_m'];probe=site['sight_probe_start_xy_m']\n if (len(junction)<4 or len(probe)!=2 or\n     not site['ego_spawn_pose'][0]<probe[0]<min(x for x,y in junction) or\n     len(site['cross_traffic_spawn_pose'])!=4):\n  raise ValueError('First-view probe must precede junction and follow spawn')")
     runner = replace_once(runner, "'stop_line_exists':True,'stop_line_marking_source':site['stop_line_marking_source'],\n  'stop_line_segment_xy_m':site['stop_line_segment_xy_m'],", "'stop_line_exists':False,'stop_line_absence_source':site['stop_line_absence_source'],\n  'sight_observer_source':site['sight_observer_source'],\n  'approaching_traffic_source':site['approaching_traffic_source'],")
@@ -59,12 +60,14 @@ def build():
     runner = replace_once(runner, "'halt_before_stop_line_observed'", "'halt_before_first_observed_view'")
     runner = replace_once(runner, "'complete_halt_before_marked_stop_line'", "'complete_halt_relative_to_first_observed_view'")
     runner = replace_once(runner, "'original complete-body speed and marked-line geometry'", "'original complete-body speed and sampled Native sight history'")
+    runner = replace_once(runner, "['crosswalk halt ordering unconfirmed']", "['first-view halt ordering unconfirmed']")
     runner = replace_once(runner, "'cause_evidence':['approach_context.json','stop_history.jsonl','video_frames.jsonl']", "'cause_evidence':['approach_context.json','stop_history.jsonl','video_frames.jsonl','sight_history.jsonl']")
     runner = replace_once(runner, "C331230 exact no-crosswalk stop-line CPU check passed", "C331230 exact no-crosswalk first-view CPU check passed")
     (TARGET / 'runner.py').write_text(runner)
     (TARGET / 'finalizer.py').write_text((HERE / 'stop_reference_finalizer.py').read_text())
     cfg = json.loads((SOURCE / 'config.json').read_text())
     cfg['selected_case_id'] = CASE
+    cfg['required_atoms'] = [atom for atom in cfg['required_atoms'] if atom != 'st.stop_line']
     cfg['site_packet']['sha256'] = sha(TARGET / 'site.json')
     cfg['recording_description']['context_inputs'][0]['method'] = 'original Native sign, absence inventories and per-frame approaching-traffic sight ray'
     cfg['recording_description']['limitations'] = ['Synthetic site and sampled first-view proxy; actual driver view, Native geometry and legal nearest point unreviewed']
