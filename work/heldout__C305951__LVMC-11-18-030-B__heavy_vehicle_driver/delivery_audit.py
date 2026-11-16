@@ -69,7 +69,7 @@ def _clearance(observation: dict) -> float:
 
 
 def audit(root: Path, case_id: str, *, negative_camera: bool = False,
-          negative_passing: bool = False) -> dict:
+          negative_passing: bool = False, negative_turn: bool = False) -> dict:
     root = Path(root)
     report = json.loads(_file(root, "analysis-report.json").read_text())
     result = json.loads(_file(root, "result.json").read_text())
@@ -79,6 +79,9 @@ def audit(root: Path, case_id: str, *, negative_camera: bool = False,
     sources = measurement["sources"]
     required = {"native_three_lane_survey.json", "heavy_lane_sources.jsonl",
                 "trace.jsonl", "video_frames.jsonl", *(name + ".mkv" for name in CAMERAS)}
+    turn_case = case_id.endswith("__lawful_turn_preparation_boundary_crossing")
+    if turn_case:
+        required.update(("native_turn_plan.json", "turn_intent_sources.jsonl"))
     if set(sources) != required:
         raise ValueError("Saved delivery source inventory differs")
     for name, digest in sources.items():
@@ -144,6 +147,31 @@ def audit(root: Path, case_id: str, *, negative_camera: bool = False,
     order_reversal = bool(relative_positions and relative_positions[0] < 0 < relative_positions[-1])
     if passing is not None and passing.get("order_reversal_observed") not in (None, order_reversal):
         raise ValueError("Saved passing order reversal differs from originals")
+    turn_context = None
+    if turn_case:
+        plan = json.loads(_file(root, "native_turn_plan.json").read_text())
+        intent_rows = _rows(_file(root, "turn_intent_sources.jsonl"))
+        reported = report["measurements"]["turn_preparation_context"]["value"]
+        if (len(intent_rows) != len(body) or
+                reported.get("turn_plan") != plan or
+                reported.get("source_frame_count") != len(body) or
+                reported.get("lawful_turn_premise") is not None or
+                plan.get("lawful_turn_premise") is not None or
+                plan.get("requested_movement") != "turn" or
+                plan.get("direction") not in ("left", "right")):
+            raise ValueError("Saved turn plan differs from originals")
+        for index, (row, frame) in enumerate(zip(intent_rows, frame_map)):
+            if (row.get("frame") != frame["carla_frame"] or
+                    row.get("time_s") != frame["time_s"] or
+                    row.get("turn_plan_sha256") != sources["native_turn_plan.json"] or
+                    row.get("requested_direction") != plan["direction"] or
+                    not row.get("command") or not row.get("indicator_readback") or
+                    row.get("lawful_turn_premise") is not None or
+                    (negative_turn and index == 0)):
+                raise ValueError("Original turn-intent source join differs")
+        turn_context = {"requested_direction": plan["direction"],
+                        "source_frame_count": len(intent_rows),
+                        "lawful_turn_premise": None}
     evidence = {item["name"]: item for item in result["recording_evidence"]}
     if set(evidence) != set(CHANNELS):
         raise ValueError("Saved delivery recording channel inventory differs")
@@ -158,6 +186,7 @@ def audit(root: Path, case_id: str, *, negative_camera: bool = False,
             "passing_context": {"overtaken_actor_ids": observed_ids,
                                 "order_reversal_observed": order_reversal,
                                 "lawful_passing_premise": None},
+            "turn_preparation_context": turn_context,
             "physical_acceptance_claimed": False, "legal_acceptance_claimed": False}
 
 
@@ -260,6 +289,7 @@ def main() -> None:
     parser.add_argument("--negative-same-body", action="store_true")
     parser.add_argument("--negative-camera", action="store_true")
     parser.add_argument("--negative-passing", action="store_true")
+    parser.add_argument("--negative-turn", action="store_true")
     args = parser.parse_args()
     if args.compare_attempt:
         if not args.attempt or args.case:
@@ -277,7 +307,8 @@ def main() -> None:
         parser.error("delivery audit needs --attempt and --case")
     print(json.dumps(audit(Path(args.attempt), args.case,
                            negative_camera=args.negative_camera,
-                           negative_passing=args.negative_passing), indent=2))
+                           negative_passing=args.negative_passing,
+                           negative_turn=args.negative_turn), indent=2))
 
 
 if __name__ == "__main__":
