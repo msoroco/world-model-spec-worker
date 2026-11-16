@@ -128,7 +128,7 @@
       "compatibility": {
         "receipt": "marker-depart-compatibility.json",
         "sha256": "ef86761025395f61ab6fc63eb555c14fed232f261fe4ae77b39e2e57729834f0",
-        "log": "marker-depart-analysis.log",
+        "log": "marker-follow-analysis.log",
         "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
         "negative_log": "marker-depart-negative.log",
         "negative_log_sha256": "42b5918d3f0326e2b2befe9b1809d27acc48b504dbc759f4fe2c3226d51d6958"
@@ -214,6 +214,77 @@
         "log_sha256": "2d3ba0b839ab093b47c42777b61d68885882cb0b573b69e695b7cc87396a2319",
         "receipt": "button-follow-saved-processing.json",
         "receipt_sha256": "2d3ba0b839ab093b47c42777b61d68885882cb0b573b69e695b7cc87396a2319"
+      }
+    },
+    {
+      "case_id": "heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__button_depart",
+      "kind": "delivery",
+      "construction": "button-depart-construction.json",
+      "construction_sha256": "399537f85edaa7312efbc5c84c6da4f090fd06d8a678e409ed05a45a565d5c62",
+      "measurement_procedure": {
+        "entrypoint": "turn_marking.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native indication spawn, turn route and four-camera visibility require physical verification"
+      },
+      "candidates": [],
+      "measurement_contract": "button-depart-measurement-contract.json",
+      "fixture_recipe": "work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/button-depart-recipe.json",
+      "acquisition": {
+        "original_course_deviation_m": {
+          "entrypoint": "turn_marking.py",
+          "method": "source-joined original body/trace/frame and four source-camera derivation",
+          "evidence": "analyze_original_sources verifies SHA-256-bound originals before emitting original_course_deviation_m"
+        },
+        "original_turn_path_length_m": {
+          "entrypoint": "turn_marking.py",
+          "method": "source-joined original body/trace/frame and four source-camera derivation",
+          "evidence": "analyze_original_sources verifies SHA-256-bound originals before emitting original_turn_path_length_m"
+        },
+        "intersection_occupancy": {
+          "entrypoint": "turn_marking.py",
+          "method": "source-joined original body/trace/frame and four source-camera derivation",
+          "evidence": "analyze_original_sources verifies SHA-256-bound originals before emitting intersection_occupancy"
+        },
+        "turn_course_source_context": {
+          "entrypoint": "turn_marking.py",
+          "method": "source-joined original body/trace/frame and four source-camera derivation",
+          "evidence": "analyze_original_sources verifies SHA-256-bound originals before emitting turn_course_source_context"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "indication_source_env_var": "TURN_INDICATION_SOURCE",
+        "indication_sha256_env_var": "TURN_INDICATION_SHA256"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/provisional-manifest.json --case heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__button_depart --output .runtime-work/c111644-button-depart-offline-20261116",
+        "exit_code": 0,
+        "log": "button-depart-offline.log",
+        "log_sha256": "f8392078ff95d1249e0849506ab0f3e79be9b39c0e0b2a7f6708f4462047a932",
+        "construction_sha256": "399537f85edaa7312efbc5c84c6da4f090fd06d8a678e409ed05a45a565d5c62"
+      },
+      "compatibility": {
+        "receipt": "button-depart-compatibility.json",
+        "sha256": "075a992fc61ed6939efb80a060909a86363d6fa2f41d757ebf7655834fc7e03d",
+        "log": "marker-follow-analysis.log",
+        "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "negative_log": "button-depart-negative.log",
+        "negative_log_sha256": "4a696e8228abac889cca40c409e9e7ad0e59e1358df0603812d2f615afb7e8ff"
+      },
+      "negative": {
+        "log": "button-depart-negative.log"
+      },
+      "saved_processing": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/provisional-manifest.json --case heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__button_depart --attempt .runtime-work/c111644-button-depart-saved-attempt-20261116 --output .runtime-work/c111644-button-depart-saved-output-20261116 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "exit_code": 0,
+        "log": "button-depart-saved-processing.json",
+        "log_sha256": "d8ba19ea6ce2d3f89715336304617ae2e0ecaf93aec43bff9c3bbded11c26966",
+        "receipt": "button-depart-saved-processing.json",
+        "receipt_sha256": "d8ba19ea6ce2d3f89715336304617ae2e0ecaf93aec43bff9c3bbded11c26966"
       }
     }
   ]
