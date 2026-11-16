@@ -97,10 +97,12 @@ def _apply_lateral_target(attempt, offset_m):
         raise ValueError("Diagnostic has no lateral motion to rescale")
     for motion, observation in zip(trace, body):
         old = motion["position"]
-        fraction = ((old["x"] - first["x"]) * right[0] +
-                    (old["y"] - first["y"]) * right[1]) / longitudinal
-        desired_x = first["x"] + right[0] * offset_m * fraction
-        desired_y = first["y"] + right[1] * offset_m * fraction
+        current_lateral = ((old["x"] - first["x"]) * right[0] +
+                           (old["y"] - first["y"]) * right[1])
+        fraction = current_lateral / longitudinal
+        lateral_change = offset_m * fraction - current_lateral
+        desired_x = old["x"] + right[0] * lateral_change
+        desired_y = old["y"] + right[1] * lateral_change
         dx, dy = desired_x - old["x"], desired_y - old["y"]
         old["x"], old["y"] = desired_x, desired_y
         if "position_m" in motion:
@@ -108,11 +110,6 @@ def _apply_lateral_target(attempt, offset_m):
             motion["position_m"][1] += dy
         for component in observation["heavy_vehicle_components"]:
             for corner in component["corners_xy_m"]:
-                corner[0] += dx
-                corner[1] += dy
-        other = observation.get("overtaken")
-        if other is not None:
-            for corner in other["corners_xy_m"]:
                 corner[0] += dx
                 corner[1] += dy
     _put(trace_path, trace)

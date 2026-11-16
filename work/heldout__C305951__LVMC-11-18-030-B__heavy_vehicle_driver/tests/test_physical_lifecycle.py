@@ -17,6 +17,29 @@ from heavy_lane_source import measure_footprint
 
 
 class HeavyPhysicalLifecycleTest(unittest.TestCase):
+    def test_lateral_sweep_holds_longitudinal_motion_and_other_vehicle(self):
+        with TemporaryDirectory() as directory:
+            attempt = Path(directory)
+            trace = [{"position": {"x": 0.0, "y": 0.0}, "position_m": [0.0, 0.0, 0.0]},
+                     {"position": {"x": 4.0, "y": 1.4}, "position_m": [4.0, 1.4, 0.0]}]
+            body = [{"lane": {"heading_xy": [1.0, 0.0]},
+                     "heavy_vehicle_components": [{"corners_xy_m": [[0.0, 0.0]]}],
+                     "overtaken": {"corners_xy_m": [[10.0, 0.0]]}},
+                    {"lane": {"heading_xy": [1.0, 0.0]},
+                     "heavy_vehicle_components": [{"corners_xy_m": [[4.0, 1.4]]}],
+                     "overtaken": {"corners_xy_m": [[10.0, 0.0]]}}]
+            fixture_runner._put(attempt / "trace.jsonl", trace)
+            fixture_runner._put(attempt / "heavy_lane_sources.jsonl", body)
+            fixture_runner._apply_lateral_target(attempt, 2.2)
+            changed_trace = fixture_runner._rows(attempt / "trace.jsonl")
+            changed_body = fixture_runner._rows(attempt / "heavy_lane_sources.jsonl")
+            self.assertEqual(changed_trace[-1]["position"], {"x": 4.0, "y": -2.2})
+            self.assertEqual(changed_trace[-1]["position_m"][:2], [4.0, -2.2])
+            self.assertEqual(changed_body[-1]["heavy_vehicle_components"][0]
+                             ["corners_xy_m"][0], [4.0, -2.2])
+            self.assertEqual([row["overtaken"] for row in changed_body],
+                             [row["overtaken"] for row in body])
+
     def test_saved_lateral_sweep_finalizer_and_audit(self):
         prefix = "heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__"
         for branch in ("passing_boundary_crossing", "lawful_turn_preparation_boundary_crossing"):
