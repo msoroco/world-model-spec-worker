@@ -262,12 +262,37 @@ def compare_passing(crossing_root: Path, passing_root: Path, *,
     changed = _rows(_file(second, "heavy_lane_sources.jsonl"))
     if len(base) != len(changed):
         raise ValueError("Heavy passing sample count differs")
+    lateral_offsets = []
     for a, b in zip(base, changed):
-        for key in ("frame", "time_s", "survey_sha256", "lane", "heavy_vehicle_components"):
+        for key in ("frame", "time_s", "survey_sha256", "lane"):
             if a[key] != b[key]:
                 raise ValueError("Heavy passing fixed source field differs: " + key)
+        # The selected passing controller changes only lateral ego motion.
+        # Keep component shape and every longitudinal coordinate source-bound.
+        old_parts, new_parts = a["heavy_vehicle_components"], b["heavy_vehicle_components"]
+        if len(old_parts) != len(new_parts):
+            raise ValueError("Heavy passing component inventory differs")
+        frame_offsets = []
+        for old, new in zip(old_parts, new_parts):
+            if old.keys() != new.keys() or any(
+                old[key] != new[key] for key in old if key != "corners_xy_m"
+            ) or len(old["corners_xy_m"]) != len(new["corners_xy_m"]):
+                raise ValueError("Heavy passing component shape differs")
+            for (old_x, old_y), (new_x, new_y) in zip(
+                old["corners_xy_m"], new["corners_xy_m"]
+            ):
+                if abs(old_x - new_x) > 1e-6:
+                    raise ValueError("Heavy passing longitudinal source differs")
+                frame_offsets.append(new_y - old_y)
+        if not frame_offsets or max(frame_offsets) - min(frame_offsets) > 1e-6:
+            raise ValueError("Heavy passing body translation differs")
+        lateral_offsets.append(frame_offsets[0])
         if a.get("overtaken") is not None or b.get("overtaken") is None:
             raise ValueError("Heavy passing participant difference absent")
+    if not any(offset < -1e-6 for offset in lateral_offsets) or any(
+        offset > 1e-6 for offset in lateral_offsets
+    ):
+        raise ValueError("Heavy passing rightward controller difference absent")
     if (abs(left["minimum_clearance_m"] - right["minimum_clearance_m"]) > 1e-9 or
             not right["passing_context"]["overtaken_actor_ids"]):
         raise ValueError("Heavy passing clearance or participant comparison differs")
