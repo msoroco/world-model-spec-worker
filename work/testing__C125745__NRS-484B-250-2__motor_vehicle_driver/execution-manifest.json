@@ -1,0 +1,53 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C125745__NRS-484B-250-2__motor_vehicle_driver",
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3",
+  "cases": [
+    {
+      "case_id": "testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_ego_left_near_time",
+      "kind": "delivery",
+      "construction": "construction.json",
+      "construction_sha256": "b5d8bead8ed09b33a5f4be01db09d28ce53b5ee471e690a93bdf152a7071d22c",
+      "physical_risk": {
+        "status": "physical",
+        "reason": "Native stop-sign governance and measured entry timing may drift"
+      },
+      "candidates": [],
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "fixture_recipe": "work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/diagnostic-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_ego_left_near_time --output .runtime-work/c125745-primary-offline-v3",
+        "exit_code": 0,
+        "construction_sha256": "b5d8bead8ed09b33a5f4be01db09d28ce53b5ee471e690a93bdf152a7071d22c",
+        "log": "primary-offline-v3.log",
+        "log_sha256": "7f5631124e8977b8a7da323d408be56feb87f243765a402318793dec355e55cc"
+      },
+      "compatibility": {
+        "receipt": "primary-compatibility-receipt-v2.json",
+        "sha256": "40a0e6bed18359af66d89cf8f5caddeae1b8debc1e0c9a22492eea0614b21607",
+        "log": "primary-compatibility-analysis-v2.log"
+      },
+      "negative": {
+        "log": "primary-negative-analysis-v2.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_ego_left_near_time --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat $OUTPUT/feedback.json",
+        "test_log": "primary-saved-v1.log",
+        "test_log_sha256": "c79e9b8a7781084c6d27747eae1439f8519f5d142f054097e14a516e56cb153c",
+        "test_exit_code": 0,
+        "proof_scope": "synthetic original-source recorded-only processing; physical/legal acceptance unclaimed"
+      }
+    }
+  ],
+  "status": "partial_first_case_cpu_bundle"
+}
