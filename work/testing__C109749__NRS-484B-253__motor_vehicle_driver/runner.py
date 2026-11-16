@@ -5,6 +5,7 @@ coverage require an authorized local run and independent source review.
 """
 import argparse
 import json
+import os
 import math
 from contextlib import ExitStack
 from pathlib import Path
@@ -16,6 +17,7 @@ from capture_sources import record_sample
 from construction import select_intersection, spawn_pair, spawn_reciprocal_vehicle
 from controller import LeftTurnController
 from native_scene import control_inputs, junction_context
+from district_site_audit import verify_district_site_packet
 
 CASE = 'testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield_after_turn'
 CAMERAS = tuple(PROFILE)
@@ -40,6 +42,21 @@ def validate_config(config):
     if 'sig.turn_indicator' not in config.get('required_atoms',[]):
         raise ValueError('Selected indicator observation required')
     return config
+
+
+def bind_district_context(context, native_map_name, packet_path):
+    """Require an independently source-reviewed, exact-junction district packet.
+
+    A diagnostic packet can test software wiring but cannot authorize capture.
+    Legal district classification remains for the local reviewer.
+    """
+    if not packet_path:
+        raise ValueError('Reviewed district site packet path required for Native capture')
+    review = verify_district_site_packet(context, native_map_name, packet_path)
+    if review['diagnostic_only']:
+        raise ValueError('Diagnostic district packet cannot authorize Native capture')
+    context['district_source_review'] = review
+    return context
 
 
 def camera_transforms(carla, selected, context):
@@ -95,6 +112,8 @@ def capture(args, config):
         selected = select_intersection(world.get_map())
         context = junction_context(selected)
         context['native_map_id'] = world.get_map().name
+        context = bind_district_context(context, world.get_map().name,
+                                            os.environ.get('SCENARIO_DISTRICT_SITE_PACKET'))
         context['legal_intersection_status'] = 'original-source review required'
         (output/'intersection_geometry.json').write_text(json.dumps(context,indent=2)+'\n')
         ego,oncoming = actors = spawn_pair(world,selected)
