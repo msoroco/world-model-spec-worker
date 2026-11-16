@@ -31,6 +31,17 @@
       ],
       "construction_state": "planned",
       "purpose": "Vary measured departure lateral position only, preserving approach target and geometry."
+    },
+    {
+      "case_id": "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__entry_body_straddles_centerline",
+      "target_law_id": "NRS-484B-400-3",
+      "gap_ids": [
+        "approach-position",
+        "entry-position",
+        "departure-position"
+      ],
+      "construction_state": "draft_cpu_proofs_in_progress",
+      "purpose": "Controlled entry full-body centerline straddle relative to the right-side reference; original physical outcome remains unverified."
     }
   ],
   "comparisons": [
@@ -73,6 +84,28 @@
       "audit_script_sha256": "9f8316e2ec8e96f8c027844827f730f1f2cceeec29bfd928df8edeaa9e74615b",
       "audit_log": "turn-comparison-positive.json",
       "audit_log_sha256": "e14f4eed1842bc9a17adbed01ed38ee95fc0d47885cca4de69501a06b5f7c247"
+    },
+    {
+      "comparison_id": "entry_side",
+      "case_ids": [
+        "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_left_curb_departure",
+        "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__entry_body_straddles_centerline"
+      ],
+      "fixed_conditions": [
+        "same sourced two-directional approach and one-way departure geometry",
+        "same left-turn intention and departure target",
+        "same four cameras and eight-second duration"
+      ],
+      "deliberate_differences": [
+        "original full-body position relative to centerline at intersection entry"
+      ],
+      "audit_script": "turn_entry_comparison_audit.py",
+      "audit_status": "source_shaped_exact_diagnostic_proved_original_native_attempts_pending",
+      "audit_script_sha256": "aa9f74d24096afe1b5b06166f559e57b3277de7b19c7a247646ffc14cf9b4809",
+      "audit_log": "turn-entry-comparison-positive.log",
+      "audit_log_sha256": "65396dac9d447156a483d84ebd31636580057285338b05001f8a7720c1be7878",
+      "negative_log": "turn-entry-comparison-negative.log",
+      "negative_log_sha256": "7ced45c91ccf88b77e7c38c63a9dac5406746a0854517f937f2b5b125ca5045a"
     }
   ],
   "observations": [
@@ -165,6 +198,12 @@
         "requirement": "Full vehicle-body position relative to one-way departure left curb after turning from the right of the centerline at entry",
         "source": "inputs/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/assignment.json",
         "why_existing_insufficient": "No accepted recordings are listed."
+      },
+      {
+        "id": "entry-position",
+        "requirement": "Full body turns from the right of the centerline at the point where it enters the intersection",
+        "source": "inputs/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/assignment.json",
+        "why_existing_insufficient": "No accepted recordings are listed, and the three existing selected cases target right-of-centerline entry only."
       }
     ]
   },
@@ -177,7 +216,8 @@
       "case_ids": [
         "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_left_curb_departure",
         "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__farther_approach_left_curb_departure",
-        "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_farther_departure"
+        "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_farther_departure",
+        "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__entry_body_straddles_centerline"
       ]
     },
     {
@@ -188,7 +228,8 @@
       "case_ids": [
         "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_left_curb_departure",
         "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__farther_approach_left_curb_departure",
-        "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_farther_departure"
+        "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_farther_departure",
+        "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__entry_body_straddles_centerline"
       ]
     },
     {
@@ -199,7 +240,8 @@
       "case_ids": [
         "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_left_curb_departure",
         "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__farther_approach_left_curb_departure",
-        "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_farther_departure"
+        "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_farther_departure",
+        "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__entry_body_straddles_centerline"
       ]
     },
     {
@@ -210,8 +252,125 @@
       "case_ids": [
         "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_left_curb_departure",
         "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__farther_approach_left_curb_departure",
-        "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_farther_departure"
+        "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_farther_departure",
+        "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__entry_body_straddles_centerline"
       ]
     }
-  ]
+  ],
+  "source_observation_mapping": {
+    "drv.turning": {
+      "evidence": "Original frame-joined body path, route survey and completed-turn result distinguish an attempted left turn from a requested target.",
+      "channels": [
+        "approach_body_to_centerline",
+        "entry_body_right_of_centerline",
+        "departure_body_to_left_curb"
+      ],
+      "source_refs": [
+        "inputs/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.centre_line": {
+      "evidence": "Source-hashed Native approach centerline and direction are retained for signed body-corner offsets.",
+      "channels": [
+        "approach_body_to_centerline",
+        "entry_body_right_of_centerline"
+      ],
+      "source_refs": [
+        "inputs/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Original four-corner body footprint relative to the right half and centerline at approach and intersection entry is retained.",
+      "channels": [
+        "approach_body_to_centerline",
+        "entry_body_right_of_centerline"
+      ],
+      "source_refs": [
+        "inputs/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.one_way_roadway": {
+      "evidence": "Original Native connected destination lane directions must establish a one-way highway; catalog label alone does not.",
+      "channels": [
+        "highway_directions"
+      ],
+      "source_refs": [
+        "inputs/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.road_edge": {
+      "evidence": "Original Native destination left-curb geometry is retained and source joined to body corners.",
+      "channels": [
+        "departure_body_to_left_curb"
+      ],
+      "source_refs": [
+        "inputs/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "kin.position": {
+      "evidence": "Original 20 Hz full-body corner positions yield departure curb-distance samples without a legal cutoff.",
+      "channels": [
+        "departure_body_to_left_curb"
+      ],
+      "source_refs": [
+        "inputs/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.intersection": {
+      "evidence": "Original Native interior junction and connected approach/departure route must be verified at capture.",
+      "channels": [
+        "entry_body_right_of_centerline",
+        "highway_directions"
+      ],
+      "source_refs": [
+        "inputs/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.lane_enters": {
+      "evidence": "Original route source identifies the approach centerline entry point and the first body entry frame.",
+      "channels": [
+        "entry_body_right_of_centerline",
+        "highway_directions"
+      ],
+      "source_refs": [
+        "inputs/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.lane_direction": {
+      "evidence": "Original Native waypoint direction inventory must show the two-directional approach and one-way departure.",
+      "channels": [
+        "highway_directions"
+      ],
+      "source_refs": [
+        "inputs/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/assignment.json"
+      ]
+    }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 8,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "ego body, approach centerline, intersection and one-way departure curb",
+        "interval": "full 8-second turn capture"
+      },
+      {
+        "view": "approach",
+        "subject": "ego approach right-half placement and intersection centerline entry",
+        "interval": "approach through entry"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "one-way left-hand curb and ego full-body departure path",
+        "interval": "entry through departure"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "ego intended turn, connected route and surrounding physical constraints",
+        "interval": "full 8-second turn capture"
+      }
+    ]
+  }
 }

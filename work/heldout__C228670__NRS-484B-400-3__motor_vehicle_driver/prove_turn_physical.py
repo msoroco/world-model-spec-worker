@@ -61,7 +61,7 @@ def main():
         entry["native_handoff"] = {"python_env_var": "CARLA_PYTHON",
                                    "host_env_var": "CARLA_HOST", "port_env_var": "CARLA_PORT"}
     manifest_path.write_text(json.dumps(manifest, indent=2) + "\n")
-    print("Three exact turn cases: complete/incomplete/missing and ordered lifecycle passed")
+    print(f"{len(claims)} exact turn cases: complete/incomplete/missing and ordered lifecycle passed")
 
 
 if __name__ == "__main__":

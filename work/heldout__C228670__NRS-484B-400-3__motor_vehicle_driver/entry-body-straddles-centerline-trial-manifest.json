@@ -1,0 +1,90 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver",
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3",
+  "cases": [
+    {
+      "case_id": "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__entry_body_straddles_centerline",
+      "kind": "delivery",
+      "construction": "entry-body-straddles-centerline-construction.json",
+      "construction_sha256": "65e5ac97bbfb7d714af9831618643ce92870a35be0c1c340f56c8387468f982b",
+      "measurement_procedure": {
+        "entrypoint": "turn_position_finalizer.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Surveyed Native road spawn, turn target tracking and original camera coverage need physical verification"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "entry-body-straddles-centerline-fallback1-construction.json",
+          "construction_sha256": "adc82fee786d9fb7b22fc0fa2db5c7991b0a6b3bd93ba7b70f92c5e3b230b288",
+          "changed_knobs": [
+            "spawn_height_offset_m=0.7"
+          ],
+          "trigger": {
+            "source": "Original Native ego spawn readback",
+            "metric": "spawn success at surveyed approach waypoint",
+            "failure_condition": "Primary 0.5 m clearance intersects the road or actor spawn fails"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "entry-body-straddles-centerline-fallback2-construction.json",
+          "construction_sha256": "6fdc7ea7210cc7637ef091045f51c5d1c7889b225a8688f33ccffc4020ca06e2",
+          "changed_knobs": [
+            "target_speed_mps=3.5"
+          ],
+          "trigger": {
+            "source": "Original Native body progress and target reach",
+            "metric": "turn target reached inside 160-frame budget",
+            "failure_condition": "Primary 4 m/s feedback overshoots the sourced target or cannot stay on connected route"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "entry-body-straddles-centerline-fallback3-construction.json",
+          "construction_sha256": "ff5d15d8c28655e4c46e6081115e2b9d2b47fa767a6b88af20230e05cc980e35",
+          "changed_knobs": [
+            "overview_mount_z_m=9.0"
+          ],
+          "trigger": {
+            "source": "Original overview camera decoded frames",
+            "metric": "full-body and both surveyed road legs visible",
+            "failure_condition": "Primary 8 m overview mount clips the body or governing road geometry"
+          }
+        }
+      ],
+      "fixture_recipe": "work/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/entry-body-straddles-centerline-recipe.json",
+      "measurement_contract": "entry-body-straddles-centerline-measurement-contract.json",
+      "acquisition": {
+        "approach_body_to_centerline": {
+          "entrypoint": "turn_position_finalizer.py",
+          "method": "source-hashed Native XODR survey and frame-joined original body geometry",
+          "evidence": "route_survey_original.json, route_survey_capture_receipt.json, body_corners_original.jsonl, trace.jsonl, video_frames.jsonl and four original cameras"
+        },
+        "entry_body_right_of_centerline": {
+          "entrypoint": "turn_position_finalizer.py",
+          "method": "source-hashed Native XODR survey and frame-joined original body geometry",
+          "evidence": "route_survey_original.json, route_survey_capture_receipt.json, body_corners_original.jsonl, trace.jsonl, video_frames.jsonl and four original cameras"
+        },
+        "departure_body_to_left_curb": {
+          "entrypoint": "turn_position_finalizer.py",
+          "method": "source-hashed Native XODR survey and frame-joined original body geometry",
+          "evidence": "route_survey_original.json, route_survey_capture_receipt.json, body_corners_original.jsonl, trace.jsonl, video_frames.jsonl and four original cameras"
+        },
+        "highway_directions": {
+          "entrypoint": "turn_position_finalizer.py",
+          "method": "source-hashed Native XODR survey and frame-joined original body geometry",
+          "evidence": "route_survey_original.json, route_survey_capture_receipt.json, body_corners_original.jsonl, trace.jsonl, video_frames.jsonl and four original cameras"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
+    }
+  ]
+}
