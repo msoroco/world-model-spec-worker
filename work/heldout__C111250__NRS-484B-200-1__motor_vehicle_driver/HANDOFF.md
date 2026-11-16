@@ -1991,3 +1991,27 @@ The settled-state full `.venv-cpu/bin/python worker_check.py --complete --requir
 
 - `.venv-cpu/bin/python worker_check.py --complete --require-delivery-ready` exited 1. Exact log: `work/_shared/strict-gate-latest.log`, SHA256 `8a5196a775b4e25dcc5ad430d9aa36835506a570dd5afd41ee669c3da366a69e`. It failed at `preparation.py:276` with `Preparation acceptance failed: partial/missing packages remain`. Current returned status inventory: {'ready': 40, 'partial': 13}; this is a CPU preparation acceptance failure, not a tool/dependency blocker.
 - C111250 remains partial with nine of twelve selected cases directly bound. Continue `posted_one_way_left`, `insufficient_width_right`, `insufficient_width_left`; then stable-manifest saved replay, semantic-to-execution and audit binding, and assignment strict checks.
+
+## CPU checkpoint 2026-11-16 20:10 UTC: posted_one_way_left direct primary and fallback triple
+
+- Ten of twelve exact cases directly returned; manifest SHA256 `c9d1dbceb663e2ca4deeba655435aee9d5aa73d13b3c12f95338f182e29196e8`. `posted_one_way_left` primary and three distinct triggered fallbacks are directly bound under `cases/posted_one_way_left/`.
+- Primary and all fallbacks passed pinned offline, positive/negative compatibility, and saved processing on synthetic four-camera attempts. Seven case tests and the four-candidate validator passed. Exact commands and paths are in the manifest; source/proof SHA256 digests are in `result.json.posted_one_way_left_direct_binding` and `.posted_one_way_left_fallback_direct_binding`. Final stable-manifest replay remains.
+- To meet the 10,200-file return cap, ten additional C111305 and five C111644 partial-package proof receipts/logs, then two C111305 and 22 C305951 partial-package receipts/logs, were preserved byte-exact in their `result.json.preserved_source_artifacts`. Restore before those packages' direct proof binding. All affected scoped non-strict checkers passed after curation.
+- Next CPU work: both `insufficient_width` cases, final semantic-to-execution and width-source/delivery audit bindings, stable-manifest saved replay, then scoped/batch strict gates.
+
+## CPU checkpoint 2026-11-16 20:12 UTC: insufficient_width_right primary
+
+- Eleven of twelve exact cases now have directly returned primaries. The `insufficient_width_right` primary passed seven case tests, offline, positive/negative compatibility and saved processing on synthetic four-camera sources; exact commands/paths are in `provisional-manifest.json`, SHA256 `b03d399ab3c46cf90b9d3aa4480e88a6f32b463cef93af344bba2d005117e240`. Direct receipt hashes are in `result.json.insufficient_width_right_direct_binding`. Its fallback triple is next.
+- Return-cap curation: six C293604 diagnostic JSON sources and nine C111305 fallback construction sources archived byte-exact with per-file SHA256 under their `result.json.preserved_source_artifacts`; restore before direct work there. Both affected scoped non-strict gates passed.
+
+## CPU checkpoint 2026-11-16 20:14 UTC: insufficient_width_right fallback triple
+
+- Eleven exact cases now have directly returned primaries and three risk-triggered fallbacks each. `insufficient_width_right` fallback1/2/3 each passed offline, positive/negative compatibility, and saved processing on synthetic four-camera attempts. The four-candidate validator and affected scoped non-strict checkers passed. Exact paths/commands in `provisional-manifest.json` (SHA256 `f94db00c20369ba9c62e4a5073d7d76e1c02ce347972aebf13e92cfbff16583c`); proof SHA256 digests in `result.json.insufficient_width_right_fallback_direct_binding`.
+- To meet 10,200-file return cap, 12 C111305 diagnostic/measurement artifacts and 12 C305951 fallback constructions were archived byte-exact with per-file SHA256 in their existing result files. Restore before direct proof binding there.
+- Next CPU case: `insufficient_width_left` primary and fallback triple. Then full semantic-to-execution and original width-source/delivery audit bindings, final-manifest saved replay, and strict gates.
+
+## CPU checkpoint 2026-11-16 20:18 UTC: all twelve selected cases directly bound
+
+- `insufficient_width_left` primary and all three distinct triggered fallbacks passed offline, positive/negative compatibility, and saved processing on synthetic four-camera attempts. Seven case tests and the four-candidate validator passed. The returned manifest now has all twelve selected cases, each with primary plus three fallbacks; SHA256 `bd2ffc18b0def5070062932d54ac30078000e478fcb985ffec603e4cf5c654da`. Exact commands and paths are on manifest entries; hashes in `result.json.insufficient_width_left_direct_binding` and `.insufficient_width_left_fallback_direct_binding`.
+- Return-cap curation: 15 C111644 partial-package case artifacts, seven C111305 constructions and 17 C293604 proposal/test sources archived byte-exact with per-file SHA256 in their existing result files; restore before direct proof binding. All affected scoped non-strict checks passed.
+- Remaining CPU work: canonical execution-manifest validation; semantic-to-execution, physical preparation, width source and independent audit bindings; final stable-manifest saved replay; assignment and batch strict gates. Keep status partial until these pass.
