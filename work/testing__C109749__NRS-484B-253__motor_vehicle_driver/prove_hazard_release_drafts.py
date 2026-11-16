@@ -7,7 +7,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parent.parent
-STAGE = REPO / '.runtime-work/c109749-hazard-release-stage-v1'
+STAGE = REPO / '.runtime-work/c109749-hazard-release-stage-v2'
 MANIFEST = STAGE / 'work' / ROOT.name / 'hazard-release-draft-manifest.json'
 PYTHON = REPO / '.venv-cpu/bin/python'
 VALIDATOR = REPO / '.runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck'

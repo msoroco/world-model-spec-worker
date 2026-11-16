@@ -6,7 +6,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parent.parent
-STAGE = REPO / '.runtime-work/c109749-hazard-release-stage-v1'
+STAGE = REPO / '.runtime-work/c109749-hazard-release-stage-v2'
 
 
 def write(path, data):
@@ -30,10 +30,14 @@ def stage():
         dest.mkdir(parents=True)
         for bundle in source.glob('*construction.json'):
             shutil.copy2(bundle, dest / bundle.name)
-        contract = ROOT / 'cases/approaching_far/measurement-contract.json'
+        contract = ROOT / ('cases/approaching_yield/measurement-contract.json'
+                           if suffix == 'approaching_release_5s'
+                           else 'cases/approaching_far/measurement-contract.json')
         shutil.copy2(contract, dest / contract.name)
         entry['measurement_contract'] = 'cases/' + suffix + '/measurement-contract.json'
-        entry['fixture_recipe'] = 'work/' + ROOT.name + '/cases/approaching_far/diagnostic-recipe.json'
+        recipe_case = ('approaching_yield' if suffix == 'approaching_release_5s'
+                       else 'approaching_far')
+        entry['fixture_recipe'] = 'work/' + ROOT.name + '/cases/' + recipe_case + '/diagnostic-recipe.json'
         plan['cases'].append({'case_id': case, 'target_law_id': 'NRS-484B-253',
                               'gap_ids': ['gap-conditional-branch'], 'status': 'draft_offline_branch',
                               'objective': 'Measure release-policy behavior at an engineering TTC setting.'})
@@ -45,6 +49,8 @@ def stage():
         proposal['rationale'] = 'Diagnostic engineering release setting; Native motion and legal immediate hazard unverified.'
         proposals['cases'].append(proposal)
     shutil.copytree(ROOT / 'cases/approaching_far', target / 'cases/approaching_far',
+                    ignore=shutil.ignore_patterns('*.log', '*.pyc', '__pycache__'))
+    shutil.copytree(ROOT / 'cases/approaching_yield', target / 'cases/approaching_yield',
                     ignore=shutil.ignore_patterns('*.log', '*.pyc', '__pycache__'))
     write(target / 'case-plan.json', plan)
     write(target / 'proposals/cases.json', proposals)

@@ -46,6 +46,9 @@ def build():
             bundle["case_id"] = case_id
             for file in bundle["files"]:
                 content = file["content"].replace(SOURCE_SUFFIX, suffix)
+                if suffix == 'approaching_release_5s' and file['path'] == 'finalizer.py':
+                    content = (ROOT / 'cases/approaching_yield/finalizer.py').read_text().replace(
+                        '__approaching_yield', '__approaching_release_5s')
                 if file["path"] == "config.json":
                     config = json.loads(content)
                     config["controller_release_ttc_s"] = (
@@ -54,6 +57,13 @@ def build():
                     config["hazard_legal_threshold"] = None
                     content = json.dumps(config, indent=2, ensure_ascii=False) + "\n"
                 file["content"] = content
+            if suffix == 'approaching_release_5s':
+                bundle['mechanisms']['subject'] = (
+                    '5 s engineering policy holds during measured opposing approach and turns after '
+                    'complete-body clearance; Native motion unverified')
+                bundle['mechanisms']['traffic'] = (
+                    'same authored opposing approach, with source-measured entry and clearance '
+                    'before the subject turn')
             name = "construction.json" if label == "primary" else label + "-construction.json"
             path = folder / name
             write(path, bundle)
@@ -69,6 +79,11 @@ def build():
             if label == "fallback1":
                 target["changed_knobs"] = ["controller_release_ttc_s"]
         entries.append(entry)
+        if suffix == 'approaching_release_5s':
+            contract = json.loads((ROOT / 'cases/approaching_yield/measurement-contract.json').read_text())
+            contract_path = folder / 'measurement-contract.json'
+            write(contract_path, contract)
+            entry['measurement_contract'] = str(contract_path.relative_to(ROOT))
         index.append({"case_id": case_id, "engineering_release_ttc_s": release,
                       "legal_threshold": None, "canonical_selection": False,
                       "variants": variants})
