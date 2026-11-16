@@ -133,15 +133,13 @@ class SavedFinalizerTests(unittest.TestCase):
         the saved-source measurement responds to arrival order, not that the
         selected Native intersection can realize any of these points.
         """
-        source = PACKAGE / "diagnostic-sources"
-        original = [json.loads(line) for line in
-                    (source / "crossing_history.jsonl").read_text().splitlines()]
         results = []
         for shift in (-1, 0, 1, 2):
             with tempfile.TemporaryDirectory() as temp:
                 root = Path(temp)
-                for name in ("road_geometry.json", "video_frames.jsonl"):
-                    (root / name).write_bytes((source / name).read_bytes())
+                self.sources(root)
+                original = [json.loads(line) for line in
+                            (root / "crossing_history.jsonl").read_text().splitlines()]
                 rows = []
                 for i, row in enumerate(original):
                     shifted = dict(row)

@@ -16,6 +16,8 @@ sys.path.insert(0, str(PACKAGE))
 from runner import TARGETS, _camera_frame, capture, main, release_permissions, validate_config
 from site_packet import source_bindings
 from camera_setup import SIZES
+from stop_control import StopApproach
+from yield_controller import apply_speed_control
 
 
 def config(case):
@@ -93,6 +95,34 @@ def write_packet(root, value):
 
 
 class RunnerTests(unittest.TestCase):
+    def test_four_release_sweep_points_issue_distinct_measured_commands(self):
+        """Exercise the authored schedule through the actual stop/speed controllers."""
+        case = next(item for item in TARGETS if item.endswith("signal_off"))
+        observed = []
+        for ego_release in (8, 9, 10, 11):
+            value = config(case)
+            value["ego_release_frame"] = ego_release
+            value["other_release_frame"] = 10
+            with tempfile.TemporaryDirectory() as temp:
+                write_packet(Path(temp), value)
+                validate_config(value, Path(temp))
+            stop = StopApproach([[-5, -2], [-5, 2]])
+            controls = []
+            actor = NS(get_velocity=lambda: NS(x=0.0, y=0.0, z=0.0),
+                       apply_control=lambda command: controls.append(command))
+            carla = NS(VehicleControl=lambda: NS(steer=0.0, throttle=0.0, brake=0.0))
+            first_release = None
+            for frame in range(14):
+                permission = release_permissions(value, frame, other_entered=False)["ego"]
+                decision = stop.step([-5.0, 0.0], 0.0, [1.0, 0.0], permission)
+                command = apply_speed_control(carla, actor, 5.0, decision["hold"])
+                if command["throttle"] > 0 and first_release is None:
+                    first_release = frame
+                self.assertEqual(command["hold"], decision["hold"])
+            self.assertEqual(len(controls), 14)
+            observed.append(first_release)
+        self.assertEqual(observed, [8, 9, 10, 11])
+
     def test_declared_ego_release_sweep_keeps_default_order_gate(self):
         baseline = config(next(iter(TARGETS)))
         self.assertEqual(release_permissions(baseline, 21, False),
