@@ -203,6 +203,7 @@ class SignalTests(unittest.TestCase):
         candidates = site_packet.probe_native_signal_crossings(world)
         self.assertEqual(len(candidates), 1)
         self.assertEqual(candidates[0]["governing_signal_ids"], [5, 9])
+        self.assertEqual(candidates[0]["junction_sample_road_lanes"], [[11, -1], [22, -1]])
         self.assertEqual(candidates[0]["review_status"], "candidate_only")
         self.assertIn("statutory intersection identity", candidates[0]["unresolved"])
         self.assertEqual(world.native_map.spacing, 2.0)
@@ -210,6 +211,10 @@ class SignalTests(unittest.TestCase):
         self.assertEqual(site_packet.probe_native_signal_crossings(parallel), [])
         ambiguous = NativeWorld(world.lights + [Light(10, 22, -1)], crossing)
         self.assertEqual(site_packet.probe_native_signal_crossings(ambiguous), [])
+        shared_head = Light(5, 11, -1)
+        shared_head.waypoints.append(Waypoint(22, -1))
+        self.assertEqual(site_packet.probe_native_signal_crossings(
+            NativeWorld([shared_head], crossing)), [])
 
         def upstream_sample(junction_road, approach_road, x, y, yaw):
             approach = waypoint(approach_road, -1, x - 2, y - 2, yaw)
@@ -223,6 +228,8 @@ class SignalTests(unittest.TestCase):
         traced = site_packet.probe_native_signal_crossings(split_roads)
         self.assertEqual(len(traced), 1)
         self.assertEqual(traced[0]["approach_road_lanes"], [[11, -1], [22, -1]])
+        self.assertEqual(traced[0]["junction_sample_road_lanes"], [[111, -1], [222, -1]])
+        self.assertEqual(traced[0]["governing_signal_ids"], [5, 9])
         self.assertEqual(traced[0]["governance_trace_m"], [2.0, 2.0])
         split_roads.native_map.points[0].previous = lambda distance: [
             waypoint(11, -1, -3, 0, 0), waypoint(11, -2, -3, 1, 0)]

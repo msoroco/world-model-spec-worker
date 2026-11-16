@@ -1,5 +1,6 @@
 """Reject changed fixed conditions in the matched signal contrast."""
 import copy
+import json
 import sys
 import unittest
 from pathlib import Path
@@ -7,7 +8,7 @@ from pathlib import Path
 ASSIGNMENT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ASSIGNMENT))
 from signal_advance_comparison_audit import compare_rows, fixed_config
-from prove_signal_distance_comparison import compare_fixed_motion
+from prove_signal_distance_comparison import compare_fixed_motion, compare_fixed_construction, CASES
 
 
 class SignalAdvanceComparisonTests(unittest.TestCase):
@@ -62,6 +63,25 @@ class SignalAdvanceComparisonTests(unittest.TestCase):
         third[380]['oncoming']['position_xy_m'][0] += 0.5
         with self.assertRaisesRegex(ValueError, 'non-signal source condition changed'):
             compare_fixed_motion((self.signalled, self.omitted, third))
+
+    def test_three_selected_constructions_reject_undeclared_change(self):
+        manifest = json.loads((ASSIGNMENT / 'execution-manifest.json').read_text())
+        bundles = []
+        for name in CASES:
+            case = next(item for item in manifest['cases'] if item['case_id'].endswith('__' + name))
+            bundle = json.loads((ASSIGNMENT / case['construction']).read_text())
+            bundles.append({file['path']: file['content'] for file in bundle['files']})
+        compare_fixed_construction(bundles)
+        tampered = copy.deepcopy(bundles)
+        tampered[0]['camera_setup.py'] += '\n# undeclared camera change\n'
+        with self.assertRaisesRegex(ValueError, 'Construction differs outside declared signal target'):
+            compare_fixed_construction(tampered)
+        tampered = copy.deepcopy(bundles)
+        config = json.loads(tampered[2]['config.json'])
+        config['duration_s'] = 44
+        tampered[2]['config.json'] = json.dumps(config)
+        with self.assertRaisesRegex(ValueError, 'Construction differs outside declared signal target'):
+            compare_fixed_construction(tampered)
 
 
 if __name__ == '__main__':

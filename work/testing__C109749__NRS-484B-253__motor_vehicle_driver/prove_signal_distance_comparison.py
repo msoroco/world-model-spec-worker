@@ -15,6 +15,7 @@ TARGETS = (25.0, 30.48, 36.0)
 ATTEMPTS = ('c109749-canonical-below-delivery-v1',
             'c109749-signal-advance-delivery-v1',
             'c109749-canonical-above-delivery-v1')
+IDENTITY = {'selected_case_id', 'supported_case_ids', 'signal_target_m'}
 
 
 def require(condition, message):
@@ -35,9 +36,57 @@ def compare_fixed_motion(histories):
             'A non-signal source condition changed')
 
 
+def normalized_bundle(files, case_id, target):
+    """Remove only declared case identity, target, and threshold outcome."""
+    result = dict(files)
+    config = json.loads(result['config.json'])
+    require(config['selected_case_id'] == case_id and
+            config['supported_case_ids'] == [case_id] and
+            config['signal_target_m'] == target,
+            'Comparison case identity or signal target differs')
+    result['config.json'] = json.dumps({key: value for key, value in config.items()
+                                        if key not in IDENTITY}, sort_keys=True)
+    runner = result['runner.py']
+    exact = f"config.get('signal_target_m') != {target} or"
+    require(runner.count(case_id) == 1 and runner.count(exact) == 1,
+            'Declared runner target policy missing')
+    error = f"Exact {target} m signal probe required"
+    require(runner.count(error) == 1, 'Declared runner target error missing')
+    result['runner.py'] = runner.replace(case_id, '<CASE>').replace(exact,
+                               "config.get('signal_target_m') != <TARGET> or").replace(error, '<TARGET> m signal probe required')
+    finalizer = result['finalizer.py']
+    require(finalizer.count(case_id) == 1, 'Declared finalizer case identity missing')
+    finalizer = finalizer.replace(case_id, '<CASE>')
+    if target == 25.0:
+        requested = "'target':'continuous_left_signal_at_least_30_48_m',\n                        'requested':False,"
+        matched = "'matched':not (signal_advance['probes']['30.48']['observable_distance_met'] and signal_advance['probes']['30.48']['full_signal_onset_observed'])"
+        require(finalizer.count(requested) == 1 and finalizer.count(matched) == 1,
+                'Below-threshold finalizer outcome missing')
+        finalizer = finalizer.replace(requested, requested.replace('False', '<TARGET_OUTCOME>'))
+        finalizer = finalizer.replace(matched, "'matched':<TARGET_OUTCOME>")
+    else:
+        requested = "'target':'continuous_left_signal_at_least_30_48_m',\n                        'requested':True,"
+        matched = "'matched':signal_advance['probes']['30.48']['observable_distance_met'] and signal_advance['probes']['30.48']['full_signal_onset_observed']"
+        require(finalizer.count(requested) == 1 and finalizer.count(matched) == 1,
+                'At/above-threshold finalizer outcome missing')
+        finalizer = finalizer.replace(requested, requested.replace('True', '<TARGET_OUTCOME>'))
+        finalizer = finalizer.replace(matched, "'matched':<TARGET_OUTCOME>")
+    result['finalizer.py'] = finalizer
+    return result
+
+
+def compare_fixed_construction(bundles):
+    require(len(bundles) == 3, 'Three selected constructions required')
+    normalized = [normalized_bundle(files, ROOT.name + '__' + name, target)
+                  for files, name, target in zip(bundles, CASES, TARGETS)]
+    require(normalized[0] == normalized[1] == normalized[2],
+            'Construction differs outside declared signal target')
+
+
 def main():
     histories = []
     evidence = []
+    bundles = []
     manifest = json.loads((ROOT / 'execution-manifest.json').read_text())
     for name, target, attempt_name in zip(CASES, TARGETS, ATTEMPTS):
         case_id = ROOT.name + '__' + name
@@ -46,7 +95,9 @@ def main():
         require(hashlib.sha256(construction.read_bytes()).hexdigest() == selected['construction_sha256'],
                 'Selected comparison construction changed')
         bundle = json.loads(construction.read_text())
-        config = json.loads(next(f['content'] for f in bundle['files'] if f['path'] == 'config.json'))
+        files = {f['path']: f['content'] for f in bundle['files']}
+        bundles.append(files)
+        config = json.loads(files['config.json'])
         require(config['signal_target_m'] == target, 'Selected signal target changed')
         attempt = REPO / '.runtime-work' / attempt_name / 'attempt'
         source = attempt / 'interaction_history.jsonl'
@@ -77,6 +128,7 @@ def main():
                          'authored_target_m': target, 'measured_m': value,
                          'continuous_start_frame': observed['continuous_start_frame'],
                          'observable_30_48_m_met': target >= 30.48})
+    compare_fixed_construction(bundles)
     compare_fixed_motion(histories)
     require(all(left['measured_m'] < right['measured_m']
                 for left, right in zip(evidence, evidence[1:])),
@@ -92,6 +144,7 @@ def main():
         raise ValueError('Changed opposing position passed fixed-condition check')
     print(json.dumps({'format': 'worker-signal-distance-fixed-condition-comparison',
                       'cases': evidence, 'fixed_motion_except_indicator': True,
+                      'fixed_construction_except_declared_target': True,
                       'changed_opposing_position_rejected': True,
                       'frames': 900,
                       'source_kind': 'sealed synthetic software delivery diagnostics',

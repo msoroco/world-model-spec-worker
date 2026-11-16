@@ -169,7 +169,8 @@ def probe_native_signal_crossings(world, sample_m=2.0, search_radius_m=25.0):
             continue
         junction_id = int(waypoint.get_junction().id)
         junctions.setdefault(junction_id, {}).setdefault(key, []).append(
-            (float(location.x), float(location.y), float(rotation.yaw), signal_id, trace_m))
+            (float(location.x), float(location.y), float(rotation.yaw), signal_id, trace_m,
+             [int(waypoint.road_id), int(waypoint.lane_id)]))
     candidates = []
     for junction_id, approaches in sorted(junctions.items()):
         keys = sorted(approaches)
@@ -187,11 +188,14 @@ def probe_native_signal_crossings(world, sample_m=2.0, search_radius_m=25.0):
                 if not pairs:
                     continue
                 distance, angle, a, b = min(pairs, key=lambda item: item[0])
+                if a[3] == b[3]:
+                    continue
                 candidates.append({
                     "native_map_name": native_map.name,
                     "native_junction_id": junction_id,
                     "approach_road_lanes": [list(left), list(right)],
-                    "governing_signal_ids": [next(iter(lanes[left])), next(iter(lanes[right]))],
+                    "governing_signal_ids": [a[3], b[3]],
+                    "junction_sample_road_lanes": [a[5], b[5]],
                     "sample_xy_yaw": [list(a[:3]), list(b[:3])],
                     "governance_trace_m": [a[4], b[4]],
                     "sample_separation_m": distance,
