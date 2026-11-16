@@ -24,7 +24,15 @@ class Actor:
         return self
 
     def get_transform(self):
-        return SimpleNamespace(rotation=SimpleNamespace(yaw=self.yaw))
+        x = -10 if self.yaw == 0 else 10
+        return SimpleNamespace(location=SimpleNamespace(x=x, y=0),
+                               rotation=SimpleNamespace(yaw=self.yaw))
+
+    def get_velocity(self):
+        return SimpleNamespace(x=0., y=0., z=0.)
+
+    def apply_control(self, control):
+        self.control = control
 
     def destroy(self):
         self.destroyed = True
@@ -79,6 +87,51 @@ class OppositeTurnConstructionTest(unittest.TestCase):
                                                      {"ego": "pose1", "other": "pose2"}, site(), "ego"):
                 pass
         self.assertTrue(all(actor.destroyed for actor in actors))
+
+    def test_route_commands_hold_then_release_both_roles(self):
+        actors = {"ego": Actor([11, -1], 0), "other": Actor([11, 1], 180)}
+        carla = SimpleNamespace(VehicleControl=lambda: SimpleNamespace())
+        progress = {"ego": 1, "other": 1}
+        before = module.command_opposite_turn_pair(
+            carla, actors, site(), progress, 7, {"ego": 8, "other": 10},
+            {"ego": 5., "other": 5.}, "ego")
+        self.assertFalse(before["decisions"]["ego"]["release_allowed"])
+        self.assertEqual(actors["ego"].control.brake, 1.)
+        self.assertEqual(actors["other"].control.brake, 1.)
+        ego_release = module.command_opposite_turn_pair(
+            carla, actors, site(), progress, 8, {"ego": 8, "other": 10},
+            {"ego": 5., "other": 5.}, "ego")
+        self.assertGreater(actors["ego"].control.throttle, 0.)
+        self.assertEqual(actors["other"].control.brake, 1.)
+        self.assertFalse(ego_release["legal_exception_verified"])
+        module.command_opposite_turn_pair(
+            carla, actors, site(), progress, 10, {"ego": 8, "other": 10},
+            {"ego": 5., "other": 5.}, "ego")
+        self.assertGreater(actors["other"].control.throttle, 0.)
+
+    def test_bad_route_index_applies_no_partial_command(self):
+        actors = {"ego": Actor([11, -1], 0), "other": Actor([11, 1], 180)}
+        carla = SimpleNamespace(VehicleControl=lambda: SimpleNamespace())
+        with self.assertRaisesRegex(ValueError, 'route target index'):
+            module.command_opposite_turn_pair(
+                carla, actors, site(), {"ego": 1, "other": 0}, 8,
+                {"ego": 8, "other": 10}, {"ego": 5., "other": 5.}, "ego")
+        self.assertFalse(hasattr(actors["ego"], "control"))
+        self.assertFalse(hasattr(actors["other"], "control"))
+
+    def test_other_driver_can_be_the_left_turner(self):
+        changed = site()
+        changed["routes"]["ego"] = [[-10, 0], [-5, 0], [0, 0], [5, 0]]
+        changed["routes"]["other"] = [[10, 0], [5, 0], [0, 0], [0, -5]]
+        actors = {"ego": Actor([11, -1], 0), "other": Actor([11, 1], 180)}
+        carla = SimpleNamespace(VehicleControl=lambda: SimpleNamespace())
+        result = module.command_opposite_turn_pair(
+            carla, actors, changed, {"ego": 1, "other": 3}, 10,
+            {"ego": 8, "other": 10}, {"ego": 5., "other": 5.}, "other")
+        self.assertEqual(result["turning_role"], "other")
+        self.assertAlmostEqual(result["geometry"]["routes"]["other"]["deflection_deg"], 90.)
+        self.assertGreater(actors["other"].control.throttle, 0.)
+        self.assertLess(actors["other"].control.steer, 0.)
 
 
 if __name__ == "__main__":

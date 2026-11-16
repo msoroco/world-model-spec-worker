@@ -7,6 +7,9 @@ blueprints. Angular bounds are construction checks, not statutory definitions.
 from contextlib import contextmanager
 import math
 
+from route_control import steering_command
+from yield_controller import apply_speed_control
+
 
 def _bearing(a, b):
     if not isinstance(a, (list, tuple)) or not isinstance(b, (list, tuple)) or len(a) != 2 or len(b) != 2:
@@ -75,3 +78,44 @@ def construct_opposite_turn_pair(world, blueprints, transforms, site, turning_ro
     finally:
         for actor in reversed(list(actors.values())):
             actor.destroy()
+
+
+def command_opposite_turn_pair(carla, actors, site, progress, frame_index,
+                               release_frames, target_speeds_mps, turning_role):
+    """Apply one source-route command to each Native vehicle before a world tick.
+
+    Release frames are engineering capture inputs. They do not encode which
+    driver has statutory priority or whether the exception applies.
+    """
+    geometry = check_routes(site.get("routes"), turning_role)
+    roles = ("ego", "other")
+    if set(actors) != set(roles) or set(progress) != set(roles):
+        raise ValueError("Both live Native actors and route indices required")
+    if (type(frame_index) is not int or frame_index < 0
+            or set(release_frames) != set(roles)
+            or any(type(release_frames[role]) is not int or release_frames[role] < 1
+                   for role in roles)
+            or set(target_speeds_mps) != set(roles)
+            or any(type(target_speeds_mps[role]) not in (int, float)
+                   or not math.isfinite(target_speeds_mps[role])
+                   or target_speeds_mps[role] <= 0 for role in roles)):
+        raise ValueError("Finite release schedule and target speeds required")
+    decisions = {}
+    # Compute both steering paths before applying either command. If geometry or
+    # a route index is invalid, no actor receives a partial new command.
+    for role in roles:
+        pose = actors[role].get_transform()
+        location, yaw = pose.location, float(pose.rotation.yaw)
+        steer, next_index = steering_command(float(location.x), float(location.y),
+                                              yaw, site["routes"][role], progress[role])
+        decisions[role] = {"steer": steer, "next_index": next_index,
+                           "release_allowed": frame_index >= release_frames[role]}
+    for role in roles:
+        decision = decisions[role]
+        decision["applied_control"] = apply_speed_control(
+            carla, actors[role], float(target_speeds_mps[role]),
+            not decision["release_allowed"], decision["steer"])
+        progress[role] = decision["next_index"]
+    return {"frame_index": frame_index, "turning_role": turning_role,
+            "geometry": geometry, "decisions": decisions,
+            "native_motion_verified": False, "legal_exception_verified": False}
