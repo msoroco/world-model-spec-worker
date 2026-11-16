@@ -37,6 +37,8 @@ def main():
     manifest=json.loads(path.read_text())
     for entry in manifest['cases']:
         case=entry['case_id'];suffix=case.split('__')[-1]
+        if suffix.startswith('conditions_gap_'):
+            continue  # The canonical sweep binder owns these two receipts.
         fixtures=[run(case,suffix,kind) for kind in KINDS]
         life=run(case,suffix,'lifecycle')
         lifecycle={'events':['capture_finished','encoders_closed','restoration_verified',
