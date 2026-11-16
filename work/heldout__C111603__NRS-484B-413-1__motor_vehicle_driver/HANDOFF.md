@@ -298,3 +298,12 @@ A further 12 and then 25 byte-identical analysis logs were compacted using retai
 ### 2026-11-12 proof-preserving analysis consolidation
 
 Six byte-identical empty compatibility analysis logs were consolidated with execution-manifest paths repointed to the identical retained bytes. The assignment-scoped strict gate passed afterward; ready status is unchanged.
+
+
+2026-11-16 CPU file-budget preservation: nine unreferenced saved receipt copies archived byte-exact in `result.json.preserved_unreferenced_cpu_artifacts`; member SHA256 values recorded there. Scoped validation follows.
+
+
+2026-11-16 CPU file-budget preservation: three additional unreferenced saved receipt copies archived byte-exact in `result.json.preserved_unreferenced_cpu_artifacts`; member SHA256 values recorded there.
+
+
+2026-11-16 CPU file-budget preservation: 3 unreferenced saved receipt copies archived byte-exact in `result.json.preserved_unreferenced_cpu_artifacts`; member SHA256 values recorded there.

@@ -266,3 +266,6 @@ The preceding channel finding was repaired as a plan-schema correction. `case-pl
 ### 2026-11-16 proof-preserving audit compaction
 
 4 historical comparison logs were preserved byte-for-byte with original filenames and SHA-256 values in `comparison-audit-history.json`; their case-plan references now point to the returned bundle. The originals were backed up in ignored `.runtime-work` and removed from the returned inventory to make room for ongoing CPU preparation. This assignment’s scoped `--complete --require-delivery-ready` gate passed after compaction. Status remains ready.
+
+
+2026-11-16 CPU file-budget preservation: 1 unreferenced saved receipt copies archived byte-exact in `result.json.preserved_unreferenced_cpu_artifacts`; member SHA256 values recorded there.

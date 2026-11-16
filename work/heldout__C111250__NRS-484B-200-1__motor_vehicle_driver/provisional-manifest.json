@@ -536,7 +536,89 @@
         "status": "physical",
         "reason": "Loaded road geometry and camera/vehicle motion require physical verification"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction_sha256": "1afbd6a94919f3a8aa7b71cef15dee0739cb329f782625681928d6fc74164acf",
+          "trigger": {
+            "source": "road_geometry.json",
+            "metric": "connected driving lane and passed vehicle lane survey",
+            "failure_condition": "primary surveyed road cannot support the overtaking same direction geometry"
+          },
+          "changed_knobs": [
+            "required_site_profile=alternate_overtaking_road"
+          ],
+          "construction": "cases/overtaking_same_direction_left/candidates/fallback1/construction.json",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111250__NRS-484B-200-1__motor_vehicle_driver/provisional-manifest.json --case heldout__C111250__NRS-484B-200-1__motor_vehicle_driver__overtaking_same_direction_left --candidate fallback1 --output .runtime-work/c111250-overtaking-left-direct-fallback1-offline",
+            "exit_code": 0,
+            "construction_sha256": "1afbd6a94919f3a8aa7b71cef15dee0739cb329f782625681928d6fc74164acf",
+            "log": "cases/overtaking_same_direction_left/candidates/fallback1/offline.log",
+            "log_sha256": "7d5d71be4a78c868f80cf296303b7995dc405bc2c7095873c21458a694ec3edc"
+          },
+          "compatibility": {
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C111250__NRS-484B-200-1__motor_vehicle_driver/provisional-manifest.json --case heldout__C111250__NRS-484B-200-1__motor_vehicle_driver__overtaking_same_direction_left --candidate fallback1 --output .runtime-work/c111250-overtaking-left-direct-fallback1-compat --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+            "receipt": "cases/overtaking_same_direction_left/candidates/fallback1/compatibility.json",
+            "sha256": "c69a4777dceff5d6fd3186fe7eba6c269d2fd4bb5d77371ca4b82159d48fba25",
+            "log": "first-primary-compatibility-analysis.log",
+            "negative_log": "cases/overtaking_same_direction_left/candidates/fallback1/negative-analysis.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction_sha256": "cd5f5fc4a2bd4c13807d0e6d61ed4b7949be37bfff76766f601ae4054447f142",
+          "trigger": {
+            "source": "passed_vehicle_original.json",
+            "metric": "passed vehicle spawn and original route separation",
+            "failure_condition": "primary passed vehicle spawn is occupied or overlap prevents a usable pass"
+          },
+          "changed_knobs": [
+            "passed_vehicle_spawn_offset_m=2.0"
+          ],
+          "construction": "cases/overtaking_same_direction_left/candidates/fallback2/construction.json",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111250__NRS-484B-200-1__motor_vehicle_driver/provisional-manifest.json --case heldout__C111250__NRS-484B-200-1__motor_vehicle_driver__overtaking_same_direction_left --candidate fallback2 --output .runtime-work/c111250-overtaking-left-direct-fallback2-offline",
+            "exit_code": 0,
+            "construction_sha256": "cd5f5fc4a2bd4c13807d0e6d61ed4b7949be37bfff76766f601ae4054447f142",
+            "log": "cases/overtaking_same_direction_left/candidates/fallback2/offline.log",
+            "log_sha256": "3fb0223b8640cd82b40bcecae0a501012adffe0ce8b2a3894fdf28b98e08ca22"
+          },
+          "compatibility": {
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C111250__NRS-484B-200-1__motor_vehicle_driver/provisional-manifest.json --case heldout__C111250__NRS-484B-200-1__motor_vehicle_driver__overtaking_same_direction_left --candidate fallback2 --output .runtime-work/c111250-overtaking-left-direct-fallback2-compat --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+            "receipt": "cases/overtaking_same_direction_left/candidates/fallback2/compatibility.json",
+            "sha256": "0167951752bd0300f018f421279d1382a9f807545a1b5f248893126ddb41e9b3",
+            "log": "first-primary-compatibility-analysis.log",
+            "negative_log": "cases/overtaking_same_direction_left/candidates/fallback2/negative-analysis.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction_sha256": "ba31b73125e5e8b2cac9f00b171eb3c204c631088b5ac6978e73c8ad561dafd3",
+          "trigger": {
+            "source": "overview.mkv",
+            "metric": "subject and passed vehicle pixel coverage across original frames",
+            "failure_condition": "primary overview view omits either vehicle during the pass"
+          },
+          "changed_knobs": [
+            "overview_mount_shift_m=[-2.0,2.0,1.0]"
+          ],
+          "construction": "cases/overtaking_same_direction_left/candidates/fallback3/construction.json",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111250__NRS-484B-200-1__motor_vehicle_driver/provisional-manifest.json --case heldout__C111250__NRS-484B-200-1__motor_vehicle_driver__overtaking_same_direction_left --candidate fallback3 --output .runtime-work/c111250-overtaking-left-direct-fallback3-offline",
+            "exit_code": 0,
+            "construction_sha256": "ba31b73125e5e8b2cac9f00b171eb3c204c631088b5ac6978e73c8ad561dafd3",
+            "log": "cases/overtaking_same_direction_left/candidates/fallback3/offline.log",
+            "log_sha256": "18e11fe755d9e21ef351fd02fa094acf6f01ef499547736af8035a9aef9331be"
+          },
+          "compatibility": {
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C111250__NRS-484B-200-1__motor_vehicle_driver/provisional-manifest.json --case heldout__C111250__NRS-484B-200-1__motor_vehicle_driver__overtaking_same_direction_left --candidate fallback3 --output .runtime-work/c111250-overtaking-left-direct-fallback3-compat --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+            "receipt": "cases/overtaking_same_direction_left/candidates/fallback3/compatibility.json",
+            "sha256": "c5d8b88c1e4ad8ad521f767f220df3cc4e9af3e0a280903269b1b174c6d3ca47",
+            "log": "first-primary-compatibility-analysis.log",
+            "negative_log": "cases/overtaking_same_direction_left/candidates/fallback3/negative-analysis.log"
+          }
+        }
+      ],
       "measurement_procedure": {
         "entrypoint": "finalizer.py"
       },
@@ -622,6 +704,180 @@
         "receipt_sha256": "707eb36790e1ab55463888879be37a74fc222d7963a73867793383b00560075a",
         "log": "cases/overtaking_same_direction_left/saved-processing.json",
         "log_sha256": "707eb36790e1ab55463888879be37a74fc222d7963a73867793383b00560075a"
+      }
+    },
+    {
+      "case_id": "heldout__C111250__NRS-484B-200-1__motor_vehicle_driver__right_half_closed_right",
+      "kind": "delivery",
+      "construction": "cases/right_half_closed_right/construction.json",
+      "construction_sha256": "06e64b336895647bfec08472dc0eb295608c6a2420d47c3fe5ad32bcd3d2b7c8",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Loaded road geometry and camera/vehicle motion require physical verification"
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "measurement_contract": "cases/right_half_closed_right/measurement-contract.json",
+      "fixture_recipe": "work/heldout__C111250__NRS-484B-200-1__motor_vehicle_driver/cases/right_half_closed_right/recipe.json",
+      "acquisition": {
+        "full_body_leftward_clearance_m": {
+          "entrypoint": "finalizer.py",
+          "method": "source-hashed original body/frame and four-camera join",
+          "evidence": [
+            "road_geometry.json",
+            "exception_context.json",
+            "body_history.jsonl",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "any_left_half_body": {
+          "entrypoint": "finalizer.py",
+          "method": "source-hashed original body/frame and four-camera join",
+          "evidence": [
+            "road_geometry.json",
+            "exception_context.json",
+            "body_history.jsonl",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "exception_source_context": {
+          "entrypoint": "finalizer.py",
+          "method": "source-hashed original body/frame and four-camera join",
+          "evidence": [
+            "road_geometry.json",
+            "exception_context.json",
+            "body_history.jsonl",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        }
+      },
+      "negative": {
+        "log": "cases/right_half_closed_right/negative-analysis.log"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction_sha256": "99f01be521abd7cba2be1e320667c6932b57ff7c444ffa50475e57fd1f6733c0",
+          "trigger": {
+            "source": "road_geometry.json",
+            "metric": "connected road half and physical closure survey",
+            "failure_condition": "primary surveyed road lacks a physical closure of the right half"
+          },
+          "changed_knobs": [
+            "required_site_profile=alternate_closure_road"
+          ],
+          "construction": "cases/right_half_closed_right/candidates/fallback1/construction.json",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111250__NRS-484B-200-1__motor_vehicle_driver/provisional-manifest.json --case heldout__C111250__NRS-484B-200-1__motor_vehicle_driver__right_half_closed_right --candidate fallback1 --output .runtime-work/c111250-closure-right-direct-fallback1-offline",
+            "exit_code": 0,
+            "construction_sha256": "99f01be521abd7cba2be1e320667c6932b57ff7c444ffa50475e57fd1f6733c0",
+            "log": "cases/right_half_closed_right/candidates/fallback1/offline.log",
+            "log_sha256": "35160c14f9433d6d2acf9dae282ef76cf7a4edbb5dddd4a61e369e0346a1e00f"
+          },
+          "compatibility": {
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C111250__NRS-484B-200-1__motor_vehicle_driver/provisional-manifest.json --case heldout__C111250__NRS-484B-200-1__motor_vehicle_driver__right_half_closed_right --candidate fallback1 --output .runtime-work/c111250-closure-right-direct-fallback1-compat --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+            "receipt": "cases/right_half_closed_right/candidates/fallback1/compatibility.json",
+            "sha256": "e74cf48a9d67c9750e06d9ef955f787207483588c5dcaba86b8646854ca5e896",
+            "log": "first-primary-compatibility-analysis.log",
+            "negative_log": "cases/right_half_closed_right/candidates/fallback1/negative-analysis.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction_sha256": "9a1cc0da168ef691d3876871c464264e199136e69ce0a0b3fae291314bbc78ac",
+          "trigger": {
+            "source": "acquisition-provenance.json",
+            "metric": "ego spawn success and original route",
+            "failure_condition": "primary ego spawn is occupied or route entrance is blocked"
+          },
+          "changed_knobs": [
+            "ego_spawn_offset_m=2.0"
+          ],
+          "construction": "cases/right_half_closed_right/candidates/fallback2/construction.json",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111250__NRS-484B-200-1__motor_vehicle_driver/provisional-manifest.json --case heldout__C111250__NRS-484B-200-1__motor_vehicle_driver__right_half_closed_right --candidate fallback2 --output .runtime-work/c111250-closure-right-direct-fallback2-offline",
+            "exit_code": 0,
+            "construction_sha256": "9a1cc0da168ef691d3876871c464264e199136e69ce0a0b3fae291314bbc78ac",
+            "log": "cases/right_half_closed_right/candidates/fallback2/offline.log",
+            "log_sha256": "7cedd2bbf5dfadfdcd527f77aefcfac8eb8a4b2d4e698c27d7cf38f2aa389b5c"
+          },
+          "compatibility": {
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C111250__NRS-484B-200-1__motor_vehicle_driver/provisional-manifest.json --case heldout__C111250__NRS-484B-200-1__motor_vehicle_driver__right_half_closed_right --candidate fallback2 --output .runtime-work/c111250-closure-right-direct-fallback2-compat --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+            "receipt": "cases/right_half_closed_right/candidates/fallback2/compatibility.json",
+            "sha256": "7154a89c42a88bebcb22589e8faf446fc1fca3d2875ff59747a9288640f38b55",
+            "log": "first-primary-compatibility-analysis.log",
+            "negative_log": "cases/right_half_closed_right/candidates/fallback2/negative-analysis.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction_sha256": "fd035795ffb6da4e44a73914728fb8ae623384d0477f68269824c217f4bbfae2",
+          "trigger": {
+            "source": "overview.mkv",
+            "metric": "subject body and closure pixel coverage across original frames",
+            "failure_condition": "primary overview view omits the subject or closure geometry"
+          },
+          "changed_knobs": [
+            "overview_mount_shift_m=[-2.0,2.0,1.0]"
+          ],
+          "construction": "cases/right_half_closed_right/candidates/fallback3/construction.json",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111250__NRS-484B-200-1__motor_vehicle_driver/provisional-manifest.json --case heldout__C111250__NRS-484B-200-1__motor_vehicle_driver__right_half_closed_right --candidate fallback3 --output .runtime-work/c111250-closure-right-direct-fallback3-offline",
+            "exit_code": 0,
+            "construction_sha256": "fd035795ffb6da4e44a73914728fb8ae623384d0477f68269824c217f4bbfae2",
+            "log": "cases/right_half_closed_right/candidates/fallback3/offline.log",
+            "log_sha256": "2520c7e9a2dfcd6c94977b608cdd33eb9999092d689172b6ccc9660670589ebf"
+          },
+          "compatibility": {
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C111250__NRS-484B-200-1__motor_vehicle_driver/provisional-manifest.json --case heldout__C111250__NRS-484B-200-1__motor_vehicle_driver__right_half_closed_right --candidate fallback3 --output .runtime-work/c111250-closure-right-direct-fallback3-compat --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+            "receipt": "cases/right_half_closed_right/candidates/fallback3/compatibility.json",
+            "sha256": "c8990b4a6c5a7dede4d9c1cb9ca8345b9402c408046ef43b4a851ab0b52a8c9c",
+            "log": "first-primary-compatibility-analysis.log",
+            "negative_log": "cases/right_half_closed_right/candidates/fallback3/negative-analysis.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111250__NRS-484B-200-1__motor_vehicle_driver/provisional-manifest.json --case heldout__C111250__NRS-484B-200-1__motor_vehicle_driver__right_half_closed_right --candidate primary --output .runtime-work/c111250-closure-right-direct-primary-offline",
+        "exit_code": 0,
+        "construction_sha256": "06e64b336895647bfec08472dc0eb295608c6a2420d47c3fe5ad32bcd3d2b7c8",
+        "log": "cases/right_half_closed_right/offline.log",
+        "log_sha256": "93149bb267283db93c0f233cbd0754d6802a8d7c685900b4b6c355611b8c6b9c"
+      },
+      "compatibility": {
+        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C111250__NRS-484B-200-1__motor_vehicle_driver/provisional-manifest.json --case heldout__C111250__NRS-484B-200-1__motor_vehicle_driver__right_half_closed_right --candidate primary --output .runtime-work/c111250-closure-right-direct-primary-compat --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "receipt": "cases/right_half_closed_right/compatibility.json",
+        "sha256": "c393c1e202dd4bfab00d16676c62fa47791d29194eaea400ac3b448a03303e33",
+        "log": "first-primary-compatibility-analysis.log"
+      },
+      "saved_processing": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111250__NRS-484B-200-1__motor_vehicle_driver/provisional-manifest.json --case heldout__C111250__NRS-484B-200-1__motor_vehicle_driver__right_half_closed_right --attempt .runtime-work/c111250-closure-right-direct-primary-saved-attempt --output .runtime-work/c111250-closure-right-direct-primary-saved-proof --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "exit_code": 0,
+        "receipt": "cases/right_half_closed_right/saved-processing.json",
+        "receipt_sha256": "ea592d2c4040a71b99452334c366c52310d7117b7d9bccf5d3cedc5f0e537b1f",
+        "log": "cases/right_half_closed_right/saved-processing.json",
+        "log_sha256": "ea592d2c4040a71b99452334c366c52310d7117b7d9bccf5d3cedc5f0e537b1f"
       }
     }
   ],

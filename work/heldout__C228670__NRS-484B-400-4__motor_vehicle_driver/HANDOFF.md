@@ -82,3 +82,6 @@ Scoped strict gate passes: `.venv-cpu/bin/python worker_check.py --assignment he
 ### 2026-11-16 historical receipt bundle
 
 The following historical, inactive JSON receipts were preserved byte-for-byte in `work/_shared/historical-receipts-bundle-20261116.json` with original relative paths and SHA-256 values, then removed from the returned tree to free file slots: `approach_far_depart_right-compatibility.json`, `approach_near_depart_left-compatibility.json`, `approach_near_depart_right-compatibility.json`. The current source/manifest files have no references to these names. An ignored local backup is at `.runtime-work/historical-receipts-dedup-20261116/`. Restore by base64-decoding the bundle entries to their `path`. The active scoped strict gate was rerun after compaction.
+
+
+2026-11-16 CPU file-budget preservation: 12 unreferenced standalone saved receipt copies archived byte-exact in `result.json.preserved_unreferenced_cpu_artifacts`; member SHA256 values recorded there. Scoped validation follows.

@@ -158,3 +158,6 @@ The assignment-scoped complete and strict readiness commands both exit 0: `.venv
 
 
 2026-11-16 CPU file-budget preservation: 4 unreferenced standalone artifacts archived byte-exact in `result.json.preserved_unreferenced_cpu_artifacts`; member SHA256 values are recorded there. Scoped validation follows.
+
+
+2026-11-16 CPU file-budget preservation: 9 unreferenced standalone saved receipt copies archived byte-exact in `result.json.preserved_unreferenced_cpu_artifacts`; member SHA256 values recorded there. Scoped validation follows.
