@@ -1,6 +1,7 @@
 """Run and bind source-derived synthetic motion and saved lifecycle probes."""
 
 import hashlib
+import argparse
 import json
 from pathlib import Path
 import subprocess
@@ -26,12 +27,17 @@ def run(command, log):
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--case', action='append', default=[])
+    args = parser.parse_args()
     path = HERE / 'execution-manifest.json'
     manifest = json.loads(path.read_text())
     output = HERE / 'physical'
     output.mkdir(exist_ok=True)
     for entry in manifest['cases']:
         case = entry['case_id']
+        if args.case and case not in args.case:
+            continue
         short = case.rsplit('__', 1)[-1]
         fixtures = []
         for kind in ('complete_motion', 'incomplete_motion', 'missing_evidence'):

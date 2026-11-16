@@ -108,6 +108,51 @@
         "trigger_metric": "measured realized centroid offset and four-camera original pixels",
         "failure_condition": "target motion incomplete, original source missing, or marker/body pixels unreviewable"
       }
+    },
+    {
+      "case_id": "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__c126064_course_blend-0000",
+      "target_law_id": "LVMC-11-12-020",
+      "gap_ids": [
+        "authorized-course"
+      ],
+      "construction_state": "primary_offline_proved_fallbacks_offline_proved",
+      "purpose": "Frozen course-blend setpoint 0 between the same source-hashed indicated and divergent routes; original full-body offset is measured independently without a legal cutoff.",
+      "physical_risk": {
+        "risk": "Sourced course target may miss the original body path or lose physical marker visibility in Native motion",
+        "trigger_source": "original Native marker readback, body path and four named camera streams",
+        "trigger_metric": "realized centroid offset and original marker/body pixels",
+        "failure_condition": "target motion incomplete, original source missing, or original pixels unreviewable"
+      }
+    },
+    {
+      "case_id": "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__c126064_course_blend-0001",
+      "target_law_id": "LVMC-11-12-020",
+      "gap_ids": [
+        "authorized-course"
+      ],
+      "construction_state": "primary_offline_proved",
+      "purpose": "Frozen course-blend setpoint 1 between the same source-hashed indicated and divergent routes; original full-body offset is measured independently without a legal cutoff.",
+      "physical_risk": {
+        "risk": "Sourced course target may miss the original body path or lose physical marker visibility in Native motion",
+        "trigger_source": "original Native marker readback, body path and four named camera streams",
+        "trigger_metric": "realized centroid offset and original marker/body pixels",
+        "failure_condition": "target motion incomplete, original source missing, or original pixels unreviewable"
+      }
+    },
+    {
+      "case_id": "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__c126064_course_blend-0002",
+      "target_law_id": "LVMC-11-12-020",
+      "gap_ids": [
+        "authorized-course"
+      ],
+      "construction_state": "primary_offline_proved",
+      "purpose": "Frozen course-blend setpoint 0.5 between the same source-hashed indicated and divergent routes; original full-body offset is measured independently without a legal cutoff.",
+      "physical_risk": {
+        "risk": "Sourced course target may miss the original body path or lose physical marker visibility in Native motion",
+        "trigger_source": "original Native marker readback, body path and four named camera streams",
+        "trigger_metric": "realized centroid offset and original marker/body pixels",
+        "failure_condition": "target motion incomplete, original source missing, or original pixels unreviewable"
+      }
     }
   ],
   "comparisons": [
@@ -178,8 +223,9 @@
     {
       "comparison_id": "marker_numeric_course_offset",
       "case_ids": [
-        "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__indicated_course",
-        "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__marker_course_blend_050"
+        "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__c126064_course_blend-0000",
+        "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__c126064_course_blend-0001",
+        "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__c126064_course_blend-0002"
       ],
       "fixed_conditions": [
         "same source-hashed marker authority claim and physical marker inventory",
@@ -187,10 +233,10 @@
         "same four-camera profile, 8 s duration and sourced approach/exit"
       ],
       "deliberate_differences": [
-        "requested 0.0 versus 0.5 blend between sourced indicated and divergent controller routes; actual centroid offset measured independently"
+        "frozen 0, 1 and 0.5 source-constrained course-blend setpoints; original body centroid offset measured separately"
       ],
       "audit_script": "comparison_audit.py",
-      "audit_status": "pending_exact_numeric_source_audit"
+      "audit_status": "pending_exact_canonical_sweep_source_audit"
     }
   ],
   "observations": [
@@ -279,7 +325,10 @@
         "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__button_divergent_course",
         "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__other_indication_indicated_course",
         "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__other_indication_divergent_course",
-        "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__marker_course_blend_050"
+        "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__marker_course_blend_050",
+        "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__c126064_course_blend-0000",
+        "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__c126064_course_blend-0001",
+        "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__c126064_course_blend-0002"
       ],
       "evidence_or_gap": "No source-backed municipal authority or original marked-turn recording; CPU diagnostic is not legal or physical evidence."
     }

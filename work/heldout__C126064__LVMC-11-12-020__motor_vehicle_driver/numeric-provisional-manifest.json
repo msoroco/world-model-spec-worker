@@ -91,13 +91,372 @@
       "case_id": "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__c126064_course_blend-0000",
       "kind": "delivery",
       "construction": "c126064_course_blend-0000-construction.json",
-      "construction_sha256": "f1878185f4dbf43c47af93a6d54a9569f16ad59cd3fc9a00a48a0b5c0017a9e8",
+      "construction_sha256": "9881898502229104fc30851411a31ddcc81612e23f2a4624824186bfead076be",
       "measurement_procedure": {
         "entrypoint": "marked_course_finalizer.py"
       },
       "candidate_risk": {
         "status": "physical",
         "reason": "Endpoint target may miss its original full-body course or marker visibility in Native motion."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "c126064_course_blend-0000-fallback1-construction.json",
+          "construction_sha256": "3da5d72ded8ea5fefada36cd3989d39b3abc459dc23426bddbc1c0df2520ad48",
+          "trigger": {
+            "source": "original Native actor spawn readback",
+            "metric": "spawn success and road clearance",
+            "failure_condition": "0.5 m spawn offset intersects the road or fails actor spawn"
+          },
+          "changed_knobs": [
+            "spawn_height_offset_m=0.7"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/runtime.py offline --manifest work/heldout__C126064__LVMC-11-12-020__motor_vehicle_driver/execution-manifest.json --case heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__c126064_course_blend-0000 --candidate fallback1 --output .runtime-work/c126064-sweep-0000-fallback1-offline-v4 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "3da5d72ded8ea5fefada36cd3989d39b3abc459dc23426bddbc1c0df2520ad48",
+            "log": "c126064_course_blend-0000-fallback1-offline.log",
+            "log_sha256": "391280e9bc7e762003a2a1801bc1fbf575e49bbae9d068edfd148701ddf2be80"
+          },
+          "compatibility": {
+            "receipt": "c126064_course_blend-0000-fallback1-compatibility.json",
+            "sha256": "9158a1ada9628bac1fd05d6e0ebc32c759963290e5925edfa5e544bdb9902416",
+            "log": "c126064-sweep-compat-analysis.log",
+            "negative_log": "c126064_course_blend-0000-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "c126064_course_blend-0000-fallback2-construction.json",
+          "construction_sha256": "6a4f6faa9d71090c73bd56d61da2ff99deb2be15f8527c6b65a81cda3b2b141e",
+          "trigger": {
+            "source": "original Native body and controller history",
+            "metric": "course target overshoot before 160 frames",
+            "failure_condition": "4 m/s target overshoots the numeric course before capture ends"
+          },
+          "changed_knobs": [
+            "target_speed_mps=3.5"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/runtime.py offline --manifest work/heldout__C126064__LVMC-11-12-020__motor_vehicle_driver/execution-manifest.json --case heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__c126064_course_blend-0000 --candidate fallback2 --output .runtime-work/c126064-sweep-0000-fallback2-offline-v4 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "6a4f6faa9d71090c73bd56d61da2ff99deb2be15f8527c6b65a81cda3b2b141e",
+            "log": "c126064_course_blend-0000-fallback2-offline.log",
+            "log_sha256": "fe815105fcf0a42596d1ba80c2600c58d6513d4c4399583a569ba78ec1c295ab"
+          },
+          "compatibility": {
+            "receipt": "c126064_course_blend-0000-fallback2-compatibility.json",
+            "sha256": "4c281e7c07cf5d456e1e55c71c9b0b5db2f33616ed455104e4ab7c9faf80165c",
+            "log": "c126064-sweep-compat-analysis.log",
+            "negative_log": "c126064_course_blend-0000-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "c126064_course_blend-0000-fallback3-construction.json",
+          "construction_sha256": "2e8bcbf7a62d638b1619047d7a574f3054ad1751a2361fc659bb1944bfc68398",
+          "trigger": {
+            "source": "original overview camera frames",
+            "metric": "marker and body pixel visibility",
+            "failure_condition": "primary overview mount fails to show marker and vehicle bodies"
+          },
+          "changed_knobs": [
+            "overview_x_m=-10"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/runtime.py offline --manifest work/heldout__C126064__LVMC-11-12-020__motor_vehicle_driver/execution-manifest.json --case heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__c126064_course_blend-0000 --candidate fallback3 --output .runtime-work/c126064-sweep-0000-fallback3-offline-v4 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "2e8bcbf7a62d638b1619047d7a574f3054ad1751a2361fc659bb1944bfc68398",
+            "log": "c126064_course_blend-0000-fallback3-offline.log",
+            "log_sha256": "5630855f6a53eeb53915348170f6cc59a309285ce5cf8331c7e36cc057b276d1"
+          },
+          "compatibility": {
+            "receipt": "c126064_course_blend-0000-fallback3-compatibility.json",
+            "sha256": "1a279d4b2d2963cddcefe402e723e3d18ffc382861d5eb4a814d0005189dd513",
+            "log": "c126064-sweep-compat-analysis.log",
+            "negative_log": "c126064_course_blend-0000-fallback3-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/runtime.py offline --manifest work/heldout__C126064__LVMC-11-12-020__motor_vehicle_driver/execution-manifest.json --case heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__c126064_course_blend-0000 --output .runtime-work/c126064-sweep-0000-offline-v4 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "9881898502229104fc30851411a31ddcc81612e23f2a4624824186bfead076be",
+        "log": "c126064_course_blend-0000-offline.log",
+        "log_sha256": "db1a5d20963c63ecb5c71a277987ea5aeb57328a691e470246a0c7beb1ad2cab"
+      },
+      "fixture_recipe": "work/heldout__C126064__LVMC-11-12-020__motor_vehicle_driver/c126064_course_blend-0000-recipe.json",
+      "measurement_contract": "c126064_course_blend-0000-measurement-contract.json",
+      "compatibility": {
+        "receipt": "c126064_course_blend-0000-compatibility.json",
+        "sha256": "579e8354d6f1b1bc3af15b99beceb79706abea0844c604dacdf3baec30a7648a",
+        "log": "c126064-sweep-compat-analysis.log",
+        "negative_log": "c126064_course_blend-0000-negative.log"
+      },
+      "saved_processing": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/runtime.py process-saved --manifest work/heldout__C126064__LVMC-11-12-020__motor_vehicle_driver/execution-manifest.json --case heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__c126064_course_blend-0000 --attempt .runtime-work/c126064-sweep-0000-saved-attempt-v4 --output .runtime-work/c126064-sweep-0000-saved-v4 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "exit_code": 0,
+        "log": "c126064_course_blend-0000-saved.json",
+        "log_sha256": "e18abaecf9dccee362b411574106dbd71d97be832704d776a935bd9db075cdc6",
+        "receipt": "c126064_course_blend-0000-saved.json",
+        "receipt_sha256": "e18abaecf9dccee362b411574106dbd71d97be832704d776a935bd9db075cdc6"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C126064__LVMC-11-12-020__motor_vehicle_driver/execution-manifest.json --case heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__c126064_course_blend-0000 --attempt \"$ATTEMPT\" --output \"$PROCESSING_OUTPUT\" --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSING_OUTPUT/feedback.json\"",
+        "test_log": "c126064_course_blend-0000-saved.json",
+        "test_log_sha256": "e18abaecf9dccee362b411574106dbd71d97be832704d776a935bd9db075cdc6",
+        "test_exit_code": 0
+      }
+    },
+    {
+      "case_id": "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__c126064_course_blend-0001",
+      "kind": "delivery",
+      "construction": "c126064_course_blend-0001-construction.json",
+      "construction_sha256": "95e0ddba536b8dfc7d72a2b100207856a5de9fbb509e68e155fa6e07da24593a",
+      "measurement_procedure": {
+        "entrypoint": "marked_course_finalizer.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Course target may miss original full-body path or marker visibility in Native motion."
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/runtime.py offline --manifest work/heldout__C126064__LVMC-11-12-020__motor_vehicle_driver/execution-manifest.json --case heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__c126064_course_blend-0001 --output .runtime-work/c126064-sweep-0001-offline-v4 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "95e0ddba536b8dfc7d72a2b100207856a5de9fbb509e68e155fa6e07da24593a",
+        "log": "c126064_course_blend-0001-offline.log",
+        "log_sha256": "bf729f9640a9d61c83508e24515d98ff18fe4150352011baf4ef3ebf6f60e68a"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "c126064_course_blend-0001-fallback1-construction.json",
+          "construction_sha256": "b04b55efec335afb0664c34b2933509bdf3d6d090676a0b7a71ccd5481272050",
+          "trigger": {
+            "source": "original Native actor spawn readback",
+            "metric": "spawn success and road clearance",
+            "failure_condition": "0.5 m spawn offset intersects the road or fails actor spawn"
+          },
+          "changed_knobs": [
+            "spawn_height_offset_m=0.7"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/runtime.py offline --manifest work/heldout__C126064__LVMC-11-12-020__motor_vehicle_driver/execution-manifest.json --case heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__c126064_course_blend-0001 --candidate fallback1 --output .runtime-work/c126064-sweep-0001-fallback1-offline-v4 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "b04b55efec335afb0664c34b2933509bdf3d6d090676a0b7a71ccd5481272050",
+            "log": "c126064_course_blend-0001-fallback1-offline.log",
+            "log_sha256": "97a59837071218b6cf510b68433b02129ecf1d598df8ef87f136f1df6e932e71"
+          },
+          "compatibility": {
+            "receipt": "c126064_course_blend-0001-fallback1-compatibility.json",
+            "sha256": "11c9ee9d9e6d9146783dbf18043acf23ced681654c4187c12dfdd62af5427082",
+            "log": "c126064-sweep-compat-analysis.log",
+            "negative_log": "c126064_course_blend-0001-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "c126064_course_blend-0001-fallback2-construction.json",
+          "construction_sha256": "9760b5b4b8da2afbe03cb2044b6bdec3805bec98ee6c92341dda31e78884cc50",
+          "trigger": {
+            "source": "original Native body and controller history",
+            "metric": "course target overshoot before 160 frames",
+            "failure_condition": "4 m/s target overshoots the numeric course before capture ends"
+          },
+          "changed_knobs": [
+            "target_speed_mps=3.5"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/runtime.py offline --manifest work/heldout__C126064__LVMC-11-12-020__motor_vehicle_driver/execution-manifest.json --case heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__c126064_course_blend-0001 --candidate fallback2 --output .runtime-work/c126064-sweep-0001-fallback2-offline-v4 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "9760b5b4b8da2afbe03cb2044b6bdec3805bec98ee6c92341dda31e78884cc50",
+            "log": "c126064_course_blend-0001-fallback2-offline.log",
+            "log_sha256": "dfec08f85b49a1d9a3d91ad8a77d092ee9f33009a53f62cc998496a47b66aab9"
+          },
+          "compatibility": {
+            "receipt": "c126064_course_blend-0001-fallback2-compatibility.json",
+            "sha256": "e21c33529f6ca2a0b460381959b94cb81ccf31762b5a35cb6ff16578575bc231",
+            "log": "c126064-sweep-compat-analysis.log",
+            "negative_log": "c126064_course_blend-0001-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "c126064_course_blend-0001-fallback3-construction.json",
+          "construction_sha256": "2297f8563f6ec9e18f4eeacac4dc4441aa006c229abb571946a4f9e2e3a5bac9",
+          "trigger": {
+            "source": "original overview camera frames",
+            "metric": "marker and body pixel visibility",
+            "failure_condition": "primary overview mount fails to show marker and vehicle bodies"
+          },
+          "changed_knobs": [
+            "overview_x_m=-10"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/runtime.py offline --manifest work/heldout__C126064__LVMC-11-12-020__motor_vehicle_driver/execution-manifest.json --case heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__c126064_course_blend-0001 --candidate fallback3 --output .runtime-work/c126064-sweep-0001-fallback3-offline-v4 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "2297f8563f6ec9e18f4eeacac4dc4441aa006c229abb571946a4f9e2e3a5bac9",
+            "log": "c126064_course_blend-0001-fallback3-offline.log",
+            "log_sha256": "d0fec5593120b04ccc1af58498f4b3ad0f3c62920de2aefa5ae87ad814e12d8f"
+          },
+          "compatibility": {
+            "receipt": "c126064_course_blend-0001-fallback3-compatibility.json",
+            "sha256": "76ad96996f19b0640ac429185d7fae8e3793db5fea79750a50dc40c30ed49d55",
+            "log": "c126064-sweep-compat-analysis.log",
+            "negative_log": "c126064_course_blend-0001-fallback3-negative.log"
+          }
+        }
+      ],
+      "fixture_recipe": "work/heldout__C126064__LVMC-11-12-020__motor_vehicle_driver/c126064_course_blend-0001-recipe.json",
+      "measurement_contract": "c126064_course_blend-0001-measurement-contract.json",
+      "compatibility": {
+        "receipt": "c126064_course_blend-0001-compatibility.json",
+        "sha256": "1bd2472636a13ae9bc5014e5ab0018ebcd925dccb93ac44ac77f6c504e156f97",
+        "log": "c126064-sweep-compat-analysis.log",
+        "negative_log": "c126064_course_blend-0001-negative.log"
+      },
+      "saved_processing": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/runtime.py process-saved --manifest work/heldout__C126064__LVMC-11-12-020__motor_vehicle_driver/execution-manifest.json --case heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__c126064_course_blend-0001 --attempt .runtime-work/c126064-sweep-0001-saved-attempt-v4 --output .runtime-work/c126064-sweep-0001-saved-v4 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "exit_code": 0,
+        "log": "c126064_course_blend-0001-saved.json",
+        "log_sha256": "a20b0d48b671dd3e49a4c9dcf0a5fccb107976c66c46c678f16bd1f5ba425d67",
+        "receipt": "c126064_course_blend-0001-saved.json",
+        "receipt_sha256": "a20b0d48b671dd3e49a4c9dcf0a5fccb107976c66c46c678f16bd1f5ba425d67"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C126064__LVMC-11-12-020__motor_vehicle_driver/execution-manifest.json --case heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__c126064_course_blend-0001 --attempt \"$ATTEMPT\" --output \"$PROCESSING_OUTPUT\" --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSING_OUTPUT/feedback.json\"",
+        "test_log": "c126064_course_blend-0001-saved.json",
+        "test_log_sha256": "a20b0d48b671dd3e49a4c9dcf0a5fccb107976c66c46c678f16bd1f5ba425d67",
+        "test_exit_code": 0
+      }
+    },
+    {
+      "case_id": "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__c126064_course_blend-0002",
+      "kind": "delivery",
+      "construction": "c126064_course_blend-0002-construction.json",
+      "construction_sha256": "fe1bc023366162cf8b49083bcaacee1fd47a44c61d8e10efbb3d672d8936b24e",
+      "measurement_procedure": {
+        "entrypoint": "marked_course_finalizer.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Course target may miss original full-body path or marker visibility in Native motion."
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/runtime.py offline --manifest work/heldout__C126064__LVMC-11-12-020__motor_vehicle_driver/execution-manifest.json --case heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__c126064_course_blend-0002 --output .runtime-work/c126064-sweep-0002-offline-v4 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "fe1bc023366162cf8b49083bcaacee1fd47a44c61d8e10efbb3d672d8936b24e",
+        "log": "c126064_course_blend-0002-offline.log",
+        "log_sha256": "ad2fdca5faf0a515add08a8c402c6ef2ccabaec684471c6656083eea31ad7108"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "c126064_course_blend-0002-fallback1-construction.json",
+          "construction_sha256": "57a963b371b6ecc25cd37ef860d7d87a807ae4bda42d124ce18a6e55c0423f82",
+          "trigger": {
+            "source": "original Native actor spawn readback",
+            "metric": "spawn success and road clearance",
+            "failure_condition": "0.5 m spawn offset intersects the road or fails actor spawn"
+          },
+          "changed_knobs": [
+            "spawn_height_offset_m=0.7"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/runtime.py offline --manifest work/heldout__C126064__LVMC-11-12-020__motor_vehicle_driver/execution-manifest.json --case heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__c126064_course_blend-0002 --candidate fallback1 --output .runtime-work/c126064-sweep-0002-fallback1-offline-v4 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "57a963b371b6ecc25cd37ef860d7d87a807ae4bda42d124ce18a6e55c0423f82",
+            "log": "c126064_course_blend-0002-fallback1-offline.log",
+            "log_sha256": "a9979505e2ed090d299c9d9368d6a8a1947a8e585fbf66d6cd51890dec7fd33a"
+          },
+          "compatibility": {
+            "receipt": "c126064_course_blend-0002-fallback1-compatibility.json",
+            "sha256": "59368af653eb7437e36870a4d50d14ecedbcc83103e4cb4ed37697219c0638a9",
+            "log": "c126064-sweep-compat-analysis.log",
+            "negative_log": "c126064_course_blend-0002-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "c126064_course_blend-0002-fallback2-construction.json",
+          "construction_sha256": "d4fa2dd95d70ad24032c361c30817e458621361645658494220942b71125b4e1",
+          "trigger": {
+            "source": "original Native body and controller history",
+            "metric": "course target overshoot before 160 frames",
+            "failure_condition": "4 m/s target overshoots the numeric course before capture ends"
+          },
+          "changed_knobs": [
+            "target_speed_mps=3.5"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/runtime.py offline --manifest work/heldout__C126064__LVMC-11-12-020__motor_vehicle_driver/execution-manifest.json --case heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__c126064_course_blend-0002 --candidate fallback2 --output .runtime-work/c126064-sweep-0002-fallback2-offline-v4 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "d4fa2dd95d70ad24032c361c30817e458621361645658494220942b71125b4e1",
+            "log": "c126064_course_blend-0002-fallback2-offline.log",
+            "log_sha256": "b4129821af0077a5ae26a41796974479bb8b46dbf6c6a9dbf2a584aa37235c3f"
+          },
+          "compatibility": {
+            "receipt": "c126064_course_blend-0002-fallback2-compatibility.json",
+            "sha256": "fa8f87d2466ff2a619af3fd1a8f16ef68bf1d643a4dd087091f3c958cd8fa809",
+            "log": "c126064-sweep-compat-analysis.log",
+            "negative_log": "c126064_course_blend-0002-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "c126064_course_blend-0002-fallback3-construction.json",
+          "construction_sha256": "4bf41a10769a9314d3c7ff423a4facd8950d3968a7b70cc3c1af20c01cacb8d4",
+          "trigger": {
+            "source": "original overview camera frames",
+            "metric": "marker and body pixel visibility",
+            "failure_condition": "primary overview mount fails to show marker and vehicle bodies"
+          },
+          "changed_knobs": [
+            "overview_x_m=-10"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/runtime.py offline --manifest work/heldout__C126064__LVMC-11-12-020__motor_vehicle_driver/execution-manifest.json --case heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__c126064_course_blend-0002 --candidate fallback3 --output .runtime-work/c126064-sweep-0002-fallback3-offline-v4 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "4bf41a10769a9314d3c7ff423a4facd8950d3968a7b70cc3c1af20c01cacb8d4",
+            "log": "c126064_course_blend-0002-fallback3-offline.log",
+            "log_sha256": "0e2dfa7d4ea14db10a61c9514b7ea43d24a19cd4333e43db2aa48c9dd95088cf"
+          },
+          "compatibility": {
+            "receipt": "c126064_course_blend-0002-fallback3-compatibility.json",
+            "sha256": "e89ee7863ceb89283742cd114b995eaaebc0197c9bb68d675310e12098935a22",
+            "log": "c126064-sweep-compat-analysis.log",
+            "negative_log": "c126064_course_blend-0002-fallback3-negative.log"
+          }
+        }
+      ],
+      "fixture_recipe": "work/heldout__C126064__LVMC-11-12-020__motor_vehicle_driver/c126064_course_blend-0002-recipe.json",
+      "measurement_contract": "c126064_course_blend-0002-measurement-contract.json",
+      "compatibility": {
+        "receipt": "c126064_course_blend-0002-compatibility.json",
+        "sha256": "fe8fee6e762ac48865266a800c5c75147c05d039c69b7076d1de9feae98c04f1",
+        "log": "c126064-sweep-compat-analysis.log",
+        "negative_log": "c126064_course_blend-0002-negative.log"
+      },
+      "saved_processing": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/runtime.py process-saved --manifest work/heldout__C126064__LVMC-11-12-020__motor_vehicle_driver/execution-manifest.json --case heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__c126064_course_blend-0002 --attempt .runtime-work/c126064-sweep-0002-saved-attempt-v4 --output .runtime-work/c126064-sweep-0002-saved-v4 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "exit_code": 0,
+        "log": "c126064_course_blend-0002-saved.json",
+        "log_sha256": "2582c6ac935e251dcdc2204bb733ae91113667dd1c522d7307e3fc5b14360959",
+        "receipt": "c126064_course_blend-0002-saved.json",
+        "receipt_sha256": "2582c6ac935e251dcdc2204bb733ae91113667dd1c522d7307e3fc5b14360959"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C126064__LVMC-11-12-020__motor_vehicle_driver/execution-manifest.json --case heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__c126064_course_blend-0002 --attempt \"$ATTEMPT\" --output \"$PROCESSING_OUTPUT\" --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSING_OUTPUT/feedback.json\"",
+        "test_log": "c126064_course_blend-0002-saved.json",
+        "test_log_sha256": "2582c6ac935e251dcdc2204bb733ae91113667dd1c522d7307e3fc5b14360959",
+        "test_exit_code": 0
       }
     }
   ]
