@@ -167,7 +167,110 @@
         "status": "physical",
         "reason": "Native stop may overshoot marking or the selected map may contain a crosswalk"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/no_crosswalk_marked_stop_line_fallback1.json",
+          "construction_sha256": "2c68b837eaab61f6c73afa7343537e2e72579a47c279a9a2876e0f01dce101ee",
+          "trigger": {
+            "source": "stop_history.jsonl",
+            "metric": "pre-line zero-speed samples during commanded hold",
+            "failure_condition": "no complete-body zero-speed sample before marked stop line in primary brake-hold window"
+          },
+          "changed_knobs": [
+            "brake_hold_frames"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__no_crosswalk_marked_stop_line --candidate fallback1 --output .runtime-work/c331230-stopline-fallback1-offline-v1",
+            "exit_code": 0,
+            "log": "stopline-fallback1-offline.log",
+            "log_sha256": "ca7751769704046832ac358cf88a30985ff6e924f3d24481bb5eb397c6080a78",
+            "construction_sha256": "2c68b837eaab61f6c73afa7343537e2e72579a47c279a9a2876e0f01dce101ee"
+          },
+          "compatibility": {
+            "receipt": "stopline-fallback1-compatibility.json",
+            "sha256": "a917888a732ceb301d34a66f302c74a13b742b024466e1aa1792eaaf38b879c6",
+            "log": "stopline-fallback1-analysis.log",
+            "negative_log": "stopline-fallback1-negative.log",
+            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__no_crosswalk_marked_stop_line --candidate fallback1 --output .runtime-work/c331230-stopline-fallback1-compat-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__no_crosswalk_marked_stop_line --attempt .runtime-work/c331230-stopline-fallback1-compat-v1 --output .runtime-work/c331230-stopline-fallback1-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "test_log": "stopline-fallback1-saved.json",
+            "test_log_sha256": "e120ed20a7efadd58a05e31bf93af563b07dc4d65a1d79df59fb8f89996bde17",
+            "test_exit_code": 0
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/no_crosswalk_marked_stop_line_fallback2.json",
+          "construction_sha256": "7c354d28b4b2240847c96126dcf4140030d175431d42b3a09f5b3c7020d66087",
+          "trigger": {
+            "source": "reference_corner.mkv",
+            "metric": "marked line and complete-body stop visibility",
+            "failure_condition": "reference-corner camera does not show stop-line/body relationship in original frames"
+          },
+          "changed_knobs": [
+            "reference_corner_camera_pose"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__no_crosswalk_marked_stop_line --candidate fallback2 --output .runtime-work/c331230-stopline-fallback2-offline-v1",
+            "exit_code": 0,
+            "log": "stopline-fallback2-offline.log",
+            "log_sha256": "5fea7c9ce7be24677e63cdefd458c9d314ae9295ab375c300158e5ac7d0585aa",
+            "construction_sha256": "7c354d28b4b2240847c96126dcf4140030d175431d42b3a09f5b3c7020d66087"
+          },
+          "compatibility": {
+            "receipt": "stopline-fallback2-compatibility.json",
+            "sha256": "1beef0da173c85997305c55a3121db194a0b688226f2a621114f08dd3645e4b1",
+            "log": "stopline-fallback2-analysis.log",
+            "negative_log": "stopline-fallback2-negative.log",
+            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__no_crosswalk_marked_stop_line --candidate fallback2 --output .runtime-work/c331230-stopline-fallback2-compat-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__no_crosswalk_marked_stop_line --attempt .runtime-work/c331230-stopline-fallback2-compat-v1 --output .runtime-work/c331230-stopline-fallback2-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "test_log": "stopline-fallback2-saved.json",
+            "test_log_sha256": "f40ab07e43f6731cca1b7167c84be62232c3624476de397c5a7cc639b13445ef",
+            "test_exit_code": 0
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/no_crosswalk_marked_stop_line_fallback3.json",
+          "construction_sha256": "6c39693523e049c82e025493df51839d02a066449754a4a62d176ea442467469",
+          "trigger": {
+            "source": "stop_history.jsonl",
+            "metric": "initial complete-body distance from marked line",
+            "failure_condition": "initial complete body is too close to stop line for a measurable before-line halt"
+          },
+          "changed_knobs": [
+            "ego_spawn_pose"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__no_crosswalk_marked_stop_line --candidate fallback3 --output .runtime-work/c331230-stopline-fallback3-offline-v1",
+            "exit_code": 0,
+            "log": "stopline-fallback3-offline.log",
+            "log_sha256": "883a27ea52f74fcf3b4b0ae5517bd194deb2efa4b3f0637f11826cd22d9baa3f",
+            "construction_sha256": "6c39693523e049c82e025493df51839d02a066449754a4a62d176ea442467469"
+          },
+          "compatibility": {
+            "receipt": "stopline-fallback3-compatibility.json",
+            "sha256": "9fd85c0f49571c37e808c78b54edb54e4f9e211472005d930ad777d946a7dafb",
+            "log": "stopline-fallback3-analysis.log",
+            "negative_log": "stopline-fallback3-negative.log",
+            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__no_crosswalk_marked_stop_line --candidate fallback3 --output .runtime-work/c331230-stopline-fallback3-compat-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__no_crosswalk_marked_stop_line --attempt .runtime-work/c331230-stopline-fallback3-compat-v1 --output .runtime-work/c331230-stopline-fallback3-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "test_log": "stopline-fallback3-saved.json",
+            "test_log_sha256": "621375bb6adda97bd21890ffd20828e29ff6bacd778a2787e2d706a7857a246e",
+            "test_exit_code": 0
+          }
+        }
+      ],
       "measurement_procedure": {
         "entrypoint": "finalizer.py"
       },
