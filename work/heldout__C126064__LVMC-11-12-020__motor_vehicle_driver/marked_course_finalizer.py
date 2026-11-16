@@ -12,6 +12,7 @@ SOURCES = ('marked_intersection.json', 'authority_source_original.json',
            'turn_body.jsonl', 'video_frames.jsonl', 'trace.jsonl', *CAMERAS)
 CASE_FORMS = {
     'indicated_course': 'marker', 'divergent_course': 'marker',
+    'marker_course_blend_050': 'marker',
     'button_indicated_course': 'button', 'button_divergent_course': 'button',
     'other_indication_indicated_course': 'other_indication',
     'other_indication_divergent_course': 'other_indication',
@@ -65,6 +66,22 @@ def analyze(attempt, *, write_channel=True):
         channel.write_text(''.join(json.dumps({'frame': row['frame'], 'time_s': row['time_s'],
                                               'value': row}, allow_nan=False) + '\n'
                                    for row in observation['observations']))
+        names = {item['name'] for item in
+                 config['case']['recording_description']['channels']}
+        if 'realized_course_deviation_m' in names:
+            numeric = root / 'realized_course_deviation_m.jsonl'
+            if numeric.exists():
+                raise ValueError('Derived numeric course channel already exists')
+            inside = [row for row in observation['observations']
+                      if row['inside_intersection']]
+            if any(abs(b['time_s'] - a['time_s'] - .05) > 1e-4
+                   for a, b in zip(inside, inside[1:])):
+                raise ValueError('Original numeric intersection interval is discontinuous')
+            numeric.write_text(''.join(json.dumps({'frame': row['frame'],
+                                                   'time_s': row['time_s'],
+                                                   'value': row['centroid_to_indicated_course_m']},
+                                                  allow_nan=False) + '\n'
+                                       for row in inside))
     source_hashes = {name: sha256(path.read_bytes()).hexdigest() for name, path in paths.items()}
     return {'format': 'worker-analysis-report', 'case_id': case,
             'measurements': {'original_marked_turn_course': {
@@ -82,6 +99,26 @@ def build_result(attempt, report):
     channel = required(root, 'original_marked_turn_course.jsonl')
     evidence = [{'name': 'original_marked_turn_course', 'unit': 'structured',
                  'reference': channel.name, 'sha256': sha256(channel.read_bytes()).hexdigest()}]
+    realized = {'original_marked_turn_course': {
+        'unit': 'structured', 'method': 'source-joined original full-body course',
+        'time_window': 'all recorded original frames',
+        'statistic': 'sample count', 'reference': channel.name,
+        'value': observation['frame_count'],
+        'sample_window_s': [observation['observations'][0]['time_s'],
+                            observation['observations'][-1]['time_s']]}}
+    if any(item['name'] == 'realized_course_deviation_m'
+           for item in description['channels']):
+        numeric = required(root, 'realized_course_deviation_m.jsonl')
+        evidence.append({'name': 'realized_course_deviation_m', 'unit': 'm',
+                         'reference': numeric.name,
+                         'sha256': sha256(numeric.read_bytes()).hexdigest()})
+        summary = observation['realized_course_deviation']
+        realized['realized_course_deviation_m'] = {
+            'unit': 'm', 'method': summary['method'],
+            'time_window': summary['time_window'],
+            'statistic': summary['statistic'], 'reference': numeric.name,
+            'value': summary['value_m'],
+            'sample_window_s': summary['sample_window_s']}
     return {'case_id': report['case_id'],
             'measured_values': {'original_marked_turn_course': observation},
             'target_checks': [{'target': 'municipal turning course with ' + form,
@@ -97,13 +134,7 @@ def build_result(attempt, report):
             'trace_reference': 'trace.jsonl', 'video_references': list(CAMERAS),
             'video_frame_map_reference': 'video_frames.jsonl',
             'recording_description': description, 'recording_evidence': evidence,
-            'realized_observables': {'original_marked_turn_course': {
-                'unit': 'structured', 'method': 'source-joined original full-body course',
-                'time_window': 'all recorded original frames',
-                'statistic': 'sample count', 'reference': channel.name,
-                'value': observation['frame_count'],
-                'sample_window_s': [observation['observations'][0]['time_s'],
-                                    observation['observations'][-1]['time_s']]}},
+            'realized_observables': realized,
             'physical_acceptance_claimed': False, 'legal_acceptance_claimed': False}
 
 

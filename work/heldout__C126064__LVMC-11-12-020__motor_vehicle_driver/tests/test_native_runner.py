@@ -40,6 +40,10 @@ class NativeRunnerTests(unittest.TestCase):
                 self.assertEqual(plan['variant'], variant)
                 self.assertEqual(plan['approach_heading_deg'], 0)
                 self.assertFalse(plan['authority_verified'])
+            numeric = module.prepare(module.ASSIGNMENT + '__marker_course_blend_050',
+                                     path, digest)
+            self.assertEqual((numeric['variant'], numeric['course_blend']),
+                             ('indicated_course', .5))
             with self.assertRaisesRegex(ValueError, 'Unknown exact'):
                 module.prepare(module.ASSIGNMENT + '__unplanned', path, digest)
             path.write_text(path.read_text() + ' ')
@@ -110,6 +114,18 @@ class NativeRunnerTests(unittest.TestCase):
             self.assertFalse(settings.synchronous_mode)
             self.assertIsNone(settings.fixed_delta_seconds)
             self.assertTrue((Path(directory) / 'attempt/native-turn-result.json').is_file())
+            numeric = module.prepare(module.ASSIGNMENT + '__marker_course_blend_050',
+                                     path, digest)
+            numeric_seen = []
+            def numeric_execute(*args, **kwargs):
+                numeric_seen.append(kwargs['course_blend'])
+                return {'authority_verified': False,
+                        'motion': {'actual_turn_observed': False}}
+            with patch.dict(sys.modules, {'carla': fake_carla}), \
+                    patch.object(module, 'SourceRecorder', return_value=recorder), \
+                    patch.object(module, 'execute_marked_turn', side_effect=numeric_execute):
+                module.run(numeric, Path(directory) / 'numeric-attempt')
+            self.assertEqual(numeric_seen, [.5])
             with patch.dict(sys.modules, {'carla': fake_carla}):
                 with self.assertRaisesRegex(ValueError, 'does not match Native map'):
                     module.run(dict(plan, map_name='different-map'), Path(directory) / 'wrong-map')

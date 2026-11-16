@@ -1,0 +1,89 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver",
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3",
+  "cases": [
+    {
+      "case_id": "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__marker_course_blend_050",
+      "kind": "delivery",
+      "construction": "marker_course_blend_050-construction.json",
+      "construction_sha256": "c4fef0a1425d696d0a8cd070487b148f10861a5fce93fc32a333dad7d749235c",
+      "measurement_procedure": {
+        "entrypoint": "marked_course_finalizer.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Intermediate course may miss its requested body path or lose marker visibility in Native motion."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "marker_course_blend_050-fallback1-construction.json",
+          "construction_sha256": "b079b795bf10b02b647be42eda718877d306acc86caa00099b56d69538532dfe",
+          "trigger": {
+            "source": "original Native actor spawn readback",
+            "metric": "spawn success and road clearance",
+            "failure_condition": "0.5 m spawn offset intersects the road or fails actor spawn"
+          },
+          "changed_knobs": [
+            "spawn_height_offset_m=0.7"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/runtime.py offline --manifest work/heldout__C126064__LVMC-11-12-020__motor_vehicle_driver/numeric-provisional-manifest.json --case heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__marker_course_blend_050 --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c126064-numeric-fallback1-offline-20261115 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "b079b795bf10b02b647be42eda718877d306acc86caa00099b56d69538532dfe",
+            "log": "marker_course_blend_050-fallback1-offline.log",
+            "log_sha256": "7c27b5ff49d165263e21c59a22e98624dc7c1572a5dd96d4677250d961fc286b"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "marker_course_blend_050-fallback2-construction.json",
+          "construction_sha256": "50e8b340481650c196d065d962c93109deabf2ce0651d4da1c6d379bd6078f27",
+          "trigger": {
+            "source": "original Native body and controller history",
+            "metric": "course target overshoot before 160 frames",
+            "failure_condition": "4 m/s target overshoots the numeric course before capture ends"
+          },
+          "changed_knobs": [
+            "target_speed_mps=3.5"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/runtime.py offline --manifest work/heldout__C126064__LVMC-11-12-020__motor_vehicle_driver/numeric-provisional-manifest.json --case heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__marker_course_blend_050 --candidate fallback2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c126064-numeric-fallback2-offline-20261115 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "50e8b340481650c196d065d962c93109deabf2ce0651d4da1c6d379bd6078f27",
+            "log": "marker_course_blend_050-fallback2-offline.log",
+            "log_sha256": "5628a00235335ca453bc03af006f7860fcc0460d17a6e86a03dcd55e71c06ebd"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "marker_course_blend_050-fallback3-construction.json",
+          "construction_sha256": "cfcfc8da89bdbbd77e45383cb0f227dab3f152bf7e27173f1ac95fecfa043c5a",
+          "trigger": {
+            "source": "original overview camera frames",
+            "metric": "marker and body pixel visibility",
+            "failure_condition": "primary overview mount fails to show marker and vehicle bodies"
+          },
+          "changed_knobs": [
+            "overview_x_m=-10"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/runtime.py offline --manifest work/heldout__C126064__LVMC-11-12-020__motor_vehicle_driver/numeric-provisional-manifest.json --case heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__marker_course_blend_050 --candidate fallback3 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c126064-numeric-fallback3-offline-20261115 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "cfcfc8da89bdbbd77e45383cb0f227dab3f152bf7e27173f1ac95fecfa043c5a",
+            "log": "marker_course_blend_050-fallback3-offline.log",
+            "log_sha256": "f23e530f204bc151a11dfc55fd4c3890474be4e0cff469fb9fdd2e8be009764e"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C126064__LVMC-11-12-020__motor_vehicle_driver/numeric-provisional-manifest.json --case heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__marker_course_blend_050 --output .runtime-work/c126064-numeric-primary-offline-20261115 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "c4fef0a1425d696d0a8cd070487b148f10861a5fce93fc32a333dad7d749235c",
+        "log": "marker_course_blend_050-offline.log",
+        "log_sha256": "a592996f5ee0f2387887061babaa08b97f805e64260daf46ad11864924901051"
+      }
+    }
+  ]
+}

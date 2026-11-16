@@ -93,6 +93,21 @@
         "trigger_metric": "button spawn and readback, visible pixels and completed turn",
         "failure_condition": "button missing or outside view, or turn incomplete"
       }
+    },
+    {
+      "case_id": "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__marker_course_blend_050",
+      "target_law_id": "LVMC-11-12-020",
+      "gap_ids": [
+        "authorized-course"
+      ],
+      "construction_state": "provisional_primary_offline_and_source_finalizer_positive_negative_proved",
+      "purpose": "Intermediate 0.5 numeric controller course between the same source-hashed indicated and divergent routes; original body offset is measured and no municipal or legal threshold is inferred.",
+      "physical_risk": {
+        "risk": "Intermediate target may miss body path or lose marker visibility during Native motion",
+        "trigger_source": "original Native marker readback, body path and four named camera streams",
+        "trigger_metric": "measured realized centroid offset and four-camera original pixels",
+        "failure_condition": "target motion incomplete, original source missing, or marker/body pixels unreviewable"
+      }
     }
   ],
   "comparisons": [
@@ -159,6 +174,23 @@
       "audit_log_sha256": "6afacbeac0d0312f719aad94206eadf52bff60a5aab24c2ad41885fd75825322",
       "negative_log": "other-indication-comparison-negative.log",
       "negative_log_sha256": "3b52b381bd9782bb6c4564006c0faabf50412565a87ac620e8c97be07e341506"
+    },
+    {
+      "comparison_id": "marker_numeric_course_offset",
+      "case_ids": [
+        "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__indicated_course",
+        "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__marker_course_blend_050"
+      ],
+      "fixed_conditions": [
+        "same source-hashed marker authority claim and physical marker inventory",
+        "same median-opening intersection, actor and jurisdiction",
+        "same four-camera profile, 8 s duration and sourced approach/exit"
+      ],
+      "deliberate_differences": [
+        "requested 0.0 versus 0.5 blend between sourced indicated and divergent controller routes; actual centroid offset measured independently"
+      ],
+      "audit_script": "comparison_audit.py",
+      "audit_status": "pending_exact_numeric_source_audit"
     }
   ],
   "observations": [
@@ -246,7 +278,8 @@
         "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__button_indicated_course",
         "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__button_divergent_course",
         "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__other_indication_indicated_course",
-        "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__other_indication_divergent_course"
+        "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__other_indication_divergent_course",
+        "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__marker_course_blend_050"
       ],
       "evidence_or_gap": "No source-backed municipal authority or original marked-turn recording; CPU diagnostic is not legal or physical evidence."
     }

@@ -379,7 +379,8 @@ def drive_turn(world, carla_module, ego, plan, cameras, record_sample,
 
 def execute_marked_turn(world, carla_module, ego, case_id, source_path, source_sha256,
                         variant, make_transform, recorder, *,
-                        camera_factory=FourCameraCapture, drive=drive_turn):
+                        camera_factory=FourCameraCapture, drive=drive_turn,
+                        course_blend=None):
     """Join physical markers, selected targets, cameras and original recorder.
 
     The caller supplies a reviewed authority/site source and an already owned ego.
@@ -390,7 +391,8 @@ def execute_marked_turn(world, carla_module, ego, case_id, source_path, source_s
     cameras = None
     try:
         markers = place_markers(world, source_path, source_sha256, make_transform)
-        plan = turn_targets(world, source_path, source_sha256, variant, make_transform)
+        plan = turn_targets(world, source_path, source_sha256, variant, make_transform,
+                            course_blend=course_blend)
         if plan['intersection_id'] != markers['intersection_id']:
             raise ValueError('Marker and turn plan intersection identities differ')
         recorder.record_scene(case_id, source_path, source_sha256, markers, ego.id)
@@ -402,6 +404,7 @@ def execute_marked_turn(world, carla_module, ego, case_id, source_path, source_s
         return {'source_sha256': source_sha256,
                 'intersection_id': plan['intersection_id'],
                 'variant': variant,
+                'course_blend_target': course_blend,
                 'physical_marker_xy_m': markers['physical_marker_xy_m'],
                 'motion': motion, 'sources': sources,
                 'authority_verified': False,

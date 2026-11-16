@@ -15,6 +15,7 @@ from turn_source_recorder import SourceRecorder
 ASSIGNMENT = 'heldout__C126064__LVMC-11-12-020__motor_vehicle_driver'
 VARIANTS = ('indicated_course', 'divergent_course')
 FORMS = {'button': 'button', 'other_indication': 'other_indication'}
+NUMERIC_MARKER_CASES = {'marker_course_blend_050': .5}
 
 
 def case_form_variant(case_id):
@@ -22,6 +23,8 @@ def case_form_variant(case_id):
     if not case_id.startswith(prefix):
         raise ValueError('Unknown exact marked-turn case')
     suffix = case_id[len(prefix):]
+    if suffix in NUMERIC_MARKER_CASES:
+        return 'marker', 'indicated_course'
     if suffix in VARIANTS:
         return 'marker', suffix
     for form in FORMS:
@@ -33,6 +36,8 @@ def case_form_variant(case_id):
 
 def prepare(case_id, source_path, expected_sha256):
     form, variant = case_form_variant(case_id)
+    suffix = case_id.removeprefix(ASSIGNMENT + '__')
+    course_blend = NUMERIC_MARKER_CASES.get(suffix)
     path = Path(source_path)
     raw = path.read_bytes()
     if sha256(raw).hexdigest() != expected_sha256:
@@ -58,6 +63,7 @@ def prepare(case_id, source_path, expected_sha256):
         raise ValueError('Marked-turn approach coordinates incomplete')
     heading = degrees(atan2(second[1] - first[1], second[0] - first[0]))
     return {'case_id': case_id, 'variant': variant, 'indication_form': form,
+            'course_blend': course_blend,
             'source_path': str(path), 'source_sha256': expected_sha256,
             'map_name': record['map_name'],
             'approach_xy_m': first, 'approach_heading_deg': heading,
@@ -100,9 +106,10 @@ def run(plan, output, host='127.0.0.1', port=2000):
             return carla.Transform(carla.Location(x=x, y=y, z=z), carla.Rotation(yaw=yaw))
 
         if plan['indication_form'] == 'marker':
-            result = execute_marked_turn(world, carla, ego, plan['case_id'], plan['source_path'],
-                                         plan['source_sha256'], plan['variant'], make_transform,
-                                         recorder)
+            args = (world, carla, ego, plan['case_id'], plan['source_path'],
+                    plan['source_sha256'], plan['variant'], make_transform, recorder)
+            result = (execute_marked_turn(*args, course_blend=plan['course_blend'])
+                      if plan.get('course_blend') is not None else execute_marked_turn(*args))
         else:
             result = execute_indication_turn(world, carla, ego, plan['case_id'],
                                              plan['source_path'], plan['source_sha256'],

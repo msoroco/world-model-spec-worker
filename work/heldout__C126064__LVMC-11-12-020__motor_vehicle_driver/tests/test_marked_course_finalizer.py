@@ -41,6 +41,23 @@ class MarkedCourseFinalizerTests(unittest.TestCase):
             self.assertFalse(result['setup_confirmed'])
             self.assertFalse(report['legal_acceptance_claimed'])
 
+    def test_numeric_course_stream_recomputes_from_original_body(self):
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.prepare(root)
+            config = json.loads((root / 'config.json').read_text())
+            config['case']['recording_description']['channels'].append(
+                {'name': 'realized_course_deviation_m', 'unit': 'm'})
+            (root / 'config.json').write_text(json.dumps(config))
+            report = analyze(root)
+            result = build_result(root, report)
+            summary = result['realized_observables']['realized_course_deviation_m']
+            stream = [json.loads(line) for line in
+                      (root / summary['reference']).read_text().splitlines()]
+            self.assertEqual(summary['value'], max(row['value'] for row in stream))
+            self.assertEqual(summary['statistic'], 'max')
+            self.assertFalse(result['legal_acceptance_claimed'])
+
     def test_rejects_missing_camera_and_changed_trace_join(self):
         with TemporaryDirectory() as directory:
             root = Path(directory)
