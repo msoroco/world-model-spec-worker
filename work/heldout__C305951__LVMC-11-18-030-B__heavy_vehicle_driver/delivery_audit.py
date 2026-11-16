@@ -280,12 +280,41 @@ def compare_passing(crossing_root: Path, passing_root: Path, *,
             "physical_acceptance_claimed": False, "legal_acceptance_claimed": False}
 
 
+def compare_turn(crossing_root: Path, turn_root: Path, *,
+                 negative_turn: bool = False) -> dict:
+    """Hold original footprint, route and cameras fixed while adding turn intent."""
+    first, second = Path(crossing_root), Path(turn_root)
+    left_case = json.loads(_file(first, "result.json").read_text())["case_id"]
+    right_case = json.loads(_file(second, "result.json").read_text())["case_id"]
+    left = audit(first, left_case)
+    right = audit(second, right_case, negative_turn=negative_turn)
+    if (not left_case.endswith("__unexcused_boundary_crossing") or
+            not right_case.endswith("__lawful_turn_preparation_boundary_crossing")):
+        raise ValueError("Heavy turn comparison case pair differs")
+    fixed = ("native_three_lane_survey.json", "video_frames.jsonl",
+             "heavy_lane_sources.jsonl", "trace.jsonl", "overview.mkv",
+             "approach.mkv", "reference_corner.mkv", "driver_reference.mkv")
+    for name in fixed:
+        if _sha(_file(first, name)) != _sha(_file(second, name)):
+            raise ValueError("Heavy turn fixed source differs: " + name)
+    if (abs(left["minimum_clearance_m"] - right["minimum_clearance_m"]) > 1e-9 or
+            right["turn_preparation_context"] is None):
+        raise ValueError("Heavy turn clearance or intent comparison differs")
+    return {"format": "worker-heavy-lane-turn-comparison-fixture",
+            "case_ids": [left_case, right_case],
+            "fixed_source_sha256": {name: _sha(_file(first, name)) for name in fixed},
+            "matched_minimum_clearance_m": left["minimum_clearance_m"],
+            "turn_preparation_context": right["turn_preparation_context"],
+            "physical_acceptance_claimed": False, "legal_acceptance_claimed": False}
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--attempt")
     parser.add_argument("--case")
     parser.add_argument("--compare-attempt")
     parser.add_argument("--passing-comparison", action="store_true")
+    parser.add_argument("--turn-comparison", action="store_true")
     parser.add_argument("--negative-same-body", action="store_true")
     parser.add_argument("--negative-camera", action="store_true")
     parser.add_argument("--negative-passing", action="store_true")
@@ -294,7 +323,11 @@ def main() -> None:
     if args.compare_attempt:
         if not args.attempt or args.case:
             parser.error("comparison needs --attempt and --compare-attempt")
-        if args.passing_comparison:
+        if args.turn_comparison:
+            print(json.dumps(compare_turn(Path(args.attempt),
+                                          Path(args.compare_attempt),
+                                          negative_turn=args.negative_turn), indent=2))
+        elif args.passing_comparison:
             print(json.dumps(compare_passing(Path(args.attempt),
                                              Path(args.compare_attempt),
                                              negative_passing=args.negative_passing), indent=2))

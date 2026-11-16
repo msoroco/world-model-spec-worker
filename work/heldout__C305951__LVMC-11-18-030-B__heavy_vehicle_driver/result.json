@@ -104,7 +104,7 @@
       "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python work/heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver/delivery_audit.py --attempt .runtime-work/c305951-passing-saved-output-v2/v0001/analysis --case heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__passing_boundary_crossing",
       "exit_code": 0,
       "log": "passing-primary-delivery-positive.log",
-      "sha256": "1c571eb7f80ba1d2bb1250806807151f03ab9150a0918cbd05652f8bdac7556c"
+      "sha256": "75895200e371ea4913e7749a91148602c8e04edc4cca8f09904211e78603d671"
     },
     {
       "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver/delivery_audit.py --attempt .runtime-work/c305951-heavy-saved-output-v2/v0001/analysis --compare-attempt .runtime-work/c305951-crossing-saved-output-v2/v0001/analysis",
@@ -117,11 +117,29 @@
       "exit_code": 0,
       "log": "crossing-passing-comparison-positive.log",
       "sha256": "61042b87c935cbad82519641c0594ddfef67e163dc3fea0250deb979c38640b5"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver/provisional-manifest.json --case heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__lawful_turn_preparation_boundary_crossing --output .runtime-work/c305951-turn-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+      "exit_code": 0,
+      "log": "turn-primary-offline.log",
+      "sha256": "fe008aab760eb03ccac7578e2b84665b1b50b0d7f855b17a0c7a8d039435b658"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver/provisional-manifest.json --case heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__lawful_turn_preparation_boundary_crossing --output .runtime-work/c305951-turn-compatibility-v2 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "turn-primary-compatibility.json",
+      "sha256": "83105dfb393bf0b7d28eb458ebba450f609d346d0921d494ae4c67a972d721a7"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver/provisional-manifest.json --case heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__lawful_turn_preparation_boundary_crossing --attempt .runtime-work/c305951-turn-saved-original-v1 --output .runtime-work/c305951-turn-saved-output-v1 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "turn-primary-saved-processing.json",
+      "sha256": "9621eb09c49013679bb10695ef698df12f48d862623841ef6237b117fa71f9bb"
     }
   ],
   "remaining_gpu_checks": [
     "Actual motion, geometry, camera visibility and duration remain unverified after CPU preparation."
   ],
-  "reason": "Three of four exact primary cases pass pinned offline, source-positive/missing-source compatibility and fresh saved-only processing. Within-lane has three validated fallbacks. Independent delivery and within/crossing plus crossing/passing source comparison positives and negatives are returned and bound; synthetic passing rows show actor 306 but no order reversal or lawful premise. Remaining worker-owned CPU work: construct/prove turn-preparation primary, three distinct fallbacks for crossing/passing/turn-preparation, turn-context comparison, semantic proposals, independent physical/lifecycle audits and strict delivery manifest. No GPU dependency prevents this preparation.",
+  "reason": "All four exact primary cases now pass pinned offline, positive/missing-original compatibility and fresh saved-only processing; only within-lane has three validated fallbacks. The fourth turn-preparation case has a source-recorded planned turn, command and indicator readback, with lawful-turn permission null. Independent turn delivery and crossing/turn comparison positives and tamper negatives pass in ignored runtime work but are not yet returned or bound at the 10,200-file cap. Remaining worker-owned CPU work: return/bind those four audit logs; build and prove nine fallbacks for crossing, passing and turn preparation; finish semantic, physical/lifecycle, execution and strict delivery proofs. No GPU dependency prevents this CPU work.",
   "readiness_kind": "delivery_prepared"
 }
