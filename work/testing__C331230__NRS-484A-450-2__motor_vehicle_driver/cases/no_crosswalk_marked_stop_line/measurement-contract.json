@@ -1,0 +1,25 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "If there is no near-side crosswalk, stop at a clearly marked stop line before entering the intersection",
+      "source": "NRS 484A.450(2)",
+      "output_key": "stop_line_halt_observation",
+      "method": "measure_stop_line_halt",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "approach_context.json",
+        "stop_history.jsonl",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "stop_history.jsonl"
+    ],
+    "error_contains": "Missing required source: stop_history.jsonl"
+  }
+}
