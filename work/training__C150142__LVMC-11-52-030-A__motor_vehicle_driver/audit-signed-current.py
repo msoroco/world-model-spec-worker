@@ -86,8 +86,7 @@ def audit(index=None):
             receipts[name] = (path.read_text() if path.suffix == '.log'
                               else json.loads(path.read_text()))
         for stage, checksum in row['logs'].items():
-            prefix = 'update023-signed' + (
-                '' if candidate == 'primary' else '-' + candidate)
+            prefix = 'update024-signed-' + candidate
             require(sha(ROOT / (prefix + '-' + stage + '.log')) == checksum,
                     'Signed command log changed: ' + tag + '/' + stage)
         result = receipts['result']

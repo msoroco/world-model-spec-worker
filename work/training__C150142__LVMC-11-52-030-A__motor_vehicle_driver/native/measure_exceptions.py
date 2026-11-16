@@ -35,6 +35,7 @@ def measure(frame_rows, context, events):
         raise ValueError('Missing red-paint readback')
     start = number(curb.get('start_x_m'), 'red start')
     end = number(curb.get('end_x_m'), 'red end')
+    curb_y = number(curb.get('curb_y_m'), 'curb y')
     if end <= start:
         raise ValueError('Invalid red-paint extent')
     sign = context.get('sign_readback')
@@ -54,7 +55,6 @@ def measure(frame_rows, context, events):
     if mailbox['present']:
         box_x = number(mailbox.get('center_x_m'), 'mailbox x')
         box_y = number(mailbox.get('center_y_m'), 'mailbox y')
-        curb_y = number(curb.get('curb_y_m'), 'curb y')
         mailbox_distance = hypot(float(box_x - max(start, min(box_x, end))),
                                  float(box_y - curb_y))
         if not isfinite(mailbox_distance):
@@ -76,8 +76,10 @@ def measure(frame_rows, context, events):
         if not isinstance(body, list) or len(body) < 4 or not isinstance(velocity, list) or len(velocity) != 3:
             raise ValueError('Missing Native body or velocity')
         xs = [number(point[0], 'body x') for point in body]
+        ys = [number(point[1], 'body y') for point in body]
         speed2 = sum(number(axis, 'velocity') ** 2 for axis in velocity)
-        on_red = min(xs) <= end and max(xs) >= start
+        on_red = (min(xs) <= end and max(xs) >= start and
+                  min(ys) <= curb_y <= max(ys))
         if on_red and speed2 <= STATIONARY_MPS ** 2:
             if first is None:
                 first = t

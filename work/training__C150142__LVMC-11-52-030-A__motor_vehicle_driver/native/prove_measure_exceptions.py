@@ -92,6 +92,11 @@ class ExceptionSourceProof(unittest.TestCase):
         rows = list(frames(3)); rows[1]['velocity_native_xyz_mps'] = [1, 0, 0]
         with self.assertRaisesRegex(ValueError, 'interval interrupted'):
             measure(rows, context(), [])
+        rows = list(frames(3))
+        for row in rows:
+            row['ego_body_native_xy_m'] = [[x, y + 3] for x, y in row['ego_body_native_xy_m']]
+        with self.assertRaisesRegex(ValueError, 'No measured stationary red-curb interval'):
+            measure(rows, context(), [])
 
 
 if __name__ == '__main__':

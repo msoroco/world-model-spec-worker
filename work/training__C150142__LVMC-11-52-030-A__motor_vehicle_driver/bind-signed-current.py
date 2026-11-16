@@ -28,9 +28,7 @@ def bind():
                         if candidate == 'primary' else
                         ROOT / 'selected-fallbacks/ordinary_red_signed' /
                         candidate / 'construction.json')
-        prefix = REPO / '.runtime-work' / (
-            'C150142-u023d-signed-primary' if candidate == 'primary'
-            else 'C150142-u023-signed-' + candidate)
+        prefix = REPO / '.runtime-work' / ('C150142-u024-signed-' + candidate)
         sources = {
             'compatibility': Path(str(prefix) + '-compat/compatibility.json'),
             'saved': Path(str(prefix) + '-saved/v0001/processing.json'),
@@ -55,7 +53,7 @@ def bind():
                 and compat['construction_sha256'] == sha(construction)
                 and saved['analysis_revision']['construction_sha256'] == sha(construction)):
             raise ValueError('Signed candidate proof incomplete: ' + candidate)
-        log_prefix = 'update023-signed' + suffix
+        log_prefix = 'update024-signed-' + candidate
         logs = {stage: sha(ROOT / (log_prefix + '-' + stage + '.log'))
                 for stage in ('offline', 'compat', 'prepare', 'saved')}
         entries[candidate] = {
