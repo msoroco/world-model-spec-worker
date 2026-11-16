@@ -45,10 +45,12 @@ if __name__ == '__main__':
     def duplicate_trigger(value):
         entry = next(e for e in value['cases'] if e['case_id'].endswith(service + '_' + boundary))
         entry['candidates'][1]['trigger'] = entry['candidates'][0]['trigger']
-    summary_path = (f'update035-shuttle-below-fallback1-pinned-saved-v1.json'
+    summary_path = ((f'update035-shuttle-below-fallback1-pinned-saved-v1.json'
+                     if boundary == 'below' else
+                     f'update036-shuttle-{slug}-fallback1-pinned-saved-v1.json')
                     if service == 'shuttle_bus' else
                     f'update{update}-{slug}-fallback1-pinned-saved-v1.json')
-    config_path = (f'shuttle-below-fallback2-result-v1/v0001/analysis/config.json'
+    config_path = (f'shuttle-{slug}-fallback2-result-v1/v0001/analysis/config.json'
                    if service == 'shuttle_bus' else
                    f'{slug}-fallback2-result-v1/v0001/analysis/config.json')
     manifest_path = ('execution-manifest-diagnostic-shuttle_bus_below-draft.json'

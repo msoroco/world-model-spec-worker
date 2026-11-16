@@ -30,7 +30,7 @@ def read(path):
 def audit(suffix='below', service='tour_bus'):
     if suffix not in BOUNDARIES:
         raise ValueError('Unsupported pinned tour-bus boundary')
-    if service not in ('tour_bus', 'shuttle_bus') or (service == 'shuttle_bus' and suffix != 'below'):
+    if service not in ('tour_bus', 'shuttle_bus'):
         raise ValueError('Unsupported pinned signed-bus audit')
     frames, duration, boundary = BOUNDARIES[suffix]
     update = {'below': '032', 'at': '033', 'above': '034',
@@ -38,7 +38,7 @@ def audit(suffix='below', service='tour_bus'):
     slug = suffix.replace('_', '-')
     case = ROOT.name + '__' + service + '_' + suffix
     prefix = ('c150142-tour-bus-pinned-saved-' + slug + '-'
-              if service == 'tour_bus' else 'c150142-shuttle-below-')
+              if service == 'tour_bus' else 'c150142-shuttle-' + slug + '-')
     fixed = {'capture_frames': frames, 'requested_approach_frames': 120,
              'requested_stationary_duration_s': duration,
              'requested_boundary': boundary, 'rate_hz': 20}
@@ -56,14 +56,19 @@ def audit(suffix='below', service='tour_bus'):
     configs = {}
     for candidate in ('primary', 'fallback1', 'fallback2', 'fallback3'):
         stem = ((('result-v7' if suffix == 'below' else 'result-v1')
-                 if service == 'tour_bus' else 'primary-result-v2')
+                 if service == 'tour_bus' else
+                 'primary-result-v2' if suffix == 'below' else 'primary-result-v1')
                 if candidate == 'primary' else candidate + '-result-v1')
         version = REPO / '.runtime-work' / (prefix + stem) / 'v0001'
         if service == 'shuttle_bus':
             summary_name = ('update035-shuttle-below-primary-pinned-saved-v2.json'
-                            if candidate == 'primary' else
-                            f'update035-shuttle-below-{candidate}-pinned-saved-v1.json')
-            negative_name = f'update035-shuttle-below-{candidate}-negative.json'
+                            if suffix == 'below' and candidate == 'primary' else
+                            f'update035-shuttle-below-{candidate}-pinned-saved-v1.json'
+                            if suffix == 'below' else
+                            f'update036-shuttle-{slug}-{candidate}-pinned-saved-v1.json')
+            negative_name = (f'update035-shuttle-below-{candidate}-negative.json'
+                             if suffix == 'below' else
+                             f'update036-shuttle-{slug}-{candidate}-negative.json')
         else:
             summary_name = (('update032-below-primary-pinned-saved-recheck.json'
                              if suffix == 'below' else f'update033-tour-bus-{slug}-primary-recheck.json')
