@@ -141,3 +141,7 @@ Recorded-only `runtime.py process-saved` passes in `primary-bound-saved-v2.log` 
 
 Remaining worker-owned CPU preparation includes three tested distinct physical-risk fallbacks per selected case, exact construction and proofs for the other selected cases, complete canonical semantic proposals, and independent comparison and delivery acceptance receipts. This three-frame synthetic diagnostic proves software wiring and source rejection only. It cannot establish an actual statutory median crossing, official sign governance, physical motion, camera visibility, yielding, or legal qualification. The frozen inventory contains no accepted recordings. No frozen input, runtime, batch file, shared work, or Git action was changed.
 
+
+## Historical build-log compaction — 2026-11-16
+
+Three old build-script logs (`primary-bundle-build-v1.log`, `second-build-v1.log`, `third-build-v2.log`) were removed from the returned `result.json.tests` list and retained byte-for-byte under ignored `.runtime-work/archived-historical-c125745-build-logs/` to free returned-file slots. No current execution-manifest receipt, exact offline/compatibility/saved proof, current CPU test log, or partial status was changed. Their build scripts and current construction files remain returned. This is returned-file housekeeping, not a readiness promotion.

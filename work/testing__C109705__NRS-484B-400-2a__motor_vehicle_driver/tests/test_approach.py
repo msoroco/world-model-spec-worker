@@ -1,5 +1,6 @@
 import importlib.util
 import hashlib
+from queue import Queue
 import json
 import tempfile
 import unittest
@@ -30,7 +31,9 @@ class ApproachTests(unittest.TestCase):
         names=("approach_road_source", "outgoing_road_source", "centerline_source",
                "right_half_source", "junction_source", "route_source")
         packet={"native_map_id":"TownX", "intersection_id":44,
-                "approach_road_id":1, "approach_lane_id":-1, "outgoing_road_id":2,
+                "approach_road_id":1, "approach_lane_id":-1, "connector_road_id":3,
+                "outgoing_road_id":2, "departure_direction_xy":[0,1],
+                "vehicle_blueprint_id":"vehicle.tesla.model3",
                 "centerline_kind":"marked", "centerline_xy_m":[[0,0],[20,0]],
                 "right_half_polygon_xy_m":[[0,0],[20,0],[20,-5],[0,-5]],
                 "junction_polygon_xy_m":[[14,-6],[24,-6],[24,4],[14,4]],
@@ -98,6 +101,34 @@ class ApproachTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError,"preserve reviewed approach"):
                 selection.plan_left_turn(world,packet,root)
 
+    def test_four_cameras_spawn_join_and_cleanup(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            packet,_=self.site_fixture(Path(tmp))
+            plan=selection.four_camera_plan(packet,packet["left_turn_route_xy_m"])
+            spawned=[]
+            class Sensor:
+                def __init__(self):self.stopped=self.destroyed=False
+                def stop(self):self.stopped=True
+                def destroy(self):self.destroyed=True
+            class Blueprint:
+                def __init__(self):self.attributes={}
+                def set_attribute(self,k,v):self.attributes[k]=v
+            world=NS(get_blueprint_library=lambda:NS(find=lambda name:Blueprint()),
+                     spawn_actor=lambda bp,pose,**kwargs:spawned.append((Sensor(),bp,kwargs)) or spawned[-1][0])
+            carla=NS(Location=lambda **kw:kw,Rotation=lambda **kw:kw,
+                     Transform=lambda location,rotation:(location,rotation))
+            with selection.source_cameras(world,object(),carla,plan) as cameras:
+                self.assertEqual(set(cameras),set(selection.CAMERA_PROFILE))
+                self.assertEqual(len(spawned),4)
+                self.assertEqual(spawned[-1][2].keys(),{"attach_to"})
+                self.assertEqual(spawned[0][1].attributes["sensor_tick"],"0.05")
+            self.assertTrue(all(row[0].stopped and row[0].destroyed for row in spawned))
+            queue=Queue();queue.put(NS(frame=7));queue.put(NS(frame=8))
+            self.assertEqual(selection._camera_frame(queue,8).frame,8)
+            queue=Queue();queue.put(NS(frame=9))
+            with self.assertRaisesRegex(ValueError,"skipped"):
+                selection._camera_frame(queue,8)
+
     def fixture(self,root,lateral):
         ctx={"native_map_id":"TownX","intersection_id":44,"approach_road_id":1,
              "approach_lane_id":-1,"outgoing_road_id":2,
@@ -160,6 +191,21 @@ class ApproachTests(unittest.TestCase):
             frames[1]["carla_frame"]=999
             (root/"video_frames.jsonl").write_text("".join(json.dumps(r)+"\n" for r in frames))
             with self.assertRaisesRegex(ValueError,"frame join"):
+                measure.analyze(root)
+
+    def test_approach_prefix_must_end_at_first_sourced_entry(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);self.fixture(root,-1)
+            context=json.loads((root/"road_context.json").read_text())
+            context["first_entry_frame"]=102
+            (root/"road_context.json").write_text(json.dumps(context))
+            frames=[json.loads(r) for r in (root/"video_frames.jsonl").read_text().splitlines()]
+            frames.append({"video_frame":2,"carla_frame":102,"time_s":1.1})
+            (root/"video_frames.jsonl").write_text("".join(json.dumps(r)+"\n" for r in frames))
+            self.assertEqual(len(measure.analyze(root)["approach_samples"]),2)
+            context["first_entry_frame"]=103
+            (root/"road_context.json").write_text(json.dumps(context))
+            with self.assertRaisesRegex(ValueError,"First intersection entry"):
                 measure.analyze(root)
 
     def test_both_intersecting_native_roads_need_opposing_lanes(self):
