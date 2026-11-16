@@ -8,6 +8,18 @@ import heavy_lifecycle_fixture as lifecycle
 
 
 class HeavyPhysicalLifecycleTest(unittest.TestCase):
+    def test_saved_review_rejects_synthetic_and_missing_native_provenance(self):
+        case = "heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__within_marked_lane"
+        fixture = {"case_id": case, "fixture_only": True,
+                   "review_method": "frame_by_frame_originals",
+                   "reviewer_id": "synthetic-cpu-fixture",
+                   "reviewed_at_utc": "fixture-clock-only"}
+        with self.assertRaisesRegex(ValueError, "Synthetic pixel review"):
+            physical.audit_saved("unused", case, fixture)
+        real_without_provenance = dict(fixture, fixture_only=False)
+        with self.assertRaisesRegex(ValueError, "Native capture provenance"):
+            physical.audit_saved("unused", case, real_without_provenance)
+
     def test_physical_case_events_and_missing_pixel_review(self):
         prefix = "heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__"
         frames = [{"frame": 1, "time_s": 0.0, "minimum_clearance_m": 0.5,

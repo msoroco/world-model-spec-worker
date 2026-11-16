@@ -16,7 +16,7 @@ import sys
 from tempfile import TemporaryDirectory
 
 from delivery_audit import audit
-from heavy_physical_outcome import CAMERAS, evaluate
+from heavy_physical_outcome import CAMERAS, audit_saved
 
 
 HERE = Path(__file__).resolve().parent
@@ -121,6 +121,10 @@ def run(case_id, kind):
             report = json.loads((attempt / "analysis-report.json").read_text())
             joined = audit(attempt, case_id)
             pixel_review = {"case_id": case_id, "fixture_only": True,
+                            "actual_native_capture": False,
+                            "review_method": "frame_by_frame_originals",
+                            "reviewer_id": "synthetic-cpu-fixture",
+                            "reviewed_at_utc": "fixture-clock-only",
                             "cameras": {name: {"source_sha256": joined["four_camera_decode"][name]["sha256"],
                                                "reviewed_frames": joined["frames"],
                                                "frames": [{"video_frame": index,
@@ -128,8 +132,7 @@ def run(case_id, kind):
                                                            "required_bodies_visible": True}
                                                           for index in range(joined["frames"])]}
                                         for name in CAMERAS}}
-            trace = _rows(attempt / "trace.jsonl")
-            result = evaluate(report, joined, pixel_review, trace)
+            result = audit_saved(attempt, case_id, pixel_review, allow_fixture=True)
             expected = "met" if kind == "complete_motion" else "not_met"
             if result["physical_checks"]["maneuver"]["status"] != expected:
                 raise ValueError("Physical fixture yielded another branch: " +

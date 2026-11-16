@@ -6,7 +6,11 @@ The lawful passing and turn premises are deliberately outside this evaluator.
 
 from __future__ import annotations
 
+import argparse
+from hashlib import sha256
+import json
 from math import hypot, isfinite
+from pathlib import Path
 
 
 CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
@@ -105,3 +109,54 @@ def evaluate(report, source_audit, pixel_review, trace):
             "provenance_kind": "native",
             "legal_exception_decided": False,
             "physical_acceptance_claimed": False}
+
+
+def audit_saved(attempt, case_id, pixel_review, *, allow_fixture=False):
+    """Join an explicit camera review to retained originals and saved measurements.
+
+    The fixture override is only for CPU protocol tests. A real review must name
+    its reviewer and Native provenance; the caller still owns visual inspection.
+    """
+    from delivery_audit import audit
+
+    if not isinstance(pixel_review, dict) or pixel_review.get("case_id") != case_id:
+        raise ValueError("Pixel review case identity differs")
+    fixture = pixel_review.get("fixture_only") is True
+    if fixture and not allow_fixture:
+        raise ValueError("Synthetic pixel review cannot establish Native visibility")
+    if not fixture and pixel_review.get("actual_native_capture") is not True:
+        raise ValueError("Pixel review lacks actual Native capture provenance")
+    if (pixel_review.get("review_method") != "frame_by_frame_originals"
+            or not isinstance(pixel_review.get("reviewer_id"), str)
+            or not pixel_review["reviewer_id"].strip()
+            or not isinstance(pixel_review.get("reviewed_at_utc"), str)
+            or not pixel_review["reviewed_at_utc"].strip()):
+        raise ValueError("Pixel review lacks reviewer and method provenance")
+    attempt = Path(attempt)
+    joined = audit(attempt, case_id)
+    report = json.loads((attempt / "analysis-report.json").read_text())
+    trace = [json.loads(line) for line in (attempt / "trace.jsonl").read_text().splitlines()
+             if line.strip()]
+    result = evaluate(report, joined, pixel_review, trace)
+    result["pixel_review_sha256"] = sha256(json.dumps(pixel_review, sort_keys=True,
+                                                    separators=(",", ":")).encode()).hexdigest()
+    result["pixel_reviewer_id"] = pixel_review["reviewer_id"]
+    result["diagnostic_fixture"] = fixture
+    result["actual_native_capture"] = not fixture
+    return result
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--attempt", required=True)
+    parser.add_argument("--case", required=True)
+    parser.add_argument("--pixel-review", required=True)
+    parser.add_argument("--allow-fixture", action="store_true")
+    parser.add_argument("--require-complete", action="store_true")
+    args = parser.parse_args()
+    review = json.loads(Path(args.pixel_review).read_text())
+    outcome = audit_saved(args.attempt, args.case, review,
+                          allow_fixture=args.allow_fixture)
+    if args.require_complete and not outcome["maneuver_completed"]:
+        parser.error("Native physical maneuver is not complete")
+    print(json.dumps(outcome, indent=2, allow_nan=False))
