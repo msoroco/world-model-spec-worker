@@ -167,6 +167,12 @@ def selftest(case, negative=False):
     require(receipt.get('passed') is True and receipt.get('case_id') == case and
             receipt.get('native_revision', {}).get('construction_sha256') == entry['construction_sha256'],
             'Selected synthetic source-shaped receipt differs')
+    decode = receipt.get('final_video_checks', {})
+    require(decode.get('format') == 'source-decode' and decode.get('passed') is True and
+            decode.get('frames') == 840 and
+            decode.get('auditor_sha256') == sha(Path(media.__file__)) and
+            decode.get('checks', {}).get('frame_count') == 'all-decoded-frames',
+            'Current full-decode mechanics receipt missing')
     sources = receipt['original_source_hashes']
     for name, content in spec['files'].items():
         require(sources.get(name) == hashlib.sha256(content.encode()).hexdigest(),

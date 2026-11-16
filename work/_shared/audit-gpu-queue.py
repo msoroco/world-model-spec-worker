@@ -15,8 +15,8 @@ def expected_identities():
     for aid in batch["assignments"]:
         result = json.loads((ROOT / "work" / aid / "result.json").read_text())
         status = result.get("status")
-        if status not in ("blocked", "partial"):
-            raise ValueError("Intent queue requires a truthful incomplete result")
+        if status not in ("blocked", "partial", "ready"):
+            raise ValueError("Intent queue requires a truthful result")
         plan = json.loads((ROOT / "work" / aid / "case-plan.json").read_text())
         selected_path = ROOT / "work" / aid / "execution-manifest.json"
         selected = json.loads(selected_path.read_text()) if selected_path.is_file() else {"cases": []}

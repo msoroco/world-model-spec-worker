@@ -1,0 +1,49 @@
+{
+  "template_id": "NRS-484B-413-2@motor_vehicle_driver",
+  "law_id": "NRS-484B-413-2",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "A signal of intention to turn right or left, or otherwise turn a vehicle from a direct course, shall be given continuously during not less than the last 100 feet traveled in a business or residential district and not less than the last 300 feet traveled in any other area prior to changing the course of a vehicle. This rule shall be observed, regardless of the weather.",
+  "structure": {
+    "activation": {
+      "context": "any other area; district category requires source review",
+      "subject": "driver changing a vehicle from a direct course"
+    },
+    "obligation": {
+      "type": "must",
+      "action": "give continuous turn signal before course change",
+      "source_clause": "shall be given continuously"
+    },
+    "exceptions": [],
+    "timing": {
+      "description": "last distance traveled before changing course",
+      "numeric_conditions": [
+        {
+          "variable": "actual_signal_distance_ft",
+          "operator": ">=",
+          "value": 300,
+          "unit": "ft"
+        }
+      ]
+    },
+    "judgment_calls_needed": []
+  },
+  "parameter_refs": [
+    {
+      "name": "area_classification",
+      "kind": "world_setup",
+      "range_or_domain": "business, residential, or any other area; source review required"
+    },
+    {
+      "name": "commanded_signal_distance_ft",
+      "kind": "controller",
+      "range_or_domain": "requested ft before course change"
+    },
+    {
+      "name": "actual_signal_distance_ft",
+      "kind": "subject_behavior",
+      "range_or_domain": "measured ft from original indication and path"
+    }
+  ],
+  "other_statutory_branch": "100 feet in a business or residential district, not selected in this six-case any-other-area set"
+}

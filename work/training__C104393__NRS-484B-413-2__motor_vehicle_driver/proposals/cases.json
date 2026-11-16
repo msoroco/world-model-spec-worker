@@ -1,8 +1,121 @@
 {
   "cell_id": "C104393",
   "actor": "motor_vehicle_driver",
-  "status": "unselected_draft",
+  "status": "draft",
   "cases": [
+    {
+      "case_id": "training__C104393__NRS-484B-413-2__motor_vehicle_driver__baseline",
+      "target_law_id": "NRS-484B-413-2",
+      "target_type": "baseline",
+      "rationale": "Unselected exact 100/300-foot source threshold; no legal verdict",
+      "variable_assignments": {
+        "commanded_signal_distance_ft": {
+          "kind": "controller",
+          "value": 300,
+          "unit": "ft"
+        },
+        "area_classification": {
+          "kind": "world_setup",
+          "value": "any_other_area",
+          "unit": "categorical"
+        },
+        "actual_signal_distance_ft": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "ft"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sig.turn_indicator",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Retain original Native state and synchronized frame source for saved verification",
+            "time_window": "entire 42 s / 840-frame attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms sampled state; physical and pixel review pending"
+          },
+          {
+            "name": "drv.distance_while",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Retain original Native state and synchronized frame source for saved verification",
+            "time_window": "entire 42 s / 840-frame attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms sampled state; physical and pixel review pending"
+          },
+          {
+            "name": "kin.path_length",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Retain original Native state and synchronized frame source for saved verification",
+            "time_window": "entire 42 s / 840-frame attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms sampled state; physical and pixel review pending"
+          },
+          {
+            "name": "drv.turning",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Retain original Native state and synchronized frame source for saved verification",
+            "time_window": "entire 42 s / 840-frame attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms sampled state; physical and pixel review pending"
+          },
+          {
+            "name": "env.precipitation",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Retain original Native state and synchronized frame source for saved verification",
+            "time_window": "entire 42 s / 840-frame attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms sampled state; physical and pixel review pending"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Retain original Native state and synchronized frame source for saved verification",
+            "time_window": "entire 42 s / 840-frame attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms sampled state; physical and pixel review pending"
+          },
+          {
+            "name": "native_body_pose_control",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Retain original Native state and synchronized frame source for saved verification",
+            "time_window": "entire 42 s / 840-frame attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms sampled state; physical and pixel review pending"
+          },
+          {
+            "name": "camera_frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Retain original Native state and synchronized frame source for saved verification",
+            "time_window": "entire 42 s / 840-frame attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms sampled state; physical and pixel review pending"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "area_classification",
+            "unit": "categorical",
+            "method": "authored any-other-area context joined to surveyed Native map; review pending"
+          }
+        ],
+        "limitations": [
+          "No legal conclusion from offline or synthetic data",
+          "Original body, indicator and pixel review required"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "Original Native map, body, signal, weather and pixels require review"
+      ]
+    },
     {
       "case_id": "training__C104393__NRS-484B-413-2__motor_vehicle_driver__90",
       "target_law_id": "NRS-484B-413-2",
@@ -114,7 +227,19 @@
       },
       "unresolved_judgment_calls": [
         "Original Native map, body, signal, weather and pixels require review"
-      ]
+      ],
+      "paired_probe_id": "NRS-484B-413-2@motor_vehicle_driver:other_area_far_below",
+      "deliberate_differences": [
+        "commanded_signal_distance_ft"
+      ],
+      "probe": {
+        "primary_variable": "actual_signal_distance_ft",
+        "comparison_or_standard": "NRS 484B.413(2) any-other-area 300 ft clause",
+        "target_value_or_branch": 90,
+        "test_value": 90,
+        "operator": ">=",
+        "unit": "ft"
+      }
     },
     {
       "case_id": "training__C104393__NRS-484B-413-2__motor_vehicle_driver__100",
@@ -227,7 +352,19 @@
       },
       "unresolved_judgment_calls": [
         "Original Native map, body, signal, weather and pixels require review"
-      ]
+      ],
+      "paired_probe_id": "NRS-484B-413-2@motor_vehicle_driver:other_area_far_below",
+      "deliberate_differences": [
+        "commanded_signal_distance_ft"
+      ],
+      "probe": {
+        "primary_variable": "actual_signal_distance_ft",
+        "comparison_or_standard": "NRS 484B.413(2) any-other-area 300 ft clause",
+        "target_value_or_branch": 100,
+        "test_value": 100,
+        "operator": ">=",
+        "unit": "ft"
+      }
     },
     {
       "case_id": "training__C104393__NRS-484B-413-2__motor_vehicle_driver__110",
@@ -340,7 +477,19 @@
       },
       "unresolved_judgment_calls": [
         "Original Native map, body, signal, weather and pixels require review"
-      ]
+      ],
+      "paired_probe_id": "NRS-484B-413-2@motor_vehicle_driver:other_area_far_below",
+      "deliberate_differences": [
+        "commanded_signal_distance_ft"
+      ],
+      "probe": {
+        "primary_variable": "actual_signal_distance_ft",
+        "comparison_or_standard": "NRS 484B.413(2) any-other-area 300 ft clause",
+        "target_value_or_branch": 110,
+        "test_value": 110,
+        "operator": ">=",
+        "unit": "ft"
+      }
     },
     {
       "case_id": "training__C104393__NRS-484B-413-2__motor_vehicle_driver__290",
@@ -453,7 +602,24 @@
       },
       "unresolved_judgment_calls": [
         "Original Native map, body, signal, weather and pixels require review"
-      ]
+      ],
+      "paired_probe_id": "NRS-484B-413-2@motor_vehicle_driver:other_area_threshold",
+      "deliberate_differences": [
+        "commanded_signal_distance_ft"
+      ],
+      "probe": {
+        "primary_variable": "actual_signal_distance_ft",
+        "comparison_or_standard": "NRS 484B.413(2) any-other-area 300 ft clause",
+        "target_value_or_branch": 290,
+        "test_value": 290,
+        "operator": ">=",
+        "unit": "ft",
+        "threshold_ref": "timing.numeric_conditions[0]"
+      },
+      "epsilon_used": {
+        "value": 10,
+        "unit": "ft"
+      }
     },
     {
       "case_id": "training__C104393__NRS-484B-413-2__motor_vehicle_driver__300",
@@ -566,7 +732,24 @@
       },
       "unresolved_judgment_calls": [
         "Original Native map, body, signal, weather and pixels require review"
-      ]
+      ],
+      "paired_probe_id": "NRS-484B-413-2@motor_vehicle_driver:other_area_threshold",
+      "deliberate_differences": [
+        "commanded_signal_distance_ft"
+      ],
+      "probe": {
+        "primary_variable": "actual_signal_distance_ft",
+        "comparison_or_standard": "NRS 484B.413(2) any-other-area 300 ft clause",
+        "target_value_or_branch": 300,
+        "test_value": 300,
+        "operator": ">=",
+        "unit": "ft",
+        "threshold_ref": "timing.numeric_conditions[0]"
+      },
+      "epsilon_used": {
+        "value": 10,
+        "unit": "ft"
+      }
     },
     {
       "case_id": "training__C104393__NRS-484B-413-2__motor_vehicle_driver__310",
@@ -679,7 +862,24 @@
       },
       "unresolved_judgment_calls": [
         "Original Native map, body, signal, weather and pixels require review"
-      ]
+      ],
+      "paired_probe_id": "NRS-484B-413-2@motor_vehicle_driver:other_area_threshold",
+      "deliberate_differences": [
+        "commanded_signal_distance_ft"
+      ],
+      "probe": {
+        "primary_variable": "actual_signal_distance_ft",
+        "comparison_or_standard": "NRS 484B.413(2) any-other-area 300 ft clause",
+        "target_value_or_branch": 310,
+        "test_value": 310,
+        "operator": ">=",
+        "unit": "ft",
+        "threshold_ref": "timing.numeric_conditions[0]"
+      },
+      "epsilon_used": {
+        "value": 10,
+        "unit": "ft"
+      }
     }
   ]
 }

@@ -50,7 +50,7 @@ for name in ("relevance_batch", "relevance", "template", "bindings", "cases"):
     source = HERE / ref["path"]
     assert sha(source) == ref["sha256"]
     loaded[name] = read(source)
-law = assignment["law_record"]
+law = assignment["law"]
 request = {"cell": assignment["cell"], "actor": assignment["actor"]}
 rules = read(stages.ROOT / "data/canonical_parameter_aliases.json")
 for name in ("relevance_batch", "relevance"):
@@ -84,21 +84,14 @@ for entry in manifest["cases"]:
         rail[suffix] = measured
 assert rail["rail_contrast"] < 100 and abs(rail["rail_at"] - 100) < .005
 assert rail["rail_reference"] > 100
-try:
-    semantic_delivery.validate(HERE, assignment, manifest)
-except ValueError as exc:
-    assert str(exc) == "Assignment lacks exact law text"
-else:
-    raise AssertionError("Frozen law_record/law mismatch unexpectedly disappeared")
-adapted = semantic_delivery.validate(HERE, {**assignment, "law": law}, manifest)
-assert adapted["selected_cases"] == 9 and adapted["stage_count"] == 5
+validated = semantic_delivery.validate(HERE, assignment, manifest)
+assert validated["selected_cases"] == 9 and validated["stage_count"] == 5
 proof = {"format": "c110454-nine-selected-semantic-proof-v1",
          "manifest_sha256": sha(manifest_path), "semantic_index_sha256": sha(index_path),
          "selected_case_count": 9, "rail_distance_ft": rail,
          "pinned_stage_chain_passed": True, "original_native_accepted": False,
          "canonical_delivery_selected": True,
-         "raw_frozen_assignment_error": "Assignment lacks exact law text",
-         "in_memory_law_key_adapter_passed": True}
+         "current_frozen_law_key_passed": True}
 output = HERE / "update041-selected-semantic-proof.json"
 output.write_text(json.dumps(proof, indent=2) + "\n")
 print(json.dumps({"proof_sha256": sha(output), **proof}))

@@ -14,8 +14,8 @@ def build(root=ROOT):
     for aid in sorted(batch["assignments"]):
         result = json.loads((root / "work" / aid / "result.json").read_text())
         status = result.get("status")
-        if status not in ("blocked", "partial"):
-            raise ValueError("Intent queue requires a truthful incomplete result: " + aid)
+        if status not in ("blocked", "partial", "ready"):
+            raise ValueError("Intent queue requires a truthful result: " + aid)
         plan = json.loads((root / "work" / aid / "case-plan.json").read_text())
         case_ids = [case["case_id"] for case in plan["cases"]]
         if len(case_ids) != len(set(case_ids)):

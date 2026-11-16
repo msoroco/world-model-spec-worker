@@ -50,6 +50,16 @@ def build() -> dict:
     write(HERE / "config.json", config)
     construction = {key: value for key, value in selected.items() if key != "files"}
     construction["status"] = "assignment_cpu_entrypoint_physical_unverified"
+    construction["measurement_plan"] = {
+        "method": "Original Native reversal point, curve/crest geometry and approaching-driver eye-to-body visibility from both directions; see measure_native.py, sightline.py and finalize.py",
+        "status": "cpu_software_compatible_physical_unverified",
+    }
+    construction["static_checks"] = [
+        "authored curve, crest and 450/500/550-foot obstruction geometry",
+        "twenty Native construction and source-measurement unit tests",
+        "twelve selected primary/fallback offline and saved-processing proofs",
+        "independent two-direction source and controlled-comparison audits",
+    ]
     construction["selection_source"] = {
         "selected_primary": SELECTED.relative_to(HERE).as_posix(),
         "selected_primary_sha256": sha(SELECTED),
