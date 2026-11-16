@@ -13,10 +13,37 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import heavy_physical_outcome as physical
 import heavy_lifecycle_fixture as lifecycle
 import heavy_physical_fixture as fixture_runner
+import sweep_construction
 from heavy_lane_source import measure_footprint
 
 
 class HeavyPhysicalLifecycleTest(unittest.TestCase):
+    def test_exact_sweep_construction_grid_and_fallback_identity(self):
+        with TemporaryDirectory(dir=fixture_runner.ROOT / ".runtime-work") as directory:
+            staged = Path(directory) / "variants"
+            rows = sweep_construction.build(staged)
+            self.assertEqual(len(rows), 24)
+            by_case = {}
+            for row in rows:
+                by_case.setdefault(row["case_id"], []).append(row)
+                construction = json.loads((staged / row["path"]).read_text())
+                config = json.loads(next(item["content"] for item in construction["files"]
+                                         if item["path"] == "config.json"))
+                self.assertEqual(construction["case_id"], row["case_id"])
+                self.assertEqual(config["selected_case_id"], row["case_id"])
+                self.assertEqual(config["engineering"]["lateral_offset_m"], row["setpoint_m"])
+                self.assertEqual(len(config["cameras"]), 4)
+            self.assertEqual(len(by_case), 6)
+            for sweep in ("heavy_passing_plan", "heavy_turn_plan"):
+                self.assertEqual([by_case[f"{sweep}-{rank:04d}"][0]["setpoint_m"]
+                                  for rank in range(3)], [0.0, 2.2, 1.1])
+            for variants in by_case.values():
+                self.assertEqual([row["candidate_id"] for row in variants],
+                                 ["primary", "fallback1", "fallback2", "fallback3"])
+        source = json.loads((sweep_construction.HERE / "passing-construction.json").read_text())
+        with self.assertRaisesRegex(ValueError, "outside the authored engineering grid"):
+            sweep_construction._variant(source, source["case_id"], "invalid", -0.1)
+
     def test_lateral_sweep_holds_longitudinal_motion_and_other_vehicle(self):
         with TemporaryDirectory() as directory:
             attempt = Path(directory)
