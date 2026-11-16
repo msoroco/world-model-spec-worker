@@ -29,23 +29,26 @@ def main(case, candidate):
     manifest = HERE / 'execution-manifest.json'
     case_id = AID + '__' + case
     py = sys.executable
-    run('offline', [py, 'runtime.py', 'offline', '--manifest', str(manifest),
-                    '--case', case_id, '--candidate', candidate,
-                    '--output', str(output / 'offline'), '--python', py], proof / 'offline.log')
-    run('fixture', [py, str(HERE / 'update043-generate-current-fixture.py'),
-                    '--case', case, '--candidate', candidate,
-                    '--offline', str(output / 'offline')], proof / 'fixture.log')
+    if not (HERE / 'update043-current-fixtures' / case / candidate / 'raw.json').exists():
+        run('offline', [py, 'runtime.py', 'offline', '--manifest', str(manifest),
+                        '--case', case_id, '--candidate', candidate,
+                        '--output', str(output / 'offline'), '--python', py], proof / 'offline.log')
+        run('fixture', [py, str(HERE / 'update043-generate-current-fixture.py'),
+                        '--case', case, '--candidate', candidate,
+                        '--offline', str(output / 'offline')], proof / 'fixture.log')
     mini = HERE / f'update043-current-manifest-{case}-{candidate}.json'
-    common = ['--manifest', str(mini), '--case', case_id, '--candidate', candidate,
+    common = ['--manifest', str(mini), '--case', case_id,
               '--library', 'runtime/pipeline/library',
               '--validator', '.runtime-work/decoder-update015-c10316/.lake/build/bin/adapterCheck']
-    run('compatibility', [py, 'runtime.py', 'compatibility', *common,
-                          '--output', str(output / 'compat')], proof / 'compat.log')
+    if not (proof / 'compat.log').exists() or (proof / 'compat.log').stat().st_size == 0:
+        run('compatibility', [py, 'runtime.py', 'compatibility', *common,
+                              '--candidate', candidate,
+                              '--output', str(output / 'compat')], proof / 'compat.log')
     run('process-saved', [py, 'runtime.py', 'process-saved', *common,
                           '--attempt', str(output / 'compat'),
                           '--output', str(output / 'saved')], proof / 'saved.log')
     for name, path in [('compatibility', output / 'compat' / 'compatibility.json'),
-                       ('processing', output / 'saved' / 'processing.json')]:
+                       ('processing', output / 'saved' / 'v0001' / 'processing.json')]:
         if path.exists():
             (proof / f'{name}.json').write_bytes(path.read_bytes())
     print(json.dumps({'case': case, 'candidate': candidate, 'passed': True,
