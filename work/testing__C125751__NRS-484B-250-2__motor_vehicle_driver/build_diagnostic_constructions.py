@@ -63,12 +63,14 @@ def build():
     return manifest
 
 
-def build_release_sweep(output_root):
+def build_release_sweep(output_root, vary_role="ego"):
     """Stage four Off-signal controller variants without adding case identities.
 
     These variants prove bundled CPU execution of release policies. Their
     synthetic site and media cannot establish realized Native entry timing.
     """
+    if vary_role not in ("ego", "other"):
+        raise ValueError("Release sweep role must be ego or other")
     output_root = Path(output_root)
     if output_root.exists():
         raise ValueError("Retain earlier sweep; choose a new output directory")
@@ -87,10 +89,10 @@ def build_release_sweep(output_root):
         variant = copy.deepcopy(base)
         config_entry = next(item for item in variant["files"] if item["path"] == "config.json")
         config = json.loads(config_entry["content"])
-        config["ego_release_frame"] = release
-        config["other_release_frame"] = 10
+        config["ego_release_frame"] = release if vary_role == "ego" else 10
+        config["other_release_frame"] = release if vary_role == "other" else 10
         config_entry["content"] = json.dumps(config, indent=2) + "\n"
-        construction_path = output_root / f"construction-ego-{release}.json"
+        construction_path = output_root / f"construction-{vary_role}-{release}.json"
         _dump(construction_path, variant)
         manifest = {"format": "worker-execution-manifest", "assignment_id": ASSIGNMENT,
                     "runtime_manifest_sha256": json.loads(
@@ -102,14 +104,76 @@ def build_release_sweep(output_root):
                                "fixture_recipe": case["fixture_recipe"],
                                "measurement_procedure": case["measurement_procedure"],
                                "measurement_contract": case["measurement_contract"]}]}
-        manifest_path = output_root / f"manifest-ego-{release}.json"
+        manifest_path = output_root / f"manifest-{vary_role}-{release}.json"
         _dump(manifest_path, manifest)
-        variants.append({"ego_release_frame": release, "other_release_frame": 10,
+        variants.append({"ego_release_frame": config["ego_release_frame"],
+                         "other_release_frame": config["other_release_frame"],
+                         "varied_release_role": vary_role,
                          "case_id": case["case_id"],
                          "construction": str(construction_path),
                          "construction_sha256": _sha(construction_path),
                          "manifest": str(manifest_path)})
     return variants
+
+
+def audit_release_sweep(output_root, vary_role="other"):
+    """Check one declared release axis against four complete staged bundles."""
+    if vary_role not in ("ego", "other"):
+        raise ValueError("Release sweep role must be ego or other")
+    root = Path(output_root)
+    releases = (8, 9, 10, 11)
+    bundles = [json.loads((root / f"construction-{vary_role}-{n}.json").read_text())
+               for n in releases]
+    def normalized(bundle, release):
+        files = {item["path"]: item["content"] for item in bundle["files"]}
+        config = json.loads(files["config.json"])
+        expected = {"ego_release_frame": release if vary_role == "ego" else 10,
+                    "other_release_frame": release if vary_role == "other" else 10}
+        if any(config.get(key) != value for key, value in expected.items()):
+            raise ValueError("Declared release schedule differs")
+        config.pop(vary_role + "_release_frame")
+        files["config.json"] = json.dumps(config, sort_keys=True)
+        return {"case_id": bundle["case_id"],
+                "recording_description": bundle["recording_description"],
+                "files": files}
+    fixed = [normalized(bundle, release) for bundle, release in zip(bundles, releases)]
+    if any(item != fixed[0] for item in fixed[1:]):
+        raise ValueError("Sweep changed a fixed construction condition")
+    altered = copy.deepcopy(bundles[0])
+    config_entry = next(item for item in altered["files"] if item["path"] == "config.json")
+    config = json.loads(config_entry["content"])
+    config["other_release_frame" if vary_role == "ego" else "ego_release_frame"] += 1
+    config_entry["content"] = json.dumps(config)
+    try:
+        normalized(altered, releases[0])
+    except ValueError as error:
+        if "Declared release schedule differs" not in str(error):
+            raise
+    else:
+        raise ValueError("Changed fixed release was accepted")
+    return {"format": "worker-fixed-release-axis-diagnostic",
+            "varied_role": vary_role, "releases": list(releases),
+            "fixed_construction_conditions": True,
+            "changed_fixed_release_rejected": True,
+            "physical_acceptance_claimed": False,
+            "legal_verdict_asserted": False,
+            "construction_sha256": [_sha(root / f"construction-{vary_role}-{n}.json")
+                                    for n in releases]}
+
+
+def audit_cross_release_sweeps(ego_root, other_root):
+    """Prove both one-axis sweeps share the exact frame-10 baseline bundle."""
+    ego = audit_release_sweep(ego_root, "ego")
+    other = audit_release_sweep(other_root, "other")
+    baseline_ego = Path(ego_root) / "construction-ego-10.json"
+    baseline_other = Path(other_root) / "construction-other-10.json"
+    if baseline_ego.read_bytes() != baseline_other.read_bytes():
+        raise ValueError("Release axes do not share the fixed baseline construction")
+    return {"format": "worker-cross-release-axis-diagnostic",
+            "ego_axis": ego, "other_axis": other,
+            "shared_baseline_construction_sha256": _sha(baseline_ego),
+            "physical_acceptance_claimed": False,
+            "legal_verdict_asserted": False}
 
 
 def audit_release_attempt(root):
@@ -173,12 +237,19 @@ def audit_release_attempt(root):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--release-sweep-output")
+    parser.add_argument("--vary-role", choices=("ego", "other"), default="ego")
+    parser.add_argument("--audit-release-sweep")
+    parser.add_argument("--compare-release-sweeps", nargs=2)
     parser.add_argument("--audit-release-attempt")
     args = parser.parse_args()
     if args.audit_release_attempt:
         output = audit_release_attempt(args.audit_release_attempt)
+    elif args.compare_release_sweeps:
+        output = audit_cross_release_sweeps(*args.compare_release_sweeps)
+    elif args.audit_release_sweep:
+        output = audit_release_sweep(args.audit_release_sweep, args.vary_role)
     elif args.release_sweep_output:
-        output = build_release_sweep(args.release_sweep_output)
+        output = build_release_sweep(args.release_sweep_output, args.vary_role)
     else:
         output = build()
     print(json.dumps(output, indent=2))
