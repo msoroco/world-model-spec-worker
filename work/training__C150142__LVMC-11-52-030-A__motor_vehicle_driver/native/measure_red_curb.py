@@ -17,8 +17,10 @@ def finite(value):
     return isinstance(value, (int, float)) and math.isfinite(value)
 
 
-def measure(rows, frame_map, curb):
-    require(len(rows) == len(frame_map) == 240, 'Missing synchronized capture frames')
+def measure(rows, frame_map, curb, expected_frames=240):
+    require(type(expected_frames) is int and expected_frames >= 2 and
+            len(rows) == len(frame_map) == expected_frames,
+            'Missing synchronized capture frames')
     require(curb.get('paint_color') == 'red' and curb.get('source_kind') in
             {'native_readback', 'synthetic_native_sample'} and
             all(finite(curb.get(key)) for key in ('start_x_m', 'end_x_m', 'curb_y_m')) and
@@ -61,7 +63,7 @@ def measure(rows, frame_map, curb):
         if is_stopped and along_red and touches_curb:
             red_stopped.append(index)
     return {'format': 'c150142-red-curb-observation-v1',
-            'source_kind': source_kind, 'frames': 240,
+            'source_kind': source_kind, 'frames': expected_frames,
             'stopped_frame_ids': stopped,
             'red_curb_stopped_frame_ids': red_stopped,
             'red_curb_stop_or_park_observed': bool(red_stopped),
