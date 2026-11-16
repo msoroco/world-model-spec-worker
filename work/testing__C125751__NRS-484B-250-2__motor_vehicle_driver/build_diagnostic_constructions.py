@@ -8,6 +8,7 @@ import copy
 import argparse
 import importlib.util
 import json
+import shutil
 import tempfile
 from pathlib import Path
 
@@ -234,16 +235,92 @@ def audit_release_attempt(root):
         "physical_acceptance_claimed": False, "legal_priority_claimed": False}
 
 
+def prove_fixture_release_join(ego_root, other_root, output_root):
+    """Show static diagnostic crossing tracks cannot prove release response."""
+    output = Path(output_root)
+    if output.exists():
+        raise ValueError("Use a fresh fixture-join output root")
+    output.mkdir(parents=True)
+    receipts = []
+    for role, source_root in (("ego", Path(ego_root)), ("other", Path(other_root))):
+        for release in (8, 9, 10, 11):
+            source = source_root / f"{role}-{release}-compat"
+            if not (source / "compatibility.json").is_file():
+                raise ValueError("Exact compatibility receipt missing")
+            attempt = output / f"{role}-{release}"
+            attempt.mkdir()
+            for name in ("config.json", "crossing_history.jsonl", "road_geometry.json",
+                         "video_frames.jsonl"):
+                shutil.copy2(source / name, attempt / name)
+            config = json.loads((attempt / "config.json").read_text())
+            crossings = [json.loads(line) for line in
+                         (attempt / "crossing_history.jsonl").read_text().splitlines() if line]
+            original_crossing_sha256 = _sha(attempt / "crossing_history.jsonl")
+            delayed = []
+            for index, original in enumerate(crossings):
+                row = copy.deepcopy(original)
+                for party in ("ego", "other"):
+                    row[party] = copy.deepcopy(crossings[max(0, index - 20)][party])
+                delayed.append(row)
+            crossings = delayed
+            (attempt / "crossing_history.jsonl").write_text(
+                "".join(json.dumps(row) + "\n" for row in crossings))
+            controls = [{"frame": row["frame"], "time_s": row["time_s"],
+                         "release_permissions": {
+                             party: index >= config[party + "_release_frame"]
+                             for party in ("ego", "other")}}
+                        for index, row in enumerate(crossings)]
+            controller = attempt / "controller_history.jsonl"
+            controller.write_text("".join(json.dumps(row) + "\n" for row in controls))
+            (attempt / "provenance.json").write_text(json.dumps({
+                "diagnostic_fixture": True,
+                "controller_history_origin": "synthetically generated from authored release indices",
+                "crossing_history_origin": "synthetic 20-frame body-track delay from static compatibility fixture; not Native response",
+                "compatibility_crossing_sha256": original_crossing_sha256
+            }, indent=2) + "\n")
+            measured = audit_release_attempt(attempt)
+            altered = copy.deepcopy(controls)
+            altered[0]["release_permissions"]["ego"] = True
+            controller.write_text("".join(json.dumps(row) + "\n" for row in altered))
+            try:
+                audit_release_attempt(attempt)
+            except ValueError as error:
+                if "Controller release schedule differs: ego" not in str(error):
+                    raise
+            else:
+                raise ValueError("Tampered controller permission was accepted")
+            controller.write_text("".join(json.dumps(row) + "\n" for row in controls))
+            receipts.append({"role": role, "release_frame": release,
+                             "compatibility_sha256": _sha(source / "compatibility.json"),
+                             "measurement": measured,
+                             "tampered_permission_rejected": True})
+    deltas = {round(item["measurement"]["ego_minus_other_entry_time_s"], 9)
+              for item in receipts}
+    if len(deltas) != 1:
+        raise ValueError("Static source fixture unexpectedly changed entry timing")
+    proof = {"format": "worker-static-crossing-release-join-diagnostic",
+             "cases": receipts, "static_entry_delta_s": next(iter(deltas)),
+             "all_eight_source_joins_passed": True,
+             "native_release_response_proven": False,
+             "physical_acceptance_claimed": False,
+             "legal_verdict_asserted": False}
+    (output / "proof.json").write_text(json.dumps(proof, indent=2) + "\n")
+    return proof
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--release-sweep-output")
     parser.add_argument("--vary-role", choices=("ego", "other"), default="ego")
     parser.add_argument("--audit-release-sweep")
     parser.add_argument("--compare-release-sweeps", nargs=2)
+    parser.add_argument("--prove-fixture-release-join", nargs=3)
     parser.add_argument("--audit-release-attempt")
     args = parser.parse_args()
     if args.audit_release_attempt:
         output = audit_release_attempt(args.audit_release_attempt)
+    elif args.prove_fixture_release_join:
+        output = prove_fixture_release_join(*args.prove_fixture_release_join)
     elif args.compare_release_sweeps:
         output = audit_cross_release_sweeps(*args.compare_release_sweeps)
     elif args.audit_release_sweep:
