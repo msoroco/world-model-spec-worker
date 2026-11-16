@@ -168,7 +168,54 @@
       "deliberate_differences": [
         "later opposing actor target speed becomes zero after subject turn onset in reciprocal_yield_after_turn; it remains at approach speed in reciprocal_continues_after_turn"
       ],
-      "source_review_status": "tentative; original accepted reciprocal_no_yield equivalence unverified"
+      "source_review_status": "sealed 900-frame synthetic source and independent diagnostic delivery comparison passed; Native motion and accepted-original equivalence unverified",
+      "cpu_audit": "comparison_audit.py",
+      "cpu_audit_sha256": "8112421df850538a88edd645d221c4351ca30ce0ba7cb8ce9f9995d3d5d2292f",
+      "diagnostic_proof": {
+        "format": "worker-comparison-audit-diagnostic",
+        "passed": false,
+        "software_checks_passed": true,
+        "diagnostic_fixture": true,
+        "physical_acceptance_claimed": false,
+        "legal_verdict_asserted": false,
+        "comparison_id": "reciprocal_response_after_turn",
+        "case_ids": [
+          "testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield_after_turn",
+          "testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_continues_after_turn"
+        ],
+        "fixed_conditions": [
+          "same C109749 junction search and selected opposing routes",
+          "three distinct actors with initial opposing vehicle cleared before subject turn",
+          "subject left-turn and initial-yield controller",
+          "20 Hz, 45 seconds and four named source cameras",
+          "same authored district, signal policy and junction geometry"
+        ],
+        "deliberate_differences": [
+          "later opposing actor target speed becomes zero after subject turn onset in reciprocal_yield_after_turn; it remains at approach speed in reciprocal_continues_after_turn"
+        ],
+        "frames": 900,
+        "left_source_sha256": "8d2020f70f181493d7f815fe2c5b7108de544386f184faaeae349b67bf819cfe",
+        "right_source_sha256": "04c75e9392fd7a5ef2e7138fc2c697a7cc528c1761be6c678297d843b6dfcbb6",
+        "geometry_sha256": "c65a2522f0856fdd3c9f9f0c15f8e6f3409f9a606b7960c09180ad6dacbc214e",
+        "observed_reciprocal_stopped_outside": [
+          true,
+          false
+        ],
+        "turn_start_indexes": [
+          4,
+          4
+        ]
+      },
+      "diagnostic_source_roots": [
+        ".runtime-work/c109749-reciprocal-yield-current-delivery-20261116/attempt",
+        ".runtime-work/c109749-continues-delivery-positive-v1/attempt"
+      ],
+      "negative_proof": {
+        "changed_fixed_oncoming_at_sample_500_rejected": true,
+        "truncated_899_frame_history_rejected": true,
+        "replay_log": ".runtime-work/c109749-reciprocal-full-comparison-negative-20261116.log",
+        "replay_log_sha256": "0b91bcbf168913b9e4eca21c4b6007eddaac1bc3ffbc8b00416dab129b7d3acd"
+      }
     },
     {
       "comparison_id": "inside_opponent_subject_response",
@@ -600,8 +647,12 @@
   },
   "source_observation_mapping": {
     "drv.in_intersection": {
-      "evidence": "ego body intersection occupancy from raw positions and mapped polygon (planned; no Native source yet)",
-      "channels": [],
+      "evidence": "Body polygon intersects sourced junction polygon. CPU implementation: work/testing__C109749__NRS-484B-253__motor_vehicle_driver/measurements.py; Native result remains unverified.",
+      "channels": [
+        "intersection_geometry.json",
+        "interaction_history.jsonl",
+        "measurements.ego_first_in_intersection_frame"
+      ],
       "source_refs": [
         {
           "path": "inputs/testing__C109749__NRS-484B-253__motor_vehicle_driver/assignment.json",
@@ -611,8 +662,12 @@
       "status": "planned_unverified"
     },
     "st.lane_enters": {
-      "evidence": "sourced lane/road identity for the same intersection (planned; no Native source yet)",
-      "channels": [],
+      "evidence": "Original opposing body enters the sourced junction polygon; lane identity still requires Native route context. CPU implementation: work/testing__C109749__NRS-484B-253__motor_vehicle_driver/measurements.py; Native result remains unverified.",
+      "channels": [
+        "intersection_geometry.json",
+        "interaction_history.jsonl",
+        "measurements.oncoming_first_in_intersection_frame"
+      ],
       "source_refs": [
         {
           "path": "inputs/testing__C109749__NRS-484B-253__motor_vehicle_driver/assignment.json",
@@ -622,8 +677,12 @@
       "status": "planned_unverified"
     },
     "drv.turning": {
-      "evidence": "authored intent plus measured heading/route departure (planned; no Native source yet)",
-      "channels": [],
+      "evidence": "Sourced left-turn intent and first original heading change of at least 15 degrees. CPU implementation: work/testing__C109749__NRS-484B-253__motor_vehicle_driver/measurements.py; Native result remains unverified.",
+      "channels": [
+        "intersection_geometry.json",
+        "interaction_history.jsonl",
+        "measurements.ego_turn_start_frame"
+      ],
       "source_refs": [
         {
           "path": "inputs/testing__C109749__NRS-484B-253__motor_vehicle_driver/assignment.json",
@@ -633,8 +692,11 @@
       "status": "planned_unverified"
     },
     "sig.turn_indicator": {
-      "evidence": "measured ego lamp state and original camera pixels (planned; no Native source yet)",
-      "channels": [],
+      "evidence": "Original ego lamp-state readback frames; actor pixels remain a capture review. CPU implementation: work/testing__C109749__NRS-484B-253__motor_vehicle_driver/measurements.py; Native result remains unverified.",
+      "channels": [
+        "interaction_history.jsonl",
+        "measurements.ego_left_indicator_frames"
+      ],
       "source_refs": [
         {
           "path": "inputs/testing__C109749__NRS-484B-253__motor_vehicle_driver/assignment.json",
@@ -644,8 +706,12 @@
       "status": "planned_unverified"
     },
     "rel.oncoming": {
-      "evidence": "opposing route heading and participant identity (planned; no Native source yet)",
-      "channels": [],
+      "evidence": "Distinct opposing actor body and its sourced approach direction relative to the ego left turn. CPU implementation: work/testing__C109749__NRS-484B-253__motor_vehicle_driver/measurements.py; Native result remains unverified.",
+      "channels": [
+        "intersection_geometry.json",
+        "interaction_history.jsonl",
+        "measurements.oncoming_presence_frames"
+      ],
       "source_refs": [
         {
           "path": "inputs/testing__C109749__NRS-484B-253__motor_vehicle_driver/assignment.json",
@@ -655,8 +721,12 @@
       "status": "planned_unverified"
     },
     "drv.approaching": {
-      "evidence": "opposing body position relative to intersection (planned; no Native source yet)",
-      "channels": [],
+      "evidence": "Opposing complete body position and positive projected remaining distance before junction entry. CPU implementation: work/testing__C109749__NRS-484B-253__motor_vehicle_driver/measurements.py; Native result remains unverified.",
+      "channels": [
+        "intersection_geometry.json",
+        "interaction_history.jsonl",
+        "measurements.opposing_conflict_samples"
+      ],
       "source_refs": [
         {
           "path": "inputs/testing__C109749__NRS-484B-253__motor_vehicle_driver/assignment.json",
@@ -666,8 +736,12 @@
       "status": "planned_unverified"
     },
     "drv.time_to_conflict": {
-      "evidence": "descriptive kinematic distance divided by closing speed; no legal cutoff (planned; no Native source yet)",
-      "channels": [],
+      "evidence": "Projected distance divided by positive closing speed; descriptive engineering measure without legal cutoff. CPU implementation: work/testing__C109749__NRS-484B-253__motor_vehicle_driver/measurements.py; Native result remains unverified.",
+      "channels": [
+        "intersection_geometry.json",
+        "interaction_history.jsonl",
+        "measurements.opposing_conflict_samples.kinematic_time_to_conflict_s"
+      ],
       "source_refs": [
         {
           "path": "inputs/testing__C109749__NRS-484B-253__motor_vehicle_driver/assignment.json",
@@ -677,8 +751,13 @@
       "status": "planned_unverified"
     },
     "drv.yields_to": {
-      "evidence": "ego stopping/entry order relative to opposing occupancy (planned; no Native source yet)",
-      "channels": [],
+      "evidence": "Original ego low-speed frames and turn order relative to complete opposing-body clearance. CPU implementation: work/testing__C109749__NRS-484B-253__motor_vehicle_driver/measurements.py; Native result remains unverified.",
+      "channels": [
+        "interaction_history.jsonl",
+        "measurements.initial_oncoming_clearance_frame",
+        "measurements.ego_turn_start_frame",
+        "measurements.ego_low_speed_frames"
+      ],
       "source_refs": [
         {
           "path": "inputs/testing__C109749__NRS-484B-253__motor_vehicle_driver/assignment.json",
@@ -688,8 +767,13 @@
       "status": "planned_unverified"
     },
     "drv.arrival_order": {
-      "evidence": "original frame and time of both intersection entries (planned; no Native source yet)",
-      "channels": [],
+      "evidence": "Frame/time-joined first intersection occupancy for subject and opposing bodies. CPU implementation: work/testing__C109749__NRS-484B-253__motor_vehicle_driver/measurements.py; Native result remains unverified.",
+      "channels": [
+        "video_frames.jsonl",
+        "interaction_history.jsonl",
+        "measurements.ego_first_in_intersection_frame",
+        "measurements.oncoming_first_in_intersection_frame"
+      ],
       "source_refs": [
         {
           "path": "inputs/testing__C109749__NRS-484B-253__motor_vehicle_driver/assignment.json",
@@ -699,8 +783,11 @@
       "status": "planned_unverified"
     },
     "kin.speed": {
-      "evidence": "measured opposing speed from original actor velocity (planned; no Native source yet)",
-      "channels": [],
+      "evidence": "Original opposing velocity projected onto sourced approach direction. CPU implementation: work/testing__C109749__NRS-484B-253__motor_vehicle_driver/measurements.py; Native result remains unverified.",
+      "channels": [
+        "interaction_history.jsonl",
+        "measurements.opposing_conflict_samples.closing_speed_mps"
+      ],
       "source_refs": [
         {
           "path": "inputs/testing__C109749__NRS-484B-253__motor_vehicle_driver/assignment.json",
@@ -823,5 +910,22 @@
     "ego stopping/entry order relative to opposing occupancy",
     "original frame and time of both intersection entries",
     "measured opposing speed from original actor velocity"
-  ]
+  ],
+  "district_site_source_contract": {
+    "status": "awaiting_reviewed_native_site_source_and_selected_bundle_integration",
+    "source": "native_scene.py:verify_district_site_packet",
+    "source_sha256": "2be6f0d914eeb63aef0d1b3edf3b88620026b06cf959cfee3860d9519881c392",
+    "required_packet_format": "c109749-district-site-review-v1",
+    "required_source_format": "c109749-district-polygon-source-v1",
+    "required_checks": [
+      "exact selected Native map and junction ID",
+      "junction polygon equality",
+      "SHA256-bound independently reviewed district polygon",
+      "full selected junction coverage"
+    ],
+    "diagnostic_fixture_only": true,
+    "actual_site_reviewed": false,
+    "physical_district_verified": false,
+    "legal_verdict_asserted": false
+  }
 }

@@ -1,6 +1,9 @@
 import importlib.util
+import hashlib
+import json
 import math
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 from types import SimpleNamespace as NS
@@ -38,6 +41,63 @@ def selected():
 
 
 class NativeSceneTests(unittest.TestCase):
+    def test_district_packet_binds_native_junction_to_source_polygon(self):
+        context=scene.junction_context(selected())
+        with tempfile.TemporaryDirectory() as directory:
+            source=Path(directory)/'district.json'
+            packet_path=Path(directory)/'packet.json'
+            document={'format':'c109749-district-polygon-source-v1',
+                      'native_map_name':'Town01',
+                      'district_class':'business_or_residential',
+                      'polygon_xy_m':[[-10,-10],[10,-10],[10,10],[-10,10]],
+                      'source_origin':'synthetic test polygon',
+                      'review_basis':'fixture checks geometry and binding only',
+                      'diagnostic_only':True}
+            source.write_text(json.dumps(document))
+            packet={'format':'c109749-district-site-review-v1',
+                    'review_status':'candidate_reviewed',
+                    'native_map_name':'Town01','native_junction_id':17,
+                    'junction_polygon_xy_m':context['intersection_polygon_xy_m'],
+                    'district_source':{'path':source.name,
+                                       'sha256':hashlib.sha256(source.read_bytes()).hexdigest()}}
+            packet_path.write_text(json.dumps(packet))
+            result=scene.verify_district_site_packet(context,'Town01',packet_path)
+            self.assertTrue(result['diagnostic_only'])
+            self.assertFalse(result['physical_district_verified'])
+            selected_context=scene.junction_context(selected(),native_map_name='Town01',
+                                                    district_packet_path=packet_path)
+            self.assertEqual(selected_context['district_site_review'],result)
+            with self.assertRaisesRegex(ValueError,'selected Native junction'):
+                scene.verify_district_site_packet(context,'Town02',packet_path)
+            packet['native_junction_id']=18
+            packet_path.write_text(json.dumps(packet))
+            with self.assertRaisesRegex(ValueError,'selected Native junction'):
+                scene.verify_district_site_packet(context,'Town01',packet_path)
+            packet['native_junction_id']=17
+            packet_path.write_text(json.dumps(packet))
+            source.write_text(source.read_text()+' ')
+            with self.assertRaisesRegex(ValueError,'missing or changed'):
+                scene.verify_district_site_packet(context,'Town01',packet_path)
+
+    def test_district_packet_rejects_polygon_outside_junction(self):
+        context=scene.junction_context(selected())
+        with tempfile.TemporaryDirectory() as directory:
+            source=Path(directory)/'district.json'
+            packet_path=Path(directory)/'packet.json'
+            source.write_text(json.dumps({'format':'c109749-district-polygon-source-v1',
+                'native_map_name':'Town01','district_class':'business_or_residential',
+                'polygon_xy_m':[[20,20],[30,20],[30,30],[20,30]],
+                'source_origin':'synthetic test polygon','review_basis':'fixture',
+                'diagnostic_only':True}))
+            packet_path.write_text(json.dumps({'format':'c109749-district-site-review-v1',
+                'review_status':'candidate_reviewed','native_map_name':'Town01',
+                'native_junction_id':17,
+                'junction_polygon_xy_m':context['intersection_polygon_xy_m'],
+                'district_source':{'path':source.name,
+                    'sha256':hashlib.sha256(source.read_bytes()).hexdigest()}}))
+            with self.assertRaisesRegex(ValueError,'does not cover'):
+                scene.verify_district_site_packet(context,'Town01',packet_path)
+
     def test_opposing_waypoint_direction_and_sourced_geometry(self):
         context=scene.junction_context(selected())
         self.assertEqual(context['native_junction_id'],17)

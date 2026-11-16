@@ -10,6 +10,7 @@ POSITIVE = REPO/'.runtime-work/c109749-reciprocal-yield-matched-delivery-v2/atte
 NEGATIVE = REPO/'.runtime-work/c109749-reciprocal-no-yield-delivery-v1/attempt'
 sys.path.insert(0,str(ROOT))
 from reciprocal_matched_comparison_audit import compare_histories, compare
+from comparison_audit import audit_pair, compare_full_fixed_rows
 from reciprocal_yield_matched_observation import observe
 
 
@@ -53,6 +54,28 @@ class ReciprocalMatchedComparisonTests(unittest.TestCase):
             row['reciprocal']['body_vertices_xy_m']=[[15,-1],[17,-1],[17,1],[15,1]]
         with self.assertRaisesRegex(ValueError,'Declared stopped-outside versus moving-entry'):
             compare_histories(positive,changed,polygon)
+
+
+class ReciprocalAfterTurnFullSourceTests(unittest.TestCase):
+    LEFT = REPO/'.runtime-work/c109749-reciprocal-yield-current-delivery-20261116/attempt'
+    RIGHT = REPO/'.runtime-work/c109749-continues-delivery-positive-v1/attempt'
+
+    def test_sealed_full_duration_delivery_and_comparison(self):
+        report = audit_pair(ROOT,'reciprocal_response_after_turn',self.LEFT,self.RIGHT,
+                            diagnostic_selftest=True,full_diagnostic=True)
+        self.assertEqual(report['frames'],900)
+        self.assertEqual(report['observed_reciprocal_stopped_outside'],[True,False])
+        self.assertFalse(report['passed'])
+
+    def test_fixed_trajectory_and_duration_mutations_rejected(self):
+        left=rows(self.LEFT/'interaction_history.jsonl')
+        right=rows(self.RIGHT/'interaction_history.jsonl')
+        changed=copy.deepcopy(right)
+        changed[500]['oncoming']['position_xy_m'][0]+=1.0
+        with self.assertRaisesRegex(ValueError,'Fixed original oncoming differs at sample 500'):
+            compare_full_fixed_rows(left,changed)
+        with self.assertRaisesRegex(ValueError,'900 original frames'):
+            compare_full_fixed_rows(left,right[:-1])
 
 
 if __name__=='__main__':
