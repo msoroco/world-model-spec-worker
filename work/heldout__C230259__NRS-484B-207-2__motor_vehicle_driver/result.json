@@ -5,21 +5,33 @@
   "applied_update": 0,
   "tests": [
     {
-      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/heldout__C230259__NRS-484B-207-2__motor_vehicle_driver/tests -v",
+      "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/heldout__C230259__NRS-484B-207-2__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "aedd8c74f31040dbe01c65b389090ae82bff1aa54cccd402874807c463b2e491"
+      "sha256": "3b4f8061e740f405ce26fb91b272b081fdce156af0c0639a701fe3489dd719ac"
     },
     {
-      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C230259__NRS-484B-207-2__motor_vehicle_driver/provisional-manifest.json --case heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__observed_gives_way_holds_speed --output .runtime-work/c230259-first-primary-2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+      "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C230259__NRS-484B-207-2__motor_vehicle_driver/provisional-manifest.json --case heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__observed_gives_way_holds_speed --candidate primary --output .runtime-work/c230259-primary-offline-shift --python \"$PWD/.venv-cpu/bin/python\"",
       "exit_code": 0,
       "log": "first-primary-offline.log",
-      "sha256": "a4c3352ba626bfd7c056ab4b7d7f35b98bd9ac851dad48df2cebe4c81fcab442"
+      "sha256": "7e0c7bac98140532df85f218bb1d283ffdeb0a8f7c08348cc4d9faee6cd80478"
+    },
+    {
+      "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C230259__NRS-484B-207-2__motor_vehicle_driver/provisional-manifest.json --case heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__observed_gives_way_holds_speed --candidate primary --output .runtime-work/c230259-primary-compat-final --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "primary-compatibility.json",
+      "sha256": "e0b45374d2776fc883261fabe46fb841689f67f816e3df636d57ae295d73bcb5"
+    },
+    {
+      "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C230259__NRS-484B-207-2__motor_vehicle_driver/provisional-manifest.json --case heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__observed_gives_way_holds_speed --attempt .runtime-work/c230259-primary-saved-final-attempt --output .runtime-work/c230259-primary-saved-final-proof --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "first-primary-saved-processing.json",
+      "sha256": "544748583e874407946830e41e7b519e5e1596fadbc6fad549de9caee8c72a33"
     }
   ],
   "remaining_gpu_checks": [
     "Actual motion, geometry, camera visibility and duration remain unverified after CPU preparation."
   ],
-  "reason": "CPU preparation incomplete: first exact observed/gives-way/holds-speed primary has a SHA-256 bound Native two-vehicle survey/controller, four-camera original recorder, source-joined saved finalizer and pinned offline bundle; 12 CPU tests pass. Positive/missing-source compatibility, fresh-original saved-only proof, source-backed subjective notice and right-pass permission paths, three tested physical-risk fallbacks per case, other five exact constructions, semantic proposals, independent physical/delivery/comparison audits and strict assignment gate remain worker-owned CPU work. Actual Native motion, pixels, perception and legal applicability remain unverified.",
+  "reason": "CPU preparation remains incomplete. First exact observed_gives_way_holds_speed primary and three fallback constructions pass current offline and source-bound positive/missing-original compatibility; the primary passes fresh-original saved processing. Five other planned exact cases, their fallbacks/proofs, native acquisition of converter-required original evidence/graphs, canonical semantic proposals, and independent physical/lifecycle/delivery/comparison audits remain worker-owned CPU work. Synthetic fixture shows a rightward shift but cannot establish physical motion, subjective notice, right-pass permission or legal outcome.",
   "readiness_kind": "delivery_prepared"
 }

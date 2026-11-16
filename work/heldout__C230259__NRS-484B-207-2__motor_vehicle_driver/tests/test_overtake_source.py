@@ -33,7 +33,11 @@ class SourceTests(unittest.TestCase):
         digests["overtake_site_original.json"] = put(root, "overtake_site_original.json", "synthetic site test")
         digests["overtake_bodies_original.jsonl"] = put(root, "overtake_bodies_original.jsonl", jsonl(bodies))
         digests["trace.jsonl"] = put(root, "trace.jsonl", jsonl(
-            {"frame": row["frame"], "time_s": row["time_s"]} for row in bodies))
+            {"frame": row["frame"], "time_s": row["time_s"],
+             "position": {"x": sum(p[0] for p in row["ego"]["body_corners_xy_m"]) / 4,
+                          "y": sum(p[1] for p in row["ego"]["body_corners_xy_m"]) / 4},
+             "speed_mps": row["ego"]["speed_mps"],
+             "speed_mph": row["ego"]["speed_mps"] / 0.44704} for row in bodies))
         digests["video_frames.jsonl"] = put(root, "video_frames.jsonl", jsonl(
             {"video_frame": i, "native_frame": row["frame"], "time_s": row["time_s"]}
             for i, row in enumerate(bodies)))
@@ -102,6 +106,18 @@ class SourceTests(unittest.TestCase):
                 root, "overtake_bodies_original.jsonl", jsonl(bodies))
             put(root, "overtake_source_receipt.json", json.dumps(receipt))
             with self.assertRaisesRegex(ValueError, "identity changed"):
+                analyze(root)
+
+    def test_rejects_inconsistent_body_trace_motion(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.fixture(root)
+            rows = [json.loads(line) for line in (root / "trace.jsonl").read_text().splitlines()]
+            rows[1]["position"]["y"] += 0.4
+            receipt = json.loads((root / "overtake_source_receipt.json").read_text())
+            receipt["source_sha256"]["trace.jsonl"] = put(root, "trace.jsonl", jsonl(rows))
+            put(root, "overtake_source_receipt.json", json.dumps(receipt))
+            with self.assertRaisesRegex(ValueError, "body/trace position differs"):
                 analyze(root)
 
 

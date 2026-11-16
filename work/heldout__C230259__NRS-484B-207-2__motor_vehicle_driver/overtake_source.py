@@ -69,6 +69,17 @@ def analyze(attempt):
                 motion.get("frame") != body.get("frame") or
                 motion.get("time_s") != body.get("time_s")):
             raise ValueError("Original overtaking body, trace and video join differs")
+        corners = body.get("ego", {}).get("body_corners_xy_m", [])
+        position = motion.get("position", {})
+        if len(corners) != 4 or any(
+            abs(sum(corner[axis] for corner in corners) / 4 - position.get(key, float("inf"))) > 0.05
+            for axis, key in enumerate(("x", "y"))
+        ):
+            raise ValueError("Original overtaking ego body/trace position differs")
+        if abs(body["ego"]["speed_mps"] - motion.get("speed_mps", float("inf"))) > 0.01:
+            raise ValueError("Original overtaking ego body/trace speed differs")
+        if abs(motion.get("speed_mph", float("inf")) - motion["speed_mps"] / 0.44704) > 0.03:
+            raise ValueError("Original overtaking trace mph/mps differs")
     for name in CAMERAS:
         rows = _rows(paths[name + "-frames.jsonl"])
         if len(rows) != len(bodies):

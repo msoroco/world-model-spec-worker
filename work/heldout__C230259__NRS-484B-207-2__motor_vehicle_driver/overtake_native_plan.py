@@ -60,6 +60,24 @@ def prepare(case_id, source, sha256):
             "physical_completion_claimed": False, "legal_conclusion": None}
 
 
+def apply_engineering(plan, engineering):
+    """Select bounded physical-risk controls without altering the law/case contract."""
+    if not isinstance(engineering, dict):
+        raise ValueError("Missing exact Native engineering controls")
+    bounds = {"spawn_height_offset_m": (.3, 1.),
+              "overview_mount_z_m": (6., 12.),
+              "overtaker_target_speed_mps": (6., 12.)}
+    selected = {}
+    for name, (lower, upper) in bounds.items():
+        value = engineering.get(name)
+        if isinstance(value, bool) or not isinstance(value, (int, float)) or not isfinite(value) or not lower <= value <= upper:
+            raise ValueError("Invalid exact Native engineering control: " + name)
+        selected[name] = float(value)
+    plan = dict(plan)
+    plan.update(selected)
+    return plan
+
+
 def verify_loaded_site(world_map, plan, driving_lane_type, location_factory):
     site, ego_xy, overtaker_xy, _, _ = load_site(plan["site_source"], plan["site_sha256"])
     if world_map.name != site["map_name"]:

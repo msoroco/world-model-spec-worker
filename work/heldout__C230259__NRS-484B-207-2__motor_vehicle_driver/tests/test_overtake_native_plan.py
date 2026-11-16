@@ -7,7 +7,7 @@ from pathlib import Path
 from types import SimpleNamespace
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from overtake_native_plan import CASE, control, prepare, verify_loaded_site
+from overtake_native_plan import CASE, apply_engineering, control, prepare, verify_loaded_site
 from runner import CAMERA_SETUP, Cameras
 
 
@@ -54,6 +54,13 @@ class NativePlanTests(unittest.TestCase):
         self.assertLess(value["steer"], 0)
         self.assertEqual(value["throttle"], 0.)
         self.assertEqual(control((20., -1.), (1., 0.), (0., 0.), (20., -1.), 4.)["brake"], 1.)
+
+    def test_fallback_engineering_is_bounded(self):
+        self.assertEqual(apply_engineering({}, {"spawn_height_offset_m": .7,
+            "overview_mount_z_m": 9., "overtaker_target_speed_mps": 9.})["overview_mount_z_m"], 9.)
+        with self.assertRaisesRegex(ValueError, "overview_mount_z_m"):
+            apply_engineering({}, {"spawn_height_offset_m": .5,
+                "overview_mount_z_m": 20., "overtaker_target_speed_mps": 8.})
 
     def test_four_native_cameras_are_constructed_and_joined(self):
         class Blueprint:

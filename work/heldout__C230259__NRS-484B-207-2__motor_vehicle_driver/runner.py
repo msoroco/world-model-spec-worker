@@ -9,7 +9,7 @@ from pathlib import Path
 from threading import Condition
 from time import monotonic
 
-from overtake_native_plan import CASE, control, prepare, verify_loaded_site
+from overtake_native_plan import CASE, apply_engineering, control, prepare, verify_loaded_site
 from overtake_source_recorder import CAMERAS, SourceRecorder
 
 CAMERA_SETUP = {
@@ -21,7 +21,9 @@ CAMERA_SETUP = {
 
 
 class Cameras:
-    def __init__(self, world, carla, ego, on_frame):
+    def __init__(self, world, carla, ego, on_frame, *, overview_mount_z_m=8.):
+        if not 6. <= overview_mount_z_m <= 12.:
+            raise ValueError("Invalid engineering overview mount")
         self.condition = Condition()
         self.frames = {name: set() for name in CAMERAS}
         self.errors = []
@@ -29,6 +31,8 @@ class Cameras:
         self.closed = False
         try:
             for name, (place, angles, size, fov) in CAMERA_SETUP.items():
+                if name == "overview":
+                    place = (place[0], place[1], overview_mount_z_m)
                 blueprint = world.get_blueprint_library().find("sensor.camera.rgb")
                 for key, value in (("image_size_x", size[0]), ("image_size_y", size[1]),
                                    ("fov", fov), ("sensor_tick", .05)):
@@ -150,7 +154,7 @@ def run(plan, output, host="127.0.0.1", port=2000):
         world.apply_settings(settings)
         for index, blueprint_name in enumerate(("vehicle.tesla.model3", "vehicle.audi.tt")):
             spawn = waypoints[index].transform
-            spawn.location.z += .5
+            spawn.location.z += plan["spawn_height_offset_m"]
             actor = world.try_spawn_actor(world.get_blueprint_library().find(blueprint_name), spawn)
             if actor is None:
                 raise ValueError("Original overtaking participant spawn failed")
@@ -158,7 +162,8 @@ def run(plan, output, host="127.0.0.1", port=2000):
         ego, overtaker = actors
         (output / "overtake_site_original.json").write_bytes(Path(plan["site_source"]).read_bytes())
         recorder = SourceRecorder(output, {name: spec[2] for name, spec in CAMERA_SETUP.items()})
-        cameras = Cameras(world, carla, ego, recorder.on_frame)
+        cameras = Cameras(world, carla, ego, recorder.on_frame,
+                          overview_mount_z_m=plan["overview_mount_z_m"])
         observed = []
         for _ in range(160):
             _step(ego, plan["ego_target_xy_m"], plan["ego_target_speed_mps"], carla)
@@ -195,6 +200,14 @@ def main():
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=2000)
     args = parser.parse_args()
+    config = json.loads(Path(__file__).with_name("config.json").read_text())
+    if (config.get("selected_case_id") != CASE or config.get("law_id") != "NRS-484B-207-2" or
+            config.get("cell_id") != "C230259" or config.get("actor") != "motor_vehicle_driver" or
+            config.get("rate_hz") != 20 or config.get("frames") != 160 or
+            config.get("duration_s") != 8):
+        raise ValueError("Exact overtaking Native config changed")
+    engineering = config.get("engineering")
+    apply_engineering({}, engineering)
     if args.check:
         if args.output_dir or args.site_source or args.site_sha256 or set(CAMERA_SETUP) != set(CAMERAS):
             raise ValueError("Invalid offline Native construction check")
@@ -205,7 +218,7 @@ def main():
     digest = args.site_sha256 or os.environ.get("OVERTAKE_SITE_SHA256")
     if not source or not digest:
         raise ValueError("Native overtaking capture needs source survey and SHA-256")
-    plan = prepare(CASE, source, digest)
+    plan = apply_engineering(prepare(CASE, source, digest), engineering)
     run(plan, args.output_dir, args.host, args.port)
 
 

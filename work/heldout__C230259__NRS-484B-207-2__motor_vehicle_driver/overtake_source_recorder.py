@@ -117,7 +117,8 @@ class SourceRecorder:
                                          "position": {"x": centre[0], "y": centre[1],
                                                       "z": row["ego"]["z_m"]},
                                          "heading_deg": row["ego"]["heading_deg"],
-                                         "speed_mps": row["ego"]["speed_mps"]}, allow_nan=False) + "\n")
+                                         "speed_mps": row["ego"]["speed_mps"],
+                                         "speed_mph": row["ego"]["speed_mps"] / 0.44704}, allow_nan=False) + "\n")
         with (self.output / "video_frames.jsonl").open("x") as stream:
             for index, row in enumerate(self.body):
                 stream.write(json.dumps({"video_frame": index, "carla_frame": row["frame"],
