@@ -2,7 +2,7 @@
   "format": "worker-execution-manifest",
   "assignment_id": "training__C111294__NRS-484B-600-1e__motor_vehicle_driver",
   "runtime_manifest_sha256": "ae635d487ae988b67925bacd5ba13210f31224fc6a1ae131d1836a5557ba8714",
-  "status": "selected_current_finalizer_reproof_pending",
+  "status": "selected_cpu_bound_final_saved_reproof_pending",
   "cases": [
     {
       "case_id": "training__C111294__NRS-484B-600-1e__motor_vehicle_driver__below_80_mph",
@@ -125,6 +125,72 @@
       "physical_preparation": {
         "receipt": "update042g-selected-physical/below_80_mph/proof.json",
         "sha256": "79cd6d80ebe07d6e30a980400d3bbe9bc31bfc489269cffa74638e04c8f80463"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C111294__NRS-484B-600-1e__motor_vehicle_driver__below_80_mph",
+        "sets": [
+          "demo-train",
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "4ed33b25cede4ecff6e1f24711eb419de3792cc971ca2469e95b47ab861fcb47",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/delivery_audit.py --case training__C111294__NRS-484B-600-1e__motor_vehicle_driver__below_80_mph --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update042h-selected/below_80_mph/primary/selected-attempt --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update042h-selected/below_80_mph/primary/processed/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/update042i-below_80_mph-delivery-diagnostic.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "update042i-below_80_mph-delivery-positive.log",
+        "test_log_sha256": "7ff99d1845febe837e002d1a223035f46eca3f3f8f30d4c4530f387de033a702",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/delivery_audit.py --case training__C111294__NRS-484B-600-1e__motor_vehicle_driver__below_80_mph --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update042h-selected/below_80_mph/primary/selected-attempt --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update042h-selected/below_80_mph/primary/processed/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/update042i-below_80_mph-delivery-negative.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original Native speed source required",
+        "negative_log": "update042i-below_80_mph-delivery-negative.log",
+        "negative_log_sha256": "70713610f32502b6ba0b8445579af2ef115635fe2770b409eb90f2b08d1dcb48"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C111294__NRS-484B-600-1e__motor_vehicle_driver__below_80_mph --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime/pipeline/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/decoder-update015-c10316/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "update042h-selected-below_80_mph-primary-process-saved.log",
+        "test_log_sha256": "bfaa2a89fe68ed1f49471abebe0a2dcdfbf3fb846120777929e3ada878516da2"
+      },
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "native_sample reads ego.get_velocity() in each Native frame; measure_speed computes its three-axis norm",
+          "evidence": "native_samples.jsonl ego_velocity_mps; speed-measurement.json peak_speed_mph"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "native_sample reads ego.get_velocity() x, y, z from the captured actor",
+          "evidence": "native_samples.jsonl ego_velocity_mps"
+        },
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "method": "native_sample reads ego.get_transform() and world bounding-box vertices",
+          "evidence": "native_samples.jsonl ego_position_m, ego_heading_deg, ego_body_vertices_m"
+        },
+        "ego_speed": {
+          "entrypoint": "runner.py",
+          "method": "native_sample reads ego.get_velocity() in each Native frame",
+          "evidence": "native_samples.jsonl ego_velocity_mps"
+        },
+        "observed_speed": {
+          "entrypoint": "measure_speed.py",
+          "method": "measure computes peak and interval from saved three-axis Native velocity",
+          "evidence": "speed-measurement.json peak_speed_mph and interval_mph"
+        },
+        "other_vehicle_pose": {
+          "entrypoint": "runner.py",
+          "method": "native_sample reads other.get_transform() and world bounding-box vertices",
+          "evidence": "native_samples.jsonl other_position_m, other_heading_deg, other_body_vertices_m"
+        }
       }
     },
     {
@@ -248,6 +314,72 @@
       "physical_preparation": {
         "receipt": "update042g-selected-physical/inside_80_mph/proof.json",
         "sha256": "21ef82c79500cb76799bf56f19f551b47c0ac95664036c3ad8c8452cf7f35784"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C111294__NRS-484B-600-1e__motor_vehicle_driver__inside_80_mph",
+        "sets": [
+          "demo-train",
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "4ed33b25cede4ecff6e1f24711eb419de3792cc971ca2469e95b47ab861fcb47",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/delivery_audit.py --case training__C111294__NRS-484B-600-1e__motor_vehicle_driver__inside_80_mph --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update042h-selected/inside_80_mph/primary/selected-attempt --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update042h-selected/inside_80_mph/primary/processed/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/update042i-inside_80_mph-delivery-diagnostic.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "update042i-inside_80_mph-delivery-positive.log",
+        "test_log_sha256": "93b648996a2570ff28c05b725ffead7437755ab5c856876eb37f0fb6ba711ce5",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/delivery_audit.py --case training__C111294__NRS-484B-600-1e__motor_vehicle_driver__inside_80_mph --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update042h-selected/inside_80_mph/primary/selected-attempt --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update042h-selected/inside_80_mph/primary/processed/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/update042i-inside_80_mph-delivery-negative.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original Native speed source required",
+        "negative_log": "update042i-inside_80_mph-delivery-negative.log",
+        "negative_log_sha256": "70713610f32502b6ba0b8445579af2ef115635fe2770b409eb90f2b08d1dcb48"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C111294__NRS-484B-600-1e__motor_vehicle_driver__inside_80_mph --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime/pipeline/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/decoder-update015-c10316/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "update042h-selected-inside_80_mph-primary-process-saved.log",
+        "test_log_sha256": "36a32d026ebcb2f73022e19b13a272e9a52034e11385071c1ee4ac3a623f2262"
+      },
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "native_sample reads ego.get_velocity() in each Native frame; measure_speed computes its three-axis norm",
+          "evidence": "native_samples.jsonl ego_velocity_mps; speed-measurement.json peak_speed_mph"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "native_sample reads ego.get_velocity() x, y, z from the captured actor",
+          "evidence": "native_samples.jsonl ego_velocity_mps"
+        },
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "method": "native_sample reads ego.get_transform() and world bounding-box vertices",
+          "evidence": "native_samples.jsonl ego_position_m, ego_heading_deg, ego_body_vertices_m"
+        },
+        "ego_speed": {
+          "entrypoint": "runner.py",
+          "method": "native_sample reads ego.get_velocity() in each Native frame",
+          "evidence": "native_samples.jsonl ego_velocity_mps"
+        },
+        "observed_speed": {
+          "entrypoint": "measure_speed.py",
+          "method": "measure computes peak and interval from saved three-axis Native velocity",
+          "evidence": "speed-measurement.json peak_speed_mph and interval_mph"
+        },
+        "other_vehicle_pose": {
+          "entrypoint": "runner.py",
+          "method": "native_sample reads other.get_transform() and world bounding-box vertices",
+          "evidence": "native_samples.jsonl other_position_m, other_heading_deg, other_body_vertices_m"
+        }
       }
     },
     {
@@ -371,6 +503,72 @@
       "physical_preparation": {
         "receipt": "update042g-selected-physical/at_80_mph/proof.json",
         "sha256": "a0c144579c18401fac0143f31de1e4421b0f6fbe805e2b846411ba5fdab77e22"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C111294__NRS-484B-600-1e__motor_vehicle_driver__at_80_mph",
+        "sets": [
+          "demo-train",
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "4ed33b25cede4ecff6e1f24711eb419de3792cc971ca2469e95b47ab861fcb47",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/delivery_audit.py --case training__C111294__NRS-484B-600-1e__motor_vehicle_driver__at_80_mph --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update042h-selected/at_80_mph/primary/selected-attempt --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update042h-selected/at_80_mph/primary/processed/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/update042i-at_80_mph-delivery-diagnostic.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "update042i-at_80_mph-delivery-positive.log",
+        "test_log_sha256": "7e6d071e27fd24bea1012326eaa8ab3d65240a6b848a30de2c2e8e16d912c170",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/delivery_audit.py --case training__C111294__NRS-484B-600-1e__motor_vehicle_driver__at_80_mph --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update042h-selected/at_80_mph/primary/selected-attempt --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update042h-selected/at_80_mph/primary/processed/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/update042i-at_80_mph-delivery-negative.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original Native speed source required",
+        "negative_log": "update042i-at_80_mph-delivery-negative.log",
+        "negative_log_sha256": "70713610f32502b6ba0b8445579af2ef115635fe2770b409eb90f2b08d1dcb48"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C111294__NRS-484B-600-1e__motor_vehicle_driver__at_80_mph --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime/pipeline/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/decoder-update015-c10316/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "update042h-selected-at_80_mph-primary-process-saved.log",
+        "test_log_sha256": "6f7e5ac0b63ac47dbc0b01bee79597c38d8829882495e15a89b6c53a99479df6"
+      },
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "native_sample reads ego.get_velocity() in each Native frame; measure_speed computes its three-axis norm",
+          "evidence": "native_samples.jsonl ego_velocity_mps; speed-measurement.json peak_speed_mph"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "native_sample reads ego.get_velocity() x, y, z from the captured actor",
+          "evidence": "native_samples.jsonl ego_velocity_mps"
+        },
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "method": "native_sample reads ego.get_transform() and world bounding-box vertices",
+          "evidence": "native_samples.jsonl ego_position_m, ego_heading_deg, ego_body_vertices_m"
+        },
+        "ego_speed": {
+          "entrypoint": "runner.py",
+          "method": "native_sample reads ego.get_velocity() in each Native frame",
+          "evidence": "native_samples.jsonl ego_velocity_mps"
+        },
+        "observed_speed": {
+          "entrypoint": "measure_speed.py",
+          "method": "measure computes peak and interval from saved three-axis Native velocity",
+          "evidence": "speed-measurement.json peak_speed_mph and interval_mph"
+        },
+        "other_vehicle_pose": {
+          "entrypoint": "runner.py",
+          "method": "native_sample reads other.get_transform() and world bounding-box vertices",
+          "evidence": "native_samples.jsonl other_position_m, other_heading_deg, other_body_vertices_m"
+        }
       }
     },
     {
@@ -494,6 +692,72 @@
       "physical_preparation": {
         "receipt": "update042g-selected-physical/above_80_mph/proof.json",
         "sha256": "03b72d4233adeae788c12d201bdb6123cdb86b533304e545a60aeb53230e327d"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C111294__NRS-484B-600-1e__motor_vehicle_driver__above_80_mph",
+        "sets": [
+          "demo-train",
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "4ed33b25cede4ecff6e1f24711eb419de3792cc971ca2469e95b47ab861fcb47",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/delivery_audit.py --case training__C111294__NRS-484B-600-1e__motor_vehicle_driver__above_80_mph --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update042h-selected/above_80_mph/primary/selected-attempt --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update042h-selected/above_80_mph/primary/processed/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/update042i-above_80_mph-delivery-diagnostic.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "update042i-above_80_mph-delivery-positive.log",
+        "test_log_sha256": "faa22345c87e8369d214eb1e76106044cb082df208524b6cdeddea79b0eed078",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/delivery_audit.py --case training__C111294__NRS-484B-600-1e__motor_vehicle_driver__above_80_mph --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update042h-selected/above_80_mph/primary/selected-attempt --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update042h-selected/above_80_mph/primary/processed/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/update042i-above_80_mph-delivery-negative.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original Native speed source required",
+        "negative_log": "update042i-above_80_mph-delivery-negative.log",
+        "negative_log_sha256": "70713610f32502b6ba0b8445579af2ef115635fe2770b409eb90f2b08d1dcb48"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C111294__NRS-484B-600-1e__motor_vehicle_driver__above_80_mph --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime/pipeline/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/decoder-update015-c10316/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "update042h-selected-above_80_mph-primary-process-saved.log",
+        "test_log_sha256": "c99a008a76966902e4c62102e7c1e9fe33fe1ca614169b9b0b52af7b1b1256aa"
+      },
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "native_sample reads ego.get_velocity() in each Native frame; measure_speed computes its three-axis norm",
+          "evidence": "native_samples.jsonl ego_velocity_mps; speed-measurement.json peak_speed_mph"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "native_sample reads ego.get_velocity() x, y, z from the captured actor",
+          "evidence": "native_samples.jsonl ego_velocity_mps"
+        },
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "method": "native_sample reads ego.get_transform() and world bounding-box vertices",
+          "evidence": "native_samples.jsonl ego_position_m, ego_heading_deg, ego_body_vertices_m"
+        },
+        "ego_speed": {
+          "entrypoint": "runner.py",
+          "method": "native_sample reads ego.get_velocity() in each Native frame",
+          "evidence": "native_samples.jsonl ego_velocity_mps"
+        },
+        "observed_speed": {
+          "entrypoint": "measure_speed.py",
+          "method": "measure computes peak and interval from saved three-axis Native velocity",
+          "evidence": "speed-measurement.json peak_speed_mph and interval_mph"
+        },
+        "other_vehicle_pose": {
+          "entrypoint": "runner.py",
+          "method": "native_sample reads other.get_transform() and world bounding-box vertices",
+          "evidence": "native_samples.jsonl other_position_m, other_heading_deg, other_body_vertices_m"
+        }
       }
     }
   ],
