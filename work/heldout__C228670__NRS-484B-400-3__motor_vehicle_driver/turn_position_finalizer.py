@@ -14,7 +14,8 @@ SOURCES = ("route_survey_original.json", "route_survey_capture_receipt.json",
            "body_corners_original.jsonl", "video_frames.jsonl",
            "trace.jsonl", *CAMERAS)
 CHANNELS = ("approach_body_to_centerline", "entry_body_right_of_centerline",
-            "departure_body_to_left_curb", "highway_directions")
+            "departure_body_to_left_curb", "highway_directions",
+            "measured_departure_left_curb_distance_m")
 
 
 def required(root, name):
@@ -125,6 +126,7 @@ def analyze_attempt(attempt, write_channels=True):
             streams["departure_body_to_left_curb"].append(dict(common, value={
                 "corner_distances_m": row["departure_left_curb_corner_distances_m"],
                 "farthest_corner_m": row["farthest_body_corner_from_departure_left_curb_m"]}))
+            streams["measured_departure_left_curb_distance_m"].append(dict(common, value=row["farthest_body_corner_from_departure_left_curb_m"]))
         streams["highway_directions"].append(dict(common, value={
             "approach_directions": survey["approach_directions"],
             "destination_directions": survey["destination_directions"],
@@ -157,10 +159,16 @@ def build_native_result(attempt, report):
         stream = report["measurements"][name]["value"]
         evidence.append({"name": name, "unit": units[name], "reference": channel.name,
                          "sha256": sha256(channel)})
-        realized[name] = {"unit": units[name], "method": "source-joined original turn geometry",
-                          "time_window": "original turn frames", "statistic": "sample count",
-                          "reference": channel.name, "value": len(stream),
-                          "sample_window_s": [stream[0]["time_s"], stream[-1]["time_s"]]}
+        if name == "measured_departure_left_curb_distance_m":
+            realized[name] = {"unit": units[name], "method": "source-joined original full-body corner distances to surveyed Native destination left curb",
+                              "time_window": "all relevant original turn frames", "statistic": "min",
+                              "reference": channel.name, "value": min(row["value"] for row in stream),
+                              "sample_window_s": [stream[0]["time_s"], stream[-1]["time_s"]]}
+        else:
+            realized[name] = {"unit": units[name], "method": "source-joined original turn geometry",
+                              "time_window": "original turn frames", "statistic": "sample count",
+                              "reference": channel.name, "value": len(stream),
+                              "sample_window_s": [stream[0]["time_s"], stream[-1]["time_s"]]}
     return {"case_id": report["case_id"], "measured_values": {name: len(report["measurements"][name]["value"]) for name in CHANNELS},
             "target_checks": [{"target": "two-way-to-one-way left-turn geometry",
                                "requested": "original body approach, entry and departure against surveyed road geometry",

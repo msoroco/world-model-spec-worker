@@ -135,7 +135,8 @@ class RouteSurveyTests(unittest.TestCase):
             case_id = "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_left_curb_departure"
             description = {"channels": [{"name": name, "unit": "structured"} for name in (
                 "approach_body_to_centerline", "entry_body_right_of_centerline",
-                "departure_body_to_left_curb", "highway_directions")]}
+                "departure_body_to_left_curb", "highway_directions")]+
+                [{"name": "measured_departure_left_curb_distance_m", "unit": "m"}]}
             config = {"selected_case_id": case_id, "law_id": "NRS-484B-400-3",
                       "cell_id": "C228670", "actor": "motor_vehicle_driver",
                       "case": {"recording_description": description}}
@@ -157,7 +158,8 @@ class RouteSurveyTests(unittest.TestCase):
             self.assertEqual(set(report["measurements"]), set(name["name"] for name in description["channels"]))
             result = build_native_result(root, report)
             self.assertFalse(result["legal_acceptance_claimed"])
-            self.assertEqual(len(result["recording_evidence"]), 4)
+            self.assertEqual(len(result["recording_evidence"]), 5)
+            self.assertEqual(result["realized_observables"]["measured_departure_left_curb_distance_m"]["statistic"], "min")
             (root / "route_survey_original.json").unlink()
             with self.assertRaisesRegex(ValueError, "Missing required source: route_survey_original.json"):
                 analyze_attempt(root, write_channels=False)
