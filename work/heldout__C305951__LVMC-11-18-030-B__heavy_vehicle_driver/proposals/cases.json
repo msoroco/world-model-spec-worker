@@ -4,6 +4,93 @@
   "actor": "heavy_vehicle_driver",
   "cases": [
     {
+      "case_id": "heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared heavy-vehicle marked-lane source geometry and motion baseline; no exception judgment asserted.",
+      "variable_assignments": {
+        "heavy_vehicle_blueprint": {
+          "kind": "world_setup",
+          "value": "vehicle.carlamotors.carlacola"
+        },
+        "lateral_footprint_outcome": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "passing_permission": {
+          "kind": "world_setup",
+          "value": null
+        },
+        "lawful_turn_premise": {
+          "kind": "world_setup",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "native_lane_boundaries",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Original surveyed marking geometry, lane directional allocation and governed route for every ego frame.",
+            "time_window": "original 160-frame capture",
+            "reference_frame": "source-surveyed Native three-lane road",
+            "uncertainty": "physical motion, legal exception and visibility require original-source review"
+          },
+          {
+            "name": "heavy_vehicle_footprint",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Original articulated or rigid body extents and all relevant corners projected onto the source road frame.",
+            "time_window": "original 160-frame capture",
+            "reference_frame": "source-surveyed Native three-lane road",
+            "uncertainty": "physical motion, legal exception and visibility require original-source review"
+          },
+          {
+            "name": "lane_boundary_overlap",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Signed footprint-to-boundary distances per original frame, preserving uncertainty and no invented tolerance.",
+            "time_window": "original 160-frame capture",
+            "reference_frame": "source-surveyed Native three-lane road",
+            "uncertainty": "physical motion, legal exception and visibility require original-source review"
+          },
+          {
+            "name": "passing_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Other vehicle identity, position, order reversal and independent applicable-rule source.",
+            "time_window": "original 160-frame capture",
+            "reference_frame": "source-surveyed Native three-lane road",
+            "uncertainty": "physical motion, legal exception and visibility require original-source review"
+          },
+          {
+            "name": "turn_preparation_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original indicator/heading/route/turn-intent sources and independent lawful-turn premise.",
+            "time_window": "original 160-frame capture",
+            "reference_frame": "source-surveyed Native three-lane road",
+            "uncertainty": "physical motion, legal exception and visibility require original-source review"
+          },
+          {
+            "name": "four_camera_originals",
+            "unit": "video",
+            "sampling_rate_hz": 20,
+            "method": "Original synchronized overview, approach, reference_corner and driver_reference recordings and frame joins.",
+            "time_window": "original 160-frame capture",
+            "reference_frame": "source-surveyed Native three-lane road",
+            "uncertainty": "physical motion, legal exception and visibility require original-source review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "CPU construction does not prove lane marking visibility, legal exception or physical acceptance"
+        ]
+      }
+    },
+    {
       "case_id": "heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__within_marked_lane",
       "target_law_id": "LVMC-11-18-030-B",
       "target_type": "boundary_probe",
@@ -94,10 +181,15 @@
         ]
       },
       "paired_probe_id": "heavy_marked_lane_branches",
-      "deliberate_differences": "Heavy vehicle body remains within a source-surveyed marked lane during straight travel.",
+      "deliberate_differences": [
+        "lateral_footprint_outcome",
+        "passing_permission",
+        "lawful_turn_premise"
+      ],
       "probe": {
-        "source": "original heavy-vehicle body, marked lane, motion, other actor and intended-turn sources",
-        "physical_result": "unverified"
+        "primary_variable": "lateral_footprint_outcome",
+        "comparison_or_standard": "source-surveyed marked-lane boundary and paired heavy-vehicle branches",
+        "target_value_or_branch": "within_marked_lane"
       }
     },
     {
@@ -191,10 +283,15 @@
         ]
       },
       "paired_probe_id": "heavy_marked_lane_branches",
-      "deliberate_differences": "Heavy vehicle footprint crosses a marked lane boundary, without another vehicle or planned turn.",
+      "deliberate_differences": [
+        "lateral_footprint_outcome",
+        "passing_permission",
+        "lawful_turn_premise"
+      ],
       "probe": {
-        "source": "original heavy-vehicle body, marked lane, motion, other actor and intended-turn sources",
-        "physical_result": "unverified"
+        "primary_variable": "lateral_footprint_outcome",
+        "comparison_or_standard": "source-surveyed marked-lane boundary and paired heavy-vehicle branches",
+        "target_value_or_branch": "unexcused_boundary_crossing"
       }
     },
     {
@@ -288,10 +385,15 @@
         ]
       },
       "paired_probe_id": "heavy_marked_lane_branches",
-      "deliberate_differences": "A comparable footprint crossing includes a separately recorded overtaken vehicle; lawful passing remains an independent question.",
+      "deliberate_differences": [
+        "lateral_footprint_outcome",
+        "passing_permission",
+        "lawful_turn_premise"
+      ],
       "probe": {
-        "source": "original heavy-vehicle body, marked lane, motion, other actor and intended-turn sources",
-        "physical_result": "unverified"
+        "primary_variable": "lateral_footprint_outcome",
+        "comparison_or_standard": "source-surveyed marked-lane boundary and paired heavy-vehicle branches",
+        "target_value_or_branch": "passing_boundary_crossing"
       }
     },
     {
@@ -385,13 +487,49 @@
         ]
       },
       "paired_probe_id": "heavy_marked_lane_branches",
-      "deliberate_differences": "A comparable crossing includes a source-recorded intended lawful turn and turn preparation; movement and permission remain independently reviewed.",
+      "deliberate_differences": [
+        "lateral_footprint_outcome",
+        "passing_permission",
+        "lawful_turn_premise"
+      ],
       "probe": {
-        "source": "original heavy-vehicle body, marked lane, motion, other actor and intended-turn sources",
-        "physical_result": "unverified"
+        "primary_variable": "lateral_footprint_outcome",
+        "comparison_or_standard": "source-surveyed marked-lane boundary and paired heavy-vehicle branches",
+        "target_value_or_branch": "lawful_turn_preparation_boundary_crossing"
       }
     }
   ],
-  "sweep_specs": [],
+  "sweep_specs": [
+    {
+      "sweep_id": "heavy_passing_plan",
+      "target_law_id": "LVMC-11-18-030-B",
+      "judgment_refs": [
+        {
+          "phrase": "lawfully passing another vehicle",
+          "note": "Passing lawfulness depends on separate applicable rules and the observed participant/maneuver facts."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "A lawful passing judgment needs a separately sourced applicable movement rule and observed overtaken-vehicle order reversal.",
+      "missing_inputs": [
+        "Independently verified passing-law applicability and physical sweep range for heavy-vehicle lateral excursion."
+      ]
+    },
+    {
+      "sweep_id": "heavy_turn_plan",
+      "target_law_id": "LVMC-11-18-030-B",
+      "judgment_refs": [
+        {
+          "phrase": "preparatory to making a lawful turning movement",
+          "note": "Preparation and turn lawfulness depend on route intent evidence, movement and separate applicable rules."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Turn-preparation judgment requires an independently supported lawful-turn premise and source-observed intent.",
+      "missing_inputs": [
+        "Independently verified turn permission and physical sweep range for heavy-vehicle turn preparation."
+      ]
+    }
+  ],
   "sweeps_expanded": true
 }
