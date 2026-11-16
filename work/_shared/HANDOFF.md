@@ -98,3 +98,930 @@ Constructed three distinct exact fallbacks for `__no_crosswalk_marked_stop_line`
 To stay within the 8,600 returned-file cap, 12 JSON-unreferenced historical C125745 check logs and six JSON-unreferenced historical C125763 check logs were moved byte-for-byte to ignored `.runtime-work/retired-logs/c125745-historical-checks/` and `.runtime-work/retired-logs/c125763-historical-checks/`. Scoped complete checks for both packages passed after relocation. `rg --files work` is 8,599 / 8,600. The next worker-owned CPU work is three fallbacks each for `__no_crosswalk_no_line_first_view`, `__crosswalk_and_stop_line`, and `__unmarked_crosswalk_stop_before`, then canonical semantic stages and independent delivery/comparison audits. Do not mark ready until the full CPU proofs pass. No frozen input, runtime, batch.json, or Git action was changed.
 
 Settled-tree strict gate after all three no-crosswalk marked-line fallbacks: `.venv-cpu/bin/python worker_check.py --complete --require-delivery-ready` exited 1 at `preparation.py:276`, `Preparation acceptance failed: partial/missing packages remain` (`work/_shared/strict-batch-gate.log`). All preceding static checks passed. Inventory remains 3 ready / 40 partial across 43 packages, with C331230 partial. The active Goal remains open; nine C331230 fallbacks and its remaining CPU semantic and delivery audits are worker-owned next actions.
+
+## Preserved historical check logs for returned-file headroom
+
+The following JSON-unreferenced historical check logs were relocated byte-for-byte to ignored `.runtime-work/retired-logs/20261115-next-fallback-headroom/`. Their original contents are copied below to preserve the checkpoint in returned text.
+
+### testing__C125745__NRS-484B-250-1__motor_vehicle_driver/assignment-check.log (SHA256 d93b38cacbdeca49ad9a3e094ead5aef404b609da98114fb90f6a6a130d47d4b)
+
+```text
+{
+  "batch_id": "demo-test-delivery",
+  "reported": [
+    "testing__C125745__NRS-484B-250-1__motor_vehicle_driver"
+  ],
+  "static_checks_passed": true
+}
+
+```
+
+### testing__C125745__NRS-484B-250-1__motor_vehicle_driver/strict-gate.log (SHA256 d6960eedad188c5a7f944fde31c4339a6bb7eab414f6d284219a56d71d5e3be1)
+
+```text
+Traceback (most recent call last):
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/worker_check.py", line 22, in <module>
+    result = check(Path(__file__).resolve().parent, complete=args.complete or args.require_delivery_ready, require_ready=args.require_delivery_ready, assignment=args.assignment)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 110, in check
+    require(not complete, 'Missing result: '+aid)
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 10, in require
+    raise ValueError(message)
+ValueError: Missing result: testing__C125763__NRS-484B-250-1__motor_vehicle_driver
+
+```
+
+### testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/assignment-check.log (SHA256 98c71956a44f4c788ad55d328ac92810cb0355b02eba461cbfd608c8ed493f59)
+
+```text
+{
+  "batch_id": "demo-test-delivery",
+  "reported": [
+    "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver"
+  ],
+  "static_checks_passed": true
+}
+
+```
+
+### testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/strict-gate.log (SHA256 8aef413169724d9407e9d952cba2ff32a092e36fc56cfd20e5c6db11ce83d5aa)
+
+```text
+Traceback (most recent call last):
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/worker_check.py", line 30, in <module>
+    result = check(Path(__file__).resolve().parent, complete=args.complete or args.require_delivery_ready, require_ready=args.require_delivery_ready, assignment=args.assignment)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 276, in check
+    require(len(results)==len(items) and all(r['status']=='ready' for r in results.values()), 'Preparation acceptance failed: partial/missing packages remain')
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 10, in require
+    raise ValueError(message)
+ValueError: Preparation acceptance failed: partial/missing packages remain
+
+```
+
+### testing__C158190__NRS-484B-257-2__motor_vehicle_driver/assignment-check.log (SHA256 950a4770b5e672f331818e1ec0996dcf70d83b08e461fa7f59a9e52b7f303095)
+
+```text
+{
+  "batch_id": "demo-test-delivery",
+  "reported": [
+    "testing__C158190__NRS-484B-257-2__motor_vehicle_driver"
+  ],
+  "static_checks_passed": true
+}
+
+```
+
+### testing__C158190__NRS-484B-257-2__motor_vehicle_driver/strict-gate.log (SHA256 9bc598a1adc03d8a2d41ba90ba845b8f17bd1d8cd770fc093122384de61c6d59)
+
+```text
+Traceback (most recent call last):
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/worker_check.py", line 22, in <module>
+    result = check(Path(__file__).resolve().parent, complete=args.complete or args.require_delivery_ready, require_ready=args.require_delivery_ready, assignment=args.assignment)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 110, in check
+    require(not complete, 'Missing result: '+aid)
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 10, in require
+    raise ValueError(message)
+ValueError: Missing result: testing__C158208__NRS-484B-257-1__motor_vehicle_driver
+
+```
+
+### testing__C24757__NRS-484B-250-4__motor_vehicle_driver/assignment-check.log (SHA256 23368e1acdea79d1481365bc24ac91c7a7292759cb9338a032c3105b03cf9d62)
+
+```text
+{
+  "batch_id": "demo-test-delivery",
+  "reported": [
+    "testing__C24757__NRS-484B-250-4__motor_vehicle_driver"
+  ],
+  "static_checks_passed": true
+}
+
+```
+
+### testing__C24757__NRS-484B-250-4__motor_vehicle_driver/strict-gate.log (SHA256 20fc34d2dd9fb03692468a5971efb01cea07a7eca10b30147d0ffa54b591735f)
+
+```text
+Traceback (most recent call last):
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/worker_check.py", line 22, in <module>
+    result = check(Path(__file__).resolve().parent, complete=args.complete or args.require_delivery_ready, require_ready=args.require_delivery_ready, assignment=args.assignment)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 110, in check
+    require(not complete, 'Missing result: '+aid)
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 10, in require
+    raise ValueError(message)
+ValueError: Missing result: testing__C378304__NRS-484B-413-2__motor_vehicle_driver
+
+```
+
+### testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/assignment-check.log (SHA256 18170831ee9eab01c13d2d9091ffbdb254b9bd3de6a07cac6c1b4138f21ed482)
+
+```text
+{
+  "batch_id": "demo-test-delivery",
+  "reported": [
+    "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver"
+  ],
+  "static_checks_passed": true
+}
+
+```
+
+### testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/strict-gate.log (SHA256 c28611b6994597918e32cf84532ccecc25724243a47bbe7f97f341f9b4c568c7)
+
+```text
+Traceback (most recent call last):
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/worker_check.py", line 22, in <module>
+    result = check(Path(__file__).resolve().parent, complete=args.complete or args.require_delivery_ready, require_ready=args.require_delivery_ready, assignment=args.assignment)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 110, in check
+    require(not complete, 'Missing result: '+aid)
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 10, in require
+    raise ValueError(message)
+ValueError: Missing result: testing__C125714__NRS-484B-250-1__motor_vehicle_driver
+
+```
+
+### testing__C157964__NRS-484B-257-2__motor_vehicle_driver/assignment-check.log (SHA256 941ea1aaf9e3241e52fbe0147789ad47f414d21a4468c627711a4b6893acf8ba)
+
+```text
+{
+  "batch_id": "demo-test-delivery",
+  "reported": [
+    "testing__C157964__NRS-484B-257-2__motor_vehicle_driver"
+  ],
+  "static_checks_passed": true
+}
+
+```
+
+### testing__C157964__NRS-484B-257-2__motor_vehicle_driver/strict-gate.log (SHA256 f0721b9f5af022a93e1e52ed46dc31e62e9abd3aab22659ad886aadf033ea771)
+
+```text
+Traceback (most recent call last):
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/worker_check.py", line 22, in <module>
+    result = check(Path(__file__).resolve().parent, complete=args.complete or args.require_delivery_ready, require_ready=args.require_delivery_ready, assignment=args.assignment)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 110, in check
+    require(not complete, 'Missing result: '+aid)
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 10, in require
+    raise ValueError(message)
+ValueError: Missing result: testing__C158196__NRS-484B-257-2__motor_vehicle_driver
+
+```
+
+### testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/assignment-check.log (SHA256 1a22cfbe833b96d2e951c9c0c95975b8b7ba115583ac737204bda43bfc0bd282)
+
+```text
+{
+  "batch_id": "demo-test-delivery",
+  "reported": [
+    "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver"
+  ],
+  "static_checks_passed": true
+}
+
+```
+
+### testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/strict-gate.log (SHA256 8aef413169724d9407e9d952cba2ff32a092e36fc56cfd20e5c6db11ce83d5aa)
+
+```text
+Traceback (most recent call last):
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/worker_check.py", line 30, in <module>
+    result = check(Path(__file__).resolve().parent, complete=args.complete or args.require_delivery_ready, require_ready=args.require_delivery_ready, assignment=args.assignment)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 276, in check
+    require(len(results)==len(items) and all(r['status']=='ready' for r in results.values()), 'Preparation acceptance failed: partial/missing packages remain')
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 10, in require
+    raise ValueError(message)
+ValueError: Preparation acceptance failed: partial/missing packages remain
+
+```
+
+### testing__C80909__NRS-484B-227-1__motor_vehicle_driver/assignment-check.log (SHA256 d2173e0a136c6739486bcea18071bbc865f00c2b1f6e5b1ab77d4f03139e4045)
+
+```text
+{
+  "batch_id": "demo-test-delivery",
+  "reported": [
+    "testing__C80909__NRS-484B-227-1__motor_vehicle_driver"
+  ],
+  "static_checks_passed": true
+}
+
+```
+
+### testing__C80909__NRS-484B-227-1__motor_vehicle_driver/strict-gate.log (SHA256 0a22e5b309653736241810f97f1de989fffff571fcd0f9799c1a3f9e2492de59)
+
+```text
+Traceback (most recent call last):
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/worker_check.py", line 22, in <module>
+    result = check(Path(__file__).resolve().parent, complete=args.complete or args.require_delivery_ready, require_ready=args.require_delivery_ready, assignment=args.assignment)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 110, in check
+    require(not complete, 'Missing result: '+aid)
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 10, in require
+    raise ValueError(message)
+ValueError: Missing result: testing__C109705__NRS-484B-400-2b__motor_vehicle_driver
+
+```
+
+### testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/assignment-check.log (SHA256 57fe17688791f3d201a2f3c07c780865aec8de7a4a688b277a172a99717a8be0)
+
+```text
+{
+  "batch_id": "demo-test-delivery",
+  "reported": [
+    "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver"
+  ],
+  "static_checks_passed": true
+}
+
+```
+
+### testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/strict-gate.log (SHA256 755f5767e178dfd1f638139556ce98cef4bf9ec8e3178de113f5bdbb88acbd0b)
+
+```text
+Traceback (most recent call last):
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/worker_check.py", line 22, in <module>
+    result = check(Path(__file__).resolve().parent, complete=args.complete or args.require_delivery_ready, require_ready=args.require_delivery_ready, assignment=args.assignment)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 110, in check
+    require(not complete, 'Missing result: '+aid)
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 10, in require
+    raise ValueError(message)
+ValueError: Missing result: testing__C125697__NRS-484B-250-2__motor_vehicle_driver
+
+```
+
+### testing__C158208__NRS-484B-257-1__motor_vehicle_driver/assignment-check.log (SHA256 b872068c65461868521dd6530ae9acf3ceb949cc861fb8e397897e1e49ce8e81)
+
+```text
+{
+  "batch_id": "demo-test-delivery",
+  "reported": [
+    "testing__C158208__NRS-484B-257-1__motor_vehicle_driver"
+  ],
+  "static_checks_passed": true
+}
+
+```
+
+### testing__C158208__NRS-484B-257-1__motor_vehicle_driver/strict-gate.log (SHA256 6f6e9ecda590bf19e062cb38181a56ae63ba212a9c915e487cfc690c01263c06)
+
+```text
+Traceback (most recent call last):
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/worker_check.py", line 22, in <module>
+    result = check(Path(__file__).resolve().parent, complete=args.complete or args.require_delivery_ready, require_ready=args.require_delivery_ready, assignment=args.assignment)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 110, in check
+    require(not complete, 'Missing result: '+aid)
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 10, in require
+    raise ValueError(message)
+ValueError: Missing result: testing__C178244__NRS-484B-413-2__motor_vehicle_driver
+
+```
+
+## Preserved historical check logs for crosswalk-line fallbacks
+
+These JSON-unreferenced historical logs were relocated byte-for-byte to ignored `.runtime-work/retired-logs/20261115-crossline-fallback-headroom/`. Exact text is preserved here.
+
+### testing__C412593__NRS-484B-413-2__motor_vehicle_driver/assignment-check.log (SHA256 0be0bc31870ad921bb251420882b6aa36c6e3eff0bba4e53212675131f8d9a72)
+
+```text
+{
+  "batch_id": "demo-test-delivery",
+  "reported": [
+    "testing__C412593__NRS-484B-413-2__motor_vehicle_driver"
+  ],
+  "static_checks_passed": true
+}
+
+```
+
+### testing__C412593__NRS-484B-413-2__motor_vehicle_driver/strict-gate.log (SHA256 6fbf270990698fb82cf4fbc454676ea7ec6f51b9721349ac58a0289eb10140f3)
+
+```text
+Traceback (most recent call last):
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/worker_check.py", line 22, in <module>
+    result = check(Path(__file__).resolve().parent, complete=args.complete or args.require_delivery_ready, require_ready=args.require_delivery_ready, assignment=args.assignment)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 110, in check
+    require(not complete, 'Missing result: '+aid)
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 10, in require
+    raise ValueError(message)
+ValueError: Missing result: testing__C109705__NRS-484B-400-2a__motor_vehicle_driver
+
+```
+
+### testing__C215286__NRS-484B-113-2__motor_vehicle_driver/assignment-check.log (SHA256 6648ac6f7d4496e84968d2e2741ae6750a0be6fa3f92bf0a5af3927f21b1724a)
+
+```text
+{
+  "batch_id": "demo-test-delivery",
+  "reported": [
+    "testing__C215286__NRS-484B-113-2__motor_vehicle_driver"
+  ],
+  "static_checks_passed": true
+}
+
+```
+
+### testing__C215286__NRS-484B-113-2__motor_vehicle_driver/strict-gate.log (SHA256 8aef413169724d9407e9d952cba2ff32a092e36fc56cfd20e5c6db11ce83d5aa)
+
+```text
+Traceback (most recent call last):
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/worker_check.py", line 30, in <module>
+    result = check(Path(__file__).resolve().parent, complete=args.complete or args.require_delivery_ready, require_ready=args.require_delivery_ready, assignment=args.assignment)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 276, in check
+    require(len(results)==len(items) and all(r['status']=='ready' for r in results.values()), 'Preparation acceptance failed: partial/missing packages remain')
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 10, in require
+    raise ValueError(message)
+ValueError: Preparation acceptance failed: partial/missing packages remain
+
+```
+
+### testing__C378304__NRS-484B-413-2__motor_vehicle_driver/assignment-check.log (SHA256 68222bc4547631ef425a8135f179e8cd14335ce81fa041fa614eae511e79d38f)
+
+```text
+{
+  "batch_id": "demo-test-delivery",
+  "reported": [
+    "testing__C378304__NRS-484B-413-2__motor_vehicle_driver"
+  ],
+  "static_checks_passed": true
+}
+
+```
+
+### testing__C378304__NRS-484B-413-2__motor_vehicle_driver/strict-gate.log (SHA256 3ec560e66986fe34df9f29f0358457169324550f45ed274e32806cf605d1ce13)
+
+```text
+Traceback (most recent call last):
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/worker_check.py", line 22, in <module>
+    result = check(Path(__file__).resolve().parent, complete=args.complete or args.require_delivery_ready, require_ready=args.require_delivery_ready, assignment=args.assignment)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 110, in check
+    require(not complete, 'Missing result: '+aid)
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 10, in require
+    raise ValueError(message)
+ValueError: Missing result: testing__C10301__NRS-484B-600-1e__motor_vehicle_driver
+
+```
+
+### testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/assignment-check.log (SHA256 730d7a22fe4a4c84ed7acea83c697fedd9d657f0ef0a9c8496949ad412f94a31)
+
+```text
+{
+  "batch_id": "demo-test-delivery",
+  "reported": [
+    "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver"
+  ],
+  "static_checks_passed": true
+}
+
+```
+
+### testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/strict-gate.log (SHA256 50a556927021de513a94e1a24b69e7345fe5094ec10f9490171ee3b98b1dfc63)
+
+```text
+Traceback (most recent call last):
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/worker_check.py", line 22, in <module>
+    result = check(Path(__file__).resolve().parent, complete=args.complete or args.require_delivery_ready, require_ready=args.require_delivery_ready, assignment=args.assignment)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 110, in check
+    require(not complete, 'Missing result: '+aid)
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 10, in require
+    raise ValueError(message)
+ValueError: Missing result: testing__C157964__NRS-484B-257-1__motor_vehicle_driver
+
+```
+
+### testing__C126120__NRS-484B-227-1__motor_vehicle_driver/assignment-check.log (SHA256 d5d5be0dd2c12f71ba3b3ce08ce5652c5d30583ee515e772621460e6aaee73ef)
+
+```text
+{
+  "batch_id": "demo-test-delivery",
+  "reported": [
+    "testing__C126120__NRS-484B-227-1__motor_vehicle_driver"
+  ],
+  "static_checks_passed": true
+}
+
+```
+
+### testing__C126120__NRS-484B-227-1__motor_vehicle_driver/strict-gate.log (SHA256 2d0caeae5c4d6cac911dd892acf77441c5801042d21311a335195381d362a344)
+
+```text
+Traceback (most recent call last):
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/worker_check.py", line 22, in <module>
+    result = check(Path(__file__).resolve().parent, complete=args.complete or args.require_delivery_ready, require_ready=args.require_delivery_ready, assignment=args.assignment)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 110, in check
+    require(not complete, 'Missing result: '+aid)
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 10, in require
+    raise ValueError(message)
+ValueError: Missing result: testing__C147311__NRS-484B-220-1__motor_vehicle_driver
+
+```
+
+### testing__C158196__NRS-484B-257-1__motor_vehicle_driver/assignment-check.log (SHA256 0a0f97d22284a9bb0013d70628066b3118e31f46b4f9ace51d67966a92558f81)
+
+```text
+{
+  "batch_id": "demo-test-delivery",
+  "reported": [
+    "testing__C158196__NRS-484B-257-1__motor_vehicle_driver"
+  ],
+  "static_checks_passed": true
+}
+
+```
+
+### testing__C158196__NRS-484B-257-1__motor_vehicle_driver/strict-gate.log (SHA256 c8948a239209298c18834119004ee832dbebfeffa1b5e380a9415d2f4d164989)
+
+```text
+Traceback (most recent call last):
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/worker_check.py", line 22, in <module>
+    result = check(Path(__file__).resolve().parent, complete=args.complete or args.require_delivery_ready, require_ready=args.require_delivery_ready, assignment=args.assignment)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 110, in check
+    require(not complete, 'Missing result: '+aid)
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 10, in require
+    raise ValueError(message)
+ValueError: Missing result: testing__C158208__NRS-484B-257-2__motor_vehicle_driver
+
+```
+
+### testing__C157964__NRS-484B-257-1__motor_vehicle_driver/assignment-check.log (SHA256 1adf2508bd2d5954df70a1f7a373521941162ed66477e9f4ed87a3591edd0c33)
+
+```text
+{
+  "batch_id": "demo-test-delivery",
+  "reported": [
+    "testing__C157964__NRS-484B-257-1__motor_vehicle_driver"
+  ],
+  "static_checks_passed": true
+}
+
+```
+
+### testing__C157964__NRS-484B-257-1__motor_vehicle_driver/strict-gate.log (SHA256 74e65b1bf9d7f2ce9bcf79a3d7c52d9c422138c4f6af641e0c3df22a50d050ca)
+
+```text
+Traceback (most recent call last):
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/worker_check.py", line 22, in <module>
+    result = check(Path(__file__).resolve().parent, complete=args.complete or args.require_delivery_ready, require_ready=args.require_delivery_ready, assignment=args.assignment)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 110, in check
+    require(not complete, 'Missing result: '+aid)
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 10, in require
+    raise ValueError(message)
+ValueError: Missing result: testing__C158196__NRS-484B-257-1__motor_vehicle_driver
+
+```
+
+### testing__C24811__NRS-484B-250-4__motor_vehicle_driver/assignment-check.log (SHA256 22e6006f669fee7cf2bffb8f7920743b284a2b3c39e2e6f116c3d64c4c0df4d9)
+
+```text
+{
+  "batch_id": "demo-test-delivery",
+  "reported": [
+    "testing__C24811__NRS-484B-250-4__motor_vehicle_driver"
+  ],
+  "static_checks_passed": true
+}
+
+```
+
+### testing__C24811__NRS-484B-250-4__motor_vehicle_driver/strict-gate.log (SHA256 a4ced8867e19a1b3dac4be368d44443c7f3d438f0a89732f7a11655f56c31208)
+
+```text
+Traceback (most recent call last):
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/worker_check.py", line 22, in <module>
+    result = check(Path(__file__).resolve().parent, complete=args.complete or args.require_delivery_ready, require_ready=args.require_delivery_ready, assignment=args.assignment)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 110, in check
+    require(not complete, 'Missing result: '+aid)
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 10, in require
+    raise ValueError(message)
+ValueError: Missing result: testing__C412593__NRS-484B-413-2__motor_vehicle_driver
+
+```
+
+### testing__C178244__NRS-484B-413-2__motor_vehicle_driver/assignment-check.log (SHA256 50defc2267b706e0968da187a80133378c24d6c5fe6324d788511b4a1c8c6768)
+
+```text
+{
+  "batch_id": "demo-test-delivery",
+  "reported": [
+    "testing__C178244__NRS-484B-413-2__motor_vehicle_driver"
+  ],
+  "static_checks_passed": true
+}
+
+```
+
+### testing__C178244__NRS-484B-413-2__motor_vehicle_driver/strict-gate.log (SHA256 e3a669bacbd61a9c0f29cfde8ef86cb7fd60bbb014f2caf93455cee88d13ff75)
+
+```text
+Traceback (most recent call last):
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/worker_check.py", line 22, in <module>
+    result = check(Path(__file__).resolve().parent, complete=args.complete or args.require_delivery_ready, require_ready=args.require_delivery_ready, assignment=args.assignment)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 110, in check
+    require(not complete, 'Missing result: '+aid)
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 10, in require
+    raise ValueError(message)
+ValueError: Missing result: testing__C24811__NRS-484B-250-4__motor_vehicle_driver
+
+```
+
+### testing__C160013__NRS-484B-127-3__motor_vehicle_driver/assignment-check.log (SHA256 e8926cc1953b1f17f554dd4827d29b4875c274562f07e9692078704b0af9004c)
+
+```text
+{
+  "batch_id": "demo-test-delivery",
+  "reported": [
+    "testing__C160013__NRS-484B-127-3__motor_vehicle_driver"
+  ],
+  "static_checks_passed": true
+}
+
+```
+
+### testing__C160013__NRS-484B-127-3__motor_vehicle_driver/strict-gate.log (SHA256 ded502bb0f4128678fe48012626172f1da705b170505dd7fd3af790a542de844)
+
+```text
+Traceback (most recent call last):
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/worker_check.py", line 22, in <module>
+    result = check(Path(__file__).resolve().parent, complete=args.complete or args.require_delivery_ready, require_ready=args.require_delivery_ready, assignment=args.assignment)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 110, in check
+    require(not complete, 'Missing result: '+aid)
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 10, in require
+    raise ValueError(message)
+ValueError: Missing result: testing__C215286__NRS-484B-113-2__motor_vehicle_driver
+
+```
+
+## Preserved historical check logs for unmarked-crosswalk fallbacks
+
+These JSON-unreferenced historical logs were relocated byte-for-byte to ignored `.runtime-work/retired-logs/20261115-unmarked-fallback-headroom/`. Exact text is preserved here.
+
+### testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/assignment-check.log (SHA256 dc0b29990e6cb1afedd715cc76e5171ea9cfc2842456d878e412f5c417818de0)
+
+```text
+{
+  "batch_id": "demo-test-delivery",
+  "reported": [
+    "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver"
+  ],
+  "static_checks_passed": true
+}
+
+```
+
+### testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/strict-gate.log (SHA256 e243ec675910a65a019992295e1c1b2cae94a75e28be8e8435ec7166079daccf)
+
+```text
+Traceback (most recent call last):
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/worker_check.py", line 22, in <module>
+    result = check(Path(__file__).resolve().parent, complete=args.complete or args.require_delivery_ready, require_ready=args.require_delivery_ready, assignment=args.assignment)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 110, in check
+    require(not complete, 'Missing result: '+aid)
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 10, in require
+    raise ValueError(message)
+ValueError: Missing result: testing__C158190__NRS-484B-257-2__motor_vehicle_driver
+
+```
+
+### testing__C125697__NRS-484B-250-1__motor_vehicle_driver/assignment-check.log (SHA256 a3c935bb1d86b6d8cd0eead99fb7485b8e5cac77d3cbf0923bdce4b37e2c49c4)
+
+```text
+{
+  "batch_id": "demo-test-delivery",
+  "reported": [
+    "testing__C125697__NRS-484B-250-1__motor_vehicle_driver"
+  ],
+  "static_checks_passed": true
+}
+
+```
+
+### testing__C125697__NRS-484B-250-1__motor_vehicle_driver/strict-gate.log (SHA256 5c33a1acbe3e88efcc744ddda4c9886f95e1858d2dc8234c7e48025e92cfab4c)
+
+```text
+Traceback (most recent call last):
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/worker_check.py", line 22, in <module>
+    result = check(Path(__file__).resolve().parent, complete=args.complete or args.require_delivery_ready, require_ready=args.require_delivery_ready, assignment=args.assignment)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 110, in check
+    require(not complete, 'Missing result: '+aid)
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 10, in require
+    raise ValueError(message)
+ValueError: Missing result: testing__C125745__NRS-484B-250-1__motor_vehicle_driver
+
+```
+
+### testing__C158208__NRS-484B-257-2__motor_vehicle_driver/assignment-check.log (SHA256 11c80a1a34c51fb5122e5e3049639f7d6f3d0af20e4d97031e6ec1bb79d87ea4)
+
+```text
+{
+  "batch_id": "demo-test-delivery",
+  "reported": [
+    "testing__C158208__NRS-484B-257-2__motor_vehicle_driver"
+  ],
+  "static_checks_passed": true
+}
+
+```
+
+### testing__C158208__NRS-484B-257-2__motor_vehicle_driver/strict-gate.log (SHA256 4a50bce5c2ea041394b7f58c658d9867dc43697781afdae564dd6da22228fce9)
+
+```text
+Traceback (most recent call last):
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/worker_check.py", line 22, in <module>
+    result = check(Path(__file__).resolve().parent, complete=args.complete or args.require_delivery_ready, require_ready=args.require_delivery_ready, assignment=args.assignment)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 110, in check
+    require(not complete, 'Missing result: '+aid)
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 10, in require
+    raise ValueError(message)
+ValueError: Missing result: testing__C179789__NRS-484B-600-1a__motor_vehicle_driver
+
+```
+
+### testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/assignment-check.log (SHA256 993053d68f0844b1922d373bb8982ba3b894fde8a970ce53c6cd8f8d0b9a81b2)
+
+```text
+{
+  "batch_id": "demo-test-delivery",
+  "reported": [
+    "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver"
+  ],
+  "static_checks_passed": true
+}
+
+```
+
+### testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/strict-gate.log (SHA256 b718a54606a92a33a1d461bf11378785a74487d9554645ab5585fc20ca10f4aa)
+
+```text
+Traceback (most recent call last):
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/worker_check.py", line 22, in <module>
+    result = check(Path(__file__).resolve().parent, complete=args.complete or args.require_delivery_ready, require_ready=args.require_delivery_ready, assignment=args.assignment)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 110, in check
+    require(not complete, 'Missing result: '+aid)
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 10, in require
+    raise ValueError(message)
+ValueError: Missing result: testing__C331230__NRS-484A-450-2__motor_vehicle_driver
+
+```
+
+### testing__C125763__NRS-484B-250-1__motor_vehicle_driver/assignment-check.log (SHA256 fb75743f059e3dfa55f26795d41afb31ebae4404d55262f31e0fa691fa050d1c)
+
+```text
+{
+  "batch_id": "demo-test-delivery",
+  "reported": [
+    "testing__C125763__NRS-484B-250-1__motor_vehicle_driver"
+  ],
+  "static_checks_passed": true
+}
+
+```
+
+### testing__C125763__NRS-484B-250-1__motor_vehicle_driver/strict-gate.log (SHA256 b355d3ca9e5574439dfdf2b694e1573674d4dcbaade40c2ad1294823b091739c)
+
+```text
+Traceback (most recent call last):
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/worker_check.py", line 22, in <module>
+    result = check(Path(__file__).resolve().parent, complete=args.complete or args.require_delivery_ready, require_ready=args.require_delivery_ready, assignment=args.assignment)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 110, in check
+    require(not complete, 'Missing result: '+aid)
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 10, in require
+    raise ValueError(message)
+ValueError: Missing result: testing__C136559__NRS-484B-600-1c__motor_vehicle_driver
+
+```
+
+### testing__C177008__NRS-484B-413-2__motor_vehicle_driver/assignment-check.log (SHA256 a15f61b995b4a6e8c74aee3c780b80ffa13c903495638aeba728edc3a4272144)
+
+```text
+{
+  "batch_id": "demo-test-delivery",
+  "reported": [
+    "testing__C177008__NRS-484B-413-2__motor_vehicle_driver"
+  ],
+  "static_checks_passed": true
+}
+
+```
+
+### testing__C177008__NRS-484B-413-2__motor_vehicle_driver/strict-gate.log (SHA256 50172d9e09c57693844afae76563a143bfccf26da8e45d7b96d5193f35fea35f)
+
+```text
+Traceback (most recent call last):
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/worker_check.py", line 22, in <module>
+    result = check(Path(__file__).resolve().parent, complete=args.complete or args.require_delivery_ready, require_ready=args.require_delivery_ready, assignment=args.assignment)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 110, in check
+    require(not complete, 'Missing result: '+aid)
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 10, in require
+    raise ValueError(message)
+ValueError: Missing result: testing__C24757__NRS-484B-250-4__motor_vehicle_driver
+
+```
+
+### testing__C376646__NRS-484B-250-4__motor_vehicle_driver/assignment-check.log (SHA256 4bb655dfb8ed845b2cc3f8d4fdd6e38f7375d8e94e0ef1bc97edcf55eff59db8)
+
+```text
+{
+  "batch_id": "demo-test-delivery",
+  "reported": [
+    "testing__C376646__NRS-484B-250-4__motor_vehicle_driver"
+  ],
+  "static_checks_passed": true
+}
+
+```
+
+### testing__C376646__NRS-484B-250-4__motor_vehicle_driver/strict-gate.log (SHA256 d4b85e02abadf9887c5d52bf3276202c8dd2b3055887744644a2e989a1a39674)
+
+```text
+Traceback (most recent call last):
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/worker_check.py", line 22, in <module>
+    result = check(Path(__file__).resolve().parent, complete=args.complete or args.require_delivery_ready, require_ready=args.require_delivery_ready, assignment=args.assignment)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 276, in check
+    require(len(results)==len(items) and all(r['status']=='ready' for r in results.values()), 'Preparation acceptance failed: partial/missing packages remain')
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 10, in require
+    raise ValueError(message)
+ValueError: Preparation acceptance failed: partial/missing packages remain
+
+```
+
+### testing__C125751__NRS-484B-250-1__motor_vehicle_driver/assignment-check.log (SHA256 c1a332d303fc8ec16e4b4328b67ecd05f22b40028839fb6423724cfa44434f16)
+
+```text
+{
+  "batch_id": "demo-test-delivery",
+  "reported": [
+    "testing__C125751__NRS-484B-250-1__motor_vehicle_driver"
+  ],
+  "static_checks_passed": true
+}
+
+```
+
+### testing__C125751__NRS-484B-250-1__motor_vehicle_driver/strict-gate.log (SHA256 bb96ff74630b5f8d11322db441dba04f8c1e99eb5ad530fe9d0f3703acf1a6b2)
+
+```text
+Traceback (most recent call last):
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/worker_check.py", line 22, in <module>
+    result = check(Path(__file__).resolve().parent, complete=args.complete or args.require_delivery_ready, require_ready=args.require_delivery_ready, assignment=args.assignment)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 110, in check
+    require(not complete, 'Missing result: '+aid)
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 10, in require
+    raise ValueError(message)
+ValueError: Missing result: testing__C126120__NRS-484B-227-1__motor_vehicle_driver
+
+```
+
+## Preserved historical check logs for C331230 semantic work
+
+These JSON-unreferenced historical logs were relocated byte-for-byte to ignored `.runtime-work/retired-logs/20261115-semantic-headroom/`. Exact text is preserved here.
+
+### testing__C147311__NRS-484B-220-1__motor_vehicle_driver/assignment-check.log (SHA256 faaebed437d1791a2cd230cb9738e4b802d0906dc699e6cd5049e6d0b5dfb6b4)
+
+```text
+{
+  "batch_id": "demo-test-delivery",
+  "reported": [
+    "testing__C147311__NRS-484B-220-1__motor_vehicle_driver"
+  ],
+  "static_checks_passed": true
+}
+
+```
+
+### testing__C147311__NRS-484B-220-1__motor_vehicle_driver/strict-gate.log (SHA256 8aef413169724d9407e9d952cba2ff32a092e36fc56cfd20e5c6db11ce83d5aa)
+
+```text
+Traceback (most recent call last):
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/worker_check.py", line 30, in <module>
+    result = check(Path(__file__).resolve().parent, complete=args.complete or args.require_delivery_ready, require_ready=args.require_delivery_ready, assignment=args.assignment)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 276, in check
+    require(len(results)==len(items) and all(r['status']=='ready' for r in results.values()), 'Preparation acceptance failed: partial/missing packages remain')
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 10, in require
+    raise ValueError(message)
+ValueError: Preparation acceptance failed: partial/missing packages remain
+
+```
+
+### testing__C158196__NRS-484B-257-2__motor_vehicle_driver/assignment-check.log (SHA256 5ca0416a5e6428387aa7bb3853255bc3beb6e811e6d8ad7c3f60c2fb3ba0b8c0)
+
+```text
+{
+  "batch_id": "demo-test-delivery",
+  "reported": [
+    "testing__C158196__NRS-484B-257-2__motor_vehicle_driver"
+  ],
+  "static_checks_passed": true
+}
+
+```
+
+### testing__C158196__NRS-484B-257-2__motor_vehicle_driver/strict-gate.log (SHA256 904c64c8d63f4a7a4b2f5314dd7d8c1d266df3ae3e7bc79a67efb7d2b42d6dc6)
+
+```text
+Traceback (most recent call last):
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/worker_check.py", line 22, in <module>
+    result = check(Path(__file__).resolve().parent, complete=args.complete or args.require_delivery_ready, require_ready=args.require_delivery_ready, assignment=args.assignment)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 110, in check
+    require(not complete, 'Missing result: '+aid)
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 10, in require
+    raise ValueError(message)
+ValueError: Missing result: testing__C160013__NRS-484B-127-3__motor_vehicle_driver
+
+```
+
+### testing__C125714__NRS-484B-250-1__motor_vehicle_driver/assignment-check.log (SHA256 6e94a17a997e5cf38119d23f3e464b6e26ff17ecd367104e5ecfee9f07c94d68)
+
+```text
+{
+  "batch_id": "demo-test-delivery",
+  "reported": [
+    "testing__C125714__NRS-484B-250-1__motor_vehicle_driver"
+  ],
+  "static_checks_passed": true
+}
+
+```
+
+### testing__C125714__NRS-484B-250-1__motor_vehicle_driver/strict-gate.log (SHA256 d4b85e02abadf9887c5d52bf3276202c8dd2b3055887744644a2e989a1a39674)
+
+```text
+Traceback (most recent call last):
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/worker_check.py", line 22, in <module>
+    result = check(Path(__file__).resolve().parent, complete=args.complete or args.require_delivery_ready, require_ready=args.require_delivery_ready, assignment=args.assignment)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 276, in check
+    require(len(results)==len(items) and all(r['status']=='ready' for r in results.values()), 'Preparation acceptance failed: partial/missing packages remain')
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 10, in require
+    raise ValueError(message)
+ValueError: Preparation acceptance failed: partial/missing packages remain
+
+```
+
+### testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/strict-gate.log (SHA256 8aef413169724d9407e9d952cba2ff32a092e36fc56cfd20e5c6db11ce83d5aa)
+
+```text
+Traceback (most recent call last):
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/worker_check.py", line 30, in <module>
+    result = check(Path(__file__).resolve().parent, complete=args.complete or args.require_delivery_ready, require_ready=args.require_delivery_ready, assignment=args.assignment)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 276, in check
+    require(len(results)==len(items) and all(r['status']=='ready' for r in results.values()), 'Preparation acceptance failed: partial/missing packages remain')
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 10, in require
+    raise ValueError(message)
+ValueError: Preparation acceptance failed: partial/missing packages remain
+
+```
+
+### testing__C125714__NRS-484B-250-2__motor_vehicle_driver/assignment-check-current.log (SHA256 818de7401773c997c88df3058aa290716146eeba381d020530629d05e91a50f8)
+
+```text
+{
+  "batch_id": "demo-test-delivery",
+  "reported": [
+    "testing__C125714__NRS-484B-250-2__motor_vehicle_driver"
+  ],
+  "static_checks_passed": true
+}
+
+```
+
+### testing__C125697__NRS-484B-250-2__motor_vehicle_driver/strict-assignment-five-case-v1.log (SHA256 d4b85e02abadf9887c5d52bf3276202c8dd2b3055887744644a2e989a1a39674)
+
+```text
+Traceback (most recent call last):
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/worker_check.py", line 22, in <module>
+    result = check(Path(__file__).resolve().parent, complete=args.complete or args.require_delivery_ready, require_ready=args.require_delivery_ready, assignment=args.assignment)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 276, in check
+    require(len(results)==len(items) and all(r['status']=='ready' for r in results.values()), 'Preparation acceptance failed: partial/missing packages remain')
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 10, in require
+    raise ValueError(message)
+ValueError: Preparation acceptance failed: partial/missing packages remain
+
+```

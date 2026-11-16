@@ -84,4 +84,35 @@ class StopReferenceTests(unittest.TestCase):
    self.assertTrue(compare_marked_unmarked(marked,unmarked)['diagnostic_comparison_passed'])
    p=unmarked/'approach_context.json';ctx=json.loads(p.read_text());ctx['native_stop_sign_id']=999;p.write_text(json.dumps(ctx))
    with self.assertRaisesRegex(ValueError,'native_stop_sign_id'):compare_marked_unmarked(marked,unmarked)
+ def test_before_vs_inside_halt_position_source_comparison(self):
+  repo=ROOT.parents[1]
+  sys.path.insert(0,str(repo/'runtime/scenario_pipeline'))
+  from worker_exchange.fixture_recipe import materialize
+  from stop_reference_comparison import compare_halt_position
+  with tempfile.TemporaryDirectory() as tmp:
+   base=Path(tmp);before=base/'before';inside=base/'inside'
+   materialize(repo,ROOT/'diagnostic-recipe.json',before)
+   materialize(repo,ROOT/'cases/marked_crosswalk_stop_inside/diagnostic-recipe.json',inside)
+   self.assertTrue(compare_halt_position(before,inside)['diagnostic_comparison_passed'])
+   p=inside/'approach_context.json';ctx=json.loads(p.read_text())
+   ctx['native_stop_sign_id']=999;p.write_text(json.dumps(ctx))
+   with self.assertRaisesRegex(ValueError,'native_stop_sign_id'):compare_halt_position(before,inside)
+ def test_crosswalk_to_line_hierarchy_source_comparison(self):
+  import os,subprocess,shutil
+  repo=ROOT.parents[1]
+  sys.path.insert(0,str(repo/'runtime/scenario_pipeline'))
+  from worker_exchange.fixture_recipe import materialize
+  from stop_reference_comparison import compare_crosswalk_to_line
+  with tempfile.TemporaryDirectory() as tmp:
+   base=Path(tmp);cross=base/'cross';line=base/'line'
+   for source,target in ((ROOT,cross),(ROOT/'cases/no_crosswalk_marked_stop_line',line)):
+    materialize(repo,source/'diagnostic-recipe.json',target)
+    for name in ('config.json','site.json','construction.json'):
+     shutil.copyfile(source/name,target/name)
+    env=dict(os.environ,PYTHONPATH=str(ROOT)+os.pathsep+str(repo/'runtime/scenario_pipeline'))
+    subprocess.run([sys.executable,str(source/'finalizer.py'),'--attempt',str(target),'--output',str(target/'analysis-report.json')],env=env,check=True,capture_output=True,text=True)
+   self.assertTrue(compare_crosswalk_to_line(cross,line)['diagnostic_comparison_passed'])
+   p=line/'approach_context.json';ctx=json.loads(p.read_text())
+   ctx['native_stop_sign_id']=999;p.write_text(json.dumps(ctx))
+   with self.assertRaisesRegex(ValueError,'native_stop_sign_id'):compare_crosswalk_to_line(cross,line)
 if __name__=='__main__':unittest.main()

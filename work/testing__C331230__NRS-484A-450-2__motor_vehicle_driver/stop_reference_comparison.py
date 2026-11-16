@@ -155,6 +155,102 @@ def compare_marked_unmarked(marked_root, unmarked_root):
             'physical_acceptance_claimed': False, 'legal_acceptance_claimed': False}
 
 
+def compare_halt_position(before_root, inside_root):
+    """Hold the signed crossing and body path fixed while changing halt timing."""
+    before_root, inside_root = Path(before_root), Path(inside_root)
+    contexts = [json.loads((root / 'approach_context.json').read_text())
+                for root in (before_root, inside_root)]
+    fixed = ('native_map_id', 'intersection_id', 'approach_road_id',
+             'approach_lane_id', 'native_stop_sign_id', 'crosswalk_polygon_xy_m',
+             'intersection_polygon_xy_m', 'approach_forward_xy',
+             'near_side_crosswalk_exists', 'crosswalk_origin', 'stop_line_exists')
+    for key in fixed:
+        if contexts[0].get(key) != contexts[1].get(key):
+            raise ValueError('Fixed source condition differs: ' + key)
+    if (contexts[0]['near_side_crosswalk_exists'] is not True or
+            contexts[0]['crosswalk_origin'] != 'marked' or
+            contexts[0]['stop_line_exists'] is not False):
+        raise ValueError('Halt-position comparison requires the marked crossing')
+    fixed_sources = ('road.xodr', 'video_frames.jsonl', *CAMERAS)
+    for name in fixed_sources:
+        if digest(before_root / name) != digest(inside_root / name):
+            raise ValueError('Fixed source differs: ' + name)
+    histories = [[json.loads(line) for line in (root / 'stop_history.jsonl').read_text().splitlines()]
+                 for root in (before_root, inside_root)]
+    if len(histories[0]) != len(histories[1]) or not histories[0]:
+        raise ValueError('Original halt histories have different frame counts')
+    for a, b in zip(*histories):
+        if {k: v for k, v in a.items() if k != 'ego_speed_mps'} != {
+                k: v for k, v in b.items() if k != 'ego_speed_mps'}:
+            raise ValueError('Fixed body path or frame join differs')
+    crossing_x = min(x for x, _ in contexts[0]['crosswalk_polygon_xy_m'])
+    entry = next((row['frame'] for row in histories[0]
+                  if max(x for x, _ in row['ego_body_vertices_xy_m']) >= crossing_x), None)
+    halts = [next((row['frame'] for row in rows if row['ego_speed_mps'] == 0), None)
+             for rows in histories]
+    if entry is None or halts[0] is None or halts[1] is None or not (halts[0] < entry <= halts[1]):
+        raise ValueError('Deliberate before versus inside halt timing missing')
+    return {'format': 'worker-halt-position-comparison',
+            'comparison_id': 'halt_position', 'crosswalk_entry_frame': entry,
+            'before_halt_frame': halts[0], 'inside_halt_frame': halts[1],
+            'fixed_source_sha256': {name: digest(before_root / name) for name in fixed_sources},
+            'diagnostic_comparison_passed': True,
+            'physical_acceptance_claimed': False, 'legal_acceptance_claimed': False}
+
+
+def compare_crosswalk_to_line(crosswalk_root, line_root):
+    """Check selected-reference hierarchy with signed halt behavior fixed."""
+    crosswalk_root, line_root = Path(crosswalk_root), Path(line_root)
+    contexts = [json.loads((root / 'approach_context.json').read_text())
+                for root in (crosswalk_root, line_root)]
+    cross, line = contexts
+    fixed = ('native_map_id', 'intersection_id', 'approach_road_id',
+             'approach_lane_id', 'native_stop_sign_id',
+             'intersection_polygon_xy_m', 'approach_forward_xy')
+    for key in fixed:
+        if cross.get(key) != line.get(key):
+            raise ValueError('Fixed source condition differs: ' + key)
+    if ((cross.get('near_side_crosswalk_exists'), cross.get('stop_line_exists')) != (True, False)
+            or (line.get('near_side_crosswalk_exists'), line.get('stop_line_exists')) != (False, True)):
+        raise ValueError('Deliberate crosswalk versus marked-line source change missing')
+    cross_lines, cross_walks, cross_map = _painted(crosswalk_root)
+    line_lines, line_walks, line_map = _painted(line_root)
+    if cross_lines or len(cross_walks) != 1 or len(line_lines) != 1 or line_walks:
+        raise ValueError('OpenDRIVE reference inventory differs')
+    fixed_sources = ('video_frames.jsonl', *CAMERAS)
+    for name in fixed_sources:
+        if digest(crosswalk_root / name) != digest(line_root / name):
+            raise ValueError('Fixed source differs: ' + name)
+    histories = [[json.loads(row) for row in (root / 'stop_history.jsonl').read_text().splitlines()]
+                 for root in (crosswalk_root, line_root)]
+    if len(histories[0]) != len(histories[1]) or not histories[0]:
+        raise ValueError('Original halt histories have different frame counts')
+    for a, b in zip(*histories):
+        for key in ('frame', 'time_s', 'road_id', 'lane_id', 'stop_sign_id', 'ego_speed_mps'):
+            if a.get(key) != b.get(key):
+                raise ValueError('Fixed signed halt behavior differs: ' + key)
+    halts = [[row for row in rows if row['ego_speed_mps'] == 0] for rows in histories]
+    if not halts[0] or not halts[1] or halts[0][0]['ego_body_vertices_xy_m'] != halts[1][0]['ego_body_vertices_xy_m']:
+        raise ValueError('Fixed complete-body halt location differs')
+    reports = [json.loads((root / 'analysis-report.json').read_text())['measurements']
+               for root in (crosswalk_root, line_root)]
+    cross_value = reports[0]['crosswalk_halt_observation']['value']
+    line_value = reports[1]['stop_line_halt_observation']['value']
+    if (cross_value['selected_reference'] != 'near_side_crosswalk' or
+            line_value['selected_reference'] != 'marked_stop_line' or
+            not cross_value['halt_before_crosswalk_and_junction_observed'] or
+            not line_value['halt_before_reference_and_junction_observed']):
+        raise ValueError('Selected stopping-reference observations differ')
+    return {'format': 'worker-crosswalk-line-hierarchy-comparison',
+            'comparison_id': 'stop_line_hierarchy',
+            'fixed_source_sha256': {name: digest(crosswalk_root / name) for name in fixed_sources},
+            'map_sha256': {'crosswalk': cross_map, 'line': line_map},
+            'first_full_halt_frame': halts[0][0]['frame'],
+            'selected_references': ['near_side_crosswalk', 'marked_stop_line'],
+            'diagnostic_comparison_passed': True,
+            'physical_acceptance_claimed': False, 'legal_acceptance_claimed': False}
+
+
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()
@@ -164,15 +260,22 @@ if __name__ == '__main__':
     parser.add_argument('--both', type=Path)
     parser.add_argument('--marked', type=Path)
     parser.add_argument('--unmarked', type=Path)
+    parser.add_argument('--before', type=Path)
+    parser.add_argument('--inside', type=Path)
+    parser.add_argument('--line-only', type=Path)
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
-    if args.marked and args.unmarked and not (args.line or args.view or args.crosswalk or args.both):
+    if args.crosswalk and args.line_only and not (args.line or args.view or args.both or args.marked or args.unmarked or args.before or args.inside):
+        receipt = compare_crosswalk_to_line(args.crosswalk, args.line_only)
+    elif args.before and args.inside and not (args.line or args.view or args.crosswalk or args.both or args.marked or args.unmarked or args.line_only):
+        receipt = compare_halt_position(args.before, args.inside)
+    elif args.marked and args.unmarked and not (args.line or args.view or args.crosswalk or args.both or args.before or args.inside or args.line_only):
         receipt = compare_marked_unmarked(args.marked, args.unmarked)
         receipt['comparison_id'] = 'marked_vs_unmarked_crosswalk'
-    elif args.crosswalk and args.both and not (args.line or args.view or args.marked or args.unmarked):
+    elif args.crosswalk and args.both and not (args.line or args.view or args.marked or args.unmarked or args.before or args.inside or args.line_only):
         receipt = compare_crosswalk_priority(args.crosswalk, args.both)
         receipt['comparison_id'] = 'crosswalk_vs_crosswalk_and_line'
-    elif args.line and args.view and not (args.crosswalk or args.both or args.marked or args.unmarked):
+    elif args.line and args.view and not (args.crosswalk or args.both or args.marked or args.unmarked or args.before or args.inside or args.line_only):
         receipt = compare(args.line, args.view)
     else:
         parser.error('Supply one complete comparison pair')
