@@ -10,6 +10,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from overtake_source import analyze, CAMERAS, ASSIGNMENT
 from overtake_finalizer import finalize
+from overtake_source_recorder import SourceRecorder
 from test_overtake_geometry import frame
 
 
@@ -119,6 +120,34 @@ class SourceTests(unittest.TestCase):
             put(root, "overtake_source_receipt.json", json.dumps(receipt))
             with self.assertRaisesRegex(ValueError, "body/trace position differs"):
                 analyze(root)
+
+    def test_native_pipeline_capture_requires_joined_original_graphs(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "capture/native").mkdir(parents=True)
+            bodies = [frame(i, x) for i, x in enumerate((-2., 0., 2.))]
+            recorder = SourceRecorder.__new__(SourceRecorder)
+            recorder.output, recorder.body = root, bodies
+            (root / "capture/manifest.json").write_text(json.dumps({
+                "acquisition": "original_live_run", "extraction_confirmed": True,
+                "frames": len(bodies)}))
+            (root / "road.xodr").write_text("test road")
+            (root / "carla_recorder.log").write_text("test recorder")
+            (root / "trace.jsonl").write_text(jsonl({"frame": row["frame"],
+                "time_s": row["time_s"]} for row in bodies))
+            (root / "capture/evidence.jsonl").write_text(jsonl({
+                "original_frame": row["frame"], "recording_time_s": row["time_s"]}
+                for row in bodies))
+            (root / "capture/native/frames.jsonl").write_text(jsonl({
+                "frame": row["frame"], "base": f"base-{i}.pkl",
+                "abstract": f"abstract-{i}.pkl"} for i, row in enumerate(bodies)))
+            for i in range(len(bodies)):
+                for kind in ("base", "abstract"):
+                    (root / f"capture/native/{kind}-{i}.pkl").write_text("synthetic graph")
+            recorder._verify_pipeline_capture()
+            (root / "capture/native/abstract-1.pkl").unlink()
+            with self.assertRaisesRegex(ValueError, "Missing original Native pipeline graph"):
+                recorder._verify_pipeline_capture()
 
 
 if __name__ == "__main__":

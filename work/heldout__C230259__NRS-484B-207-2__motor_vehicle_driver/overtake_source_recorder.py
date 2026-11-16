@@ -108,17 +108,7 @@ class SourceRecorder:
         with (self.output / "overtake_bodies_original.jsonl").open("x") as stream:
             for row in self.body:
                 stream.write(json.dumps(row, allow_nan=False) + "\n")
-        with (self.output / "trace.jsonl").open("x") as stream:
-            for row in self.body:
-                corners = row["ego"]["body_corners_xy_m"]
-                centre = [sum(corner[axis] for corner in corners) / 4 for axis in (0, 1)]
-                stream.write(json.dumps({"frame": row["frame"], "time_s": row["time_s"],
-                                         "position_m": centre,
-                                         "position": {"x": centre[0], "y": centre[1],
-                                                      "z": row["ego"]["z_m"]},
-                                         "heading_deg": row["ego"]["heading_deg"],
-                                         "speed_mps": row["ego"]["speed_mps"],
-                                         "speed_mph": row["ego"]["speed_mps"] / 0.44704}, allow_nan=False) + "\n")
+        self._verify_pipeline_capture()
         with (self.output / "video_frames.jsonl").open("x") as stream:
             for index, row in enumerate(self.body):
                 stream.write(json.dumps({"video_frame": index, "carla_frame": row["frame"],
@@ -133,3 +123,31 @@ class SourceRecorder:
                 "original_body": "overtake_bodies_original.jsonl",
                 "original_site": "overtake_site_original.json",
                 "frame_map": "video_frames.jsonl"}
+
+    def _verify_pipeline_capture(self):
+        capture = self.output / "capture"
+        for name in ("trace.jsonl", "capture/evidence.jsonl", "capture/native/frames.jsonl",
+                     "capture/manifest.json", "road.xodr", "carla_recorder.log"):
+            path = self.output / name
+            if not path.is_file() or not path.stat().st_size:
+                raise ValueError("Missing original Native pipeline source: " + name)
+        manifest = json.loads((capture / "manifest.json").read_text())
+        if (manifest.get("acquisition") != "original_live_run" or
+                manifest.get("extraction_confirmed") is not True or
+                manifest.get("frames") != len(self.body)):
+            raise ValueError("Original Native pipeline capture incomplete")
+        streams = []
+        for name in ("trace.jsonl", "capture/evidence.jsonl", "capture/native/frames.jsonl"):
+            streams.append([json.loads(line) for line in (self.output / name).read_text().splitlines() if line])
+        if any(len(rows) != len(self.body) for rows in streams):
+            raise ValueError("Original Native pipeline frame count differs")
+        for body, trace, evidence, graphs in zip(self.body, *streams):
+            frame, time_s = body["frame"], body["time_s"]
+            if (trace.get("frame") != frame or evidence.get("original_frame") != frame or
+                    graphs.get("frame") != frame or abs(trace.get("time_s", float("inf")) - time_s) > 1e-6 or
+                    abs(evidence.get("recording_time_s", float("inf")) - time_s) > 1e-6):
+                raise ValueError("Original Native pipeline/body frame join differs")
+            for kind in ("base", "abstract"):
+                path = capture / "native" / graphs[kind]
+                if not path.is_file() or not path.stat().st_size:
+                    raise ValueError("Missing original Native pipeline graph: " + kind)

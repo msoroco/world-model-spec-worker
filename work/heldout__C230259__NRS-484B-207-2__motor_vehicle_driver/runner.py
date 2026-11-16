@@ -4,7 +4,7 @@ import argparse
 import hashlib
 import json
 import os
-from math import hypot
+from math import hypot, sqrt
 from pathlib import Path
 from threading import Condition
 from time import monotonic
@@ -100,7 +100,7 @@ def _corners(actor):
 def _body(actor):
     velocity = actor.get_velocity()
     transform = actor.get_transform()
-    return {"id": actor.id, "speed_mps": hypot(float(velocity.x), float(velocity.y)),
+    return {"id": actor.id, "speed_mps": sqrt(float(velocity.x)**2 + float(velocity.y)**2 + float(velocity.z)**2),
             "body_corners_xy_m": _corners(actor),
             "heading_deg": float(transform.rotation.yaw),
             "z_m": float(transform.location.z)}
@@ -132,6 +132,8 @@ def _seal_receipt(output, plan, ego, overtaker):
 
 def run(plan, output, host="127.0.0.1", port=2000):
     import carla  # Loaded only for an operator's later Native run.
+    from pipeline_capture import PipelineCapture
+    from worker_exchange.native_output import seal_capture
 
     output = Path(output)
     output.mkdir(parents=True, exist_ok=True)
@@ -147,6 +149,11 @@ def run(plan, output, host="127.0.0.1", port=2000):
     actors = []
     cameras = None
     recorder = None
+    pipeline = None
+    completed = False
+    frames = []
+    errors = []
+    restored = False
     try:
         settings = world.get_settings()
         settings.synchronous_mode = True
@@ -164,7 +171,11 @@ def run(plan, output, host="127.0.0.1", port=2000):
         recorder = SourceRecorder(output, {name: spec[2] for name, spec in CAMERA_SETUP.items()})
         cameras = Cameras(world, carla, ego, recorder.on_frame,
                           overview_mount_z_m=plan["overview_mount_z_m"])
-        observed = []
+        pipeline = PipelineCapture(client, ego, output, plan["case_id"],
+                                   required_observations=("drv.overtaking", "rel.visible",
+                                       "rel.ahead_behind_in_lane", "rel.bearing", "kin.speed",
+                                       "kin.accel_longitudinal", "rel.occupies", "sig.horn",
+                                       "drv.passing_side"))
         for _ in range(160):
             _step(ego, plan["ego_target_xy_m"], plan["ego_target_speed_mps"], carla)
             _step(overtaker, plan["overtaker_target_xy_m"], plan["overtaker_target_speed_mps"], carla)
@@ -176,12 +187,18 @@ def run(plan, output, host="127.0.0.1", port=2000):
             recorder.record_body({"frame": frame, "time_s": float(snapshot.timestamp.elapsed_seconds),
                                   "road_forward_xy": plan["forward_xy"],
                                   "ego": _body(ego), "overtaker": _body(overtaker)})
-            observed.append(frame)
-        cameras.verify(observed)
-        result = recorder.seal()
-        result["receipt"] = _seal_receipt(output, plan, ego, overtaker)
-        return result
+            captured = pipeline.capture(frame, float(snapshot.timestamp.elapsed_seconds))
+            if captured["frame"] != frame or captured["time_s"] != float(snapshot.timestamp.elapsed_seconds):
+                raise ValueError("Original Native pipeline/body frame join differs")
+            frames.append(frame)
+        cameras.verify(frames)
+        completed = True
+    except BaseException as error:
+        errors.append(str(error))
+        raise
     finally:
+        if pipeline is not None:
+            pipeline.close(confirmed=completed)
         if cameras is not None:
             cameras.close()
         if recorder is not None and not recorder.closed:
@@ -189,6 +206,20 @@ def run(plan, output, host="127.0.0.1", port=2000):
         for actor in reversed(actors):
             actor.destroy()
         world.apply_settings(old)
+        current = world.get_settings()
+        restored = (current.synchronous_mode == old.synchronous_mode and
+                    current.fixed_delta_seconds == old.fixed_delta_seconds)
+        if not restored:
+            raise ValueError("Original Native world settings restoration differs")
+    result = recorder.seal()
+    result["receipt"] = _seal_receipt(output, plan, ego, overtaker)
+    (output / "acquisition-provenance.json").write_text(json.dumps({
+        "provenance_kind": "native", "diagnostic_fixture": False,
+        "original_frames": len(frames)}) + "\n")
+    seal_capture(output, frames=len(frames), restoration={"restored": restored},
+                 errors=errors, encoder_exit_codes={name: 0 for name in CAMERAS},
+                 context={"site_sha256": plan["site_sha256"], "native_map_name": world.get_map().name})
+    return result
 
 
 def main():
