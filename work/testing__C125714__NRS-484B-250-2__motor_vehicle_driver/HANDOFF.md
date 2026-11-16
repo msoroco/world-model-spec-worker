@@ -218,3 +218,5 @@ Resume by constructing `__source_verified_opposite_makes_left` with an actual ob
 ## Assignment-scoped strict readiness, 2026-11-15
 
 The current eight-case package passes `.venv-cpu/bin/python worker_check.py --assignment testing__C125714__NRS-484B-250-2__motor_vehicle_driver --complete --require-delivery-ready` (exit 0; `strict-assignment-current.log`). `result.json` is now `ready` / `delivery_prepared` for this assignment. This establishes the pinned CPU contract only; actual Native motion, camera visibility, source-pixel quality, legal judgment and canonical acceptance remain unverified. The full batch still requires the other assignments and shared branch matrix, ordered GPU queue, local integration proof and independent final review.
+
+2026-11-16 file-cap maintenance: moved 4 historical log(s) absent from current execution manifest and result claims to ignored `.runtime-work/archived-unbound-logs/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/`. The scoped `worker_check.py --complete` passed after moving them when checked. Previous checkpoint bytes remain locally recoverable.

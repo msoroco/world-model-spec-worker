@@ -6,7 +6,10 @@ finalizer's measured-values object.
 """
 import hashlib
 import json
+import argparse
+import os
 from pathlib import Path
+from tempfile import TemporaryDirectory
 
 from shapely.geometry import LineString, Polygon
 
@@ -103,3 +106,46 @@ def audit_comparison(near_attempt, far_attempt, expected_kind):
             'far_offsets_m': far['offsets_m'],
             'nearest_centerline_judgment': 'unresolved; no statutory numeric cutoff',
             'physical_acceptance_claimed': False, 'legal_acceptance_claimed': False}
+
+
+def cli():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--case', required=True)
+    parser.add_argument('--attempt', required=True, type=Path)
+    parser.add_argument('--negative', action='store_true')
+    args = parser.parse_args()
+    if args.negative:
+        with TemporaryDirectory(dir='.runtime-work') as temp:
+            target = Path(temp)
+            for name in REQUIRED:
+                if name != 'approach_history.jsonl':
+                    os.link(args.attempt / name, target / name)
+            audit_delivery(target)
+        raise AssertionError('Missing required original source passed')
+    result = audit_delivery(args.attempt)
+    if result['case_id'] != args.case:
+        raise ValueError('Delivery audit selected another case')
+    from sys import path
+    path.insert(0, str(Path(__file__).resolve().parents[2] / 'runtime/scenario_pipeline'))
+    from worker_exchange.media import audit, check_four_view_sources
+    from worker_exchange.native_output import physical_result
+    names = ('overview', 'approach', 'reference_corner', 'driver_reference')
+    sources = {name: args.attempt / (name + '.mkv') for name in names}
+    check_four_view_sources(sources)
+    count = len(_rows(args.attempt / 'video_frames.jsonl'))
+    map_sha = hashlib.sha256((args.attempt / 'video_frames.jsonl').read_bytes()).hexdigest()
+    decoded = {name: audit(video, count, mapping_sha256=map_sha)['rgb_sequence_sha256']
+               for name, video in sources.items()}
+    if not (args.attempt / 'capture/native/frames.jsonl').is_file() or not (args.attempt / 'trace.jsonl').is_file():
+        raise ValueError('Missing original Native frame or trace source')
+    physical = physical_result(args.attempt, {'case_id': args.case, 'target_checks': []})
+    if physical['physical_checks']['maneuver']['status'] != 'met':
+        raise ValueError('Physical completion source classifier did not observe full turn')
+    print(json.dumps({'case_id': args.case, 'passed': True, 'source_bound': True,
+                      'full_video_decode': decoded, 'physical_motion_status': 'met',
+                      'pixel_scope': 'full RGB pixel stream hashed; actor visibility unverified',
+                      'physical_acceptance_claimed': False, 'legal_acceptance_claimed': False}, sort_keys=True))
+
+
+if __name__ == '__main__':
+    cli()

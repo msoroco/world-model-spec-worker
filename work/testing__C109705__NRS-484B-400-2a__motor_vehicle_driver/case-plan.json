@@ -56,7 +56,7 @@
         "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__source_verified_farther_from_centerline"
       ],
       "fixed_conditions": [
-        "same both-two-directional junction, road references, left route, camera plan and traffic"
+        "same source-described two-directional junction, road and marked-centerline geometry, turn destination, camera profile, capture duration and traffic; approach path lateral placement is the declared variable"
       ],
       "deliberate_differences": [
         "measured complete-body lateral offset from sourced centerline"
@@ -69,7 +69,7 @@
         "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__source_verified_imaginary_farther_from_centerline"
       ],
       "fixed_conditions": [
-        "same two-directional unmarked junction, inferred centerline geometry, left route and cameras"
+        "same source-described two-directional unmarked junction, imaginary-centerline geometry, turn destination, camera profile, capture duration and traffic; approach path lateral placement is the declared variable"
       ],
       "deliberate_differences": [
         "measured complete-body lateral offset from imaginary centerline"
@@ -157,11 +157,11 @@
     "supported_reuses": []
   },
   "observations": [
-    "two-directional lane evidence for both intersecting highways",
-    "source-reviewed marked or imaginary centerline and right-half polygon",
-    "complete vehicle body within right half and measured body distance to centerline over approach",
-    "left-turn intent, route and before-entry timing",
-    "controlled comparison of near versus farther with no invented legal lateral cutoff"
+    {
+      "name": "approach_lateral",
+      "mandatory": true,
+      "description": "Original complete-body position against sourced right half and marked or imaginary centerline, with two-way left-turn context and frame map"
+    }
   ],
   "sources": [
     {
@@ -251,5 +251,121 @@
         "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__source_verified_imaginary_farther_from_centerline"
       ]
     }
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "complete ego route, junction and centerline context",
+        "interval": "approach through complete departure"
+      },
+      {
+        "view": "approach",
+        "subject": "full vehicle body and sourced right half",
+        "interval": "before intersection entry"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "junction and marked or imaginary centerline reference",
+        "interval": "approach through turn"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "driver forward scene and route context",
+        "interval": "approach through departure"
+      }
+    ]
+  },
+  "source_observation_mapping": {
+    "drv.turning": {
+      "evidence": "Left-turn route intent and realized departure",
+      "channels": [
+        "approach_lateral"
+      ],
+      "source_refs": [
+        "approach_history.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    "st.intersection": {
+      "evidence": "Source-identified intersection geometry",
+      "channels": [
+        "approach_lateral"
+      ],
+      "source_refs": [
+        "road_context.json",
+        "video_frames.jsonl"
+      ]
+    },
+    "st.lane_enters": {
+      "evidence": "Approach lane and intersection entry identity",
+      "channels": [
+        "approach_lateral"
+      ],
+      "source_refs": [
+        "approach_history.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    "st.centre_line": {
+      "evidence": "Sourced marked or imaginary centerline geometry",
+      "channels": [
+        "approach_lateral"
+      ],
+      "source_refs": [
+        "road_context.json",
+        "video_frames.jsonl"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Complete body polygon contained in right half",
+      "channels": [
+        "approach_lateral"
+      ],
+      "source_refs": [
+        "approach_history.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    "kin.position": {
+      "evidence": "Frame-joined complete-body centerline offset",
+      "channels": [
+        "approach_lateral"
+      ],
+      "source_refs": [
+        "body_history.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    "st.one_way_roadway": {
+      "evidence": "Both highways are two-directional, not one-way",
+      "channels": [
+        "approach_lateral"
+      ],
+      "source_refs": [
+        "road_context.json",
+        "video_frames.jsonl"
+      ]
+    },
+    "st.lane_direction": {
+      "evidence": "Opposing lane inventory and directed route",
+      "channels": [
+        "approach_lateral"
+      ],
+      "source_refs": [
+        "road_context.json",
+        "video_frames.jsonl"
+      ]
+    }
+  },
+  "observation_notes": [
+    "two-directional lane evidence for both intersecting highways",
+    "source-reviewed marked or imaginary centerline and right-half polygon",
+    "complete vehicle body within right half and measured body distance to centerline over approach",
+    "left-turn intent, route and before-entry timing",
+    "controlled comparison of near versus farther with no invented legal lateral cutoff"
   ]
 }

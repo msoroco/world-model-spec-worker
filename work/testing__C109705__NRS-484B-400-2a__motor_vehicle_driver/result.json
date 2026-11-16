@@ -1,24 +1,24 @@
 {
   "assignment_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver",
   "input_sha256": "0ac247bed937ce79b42c4a7457a3259c763d8adbab13beb5c6c0a8d3a84a73f0",
-  "status": "partial",
-  "readiness_kind": "implementation_checkpoint",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
   "tests": [
     {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/tests -v",
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/tests -p test_approach.py -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "de0391038ff5d90a9f160dcd19bd499130e636d81f9441618daab895f19f4dfd"
+      "sha256": "53f2ede2a83b93847a0923cc656bef132317d52a9f61cab71fe37ec02f9dc720"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__source_verified_near_centerline --output .runtime-work/c109705-2a-physical-rebind-marked-near-primary-offline",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__source_verified_near_centerline --output .runtime-work/c109705-2a-package-rebind-0-primary-offline",
       "exit_code": 0,
       "log": "exact-offline.log",
-      "sha256": "2a7065ddcf7904b7c934381d0bc50361085e9186ab84c8291ea4e928c87ea139"
+      "sha256": "d4a39e91fad8b6f3bc7d939b3ed30c276e4c9f9c6fc67f5504e522c12d529880"
     },
     {
-      "command": ".venv-cpu/bin/python work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/prove_independent_audits.py --marked-near .runtime-work/c109705-2a-physical-rebind-marked-near-primary-compatibility --marked-far .runtime-work/c109705-2a-physical-rebind-1-primary-compatibility --imaginary-near .runtime-work/c109705-2a-physical-rebind-2-primary-compatibility --imaginary-far .runtime-work/c109705-2a-physical-rebind-3-primary-compatibility",
+      "command": ".venv-cpu/bin/python work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/prove_independent_audits.py --marked-near .runtime-work/c109705-2a-package-rebind-0-primary-compatibility --marked-far .runtime-work/c109705-2a-package-rebind-1-primary-compatibility --imaginary-near .runtime-work/c109705-2a-package-rebind-2-primary-compatibility --imaginary-far .runtime-work/c109705-2a-package-rebind-3-primary-compatibility",
       "exit_code": 0,
       "log": "independent-audits.log",
       "sha256": "62e59b73a4457bdd67e4802181566ad86b3c797d6f5698f503c68c993a7ca174"
@@ -27,11 +27,12 @@
       "command": ".venv-cpu/bin/python work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/prove_physical_preparation.py --all",
       "exit_code": 0,
       "log": "physical-proof.log",
-      "sha256": "e61628f2190f4f87ec5f22fea21036394ec990de36d34150f0576183279365d2"
+      "sha256": "fbb47845f901df6450d04c12d1762ad4877e00fdb837737f2e7d04bf4294df27"
     }
   ],
   "remaining_gpu_checks": [
-    "Actual two-directional highways, centerline and right-half geometry, ego body approach, turn and camera visibility; original accepted source review for possible reuse."
+    "Actual Native two-way road, marked or imaginary centerline authority and right-half geometry; realized complete-body left-turn motion and source camera coverage; local original accepted recording review and legal nearest-position judgment."
   ],
-  "reason": "All four selected primary cases and three distinct fallbacks each pass current exact offline, source-bound positive/negative synthetic compatibility and recorded-only saved processing. Four source-shaped physical classifiers pass complete, incomplete and missing-evidence outcomes plus capture/encoder/restoration/owner-release/saved lifecycle. Independent diagnostic delivery/comparison audits pass. CPU preparation remains partial: canonical semantic stage chain, materialized package/camera contract, final source/law review and scoped ready gate remain worker-owned. Physical/legal acceptance unclaimed."
+  "reason": null,
+  "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline $CARLA_PYTHON -m worker_exchange execute-delivery --repo . --batch batch.json --db $DB --run $RUN --assignment testing__C109705__NRS-484B-400-2a__motor_vehicle_driver --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__source_verified_near_centerline --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT"
 }
