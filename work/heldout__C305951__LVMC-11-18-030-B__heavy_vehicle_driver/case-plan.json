@@ -3,9 +3,144 @@
   "actor": "heavy_vehicle_driver",
   "cell_id": "C305951",
   "law_id": "LVMC-11-18-030-B",
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__within_marked_lane",
+      "target_law_id": "LVMC-11-18-030-B",
+      "purpose": "Heavy vehicle body remains within a source-surveyed marked lane during straight travel.",
+      "construction_state": "planned_cpu_construction_pending",
+      "fixed_cell": {
+        "layout": "three_lane_road",
+        "maneuver": "travel",
+        "control": "lane_marking"
+      },
+      "source": "inputs/heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver/assignment.json"
+    },
+    {
+      "case_id": "heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__unexcused_boundary_crossing",
+      "target_law_id": "LVMC-11-18-030-B",
+      "purpose": "Heavy vehicle footprint crosses a marked lane boundary, without another vehicle or planned turn.",
+      "construction_state": "planned_cpu_construction_pending",
+      "fixed_cell": {
+        "layout": "three_lane_road",
+        "maneuver": "travel",
+        "control": "lane_marking"
+      },
+      "source": "inputs/heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver/assignment.json"
+    },
+    {
+      "case_id": "heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__passing_boundary_crossing",
+      "target_law_id": "LVMC-11-18-030-B",
+      "purpose": "A comparable footprint crossing includes a separately recorded overtaken vehicle; lawful passing remains an independent question.",
+      "construction_state": "planned_cpu_construction_pending",
+      "fixed_cell": {
+        "layout": "three_lane_road",
+        "maneuver": "travel",
+        "control": "lane_marking"
+      },
+      "source": "inputs/heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver/assignment.json"
+    },
+    {
+      "case_id": "heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__lawful_turn_preparation_boundary_crossing",
+      "target_law_id": "LVMC-11-18-030-B",
+      "purpose": "A comparable crossing includes a source-recorded intended lawful turn and turn preparation; movement and permission remain independently reviewed.",
+      "construction_state": "planned_cpu_construction_pending",
+      "fixed_cell": {
+        "layout": "three_lane_road",
+        "maneuver": "travel",
+        "control": "lane_marking"
+      },
+      "source": "inputs/heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver/assignment.json"
+    }
+  ],
+  "comparisons": [
+    {
+      "case_ids": [
+        "heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__within_marked_lane",
+        "heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__unexcused_boundary_crossing"
+      ],
+      "deliberate_differences": [
+        "measured lateral footprint relative to marked boundary"
+      ],
+      "fixed_conditions": [
+        "same surveyed three-lane route and marked boundary",
+        "same heavy-vehicle dimensions and footprint method",
+        "same camera profile and sample schedule",
+        "no passing or turn context"
+      ],
+      "audit_state": "planned_source_bound_comparison_pending"
+    },
+    {
+      "case_ids": [
+        "heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__unexcused_boundary_crossing",
+        "heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__passing_boundary_crossing"
+      ],
+      "deliberate_differences": [
+        "recorded overtaken vehicle and passing trajectory/context"
+      ],
+      "fixed_conditions": [
+        "same surveyed three-lane route and marked boundary",
+        "same heavy-vehicle dimensions and footprint method",
+        "same camera profile and sample schedule",
+        "boundary excursion magnitude matched by original-source measurement"
+      ],
+      "audit_state": "planned_source_bound_comparison_pending"
+    },
+    {
+      "case_ids": [
+        "heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__unexcused_boundary_crossing",
+        "heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__lawful_turn_preparation_boundary_crossing"
+      ],
+      "deliberate_differences": [
+        "recorded intended turn and preparation context"
+      ],
+      "fixed_conditions": [
+        "same surveyed three-lane route and marked boundary",
+        "same heavy-vehicle dimensions and footprint method",
+        "same camera profile and sample schedule",
+        "boundary excursion magnitude matched by original-source measurement"
+      ],
+      "audit_state": "planned_source_bound_comparison_pending"
+    }
+  ],
+  "observations": [
+    {
+      "name": "native_lane_boundaries",
+      "unit": "m",
+      "mandatory": true,
+      "method": "Original surveyed marking geometry, lane directional allocation and governed route for every ego frame."
+    },
+    {
+      "name": "heavy_vehicle_footprint",
+      "unit": "m",
+      "mandatory": true,
+      "method": "Original articulated or rigid body extents and all relevant corners projected onto the source road frame."
+    },
+    {
+      "name": "lane_boundary_overlap",
+      "unit": "m",
+      "mandatory": true,
+      "method": "Signed footprint-to-boundary distances per original frame, preserving uncertainty and no invented tolerance."
+    },
+    {
+      "name": "passing_context",
+      "unit": "structured",
+      "mandatory": true,
+      "method": "Other vehicle identity, position, order reversal and independent applicable-rule source."
+    },
+    {
+      "name": "turn_preparation_context",
+      "unit": "structured",
+      "mandatory": true,
+      "method": "Original indicator/heading/route/turn-intent sources and independent lawful-turn premise."
+    },
+    {
+      "name": "four_camera_originals",
+      "unit": "video",
+      "mandatory": true,
+      "method": "Original synchronized overview, approach, reference_corner and driver_reference recordings and frame joins."
+    }
+  ],
   "sources": [
     {
       "path": "inputs/heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver/assignment.json",
@@ -48,7 +183,40 @@
     "alternatives_and_boundaries": [
       "Heavy-vehicle footprint and vehicle classification differ from motor-vehicle C147331; do not reuse its physical measurements.",
       "Compare marked-lane containment with unexcused boundary crossing while preserving heavy-vehicle geometry.",
-      "Lawful passing and lawful-turn-preparation exceptions require separate context; the fixed travel cell may not support an actual lawful turn."
+      "Lawful passing and lawful-turn-preparation exceptions require separate context; the fixed travel cell may not support an actual lawful turn.",
+      "The turn-preparation case remains in the fixed travel cell; source-recorded route intent and lawful-turn premise are required, and a mere indicator cannot establish the exception."
     ]
-  }
+  },
+  "requirement_dispositions": [
+    {
+      "requirement": "Keep the heavy vehicle within the boundaries of its marked lane.",
+      "source": "inputs/heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "evidence_or_gap": "Exact CPU construction, source fixture and proof pending; no physical or legal acceptance claimed.",
+      "case_ids": [
+        "heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__within_marked_lane",
+        "heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__unexcused_boundary_crossing"
+      ]
+    },
+    {
+      "requirement": "Exception when lawfully passing another vehicle.",
+      "source": "inputs/heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "evidence_or_gap": "Exact CPU construction, source fixture and proof pending; no physical or legal acceptance claimed.",
+      "case_ids": [
+        "heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__passing_boundary_crossing",
+        "heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__unexcused_boundary_crossing"
+      ]
+    },
+    {
+      "requirement": "Exception when preparatory to a lawful turning movement.",
+      "source": "inputs/heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "evidence_or_gap": "Exact CPU construction, source fixture and proof pending; no physical or legal acceptance claimed.",
+      "case_ids": [
+        "heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__lawful_turn_preparation_boundary_crossing",
+        "heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__unexcused_boundary_crossing"
+      ]
+    }
+  ]
 }

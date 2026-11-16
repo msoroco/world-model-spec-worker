@@ -28,3 +28,9 @@ Status is **partial**. No executable case, fallback, source measurement, or save
 Resume gate: `.venv-cpu/bin/python worker_check.py --assignment heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver --complete --require-delivery-ready`.
 
 The external CARLA run is a later operator action; remaining CPU omissions above are not external blockers. No GPU command has been executed.
+
+## 2026-11-15 exact heavy-vehicle case decomposition
+
+The plan now names four exact cases: `__within_marked_lane`, `__unexcused_boundary_crossing`, `__passing_boundary_crossing`, and `__lawful_turn_preparation_boundary_crossing`. It binds three controlled comparisons and six mandatory original-source measurements, including heavy-vehicle footprint, marked boundary geometry, passing/turn context, and all four camera originals. All three law requirements are selected with assigned case IDs. The fixed travel cell can carry turn *preparation* only if a source-recorded intended turn and independent lawful-turn premise are supplied; an indicator alone is insufficient. The package remains **partial**: this is case decomposition, not executable construction or a proof.
+
+Next implement a source-surveyed three-lane Native route and heavy-vehicle full-body footprint recorder for the within-lane case. Require the original marked boundaries, lane direction allocation, municipal applicability/operator identity, body dimensions and four camera streams. Build its exact config/runner/finalizer/primary and three physical-risk fallback bundles; run pinned offline, positive/missing-original compatibility, fresh saved-only processing and independent source audits before extending to the three comparisons. Keep geometric tolerance and external-law permission undecided. Then add semantic proposals, physical/lifecycle and delivery proofs, and rerun the scoped strict gate. CPU construction is worker-owned; actual Native physical and legal judgments are later source checks.
