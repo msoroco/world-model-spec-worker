@@ -34,7 +34,7 @@ def exercise(name, path_suffix, mutate, expected, boundary, service='tour_bus'):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--case', choices=('below', 'at', 'above', 'no_loading'), default='below')
-    parser.add_argument('--service', choices=('tour_bus', 'shuttle_bus'),
+    parser.add_argument('--service', choices=('tour_bus', 'shuttle_bus', 'rtc_bus'),
                         default='tour_bus')
     args = parser.parse_args()
     boundary = args.case
@@ -45,17 +45,22 @@ if __name__ == '__main__':
     def duplicate_trigger(value):
         entry = next(e for e in value['cases'] if e['case_id'].endswith(service + '_' + boundary))
         entry['candidates'][1]['trigger'] = entry['candidates'][0]['trigger']
-    summary_path = ((f'update035-shuttle-below-fallback1-pinned-saved-v1.json'
+    summary_path = (f'update037-rtc-{slug}-fallback1-pinned-saved-v1.json'
+                    if service == 'rtc_bus' else
+                    (f'update035-shuttle-below-fallback1-pinned-saved-v1.json'
                      if boundary == 'below' else
-                     f'update{"036" if suffix == "at" else "037"}-shuttle-{slug}-fallback1-pinned-saved-v1.json')
+                     f'update{"036" if boundary == "at" else "037"}-shuttle-{slug}-fallback1-pinned-saved-v1.json')
                     if service == 'shuttle_bus' else
                     f'update{update}-{slug}-fallback1-pinned-saved-v1.json')
-    config_path = (f'shuttle-{slug}-fallback2-result-v1/v0001/analysis/config.json'
-                   if service == 'shuttle_bus' else
-                   f'{slug}-fallback2-result-v1/v0001/analysis/config.json')
-    manifest_path = ('execution-manifest-diagnostic-shuttle_bus_below-draft.json'
-                     if service == 'shuttle_bus' else
-                     'execution-manifest-diagnostic-tour_bus_below-draft.json')
+    config_path = ({'tour_bus': f'{slug}-',
+                    'shuttle_bus': f'shuttle-{slug}-',
+                    'rtc_bus': f'rtc-{slug}-'}[service] +
+                   'fallback2-result-v1/v0001/analysis/config.json')
+    manifest_path = {
+        'tour_bus': 'execution-manifest-diagnostic-tour_bus_below-draft.json',
+        'shuttle_bus': 'execution-manifest-diagnostic-shuttle_bus_below-draft.json',
+        'rtc_bus': 'execution-manifest-diagnostic-rtc_bus_below-draft.json',
+    }[service]
     results = [
         exercise('changed_processing_sha',
                  summary_path,
@@ -72,6 +77,6 @@ if __name__ == '__main__':
                  'Fallback physical-risk triggers overlap', boundary, service),
     ]
     print(json.dumps({'format': 'c150142-' +
-                      ('shuttle-' if service == 'shuttle_bus' else '') +
+                      (service.replace('_bus', '') + '-' if service != 'tour_bus' else '') +
                       boundary + '-fallback-audit-mutations-v1',
                       'passed': True, 'results': results}, sort_keys=True))

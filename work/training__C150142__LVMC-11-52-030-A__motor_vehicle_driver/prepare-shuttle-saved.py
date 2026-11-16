@@ -1,4 +1,4 @@
-"""Prepare a fresh synthetic shuttle Native attempt with four actual camera files."""
+"""Prepare a fresh synthetic signed-bus Native attempt with four camera files."""
 import argparse
 import importlib.util
 import json
@@ -11,7 +11,10 @@ REPO = ROOT.parents[1]
 sys.path.insert(0, str(REPO / 'runtime/pipeline/scenario_pipeline'))
 from worker_exchange.runtime_cli import materialize
 
-MANIFEST = ROOT / 'execution-manifest-diagnostic-shuttle_bus_below-draft.json'
+MANIFESTS = {
+    'shuttle_bus': ROOT / 'execution-manifest-diagnostic-shuttle_bus_below-draft.json',
+    'rtc_bus': ROOT / 'execution-manifest-diagnostic-rtc_bus_below-draft.json',
+}
 SPEC = importlib.util.spec_from_file_location('bus_source_helpers',
                                             ROOT / 'prove-tour-bus-saved-source.py')
 SOURCE = importlib.util.module_from_spec(SPEC)
@@ -20,9 +23,11 @@ VIEWS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
 
 def prepare(case, candidate, attempt, media_from):
-    if case not in ('shuttle_bus_below', 'shuttle_bus_at', 'shuttle_bus_above',
-                    'shuttle_bus_no_loading'):
-        raise ValueError('Unknown shuttle case')
+    service = case.rsplit('_', 1)[0] if not case.endswith('no_loading') else case[:-len('_no_loading')]
+    if service not in MANIFESTS or case not in tuple(
+            name + '_' + boundary for name in MANIFESTS
+            for boundary in ('below', 'at', 'above', 'no_loading')):
+        raise ValueError('Unknown signed-bus case')
     if candidate not in ('primary', 'fallback1', 'fallback2', 'fallback3'):
         raise ValueError('Unknown shuttle candidate')
     attempt = Path(attempt).resolve()
@@ -32,7 +37,7 @@ def prepare(case, candidate, attempt, media_from):
         raise ValueError('Diagnostic acquisition and media belong under .runtime-work')
     if attempt.exists():
         raise ValueError('Use a fresh acquisition directory')
-    materialize(MANIFEST, ROOT.name + '__' + case, attempt, candidate)
+    materialize(MANIFESTS[service], ROOT.name + '__' + case, attempt, candidate)
     SOURCE.source_rows(attempt)
     expected = json.loads((attempt / 'config.json').read_text())['capture_frames']
     actual = json.loads((media_from / 'config.json').read_text())['capture_frames']

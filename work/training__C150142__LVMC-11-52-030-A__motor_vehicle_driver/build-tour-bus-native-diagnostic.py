@@ -32,7 +32,7 @@ def build(attempt):
         raise ValueError('Synthetic diagnostic belongs under .runtime-work')
     config = json.loads((attempt / 'config.json').read_text())
     if config['case_id'] not in tuple(ROOT.name + '__' + service + '_' + boundary
-                                     for service in ('tour_bus', 'shuttle_bus')
+                                     for service in ('tour_bus', 'shuttle_bus', 'rtc_bus')
                                      for boundary in ('below', 'at', 'above',
                                                       'no_loading')):
         raise ValueError('This diagnostic requires a signed bus case')

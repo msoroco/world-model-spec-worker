@@ -30,21 +30,24 @@ def read(path):
 def audit(suffix='below', service='tour_bus'):
     if suffix not in BOUNDARIES:
         raise ValueError('Unsupported pinned tour-bus boundary')
-    if service not in ('tour_bus', 'shuttle_bus'):
+    if service not in ('tour_bus', 'shuttle_bus', 'rtc_bus'):
         raise ValueError('Unsupported pinned signed-bus audit')
     frames, duration, boundary = BOUNDARIES[suffix]
     update = {'below': '032', 'at': '033', 'above': '034',
               'no_loading': '034'}[suffix]
     slug = suffix.replace('_', '-')
     case = ROOT.name + '__' + service + '_' + suffix
-    prefix = ('c150142-tour-bus-pinned-saved-' + slug + '-'
-              if service == 'tour_bus' else 'c150142-shuttle-' + slug + '-')
+    prefix = ({'tour_bus': 'c150142-tour-bus-pinned-saved-',
+               'shuttle_bus': 'c150142-shuttle-',
+               'rtc_bus': 'c150142-rtc-'}[service] + slug + '-')
     fixed = {'capture_frames': frames, 'requested_approach_frames': 120,
              'requested_stationary_duration_s': duration,
              'requested_boundary': boundary, 'rate_hz': 20}
-    manifest = read(ROOT / ('execution-manifest-diagnostic-tour_bus_below-draft.json'
-                            if service == 'tour_bus' else
-                            'execution-manifest-diagnostic-shuttle_bus_below-draft.json'))
+    manifest = read(ROOT / {
+        'tour_bus': 'execution-manifest-diagnostic-tour_bus_below-draft.json',
+        'shuttle_bus': 'execution-manifest-diagnostic-shuttle_bus_below-draft.json',
+        'rtc_bus': 'execution-manifest-diagnostic-rtc_bus_below-draft.json',
+    }[service])
     entry = next(e for e in manifest['cases'] if e['case_id'] == case)
     fallback_entries = {c['id']: c for c in entry['candidates']}
     require(set(fallback_entries) == {'fallback1', 'fallback2', 'fallback3'},
@@ -57,10 +60,14 @@ def audit(suffix='below', service='tour_bus'):
     for candidate in ('primary', 'fallback1', 'fallback2', 'fallback3'):
         stem = ((('result-v7' if suffix == 'below' else 'result-v1')
                  if service == 'tour_bus' else
-                 'primary-result-v2' if suffix == 'below' else 'primary-result-v1')
+                 'primary-result-v2' if service == 'shuttle_bus' and suffix == 'below'
+                 else 'primary-result-v1')
                 if candidate == 'primary' else candidate + '-result-v1')
         version = REPO / '.runtime-work' / (prefix + stem) / 'v0001'
-        if service == 'shuttle_bus':
+        if service == 'rtc_bus':
+            summary_name = f'update037-rtc-{slug}-{candidate}-pinned-saved-v1.json'
+            negative_name = f'update037-rtc-{slug}-{candidate}-negative.json'
+        elif service == 'shuttle_bus':
             summary_name = ('update035-shuttle-below-primary-pinned-saved-v2.json'
                             if suffix == 'below' and candidate == 'primary' else
                             f'update035-shuttle-below-{candidate}-pinned-saved-v1.json'
@@ -118,7 +125,11 @@ def audit(suffix='below', service='tour_bus'):
                         'target_x_m': config['requested_target_x_m'],
                         'camera_policy': config['camera_policy']}
         if suffix == 'no_loading':
-            inventory_name = f'update034-no-loading-{candidate}-inventory-negative.json'
+            inventory_name = {
+                'tour_bus': f'update034-no-loading-{candidate}-inventory-negative.json',
+                'shuttle_bus': f'update037-shuttle-no-loading-{candidate}-inventory-negative.json',
+                'rtc_bus': f'update037-rtc-no-loading-{candidate}-inventory-negative.json',
+            }[service]
             inventory = read(ROOT / inventory_name)
             require(inventory['rejected'] is True and
                     inventory['candidate_id'] == candidate and
@@ -138,8 +149,8 @@ def audit(suffix='below', service='tour_bus'):
             configs['fallback3']['requested_target_x_m'] and
             configs['fallback2']['camera_policy'] != base['camera_policy'],
             'Fallback mitigations do not match physical-risk triggers')
-    return {'format': ('c150142-tour-bus-' if service == 'tour_bus' else
-                       'c150142-shuttle-bus-') + slug + '-fallback-audit-v1',
+    return {'format': ('c150142-' + service.replace('_', '-') + '-' +
+                       slug + '-fallback-audit-v1'),
             'source_kind': 'synthetic_native_sample',
             'original_native_observed': False, 'passed': True,
             'case_id': case, 'records': records,
@@ -149,7 +160,7 @@ def audit(suffix='below', service='tour_bus'):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--case', choices=sorted(BOUNDARIES), default='below')
-    parser.add_argument('--service', choices=('tour_bus', 'shuttle_bus'),
+    parser.add_argument('--service', choices=('tour_bus', 'shuttle_bus', 'rtc_bus'),
                         default='tour_bus')
     args = parser.parse_args()
     print(json.dumps(audit(args.case, args.service), sort_keys=True))
