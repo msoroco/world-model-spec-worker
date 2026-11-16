@@ -22,6 +22,8 @@ def prove(suffix, stage):
     stage = Path(stage).resolve()
     if REPO / '.runtime-work' not in stage.parents:
         raise ValueError('Saved-analysis stage belongs under .runtime-work')
+    if (stage / 'analysis').is_dir():
+        stage = stage / 'analysis'
     case_id = ROOT.name + '__' + suffix
     plan = json.loads((ROOT / 'case-plan.json').read_text())
     dispositions = [dict(row) for row in plan['requirement_dispositions']]
