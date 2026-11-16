@@ -8,10 +8,10 @@ from build import CASE, CASES, FRAMES, HERE, POLICIES, SOURCE, SOURCE_SHA, sha, 
 
 def audit():
     source=json.loads(SOURCE.read_text())
-    if sha(SOURCE)!=SOURCE_SHA or source['law_record']['text']!=json.loads((CASE/'case-plan.json').read_text())['source_law_text']:
+    if sha(SOURCE)!=SOURCE_SHA or source['law']['text']!=json.loads((CASE/'case-plan.json').read_text())['source_law_text']:
         raise ValueError('Statutory source changed')
-    if 'business district' not in source['law_record']['text'] or \
-            'except at an intersection or on a divided highway' not in source['law_record']['text']:
+    if 'business district' not in source['law']['text'] or \
+            'except at an intersection or on a divided highway' not in source['law']['text']:
         raise ValueError('Statutory branch text missing')
     joined=0
     for candidate in POLICIES:

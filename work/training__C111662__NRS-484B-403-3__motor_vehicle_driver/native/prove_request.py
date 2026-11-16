@@ -21,7 +21,7 @@ def prove():
                     cfg=json.loads((bundle/'config.json').read_text())
                     if mutation=='law':
                         path=bundle/'assignment-source.json'
-                        data=json.loads(path.read_text());data['law_record']['text']+=' changed'
+                        data=json.loads(path.read_text());data['law']['text']+=' changed'
                         put(path,data)
                     elif mutation=='road':
                         path=bundle/'district-crossroads.xodr'

@@ -5,7 +5,7 @@ from build import CASE, HERE, PLAN, SOURCE, SOURCE_SHA, sha, put
 
 def audit():
     source=json.loads(SOURCE.read_text());plan=json.loads(PLAN.read_text())
-    law=source['law_record']['text']
+    law=source['law']['text']
     clauses={
         'vehicle_u_turn':'The driver of a vehicle shall not make a U-turn',
         'business_district':'in a business district',

@@ -10,7 +10,7 @@ from divided_opening import BRANCH, CENTERS, OPENING_X
 def audit():
     source = json.loads(SOURCE.read_text())
     plan = json.loads(PLAN.read_text())
-    law = source["law_record"]["text"]
+    law = source["law"]["text"]
     if (sha(SOURCE) != SOURCE_SHA or plan["source_law_text"] != law or
             "or on a divided highway where an appropriate opening or crossing place exists" not in law):
         raise ValueError("Divided branch statutory source changed")

@@ -9,7 +9,7 @@ CASE = HERE.parent
 ROOT = CASE.parents[1]
 SOURCE = ROOT / "inputs" / CASE.name / "assignment.json"
 PLAN = CASE / "case-plan.json"
-SOURCE_SHA = "aab716c76efa01e178741ff7f706db5bf5daecf37e402616e00e146dfbd5a8cc"
+SOURCE_SHA = "cd26eca95ff19732358a704df7d30fae9a45f8380d6869f1e98af788f167ade5"
 FRAMES = 800
 RATE = 20
 CASES = {"reference": -45.0, "contrast": 0.0}
@@ -104,7 +104,7 @@ def build():
     if sha(SOURCE) != SOURCE_SHA:
         raise ValueError("Frozen assignment changed")
     source, plan = json.loads(SOURCE.read_text()), json.loads(PLAN.read_text())
-    if (source["law_record"]["text"] != plan["source_law_text"] or
+    if (source["law"]["text"] != plan["source_law_text"] or
             source["actor"] != "motor_vehicle_driver" or
             {key:source["cell"][key] for key in ("layout","maneuver","control")} !=
             {"layout":"intersection","maneuver":"u_turn","control":"centerline"}):
@@ -123,7 +123,7 @@ def build():
                  "case_id":CASE.name+'__'+suffix,"candidate_id":candidate,
                  "assignment_sha256":SOURCE_SHA,"case_plan_sha256":sha(PLAN),
                  "road_sha256":sha(bundle/"district-crossroads.xodr"),"tracks_sha256":sha(track),
-                 "source_text":source["law_record"]["text"],"frames":FRAMES,"rate_hz":RATE,
+                 "source_text":source["law"]["text"],"frames":FRAMES,"rate_hz":RATE,
                  "requested_turn_center_x_m":CASES[suffix],"requested_approach_speed_mps":speed,
                  "camera_policy":camera,"pre_turn_dwell_s":dwell,
                  "ego_blueprint":"vehicle.tesla.model3","status":"unselected_native_request",

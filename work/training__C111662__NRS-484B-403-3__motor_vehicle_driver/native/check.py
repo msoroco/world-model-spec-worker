@@ -58,7 +58,7 @@ def check(bundle):
     else:
         raise ValueError('Unknown candidate selection status')
     if (cfg['assignment_id']!=CASE.name or cfg['assignment_sha256']!=SOURCE_SHA or
-            cfg['case_plan_sha256']!=sha(PLAN) or cfg['source_text']!=source['law_record']['text'] or
+            cfg['case_plan_sha256']!=sha(PLAN) or cfg['source_text']!=source['law']['text'] or
             cfg['requested_turn_center_x_m']!=CASES[suffix] or
             cfg['requested_approach_speed_mps']!=speed or cfg['camera_policy']!=camera or
             cfg['pre_turn_dwell_s']!=dwell or cfg['rate_hz']!=20 or cfg['frames']!=FRAMES or

@@ -76,7 +76,7 @@ def build():
     if sha(SOURCE) != SOURCE_SHA:
         raise ValueError("Frozen assignment changed")
     source = json.loads(SOURCE.read_text())
-    if "on a divided highway where an appropriate opening or crossing place exists" not in source["law_record"]["text"]:
+    if "on a divided highway where an appropriate opening or crossing place exists" not in source["law"]["text"]:
         raise ValueError("Statutory opening clause changed")
     entries = []
     for suffix in CENTERS:
@@ -93,7 +93,7 @@ def build():
                 "format": "c111662-4033-divided-opening-request-v1",
                 "assignment_id": CASE.name, "assignment_sha256": SOURCE_SHA,
                 "case_id": CASE.name + "__" + suffix, "candidate_id": candidate,
-                "source_text": source["law_record"]["text"],
+                "source_text": source["law"]["text"],
                 "road_sha256": sha(bundle / "divided-highway.xodr"),
                 "tracks_sha256": sha(track), "frames": FRAMES, "rate_hz": RATE,
                 "requested_turn_center_x_m": CENTERS[suffix],
@@ -137,7 +137,7 @@ def check(bundle):
     if ((bundle / "assignment-source.json").read_bytes() != SOURCE.read_bytes() or
             sha(SOURCE) != SOURCE_SHA or cfg["assignment_id"] != CASE.name or
             cfg["assignment_sha256"] != SOURCE_SHA or
-            cfg["source_text"] != source["law_record"]["text"] or
+            cfg["source_text"] != source["law"]["text"] or
             cfg["requested_turn_center_x_m"] != CENTERS[suffix] or
             cfg["requested_approach_speed_mps"] != speed or
             cfg["camera_policy"] != camera or cfg["pre_turn_dwell_s"] != dwell or
