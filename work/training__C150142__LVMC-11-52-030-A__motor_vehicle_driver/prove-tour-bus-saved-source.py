@@ -82,10 +82,14 @@ def source_rows(target, walker_moves=True, inject_walker_actor=False):
             else:
                 passengers.write(json.dumps(walker) + '\n')
             frames.write(json.dumps(frame) + '\n')
+            speed_mps = target_x * 20 / approach if i < approach else 0
             trace.write(json.dumps({'frame': i, 'time_s': t,
                                     'position': {'x': x, 'y': y, 'z': 0},
+                                    'position_m': [x, y, 0],
                                     'heading_deg': 0,
-                                    'speed_mps': target_x * 20 / approach if i < approach else 0}) + '\n')
+                                    'speed_mps': speed_mps,
+                                    'speed_mph': speed_mps / .44704,
+                                    'velocity_mps': [speed_mps, 0, 0]}) + '\n')
             evidence.write(json.dumps({'frame': i,
                                        'source_kind': 'synthetic_native_sample'}) + '\n')
     for view in VIEWS:
