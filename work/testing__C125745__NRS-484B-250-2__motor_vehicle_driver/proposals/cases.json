@@ -1,35 +1,123 @@
 {
-  "format": "worker-cases-proposal",
   "cell_id": "C125745",
   "actor": "motor_vehicle_driver",
   "status": "draft",
-  "sweep_specs": [
+  "cases": [
     {
-      "sweep_id": "c125745-approximately-time",
-      "target_law_id": "NRS-484B-250-2",
-      "status": "incomplete",
-      "mode": "one_dimensional",
-      "judgment_refs": [
-        {
-          "phrase": "approximately the same time",
-          "note": "No numeric legal cutoff is supplied; the 0.05 s and 0.25 s CPU measurements are observation landmarks only."
-        }
-      ],
-      "axes": [],
-      "landmarks": [],
-      "rationale": "The retained synthetic source diagnostics establish a measured software contrast but not a legal timing boundary.",
+      "case_id": "testing__C125745__NRS-484B-250-2__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Neutral synthetic stop-sign source reference; not a selected physical execution or legal conclusion",
       "variable_assignments": {
-        "measured_body_entry_gap_s": {
+        "other_release_frame": {
+          "kind": "controller",
+          "value": 20,
+          "unit": "frame"
+        },
+        "body_entry_time_delta_s": {
           "kind": "subject_behavior",
           "value": null,
           "unit": "s"
         },
-        "other_release_frame": {
+        "official_device_status": {
+          "kind": "world_setup",
+          "value": "stop sign commanded; official status unverified",
+          "unit": "categorical"
+        },
+        "other_approach_relation": {
+          "kind": "world_setup",
+          "value": "other_on_ego_right",
+          "unit": "categorical"
+        },
+        "opposite_direction_left_turn": {
+          "kind": "world_setup",
+          "value": "not_requested",
+          "unit": "categorical"
+        },
+        "commanded_turn_path": {
           "kind": "controller",
-          "value": null,
-          "unit": "frame"
+          "value": "straight_crossing_waypoints",
+          "unit": "structured record"
+        },
+        "native_stop_sign_id": {
+          "kind": "world_setup",
+          "value": 17,
+          "unit": "Native actor id"
         }
       },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "entry_timing",
+            "unit": "structured record",
+            "method": "complete body crossing history joined to original Native frames",
+            "time_window": "entire capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "legal approximate-time judgment unresolved",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "entry_context",
+            "unit": "structured record",
+            "method": "source-bound crossing and stop-sign context"
+          }
+        ],
+        "limitations": [
+          "Synthetic site; physical and legal acceptance unclaimed"
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_ego_left_near_time",
+      "target_law_id": "NRS-484B-250-2",
+      "target_type": "boundary_probe",
+      "rationale": "Synthetic stop-sign source diagnostic for stop_ego_left_near_time; physical and legal qualification unresolved",
+      "variable_assignments": {
+        "other_release_frame": {
+          "kind": "controller",
+          "value": 20,
+          "unit": "frame"
+        },
+        "body_entry_time_delta_s": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "s"
+        },
+        "official_device_status": {
+          "kind": "world_setup",
+          "value": "stop sign commanded; official status unverified",
+          "unit": "categorical"
+        },
+        "other_approach_relation": {
+          "kind": "world_setup",
+          "value": "other_on_ego_right",
+          "unit": "categorical"
+        },
+        "opposite_direction_left_turn": {
+          "kind": "world_setup",
+          "value": "not_requested",
+          "unit": "categorical"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "straight_crossing_waypoints",
+          "unit": "structured record"
+        },
+        "native_stop_sign_id": {
+          "kind": "world_setup",
+          "value": 17,
+          "unit": "Native actor id"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "approximately the same time",
+        "yield the right-of-way",
+        "official traffic-control devices",
+        "intending to or is making a left turn"
+      ],
       "recording_description": {
         "channels": [
           {
@@ -53,34 +141,309 @@
           "Synthetic site; physical and legal acceptance unclaimed"
         ]
       },
-      "missing_inputs": [
-        "Accepted Native original-source recordings across a reviewed timing interval",
-        "Independent legal judgment on approximately the same time"
-      ]
+      "paired_probe_id": "c125745-relative-side",
+      "deliberate_differences": [],
+      "probe": {
+        "primary_variable": "other_release_frame",
+        "comparison_or_standard": "original complete-body entry timing and source-grounded approach; no legal cutoff",
+        "target_value_or_branch": "stop_ego_left_near_time"
+      }
     },
     {
-      "sweep_id": "c125745-official-device",
+      "case_id": "testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_ego_right_near_time",
       "target_law_id": "NRS-484B-250-2",
-      "status": "incomplete",
-      "mode": "one_dimensional",
-      "judgment_refs": [
-        {
-          "phrase": "official traffic-control devices",
-          "note": "Synthetic Native stop-sign identity does not establish official status or subsection-4 application."
-        }
-      ],
-      "axes": [],
-      "landmarks": [],
-      "rationale": "The selected cell commands a stop sign; official governance and subsection-4 qualification remain source and legal review questions.",
+      "target_type": "boundary_probe",
+      "rationale": "Synthetic stop-sign source diagnostic for stop_ego_right_near_time; physical and legal qualification unresolved",
       "variable_assignments": {
+        "other_release_frame": {
+          "kind": "controller",
+          "value": 20,
+          "unit": "frame"
+        },
+        "body_entry_time_delta_s": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "s"
+        },
+        "official_device_status": {
+          "kind": "world_setup",
+          "value": "stop sign commanded; official status unverified",
+          "unit": "categorical"
+        },
+        "other_approach_relation": {
+          "kind": "world_setup",
+          "value": "other_on_ego_left",
+          "unit": "categorical"
+        },
+        "opposite_direction_left_turn": {
+          "kind": "world_setup",
+          "value": "not_requested",
+          "unit": "categorical"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "straight_crossing_waypoints",
+          "unit": "structured record"
+        },
         "native_stop_sign_id": {
           "kind": "world_setup",
           "value": 17,
           "unit": "Native actor id"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "approximately the same time",
+        "yield the right-of-way",
+        "official traffic-control devices",
+        "intending to or is making a left turn"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "entry_timing",
+            "unit": "structured record",
+            "method": "complete body crossing history joined to original Native frames",
+            "time_window": "entire capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "legal approximate-time judgment unresolved",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "entry_context",
+            "unit": "structured record",
+            "method": "source-bound crossing and stop-sign context"
+          }
+        ],
+        "limitations": [
+          "Synthetic site; physical and legal acceptance unclaimed"
+        ]
+      },
+      "paired_probe_id": "c125745-relative-side",
+      "deliberate_differences": [
+        "other_approach_relation"
+      ],
+      "probe": {
+        "primary_variable": "other_release_frame",
+        "comparison_or_standard": "original complete-body entry timing and source-grounded approach; no legal cutoff",
+        "target_value_or_branch": "stop_ego_right_near_time"
+      }
+    },
+    {
+      "case_id": "testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_ego_left_separated",
+      "target_law_id": "NRS-484B-250-2",
+      "target_type": "boundary_probe",
+      "rationale": "Synthetic stop-sign source diagnostic for stop_ego_left_separated; physical and legal qualification unresolved",
+      "variable_assignments": {
+        "other_release_frame": {
+          "kind": "controller",
+          "value": 20,
+          "unit": "frame"
+        },
+        "body_entry_time_delta_s": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "s"
         },
         "official_device_status": {
           "kind": "world_setup",
+          "value": "stop sign commanded; official status unverified",
+          "unit": "categorical"
+        },
+        "other_approach_relation": {
+          "kind": "world_setup",
+          "value": "other_on_ego_right",
+          "unit": "categorical"
+        },
+        "opposite_direction_left_turn": {
+          "kind": "world_setup",
+          "value": "not_requested",
+          "unit": "categorical"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "straight_crossing_waypoints",
+          "unit": "structured record"
+        },
+        "native_stop_sign_id": {
+          "kind": "world_setup",
+          "value": 17,
+          "unit": "Native actor id"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "approximately the same time",
+        "yield the right-of-way",
+        "official traffic-control devices",
+        "intending to or is making a left turn"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "entry_timing",
+            "unit": "structured record",
+            "method": "complete body crossing history joined to original Native frames",
+            "time_window": "entire capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "legal approximate-time judgment unresolved",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "entry_context",
+            "unit": "structured record",
+            "method": "source-bound crossing and stop-sign context"
+          }
+        ],
+        "limitations": [
+          "Synthetic site; physical and legal acceptance unclaimed"
+        ]
+      },
+      "paired_probe_id": "c125745-entry-time",
+      "deliberate_differences": [
+        "other_release_frame"
+      ],
+      "probe": {
+        "primary_variable": "other_release_frame",
+        "comparison_or_standard": "original complete-body entry timing and source-grounded approach; no legal cutoff",
+        "target_value_or_branch": "stop_ego_left_separated"
+      }
+    },
+    {
+      "case_id": "testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_opposite_left_turn",
+      "target_law_id": "NRS-484B-250-2",
+      "target_type": "boundary_probe",
+      "rationale": "Synthetic stop-sign source diagnostic for stop_opposite_left_turn; physical and legal qualification unresolved",
+      "variable_assignments": {
+        "other_release_frame": {
+          "kind": "controller",
+          "value": 20,
+          "unit": "frame"
+        },
+        "body_entry_time_delta_s": {
+          "kind": "subject_behavior",
           "value": null,
+          "unit": "s"
+        },
+        "official_device_status": {
+          "kind": "world_setup",
+          "value": "stop sign commanded; official status unverified",
+          "unit": "categorical"
+        },
+        "other_approach_relation": {
+          "kind": "world_setup",
+          "value": "opposite_approach",
+          "unit": "categorical"
+        },
+        "opposite_direction_left_turn": {
+          "kind": "world_setup",
+          "value": "other_left_turn_intended",
+          "unit": "categorical"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "opposite_left_turn_waypoints",
+          "unit": "structured record"
+        },
+        "native_stop_sign_id": {
+          "kind": "world_setup",
+          "value": 17,
+          "unit": "Native actor id"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "approximately the same time",
+        "yield the right-of-way",
+        "official traffic-control devices",
+        "intending to or is making a left turn"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "entry_timing",
+            "unit": "structured record",
+            "method": "complete body crossing history joined to original Native frames",
+            "time_window": "entire capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "legal approximate-time judgment unresolved",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "entry_context",
+            "unit": "structured record",
+            "method": "source-bound crossing and stop-sign context"
+          }
+        ],
+        "limitations": [
+          "Synthetic site; physical and legal acceptance unclaimed"
+        ]
+      },
+      "paired_probe_id": "c125745-opposite-turn",
+      "deliberate_differences": [
+        "other_approach_relation",
+        "opposite_direction_left_turn",
+        "commanded_turn_path"
+      ],
+      "probe": {
+        "primary_variable": "other_release_frame",
+        "comparison_or_standard": "original complete-body entry timing and source-grounded approach; no legal cutoff",
+        "target_value_or_branch": "stop_opposite_left_turn"
+      }
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "c125745-1",
+      "target_law_id": "NRS-484B-250-2",
+      "judgment_refs": [
+        {
+          "phrase": "approximately the same time",
+          "note": "The supplied law has no numeric legal simultaneity cutoff."
+        }
+      ],
+      "status": "incomplete",
+      "mode": "one_dimensional",
+      "axes": [],
+      "landmarks": [],
+      "rationale": "C125745 stop-sign synthetic diagnostics do not resolve this legal judgment; physical source and independent review inputs are required.",
+      "variable_assignments": {
+        "other_release_frame": {
+          "kind": "controller",
+          "value": 20,
+          "unit": "frame"
+        },
+        "body_entry_time_delta_s": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "s"
+        },
+        "official_device_status": {
+          "kind": "world_setup",
+          "value": "Off commanded; physical state unverified",
+          "unit": "categorical"
+        },
+        "other_approach_relation": {
+          "kind": "world_setup",
+          "value": "other_on_ego_right",
+          "unit": "categorical"
+        },
+        "opposite_direction_left_turn": {
+          "kind": "world_setup",
+          "value": "not_requested",
+          "unit": "categorical"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "straight_crossing_waypoints",
+          "unit": "structured record"
+        },
+        "native_stop_sign_id": {
+          "kind": "world_setup",
+          "value": "all_Off",
           "unit": "categorical"
         }
       },
@@ -108,34 +471,58 @@
         ]
       },
       "missing_inputs": [
-        "Reviewed all-entrance device authority and physical sign-face pixels",
-        "Independent subsection-4 legal qualification"
+        "Source-reviewed crossing, actual Native motion and original camera evidence for approximately the same time"
       ]
     },
     {
-      "sweep_id": "c125745-opposite-left-turn",
+      "sweep_id": "c125745-2",
       "target_law_id": "NRS-484B-250-2",
-      "status": "incomplete",
-      "mode": "one_dimensional",
       "judgment_refs": [
         {
-          "phrase": "approaching each other from opposite directions",
-          "note": "Controller intention and a planned turn path are recorded; actual turn motion and exception qualification remain unresolved."
+          "phrase": "yield the right-of-way",
+          "note": "Original motion and priority context are required; no speed or time surrogate decides the duty."
         }
       ],
+      "status": "incomplete",
+      "mode": "one_dimensional",
       "axes": [],
       "landmarks": [],
-      "rationale": "The fourth case tests the separate opposite-direction left-turn exception context without asserting that the exception legally applies.",
+      "rationale": "C125745 stop-sign synthetic diagnostics do not resolve this legal judgment; physical source and independent review inputs are required.",
       "variable_assignments": {
-        "opposite_approach": {
-          "kind": "world_setup",
-          "value": true,
-          "unit": "boolean"
-        },
-        "other_left_turn_intended": {
+        "other_release_frame": {
           "kind": "controller",
-          "value": true,
-          "unit": "boolean"
+          "value": 20,
+          "unit": "frame"
+        },
+        "body_entry_time_delta_s": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "s"
+        },
+        "official_device_status": {
+          "kind": "world_setup",
+          "value": "Off commanded; physical state unverified",
+          "unit": "categorical"
+        },
+        "other_approach_relation": {
+          "kind": "world_setup",
+          "value": "other_on_ego_right",
+          "unit": "categorical"
+        },
+        "opposite_direction_left_turn": {
+          "kind": "world_setup",
+          "value": "not_requested",
+          "unit": "categorical"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "straight_crossing_waypoints",
+          "unit": "structured record"
+        },
+        "native_stop_sign_id": {
+          "kind": "world_setup",
+          "value": "all_Off",
+          "unit": "categorical"
         }
       },
       "recording_description": {
@@ -162,169 +549,164 @@
         ]
       },
       "missing_inputs": [
-        "Accepted Native turn motion and original source camera pixels",
-        "Independent legal exception judgment"
+        "Source-reviewed crossing, actual Native motion and original camera evidence for yield the right-of-way"
+      ]
+    },
+    {
+      "sweep_id": "c125745-3",
+      "target_law_id": "NRS-484B-250-2",
+      "judgment_refs": [
+        {
+          "phrase": "official traffic-control devices",
+          "note": "Official status and governance require independent source review; Native light state alone is insufficient."
+        }
+      ],
+      "status": "incomplete",
+      "mode": "one_dimensional",
+      "axes": [],
+      "landmarks": [],
+      "rationale": "C125745 stop-sign synthetic diagnostics do not resolve this legal judgment; physical source and independent review inputs are required.",
+      "variable_assignments": {
+        "other_release_frame": {
+          "kind": "controller",
+          "value": 20,
+          "unit": "frame"
+        },
+        "body_entry_time_delta_s": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "s"
+        },
+        "official_device_status": {
+          "kind": "world_setup",
+          "value": "Off commanded; physical state unverified",
+          "unit": "categorical"
+        },
+        "other_approach_relation": {
+          "kind": "world_setup",
+          "value": "other_on_ego_right",
+          "unit": "categorical"
+        },
+        "opposite_direction_left_turn": {
+          "kind": "world_setup",
+          "value": "not_requested",
+          "unit": "categorical"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "straight_crossing_waypoints",
+          "unit": "structured record"
+        },
+        "native_stop_sign_id": {
+          "kind": "world_setup",
+          "value": "all_Off",
+          "unit": "categorical"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "entry_timing",
+            "unit": "structured record",
+            "method": "complete body crossing history joined to original Native frames",
+            "time_window": "entire capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "legal approximate-time judgment unresolved",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "entry_context",
+            "unit": "structured record",
+            "method": "source-bound crossing and stop-sign context"
+          }
+        ],
+        "limitations": [
+          "Synthetic site; physical and legal acceptance unclaimed"
+        ]
+      },
+      "missing_inputs": [
+        "Source-reviewed crossing, actual Native motion and original camera evidence for official traffic-control devices"
+      ]
+    },
+    {
+      "sweep_id": "c125745-4",
+      "target_law_id": "NRS-484B-250-2",
+      "judgment_refs": [
+        {
+          "phrase": "intending to or is making a left turn",
+          "note": "Turn intention and realized trajectory require route and original heading/body evidence."
+        }
+      ],
+      "status": "incomplete",
+      "mode": "one_dimensional",
+      "axes": [],
+      "landmarks": [],
+      "rationale": "C125745 stop-sign synthetic diagnostics do not resolve this legal judgment; physical source and independent review inputs are required.",
+      "variable_assignments": {
+        "other_release_frame": {
+          "kind": "controller",
+          "value": 20,
+          "unit": "frame"
+        },
+        "body_entry_time_delta_s": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "s"
+        },
+        "official_device_status": {
+          "kind": "world_setup",
+          "value": "Off commanded; physical state unverified",
+          "unit": "categorical"
+        },
+        "other_approach_relation": {
+          "kind": "world_setup",
+          "value": "other_on_ego_right",
+          "unit": "categorical"
+        },
+        "opposite_direction_left_turn": {
+          "kind": "world_setup",
+          "value": "not_requested",
+          "unit": "categorical"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "straight_crossing_waypoints",
+          "unit": "structured record"
+        },
+        "native_stop_sign_id": {
+          "kind": "world_setup",
+          "value": "all_Off",
+          "unit": "categorical"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "entry_timing",
+            "unit": "structured record",
+            "method": "complete body crossing history joined to original Native frames",
+            "time_window": "entire capture",
+            "reference_frame": "original Native frame",
+            "uncertainty": "legal approximate-time judgment unresolved",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "entry_context",
+            "unit": "structured record",
+            "method": "source-bound crossing and stop-sign context"
+          }
+        ],
+        "limitations": [
+          "Synthetic site; physical and legal acceptance unclaimed"
+        ]
+      },
+      "missing_inputs": [
+        "Source-reviewed crossing, actual Native motion and original camera evidence for intending to or is making a left turn"
       ]
     }
-  ],
-  "cases": [
-    {
-      "case_id": "testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_ego_left_near_time",
-      "target_law_id": "NRS-484B-250-2",
-      "target_type": "selected",
-      "rationale": "Source-specific synthetic stop-sign median-entry diagnostic; legal qualification unresolved",
-      "variable_assignments": {
-        "governing_device": "stop_sign",
-        "relative_side": "ego_left",
-        "entry_timing": "near_time_measured"
-      },
-      "unresolved_judgment_calls": [
-        "official device status",
-        "approximately same time",
-        "yield and subsection 4"
-      ],
-      "recording_description": {
-        "channels": [
-          {
-            "name": "entry_timing",
-            "unit": "structured record",
-            "method": "complete body crossing history joined to original Native frames",
-            "time_window": "entire capture",
-            "reference_frame": "original Native frame",
-            "uncertainty": "legal approximate-time judgment unresolved",
-            "sampling_rate_hz": 20
-          }
-        ],
-        "context_inputs": [
-          {
-            "name": "entry_context",
-            "unit": "structured record",
-            "method": "source-bound crossing and stop-sign context"
-          }
-        ],
-        "limitations": [
-          "Synthetic site; physical and legal acceptance unclaimed"
-        ]
-      }
-    },
-    {
-      "case_id": "testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_ego_right_near_time",
-      "target_law_id": "NRS-484B-250-2",
-      "target_type": "selected",
-      "rationale": "Source-specific synthetic stop-sign median-entry diagnostic; legal qualification unresolved",
-      "variable_assignments": {
-        "governing_device": "stop_sign",
-        "relative_side": "ego_right",
-        "entry_timing": "near_time_measured"
-      },
-      "unresolved_judgment_calls": [
-        "official device status",
-        "approximately same time",
-        "yield and subsection 4"
-      ],
-      "recording_description": {
-        "channels": [
-          {
-            "name": "entry_timing",
-            "unit": "structured record",
-            "method": "complete body crossing history joined to original Native frames",
-            "time_window": "entire capture",
-            "reference_frame": "original Native frame",
-            "uncertainty": "legal approximate-time judgment unresolved",
-            "sampling_rate_hz": 20
-          }
-        ],
-        "context_inputs": [
-          {
-            "name": "entry_context",
-            "unit": "structured record",
-            "method": "source-bound crossing and stop-sign context"
-          }
-        ],
-        "limitations": [
-          "Synthetic site; physical and legal acceptance unclaimed"
-        ]
-      }
-    },
-    {
-      "case_id": "testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_ego_left_separated",
-      "target_law_id": "NRS-484B-250-2",
-      "target_type": "selected",
-      "rationale": "Source-specific synthetic stop-sign median-entry diagnostic; legal qualification unresolved",
-      "variable_assignments": {
-        "governing_device": "stop_sign",
-        "relative_side": "ego_left",
-        "entry_timing": "separated_measured"
-      },
-      "unresolved_judgment_calls": [
-        "official device status",
-        "approximately same time",
-        "yield and subsection 4"
-      ],
-      "recording_description": {
-        "channels": [
-          {
-            "name": "entry_timing",
-            "unit": "structured record",
-            "method": "complete body crossing history joined to original Native frames",
-            "time_window": "entire capture",
-            "reference_frame": "original Native frame",
-            "uncertainty": "legal approximate-time judgment unresolved",
-            "sampling_rate_hz": 20
-          }
-        ],
-        "context_inputs": [
-          {
-            "name": "entry_context",
-            "unit": "structured record",
-            "method": "source-bound crossing and stop-sign context"
-          }
-        ],
-        "limitations": [
-          "Synthetic site; physical and legal acceptance unclaimed"
-        ]
-      }
-    },
-    {
-      "case_id": "testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_opposite_left_turn",
-      "target_law_id": "NRS-484B-250-2",
-      "target_type": "selected",
-      "rationale": "Opposite-direction left-turn intention and planned path recorded in synthetic original sources; legal exception and physical turn unverified",
-      "variable_assignments": {
-        "governing_device": "stop_sign",
-        "relative_side": "inapplicable_opposite_exception",
-        "entry_timing": "near_time_measured",
-        "other_approach": "opposite_direction_left_turn"
-      },
-      "unresolved_judgment_calls": [
-        "official device status",
-        "approximately same time",
-        "yield and subsection 4"
-      ],
-      "recording_description": {
-        "channels": [
-          {
-            "name": "entry_timing",
-            "unit": "structured record",
-            "method": "complete body crossing history joined to original Native frames",
-            "time_window": "entire capture",
-            "reference_frame": "original Native frame",
-            "uncertainty": "legal approximate-time judgment unresolved",
-            "sampling_rate_hz": 20
-          }
-        ],
-        "context_inputs": [
-          {
-            "name": "entry_context",
-            "unit": "structured record",
-            "method": "source-bound crossing and stop-sign context"
-          }
-        ],
-        "limitations": [
-          "Synthetic site; physical and legal acceptance unclaimed"
-        ]
-      }
-    }
-  ],
-  "sweeps_expanded": false
+  ]
 }

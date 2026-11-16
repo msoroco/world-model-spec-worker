@@ -1,0 +1,54 @@
+{
+  "template_id": "NRS-484B-600-1c@motor_vehicle_driver",
+  "law_id": "NRS-484B-600-1c",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "It is unlawful for any person to drive or operate a vehicle of any kind or character at: A rate of speed greater than that posted by a public authority for the particular portion of highway being traversed.",
+  "structure": {
+    "law_id": "NRS-484B-600-1c",
+    "activation": {
+      "condition": "driving or operating a vehicle on the particular highway portion with a public-authority posted rate",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "do not drive at a rate greater than that posted for the traversed portion",
+      "type": "must_not",
+      "numeric_conditions": [
+        {
+          "variable": "ego_speed",
+          "operator": ">",
+          "value": "posted_limit_mph",
+          "unit": "mph"
+        }
+      ]
+    },
+    "exceptions": [],
+    "timing": {
+      "description": "while traversing the posted particular highway portion",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": []
+  },
+  "parameter_refs": [
+    {
+      "name": "posted_limit_mph",
+      "kind": "world_setup",
+      "range_or_domain": "source-confirmed public-authority posted speed in mph for governed highway portion"
+    },
+    {
+      "name": "zone_boundary_s_m",
+      "kind": "world_setup",
+      "range_or_domain": "source-confirmed signed road interval and vehicle position"
+    },
+    {
+      "name": "commanded_approach_speed",
+      "kind": "controller",
+      "range_or_domain": "positive target m/s for physical speed probe"
+    },
+    {
+      "name": "ego_speed",
+      "kind": "subject_behavior",
+      "range_or_domain": "original-frame observed 3D speed in mph, no guaranteed value"
+    }
+  ]
+}

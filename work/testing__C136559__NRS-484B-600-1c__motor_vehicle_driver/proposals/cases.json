@@ -4,25 +4,79 @@
   "status": "draft",
   "cases": [
     {
-      "case_id": "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__posted_below",
-      "target_law_id": "NRS-484B-600-1c",
-      "target_type": "boundary_probe",
-      "rationale": "Fresh below-posted diagnostic; authority and physical sign visibility unresolved",
+      "case_id": "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared authored diagnostic sign, road, camera and measurement context; public authority remains unverified",
       "variable_assignments": {
-        "requested_speed_mph": {
-          "kind": "controller",
-          "value": 24.9,
+        "posted_limit_mph": {
+          "kind": "world_setup",
+          "value": 25,
           "unit": "mph"
         },
-        "sampled_speed_mph": {
+        "zone_boundary_s_m": {
+          "kind": "world_setup",
+          "value": 700,
+          "unit": "m"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 11.176,
+          "unit": "m/s"
+        },
+        "ego_speed": {
           "kind": "subject_behavior",
           "value": null,
           "unit": "mph"
         }
       },
-      "unresolved_judgment_calls": [
-        "Public-authority posting, governed highway portion, sign visibility and actual Native motion unresolved"
-      ],
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "mph",
+            "method": "3D magnitude of original actor.get_velocity in source-joined posted road interval",
+            "time_window": "full 30 second 20 Hz capture",
+            "reference_frame": "Native subject actor",
+            "uncertainty": "sampled speeds; between-sample maxima unresolved",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Authored OpenDRIVE signal is diagnostic; public authority and signed highway portion require independent source review."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__posted_below",
+      "target_law_id": "NRS-484B-600-1c",
+      "target_type": "boundary_probe",
+      "rationale": "Fresh below-posted diagnostic; authority and physical sign visibility unresolved",
+      "variable_assignments": {
+        "posted_limit_mph": {
+          "kind": "world_setup",
+          "value": 25,
+          "unit": "mph"
+        },
+        "zone_boundary_s_m": {
+          "kind": "world_setup",
+          "value": 700,
+          "unit": "m"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 11.131295999999999,
+          "unit": "m/s"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "mph"
+        }
+      },
+      "unresolved_judgment_calls": [],
       "recording_description": {
         "channels": [
           {
@@ -42,12 +96,21 @@
       },
       "paired_probe_id": "posted_rate_boundary",
       "deliberate_differences": [
-        "requested_speed_mph"
+        "commanded_approach_speed"
       ],
       "probe": {
-        "primary_variable": "requested_speed_mph",
-        "comparison_or_standard": "strict greater-than sourced posted limit",
-        "target_value_or_branch": 24.9
+        "primary_variable": "ego_speed",
+        "comparison_or_standard": "strict greater than source-posted rate for traversed portion",
+        "target_value_or_branch": "below",
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": ">",
+        "unit": "mph",
+        "test_value": 24.9
+      },
+      "epsilon_used": {
+        "value": 0.1,
+        "unit": "mph",
+        "rationale": "Diagnostic physical request offset; no legal tolerance."
       }
     },
     {
@@ -56,20 +119,28 @@
       "target_type": "boundary_probe",
       "rationale": "Equality-requested diagnostic; measured speed and public authority remain unresolved",
       "variable_assignments": {
-        "requested_speed_mph": {
-          "kind": "controller",
-          "value": 25.0,
+        "posted_limit_mph": {
+          "kind": "world_setup",
+          "value": 25,
           "unit": "mph"
         },
-        "sampled_speed_mph": {
+        "zone_boundary_s_m": {
+          "kind": "world_setup",
+          "value": 700,
+          "unit": "m"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 11.176,
+          "unit": "m/s"
+        },
+        "ego_speed": {
           "kind": "subject_behavior",
           "value": null,
           "unit": "mph"
         }
       },
-      "unresolved_judgment_calls": [
-        "Public-authority posting, governed highway portion, sign visibility and actual Native motion unresolved"
-      ],
+      "unresolved_judgment_calls": [],
       "recording_description": {
         "channels": [
           {
@@ -89,12 +160,21 @@
       },
       "paired_probe_id": "posted_rate_boundary",
       "deliberate_differences": [
-        "requested_speed_mph"
+        "commanded_approach_speed"
       ],
       "probe": {
-        "primary_variable": "requested_speed_mph",
-        "comparison_or_standard": "strict greater-than sourced posted limit",
-        "target_value_or_branch": 25.0
+        "primary_variable": "ego_speed",
+        "comparison_or_standard": "strict greater than source-posted rate for traversed portion",
+        "target_value_or_branch": "at",
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": ">",
+        "unit": "mph",
+        "test_value": 25.0
+      },
+      "epsilon_used": {
+        "value": 0.1,
+        "unit": "mph",
+        "rationale": "Diagnostic physical request offset; no legal tolerance."
       }
     },
     {
@@ -103,20 +183,28 @@
       "target_type": "boundary_probe",
       "rationale": "Above-posted requested-speed diagnostic; observed boundary crossing and authority remain unresolved",
       "variable_assignments": {
-        "requested_speed_mph": {
-          "kind": "controller",
-          "value": 25.1,
+        "posted_limit_mph": {
+          "kind": "world_setup",
+          "value": 25,
           "unit": "mph"
         },
-        "sampled_speed_mph": {
+        "zone_boundary_s_m": {
+          "kind": "world_setup",
+          "value": 700,
+          "unit": "m"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 11.220704000000001,
+          "unit": "m/s"
+        },
+        "ego_speed": {
           "kind": "subject_behavior",
           "value": null,
           "unit": "mph"
         }
       },
-      "unresolved_judgment_calls": [
-        "Public-authority posting, governed highway portion, sign visibility and actual Native motion unresolved"
-      ],
+      "unresolved_judgment_calls": [],
       "recording_description": {
         "channels": [
           {
@@ -136,34 +224,51 @@
       },
       "paired_probe_id": "posted_rate_boundary",
       "deliberate_differences": [
-        "requested_speed_mph"
+        "commanded_approach_speed"
       ],
       "probe": {
-        "primary_variable": "requested_speed_mph",
-        "comparison_or_standard": "strict greater-than sourced posted limit",
-        "target_value_or_branch": 25.1
+        "primary_variable": "ego_speed",
+        "comparison_or_standard": "strict greater than source-posted rate for traversed portion",
+        "target_value_or_branch": "above",
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": ">",
+        "unit": "mph",
+        "test_value": 25.1
+      },
+      "epsilon_used": {
+        "value": 0.1,
+        "unit": "mph",
+        "rationale": "Diagnostic physical request offset; no legal tolerance."
       }
     },
     {
       "case_id": "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__posted_outside_zone",
       "target_law_id": "NRS-484B-600-1c",
-      "target_type": "boundary_probe",
+      "target_type": "compliant_attempt",
       "rationale": "Outside-governed-portion diagnostic; original frame road-position join exercises exclusion only",
       "variable_assignments": {
-        "requested_speed_mph": {
-          "kind": "controller",
-          "value": 25.1,
+        "posted_limit_mph": {
+          "kind": "world_setup",
+          "value": 25,
           "unit": "mph"
         },
-        "sampled_speed_mph": {
+        "zone_boundary_s_m": {
+          "kind": "world_setup",
+          "value": 99.99992,
+          "unit": "m"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 11.220704000000001,
+          "unit": "m/s"
+        },
+        "ego_speed": {
           "kind": "subject_behavior",
           "value": null,
           "unit": "mph"
         }
       },
-      "unresolved_judgment_calls": [
-        "Public-authority posting, governed highway portion, sign visibility and actual Native motion unresolved"
-      ],
+      "unresolved_judgment_calls": [],
       "recording_description": {
         "channels": [
           {
@@ -183,12 +288,12 @@
       },
       "paired_probe_id": "governed_portion_extent",
       "deliberate_differences": [
-        "requested_speed_mph"
+        "zone_boundary_s_m"
       ],
       "probe": {
-        "primary_variable": "road_s_m",
-        "comparison_or_standard": "source-confirmed signed-zone boundary",
-        "target_value_or_branch": "outside"
+        "primary_variable": "zone_boundary_s_m",
+        "comparison_or_standard": "source-confirmed governed portion",
+        "target_value_or_branch": "outside diagnostic interval"
       }
     }
   ],

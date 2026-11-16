@@ -10,10 +10,40 @@
       "exit_code": 0,
       "log": "cpu-tests.log",
       "sha256": "6f6ceb67da40255d07cc663168303744f5c0cb56dbf21e7f115fd0399af297d9"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_before --output .runtime-work/c331230-primary-offline-v1",
+      "exit_code": 0,
+      "log": "primary-offline-v1.log",
+      "sha256": "3a5a4f098e30d94a5969b5621b548cf91309d9c12a9f6ac1df10cc4934c4d7b9"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/build_primary_diagnostic.py --output .runtime-work/c331230-primary-diagnostic-v2",
+      "exit_code": 0,
+      "log": "primary-diagnostic-v1.log",
+      "sha256": "5b13e53cca45414aade2ebd4a090965869527fa66a25af3d79e779426dda4ca2"
+    },
+    {
+      "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/finalizer.py --attempt .runtime-work/c331230-primary-diagnostic-v2 --output .runtime-work/c331230-primary-diagnostic-v2/saved-analysis.json",
+      "exit_code": 0,
+      "log": "primary-saved-v1.log",
+      "sha256": "3b1ce8669a93a4d7a88dcae83091045ca230272321079b3caf8d55d29331ff0f"
+    },
+    {
+      "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/finalizer.py --attempt .runtime-work/c331230-primary-negative-v1 --output .runtime-work/c331230-primary-negative-v1/saved-analysis.json",
+      "exit_code": 1,
+      "log": "primary-negative-v1.log",
+      "sha256": "f0abf5294d2e77141c70e40cc9a88cb17b453de4f8061c652d7b3037eddc6e1d"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-tests-primary-v1.log",
+      "sha256": "0ed25b3d4bdc7cc0bb167f10068135e2c9bba0ba3c3d237e3da53f60583c1bf5"
     }
   ],
   "remaining_gpu_checks": [
     "Actual proper sign, marked/unmarked near-side crosswalk, stop line, full halt, body entry and camera visibility."
   ],
-  "reason": "CPU-tested Native stop-sign trigger selection and source-joined full-body halt before near-side crosswalk then junction entry, including correct crosswalk-first hierarchy. Exact sign/crosswalk construction, controller, four-camera capture, saved finalizer, three distinct fallbacks per selected case, semantic proposals, offline/compatibility/saved-processing proofs and independent audits remain unfinished worker-owned CPU work. See HANDOFF.md."
+  "reason": "First exact marked-crosswalk primary construction passes offline and its four-frame saved-source diagnostic passes with a missing-stop-history negative. The site packet remains a synthetic unreviewed CPU fixture. Other selected cases, three fallbacks each, source-specific compatibility and runtime process-saved, canonical semantic proposals, independent delivery/comparison audits, and accepted physical/legal site evidence remain unfinished. See HANDOFF.md."
 }

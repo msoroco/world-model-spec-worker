@@ -1,0 +1,110 @@
+"""Source-bound CPU classifier and lifecycle fixtures; no physical acceptance."""
+import argparse
+import copy
+import json
+import sys
+import tempfile
+from pathlib import Path
+
+HERE=Path(__file__).resolve().parent
+REPO=HERE.parents[1]
+sys.path.insert(0,str(REPO/'runtime/scenario_pipeline'))
+from worker_exchange.common import sha
+from worker_exchange.native_output import physical_result,seal_capture
+from worker_exchange.saved_processing import record_native_exit,acknowledge_owner_release
+
+DIAGNOSTICS={
+ 'stop_ego_left_near_time':'diagnostic.json',
+ 'stop_ego_right_near_time':'second-diagnostic.json',
+ 'stop_ego_left_separated':'third-diagnostic.json',
+ 'stop_opposite_left_turn':'fourth-diagnostic.json'}
+
+def read(path):return json.loads(Path(path).read_text())
+def write(path,value):Path(path).write_text(json.dumps(value,indent=2,allow_nan=False)+'\n')
+
+def run(kind,case,output):
+ manifest=read(HERE/'execution-manifest.json')
+ entry=next(e for e in manifest['cases'] if e['case_id']==case)
+ construction_path=HERE/entry['construction']
+ if sha(construction_path)!=entry['construction_sha256']:raise ValueError('Exact primary construction changed')
+ construction=read(construction_path)
+ config=json.loads(next(f['content'] for f in construction['files'] if f['path']=='config.json'))
+ if config['selected_case_id']!=case:raise ValueError('Exact case config differs')
+ suffix=case.split('__')[-1]
+ source_path=HERE/DIAGNOSTICS[suffix]
+ sources=read(source_path)['files']
+ criterion=config['physical_completion']
+ if (criterion['criterion']!='intersection_clearance' or
+     criterion['motion_source']!='crossing_history.jsonl' or
+     criterion['body_key']!='ego.body_vertices_xy_m' or
+     criterion['intersection_polygon_xy_m']!=json.loads(sources['junction_context.json'])['intersection_polygon_xy_m']):
+    raise ValueError('Bundled physical completion criterion differs')
+ with tempfile.TemporaryDirectory(prefix='c125745-motion-') as tmp:
+  attempt=Path(tmp)
+  write(attempt/'config.json',config)
+  for name in ('trace.jsonl','video_frames.jsonl','crossing_history.jsonl'):
+   (attempt/name).write_text(sources[name])
+  write(attempt/'acquisition-provenance.json',{'provenance_kind':'native','diagnostic_fixture':True,
+      'scope':'Synthetic CPU classifier fixture; no Native physical acceptance'})
+  if kind=='lifecycle':
+   claims=read(HERE/'result.json')['tests']
+   saved=[]
+   for claim in claims:
+    command=claim.get('command','');log=claim.get('log','')
+    if ('runtime.py process-saved' in command and '--case '+case+' ' in command and
+        ('-primary-' in log or log.startswith('primary-')) and claim.get('exit_code')==0):
+     path=HERE/log
+     if path.is_file() and sha(path)==claim.get('sha256'):
+      data=read(path)
+      if data.get('passed') is True and data.get('recorded_only') is True:
+       saved.append((path,data))
+   if not saved:raise ValueError('Current exact primary saved-processing claim missing')
+   saved_path,saved_data=saved[-1]
+   write(attempt/'construction.json',construction)
+   (attempt/'runner.py').write_text(next(f['content'] for f in construction['files'] if f['path']=='runner.py'))
+   try:
+    seal_capture(attempt,frames=60,restoration={'restored':True},errors=[],
+        encoder_exit_codes={'fixture_encoder':1},context={'diagnostic_fixture':True})
+   except ValueError as error:
+    if 'unclosed/failed encoders' not in str(error):raise
+   else:raise AssertionError('Failed encoder was sealed')
+   sealed=seal_capture(attempt,frames=60,restoration={'restored':True},errors=[],
+      encoder_exit_codes={'fixture_encoder':0},context={'diagnostic_fixture':True})
+   try:acknowledge_owner_release(attempt,attempt/'owner-release.json',True)
+   except ValueError as error:
+    if 'Native process has not exited' not in str(error):raise
+   else:raise AssertionError('Premature owner release passed')
+   native=record_native_exit(attempt)
+   owner=acknowledge_owner_release(attempt,attempt/'owner-release.json',True)
+   events=sealed['events']+[native['event'],owner['event'],saved_data['events'][0]]
+   expected=['capture_finished','encoders_closed','restoration_verified','native_exit',
+             'owner_released','saved_processing_started']
+   if events!=expected:raise AssertionError('Saved processing lifecycle order differs')
+   result={'case_id':case,'events':events,'diagnostic_fixture':True,
+       'failed_encoder_rejected':True,'premature_release_rejected':True,
+       'saved_processing_log_sha256':sha(saved_path)}
+   write(output,result);return result
+  motion=attempt/'crossing_history.jsonl'
+  if kind=='missing_evidence':motion.unlink()
+  else:
+   rows=[json.loads(line) for line in motion.read_text().splitlines()]
+   first=copy.deepcopy(rows[0]['ego']['body_vertices_xy_m'])
+   for i,row in enumerate(rows):
+    offset=29*i/(len(rows)-1) if kind=='complete_motion' else 0
+    row['ego']['body_vertices_xy_m']=[[x+offset,y] for x,y in first]
+   motion.write_text(''.join(json.dumps(row)+'\n' for row in rows))
+  result=physical_result(attempt,{'target_checks':[]})
+  expected={'complete_motion':'met','incomplete_motion':'not_met','missing_evidence':'unverified'}[kind]
+  check=result['physical_checks']['maneuver']
+  if (check['status']!=expected or result['maneuver_completed']!=(expected=='met') or
+      not check['method'] or not check['sources'] or result['physical_acceptance_claimed'] is not False):
+   raise AssertionError('Physical classifier fixture differs: '+kind)
+  write(output,result)
+  return {'case_id':case,'fixture':kind,'maneuver_status':expected,'diagnostic_fixture':True,
+      'source_hashes':check['sources']}
+
+if __name__=='__main__':
+ p=argparse.ArgumentParser();p.add_argument('--kind',required=True,choices=('complete_motion','incomplete_motion','missing_evidence','lifecycle'))
+ p.add_argument('--case',required=True);p.add_argument('--output',required=True,type=Path)
+ a=p.parse_args();a.output.parent.mkdir(parents=True,exist_ok=True)
+ print(json.dumps(run(a.kind,a.case,a.output),sort_keys=True))
