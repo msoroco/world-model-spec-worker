@@ -65,10 +65,10 @@ def audit(suffix='below', service='tour_bus'):
                             if suffix == 'below' and candidate == 'primary' else
                             f'update035-shuttle-below-{candidate}-pinned-saved-v1.json'
                             if suffix == 'below' else
-                            f'update036-shuttle-{slug}-{candidate}-pinned-saved-v1.json')
+                            f'update{"036" if suffix == "at" else "037"}-shuttle-{slug}-{candidate}-pinned-saved-v1.json')
             negative_name = (f'update035-shuttle-below-{candidate}-negative.json'
                              if suffix == 'below' else
-                             f'update036-shuttle-{slug}-{candidate}-negative.json')
+                             f'update{"036" if suffix == "at" else "037"}-shuttle-{slug}-{candidate}-negative.json')
         else:
             summary_name = (('update032-below-primary-pinned-saved-recheck.json'
                              if suffix == 'below' else f'update033-tour-bus-{slug}-primary-recheck.json')

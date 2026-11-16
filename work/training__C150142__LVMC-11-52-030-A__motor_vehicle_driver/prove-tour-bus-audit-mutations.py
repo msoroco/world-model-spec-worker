@@ -47,7 +47,7 @@ if __name__ == '__main__':
         entry['candidates'][1]['trigger'] = entry['candidates'][0]['trigger']
     summary_path = ((f'update035-shuttle-below-fallback1-pinned-saved-v1.json'
                      if boundary == 'below' else
-                     f'update036-shuttle-{slug}-fallback1-pinned-saved-v1.json')
+                     f'update{"036" if suffix == "at" else "037"}-shuttle-{slug}-fallback1-pinned-saved-v1.json')
                     if service == 'shuttle_bus' else
                     f'update{update}-{slug}-fallback1-pinned-saved-v1.json')
     config_path = (f'shuttle-{slug}-fallback2-result-v1/v0001/analysis/config.json'
