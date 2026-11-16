@@ -2,6 +2,34 @@ import importlib.util
 import json
 import tempfile
 import unittest
+
+class SidewalkNativeCallTests(unittest.TestCase):
+ def test_opposed_sidewalk_calls_and_marked_rejection(self):
+  import importlib.util
+  from pathlib import Path
+  from types import SimpleNamespace
+  source=Path(__file__).resolve().parents[1]/'cases/unmarked_crosswalk_stop_before/runner.py'
+  spec=importlib.util.spec_from_file_location('unmarked_runner',source)
+  runner=importlib.util.module_from_spec(spec);spec.loader.exec_module(runner)
+  class Carla:
+   class LaneType:Sidewalk='sidewalk'
+   @staticmethod
+   def Location(x,y,z):return SimpleNamespace(x=x,y=y,z=z)
+  class Map:
+   def __init__(self):self.calls=[];self.marked=[];self.missing=False
+   def get_waypoint(self,point,project_to_road,lane_type):
+    self.calls.append((point.x,point.y,project_to_road,lane_type))
+    if self.missing:return None
+    return SimpleNamespace(lane_type='sidewalk',transform=SimpleNamespace(location=point))
+   def get_crosswalks(self):return self.marked
+  site={'sidewalk_anchor_points_xy_m':[[6,-3],[8,-3],[8,3],[6,3]],
+        'crosswalk_polygon_xy_m':[[6,-3],[8,-3],[8,3],[6,3]]}
+  world=Map();self.assertEqual(len(runner.validate_sidewalk_connection(world,Carla,site)),4)
+  self.assertEqual(world.calls,[(6,-3,False,'sidewalk'),(8,-3,False,'sidewalk'),(8,3,False,'sidewalk'),(6,3,False,'sidewalk')])
+  world.missing=True
+  with self.assertRaisesRegex(ValueError,'anchor missing'):runner.validate_sidewalk_connection(world,Carla,site)
+  world.missing=False;world.marked=[SimpleNamespace(x=7,y=0)]
+  with self.assertRaisesRegex(ValueError,'Marked Native crosswalk'):runner.validate_sidewalk_connection(world,Carla,site)
 from pathlib import Path
 from types import SimpleNamespace as NS
 

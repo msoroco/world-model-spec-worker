@@ -27,7 +27,8 @@ def _painted(root):
         raise ValueError('Missing source OpenDRIVE map')
     source = ET.parse(road).getroot()
     crosswalks = source.findall(".//object[@type='crosswalk']")
-    lines = source.findall(".//object[@name='StopLine']")
+    lines = [obj for obj in source.findall('.//object')
+             if obj.get('name') == 'StopLine' or obj.get('type') == 'StopLine']
     return lines, crosswalks, digest(road)
 
 
@@ -77,14 +78,64 @@ def compare(line_root, view_root):
             'legal_acceptance_claimed': False}
 
 
+def compare_crosswalk_priority(crosswalk_root, both_root):
+    """Check that adding a downstream line leaves the crosswalk reference fixed."""
+    crosswalk_root, both_root = Path(crosswalk_root), Path(both_root)
+    contexts = [json.loads((root / 'approach_context.json').read_text())
+                for root in (crosswalk_root, both_root)]
+    before, both = contexts
+    fixed = ('native_map_id', 'intersection_id', 'approach_road_id',
+             'approach_lane_id', 'native_stop_sign_id', 'crosswalk_polygon_xy_m',
+             'intersection_polygon_xy_m', 'approach_forward_xy')
+    for key in fixed:
+        if before.get(key) != both.get(key):
+            raise ValueError('Fixed source condition differs: ' + key)
+    if before.get('stop_line_exists') is not False or both.get('stop_line_exists') is not True:
+        raise ValueError('Deliberate stop-line presence difference missing')
+    before_lines, before_crosswalks, before_map = _painted(crosswalk_root)
+    both_lines, both_crosswalks, both_map = _painted(both_root)
+    if before_lines or len(before_crosswalks) != 1 or len(both_lines) != 1 or len(both_crosswalks) != 1:
+        raise ValueError('OpenDRIVE reference inventory differs')
+    if float(both_lines[0].attrib['s']) <= float(both_crosswalks[0].attrib['s']):
+        raise ValueError('Marked line is not downstream of crosswalk')
+    sources = ('stop_history.jsonl', 'video_frames.jsonl', *CAMERAS)
+    for name in sources:
+        if digest(crosswalk_root / name) != digest(both_root / name):
+            raise ValueError('Fixed source differs: ' + name)
+    reports = [json.loads((root / 'analysis-report.json').read_text()) for root in (crosswalk_root, both_root)]
+    values = [r['measurements']['crosswalk_halt_observation']['value'] for r in reports]
+    for value in values:
+        if value['selected_reference'] != 'near_side_crosswalk' or not value['halt_before_crosswalk_and_junction_observed']:
+            raise ValueError('Crosswalk selection or halt ordering failed')
+    for key in ('first_full_halt', 'first_crosswalk_entry', 'first_intersection_entry'):
+        if values[0][key] != values[1][key]:
+            raise ValueError('Fixed event differs: ' + key)
+    if values[1].get('stop_line_present_but_lower_priority') is not True:
+        raise ValueError('Downstream line precedence was not recorded')
+    return {'format': 'worker-crosswalk-priority-comparison',
+            'fixed_source_sha256': {name: digest(crosswalk_root / name) for name in sources},
+            'map_sha256': {'crosswalk_only': before_map, 'crosswalk_and_line': both_map},
+            'selected_reference': 'near_side_crosswalk',
+            'diagnostic_comparison_passed': True,
+            'physical_acceptance_claimed': False, 'legal_acceptance_claimed': False}
+
+
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('--line', type=Path, required=True)
-    parser.add_argument('--view', type=Path, required=True)
+    parser.add_argument('--line', type=Path)
+    parser.add_argument('--view', type=Path)
+    parser.add_argument('--crosswalk', type=Path)
+    parser.add_argument('--both', type=Path)
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
-    receipt = compare(args.line, args.view)
+    if args.crosswalk and args.both and not (args.line or args.view):
+        receipt = compare_crosswalk_priority(args.crosswalk, args.both)
+        receipt['comparison_id'] = 'crosswalk_vs_crosswalk_and_line'
+    elif args.line and args.view and not (args.crosswalk or args.both):
+        receipt = compare(args.line, args.view)
+    else:
+        parser.error('Supply --line and --view, or --crosswalk and --both')
     args.output.write_text(json.dumps(receipt, indent=2) + '\n')
     print(json.dumps({'comparison_id': receipt['comparison_id'],
                       'diagnostic_comparison_passed': receipt['diagnostic_comparison_passed']}))

@@ -48,7 +48,12 @@ def finalize(attempt,output):
        'official_sign_status':'unresolved'},'method':'original stop-sign and approach source',
     'sources':{name:sources[name] for name in ('approach_context.json','stop_history.jsonl')}}}
  channels=attempt/'channels';channels.mkdir()
- write(channels/'stop_context.json',{'case_id':CASE,'measurements':measurements,
+ write(channels/'stop_context.json',{'case_id':CASE,
+       'stop_context':{'near_side_crosswalk_exists':ctx['near_side_crosswalk_exists'],
+                       'crosswalk_origin':ctx['crosswalk_origin'],
+                       'native_stop_sign_id':ctx['native_stop_sign_id'],
+                       'legal_conclusion':'unresolved'},
+       'measurements':measurements,
        'legal_conclusion':'unresolved'})
  with (channels/'halt_timing.jsonl').open('w') as stream:
   for row in report['samples']:

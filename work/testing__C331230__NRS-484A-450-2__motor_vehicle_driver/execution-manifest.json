@@ -7,7 +7,7 @@
       "case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_before",
       "kind": "delivery",
       "construction": "construction.json",
-      "construction_sha256": "b1942e004834d6a549995b5c163ba1b225bd20dd406872e841d3b89799b63853",
+      "construction_sha256": "3718c766d71d32290c6db296f9b96aec519ff07279c0615565191c6c9f020740",
       "candidate_risk": {
         "status": "physical",
         "reason": "Native stop position can overshoot the crosswalk"
@@ -42,7 +42,8 @@
         "negative_log_sha256": "f0abf5294d2e77141c70e40cc9a88cb17b453de4f8061c652d7b3037eddc6e1d",
         "scope": "four-frame synthetic original-source finalizer proof; no Native physical acceptance"
       },
-      "measurement_contract": "measurement-contract.json"
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/diagnostic-recipe.json"
     },
     {
       "case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__no_crosswalk_marked_stop_line",
@@ -85,6 +86,69 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       }
+    },
+    {
+      "case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_inside",
+      "kind": "delivery",
+      "construction": "cases/marked_crosswalk_stop_inside/construction.json",
+      "construction_sha256": "ced6f6ba5fe35a7b4e86365f4c064152a7f32f8895b419cbd4d86663125f2704",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Feedback brake after body entry may stop beyond the marked crosswalk"
+      },
+      "candidates": [],
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "measurement_contract": "cases/marked_crosswalk_stop_inside/measurement-contract.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "fixture_recipe": "work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/cases/marked_crosswalk_stop_inside/diagnostic-recipe.json"
+    },
+    {
+      "case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__crosswalk_and_stop_line",
+      "kind": "delivery",
+      "construction": "cases/crosswalk_and_stop_line/construction.json",
+      "construction_sha256": "36aad863b7274009efe201eeccd20e98d44c8c75dabb43e4418a79dc5f16bb2a",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native crosswalk and StopLine may not coexist in the chosen two-way junction"
+      },
+      "candidates": [],
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "measurement_contract": "cases/crosswalk_and_stop_line/measurement-contract.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "fixture_recipe": "work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/cases/crosswalk_and_stop_line/diagnostic-recipe.json"
+    },
+    {
+      "case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__unmarked_crosswalk_stop_before",
+      "kind": "delivery",
+      "construction": "cases/unmarked_crosswalk_stop_before/construction.json",
+      "construction_sha256": "6c10ac321e017815c1fbe404b5b9e3bf71b4432f5d74b49ad484845db5b533f5",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Opposed Native sidewalk continuations may not form a reviewed unmarked crosswalk"
+      },
+      "candidates": [],
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "measurement_contract": "cases/unmarked_crosswalk_stop_before/measurement-contract.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "fixture_recipe": "work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/cases/unmarked_crosswalk_stop_before/diagnostic-recipe.json"
     }
   ],
   "status": "partial_three_case_cpu_bundle"
