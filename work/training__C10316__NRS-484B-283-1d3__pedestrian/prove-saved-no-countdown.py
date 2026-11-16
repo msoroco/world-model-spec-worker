@@ -30,16 +30,15 @@ def write_rows(path, values):
 
 def source_hashes(folder):
     return {str(path.relative_to(folder)): sha(path) for path in folder.rglob('*')
-            if path.is_file() and path.name not in ('result.json', 'analysis-report.json')}
+            if path.is_file() and path.name not in ('result.json', 'analysis-report.json')
+            and 'channels' not in path.relative_to(folder).parts}
 
 
 def make_base(destination, suffix):
     shutil.copytree(SOURCE, destination)
     for name in ('result.json', 'analysis-report.json', 'native_samples.jsonl', 'crosswalk-context.json'):
         (destination / name).unlink(missing_ok=True)
-    for old, new in (('reference_corner.mkv', 'crosswalk_side.mkv'),
-                     ('pedestrian_reference.mkv', 'display_close.mkv')):
-        (destination / old).rename(destination / new)
+    (destination / 'pedestrian_reference.mkv').rename(destination / 'driver_reference.mkv')
     for path in (destination / 'channels').glob('*.jsonl'):
         path.unlink()
     construction = json.loads((HERE / 'draft-bundles' / suffix / 'primary/construction.json').read_text())

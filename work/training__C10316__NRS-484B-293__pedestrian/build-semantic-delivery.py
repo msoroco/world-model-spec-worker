@@ -29,7 +29,7 @@ def write(name, value):
 def build():
     source = REPO / 'inputs' / HERE.name / 'assignment.json'
     a = read(source)
-    law = a['law_record']
+    law = a['law']
     law_id, actor, cell_id = a['law_id'], a['actor'], a['cell_id']
     request = {'cell': a['cell'], 'actor': actor}
     rules = read(stages.ROOT / 'data/canonical_parameter_aliases.json')
@@ -144,9 +144,9 @@ def build():
     (HERE / 'execution-manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
     index = {'format': 'worker-semantic-delivery', 'assignment_id': HERE.name, 'stages': refs}
     index_ref = write('semantic-index', index)
-    proof = validate_delivery(HERE, {**a, 'law': law}, manifest)
+    proof = validate_delivery(HERE, a, manifest)
     proof_ref = write('semantic-delivery-proof', {'format': 'c10316-semantic-cpu-v1',
-        'read_only_law_record_adapter': True, 'stage_validation': proof,
+        'canonical_law_field': True, 'stage_validation': proof,
         'native_crosswalk_verified': False, 'practicability_verified': False,
         'judgment_sweep_complete': False})
     return {'stage_validation': proof, 'index': index_ref, 'proof': proof_ref}

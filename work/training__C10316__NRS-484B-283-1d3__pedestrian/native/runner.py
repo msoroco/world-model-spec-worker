@@ -25,9 +25,9 @@ def camera_specs(plan):
          'xyz': [-8, 0, 7], 'yaw': 0, 'pitch': -45},
         {'name': 'approach', 'width': 1280, 'height': 720,
          'xyz': [-6, -4, 3], 'yaw': 35, 'pitch': -20},
-        {'name': 'crosswalk_side', 'width': 1280, 'height': 720,
+        {'name': 'reference_corner', 'width': 1280, 'height': 720,
          'xyz': [0, 5, 3], 'yaw': -90, 'pitch': -25},
-        {'name': 'display_close', 'width': e['display_camera_width'],
+        {'name': 'driver_reference', 'width': e['display_camera_width'],
          'height': e['display_camera_height'],
          'xyz': [-3.7-e['display_camera_distance_m'], -2, 2.4],
          'yaw': 0, 'pitch': 0},
@@ -191,7 +191,7 @@ def execute(config, output, host, port):
                     data = rgb.tobytes()
                     pixels[spec['name']] = hashlib.sha256(data).hexdigest()
                     encoders[spec['name']].stdin.write(data)
-                observed['original_display_frame_sha256'] = pixels['display_close']
+                observed['original_display_frame_sha256'] = pixels['driver_reference']
                 samples.write(json.dumps(observed, allow_nan=False) + '\n')
                 frame_map.write(json.dumps({'video_frame': index, 'native_frame': frame,
                     'carla_frame': frame, 'time_s': time_s, 'source_rgb_sha256': pixels}) + '\n')

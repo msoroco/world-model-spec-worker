@@ -117,6 +117,34 @@ def measure_crosswalk_area(attempt):
             'method':'measure_crosswalk_area','sources':observed['sources']}
 
 
+def derive_channels(attempt, description, motion, mapping, survey):
+    """Rebuild adapter channels from retained Native samples, never fixture channels."""
+    channel_dir = attempt / 'channels'
+    channel_dir.mkdir(exist_ok=True)
+    for channel in description['channels']:
+        name = channel['name']
+        path = channel_dir / (name + '.jsonl')
+        values = []
+        for sample, frame_map in zip(motion, mapping):
+            source_values = {
+                'drv.backing': {'signed_forward_velocity_m_s': sample['signed_forward_velocity_m_s']},
+                'drv.turning': {'heading_deg': sample['heading_deg']},
+                'st.crosswalk': {'crosswalk_polygon_xy_m': survey['crosswalk_polygon_xy_m'], 'surveyed': True},
+                'st.intersection': {'intersection_polygon_xy_m': survey['intersection_polygon_xy_m']},
+                'rel.occupies': {'body_xy_m': sample['body_xy_m'],
+                                 'intersection_polygon_xy_m': survey['intersection_polygon_xy_m']},
+                'kin.heading': {'heading_deg': sample['heading_deg']},
+                'kin.velocity': {'speed_m_s': sample['speed_m_s'],
+                                 'signed_forward_velocity_m_s': sample['signed_forward_velocity_m_s']},
+                'native_body_pose_control': sample,
+                'camera_frame_join': frame_map,
+            }
+            if name not in source_values:
+                raise ValueError('Unsupported derived channel: ' + name)
+            values.append(json.dumps({'time_s': sample['time_s'], 'value': source_values[name]}, allow_nan=False))
+        path.write_text('\n'.join(values) + '\n')
+
+
 def finalize(attempt,output):
     attempt=Path(attempt).resolve();output=Path(output).resolve()
     if output.exists() or (attempt/'result.json').exists():
@@ -128,7 +156,7 @@ def finalize(attempt,output):
         raise ValueError("Recording duration/rate does not yield an integral frame count")
     original=verify_original_joins(attempt,count)
     measured=measure_corner(attempt)
-    videos=[f'{name}.mkv' for name in ('overview','approach','corner','reverse')]
+    videos=[f'{name}.mkv' for name in ('overview','approach','reference_corner','driver_reference')]
     video_counts={name:video_frames(attempt/name) for name in videos}
     if any(frames!=count for frames in video_counts.values()):
         raise ValueError("Source camera frame count differs from delivered trace")
@@ -142,6 +170,8 @@ def finalize(attempt,output):
     completed=math.dist(endpoint,target)<=.4 and \
               abs(saved_motion[-1]['signed_forward_velocity_m_s'])<=.05 and actual['backing_frames']>=10
     description=config['recording_description']
+    derive_channels(attempt, description, saved_motion, rows(attempt/'video_frames.jsonl'),
+                    json.loads((attempt/'road_geometry.json').read_text()))
     recording_evidence=[]
     for channel in description['channels']:
         name=channel['name'];reference='channels/'+name+'.jsonl'

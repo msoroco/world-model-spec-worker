@@ -15,7 +15,7 @@ import networkx as nx
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 sys.path.insert(0, str(ROOT / 'runtime/pipeline/scenario_pipeline'))
-from worker_exchange.package_compatibility import run, materialize_case
+from worker_exchange.package_compatibility import _process_fixture, materialize_case
 from worker_exchange.runtime_cli import execution_env
 
 
@@ -40,7 +40,7 @@ def fixture_at(destination, suffix):
     graph_dir.mkdir(parents=True, exist_ok=True)
     for event, frame, telemetry in zip(evidence, frames, trace):
         assert frame['frame'] == event['replay_frame']
-        event['ego']['speed_provenance'] = 'original_trace_actor_get_velocity'
+        event['ego']['speed_provenance'] = 'synthetic_native_sample'
         event['synthetic_diagnostic'] = True
         telemetry['synthetic_diagnostic'] = True
         telemetry['control'] = {'throttle': 0, 'brake': 0, 'hand_brake': False}
@@ -71,10 +71,11 @@ def main():
     fixture_at(source, args.suffix)
     manifest = HERE / 'draft-execution-manifest.json'
     case = 'training__C10316__NRS-484B-283-1d3__pedestrian__' + args.suffix
-    receipt = run(manifest, case, source, scratch / 'output',
+    receipt = _process_fixture(manifest, case, source, scratch / 'output',
                   ROOT / 'runtime/pipeline/library',
-                  ROOT / '.runtime-work/decoder-refresh-20261105/.lake/build/bin/adapterCheck',
+                  ROOT / '.runtime-work/c10316-current-decoder/.lake/build/bin/adapterCheck',
                   args.candidate)
+    (scratch / 'output/compatibility.json').write_text(json.dumps(receipt, indent=2) + '\n')
     negative = scratch / 'negative'
     materialize_case(manifest, case, negative, source, args.candidate)
     (negative / 'no-countdown-samples.jsonl').unlink()

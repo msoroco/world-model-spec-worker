@@ -7,7 +7,7 @@ def camera_plan(candidate='primary'):
        'attachment':'world','xyz_m':[6,-18,35],'pitch_deg':-65},
       {'name':'approach','width':1280,'height':720,'fov_deg':90,
        'attachment':'world','xyz_m':[17,-10,12],'pitch_deg':-40},
-      {'name':'corner','width':1280,'height':720,'fov_deg':90,
+      {'name':'reference_corner','width':1280,'height':720,'fov_deg':90,
        'attachment':'world','xyz_m':[10,10,15],'pitch_deg':-55},
-      {'name':'reverse','width':1280,'height':720,'fov_deg':90,
+      {'name':'driver_reference','width':1280,'height':720,'fov_deg':90,
        'attachment':'world','xyz_m':[2,-8,10],'pitch_deg':-40}]

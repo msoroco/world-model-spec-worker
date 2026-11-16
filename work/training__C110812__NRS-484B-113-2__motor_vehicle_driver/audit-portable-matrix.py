@@ -27,10 +27,11 @@ def main():
             path = HERE / ("portable-proof-" + suffix + "-" + candidate + ".json")
             proof = json.loads(path.read_text())
             positive = proof["positive"]; negative = proof["negative"]
-            if positive["format"] != "worker-package-compatibility-v1" or positive["passed"] is not True:
+            if positive["format"] != "worker-package-compatibility" or positive["passed"] is not True:
                 raise ValueError("Pinned portable positive absent")
             if not {"actual_analysis", "native_validation", "mandatory_observations",
-                    "lean_decoder", "render", "final_decode", "acquisition_unchanged"} <= set(positive["checks"]):
+                    "lean_decoder", "render", "final_decode", "acquisition_unchanged",
+                    "derived_outputs_rebuilt", "four_camera_sources"} <= set(positive["checks"]):
                 raise ValueError("Portable checks incomplete")
             if positive["case_id"] != entry["case_id"] or positive["candidate_id"] != candidate or \
                positive["construction_sha256"] != ref["construction_sha256"] or \
@@ -55,9 +56,10 @@ def main():
                 raise ValueError("Portable missing-source negative differs")
             scratch = Path(proof["scratch"])
             fixture = Path(proof["fixture"])
-            receipt = json.loads((scratch / "output/compatibility.json").read_text())
-            if {k: v for k, v in receipt.items() if k != "fixture_manifest"} != positive:
-                raise ValueError("Saved runtime receipt differs from exported proof")
+            if not (scratch / "output/final-decode.json").is_file():
+                raise ValueError("Current runtime full video decode receipt absent")
+            if (fixture / 'channels').exists():
+                raise ValueError("Diagnostic fixture supplied derived channels")
             report = json.loads((scratch / "output/analysis-report.json").read_text())
             if set(report["measurements"]) != {"reverse_motion_frames",
                                                "backing_corner_relation",
@@ -91,7 +93,7 @@ def main():
                outcomes["condition_b/" + c]["heading_change_deg"] == 90
                for c in ("primary", "fallback1", "fallback2", "fallback3")):
         raise ValueError("Controlled reverse-corner contrast differs")
-    print(json.dumps({"passed": True, "scope": "independent exact portable v1 synthetic audit",
+    print(json.dumps({"passed": True, "scope": "independent current-runtime synthetic audit",
                       "ready": False, "packages": len(outcomes),
                       "controlled_variable": "backing_around_street_corner",
                       "fixed_conditions_checked": True, "cases": outcomes}, indent=2))

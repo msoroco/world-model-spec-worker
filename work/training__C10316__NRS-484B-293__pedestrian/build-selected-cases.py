@@ -32,7 +32,7 @@ def build() -> dict:
     plan = read(HERE / "case-plan.json")
     proposal = read(HERE / "proposals/cases.json")
     draft = read(HERE / "draft-execution-manifest.json")
-    if (assignment["law_record"]["text"] != LAW or
+    if (assignment["law"]["text"] != LAW or
             len(witnesses) != 1 or witnesses[0]["witness"]["quote"] != LAW or
             witnesses[0]["witness"]["decision"] != "conditional" or
             assignment["local_snapshot"]["memberships"]["full-train"] or

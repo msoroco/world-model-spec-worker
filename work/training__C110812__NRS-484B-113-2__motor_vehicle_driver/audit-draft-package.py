@@ -12,7 +12,7 @@ def sha(path): return hashlib.sha256(path.read_bytes()).hexdigest()
 
 def main():
     assignment = json.loads((REPO / "inputs" / HERE.name / "assignment.json").read_text())
-    if assignment["law_record"]["source"] != "NRS 484B.113(2)":
+    if assignment["law"]["source"] != "NRS 484B.113(2)":
         raise ValueError("Statutory source differs")
     if (assignment["cell"]["layout"],assignment["cell"]["maneuver"],assignment["cell"]["control"]) != \
        ("intersection","reverse","street_corner"):

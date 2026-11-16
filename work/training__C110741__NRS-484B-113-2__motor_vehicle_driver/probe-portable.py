@@ -16,8 +16,8 @@ ROOT = HERE.parents[1]
 sys.path.insert(0, str(HERE / "native"))
 sys.path.insert(0, str(ROOT / "runtime/pipeline/scenario_pipeline"))
 from geometry import body, STOPS
-from traffic_spec_adapter.adapter import load_graph
-from worker_exchange.package_compatibility import run, materialize_case
+from worker_exchange.fixture_generator import _graph
+from worker_exchange.package_compatibility import _process_fixture, materialize_case
 from worker_exchange.runtime_cli import execution_env
 
 
@@ -44,7 +44,9 @@ def fixture(destination: Path, suffix: str):
     (destination / "road_geometry.json").write_text(json.dumps(survey))
     (destination / "context.json").write_text(json.dumps({"surveyed_crosswalk": survey}))
     trace = []; evidence = []; mapping = []; motion = []; history = []; frames = []
-    graph = load_graph(ROOT / "runtime/pipeline/fixtures/retained-speed/capture/native/graphs/base/00021714.pkl")
+    example = json.loads((ROOT / "runtime/pipeline/fixtures/example.json").read_text())
+    graph_spec = next(item for item in example["graphs"] if "/base/" in item["path"])
+    graph = _graph(graph_spec)
     graph_dir = destination / "capture/native/graphs/base"; graph_dir.mkdir(parents=True)
     stop = STOPS[suffix]
     for i in range(480):
@@ -80,13 +82,14 @@ def fixture(destination: Path, suffix: str):
                          "ego": {"body_vertices_m": vertices,
                                  "position_m": [x, y, .5], "heading_deg": 0,
                                  "speed_mps": speed,
-                                 "speed_provenance": "original_trace_actor_get_velocity"},
+                                 "speed_provenance": "synthetic_native_sample"},
                          "world": {"weather": {"cloudiness": 0, "precipitation": 0,
                                                "wetness": 0, "fog_density": 0},
                                    "road_projection": {"road_id": road,
                                                        "section_id": 0, "lane_id": -1,
                                                        "s_m": x + 100}}})
         graph.graph["frame"] = frame
+        graph.graph["synthetic_diagnostic"] = True
         (graph_dir / f"{frame:08d}.pkl").write_bytes(pickle.dumps(graph, protocol=4))
         frames.append({"frame": frame, "simulation_time": time_s,
                        "time_s": time_s,
@@ -103,31 +106,15 @@ def fixture(destination: Path, suffix: str):
         "sources": {"road.xodr": sha(HERE / "native/road.xodr"),
                     "trace.jsonl": sha(destination / "trace.jsonl")},
         "synthetic_diagnostic": True}))
-    (destination / "channels").mkdir()
-    for channel in config["recording_description"]["channels"]:
-        name = channel["name"]
-        values = []
-        for i, sample in enumerate(motion):
-            speed = sample["speed_m_s"]
-            mapping_row = mapping[i]
-            by_name = {"drv.backing": {"signed_forward_velocity_m_s": sample["signed_forward_velocity_m_s"]},
-                       "st.crosswalk": survey,
-                       "st.intersection": {"intersection_polygon_xy_m": survey["intersection_polygon_xy_m"]},
-                       "rel.occupies": {"body_xy_m": sample["body_xy_m"],
-                                        "crosswalk_polygon_xy_m": survey["crosswalk_polygon_xy_m"]},
-                       "kin.heading": {"heading_deg": 0},
-                       "kin.velocity": {"speed_m_s": speed,
-                                        "signed_forward_velocity_m_s": sample["signed_forward_velocity_m_s"]},
-                       "native_body_pose_control": sample,
-                       "camera_frame_join": mapping_row}
-            values.append({"time_s": sample["time_s"], "value": by_name[name]})
-        write_rows(destination / "channels" / (name + ".jsonl"), values)
-    for camera in config["cameras"]:
-        size = f"{camera['width']}x{camera['height']}"
+    from worker_exchange.capture import PROFILE
+    names = ("overview", "approach", "reference_corner", "driver_reference")
+    sizes = (PROFILE["overview"], *PROFILE["detail_views"])
+    for name, (width, height) in zip(names, sizes):
+        size = f"{width}x{height}"
         subprocess.run(["ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error", "-y",
                         "-f", "lavfi", "-i", f"color=c=black:s={size}:r=20:d=24",
                         "-frames:v", "480", "-c:v", "ffv1",
-                        str(destination / (camera["name"] + ".mkv"))],
+                        str(destination / (name + ".mkv"))],
                        check=True, timeout=120)
 
 
@@ -151,9 +138,9 @@ def main():
                 if c["case_id"].endswith("__" + args.suffix))
     output = scratch / "output"
     print("scratch", scratch, flush=True)
-    receipt = run(HERE / "draft-execution-manifest.json", case, source, output,
+    receipt = _process_fixture(HERE / "draft-execution-manifest.json", case, source, output,
                   ROOT / "runtime/pipeline/library",
-                  ROOT / ".runtime-work/decoder-refresh-20261105/.lake/build/bin/adapterCheck",
+                  ROOT / ".runtime-work/decoder-update16/.lake/build/bin/adapterCheck",
                   args.candidate)
     negative = scratch / "negative"
     materialize_case(HERE / "draft-execution-manifest.json", case, negative, source, args.candidate)

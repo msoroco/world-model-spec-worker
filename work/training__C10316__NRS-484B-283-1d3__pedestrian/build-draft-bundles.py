@@ -53,7 +53,12 @@ def build():
         contract = HERE / 'draft-no-countdown' / suffix / 'measurement-contract.json'
         if json.loads(contract.read_text())['case_id'] != case_id:
             raise ValueError('No-countdown contract identity differs')
+        current_contract = json.loads(contract.read_text())
+        current_contract['format'] = 'worker-measurement-contract'
+        current_contract['requirements'][0]['inputs'] = ['no-countdown-samples.jsonl', 'no-countdown-context.json']
+        contract.write_text(json.dumps(current_contract, indent=2) + '\n')
         entry = {'case_id': case_id, 'kind': 'draft_not_selected',
+                 'fixture_recipe': str((HERE / ('diagnostic-' + suffix + '-recipe.json')).relative_to(ROOT)),
                  'candidate_risk': {'status': 'physical',
                                     'reason': 'Native no-countdown device, display pixels, governance, walker crossing and highway status remain unverified'},
                  'measurement_contract': str(contract.relative_to(HERE)),
@@ -73,7 +78,7 @@ def build():
                       'source_packets': [],
                       'cameras': [{'name': name, 'width': width, 'height': height} for name, width, height in (
                           ('overview', 1920, 1080), ('approach', 1280, 720),
-                          ('crosswalk_side', 1280, 720), ('display_close', 1280, 720))],
+                          ('reference_corner', 1280, 720), ('driver_reference', 1280, 720))],
                       'recording_description': description,
                       'status': 'unselected_no_countdown_native_capture_proposal'}
             assert (e['display_camera_width'], e['display_camera_height']) == (1280, 720)

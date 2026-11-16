@@ -52,6 +52,7 @@ def main() -> None:
         case_id = next(c["case_id"] for c in case_plan["cases"]
                        if c["case_id"].endswith("__" + {"condition_a":"false","condition_b":"true"}[suffix]))
         entry = {"case_id": case_id, "kind": "draft_not_selected",
+                 "fixture_recipe": str((HERE / f'diagnostic-{suffix}-recipe.json').relative_to(REPO)),
                  "candidate_risk": {"status": "physical",
                                     "reason": "Native reverse tracking, corner map readback and original pixels require physical observations"},
                  "measurement_procedure": {"entrypoint": "finalize.py",
@@ -59,7 +60,7 @@ def main() -> None:
                  "measurement_contract": f"draft-candidates/{suffix}/measurement-contract.json",
                  "candidates": []}
         write(HERE / entry["measurement_contract"], {
-            "format": "worker-measurement-contract-v1", "case_id": case_id,
+            "format": "worker-measurement-contract", "case_id": case_id,
             "requirements": [
                 {"disposition_index": 0, "requirement": "text-0",
                  "source": "inputs/coverage/branch-sources.json",
@@ -103,7 +104,7 @@ def main() -> None:
                       "cameras": [{"name": name, "width": width, "height": height}
                                   for name, width, height in
                                   (("overview", 1920, 1080), ("approach", 1280, 720),
-                                   ("corner", 1280, 720), ("reverse", 1280, 720))],
+                                   ("reference_corner", 1280, 720), ("driver_reference", 1280, 720))],
                       "engineering_knobs": plan["knobs"],
                       "status": "unselected_native_runner_prototype"}
             files = shared + [{"path": "config.json", "content": json.dumps(config, indent=2) + "\n"}]

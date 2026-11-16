@@ -17,8 +17,9 @@ sys.path.insert(0, str(HERE / "native"))
 sys.path.insert(0, str(ROOT / "runtime/pipeline/scenario_pipeline"))
 from geometry import body, pose, TOTAL_REVERSE_DISTANCE
 from traffic_spec_adapter.adapter import load_graph
-from worker_exchange.package_compatibility import run, materialize_case
+from worker_exchange.package_compatibility import _process_fixture, materialize_case
 from worker_exchange.runtime_cli import execution_env
+from worker_exchange.fixture_generator import _graph
 
 
 def write_rows(path: Path, rows):
@@ -44,7 +45,9 @@ def fixture(destination: Path, suffix: str):
     (destination / "road_geometry.json").write_text(json.dumps(survey))
     (destination / "context.json").write_text(json.dumps({"surveyed_corner": survey}))
     trace = []; evidence = []; mapping = []; motion = []; history = []; frames = []
-    graph = load_graph(ROOT / "runtime/pipeline/fixtures/retained-speed/capture/native/graphs/base/00021714.pkl")
+    example = json.loads((ROOT / "runtime/pipeline/fixtures/example.json").read_text())
+    graph = _graph(next(item for item in example['graphs']
+                        if item['path'].startswith('capture/native/graphs/base/')))
     graph_dir = destination / "capture/native/graphs/base"; graph_dir.mkdir(parents=True)
     for i in range(480):
         frame = 100 + i; time_s = .05 * (i + 1)
@@ -80,7 +83,7 @@ def fixture(destination: Path, suffix: str):
                          "ego": {"body_vertices_m": vertices,
                                  "position_m": [x, y, .5], "heading_deg": heading,
                                  "speed_mps": speed,
-                                 "speed_provenance": "original_trace_actor_get_velocity"},
+                                 "speed_provenance": "synthetic_native_sample"},
                          "world": {"weather": {"cloudiness": 0, "precipitation": 0,
                                                "wetness": 0, "fog_density": 0},
                                    "road_projection": {"road_id": road,
@@ -103,26 +106,6 @@ def fixture(destination: Path, suffix: str):
         "sources": {"road.xodr": sha(HERE / "native/road.xodr"),
                     "trace.jsonl": sha(destination / "trace.jsonl")},
         "synthetic_diagnostic": True}))
-    (destination / "channels").mkdir()
-    for channel in config["recording_description"]["channels"]:
-        name = channel["name"]
-        values = []
-        for i, sample in enumerate(motion):
-            speed = sample["speed_m_s"]
-            mapping_row = mapping[i]
-            by_name = {"drv.backing": {"signed_forward_velocity_m_s": sample["signed_forward_velocity_m_s"]},
-                       "drv.turning": {"heading_deg":sample["heading_deg"]},
-                       "st.crosswalk": {"crosswalk_polygon_xy_m":survey["crosswalk_polygon_xy_m"],"surveyed":True},
-                       "st.intersection": {"intersection_polygon_xy_m": survey["intersection_polygon_xy_m"]},
-                       "rel.occupies": {"body_xy_m": sample["body_xy_m"],
-                                        "intersection_polygon_xy_m": survey["intersection_polygon_xy_m"]},
-                       "kin.heading": {"heading_deg": sample["heading_deg"]},
-                       "kin.velocity": {"speed_m_s": speed,
-                                        "signed_forward_velocity_m_s": sample["signed_forward_velocity_m_s"]},
-                       "native_body_pose_control": sample,
-                       "camera_frame_join": mapping_row}
-            values.append({"time_s": sample["time_s"], "value": by_name[name]})
-        write_rows(destination / "channels" / (name + ".jsonl"), values)
     for camera in config["cameras"]:
         size = f"{camera['width']}x{camera['height']}"
         subprocess.run(["ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error", "-y",
@@ -152,10 +135,11 @@ def main():
                 if c["case_id"].endswith("__" + {"condition_a":"false","condition_b":"true"}[args.suffix]))
     output = scratch / "output"
     print("scratch", scratch, flush=True)
-    receipt = run(HERE / "draft-execution-manifest.json", case, source, output,
+    receipt = _process_fixture(HERE / "draft-execution-manifest.json", case, source, output,
                   ROOT / "runtime/pipeline/library",
-                  ROOT / ".runtime-work/decoder-refresh-20261105/.lake/build/bin/adapterCheck",
+                  ROOT / ".runtime-work/c110812-current-decoder/.lake/build/bin/adapterCheck",
                   args.candidate)
+    (output / 'compatibility.json').write_text(json.dumps(receipt, indent=2) + '\n')
     negative = scratch / "negative"
     materialize_case(HERE / "draft-execution-manifest.json", case, negative, source, args.candidate)
     (negative / "native_samples.jsonl").unlink()

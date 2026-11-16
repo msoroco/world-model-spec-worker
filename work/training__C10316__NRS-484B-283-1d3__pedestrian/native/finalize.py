@@ -71,10 +71,42 @@ def no_countdown_entry(folder):
     return measure(folder / 'no-countdown-samples.jsonl', folder / 'no-countdown-context.json')
 
 
+def derive_channels(folder, count):
+    """Build measured channels from retained acquisition after joins are checked."""
+    trace = rows(folder, 'trace.jsonl')
+    evidence = rows(folder, 'capture/evidence.jsonl')
+    samples = rows(folder, 'no-countdown-samples.jsonl')
+    mapping = rows(folder, 'video_frames.jsonl')
+    if any(len(source) != count for source in (trace, evidence, samples, mapping)):
+        raise ValueError('Cannot derive channels from incomplete original sources')
+    channels = {name: [] for name in ('kin.position', 'kin.heading', 'rel.occupies',
+                                     'native_display_program', 'display_camera_frame_join')}
+    for t, e, s, m in zip(trace, evidence, samples, mapping):
+        time = m['time_s']
+        heading = math.radians(float(e['ego']['heading_deg']))
+        values = {
+            'kin.position': e['ego']['position_m'][:2],
+            'kin.heading': [math.cos(heading), math.sin(heading)],
+            'rel.occupies': {'crosswalk_id': s['crosswalk_id'],
+                             'original_footprint_xy_m': s['pedestrian_footprint_xy_m']},
+            'native_display_program': {'indication': s['indication'],
+                                       'illuminated': s['display_illuminated'],
+                                       'countdown_visible': s['countdown_visible']},
+            'display_camera_frame_join': m,
+        }
+        for name, value in values.items():
+            channels[name].append({'time_s': time, 'value': value})
+    directory = folder / 'channels'
+    directory.mkdir(exist_ok=True)
+    for name, values in channels.items():
+        (directory / (name + '.jsonl')).write_text(
+            ''.join(json.dumps(row, allow_nan=False) + '\n' for row in values))
+
+
 def report(folder, case_id):
     folder = Path(folder)
     value = no_countdown_entry(folder)
-    sources = {name: sha(folder / name) for name in ('no-countdown-samples.jsonl', 'no-countdown-context.json', 'road.xodr')}
+    sources = {name: sha(folder / name) for name in ('no-countdown-samples.jsonl', 'no-countdown-context.json')}
     return {'format': 'worker-analysis-report-v1', 'case_id': case_id,
             'measurements': {'no_countdown_entry_and_clearance': {
                 'method': 'no_countdown_entry', 'value': value, 'sources': sources}},
@@ -91,6 +123,7 @@ def finalize(attempt, output):
     if count != 240:
         raise ValueError('Full 12-second no-countdown window changed')
     joins = verify_original_joins(attempt, count)
+    derive_channels(attempt, count)
     analysis = report(attempt, config['case_id'])
     measured = analysis['measurements']['no_countdown_entry_and_clearance']['value']
     context = json.loads(required(attempt, 'no-countdown-context.json').read_text())
