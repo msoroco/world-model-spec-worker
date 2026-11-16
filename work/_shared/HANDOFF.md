@@ -1393,3 +1393,7 @@ The C125751 worker added `build_diagnostic_constructions.py:audit_release_attemp
 The refreshed full strict gate exits 1 at `preparation.py:276` with `Preparation acceptance failed: partial/missing packages remain`; its exact output is `.runtime-work/c125751-release-audit-strict-gate.log`. Current inventory: 5 ready, 38 partial of 43; 8,600 returned files. Goal remains active.
 
 C125751 also passed a four-point authored synthetic controller/crossing source-join proof with release indices 8/9/10/11 and measured deltas -0.10/-0.05/0/+0.05 s; see its case-plan and ignored `.runtime-work/c125751-release-entry-four-point.log`. This remains diagnostic and does not supply Native release response.
+
+## C125751 separate-run comparison repair in progress, 2026-11-16
+
+The C125751 comparison audit now permits observed trajectories, camera bytes and frame IDs to differ between operative and Off Native runs, while enforcing fixed site/construction policy, each result's source hashes, each run's original signal/frame join and entry states. Six focused tests pass. All eight revised exact constructions passed staged offline/positive-negative compatibility/recorded-only saved proof, and were promoted with byte-preserved backups. Returned exact reproof is underway; see C125751 HANDOFF and ignored `.runtime-work/c125751-comparison-repair-stage/returned-proof-results.json`. C125751 stays partial until receipts and canonical checks are refreshed.
