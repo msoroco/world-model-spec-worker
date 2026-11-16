@@ -19,7 +19,7 @@ SOURCES = ("subject_motion.jsonl", "video_frames.jsonl", "road_context.json",
            "trace.jsonl", "capture/evidence.jsonl", "overview.mkv", "approach.mkv",
            "reference_corner.mkv", "driver_reference.mkv")
 FIXED_CONFIG = ("law_id", "cell_id", "actor", "duration_s", "fps", "rate_hz",
-                "authored_scene_sha256", "camera_transforms", "corridor_context")
+                "authored_scene_sha256", "cameras", "camera_transforms", "corridor_context")
 FIXED_CONTEXT = ("native_map_id", "road_id", "lane_id", "route_source",
                  "alley_source", "access_aisle_source", "road_authority_source",
                  "subject_blueprint_id", "subject_actor_id")

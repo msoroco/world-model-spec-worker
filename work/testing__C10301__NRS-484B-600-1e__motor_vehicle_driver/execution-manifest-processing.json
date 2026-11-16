@@ -7,7 +7,7 @@
       "case_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__source_verified_below_80",
       "kind": "delivery",
       "construction": "construction.json",
-      "construction_sha256": "a3a35f5c16b85921fdd5d9ad18d38b535776d9451b848d324fee1f100a2d71b8",
+      "construction_sha256": "46605fd7401448160ff086e31766b66e9ac0774916271dc17f5d9fcae8ae6aac",
       "recording_description": {
         "channels": [
           {
@@ -30,7 +30,631 @@
       "measurement_procedure": {
         "entrypoint": "finalizer.py"
       },
-      "fixture_recipe": "work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/fixture-recipe.json"
+      "fixture_recipe": "work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/fixture-recipe.json",
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "46605fd7401448160ff086e31766b66e9ac0774916271dc17f5d9fcae8ae6aac",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__source_verified_below_80 --candidate primary --output .runtime-work/c10301-camera-below_80-primary-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "log": "primary-offline.log",
+        "log_sha256": "7782af2c45943e1fe2f2df0d0c59d7308cef1c68e2682f6f26aae09670b3e5c3"
+      },
+      "compatibility": {
+        "receipt": "primary-compatibility.json",
+        "sha256": "41e637874d8b2d872438a54f01572aa2d82faf471bbfd70f7bfefee3773ad38f",
+        "log": "primary-compatibility-analysis.log",
+        "negative_log": "primary-negative-analysis.log",
+        "camera_decode_receipt": "primary-camera-decode.json",
+        "camera_decode_sha256": "a8fa98b2c5c566935a41d9c999c75552e199743a8a1248216c6538b9eb0a2636",
+        "command_log": "primary-compatibility-command.log",
+        "command_log_sha256": "41e637874d8b2d872438a54f01572aa2d82faf471bbfd70f7bfefee3773ad38f"
+      },
+      "negative": {
+        "log": "primary-negative-analysis.log"
+      },
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "original actor.get_velocity joined to Native frame and sampled at 20 Hz",
+          "evidence": "subject_motion.jsonl plus video_frames.jsonl"
+        }
+      },
+      "saved_processing": {
+        "receipt": "primary-saved-processing.json",
+        "sha256": "256868bc85ebd405acd8f2f847d82c4180c28ae02d8bb55e4972587d14ee1493",
+        "log": "primary-saved-command.log",
+        "log_sha256": "256868bc85ebd405acd8f2f847d82c4180c28ae02d8bb55e4972587d14ee1493",
+        "proof_manifest": "execution-manifest-processing.json",
+        "proof_manifest_sha256": "3e617aea708328c62e8d5bf49adba87c4b7a0510cdf60997ffaaabd2a9b242d7"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Authored 1500 m route may lack a Native spawn point with a full uninterrupted lane or enough braking margin; actual Native map not yet run."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallbacks/fallback1-construction.json",
+          "construction_sha256": "56941fa43e56a5cec848bedb412b429128b216362c8532a47763eddb5df69de9",
+          "trigger": {
+            "source": "Native route selection and road_context.json",
+            "metric": "measured uninterrupted lane length",
+            "failure_condition": "Primary select_corridor raises No source-reviewed Native corridor meets requested length at 1500 m"
+          },
+          "changed_knobs": [
+            "corridor_context.minimum_length_m: 1500 -> 1300 m"
+          ],
+          "physical_limit": "Do not run if 1300 m cannot fit acceleration, 30 s target-speed travel and braking; no source-backed feasibility claim.",
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "56941fa43e56a5cec848bedb412b429128b216362c8532a47763eddb5df69de9",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__source_verified_below_80 --candidate fallback1 --output .runtime-work/c10301-camera-below_80-fallback1-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "log": "fallbacks/fallback1-offline.log",
+            "log_sha256": "ddf1533863d9e6321904a76db1cdd08798a4f5a87a6875f1b7091cad32bd6662"
+          },
+          "compatibility": {
+            "receipt": "fallbacks/fallback1-compatibility.json",
+            "sha256": "1cce1d5d98872fd9be1c4267800152812af0ba26feb0ae235987a6236cff130b",
+            "log": "fallbacks/fallback1-analysis.log",
+            "negative_log": "fallbacks/fallback1-negative.log",
+            "command_log": "fallbacks/fallback1-command.log",
+            "command_log_sha256": "1cce1d5d98872fd9be1c4267800152812af0ba26feb0ae235987a6236cff130b"
+          },
+          "saved_processing": {
+            "receipt": "fallbacks/fallback1-saved-processing.json",
+            "sha256": "09223729189d1699ce599d78f11aab4e4a0761ede4693b1df609ece89f2e36c4",
+            "log": "fallbacks/fallback1-saved-command.log",
+            "log_sha256": "09223729189d1699ce599d78f11aab4e4a0761ede4693b1df609ece89f2e36c4",
+            "proof_manifest": "execution-manifest-fallback1-processing.json",
+            "proof_manifest_sha256": "fa074618e03926b92476d626c5d665124c3b953d226a9153e978884afd71356a"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "fallbacks/fallback2-construction.json",
+          "construction_sha256": "8ac956b1c9141411f1edc04e76cfabe31673328229476e41d56a7139787daaab",
+          "trigger": {
+            "source": "independent pixel coverage audit of reference_corner.mkv",
+            "metric": "subject and marked aisle visible over required interval",
+            "failure_condition": "Primary reference-corner view fails documented subject/aisle coverage at any required source interval"
+          },
+          "changed_knobs": [
+            "camera_transforms.reference_corner.location: (410,12,6) -> (405,18,10) m"
+          ],
+          "physical_limit": "Raise and move the reference-corner camera to recover aisle/subject visibility; physical view must be checked.",
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "8ac956b1c9141411f1edc04e76cfabe31673328229476e41d56a7139787daaab",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__source_verified_below_80 --candidate fallback2 --output .runtime-work/c10301-camera-below_80-fallback2-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "log": "fallbacks/fallback2-offline.log",
+            "log_sha256": "1808f7ac0c7bbf8cc667919cca3f49259c480bf91856cf632c96a13a57050be1"
+          },
+          "compatibility": {
+            "receipt": "fallbacks/fallback2-compatibility.json",
+            "sha256": "7590ae92f05a105b8d2d9038bc063f43bab73c43c28518b51a719135cc4219e2",
+            "log": "fallbacks/fallback2-analysis.log",
+            "negative_log": "fallbacks/fallback2-negative.log",
+            "command_log": "fallbacks/fallback2-command.log",
+            "command_log_sha256": "7590ae92f05a105b8d2d9038bc063f43bab73c43c28518b51a719135cc4219e2"
+          },
+          "saved_processing": {
+            "receipt": "fallbacks/fallback2-saved-processing.json",
+            "sha256": "5b42bced2679ce1e914039b922c6f30c7dd6492875d27a0cfcffa329c4f46c4b",
+            "log": "fallbacks/fallback2-saved-command.log",
+            "log_sha256": "5b42bced2679ce1e914039b922c6f30c7dd6492875d27a0cfcffa329c4f46c4b",
+            "proof_manifest": "execution-manifest-fallback23-processing.json",
+            "proof_manifest_sha256": "6837de30f6ceb26d9a3cbf8291701a4f6a6e1e88b8085b32d44ae5a4368d4915"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "fallbacks/fallback3-construction.json",
+          "construction_sha256": "8c975c7339f7864ee62d0f2a7822072755148f318955b4799868305082759431",
+          "trigger": {
+            "source": "original subject_motion.jsonl and Native actor spawn status",
+            "metric": "attained 3D sampled speed and successful blueprint spawn",
+            "failure_condition": "Primary Tesla Model3 fails spawn or remains below 78.5 mph sampled peak despite full route and controller attempt"
+          },
+          "changed_knobs": [
+            "corridor_context.subject_blueprint_id: vehicle.tesla.model3 -> vehicle.audi.tt"
+          ],
+          "physical_limit": "Alternative Native vehicle blueprint for acceleration feasibility; availability and actual speed unverified.",
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "8c975c7339f7864ee62d0f2a7822072755148f318955b4799868305082759431",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__source_verified_below_80 --candidate fallback3 --output .runtime-work/c10301-camera-below_80-fallback3-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "log": "fallbacks/fallback3-offline.log",
+            "log_sha256": "fe2f66c125799006707c45fd91ee65e75ce528680c17749a6b20ce24c2661782"
+          },
+          "compatibility": {
+            "receipt": "fallbacks/fallback3-compatibility.json",
+            "sha256": "6b01ec060c980259c807b7c47afdd7146a2b6246c8f50b2e2413314dae87fa73",
+            "log": "fallbacks/fallback3-analysis.log",
+            "negative_log": "fallbacks/fallback3-negative.log",
+            "command_log": "fallbacks/fallback3-command.log",
+            "command_log_sha256": "6b01ec060c980259c807b7c47afdd7146a2b6246c8f50b2e2413314dae87fa73"
+          },
+          "saved_processing": {
+            "receipt": "fallbacks/fallback3-saved-processing.json",
+            "sha256": "7330ffbd96cd398668dbb44115778d06f39a82b1695c3d9b597fdf25146e7f70",
+            "log": "fallbacks/fallback3-saved-command.log",
+            "log_sha256": "7330ffbd96cd398668dbb44115778d06f39a82b1695c3d9b597fdf25146e7f70",
+            "proof_manifest": "execution-manifest-fallback23-processing.json",
+            "proof_manifest_sha256": "6837de30f6ceb26d9a3cbf8291701a4f6a6e1e88b8085b32d44ae5a4368d4915"
+          }
+        }
+      ],
+      "delivery_acceptance": {
+        "case_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__source_verified_below_80",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "f9d155da499ee617ea357058fcf88191c853d9268a96c37f1ec96b992d40aff3",
+        "command": ".venv-cpu/bin/python work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/delivery_audit.py --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__source_verified_below_80 --mode positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-source_verified_below_80-positive.log",
+        "test_log_sha256": "ce969f3e1123cac77623804cf116436ee657725acad3e8ca399b111ec922209f",
+        "negative_command": ".venv-cpu/bin/python work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/delivery_audit.py --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__source_verified_below_80 --mode negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: overview.mkv",
+        "negative_log": "delivery-source_verified_below_80-negative.log",
+        "negative_log_sha256": "b1d8ec1cfa0f6314176547f8eb525451cd5c0ce6fafca332346143aab2b70c72",
+        "proof_scope": "diagnostic CPU source integrity and physical-check provenance only; setup, target and maneuver not_met; no physical acceptance"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proofs/below80/receipt.json",
+        "sha256": "5cfd4372ac249749a99500780fb93e6cde3bb1a7afc09909e54b3dcbe48cfdee"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "capture_command": ".venv-cpu/bin/python runtime.py capture --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__source_verified_below_80 --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
+        "scope": "local Native execution after CPU preparation; not run in this worker"
+      }
+    },
+    {
+      "case_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__source_verified_at_80",
+      "kind": "delivery",
+      "construction": "cases/at80/primary-construction.json",
+      "construction_sha256": "4f9323277c24cf6aafbf88b63304167e3dc47709f385525e77dc88776eaeba48",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "mph",
+            "method": "3D magnitude of original actor.get_velocity joined to source frame",
+            "time_window": "full 30 second 20 Hz capture",
+            "reference_frame": "Native subject actor",
+            "uncertainty": "sampled speeds; between-sample maxima unresolved",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Synthetic OpenDRIVE geometry is diagnostic; legal public-way status and physical attainment remain unresolved."
+        ]
+      },
+      "readiness": "partial; equality attainment and legal public-way status unresolved",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "fixture_recipe": "work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/cases/at80/fixture-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Exact 80 mph equality may be unattained or transient, and authored Native lane/view/vehicle feasibility is untested."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/at80/fallback1-construction.json",
+          "construction_sha256": "6425b3a291e80125af348c036666574c793137a89a5b5d32078e7b4c048bd072",
+          "trigger": {
+            "source": "Native route selection and road_context.json",
+            "metric": "measured uninterrupted lane length",
+            "failure_condition": "Primary 1500 m lane selection fails"
+          },
+          "changed_knobs": [
+            "corridor_context.minimum_length_m: 1500 -> 1300 m"
+          ],
+          "physical_limit": "Fallback1 shorter measured lane demand; braking margin unverified.",
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "6425b3a291e80125af348c036666574c793137a89a5b5d32078e7b4c048bd072",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__source_verified_at_80 --candidate fallback1 --output .runtime-work/c10301-camera-at_80-fallback1-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "log": "cases/at80/fallback1-offline.log",
+            "log_sha256": "0e2c9121a137108984a4129e637763cabbe3dd7d8bfb9828b354ddbed2275874"
+          },
+          "compatibility": {
+            "receipt": "cases/at80/fallback1-compatibility.json",
+            "sha256": "ccf25d7239c2b1962f0517812f60df7b6f54f8ca6c92c6ddc8e9e786d0ce09f2",
+            "log": "cases/at80/fallback1-analysis.log",
+            "negative_log": "cases/at80/fallback1-negative.log",
+            "command_log": "cases/at80/fallback1-command.log",
+            "command_log_sha256": "ccf25d7239c2b1962f0517812f60df7b6f54f8ca6c92c6ddc8e9e786d0ce09f2"
+          },
+          "saved_processing": {
+            "receipt": "cases/at80/fallback1-saved-processing.json",
+            "sha256": "250ea899c4d1ce1f54d691cd2f3084a8109b1fcd92008d82e77ee2be1a4ad4cc",
+            "log": "cases/at80/fallback1-saved-command.log",
+            "log_sha256": "250ea899c4d1ce1f54d691cd2f3084a8109b1fcd92008d82e77ee2be1a4ad4cc",
+            "proof_manifest": "cases/at80/execution-manifest-processing.json",
+            "proof_manifest_sha256": "a04ab9fe49346934a33a79ad5931d66373aeff1bcdae217740adaa6ab64ac7ad"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/at80/fallback2-construction.json",
+          "construction_sha256": "626c08a855bc4312cebfda97bed802bc4c49747eb5d7e4653ceb9a8a77055ad8",
+          "trigger": {
+            "source": "independent reference_corner.mkv pixel coverage audit",
+            "metric": "subject and marked access aisle visible in required intervals",
+            "failure_condition": "Primary view misses subject or aisle in any required interval"
+          },
+          "changed_knobs": [
+            "camera_transforms.reference_corner.location: (410,12,6) -> (405,18,10) m"
+          ],
+          "physical_limit": "Fallback2 revised reference-corner camera; physical visibility unverified.",
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "626c08a855bc4312cebfda97bed802bc4c49747eb5d7e4653ceb9a8a77055ad8",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__source_verified_at_80 --candidate fallback2 --output .runtime-work/c10301-camera-at_80-fallback2-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "log": "cases/at80/fallback2-offline.log",
+            "log_sha256": "2248742886185c9af966c753908f29dfbc52203bb48d2e409684c1fc8a0a36f8"
+          },
+          "compatibility": {
+            "receipt": "cases/at80/fallback2-compatibility.json",
+            "sha256": "bc0f95c9a4b4acac31eaa4b2a9ab62991cbca922fb7107d5dad47759fcd14b3a",
+            "log": "cases/at80/fallback2-analysis.log",
+            "negative_log": "cases/at80/fallback2-negative.log",
+            "command_log": "cases/at80/fallback2-command.log",
+            "command_log_sha256": "bc0f95c9a4b4acac31eaa4b2a9ab62991cbca922fb7107d5dad47759fcd14b3a"
+          },
+          "saved_processing": {
+            "receipt": "cases/at80/fallback2-saved-processing.json",
+            "sha256": "bf5f6ea56aff6c65b8c7618761fad25e518a04000c86cc69c11bbbd461287a8e",
+            "log": "cases/at80/fallback2-saved-command.log",
+            "log_sha256": "bf5f6ea56aff6c65b8c7618761fad25e518a04000c86cc69c11bbbd461287a8e",
+            "proof_manifest": "cases/at80/execution-manifest-processing.json",
+            "proof_manifest_sha256": "a04ab9fe49346934a33a79ad5931d66373aeff1bcdae217740adaa6ab64ac7ad"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/at80/fallback3-construction.json",
+          "construction_sha256": "63ad19536b10d53ae2718d7f3314e9b2a974df675ce9e39014fbf86a8eae71ab",
+          "trigger": {
+            "source": "original subject_motion.jsonl and Native spawn status",
+            "metric": "attained sampled 3D speed at equality target",
+            "failure_condition": "Primary Tesla Model3 fails spawn or remains below 79.5 mph sampled peak"
+          },
+          "changed_knobs": [
+            "corridor_context.subject_blueprint_id: vehicle.tesla.model3 -> vehicle.audi.tt"
+          ],
+          "physical_limit": "Fallback3 alternative vehicle acceleration; availability and physical speed unverified.",
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "63ad19536b10d53ae2718d7f3314e9b2a974df675ce9e39014fbf86a8eae71ab",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__source_verified_at_80 --candidate fallback3 --output .runtime-work/c10301-camera-at_80-fallback3-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "log": "cases/at80/fallback3-offline.log",
+            "log_sha256": "3ba725e82b96001e842007b1c680f97b3da7997729d9169764191ed15cc34328"
+          },
+          "compatibility": {
+            "receipt": "cases/at80/fallback3-compatibility.json",
+            "sha256": "b4d0d44f412261008930bf9b9c88f2ad83bb5e65795850834d557ee196ffc469",
+            "log": "cases/at80/fallback3-analysis.log",
+            "negative_log": "cases/at80/fallback3-negative.log",
+            "command_log": "cases/at80/fallback3-command.log",
+            "command_log_sha256": "b4d0d44f412261008930bf9b9c88f2ad83bb5e65795850834d557ee196ffc469"
+          },
+          "saved_processing": {
+            "receipt": "cases/at80/fallback3-saved-processing.json",
+            "sha256": "ba68ac443f3c35e86a251914d495265d1e9ef5385fc72fdb535986010c787025",
+            "log": "cases/at80/fallback3-saved-command.log",
+            "log_sha256": "ba68ac443f3c35e86a251914d495265d1e9ef5385fc72fdb535986010c787025",
+            "proof_manifest": "cases/at80/execution-manifest-processing.json",
+            "proof_manifest_sha256": "a04ab9fe49346934a33a79ad5931d66373aeff1bcdae217740adaa6ab64ac7ad"
+          }
+        }
+      ],
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "original actor.get_velocity joined to Native frame and sampled at 20 Hz",
+          "evidence": "subject_motion.jsonl plus video_frames.jsonl"
+        }
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "4f9323277c24cf6aafbf88b63304167e3dc47709f385525e77dc88776eaeba48",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__source_verified_at_80 --candidate primary --output .runtime-work/c10301-camera-at_80-primary-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "log": "cases/at80/primary-offline.log",
+        "log_sha256": "d550e6f369ea36de3c004c2e656426115fb9dcf910b7fb08fd40fefe5075d3b4"
+      },
+      "compatibility": {
+        "receipt": "cases/at80/primary-compatibility.json",
+        "sha256": "a756e1f97f65938d9af6b77b0fa491dbc6a1a9056c5c074b3fc358d52f378c50",
+        "log": "cases/at80/primary-analysis.log",
+        "negative_log": "cases/at80/primary-negative.log",
+        "command_log": "cases/at80/primary-command.log",
+        "command_log_sha256": "a756e1f97f65938d9af6b77b0fa491dbc6a1a9056c5c074b3fc358d52f378c50"
+      },
+      "saved_processing": {
+        "receipt": "cases/at80/primary-saved-processing.json",
+        "sha256": "8cda87cb332acc9a586153c9dee353752b1d128b99d03563e8c3cc5eee0e4e80",
+        "log": "cases/at80/primary-saved-command.log",
+        "log_sha256": "8cda87cb332acc9a586153c9dee353752b1d128b99d03563e8c3cc5eee0e4e80",
+        "proof_manifest": "cases/at80/execution-manifest-processing.json",
+        "proof_manifest_sha256": "a04ab9fe49346934a33a79ad5931d66373aeff1bcdae217740adaa6ab64ac7ad"
+      },
+      "negative": {
+        "log": "cases/at80/primary-negative.log"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__source_verified_at_80",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "f9d155da499ee617ea357058fcf88191c853d9268a96c37f1ec96b992d40aff3",
+        "command": ".venv-cpu/bin/python work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/delivery_audit.py --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__source_verified_at_80 --mode positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-source_verified_at_80-positive.log",
+        "test_log_sha256": "e32f1cb17362c037532bda4b9de2a3d27edf697e748b8d3ebc588e683cce8b8c",
+        "negative_command": ".venv-cpu/bin/python work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/delivery_audit.py --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__source_verified_at_80 --mode negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: overview.mkv",
+        "negative_log": "delivery-source_verified_at_80-negative.log",
+        "negative_log_sha256": "b1d8ec1cfa0f6314176547f8eb525451cd5c0ce6fafca332346143aab2b70c72",
+        "proof_scope": "diagnostic CPU source integrity and physical-check provenance only; setup, target and maneuver not_met; no physical acceptance"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proofs/at80/receipt.json",
+        "sha256": "53398fcf8b842c875805d000aa9db59c759b47502dcab8fb54b04748f344c9cb"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "capture_command": ".venv-cpu/bin/python runtime.py capture --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__source_verified_at_80 --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
+        "scope": "local Native execution after CPU preparation; not run in this worker"
+      }
+    },
+    {
+      "case_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__source_verified_above_80",
+      "kind": "delivery",
+      "construction": "cases/above80/primary-construction.json",
+      "construction_sha256": "ed2c2c945cf392c7fe494321ae547744efddc67a4e973dadd93353ba98579ae8",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "mph",
+            "method": "3D magnitude of original actor.get_velocity joined to source frame",
+            "time_window": "full 30 second 20 Hz capture",
+            "reference_frame": "Native subject actor",
+            "uncertainty": "sampled speeds; between-sample maxima unresolved",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Synthetic OpenDRIVE geometry is diagnostic; legal public-way status and physical attainment remain unresolved."
+        ]
+      },
+      "readiness": "partial; above-boundary attainment and legal public-way status unresolved",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "fixture_recipe": "work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/cases/above80/fixture-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Above-80 sampled rate may be unattained; corridor, camera and vehicle feasibility are untested."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/above80/fallback1-construction.json",
+          "construction_sha256": "7752d1f3679c3534146edc22affd9af947b57d9bb62172c18b69f450d972fa16",
+          "trigger": {
+            "source": "Native route selection and road_context.json",
+            "metric": "measured uninterrupted lane length",
+            "failure_condition": "Primary 1500 m lane selection fails"
+          },
+          "changed_knobs": [
+            "corridor_context.minimum_length_m: 1500 -> 1300 m"
+          ],
+          "physical_limit": "Fallback1 shorter lane requirement; physical braking margin unverified.",
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "7752d1f3679c3534146edc22affd9af947b57d9bb62172c18b69f450d972fa16",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__source_verified_above_80 --candidate fallback1 --output .runtime-work/c10301-camera-above_80-fallback1-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "log": "cases/above80/fallback1-offline.log",
+            "log_sha256": "d0ff0b0146e183b72ba47212b45c6894fd430d3d8a75bd0fb8ce70787206ef3c"
+          },
+          "compatibility": {
+            "receipt": "cases/above80/fallback1-compatibility.json",
+            "sha256": "df43d5d82f182dce904aa57c29a458c1dae305047a3fd94a165ff746b331a9eb",
+            "log": "cases/above80/fallback1-analysis.log",
+            "negative_log": "cases/above80/fallback1-negative.log",
+            "command_log": "cases/above80/fallback1-command.log",
+            "command_log_sha256": "df43d5d82f182dce904aa57c29a458c1dae305047a3fd94a165ff746b331a9eb"
+          },
+          "saved_processing": {
+            "receipt": "cases/above80/fallback1-saved-processing.json",
+            "sha256": "4274080aef08e3e800e9e824634d1ef8376bbc0daf3a682d0778451b7e3836ab",
+            "log": "cases/above80/fallback1-saved-command.log",
+            "log_sha256": "4274080aef08e3e800e9e824634d1ef8376bbc0daf3a682d0778451b7e3836ab",
+            "proof_manifest": "cases/above80/execution-manifest-processing.json",
+            "proof_manifest_sha256": "f66e19b8df3630d4ccead15631a8c6fc43298baace71c86ef652a498ea416309"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/above80/fallback2-construction.json",
+          "construction_sha256": "041b6052c434c4e8902403175ff058d275ff64c2ae61851ad60b94463b12a95a",
+          "trigger": {
+            "source": "independent reference_corner.mkv pixel coverage audit",
+            "metric": "subject and marked access aisle visible in required intervals",
+            "failure_condition": "Primary view misses subject or aisle in any required interval"
+          },
+          "changed_knobs": [
+            "camera_transforms.reference_corner.location: (410,12,6) -> (405,18,10) m"
+          ],
+          "physical_limit": "Fallback2 revised reference-corner view; physical visibility unverified.",
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "041b6052c434c4e8902403175ff058d275ff64c2ae61851ad60b94463b12a95a",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__source_verified_above_80 --candidate fallback2 --output .runtime-work/c10301-camera-above_80-fallback2-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "log": "cases/above80/fallback2-offline.log",
+            "log_sha256": "160ac1f0c6dd00ee65962cca64ef49bef792569dd1ce4f3b60f10098b38c2890"
+          },
+          "compatibility": {
+            "receipt": "cases/above80/fallback2-compatibility.json",
+            "sha256": "555538ee5c4f8d42b92fad1285b75650e4be1a5ca225717ba47855ffb6d4d31e",
+            "log": "cases/above80/fallback2-analysis.log",
+            "negative_log": "cases/above80/fallback2-negative.log",
+            "command_log": "cases/above80/fallback2-command.log",
+            "command_log_sha256": "555538ee5c4f8d42b92fad1285b75650e4be1a5ca225717ba47855ffb6d4d31e"
+          },
+          "saved_processing": {
+            "receipt": "cases/above80/fallback2-saved-processing.json",
+            "sha256": "5cfe64a80e0f96ed13a2f4b83edfdb7ae67793500bbfba51940af9a88b70d83c",
+            "log": "cases/above80/fallback2-saved-command.log",
+            "log_sha256": "5cfe64a80e0f96ed13a2f4b83edfdb7ae67793500bbfba51940af9a88b70d83c",
+            "proof_manifest": "cases/above80/execution-manifest-processing.json",
+            "proof_manifest_sha256": "f66e19b8df3630d4ccead15631a8c6fc43298baace71c86ef652a498ea416309"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/above80/fallback3-construction.json",
+          "construction_sha256": "076fca4d2fca3fb1ed594b8d09f7c84ed8d48508c8adec986e359c2ad511e9cb",
+          "trigger": {
+            "source": "original subject_motion.jsonl and Native spawn status",
+            "metric": "attained sampled 3D speed above strict 80 mph boundary",
+            "failure_condition": "Primary Tesla Model3 fails spawn or does not attain any sampled speed greater than 80 mph"
+          },
+          "changed_knobs": [
+            "corridor_context.subject_blueprint_id: vehicle.tesla.model3 -> vehicle.audi.tt"
+          ],
+          "physical_limit": "Fallback3 alternative vehicle acceleration; availability and physical speed unverified.",
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "076fca4d2fca3fb1ed594b8d09f7c84ed8d48508c8adec986e359c2ad511e9cb",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__source_verified_above_80 --candidate fallback3 --output .runtime-work/c10301-camera-above_80-fallback3-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "log": "cases/above80/fallback3-offline.log",
+            "log_sha256": "933e5fa541753175961a35aba68a2b5d697f614b55a188cf0be3abab2c61f01e"
+          },
+          "compatibility": {
+            "receipt": "cases/above80/fallback3-compatibility.json",
+            "sha256": "c9540f785770b92923736450898d1965d763dc40d4dd26c5f60347481e865176",
+            "log": "cases/above80/fallback3-analysis.log",
+            "negative_log": "cases/above80/fallback3-negative.log",
+            "command_log": "cases/above80/fallback3-command.log",
+            "command_log_sha256": "c9540f785770b92923736450898d1965d763dc40d4dd26c5f60347481e865176"
+          },
+          "saved_processing": {
+            "receipt": "cases/above80/fallback3-saved-processing.json",
+            "sha256": "9f1d6f0f49f8849e805da7fe9802d57383e32a31b58063411254e70fda6cfe27",
+            "log": "cases/above80/fallback3-saved-command.log",
+            "log_sha256": "9f1d6f0f49f8849e805da7fe9802d57383e32a31b58063411254e70fda6cfe27",
+            "proof_manifest": "cases/above80/execution-manifest-processing.json",
+            "proof_manifest_sha256": "f66e19b8df3630d4ccead15631a8c6fc43298baace71c86ef652a498ea416309"
+          }
+        }
+      ],
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "original actor.get_velocity joined to Native frame and sampled at 20 Hz",
+          "evidence": "subject_motion.jsonl plus video_frames.jsonl"
+        }
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "ed2c2c945cf392c7fe494321ae547744efddc67a4e973dadd93353ba98579ae8",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__source_verified_above_80 --candidate primary --output .runtime-work/c10301-camera-above_80-primary-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "log": "cases/above80/primary-offline.log",
+        "log_sha256": "3e23f763e17cad4925b4b6eb5e923775af1b7594dc6972f26bbb8f2ded2a4f20"
+      },
+      "compatibility": {
+        "receipt": "cases/above80/primary-compatibility.json",
+        "sha256": "df3befaadd0fa8cf476c6fadfa56e748e64ff901467dc7cf1a57d74c3d448ebe",
+        "log": "cases/above80/primary-analysis.log",
+        "negative_log": "cases/above80/primary-negative.log",
+        "command_log": "cases/above80/primary-command.log",
+        "command_log_sha256": "df3befaadd0fa8cf476c6fadfa56e748e64ff901467dc7cf1a57d74c3d448ebe"
+      },
+      "saved_processing": {
+        "receipt": "cases/above80/primary-saved-processing.json",
+        "sha256": "bbdbe4fb2e9a1f3573ed4e7e370a5f78e19dafceccf7e86c4a962b3ae11ef23f",
+        "log": "cases/above80/primary-saved-command.log",
+        "log_sha256": "bbdbe4fb2e9a1f3573ed4e7e370a5f78e19dafceccf7e86c4a962b3ae11ef23f",
+        "proof_manifest": "cases/above80/execution-manifest-processing.json",
+        "proof_manifest_sha256": "f66e19b8df3630d4ccead15631a8c6fc43298baace71c86ef652a498ea416309"
+      },
+      "negative": {
+        "log": "cases/above80/primary-negative.log"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__source_verified_above_80",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "f9d155da499ee617ea357058fcf88191c853d9268a96c37f1ec96b992d40aff3",
+        "command": ".venv-cpu/bin/python work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/delivery_audit.py --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__source_verified_above_80 --mode positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-source_verified_above_80-positive.log",
+        "test_log_sha256": "94c3bec2607c269c47dfcda2751fb376e8613b77ff746972a83aa46e7aa40c2f",
+        "negative_command": ".venv-cpu/bin/python work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/delivery_audit.py --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__source_verified_above_80 --mode negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: overview.mkv",
+        "negative_log": "delivery-source_verified_above_80-negative.log",
+        "negative_log_sha256": "b1d8ec1cfa0f6314176547f8eb525451cd5c0ce6fafca332346143aab2b70c72",
+        "proof_scope": "diagnostic CPU source integrity and physical-check provenance only; setup, target and maneuver not_met; no physical acceptance"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proofs/above80/receipt.json",
+        "sha256": "69be8359ab0160373376a6cf03373d3b067a89aafa260a491b1eaf90682fdcca"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "capture_command": ".venv-cpu/bin/python runtime.py capture --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__source_verified_above_80 --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
+        "scope": "local Native execution after CPU preparation; not run in this worker"
+      }
     }
   ]
 }
