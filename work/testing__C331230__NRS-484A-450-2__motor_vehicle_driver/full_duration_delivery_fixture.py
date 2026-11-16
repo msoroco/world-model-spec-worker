@@ -14,7 +14,7 @@ PACKAGE = Path(__file__).resolve().parent
 REPO = PACKAGE.parent.parent
 sys.path.insert(0, str(PACKAGE))
 sys.path.insert(0, str(REPO / 'runtime/scenario_pipeline'))
-from delivery_audit import CAMERAS, audit, digest  # noqa: E402
+from delivery_audit import CAMERAS, audit  # noqa: E402
 from worker_exchange.media import compose_four_views  # noqa: E402
 from worker_exchange.native_output import assess_physical  # noqa: E402
 from worker_exchange.runtime_cli import execution_env  # noqa: E402
@@ -22,6 +22,7 @@ from worker_exchange.runtime_cli import execution_env  # noqa: E402
 FRAMES = 900
 CASE = 'testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_before'
 SOURCE = REPO / '.runtime-work/c331230-primary-compat-v2'
+MEDIA_SOURCE = REPO / '.runtime-work/c331230-full-duration-audit-v2'
 
 
 def write(path, value):
@@ -97,18 +98,23 @@ def prove(attempt):
     if (delivery['frames'] != FRAMES or not delivery['software_checks_passed'] or
             delivery['physical_acceptance_claimed'] or delivery['physical_completion_verified']):
         raise ValueError('Synthetic full-duration audit claim differs')
+    negative = attempt / 'negative-motion'
+    negative.mkdir()
+    for name in ('config.json', 'video_frames.jsonl', 'trace.jsonl',
+                 'crosswalk_geometry.json', 'approach_context.json', 'result.json'):
+        shutil.copy2(attempt / name, negative / name)
     original = (attempt / 'stop_history.jsonl').read_text().splitlines()
     altered = [json.loads(line) for line in original]
     # Keep the last complete body inside the junction: completion must fail.
     for row in altered[400:]:
         row['ego_body_vertices_xy_m'] = [[17, -1], [17, 1], [19, 1], [19, -1]]
-    (attempt / 'stop_history.jsonl').write_text(''.join(json.dumps(row) + '\n' for row in altered))
+    (negative / 'stop_history.jsonl').write_text(''.join(json.dumps(row) + '\n' for row in altered))
     config = json.loads((attempt / 'config.json').read_text())
-    failed = assess_physical(attempt, config, result['target_checks'])
+    failed = assess_physical(negative, config, result['target_checks'])
     if failed['physical_checks']['maneuver']['status'] == 'met':
         raise ValueError('Incomplete synthetic junction clearance accepted')
     try:
-        audit(CASE, attempt, diagnostic=True)
+        audit(CASE, negative, diagnostic=True)
     except ValueError as error:
         if 'Missing or changed original source: stop_history.jsonl' not in str(error):
             raise
@@ -125,8 +131,127 @@ def receipt_sources(delivery):
     return {name: entry['source_sha256'] for name, entry in delivery['camera_decodes'].items()}
 
 
+def extend_rows(source, destination, name):
+    original = [json.loads(line) for line in (source / name).read_text().splitlines() if line.strip()]
+    if len(original) != 4:
+        raise ValueError('Expected exact four-frame source shape: ' + name)
+    with (destination / name).open('x') as stream:
+        for index in range(FRAMES):
+            row = json.loads(json.dumps(original[index if index < 4 else -1]))
+            frame, time = 100 + index, round(1 + index / 20, 2)
+            if name == 'capture/evidence.jsonl':
+                row.update(original_frame=frame, replay_frame=frame,
+                           recording_time_s=time, replay_simulation_time_s=time)
+            else:
+                row.update(frame=frame, time_s=time)
+            if name == 'stop_history.jsonl' and index >= 4:
+                row['ego_body_vertices_xy_m'] = [[22, -1], [22, 1], [24, 1], [24, -1]]
+                row['ego_speed_mps'] = 0
+            elif name == 'trace.jsonl' and index >= 4:
+                row['position_m'] = [23, 0, 0]
+                row['position'] = {'x': 23, 'y': 0, 'z': 0}
+                row['speed_mps'] = 0
+            elif name == 'sight_history.jsonl' and index >= 4:
+                row['ego_position_xy_m'] = [23, 0]
+            stream.write(json.dumps(row, allow_nan=False) + '\n')
+
+
+def prove_remaining(entry, attempt):
+    if attempt.exists():
+        raise ValueError('Use a fresh synthetic fixture root')
+    case_id = entry['case_id']
+    command = entry['post_capture']['command'].split()
+    source = (REPO / command[command.index('--attempt') + 1]).resolve()
+    attempt.mkdir(parents=True)
+    for name in ('config.json', 'site.json', 'approach_context.json', 'construction.json', 'road.xodr'):
+        shutil.copy2(source / name, attempt / name)
+    for path in source.glob('*.py'):
+        shutil.copy2(path, attempt / path.name)
+    context = json.loads((attempt / 'approach_context.json').read_text())
+    write(attempt / 'crosswalk_geometry.json', {
+        'intersection_polygon_xy_m': context['intersection_polygon_xy_m'],
+        'diagnostic_fixture': True, 'physical_acceptance_claimed': False})
+    (attempt / 'capture').mkdir()
+    for name in ('stop_history.jsonl', 'trace.jsonl', 'capture/evidence.jsonl'):
+        extend_rows(source, attempt, name)
+    if (source / 'sight_history.jsonl').is_file():
+        extend_rows(source, attempt, 'sight_history.jsonl')
+    with (attempt / 'video_frames.jsonl').open('x') as mapping:
+        for index in range(FRAMES):
+            mapping.write(json.dumps({'video_frame': index, 'carla_frame': 100 + index,
+                                      'time_s': round(1 + index / 20, 2)}) + '\n')
+    for camera in CAMERAS:
+        (attempt / (camera + '.mkv')).hardlink_to(MEDIA_SOURCE / (camera + '.mkv'))
+    subprocess.run([sys.executable, str(attempt / 'finalizer.py'), '--attempt', str(attempt),
+                    '--output', str(attempt / 'analysis-report.json')],
+                   check=True, timeout=120, env=execution_env())
+    result = json.loads((attempt / 'result.json').read_text())
+    expected_target = ('not_met' if case_id.endswith('__marked_crosswalk_stop_inside') else 'met')
+    if (result.get('case_id') != case_id or result.get('provenance_kind') != 'synthetic_fixture' or
+            result.get('physical_acceptance_claimed') is not False or
+            result['physical_checks']['setup']['status'] != 'met' or
+            result['physical_checks']['maneuver']['status'] != 'met' or
+            result['physical_checks']['target']['status'] != expected_target):
+        raise ValueError('Full-duration synthetic physical checker did not pass: ' + case_id)
+    frame_map = [json.loads(line) for line in (attempt / 'video_frames.jsonl').read_text().splitlines()]
+    write(attempt / 'converted/trace.json', {'scenes': [
+        {'t': round(row['time_s'] * 1000)} for row in frame_map]})
+    receipt = compose_four_views({name: attempt / (name + '.mkv') for name in CAMERAS},
+                                 attempt / 'video_frames.jsonl', attempt / 'raw.mkv')
+    write(attempt / 'four-view-receipt.json', receipt)
+    delivery = audit(case_id, attempt, diagnostic=True)
+    if (delivery['frames'] != FRAMES or not delivery['software_checks_passed'] or
+            delivery['physical_acceptance_claimed'] or delivery['physical_completion_verified']):
+        raise ValueError('Synthetic full-duration audit claim differs: ' + case_id)
+    negative = attempt / 'negative-motion'
+    negative.mkdir()
+    for name in ('config.json', 'video_frames.jsonl', 'trace.jsonl',
+                 'crosswalk_geometry.json', 'approach_context.json', 'result.json'):
+        shutil.copy2(attempt / name, negative / name)
+    with (negative / 'stop_history.jsonl').open('x') as changed:
+        for index, line in enumerate((attempt / 'stop_history.jsonl').read_text().splitlines()):
+            row = json.loads(line)
+            if index >= 4:
+                row['ego_body_vertices_xy_m'] = [[17, -1], [17, 1], [19, 1], [19, -1]]
+            changed.write(json.dumps(row) + '\n')
+    config = json.loads((attempt / 'config.json').read_text())
+    if assess_physical(negative, config, result['target_checks'])['physical_checks']['maneuver']['status'] == 'met':
+        raise ValueError('Incomplete synthetic junction clearance accepted: ' + case_id)
+    try:
+        audit(case_id, negative, diagnostic=True)
+    except ValueError as error:
+        if 'Missing or changed original source: stop_history.jsonl' not in str(error):
+            raise
+    else:
+        raise ValueError('Changed original motion accepted: ' + case_id)
+    print(json.dumps({'case_id': case_id, 'frames': FRAMES,
+                      'synthetic_setup': 'met', 'synthetic_target': expected_target,
+                      'synthetic_maneuver': 'met',
+                      'original_cameras': len(delivery['camera_decodes']),
+                      'incomplete_clearance': 'rejected', 'changed_source': 'rejected',
+                      'physical_acceptance_claimed': False}, sort_keys=True))
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--output', type=Path)
+    parser.add_argument('--all', action='store_true')
+    parser.add_argument('--output-root', type=Path)
     args = parser.parse_args()
-    prove(args.output.resolve())
+    if args.all:
+        if not args.output_root:
+            parser.error('--all requires --output-root')
+        root = args.output_root.resolve()
+        if root.exists():
+            raise ValueError('Use a fresh synthetic fixture root')
+        root.mkdir(parents=True)
+        prove(root / 'marked_crosswalk_stop_before')
+        manifest = json.loads((PACKAGE / 'execution-manifest.json').read_text())
+        for entry in manifest['cases']:
+            suffix = entry['case_id'].split('__')[-1]
+            if suffix != 'marked_crosswalk_stop_before':
+                prove_remaining(entry, root / suffix)
+    else:
+        if not args.output:
+            parser.error('--output required without --all')
+        prove(args.output.resolve())
