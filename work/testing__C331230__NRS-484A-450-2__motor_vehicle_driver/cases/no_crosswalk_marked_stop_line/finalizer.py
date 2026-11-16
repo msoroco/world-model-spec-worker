@@ -14,6 +14,16 @@ def measure_stop_line_halt(attempt,report):
    'halt_before_reference_and_junction_observed':report['halt_before_reference_and_junction_observed']},
    'method':'measure_stop_line_halt','sources':{name:sha(Path(attempt)/name) for name in names}}
 
+def measure_first_view_halt(attempt,report):
+ names=('approach_context.json','stop_history.jsonl','sight_history.jsonl','video_frames.jsonl')
+ return {'value':{'selected_reference':report['selected_reference'],
+   'first_full_halt':report['first_full_halt'],
+   'first_observed_view':report['first_observed_view'],
+   'first_intersection_entry':report['first_intersection_entry'],
+   'halt_before_reference_and_junction_observed':report['halt_before_reference_and_junction_observed'],
+   'sight_limit':report['sight_limit']},
+   'method':'measure_first_view_halt','sources':{name:sha(Path(attempt)/name) for name in names}}
+
 def finalize(attempt,output):
  from worker_exchange.native_output import physical_result,write_result
  attempt=Path(attempt);output=Path(output)
@@ -56,7 +66,7 @@ def finalize(attempt,output):
    'realized_observables':{}}
  result=physical_result(attempt,result);write_result(attempt,result)
  output.write_text(json.dumps({'format':'worker-c331230-stop-reference-saved-analysis','case_id':case,
-   'observation':value,'measurements':{'stop_line_halt_observation':measure_stop_line_halt(attempt,report)} if expected=='marked_stop_line' else {},
+   'observation':value,'measurements':{'stop_line_halt_observation':measure_stop_line_halt(attempt,report)} if expected=='marked_stop_line' else {'first_view_halt_observation':measure_first_view_halt(attempt,report)},
    'source_sha256':sources,'physical_acceptance_claimed':False,
    'legal_acceptance_claimed':False},indent=2)+'\n')
  return value

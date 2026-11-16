@@ -52,10 +52,22 @@
       "exit_code": 0,
       "log": "stop-line-offline.log",
       "sha256": "460dac87598f93d8cf67cf742f945f52e57780c3d365e1ea886dcbd225fdf2ba"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/execution-manifest.json --case testing__C331230__NRS-484A-450-2__motor_vehicle_driver__no_crosswalk_no_line_first_view --output .runtime-work/c331230-first-view-offline-v3",
+      "exit_code": 0,
+      "log": "first-view-offline.log",
+      "sha256": "af76fc9d8906709b8aaf58f036e124c61649571f3e50f0e1fe7b04a15397920b"
+    },
+    {
+      "command": "PYTHONPATH=work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver:runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/stop_reference_finalizer.py --attempt .runtime-work/c331230-first-view-fixture-v7 --output .runtime-work/c331230-first-view-fixture-v7/analysis.json",
+      "exit_code": 0,
+      "log": "first-view-saved-only.log",
+      "sha256": "fc2c1e0b141efd00569fc673d7f75187a88b2ae8d2a56bf9c081ca752270d0c1"
     }
   ],
   "remaining_gpu_checks": [
     "Actual proper sign, marked/unmarked near-side crosswalk, stop line, full halt, body entry and camera visibility."
   ],
-  "reason": "The marked-crosswalk and no-crosswalk marked-stop-line primary constructions pass exact offline CPU tests; eight assignment tests pass source-bound stop-line/first-view measurements and saved-only finalization. The stop-line four-camera textual compatibility fixture reaches the pinned converter, then fails because its native frame/graph source packet is not yet constructed (stop-line-compatibility-attempt.log). Author that original-shaped packet and rerun compatibility and process-saved. The no-line sight case and other selected cases still need exact constructions; all cases need fallbacks, canonical semantic proposals and independent delivery/comparison audits. Synthetic site packets do not establish actual sign, marking, sight or legal qualification. See HANDOFF.md."
+  "reason": "Three exact primary cases now have offline CPU materialization: marked crosswalk, no-crosswalk marked stop line, and no-crosswalk/no-line first observed view. The first-view four-camera synthetic fixture passes saved-only finalization with halt frame 101, first sampled view frame 102 and junction frame 103; missing sight_history.jsonl is rejected. Exact compatibility for both no-crosswalk cases reaches the pinned converter but lacks case-consistent capture/native/frames.jsonl and graph packet; see first-view-compatibility-attempt.log and stop-line-compatibility-attempt.log. First-view saved-only fixture finalization is not runtime process-saved. Other selected cases, three fallbacks per selected case, canonical semantic proposals, delivery/comparison audits and source-reviewed Native geometry remain worker-owned. Synthetic sight proxy does not establish the legal nearest driver-view point. See HANDOFF.md."
 }

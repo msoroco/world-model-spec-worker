@@ -1,0 +1,26 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 1,
+      "requirement": "If there is neither crosswalk nor marked stop line, stop at the nearest point with a view of approaching intersecting-highway traffic",
+      "source": "NRS 484A.450(2)",
+      "output_key": "first_view_halt_observation",
+      "method": "measure_first_view_halt",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "approach_context.json",
+        "stop_history.jsonl",
+        "sight_history.jsonl",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "sight_history.jsonl"
+    ],
+    "error_contains": "Missing required source: sight_history.jsonl"
+  }
+}
