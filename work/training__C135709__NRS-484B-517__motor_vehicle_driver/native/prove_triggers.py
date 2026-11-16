@@ -39,8 +39,8 @@ def prove():
             'source_hashes':{p.name:sha(p) for p in target.iterdir() if p.is_file()},
             'measurement':result})
     baseline=triggers.route(bundle)
-    if baseline['triggered_candidate']!='fallback3':
-        raise AssertionError('C135709 unverified statutory trigger absent')
+    if baseline['triggered_candidate']!='fallback3' or baseline['first_40_stopped_frames']>=10:
+        raise AssertionError('C135709 physical stabilization trigger absent')
     with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
         target=Path(temporary)/'saved';shutil.copytree(base,target)
         path=target/'stand-review.jsonl';items=rows(path)

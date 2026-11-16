@@ -44,7 +44,7 @@ def compare(reference,contrast):
                           for p in x['ego_body_xy_m'])
         contrast_occupied+=all(50<=p[0]<=75 and -8.25<=p[1]<=-3.5
                                for p in y['ego_body_xy_m'])
-    expected=0 if ca['candidate_id']=='fallback3' else 30
+    expected=30
     if ref_occupied!=0 or contrast_occupied!=expected:
         raise ValueError('C135709 comparison stand occupancy differs')
     return {'candidate_id':ca['candidate_id'],'paired_stationary_frames':30,

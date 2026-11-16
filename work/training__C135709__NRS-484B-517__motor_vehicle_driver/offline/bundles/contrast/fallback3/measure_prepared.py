@@ -57,7 +57,9 @@ def measure(bundle,saved):
             row.get('time_s')!=(i+1)/20 or
             frame.get('time_s')!=row['time_s'] or
             review_row.get('time_s')!=row['time_s'] or
-            row.get('source_kind')!=kind or frame.get('source_kind')!=kind or
+            row.get('source_kind')!=kind or
+            row.get('speed_source')!=('synthetic_native_sample' if kind=='synthetic_cpu' else 'original_native') or
+            frame.get('source_kind')!=kind or
             review_row.get('source_kind')!=kind or
             row.get('witness')!=req['witness'] or
             row.get('candidate_id')!=cfg['candidate_id'] or

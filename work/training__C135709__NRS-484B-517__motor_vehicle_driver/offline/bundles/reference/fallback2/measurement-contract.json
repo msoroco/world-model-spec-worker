@@ -9,7 +9,7 @@
   "contrast_request": "non-taxicab passenger vehicle stationary at x=60 m inside the authored curb stand polygon",
   "fallback1_trigger": "fewer than 20 visible stand/sign frames in the first 40 saved frames: slower approach request",
   "fallback2_trigger": "observed curb-stand center deviation above 0.2 m: elevated overview camera request",
-  "fallback3_trigger": "official designation, sign appropriateness, vehicle use or passenger-loading exception unverified: stop before stand request",
+  "fallback3_trigger": "fewer than 10 stationary frames in the first 40 saved frames: add a 20-frame pre-entry stabilization dwell while preserving the same requested stand occupancy",
   "required_original_evidence": [
     "generated Native map, curb stand polygon, sign content, placement, condition, authority and spatial applicability",
     "240 actual actor poses, body vertices, speed and synchronized camera frames",
@@ -19,7 +19,7 @@
     "source-hashed human review, accepted legal comparison and statutory verdict"
   ],
   "request_limit": "Eight authored trajectories are unselected CPU proposals. The sign and stand are authored objects; official designation, appropriate signing, actual parking and exception status are unverified.",
-  "native_capture_contract": "capture.py runs only against an exclusive idle CARLA world, generates the authored OpenDRIVE, records observed actor/body/lane and synchronized forward/overview FFV1 frames plus PipelineCapture rows, then restores the prior world. Its output is unaccepted. CPU environment currently lacks carla and ffmpeg.",
-  "raw_to_saved_processor": "prepare_raw.py binds exact request, generated-map lane readback, full capture report, 240 actor and video-frame joins and source-hashed per-frame stand review. Original mode requires two 240-frame FFV1 streams checked by ffprobe and human review provenance. measure_prepared.py measures actual stationary and full-body stand intervals without deciding official designation, sign adequacy, vehicle use, loading exception or legal verdict. Synthetic CPU controls prove schema only.",
+  "native_capture_contract": "capture.py runs only against an exclusive idle CARLA world, generates the authored OpenDRIVE, records observed actor/body/lane and four synchronized FFV1 source-camera streams plus PipelineCapture rows, then restores the prior world. Its output is unaccepted. CARLA motion and pixels remain unverified on this CPU worker.",
+  "raw_to_saved_processor": "prepare_raw.py binds exact request, generated-map lane readback, full capture report, 240 actor and video-frame joins and source-hashed per-frame stand review. Original mode requires overview, approach, reference_corner and driver_reference 240-frame FFV1 streams checked by ffprobe and human review provenance. measure_prepared.py measures actual stationary and full-body stand intervals without deciding official designation, sign adequacy, vehicle use, loading exception or legal verdict. Synthetic CPU controls prove schema only.",
   "status": "cpu_request_unselected"
 }

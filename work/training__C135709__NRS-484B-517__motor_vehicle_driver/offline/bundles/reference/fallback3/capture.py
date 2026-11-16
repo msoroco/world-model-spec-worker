@@ -10,6 +10,31 @@ import traceback
 
 import check as exact
 
+CAMERA_NAMES = ('overview', 'approach', 'reference_corner', 'driver_reference')
+
+def camera_plan(policy):
+    if policy not in ('standard', 'elevated_overview'):
+        raise ValueError('Unknown stand camera policy')
+    height = 42 if policy == 'elevated_overview' else 35
+    return (('overview', 1920, 1080, 85, (60, -22, height)),
+            ('approach', 1280, 720, 75, (25, -18, 12)),
+            ('reference_corner', 1280, 720, 75, (60, -18, 12)),
+            ('driver_reference', 1280, 720, 90, (1, 0, 1.5)))
+
+def check_capture(bundle):
+    checked = exact.check(bundle)
+    cfg = json.loads((Path(bundle)/'config.json').read_text())
+    cameras = camera_plan(cfg['camera_policy'])
+    if (tuple(item[0] for item in cameras) != CAMERA_NAMES or
+        [list(item[1:3]) for item in cameras] !=
+            [[1920, 1080], [1280, 720], [1280, 720], [1280, 720]]):
+        raise ValueError('Stand four-camera profile differs')
+    return {'case_id': checked['case_id'], 'candidate_id': checked['candidate_id'],
+            'camera_names': list(CAMERA_NAMES),
+            'camera_dimensions': [list(item[1:3]) for item in cameras],
+            'camera_positions_m': [list(item[4]) for item in cameras],
+            'original_native_observed': False}
+
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 def repository():
     for parent in (Path(__file__).resolve().parent,*Path(__file__).resolve().parents):
@@ -41,7 +66,7 @@ def control(carla,ego,target,target_speed):
         brake=max(0,min(1,.4*(speed-target_speed))))
 
 def execute(bundle,output,host,port):
-    checked=exact.check(bundle)
+    checked=check_capture(bundle)
     bundle=Path(bundle).resolve();output=Path(output).resolve()
     if output.exists():raise ValueError('Native output must be a fresh directory')
     root=repository();sys.path.insert(0,str(root/'runtime/pipeline/scenario_pipeline'))
@@ -79,7 +104,7 @@ def execute(bundle,output,host,port):
             if waypoint is None or waypoint.road_id!=517 or waypoint.lane_id!=lane:
                 raise RuntimeError('Generated Native driving/curb lanes differ')
         phase_readback={}
-        for phase in ('approach','parked','prestand','hold_before_stand'):
+        for phase in ('entry_dwell','approach','parked'):
             matching=[row for row in requests if row['phase']==phase]
             if not matching:continue
             sample=matching[len(matching)//2]
@@ -111,10 +136,7 @@ def execute(bundle,output,host,port):
             'passenger_loading_exception_verified':False,
             'legal_verdict':None})
         # Keep all four source views synchronized for the pinned capture profile.
-        cameras=(('overview',1920,1080,85,(60,-22,35)),
-                 ('approach',1280,720,75,(25,-18,12)),
-                 ('reference_corner',1280,720,75,(60,-18,12)),
-                 ('driver_reference',1280,720,90,(1,0,1.5)))
+        cameras=camera_plan(cfg['camera_policy'])
         library=world.get_blueprint_library()
         for name,width,height,fov,location in cameras:
             camera_bp=library.find('sensor.camera.rgb')
@@ -149,7 +171,8 @@ def execute(bundle,output,host,port):
                 waypoint=mapping.get_waypoint(transform.location,project_to_road=False,
                     lane_type=carla.LaneType.Any)
                 row={'frame':i,'native_frame':frame,'time_s':time_s,
-                    'source_kind':'original_native','requested_phase':request['phase'],
+                    'source_kind':'original_native','speed_source':'original_native',
+                    'requested_phase':request['phase'],
                     'requested_road_id':request['road_id'],
                     'requested_lane_id':request['lane_id'],
                     'observed_road_id':None if waypoint is None else waypoint.road_id,
@@ -210,8 +233,14 @@ if __name__=='__main__':
     import argparse
     parser=argparse.ArgumentParser()
     parser.add_argument('--bundle',type=Path,required=True)
-    parser.add_argument('--output-dir',type=Path,required=True)
-    parser.add_argument('--host',required=True)
-    parser.add_argument('--port',type=int,required=True)
+    parser.add_argument('--check',action='store_true')
+    parser.add_argument('--output-dir',type=Path)
+    parser.add_argument('--host')
+    parser.add_argument('--port',type=int)
     args=parser.parse_args()
-    execute(args.bundle,args.output_dir,args.host,args.port)
+    if args.check:
+        print(json.dumps(check_capture(args.bundle)))
+    else:
+        if args.output_dir is None or args.host is None or args.port is None:
+            parser.error('Capture requires output-dir, host and port')
+        execute(args.bundle,args.output_dir,args.host,args.port)

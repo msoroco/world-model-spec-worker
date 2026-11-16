@@ -44,7 +44,7 @@ def prepare(bundle,raw,output,synthetic_cpu=False):
             map_readback.get('legal_verdict') is None,
             'C135709 raw map/stand readback differs')
     phase_readback={}
-    for phase in ('approach','parked','prestand','hold_before_stand'):
+    for phase in ('entry_dwell','approach','parked'):
         matching=[x for x in request if x['phase']==phase]
         if matching:
             phase_readback[phase]={'road_id':517,
@@ -77,6 +77,7 @@ def prepare(bundle,raw,output,synthetic_cpu=False):
         native=first+i;t=row.get('time_s')
         require(row.get('frame')==i and row.get('native_frame')==native and
                 row.get('source_kind')==kind and
+                row.get('speed_source')==('synthetic_native_sample' if synthetic_cpu else 'original_native') and
                 row.get('requested_phase')==req['phase'] and
                 row.get('requested_road_id')==517 and
                 row.get('requested_lane_id')==req['lane_id'] and
@@ -121,6 +122,7 @@ def prepare(bundle,raw,output,synthetic_cpu=False):
             'ego_blueprint':ego['blueprint'],'ego_x_m':center[0],
             'ego_y_m':center[1],'ego_heading_deg':ego['yaw_deg'],
             'ego_speed_mps':ego['speed_mps'],
+            'speed_source':row['speed_source'],
             'ego_body_xy_m':[[p[0],p[1]] for p in body],
             'actual_parking_observed':False})
         camera.append({'frame':i,'camera_frame':native,'time_s':(i+1)/20,

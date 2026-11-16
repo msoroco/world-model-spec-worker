@@ -41,28 +41,29 @@ def build():
     entries=[]
     for witness in ('reference','contrast'):
         for candidate in ('primary','fallback1','fallback2','fallback3'):
-            slow=candidate=='fallback1';stop=candidate=='fallback3'
-            approach=200 if slow else 100
-            target=40 if stop else 60
+            slow=candidate=='fallback1';dwell=candidate=='fallback3'
+            approach=200 if slow else 120 if dwell else 100
+            target=60
             start=10
             tracks=[];prior=None
             for i in range(240):
-                fraction=min(1,(i+1)/approach)
+                fraction=min(1,max(0,(i+1-(20 if dwell else 0))/
+                                   (approach-(20 if dwell else 0))))
                 x=start+(target-start)*fraction
-                if witness=='contrast' and not stop:
+                if witness=='contrast':
                     lateral=min(1,max(0,(fraction-.65)/.35))
                     y=-1.75-4.75*lateral
                 else:y=-1.75
                 if prior is None: speed=math.hypot(x-start,y+1.75)*20
                 else:speed=math.hypot(x-prior[0],y-prior[1])*20
-                phase=('prestand' if stop else 'approach') if fraction<1 else ('hold_before_stand' if stop else 'parked')
+                phase='entry_dwell' if dwell and i<20 else 'approach' if fraction<1 else 'parked'
                 tracks.append({'frame':i,'time_s':(i+1)/20,'witness':witness,
                     'candidate_id':candidate,'road_id':517,
                     'lane_id':-2 if y < -3.5 else -1,
                     'ego_x_m':round(x,6),'ego_y_m':round(y,6),
                     'ego_heading_deg':0,'ego_speed_mps':round(speed,6),
                     'phase':phase,'stand_polygon_occupied_requested':
-                        witness=='contrast' and not stop and phase=='parked',
+                        witness=='contrast' and phase=='parked',
                     'official_designation_verified':False,
                     'sign_appropriateness_verified':False,
                     'non_taxicab_actual_use_verified':False,
@@ -77,10 +78,10 @@ def build():
                 'actor':'motor_vehicle_driver','rate_hz':20,'frames':240,
                 'road_sha256':sha(roadpath),'tracks_sha256':sha(track),
                 'assignment_sha256':sha(src),'case_plan_sha256':sha(plan),
-                'requested_stand_occupancy':witness=='contrast' and not stop,
+                'requested_stand_occupancy':witness=='contrast',
                 'requested_vehicle_class':'non_taxicab_passenger_vehicle',
                 'camera_policy':'elevated_overview' if candidate=='fallback2' else 'standard',
-                'motion_policy':'slow_approach' if slow else 'stop_before_stand' if stop else 'normal_approach',
+                'motion_policy':'slow_approach' if slow else 'pre_entry_dwell' if dwell else 'normal_approach',
                 'approach_frames':approach,'target_x_m':target,
                 'original_native_observed':False,'status':'unselected_native_request'}
             write(target_dir/'config.json',cfg)

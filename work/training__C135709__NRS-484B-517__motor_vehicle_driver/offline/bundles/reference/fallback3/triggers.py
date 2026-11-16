@@ -22,9 +22,10 @@ def route(bundle,saved_dir=None):
     request=rows(bundle/'requested-tracks.jsonl')
     camera=rows(saved/'camera-frames.jsonl')
     review=rows(saved/'stand-review.jsonl')
+    observed=rows(saved/'native-observed.jsonl')
     readback=json.loads((saved/'stand-readback.json').read_text())
     if (readback.get('review_sha256')!=sha(saved/'stand-review.jsonl') or
-        not (len(request)==len(camera)==len(review)==240)):
+        not (len(request)==len(camera)==len(review)==len(observed)==240)):
         raise ValueError('C135709 trigger source differs')
     visible=0;maximum=0
     for i,(req,frame,review_row) in enumerate(zip(request,camera,review)):
@@ -36,16 +37,14 @@ def route(bundle,saved_dir=None):
         if i<40 and frame['stand_sign_visible'] and frame['stand_polygon_visible']:
             visible+=1
         maximum=max(maximum,abs(review_row['reviewed_ego_y_m']-req['ego_y_m']))
-    unverified=any(readback.get(k) is False for k in
-        ('official_designation_verified','sign_appropriateness_verified',
-         'non_taxicab_actual_use_verified','passenger_loading_exception_verified'))
+    first_40_stopped=sum(row['ego_speed_mps']<=.1 for row in observed[:40])
     selected=('fallback1' if visible<20 else 'fallback2' if maximum>.2 else
-        'fallback3' if unverified else 'primary')
+        'fallback3' if first_40_stopped<10 else 'primary')
     return {'format':'c135709-measured-trigger-v1',
         'case_id':measurement['case_id'],'candidate_id':measurement['candidate_id'],
         'first_40_visible_frames':visible,
         'maximum_reviewed_trajectory_deviation_m':round(maximum,6),
-        'statutory_context_unverified':unverified,
+        'first_40_stopped_frames':first_40_stopped,
         'triggered_candidate':selected,'candidate_selected_for_delivery':None,
         'source_kind':'synthetic_cpu','delivery_ready':False}
 

@@ -38,6 +38,7 @@ def measure(bundle):
             row.get('native_frame')!=1000+i or frame.get('camera_frame')!=1000+i or
             row.get('time_s')!=(i+1)/20 or frame.get('time_s')!=row['time_s'] or
             row.get('source_kind')!='synthetic_cpu' or
+            row.get('speed_source')!='synthetic_native_sample' or
             frame.get('source_kind')!='synthetic_cpu' or
             row.get('witness')!=req.get('witness') or
             row.get('candidate_id')!=req.get('candidate_id') or

@@ -37,7 +37,7 @@ def audit():
                                for p in row['ego_body_xy_m'])
             total+=1
         if (actual!=[item['reference_stand_frames'],item['contrast_stand_frames']] or
-            actual!=[0,0 if candidate=='fallback3' else 30]):
+            actual!=[0,30]):
             raise ValueError('C135709 pair occupancy differs')
     receipt={'format':'c135709-independent-comparison-audit-v1',
         'proof_sha256':sha(proof_path),'paired_frames_recomputed':total,

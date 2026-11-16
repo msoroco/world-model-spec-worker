@@ -35,6 +35,7 @@ def build():
                     'ego_blueprint':'vehicle.tesla.model3',
                     'ego_x_m':x,'ego_y_m':y,'ego_heading_deg':0,
                     'ego_speed_mps':row['ego_speed_mps'],
+                    'speed_source':'synthetic_native_sample',
                     'ego_body_xy_m':body,
                     'actual_parking_observed':False})
                 camera.append({'frame':i,'camera_frame':1000+i,

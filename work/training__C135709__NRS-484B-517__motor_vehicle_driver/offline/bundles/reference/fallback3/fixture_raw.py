@@ -24,7 +24,8 @@ def generate(bundle,output):
         t=row['time_s'];native=1000+i;speed=row['ego_speed_mps']
         body=[[x,y,z] for z in (0,1) for x,y in row['ego_body_xy_m']]
         actors.append({'frame':i,'native_frame':native,'time_s':t,
-            'source_kind':'synthetic_cpu','requested_phase':req['phase'],
+            'source_kind':'synthetic_cpu','speed_source':'synthetic_native_sample',
+            'requested_phase':req['phase'],
             'requested_road_id':517,'requested_lane_id':req['lane_id'],
             'observed_road_id':517,'observed_lane_id':row['lane_id'],
             'ego':{'actor_id':actor_id,'blueprint':'vehicle.tesla.model3',
@@ -43,7 +44,7 @@ def generate(bundle,output):
             'stand_polygon_visible':frame['stand_polygon_visible'],
             'reviewed_ego_y_m':review['reviewed_ego_y_m']})
     phase_readback={}
-    for phase in ('approach','parked','prestand','hold_before_stand'):
+    for phase in ('entry_dwell','approach','parked'):
         matching=[x for x in request if x['phase']==phase]
         if matching:phase_readback[phase]={'road_id':517,
             'lane_id':matching[len(matching)//2]['lane_id']}

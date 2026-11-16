@@ -50,23 +50,24 @@ def check(bundle):
         objects['2'].get('type')!='parkingSpace'):
         raise ValueError('C135709 stand/sign request differs')
     expected_camera='elevated_overview' if candidate=='fallback2' else 'standard'
-    expected_motion='slow_approach' if candidate=='fallback1' else 'stop_before_stand' if candidate=='fallback3' else 'normal_approach'
+    expected_motion='slow_approach' if candidate=='fallback1' else 'pre_entry_dwell' if candidate=='fallback3' else 'normal_approach'
     if (cfg.get('camera_policy')!=expected_camera or cfg.get('motion_policy')!=expected_motion or
-        cfg.get('approach_frames')!=(200 if candidate=='fallback1' else 100) or
-        cfg.get('target_x_m')!=(40 if candidate=='fallback3' else 60) or
-        cfg.get('requested_stand_occupancy')!=(witness=='contrast' and candidate!='fallback3')):
+        cfg.get('approach_frames')!=(200 if candidate=='fallback1' else 120 if candidate=='fallback3' else 100) or
+        cfg.get('target_x_m')!=60 or
+        cfg.get('requested_stand_occupancy')!=(witness=='contrast')):
         raise ValueError('C135709 candidate policy differs')
     data=rows(track)
     if len(data)!=240:raise ValueError('C135709 request length differs')
     occupied=0;parked=0;prior=(10,-1.75)
     for i,row in enumerate(data):
-        fraction=min(1,(i+1)/cfg['approach_frames'])
+        dwell=20 if candidate=='fallback3' else 0
+        fraction=min(1,max(0,(i+1-dwell)/(cfg['approach_frames']-dwell)))
         x=10+(cfg['target_x_m']-10)*fraction
         y=(-1.75-4.75*min(1,max(0,(fraction-.65)/.35))
-            if witness=='contrast' and candidate!='fallback3' else -1.75)
-        phase=('prestand' if candidate=='fallback3' else 'approach') if fraction<1 else ('hold_before_stand' if candidate=='fallback3' else 'parked')
+            if witness=='contrast' else -1.75)
+        phase='entry_dwell' if dwell and i<20 else 'approach' if fraction<1 else 'parked'
         speed=20*math.hypot(x-prior[0],y-prior[1]);prior=(x,y)
-        occupancy=witness=='contrast' and candidate!='fallback3' and phase=='parked'
+        occupancy=witness=='contrast' and phase=='parked'
         if (row.get('frame')!=i or row.get('time_s')!=(i+1)/20 or
             row.get('witness')!=witness or row.get('candidate_id')!=candidate or
             row.get('road_id')!=517 or row.get('lane_id')!=(-2 if y<-3.5 else -1) or

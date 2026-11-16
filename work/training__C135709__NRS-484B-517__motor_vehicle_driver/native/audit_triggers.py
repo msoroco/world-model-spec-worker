@@ -33,11 +33,14 @@ def audit():
                     for x in camera[:40])
         deviation=max(abs(a['reviewed_ego_y_m']-b['ego_y_m'])
                       for a,b in zip(review,request))
-        expected='fallback1' if visible<20 else 'fallback2' if deviation>.2 else 'fallback3'
+        observed=rows(folder/'native-observed.jsonl')
+        first_40_stopped=sum(row['ego_speed_mps']<=.1 for row in observed[:40])
+        expected='fallback1' if visible<20 else 'fallback2' if deviation>.2 else 'fallback3' if first_40_stopped<10 else 'primary'
         measured=variant['measurement']
         if (variant['triggered_candidate']!=expected or
             measured['triggered_candidate']!=expected or
             measured['first_40_visible_frames']!=visible or
+            measured['first_40_stopped_frames']!=first_40_stopped or
             abs(measured['maximum_reviewed_trajectory_deviation_m']-deviation)>1e-6 or
             measured['delivery_ready']):
             raise ValueError('C135709 measured trigger differs')
