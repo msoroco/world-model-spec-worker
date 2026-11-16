@@ -1,6 +1,7 @@
 import unittest
 import json
 import ast
+from hashlib import sha256
 from copy import deepcopy
 from math import atan2, hypot, pi
 from types import SimpleNamespace
@@ -18,6 +19,37 @@ from heavy_lane_source import measure_footprint
 
 
 class HeavyPhysicalLifecycleTest(unittest.TestCase):
+    def test_sweep_diagnostic_trace_capture_and_graph_join(self):
+        for branch in ("passing", "turn"):
+            source = json.loads((sweep_construction.HERE /
+                                 (branch + "-diagnostic.json")).read_text())
+            original = [json.loads(line) for line in
+                        source["files"]["capture/evidence.jsonl"].splitlines()]
+            for setpoint in (0.0, 1.1, 2.2):
+                with self.subTest(branch=branch, setpoint=setpoint):
+                    diagnostic = sweep_construction.diagnostic_at_setpoint(source, setpoint)
+                    files = diagnostic["files"]
+                    trace = [json.loads(line) for line in files["trace.jsonl"].splitlines()]
+                    evidence = [json.loads(line) for line in
+                                files["capture/evidence.jsonl"].splitlines()]
+                    graphs = {graph["path"]: graph for graph in diagnostic["graphs"]}
+                    manifest = json.loads(files["capture/manifest.json"])
+                    self.assertEqual(manifest["sources"]["trace.jsonl"],
+                                     sha256(files["trace.jsonl"].encode()).hexdigest())
+                    self.assertAlmostEqual(trace[0]["position"]["y"] -
+                                           trace[-1]["position"]["y"], setpoint)
+                    for motion, capture, prior in zip(trace, evidence, original):
+                        self.assertEqual(motion["position_m"], capture["ego"]["position_m"])
+                        self.assertEqual(capture["original_observations"]["participants"][1:],
+                                         prior["original_observations"]["participants"][1:])
+                        for kind in ("abstract", "base"):
+                            path = (f"capture/native/graphs/{kind}/"
+                                    f"{capture['original_frame']:08d}.pkl")
+                            self.assertEqual(graphs[path]["attributes"]["observed_evidence"],
+                                             capture["original_observations"])
+        with self.assertRaisesRegex(ValueError, "not in the authored judgment grid"):
+            sweep_construction.diagnostic_at_setpoint(source, 0.5)
+
     def test_exact_sweep_construction_grid_and_fallback_identity(self):
         with TemporaryDirectory(dir=fixture_runner.ROOT / ".runtime-work") as directory:
             staged = Path(directory) / "variants"

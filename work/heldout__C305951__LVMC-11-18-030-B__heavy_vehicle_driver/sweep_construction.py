@@ -20,6 +20,7 @@ sys.path.insert(0, str(ROOT / "runtime/scenario_pipeline"))
 from batch_pipeline.sweeps import grid
 from worker_exchange.candidate_constructions import validate as validate_candidates
 from worker_exchange.identity_preflight import validate as validate_identity
+from worker_exchange.fixture_generator import generate as generate_fixture
 
 
 SOURCE_CASES = {
@@ -69,6 +70,81 @@ def _variant(source: dict, old_case: str, new_case: str, setpoint_m: float) -> d
     for item in result["files"]:
         if item["path"].endswith(".py"):
             compile(item["content"], new_case + "/" + item["path"], "exec")
+    return result
+
+
+def diagnostic_at_setpoint(source: dict, setpoint_m: float) -> dict:
+    """Move the synthetic ego consistently across trace, body and capture packets.
+
+    The source remains a diagnostic fixture. Its graph observations are copied
+    from the transformed capture observations, so no Native acquisition is
+    implied by this transformation.
+    """
+    if setpoint_m not in (0.0, 1.1, 2.2):
+        raise ValueError("Setpoint is not in the authored judgment grid")
+    result = deepcopy(source)
+    files = result["files"]
+    trace = [json.loads(line) for line in files["trace.jsonl"].splitlines()]
+    body = [json.loads(line) for line in files["heavy_lane_sources.jsonl"].splitlines()]
+    evidence = [json.loads(line) for line in files["capture/evidence.jsonl"].splitlines()]
+    if not len(trace) == len(body) == len(evidence) == 9:
+        raise ValueError("Diagnostic sources must have nine joined frames")
+    first = trace[0]["position"]
+    last = trace[-1]["position"]
+    heading = body[0]["lane"]["heading_xy"]
+    right = (heading[1], -heading[0])
+    source_extent = sum((last[k] - first[k]) * axis for k, axis in zip(("x", "y"), right))
+    if source_extent <= 0.1:
+        raise ValueError("Selected source lacks rightward motion")
+    graphs = {item["path"]: item for item in result["graphs"]}
+    for motion, observation, capture in zip(trace, body, evidence):
+        if not motion["frame"] == observation["frame"] == capture["original_frame"]:
+            raise ValueError("Diagnostic source frame join changed")
+        position = motion["position"]
+        old_xy = (position["x"], position["y"])
+        current = sum((position[k] - first[k]) * axis for k, axis in zip(("x", "y"), right))
+        change = setpoint_m * current / source_extent - current
+        dx, dy = (change * right[0], change * right[1])
+        position["x"] += dx
+        position["y"] += dy
+        motion["position_m"][0] += dx
+        motion["position_m"][1] += dy
+        for component in observation["heavy_vehicle_components"]:
+            for corner in component["corners_xy_m"]:
+                corner[0] += dx
+                corner[1] += dy
+        ego = capture["ego"]
+        if any(abs(ego["position_m"][i] - old_xy[i]) > 1e-5 for i in (0, 1)):
+            raise ValueError("Capture ego differs from trace source")
+        ego["position_m"][0] += dx
+        ego["position_m"][1] += dy
+        for corner in ego["body_vertices_m"]:
+            corner[0] += dx
+            corner[1] += dy
+        observed = capture["original_observations"]
+        for participant in observed["participants"]:
+            if participant["actor_id"] == capture["actor_id"]:
+                participant["position_m"][0] += dx
+                participant["position_m"][1] += dy
+                for corner in participant["body_vertices_m"]:
+                    corner[0] += dx
+                    corner[1] += dy
+        for camera in observed["rgb_sensors"]:
+            if camera["parent_actor_id"] == capture["actor_id"]:
+                camera["position_m"][0] += dx
+                camera["position_m"][1] += dy
+        frame = capture["original_frame"]
+        for kind in ("abstract", "base"):
+            graph_path = f"capture/native/graphs/{kind}/{frame:08d}.pkl"
+            if graph_path not in graphs:
+                raise ValueError("Missing graph observation packet")
+            graphs[graph_path]["attributes"]["observed_evidence"] = deepcopy(observed)
+    files["trace.jsonl"] = "".join(json.dumps(row, allow_nan=False) + "\n" for row in trace)
+    files["heavy_lane_sources.jsonl"] = "".join(json.dumps(row, allow_nan=False) + "\n" for row in body)
+    files["capture/evidence.jsonl"] = "".join(json.dumps(row, allow_nan=False) + "\n" for row in evidence)
+    capture_manifest = json.loads(files["capture/manifest.json"])
+    capture_manifest["sources"]["trace.jsonl"] = sha256(files["trace.jsonl"].encode()).hexdigest()
+    files["capture/manifest.json"] = json.dumps(capture_manifest, indent=2) + "\n"
     return result
 
 
@@ -148,11 +224,47 @@ def build(output: Path) -> list[dict]:
     return index
 
 
+def stage_diagnostics(output: Path) -> list[dict]:
+    """Materialize six source-joined synthetic capture diagnostics in staging."""
+    output = output.resolve()
+    if ROOT / ".runtime-work" not in output.parents or output.exists():
+        raise ValueError("Choose a fresh directory under ignored .runtime-work")
+    output.mkdir(parents=True)
+    rows = []
+    for sweep_id, branch in (("heavy_passing_plan", "passing"),
+                             ("heavy_turn_plan", "turn")):
+        source_path = HERE / (branch + "-diagnostic.json")
+        source = json.loads(source_path.read_text())
+        for rank, setpoint in enumerate((0.0, 2.2, 1.1)):
+            case_id = f"{sweep_id}-{rank:04d}"
+            diagnostic = diagnostic_at_setpoint(source, setpoint)
+            path = output / (case_id + "-diagnostic.json")
+            path.write_text(json.dumps(diagnostic, indent=2) + "\n")
+            fixture = output / (case_id + "-fixture")
+            generate_fixture(diagnostic, fixture)
+            rows.append({"case_id": case_id, "branch": branch,
+                         "setpoint_m": setpoint, "source_sha256": sha256(source_path.read_bytes()).hexdigest(),
+                         "diagnostic": path.name, "diagnostic_sha256": sha256(path.read_bytes()).hexdigest(),
+                         "trace_sha256": sha256((fixture / "trace.jsonl").read_bytes()).hexdigest(),
+                         "body_sha256": sha256((fixture / "heavy_lane_sources.jsonl").read_bytes()).hexdigest(),
+                         "evidence_sha256": sha256((fixture / "capture/evidence.jsonl").read_bytes()).hexdigest()})
+    (output / "index.json").write_text(json.dumps(rows, indent=2) + "\n")
+    return rows
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--output", type=Path)
+    parser.add_argument("--diagnostics-output", type=Path)
     args = parser.parse_args()
-    rows = build(args.output)
-    print(json.dumps({"construction_variants": len(rows),
-                      "exact_cases": len({row["case_id"] for row in rows}),
-                      "output": str(args.output)}, indent=2))
+    if not args.output and not args.diagnostics_output:
+        parser.error("Supply construction or diagnostic staging output")
+    if args.output:
+        rows = build(args.output)
+        print(json.dumps({"construction_variants": len(rows),
+                          "exact_cases": len({row["case_id"] for row in rows}),
+                          "output": str(args.output)}, indent=2))
+    if args.diagnostics_output:
+        rows = stage_diagnostics(args.diagnostics_output)
+        print(json.dumps({"diagnostic_cases": len(rows),
+                          "output": str(args.diagnostics_output)}, indent=2))
