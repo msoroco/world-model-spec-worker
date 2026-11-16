@@ -354,44 +354,19 @@
   ],
   "observations": [
     {
-      "term": "st.highway",
-      "note": "the highway and its two halves"
+      "name": "full_body_leftward_clearance_m",
+      "mandatory": true,
+      "source": "joined body_history.jsonl and road_geometry.json"
     },
     {
-      "term": "st.centre_line",
-      "note": "the division between the directions"
+      "name": "any_left_half_body",
+      "mandatory": true,
+      "source": "joined body_history.jsonl and road_geometry.json"
     },
     {
-      "term": "rel.occupies",
-      "note": "which half the footprint is in"
-    },
-    {
-      "term": "drv.overtaking",
-      "note": "exception (a)"
-    },
-    {
-      "term": "st.lane_adjacency",
-      "note": "exception (c): a three-lane highway"
-    },
-    {
-      "term": "st.one_way_roadway",
-      "note": "exception (d)"
-    },
-    {
-      "term": "dev.regulatory_sign",
-      "note": "exception (d): posted one_way"
-    },
-    {
-      "term": "st.lane_width",
-      "note": "exception (e): the highway is not of sufficient width"
-    },
-    {
-      "term": "dev.temporary_traffic_control",
-      "note": "exception (b): the right half closed to traffic"
-    },
-    {
-      "term": "st.obstruction",
-      "note": "the same"
+      "name": "exception_source_context",
+      "mandatory": true,
+      "source": "exception_context.json and original feature survey/source packet"
     }
   ],
   "sources": [
@@ -926,6 +901,131 @@
         "candidates/fallback3/processing.json": "7596618c10c68e21c2e2e684499f80d35baeb41d6f1b3b20e6a6f02d165693ec"
       },
       "reconstruction": "Write each UTF-8 value at its relative path under a stage directory; restore the primary files from the source archive indexed in result.json; rerun candidate validation and bind direct canonical paths."
+    }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 8,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "ego footprint, road centerline, both road halves and exception context",
+        "interval": "full eight-second approach and passage"
+      },
+      {
+        "view": "approach",
+        "subject": "ego approach, passed vehicle or closure, and roadway direction",
+        "interval": "approach through centerline crossing"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "ego ground-corner footprint against surveyed centerline and roadway features",
+        "interval": "full crossing and clearance"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "roadway sign, lane inventory, obstruction, and driver sight line",
+        "interval": "full eight-second approach and passage"
+      }
+    ]
+  },
+  "source_observation_mapping": {
+    "st.highway": {
+      "evidence": "Original Native-shaped road, actor and exception source packets joined by exact frame and road identity; physical and legal realization require local capture review.",
+      "channels": [
+        "exception_source_context"
+      ],
+      "source_refs": [
+        "road_geometry.json"
+      ]
+    },
+    "st.centre_line": {
+      "evidence": "Original Native-shaped road, actor and exception source packets joined by exact frame and road identity; physical and legal realization require local capture review.",
+      "channels": [
+        "full_body_leftward_clearance_m"
+      ],
+      "source_refs": [
+        "road_geometry.json"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Original Native-shaped road, actor and exception source packets joined by exact frame and road identity; physical and legal realization require local capture review.",
+      "channels": [
+        "any_left_half_body",
+        "full_body_leftward_clearance_m"
+      ],
+      "source_refs": [
+        "body_history.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    "drv.overtaking": {
+      "evidence": "Original Native-shaped road, actor and exception source packets joined by exact frame and road identity; physical and legal realization require local capture review.",
+      "channels": [
+        "exception_source_context"
+      ],
+      "source_refs": [
+        "passed_vehicle_original.json",
+        "exception_context.json"
+      ]
+    },
+    "st.lane_adjacency": {
+      "evidence": "Original Native-shaped road, actor and exception source packets joined by exact frame and road identity; physical and legal realization require local capture review.",
+      "channels": [
+        "exception_source_context"
+      ],
+      "source_refs": [
+        "lane_survey_original.json",
+        "road_geometry.json"
+      ]
+    },
+    "st.one_way_roadway": {
+      "evidence": "Original Native-shaped road, actor and exception source packets joined by exact frame and road identity; physical and legal realization require local capture review.",
+      "channels": [
+        "exception_source_context"
+      ],
+      "source_refs": [
+        "one_way_sign_original.json",
+        "road_geometry.json"
+      ]
+    },
+    "dev.regulatory_sign": {
+      "evidence": "Original Native-shaped road, actor and exception source packets joined by exact frame and road identity; physical and legal realization require local capture review.",
+      "channels": [
+        "exception_source_context"
+      ],
+      "source_refs": [
+        "one_way_sign_original.json"
+      ]
+    },
+    "st.lane_width": {
+      "evidence": "Original Native-shaped road, actor and exception source packets joined by exact frame and road identity; physical and legal realization require local capture review.",
+      "channels": [
+        "exception_source_context"
+      ],
+      "source_refs": [
+        "width_survey_original.json",
+        "road_geometry.json"
+      ]
+    },
+    "dev.temporary_traffic_control": {
+      "evidence": "Original Native-shaped road, actor and exception source packets joined by exact frame and road identity; physical and legal realization require local capture review.",
+      "channels": [
+        "exception_source_context"
+      ],
+      "source_refs": [
+        "closure_original.json"
+      ]
+    },
+    "st.obstruction": {
+      "evidence": "Original Native-shaped road, actor and exception source packets joined by exact frame and road identity; physical and legal realization require local capture review.",
+      "channels": [
+        "exception_source_context"
+      ],
+      "source_refs": [
+        "closure_original.json"
+      ]
     }
   }
 }
