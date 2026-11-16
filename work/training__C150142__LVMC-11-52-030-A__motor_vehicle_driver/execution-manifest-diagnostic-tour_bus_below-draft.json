@@ -284,6 +284,100 @@
         "wrapper_log": "update027-tour_bus_above-offline.log",
         "wrapper_log_sha256": "9d67ab57c5ac0b529e8056bab1d35f9cdec07490ed389b584309e79bd1f680b5"
       }
+    },
+    {
+      "case_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_no_loading",
+      "kind": "delivery",
+      "construction": "selected-primary/tour_bus_no_loading/construction.json",
+      "construction_sha256": "174e7f05c43c6c658c58ac1b62d96b096a67b4d3d83e72e7d8e121231f86ab5a",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native bus stop, absent walker inventory, signed curb and four views unverified"
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize_selected.py",
+        "output_schema": "c150142-red-curb-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-fallbacks/tour_bus_no_loading/fallback1/construction.json",
+          "construction_sha256": "277bad4b5cdddaadd99821856d00c26f4e179c1e285f9e8a73e8491ee3a30fe7",
+          "trigger": {
+            "source": "retained Native bus body and red paint extent",
+            "metric": "longitudinal stop overshoot in meters",
+            "failure_condition": "Observed bus body overshoots the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest-diagnostic-tour_bus_below-draft.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_no_loading --candidate fallback1 --output .runtime-work/c150142-tour_bus_no_loading-fallback1-offline --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "277bad4b5cdddaadd99821856d00c26f4e179c1e285f9e8a73e8491ee3a30fe7",
+            "log": "update028-tour_bus_no_loading-fallback1-bundle-tests.log",
+            "log_sha256": "565fb6237776cb7c7aee51cb40bd280d54e1468bcf211efe5af8364b2b81cfe0",
+            "wrapper_log": "update028-tour_bus_no_loading-fallback1-offline.log",
+            "wrapper_log_sha256": "9a6dfb6388cf7c2bc8c1803ec39bd43d62bc148b270234d6b6ef1168377682a6"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-fallbacks/tour_bus_no_loading/fallback2/construction.json",
+          "construction_sha256": "aeb5169b8e08242c327cc341c175642e583fc6086ec091145ceae21c7e7812c6",
+          "trigger": {
+            "source": "decoded overview and retained Native signal readback",
+            "metric": "visible signed curb and complete bus body",
+            "failure_condition": "Overview obscures sign, red paint or complete bus body"
+          },
+          "changed_knobs": [
+            "camera_policy",
+            "overview camera elevation"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest-diagnostic-tour_bus_below-draft.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_no_loading --candidate fallback2 --output .runtime-work/c150142-tour_bus_no_loading-fallback2-offline --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "aeb5169b8e08242c327cc341c175642e583fc6086ec091145ceae21c7e7812c6",
+            "log": "update028-tour_bus_no_loading-fallback2-bundle-tests.log",
+            "log_sha256": "1d08c7212fc85680c8b594fa48a863c89e2ea5e0a00f225c332d53f32aec2cb7",
+            "wrapper_log": "update028-tour_bus_no_loading-fallback2-offline.log",
+            "wrapper_log_sha256": "03c6e41eea22cd0df11bf8e8c1addcf9efb0923c0a6cc05ef395e744fcd2f4fe"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-fallbacks/tour_bus_no_loading/fallback3/construction.json",
+          "construction_sha256": "c6ccd3fca03279d3283f23152bae20a043044122d9fd945e19744d3d69c31668",
+          "trigger": {
+            "source": "retained Native bus body and red paint extent",
+            "metric": "longitudinal stop undershoot in meters",
+            "failure_condition": "Observed bus body stops short of the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest-diagnostic-tour_bus_below-draft.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_no_loading --candidate fallback3 --output .runtime-work/c150142-tour_bus_no_loading-fallback3-offline --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "c6ccd3fca03279d3283f23152bae20a043044122d9fd945e19744d3d69c31668",
+            "log": "update028-tour_bus_no_loading-fallback3-bundle-tests.log",
+            "log_sha256": "2ebad91039d20e4f0dececed1adb86b2a4555c1dea24d46ba1b65d0558bf92ea",
+            "wrapper_log": "update028-tour_bus_no_loading-fallback3-offline.log",
+            "wrapper_log_sha256": "cd2450927ff664e6c0643d3c310391f7619c40d7c2f334b2e4cff5dc191411f3"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest-diagnostic-tour_bus_below-draft.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_no_loading --candidate primary --output .runtime-work/c150142-tour_bus_no_loading-primary-offline --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "construction_sha256": "174e7f05c43c6c658c58ac1b62d96b096a67b4d3d83e72e7d8e121231f86ab5a",
+        "log": "update028-tour_bus_no_loading-primary-bundle-tests.log",
+        "log_sha256": "b9f599c3a4b6944cf1367b597725f87a93388155225416c6d5c234c3ac93ada0",
+        "wrapper_log": "update028-tour_bus_no_loading-primary-offline.log",
+        "wrapper_log_sha256": "8c7bfec8307af29b2dc247085331db9e6be5673830c99a86a5e411e1c9792ae3"
+      }
     }
   ],
   "runtime_manifest_sha256": "ae635d487ae988b67925bacd5ba13210f31224fc6a1ae131d1836a5557ba8714"

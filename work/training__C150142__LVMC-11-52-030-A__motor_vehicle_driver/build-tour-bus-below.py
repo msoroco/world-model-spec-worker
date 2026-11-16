@@ -11,7 +11,8 @@ sys.path.insert(0, str(NATIVE))
 from exception_duration import plan
 from exception_road import construct, readback
 
-CASES = ('tour_bus_below', 'tour_bus_at', 'tour_bus_above')
+CASES = ('tour_bus_below', 'tour_bus_at', 'tour_bus_above',
+         'tour_bus_no_loading')
 
 
 def encode(value):
@@ -26,12 +27,15 @@ def build(case_suffix='tour_bus_below'):
     if case_suffix not in CASES:
         raise ValueError('Unsupported tour-bus boundary case')
     case_id = ROOT.name + '__' + case_suffix
+    no_loading = case_suffix == 'tour_bus_no_loading'
     matrix = json.loads((ROOT / 'exception-case-matrix.json').read_text())
     case = next(row for row in matrix['cases'] if row['case_id'] == case_id)
-    if case['service_class'] != 'tour_bus' or case['activity_request'] != 'passenger_loading':
+    if case['service_class'] != 'tour_bus' or \
+       case['activity_request'] != (None if no_loading else 'passenger_loading'):
         raise ValueError('Exact tour-bus branch changed')
     schedule = plan(case)
-    if schedule['requested_boundary'] != case_suffix.rsplit('_', 1)[-1] or \
+    boundary = 'at' if no_loading else case_suffix.rsplit('_', 1)[-1]
+    if schedule['requested_boundary'] != boundary or \
        schedule['stationary_frames'] != {'below': 36000, 'at': 36001, 'above': 36002}[schedule['requested_boundary']]:
         raise ValueError('Tour-bus boundary capture request changed')
     source = json.loads((ROOT / 'selected-primary/ordinary_red_signed/construction.json').read_text())
@@ -40,15 +44,17 @@ def build(case_suffix='tour_bus_below'):
     if readback(road)['sign_readback']['displayed_classes'] != case['sign_classes']:
         raise ValueError('Tour-bus sign construction differs')
     files['red-curb-road.xodr'] = road
-    for name, native_name in (
-            ('runner.py', 'long_exception_runner.py'),
-            ('finalize_selected.py', 'finalize_long_exception.py'),
+    native_files = [
+            ('runner.py', 'no_loading_runner.py' if no_loading else 'long_exception_runner.py'),
+            ('finalize_selected.py', 'finalize_no_loading.py' if no_loading else 'finalize_long_exception.py'),
             ('measure_red_curb.py', 'measure_red_curb.py'),
             ('measure_exceptions.py', 'measure_exceptions.py'),
             ('exception_road.py', 'exception_road.py'),
-            ('exception_duration.py', 'exception_duration.py'),
-            ('passenger_activity.py', 'passenger_activity.py'),
-            ('passenger_spawn.py', 'passenger_spawn.py')):
+            ('exception_duration.py', 'exception_duration.py')]
+    native_files += ([('passenger_absence.py', 'passenger_absence.py')] if no_loading else
+                     [('passenger_activity.py', 'passenger_activity.py'),
+                      ('passenger_spawn.py', 'passenger_spawn.py')])
+    for name, native_name in native_files:
         files[name] = (NATIVE / native_name).read_text()
     initial = [json.loads(line) for line in files['requested-tracks.jsonl'].splitlines()]
     if len(initial) != 240 or initial[120]['requested_parked'] is not True:
@@ -75,6 +81,11 @@ def build(case_suffix='tour_bus_below'):
         "self.assertEqual(cfg['sign_classes'], ['no_parking'])",
         "self.assertEqual(cfg['sign_classes'], ['tour_bus', 'shuttle_bus', 'limo'])\n"
         "        self.assertEqual(cfg['native_blueprint'], 'vehicle.mitsubishi.fusorosa')")
+    if no_loading:
+        files['tests/test_selected.py'] = files['tests/test_selected.py'].replace(
+            "self.assertEqual(cfg['native_blueprint'], 'vehicle.mitsubishi.fusorosa')",
+            "self.assertEqual(cfg['native_blueprint'], 'vehicle.mitsubishi.fusorosa')\n"
+            "        self.assertIsNone(cfg['activity_request'])")
     files['tests/test_selected.py'] = files['tests/test_selected.py'].replace(
         "if __name__=='__main__': unittest.main()",
         "    def test_compact_long_request_generation(self):\n"
@@ -94,8 +105,11 @@ def build(case_suffix='tour_bus_below'):
     for channel in source['recording_description']['channels']:
         channel['time_window'] = str(schedule['capture_frames']) + ' frames'
     source['recording_description']['limitations'].append(
+        'Passenger absence, tour-bus livery and the 30-minute legal exception remain unverified.'
+        if no_loading else
         'Passenger boarding, tour-bus livery and the 30-minute legal exception remain unverified.')
-    source['measurement_plan'] = {'source': 'retained Native bus, walker, velocity and sign rows',
+    source['measurement_plan'] = {'source': 'retained Native bus, walker inventory, velocity and sign rows'
+                                  if no_loading else 'retained Native bus, walker, velocity and sign rows',
                                   'finalizer': 'finalize_selected.py', 'legal_verdict': None}
     target = ROOT / 'selected-primary' / case_suffix / 'construction.json'
     target.parent.mkdir(parents=True, exist_ok=True)

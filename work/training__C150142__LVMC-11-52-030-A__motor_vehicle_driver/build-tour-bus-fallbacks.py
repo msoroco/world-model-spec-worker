@@ -5,7 +5,8 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-CASES = ('tour_bus_below', 'tour_bus_at', 'tour_bus_above')
+CASES = ('tour_bus_below', 'tour_bus_at', 'tour_bus_above',
+         'tour_bus_no_loading')
 OPTIONS = (
     ('fallback1', 38, 'standard',
      'observed Native bus body overshoots the painted red curb target'),

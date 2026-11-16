@@ -20,8 +20,9 @@ def materialize(target, package):
     (target / 'construction.json').write_text(json.dumps(package) + '\n')
 
 
-def source_rows(target, walker_moves=True):
+def source_rows(target, walker_moves=True, inject_walker_actor=False):
     config = json.loads((target / 'config.json').read_text())
+    no_loading = config.get('activity_request') is None
     target_x = config['requested_target_x_m']
     approach = config['requested_approach_frames']
     capture_frames = config['capture_frames']
@@ -45,7 +46,8 @@ def source_rows(target, walker_moves=True):
         'mailbox_readback': road['mailbox_readback']}) + '\n')
     (target / 'capture').mkdir(exist_ok=True)
     with (target / 'native-raw-actors.jsonl').open('w') as actors, \
-         (target / 'native-passenger-actors.jsonl').open('w') as passengers, \
+         (target / ('native-passenger-inventory.jsonl' if no_loading else
+                    'native-passenger-actors.jsonl')).open('w') as passengers, \
          (target / 'video_frames.jsonl').open('w') as frames, \
          (target / 'trace.jsonl').open('w') as trace, \
          (target / 'capture/evidence.jsonl').open('w') as evidence:
@@ -71,7 +73,14 @@ def source_rows(target, walker_moves=True):
             frame = {'video_frame': i, 'native_frame': i, 'carla_frame': i,
                      'time_s': t, 'views': list(VIEWS)}
             actors.write(json.dumps(actor) + '\n')
-            passengers.write(json.dumps(walker) + '\n')
+            if no_loading:
+                passengers.write(json.dumps({
+                    'frame': i, 'native_frame': i, 'time_s': t,
+                    'source_kind': 'synthetic_native_sample',
+                    'walker_actor_ids': [2] if inject_walker_actor and i == approach else [],
+                    'inventory_source': 'world.get_actors().filter(walker.pedestrian.*)'}) + '\n')
+            else:
+                passengers.write(json.dumps(walker) + '\n')
             frames.write(json.dumps(frame) + '\n')
             trace.write(json.dumps({'frame': i, 'time_s': t,
                                     'position_m': [x, y, 0],
@@ -93,7 +102,8 @@ def run(target):
 def prove(candidate='primary', negatives=True, case_suffix='tour_bus_below'):
     if candidate not in ('primary', 'fallback1', 'fallback2', 'fallback3'):
         raise ValueError('Unknown tour-bus candidate')
-    if case_suffix not in ('tour_bus_below', 'tour_bus_at', 'tour_bus_above'):
+    if case_suffix not in ('tour_bus_below', 'tour_bus_at', 'tour_bus_above',
+                           'tour_bus_no_loading'):
         raise ValueError('Unsupported tour-bus boundary candidate')
     case_id = ROOT.name + '__' + case_suffix
     package_path = (ROOT / 'selected-primary' / case_suffix / 'construction.json' if
@@ -115,7 +125,7 @@ def prove(candidate='primary', negatives=True, case_suffix='tour_bus_below'):
         observed = report['measurements']['signed_curb_observation']['value']
         if abs(observed['red_curb_stationary_duration_s'] - config['requested_stationary_duration_s']) > 1e-9 or \
            observed['duration_relative_to_30_minutes'] != config['requested_boundary'] or \
-           len(observed['recorded_activity_events']) != 1 or \
+           len(observed['recorded_activity_events']) != (0 if config['activity_request'] is None else 1) or \
            observed['legal_verdict'] is not None:
             raise AssertionError('Long source observations differ')
         if negatives:
@@ -125,22 +135,30 @@ def prove(candidate='primary', negatives=True, case_suffix='tour_bus_below'):
                          'native-raw-actors.jsonl'):
                 (negative / name).write_text('')
             rejected = run(negative)
+            missing_name = ('native-passenger-inventory.jsonl' if config['activity_request'] is None
+                            else 'native-passenger-actors.jsonl')
             if rejected.returncode == 0 or \
-               'Missing required source: native-passenger-actors.jsonl' not in rejected.stderr:
+               'Missing required source: ' + missing_name not in rejected.stderr:
                 raise AssertionError('Missing passenger actor source was accepted')
             stationary = parent / 'stationary-walker'
             materialize(stationary, package)
-            source_rows(stationary, walker_moves=False)
+            source_rows(stationary, walker_moves=False,
+                        inject_walker_actor=config['activity_request'] is None)
             rejected_stationary = run(stationary)
+            expected_error = ('No-loading case contains a pedestrian actor'
+                              if config['activity_request'] is None else
+                              'No measured passenger approach at stopped bus')
             if rejected_stationary.returncode == 0 or \
-               'No measured passenger approach at stopped bus' not in rejected_stationary.stderr:
+               expected_error not in rejected_stationary.stderr:
                 raise AssertionError('Static passenger actor was accepted as loading')
     return {'case_id': case_id, 'candidate_id': candidate,
             'source_kind': 'synthetic_native_sample',
             'requested_boundary': config['requested_boundary'],
             'measured_duration_s': observed['red_curb_stationary_duration_s'],
-            'passenger_approach_event': True, 'missing_source_rejected': negatives,
-            'stationary_actor_rejected': negatives,
+            'passenger_approach_event': config['activity_request'] is not None,
+            'missing_source_rejected': negatives,
+            'stationary_actor_rejected': negatives and config['activity_request'] is not None,
+            'unexpected_actor_rejected': negatives and config['activity_request'] is None,
             'media_decoded': False, 'original_native_observed': False}
 
 
