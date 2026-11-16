@@ -28,7 +28,7 @@ def write(name, value):
 
 def build():
     assignment = read(REPO / 'inputs' / HERE.name / 'assignment.json')
-    law = assignment['law_record']
+    law = assignment['law']
     law_id, actor, cell_id = (assignment[key] for key in ('law_id', 'actor', 'cell_id'))
     request = {'cell': assignment['cell'], 'actor': actor}
     rules = read(stages.ROOT / 'data/canonical_parameter_aliases.json')
@@ -154,9 +154,9 @@ def build():
     refs['cases'] = write('cases', cases)
     index = {'format': 'worker-semantic-delivery', 'assignment_id': HERE.name, 'stages': refs}
     index_ref = write('semantic-index', index)
-    proof = validate_delivery(HERE, {**assignment, 'law': law}, manifest)
+    proof = validate_delivery(HERE, assignment, manifest)
     proof_ref = write('semantic-delivery-proof', {
-        'format': 'c111256-semantic-cpu-v1', 'read_only_law_record_adapter': True,
+        'format': 'c111256-semantic-cpu-v1', 'canonical_law_input': True,
         'stage_validation': proof, 'official_walk_verified': False,
         'exception_applicability_verified': False, 'judgment_sweep_complete': False})
     return {'stage_validation': proof, 'index': index_ref, 'proof': proof_ref}

@@ -275,19 +275,25 @@
       "exit_code": 0,
       "log": "selected-comparison-positive.log",
       "sha256": "98be76770c389670e69f6097d9f32557c0a595a628926e2b3c341e5834cb262b"
+    },
+    {
+      "command": "PYTHONPATH=runtime/pipeline:runtime/pipeline/scenario_pipeline .venv-cpu/bin/python direct scoped ready-only audit",
+      "exit_code": 0,
+      "log": "current-ready-audit.log",
+      "sha256": "46149a3191c289075fd15d20e6de236cc04695b9e59dc98159820ccc44660d05"
     }
   ],
   "strict_gate": {
     "command": ".venv-cpu/bin/python worker_check.py --assignment training__C104393__NRS-484B-413-2__motor_vehicle_driver --complete --require-delivery-ready",
-    "exit_code": 1,
+    "exit_code": 0,
     "log": "current-scoped-strict.log",
-    "sha256": "f105b68de8bd7bbb3e9bdfade14e75a9b56640cac7ca657a4ce02c3efba457fe",
-    "exact_error": "Preparation acceptance failed: partial/missing packages remain"
+    "sha256": "ef02677b2686c92a34994066a496c0f75c4367712281b54da0578b3bff2574e2",
+    "static_checks_passed": true
   },
   "selected_delivery_intent": {
-    "status": "selected_cpu_preparation_incomplete",
+    "status": "selected_cpu_preparation_complete",
     "manifest": "execution-manifest.json",
-    "sha256": "283549ed24cad879af549d6e804f0f6aed44f4c19a2b90649fb8404b65ad439d",
+    "sha256": "a5f7a1c6c684eba4eeebd727adf4e5b5d99f358b4b102f258860e66f35a41dad",
     "selection_review": "selection-review.json",
     "selection_review_sha256": "1c7eec8486e3f30746b379483c9a469d139a6189a7b8b2226e5a80a634d6801a",
     "cases": 6,
@@ -311,7 +317,7 @@
       "positive_mechanics_proof_complete": true
     },
     "semantic_index": "proposals/semantic-index.json",
-    "semantic_index_sha256": "34a365964c6fb0036adaf01059925a75375cffb48d0114a2172b8235a1fe1a7b",
+    "semantic_index_sha256": "a33e66b04fb391575d3461276c7b8e74263c33bca295a49dfe1c0c4ec38f6fbb",
     "casewise_delivery_acceptance_mechanics": 6,
     "casewise_delivery_acceptance_positive_original": 0,
     "selected_comparison_script": "native/comparison_audit.py",
@@ -350,7 +356,13 @@
       "kin.heading",
       "kin.speed"
     ],
-    "historical_selected_300_compatibility_scope": "Earlier selected-manifest 300 proof predates Core atom correction; current six primary receipts pass current static package validator."
+    "historical_selected_300_compatibility_scope": "Earlier selected-manifest 300 proof predates Core atom correction; current six primary receipts pass current static package validator.",
+    "selection_targets": [
+      "demo-train",
+      "full-train"
+    ],
+    "ready_only_audit_log": "current-ready-audit.log",
+    "ready_only_audit_log_sha256": "46149a3191c289075fd15d20e6de236cc04695b9e59dc98159820ccc44660d05"
   },
   "first_gpu_delivery_command": "PYTHONPATH=runtime/pipeline/scenario_pipeline python3.11 -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C104393__NRS-484B-413-2__motor_vehicle_driver --case training__C104393__NRS-484B-413-2__motor_vehicle_driver__300 --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT",
   "root_return_contract": {
