@@ -4,9 +4,78 @@
   "actor": "motor_vehicle_driver",
   "cases": [
     {
+      "case_id": "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__shared_baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared fixed cell and controller reference; not a selected recording or legal label.",
+      "variable_assignments": {
+        "approach_target_offset_m": {
+          "kind": "controller",
+          "value": 1.2
+        },
+        "departure_target_offset_m": {
+          "kind": "controller",
+          "value": 1.2
+        },
+        "measured_approach_body_offset_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "measured_departure_left_curb_distance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "approach_body_to_centerline",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original four-corner signed offsets from surveyed approach centerline",
+            "time_window": "all relevant original turn frames",
+            "reference_frame": "source-surveyed Native road geometry",
+            "uncertainty": "public access, legal proximity and camera visibility require original review"
+          },
+          {
+            "name": "entry_body_right_of_centerline",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original entry footprint right of surveyed centerline",
+            "time_window": "all relevant original turn frames",
+            "reference_frame": "source-surveyed Native road geometry",
+            "uncertainty": "public access, legal proximity and camera visibility require original review"
+          },
+          {
+            "name": "departure_body_to_left_curb",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original four-corner distances from surveyed destination left curb",
+            "time_window": "all relevant original turn frames",
+            "reference_frame": "source-surveyed Native road geometry",
+            "uncertainty": "public access, legal proximity and camera visibility require original review"
+          },
+          {
+            "name": "highway_directions",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "source-hashed Native waypoint direction inventory",
+            "time_window": "all relevant original turn frames",
+            "reference_frame": "source-surveyed Native road geometry",
+            "uncertainty": "public access, legal proximity and camera visibility require original review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "No legal distance threshold or physical acceptance inferred from CPU fixtures"
+        ]
+      }
+    },
+    {
       "case_id": "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_left_curb_departure",
       "target_law_id": "NRS-484B-400-3",
-      "target_type": "boundary_probe",
+      "target_type": "judgment_sweep",
       "rationale": "Source-surveyed reference for right-half centerline approach and one-way left-curb departure; physical outcomes and legal practicability unresolved.",
       "variable_assignments": {
         "approach_target_offset_m": {
@@ -72,7 +141,35 @@
         "limitations": [
           "No legal distance threshold or physical acceptance inferred from CPU fixtures"
         ]
-      }
+      },
+      "paired_probe_id": "C228670_departure_curb_physical",
+      "deliberate_differences": [
+        "departure_target_offset_m"
+      ],
+      "probe": {
+        "primary_variable": "departure_target_offset_m",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "departure_target_offset_m": 1.2
+        }
+      },
+      "sweep_id": "C228670_departure_curb_physical",
+      "sweep_spec_version": "983f36436d4132fe286edff0c202b38a20be3c05cd6d8e880f00f03daaf6128e",
+      "sweep_point": {
+        "departure_target_offset_m": 1.2
+      },
+      "selection_rank": 0,
+      "sweep_measurements": [
+        {
+          "observable": "measured_departure_left_curb_distance_m",
+          "unit": "m",
+          "measurement": {
+            "method": "source-joined original full-body corner distances to surveyed Native destination left curb",
+            "time_window": "all relevant original turn frames",
+            "statistic": "min"
+          }
+        }
+      ]
     },
     {
       "case_id": "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__farther_approach_left_curb_departure",
@@ -143,12 +240,21 @@
         "limitations": [
           "No legal distance threshold or physical acceptance inferred from CPU fixtures"
         ]
+      },
+      "paired_probe_id": "C228670_approach_position",
+      "deliberate_differences": [
+        "approach_target_offset_m"
+      ],
+      "probe": {
+        "primary_variable": "approach_target_offset_m",
+        "comparison_or_standard": "physical comparison with shared reference; no legal cutoff",
+        "target_value_or_branch": 2.2
       }
     },
     {
       "case_id": "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_farther_departure",
       "target_law_id": "NRS-484B-400-3",
-      "target_type": "boundary_probe",
+      "target_type": "judgment_sweep",
       "rationale": "Controlled source-surveyed lateral target variant; physical position and practicability require original review.",
       "variable_assignments": {
         "approach_target_offset_m": {
@@ -214,9 +320,138 @@
         "limitations": [
           "No legal distance threshold or physical acceptance inferred from CPU fixtures"
         ]
-      }
+      },
+      "paired_probe_id": "C228670_departure_curb_physical",
+      "deliberate_differences": [
+        "departure_target_offset_m"
+      ],
+      "probe": {
+        "primary_variable": "departure_target_offset_m",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "departure_target_offset_m": 2.2
+        }
+      },
+      "sweep_id": "C228670_departure_curb_physical",
+      "sweep_spec_version": "983f36436d4132fe286edff0c202b38a20be3c05cd6d8e880f00f03daaf6128e",
+      "sweep_point": {
+        "departure_target_offset_m": 2.2
+      },
+      "selection_rank": 1,
+      "sweep_measurements": [
+        {
+          "observable": "measured_departure_left_curb_distance_m",
+          "unit": "m",
+          "measurement": {
+            "method": "source-joined original full-body corner distances to surveyed Native destination left curb",
+            "time_window": "all relevant original turn frames",
+            "statistic": "min"
+          }
+        }
+      ]
     }
   ],
-  "sweep_specs": [],
+  "sweep_specs": [
+    {
+      "sweep_id": "C228670_departure_curb_physical",
+      "target_law_id": "NRS-484B-400-3",
+      "judgment_refs": [
+        {
+          "phrase": "as close as practicable to the left-hand curb of the one-way highway",
+          "note": "Preserve original full-body departure distance, Native left curb and physical constraints; do not assign a legal distance cutoff."
+        }
+      ],
+      "status": "complete",
+      "mode": "one_dimensional",
+      "axes": [
+        {
+          "variable": "departure_target_offset_m",
+          "observable": "measured_departure_left_curb_distance_m",
+          "unit": "m",
+          "min": 1.2,
+          "max": 2.2,
+          "spacing": 1.0,
+          "measurement": {
+            "method": "source-joined original full-body corner distances to surveyed Native destination left curb",
+            "time_window": "all relevant original turn frames",
+            "statistic": "min"
+          },
+          "range_rationale": "Two already constructed engineering targets sample physical departure placement; they do not define a legal boundary.",
+          "spacing_rationale": "One-meter controller separation gives a measurable physical contrast in current diagnostics; original Native realization remains to be measured.",
+          "feasibility_evidence": "route_survey.py checks positive target fit against source width; all current exact offline and saved-only diagnostic proofs pass, while Native map compatibility remains unverified."
+        }
+      ],
+      "landmarks": [],
+      "rationale": "Fixed physical destination-curb sweep with approach target held at 1.2 m; later legal judgment remains unresolved.",
+      "variable_assignments": {
+        "approach_target_offset_m": {
+          "kind": "controller",
+          "value": 1.2
+        },
+        "departure_target_offset_m": {
+          "kind": "controller",
+          "value": 1.2
+        },
+        "measured_approach_body_offset_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "measured_departure_left_curb_distance_m": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "approach_body_to_centerline",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original four-corner signed offsets from surveyed approach centerline",
+            "time_window": "all relevant original turn frames",
+            "reference_frame": "source-surveyed Native road geometry",
+            "uncertainty": "public access, legal proximity and camera visibility require original review"
+          },
+          {
+            "name": "entry_body_right_of_centerline",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original entry footprint right of surveyed centerline",
+            "time_window": "all relevant original turn frames",
+            "reference_frame": "source-surveyed Native road geometry",
+            "uncertainty": "public access, legal proximity and camera visibility require original review"
+          },
+          {
+            "name": "departure_body_to_left_curb",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original four-corner distances from surveyed destination left curb",
+            "time_window": "all relevant original turn frames",
+            "reference_frame": "source-surveyed Native road geometry",
+            "uncertainty": "public access, legal proximity and camera visibility require original review"
+          },
+          {
+            "name": "highway_directions",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "source-hashed Native waypoint direction inventory",
+            "time_window": "all relevant original turn frames",
+            "reference_frame": "source-surveyed Native road geometry",
+            "uncertainty": "public access, legal proximity and camera visibility require original review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "No legal distance threshold or physical acceptance inferred from CPU fixtures"
+        ]
+      },
+      "spec_version": "983f36436d4132fe286edff0c202b38a20be3c05cd6d8e880f00f03daaf6128e",
+      "planned_case_count": 2,
+      "selection_order": [
+        "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_left_curb_departure",
+        "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_farther_departure"
+      ]
+    }
+  ],
   "sweeps_expanded": true
 }

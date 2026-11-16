@@ -23,3 +23,7 @@ The 17 unit tests pass in `cpu-tests.log`. `execution_manifest.validate`, `seman
 ## Native handoff and limits
 
 The first exact local GPU job is the `slow_with_following_traffic` case through `scenario_pipeline/pipeline.py execute-delivery`, using the operator's `$CARLA_PYTHON`, `$CARLA_HOST`, `$CARLA_PORT`, `$JOB_ID`, `$DB` and `$RUN`. Actual motion, source camera body/device visibility, traffic impedance, obstruction necessity, speed-sign authority and governed road portion, and legal judgment remain unverified. The independent saved audit must assess them after a real Native capture; CPU fixtures do not establish physical or legal acceptance. No CARLA, SQLite, GPU, or Git operation was run in this worker scope.
+
+### 2026-11-15 proof-preserving return compaction
+
+Removed 31 byte-identical returned logs with no non-manifest references and rebound their exact `execution-manifest.json` paths to retained identical bytes. The assignment-scoped strict `--complete --require-delivery-ready` gate passed both before and after. Result stays ready.

@@ -1,0 +1,556 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver",
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3",
+  "cases": [
+    {
+      "case_id": "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_left_curb_departure",
+      "kind": "delivery",
+      "construction": "construction.json",
+      "construction_sha256": "aa300cfdcc24d999f57b19c54e1db4124ae7efe350652b5b71649b0f7ade5e3b",
+      "measurement_procedure": {
+        "entrypoint": "turn_position_finalizer.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Surveyed Native road spawn, turn target tracking and original camera coverage need physical verification"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback1-construction.json",
+          "construction_sha256": "763281e8813e32f3dee17523dd87e0af6ca942a904163090ec0599e9ff91875b",
+          "changed_knobs": [
+            "spawn_height_offset_m=0.7"
+          ],
+          "trigger": {
+            "source": "Original Native ego spawn readback",
+            "metric": "spawn success at surveyed approach waypoint",
+            "failure_condition": "Primary 0.5 m clearance intersects the road or actor spawn fails"
+          },
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/provisional-manifest.json --case heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_left_curb_departure --output .runtime-work/c228670-fallback1-offline-5 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 --candidate fallback1",
+            "exit_code": 0,
+            "log": "first-fallback1-offline.log",
+            "log_sha256": "a17ab3bb968cacfacbfd82b964925a020d5059af86cf49351e1b6082a58d6aba",
+            "construction_sha256": "763281e8813e32f3dee17523dd87e0af6ca942a904163090ec0599e9ff91875b"
+          },
+          "compatibility": {
+            "receipt": "first-fallback1-compatibility-receipt.json",
+            "log": "first-primary-compatibility-analysis.log",
+            "negative_log": "first-fallback1-compatibility-negative.log",
+            "sha256": "a09575fef0187bbbee7c62eb0caa259765626cf3f858f3a38e4968679583ea3d"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "fallback2-construction.json",
+          "construction_sha256": "beffd79b37fdf95cd159e61ce0e8eebf889a5519f60e12ba1969a71361e3b34f",
+          "changed_knobs": [
+            "target_speed_mps=3.5"
+          ],
+          "trigger": {
+            "source": "Original Native body progress and target reach",
+            "metric": "turn target reached inside 160-frame budget",
+            "failure_condition": "Primary 4 m/s feedback overshoots the sourced target or cannot stay on connected route"
+          },
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/provisional-manifest.json --case heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_left_curb_departure --output .runtime-work/c228670-fallback2-offline-5 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 --candidate fallback2",
+            "exit_code": 0,
+            "log": "first-fallback2-offline.log",
+            "log_sha256": "f8c84ee075cc53bbf33fe721b462e4dfc49ed1adc4dd0629402e939aa637b49b",
+            "construction_sha256": "beffd79b37fdf95cd159e61ce0e8eebf889a5519f60e12ba1969a71361e3b34f"
+          },
+          "compatibility": {
+            "receipt": "first-fallback2-compatibility-receipt.json",
+            "log": "first-primary-compatibility-analysis.log",
+            "negative_log": "first-fallback2-compatibility-negative.log",
+            "sha256": "750aa9cc9b18f385bd070e5ceaa8549cba4e2b8ddd20364353a7205858d2ba68"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "fallback3-construction.json",
+          "construction_sha256": "2e45cf9c0c7120163511426f71476ea0f05cc5b5ec31ec5919967b80262b8db7",
+          "changed_knobs": [
+            "overview_mount_z_m=9.0"
+          ],
+          "trigger": {
+            "source": "Original overview camera decoded frames",
+            "metric": "full-body and both surveyed road legs visible",
+            "failure_condition": "Primary 8 m overview mount clips the body or governing road geometry"
+          },
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/provisional-manifest.json --case heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_left_curb_departure --output .runtime-work/c228670-fallback3-offline-5 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 --candidate fallback3",
+            "exit_code": 0,
+            "log": "first-fallback3-offline.log",
+            "log_sha256": "8f77c6c9b98bdc7007e5608670d0035ac6810a229e7e8a109103e7dd8155e373",
+            "construction_sha256": "2e45cf9c0c7120163511426f71476ea0f05cc5b5ec31ec5919967b80262b8db7"
+          },
+          "compatibility": {
+            "receipt": "first-fallback3-compatibility-receipt.json",
+            "log": "first-primary-compatibility-analysis.log",
+            "negative_log": "first-fallback3-compatibility-negative.log",
+            "sha256": "f50b9d2b74225d0b0c186d08f038d66a6bad8c9dbc1e57c8b170a24095da94fe"
+          }
+        }
+      ],
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/provisional-manifest.json --case heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_left_curb_departure --output .runtime-work/c228670-primary-offline-5 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "exit_code": 0,
+        "log": "first-primary-offline.log",
+        "log_sha256": "12565ac4696b8340a265f06780917fe2b66472578a5dd4698dec5bde75764b5a",
+        "construction_sha256": "aa300cfdcc24d999f57b19c54e1db4124ae7efe350652b5b71649b0f7ade5e3b"
+      },
+      "fixture_recipe": "work/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/recipe.json",
+      "saved_processing": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/provisional-manifest.json --case heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_left_curb_departure --attempt .runtime-work/c228670-first-saved-attempt-5 --output .runtime-work/c228670-first-saved-output-5 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "exit_code": 0,
+        "log": "first-saved.log",
+        "log_sha256": "c76e922014537d28f3f898409a23ecd3bc3a81a926037f6f53b33de8b706c4a7",
+        "receipt": "first-saved-receipt.json",
+        "receipt_sha256": "c76e922014537d28f3f898409a23ecd3bc3a81a926037f6f53b33de8b706c4a7"
+      },
+      "measurement_contract": "measurement-contract.json",
+      "compatibility": {
+        "receipt": "first-primary-compatibility-receipt.json",
+        "log": "first-primary-compatibility-analysis.log",
+        "negative_log": "first-primary-compatibility-negative.log",
+        "sha256": "e74668305ec39c1f4f30685836505dea9a2e3bfab7a2ddbf3d6c1fd1db3fb1e7"
+      },
+      "negative": {
+        "log": "first-primary-compatibility-negative.log"
+      },
+      "acquisition": {
+        "approach_body_to_centerline": {
+          "entrypoint": "turn_position_finalizer.py",
+          "method": "source-hashed Native XODR survey and frame-joined original body geometry",
+          "evidence": "route_survey_original.json, route_survey_capture_receipt.json, body_corners_original.jsonl, trace.jsonl, video_frames.jsonl and four original cameras"
+        },
+        "entry_body_right_of_centerline": {
+          "entrypoint": "turn_position_finalizer.py",
+          "method": "source-hashed Native XODR survey and frame-joined original body geometry",
+          "evidence": "route_survey_original.json, route_survey_capture_receipt.json, body_corners_original.jsonl, trace.jsonl, video_frames.jsonl and four original cameras"
+        },
+        "departure_body_to_left_curb": {
+          "entrypoint": "turn_position_finalizer.py",
+          "method": "source-hashed Native XODR survey and frame-joined original body geometry",
+          "evidence": "route_survey_original.json, route_survey_capture_receipt.json, body_corners_original.jsonl, trace.jsonl, video_frames.jsonl and four original cameras"
+        },
+        "highway_directions": {
+          "entrypoint": "turn_position_finalizer.py",
+          "method": "source-hashed Native XODR survey and frame-joined original body geometry",
+          "evidence": "route_survey_original.json, route_survey_capture_receipt.json, body_corners_original.jsonl, trace.jsonl, video_frames.jsonl and four original cameras"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical/centerline_approach_left_curb_departure-proof.json",
+        "sha256": "a18eda42324fa8b82b6ff8b604bfeae7e7731e10b5d1dd02e68b38175a8883dc"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_left_curb_departure",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "turn_delivery_audit.py",
+        "script_sha256": "69910eb740ac596896fe7bceca44c98ab51f3a844782e41de97940e39b706725",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/turn_delivery_audit.py --case heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_left_curb_departure --attempt .runtime-work/c228670-first-saved-attempt-5 --processed .runtime-work/c228670-first-saved-output-5",
+        "test_exit_code": 0,
+        "test_log": "centerline_approach_left_curb_departure-delivery-positive.log",
+        "test_log_sha256": "b41160aa75373562e2180d14d4a587a1501b74455cb4b904a7048516cf6e639a",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/turn_delivery_audit.py --case heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_left_curb_departure --attempt .runtime-work/c228670-first-saved-attempt-5 --processed .runtime-work/c228670-first-saved-output-5 --negative-source",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Stale or missing original turn source: route_survey_original.json",
+        "negative_log": "centerline_approach_left_curb_departure-delivery-negative.log",
+        "negative_log_sha256": "e426ce087bb2bffa981ce0949e9a97af080f4b318e8c8f53354e92d75c9fe724"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/provisional-manifest.json --case heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_left_curb_departure --attempt \"$ATTEMPT\" --output \"$PROCESSING_OUTPUT\" --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSING_OUTPUT/feedback.json\"",
+        "test_log": "first-saved-receipt.json",
+        "test_log_sha256": "c76e922014537d28f3f898409a23ecd3bc3a81a926037f6f53b33de8b706c4a7",
+        "test_exit_code": 0
+      }
+    },
+    {
+      "kind": "delivery",
+      "measurement_procedure": {
+        "entrypoint": "turn_position_finalizer.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Surveyed Native road spawn, turn target tracking and original camera coverage need physical verification"
+      },
+      "acquisition": {
+        "approach_body_to_centerline": {
+          "entrypoint": "turn_position_finalizer.py",
+          "method": "source-hashed Native XODR survey and frame-joined original body geometry",
+          "evidence": "route_survey_original.json, route_survey_capture_receipt.json, body_corners_original.jsonl, trace.jsonl, video_frames.jsonl and four original cameras"
+        },
+        "entry_body_right_of_centerline": {
+          "entrypoint": "turn_position_finalizer.py",
+          "method": "source-hashed Native XODR survey and frame-joined original body geometry",
+          "evidence": "route_survey_original.json, route_survey_capture_receipt.json, body_corners_original.jsonl, trace.jsonl, video_frames.jsonl and four original cameras"
+        },
+        "departure_body_to_left_curb": {
+          "entrypoint": "turn_position_finalizer.py",
+          "method": "source-hashed Native XODR survey and frame-joined original body geometry",
+          "evidence": "route_survey_original.json, route_survey_capture_receipt.json, body_corners_original.jsonl, trace.jsonl, video_frames.jsonl and four original cameras"
+        },
+        "highway_directions": {
+          "entrypoint": "turn_position_finalizer.py",
+          "method": "source-hashed Native XODR survey and frame-joined original body geometry",
+          "evidence": "route_survey_original.json, route_survey_capture_receipt.json, body_corners_original.jsonl, trace.jsonl, video_frames.jsonl and four original cameras"
+        }
+      },
+      "case_id": "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__farther_approach_left_curb_departure",
+      "construction": "farther-approach-left-curb-departure-construction.json",
+      "construction_sha256": "0bc7c2ec6a72cd9b36a14cacf2e39f2880f8b92c42254800b37b3c9cb9c5617b",
+      "measurement_contract": "farther-approach-left-curb-departure-measurement-contract.json",
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/provisional-manifest.json --case heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__farther_approach_left_curb_departure --output .runtime-work/c228670-farther_approach_left_curb_departure-primary-offline-1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "exit_code": 0,
+        "log": "farther_approach_left_curb_departure-primary-offline.log",
+        "log_sha256": "bde260fcaf9491f764dbdf8fd9af89b5431701236446816775fa4784f1011d8f",
+        "construction_sha256": "0bc7c2ec6a72cd9b36a14cacf2e39f2880f8b92c42254800b37b3c9cb9c5617b"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "farther-approach-left-curb-departure-fallback1-construction.json",
+          "construction_sha256": "a8721ae185c9dc01b177022bf94bb57148b541187f02f2ce6430e5de2ef184b3",
+          "changed_knobs": [
+            "spawn_height_offset_m=0.7"
+          ],
+          "trigger": {
+            "source": "Original Native ego spawn readback",
+            "metric": "spawn success at surveyed approach waypoint",
+            "failure_condition": "Primary 0.5 m clearance intersects the road or actor spawn fails"
+          },
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/provisional-manifest.json --case heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__farther_approach_left_curb_departure --output .runtime-work/c228670-farther_approach_left_curb_departure-fallback1-offline-1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 --candidate fallback1",
+            "exit_code": 0,
+            "log": "farther_approach_left_curb_departure-fallback1-offline.log",
+            "log_sha256": "29f747aa49384e98af2aafd7603364a5142c79173ce169b65d7cecc49d99824b",
+            "construction_sha256": "a8721ae185c9dc01b177022bf94bb57148b541187f02f2ce6430e5de2ef184b3"
+          },
+          "compatibility": {
+            "receipt": "farther_approach_left_curb_departure-fallback1-receipt.json",
+            "negative_log": "farther_approach_left_curb_departure-fallback1-negative.log",
+            "log": "first-primary-compatibility-analysis.log",
+            "sha256": "d9565468690473233667741e3ec9f4f9a17d0485c87ee19f70ff5a32decb4d65"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "farther-approach-left-curb-departure-fallback2-construction.json",
+          "construction_sha256": "3c97b5e89aeea8a4a0399806660ecde99fb363d09ece053b586572586af2ef08",
+          "changed_knobs": [
+            "target_speed_mps=3.5"
+          ],
+          "trigger": {
+            "source": "Original Native body progress and target reach",
+            "metric": "turn target reached inside 160-frame budget",
+            "failure_condition": "Primary 4 m/s feedback overshoots the sourced target or cannot stay on connected route"
+          },
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/provisional-manifest.json --case heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__farther_approach_left_curb_departure --output .runtime-work/c228670-farther_approach_left_curb_departure-fallback2-offline-1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 --candidate fallback2",
+            "exit_code": 0,
+            "log": "farther_approach_left_curb_departure-fallback2-offline.log",
+            "log_sha256": "40a5d16852ff1d83376929c27708cc4d9fd1d1bf225df4bb2fa3332f1802f177",
+            "construction_sha256": "3c97b5e89aeea8a4a0399806660ecde99fb363d09ece053b586572586af2ef08"
+          },
+          "compatibility": {
+            "receipt": "farther_approach_left_curb_departure-fallback2-receipt.json",
+            "negative_log": "farther_approach_left_curb_departure-fallback2-negative.log",
+            "log": "first-primary-compatibility-analysis.log",
+            "sha256": "74fb0e7e8c1a11b87887b1ec5d873e3923add9bedb3084b6dc8bb703ba36c7c0"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "farther-approach-left-curb-departure-fallback3-construction.json",
+          "construction_sha256": "bab8355334a7f563e88bf672a879dc9c49b3cabea2a5d7f8f0b6e464f65c9cbf",
+          "changed_knobs": [
+            "overview_mount_z_m=9.0"
+          ],
+          "trigger": {
+            "source": "Original overview camera decoded frames",
+            "metric": "full-body and both surveyed road legs visible",
+            "failure_condition": "Primary 8 m overview mount clips the body or governing road geometry"
+          },
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/provisional-manifest.json --case heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__farther_approach_left_curb_departure --output .runtime-work/c228670-farther_approach_left_curb_departure-fallback3-offline-1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 --candidate fallback3",
+            "exit_code": 0,
+            "log": "farther_approach_left_curb_departure-fallback3-offline.log",
+            "log_sha256": "97763f144b6075fd384e721acad3a6dfa2aa46188f1e2060baa5c84fc6012842",
+            "construction_sha256": "bab8355334a7f563e88bf672a879dc9c49b3cabea2a5d7f8f0b6e464f65c9cbf"
+          },
+          "compatibility": {
+            "receipt": "farther_approach_left_curb_departure-fallback3-receipt.json",
+            "negative_log": "farther_approach_left_curb_departure-fallback3-negative.log",
+            "log": "first-primary-compatibility-analysis.log",
+            "sha256": "2429ed6fe34d504791508404b633bbc137a0e8b9b3fc3eda9917f7dcedc2fd37"
+          }
+        }
+      ],
+      "fixture_recipe": "work/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/farther-approach-left-curb-departure-recipe.json",
+      "compatibility": {
+        "receipt": "farther_approach_left_curb_departure-primary-receipt.json",
+        "negative_log": "farther_approach_left_curb_departure-primary-negative.log",
+        "log": "first-primary-compatibility-analysis.log",
+        "sha256": "b3e52b98d3a655448a9c3aef8e85cdbf31c3b59f8a6dda19bcf6955bac266f7f"
+      },
+      "negative": {
+        "log": "farther_approach_left_curb_departure-primary-negative.log"
+      },
+      "saved_processing": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/provisional-manifest.json --case heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__farther_approach_left_curb_departure --attempt .runtime-work/c228670-farther_approach_left_curb_departure-saved-attempt-3 --output .runtime-work/c228670-farther_approach_left_curb_departure-saved-output-3 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "exit_code": 0,
+        "log": "farther_approach_left_curb_departure-saved.log",
+        "log_sha256": "804de31a437952c93d02e652a1e575398500bf15bd2ed30cf63622c0d54923a3",
+        "receipt": "farther_approach_left_curb_departure-saved-receipt.json",
+        "receipt_sha256": "804de31a437952c93d02e652a1e575398500bf15bd2ed30cf63622c0d54923a3"
+      },
+      "physical_preparation": {
+        "receipt": "physical/farther_approach_left_curb_departure-proof.json",
+        "sha256": "1c44d1678545c053c7e03ba93853f695e2c316ead32ab384f9a7a7df37e3b36a"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__farther_approach_left_curb_departure",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "turn_delivery_audit.py",
+        "script_sha256": "69910eb740ac596896fe7bceca44c98ab51f3a844782e41de97940e39b706725",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/turn_delivery_audit.py --case heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__farther_approach_left_curb_departure --attempt .runtime-work/c228670-farther_approach_left_curb_departure-saved-attempt-3 --processed .runtime-work/c228670-farther_approach_left_curb_departure-saved-output-3",
+        "test_exit_code": 0,
+        "test_log": "farther_approach_left_curb_departure-delivery-positive.log",
+        "test_log_sha256": "a83f5b931904c94c44a867683d2be46c483e3fa2e8d4aa85e245020c0d3681a6",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/turn_delivery_audit.py --case heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__farther_approach_left_curb_departure --attempt .runtime-work/c228670-farther_approach_left_curb_departure-saved-attempt-3 --processed .runtime-work/c228670-farther_approach_left_curb_departure-saved-output-3 --negative-source",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Stale or missing original turn source: route_survey_original.json",
+        "negative_log": "farther_approach_left_curb_departure-delivery-negative.log",
+        "negative_log_sha256": "e426ce087bb2bffa981ce0949e9a97af080f4b318e8c8f53354e92d75c9fe724"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/provisional-manifest.json --case heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__farther_approach_left_curb_departure --attempt \"$ATTEMPT\" --output \"$PROCESSING_OUTPUT\" --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSING_OUTPUT/feedback.json\"",
+        "test_log": "farther_approach_left_curb_departure-saved-receipt.json",
+        "test_log_sha256": "804de31a437952c93d02e652a1e575398500bf15bd2ed30cf63622c0d54923a3",
+        "test_exit_code": 0
+      }
+    },
+    {
+      "kind": "delivery",
+      "measurement_procedure": {
+        "entrypoint": "turn_position_finalizer.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Surveyed Native road spawn, turn target tracking and original camera coverage need physical verification"
+      },
+      "acquisition": {
+        "approach_body_to_centerline": {
+          "entrypoint": "turn_position_finalizer.py",
+          "method": "source-hashed Native XODR survey and frame-joined original body geometry",
+          "evidence": "route_survey_original.json, route_survey_capture_receipt.json, body_corners_original.jsonl, trace.jsonl, video_frames.jsonl and four original cameras"
+        },
+        "entry_body_right_of_centerline": {
+          "entrypoint": "turn_position_finalizer.py",
+          "method": "source-hashed Native XODR survey and frame-joined original body geometry",
+          "evidence": "route_survey_original.json, route_survey_capture_receipt.json, body_corners_original.jsonl, trace.jsonl, video_frames.jsonl and four original cameras"
+        },
+        "departure_body_to_left_curb": {
+          "entrypoint": "turn_position_finalizer.py",
+          "method": "source-hashed Native XODR survey and frame-joined original body geometry",
+          "evidence": "route_survey_original.json, route_survey_capture_receipt.json, body_corners_original.jsonl, trace.jsonl, video_frames.jsonl and four original cameras"
+        },
+        "highway_directions": {
+          "entrypoint": "turn_position_finalizer.py",
+          "method": "source-hashed Native XODR survey and frame-joined original body geometry",
+          "evidence": "route_survey_original.json, route_survey_capture_receipt.json, body_corners_original.jsonl, trace.jsonl, video_frames.jsonl and four original cameras"
+        }
+      },
+      "case_id": "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_farther_departure",
+      "construction": "centerline-approach-farther-departure-construction.json",
+      "construction_sha256": "5fb40aafbaa28206483fab953e2718ccaa28b4eec4814b64d041b5acd8505b2d",
+      "measurement_contract": "centerline-approach-farther-departure-measurement-contract.json",
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/provisional-manifest.json --case heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_farther_departure --output .runtime-work/c228670-centerline_approach_farther_departure-primary-offline-1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "exit_code": 0,
+        "log": "centerline_approach_farther_departure-primary-offline.log",
+        "log_sha256": "4d7f9c89cad11e1c301708a1ecf97060bc24797ae4cafb5ba6f5942eead427cb",
+        "construction_sha256": "5fb40aafbaa28206483fab953e2718ccaa28b4eec4814b64d041b5acd8505b2d"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "centerline-approach-farther-departure-fallback1-construction.json",
+          "construction_sha256": "68f50b3c03e3a02bf7b9cc8c42615d3e3d684e06e874096342246ae47a6c4e2d",
+          "changed_knobs": [
+            "spawn_height_offset_m=0.7"
+          ],
+          "trigger": {
+            "source": "Original Native ego spawn readback",
+            "metric": "spawn success at surveyed approach waypoint",
+            "failure_condition": "Primary 0.5 m clearance intersects the road or actor spawn fails"
+          },
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/provisional-manifest.json --case heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_farther_departure --output .runtime-work/c228670-centerline_approach_farther_departure-fallback1-offline-1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 --candidate fallback1",
+            "exit_code": 0,
+            "log": "centerline_approach_farther_departure-fallback1-offline.log",
+            "log_sha256": "00dd1de4ebd4e299871c27c159b71cd036b0340c016b13a4d6d3d824ff9d5e72",
+            "construction_sha256": "68f50b3c03e3a02bf7b9cc8c42615d3e3d684e06e874096342246ae47a6c4e2d"
+          },
+          "compatibility": {
+            "receipt": "centerline_approach_farther_departure-fallback1-receipt.json",
+            "negative_log": "centerline_approach_farther_departure-fallback1-negative.log",
+            "log": "first-primary-compatibility-analysis.log",
+            "sha256": "f4822d9d330b699d84e459323bb7df0e065bf3dcf02b06af9ff9d6f668935f7f"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "centerline-approach-farther-departure-fallback2-construction.json",
+          "construction_sha256": "b65035ff983d70adbf1ef6a5ba4318b8d6e3c7d072992aa3bdb8f0228b80bb53",
+          "changed_knobs": [
+            "target_speed_mps=3.5"
+          ],
+          "trigger": {
+            "source": "Original Native body progress and target reach",
+            "metric": "turn target reached inside 160-frame budget",
+            "failure_condition": "Primary 4 m/s feedback overshoots the sourced target or cannot stay on connected route"
+          },
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/provisional-manifest.json --case heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_farther_departure --output .runtime-work/c228670-centerline_approach_farther_departure-fallback2-offline-1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 --candidate fallback2",
+            "exit_code": 0,
+            "log": "centerline_approach_farther_departure-fallback2-offline.log",
+            "log_sha256": "973e8ae5f57fb286f0da7f9d5f55df5c07b74a6e074a907229c87562964a1fff",
+            "construction_sha256": "b65035ff983d70adbf1ef6a5ba4318b8d6e3c7d072992aa3bdb8f0228b80bb53"
+          },
+          "compatibility": {
+            "receipt": "centerline_approach_farther_departure-fallback2-receipt.json",
+            "negative_log": "centerline_approach_farther_departure-fallback2-negative.log",
+            "log": "first-primary-compatibility-analysis.log",
+            "sha256": "477f4c3459e62e4ec4fc603716809a1b0387244581dcb79fb0ef871f3216d469"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "centerline-approach-farther-departure-fallback3-construction.json",
+          "construction_sha256": "9eb57fe30e9cadc0a10b4f99a9e9b3000645f2e05bec74bc7604acc924b83b41",
+          "changed_knobs": [
+            "overview_mount_z_m=9.0"
+          ],
+          "trigger": {
+            "source": "Original overview camera decoded frames",
+            "metric": "full-body and both surveyed road legs visible",
+            "failure_condition": "Primary 8 m overview mount clips the body or governing road geometry"
+          },
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/provisional-manifest.json --case heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_farther_departure --output .runtime-work/c228670-centerline_approach_farther_departure-fallback3-offline-1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 --candidate fallback3",
+            "exit_code": 0,
+            "log": "centerline_approach_farther_departure-fallback3-offline.log",
+            "log_sha256": "734a44a79c1db8c3cf88660d92729a92c30d21c7bdfce8eac123d5c3e709100a",
+            "construction_sha256": "9eb57fe30e9cadc0a10b4f99a9e9b3000645f2e05bec74bc7604acc924b83b41"
+          },
+          "compatibility": {
+            "receipt": "centerline_approach_farther_departure-fallback3-receipt.json",
+            "negative_log": "centerline_approach_farther_departure-fallback3-negative.log",
+            "log": "first-primary-compatibility-analysis.log",
+            "sha256": "707ff951ef3ade62b5e0fa6a4f0c00bf204328e74a219fda4041c0d739212dfb"
+          }
+        }
+      ],
+      "fixture_recipe": "work/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/centerline-approach-farther-departure-recipe.json",
+      "compatibility": {
+        "receipt": "centerline_approach_farther_departure-primary-receipt.json",
+        "negative_log": "centerline_approach_farther_departure-primary-negative.log",
+        "log": "first-primary-compatibility-analysis.log",
+        "sha256": "29d103c090be8a0dfcdac3f81a79e651b70bcc86f43dbe37ed386ff886c141d3"
+      },
+      "negative": {
+        "log": "centerline_approach_farther_departure-primary-negative.log"
+      },
+      "saved_processing": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/provisional-manifest.json --case heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_farther_departure --attempt .runtime-work/c228670-centerline_approach_farther_departure-saved-attempt-3 --output .runtime-work/c228670-centerline_approach_farther_departure-saved-output-3 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "exit_code": 0,
+        "log": "centerline_approach_farther_departure-saved.log",
+        "log_sha256": "6ca87eb192d147d344e6e586e90efaee0b187bf44e88ec23facc0a5c44f4cc41",
+        "receipt": "centerline_approach_farther_departure-saved-receipt.json",
+        "receipt_sha256": "6ca87eb192d147d344e6e586e90efaee0b187bf44e88ec23facc0a5c44f4cc41"
+      },
+      "physical_preparation": {
+        "receipt": "physical/centerline_approach_farther_departure-proof.json",
+        "sha256": "08f57b6a77d96aa58b23975fe95f5723cca4e7fc79dedd8dd9d5163d3a54cfc5"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_farther_departure",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "turn_delivery_audit.py",
+        "script_sha256": "69910eb740ac596896fe7bceca44c98ab51f3a844782e41de97940e39b706725",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/turn_delivery_audit.py --case heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_farther_departure --attempt .runtime-work/c228670-centerline_approach_farther_departure-saved-attempt-3 --processed .runtime-work/c228670-centerline_approach_farther_departure-saved-output-3",
+        "test_exit_code": 0,
+        "test_log": "centerline_approach_farther_departure-delivery-positive.log",
+        "test_log_sha256": "0da8b21a6cbf32a15ca5da0f6222ef0d7c237d2c501f80f5482aabe6da108b94",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/turn_delivery_audit.py --case heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_farther_departure --attempt .runtime-work/c228670-centerline_approach_farther_departure-saved-attempt-3 --processed .runtime-work/c228670-centerline_approach_farther_departure-saved-output-3 --negative-source",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Stale or missing original turn source: route_survey_original.json",
+        "negative_log": "centerline_approach_farther_departure-delivery-negative.log",
+        "negative_log_sha256": "e426ce087bb2bffa981ce0949e9a97af080f4b318e8c8f53354e92d75c9fe724"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/provisional-manifest.json --case heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_farther_departure --attempt \"$ATTEMPT\" --output \"$PROCESSING_OUTPUT\" --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSING_OUTPUT/feedback.json\"",
+        "test_log": "centerline_approach_farther_departure-saved-receipt.json",
+        "test_log_sha256": "6ca87eb192d147d344e6e586e90efaee0b187bf44e88ec23facc0a5c44f4cc41",
+        "test_exit_code": 0
+      }
+    }
+  ]
+}
