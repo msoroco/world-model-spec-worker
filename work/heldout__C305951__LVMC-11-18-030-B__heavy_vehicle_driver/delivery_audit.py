@@ -307,7 +307,7 @@ def compare_passing(crossing_root: Path, passing_root: Path, *,
 
 def compare_turn(crossing_root: Path, turn_root: Path, *,
                  negative_turn: bool = False) -> dict:
-    """Hold original footprint, route and cameras fixed while adding turn intent."""
+    """Verify fixed source context and the declared rightward turn controller."""
     first, second = Path(crossing_root), Path(turn_root)
     left_case = json.loads(_file(first, "result.json").read_text())["case_id"]
     right_case = json.loads(_file(second, "result.json").read_text())["case_id"]
@@ -316,12 +316,48 @@ def compare_turn(crossing_root: Path, turn_root: Path, *,
     if (not left_case.endswith("__unexcused_boundary_crossing") or
             not right_case.endswith("__lawful_turn_preparation_boundary_crossing")):
         raise ValueError("Heavy turn comparison case pair differs")
-    fixed = ("native_three_lane_survey.json", "video_frames.jsonl",
-             "heavy_lane_sources.jsonl", "trace.jsonl", "overview.mkv",
+    fixed = ("native_three_lane_survey.json", "video_frames.jsonl", "overview.mkv",
              "approach.mkv", "reference_corner.mkv", "driver_reference.mkv")
     for name in fixed:
         if _sha(_file(first, name)) != _sha(_file(second, name)):
             raise ValueError("Heavy turn fixed source differs: " + name)
+    base = _rows(_file(first, "heavy_lane_sources.jsonl"))
+    changed = _rows(_file(second, "heavy_lane_sources.jsonl"))
+    old_trace = _rows(_file(first, "trace.jsonl"))
+    new_trace = _rows(_file(second, "trace.jsonl"))
+    if not (len(base) == len(changed) == len(old_trace) == len(new_trace)):
+        raise ValueError("Heavy turn source sample count differs")
+    offsets = []
+    for old, new, old_tick, new_tick in zip(base, changed, old_trace, new_trace):
+        if any(old[key] != new[key] for key in old if key != "heavy_vehicle_components"):
+            raise ValueError("Heavy turn fixed source field differs")
+        old_parts, new_parts = old["heavy_vehicle_components"], new["heavy_vehicle_components"]
+        if len(old_parts) != len(new_parts):
+            raise ValueError("Heavy turn component inventory differs")
+        differences = []
+        for a, b in zip(old_parts, new_parts):
+            if a.keys() != b.keys() or any(a[key] != b[key] for key in a if key != "corners_xy_m"):
+                raise ValueError("Heavy turn component identity differs")
+            if len(a["corners_xy_m"]) != len(b["corners_xy_m"]):
+                raise ValueError("Heavy turn component shape differs")
+            for (ax, ay), (bx, by) in zip(a["corners_xy_m"], b["corners_xy_m"]):
+                if abs(ax - bx) > 1e-6:
+                    raise ValueError("Heavy turn longitudinal source differs")
+                differences.append(by - ay)
+        if not differences or max(differences) - min(differences) > 1e-6:
+            raise ValueError("Heavy turn body translation differs")
+        offset = differences[0]
+        if any(old_tick[key] != new_tick[key] for key in old_tick if key not in ("position", "position_m")):
+            raise ValueError("Heavy turn fixed trace field differs")
+        if (abs(old_tick["position"]["x"] - new_tick["position"]["x"]) > 1e-6 or
+                abs(old_tick["position"]["z"] - new_tick["position"]["z"]) > 1e-6 or
+                abs(new_tick["position"]["y"] - old_tick["position"]["y"] - offset) > 1e-6 or
+                any(abs(old_tick["position_m"][i] - new_tick["position_m"][i]) > 1e-6 for i in (0, 2)) or
+                abs(new_tick["position_m"][1] - old_tick["position_m"][1] - offset) > 1e-6):
+            raise ValueError("Heavy turn trace translation differs")
+        offsets.append(offset)
+    if not any(offset < -1e-6 for offset in offsets) or any(offset > 1e-6 for offset in offsets):
+        raise ValueError("Heavy turn rightward controller difference absent")
     if (abs(left["minimum_clearance_m"] - right["minimum_clearance_m"]) > 1e-9 or
             right["turn_preparation_context"] is None):
         raise ValueError("Heavy turn clearance or intent comparison differs")
