@@ -18,7 +18,7 @@ def sha(path):
 def run(suffix, kind):
     if suffix not in {f'right_of_way_physical_context-{n:04d}' for n in range(4)}:
         raise ValueError('Unknown staged sweep case')
-    manifest = json.loads((HERE / 'sweep-proof-bound-promotion-candidate.json').read_text())
+    manifest = json.loads((HERE / 'execution-manifest.json').read_text())
     case_id = HERE.name + '__' + suffix
     entry = next(item for item in manifest['cases'] if item['case_id'] == case_id)
     base = {'case_id': case_id, 'construction_sha256': entry['construction_sha256'],

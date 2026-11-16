@@ -149,6 +149,15 @@ def measure_bus_yield(measurement):
             'synthetic_diagnostic':measurement['synthetic_diagnostic']}
 
 
+def measure_exception_context(measurement):
+    """Retain sampled Walk context; original exception applicability needs review."""
+    return {'walk_display_frames': measurement['walk_display_frames'],
+            'directed_pedestrian_conflict_frames':
+                measurement['directed_pedestrian_conflict_frames'],
+            'applicability_decision': 'requires_independent_original_branch_review',
+            'synthetic_diagnostic': measurement['synthetic_diagnostic']}
+
+
 def finalize(attempt,output):
     attempt=Path(attempt).resolve();output=Path(output).resolve()
     require(not output.exists() and not (attempt/'result.json').exists(),
@@ -219,6 +228,7 @@ def finalize(attempt,output):
                 key:{'value':method(measurement),'method':method.__name__,
                      'sources':measurement['source_sha256']}
                 for key,method in (
+                    ('exception_context_observation',measure_exception_context),
                     ('signal_presence_observation',measure_signal_presence),
                     ('walk_crossing_observation',measure_walk_crossing),
                     ('bus_yield_observation',measure_bus_yield))},
