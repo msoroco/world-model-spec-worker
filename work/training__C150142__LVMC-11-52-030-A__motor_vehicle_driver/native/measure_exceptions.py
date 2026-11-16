@@ -27,7 +27,7 @@ def number(value, field):
 
 def measure(frame_rows, context, events):
     if not isinstance(context, dict) or context.get('source_kind') not in (
-            'native', 'synthetic_native_sample'):
+            'native', 'original_native', 'synthetic_native_sample'):
         raise ValueError('Missing source provenance')
     kind = context['source_kind']
     curb = context.get('red_curb')
@@ -43,6 +43,8 @@ def measure(frame_rows, context, events):
             any(not isinstance(item, str) or not item for item in sign['displayed_classes']) or \
             (not sign['present'] and sign['displayed_classes']):
         raise ValueError('Missing sign readback')
+    sign_x = number(sign.get('center_x_m'), 'sign x') if sign['present'] else None
+    sign_over_red = (start <= sign_x <= end) if sign_x is not None else None
     vehicle = context.get('vehicle_readback')
     if not isinstance(vehicle, dict) or not vehicle.get('native_blueprint') or not vehicle.get('declared_service_class'):
         raise ValueError('Missing vehicle identity readback')
@@ -107,6 +109,8 @@ def measure(frame_rows, context, events):
                 'at' if duration == THIRTY_MINUTES_S else 'above',
             'displayed_sign_classes': sign['displayed_classes'],
             'sign_present': sign['present'],
+            'sign_center_x_m': float(sign_x) if sign_x is not None else None,
+            'sign_over_red_extent': sign_over_red,
             'native_blueprint': vehicle['native_blueprint'],
             'declared_service_class': vehicle['declared_service_class'],
             'mailbox_present': mailbox['present'],

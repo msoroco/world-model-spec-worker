@@ -12,6 +12,7 @@ def context(service='tour_bus', sign=True, mailbox=False):
             'red_curb': {'paint_color': 'red', 'start_x_m': 30,
                          'end_x_m': 50, 'curb_y_m': -7},
             'sign_readback': {'present': sign,
+                              'center_x_m': 40 if sign else None,
                               'displayed_classes': ['tour_bus', 'shuttle_bus', 'limo']
                               if sign else []},
             'vehicle_readback': {'native_blueprint': 'vehicle.test.bus',
@@ -41,6 +42,7 @@ class ExceptionSourceProof(unittest.TestCase):
             self.assertEqual(result['duration_relative_to_30_minutes'], label)
             self.assertEqual(result['frames'], count)
             self.assertIn('tour_bus', result['displayed_sign_classes'])
+            self.assertTrue(result['sign_over_red_extent'])
             self.assertIsNone(result['statutory_exception_applies'])
             observed[label] = result['red_curb_stationary_duration_s']
         self.assertEqual(observed, {'below': 1799.95, 'at': 1800.0,
@@ -63,6 +65,10 @@ class ExceptionSourceProof(unittest.TestCase):
         bad = context()
         del bad['sign_readback']
         with self.assertRaisesRegex(ValueError, 'sign readback'):
+            measure(frames(3), bad, [])
+        bad = context()
+        del bad['sign_readback']['center_x_m']
+        with self.assertRaisesRegex(ValueError, 'sign x'):
             measure(frames(3), bad, [])
         bad = context(sign=False)
         bad['sign_readback']['displayed_classes'] = ['rtc_bus']

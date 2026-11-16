@@ -64,6 +64,7 @@ def readback(xml):
         raise ValueError('Mail-drop geometry changed')
     return {'red_curb':{'paint_color':'red','start_x_m':30,'end_x_m':50,
                         'curb_y_m':-7},
-            'sign_readback':{'present':bool(signs),'displayed_classes':classes},
+            'sign_readback':{'present':bool(signs),'displayed_classes':classes,
+                             'center_x_m':40 if signs else None},
             'mailbox_readback':{'present':bool(boxes),'center_x_m':40,
                                 'center_y_m':-7.4}}
