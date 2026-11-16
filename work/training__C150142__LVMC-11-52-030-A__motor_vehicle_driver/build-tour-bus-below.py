@@ -41,16 +41,14 @@ def build():
             ('measure_red_curb.py', 'measure_red_curb.py'),
             ('measure_exceptions.py', 'measure_exceptions.py'),
             ('exception_road.py', 'exception_road.py'),
-            ('exception_duration.py', 'exception_duration.py')):
+            ('exception_duration.py', 'exception_duration.py'),
+            ('passenger_activity.py', 'passenger_activity.py'),
+            ('passenger_spawn.py', 'passenger_spawn.py')):
         files[name] = (NATIVE / native_name).read_text()
     initial = [json.loads(line) for line in files['requested-tracks.jsonl'].splitlines()]
     if len(initial) != 240 or initial[120]['requested_parked'] is not True:
         raise ValueError('Source approach request changed')
     tracks = initial[:schedule['approach_frames']]
-    parked = initial[schedule['approach_frames']]
-    for i in range(schedule['approach_frames'], schedule['capture_frames']):
-        row = dict(parked, frame=i, time_s=round((i + 1) / 20, 2))
-        tracks.append(row)
     files['requested-tracks.jsonl'] = ''.join(json.dumps(row, separators=(',', ':'),
         allow_nan=False) + '\n' for row in tracks)
     cfg = json.loads(files['config.json'])
@@ -72,6 +70,18 @@ def build():
         "self.assertEqual(cfg['sign_classes'], ['no_parking'])",
         "self.assertEqual(cfg['sign_classes'], ['tour_bus', 'shuttle_bus', 'limo'])\n"
         "        self.assertEqual(cfg['native_blueprint'], 'vehicle.mitsubishi.fusorosa')")
+    files['tests/test_selected.py'] = files['tests/test_selected.py'].replace(
+        "if __name__=='__main__': unittest.main()",
+        "    def test_compact_long_request_generation(self):\n"
+        "        cfg=json.loads((Path(__file__).resolve().parents[1]/'config.json').read_text())\n"
+        "        requests=runner.requests_for_capture(cfg)\n"
+        "        first=next(requests)\n"
+        "        rows=[first]+list(requests)\n"
+        "        self.assertEqual(len(rows),cfg['capture_frames'])\n"
+        "        self.assertFalse(rows[119]['requested_parked'])\n"
+        "        self.assertTrue(rows[120]['requested_parked'])\n"
+        "        self.assertEqual(rows[-1]['frame'],cfg['capture_frames']-1)\n\n"
+        "if __name__=='__main__': unittest.main()")
     source['case_id'] = CASE
     source['files'] = [{'path': name, 'content': content} for name, content in files.items()]
     source['status'] = 'draft_selected_cpu'
@@ -80,7 +90,7 @@ def build():
         channel['time_window'] = str(schedule['capture_frames']) + ' frames'
     source['recording_description']['limitations'].append(
         'Passenger boarding, tour-bus livery and the 30-minute legal exception remain unverified.')
-    source['measurement_plan'] = {'source': 'retained Native body, velocity, sign and activity rows',
+    source['measurement_plan'] = {'source': 'retained Native bus, walker, velocity and sign rows',
                                   'finalizer': 'finalize_selected.py', 'legal_verdict': None}
     target = ROOT / 'selected-primary/tour_bus_below/construction.json'
     target.parent.mkdir(parents=True, exist_ok=True)

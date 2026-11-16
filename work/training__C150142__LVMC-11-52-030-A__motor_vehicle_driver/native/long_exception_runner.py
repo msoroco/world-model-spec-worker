@@ -10,6 +10,7 @@ import traceback
 import xml.etree.ElementTree as ET
 import exception_road
 import exception_duration
+import passenger_spawn
 
 
 ROOT = Path(__file__).resolve().parent
@@ -65,7 +66,8 @@ def check():
        not authored['sign_readback']['present'] or authored['mailbox_readback']['present']:
         raise ValueError('Signed curb construction differs from exact case')
     if cfg.get('native_blueprint') != 'vehicle.mitsubishi.fusorosa' or \
-       cfg.get('service_class') != 'tour_bus':
+       cfg.get('service_class') != 'tour_bus' or \
+       cfg.get('activity_request') != 'passenger_loading':
         raise ValueError('Tour-bus vehicle construction differs')
     schedule = exception_duration.plan({'case_id': cfg['case_id'],
         'requested_stationary_duration_s': cfg['requested_stationary_duration_s']},
@@ -74,7 +76,7 @@ def check():
        cfg['candidate_id'] not in ('primary','fallback1','fallback2','fallback3') or \
        cfg['rate_hz'] != 20 or cfg['capture_frames'] != schedule['capture_frames'] or \
        cfg['requested_boundary'] != schedule['requested_boundary'] or \
-       len(tracks) != schedule['capture_frames'] or \
+       len(tracks) != schedule['approach_frames'] or \
        [c['name'] for c in cfg['cameras']] != list(VIEWS):
         raise ValueError('Selected case or four-view capture contract changed')
     camera_plan(cfg['camera_policy'])
@@ -82,7 +84,8 @@ def check():
     for i, line in enumerate(tracks):
         row = json.loads(line)
         if row['frame'] != i or row['source_kind'] != 'authored_controller_request' or \
-           row['observed_native_motion'] is not False:
+           row['observed_native_motion'] is not False or \
+           row['requested_parked'] is not False:
             raise ValueError('Requested tracks cannot be Native evidence')
     return {'case_id': cfg['case_id'], 'candidate_id': cfg['candidate_id'],
             'frames': schedule['capture_frames'], 'source_bound': True, 'original_native_observed': False}
@@ -106,16 +109,39 @@ def native_pose(actor):
             'yaw_deg': transform.rotation.yaw}
 
 
+def native_walker_pose(actor):
+    transform = actor.get_transform()
+    velocity = actor.get_velocity()
+    return {'actor_id': actor.id, 'blueprint': actor.type_id,
+            'center_native_xy_m': [transform.location.x, transform.location.y],
+            'velocity_native_xyz_mps': [velocity.x, velocity.y, velocity.z]}
+
+
+def requests_for_capture(cfg):
+    """Yield compact approach requests, then requested stationary holds."""
+    approach = [json.loads(line) for line in
+                (ROOT / 'requested-tracks.jsonl').read_text().splitlines()]
+    for row in approach:
+        yield row
+    for i in range(len(approach), cfg['capture_frames']):
+        yield {'frame': i, 'time_s': (i + 1) / cfg['rate_hz'],
+               'source_kind': 'authored_controller_request',
+               'observed_native_motion': False,
+               'requested_ego_x_m': cfg['requested_target_x_m'],
+               'requested_ego_y_m': -6.8,
+               'requested_parked': True,
+               'requested_red_curb_occupancy': True}
+
+
 def execute(output, host, port):
     """Capture original Native rows and four encoded source views on an owned server."""
     checked = check()
     cfg = json.loads((ROOT / 'config.json').read_text())
-    requests = [json.loads(s) for s in
-                (ROOT / 'requested-tracks.jsonl').read_text().splitlines()]
     output = Path(output).resolve()
     output.mkdir(parents=True, exist_ok=True)
     if any((output/name).exists() for name in
-           ('native-raw-actors.jsonl','video_frames.jsonl',
+           ('native-raw-actors.jsonl','native-passenger-actors.jsonl',
+            'video_frames.jsonl',
             'native-capture-report.json','capture/evidence.jsonl')):
         raise ValueError('Retain prior attempt; choose a new capture directory')
     repo = repository()
@@ -214,6 +240,8 @@ def execute(output, host, port):
         if ego is None:
             raise RuntimeError('Red-curb ego spawn failed')
         owned.append(ego)
+        walker = passenger_spawn.spawn(world, library, carla)
+        owned.append(walker)
         for name, width, height, fov, location, pitch in camera_plan(cfg['camera_policy']):
             bp = library.find('sensor.camera.rgb')
             for key, value in (('image_size_x', width), ('image_size_y', height),
@@ -236,11 +264,14 @@ def execute(output, host, port):
             visibility=False, required_observations=[])
         start = world.get_snapshot().timestamp.elapsed_seconds
         with (output/'native-raw-actors.jsonl').open('x') as rows, \
+             (output/'native-passenger-actors.jsonl').open('x') as passenger_rows, \
              (output/'video_frames.jsonl').open('x') as frame_map:
-            for i, request in enumerate(requests):
+            for i, request in enumerate(requests_for_capture(cfg)):
                 decision = parking_controller.apply(ego, carla,
                     cfg['requested_target_x_m'], request['requested_ego_y_m'],
                     approach_speed_mps=approach_speed(cfg))
+                passenger_spawn.control(walker, carla, i,
+                                        cfg['requested_approach_frames'])
                 frame = world.tick()
                 time_s = world.get_snapshot().timestamp.elapsed_seconds - start
                 native = native_pose(ego)
@@ -252,6 +283,10 @@ def execute(output, host, port):
                        'legal_verdict': None}
                 pipeline.capture(frame, time_s, extra={'c150142_red_curb': row})
                 rows.write(json.dumps(row, allow_nan=False)+'\n')
+                passenger_rows.write(json.dumps({
+                    'frame': i, 'native_frame': frame, 'time_s': time_s,
+                    'source_kind': 'original_native',
+                    **native_walker_pose(walker)}, allow_nan=False)+'\n')
                 for name, width, height, *_ in CAMERAS:
                     image = image_queues[name].get(timeout=30)
                     while image.frame < frame:

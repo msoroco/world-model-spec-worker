@@ -9,6 +9,7 @@ from measure_red_curb import measure, VIEWS
 from measure_exceptions import measure as measure_exception
 from exception_road import readback as read_road
 from exception_duration import plan as duration_plan
+from passenger_activity import derive as derive_passenger_activity
 
 
 def sha(path):
@@ -76,7 +77,7 @@ def finalize(attempt, output):
     for name in ('construction.json','config.json','assignment-source.json',
                  'statutory-context.json',
                  'red-curb-road.xodr','native-map-readback.json',
-                 'native-raw-actors.jsonl','native-activity-events.jsonl',
+                 'native-raw-actors.jsonl','native-passenger-actors.jsonl',
                  'video_frames.jsonl','trace.jsonl',
                  'capture/evidence.jsonl'):
         source(attempt,name)
@@ -91,7 +92,7 @@ def finalize(attempt, output):
     actor_rows=rows(attempt,'native-raw-actors.jsonl')
     frame_map=rows(attempt,'video_frames.jsonl')
     trace=rows(attempt,'trace.jsonl')
-    activity=rows(attempt,'native-activity-events.jsonl')
+    walker_rows=rows(attempt,'native-passenger-actors.jsonl')
     expected_frames=config.get('capture_frames')
     if type(expected_frames) is not int or expected_frames < 2:
         raise ValueError('Missing long exception capture schedule')
@@ -101,6 +102,8 @@ def finalize(attempt, output):
     if expected_frames!=schedule['capture_frames'] or \
        config.get('requested_boundary')!=schedule['requested_boundary']:
         raise ValueError('Long exception capture schedule differs')
+    activity=derive_passenger_activity(walker_rows,actor_rows,
+                                       schedule['stationary_first_frame'])
     if construction['case_id'] != config['selected_case_id'] or \
        config['case_id'] != config['selected_case_id'] or \
        assignment.get('law_id') != config['law_id'] or \
@@ -155,13 +158,13 @@ def finalize(attempt, output):
     hashes={name:sha(attempt/name) for name in
             ('statutory-context.json','native-map-readback.json',
              'native-raw-actors.jsonl','video_frames.jsonl',
-             'native-activity-events.jsonl')}
+             'native-passenger-actors.jsonl')}
     measurements={
         'signed_curb_observation':{'method':'signed_context',
             'value':signed_context(exception),
             'sources':{name:hashes[name] for name in
                 ('native-raw-actors.jsonl','native-map-readback.json',
-                'native-activity-events.jsonl')}},
+                'native-passenger-actors.jsonl')}},
         'red_curb_stop_or_park_observed':{
             'method':'red_occupancy','value':red_occupancy(observation),
             'sources':{name:hashes[name] for name in
