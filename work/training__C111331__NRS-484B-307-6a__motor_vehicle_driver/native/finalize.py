@@ -84,8 +84,9 @@ def finalize(attempt, output):
         video = inspect_diagnostic_format(attempt, attempt / signal_name, ffmpeg)
     source_hashes = dict(measurement['sources'])
     source_hashes[signal_name] = video['video_sha256']
+    selected = config.get('status', '').startswith('selected_cpu_delivery')
     report = {'format': 'c111331-saved-signal-entry-report-v1', 'case_id': config['case_id'],
-              'selected': False, 'draft_only': True,
+              'selected': selected, 'draft_only': not selected,
               'measurements': {
                   key: {'method': method.__name__, 'value': method(measurement),
                         'sources': source_hashes}

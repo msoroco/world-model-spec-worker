@@ -122,104 +122,126 @@
   ],
   "observations": [
     {
-      "name": "ego_pose",
-      "unit": "m,deg",
+      "name": "native_body_pose",
+      "unit": "structured",
       "mandatory": true,
-      "purpose": "Measured position, heading and footprint over time"
+      "purpose": "Observed vehicle body, velocity and intersection entry by Native frame"
     },
     {
-      "name": "ego_speed",
-      "unit": "m/s",
+      "name": "observed_signal_state",
+      "unit": "structured",
       "mandatory": true,
-      "purpose": "Observed movement and stop intervals"
+      "purpose": "Observed yellow and red exhibition on the governing signal"
     },
     {
-      "name": "intersection_entry_signal_phase",
-      "unit": "yellow_or_red",
+      "name": "signal_camera_frame_join",
+      "unit": "structured",
       "mandatory": true,
-      "purpose": "entry before versus after observed red exhibition"
+      "purpose": "Original signal pixels joined to Native frames"
     }
   ],
   "source_observation_mapping": {
     "dev.traffic_signal": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Retained original Native tick data and synchronized source-camera join are required; physical values remain unverified.",
       "channels": [
-        "intersection_entry_signal_phase"
+        "observed_signal_state",
+        "signal_camera_frame_join"
       ],
       "source_refs": [
-        "inputs/training__C111331__NRS-484B-307-6a__motor_vehicle_driver/assignment.json"
+        "native_samples.jsonl",
+        "video_frames.jsonl",
+        "reference_corner.mkv"
       ]
     },
     "dev.governs": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Retained original Native tick data and synchronized source-camera join are required; physical values remain unverified.",
       "channels": [
-        "intersection_entry_signal_phase"
+        "observed_signal_state",
+        "native_body_pose"
       ],
       "source_refs": [
-        "inputs/training__C111331__NRS-484B-307-6a__motor_vehicle_driver/assignment.json"
+        "native_samples.jsonl",
+        "video_frames.jsonl",
+        "reference_corner.mkv"
       ]
     },
     "st.lane_enters": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Retained original Native tick data and synchronized source-camera join are required; physical values remain unverified.",
       "channels": [
-        "intersection_entry_signal_phase"
+        "native_body_pose"
       ],
       "source_refs": [
-        "inputs/training__C111331__NRS-484B-307-6a__motor_vehicle_driver/assignment.json"
+        "native_samples.jsonl",
+        "video_frames.jsonl",
+        "reference_corner.mkv"
       ]
     },
     "kin.time": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Retained original Native tick data and synchronized source-camera join are required; physical values remain unverified.",
       "channels": [
-        "intersection_entry_signal_phase"
+        "native_body_pose",
+        "observed_signal_state",
+        "signal_camera_frame_join"
       ],
       "source_refs": [
-        "inputs/training__C111331__NRS-484B-307-6a__motor_vehicle_driver/assignment.json"
+        "native_samples.jsonl",
+        "video_frames.jsonl",
+        "reference_corner.mkv"
       ]
     },
     "drv.entering_intersection": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Retained original Native tick data and synchronized source-camera join are required; physical values remain unverified.",
       "channels": [
-        "intersection_entry_signal_phase"
+        "native_body_pose"
       ],
       "source_refs": [
-        "inputs/training__C111331__NRS-484B-307-6a__motor_vehicle_driver/assignment.json"
+        "native_samples.jsonl",
+        "video_frames.jsonl",
+        "reference_corner.mkv"
       ]
     },
     "st.intersection": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Retained original Native tick data and synchronized source-camera join are required; physical values remain unverified.",
       "channels": [
-        "intersection_entry_signal_phase"
+        "native_body_pose"
       ],
       "source_refs": [
-        "inputs/training__C111331__NRS-484B-307-6a__motor_vehicle_driver/assignment.json"
+        "native_samples.jsonl",
+        "video_frames.jsonl",
+        "reference_corner.mkv"
       ]
     },
     "drv.crossing_line": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Retained original Native tick data and synchronized source-camera join are required; physical values remain unverified.",
       "channels": [
-        "intersection_entry_signal_phase"
+        "native_body_pose"
       ],
       "source_refs": [
-        "inputs/training__C111331__NRS-484B-307-6a__motor_vehicle_driver/assignment.json"
+        "native_samples.jsonl",
+        "video_frames.jsonl",
+        "reference_corner.mkv"
       ]
     },
     "kin.speed": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Retained original Native tick data and synchronized source-camera join are required; physical values remain unverified.",
       "channels": [
-        "intersection_entry_signal_phase"
+        "native_body_pose"
       ],
       "source_refs": [
-        "inputs/training__C111331__NRS-484B-307-6a__motor_vehicle_driver/assignment.json"
+        "native_samples.jsonl",
+        "video_frames.jsonl",
+        "reference_corner.mkv"
       ]
     },
     "drv.stopping_distance": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Retained original Native tick data and synchronized source-camera join are required; physical values remain unverified.",
       "channels": [
-        "intersection_entry_signal_phase"
+        "native_body_pose"
       ],
       "source_refs": [
-        "inputs/training__C111331__NRS-484B-307-6a__motor_vehicle_driver/assignment.json"
+        "native_samples.jsonl",
+        "video_frames.jsonl",
+        "reference_corner.mkv"
       ]
     }
   },
@@ -316,5 +338,65 @@
     "audit_sha256": "8f6567bd173aca07a7e37f8e15535152f91431ce94a2a5f0ddfe14a06ba4d5c2",
     "selected_cases": 0,
     "physical_signal_or_original_pixels_verified": false
+  },
+  "evidence_review": {
+    "method": "Reviewed frozen assignment, witness, and local evidence inventory; no evidence.json or source-hashed equivalence receipt supplied.",
+    "accepted_recordings": [],
+    "demonstrated_facts": [],
+    "membership_only": [
+      {
+        "set_id": "demo-train",
+        "membership_rows": 4,
+        "status": "unreviewed_membership_only",
+        "reuse_receipt": null
+      },
+      {
+        "set_id": "full-train",
+        "membership_rows": 4,
+        "status": "unreviewed_membership_only",
+        "reuse_receipt": null
+      }
+    ],
+    "limitations": [
+      "Set membership does not establish entry phase, Native provenance, original pixels, or statutory coverage."
+    ],
+    "gaps": [
+      {
+        "case_id": "training__C111331__NRS-484B-307-6a__motor_vehicle_driver__reference",
+        "requirement": "observed original vehicle-body entry joined to signal exhibition and four source cameras"
+      },
+      {
+        "case_id": "training__C111331__NRS-484B-307-6a__motor_vehicle_driver__contrast",
+        "requirement": "observed original vehicle-body entry joined to signal exhibition and four source cameras"
+      }
+    ]
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 24,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "full intersection and vehicle",
+        "interval": "all 480 frames"
+      },
+      {
+        "view": "approach",
+        "subject": "vehicle approach and governing signal",
+        "interval": "all 480 frames"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "governing signal head and entry boundary",
+        "interval": "all 480 frames"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "driver vehicle and forward context",
+        "interval": "all 480 frames"
+      }
+    ],
+    "original_visibility_verified": false
   }
 }
