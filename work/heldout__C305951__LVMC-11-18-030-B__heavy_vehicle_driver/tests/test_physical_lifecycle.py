@@ -1,5 +1,8 @@
 import unittest
 import json
+import ast
+from math import atan2, hypot, pi
+from types import SimpleNamespace
 from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
@@ -11,6 +14,34 @@ import heavy_lifecycle_fixture as lifecycle
 
 
 class HeavyPhysicalLifecycleTest(unittest.TestCase):
+    def test_passing_and_turn_lateral_control_sweep(self):
+        """The authored offset must change the actual steering command on both branches."""
+        here = Path(__file__).resolve().parents[1]
+        for branch in ("passing", "turn"):
+            construction = json.loads((here / (branch + "-construction.json")).read_text())
+            sources = {item["path"]: item["content"] for item in construction["files"]}
+            config = json.loads(sources["config.json"])
+            self.assertEqual(config["engineering"]["lateral_offset_m"], 2.2)
+            tree = ast.parse(sources["runner.py"])
+            function = next(node for node in tree.body if isinstance(node, ast.FunctionDef)
+                            and node.name == "control_step")
+            scope = {"atan2": atan2, "hypot": hypot, "pi": pi}
+            exec(compile(ast.Module(body=[function], type_ignores=[]), branch + "-runner.py", "exec"), scope)
+            point = lambda x, y: SimpleNamespace(x=x, y=y)
+            transform = SimpleNamespace(location=point(0.0, 0.0),
+                                        get_forward_vector=lambda: point(1.0, 0.0))
+            actor = SimpleNamespace(get_transform=lambda: transform,
+                                    get_velocity=lambda: point(0.0, 0.0))
+            target = SimpleNamespace(transform=SimpleNamespace(location=point(10.0, 0.0),
+                                      get_right_vector=lambda: point(0.0, -1.0)))
+            commands = [scope["control_step"](actor, target, 4.0, offset)
+                        for offset in (0.0, 1.1, 2.2)]
+            with self.subTest(branch=branch):
+                self.assertEqual(commands[0]["steer"], 0.0)
+                self.assertGreater(commands[0]["steer"], commands[1]["steer"])
+                self.assertGreater(commands[1]["steer"], commands[2]["steer"])
+                self.assertTrue(all(command["throttle"] == 0.6 for command in commands))
+
     def test_saved_review_rejects_synthetic_and_missing_native_provenance(self):
         case = "heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__within_marked_lane"
         fixture = {"case_id": case, "fixture_only": True,
