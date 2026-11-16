@@ -31,8 +31,9 @@ def build(attempt):
     if REPO / '.runtime-work' not in attempt.parents:
         raise ValueError('Synthetic diagnostic belongs under .runtime-work')
     config = json.loads((attempt / 'config.json').read_text())
-    if config['case_id'] != ROOT.name + '__tour_bus_below':
-        raise ValueError('This diagnostic is only for tour_bus_below')
+    if config['case_id'] not in tuple(ROOT.name + '__tour_bus_' + boundary
+                                     for boundary in ('below', 'at', 'above')):
+        raise ValueError('This diagnostic requires a loading tour-bus case')
     capture = attempt / 'capture'
     graph_dir = capture / 'native/graphs/base'
     if (capture / 'manifest.json').exists() or graph_dir.exists():

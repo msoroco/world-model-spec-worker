@@ -27,8 +27,8 @@ def prepare(attempt, *, case='tour_bus_below', reuse_media_from=None):
         raise ValueError('Diagnostic acquisition belongs under .runtime-work')
     if attempt.exists():
         raise ValueError('Use a fresh synthetic acquisition directory')
-    if case != 'tour_bus_below':
-        raise ValueError('This source-bound pilot has exactly 36,120 frames for tour_bus_below')
+    if case not in ('tour_bus_below', 'tour_bus_at', 'tour_bus_above'):
+        raise ValueError('Unsupported source-bound loading case')
     case_id = ROOT.name + '__' + case
     materialize(MANIFEST, case_id, attempt, 'primary')
     module = importlib.util.spec_from_file_location(
@@ -36,25 +36,30 @@ def prepare(attempt, *, case='tour_bus_below', reuse_media_from=None):
     source = importlib.util.module_from_spec(module)
     module.loader.exec_module(source)
     source.source_rows(attempt)
-    if not PILOT.is_file():
-        raise ValueError('Full-length overview pilot is missing')
+    frames = json.loads((attempt / 'config.json').read_text())['capture_frames']
     if reuse_media_from is not None:
         reuse_media_from = Path(reuse_media_from).resolve()
         if REPO / '.runtime-work' not in reuse_media_from.parents:
             raise ValueError('Reusable synthetic media belongs under .runtime-work')
-    shutil.copy2((reuse_media_from / 'overview.mkv') if reuse_media_from else PILOT,
-                 attempt / 'overview.mkv')
-    for view, color in (('approach', 'red'),
-                        ('reference_corner', 'green'),
-                        ('driver_reference', 'blue')):
+    if reuse_media_from is not None:
+        shutil.copy2(reuse_media_from / 'overview.mkv', attempt / 'overview.mkv')
+    elif case == 'tour_bus_below' and PILOT.is_file():
+        shutil.copy2(PILOT, attempt / 'overview.mkv')
+    for view, color, size in (('overview', 'black', '1920x1080'),
+                        ('approach', 'red', '1280x720'),
+                        ('reference_corner', 'green', '1280x720'),
+                        ('driver_reference', 'blue', '1280x720')):
         output = attempt / (view + '.mkv')
-        output.unlink()
+        if view == 'overview' and (reuse_media_from is not None or
+                                   case == 'tour_bus_below' and PILOT.is_file()):
+            continue
+        output.unlink(missing_ok=True)
         if reuse_media_from is not None:
             shutil.copy2(reuse_media_from / (view + '.mkv'), output)
             continue
         command = ['ffmpeg', '-nostdin', '-hide_banner', '-loglevel', 'error',
-                   '-f', 'lavfi', '-i', 'color=c=' + color + ':s=1280x720:r=20',
-                   '-frames:v', '36120', '-an', '-c:v', 'libx265',
+                   '-f', 'lavfi', '-i', 'color=c=' + color + ':s=' + size + ':r=20',
+                   '-frames:v', str(frames), '-an', '-c:v', 'libx265',
                    '-preset', 'ultrafast', '-x265-params',
                    'lossless=1:log-level=error', '-threads', '2', str(output)]
         subprocess.run(command, check=True, timeout=1800)
