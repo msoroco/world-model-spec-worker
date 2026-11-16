@@ -66,7 +66,7 @@ class HeavyPhysicalLifecycleTest(unittest.TestCase):
                 self.assertEqual(config["engineering"]["lateral_offset_m"], row["setpoint_m"])
                 self.assertEqual(len(config["cameras"]), 4)
             self.assertEqual(len(by_case), 6)
-            for sweep in ("heavy_passing_plan", "heavy_turn_plan"):
+            for sweep in sweep_construction.SOURCE_CASES:
                 self.assertEqual([by_case[f"{sweep}-{rank:04d}"][0]["setpoint_m"]
                                   for rank in range(3)], [0.0, 2.2, 1.1])
             for variants in by_case.values():

@@ -24,8 +24,8 @@ from worker_exchange.fixture_generator import generate as generate_fixture
 
 
 SOURCE_CASES = {
-    "heavy_passing_plan": "passing_boundary_crossing",
-    "heavy_turn_plan": "lawful_turn_preparation_boundary_crossing",
+    HERE.name + "__heavy_passing_plan": "passing_boundary_crossing",
+    HERE.name + "__heavy_turn_plan": "lawful_turn_preparation_boundary_crossing",
 }
 
 
@@ -231,8 +231,8 @@ def stage_diagnostics(output: Path) -> list[dict]:
         raise ValueError("Choose a fresh directory under ignored .runtime-work")
     output.mkdir(parents=True)
     rows = []
-    for sweep_id, branch in (("heavy_passing_plan", "passing"),
-                             ("heavy_turn_plan", "turn")):
+    for sweep_id, branch in ((HERE.name + "__heavy_passing_plan", "passing"),
+                             (HERE.name + "__heavy_turn_plan", "turn")):
         source_path = HERE / (branch + "-diagnostic.json")
         source = json.loads(source_path.read_text())
         for rank, setpoint in enumerate((0.0, 2.2, 1.1)):
