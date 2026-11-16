@@ -45,8 +45,17 @@ def center(actor):
     return tuple((min(v[i] for v in vertices)+max(v[i] for v in vertices))/2 for i in (0,1))
 
 
+def compare_full_fixed_rows(left_rows,right_rows):
+    if len(left_rows)!=900 or len(right_rows)!=900:
+        raise ValueError('Full diagnostic comparison requires 900 original frames')
+    for index,(left,right) in enumerate(zip(left_rows,right_rows)):
+        for field in ('frame','time_s','ego','oncoming','ego_heading_deg','ego_left_indicator'):
+            if left[field]!=right[field]:
+                raise ValueError(f'Fixed original {field} differs at sample {index}')
+
+
 def audit_pair(folder,comparison_id,left_source,right_source,*,left_audit=None,right_audit=None,
-               diagnostic_selftest=False):
+               diagnostic_selftest=False,full_diagnostic=False):
     folder=Path(folder);left_source=Path(left_source);right_source=Path(right_source)
     plan=read(folder/'case-plan.json');manifest=read(folder/'execution-manifest.json')
     pair=next((x for x in plan['comparisons'] if x['comparison_id']==comparison_id),None)
@@ -66,7 +75,9 @@ def audit_pair(folder,comparison_id,left_source,right_source,*,left_audit=None,r
         raise ValueError('Fixed authored configuration differs')
     if configs[0]['rate_hz']!=20 or configs[0]['duration_s']!=45 or len(configs[0]['cameras'])!=4:
         raise ValueError('Comparison capture contract changed')
-    joins=[validate_originals(root,e['case_id'],full_duration=not diagnostic_selftest)
+    if full_diagnostic and not diagnostic_selftest:
+        raise ValueError('Full diagnostic requires diagnostic selftest mode')
+    joins=[validate_originals(root,e['case_id'],full_duration=full_diagnostic or not diagnostic_selftest)
            for root,e in zip((left_source,right_source),entries)]
     geometry=[read(root/'intersection_geometry.json') for root in (left_source,right_source)]
     if geometry[0]!=geometry[1]:
@@ -74,6 +85,25 @@ def audit_pair(folder,comparison_id,left_source,right_source,*,left_audit=None,r
     histories=[rows(root/'interaction_history.jsonl') for root in (left_source,right_source)]
     if len(histories[0])!=len(histories[1]):
         raise ValueError('Comparison original duration differs')
+    if full_diagnostic:
+        for root,e,joined,files in zip((left_source,right_source),entries,joins,(left_files,right_files)):
+            if read(root/'config.json')!=json.loads(files['config.json']):
+                raise ValueError('Full diagnostic config differs from selected construction')
+            seal=read(root/'capture-seal.json')
+            for name in ('config.json','intersection_geometry.json','interaction_history.jsonl',
+                         'video_frames.jsonl','trace.jsonl'):
+                if seal.get('sources',{}).get(name)!=sha(root/name):
+                    raise ValueError('Full diagnostic source is unsealed: '+name)
+            receipt=read(root/'diagnostic-audit.json')
+            if (receipt.get('format')!='worker-delivery-audit-diagnostic' or
+                    receipt.get('passed') is not False or receipt.get('software_checks_passed') is not True or
+                    receipt.get('diagnostic_fixture') is not True or receipt.get('physical_acceptance_claimed') is not False or
+                    receipt.get('case_id')!=e['case_id'] or receipt.get('frames')!=900 or
+                    receipt.get('auditor_sha256')!=sha(folder/'delivery_audit.py') or
+                    receipt.get('source_result_sha256')!=sha(root/'result.json') or
+                    receipt.get('original_sources',{}).get('history_sha256')!=joined['history_sha256']):
+                raise ValueError('Full diagnostic delivery audit missing or stale')
+        compare_full_fixed_rows(*histories)
     measured=[analyze(root) for root in (left_source,right_source)]
     if measured[0]['reciprocal_stopped_outside_during_turn'] is not True or measured[1]['reciprocal_stopped_outside_during_turn'] is not False:
         raise ValueError('Declared reciprocal response difference absent')
@@ -117,10 +147,11 @@ def main():
     p.add_argument('--left-audit',type=Path)
     p.add_argument('--right-audit',type=Path)
     p.add_argument('--diagnostic-selftest',action='store_true')
+    p.add_argument('--full-diagnostic',action='store_true')
     p.add_argument('--output',type=Path,required=True)
     a=p.parse_args();result=audit_pair(a.folder,a.comparison,a.left_source,a.right_source,
                     left_audit=a.left_audit,right_audit=a.right_audit,
-                    diagnostic_selftest=a.diagnostic_selftest)
+                    diagnostic_selftest=a.diagnostic_selftest,full_diagnostic=a.full_diagnostic)
     a.output.parent.mkdir(parents=True,exist_ok=True)
     a.output.write_text(json.dumps(result,indent=2)+'\n')
     print(json.dumps(result,sort_keys=True))
