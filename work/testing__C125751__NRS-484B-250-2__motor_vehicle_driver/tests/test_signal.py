@@ -4,6 +4,7 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from types import SimpleNamespace
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -18,6 +19,7 @@ def load(name):
 
 control = load("signal_control")
 measure = load("signal_measurements")
+site_packet = load("site_packet")
 
 
 class Waypoint:
@@ -169,6 +171,45 @@ class SignalTests(unittest.TestCase):
             self.assertEqual(report["at_body_entry"]["other"]["native_state"], "Green")
             self.assertNotEqual(report["at_body_entry"]["other"]["native_state"],
                                 report["at_body_entry"]["ego"]["native_state"])
+
+    def test_native_crossing_probe_keeps_site_classification_pending(self):
+        def waypoint(road, lane, x, y, yaw, junction=7):
+            point = SimpleNamespace(x=x, y=y)
+            pose = SimpleNamespace(location=point, rotation=SimpleNamespace(yaw=yaw))
+            return SimpleNamespace(road_id=road, lane_id=lane, is_junction=True,
+                                   transform=pose,
+                                   get_junction=lambda: SimpleNamespace(id=junction))
+
+        class NativeMap:
+            name = "TownCandidate"
+
+            def __init__(self, points):
+                self.points = points
+
+            def generate_waypoints(self, spacing):
+                self.spacing = spacing
+                return self.points
+
+        class NativeWorld(World):
+            def __init__(self, lights, points):
+                super().__init__(lights)
+                self.native_map = NativeMap(points)
+
+            def get_map(self):
+                return self.native_map
+
+        crossing = [waypoint(11, -1, -1, 0, 0), waypoint(22, -1, 0, -1, 90)]
+        world = NativeWorld([Light(5, 11, -1), Light(9, 22, -1)], crossing)
+        candidates = site_packet.probe_native_signal_crossings(world)
+        self.assertEqual(len(candidates), 1)
+        self.assertEqual(candidates[0]["governing_signal_ids"], [5, 9])
+        self.assertEqual(candidates[0]["review_status"], "candidate_only")
+        self.assertIn("statutory intersection identity", candidates[0]["unresolved"])
+        self.assertEqual(world.native_map.spacing, 2.0)
+        parallel = NativeWorld(world.lights, [crossing[0], waypoint(22, -1, 0, -1, 4)])
+        self.assertEqual(site_packet.probe_native_signal_crossings(parallel), [])
+        ambiguous = NativeWorld(world.lights + [Light(10, 22, -1)], crossing)
+        self.assertEqual(site_packet.probe_native_signal_crossings(ambiguous), [])
 
 
 if __name__ == "__main__":

@@ -118,3 +118,65 @@ def verify_site_packet(config, base_dir):
             "source_documents": verified, "diagnostic_only": diagnostic_only,
             "physical_site_verified": False, "official_device_status_verified": False,
             "head_pixel_visibility_verified": False}
+
+
+def probe_native_signal_crossings(world, sample_m=2.0, search_radius_m=25.0):
+    """Find review candidates from Native map/signal calls, without legal classification.
+
+    The returned junction and lane IDs can seed a site review. A CARLA junction
+    is not by itself proof of a statutory intersection or median opening.
+    """
+    if not 0 < sample_m <= 5 or not 0 < search_radius_m <= 50:
+        raise ValueError("Finite bounded Native probe spacing/radius required")
+    native_map = world.get_map()
+    lanes = {}
+    for signal in world.get_actors().filter("traffic.traffic_light*"):
+        for lane in signal.get_affected_lane_waypoints():
+            key = (int(lane.road_id), int(lane.lane_id))
+            lanes.setdefault(key, set()).add(int(signal.id))
+    junctions = {}
+    for waypoint in native_map.generate_waypoints(sample_m):
+        if not waypoint.is_junction:
+            continue
+        key = (int(waypoint.road_id), int(waypoint.lane_id))
+        if len(lanes.get(key, ())) != 1:
+            continue
+        transform = waypoint.transform
+        location, rotation = transform.location, transform.rotation
+        values = (location.x, location.y, rotation.yaw)
+        if not all(math.isfinite(float(value)) for value in values):
+            continue
+        junction_id = int(waypoint.get_junction().id)
+        junctions.setdefault(junction_id, {}).setdefault(key, []).append(
+            (float(location.x), float(location.y), float(rotation.yaw)))
+    candidates = []
+    for junction_id, approaches in sorted(junctions.items()):
+        keys = sorted(approaches)
+        for index, left in enumerate(keys):
+            for right in keys[index + 1:]:
+                if left[0] == right[0]:
+                    continue
+                pairs = []
+                for a in approaches[left]:
+                    for b in approaches[right]:
+                        separation = math.hypot(a[0] - b[0], a[1] - b[1])
+                        angle = abs((a[2] - b[2] + 180) % 360 - 180)
+                        if separation <= search_radius_m and 45 <= angle <= 135:
+                            pairs.append((separation, angle, a, b))
+                if not pairs:
+                    continue
+                distance, angle, a, b = min(pairs, key=lambda item: item[0])
+                candidates.append({
+                    "native_map_name": native_map.name,
+                    "native_junction_id": junction_id,
+                    "approach_road_lanes": [list(left), list(right)],
+                    "governing_signal_ids": [next(iter(lanes[left])), next(iter(lanes[right]))],
+                    "sample_xy_yaw": [list(a), list(b)],
+                    "sample_separation_m": distance,
+                    "crossing_angle_deg": angle,
+                    "probe_spacing_m": sample_m,
+                    "review_status": "candidate_only",
+                    "unresolved": ["median opening and distinct highways", "all entrances and official device status",
+                                   "signal head visibility", "statutory intersection identity"],
+                })
+    return candidates

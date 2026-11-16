@@ -12,7 +12,7 @@ from capture_sources import record_frame, source_contexts
 from native_pair import construct_pair
 from route_control import steering_command, validate_route
 from signal_control import find_governing_signal, SignalPairControl
-from site_packet import verify_site_packet
+from site_packet import probe_native_signal_crossings, verify_site_packet
 from stop_control import StopApproach, front_speed
 from yield_controller import apply_speed_control, body_in_crossing
 
@@ -255,10 +255,21 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", default="config.json")
     parser.add_argument("--check", action="store_true")
+    parser.add_argument("--probe-site", action="store_true",
+                        help="List provisional Native crossing/signal candidates for site review")
     parser.add_argument("--output-dir")
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=2000)
     args = parser.parse_args()
+    if args.probe_site:
+        import carla
+        client = carla.Client(args.host, args.port)
+        client.set_timeout(30)
+        candidates = probe_native_signal_crossings(client.get_world())
+        print(json.dumps({"format": "worker-c125751-native-site-probe",
+                          "review_status": "candidate_only", "candidates": candidates,
+                          "physical_or_legal_acceptance_claimed": False}, allow_nan=False))
+        return
     config = validate_config(json.loads(Path(args.config).read_text()), Path(args.config).parent)
     if args.check:
         print(json.dumps({"case_id": config["selected_case_id"], "frames": 1100,

@@ -1,4 +1,5 @@
 import json
+import io
 import hashlib
 import subprocess
 import sys
@@ -7,10 +8,12 @@ import unittest
 from pathlib import Path
 from queue import Queue
 from types import SimpleNamespace as NS
+from contextlib import redirect_stdout
+from unittest.mock import patch
 
 PACKAGE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PACKAGE))
-from runner import TARGETS, _camera_frame, capture, validate_config
+from runner import TARGETS, _camera_frame, capture, main, validate_config
 from site_packet import source_bindings
 from camera_setup import SIZES
 
@@ -90,6 +93,21 @@ def write_packet(root, value):
 
 
 class RunnerTests(unittest.TestCase):
+    def test_probe_site_cli_does_not_load_diagnostic_capture_config(self):
+        world = object()
+        client = NS(set_timeout=lambda seconds: self.assertEqual(seconds, 30),
+                    get_world=lambda: world)
+        output = io.StringIO()
+        with (patch.dict(sys.modules, {"carla": NS(Client=lambda host, port: client)}),
+              patch("runner.probe_native_signal_crossings", return_value=[{"review_status": "candidate_only"}]) as probe,
+              patch.object(sys, "argv", ["runner.py", "--probe-site"]),
+              redirect_stdout(output)):
+            main()
+        probe.assert_called_once_with(world)
+        report = json.loads(output.getvalue())
+        self.assertEqual(report["review_status"], "candidate_only")
+        self.assertFalse(report["physical_or_legal_acceptance_claimed"])
+
     def test_both_exact_cases_cpu_check_without_carla(self):
         for case in TARGETS:
             with tempfile.TemporaryDirectory() as temp:
