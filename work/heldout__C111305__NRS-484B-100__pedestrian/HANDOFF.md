@@ -96,3 +96,10 @@ Next CPU work: return and bind independent delivery positive/negative receipts, 
 The package is **partial**. Next worker CPU action is the judgment timing sweep's three exact cases and source-bound proofs, then physical/lifecycle fixtures and canonical delivery acceptance/execution manifest, followed by scoped strict and whole-batch strict. Do not mark ready from the current returned suite.
 
 The latest settled-state whole-batch strict gate exited 1 with `Preparation acceptance failed: partial/missing packages remain`; `work/_shared/strict-gate-latest.log` SHA-256 is `8a5196a775b4e25dcc5ad430d9aa36835506a570dd5afd41ee669c3da366a69e`. The C111305 scoped strict gate also exits 1 at the partial-status acceptance check. This is unfinished CPU delivery preparation, not an external blocker.
+
+
+## 2026-11-16 physical outcome fixture checkpoint
+
+The returned `physical_fixture.py` SHA-256 `602e101519372f9aaf64732f4d9e45f273a1106ef610d7a77d0bb001fd60cdf5` reads each current exact case's hash-pinned diagnostic recipe, joins officer direction and recipient with original-shaped subject/video frame IDs, and exercises three synthetic outcomes per case. Twelve CLI invocations across four current cases pass: complete=met, incomplete=not_met, missing direction=unverified. Retained `physical-fixture-cpu.log` SHA-256 `75cd4e1d3bff35dd43c66286eae68c26e1ae5327b54e55dee71f747763d21230`; `.venv-cpu/bin/python worker_check.py --assignment heldout__C111305__NRS-484B-100__pedestrian --complete` exits 0. The diagnostic source and recipe files for all four cases were restored byte-exact from `result.json.preserved_source_artifacts` to run these tests.
+
+Status remains **partial**. The next worker-owned CPU actions are to construct and prove the three exact judgment timing-sweep cases, bind physical receipts and ordered lifecycle tests, build and test the delivery acceptance/execution manifest, rerun stable saved processing, then run the assignment strict gate. Synthetic officer indications and subject motion do not establish Native communication, physical realization, authority, lawfulness, willfulness or legal compliance.
