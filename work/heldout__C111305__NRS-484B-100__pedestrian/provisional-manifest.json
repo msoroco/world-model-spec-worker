@@ -1,0 +1,58 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "heldout__C111305__NRS-484B-100__pedestrian",
+  "cases": [
+    {
+      "case_id": "heldout__C111305__NRS-484B-100__pedestrian__stop_responds",
+      "kind": "delivery",
+      "construction": "construction.json",
+      "construction_sha256": "654a5f9a15f33a1c0c993c2d9eb4eb2f331fca65e9f583eac7b9119d97f48804",
+      "measurement_procedure": {
+        "entrypoint": "officer_response.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Crosswalk connectivity and four-view officer/pedestrian visibility may fail in Native."
+      },
+      "candidates": [],
+      "measurement_contract": "measurement-contract-stop_responds.json",
+      "fixture_recipe": "work/heldout__C111305__NRS-484B-100__pedestrian/diagnostic-recipe-stop_responds.json",
+      "acquisition": {
+        "subject_speed_mps": {
+          "entrypoint": "officer_response.py",
+          "method": "original pedestrian velocity joined at every frame",
+          "evidence": "subject_motion_history.jsonl and video_frames.jsonl"
+        },
+        "officer_direction": {
+          "entrypoint": "officer_response.py",
+          "method": "timed addressed officer pose joined to original frame",
+          "evidence": "officer_direction.json, officer_context.json and video_frames.jsonl"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111305__NRS-484B-100__pedestrian/provisional-manifest.json --case heldout__C111305__NRS-484B-100__pedestrian__stop_responds --output .runtime-work/c111305-first-offline5 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "primary-offline-stop_responds.log",
+        "log_sha256": "8c4b1532288f3c2237a75b4778a19116380135ed2658033225c3d1a1a8446867",
+        "construction_sha256": "654a5f9a15f33a1c0c993c2d9eb4eb2f331fca65e9f583eac7b9119d97f48804"
+      },
+      "compatibility": {
+        "receipt": "primary-compat-stop_responds.json",
+        "sha256": "5f6b68d9e7e25bc9e1c559fe022792168ca1456218ccbdcfdc724edd92d692e5",
+        "log": "primary-compat-analysis.log"
+      },
+      "negative": {
+        "log": "primary-negative-analysis.log"
+      },
+      "saved_processing": {
+        "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111305__NRS-484B-100__pedestrian/provisional-manifest.json --case heldout__C111305__NRS-484B-100__pedestrian__stop_responds --attempt .runtime-work/c111305-first-saved-attempt --output .runtime-work/c111305-first-saved-processing --library runtime/library --validator .runtime-work/c111305-validator/.lake/build/bin/adapterCheck",
+        "exit_code": 0,
+        "log": "primary-saved-stop_responds.json",
+        "log_sha256": "93e6101659dc8c9de03026446a6c2a9766b258ac1537d760a1f9c3f4ba489ef6",
+        "receipt": "primary-saved-stop_responds.json",
+        "receipt_sha256": "93e6101659dc8c9de03026446a6c2a9766b258ac1537d760a1f9c3f4ba489ef6"
+      }
+    }
+  ],
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3"
+}

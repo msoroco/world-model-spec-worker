@@ -208,6 +208,6 @@ class NativeIndicationTests(unittest.TestCase):
    self.assertEqual(report['measurements']['original_course_deviation_m']['value'][-1]['value'],0.)
    self.assertFalse(report['physical_acceptance_claimed'])
    (root/'overview.mkv').unlink()
-   with self.assertRaisesRegex(ValueError,'Missing original turn source'):
+   with self.assertRaisesRegex(ValueError,'Missing required source'):
     m.analyze_original_sources(root)
 if __name__=='__main__':unittest.main()

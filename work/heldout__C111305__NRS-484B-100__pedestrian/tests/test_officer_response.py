@@ -4,6 +4,7 @@ import json
 import tempfile
 import unittest
 import types
+import sys
 from pathlib import Path
 
 HERE=Path(__file__).resolve().parents[1]
@@ -13,6 +14,7 @@ spec2=importlib.util.spec_from_file_location("officer_comparison_audit", HERE/"o
 audit_module=importlib.util.module_from_spec(spec2);spec2.loader.exec_module(audit_module)
 spec3=importlib.util.spec_from_file_location("pedestrian_runner", HERE/"runner.py")
 runner=importlib.util.module_from_spec(spec3);spec3.loader.exec_module(runner)
+sys.modules["runner"] = runner
 ACTOR="pedestrian"
 
 class OfficerResponseTests(unittest.TestCase):
@@ -115,5 +117,44 @@ class PedestrianNativeConstructionTests(unittest.TestCase):
         proceed=runner.pose_direction(carla,officer,"proceed")
         self.assertNotEqual(stop["relative_pitch_deg"],proceed["relative_pitch_deg"])
         self.assertEqual(officer.blend,1.0)
+
+class SavedSourceTests(unittest.TestCase):
+    def test_original_join_and_missing_camera_negative(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp)
+            case=runner.PREFIX+"stop_responds"
+            cfg={"law_id":"NRS-484B-100","cell_id":"C111305","actor":"pedestrian",
+                 "selected_case_id":case,"case":{"case_id":case},"rate_hz":20,"frames":160,
+                 "direction_frame":40,"cameras":[{"name":name,"width":spec[2][0],"height":spec[2][1]}
+                                                   for name,spec in runner.CAMERAS.items()]}
+            (root/"config.json").write_text(json.dumps(cfg))
+            context={"actor_role":"pedestrian","officer_role":"police_officer","officer_id":"officer-1",
+                     "subject_id":"subject-1","duty_source":"source pending review","lawfulness_source":"source pending review"}
+            direction={"officer_id":"officer-1","subject_id":"subject-1","recipient_id":"subject-1",
+                       "frame":2,"indication_source":"original arm cue","command":"stop",
+                       "exact_direction_text":"Wait at marked sidewalk until released",
+                       "wait_location_source":"sidewalk waypoint","communication_modality":"visual",
+                       "communication_source":"overview.mkv","opportunity_source":"four cameras",
+                       "actual_perception":None}
+            motion=[{"frame":i,"time_s":i/20,"subject_id":"subject-1","speed_mps":speed,
+                     "position_m":[i/10,0,0]} for i,speed in enumerate((1.2,1.2,1.2,.5,0))]
+            (root/"officer_context.json").write_text(json.dumps(context))
+            (root/"officer_direction.json").write_text(json.dumps(direction))
+            (root/"subject_motion.json").write_text(json.dumps({"frames":motion}))
+            (root/"subject_motion_history.jsonl").write_text("".join(json.dumps(row)+"\n" for row in motion))
+            (root/"video_frames.jsonl").write_text("".join(json.dumps({"video_frame":i,"carla_frame":i,"time_s":i/20})+"\n" for i in range(5)))
+            (root/"trace.jsonl").write_text("".join(json.dumps({"frame":i,"time_s":i/20})+"\n" for i in range(5)))
+            for name in runner.CAMERAS:(root/(name+".mkv")).write_bytes(b"text-only test marker")
+            report=module.analyze_saved(root)
+            self.assertEqual(report["measurements"]["officer_response"]["value"]["observed_response"],"stopped_after_indication")
+            self.assertEqual(len((root/"subject_speed_mps.jsonl").read_text().splitlines()),5)
+            (root/"overview.mkv").unlink()
+            with self.assertRaisesRegex(ValueError,"Missing required source: overview.mkv"):
+                module.analyze_saved(root)
+            (root/"overview.mkv").write_bytes(b"text-only test marker")
+            motion[1]["frame"]=99
+            (root/"subject_motion_history.jsonl").write_text("".join(json.dumps(row)+"\n" for row in motion))
+            with self.assertRaisesRegex(ValueError,"frame join differs"):
+                module.analyze_saved(root)
 
 if __name__=="__main__":unittest.main()

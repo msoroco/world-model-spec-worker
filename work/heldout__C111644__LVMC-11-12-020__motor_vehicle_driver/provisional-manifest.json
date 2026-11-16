@@ -1,0 +1,76 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "heldout__C111644__LVMC-11-12-020__motor_vehicle_driver",
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3",
+  "cases": [
+    {
+      "case_id": "heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__marker_follow",
+      "kind": "delivery",
+      "construction": "construction.json",
+      "construction_sha256": "74f4f8bd108e33f3befb36afffa780617b9c15515ed4a7c890e41053efe4d721",
+      "measurement_procedure": {
+        "entrypoint": "turn_marking.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native indication spawn, turn route and four-camera visibility require physical verification"
+      },
+      "candidates": [],
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/provisional-manifest.json --case heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__marker_follow --output .runtime-work/c111644-marker-follow-offline-v3-20261116 --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "log": "marker-follow-offline.log",
+        "log_sha256": "099a72c953712d20318b6179a330d9d9a849a2425c65016a0093dcce1e93c525",
+        "construction_sha256": "74f4f8bd108e33f3befb36afffa780617b9c15515ed4a7c890e41053efe4d721"
+      },
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/recipe.json",
+      "compatibility": {
+        "receipt": "marker-follow-compatibility.json",
+        "sha256": "5f28574d5ea5a6874e428c90e5de6a4695c500fb0735eb1b6cec2b857a8d540d",
+        "log": "marker-follow-analysis.log",
+        "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "negative_log": "marker-follow-negative.log",
+        "negative_log_sha256": "98d40afcc6b4efa0d72d661ba0842c3af6128ac293da8d1e7b655b386ce39037"
+      },
+      "negative": {
+        "log": "marker-follow-negative.log"
+      },
+      "acquisition": {
+        "original_course_deviation_m": {
+          "entrypoint": "turn_marking.py",
+          "method": "source-joined original body/trace/frame and four source-camera derivation",
+          "evidence": "analyze_original_sources verifies SHA-256-bound originals before emitting original_course_deviation_m"
+        },
+        "original_turn_path_length_m": {
+          "entrypoint": "turn_marking.py",
+          "method": "source-joined original body/trace/frame and four source-camera derivation",
+          "evidence": "analyze_original_sources verifies SHA-256-bound originals before emitting original_turn_path_length_m"
+        },
+        "intersection_occupancy": {
+          "entrypoint": "turn_marking.py",
+          "method": "source-joined original body/trace/frame and four source-camera derivation",
+          "evidence": "analyze_original_sources verifies SHA-256-bound originals before emitting intersection_occupancy"
+        },
+        "turn_course_source_context": {
+          "entrypoint": "turn_marking.py",
+          "method": "source-joined original body/trace/frame and four source-camera derivation",
+          "evidence": "analyze_original_sources verifies SHA-256-bound originals before emitting turn_course_source_context"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "saved_processing": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/provisional-manifest.json --case heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__marker_follow --attempt .runtime-work/c111644-primary-saved-attempt-v2-20261116 --output .runtime-work/c111644-primary-saved-output-20261116 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "exit_code": 0,
+        "log": "marker-follow-saved-processing.json",
+        "log_sha256": "0eb6005e7b62260f1e0ed0dd396b33acf67cf6dd42542d7e7bec9c88214767de",
+        "receipt": "marker-follow-saved-processing.json",
+        "receipt_sha256": "0eb6005e7b62260f1e0ed0dd396b33acf67cf6dd42542d7e7bec9c88214767de"
+      }
+    }
+  ]
+}

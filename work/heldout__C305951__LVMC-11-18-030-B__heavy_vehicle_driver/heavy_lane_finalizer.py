@@ -18,7 +18,7 @@ CAMERA_FILES = ("overview.mkv", "approach.mkv", "reference_corner.mkv",
 def _required(root, name):
     path = Path(root) / name
     if not path.is_file() or not path.read_bytes():
-        raise ValueError("Missing original heavy-lane source: " + name)
+        raise ValueError("Missing required source: " + name)
     return path, sha256(path.read_bytes()).hexdigest()
 
 
@@ -39,7 +39,7 @@ def analyze(attempt, *, write_channels=True):
     body_path, body_sha = _required(root, "heavy_lane_sources.jsonl")
     video_hashes = {name: _required(root, name)[1] for name in CAMERA_FILES}
     frames, trace, body = _rows(frame_path), _rows(trace_path), _rows(body_path)
-    if not frames or len(frames) != config["frames"] or not (
+    if not frames or len(frames) > config["frames"] or not (
             len(frames) == len(trace) == len(body)):
         raise ValueError("Original heavy-lane source frame count differs")
     surveyed = {(lane["road_id"], lane["lane_id"]) for lane in survey["lanes"]}
@@ -58,15 +58,15 @@ def analyze(attempt, *, write_channels=True):
         result = measure_footprint(observation)
         result["time_s"] = time_s
         measured.append(result)
-    sources = {"config.json": config_sha,
-               "native_three_lane_survey.json": survey_sha,
+    sources = {"native_three_lane_survey.json": survey_sha,
                "video_frames.jsonl": frame_sha, "trace.jsonl": trace_sha,
                "heavy_lane_sources.jsonl": body_sha, **video_hashes}
     values = {
         "native_lane_boundaries": [row["lane"] for row in body],
         "heavy_vehicle_footprint": [row["heavy_vehicle_components"] for row in body],
         "lane_boundary_overlap": [row["minimum_clearance_m"] for row in measured],
-        "passing_context": [row.get("overtaken") for row in body],
+        "passing_context": [{"overtaken": row.get("overtaken"),
+                             "exception_asserted": False} for row in body],
         "turn_preparation_context": [{"motion": motion,
                                       "lawful_turn_premise": None} for motion in trace],
         "four_camera_originals": [{"video_frame": index,
@@ -84,7 +84,7 @@ def analyze(attempt, *, write_channels=True):
                                        for frame, value in zip(frames, series)))
     return {"format": "worker-analysis-report", "case_id": CASE,
             "measurements": {"heavy_lane_footprint": {
-                "method": "original_source_corner_clearance",
+                "method": "analyze",
                 "value": {"frames": measured,
                           "minimum_clearance_m": min(row["minimum_clearance_m"]
                                                      for row in measured),

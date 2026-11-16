@@ -1,0 +1,98 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "heldout__C111250__NRS-484B-200-1__motor_vehicle_driver",
+  "cases": [
+    {
+      "case_id": "heldout__C111250__NRS-484B-200-1__motor_vehicle_driver__none_right",
+      "kind": "delivery",
+      "construction": "construction.json",
+      "construction_sha256": "d21e84b2655dc60ba3873cad9d18b778dc253ac8ce1c2a4bda4bd4c1b330c6e0",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Loaded road geometry and camera/vehicle motion require physical verification"
+      },
+      "candidates": [],
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/heldout__C111250__NRS-484B-200-1__motor_vehicle_driver/recipe.json",
+      "acquisition": {
+        "full_body_leftward_clearance_m": {
+          "entrypoint": "finalizer.py",
+          "method": "source-hashed original body/frame and four-camera join",
+          "evidence": [
+            "road_geometry.json",
+            "exception_context.json",
+            "body_history.jsonl",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "any_left_half_body": {
+          "entrypoint": "finalizer.py",
+          "method": "source-hashed original body/frame and four-camera join",
+          "evidence": [
+            "road_geometry.json",
+            "exception_context.json",
+            "body_history.jsonl",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "exception_source_context": {
+          "entrypoint": "finalizer.py",
+          "method": "source-hashed original body/frame and four-camera join",
+          "evidence": [
+            "road_geometry.json",
+            "exception_context.json",
+            "body_history.jsonl",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --assignment heldout__C111250__NRS-484B-200-1__motor_vehicle_driver --case heldout__C111250__NRS-484B-200-1__motor_vehicle_driver__none_right --candidate primary --bundle work/heldout__C111250__NRS-484B-200-1__motor_vehicle_driver --output .runtime-work/c111250-first-primary-offline-20261116c",
+        "exit_code": 0,
+        "construction_sha256": "d21e84b2655dc60ba3873cad9d18b778dc253ac8ce1c2a4bda4bd4c1b330c6e0",
+        "log": "first-primary-offline.log",
+        "log_sha256": "de4f0a599273916ed38dce3c05581a33a1445595ee1fdf3e12aec18d9d30913f"
+      },
+      "compatibility": {
+        "receipt": "first-primary-compatibility.json",
+        "sha256": "c484a658a013a89cc3b244b3aa458947b7a759db3ae2f3b7e50250112be41bf9",
+        "log": "first-primary-compatibility-analysis.log"
+      },
+      "negative": {
+        "log": "first-primary-negative-analysis.log"
+      },
+      "saved_processing": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111250__NRS-484B-200-1__motor_vehicle_driver/provisional-manifest.json --case heldout__C111250__NRS-484B-200-1__motor_vehicle_driver__none_right --attempt .runtime-work/c111250-saved-attempt-20261116a --output .runtime-work/c111250-saved-proof-20261116a --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "exit_code": 0,
+        "log": "first-primary-saved-processing.json",
+        "log_sha256": "112f0a89cf7e380b361d640e3ba1d3dfb15ca3c08ce23b52899f2c938b109ef7",
+        "receipt": "first-primary-saved-processing.json",
+        "receipt_sha256": "112f0a89cf7e380b361d640e3ba1d3dfb15ca3c08ce23b52899f2c938b109ef7"
+      }
+    }
+  ],
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3"
+}

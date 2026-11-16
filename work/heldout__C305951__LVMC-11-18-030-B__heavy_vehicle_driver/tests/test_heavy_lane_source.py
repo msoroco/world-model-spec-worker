@@ -195,7 +195,7 @@ class HeavyLaneSourceTest(unittest.TestCase):
                          ["sample_window_s"], [0.0, 159 / 20])
         self.assertFalse(result["physical_acceptance_claimed"])
         (self.root / "overview.mkv").unlink()
-        with self.assertRaisesRegex(ValueError, "Missing original heavy-lane source: overview"):
+        with self.assertRaisesRegex(ValueError, "Missing required source: overview"):
             finalizer.analyze(self.root, write_channels=False)
         (self.root / "overview.mkv").write_bytes(b"source-shaped CPU test bytes")
         rows[0]["survey_sha256"] = "0" * 64

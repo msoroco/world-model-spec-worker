@@ -1,5 +1,6 @@
 """Authorized intersection turn-course indication construction and observations."""
 from __future__ import annotations
+import argparse
 import hashlib
 import json
 from math import atan2, cos, hypot, isfinite, sin
@@ -160,7 +161,7 @@ def analyze_original_sources(attempt):
     for name, digest in hashes.items():
         path = root / name
         if not path.is_file():
-            raise ValueError('Missing original turn source: ' + name)
+            raise ValueError('Missing required source: ' + name)
         if hashlib.sha256(path.read_bytes()).hexdigest() != digest:
             raise ValueError('Original turn source SHA-256 mismatch: ' + name)
     source = json.loads((root / 'turn_indication_original.json').read_text())
@@ -266,9 +267,74 @@ def finalize_original_sources(attempt):
             raise ValueError('Derived turn source channel already exists: ' + name)
         path.write_text(''.join(json.dumps(row,allow_nan=False)+'\n' for row in entries))
     return {'format':'worker-analysis-report','case_id':source['case_id'],
-            'measurements':{name:{'method':'source-joined original turn geometry',
+            'measurements':{name:{'method':'finalize_original_sources',
                                   'value':rows,'sources':source['source_sha256']}
                             for name,rows in streams.items()},
             'physical_acceptance_claimed':False,'legal_acceptance_claimed':False,
             'limitations':['Source record contains an authority claim, not municipal verification',
                            'Original pixels and physical turn completion require independent review']}
+
+
+def native_result(attempt, report):
+    """Write the pinned Native result schema without inferring a legal verdict."""
+    root = Path(attempt)
+    config = json.loads((root / 'config.json').read_text())
+    description = config['case']['recording_description']
+    units = {item['name']:item['unit'] for item in description['channels']}
+    if set(units) != set(CHANNELS) or report['case_id'] != config['selected_case_id']:
+        raise ValueError('Exact turn recording description or case identity differs')
+    evidence = []
+    realized = {}
+    for name in CHANNELS:
+        path = root / (name + '.jsonl')
+        rows = report['measurements'][name]['value']
+        evidence.append({'name':name,'unit':units[name],'reference':path.name,
+                         'sha256':hashlib.sha256(path.read_bytes()).hexdigest()})
+        realized[name] = {'unit':units[name],
+                          'method':'source-hashed original 20 Hz turn join',
+                          'time_window':'all original turn frames',
+                          'statistic':'sample count','reference':path.name,
+                          'value':len(rows),
+                          'sample_window_s':[rows[0]['time_s'],rows[-1]['time_s']]}
+    deviation = max(row['value'] for row in report['measurements'][
+        'original_course_deviation_m']['value'])
+    return {'case_id':report['case_id'],
+            'measured_values':{'maximum_center_course_deviation_m':deviation,
+                               'sampled_path_length_m':report['measurements'][
+                                   'original_turn_path_length_m']['value'][-1]['value']},
+            'target_checks':[{'target':'sourced indicated intersection turn course',
+                              'requested':config['selected_case_id'],
+                              'measured':deviation,
+                              'method':'original source-joined body center to indicated course',
+                              'tolerance':None,'matched':False,
+                              'physical_cause_confirmed':False,
+                              'cause_evidence':'Physical course realization and pixels pending independent review'}],
+            'setup_confirmed':False,'behavior_attempted':False,
+            'maneuver_completed':False,
+            'termination_reason':'Original turn source geometry measured; physical outcome unverified',
+            'physical_failure_flags':{'independent_visibility_pending':True,
+                                      'authority_review_pending':True},
+            'trace_reference':'trace.jsonl',
+            'video_references':[name+'.mkv' for name in CAMERAS],
+            'video_frame_map_reference':'video_frames.jsonl',
+            'recording_description':description,
+            'recording_evidence':evidence,'realized_observables':realized,
+            'physical_acceptance_claimed':False,'legal_acceptance_claimed':False}
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--attempt',required=True)
+    parser.add_argument('--output',required=True)
+    args = parser.parse_args()
+    output = Path(args.output)
+    if output.exists():
+        raise ValueError('Retain prior turn analysis report')
+    report = finalize_original_sources(args.attempt)
+    output.write_text(json.dumps(report,indent=2,allow_nan=False)+'\n')
+    from worker_exchange.native_output import write_result
+    write_result(args.attempt,native_result(args.attempt,report))
+
+
+if __name__ == '__main__':
+    main()
