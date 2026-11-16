@@ -9,6 +9,7 @@ PACKAGE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PACKAGE))
 sys.path.insert(0, str(PACKAGE.parents[1] / "runtime/scenario_pipeline"))
 from finalizer import CASES, finalize
+from entry_measurements import analyze as measure_entry
 
 
 def write_rows(path, rows):
@@ -124,6 +125,38 @@ class SavedFinalizerTests(unittest.TestCase):
             (root/"stop_history.jsonl").unlink()
             with self.assertRaisesRegex(ValueError,"Missing required source: stop_history.jsonl"):
                 finalize(root,root/"analysis-report.json")
+
+    def test_entry_arrival_sweep_preserves_unresolved_legal_judgment(self):
+        """Exercise measured order across a controller-like, one-frame arrival sweep.
+
+        The shifted tracks are synthetic diagnostic sources. They establish that
+        the saved-source measurement responds to arrival order, not that the
+        selected Native intersection can realize any of these points.
+        """
+        source = PACKAGE / "diagnostic-sources"
+        original = [json.loads(line) for line in
+                    (source / "crossing_history.jsonl").read_text().splitlines()]
+        results = []
+        for shift in (-1, 0, 1, 2):
+            with tempfile.TemporaryDirectory() as temp:
+                root = Path(temp)
+                for name in ("road_geometry.json", "video_frames.jsonl"):
+                    (root / name).write_bytes((source / name).read_bytes())
+                rows = []
+                for i, row in enumerate(original):
+                    shifted = dict(row)
+                    donor = min(max(i - shift, 0), len(original) - 1)
+                    shifted["other"] = original[donor]["other"]
+                    rows.append(shifted)
+                write_rows(root / "crossing_history.jsonl", rows)
+                measured = measure_entry(root)
+                results.append(measured["ego_minus_other_entry_time_s"])
+                self.assertEqual(measured["first_body_entry"]["ego"]["frame"], 102)
+                self.assertEqual(measured["approximately_same_time_judgment"],
+                                 "unresolved; no numeric legal threshold")
+                self.assertEqual(measured["right_of_way_judgment"], "unresolved")
+        for observed, expected in zip(results, (.10, .05, 0, -.05)):
+            self.assertAlmostEqual(observed, expected)
 
 
 if __name__ == "__main__":
