@@ -13,6 +13,16 @@ CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 CHECKS = ('native_source', 'all_participants', 'time_join', 'full_video_decode',
           'actual_pixels', 'physical_completion')
 CLAIMS = {'vehicle_body', 'stand_sign', 'stand_polygon'}
+CONTEXT_SOURCES = {
+    'official_designation': 'designation-record.json',
+    'appropriate_signing': 'raw.mkv',
+    'subject_non_taxicab': 'native-raw-actors.jsonl',
+    'actual_stand_use': 'native-raw-actors.jsonl',
+    'parking_purpose': 'raw.mkv',
+    'passenger_exchange': 'raw.mkv',
+    'taxicab_waiting_or_approaching': 'raw.mkv',
+    'interference': 'raw.mkv',
+}
 
 
 def sha(path):
@@ -34,6 +44,35 @@ def read(path):
     path = Path(path)
     require(path.is_file(), 'Missing delivery source: '+str(path))
     return json.loads(path.read_text())
+
+
+def validate_context_findings(review, sources):
+    """Require separate original-source review of each stand and exception fact.
+
+    A finding records the reviewer's observation, not a legal verdict. The
+    designation record is independent of the generated Native map/sign.
+    """
+    findings = review.get('context_findings')
+    require(isinstance(findings, dict) and set(findings) == set(CONTEXT_SOURCES),
+            'Original stand context findings are incomplete')
+    for term, source in CONTEXT_SOURCES.items():
+        row = findings[term]
+        require(isinstance(row, dict) and type(row.get('observed')) is bool and
+                row.get('source') == source and
+                row.get('source_sha256') == sources.get(source) and
+                isinstance(row.get('review_note'), str) and
+                bool(row['review_note'].strip()),
+                'Original stand context finding lacks source: '+term)
+    return {term: findings[term]['observed'] for term in CONTEXT_SOURCES}
+
+
+def validate_designation_record(record):
+    require(isinstance(record, dict) and
+            record.get('source_kind') == 'external_official_record' and
+            all(isinstance(record.get(key), str) and record[key].strip()
+                for key in ('issuer', 'order_or_citation', 'effective_date',
+                            'stand_location', 'document_reference')),
+            'Independent official designation record is incomplete')
 
 
 def validate_rows(actors, frames, trace, reviews, *, source_kind):
@@ -134,10 +173,12 @@ def audit_original(attempt, case, review_path, output, decode_receipt,
                            source_kind='original_native')
     required = ('native-raw-actors.jsonl', 'video_frames.jsonl', 'trace.jsonl',
                 'stand-review.jsonl', 'native-map-readback.json', 'config.json',
-                'result.json', 'native-capture-report.json', 'raw.mkv')
+                'result.json', 'native-capture-report.json', 'raw.mkv',
+                'designation-record.json')
     sources = {name: sha(attempt/name) for name in required}
     sources.update({name+'.mkv': sha(attempt/(name+'.mkv')) for name in CAMERAS})
     map_row = read(attempt/'native-map-readback.json')
+    validate_designation_record(read(attempt/'designation-record.json'))
     capture = read(attempt/'native-capture-report.json')
     require(map_row.get('road_sha256') == config.get('road_sha256') and
             capture.get('case_id') == case and
@@ -158,6 +199,7 @@ def audit_original(attempt, case, review_path, output, decode_receipt,
             all(review.get('sources', {}).get(name) == value
                 for name, value in sources.items()),
             'Independent original stand review or source hashes differ')
+    context = validate_context_findings(review, sources)
     physical = result.get('physical_checks', {}).get('maneuver', {})
     require(physical.get('status') == 'met' and
             result.get('maneuver_completed') is True and
@@ -191,6 +233,7 @@ def audit_original(attempt, case, review_path, output, decode_receipt,
         'trace_sha256': sha(attempt/'converted/trace.json'),
         'frame_map_sha256': sources['video_frames.jsonl'],
         'checks': {name: True for name in CHECKS}, 'joined': joined,
+        'context_findings': context,
         'sources': sources, 'review_sha256': sha(review_path),
         'auditor_path': str(Path(__file__).resolve()),
         'auditor_sha256': sha(Path(__file__)),

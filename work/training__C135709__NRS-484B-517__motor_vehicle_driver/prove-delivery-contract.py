@@ -26,10 +26,47 @@ def load_auditor():
 
 def prove(case):
     audit = load_auditor()
+    designation = {'source_kind': 'external_official_record',
+                   'issuer': 'CPU fixture only', 'order_or_citation': 'CPU fixture only',
+                   'effective_date': 'CPU fixture only',
+                   'stand_location': 'CPU fixture only',
+                   'document_reference': 'CPU fixture only'}
+    audit.validate_designation_record(designation)
+    altered_designation = dict(designation, issuer='')
+    try:
+        audit.validate_designation_record(altered_designation)
+    except ValueError as error:
+        assert 'incomplete' in str(error)
+    else:
+        raise AssertionError('Designation without issuer was accepted')
+    source_hashes = {name: ('a' if name == 'designation-record.json' else 'b')*64
+                     for name in set(audit.CONTEXT_SOURCES.values())}
+    findings = {term: {'observed': False, 'source': source,
+                       'source_sha256': source_hashes[source],
+                       'review_note': 'CPU schema fixture; no original fact asserted'}
+                for term, source in audit.CONTEXT_SOURCES.items()}
+    assert len(audit.validate_context_findings(
+        {'context_findings': findings}, source_hashes)) == len(findings)
+    changed = copy.deepcopy(findings)
+    changed['official_designation']['source_sha256'] = '0'*64
+    try:
+        audit.validate_context_findings({'context_findings': changed}, source_hashes)
+    except ValueError as error:
+        assert 'lacks source' in str(error)
+    else:
+        raise AssertionError('Unbound designation finding was accepted')
+    changed = copy.deepcopy(findings)
+    del changed['taxicab_waiting_or_approaching']
+    try:
+        audit.validate_context_findings({'context_findings': changed}, source_hashes)
+    except ValueError as error:
+        assert 'incomplete' in str(error)
+    else:
+        raise AssertionError('Missing entitled-vehicle review was accepted')
     witness = case.rsplit('__', 1)[-1]
     checked = []
     for candidate in ('primary', 'fallback1', 'fallback2', 'fallback3'):
-        version = (REPO/'.runtime-work/update052-c135709-saved-all-v2'/witness/
+        version = (REPO/'.runtime-work/update054-c135709-saved-all-v4'/witness/
                    candidate/'processed/v0001')
         analysis = version/'analysis'
         config, result = audit.read(analysis/'config.json'), audit.read(analysis/'result.json')
@@ -92,6 +129,8 @@ def prove(case):
             'joined_synthetic_frames_per_candidate': 240,
             'full_decode_receipts_verified': 4,
             'pixel_checker_positive_and_flat_negative': True,
+            'context_findings_positive_and_missing_source_negatives': True,
+            'designation_record_positive_and_missing_issuer_negative': True,
             'changed_speed_missing_review_and_camera_negatives': True,
             'original_native_observed': False, 'accepted_recording': False}
 
@@ -105,7 +144,7 @@ def main():
         raise ValueError('Unknown exact delivery case')
     if args.reject_synthetic:
         witness = args.case.rsplit('__', 1)[-1]
-        attempt = (REPO/'.runtime-work/update052-c135709-saved-all-v2'/witness/
+        attempt = (REPO/'.runtime-work/update054-c135709-saved-all-v4'/witness/
                    'primary/processed/v0001/analysis')
         audit = load_auditor()
         audit.audit_original(attempt, args.case, attempt/'missing-human-review.json',

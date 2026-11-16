@@ -25,7 +25,7 @@ def prove():
             case = ROOT.name+'__'+witness
             manifest = ROOT/('execution-manifest-'+witness+'-'+candidate+'-draft.json')
             recipe = ROOT/'selected-diagnostics'/witness/(candidate+'-recipe.json')
-            base = REPO/'.runtime-work/update052-c135709-saved-all-v2'/witness/candidate
+            base = REPO/'.runtime-work/update054-c135709-saved-all-v4'/witness/candidate
             fixture, attempt, output = (base/name for name in ('fixture', 'attempt', 'processed'))
             base.mkdir(parents=True, exist_ok=True)
             materialize(REPO, recipe, fixture)

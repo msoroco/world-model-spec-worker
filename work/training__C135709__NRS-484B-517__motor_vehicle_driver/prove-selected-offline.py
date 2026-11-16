@@ -22,7 +22,7 @@ def prove():
     for entry in manifest['cases']:
         witness = entry['case_id'].split('__')[-1]
         for candidate in ('primary', 'fallback1', 'fallback2', 'fallback3'):
-            output = REPO/'.runtime-work/update052-c135709-selected-all-v6'/witness/candidate
+            output = REPO/'.runtime-work/update054-c135709-selected-all-v9'/witness/candidate
             log = ROOT/'update050-offline'/witness/(candidate+'.log')
             log.parent.mkdir(parents=True, exist_ok=True)
             command = [sys.executable, str(REPO/'runtime.py'), 'offline',

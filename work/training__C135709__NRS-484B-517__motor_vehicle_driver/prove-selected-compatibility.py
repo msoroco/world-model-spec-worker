@@ -29,7 +29,7 @@ def prove():
                 '/selected-diagnostics/'+witness+'/'+candidate+'-recipe.json')
             manifest_path = ROOT/('execution-manifest-'+witness+'-'+candidate+'-draft.json')
             manifest_path.write_text(json.dumps(manifest, indent=2)+'\n')
-            output = REPO/'.runtime-work/update052-c135709-compat-all-v2'/witness/candidate
+            output = REPO/'.runtime-work/update054-c135709-compat-all-v4'/witness/candidate
             proof = ROOT/'update051-proof'/witness/candidate
             proof.mkdir(parents=True, exist_ok=True)
             command = [sys.executable, str(REPO/'runtime.py'), 'compatibility',

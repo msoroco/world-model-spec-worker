@@ -107,93 +107,124 @@
   ],
   "source_observation_mapping": {
     "st.curb_zone": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Native road/lane readback and body footprint identify candidate stand geometry; official designation remains human review.",
       "channels": [
+        "ego_pose",
         "taxicab_stand_occupancy_by_nontaxicab"
       ],
       "source_refs": [
-        "inputs/training__C135709__NRS-484B-517__motor_vehicle_driver/assignment.json"
+        "inputs/training__C135709__NRS-484B-517__motor_vehicle_driver/assignment.json",
+        "native-map-readback.json",
+        "native-raw-actors.jsonl",
+        "stand-review.jsonl",
+        "designation-record.json"
       ]
     },
     "dev.regulatory_sign": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Requested sign text and frame review identify visible sign; appropriateness and official designation require independent original review.",
       "channels": [
-        "taxicab_stand_occupancy_by_nontaxicab"
+        "four_source_views"
       ],
       "source_refs": [
-        "inputs/training__C135709__NRS-484B-517__motor_vehicle_driver/assignment.json"
+        "inputs/training__C135709__NRS-484B-517__motor_vehicle_driver/assignment.json",
+        "native-map-readback.json",
+        "stand-review.jsonl",
+        "designation-record.json",
+        "raw.mkv"
       ]
     },
     "ru.bus": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Bus-stop branch is outside frozen taxicab-stand witness; no bus-use inference from this selected pair.",
       "channels": [
-        "taxicab_stand_occupancy_by_nontaxicab"
+        "four_source_views"
       ],
       "source_refs": [
-        "inputs/training__C135709__NRS-484B-517__motor_vehicle_driver/assignment.json"
+        "inputs/training__C135709__NRS-484B-517__motor_vehicle_driver/assignment.json",
+        "stand-review.jsonl"
       ]
     },
     "ru.taxicab": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Entitled taxicab presence and waiting or approach require independent frame/actor review; presently unverified.",
       "channels": [
-        "taxicab_stand_occupancy_by_nontaxicab"
+        "four_source_views"
       ],
       "source_refs": [
-        "inputs/training__C135709__NRS-484B-517__motor_vehicle_driver/assignment.json"
+        "inputs/training__C135709__NRS-484B-517__motor_vehicle_driver/assignment.json",
+        "native-raw-actors.jsonl",
+        "stand-review.jsonl",
+        "raw.mkv"
       ]
     },
     "ru.subject": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Native ego actor blueprint and body identify the subject; non-taxicab classification requires independent original review.",
       "channels": [
-        "taxicab_stand_occupancy_by_nontaxicab"
+        "ego_pose"
       ],
       "source_refs": [
-        "inputs/training__C135709__NRS-484B-517__motor_vehicle_driver/assignment.json"
+        "inputs/training__C135709__NRS-484B-517__motor_vehicle_driver/assignment.json",
+        "native-raw-actors.jsonl",
+        "stand-review.jsonl",
+        "raw.mkv"
       ]
     },
     "drv.standing_or_parked": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Native body and speed establish stationary stand occupancy; destination parking purpose requires independent review.",
       "channels": [
+        "ego_pose",
+        "ego_speed",
         "taxicab_stand_occupancy_by_nontaxicab"
       ],
       "source_refs": [
-        "inputs/training__C135709__NRS-484B-517__motor_vehicle_driver/assignment.json"
+        "inputs/training__C135709__NRS-484B-517__motor_vehicle_driver/assignment.json",
+        "native-raw-actors.jsonl",
+        "stand-review.jsonl",
+        "raw.mkv"
       ]
     },
     "kin.time": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Synchronized Native frame timestamps establish duration; no numeric legal threshold is inferred.",
       "channels": [
-        "taxicab_stand_occupancy_by_nontaxicab"
+        "ego_speed"
       ],
       "source_refs": [
-        "inputs/training__C135709__NRS-484B-517__motor_vehicle_driver/assignment.json"
+        "inputs/training__C135709__NRS-484B-517__motor_vehicle_driver/assignment.json",
+        "native-raw-actors.jsonl",
+        "video_frames.jsonl"
       ]
     },
     "sig.door_open": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Door and passenger exchange are not in the current Native telemetry; original frame review is required.",
       "channels": [
-        "taxicab_stand_occupancy_by_nontaxicab"
+        "four_source_views"
       ],
       "source_refs": [
-        "inputs/training__C135709__NRS-484B-517__motor_vehicle_driver/assignment.json"
+        "inputs/training__C135709__NRS-484B-517__motor_vehicle_driver/assignment.json",
+        "stand-review.jsonl",
+        "raw.mkv"
       ]
     },
     "ru.occupant_count": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Passenger count is not measured by the current Native actor trace; original frame review is required.",
       "channels": [
-        "taxicab_stand_occupancy_by_nontaxicab"
+        "four_source_views"
       ],
       "source_refs": [
-        "inputs/training__C135709__NRS-484B-517__motor_vehicle_driver/assignment.json"
+        "inputs/training__C135709__NRS-484B-517__motor_vehicle_driver/assignment.json",
+        "stand-review.jsonl",
+        "raw.mkv"
       ]
     },
     "drv.approaching": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Subject approach is measured from Native ego pose; entitled taxicab approach requires separate actor/frame review.",
       "channels": [
-        "taxicab_stand_occupancy_by_nontaxicab"
+        "ego_pose",
+        "four_source_views"
       ],
       "source_refs": [
-        "inputs/training__C135709__NRS-484B-517__motor_vehicle_driver/assignment.json"
+        "inputs/training__C135709__NRS-484B-517__motor_vehicle_driver/assignment.json",
+        "native-raw-actors.jsonl",
+        "stand-review.jsonl",
+        "raw.mkv"
       ]
     }
   },
@@ -227,5 +258,33 @@
   ],
   "selection_targets": [
     "full-train"
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 12,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "subject": "full taxicab stand polygon, subject footprint and curb approach",
+        "interval": "0-12 s",
+        "view": "overview"
+      },
+      {
+        "subject": "subject approach and stand entry, including entitled vehicle approach zone",
+        "interval": "0-12 s",
+        "view": "approach"
+      },
+      {
+        "subject": "stand sign face, curb limits and any passenger exchange",
+        "interval": "0-12 s",
+        "view": "reference_corner"
+      },
+      {
+        "subject": "subject cabin, door area and passenger activity",
+        "interval": "0-12 s",
+        "view": "driver_reference"
+      }
+    ],
+    "verification": "Pixel coverage and legal applicability require original Native capture and independent human review."
+  }
 }
