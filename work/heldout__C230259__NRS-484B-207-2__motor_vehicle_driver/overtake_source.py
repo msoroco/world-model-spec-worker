@@ -13,7 +13,7 @@ CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 def _required(root, name):
     path = root / name
     if not path.is_file() or not path.stat().st_size:
-        raise ValueError("Missing original source: " + name)
+        raise ValueError("Missing required source: " + name)
     return path
 
 

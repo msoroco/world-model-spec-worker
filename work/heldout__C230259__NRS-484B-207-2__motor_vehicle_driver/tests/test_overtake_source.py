@@ -93,7 +93,7 @@ class SourceTests(unittest.TestCase):
             root = Path(directory)
             bodies = self.fixture(root)
             (root / "driver_reference.mkv").unlink()
-            with self.assertRaisesRegex(ValueError, "Missing original source"):
+            with self.assertRaisesRegex(ValueError, "Missing required source"):
                 analyze(root)
             self.fixture(root)
             bodies[1]["overtaker"]["id"] = "different"

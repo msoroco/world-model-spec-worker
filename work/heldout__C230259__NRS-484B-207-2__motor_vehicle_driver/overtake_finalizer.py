@@ -45,7 +45,7 @@ def finalize(attempt, write_channels=True):
                 raise ValueError("Derived overtaking channel already exists: " + name)
             path.write_text("".join(json.dumps(row, allow_nan=False) + "\n" for row in rows))
     return {"format": "worker-analysis-report", "case_id": source["case_id"],
-            "measurements": {name: {"method": "source-joined original overtaking geometry",
+            "measurements": {name: {"method": "finalize",
                                      "value": rows, "sources": source["source_sha256"]}
                              for name, rows in streams.items()},
             "completion_interval_s": geometry["completion_interval_s"],
@@ -84,7 +84,7 @@ def native_result(attempt, report):
             "maneuver_completed": False,
             "termination_reason": "Original overtaking sources measured; outcome unverified",
             "physical_failure_flags": {"visibility_validated": False},
-            "trace_reference": "trace.jsonl", "video_references": list(CAMERAS),
+            "trace_reference": "trace.jsonl", "video_references": [name + ".mkv" for name in CAMERAS],
             "video_frame_map_reference": "video_frames.jsonl", "recording_description": description,
             "recording_evidence": evidence, "realized_observables": realized,
             "physical_acceptance_claimed": False, "legal_acceptance_claimed": False}

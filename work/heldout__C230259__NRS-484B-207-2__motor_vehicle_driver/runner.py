@@ -95,8 +95,11 @@ def _corners(actor):
 
 def _body(actor):
     velocity = actor.get_velocity()
+    transform = actor.get_transform()
     return {"id": actor.id, "speed_mps": hypot(float(velocity.x), float(velocity.y)),
-            "body_corners_xy_m": _corners(actor)}
+            "body_corners_xy_m": _corners(actor),
+            "heading_deg": float(transform.rotation.yaw),
+            "z_m": float(transform.location.z)}
 
 
 def _step(actor, target, speed, carla):

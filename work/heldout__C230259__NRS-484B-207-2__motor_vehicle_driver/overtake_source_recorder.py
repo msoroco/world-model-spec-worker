@@ -113,7 +113,11 @@ class SourceRecorder:
                 corners = row["ego"]["body_corners_xy_m"]
                 centre = [sum(corner[axis] for corner in corners) / 4 for axis in (0, 1)]
                 stream.write(json.dumps({"frame": row["frame"], "time_s": row["time_s"],
-                                         "position_m": centre}, allow_nan=False) + "\n")
+                                         "position_m": centre,
+                                         "position": {"x": centre[0], "y": centre[1],
+                                                      "z": row["ego"]["z_m"]},
+                                         "heading_deg": row["ego"]["heading_deg"],
+                                         "speed_mps": row["ego"]["speed_mps"]}, allow_nan=False) + "\n")
         with (self.output / "video_frames.jsonl").open("x") as stream:
             for index, row in enumerate(self.body):
                 stream.write(json.dumps({"video_frame": index, "carla_frame": row["frame"],
