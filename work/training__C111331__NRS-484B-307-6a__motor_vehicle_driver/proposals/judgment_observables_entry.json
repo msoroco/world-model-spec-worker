@@ -1,0 +1,50 @@
+{
+  "template_id": "NRS-484B-307-6a@motor_vehicle_driver",
+  "phrase": "must not enter the intersection when the red signal is exhibited",
+  "note": "Compare original Native signal-head state and vehicle-body boundary entry in one frame clock; requested phase timing is not an observed legal outcome.",
+  "status": "draft",
+  "observable_requirements": {
+    "observables": [
+      {
+        "name": "dev.traffic_signal",
+        "unit": "yellow_or_red",
+        "description": "Original Native governing signal color per frame."
+      },
+      {
+        "name": "drv.entering_intersection",
+        "unit": "frame",
+        "description": "First original vehicle-body overlap with surveyed intersection boundary."
+      },
+      {
+        "name": "kin.time",
+        "unit": "seconds",
+        "description": "Shared original Native clock for red onset and body entry."
+      }
+    ],
+    "context_inputs": [],
+    "sweep_dimensions": [],
+    "landmarks": [],
+    "recording_needs": [
+      {
+        "name": "native_body_pose",
+        "unit": "structured",
+        "description": "480 original vehicle pose and full-body rows."
+      },
+      {
+        "name": "observed_signal_state",
+        "unit": "structured",
+        "description": "480 original governing signal readbacks."
+      },
+      {
+        "name": "signal_camera_frame_join",
+        "unit": "structured",
+        "description": "Original signal/body rows joined to source-camera frames."
+      }
+    ],
+    "limitations": [
+      "Requested signal timing is not observed signal state.",
+      "Synthetic rows and video are CPU diagnostics only.",
+      "Governing-head and original pixel review remain pending."
+    ]
+  }
+}

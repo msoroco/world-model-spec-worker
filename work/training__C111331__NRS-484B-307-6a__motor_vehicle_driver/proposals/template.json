@@ -1,0 +1,57 @@
+{
+  "template_id": "NRS-484B-307-6a@motor_vehicle_driver",
+  "law_id": "NRS-484B-307-6a",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "Where the signal is a steady yellow signal alone: Vehicular traffic facing the signal is thereby warned that the related green movement is being terminated or that a steady red indication will be exhibited immediately thereafter, and such vehicular traffic must not enter the intersection when the red signal is exhibited.",
+  "structure": {
+    "activation": {
+      "condition": "a steady yellow signal faces vehicular traffic approaching the intersection",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "type": "must_not",
+      "description": "enter the intersection when the red signal is exhibited",
+      "source_clause": "Vehicular traffic facing the signal is thereby warned that the related green movement is being terminated or that a steady red indication will be exhibited immediately thereafter, and such vehicular traffic must not enter the intersection when the red signal is exhibited.",
+      "numeric_conditions": []
+    },
+    "exceptions": [],
+    "timing": {
+      "description": "compare the first red exhibition with first vehicle-body intersection entry",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "must not enter the intersection when the red signal is exhibited",
+        "note": "Compare original Native signal-head state and vehicle-body boundary entry in one frame clock; requested phase timing is not an observed legal outcome."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "intersection_context",
+      "kind": "world_setup",
+      "range_or_domain": "authored junction and signal head; Native governing-head readback pending"
+    },
+    {
+      "name": "requested_red_onset_frame",
+      "kind": "controller",
+      "range_or_domain": "authored early or late red transition request"
+    },
+    {
+      "name": "subject_entry_request",
+      "kind": "controller",
+      "range_or_domain": "authored vehicle body entry request; Native motion pending"
+    },
+    {
+      "name": "native_signal_and_body_history",
+      "kind": "subject_behavior",
+      "range_or_domain": "original 480-frame signal and body observations pending"
+    },
+    {
+      "name": "camera_policy",
+      "kind": "controller",
+      "range_or_domain": "four synchronized original source cameras"
+    }
+  ]
+}
