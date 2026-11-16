@@ -19,7 +19,7 @@ def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def main(tag):
+def main(tag, source_tag=None):
     manifest_path = HERE / 'execution-manifest.json'
     manifest = json.loads(manifest_path.read_text())
     bound_sha = sha(manifest_path)
@@ -38,9 +38,17 @@ def main(tag):
             if any(path.exists() for path in (fixture, attempt, output)):
                 raise ValueError('Retain prior selected attempt; choose a fresh update directory')
             fixture.parent.mkdir(parents=True, exist_ok=True)
-            make_fixture(ROOT, ROOT / entry['fixture_recipe'], fixture)
+            if source_tag is None:
+                make_fixture(ROOT, ROOT / entry['fixture_recipe'], fixture)
+                source_fixture = fixture
+            else:
+                source_fixture = (ROOT / '.runtime-work' /
+                                  f'c111256-{source_tag}-selected' / suffix /
+                                  candidate / 'source-fixture')
+                if not source_fixture.is_dir():
+                    raise ValueError('Reusable source fixture absent: ' + str(source_fixture))
             make_package(manifest_path, entry['case_id'], attempt, candidate)
-            copy_sources(fixture, attempt)
+            copy_sources(source_fixture, attempt)
             selection = json.loads((attempt / 'candidate-selection.json').read_text())
             if (selection['manifest_sha256'] != bound_sha or
                     selection['candidate_id'] != candidate):
@@ -69,6 +77,7 @@ def main(tag):
                 'format': 'c111256-selected-process-saved-matrix-v1',
                 'status': 'complete_diagnostic' if len(rows) == expected_bundles else 'partial',
                 'manifest_sha256': bound_sha, 'rows': rows,
+                'source_fixture_reused_from_tag': source_tag,
                 'original_physical_acceptance_claimed': False}, indent=2) + '\n')
     print(json.dumps({'selected_saved_processing_passed': len(rows),
                       'matrix_sha256': sha(matrix_path),
@@ -78,4 +87,6 @@ def main(tag):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--tag', default='update019')
-    main(parser.parse_args().tag)
+    parser.add_argument('--source-tag')
+    args = parser.parse_args()
+    main(args.tag, args.source_tag)

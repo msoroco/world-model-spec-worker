@@ -3,6 +3,7 @@ import hashlib
 import json
 from pathlib import Path
 import shlex
+import argparse
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
@@ -28,12 +29,12 @@ def option(command, name):
     return parts[parts.index(name) + 1]
 
 
-def main():
+def main(saved_tag='update036', construction_tag='update036'):
     manifest_path = HERE / 'execution-manifest.json'
     manifest = read(manifest_path)
     manifest_sha = sha(manifest_path)
-    construction_matrix = read(HERE / 'update036-selected-construction-proof-matrix.json')
-    process_matrix = read(HERE / 'update036-selected-process-saved-matrix.json')
+    construction_matrix = read(HERE / f'{construction_tag}-selected-construction-proof-matrix.json')
+    process_matrix = read(HERE / f'{saved_tag}-selected-process-saved-matrix.json')
     require(process_matrix['manifest_sha256'] == manifest_sha and
             process_matrix['status'] == 'complete_diagnostic',
             'Saved proof matrix does not bind final selected manifest')
@@ -117,7 +118,7 @@ def main():
                             'construction_sha256': selected['construction_sha256'],
                             'compatibility_sha256': compatibility['sha256'],
                             'processing_sha256': sha(receipt)})
-    output = HERE / 'update036-final-selected-proof-audit.json'
+    output = HERE / f'{saved_tag}-final-selected-proof-audit.json'
     output.write_text(json.dumps({'format': 'c111256-final-selected-proof-audit-v1',
                                   'manifest_sha256': manifest_sha,
                                   'selected_cases': 6, 'candidate_bundles': 24,
@@ -129,4 +130,8 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--saved-tag', default='update036')
+    parser.add_argument('--construction-tag', default='update036')
+    args = parser.parse_args()
+    main(args.saved_tag, args.construction_tag)
