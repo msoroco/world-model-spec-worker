@@ -9,12 +9,14 @@ import shutil
 import subprocess
 import sys
 from pathlib import Path
+from unittest.mock import patch
 
 PACKAGE = Path(__file__).resolve().parent
 REPO = PACKAGE.parent.parent
 sys.path.insert(0, str(PACKAGE))
 sys.path.insert(0, str(REPO / 'runtime/scenario_pipeline'))
 from delivery_audit import CAMERAS, audit  # noqa: E402
+import delivery_audit as independent_audit  # noqa: E402
 from worker_exchange.media import compose_four_views  # noqa: E402
 from worker_exchange.native_output import assess_physical  # noqa: E402
 from worker_exchange.runtime_cli import execution_env  # noqa: E402
@@ -22,7 +24,6 @@ from worker_exchange.runtime_cli import execution_env  # noqa: E402
 FRAMES = 900
 CASE = 'testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_before'
 SOURCE = REPO / '.runtime-work/c331230-primary-compat-v2'
-MEDIA_SOURCE = REPO / '.runtime-work/c331230-full-duration-audit-v2'
 
 
 def write(path, value):
@@ -120,11 +121,80 @@ def prove(attempt):
             raise
     else:
         raise ValueError('Changed original motion accepted')
+    prove_audit_branches(attempt)
     print(json.dumps({'case_id': CASE, 'frames': FRAMES, 'synthetic_setup': 'met',
                       'synthetic_target': 'met', 'synthetic_maneuver': 'met',
                       'incomplete_clearance': 'rejected', 'changed_original_motion': 'rejected',
                       'four_view_source_sha256': receipt_sources(delivery),
+                      'mock_lifecycle_checker': 'passed',
+                      'synthetic_pixel_checker': 'passed',
                       'physical_acceptance_claimed': False}, sort_keys=True))
+
+
+def prove_audit_branches(attempt):
+    """Exercise checker branches without writing or claiming Native receipts."""
+    mapping_hash = independent_audit.digest(attempt / 'video_frames.jsonl')
+    observations = [{'camera': name, 'video_frame': 0,
+                     'bbox_xyxy': [0, 0, 128, 128]} for name in CAMERAS]
+    independent_audit.verify_pixels(attempt, {'observations': observations}, FRAMES, mapping_hash)
+    uniform = [dict(row) for row in observations]
+    uniform[0]['bbox_xyxy'] = [200, 200, 264, 264]
+    try:
+        independent_audit.verify_pixels(attempt, {'observations': uniform}, FRAMES, mapping_hash)
+    except ValueError as error:
+        if 'Reviewed original pixel ROI has no detail' not in str(error):
+            raise
+    else:
+        raise ValueError('Uniform synthetic pixel region accepted')
+
+    revision = {'construction_sha256': independent_audit.digest(attempt / 'construction.json'),
+                'runner_sha256': independent_audit.digest(attempt / 'runner.py')}
+    seal = {'format': 'worker-sealed-capture', 'provenance_kind': 'native',
+            'diagnostic_fixture': False, 'frames': FRAMES,
+            'events': ['capture_finished', 'encoders_closed', 'restoration_verified'],
+            'restoration': {'restored': True}, 'physical_acceptance_claimed': False,
+            'sources': {name: independent_audit.digest(attempt / name)
+                        for name in independent_audit.SOURCES},
+            'native_revision': revision}
+    exit_receipt = {'event': 'native_exit', 'native_revision': revision,
+                    'capture_seal_sha256': 'a' * 64}
+    owner = {'event': 'owner_released', 'operator_attested': True,
+             'native_construction_sha256': revision['construction_sha256'],
+             'native_exit_sha256': 'b' * 64}
+    mocked = {'capture-seal.json': seal, 'native-exit.json': exit_receipt,
+              'owner-release.json': owner}
+    fake_hashes = {'capture-seal.json': 'a' * 64, 'native-exit.json': 'b' * 64,
+                   'owner-release.json': 'c' * 64}
+    original_read, original_digest = independent_audit.read, independent_audit.digest
+
+    def checker_read(path):
+        return mocked.get(Path(path).name) or original_read(path)
+
+    def checker_digest(path):
+        return fake_hashes.get(Path(path).name) or original_digest(path)
+
+    with patch.object(independent_audit, 'read', checker_read), \
+            patch.object(independent_audit, 'digest', checker_digest):
+        closure = independent_audit.verify_native_closure(attempt, FRAMES)
+        if closure['owner_release_sha256'] != 'c' * 64:
+            raise ValueError('Mock closure hash differs')
+        owner['native_exit_sha256'] = 'd' * 64
+        try:
+            independent_audit.verify_native_closure(attempt, FRAMES)
+        except ValueError as error:
+            if 'Owner release does not bind Native exit' not in str(error):
+                raise
+        else:
+            raise ValueError('Unbound mock owner release accepted')
+        owner['native_exit_sha256'] = 'b' * 64
+        seal['sources']['stop_history.jsonl'] = 'e' * 64
+        try:
+            independent_audit.verify_native_closure(attempt, FRAMES)
+        except ValueError as error:
+            if 'Sealed Native original missing or stale: stop_history.jsonl' not in str(error):
+                raise
+        else:
+            raise ValueError('Stale mock capture seal accepted')
 
 
 def receipt_sources(delivery):
@@ -156,7 +226,7 @@ def extend_rows(source, destination, name):
             stream.write(json.dumps(row, allow_nan=False) + '\n')
 
 
-def prove_remaining(entry, attempt):
+def prove_remaining(entry, attempt, media_source):
     if attempt.exists():
         raise ValueError('Use a fresh synthetic fixture root')
     case_id = entry['case_id']
@@ -181,7 +251,7 @@ def prove_remaining(entry, attempt):
             mapping.write(json.dumps({'video_frame': index, 'carla_frame': 100 + index,
                                       'time_s': round(1 + index / 20, 2)}) + '\n')
     for camera in CAMERAS:
-        (attempt / (camera + '.mkv')).hardlink_to(MEDIA_SOURCE / (camera + '.mkv'))
+        (attempt / (camera + '.mkv')).hardlink_to(media_source / (camera + '.mkv'))
     subprocess.run([sys.executable, str(attempt / 'finalizer.py'), '--attempt', str(attempt),
                     '--output', str(attempt / 'analysis-report.json')],
                    check=True, timeout=120, env=execution_env())
@@ -250,7 +320,7 @@ if __name__ == '__main__':
         for entry in manifest['cases']:
             suffix = entry['case_id'].split('__')[-1]
             if suffix != 'marked_crosswalk_stop_before':
-                prove_remaining(entry, root / suffix)
+                prove_remaining(entry, root / suffix, root / 'marked_crosswalk_stop_before')
     else:
         if not args.output:
             parser.error('--output required without --all')
