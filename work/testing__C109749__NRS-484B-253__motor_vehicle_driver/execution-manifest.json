@@ -3127,6 +3127,468 @@
         "negative_log": "cases/approaching_far/clearance_guard/delivery-negative.log",
         "negative_log_sha256": "04adceaf3472ef50714c80d2bc2db30fedda3845161e4438fecde01aba3703c4"
       }
+    },
+    {
+      "case_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver__signal_advance_100_below_25",
+      "kind": "delivery",
+      "construction": "cases/signal_advance_100_below_25/construction.json",
+      "construction_sha256": "5acaf527d38080b9f2b2b7f7a8f4a983ce83564911dd2dc133c69e4e1dd65896",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "upstream lane extent, signalled path length, occupied junction and subject speed may not realize in Native motion"
+      },
+      "measurement_contract": "cases/signal_advance_100_at/measurement-contract.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame",
+          "evidence": "trace.jsonl and capture/evidence.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame",
+          "evidence": "trace.jsonl and capture/evidence.jsonl"
+        },
+        "st.intersection": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame",
+          "evidence": "trace.jsonl and capture/evidence.jsonl"
+        },
+        "st.lane_enters": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame",
+          "evidence": "trace.jsonl and capture/evidence.jsonl"
+        },
+        "sig.turn_indicator": {
+          "entrypoint": "capture_sources.py",
+          "method": "original actor readback",
+          "evidence": "interaction_history.jsonl and Native frame join"
+        },
+        "rel.oncoming": {
+          "entrypoint": "capture_sources.py",
+          "method": "original actor readback",
+          "evidence": "interaction_history.jsonl and Native frame join"
+        },
+        "ego_speed": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original interaction history and geometry",
+          "evidence": "interaction_history.jsonl and intersection_geometry.json"
+        },
+        "oncoming_speed": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original interaction history and geometry",
+          "evidence": "interaction_history.jsonl and intersection_geometry.json"
+        },
+        "reciprocal_speed": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original interaction history and geometry",
+          "evidence": "interaction_history.jsonl and intersection_geometry.json"
+        },
+        "ego_heading": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original interaction history and geometry",
+          "evidence": "interaction_history.jsonl and intersection_geometry.json"
+        },
+        "ego_left_indicator": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original interaction history and geometry",
+          "evidence": "interaction_history.jsonl and intersection_geometry.json"
+        },
+        "ego_in_intersection": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original interaction history and geometry",
+          "evidence": "interaction_history.jsonl and intersection_geometry.json"
+        },
+        "initial_oncoming_in_intersection": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original interaction history and geometry",
+          "evidence": "interaction_history.jsonl and intersection_geometry.json"
+        },
+        "reciprocal_in_intersection": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original interaction history and geometry",
+          "evidence": "interaction_history.jsonl and intersection_geometry.json"
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction_sha256": "5d13ce3d28b9f1f114ba1cc899d575e75b861b0f1a165702395ff04860a36a20",
+          "trigger": {
+            "source": "interaction_history.jsonl and intersection_geometry.json",
+            "metric": "signal_onset_margin_m original-source physical-risk check",
+            "failure_condition": "original signal onset has insufficient continuous preturn distance"
+          },
+          "changed_knobs": [
+            "signal_onset_margin_m"
+          ],
+          "construction": "cases/signal_advance_100_below_25/fallback1-construction.json",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__signal_advance_100_below_25 --output .runtime-work/c109749-canonical-below-fallback1-offline-v1 --candidate fallback1",
+            "exit_code": 0,
+            "log": "cases/signal_advance_100_below_25/canonical-proofs/fallback1/offline.log",
+            "log_sha256": "8e73401178226d3412b96409e3c7527c822c826d1fcf20d324111c97df60e1fb",
+            "construction_sha256": "5d13ce3d28b9f1f114ba1cc899d575e75b861b0f1a165702395ff04860a36a20"
+          },
+          "compatibility": {
+            "receipt": "cases/signal_advance_100_below_25/canonical-proofs/fallback1/compatibility.json",
+            "sha256": "bd792658e27b56025a252664a49c6d024cb6ae860c01846e2ee39cbb8879b318",
+            "log": "cases/signal_advance_100_below_25/canonical-proofs/fallback1/compatibility-analysis.log",
+            "negative_log": "cases/signal_advance_100_below_25/canonical-proofs/fallback1/negative-analysis.log",
+            "replay_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__signal_advance_100_below_25 --output .runtime-work/c109749-canonical-below-fallback1-compat-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck --candidate fallback1",
+            "replay_log": "cases/signal_advance_100_below_25/canonical-proofs/fallback1/compatibility-replay.log"
+          },
+          "negative": {
+            "log": "cases/signal_advance_100_below_25/canonical-proofs/fallback1/negative-analysis.log"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__signal_advance_100_below_25 --attempt .runtime-work/c109749-canonical-below-fallback1-compat-v1 --output .runtime-work/c109749-canonical-below-fallback1-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat .runtime-work/c109749-canonical-below-fallback1-saved-v1/v0001/feedback.json",
+            "test_log": "cases/signal_advance_100_below_25/canonical-proofs/fallback1/saved.log",
+            "test_log_sha256": "7348ed2f11747c953d73b85f765415669be9795b5a57ffb85c77b374bb84eb55",
+            "test_exit_code": 0
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction_sha256": "c1fd2cd0d0b903e0bdf2b66eadca9642589f538017d77634141a7f92d28d96c1",
+          "trigger": {
+            "source": "interaction_history.jsonl and intersection_geometry.json",
+            "metric": "approach_speed_mps original-source physical-risk check",
+            "failure_condition": "subject reaches the occupied junction at excessive measured speed"
+          },
+          "changed_knobs": [
+            "approach_speed_mps"
+          ],
+          "construction": "cases/signal_advance_100_below_25/fallback2-construction.json",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__signal_advance_100_below_25 --output .runtime-work/c109749-canonical-below-fallback2-offline-v1 --candidate fallback2",
+            "exit_code": 0,
+            "log": "cases/signal_advance_100_below_25/canonical-proofs/fallback2/offline.log",
+            "log_sha256": "2385245e07c2317f1f361026c8d1b68d166218d3d6e136ddac92fe7fc9e7580e",
+            "construction_sha256": "c1fd2cd0d0b903e0bdf2b66eadca9642589f538017d77634141a7f92d28d96c1"
+          },
+          "compatibility": {
+            "receipt": "cases/signal_advance_100_below_25/canonical-proofs/fallback2/compatibility.json",
+            "sha256": "bdfe3431c7d5cecff95db35ab5b9f5f218ab7597f41325732bf681a89e370a7c",
+            "log": "cases/signal_advance_100_below_25/canonical-proofs/fallback2/compatibility-analysis.log",
+            "negative_log": "cases/signal_advance_100_below_25/canonical-proofs/fallback2/negative-analysis.log",
+            "replay_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__signal_advance_100_below_25 --output .runtime-work/c109749-canonical-below-fallback2-compat-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck --candidate fallback2",
+            "replay_log": "cases/signal_advance_100_below_25/canonical-proofs/fallback2/compatibility-replay.log"
+          },
+          "negative": {
+            "log": "cases/signal_advance_100_below_25/canonical-proofs/fallback2/negative-analysis.log"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__signal_advance_100_below_25 --attempt .runtime-work/c109749-canonical-below-fallback2-compat-v1 --output .runtime-work/c109749-canonical-below-fallback2-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat .runtime-work/c109749-canonical-below-fallback2-saved-v1/v0001/feedback.json",
+            "test_log": "cases/signal_advance_100_below_25/canonical-proofs/fallback2/saved.log",
+            "test_log_sha256": "745d0632bc96eaf38dcd255d9741a59441e050166d1bdd343d66d078595b23e4",
+            "test_exit_code": 0
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction_sha256": "95de32db828b28c7cd89191c067f0c31b7ae50c807f5e44eea04c19341678e00",
+          "trigger": {
+            "source": "interaction_history.jsonl and intersection_geometry.json",
+            "metric": "inside_oncoming_travel_m original-source physical-risk check",
+            "failure_condition": "initial opposing complete body does not fit in the selected junction"
+          },
+          "changed_knobs": [
+            "inside_oncoming_travel_m"
+          ],
+          "construction": "cases/signal_advance_100_below_25/fallback3-construction.json",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__signal_advance_100_below_25 --output .runtime-work/c109749-canonical-below-fallback3-offline-v1 --candidate fallback3",
+            "exit_code": 0,
+            "log": "cases/signal_advance_100_below_25/canonical-proofs/fallback3/offline.log",
+            "log_sha256": "c880687d1e5c7462a8bebe3a1922690b306b1aa42c5b41e4d824d502c1bd8098",
+            "construction_sha256": "95de32db828b28c7cd89191c067f0c31b7ae50c807f5e44eea04c19341678e00"
+          },
+          "compatibility": {
+            "receipt": "cases/signal_advance_100_below_25/canonical-proofs/fallback3/compatibility.json",
+            "sha256": "251ace00eaf757cd94e2557fe3c0a19ee9133dc7d032b189b331defd65284112",
+            "log": "cases/signal_advance_100_below_25/canonical-proofs/fallback3/compatibility-analysis.log",
+            "negative_log": "cases/signal_advance_100_below_25/canonical-proofs/fallback3/negative-analysis.log",
+            "replay_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__signal_advance_100_below_25 --output .runtime-work/c109749-canonical-below-fallback3-compat-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck --candidate fallback3",
+            "replay_log": "cases/signal_advance_100_below_25/canonical-proofs/fallback3/compatibility-replay.log"
+          },
+          "negative": {
+            "log": "cases/signal_advance_100_below_25/canonical-proofs/fallback3/negative-analysis.log"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__signal_advance_100_below_25 --attempt .runtime-work/c109749-canonical-below-fallback3-compat-v1 --output .runtime-work/c109749-canonical-below-fallback3-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat .runtime-work/c109749-canonical-below-fallback3-saved-v1/v0001/feedback.json",
+            "test_log": "cases/signal_advance_100_below_25/canonical-proofs/fallback3/saved.log",
+            "test_log_sha256": "ba87712e75a2e724b6fbe6ee785abad3fdbe790667cd566918a0a90de11ed333",
+            "test_exit_code": 0
+          }
+        }
+      ],
+      "signal_target_m": 25.0,
+      "fixture_recipe": "work/testing__C109749__NRS-484B-253__motor_vehicle_driver/cases/signal_advance_100_below_25/diagnostic-recipe.json",
+      "physical_preparation": {
+        "receipt": "cases/signal_advance_100_below_25/physical-proofs/receipt.json",
+        "sha256": "afff521e92c873c5713e207573b25582399af79c157bbcd4390fef59018135c4"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver__signal_advance_100_below_25",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "signal_advance"
+        ],
+        "script": "signal_distance_delivery_audit.py",
+        "script_sha256": "79adcbae0652355bc481e8055ad334b16f5e42b8a1ade4a63cba08a88e05ee86",
+        "command": ".venv-cpu/bin/python work/testing__C109749__NRS-484B-253__motor_vehicle_driver/signal_distance_delivery_fixture_proof.py --case testing__C109749__NRS-484B-253__motor_vehicle_driver__signal_advance_100_below_25 --output-root .runtime-work/c109749-signal-distance-below-delivery-v1",
+        "test_exit_code": 0,
+        "test_log": "signal-distance-below-delivery-proof.log",
+        "test_log_sha256": "3470f8875b50f0e9c22bcd0a9e505e4f697a157b57f230f401b47dd2efcaa834",
+        "negative_command": ".venv-cpu/bin/python work/testing__C109749__NRS-484B-253__motor_vehicle_driver/signal_distance_delivery_fixture_proof.py --case testing__C109749__NRS-484B-253__motor_vehicle_driver__signal_advance_100_below_25 --output-root .runtime-work/c109749-signal-distance-below-delivery-negative-v1 --negative-source-root .runtime-work/c109749-signal-distance-below-delivery-v1",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Sealed original source changed: interaction_history.jsonl",
+        "negative_log": "signal-distance-below-delivery-negative.log",
+        "negative_log_sha256": "61d0286239a1666eb60108e5baf840ef77a7d90c74177da88d005143c8cc3228"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__signal_advance_100_below_25 --output .runtime-work/c109749-canonical-below-primary-offline-v1",
+        "exit_code": 0,
+        "log": "cases/signal_advance_100_below_25/canonical-proofs/primary/offline.log",
+        "log_sha256": "c72f5160c41cdc2f2a3380bb8a860e926b8c3e75887d76e037d2f0b32f11cc13",
+        "construction_sha256": "5acaf527d38080b9f2b2b7f7a8f4a983ce83564911dd2dc133c69e4e1dd65896"
+      },
+      "compatibility": {
+        "receipt": "cases/signal_advance_100_below_25/canonical-proofs/primary/compatibility.json",
+        "sha256": "5d83f11634424f8a8ce718d75ca1d28773e242ee00dcbca2ff50558fd1b38397",
+        "log": "cases/signal_advance_100_below_25/canonical-proofs/primary/compatibility-analysis.log",
+        "negative_log": "cases/signal_advance_100_below_25/canonical-proofs/primary/negative-analysis.log",
+        "replay_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__signal_advance_100_below_25 --output .runtime-work/c109749-canonical-below-primary-compat-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "replay_log": "cases/signal_advance_100_below_25/canonical-proofs/primary/compatibility-replay.log"
+      },
+      "negative": {
+        "log": "cases/signal_advance_100_below_25/canonical-proofs/primary/negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__signal_advance_100_below_25 --attempt .runtime-work/c109749-canonical-below-primary-compat-v1 --output .runtime-work/c109749-canonical-below-primary-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat .runtime-work/c109749-canonical-below-primary-saved-v1/v0001/feedback.json",
+        "test_log": "cases/signal_advance_100_below_25/canonical-proofs/primary/saved.log",
+        "test_log_sha256": "ff741158178a9b16d9910061fa15fe7891094fec125feb080098313f3f13af8c",
+        "test_exit_code": 0
+      }
+    },
+    {
+      "case_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver__signal_advance_100_above_36",
+      "kind": "delivery",
+      "construction": "cases/signal_advance_100_above_36/construction.json",
+      "construction_sha256": "2afa0c9b4201a18c640218450972ba0f0f06ff2c6c1244fbe9ae69518bc35f2c",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "upstream lane extent, signalled path length, occupied junction and subject speed may not realize in Native motion"
+      },
+      "measurement_contract": "cases/signal_advance_100_at/measurement-contract.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame",
+          "evidence": "trace.jsonl and capture/evidence.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame",
+          "evidence": "trace.jsonl and capture/evidence.jsonl"
+        },
+        "st.intersection": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame",
+          "evidence": "trace.jsonl and capture/evidence.jsonl"
+        },
+        "st.lane_enters": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame",
+          "evidence": "trace.jsonl and capture/evidence.jsonl"
+        },
+        "sig.turn_indicator": {
+          "entrypoint": "capture_sources.py",
+          "method": "original actor readback",
+          "evidence": "interaction_history.jsonl and Native frame join"
+        },
+        "rel.oncoming": {
+          "entrypoint": "capture_sources.py",
+          "method": "original actor readback",
+          "evidence": "interaction_history.jsonl and Native frame join"
+        },
+        "ego_speed": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original interaction history and geometry",
+          "evidence": "interaction_history.jsonl and intersection_geometry.json"
+        },
+        "oncoming_speed": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original interaction history and geometry",
+          "evidence": "interaction_history.jsonl and intersection_geometry.json"
+        },
+        "reciprocal_speed": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original interaction history and geometry",
+          "evidence": "interaction_history.jsonl and intersection_geometry.json"
+        },
+        "ego_heading": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original interaction history and geometry",
+          "evidence": "interaction_history.jsonl and intersection_geometry.json"
+        },
+        "ego_left_indicator": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original interaction history and geometry",
+          "evidence": "interaction_history.jsonl and intersection_geometry.json"
+        },
+        "ego_in_intersection": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original interaction history and geometry",
+          "evidence": "interaction_history.jsonl and intersection_geometry.json"
+        },
+        "initial_oncoming_in_intersection": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original interaction history and geometry",
+          "evidence": "interaction_history.jsonl and intersection_geometry.json"
+        },
+        "reciprocal_in_intersection": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original interaction history and geometry",
+          "evidence": "interaction_history.jsonl and intersection_geometry.json"
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction_sha256": "41e8ae389026fcf417a6d359aac9ff450ade321f97548cb3ca23b7ef7265bde6",
+          "trigger": {
+            "source": "interaction_history.jsonl and intersection_geometry.json",
+            "metric": "signal_onset_margin_m original-source physical-risk check",
+            "failure_condition": "original signal onset has insufficient continuous preturn distance"
+          },
+          "changed_knobs": [
+            "signal_onset_margin_m"
+          ],
+          "construction": "cases/signal_advance_100_above_36/fallback1-construction.json",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__signal_advance_100_above_36 --output .runtime-work/c109749-canonical-above-fallback1-offline-v1 --candidate fallback1",
+            "exit_code": 0,
+            "log": "cases/signal_advance_100_above_36/canonical-proofs/fallback1/offline.log",
+            "log_sha256": "0a0125ef514dc6a4de77de494ac6260d0c7027662d1d4038e113845e7926ac17",
+            "construction_sha256": "41e8ae389026fcf417a6d359aac9ff450ade321f97548cb3ca23b7ef7265bde6"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction_sha256": "8bcb227c046336baebf701f1084ce84768ba69361dc17fe87f700af0c0f51c4b",
+          "trigger": {
+            "source": "interaction_history.jsonl and intersection_geometry.json",
+            "metric": "approach_speed_mps original-source physical-risk check",
+            "failure_condition": "subject reaches the occupied junction at excessive measured speed"
+          },
+          "changed_knobs": [
+            "approach_speed_mps"
+          ],
+          "construction": "cases/signal_advance_100_above_36/fallback2-construction.json",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__signal_advance_100_above_36 --output .runtime-work/c109749-canonical-above-fallback2-offline-v1 --candidate fallback2",
+            "exit_code": 0,
+            "log": "cases/signal_advance_100_above_36/canonical-proofs/fallback2/offline.log",
+            "log_sha256": "adb458fdf49c1b22c638f2f4d0161b5b23fad9a3e44b0f98d750c01950276062",
+            "construction_sha256": "8bcb227c046336baebf701f1084ce84768ba69361dc17fe87f700af0c0f51c4b"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction_sha256": "36f844b1065182cccf73e2e6452ada098a07a99287512af86a83b9cf51b15be1",
+          "trigger": {
+            "source": "interaction_history.jsonl and intersection_geometry.json",
+            "metric": "inside_oncoming_travel_m original-source physical-risk check",
+            "failure_condition": "initial opposing complete body does not fit in the selected junction"
+          },
+          "changed_knobs": [
+            "inside_oncoming_travel_m"
+          ],
+          "construction": "cases/signal_advance_100_above_36/fallback3-construction.json",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__signal_advance_100_above_36 --output .runtime-work/c109749-canonical-above-fallback3-offline-v1 --candidate fallback3",
+            "exit_code": 0,
+            "log": "cases/signal_advance_100_above_36/canonical-proofs/fallback3/offline.log",
+            "log_sha256": "dea5170f8ee0f7e5b31e21dcd4649b1652a028d3bd024a84ee7f183404fa0c75",
+            "construction_sha256": "36f844b1065182cccf73e2e6452ada098a07a99287512af86a83b9cf51b15be1"
+          }
+        }
+      ],
+      "signal_target_m": 36.0,
+      "fixture_recipe": "work/testing__C109749__NRS-484B-253__motor_vehicle_driver/cases/signal_advance_100_above_36/diagnostic-recipe.json",
+      "physical_preparation": {
+        "receipt": "cases/signal_advance_100_above_36/physical-proofs/receipt.json",
+        "sha256": "033085a5d12370ceedcd4606be74fc4bd0941ac2a267580fb0cebf9d2630123a"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver__signal_advance_100_above_36",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "signal_advance"
+        ],
+        "script": "signal_distance_delivery_audit.py",
+        "script_sha256": "79adcbae0652355bc481e8055ad334b16f5e42b8a1ade4a63cba08a88e05ee86",
+        "command": ".venv-cpu/bin/python work/testing__C109749__NRS-484B-253__motor_vehicle_driver/signal_distance_delivery_fixture_proof.py --case testing__C109749__NRS-484B-253__motor_vehicle_driver__signal_advance_100_above_36 --output-root .runtime-work/c109749-signal-distance-above-delivery-v1",
+        "test_exit_code": 0,
+        "test_log": "signal-distance-above-delivery-proof.log",
+        "test_log_sha256": "9cdeb552b7c3492242161011fb303e0358ae054c3f84731a6709c2f17a452045",
+        "negative_command": ".venv-cpu/bin/python work/testing__C109749__NRS-484B-253__motor_vehicle_driver/signal_distance_delivery_fixture_proof.py --case testing__C109749__NRS-484B-253__motor_vehicle_driver__signal_advance_100_above_36 --output-root .runtime-work/c109749-signal-distance-above-delivery-negative-v1 --negative-source-root .runtime-work/c109749-signal-distance-above-delivery-v1",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Sealed original source changed: interaction_history.jsonl",
+        "negative_log": "signal-distance-above-delivery-negative.log",
+        "negative_log_sha256": "61d0286239a1666eb60108e5baf840ef77a7d90c74177da88d005143c8cc3228"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__signal_advance_100_above_36 --output .runtime-work/c109749-canonical-above-primary-offline-v1",
+        "exit_code": 0,
+        "log": "cases/signal_advance_100_above_36/canonical-proofs/primary/offline.log",
+        "log_sha256": "f73f97ce8b82872c5afcdf37833f4b752f6ce447c26bfd18554985c63b0f13ca",
+        "construction_sha256": "2afa0c9b4201a18c640218450972ba0f0f06ff2c6c1244fbe9ae69518bc35f2c"
+      }
     }
   ]
 }

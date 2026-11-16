@@ -70,7 +70,12 @@ def analyze(root:Path)->dict:
         previous=fid,time
         if frame.get("video_frame")!=i or frame.get("carla_frame")!=fid or frame.get("time_s")!=time:
             raise ValueError("Original frame join failed")
-        if row.get("road_id")!=ctx["approach_road_id"] or row.get("lane_id")!=ctx["approach_lane_id"] or row.get("stop_sign_id")!=ctx["native_stop_sign_id"]:
+        if row.get("stop_sign_id")!=ctx["native_stop_sign_id"]:
+            raise ValueError("Ego approach/sign identity mismatch")
+        # The Native road/lane can change after crossing the near-side
+        # crosswalk; keep the exact approach identity through that entry.
+        if first_cross is None and (row.get("road_id")!=ctx["approach_road_id"] or
+                                    row.get("lane_id")!=ctx["approach_lane_id"]):
             raise ValueError("Ego approach/sign identity mismatch")
         speed=_number(row.get("ego_speed_mps"),"ego speed")
         if speed<0:raise ValueError("Negative ego speed")
