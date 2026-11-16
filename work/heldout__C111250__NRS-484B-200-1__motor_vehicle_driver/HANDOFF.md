@@ -1916,3 +1916,6 @@ Primary construction plus three physically distinct fallback constructions are d
 
 ```
 </details>
+
+
+The settled-state full `.venv-cpu/bin/python worker_check.py --complete --require-delivery-ready` exited 1 at `runtime/scenario_pipeline/worker_exchange/preparation.py:276`: `Preparation acceptance failed: partial/missing packages remain`. `work/_shared/strict-gate-latest.log` SHA256 `8a5196a775b4e25dcc5ad430d9aa36835506a570dd5afd41ee669c3da366a69e`. C111250 remains partial; no environment dependency or external blocker is asserted. Next worker CPU action: direct binding of `three_lanes_right` primary and its three fallbacks, using the preserved source bundles, then the remaining five triples/primaries and final stable-manifest replays.
