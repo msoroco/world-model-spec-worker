@@ -19,8 +19,14 @@ def prove(far_root, output_root):
     near.mkdir(parents=True)
     for name in ('config.json', 'intersection_geometry.json', 'video_frames.jsonl'):
         shutil.copy2(far_root / name, near / name)
-    config = read(near / 'config.json')
-    config['selected_case_id'] = 'testing__C109749__NRS-484B-253__motor_vehicle_driver__approaching_no_yield'
+    manifest = read(Path(__file__).resolve().parent / 'execution-manifest.json')
+    entry = next(item for item in manifest['cases'] if item['case_id'].endswith('__approaching_no_yield'))
+    construction_path = Path(__file__).resolve().parent / entry['construction']
+    if sha(construction_path) != entry['construction_sha256']:
+        raise ValueError('Selected near construction changed')
+    construction = read(construction_path)
+    config = json.loads(next(item['content'] for item in construction['files']
+                             if item['path'] == 'config.json'))
     write(near / 'config.json', config)
     history = rows(far_root / 'interaction_history.jsonl')
     for row in history:

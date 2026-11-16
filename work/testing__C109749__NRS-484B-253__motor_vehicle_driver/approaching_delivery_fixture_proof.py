@@ -33,10 +33,14 @@ def build_positive(root,case):
     root.mkdir(parents=True)
     attempt=root/'attempt';attempt.mkdir()
     draft=FOLDER/'cases'/('approaching_yield' if APPROACHING_BRANCHES[case]=='yield' else 'approaching_no_yield')
-    entry=json.loads((draft/'draft-manifest.json').read_text())['cases'][0]
+    entry=next(item for item in json.loads((FOLDER/'execution-manifest.json').read_text())['cases']
+               if item['case_id']==case)
     recipe=json.loads((draft/'diagnostic-recipe.json').read_text())
     diagnostic=json.loads((REPO/recipe['generator']['source']).read_text())['files']
-    construction=json.loads((draft/entry['construction']).read_text())
+    construction_path=FOLDER/entry['construction']
+    if sha(construction_path)!=entry['construction_sha256']:
+        raise ValueError('Selected approaching construction changed')
+    construction=json.loads(construction_path.read_text())
     config=json.loads(next(f['content'] for f in construction['files'] if f['path']=='config.json'))
     write(attempt/'config.json',config)
     (attempt/'intersection_geometry.json').write_text(diagnostic['intersection_geometry.json'])

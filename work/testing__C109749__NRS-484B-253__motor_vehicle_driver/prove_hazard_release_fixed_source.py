@@ -11,8 +11,8 @@ from hazard_sweep_policy import HazardSweepPolicy
 
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
-SOURCE = REPO / '.runtime-work/c109749-far-delivery-v2/attempt'
-INDEX = ROOT / 'hazard-release-draft-proof-index.json'
+SOURCE = REPO / '.runtime-work/c109749-district-delivery-current-11/positive/attempt'
+INDEX = ROOT / 'district-integration-draft-proof.json'
 FRAME = 38074
 
 
@@ -98,6 +98,16 @@ def compare():
             action(4.0, remaining, closing) == 'turn',
             'Selected 4 s controller or fixed-frame behavior changed')
     index = json.loads(INDEX.read_text())
+    release_cases = [row for row in manifest['cases']
+                     if row['case_id'].endswith(('__approaching_release_3s',
+                                                 '__approaching_release_5s'))]
+    index['cases'] = [
+        {'case_id': row['case_id'], 'candidate': candidate,
+         'construction_sha256': (row['construction_sha256'] if candidate == 'primary'
+                                 else next(item['construction_sha256']
+                                           for item in row['fallbacks']
+                                           if item['candidate_id'] == candidate))}
+        for row in release_cases for candidate in ('primary', 'fallback1', 'fallback2', 'fallback3')]
     observations = []
     for proof in index['cases']:
         path = ROOT / 'cases' / proof['case_id'].split('__')[-1] / (

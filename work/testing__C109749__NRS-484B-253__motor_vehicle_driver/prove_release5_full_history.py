@@ -702,13 +702,23 @@ def release_delivery(case, output_root, negative_source_root=None):
     suffix = case.rsplit('__', 1)[-1]
     require(suffix in ('approaching_release_3s', 'approaching_release_5s'),
             'Exact release-grid delivery case required')
-    index = json.loads(INDEX.read_text())
+    manifest = json.loads((ROOT / 'execution-manifest.json').read_text())
+    entry = next(item for item in manifest['cases'] if item['case_id'] == case)
+    selected_path = ROOT / entry['construction']
+    require(sha(selected_path) == entry['construction_sha256'],
+            'Selected release construction changed')
+    selected = json.loads(selected_path.read_text())
+    selected_config = json.loads(next(item['content'] for item in selected['files']
+                                      if item['path'] == 'config.json'))
+    index = json.loads((ROOT / 'district-integration-draft-proof.json').read_text())['release_source_fixture']
     key = 'release3_full_history_diagnostic' if suffix.endswith('3s') else 'release5_full_history_diagnostic'
     prior = index[key]
     require(prior['case_id'] == case, 'Delivery source does not match exact case')
     source = (REPO / ('.runtime-work/c109749-release3-full-history-v2/attempt'
                      if suffix.endswith('3s') else
                      '.runtime-work/c109749-release5-full-history-v1/attempt'))
+    require(json.loads((source / 'config.json').read_text()) == selected_config,
+            'Release source config differs from selected construction')
     root = Path(output_root).resolve()
     require((REPO / '.runtime-work').resolve() in root.parents and not root.exists(),
             'Use a fresh ignored release delivery output root')

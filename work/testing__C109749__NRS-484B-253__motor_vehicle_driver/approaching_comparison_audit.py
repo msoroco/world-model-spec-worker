@@ -26,7 +26,10 @@ def _load(recipe):
     recipe = Path(recipe)
     if recipe.is_dir():
         seal = json.loads((recipe / 'capture-seal.json').read_text())
-        audit = json.loads((recipe / 'diagnostic-audit.json').read_text())
+        audit_path = recipe / 'diagnostic-audit.json'
+        if not audit_path.is_file():
+            audit_path = recipe / 'matched-diagnostic-audit.json'
+        audit = json.loads(audit_path.read_text())
         if not (audit.get('software_checks_passed') is True
                 and audit.get('diagnostic_fixture') is True
                 and audit.get('passed') is False and audit.get('frames') == 900):

@@ -43,6 +43,16 @@ def positive(root, near_root, media_root):
         dest = attempt / name
         dest.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(media_root / name, dest)
+    entry = next(item for item in json.loads((FOLDER / 'execution-manifest.json').read_text())['cases']
+                 if item['case_id'] == CASE)
+    construction_path = FOLDER / entry['construction']
+    if sha(construction_path) != entry['construction_sha256']:
+        raise ValueError('Selected near construction changed')
+    construction = json.loads(construction_path.read_text())
+    selected_config = json.loads(next(item['content'] for item in construction['files']
+                                      if item['path'] == 'config.json'))
+    if selected_config != json.loads((attempt / 'config.json').read_text()):
+        raise ValueError('Near source config differs from selected construction')
     write(attempt / 'acquisition-provenance.json',
           {'provenance_kind': 'synthetic_fixture', 'diagnostic_fixture': True,
            'scope': 'matched 900-frame CPU source; static pattern cameras depict no actors'})

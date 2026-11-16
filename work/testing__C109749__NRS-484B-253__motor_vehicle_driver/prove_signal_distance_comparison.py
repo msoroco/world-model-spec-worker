@@ -12,9 +12,9 @@ REPO = ROOT.parents[1]
 CASES = ('signal_advance_100_below_25', 'signal_advance_100_at',
          'signal_advance_100_above_36')
 TARGETS = (25.0, 30.48, 36.0)
-ATTEMPTS = ('c109749-canonical-below-delivery-v1',
-            'c109749-signal-advance-delivery-v1',
-            'c109749-canonical-above-delivery-v1')
+ATTEMPTS = ('c109749-district-delivery-current-12/positive',
+            'c109749-district-delivery-current-09/positive',
+            'c109749-district-delivery-current-13/positive')
 IDENTITY = {'selected_case_id', 'supported_case_ids', 'signal_target_m'}
 
 

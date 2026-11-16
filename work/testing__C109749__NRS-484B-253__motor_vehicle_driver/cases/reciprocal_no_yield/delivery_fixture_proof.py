@@ -34,6 +34,15 @@ def build_positive(root,case):
     attempt=root/'attempt';attempt.mkdir()
     diagnostic=json.loads((FOLDER/'diagnostic.json').read_text())['files']
     config=json.loads((FOLDER/'config.json').read_text())
+    selected_folder=FOLDER.parents[1]
+    selected=next(item for item in json.loads((selected_folder/'execution-manifest.json').read_text())['cases']
+                  if item['case_id']==case)
+    source=selected_folder/selected['construction']
+    if sha(source)!=selected['construction_sha256']:
+        raise ValueError('Selected reciprocal construction changed')
+    selected_files={item['path']:item['content'] for item in json.loads(source.read_text())['files']}
+    if config!=json.loads(selected_files['config.json']):
+        raise ValueError('Reciprocal diagnostic config differs from selected construction')
     write(attempt/'config.json',config)
     (attempt/'intersection_geometry.json').write_text(diagnostic['intersection_geometry.json'])
     original=[json.loads(s) for s in diagnostic['interaction_history.jsonl'].splitlines() if s]

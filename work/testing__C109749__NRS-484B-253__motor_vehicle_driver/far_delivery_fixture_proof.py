@@ -39,6 +39,16 @@ def positive(root, media_root):
     attempt = root / 'attempt'
     attempt.mkdir(parents=True)
     copy_originals(media_root, attempt)
+    entry = next(item for item in json.loads((FOLDER / 'execution-manifest.json').read_text())['cases']
+                 if item['case_id'] == CASE)
+    construction_path = FOLDER / entry['construction']
+    if sha(construction_path) != entry['construction_sha256']:
+        raise ValueError('Selected far construction changed')
+    construction = json.loads(construction_path.read_text())
+    selected_config = json.loads(next(item['content'] for item in construction['files']
+                                      if item['path'] == 'config.json'))
+    if selected_config != json.loads((attempt / 'config.json').read_text()):
+        raise ValueError('Far source config differs from selected construction')
     finalize(attempt, attempt / 'analysis-report.json')
     result = json.loads((attempt / 'result.json').read_text())
     if (result.get('provenance_kind') != 'synthetic_fixture' or
