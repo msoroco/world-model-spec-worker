@@ -1,7 +1,7 @@
 {
   "assignment_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver",
   "input_sha256": "42cc01f69660afb23a9167a02ab7151ddd33a1fee873db9920a705453a389cd8",
-  "status": "ready",
+  "status": "partial",
   "applied_update": 0,
   "tests": [
     {
@@ -113,8 +113,8 @@
     "Actual horn audibility at route-relative pedestrian listener positions",
     "Actual affected pedestrian and vehicle paths, camera coverage, physical safety and legal judgments"
   ],
-  "reason": null,
-  "readiness_kind": "delivery_prepared",
+  "reason": "Fresh CPU unit-test recheck fails (40 run, 8 errors, 1 failure): missing vehicle-indicator-manifest.json, listener-2m-manifest.json, comparison-proof-index.json and aggregate-saved/ped_horn_listener_2m.log; aggregate saved index also binds stale execution-manifest SHA. The scoped static strict gate passed before downgrade but cannot establish ready while these worker-owned proof/reproduction gaps remain. Restore source-hashed missing artifacts or regenerate from current constructions, rebind saved/comparison proofs, rerun the 40 tests and scoped strict gate.",
+  "readiness_kind": "incomplete",
   "first_gpu_delivery_command": "python scenario_pipeline/pipeline.py execute-delivery --assignment heldout__C111603__NRS-484B-413-1__motor_vehicle_driver --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__vehicle_left_indicator --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --job \"$JOB_ID\" --db \"$DB\" --run \"$RUN\"",
   "preserved_unreferenced_cpu_artifacts": [
     {
@@ -181,5 +181,14 @@
       "data": "Y2FwdHVyZV9maW5pc2hlZCBlbmNvZGVyc19jbG9zZWQgcmVzdG9yYXRpb25fdmVyaWZpZWQgbmF0aXZlX2V4aXQgb3duZXJfcmVsZWFzZWQgc2F2ZWRfcHJvY2Vzc2luZ19zdGFydGVkCmhlbGRvdXRfX0MxMTE2MDNfX05SUy00ODRCLTQxMy0xX19tb3Rvcl92ZWhpY2xlX2RyaXZlcl9fcGVkX2hvcm5fbGlzdGVuZXJfNm0gc3ludGhldGljX2xpZmVjeWNsZV9vbmx5IHNhdmVkX3Byb2Nlc3NpbmdfcGFzc2VkCmhlbGRvdXRfX0MxMTE2MDNfX05SUy00ODRCLTQxMy0xX19tb3Rvcl92ZWhpY2xlX2RyaXZlcl9fcGVkX2hvcm5fbGlzdGVuZXJfNm0gYWdncmVnYXRlX21hbmlmZXN0X3NhdmVkX3Byb2Nlc3NpbmdfcGFzc2VkCg==",
       "reason": "Unbound standalone saved-run log copy retained byte-exact under returned-file cap"
     }
-  ]
+  ],
+  "fresh_cpu_recheck": {
+    "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/tests",
+    "exit_code": 1,
+    "log": "cpu-tests-20261116-failed.log",
+    "sha256": "842c3577a6c177d5a09e6992ceb7040162bf56a0bcaa060ba471eec5517e675f",
+    "ran": 40,
+    "errors": 8,
+    "failures": 1
+  }
 }
