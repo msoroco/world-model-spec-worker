@@ -1,14 +1,14 @@
 {
   "assignment_id": "training__C111331__NRS-484B-307-6a__motor_vehicle_driver",
   "input_sha256": "3d145bae91ddfc0070fb2599c047d807bf1068efe88fa0ce9a68a14888d57874",
-  "status": "partial",
+  "status": "ready",
   "applied_update": 16,
-  "reason": "Two yellow/red reference/contrast cases and eight unselected primary/fallback bundles retain current pinned synthetic CPU proofs. Six canonical frozen-law semantic stages now validate against the draft constructions, and the ordinary scoped check passes. The two cases remain unselected: exact selected manifest, source-reviewed membership limitations, current-input selected offline/compatibility/saved reproof, independent physical/delivery/comparison audits, root package and scoped strict gate remain worker-owned CPU work. Original Native signal/body, pixels, physical acceptance and legal judgment are unverified; zero original recordings accepted.",
-  "readiness_kind": null,
+  "reason": null,
+  "readiness_kind": "delivery_prepared",
   "cases_planned": 2,
-  "cases_selected": 0,
-  "candidate_plans_proven": 0,
-  "comparison_audits_passed": 0,
+  "cases_selected": 2,
+  "candidate_plans_proven": 8,
+  "comparison_audits_passed": 1,
   "carla_executed": false,
   "recordings_accepted": 0,
   "native_speed_frame_proof": {
@@ -76,6 +76,48 @@
       "exit_code": 0,
       "log": "update042c-scoped-ordinary.log",
       "sha256": "9036884324b80c0764a90120cea976ed68de986c6cca3feae4f01cda35b2f79c"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C111331__NRS-484B-307-6a__motor_vehicle_driver/prove-selected.py",
+      "exit_code": 0,
+      "log": "update043b-selected-proof-run.log",
+      "sha256": "7dff1e5b29e8080930dcb88059a44383fc70c880ca1c6c2a459a7e12c6b21701"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C111331__NRS-484B-307-6a__motor_vehicle_driver/prove-physical-signal.py",
+      "exit_code": 0,
+      "log": "update043b-physical-proof-run.log",
+      "sha256": "b3ede6d807f5e5a0fc6731bc483cd2d1b0659a89ec9a77232149b415549f04e7"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C111331__NRS-484B-307-6a__motor_vehicle_driver/bind-selected-handoff.py",
+      "exit_code": 0,
+      "log": "update043b-bind-handoff.log",
+      "sha256": "a1efb385b4eb048804e14f96209153e205e7372763fb402d934d81963fc1eaaa"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C111331__NRS-484B-307-6a__motor_vehicle_driver/test-comparison.py",
+      "exit_code": 0,
+      "log": "update043b-comparison-fixed-negative.log",
+      "sha256": "46a477c328575cd411919a2d738789b87671e5f4bfdba34429acd2912b94ca4f"
+    },
+    {
+      "command": "PYTHONPATH=runtime/pipeline:runtime/pipeline/scenario_pipeline .venv-cpu/bin/python - <work-owned validation command>",
+      "exit_code": 0,
+      "log": "update043b-static-delivery-validation.log",
+      "sha256": "d752e9659fa6bbf30501259884fa0f1983556ae5b55a7af13f435709f9fdd1c6"
+    },
+    {
+      "command": "PYTHONPATH=. .venv-cpu/bin/python -m unittest discover -s tests",
+      "exit_code": 0,
+      "log": "update043-root-tests.log",
+      "sha256": "fd49aba5f35c938be43436424bc3c2f9f2397a091da4f7e2a3cf10e5b4ba5abf"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment training__C111331__NRS-484B-307-6a__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 0,
+      "log": "update043c-scoped-strict.log",
+      "sha256": "9036884324b80c0764a90120cea976ed68de986c6cca3feae4f01cda35b2f79c"
     }
   ],
   "current_update042_semantic": {
@@ -86,5 +128,16 @@
     "semantic_proof_sha256": "fa7c1f08c1a5265a98a8834fc02d094b04589899288d2bb958041bb3418dd999",
     "selected_manifest_bound": false,
     "original_signal_and_entry_verified": false
-  }
+  },
+  "remaining_gpu_checks": [
+    "Original Native signal and vehicle-body motion, four source-camera pixel visibility, physical completion and local canonical acceptance remain unverified."
+  ],
+  "current_cpu_proof": {
+    "status": "eight_selected_current_input_chains_and_independent_cpu_audits_passed",
+    "manifest_sha256": "09e72e597f94a96e729f47037ce21b10aa97083cba6159a5f99dd7c533bcefe9",
+    "matrix_sha256": "8ae847cfb588d0acca7b35c2576190d49d212fd2b0e4bc318cf39b02bb00da28",
+    "comparison_audit_sha256": "3bd418818cd19771db51ada4903348843970c6145b1f548665f711bb0d6f5551",
+    "physical_original_verified": false
+  },
+  "first_gpu_delivery_command": "PYTHONPATH=runtime/pipeline/scenario_pipeline python3.11 -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db \"$DB\" --assignment training__C111331__NRS-484B-307-6a__motor_vehicle_driver --case training__C111331__NRS-484B-307-6a__motor_vehicle_driver__reference --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""
 }

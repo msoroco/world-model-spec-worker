@@ -61,17 +61,17 @@ def main():
                                '--manifest', str(MANIFEST), '--case', case,
                                '--candidate', name, '--output', str(offline),
                                '--python', python]
-                run(offline_cmd, target / 'offline-command.log')
+                run(offline_cmd, target / 'run-offline.log')
                 row['offline'] = copy(offline / 'offline.log', target / 'offline.log')
                 candidate['offline'] = {'command': ' '.join(offline_cmd),
                     'exit_code': 0, 'construction_sha256': candidate['construction_sha256'],
-                    'log': str((target / 'offline-command.log').relative_to(HERE)),
-                    'log_sha256': sha(target / 'offline-command.log')}
+                    'log': str((target / 'run-offline.log').relative_to(HERE)),
+                    'log_sha256': sha(target / 'run-offline.log')}
                 compat_cmd = [python, str(ROOT / 'runtime.py'), 'compatibility',
                               '--manifest', str(MANIFEST), '--case', case,
                               '--candidate', name, '--output', str(compat),
                               '--library', str(LIBRARY), '--validator', str(VALIDATOR)]
-                run(compat_cmd, target / 'compatibility-command.log')
+                run(compat_cmd, target / 'run-compat.log')
                 row['compatibility'] = copy(compat / 'compatibility.json', target / 'compatibility.json')
                 row['analysis'] = copy(compat / 'compatibility-analysis.log', target / 'analysis.log')
                 row['negative'] = copy(compat / 'negative-analysis.log', target / 'negative.log')

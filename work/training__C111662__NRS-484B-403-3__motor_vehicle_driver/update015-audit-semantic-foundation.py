@@ -38,7 +38,7 @@ def run():
             if sha(path) != item["sha256"]:
                 raise ValueError("Semantic proposal hash changed: " + stage)
             values[stage].append(json.loads(path.read_text()))
-    law = assignment["law_record"]
+    law = assignment["law"]
     request = {"cell": assignment["cell"], "actor": assignment["actor"]}
     common = {"request": request, "law_records": {assignment["law_id"]: law},
               "dependencies": []}

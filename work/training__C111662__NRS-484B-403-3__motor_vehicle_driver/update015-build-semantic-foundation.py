@@ -27,7 +27,7 @@ def write(name, value):
 def build():
     assignment_path = REPO / "inputs" / ROOT.name / "assignment.json"
     assignment = json.loads(assignment_path.read_text())
-    law = assignment["law_record"]
+    law = assignment["law"]
     law_id, cell_id, actor = assignment["law_id"], assignment["cell_id"], assignment["actor"]
     quote = law["text"]
     assert law["id"] == law_id and "business district" in quote
