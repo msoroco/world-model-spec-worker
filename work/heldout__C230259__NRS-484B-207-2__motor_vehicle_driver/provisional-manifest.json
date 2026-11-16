@@ -1074,6 +1074,149 @@
         "receipt": "audible-primary-saved-processing.json",
         "receipt_sha256": "c804f4b408c82d1b6ac8c6c576002cf19d791ba56ae6fe33d36e01beea2d8aaf"
       }
+    },
+    {
+      "case_id": "heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__right_pass_permission_premise_no_right_yield",
+      "kind": "delivery",
+      "construction": "permission-construction.json",
+      "construction_sha256": "a41de467a7d9f9b09f109340f55353de0b2fe4b485adaa4b03cebc4b025c75c1",
+      "measurement_procedure": {
+        "entrypoint": "overtake_finalizer.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Right-side Native overtaker lane spawn and camera coverage need physical verification; surveyed statutory premise and safety need separate review."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "permission-fallback1-construction.json",
+          "construction_sha256": "3b408edb937ce644a355ce1c53673981b0095785abb81a1be7d0b82630d9da37",
+          "changed_knobs": [
+            "spawn_height_offset_m=0.7"
+          ],
+          "trigger": {
+            "source": "Native actor spawn/readback",
+            "metric": "both actors spawned at surveyed waypoints",
+            "failure_condition": "Native ego or overtaker spawn intersects surface at primary 0.5 m offset"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "permission-fallback2-construction.json",
+          "construction_sha256": "da9d4b0c4e57b1340953a17f0382206765edf0d0a82736e6fc223fde061d3823",
+          "changed_knobs": [
+            "overview_mount_z_m=9.0"
+          ],
+          "trigger": {
+            "source": "original overview pixel/source-camera audit",
+            "metric": "both actors and road context visible in overview",
+            "failure_condition": "Primary overview mount hides an overtaking body or road context"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "permission-fallback3-construction.json",
+          "construction_sha256": "21df199943e465125720c4ee60d8b3afb24a51b8439ffd6b84458f3a82590f71",
+          "changed_knobs": [
+            "overtaker_target_speed_mps=9.0"
+          ],
+          "trigger": {
+            "source": "original full-body pass gap bracket",
+            "metric": "first complete frame exists within capture",
+            "failure_condition": "Primary overtaker does not complete pass within 160 original frames"
+          }
+        }
+      ],
+      "measurement_contract": "permission-measurement-contract.json",
+      "fixture_recipe": "work/heldout__C230259__NRS-484B-207-2__motor_vehicle_driver/permission-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "full_body_pass_gap_m": {
+          "entrypoint": "overtake_finalizer.py",
+          "method": "source-hashed original frame join",
+          "evidence": [
+            "overtake_bodies_original.jsonl",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "ego_right_shift_m": {
+          "entrypoint": "overtake_finalizer.py",
+          "method": "source-hashed original frame join",
+          "evidence": [
+            "overtake_bodies_original.jsonl",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "ego_speed_mps": {
+          "entrypoint": "overtake_finalizer.py",
+          "method": "source-hashed original frame join",
+          "evidence": [
+            "overtake_bodies_original.jsonl",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "overtaker_lateral_offset_right_m": {
+          "entrypoint": "overtake_finalizer.py",
+          "method": "source-hashed original frame join",
+          "evidence": [
+            "overtake_bodies_original.jsonl",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "notice_source_context": {
+          "entrypoint": "overtake_finalizer.py",
+          "method": "source-hashed original frame join",
+          "evidence": [
+            "overtake_bodies_original.jsonl",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "right_pass_permission_context": {
+          "entrypoint": "overtake_finalizer.py",
+          "method": "source-hashed original frame join",
+          "evidence": [
+            "overtake_bodies_original.jsonl",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv",
+            "right_pass_authority.json",
+            "right_pass_premise_original.json"
+          ]
+        }
+      }
     }
   ]
 }
