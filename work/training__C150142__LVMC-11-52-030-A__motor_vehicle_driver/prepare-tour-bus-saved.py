@@ -27,8 +27,9 @@ def prepare(attempt, *, case='tour_bus_below', reuse_media_from=None):
         raise ValueError('Diagnostic acquisition belongs under .runtime-work')
     if attempt.exists():
         raise ValueError('Use a fresh synthetic acquisition directory')
-    if case not in ('tour_bus_below', 'tour_bus_at', 'tour_bus_above'):
-        raise ValueError('Unsupported source-bound loading case')
+    if case not in ('tour_bus_below', 'tour_bus_at', 'tour_bus_above',
+                    'tour_bus_no_loading'):
+        raise ValueError('Unsupported source-bound tour-bus case')
     case_id = ROOT.name + '__' + case
     materialize(MANIFEST, case_id, attempt, 'primary')
     module = importlib.util.spec_from_file_location(
@@ -41,6 +42,9 @@ def prepare(attempt, *, case='tour_bus_below', reuse_media_from=None):
         reuse_media_from = Path(reuse_media_from).resolve()
         if REPO / '.runtime-work' not in reuse_media_from.parents:
             raise ValueError('Reusable synthetic media belongs under .runtime-work')
+        prior = json.loads((reuse_media_from / 'config.json').read_text())
+        if prior['capture_frames'] != frames:
+            raise ValueError('Reusable media has a different exact frame count')
     if reuse_media_from is not None:
         shutil.copy2(reuse_media_from / 'overview.mkv', attempt / 'overview.mkv')
     elif case == 'tour_bus_below' and PILOT.is_file():

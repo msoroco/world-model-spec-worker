@@ -32,8 +32,10 @@ def build(attempt):
         raise ValueError('Synthetic diagnostic belongs under .runtime-work')
     config = json.loads((attempt / 'config.json').read_text())
     if config['case_id'] not in tuple(ROOT.name + '__tour_bus_' + boundary
-                                     for boundary in ('below', 'at', 'above')):
-        raise ValueError('This diagnostic requires a loading tour-bus case')
+                                     for boundary in ('below', 'at', 'above',
+                                                      'no_loading')):
+        raise ValueError('This diagnostic requires a tour-bus case')
+    no_loading = config.get('activity_request') is None
     capture = attempt / 'capture'
     graph_dir = capture / 'native/graphs/base'
     if (capture / 'manifest.json').exists() or graph_dir.exists():
@@ -44,13 +46,16 @@ def build(attempt):
         'provenance_kind': 'synthetic_fixture', 'diagnostic_fixture': True,
         'native_executed': False}) + '\n')
     actors = (json.loads(line) for line in (attempt / 'native-raw-actors.jsonl').open())
-    walkers = (json.loads(line) for line in (attempt / 'native-passenger-actors.jsonl').open())
+    walkers = ((None for _ in range(config['capture_frames'])) if no_loading
+               else (json.loads(line) for line in
+                     (attempt / 'native-passenger-actors.jsonl').open()))
     count = 0
     with (capture / 'evidence.jsonl').open('w') as evidence, \
          (capture / 'native/frames.jsonl').open('w') as frames:
         for actor, walker in zip(actors, walkers, strict=True):
             frame, time_s = actor['frame'], actor['time_s']
-            if walker['frame'] != frame or walker['time_s'] != time_s:
+            if walker is not None and (walker['frame'] != frame or
+                                       walker['time_s'] != time_s):
                 raise ValueError('Synthetic bus/walker frame join differs')
             x, y = actor['ego_center_native_xy_m']
             speed = actor['velocity_native_xyz_mps'][0]
@@ -64,23 +69,26 @@ def build(attempt):
                 'blueprint_attributes': {'role_name': 'c150142_ego'},
                 'light_attributes': {}, 'wheel_steer_angle_deg': 0,
             }
-            wx, wy = walker['center_native_xy_m']
-            pedestrian = {
-                'actor_id': walker['actor_id'], 'blueprint': walker['blueprint'],
-                'position_m': [wx, wy, 0], 'heading_deg': 0,
-                'velocity_mps': walker['velocity_native_xyz_mps'],
-                'speed_mps': abs(walker['velocity_native_xyz_mps'][1]),
-                'acceleration_mps2': [0, 0, 0],
-                'accel_longitudinal_mps2': 0,
-                'body_vertices_m': body_3d([[wx - .2, wy - .2],
-                                            [wx + .2, wy - .2],
-                                            [wx + .2, wy + .2],
-                                            [wx - .2, wy + .2]]),
-                'blueprint_attributes': {}, 'light_attributes': {},
-            }
+            participants = [bus]
+            if walker is not None:
+                wx, wy = walker['center_native_xy_m']
+                pedestrian = {
+                    'actor_id': walker['actor_id'], 'blueprint': walker['blueprint'],
+                    'position_m': [wx, wy, 0], 'heading_deg': 0,
+                    'velocity_mps': walker['velocity_native_xyz_mps'],
+                    'speed_mps': abs(walker['velocity_native_xyz_mps'][1]),
+                    'acceleration_mps2': [0, 0, 0],
+                    'accel_longitudinal_mps2': 0,
+                    'body_vertices_m': body_3d([[wx - .2, wy - .2],
+                                                [wx + .2, wy - .2],
+                                                [wx + .2, wy + .2],
+                                                [wx - .2, wy + .2]]),
+                    'blueprint_attributes': {}, 'light_attributes': {},
+                }
+                participants.append(pedestrian)
             observed = {
                 'frame': frame, 'time_s': time_s,
-                'participants': [bus, pedestrian],
+                'participants': participants,
                 'world_settings': {'no_rendering_mode': False},
                 'rgb_sensors': {view: {'frame': frame} for view in VIEWS},
                 'map_context': {'declared_public_way_road_ids': [150142],
@@ -116,8 +124,8 @@ def build(attempt):
         raise ValueError('Native diagnostic frame count differs')
     (capture / 'recorder_info.txt').write_text(
         'Synthetic CPU diagnostic; CARLA recorder did not run.\n'
-        'Create 1: vehicle.mitsubishi.fusorosa\n'
-        'Create 2: walker.pedestrian.0001\n')
+        'Create 1: vehicle.mitsubishi.fusorosa\n' +
+        ('' if no_loading else 'Create 2: walker.pedestrian.0001\n'))
     (capture / 'manifest.json').write_text(json.dumps({
         'extraction_confirmed': True, 'frames': count,
         'acquisition': 'synthetic_cpu_fixture',
