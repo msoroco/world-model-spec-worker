@@ -200,7 +200,7 @@ def finalize(attempt:Path, output:Path)->dict:
                                   for name in inputs}}
     channels=attempt/"channels";channels.mkdir()
     (channels/"approach_context.json").write_text(json.dumps({
-        "case_id":case,"measurements":measured,"source_evidence_hashes":sources,
+        "approach_context":{"case_id":case,"measurements":measured,"source_evidence_hashes":sources},
         "legal_conclusion":"unresolved"},indent=2,allow_nan=False)+"\n")
     (channels/"approach_lateral.jsonl").write_text("".join(json.dumps({
         "time_s":row["time_s"],"value":{"frame":row["frame"],
@@ -221,7 +221,7 @@ def finalize(attempt:Path, output:Path)->dict:
         "recording_description":config["recording_description"],
         "recording_evidence":[{"name":"approach_context","unit":"structured record",
                                "reference":"channels/approach_context.json"},
-                              {"name":"approach_lateral","unit":"meters and boolean",
+                              {"name":"approach_lateral","unit":"structured record",
                                "reference":"channels/approach_lateral.jsonl"}],
         "source_evidence_hashes":sources,"capture_evidence_sha256":sources["capture/evidence.jsonl"],
         "realized_observables":{}}

@@ -4,17 +4,186 @@
     {
       "case_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__source_verified_near_centerline",
       "construction": "construction.json",
-      "construction_sha256": "8f15df249ff6dbfdfc088409aaffde500c40068be1327cebd90f2cf9397e364c",
+      "construction_sha256": "63c6c9ef8bc73e7fdd16ca9593b79a36d75bbbc30bec8cdc2f7b9a5d42b2c002",
       "candidate_risk": {
         "status": "physical",
         "reason": "Body may leave the sourced right half or drift laterally on a Native approach."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback1-construction.json",
+          "construction_sha256": "84f514de36a8e8673eee122085e5d841f9f189e5755b5a40a8bd3241ab5c0773",
+          "trigger": {
+            "source": "retained original Native body/frame and four camera sources",
+            "metric": "body minimum centerline distance and right-half containment",
+            "failure_condition": "Complete body crosses sourced centerline or leaves right half during approach"
+          },
+          "changed_knobs": [
+            "config.requested_speed_mps"
+          ],
+          "remedy": "Reduce commanded approach speed to 2 m/s while retaining route, road context, capture and measurement contract",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__source_verified_near_centerline --candidate fallback1 --output .runtime-work/c109705-2a-fallback1-offline-v1",
+            "exit_code": 0,
+            "construction_sha256": "84f514de36a8e8673eee122085e5d841f9f189e5755b5a40a8bd3241ab5c0773",
+            "log": "fallback1-offline.log",
+            "log_sha256": "9f2ed142355416508acb54642346b415f5bad52595e67a1b1dff5e96f5aad05d"
+          },
+          "compatibility": {
+            "receipt": "fallback1-compatibility-receipt.json",
+            "sha256": "59d3596899ab4bbd857bbaa643f7f465921e611383f9a90f4d5a1fdec86a5061",
+            "log": "fallback1-analysis.log",
+            "negative_log": "fallback1-negative.log"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__source_verified_near_centerline --attempt .runtime-work/c109705-2a-fallback1-compatibility-v1 --output .runtime-work/c109705-2a-fallback1-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "test_log": "fallback1-saved-receipt.json",
+            "test_log_sha256": "e39f500656469d5b80a93471540ad9bfb0032c5dae1c67a0a3dc4780461f0442",
+            "test_exit_code": 0,
+            "proof_scope": "synthetic original-source recorded-only processing; physical/legal acceptance unclaimed"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "fallback2-construction.json",
+          "construction_sha256": "c09141bed298df971dcb4206716683ac294d3fe42a954cabebc4a8c945d583ca",
+          "trigger": {
+            "source": "retained original overview and approach camera frames",
+            "metric": "body and marked-centerline visibility in overview source",
+            "failure_condition": "Overview view occludes the complete vehicle body or the centerline reference during the approach"
+          },
+          "changed_knobs": [
+            "runner.four_camera_plan.overview.position_xyz_m",
+            "runner.four_camera_plan.overview.yaw_deg"
+          ],
+          "remedy": "Relocate the overview camera to an alternate elevated corner while preserving all four source streams, route and measurement contract",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__source_verified_near_centerline --candidate fallback2 --output .runtime-work/c109705-2a-fallback2-offline-v1",
+            "exit_code": 0,
+            "construction_sha256": "c09141bed298df971dcb4206716683ac294d3fe42a954cabebc4a8c945d583ca",
+            "log": "fallback2-offline.log",
+            "log_sha256": "a4eba21ec30a2f4049bc953a22f4a4ed6ba12cf0f93f906188de082d49ba1ae2"
+          },
+          "compatibility": {
+            "receipt": "fallback2-compatibility-receipt.json",
+            "sha256": "17a2ec79591224b7b96fb78730186042287f3706a76555d3edf5e19181036a5d",
+            "log": "fallback2-analysis.log",
+            "negative_log": "fallback2-negative.log"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__source_verified_near_centerline --attempt .runtime-work/c109705-2a-fallback2-compatibility-v1 --output .runtime-work/c109705-2a-fallback2-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "test_log": "fallback2-saved-receipt.json",
+            "test_log_sha256": "446f9c1d9b2d61fda91adc7599d75d1814c46192ddb7442073b32ffb15d9f514",
+            "test_exit_code": 0,
+            "proof_scope": "synthetic original-source recorded-only processing; physical/legal acceptance unclaimed"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "fallback3-construction.json",
+          "construction_sha256": "e4fe844695182050e271bfe1e78a98ab7d9267dbe81431694074faf2e55292b8",
+          "trigger": {
+            "source": "retained original body history, frame map and four source streams",
+            "metric": "full-body junction clearance before capture end",
+            "failure_condition": "Complete vehicle body remains in the sourced junction at the final original frame"
+          },
+          "changed_knobs": [
+            "config.requested_speed_mps"
+          ],
+          "remedy": "Increase commanded route speed to 4 m/s within the unchanged 45-second capture, retaining the site and evidence contract",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__source_verified_near_centerline --candidate fallback3 --output .runtime-work/c109705-2a-fallback3-offline-v1",
+            "exit_code": 0,
+            "construction_sha256": "e4fe844695182050e271bfe1e78a98ab7d9267dbe81431694074faf2e55292b8",
+            "log": "fallback3-offline.log",
+            "log_sha256": "a4eba21ec30a2f4049bc953a22f4a4ed6ba12cf0f93f906188de082d49ba1ae2"
+          },
+          "compatibility": {
+            "receipt": "fallback3-compatibility-receipt.json",
+            "sha256": "e0a4771848c96578db75dd106a951ad671242ae3166090af2597f05a051d2b3f",
+            "log": "fallback3-analysis.log",
+            "negative_log": "fallback3-negative.log"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__source_verified_near_centerline --attempt .runtime-work/c109705-2a-fallback3-compatibility-v1 --output .runtime-work/c109705-2a-fallback3-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "test_log": "fallback3-saved-receipt.json",
+            "test_log_sha256": "2cada6cde13bce322cece643ef44d783839a461c64a476ccd313024c85fbdf67",
+            "test_exit_code": 0,
+            "proof_scope": "synthetic original-source recorded-only processing; physical/legal acceptance unclaimed"
+          }
+        }
+      ],
       "measurement_procedure": {
         "entrypoint": "finalizer.py"
       },
       "measurement_contract": "measurement-contract.json",
-      "fixture_recipe": "work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/diagnostic-recipe.json"
+      "fixture_recipe": "work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/diagnostic-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__source_verified_near_centerline --output .runtime-work/c109705-2a-measurement-offline-v5",
+        "exit_code": 0,
+        "construction_sha256": "63c6c9ef8bc73e7fdd16ca9593b79a36d75bbbc30bec8cdc2f7b9a5d42b2c002",
+        "log": "exact-offline.log",
+        "log_sha256": "a4eba21ec30a2f4049bc953a22f4a4ed6ba12cf0f93f906188de082d49ba1ae2",
+        "simulation_started": false
+      },
+      "compatibility": {
+        "receipt": "primary-compatibility-receipt.json",
+        "sha256": "36c165ec4089cc8824d150168dd4242fed02f34747e15306dc51e46461d020b9",
+        "log": "primary-compatibility-analysis.log"
+      },
+      "negative": {
+        "log": "primary-negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__source_verified_near_centerline --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "test_log": "primary-saved-processing-receipt.json",
+        "test_log_sha256": "8643044df23beaee05d2330625ee12ab15347d6e104b09566df99e7826cd2f3e",
+        "test_exit_code": 0,
+        "proof_scope": "synthetic original-source recorded-only processing; physical and legal acceptance unclaimed"
+      }
+    },
+    {
+      "case_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__source_verified_farther_from_centerline",
+      "construction": "second-construction.json",
+      "construction_sha256": "265bd151a26b0411bab9ba34ae444f8d433fae8b74b1b16b9f037ffda6b27164",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "A farther source body may leave the right half or fail to maintain distinct lateral offset"
+      },
+      "candidates": [],
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "fixture_recipe": "work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/second-diagnostic-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__source_verified_farther_from_centerline --output .runtime-work/c109705-2a-second-offline-v2",
+        "exit_code": 0,
+        "construction_sha256": "265bd151a26b0411bab9ba34ae444f8d433fae8b74b1b16b9f037ffda6b27164",
+        "log": "second-offline.log",
+        "log_sha256": "6b70c061a06bfdfb90c6fa13c2a76d00e5f588c1cda2d524ccc4d08168c43ce5"
+      },
+      "compatibility": {
+        "receipt": "second-compatibility-receipt.json",
+        "sha256": "9b4f9c09498e7590bf204c86d337c84c93101b4f0d1224076ea806b114e1f0dd",
+        "log": "second-analysis.log"
+      },
+      "negative": {
+        "log": "second-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__source_verified_farther_from_centerline --attempt .runtime-work/c109705-2a-second-compatibility-v1 --output .runtime-work/c109705-2a-second-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "test_log": "second-saved-receipt.json",
+        "test_log_sha256": "d762d2a24a0d35fd12d505c871f389327d3d0a21833539d67e611bcaa88b416c",
+        "test_exit_code": 0,
+        "proof_scope": "synthetic original-source recorded-only processing; physical/legal acceptance unclaimed"
+      }
     }
   ],
   "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3"

@@ -37,17 +37,24 @@
       "recording_description": {
         "channels": [
           {
-            "name": "complete_body_approach_lateral_position",
-            "unit": "boolean and meters",
-            "method": "original-frame body vertices against sourced centerline and right-half polygon",
-            "time_window": "before intersection entry",
-            "reference_frame": "Native original frame",
+            "name": "approach_lateral",
+            "unit": "structured record",
+            "method": "original complete body polygon against sourced marked centerline and right-half polygon",
+            "time_window": "before first intersection entry",
+            "reference_frame": "original Native frame",
             "sampling_rate_hz": 20,
-            "uncertainty": "physical body position and legal nearest-centerline judgment unverified"
+            "uncertainty": "synthetic diagnostic only; legal nearest position unresolved"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "approach_context",
+            "unit": "structured record",
+            "method": "source-hashed Native road context and full-body approach measurements"
           }
         ],
         "limitations": [
-          "Synthetic site only; real Native capture and source-camera visibility unverified. Saved finalizer and delivery audit remain unfinished."
+          "Synthetic CPU site and media; actual Native highway status, turn, body position and camera visibility require later acceptance."
         ]
       },
       "paired_probe_id": "c109705-marked-lateral",
@@ -56,6 +63,70 @@
         "primary_variable": "approach_lateral_offset_m",
         "comparison_or_standard": "source-bound body geometry and near/far ordering; no legal cutoff",
         "target_value_or_branch": "near_centerline"
+      }
+    },
+    {
+      "case_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__source_verified_farther_from_centerline",
+      "target_law_id": "NRS-484B-400-2a",
+      "target_type": "boundary_probe",
+      "rationale": "Source-shaped synthetic farther marked-centerline approach diagnostic; physical and legal acceptance pending",
+      "variable_assignments": {
+        "centerline_kind": {
+          "kind": "world_setup",
+          "value": "marked",
+          "unit": "categorical"
+        },
+        "approach_lateral_offset_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "both_highways_two_directional": {
+          "kind": "world_setup",
+          "value": "source review required",
+          "unit": "categorical"
+        },
+        "commanded_left_turn": {
+          "kind": "controller",
+          "value": "checked route from site packet",
+          "unit": "structured record"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "nearest the centerline",
+        "physical highway direction authority"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "approach_lateral",
+            "unit": "structured record",
+            "method": "original complete body polygon against sourced marked centerline and right-half polygon",
+            "time_window": "before first intersection entry",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "synthetic diagnostic only; legal nearest position unresolved"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "approach_context",
+            "unit": "structured record",
+            "method": "source-hashed Native road context and full-body approach measurements"
+          }
+        ],
+        "limitations": [
+          "Synthetic CPU site and media; actual Native highway status, turn, body position and camera visibility require later acceptance."
+        ]
+      },
+      "paired_probe_id": "c109705-marked-lateral",
+      "deliberate_differences": [
+        "complete-body lateral offset within the same sourced right half"
+      ],
+      "probe": {
+        "primary_variable": "approach_lateral_offset_m",
+        "comparison_or_standard": "source-bound body geometry and near/far ordering; no legal cutoff",
+        "target_value_or_branch": "farther_from_centerline"
       }
     }
   ]
