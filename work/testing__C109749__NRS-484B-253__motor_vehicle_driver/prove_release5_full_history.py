@@ -435,6 +435,94 @@ def prove_independent_delivery_sequences():
     return proof
 
 
+def compare_three_four_full_history():
+    """Audit all 900 rows of the controlled 5 m opposing-approach shift."""
+    near = REPO / '.runtime-work/c109749-release3-full-history-v2/attempt'
+    index = json.loads(INDEX.read_text())
+    proof = index['release3_full_history_diagnostic']
+    require(proof['source_frames'] == 900 and
+            proof['case_id'] == ROOT.name + '__approaching_release_3s',
+            'Exact 3 s full-history proof changed')
+    for source, digest in proof['source_hashes'].items():
+        require(sha(near / source) == digest,
+                'Sealed 3 s comparison source changed: ' + source)
+    require(sha(near / 'capture-seal.json') == proof['capture_seal_sha256'],
+            '3 s comparison source seal changed')
+    far_seal = json.loads((SOURCE / 'capture-seal.json').read_text())
+    for source, digest in far_seal['sources'].items():
+        require(sha(SOURCE / source) == digest,
+                'Sealed 4 s comparison source changed: ' + source)
+    far_audit = json.loads((SOURCE / 'far-diagnostic-audit.json').read_text())
+    require(far_audit['software_checks_passed'] is True and
+            far_audit['passed'] is False,
+            'Selected 4 s diagnostic audit changed')
+    for source in ('intersection_geometry.json', 'video_frames.jsonl',
+                   'capture/evidence.jsonl'):
+        require(sha(near / source) == sha(SOURCE / source),
+                'Fixed geometry or frame evidence changed: ' + source)
+    far = [json.loads(line) for line in (SOURCE / 'interaction_history.jsonl').read_text().splitlines()]
+    closer = [json.loads(line) for line in (near / 'interaction_history.jsonl').read_text().splitlines()]
+
+    def compare(left, right):
+        require(len(left) == len(right) == 900, 'Full matched 3 s/4 s histories required')
+        for original, shifted in zip(left, right):
+            require(set(original) == set(shifted), 'Top-level source fields changed')
+            for key in ('frame', 'time_s', 'ego', 'ego_heading_deg',
+                        'ego_left_indicator', 'reciprocal'):
+                require(original[key] == shifted[key],
+                        'Fixed 3 s/4 s source changed: ' + key)
+            for key in set(original) - {'frame', 'time_s', 'ego', 'ego_heading_deg',
+                                        'ego_left_indicator', 'reciprocal', 'oncoming'}:
+                require(original[key] == shifted[key],
+                        'Additional fixed 3 s/4 s source changed: ' + key)
+            base = original['oncoming']
+            changed = shifted['oncoming']
+            require(set(base) == set(changed), 'Opposing source fields changed')
+            for key in base:
+                if key not in ('position_xy_m', 'body_vertices_xy_m'):
+                    require(base[key] == changed[key],
+                            'Opposing condition changed beyond position: ' + key)
+            points = [(base['position_xy_m'], changed['position_xy_m'])]
+            require(len(base['body_vertices_xy_m']) == len(changed['body_vertices_xy_m']),
+                    'Opposing body geometry changed')
+            points.extend(zip(base['body_vertices_xy_m'], changed['body_vertices_xy_m']))
+            for first, second in points:
+                require(math.isclose(second[0] - first[0], -5.0, abs_tol=1e-9) and
+                        math.isclose(second[1] - first[1], 0.0, abs_tol=1e-9),
+                        'Opposing approach shift is not constant 5 m')
+
+    compare(far, closer)
+    changed = json.loads(json.dumps(closer))
+    changed[0]['oncoming']['position_xy_m'][0] += 1
+    try:
+        compare(far, changed)
+    except ValueError as exc:
+        require('Opposing approach shift is not constant 5 m' in str(exc),
+                'Tampered opposing negative failed elsewhere')
+    else:
+        raise ValueError('Changed opposing position passed 3 s/4 s comparison')
+    require(proof['ego_turn_start_frame'] == 38074 and
+            proof['opposing_entry_frame'] == 38129 and
+            3.9 < proof['measured_time_to_conflict_s'] < 4.0,
+            '3 s full-history release observation changed')
+    receipt = {
+        'selected_4s_case_id': ROOT.name + '__approaching_far',
+        'draft_3s_case_id': proof['case_id'],
+        'selected_4s_source_sha256': sha(SOURCE / 'interaction_history.jsonl'),
+        'selected_4s_audit_sha256': sha(SOURCE / 'far-diagnostic-audit.json'),
+        'draft_3s_source_sha256': sha(near / 'interaction_history.jsonl'),
+        'proof_script_sha256': sha(Path(__file__)),
+        'matched_frames': 900,
+        'declared_opposing_shift_m': -5.0,
+        'fixed_ego_reciprocal_geometry_and_frame_evidence': True,
+        'changed_opposing_position_rejected': True,
+        'native_or_legal_acceptance_claimed': False,
+    }
+    index['release3_4_fixed_trajectory_comparison'] = receipt
+    INDEX.write_text(json.dumps(index, indent=2) + '\n')
+    return receipt
+
+
 def prove_physical_lifecycle_diagnostics():
     """Exercise source-bound classifier negatives and ordered capture lifecycle."""
     index = json.loads(INDEX.read_text())
@@ -755,6 +843,8 @@ def prove_delivery_contracts(tag='v2'):
 if __name__ == '__main__':
     if len(sys.argv) == 3 and sys.argv[1] == '--three-output':
         print(json.dumps(prove_three(sys.argv[2]), indent=2))
+    elif len(sys.argv) == 2 and sys.argv[1] == '--compare-three-four':
+        print(json.dumps(compare_three_four_full_history(), indent=2))
     elif len(sys.argv) == 2 and sys.argv[1] == '--physical':
         print(json.dumps(prove_physical_lifecycle_diagnostics(), indent=2))
     elif len(sys.argv) == 2 and sys.argv[1] == '--return-physical':
@@ -772,4 +862,4 @@ if __name__ == '__main__':
     elif len(sys.argv) == 1:
         print(json.dumps(prove_independent_delivery_sequences(), indent=2))
     else:
-        raise SystemExit('Usage: prove_release5_full_history.py [--three-output .runtime-work/FRESH_ROOT | --physical | --return-physical | --return-delivery [--delivery-tag FRESH] | --delivery-case ID --delivery-output-root FRESH [--negative-source-root POSITIVE]]')
+        raise SystemExit('Usage: prove_release5_full_history.py [--three-output .runtime-work/FRESH_ROOT | --compare-three-four | --physical | --return-physical | --return-delivery [--delivery-tag FRESH] | --delivery-case ID --delivery-output-root FRESH [--negative-source-root POSITIVE]]')
