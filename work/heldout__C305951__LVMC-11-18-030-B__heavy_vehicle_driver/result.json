@@ -8,18 +8,30 @@
       "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "heavy-lane-source-tests.log",
-      "sha256": "7d4fc0eb595084365de3d734bae7d35727f2602e09d81eaf34bff5bcc4a07bd4"
+      "sha256": "e7256c3b30c4988393e5083e985c9c47492e05a7f2ad728b545cb4802baf087e"
     },
     {
-      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver/provisional-manifest.json --case heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__within_marked_lane --output .runtime-work/c305951-heavy-within-primary-offline --python \"$PWD/.venv-cpu/bin/python\"",
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver/provisional-manifest.json --case heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__within_marked_lane --output .runtime-work/c305951-heavy-within-primary-offline-v3 --python \"$PWD/.venv-cpu/bin/python\"",
       "exit_code": 0,
       "log": "first-primary-offline.log",
-      "sha256": "c5cec477990ca3c796bdd324baf8ddfb4adbfaf2f6ab3f267f5a7efb1afb3dfd"
+      "sha256": "1dc41fe23f46ee693e7022d639f7235ea1fab1ddd15199fd90b77722d8aa39cb"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver/provisional-manifest.json --case heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__within_marked_lane --output .runtime-work/c305951-heavy-compat-v4 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "first-primary-compatibility.json",
+      "sha256": "42d865dedb75268c5b11ffa2fb06e74fd9c38fa923a4cd007b177693a273feba"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver/provisional-manifest.json --case heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__within_marked_lane --attempt .runtime-work/c305951-heavy-saved-original-v1 --output .runtime-work/c305951-heavy-saved-output-v2 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "first-primary-saved-processing.json",
+      "sha256": "56dd536887219fe7e8b7d48a1ec3ce01f3ea7b88f8b9e79ebf268814ef1614ab"
     }
   ],
   "remaining_gpu_checks": [
     "Actual motion, geometry, camera visibility and duration remain unverified after CPU preparation."
   ],
-  "reason": "CPU preparation incomplete: first heavy marked-lane exact primary construction passes pinned offline and ten source/join CPU tests, but positive/missing-original compatibility, fresh saved processing, three physical-risk fallbacks per selected case, remaining cases, semantic, physical/delivery/comparison audits and strict gate remain worker-owned work.",
+  "reason": "CPU preparation incomplete: first exact heavy marked-lane primary now passes pinned offline, source-positive/missing-heavy-body compatibility, Lean/converter/four-camera full decode, and fresh saved-only processing with nine joined diagnostic frames and originals preserved. Independent delivery audit code passes positive and missing-camera probes in ignored local outputs, but returned logs/manifest binding, three physical-risk fallbacks for each selected case, the other three cases, semantic, physical/lifecycle and comparison audits, and scoped strict readiness remain worker-owned CPU work. Synthetic lane/video fixture cannot establish physical or legal facts.",
   "readiness_kind": "delivery_prepared"
 }
