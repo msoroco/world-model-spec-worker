@@ -161,3 +161,5 @@ The assignment-scoped complete and strict readiness commands both exit 0: `.venv
 
 
 2026-11-16 CPU file-budget preservation: 9 unreferenced standalone saved receipt copies archived byte-exact in `result.json.preserved_unreferenced_cpu_artifacts`; member SHA256 values recorded there. Scoped validation follows.
+
+2026-11-16 returned-file consolidation: historical standalone logs not referenced by the current package source/index were preserved byte-exact with per-file SHA-256 in `work/_shared/prune-history-bundle-all.json.preserved_source_files`; obsolete test-log entries were removed from `result.json`. Current source-bound proofs remain direct. Rerun the scoped strict gate before relying on ready status.

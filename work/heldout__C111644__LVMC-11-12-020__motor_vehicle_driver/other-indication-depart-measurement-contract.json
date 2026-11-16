@@ -1,0 +1,93 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__other_indication_depart",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Authorized markers, buttons or other indications placed within the intersection",
+      "source": {
+        "path": "inputs/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/assignment.json",
+        "sha256": "2a367f6a40f413fbc776ee3b65cf5517bdd6952891d0272b4c8f8a198cc4c60a"
+      },
+      "output_key": "turn_course_source_context",
+      "method": "finalize_original_sources",
+      "value_type": "array",
+      "kind": "sourced_context",
+      "inputs": [
+        "turn_indication_original.json",
+        "turn_route_plan.json",
+        "turn_body_original.jsonl",
+        "trace.jsonl",
+        "video_frames.jsonl",
+        "overview.mkv",
+        "approach.mkv",
+        "reference_corner.mkv",
+        "driver_reference.mkv",
+        "overview-frames.jsonl",
+        "approach-frames.jsonl",
+        "reference_corner-frames.jsonl",
+        "driver_reference-frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Indications direct the course traveled by vehicles turning there",
+      "source": {
+        "path": "inputs/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/assignment.json",
+        "sha256": "2a367f6a40f413fbc776ee3b65cf5517bdd6952891d0272b4c8f8a198cc4c60a"
+      },
+      "output_key": "original_course_deviation_m",
+      "method": "finalize_original_sources",
+      "value_type": "array",
+      "kind": "measured",
+      "inputs": [
+        "turn_indication_original.json",
+        "turn_route_plan.json",
+        "turn_body_original.jsonl",
+        "trace.jsonl",
+        "video_frames.jsonl",
+        "overview.mkv",
+        "approach.mkv",
+        "reference_corner.mkv",
+        "driver_reference.mkv",
+        "overview-frames.jsonl",
+        "approach-frames.jsonl",
+        "reference_corner-frames.jsonl",
+        "driver_reference-frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Driver turn response follows or departs from the indicated direction over the whole turn",
+      "source": {
+        "path": "inputs/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/assignment.json",
+        "sha256": "2a367f6a40f413fbc776ee3b65cf5517bdd6952891d0272b4c8f8a198cc4c60a"
+      },
+      "output_key": "original_turn_path_length_m",
+      "method": "finalize_original_sources",
+      "value_type": "array",
+      "kind": "measured",
+      "inputs": [
+        "turn_indication_original.json",
+        "turn_route_plan.json",
+        "turn_body_original.jsonl",
+        "trace.jsonl",
+        "video_frames.jsonl",
+        "overview.mkv",
+        "approach.mkv",
+        "reference_corner.mkv",
+        "driver_reference.mkv",
+        "overview-frames.jsonl",
+        "approach-frames.jsonl",
+        "reference_corner-frames.jsonl",
+        "driver_reference-frames.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "turn_body_original.jsonl"
+    ],
+    "error_contains": "Missing required source: turn_body_original.jsonl"
+  }
+}

@@ -215,3 +215,5 @@ Removed 29 redundant `probe-*-compatibility.log` stdout copies that were cited o
 ### 2026-11-12 proof-preserving return compaction
 
 Thirty-one byte-identical empty compatibility analysis logs were consolidated with execution-manifest paths repointed to the retained identical bytes. The assignment-scoped strict ready gate passed afterward; existing ready status is unchanged.
+
+2026-11-16 returned-file consolidation: historical standalone logs not referenced by the current package source/index were preserved byte-exact with per-file SHA-256 in `work/_shared/prune-history-bundle-all.json.preserved_source_files`; obsolete test-log entries were removed from `result.json`. Current source-bound proofs remain direct. Rerun the scoped strict gate before relying on ready status.

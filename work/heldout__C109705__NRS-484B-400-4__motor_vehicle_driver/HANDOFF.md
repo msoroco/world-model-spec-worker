@@ -85,3 +85,5 @@ The following historical, inactive JSON receipts were preserved byte-for-byte in
 
 
 2026-11-16 CPU file-budget preservation: 3 unreferenced standalone artifacts archived byte-exact in `result.json.preserved_unreferenced_cpu_artifacts`; member SHA256 values are recorded there. Scoped validation follows.
+
+2026-11-16 returned-file consolidation: historical standalone logs not referenced by the current package source/index were preserved byte-exact with per-file SHA-256 in `work/_shared/prune-history-bundle-all.json.preserved_source_files`; obsolete test-log entries were removed from `result.json`. Current source-bound proofs remain direct. Rerun the scoped strict gate before relying on ready status.
