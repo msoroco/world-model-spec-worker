@@ -1,6 +1,7 @@
 import unittest
 import json
 import ast
+from copy import deepcopy
 from math import atan2, hypot, pi
 from types import SimpleNamespace
 from tempfile import TemporaryDirectory
@@ -11,9 +12,65 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import heavy_physical_outcome as physical
 import heavy_lifecycle_fixture as lifecycle
+import heavy_physical_fixture as fixture_runner
+from heavy_lane_source import measure_footprint
 
 
 class HeavyPhysicalLifecycleTest(unittest.TestCase):
+    def test_saved_lateral_sweep_finalizer_and_audit(self):
+        prefix = "heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__"
+        for branch in ("passing_boundary_crossing", "lawful_turn_preparation_boundary_crossing"):
+            outputs = [fixture_runner.run(prefix + branch, "complete_motion",
+                                          lateral_offset_m=offset)
+                       for offset in (0.0, 1.1, 2.2)]
+            clearances = [item["realized_observables"]["minimum_clearance_m"]
+                          for item in outputs]
+            with self.subTest(branch=branch):
+                self.assertEqual([item["physical_checks"]["maneuver"]["status"]
+                                  for item in outputs], ["not_met", "met", "met"])
+                self.assertGreater(clearances[0], 0)
+                self.assertLess(clearances[1], 0)
+                self.assertGreater(clearances[0], clearances[1])
+                self.assertGreater(clearances[1], clearances[2])
+                self.assertTrue(all(item["diagnostic_fixture"] and
+                                    not item["actual_native_capture"] and
+                                    not item["physical_acceptance_claimed"]
+                                    for item in outputs))
+
+    def test_passing_and_turn_source_footprint_sweep(self):
+        """Probe physical clearance from returned source geometry, with legal status unset."""
+        here = Path(__file__).resolve().parents[1]
+        root = here.parents[1]
+        sys.path.insert(0, str(root / "runtime/scenario_pipeline"))
+        from worker_exchange.fixture_recipe import materialize
+        manifest = json.loads((here / "provisional-manifest.json").read_text())
+        for branch in ("passing_boundary_crossing", "lawful_turn_preparation_boundary_crossing"):
+            entry = next(e for e in manifest["cases"] if e["case_id"].endswith("__" + branch))
+            with TemporaryDirectory(dir=root / ".runtime-work") as directory:
+                fixture = Path(directory) / "fixture"
+                materialize(root, root / entry["fixture_recipe"], fixture)
+                source = json.loads((fixture / "heavy_lane_sources.jsonl").read_text().splitlines()[0])
+                heading_x, heading_y = source["lane"]["heading_xy"]
+                right_x, right_y = heading_y, -heading_x
+                results = []
+                for offset in (0.0, 1.1, 2.2):
+                    row = deepcopy(source)
+                    for component in row["heavy_vehicle_components"]:
+                        for corner in component["corners_xy_m"]:
+                            corner[0] += offset * right_x
+                            corner[1] += offset * right_y
+                    measurement = measure_footprint(row)
+                    self.assertEqual(len(measurement["component_clearances"]),
+                                     len(source["heavy_vehicle_components"]))
+                    results.append(measurement["minimum_clearance_m"])
+                with self.subTest(branch=branch):
+                    self.assertAlmostEqual(results[0], 0.75, places=5)
+                    self.assertAlmostEqual(results[1], -0.35, places=5)
+                    self.assertAlmostEqual(results[2], -1.45, places=5)
+                    self.assertGreater(results[0], results[1])
+                    self.assertGreater(results[1], results[2])
+                print("synthetic source footprint sweep", branch, results)
+
     def test_passing_and_turn_lateral_control_sweep(self):
         """The authored offset must change the actual steering command on both branches."""
         here = Path(__file__).resolve().parents[1]

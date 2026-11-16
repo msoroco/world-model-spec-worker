@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 from hashlib import sha256
 import json
+from math import isfinite
 import os
 from pathlib import Path
 import subprocess
@@ -74,7 +75,51 @@ def _alter(attempt, suffix, kind):
     _put(body_path, body)
 
 
-def run(case_id, kind, *, negative_review=False):
+def _apply_lateral_target(attempt, offset_m):
+    """Replace the synthetic excursion with a rightward target from the source lane.
+
+    This changes the diagnostic body/trace sources only. The target is an
+    engineering setpoint, never a measured Native motion or legal boundary.
+    """
+    if not isfinite(offset_m) or offset_m < 0 or offset_m > 3.2:
+        raise ValueError("Invalid diagnostic lateral offset")
+    trace_path = attempt / "trace.jsonl"
+    body_path = attempt / "heavy_lane_sources.jsonl"
+    trace, body = _rows(trace_path), _rows(body_path)
+    if len(trace) != len(body) or len(trace) < 2:
+        raise ValueError("Diagnostic lateral sweep needs matching source frames")
+    first = trace[0]["position"]
+    last = trace[-1]["position"]
+    heading = body[0]["lane"]["heading_xy"]
+    right = (heading[1], -heading[0])
+    longitudinal = (last["x"] - first["x"]) * right[0] + (last["y"] - first["y"]) * right[1]
+    if abs(longitudinal) < 0.1:
+        raise ValueError("Diagnostic has no lateral motion to rescale")
+    for motion, observation in zip(trace, body):
+        old = motion["position"]
+        fraction = ((old["x"] - first["x"]) * right[0] +
+                    (old["y"] - first["y"]) * right[1]) / longitudinal
+        desired_x = first["x"] + right[0] * offset_m * fraction
+        desired_y = first["y"] + right[1] * offset_m * fraction
+        dx, dy = desired_x - old["x"], desired_y - old["y"]
+        old["x"], old["y"] = desired_x, desired_y
+        if "position_m" in motion:
+            motion["position_m"][0] += dx
+            motion["position_m"][1] += dy
+        for component in observation["heavy_vehicle_components"]:
+            for corner in component["corners_xy_m"]:
+                corner[0] += dx
+                corner[1] += dy
+        other = observation.get("overtaken")
+        if other is not None:
+            for corner in other["corners_xy_m"]:
+                corner[0] += dx
+                corner[1] += dy
+    _put(trace_path, trace)
+    _put(body_path, body)
+
+
+def run(case_id, kind, *, negative_review=False, lateral_offset_m=None):
     if not case_id.startswith(PREFIX):
         raise ValueError("Wrong heavy-lane case identity")
     suffix = case_id[len(PREFIX):]
@@ -85,6 +130,9 @@ def run(case_id, kind, *, negative_review=False):
             "complete_motion", "incomplete_motion", "missing_evidence"):
         raise ValueError("Unknown heavy-lane physical fixture")
     entry = entries[0]
+    if lateral_offset_m is not None and (kind != "complete_motion" or suffix not in (
+            "passing_boundary_crossing", "lawful_turn_preparation_boundary_crossing")):
+        raise ValueError("Lateral sweep is for complete passing/turn diagnostic sources")
     with TemporaryDirectory(dir=ROOT / ".runtime-work", prefix="heavy-physical-") as temp:
         base = Path(temp)
         make_fixture(ROOT, ROOT / entry["fixture_recipe"], base / "fixture")
@@ -97,6 +145,8 @@ def run(case_id, kind, *, negative_review=False):
             (attempt / "heavy_lane_sources.jsonl").unlink()
         else:
             _alter(attempt, suffix, kind)
+            if lateral_offset_m is not None:
+                _apply_lateral_target(attempt, lateral_offset_m)
         command = [sys.executable, str(attempt / "heavy_lane_finalizer.py"),
                    "--attempt", str(attempt), "--output", str(attempt / "analysis-report.json")]
         env = dict(os.environ)
@@ -135,12 +185,14 @@ def run(case_id, kind, *, negative_review=False):
             result = audit_saved(attempt, case_id, pixel_review,
                                  allow_fixture=not negative_review)
             expected = "met" if kind == "complete_motion" else "not_met"
-            if result["physical_checks"]["maneuver"]["status"] != expected:
+            if lateral_offset_m is None and result["physical_checks"]["maneuver"]["status"] != expected:
                 raise ValueError("Physical fixture yielded another branch: " +
                                  result["physical_checks"]["maneuver"]["status"])
             result.update(fixture_kind=kind, diagnostic_fixture=True,
                           actual_native_capture=False, physical_acceptance_claimed=False,
                           provenance_note="Native-shaped synthetic source protocol; pixel review is fixture input only")
+            if lateral_offset_m is not None:
+                result["lateral_control_setpoint_m"] = lateral_offset_m
         print(case_id, kind, result["physical_checks"]["maneuver"]["status"],
               "synthetic_fixture_only")
         return result
@@ -154,10 +206,13 @@ if __name__ == "__main__":
     parser.add_argument("--output", required=True)
     parser.add_argument("--negative-review", action="store_true",
                         help="Verify that the real-capture path rejects fixture pixel review")
+    parser.add_argument("--lateral-offset-m", type=float,
+                        help="Probe rightward source-shaped passing/turn excursion")
     args = parser.parse_args()
     if args.negative_review and args.kind != "complete_motion":
         parser.error("negative review probe requires complete_motion")
-    value = run(args.case, args.kind, negative_review=args.negative_review)
+    value = run(args.case, args.kind, negative_review=args.negative_review,
+                lateral_offset_m=args.lateral_offset_m)
     output = Path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(value, indent=2, allow_nan=False) + "\n")
