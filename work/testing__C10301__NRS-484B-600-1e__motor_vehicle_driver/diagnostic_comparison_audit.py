@@ -7,6 +7,7 @@ requested targets never establish physical speed or public-way status.
 import argparse
 import hashlib
 import json
+import math
 from pathlib import Path
 
 from speed_measurements import analyze
@@ -30,6 +31,32 @@ def _read(path):
 
 def _sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _check_trace_dynamics(attempt):
+    motion = [json.loads(line) for line in (attempt / 'subject_motion.jsonl').read_text().splitlines() if line.strip()]
+    trace = [json.loads(line) for line in (attempt / 'trace.jsonl').read_text().splitlines() if line.strip()]
+    if len(trace) != len(motion) or len(trace) < 2:
+        raise ValueError('Incomplete original trace dynamics')
+    previous = None
+    for sample, row in zip(motion, trace):
+        speed = sample.get('speed_mps')
+        trace_speed = row.get('speed_mps')
+        position = row.get('position_m')
+        if any(type(value) not in (int, float) or not math.isfinite(value) for value in (speed, trace_speed)):
+            raise ValueError('Original trace speed missing or nonfinite')
+        if abs(speed - trace_speed) > 1e-6:
+            raise ValueError('Original trace speed differs from motion')
+        if not isinstance(position, list) or len(position) != 3 or any(type(value) not in (int, float) or not math.isfinite(value) for value in position):
+            raise ValueError('Original trace position missing or nonfinite')
+        if row.get('frame') != sample.get('frame') or row.get('time_s') != sample.get('time_s'):
+            raise ValueError('Original trace frame join differs from motion')
+        if previous is not None:
+            prior_time, prior_speed, prior_position = previous
+            expected = (prior_speed + speed) * (sample['time_s'] - prior_time) / 2
+            if abs(math.dist(position, prior_position) - expected) > max(1.0, expected * .2):
+                raise ValueError('Original trace displacement disagrees with sampled motion')
+        previous = (sample['time_s'], speed, position)
 
 
 def audit(attempts, compatibility_receipts):
@@ -66,6 +93,7 @@ def audit(attempts, compatibility_receipts):
             if receipt.get("fixture_manifest", {}).get(source) != hashes[source]:
                 raise ValueError("Compatibility source hash differs: " + source)
         report = analyze(attempt)
+        _check_trace_dynamics(attempt)
         if any(report["sources"][name] != hashes[name] for name in report["sources"]):
             raise ValueError("Measured original source hash differs")
         by_suffix[suffix] = {"case_id": case_id, "requested_speed_mph": config["requested_speed_mph"],
@@ -88,6 +116,7 @@ def audit(attempts, compatibility_receipts):
     return {"format": "worker-c10301-diagnostic-comparison", "comparison_id": "absolute_80_mph_boundary",
             "case_ids": [row["case_id"] for row in rows], "records": rows,
             "fixed_conditions_checked": list(FIXED_CONFIG) + list(FIXED_CONTEXT),
+            "trace_dynamics_checked": True,
             "requested_targets_bracket_80": True,
             "measured_samples_bracket_80": measured[0] < 80 and measured[1] == 80 and measured[2] > 80,
             "physical_comparison_complete": False, "source_scope": "synthetic nine-frame diagnostic only",
