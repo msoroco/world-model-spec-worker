@@ -89,3 +89,7 @@ These positive proofs use source-shaped CPU fixtures. Actual Native motion, pixe
 ### 2026-11-16 proof-preserving audit compaction
 
 5 historical comparison logs were preserved byte-for-byte with original filenames and SHA-256 values in `comparison-negative-history.json`; their case-plan references now point to the returned bundle. The originals were backed up in ignored `.runtime-work` and removed from the returned inventory to make room for ongoing CPU preparation. This assignment’s scoped `--complete --require-delivery-ready` gate passed after compaction. Status remains ready.
+
+### 2026-11-16 historical receipt bundle
+
+The following historical, inactive JSON receipts were preserved byte-for-byte in `work/_shared/historical-receipts-bundle-20261116.json` with original relative paths and SHA-256 values, then removed from the returned tree to free file slots: `first-primary-compatibility.json`, `speed-before-comparison.json`. The current source/manifest files have no references to these names. An ignored local backup is at `.runtime-work/historical-receipts-dedup-20261116/`. Restore by base64-decoding the bundle entries to their `path`. The active scoped strict gate was rerun after compaction.

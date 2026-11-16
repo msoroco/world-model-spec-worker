@@ -78,3 +78,7 @@ The exact command `.venv-cpu/bin/python worker_check.py --assignment heldout__C1
 ### 2026-11-15 proof-preserving return compaction
 
 Removed 28 byte-identical case logs and rebound their exact references in `execution-manifest.json` to retained identical bytes. The assignment-scoped `--complete --require-delivery-ready` gate passed before and after compaction. Result remains ready; no source proof was weakened.
+
+### 2026-11-16 historical receipt bundle
+
+The following historical, inactive JSON receipts were preserved byte-for-byte in `work/_shared/historical-receipts-bundle-20261116.json` with original relative paths and SHA-256 values, then removed from the returned tree to free file slots: `saved-first.json`. The current source/manifest files have no references to these names. An ignored local backup is at `.runtime-work/historical-receipts-dedup-20261116/`. Restore by base64-decoding the bundle entries to their `path`. The active scoped strict gate was rerun after compaction.
