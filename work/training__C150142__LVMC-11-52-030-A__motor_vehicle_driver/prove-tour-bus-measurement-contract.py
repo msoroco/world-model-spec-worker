@@ -16,9 +16,10 @@ from worker_exchange.measurement_contract import validate, verify_report
 
 
 def prove(suffix, stage):
-    if suffix not in ('tour_bus_below', 'tour_bus_at', 'tour_bus_above',
-                      'tour_bus_no_loading'):
-        raise ValueError('Unsupported tour-bus case')
+    if suffix not in tuple(service + '_' + boundary
+                           for service in ('tour_bus', 'shuttle_bus', 'rtc_bus')
+                           for boundary in ('below', 'at', 'above', 'no_loading')):
+        raise ValueError('Unsupported signed-bus case')
     stage = Path(stage).resolve()
     if REPO / '.runtime-work' not in stage.parents:
         raise ValueError('Saved-analysis stage belongs under .runtime-work')
@@ -27,8 +28,9 @@ def prove(suffix, stage):
     case_id = ROOT.name + '__' + suffix
     plan = json.loads((ROOT / 'case-plan.json').read_text())
     dispositions = [dict(row) for row in plan['requirement_dispositions']]
+    requirement = 'text-5' if suffix.startswith('rtc_bus_') else 'text-4'
     for row in dispositions:
-        row['status'] = ('selected_required' if row['requirement'] == 'text-4'
+        row['status'] = ('selected_required' if row['requirement'] == requirement
                          else 'exception_pending')
     contract_path = (ROOT / 'selected-primary' / suffix /
                      'selected-measurement-contracts' / (suffix + '.json'))
@@ -39,7 +41,7 @@ def prove(suffix, stage):
     values = verify_report(contract, json.loads(report_path.read_text()), stage)
     observed = values['signed_curb_observation']['value']
     return {'case_id': case_id, 'actual_case_plan_changed': False,
-            'contract_valid_under_in_memory_text4_selection': True,
+            'contract_valid_under_in_memory_' + requirement.replace('-', '') + '_selection': True,
             'report_sha256': hashlib.sha256(report_path.read_bytes()).hexdigest(),
             'contract_sha256': hashlib.sha256(contract_path.read_bytes()).hexdigest(),
             'source_bound_measurements': ['signed_curb_observation'],

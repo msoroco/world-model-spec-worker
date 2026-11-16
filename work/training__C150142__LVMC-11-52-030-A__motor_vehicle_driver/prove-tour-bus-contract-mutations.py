@@ -12,9 +12,10 @@ from worker_exchange.measurement_contract import verify_report
 
 
 def prove(case, stage):
-    if case not in ('tour_bus_below', 'tour_bus_at', 'tour_bus_above',
-                    'tour_bus_no_loading'):
-        raise ValueError('Unsupported tour-bus case')
+    if case not in tuple(service + '_' + boundary
+                         for service in ('tour_bus', 'shuttle_bus', 'rtc_bus')
+                         for boundary in ('below', 'at', 'above', 'no_loading')):
+        raise ValueError('Unsupported signed-bus case')
     stage = Path(stage).resolve()
     if REPO / '.runtime-work' not in stage.parents:
         raise ValueError('Saved analysis belongs under .runtime-work')
