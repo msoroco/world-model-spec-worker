@@ -239,7 +239,12 @@ def stage_diagnostics(output: Path) -> list[dict]:
             case_id = f"{sweep_id}-{rank:04d}"
             diagnostic = diagnostic_at_setpoint(source, setpoint)
             path = output / (case_id + "-diagnostic.json")
-            path.write_text(json.dumps(diagnostic, indent=2) + "\n")
+            # A returned diagnostic specification must stay below the 2 MiB
+            # text-file limit; its graph observations dominate pretty JSON.
+            encoded = json.dumps(diagnostic, separators=(",", ":"), allow_nan=False) + "\n"
+            if len(encoded.encode()) > 2 * 1024 * 1024:
+                raise ValueError("Generated diagnostic exceeds returned text-file limit")
+            path.write_text(encoded)
             fixture = output / (case_id + "-fixture")
             generate_fixture(diagnostic, fixture)
             rows.append({"case_id": case_id, "branch": branch,
