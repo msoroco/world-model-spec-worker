@@ -7,6 +7,7 @@ the Native realization gate.
 import argparse
 import hashlib
 import json
+import shutil
 from pathlib import Path
 
 from following_measurements import analyze
@@ -20,6 +21,8 @@ FIXED_COMMANDS = ('ego_target_speed_mps', 'lead_target_speed_mps',
                   'rate_hz', 'duration_s')
 SEALED = ('config.json', 'vehicle_history.jsonl',
           'video_frames.jsonl', 'trace.jsonl')
+PACKAGE = Path(__file__).resolve().parent
+REPO = PACKAGE.parent.parent
 
 
 def digest(path):
@@ -107,13 +110,85 @@ def audit_grid(roots, *, diagnostic_selftest=False):
             'points':points}
 
 
+def build_diagnostic_grid(output_root):
+    """Exercise the positive checker path with explicit synthetic projections.
+
+    The supplied short diagnostic histories change lanes after seven following
+    frames. This makes a *new* synthetic 40-frame following interval for each
+    selected point; it never alters or replaces the retained original fixture.
+    """
+    output_root = Path(output_root).resolve()
+    if output_root.exists():
+        raise ValueError('Diagnostic projection output already exists')
+    if REPO / '.runtime-work' not in output_root.parents:
+        raise ValueError('Diagnostic projections must remain under ignored .runtime-work')
+    source_root = REPO / '.runtime-work/c101303-full-duration'
+    labels = ('closer', 'midpoint', 'base')
+    roots = []
+    for label in labels:
+        source = source_root / (label + '-positive-v1/attempt')
+        target = output_root / label
+        target.mkdir(parents=True)
+        for name in (*SEALED, 'result.json', 'road_context.json'):
+            shutil.copy2(source / name, target / name)
+        original = [json.loads(line) for line in (target / 'vehicle_history.jsonl').read_text().splitlines()]
+        if (len(original) != 900 or
+                sum(not row['lane_change_started'] for row in original) != 7):
+            raise ValueError('Expected short original diagnostic history changed: ' + label)
+        template = original[6]
+        if template['lane_change_started'] or template['ego']['lane_id'] != template['lead']['lane_id']:
+            raise ValueError('Pre-change following template missing: ' + label)
+        for i in range(7, 40):
+            projected = json.loads(json.dumps(template))
+            projected['frame'] = original[i]['frame']
+            projected['time_s'] = original[i]['time_s']
+            original[i] = projected
+        original_brake_frames = [i for i, row in enumerate(original[:40])
+                                 if row['lead'].get('brake_applied')]
+        for row in original[:40]:
+            row['lead']['brake_applied'] = False
+        (target / 'vehicle_history.jsonl').write_text(''.join(json.dumps(row) + '\n' for row in original))
+        source_seal = json.loads((source / 'capture-seal.json').read_text())
+        if (source_seal.get('provenance_kind') != 'synthetic_fixture' or
+                source_seal.get('diagnostic_fixture') is not True):
+            raise ValueError('Original source is not an explicit diagnostic fixture')
+        seal = {'format': 'worker-sealed-capture',
+                'provenance_kind': 'synthetic_fixture', 'diagnostic_fixture': True,
+                'projection_kind': 'extended_pre_change_following_cpu_selftest',
+                'frames': 900, 'physical_acceptance_claimed': False,
+                'sources': {name: digest(target / name) for name in (*SEALED, 'road_context.json')},
+                'source_attempt': str(source.relative_to(REPO)),
+                'source_capture_seal_sha256': digest(source / 'capture-seal.json'),
+                'synthetic_modifications': {'held_following_through_index': 39,
+                                            'removed_lead_brake_indices': original_brake_frames}}
+        (target / 'capture-seal.json').write_text(json.dumps(seal, indent=2) + '\n')
+        roots.append(target)
+    receipt = audit_grid(roots, diagnostic_selftest=True)
+    if (receipt['native_realization_passed'] or not receipt['diagnostic_only'] or
+            receipt['legal_threshold_asserted']):
+        raise AssertionError('Synthetic projection escaped diagnostic boundary')
+    (output_root / 'diagnostic-sweep-audit.json').write_text(json.dumps(receipt, indent=2) + '\n')
+    return receipt
+
+
 def main():
     parser = argparse.ArgumentParser()
     for name in ('gap7', 'gap8_5', 'gap10'):
-        parser.add_argument('--'+name.replace('_','-'), type=Path, required=True)
-    parser.add_argument('--output', type=Path, required=True)
+        parser.add_argument('--'+name.replace('_','-'), type=Path)
+    parser.add_argument('--output', type=Path)
     parser.add_argument('--diagnostic-selftest', action='store_true')
+    parser.add_argument('--build-diagnostic-grid', type=Path)
     args = parser.parse_args()
+    if args.build_diagnostic_grid:
+        if any((args.gap7, args.gap8_5, args.gap10, args.output)):
+            parser.error('Projection builder takes only --build-diagnostic-grid')
+        receipt = build_diagnostic_grid(args.build_diagnostic_grid)
+        print(json.dumps({'diagnostic_only': receipt['diagnostic_only'],
+                          'points': len(receipt['points']),
+                          'following_frames': [p['pre_change_following_frames'] for p in receipt['points']]}))
+        return
+    if not all((args.gap7, args.gap8_5, args.gap10, args.output)):
+        parser.error('The three original sweep attempts and --output are required')
     value = audit_grid((args.gap7, args.gap8_5, args.gap10),
                        diagnostic_selftest=args.diagnostic_selftest)
     args.output.write_text(json.dumps(value, indent=2)+'\n')
