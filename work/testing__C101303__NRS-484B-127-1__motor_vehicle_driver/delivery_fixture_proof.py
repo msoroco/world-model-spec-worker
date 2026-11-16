@@ -21,22 +21,35 @@ def write(path, value):
     path.write_text(json.dumps(value,indent=2)+'\n')
 
 
-def build(case_id, root):
+def build(case_id, root, manifest_path=None, history_source=None):
     if root.exists():
         raise ValueError('Use a fresh diagnostic proof root')
-    manifest=json.loads((FOLDER/'execution-manifest.json').read_text())
+    manifest_path=(manifest_path or FOLDER/'execution-manifest.json').resolve()
+    manifest=json.loads(manifest_path.read_text())
     entry=next(e for e in manifest['cases'] if e['case_id']==case_id)
     diagnostic=json.loads((REPO/json.loads((REPO/entry['fixture_recipe']).read_text())['generator']['source']).read_text())
-    construction=json.loads((FOLDER/entry['construction']).read_text())
+    construction_path=manifest_path.parent/entry['construction']
+    construction=json.loads(construction_path.read_text())
+    if sha(construction_path)!=entry['construction_sha256']:
+        raise ValueError('Exact construction changed')
     config=json.loads(next(f['content'] for f in construction['files'] if f['path']=='config.json'))
     attempt=root/'attempt';attempt.mkdir(parents=True)
     write(attempt/'config.json',config)
     (attempt/'road_context.json').write_text(diagnostic['files']['road_context.json'])
-    write(attempt/'acquisition-provenance.json',{'provenance_kind':'synthetic_fixture',
-          'diagnostic_fixture':True,'scope':'CPU software audit fixture; no physical recording'})
+    provenance={'provenance_kind':'synthetic_fixture', 'diagnostic_fixture':True,
+                'scope':'CPU software audit fixture; no physical recording'}
+    if history_source is not None:
+        provenance['synthetic_history_projection_sha256']=sha(history_source)
+    write(attempt/'acquisition-provenance.json',provenance)
     source_history=[json.loads(x) for x in diagnostic['files']['vehicle_history.jsonl'].splitlines() if x]
     first_frame=source_history[0]['frame']
     count=config['rate_hz']*config['duration_s']
+    if history_source is not None:
+        source_history=[json.loads(x) for x in history_source.read_text().splitlines() if x]
+        if len(source_history)!=count:
+            raise ValueError('Synthetic history projection must cover exact duration')
+        if any(row.get('case_id') not in (None,case_id) for row in source_history):
+            raise ValueError('Synthetic history projection case differs')
     history=[];mapping=[];trace=[]
     for index in range(count):
         row=copy.deepcopy(source_history[min(index,len(source_history)-1)])
@@ -91,6 +104,8 @@ def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--case',required=True)
     parser.add_argument('--output-root',required=True,type=Path)
+    parser.add_argument('--manifest',type=Path)
+    parser.add_argument('--history-source',type=Path)
     parser.add_argument('--negative-missing-source',action='store_true')
     parser.add_argument('--negative-review-identity',action='store_true')
     parser.add_argument('--negative-unsealed-source',action='store_true')
@@ -118,7 +133,7 @@ def main():
         os.link(source/'attempt/converted/trace.json',attempt/'converted/trace.json')
         shutil.copyfile(source/'pixel-review.json',root/'pixel-review.json')
     else:
-        attempt=build(args.case,root)
+        attempt=build(args.case,root,args.manifest,args.history_source)
     if args.negative_missing_source:
         (attempt/'vehicle_history.jsonl').unlink(missing_ok=True)
     if args.negative_review_identity:

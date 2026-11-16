@@ -1,6 +1,7 @@
 import importlib.util
 import json
 import subprocess
+import shutil
 import tempfile
 import unittest
 from pathlib import Path
@@ -14,6 +15,34 @@ from worker_exchange.media import Frame, audit as decode_video
 
 
 class DeliveryAuditTest(unittest.TestCase):
+    def test_candidate_delivery_proof_rejects_changed_construction(self):
+        source = FOLDER
+        manifest = json.loads((source/'execution-manifest.json').read_text())
+        case = next(c for c in manifest['cases'] if c['case_id'].endswith('source_verified_closer'))
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            shutil.copyfile(source/case['construction'], root/'construction.json')
+            manifest['cases'] = [case]
+            case['construction'] = 'construction.json'
+            original_sha = case['construction_sha256']
+            case['construction_sha256'] = '0'*64
+            (root/'manifest.json').write_text(json.dumps(manifest))
+            result = subprocess.run([str(REPO/'.venv-cpu/bin/python'),
+                str(FOLDER/'delivery_fixture_proof.py'),'--manifest',str(root/'manifest.json'),
+                '--case',case['case_id'],'--output-root',str(root/'attempt')],
+                text=True,capture_output=True)
+            self.assertNotEqual(result.returncode,0)
+            self.assertIn('Exact construction changed',result.stderr)
+            case['construction_sha256'] = original_sha
+            (root/'manifest.json').write_text(json.dumps(manifest))
+            (root/'short.jsonl').write_text('{}\n')
+            result = subprocess.run([str(REPO/'.venv-cpu/bin/python'),
+                str(FOLDER/'delivery_fixture_proof.py'),'--manifest',str(root/'manifest.json'),
+                '--history-source',str(root/'short.jsonl'),'--case',case['case_id'],
+                '--output-root',str(root/'short-attempt')],text=True,capture_output=True)
+            self.assertNotEqual(result.returncode,0)
+            self.assertIn('projection must cover exact duration',result.stderr)
+
     def test_source_join_and_missing_participant_rejection(self):
         root = REPO/'.runtime-work/c101303-final-v3/base-primary-compat'
         case = 'testing__C101303__NRS-484B-127-1__motor_vehicle_driver__source_verified_base'
