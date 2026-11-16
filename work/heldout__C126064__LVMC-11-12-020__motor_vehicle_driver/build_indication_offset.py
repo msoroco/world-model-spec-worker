@@ -80,7 +80,9 @@ def build(point):
     files['authority_source_original.json'] = original
     files['marked_intersection.json'] = json.dumps(scene) + '\n'
     diagnostic = stem + '-diagnostic.json'
-    diagnostic_sha = write(diagnostic, fixture)
+    diagnostic_path = ROOT / diagnostic
+    diagnostic_path.write_text(json.dumps(fixture, separators=(',', ':')) + '\n')
+    diagnostic_sha = sha256(diagnostic_path.read_bytes()).hexdigest()
     recipe = {'format': 'worker-fixture-recipe',
               'sources': [{'path': 'diagnostic-input.json',
                            'source': f'work/{ASSIGNMENT}/{diagnostic}',

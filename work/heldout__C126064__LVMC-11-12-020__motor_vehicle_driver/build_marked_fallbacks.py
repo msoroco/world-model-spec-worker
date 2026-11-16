@@ -1,4 +1,5 @@
 """Build three physically distinct marked-turn candidates for both exact cases."""
+import argparse
 from hashlib import sha256
 import json
 from pathlib import Path
@@ -28,8 +29,8 @@ def put(path, value):
     return sha256(path.read_bytes()).hexdigest()
 
 
-def build():
-    manifest_path = ROOT / 'execution-manifest.json'
+def build(manifest_name='execution-manifest.json'):
+    manifest_path = ROOT / manifest_name
     manifest = json.loads(manifest_path.read_text())
     for entry in manifest['cases']:
         base = json.loads((ROOT / entry['construction']).read_text())
@@ -37,7 +38,8 @@ def build():
         existing = {item['id']: item for item in entry.get('candidates', [])}
         candidates = []
         for candidate_id, module, before, after, knob, value, source, metric, failure in CANDIDATES:
-            form = ('button' if '__button_' in entry['case_id'] else
+            form = ('button' if '__button_' in entry['case_id'] or
+                    '__c126064_indication_offset-' in entry['case_id'] else
                     'other indication' if '__other_indication_' in entry['case_id'] else 'marker')
             metric = metric.replace('physical marker', 'physical ' + form)
             failure = failure.replace('physical indicated marker', 'physical indicated ' + form)
@@ -71,4 +73,6 @@ def build():
 
 
 if __name__ == '__main__':
-    print(build())
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--manifest-name', default='execution-manifest.json')
+    print(build(parser.parse_args().manifest_name))

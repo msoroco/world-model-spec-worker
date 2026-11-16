@@ -13,8 +13,8 @@ def rows(text):
     return [json.loads(line) for line in text.splitlines() if line.strip()]
 
 
-def run(case, kind):
-    manifest = json.loads((HERE / 'execution-manifest.json').read_text())
+def run(case, kind, manifest_name='execution-manifest.json'):
+    manifest = json.loads((HERE / manifest_name).read_text())
     entry = next((item for item in manifest['cases'] if item['case_id'] == case), None)
     if entry is None or kind not in ('complete_motion', 'incomplete_motion', 'missing_evidence'):
         raise ValueError('Unknown marked-turn physical fixture')
@@ -68,8 +68,9 @@ if __name__ == '__main__':
     parser.add_argument('--case', required=True)
     parser.add_argument('--kind', required=True)
     parser.add_argument('--output', required=True)
+    parser.add_argument('--manifest-name', default='execution-manifest.json')
     args = parser.parse_args()
-    result = run(args.case, args.kind)
+    result = run(args.case, args.kind, args.manifest_name)
     Path(args.output).write_text(json.dumps(result, indent=2) + '\n')
     print(args.case, args.kind, result['physical_checks']['maneuver']['status'],
           'synthetic_fixture_only')

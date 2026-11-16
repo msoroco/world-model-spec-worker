@@ -29,8 +29,9 @@ def run(command, log):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--case', action='append', default=[])
+    parser.add_argument('--manifest-name', default='execution-manifest.json')
     args = parser.parse_args()
-    path = HERE / 'execution-manifest.json'
+    path = HERE / args.manifest_name
     manifest = json.loads(path.read_text())
     output = HERE / 'physical'
     output.mkdir(exist_ok=True)
@@ -44,13 +45,15 @@ def main():
             result = output / f'{short}-{kind}.json'
             log = output / f'{short}-{kind}.log'
             command = [sys.executable, str(HERE / 'physical_fixture.py'), '--case', case,
-                       '--kind', kind, '--output', str(result)]
+                       '--kind', kind, '--output', str(result),
+                       '--manifest-name', args.manifest_name]
             code = run(command, log)
             fixtures.append({'kind': kind, 'command': ' '.join(command), 'exit_code': code,
                              'log': str(log.relative_to(HERE)), 'log_sha256': sha(log),
                              'result': str(result.relative_to(HERE)), 'result_sha256': sha(result)})
         log = output / f'{short}-lifecycle.log'
-        command = [sys.executable, str(HERE / 'lifecycle_fixture.py'), '--case', case]
+        command = [sys.executable, str(HERE / 'lifecycle_fixture.py'), '--case', case,
+                   '--manifest-name', args.manifest_name]
         code = run(command, log)
         if ' '.join(EVENTS) not in log.read_text():
             raise ValueError('Lifecycle fixture did not report ordered closure: ' + case)

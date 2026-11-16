@@ -95,21 +95,6 @@
       }
     },
     {
-      "case_id": "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__marker_course_blend_050",
-      "target_law_id": "LVMC-11-12-020",
-      "gap_ids": [
-        "authorized-course"
-      ],
-      "construction_state": "provisional_primary_offline_and_source_finalizer_positive_negative_proved",
-      "purpose": "Intermediate 0.5 numeric controller course between the same source-hashed indicated and divergent routes; original body offset is measured and no municipal or legal threshold is inferred.",
-      "physical_risk": {
-        "risk": "Intermediate target may miss body path or lose marker visibility during Native motion",
-        "trigger_source": "original Native marker readback, body path and four named camera streams",
-        "trigger_metric": "measured realized centroid offset and four-camera original pixels",
-        "failure_condition": "target motion incomplete, original source missing, or marker/body pixels unreviewable"
-      }
-    },
-    {
       "case_id": "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__c126064_course_blend-0000",
       "target_law_id": "LVMC-11-12-020",
       "gap_ids": [
@@ -162,6 +147,36 @@
       ],
       "construction_state": "primary_offline_proved_compatibility_pending",
       "purpose": "Source-axis button indication placement endpoint at 0 m; original authority and legal meaning unresolved.",
+      "physical_risk": {
+        "risk": "Button spawn/readback, turn completion and four-camera visibility may fail",
+        "trigger_source": "original Native button readback, body path and named camera streams",
+        "trigger_metric": "button spawn and readback, visible pixels and completed turn",
+        "failure_condition": "button missing or outside view, or turn incomplete"
+      }
+    },
+    {
+      "case_id": "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__c126064_indication_offset-0001",
+      "target_law_id": "LVMC-11-12-020",
+      "gap_ids": [
+        "authorized-course"
+      ],
+      "construction_state": "primary_offline_pending",
+      "purpose": "Source-axis button indication placement at 1.0 m; original authority and legal meaning unresolved.",
+      "physical_risk": {
+        "risk": "Button spawn/readback, turn completion and four-camera visibility may fail",
+        "trigger_source": "original Native button readback, body path and named camera streams",
+        "trigger_metric": "button spawn and readback, visible pixels and completed turn",
+        "failure_condition": "button missing or outside view, or turn incomplete"
+      }
+    },
+    {
+      "case_id": "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__c126064_indication_offset-0002",
+      "target_law_id": "LVMC-11-12-020",
+      "gap_ids": [
+        "authorized-course"
+      ],
+      "construction_state": "primary_offline_pending",
+      "purpose": "Source-axis button indication placement at 0.5 m; original authority and legal meaning unresolved.",
       "physical_risk": {
         "risk": "Button spawn/readback, turn completion and four-camera visibility may fail",
         "trigger_source": "original Native button readback, body path and named camera streams",
@@ -261,6 +276,28 @@
         "sha256": "48099544ba2742f799f59c8f94dfa0acb8b11f261f0a5ab750607d876ccce85c",
         "expected_error": "Numeric comparison changed fixed site or marker: physical_markers_xy_m"
       }
+    },
+    {
+      "comparison_id": "button_numeric_indication_offset",
+      "case_ids": [
+        "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__c126064_indication_offset-0000",
+        "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__c126064_indication_offset-0001",
+        "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__c126064_indication_offset-0002"
+      ],
+      "fixed_conditions": [
+        "same source-hashed original authority, button baseline pose and unit placement axis",
+        "same median-opening intersection, indicated course, actor, four cameras and duration"
+      ],
+      "deliberate_differences": [
+        "frozen 0, 1 and 0.5 m button placement setpoints; original Native pose displacement measured separately"
+      ],
+      "audit_script": "indication_offset_comparison_audit.py",
+      "audit_status": "source_joined_cpu_proved",
+      "audit_script_sha256": "610ee9f802049bb3240149e5460b12103491eb9d746ec8be5643b1ca8aa6ccf4",
+      "audit_log": "indication-offset-comparison-positive.log",
+      "audit_log_sha256": "8c3d90f7c3d789b8ee621635a772cf0aae6692b8873b3f88a209dadca31a288b",
+      "negative_log": "indication-offset-comparison-negative.log",
+      "negative_log_sha256": "10ce9790a8a2cc18c1edbf98c6ca34966b0fd186aad15941823caadc3c070a7b"
     }
   ],
   "observations": [
@@ -349,11 +386,12 @@
         "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__button_divergent_course",
         "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__other_indication_indicated_course",
         "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__other_indication_divergent_course",
-        "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__marker_course_blend_050",
         "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__c126064_course_blend-0000",
         "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__c126064_course_blend-0001",
         "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__c126064_course_blend-0002",
-        "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__c126064_indication_offset-0000"
+        "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__c126064_indication_offset-0000",
+        "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__c126064_indication_offset-0001",
+        "heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__c126064_indication_offset-0002"
       ],
       "evidence_or_gap": "No source-backed municipal authority or original marked-turn recording; CPU diagnostic is not legal or physical evidence."
     }

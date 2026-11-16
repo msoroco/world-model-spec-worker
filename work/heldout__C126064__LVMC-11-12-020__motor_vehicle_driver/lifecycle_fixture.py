@@ -26,8 +26,8 @@ EVENTS = ["capture_finished", "encoders_closed", "restoration_verified",
           "native_exit", "owner_released", "saved_processing_started"]
 
 
-def run(case_id):
-    manifest = HERE / "execution-manifest.json"
+def run(case_id, manifest_name='execution-manifest.json'):
+    manifest = HERE / manifest_name
     entry = next((item for item in json.loads(manifest.read_text())["cases"]
                   if item["case_id"] == case_id), None)
     if entry is None:
@@ -82,5 +82,6 @@ def run(case_id):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--case", required=True)
+    parser.add_argument("--manifest-name", default='execution-manifest.json')
     args = parser.parse_args()
-    run(args.case)
+    run(args.case, args.manifest_name)
