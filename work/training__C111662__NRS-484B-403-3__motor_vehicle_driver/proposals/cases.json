@@ -1,12 +1,36 @@
 {
   "cell_id": "C111662",
   "actor": "motor_vehicle_driver",
-  "status": "unselected_cpu_draft",
+  "status": "draft",
   "cases": [
     {
-      "case_id": "training__C111662__NRS-484B-403-3__motor_vehicle_driver__reference",
-      "target_law_id": "NRS-484B-403-3",
-      "target_type": "attempt",
+      "case_id": "training__C111662__NRS-484B-403-3__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared prospective frontage and capture setup; no baseline recording selected.",
+      "variable_assignments": {
+        "authored_business_frontage": {
+          "kind": "world_setup",
+          "value": "authored 328.08 ft prospective business frontage; actual district unverified"
+        },
+        "authored_exception_geometry": {
+          "kind": "world_setup",
+          "value": "authored intersection footprint; Native boundaries unverified"
+        },
+        "requested_turn_center_x_m": {
+          "kind": "controller",
+          "value": -45.0,
+          "unit": "m"
+        },
+        "ego_trajectory": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "camera_policy": {
+          "kind": "controller",
+          "value": "four_view_primary"
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -57,12 +81,131 @@
         "limitations": [
           "Original district designation, physical U-turn, and exception status unverified"
         ]
-      }
+      },
+      "unresolved_judgment_calls": [
+        "appropriate opening or crossing place"
+      ]
+    },
+    {
+      "case_id": "training__C111662__NRS-484B-403-3__motor_vehicle_driver__reference",
+      "target_law_id": "NRS-484B-403-3",
+      "target_type": "boundary_probe",
+      "rationale": "Prospective authored U-turn crossing-location probe; statutory district, motion and exception status require original review.",
+      "variable_assignments": {
+        "authored_business_frontage": {
+          "kind": "world_setup",
+          "value": "authored 328.08 ft prospective business frontage; actual district unverified"
+        },
+        "authored_exception_geometry": {
+          "kind": "world_setup",
+          "value": "authored intersection footprint; Native boundaries unverified"
+        },
+        "requested_turn_center_x_m": {
+          "kind": "controller",
+          "value": -45.0,
+          "unit": "m"
+        },
+        "ego_trajectory": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "camera_policy": {
+          "kind": "controller",
+          "value": "four_view_primary"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved Native body/frame join",
+            "time_window": "800 frames",
+            "reference_frame": "authored OpenDRIVE coordinates",
+            "uncertainty": "50 ms frame bracket; district/exception applicability unverified"
+          },
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "saved Native body/frame join",
+            "time_window": "800 frames",
+            "reference_frame": "authored OpenDRIVE coordinates",
+            "uncertainty": "50 ms frame bracket; district/exception applicability unverified"
+          },
+          {
+            "name": "u_turn_at_intersection_or_opening",
+            "unit": "bool",
+            "sampling_rate_hz": 20,
+            "method": "saved Native body/frame join",
+            "time_window": "800 frames",
+            "reference_frame": "authored OpenDRIVE coordinates",
+            "uncertainty": "50 ms frame bracket; district/exception applicability unverified"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "authored_road",
+            "unit": "structured",
+            "method": "source-hashed OpenDRIVE"
+          },
+          {
+            "name": "authored_request",
+            "unit": "structured",
+            "method": "source-hashed requested-tracks.jsonl"
+          },
+          {
+            "name": "authored_frontage",
+            "unit": "structured",
+            "method": "source-hashed frontage plan and Native geometry readback pending"
+          }
+        ],
+        "limitations": [
+          "Original district designation, physical U-turn, and exception status unverified"
+        ]
+      },
+      "paired_probe_id": "intersection_pair",
+      "deliberate_differences": [
+        "requested_turn_center_x_m"
+      ],
+      "probe": {
+        "primary_variable": "requested_turn_center_x_m",
+        "comparison_or_standard": "observed vehicle-body crossing versus authored intersection or divided opening",
+        "target_value_or_branch": -45.0
+      },
+      "unresolved_judgment_calls": [
+        "appropriate opening or crossing place"
+      ]
     },
     {
       "case_id": "training__C111662__NRS-484B-403-3__motor_vehicle_driver__contrast",
       "target_law_id": "NRS-484B-403-3",
-      "target_type": "attempt",
+      "target_type": "boundary_probe",
+      "rationale": "Prospective authored U-turn crossing-location probe; statutory district, motion and exception status require original review.",
+      "variable_assignments": {
+        "authored_business_frontage": {
+          "kind": "world_setup",
+          "value": "authored 328.08 ft prospective business frontage; actual district unverified"
+        },
+        "authored_exception_geometry": {
+          "kind": "world_setup",
+          "value": "authored intersection footprint; Native boundaries unverified"
+        },
+        "requested_turn_center_x_m": {
+          "kind": "controller",
+          "value": 0.0,
+          "unit": "m"
+        },
+        "ego_trajectory": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "camera_policy": {
+          "kind": "controller",
+          "value": "four_view_primary"
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -113,12 +256,48 @@
         "limitations": [
           "Original district designation, physical U-turn, and exception status unverified"
         ]
-      }
+      },
+      "paired_probe_id": "intersection_pair",
+      "deliberate_differences": [
+        "requested_turn_center_x_m"
+      ],
+      "probe": {
+        "primary_variable": "requested_turn_center_x_m",
+        "comparison_or_standard": "observed vehicle-body crossing versus authored intersection or divided opening",
+        "target_value_or_branch": 0.0
+      },
+      "unresolved_judgment_calls": [
+        "appropriate opening or crossing place"
+      ]
     },
     {
       "case_id": "training__C111662__NRS-484B-403-3__motor_vehicle_driver__divided_reference",
       "target_law_id": "NRS-484B-403-3",
-      "target_type": "attempt",
+      "target_type": "boundary_probe",
+      "rationale": "Prospective authored U-turn crossing-location probe; statutory district, motion and exception status require original review.",
+      "variable_assignments": {
+        "authored_business_frontage": {
+          "kind": "world_setup",
+          "value": "authored 328.08 ft prospective business frontage; actual district unverified"
+        },
+        "authored_exception_geometry": {
+          "kind": "world_setup",
+          "value": "authored divided highway opening; appropriateness unverified"
+        },
+        "requested_turn_center_x_m": {
+          "kind": "controller",
+          "value": -45.0,
+          "unit": "m"
+        },
+        "ego_trajectory": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "camera_policy": {
+          "kind": "controller",
+          "value": "four_view_primary"
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -169,12 +348,48 @@
         "limitations": [
           "Original district designation, physical U-turn, and exception status unverified"
         ]
-      }
+      },
+      "paired_probe_id": "divided_opening_pair",
+      "deliberate_differences": [
+        "requested_turn_center_x_m"
+      ],
+      "probe": {
+        "primary_variable": "requested_turn_center_x_m",
+        "comparison_or_standard": "observed vehicle-body crossing versus authored intersection or divided opening",
+        "target_value_or_branch": -45.0
+      },
+      "unresolved_judgment_calls": [
+        "appropriate opening or crossing place"
+      ]
     },
     {
       "case_id": "training__C111662__NRS-484B-403-3__motor_vehicle_driver__divided_opening",
       "target_law_id": "NRS-484B-403-3",
-      "target_type": "attempt",
+      "target_type": "boundary_probe",
+      "rationale": "Prospective authored U-turn crossing-location probe; statutory district, motion and exception status require original review.",
+      "variable_assignments": {
+        "authored_business_frontage": {
+          "kind": "world_setup",
+          "value": "authored 328.08 ft prospective business frontage; actual district unverified"
+        },
+        "authored_exception_geometry": {
+          "kind": "world_setup",
+          "value": "authored divided highway opening; appropriateness unverified"
+        },
+        "requested_turn_center_x_m": {
+          "kind": "controller",
+          "value": 0.0,
+          "unit": "m"
+        },
+        "ego_trajectory": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "camera_policy": {
+          "kind": "controller",
+          "value": "four_view_primary"
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -225,7 +440,82 @@
         "limitations": [
           "Original district designation, physical U-turn, and exception status unverified"
         ]
-      }
+      },
+      "paired_probe_id": "divided_opening_pair",
+      "deliberate_differences": [
+        "requested_turn_center_x_m"
+      ],
+      "probe": {
+        "primary_variable": "requested_turn_center_x_m",
+        "comparison_or_standard": "observed vehicle-body crossing versus authored intersection or divided opening",
+        "target_value_or_branch": 0.0
+      },
+      "unresolved_judgment_calls": [
+        "appropriate opening or crossing place"
+      ]
     }
-  ]
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "divided_opening_appropriateness_review",
+      "target_law_id": "NRS-484B-403-3",
+      "judgment_refs": [
+        {
+          "phrase": "appropriate opening or crossing place",
+          "note": "Qualitative condition in the divided-highway exception; geometry alone does not settle it.",
+          "observable_requirements": {
+            "observables": [
+              {
+                "name": "ego_pose",
+                "unit": "structured",
+                "description": "Saved original vehicle body and heading history around the crossing."
+              },
+              {
+                "name": "u_turn_at_intersection_or_opening",
+                "unit": "bool",
+                "description": "Measured spatial relation of the vehicle turn to the recorded candidate crossing area."
+              }
+            ],
+            "context_inputs": [
+              {
+                "name": "authored_road",
+                "unit": "structured",
+                "description": "Source-hashed road request, to be checked against generated Native topology."
+              },
+              {
+                "name": "authored_frontage",
+                "unit": "structured",
+                "description": "Source-hashed frontage request; actual use and district boundaries need separate review."
+              }
+            ],
+            "sweep_dimensions": [],
+            "landmarks": [],
+            "recording_needs": [
+              {
+                "name": "ego_pose",
+                "unit": "structured",
+                "description": "Original frame-joined body path and heading."
+              },
+              {
+                "name": "u_turn_at_intersection_or_opening",
+                "unit": "bool",
+                "description": "Saved spatial relation with source geometry."
+              }
+            ],
+            "limitations": [
+              "The statute gives no numeric meaning for appropriate; retained geometry and pixels require independent review.",
+              "An authored opening or frontage plan does not establish generated geometry, business use, or legal applicability."
+            ]
+          }
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Qualitative opening appropriateness and district applicability need original Native geometry and independent review.",
+      "missing_inputs": [
+        "Original Native opening and vehicle body readback",
+        "Reviewed business or industrial building use and district boundaries"
+      ]
+    }
+  ],
+  "sweeps_expanded": true
 }
