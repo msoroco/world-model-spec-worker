@@ -1,0 +1,273 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver",
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3",
+  "cases": [
+    {
+      "case_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver__approaching_release_3s",
+      "kind": "diagnostic_unselected",
+      "construction": "cases/approaching_release_3s/construction.json",
+      "construction_sha256": "24e1afe79a0f7249324e8b69bb4e73811e4e94d70bd7129e6f60c2f632da71cf",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "measurement_contract": "cases/approaching_far/measurement-contract.json",
+      "fixture_recipe": "work/testing__C109749__NRS-484B-253__motor_vehicle_driver/cases/approaching_far/diagnostic-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native opposing and subject paths may not realize the intended far approach"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/approaching_release_3s/fallback1-construction.json",
+          "construction_sha256": "f770fcb5bb4b00456fdcedee76a0625a0d2c733c5d6cbb18aa5f8c43ad3d26ff",
+          "trigger": {
+            "source": "interaction_history.jsonl and intersection_geometry.json",
+            "metric": "controller_release_ttc_s physical-risk observation",
+            "failure_condition": "measured opposing closing motion leaves too little engineered release margin before subject turn"
+          },
+          "changed_knobs": [
+            "controller_release_ttc_s"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/approaching_release_3s/fallback2-construction.json",
+          "construction_sha256": "df38e28461d23693b3ca77d21e39fe5994b3ac35c064595c2790042ca4e344b4",
+          "trigger": {
+            "source": "interaction_history.jsonl and intersection_geometry.json",
+            "metric": "approach_speed_mps physical-risk observation",
+            "failure_condition": "subject reaches the hold or conflict region at excessive measured speed"
+          },
+          "changed_knobs": [
+            "approach_speed_mps"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/approaching_release_3s/fallback3-construction.json",
+          "construction_sha256": "f461fb7a20d77f61913880fa8a5ac01d6d6915273a9afb6907e66fea38124c02",
+          "trigger": {
+            "source": "interaction_history.jsonl and intersection_geometry.json",
+            "metric": "reciprocal_approach_speed_mps physical-risk observation",
+            "failure_condition": "later opposing body reaches the junction during the subject's incomplete turn"
+          },
+          "changed_knobs": [
+            "reciprocal_approach_speed_mps"
+          ]
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture.capture original Native frame",
+          "evidence": "trace.jsonl and capture/evidence.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture.capture original Native frame",
+          "evidence": "trace.jsonl and capture/evidence.jsonl"
+        },
+        "st.intersection": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture.capture original Native frame",
+          "evidence": "trace.jsonl and capture/evidence.jsonl"
+        },
+        "st.lane_enters": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture.capture original Native frame",
+          "evidence": "trace.jsonl and capture/evidence.jsonl"
+        },
+        "sig.turn_indicator": {
+          "entrypoint": "capture_sources.py",
+          "method": "record_sample original actor readback",
+          "evidence": "interaction_history.jsonl and Native frame join"
+        },
+        "rel.oncoming": {
+          "entrypoint": "capture_sources.py",
+          "method": "record_sample original actor readback",
+          "evidence": "interaction_history.jsonl and Native frame join"
+        },
+        "ego_speed": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original interaction history and geometry",
+          "evidence": "interaction_history.jsonl and intersection_geometry.json"
+        },
+        "oncoming_speed": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original interaction history and geometry",
+          "evidence": "interaction_history.jsonl and intersection_geometry.json"
+        },
+        "reciprocal_speed": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original interaction history and geometry",
+          "evidence": "interaction_history.jsonl and intersection_geometry.json"
+        },
+        "ego_heading": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original interaction history and geometry",
+          "evidence": "interaction_history.jsonl and intersection_geometry.json"
+        },
+        "ego_left_indicator": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original interaction history and geometry",
+          "evidence": "interaction_history.jsonl and intersection_geometry.json"
+        },
+        "ego_in_intersection": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original interaction history and geometry",
+          "evidence": "interaction_history.jsonl and intersection_geometry.json"
+        },
+        "initial_oncoming_in_intersection": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original interaction history and geometry",
+          "evidence": "interaction_history.jsonl and intersection_geometry.json"
+        },
+        "reciprocal_in_intersection": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original interaction history and geometry",
+          "evidence": "interaction_history.jsonl and intersection_geometry.json"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver__approaching_release_5s",
+      "kind": "diagnostic_unselected",
+      "construction": "cases/approaching_release_5s/construction.json",
+      "construction_sha256": "175eff04e8ed618d43e5313230fe8acf1b50f346cbae0e14f4993040f81a5bf2",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "measurement_contract": "cases/approaching_far/measurement-contract.json",
+      "fixture_recipe": "work/testing__C109749__NRS-484B-253__motor_vehicle_driver/cases/approaching_far/diagnostic-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native opposing and subject paths may not realize the intended far approach"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/approaching_release_5s/fallback1-construction.json",
+          "construction_sha256": "c8912aeb07fd1b15c3b4baa53ab19dcd2d43e51f0721661e70dc4111792345b5",
+          "trigger": {
+            "source": "interaction_history.jsonl and intersection_geometry.json",
+            "metric": "controller_release_ttc_s physical-risk observation",
+            "failure_condition": "measured opposing closing motion leaves too little engineered release margin before subject turn"
+          },
+          "changed_knobs": [
+            "controller_release_ttc_s"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/approaching_release_5s/fallback2-construction.json",
+          "construction_sha256": "7582859ff5a17f356c771da3ccca2241a0cf1b302face07e5995957816479920",
+          "trigger": {
+            "source": "interaction_history.jsonl and intersection_geometry.json",
+            "metric": "approach_speed_mps physical-risk observation",
+            "failure_condition": "subject reaches the hold or conflict region at excessive measured speed"
+          },
+          "changed_knobs": [
+            "approach_speed_mps"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/approaching_release_5s/fallback3-construction.json",
+          "construction_sha256": "3d5447045bfb776c1803eb7c89e12d768141fd4511ec1171d3f3a5b6d7f0dce4",
+          "trigger": {
+            "source": "interaction_history.jsonl and intersection_geometry.json",
+            "metric": "reciprocal_approach_speed_mps physical-risk observation",
+            "failure_condition": "later opposing body reaches the junction during the subject's incomplete turn"
+          },
+          "changed_knobs": [
+            "reciprocal_approach_speed_mps"
+          ]
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture.capture original Native frame",
+          "evidence": "trace.jsonl and capture/evidence.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture.capture original Native frame",
+          "evidence": "trace.jsonl and capture/evidence.jsonl"
+        },
+        "st.intersection": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture.capture original Native frame",
+          "evidence": "trace.jsonl and capture/evidence.jsonl"
+        },
+        "st.lane_enters": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture.capture original Native frame",
+          "evidence": "trace.jsonl and capture/evidence.jsonl"
+        },
+        "sig.turn_indicator": {
+          "entrypoint": "capture_sources.py",
+          "method": "record_sample original actor readback",
+          "evidence": "interaction_history.jsonl and Native frame join"
+        },
+        "rel.oncoming": {
+          "entrypoint": "capture_sources.py",
+          "method": "record_sample original actor readback",
+          "evidence": "interaction_history.jsonl and Native frame join"
+        },
+        "ego_speed": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original interaction history and geometry",
+          "evidence": "interaction_history.jsonl and intersection_geometry.json"
+        },
+        "oncoming_speed": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original interaction history and geometry",
+          "evidence": "interaction_history.jsonl and intersection_geometry.json"
+        },
+        "reciprocal_speed": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original interaction history and geometry",
+          "evidence": "interaction_history.jsonl and intersection_geometry.json"
+        },
+        "ego_heading": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original interaction history and geometry",
+          "evidence": "interaction_history.jsonl and intersection_geometry.json"
+        },
+        "ego_left_indicator": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original interaction history and geometry",
+          "evidence": "interaction_history.jsonl and intersection_geometry.json"
+        },
+        "ego_in_intersection": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original interaction history and geometry",
+          "evidence": "interaction_history.jsonl and intersection_geometry.json"
+        },
+        "initial_oncoming_in_intersection": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original interaction history and geometry",
+          "evidence": "interaction_history.jsonl and intersection_geometry.json"
+        },
+        "reciprocal_in_intersection": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original interaction history and geometry",
+          "evidence": "interaction_history.jsonl and intersection_geometry.json"
+        }
+      }
+    }
+  ]
+}
