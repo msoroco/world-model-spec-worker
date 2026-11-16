@@ -15,7 +15,12 @@ from turn_source_recorder import SourceRecorder
 ASSIGNMENT = 'heldout__C126064__LVMC-11-12-020__motor_vehicle_driver'
 VARIANTS = ('indicated_course', 'divergent_course')
 FORMS = {'button': 'button', 'other_indication': 'other_indication'}
-NUMERIC_MARKER_CASES = {'marker_course_blend_050': .5}
+NUMERIC_MARKER_CASES = {
+    'marker_course_blend_050': .5,  # Retained provisional offline construction.
+    'c126064_course_blend-0000': 0.,
+    'c126064_course_blend-0001': 1.,
+    'c126064_course_blend-0002': .5,
+}
 
 
 def case_form_variant(case_id):

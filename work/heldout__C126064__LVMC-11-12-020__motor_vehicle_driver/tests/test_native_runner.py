@@ -44,6 +44,13 @@ class NativeRunnerTests(unittest.TestCase):
                                      path, digest)
             self.assertEqual((numeric['variant'], numeric['course_blend']),
                              ('indicated_course', .5))
+            for suffix, expected in (('c126064_course_blend-0000', 0.),
+                                     ('c126064_course_blend-0001', 1.),
+                                     ('c126064_course_blend-0002', .5)):
+                sweep = module.prepare(module.ASSIGNMENT + '__' + suffix, path, digest)
+                self.assertEqual((sweep['indication_form'], sweep['variant'],
+                                  sweep['course_blend']),
+                                 ('marker', 'indicated_course', expected))
             with self.assertRaisesRegex(ValueError, 'Unknown exact'):
                 module.prepare(module.ASSIGNMENT + '__unplanned', path, digest)
             path.write_text(path.read_text() + ' ')
