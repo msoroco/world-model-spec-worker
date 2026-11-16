@@ -42,6 +42,15 @@ class SelectedReference(unittest.TestCase):
         self.assertEqual(near['phase'],'brake_to_park')
         self.assertEqual(near['throttle'],0)
 
+    def test_candidate_camera_and_speed_mechanisms(self):
+        cfg=json.loads((Path(__file__).resolve().parents[1]/'config.json').read_text())
+        cameras=runner.camera_plan(cfg['camera_policy'])
+        self.assertEqual([x[0] for x in cameras],list(runner.VIEWS))
+        self.assertEqual(cameras[0][4][2],45 if cfg['camera_policy']=='elevated_overview' else 35)
+        self.assertAlmostEqual(runner.approach_speed(cfg),35*20/cfg['requested_approach_frames'])
+        with self.assertRaisesRegex(ValueError,'camera policy'):
+            runner.camera_plan('unknown')
+
 if __name__=='__main__': unittest.main()
 '''
 
@@ -76,11 +85,17 @@ def build():
                     'status':'draft_selected_cpu',
                     'recording_description':{
                         'channels':[{'name':name,'unit':unit,'sampling_rate_hz':20,
-                                     'method':'original Native actor body and four-camera frame join'}
+                                     'method':'retained Native actor, body, velocity and four-camera frame join',
+                                     'time_window':'240 frames',
+                                     'reference_frame':'authored OpenDRIVE coordinates',
+                                     'uncertainty':'50 ms bracket; physical paint and pixels unverified'}
                                     for name,unit in [('ego_pose','structured'),
                                                       ('ego_speed','m/s'),
                                                       ('red_curb_stop_or_park','bool'),
                                                       ('four_source_views','video')]],
+                        'context_inputs':[{'name':'red_curb_map_readback',
+                            'unit':'structured',
+                            'method':'source-hashed Native OpenDRIVE parking lane and paint readback'}],
                         'limitations':['Red paint, zone occupancy and statutory exceptions require independent source review.']},
                     'original_native_observed':False,'delivery_ready':False,
                     'measurement_plan':{'source':'original Native body and road paint readback',
@@ -90,14 +105,14 @@ def build():
     write(target,construction)
     plan=json.loads((ROOT/'case-plan.json').read_text())
     output_mapping={0:('statute_source_context','statute_context','object',
-                       'sourced_context',['assignment-source.json']),
+                       'sourced_context',['statutory-context.json']),
                     1:('red_curb_extent','curb_extent','object','sourced_context',
                        ['native-map-readback.json']),
                     2:('red_curb_stop_or_park_observed','red_occupancy','boolean',
                        'measured',['native-raw-actors.jsonl','video_frames.jsonl',
                                    'native-map-readback.json']),
                     8:('mail_exception_source_text','mail_clause_context','text',
-                       'sourced_context',['assignment-source.json']),
+                       'sourced_context',['statutory-context.json']),
                     9:('scope_red_occupancy','scope_occupancy','boolean','measured',
                        ['native-raw-actors.jsonl','video_frames.jsonl',
                         'native-map-readback.json'])}
@@ -128,8 +143,8 @@ def build():
                                             'reason':'Paint, parked body and four views unverified in Native'},
                           'candidates':[],
                           'measurement_contract':'selected-measurement-contracts/reference.json',
-                          'measurement_procedure':{'entrypoint':'measure_red_curb.py',
-                                                   'output_schema':'c150142-red-curb-observation-v1'}}],
+                          'measurement_procedure':{'entrypoint':'finalize_selected.py',
+                                                   'output_schema':'c150142-red-curb-saved-analysis-v1'}}],
                 'original_native_observed':False,'delivery_ready':False}
     mpath=ROOT/'selected-primary/reference/draft-manifest.json'
     write(mpath,manifest)

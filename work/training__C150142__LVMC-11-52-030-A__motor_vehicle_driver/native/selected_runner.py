@@ -20,6 +20,26 @@ CAMERAS = (
 )
 
 
+def camera_plan(policy):
+    if policy not in ('standard','elevated_overview'):
+        raise ValueError('Unsupported source-camera policy')
+    result=[]
+    for name,width,height,fov,location,pitch in CAMERAS:
+        if name=='overview' and policy=='elevated_overview':
+            location=(location[0],location[1],location[2]+10)
+        result.append((name,width,height,fov,location,pitch))
+    return tuple(result)
+
+
+def approach_speed(config):
+    frames=config['requested_approach_frames']
+    target=config['requested_target_x_m']
+    if not isinstance(frames,int) or frames<=0 or frames>240 or \
+       not isinstance(target,(int,float)) or target<=5:
+        raise ValueError('Invalid authored parking approach request')
+    return (target-5)*20/frames
+
+
 def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
@@ -38,16 +58,19 @@ def check():
     if [(float(m.attrib['sOffset']), m.attrib['color']) for m in marks] != \
        [(0, 'white'), (30, 'red'), (50, 'white')]:
         raise ValueError('Red-painted curb construction changed')
-    if cfg['selected_case_id'] != cfg['case_id'] or cfg['candidate_id'] != 'primary' or \
+    if cfg['selected_case_id'] != cfg['case_id'] or \
+       cfg['candidate_id'] not in ('primary','fallback1','fallback2','fallback3') or \
        cfg['rate_hz'] != 20 or cfg['duration_s'] != 12 or len(tracks) != 240 or \
        [c['name'] for c in cfg['cameras']] != list(VIEWS):
         raise ValueError('Selected case or four-view capture contract changed')
+    camera_plan(cfg['camera_policy'])
+    approach_speed(cfg)
     for i, line in enumerate(tracks):
         row = json.loads(line)
         if row['frame'] != i or row['source_kind'] != 'authored_controller_request' or \
            row['observed_native_motion'] is not False:
             raise ValueError('Requested tracks cannot be Native evidence')
-    return {'case_id': cfg['case_id'], 'candidate_id': 'primary',
+    return {'case_id': cfg['case_id'], 'candidate_id': cfg['candidate_id'],
             'frames': 240, 'source_bound': True, 'original_native_observed': False}
 
 
@@ -105,6 +128,12 @@ def execute(output, host, port):
             raise ValueError('Materialized capture config differs')
     else:
         target_config.write_bytes((ROOT/'config.json').read_bytes())
+    assignment=json.loads((ROOT/'assignment-source.json').read_text())
+    (output/'statutory-context.json').write_text(json.dumps({
+        'assignment_id':assignment['assignment_id'],
+        'law_id':assignment['law_id'],
+        'law_text_sha256':hashlib.sha256(assignment['law']['text'].encode()).hexdigest(),
+        'law_text':assignment['law']['text']},indent=2)+'\n')
     owned, encoders, encoder_logs, image_queues = [], {}, {}, {}
     pipeline = None
     changed = False
@@ -158,7 +187,7 @@ def execute(output, host, port):
         if ego is None:
             raise RuntimeError('Red-curb ego spawn failed')
         owned.append(ego)
-        for name, width, height, fov, location, pitch in CAMERAS:
+        for name, width, height, fov, location, pitch in camera_plan(cfg['camera_policy']):
             bp = library.find('sensor.camera.rgb')
             for key, value in (('image_size_x', width), ('image_size_y', height),
                                ('fov', fov), ('sensor_tick', 0)):
@@ -183,7 +212,8 @@ def execute(output, host, port):
              (output/'video_frames.jsonl').open('x') as frame_map:
             for i, request in enumerate(requests):
                 decision = parking_controller.apply(ego, carla,
-                    cfg['requested_target_x_m'], request['requested_ego_y_m'])
+                    cfg['requested_target_x_m'], request['requested_ego_y_m'],
+                    approach_speed_mps=approach_speed(cfg))
                 frame = world.tick()
                 time_s = world.get_snapshot().timestamp.elapsed_seconds - start
                 native = native_pose(ego)
@@ -246,7 +276,7 @@ def execute(output, host, port):
            isinstance(restored, dict) and restored.get('restored') is True:
             events.append('restoration_verified')
         (output/'native-capture-report.json').write_text(json.dumps({
-            'case_id': checked['case_id'], 'candidate_id': 'primary',
+            'case_id': checked['case_id'], 'candidate_id': checked['candidate_id'],
             'config_sha256': sha(ROOT/'config.json'),
             'requested_frames': 240, 'observed_frames': frames,
             'lifecycle_events': events, 'restoration': restored,
@@ -255,7 +285,7 @@ def execute(output, host, port):
         if not errors and frames == 240 and events[-1:] == ['restoration_verified']:
             seal_capture(output, frames=frames, restoration=restored, errors=[],
                 encoder_exit_codes=codes, context={'case_id':checked['case_id'],
-                'candidate_id':'primary', 'legal_verdict':None})
+                'candidate_id':checked['candidate_id'], 'legal_verdict':None})
     if errors or frames != 240:
         raise RuntimeError('Red-curb Native capture failed; inspect report')
 

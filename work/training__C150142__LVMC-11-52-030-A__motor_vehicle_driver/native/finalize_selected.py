@@ -45,15 +45,13 @@ def footage_join(frame_map):
     return all(set(row['views']) == VIEWS for row in frame_map)
 
 
-def statute_context(assignment):
-    law=assignment.get('law',{})
-    return {'law_id':assignment.get('law_id'),
-            'citation':law.get('citation') or assignment.get('law_citation'),
-            'text_sha256':hashlib.sha256(str(law.get('text','')).encode()).hexdigest()}
+def statute_context(statutory):
+    return {'law_id':statutory['law_id'],
+            'text_sha256':statutory['law_text_sha256']}
 
 
-def mail_clause_context(assignment):
-    text=assignment.get('law',{}).get('text','')
+def mail_clause_context(statutory):
+    text=statutory['law_text']
     marker='(5) At locations where a drop box for U.S. mail'
     if marker not in text:
         raise ValueError('Frozen U.S. mail exception text absent')
@@ -69,6 +67,7 @@ def finalize(attempt, output):
     if output.exists() or (attempt/'result.json').exists() or (attempt/'channels').exists():
         raise ValueError('Retain prior finalization; use fresh saved attempt')
     for name in ('construction.json','config.json','assignment-source.json',
+                 'statutory-context.json',
                  'red-curb-road.xodr','native-map-readback.json',
                  'native-raw-actors.jsonl','video_frames.jsonl','trace.jsonl',
                  'capture/evidence.jsonl'):
@@ -78,6 +77,7 @@ def finalize(attempt, output):
     config=json.loads(source(attempt,'config.json').read_text())
     construction=json.loads(source(attempt,'construction.json').read_text())
     assignment=json.loads(source(attempt,'assignment-source.json').read_text())
+    statutory=json.loads(source(attempt,'statutory-context.json').read_text())
     context=paint_context(json.loads(source(attempt,'native-map-readback.json').read_text()))
     actor_rows=rows(attempt,'native-raw-actors.jsonl')
     frame_map=rows(attempt,'video_frames.jsonl')
@@ -87,6 +87,12 @@ def finalize(attempt, output):
        assignment.get('law_id') != config['law_id'] or \
        sha(attempt/'red-curb-road.xodr') != config['road_sha256']:
         raise ValueError('Selected red-curb case or frozen source differs')
+    if statutory.get('assignment_id')!=assignment['assignment_id'] or \
+       statutory.get('law_id')!=assignment['law_id'] or \
+       statutory.get('law_text')!=assignment['law']['text'] or \
+       statutory.get('law_text_sha256')!=hashlib.sha256(
+           assignment['law']['text'].encode()).hexdigest():
+        raise ValueError('Acquired statutory context differs from frozen assignment')
     if len(actor_rows) != len(frame_map) or len(trace) != 240:
         raise ValueError('Missing synchronized saved trace')
     speeds=[]
@@ -101,7 +107,7 @@ def finalize(attempt, output):
         speeds.append(math.sqrt(sum(v*v for v in velocity)))
     observation=measure(actor_rows,frame_map,context)
     hashes={name:sha(attempt/name) for name in
-            ('assignment-source.json','native-map-readback.json',
+            ('statutory-context.json','native-map-readback.json',
              'native-raw-actors.jsonl','video_frames.jsonl')}
     measurements={
         'red_curb_stop_or_park_observed':{
@@ -112,11 +118,11 @@ def finalize(attempt, output):
                             'sources':{'native-map-readback.json':hashes['native-map-readback.json']}},
         'four_view_frame_join':{'method':'footage_join','value':footage_join(frame_map),
                                 'sources':{'video_frames.jsonl':hashes['video_frames.jsonl']}},
-        'statute_source_context':{'method':'statute_context','value':statute_context(assignment),
-                                   'sources':{'assignment-source.json':hashes['assignment-source.json']}},
+        'statute_source_context':{'method':'statute_context','value':statute_context(statutory),
+                                   'sources':{'statutory-context.json':hashes['statutory-context.json']}},
         'mail_exception_source_text':{'method':'mail_clause_context',
-            'value':mail_clause_context(assignment),
-            'sources':{'assignment-source.json':hashes['assignment-source.json']}},
+            'value':mail_clause_context(statutory),
+            'sources':{'statutory-context.json':hashes['statutory-context.json']}},
         'scope_red_occupancy':{'method':'scope_occupancy',
             'value':scope_occupancy(observation),
             'sources':{name:hashes[name] for name in
@@ -139,6 +145,12 @@ def finalize(attempt, output):
                                allow_nan=False)+'\n' for row,value in zip(actor_rows,values[name])))
         evidence.append({'name':name,'unit':channel['unit'],
                          'reference':'channels/'+path.name})
+    context_path=attempt/'red-curb-context.json'
+    context_path.write_text(json.dumps({'red_curb_map_readback':{
+        'source':'native-map-readback.json',
+        'sha256':hashes['native-map-readback.json']}},indent=2)+'\n')
+    evidence.append({'name':'red_curb_map_readback','unit':'structured',
+                     'reference':context_path.name})
     result={'case_id':config['case_id'],
             'measured_values':{'red_curb_stop_or_park_observed':red_occupancy(observation),
                                'red_curb_stopped_frames':len(observation['red_curb_stopped_frame_ids'])},
@@ -156,8 +168,8 @@ def finalize(attempt, output):
             'video_frame_map_reference':'video_frames.jsonl',
             'recording_description':construction['recording_description'],
             'recording_evidence':evidence,
-            'realized_observables':{'red_curb_stop_or_park_observed':{
-                'value':red_occupancy(observation),'unit':'bool',
+            'realized_observables':{'red_curb_stopped_frames':{
+                'value':len(observation['red_curb_stopped_frame_ids']),'unit':'count',
                 'method':'retained Native body and curb geometry',
                 'time_window':'12 s source interval','statistic':'any stopped frame touching red',
                 'reference':'native-raw-actors.jsonl'}},

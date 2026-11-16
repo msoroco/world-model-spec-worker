@@ -45,6 +45,12 @@ def sources(attempt):
     (attempt/'native-map-readback.json').write_text(json.dumps({
         'source_kind':'synthetic_native_sample','paint_color':'red',
         'red_curb_start_x_m':30,'red_curb_end_x_m':50,'curb_y_m':-7})+'\n')
+    assignment=json.loads((attempt/'assignment-source.json').read_text())
+    (attempt/'statutory-context.json').write_text(json.dumps({
+        'assignment_id':assignment['assignment_id'],
+        'law_id':assignment['law_id'],
+        'law_text_sha256':__import__('hashlib').sha256(assignment['law']['text'].encode()).hexdigest(),
+        'law_text':assignment['law']['text']})+'\n')
     for view in VIEWS:
         (attempt/(view+'.mkv')).write_bytes(b'synthetic placeholder; not decoded')
 
