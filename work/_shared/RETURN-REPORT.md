@@ -5304,3 +5304,5 @@ Pinned CPU preflight and ordinary C146314 scoped complete pass. Scoped strict ex
 ## Update 058 C146314 audit construction
 
 Added independent source-derived right-pass physical-motion and delivery auditors under C146314 `native/`. The physical-motion proof passes diagnostic geometry and five negatives; synthetic status remains `unverified`. The delivery proof checks all eight current saved diagnostic attempts without accepting them and rejects 24 source, join and false-review mutations. Proof hashes, exact commands and remaining CPU integration work are in C146314 `HANDOFF.md` Update 058. C146314 remains `partial`; ordinary scoped complete passes and scoped strict fails on that status. The Goal remains active. Frozen inputs, runtime, `batch.json` and Git were not changed.
+
+Update 058 full strict rerun exits 1 at the unchanged frozen-runtime generated path `runtime/pipeline/runs/scenario_pipeline/inputs/shared/manifest.json` (`work/_shared/update058-full-strict.log`, SHA-256 `703ba86fdbd66d9b2589e7394601c6fea6837a3ee9a75481eea27a5d0f91c2fa`). The batch is also independently incomplete; no readiness or delivery claim is made.

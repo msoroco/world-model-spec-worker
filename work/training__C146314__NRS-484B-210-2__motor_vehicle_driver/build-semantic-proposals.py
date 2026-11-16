@@ -144,6 +144,10 @@ for witness,apex in (('reference',-5.5),('contrast',-4.8)):
 canonical={'cell_id':cell['cell_id'],'actor':actor,'status':'draft',
     'sweep_specs':[spec],'sweeps_expanded':True,'cases':cases}
 cases_ref=write('canonical-cases.json',canonical)
+# The selected case proposal used by package validation is the same expanded
+# semantic case set. A second, divergent case definition would change the
+# physical sweep between semantic review and exact construction.
+write('cases.json',canonical)
 index={'format':'worker-semantic-delivery','assignment_id':ROOT.name,
        'stages':{'relevance_batch':relevance_batch,'relevance':relevance_ref,
                  'template':template_ref,'judgment_observables':[judgment_ref],

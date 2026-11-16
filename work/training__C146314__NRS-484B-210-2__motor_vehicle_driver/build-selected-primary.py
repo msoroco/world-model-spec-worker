@@ -96,21 +96,13 @@ def build():
         'context_inputs':[{'name':'right_pass_map_readback','unit':'structured',
             'method':'source-hashed Native OpenDRIVE map/lane readback'}],
         'limitations':['NRS 484B.210(2) is qualitative; engineering clearance does not determine legal safety.']}
-    selected={'case_id':CASE,'target_law_id':'NRS-484B-210-2',
-        'target_type':'boundary_probe',
-        'rationale':'Controlled right-side-pass lateral-clearance '+WITNESS+'; legal safety unresolved.',
-        'paired_probe_id':ROOT.name+'__comparison_main',
-        'deliberate_differences':['right_side_pass_lateral_clearance'],
-        'probe':{'primary_variable':'right_side_pass_lateral_clearance',
-                 'comparison_or_standard':'physical clearance sweep, no legal cutoff',
-                 'target_value_or_branch':WITNESS},
-        'variable_assignments':{
-            'road_and_actors':{'kind':'world_setup','value':'authored two-lane one-way road, ego and lead Tesla','unit':'structured'},
-            'commanded_lateral_apex':{'kind':'controller','value':cfg['requested_lateral_apex_y_m'],'unit':'m'},
-            'ego_speed':{'kind':'subject_behavior','value':None,'unit':'m/s'},
-            'lead_speed':{'kind':'other_behavior','value':None,'unit':'m/s'}},
-        'unresolved_judgment_calls':['conditions permitting such movement in safety'],
-        'recording_description':recording}
+    selected=next(item for item in json.loads((ROOT/'proposals/cases.json').read_text())['cases']
+                  if item['case_id']==CASE)
+    if (selected['recording_description']!=recording or
+        selected['variable_assignments']['commanded_lateral_apex']['value']!=
+            cfg['requested_lateral_apex_y_m'] or
+        selected['target_type']!='judgment_sweep'):
+        raise ValueError('Selected construction differs from canonical judgment sweep')
     cfg.update(selected_case_id=CASE,duration_s=12,required_atoms=[],
                source_packets=[],case=selected,supported_case_ids=[CASE],
                physical_success_claimed=False,
