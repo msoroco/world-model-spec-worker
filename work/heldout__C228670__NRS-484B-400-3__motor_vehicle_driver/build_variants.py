@@ -92,7 +92,59 @@ def build():
         stem = entry["case_id"].split("__")[-1].replace("_", "-")
         diagnostic_name = stem + "-diagnostic.json"
         diagnostic = ROOT / diagnostic_name
-        diagnostic.write_text(original_diagnostic.replace(FIRST, entry["case_id"]))
+        source_fixture = json.loads(original_diagnostic.replace(FIRST, entry["case_id"]))
+        suffix = entry["case_id"].split("__")[-1]
+        shift_axis = 1 if suffix == "farther_approach_left_curb_departure" else 0
+        shift_phases = ("approach", "entry") if shift_axis == 1 else ("departure",)
+        shift_m = -1.0 if shift_axis == 1 else 1.0
+        rows = [json.loads(line) for line in source_fixture["files"]["body_corners_original.jsonl"].splitlines() if line]
+        for row in rows:
+            if row["phase"] in shift_phases:
+                for corner in row["body_corners_xy_m"]:
+                    corner[shift_axis] += shift_m
+        source_fixture["files"]["body_corners_original.jsonl"] = "".join(json.dumps(row) + "\n" for row in rows)
+        trace = [json.loads(line) for line in source_fixture["files"]["trace.jsonl"].splitlines() if line]
+        if len(trace) != len(rows):
+            raise ValueError("Diagnostic trace/body join differs")
+        axis = "y" if shift_axis == 1 else "x"
+        for motion, body in zip(trace, rows):
+            if (motion["frame"], motion["time_s"]) != (body["frame"], body["time_s"]):
+                raise ValueError("Diagnostic trace/body frame identity differs")
+            if body["phase"] in shift_phases:
+                motion["position_m"][shift_axis] += shift_m
+                motion["position"][axis] += shift_m
+        source_fixture["files"]["trace.jsonl"] = "".join(json.dumps(row) + "\n" for row in trace)
+        evidence = [json.loads(line) for line in source_fixture["files"]["capture/evidence.jsonl"].splitlines() if line]
+        if len(evidence) != len(rows):
+            raise ValueError("Diagnostic capture/body join differs")
+        for packet, body in zip(evidence, rows):
+            if packet["original_frame"] != body["frame"]:
+                raise ValueError("Diagnostic capture/body frame differs")
+            if body["phase"] in shift_phases:
+                ego = packet["ego"]
+                ego["position_m"][shift_axis] += shift_m
+                for vertex in ego["body_vertices_m"]:
+                    vertex[shift_axis] += shift_m
+                participant = packet["original_observations"]["participants"][0]
+                participant["position_m"][shift_axis] += shift_m
+                for vertex in participant["body_vertices_m"]:
+                    vertex[shift_axis] += shift_m
+        source_fixture["files"]["capture/evidence.jsonl"] = "".join(json.dumps(row) + "\n" for row in evidence)
+        by_frame = {packet["original_frame"]: packet["original_observations"] for packet in evidence}
+        for graph in source_fixture["graphs"]:
+            frame = graph["attributes"].get("frame")
+            if frame in by_frame and "observed_evidence" in graph["attributes"]:
+                graph["attributes"]["observed_evidence"] = by_frame[frame]
+        capture_manifest = json.loads(source_fixture["files"]["capture/manifest.json"])
+        capture_manifest["sources"]["trace.jsonl"] = hashlib.sha256(
+            source_fixture["files"]["trace.jsonl"].encode()).hexdigest()
+        source_fixture["files"]["capture/manifest.json"] = json.dumps(capture_manifest, indent=2) + "\n"
+        provenance = json.loads(source_fixture["files"]["fixture-provenance.json"])
+        provenance["controlled_diagnostic_shift"] = {"axis": "y" if shift_axis == 1 else "x",
+                                                       "phases": shift_phases, "meters": shift_m,
+                                                       "physical_realization_claimed": False}
+        source_fixture["files"]["fixture-provenance.json"] = json.dumps(provenance) + "\n"
+        diagnostic.write_text(json.dumps(source_fixture, separators=(",", ":")) + "\n")
         diagnostic_sha = hashlib.sha256(diagnostic.read_bytes()).hexdigest()
         source = "work/" + ROOT.name + "/" + diagnostic_name
         recipe = {"format": "worker-fixture-recipe",

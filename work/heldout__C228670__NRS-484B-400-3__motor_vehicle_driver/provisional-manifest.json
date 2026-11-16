@@ -37,7 +37,7 @@
           },
           "compatibility": {
             "receipt": "first-fallback1-compatibility-receipt.json",
-            "log": "first-fallback1-compatibility-analysis.log",
+            "log": "first-primary-compatibility-analysis.log",
             "negative_log": "first-fallback1-compatibility-negative.log",
             "sha256": "a09575fef0187bbbee7c62eb0caa259765626cf3f858f3a38e4968679583ea3d"
           }
@@ -63,7 +63,7 @@
           },
           "compatibility": {
             "receipt": "first-fallback2-compatibility-receipt.json",
-            "log": "first-fallback2-compatibility-analysis.log",
+            "log": "first-primary-compatibility-analysis.log",
             "negative_log": "first-fallback2-compatibility-negative.log",
             "sha256": "750aa9cc9b18f385bd070e5ceaa8549cba4e2b8ddd20364353a7205858d2ba68"
           }
@@ -89,7 +89,7 @@
           },
           "compatibility": {
             "receipt": "first-fallback3-compatibility-receipt.json",
-            "log": "first-fallback3-compatibility-analysis.log",
+            "log": "first-primary-compatibility-analysis.log",
             "negative_log": "first-fallback3-compatibility-negative.log",
             "sha256": "f50b9d2b74225d0b0c186d08f038d66a6bad8c9dbc1e57c8b170a24095da94fe"
           }
@@ -142,6 +142,40 @@
           "method": "source-hashed Native XODR survey and frame-joined original body geometry",
           "evidence": "route_survey_original.json, route_survey_capture_receipt.json, body_corners_original.jsonl, trace.jsonl, video_frames.jsonl and four original cameras"
         }
+      },
+      "physical_preparation": {
+        "receipt": "physical/centerline_approach_left_curb_departure-proof.json",
+        "sha256": "a18eda42324fa8b82b6ff8b604bfeae7e7731e10b5d1dd02e68b38175a8883dc"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_left_curb_departure",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "turn_delivery_audit.py",
+        "script_sha256": "69910eb740ac596896fe7bceca44c98ab51f3a844782e41de97940e39b706725",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/turn_delivery_audit.py --case heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_left_curb_departure --attempt .runtime-work/c228670-first-saved-attempt-5 --processed .runtime-work/c228670-first-saved-output-5",
+        "test_exit_code": 0,
+        "test_log": "centerline_approach_left_curb_departure-delivery-positive.log",
+        "test_log_sha256": "b41160aa75373562e2180d14d4a587a1501b74455cb4b904a7048516cf6e639a",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/turn_delivery_audit.py --case heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_left_curb_departure --attempt .runtime-work/c228670-first-saved-attempt-5 --processed .runtime-work/c228670-first-saved-output-5 --negative-source",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Stale or missing original turn source: route_survey_original.json",
+        "negative_log": "centerline_approach_left_curb_departure-delivery-negative.log",
+        "negative_log_sha256": "e426ce087bb2bffa981ce0949e9a97af080f4b318e8c8f53354e92d75c9fe724"
       }
     },
     {
@@ -208,9 +242,9 @@
           },
           "compatibility": {
             "receipt": "farther_approach_left_curb_departure-fallback1-receipt.json",
-            "log": "farther_approach_left_curb_departure-fallback1-analysis.log",
             "negative_log": "farther_approach_left_curb_departure-fallback1-negative.log",
-            "sha256": "9a47b06bfbf528d5fef71c4138c6fefe12ed9dbfa58d745639afc367e5b16527"
+            "log": "first-primary-compatibility-analysis.log",
+            "sha256": "d9565468690473233667741e3ec9f4f9a17d0485c87ee19f70ff5a32decb4d65"
           }
         },
         {
@@ -234,9 +268,9 @@
           },
           "compatibility": {
             "receipt": "farther_approach_left_curb_departure-fallback2-receipt.json",
-            "log": "farther_approach_left_curb_departure-fallback2-analysis.log",
             "negative_log": "farther_approach_left_curb_departure-fallback2-negative.log",
-            "sha256": "4c88834923e25959ff6cb253ca0ce67d6a86266bc381d30245b60cd6a600bb5a"
+            "log": "first-primary-compatibility-analysis.log",
+            "sha256": "74fb0e7e8c1a11b87887b1ec5d873e3923add9bedb3084b6dc8bb703ba36c7c0"
           }
         },
         {
@@ -260,29 +294,63 @@
           },
           "compatibility": {
             "receipt": "farther_approach_left_curb_departure-fallback3-receipt.json",
-            "log": "farther_approach_left_curb_departure-fallback3-analysis.log",
             "negative_log": "farther_approach_left_curb_departure-fallback3-negative.log",
-            "sha256": "0785267a1cef94e3bea0e2705d42c39a377964c76fb32c5eb7e5a1128e13fdae"
+            "log": "first-primary-compatibility-analysis.log",
+            "sha256": "2429ed6fe34d504791508404b633bbc137a0e8b9b3fc3eda9917f7dcedc2fd37"
           }
         }
       ],
       "fixture_recipe": "work/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/farther-approach-left-curb-departure-recipe.json",
       "compatibility": {
         "receipt": "farther_approach_left_curb_departure-primary-receipt.json",
-        "log": "farther_approach_left_curb_departure-primary-analysis.log",
         "negative_log": "farther_approach_left_curb_departure-primary-negative.log",
-        "sha256": "6f568dbebd8ef776f2772174f2b005dde387fb042f94d1c433480a80f38b41b8"
+        "log": "first-primary-compatibility-analysis.log",
+        "sha256": "b3e52b98d3a655448a9c3aef8e85cdbf31c3b59f8a6dda19bcf6955bac266f7f"
       },
       "negative": {
         "log": "farther_approach_left_curb_departure-primary-negative.log"
       },
       "saved_processing": {
-        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/provisional-manifest.json --case heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__farther_approach_left_curb_departure --attempt .runtime-work/c228670-farther_approach_left_curb_departure-saved-attempt-1 --output .runtime-work/c228670-farther_approach_left_curb_departure-saved-output-1 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/provisional-manifest.json --case heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__farther_approach_left_curb_departure --attempt .runtime-work/c228670-farther_approach_left_curb_departure-saved-attempt-3 --output .runtime-work/c228670-farther_approach_left_curb_departure-saved-output-3 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
         "exit_code": 0,
         "log": "farther_approach_left_curb_departure-saved.log",
-        "log_sha256": "d8dc3d6be92499f65def4eb0478fb441b0e53e24dddddee4ec5acbdff043c352",
+        "log_sha256": "804de31a437952c93d02e652a1e575398500bf15bd2ed30cf63622c0d54923a3",
         "receipt": "farther_approach_left_curb_departure-saved-receipt.json",
-        "receipt_sha256": "d8dc3d6be92499f65def4eb0478fb441b0e53e24dddddee4ec5acbdff043c352"
+        "receipt_sha256": "804de31a437952c93d02e652a1e575398500bf15bd2ed30cf63622c0d54923a3"
+      },
+      "physical_preparation": {
+        "receipt": "physical/farther_approach_left_curb_departure-proof.json",
+        "sha256": "1c44d1678545c053c7e03ba93853f695e2c316ead32ab384f9a7a7df37e3b36a"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__farther_approach_left_curb_departure",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "turn_delivery_audit.py",
+        "script_sha256": "69910eb740ac596896fe7bceca44c98ab51f3a844782e41de97940e39b706725",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/turn_delivery_audit.py --case heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__farther_approach_left_curb_departure --attempt .runtime-work/c228670-farther_approach_left_curb_departure-saved-attempt-3 --processed .runtime-work/c228670-farther_approach_left_curb_departure-saved-output-3",
+        "test_exit_code": 0,
+        "test_log": "farther_approach_left_curb_departure-delivery-positive.log",
+        "test_log_sha256": "a83f5b931904c94c44a867683d2be46c483e3fa2e8d4aa85e245020c0d3681a6",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/turn_delivery_audit.py --case heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__farther_approach_left_curb_departure --attempt .runtime-work/c228670-farther_approach_left_curb_departure-saved-attempt-3 --processed .runtime-work/c228670-farther_approach_left_curb_departure-saved-output-3 --negative-source",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Stale or missing original turn source: route_survey_original.json",
+        "negative_log": "farther_approach_left_curb_departure-delivery-negative.log",
+        "negative_log_sha256": "e426ce087bb2bffa981ce0949e9a97af080f4b318e8c8f53354e92d75c9fe724"
       }
     },
     {
@@ -349,9 +417,9 @@
           },
           "compatibility": {
             "receipt": "centerline_approach_farther_departure-fallback1-receipt.json",
-            "log": "centerline_approach_farther_departure-fallback1-analysis.log",
             "negative_log": "centerline_approach_farther_departure-fallback1-negative.log",
-            "sha256": "008df2a0543e517775dc384a1d608c8888be603d05a8618ccaef8262cf1b5537"
+            "log": "first-primary-compatibility-analysis.log",
+            "sha256": "f4822d9d330b699d84e459323bb7df0e065bf3dcf02b06af9ff9d6f668935f7f"
           }
         },
         {
@@ -375,9 +443,9 @@
           },
           "compatibility": {
             "receipt": "centerline_approach_farther_departure-fallback2-receipt.json",
-            "log": "centerline_approach_farther_departure-fallback2-analysis.log",
             "negative_log": "centerline_approach_farther_departure-fallback2-negative.log",
-            "sha256": "c4627acf67d845ff46227240dba87c2fd8bafebc915742c69a54e2213587aebb"
+            "log": "first-primary-compatibility-analysis.log",
+            "sha256": "477f4c3459e62e4ec4fc603716809a1b0387244581dcb79fb0ef871f3216d469"
           }
         },
         {
@@ -401,29 +469,63 @@
           },
           "compatibility": {
             "receipt": "centerline_approach_farther_departure-fallback3-receipt.json",
-            "log": "centerline_approach_farther_departure-fallback3-analysis.log",
             "negative_log": "centerline_approach_farther_departure-fallback3-negative.log",
-            "sha256": "e76d0739043c94a83376ece4ebc423bcb31d4ec1ad3fd6a7145409ee794d4153"
+            "log": "first-primary-compatibility-analysis.log",
+            "sha256": "707ff951ef3ade62b5e0fa6a4f0c00bf204328e74a219fda4041c0d739212dfb"
           }
         }
       ],
       "fixture_recipe": "work/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/centerline-approach-farther-departure-recipe.json",
       "compatibility": {
         "receipt": "centerline_approach_farther_departure-primary-receipt.json",
-        "log": "centerline_approach_farther_departure-primary-analysis.log",
         "negative_log": "centerline_approach_farther_departure-primary-negative.log",
-        "sha256": "739193e61b784e5432f1e47c9dd74d37838b7affb7d82794ebcbc122cf1af97b"
+        "log": "first-primary-compatibility-analysis.log",
+        "sha256": "29d103c090be8a0dfcdac3f81a79e651b70bcc86f43dbe37ed386ff886c141d3"
       },
       "negative": {
         "log": "centerline_approach_farther_departure-primary-negative.log"
       },
       "saved_processing": {
-        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/provisional-manifest.json --case heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_farther_departure --attempt .runtime-work/c228670-centerline_approach_farther_departure-saved-attempt-1 --output .runtime-work/c228670-centerline_approach_farther_departure-saved-output-1 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/provisional-manifest.json --case heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_farther_departure --attempt .runtime-work/c228670-centerline_approach_farther_departure-saved-attempt-3 --output .runtime-work/c228670-centerline_approach_farther_departure-saved-output-3 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
         "exit_code": 0,
         "log": "centerline_approach_farther_departure-saved.log",
-        "log_sha256": "7df23c10a69632ecff72cc0583e0a73257ff0a18130f073acfec8258f6c0fc91",
+        "log_sha256": "6ca87eb192d147d344e6e586e90efaee0b187bf44e88ec23facc0a5c44f4cc41",
         "receipt": "centerline_approach_farther_departure-saved-receipt.json",
-        "receipt_sha256": "7df23c10a69632ecff72cc0583e0a73257ff0a18130f073acfec8258f6c0fc91"
+        "receipt_sha256": "6ca87eb192d147d344e6e586e90efaee0b187bf44e88ec23facc0a5c44f4cc41"
+      },
+      "physical_preparation": {
+        "receipt": "physical/centerline_approach_farther_departure-proof.json",
+        "sha256": "08f57b6a77d96aa58b23975fe95f5723cca4e7fc79dedd8dd9d5163d3a54cfc5"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_farther_departure",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "turn_delivery_audit.py",
+        "script_sha256": "69910eb740ac596896fe7bceca44c98ab51f3a844782e41de97940e39b706725",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/turn_delivery_audit.py --case heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_farther_departure --attempt .runtime-work/c228670-centerline_approach_farther_departure-saved-attempt-3 --processed .runtime-work/c228670-centerline_approach_farther_departure-saved-output-3",
+        "test_exit_code": 0,
+        "test_log": "centerline_approach_farther_departure-delivery-positive.log",
+        "test_log_sha256": "0da8b21a6cbf32a15ca5da0f6222ef0d7c237d2c501f80f5482aabe6da108b94",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/turn_delivery_audit.py --case heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_farther_departure --attempt .runtime-work/c228670-centerline_approach_farther_departure-saved-attempt-3 --processed .runtime-work/c228670-centerline_approach_farther_departure-saved-output-3 --negative-source",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Stale or missing original turn source: route_survey_original.json",
+        "negative_log": "centerline_approach_farther_departure-delivery-negative.log",
+        "negative_log_sha256": "e426ce087bb2bffa981ce0949e9a97af080f4b318e8c8f53354e92d75c9fe724"
       }
     }
   ]
