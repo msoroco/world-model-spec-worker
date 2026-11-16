@@ -9,7 +9,7 @@
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "f2c059de436bc9a75527da3e655e14bc1b18dfd5b56016f6d458d8b59e72fec3"
+      "sha256": "1b49b8294d0a2f2eb8fdcc8312176d4f8e8c791d7eadd361cc79be9abbb6139d"
     },
     {
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/tests -v",
@@ -477,7 +477,7 @@
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/tests -p test_stop_reference.py -v",
       "exit_code": 0,
       "log": "stop-reference-tests.log",
-      "sha256": "2b85818f31ff3a9a7cdb0ebeb8f77cb3e5a6ae25e80b4bd7ed4a51be0411c7ea"
+      "sha256": "4bea9be4a5b3ee1407b677e868b8fa2cf12c8baa73095f7628e65ad0710d9098"
     },
     {
       "command": ".venv-cpu/bin/python work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/stop_reference_comparison.py --before .runtime-work/c331230-primary-compat-v2 --inside .runtime-work/c331230-inside-compat-v1 --output work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/halt-position-comparison.json",
@@ -490,10 +490,22 @@
       "exit_code": 0,
       "log": "stop-line-hierarchy-comparison.json",
       "sha256": "e66347aa3474d402d49e198866278736708b5941ff5d486b3fb5eb31cfed4eb8"
+    },
+    {
+      "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -c 'import json; from pathlib import Path; from worker_exchange.semantic_delivery import validate; r=Path(\"work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver\"); a=json.loads(Path(\"inputs/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/assignment.json\").read_text()); m=json.loads((r/\"execution-manifest.json\").read_text()); print(json.dumps(validate(r,a,m)))'",
+      "exit_code": 0,
+      "log": "semantic-proof.log",
+      "sha256": "6c4bdc52cb0a22eacf87c2db85f28e62e762e418d43990e6cd45f6c55f16e8a9"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/stop_reference_comparison.py --crosswalk .runtime-work/c331230-primary-compat-v2 --first-view .runtime-work/c331230-first-view-compat-v4 --output work/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/sight-point-hierarchy-comparison.json",
+      "exit_code": 0,
+      "log": "sight-point-hierarchy-comparison.json",
+      "sha256": "5ce303bbe88325bf325059fde2d5730ee2f969f17c871e08b37941d7b8fb403c"
     }
   ],
   "remaining_gpu_checks": [
     "Actual proper sign, marked/unmarked near-side crosswalk, stop line, full halt, body entry and camera visibility."
   ],
-  "reason": "All six selected primaries pass exact offline, synthetic compatibility with negative source removal, and recorded-only saved processing. Marked-crosswalk fallback1 now passes those CPU paths with an extended brake-hold trigger and invariant candidate plan. Twelve CPU tests and three source comparisons pass. Twelve remaining fallbacks, canonical semantic proposals, independent delivery/remaining comparison audits, and exact full-branch review are unfinished worker-owned CPU work. No physical, pixel or legal acceptance is claimed; status partial."
+  "reason": "All six selected cases and all 18 distinct fallbacks pass exact offline, synthetic positive/negative source-bound compatibility, and recorded-only saved processing; candidate construction validation passes for every case. Six diagnostic source comparisons and the eight-stage canonical semantic proposal chain pass CPU validation. Independent per-case delivery and remaining comparison acceptance audits, complete physical sweep plans, exact statutory/full-branch review, queue/shared bindings and batch integration remain unfinished worker-owned CPU work. Native sign, crossing/marking/view provenance, original pixel visibility, physical completion and legal qualification remain unverified. Status stays partial."
 }

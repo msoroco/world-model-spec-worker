@@ -1025,3 +1025,32 @@ Traceback (most recent call last):
 ValueError: Preparation acceptance failed: partial/missing packages remain
 
 ```
+
+## Current continuation: complete C331230 fallback set and semantic stage chain, 2026-11-15
+
+All six selected C331230 cases now have three distinct physical-risk fallback constructions each (18 total). This turn completed `__no_crosswalk_no_line_first_view`, `__crosswalk_and_stop_line`, and `__unmarked_crosswalk_stop_before` with nine additional candidates. Each new candidate passed exact offline materialization, positive/negative source-bound synthetic compatibility, and recorded-only `process-saved`; exact commands, construction hashes and receipt hashes are in `execution-manifest.json` and `result.json`. `candidate_constructions.validate(... required=True, require_alternate=True, candidate_count=4)` passes for all six cases; scoped complete check passes. These proofs claim software compatibility only.
+
+Added independent diagnostic comparisons for `halt_position` and `stop_line_hierarchy` in `stop_reference_comparison.py`, with positive source receipts, negative sign-ID tests and the 14-test C331230 CPU suite passing. The stop-line hierarchy check holds signed halt behavior and halt body location fixed while permitting the declared reference inventory change; a one-frame transit body position difference exists in the synthetic diagnostic packets, so no identical-full-trajectory claim is made. All five case-plan comparisons now have diagnostic source checks, plus one stop-line versus first-view diagnostic comparison. Independent Native delivery/comparison acceptance audits are still worker-owned.
+
+Authored canonical relevance-batch, relevance, template, three judgment-observable, bindings, cases and semantic-index proposals under `proposals/`. The eight-stage `semantic_delivery.validate` passes for six selected cases and is recorded in `semantic-proof.log`; judgment sweep specs remain explicitly incomplete pending reviewed Native feasibility and coverage, so this does not make the package ready. The package remains partial. The next CPU tasks are independent delivery audit code and positive/negative fixture proofs for each selected case, complete feasible sweep proposals, exact statutory/branch review, then queue and shared integration bindings. Native physical/pixel/legal acceptance remains unclaimed.
+
+To remain at the 8,600 returned-file limit, this turn relocated 66 JSON-unreferenced historical check logs to ignored `.runtime-work/retired-logs/`; their exact UTF-8 contents and SHA256 values are preserved in `work/_shared/HANDOFF.md`, and their original bytes remain in the archive. Every affected package's scoped complete check passed after relocation. No frozen input, runtime, batch.json or Git action was changed.
+
+### testing__C125697__NRS-484B-250-2__motor_vehicle_driver/strict-assignment-semantic-v1.log (SHA256 8aef413169724d9407e9d952cba2ff32a092e36fc56cfd20e5c6db11ce83d5aa)
+
+```text
+Traceback (most recent call last):
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/worker_check.py", line 30, in <module>
+    result = check(Path(__file__).resolve().parent, complete=args.complete or args.require_delivery_ready, require_ready=args.require_delivery_ready, assignment=args.assignment)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 276, in check
+    require(len(results)==len(items) and all(r['status']=='ready' for r in results.values()), 'Preparation acceptance failed: partial/missing packages remain')
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/scenario_pipeline/worker_exchange/preparation.py", line 10, in require
+    raise ValueError(message)
+ValueError: Preparation acceptance failed: partial/missing packages remain
+
+```
+
+The `sight_point_hierarchy` case-plan comparison now has a source-bound crosswalk-versus-first-view receipt (`sight-point-hierarchy-comparison.json`) and a negative missing-sight-history CPU test. All five planned comparisons have diagnostic source checks, plus the independent stop-line-versus-first-view check. The full C331230 suite reports 15 passing tests; scoped complete check and strict full-batch gate must be rerun after this latest edit.
+
+Final settled-tree strict rerun after 18 C331230 fallbacks, six diagnostic comparisons and validated semantic stage chain exited 1 at `preparation.py:276`: `Preparation acceptance failed: partial/missing packages remain` (`work/_shared/strict-batch-gate.log`). All preceding static/returned-file checks passed. The inventory is 3 ready / 40 partial of 43; `work/` has exactly 8,600 files, and C331230 scoped `--complete` passes while its status remains partial. Goal remains active. Worker-owned next actions are independent delivery audit construction and positive/negative proofs for C331230, complete feasible judgment sweep plans and statutory review, followed by other incomplete assignments and shared queue/integration. No external dependency is asserted.

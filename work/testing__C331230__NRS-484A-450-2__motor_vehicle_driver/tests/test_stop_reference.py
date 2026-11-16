@@ -115,4 +115,21 @@ class StopReferenceTests(unittest.TestCase):
    p=line/'approach_context.json';ctx=json.loads(p.read_text())
    ctx['native_stop_sign_id']=999;p.write_text(json.dumps(ctx))
    with self.assertRaisesRegex(ValueError,'native_stop_sign_id'):compare_crosswalk_to_line(cross,line)
+ def test_crosswalk_to_first_view_hierarchy_source_comparison(self):
+  import os,subprocess,shutil
+  repo=ROOT.parents[1]
+  sys.path.insert(0,str(repo/'runtime/scenario_pipeline'))
+  from worker_exchange.fixture_recipe import materialize
+  from stop_reference_comparison import compare_crosswalk_to_view
+  with tempfile.TemporaryDirectory() as tmp:
+   base=Path(tmp);cross=base/'cross';view=base/'view'
+   materialize(repo,ROOT/'diagnostic-recipe.json',cross)
+   materialize(repo,ROOT/'cases/no_crosswalk_no_line_first_view/diagnostic-recipe.json',view)
+   for name in ('config.json','site.json','construction.json'):
+    shutil.copyfile(ROOT/name,cross/name)
+   env=dict(os.environ,PYTHONPATH=str(ROOT)+os.pathsep+str(repo/'runtime/scenario_pipeline'))
+   subprocess.run([sys.executable,str(ROOT/'finalizer.py'),'--attempt',str(cross),'--output',str(cross/'analysis-report.json')],env=env,check=True,capture_output=True,text=True)
+   self.assertTrue(compare_crosswalk_to_view(cross,view)['diagnostic_comparison_passed'])
+   p=view/'sight_history.jsonl';p.unlink()
+   with self.assertRaisesRegex(ValueError,'Missing original source'):compare_crosswalk_to_view(cross,view)
 if __name__=='__main__':unittest.main()
