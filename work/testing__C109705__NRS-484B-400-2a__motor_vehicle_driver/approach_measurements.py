@@ -80,3 +80,35 @@ def analyze(root:Path)->dict:
             "all_sampled_bodies_in_right_half":all(s["body_fully_in_right_half"] for s in samples),
             "nearest_centerline_judgment":"unresolved; no statutory numeric lateral cutoff",
             "legal_conclusion":"unresolved"}
+
+
+def compare_near_far(near_root:Path, far_root:Path)->dict:
+    """Compare independently saved approaches with fixed sourced road geometry.
+
+    Frame numbers and physical trajectories may differ between attempts. The
+    geometric distinction is observational and supplies no legal cutoff.
+    """
+    near,far=analyze(near_root),analyze(far_root)
+    fixed=("native_map_id","intersection_id","approach_road_id",
+           "approach_lane_id","outgoing_road_id","opposing_lane_source",
+           "centerline_source","right_half_source","junction_source",
+           "left_turn_route_source","both_highways_two_directional",
+           "intended_turn","centerline_kind","centerline_xy_m",
+           "right_half_polygon_xy_m")
+    a,b=near["native_road_context"],far["native_road_context"]
+    if any(a.get(key)!=b.get(key) for key in fixed):
+        raise ValueError("Fixed approach road context differs")
+    if not near["all_sampled_bodies_in_right_half"] or not far["all_sampled_bodies_in_right_half"]:
+        raise ValueError("Compared body leaves sourced right half")
+    near_distances=[s["body_centroid_distance_to_centerline_m"] for s in near["approach_samples"]]
+    far_distances=[s["body_centroid_distance_to_centerline_m"] for s in far["approach_samples"]]
+    near_mean=sum(near_distances)/len(near_distances)
+    far_mean=sum(far_distances)/len(far_distances)
+    if not near_mean<far_mean:
+        raise ValueError("Near/far measured ordering missing")
+    return {"format":"worker-left-approach-near-far-comparison",
+            "fixed_context_keys":list(fixed),
+            "near_source_hashes":near["sources"],"far_source_hashes":far["sources"],
+            "near_mean_body_centroid_distance_m":near_mean,
+            "far_mean_body_centroid_distance_m":far_mean,
+            "legal_nearest_judgment":"unresolved"}
