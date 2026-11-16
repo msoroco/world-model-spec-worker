@@ -110,8 +110,11 @@ def execute(bundle,output,host,port):
             'actual_parking_verified':False,'non_taxicab_actual_use_verified':False,
             'passenger_loading_exception_verified':False,
             'legal_verdict':None})
-        cameras=(('overview',1280,720,85,(60,-22,35)),
-                 ('forward',1280,720,90,(0,0,0)))
+        # Keep all four source views synchronized for the pinned capture profile.
+        cameras=(('overview',1920,1080,85,(60,-22,35)),
+                 ('approach',1280,720,75,(25,-18,12)),
+                 ('reference_corner',1280,720,75,(60,-18,12)),
+                 ('driver_reference',1280,720,90,(1,0,1.5)))
         library=world.get_blueprint_library()
         for name,width,height,fov,location in cameras:
             camera_bp=library.find('sensor.camera.rgb')
@@ -119,10 +122,11 @@ def execute(bundle,output,host,port):
                 ('fov',fov),('sensor_tick',0)):
                 camera_bp.set_attribute(key,str(value))
             transform=(carla.Transform(carla.Location(x=location[0],
-                y=location[1],z=location[2]),carla.Rotation(pitch=-55))
-                if name=='overview' else carla.Transform(carla.Location(x=1,y=0,z=1.5)))
+                y=location[1],z=location[2]),carla.Rotation(pitch=-55 if name=='overview' else -25))
+                if name!='driver_reference' else
+                carla.Transform(carla.Location(x=1,y=0,z=1.5)))
             sensor=world.spawn_actor(camera_bp,transform,
-                attach_to=None if name=='overview' else ego)
+                attach_to=ego if name=='driver_reference' else None)
             owned.append(sensor);camera_queues[name]=queue.Queue()
             logs[name]=(output/(name+'.encoder.log')).open('x')
             video[name]=subprocess.Popen(['ffmpeg','-nostdin','-hide_banner',

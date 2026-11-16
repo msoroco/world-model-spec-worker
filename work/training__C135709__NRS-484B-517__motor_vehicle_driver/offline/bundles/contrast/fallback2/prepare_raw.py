@@ -60,7 +60,8 @@ def prepare(bundle,raw,output,synthetic_cpu=False):
             'C135709 raw capture report differs')
     media={}
     if not synthetic_cpu:
-        for name in ('forward.mkv','overview.mkv'):
+        for name in ('overview.mkv','approach.mkv','reference_corner.mkv',
+                     'driver_reference.mkv'):
             path=raw/name;media[name]=sha(path)
             proc=subprocess.run(['ffprobe','-v','error','-count_frames',
                 '-select_streams','v:0','-show_entries','stream=codec_name,nb_read_frames',
@@ -96,7 +97,7 @@ def prepare(bundle,raw,output,synthetic_cpu=False):
                 review.get('source_kind')==kind and
                 review.get('review_provenance')==
                     ('synthetic_cpu' if synthetic_cpu else 'human_frame_review') and
-                review.get('video_sha256')==media.get('forward.mkv','synthetic_cpu') and
+                review.get('video_sha256')==media.get('driver_reference.mkv','synthetic_cpu') and
                 type(review.get('stand_sign_visible')) is bool and
                 type(review.get('stand_polygon_visible')) is bool and
                 finite(review.get('reviewed_ego_y_m')),

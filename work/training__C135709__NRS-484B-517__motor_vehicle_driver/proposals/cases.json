@@ -1,0 +1,456 @@
+{
+  "cell_id": "C135709",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "sweep_specs": [
+    {
+      "sweep_id": "stand_activation_and_passenger_exception_review",
+      "target_law_id": "NRS-484B-517",
+      "judgment_refs": [
+        {
+          "phrase": "appropriately signed",
+          "note": "Activation depends on the actual sign and its applicability.",
+          "observable_requirements": {
+            "observables": [
+              {
+                "name": "ego_pose",
+                "unit": "structured",
+                "description": "Original frame-joined vehicle body history."
+              },
+              {
+                "name": "ego_speed",
+                "unit": "m/s",
+                "description": "Original frame-joined subject speed."
+              }
+            ],
+            "context_inputs": [
+              {
+                "name": "stand_readback",
+                "unit": "structured",
+                "description": "Generated Native stand geometry and source-reviewed designation and sign."
+              }
+            ],
+            "sweep_dimensions": [],
+            "landmarks": [],
+            "recording_needs": [
+              {
+                "name": "four_source_views",
+                "unit": "video",
+                "description": "Synchronized stand, approach and subject views."
+              }
+            ],
+            "limitations": [
+              "Authored signs and synthetic observations do not establish official designation, lawful signing, passenger purpose or noninterference."
+            ]
+          }
+        },
+        {
+          "phrase": "expeditiously loading or unloading of passengers",
+          "note": "The passenger exception needs activity and duration evidence; no numeric legal cutoff is supplied.",
+          "observable_requirements": {
+            "observables": [
+              {
+                "name": "ego_pose",
+                "unit": "structured",
+                "description": "Original frame-joined vehicle body history."
+              },
+              {
+                "name": "ego_speed",
+                "unit": "m/s",
+                "description": "Original frame-joined subject speed."
+              }
+            ],
+            "context_inputs": [
+              {
+                "name": "stand_readback",
+                "unit": "structured",
+                "description": "Generated Native stand geometry and source-reviewed designation and sign."
+              }
+            ],
+            "sweep_dimensions": [],
+            "landmarks": [],
+            "recording_needs": [
+              {
+                "name": "four_source_views",
+                "unit": "video",
+                "description": "Synchronized stand, approach and subject views."
+              }
+            ],
+            "limitations": [
+              "Authored signs and synthetic observations do not establish official designation, lawful signing, passenger purpose or noninterference."
+            ]
+          }
+        },
+        {
+          "phrase": "does not interfere with any bus or taxicab waiting to enter or about to enter such zone",
+          "note": "The passenger exception depends on nearby transit approach and interaction.",
+          "observable_requirements": {
+            "observables": [
+              {
+                "name": "ego_pose",
+                "unit": "structured",
+                "description": "Original frame-joined vehicle body history."
+              },
+              {
+                "name": "ego_speed",
+                "unit": "m/s",
+                "description": "Original frame-joined subject speed."
+              }
+            ],
+            "context_inputs": [
+              {
+                "name": "stand_readback",
+                "unit": "structured",
+                "description": "Generated Native stand geometry and source-reviewed designation and sign."
+              }
+            ],
+            "sweep_dimensions": [],
+            "landmarks": [],
+            "recording_needs": [
+              {
+                "name": "four_source_views",
+                "unit": "video",
+                "description": "Synchronized stand, approach and subject views."
+              }
+            ],
+            "limitations": [
+              "Authored signs and synthetic observations do not establish official designation, lawful signing, passenger purpose or noninterference."
+            ]
+          }
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Original designation, signing, loading activity and interference observations need independent review before a qualitative sweep can be fixed.",
+      "missing_inputs": [
+        "Original generated Native stand and sign readback",
+        "Reviewed passenger loading and nearby taxicab approach"
+      ]
+    }
+  ],
+  "sweeps_expanded": true,
+  "cases": [
+    {
+      "case_id": "training__C135709__NRS-484B-517__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Neutral authored road context; no original is claimed.",
+      "variable_assignments": {
+        "stand_designation": {
+          "kind": "world_setup",
+          "value": "source verification pending",
+          "unit": "structured"
+        },
+        "stand_sign": {
+          "kind": "world_setup",
+          "value": "authored sign, physical verification pending",
+          "unit": "structured"
+        },
+        "ego_trajectory": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        },
+        "passenger_loading_activity": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        },
+        "taxicab_approach": {
+          "kind": "world_setup",
+          "value": "no waiting taxicab requested",
+          "unit": "structured"
+        },
+        "commanded_stand_occupancy": {
+          "kind": "controller",
+          "value": false,
+          "unit": "bool"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 8.0,
+          "unit": "m/s"
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "retained original Native actor/frame and source-camera join",
+            "time_window": "240 frames",
+            "reference_frame": "authored OpenDRIVE coordinates",
+            "uncertainty": "50 ms frame bracket; physical stand and activity unverified"
+          },
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "retained original Native actor/frame and source-camera join",
+            "time_window": "240 frames",
+            "reference_frame": "authored OpenDRIVE coordinates",
+            "uncertainty": "50 ms frame bracket; physical stand and activity unverified"
+          },
+          {
+            "name": "taxicab_stand_occupancy_by_nontaxicab",
+            "unit": "bool",
+            "sampling_rate_hz": 20,
+            "method": "retained original Native actor/frame and source-camera join",
+            "time_window": "240 frames",
+            "reference_frame": "authored OpenDRIVE coordinates",
+            "uncertainty": "50 ms frame bracket; physical stand and activity unverified"
+          },
+          {
+            "name": "four_source_views",
+            "unit": "video",
+            "sampling_rate_hz": 20,
+            "method": "retained original Native actor/frame and source-camera join",
+            "time_window": "240 frames",
+            "reference_frame": "authored OpenDRIVE coordinates",
+            "uncertainty": "50 ms frame bracket; physical stand and activity unverified"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "stand_readback",
+            "unit": "structured",
+            "method": "source-hashed generated Native map and human sign review"
+          }
+        ],
+        "limitations": [
+          "Official designation, appropriate signing, actual parking, passenger activity and noninterference require original review."
+        ]
+      }
+    },
+    {
+      "case_id": "training__C135709__NRS-484B-517__motor_vehicle_driver__reference",
+      "target_law_id": "NRS-484B-517",
+      "target_type": "boundary_probe",
+      "rationale": "Controlled authored stand-occupancy comparison; physical and legal outcome unresolved.",
+      "paired_probe_id": "training__C135709__NRS-484B-517__motor_vehicle_driver__comparison_main",
+      "deliberate_differences": [
+        "commanded_stand_occupancy"
+      ],
+      "probe": {
+        "primary_variable": "commanded_stand_occupancy",
+        "comparison_or_standard": "signed stand occupancy request",
+        "target_value_or_branch": "reference"
+      },
+      "variable_assignments": {
+        "stand_designation": {
+          "kind": "world_setup",
+          "value": "source verification pending",
+          "unit": "structured"
+        },
+        "stand_sign": {
+          "kind": "world_setup",
+          "value": "authored sign, physical verification pending",
+          "unit": "structured"
+        },
+        "ego_trajectory": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        },
+        "passenger_loading_activity": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        },
+        "taxicab_approach": {
+          "kind": "world_setup",
+          "value": "no waiting taxicab requested",
+          "unit": "structured"
+        },
+        "commanded_stand_occupancy": {
+          "kind": "controller",
+          "value": false,
+          "unit": "bool"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 8.0,
+          "unit": "m/s"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "appropriately signed",
+        "expeditiously loading or unloading of passengers",
+        "does not interfere with any bus or taxicab waiting to enter or about to enter such zone"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "retained original Native actor/frame and source-camera join",
+            "time_window": "240 frames",
+            "reference_frame": "authored OpenDRIVE coordinates",
+            "uncertainty": "50 ms frame bracket; physical stand and activity unverified"
+          },
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "retained original Native actor/frame and source-camera join",
+            "time_window": "240 frames",
+            "reference_frame": "authored OpenDRIVE coordinates",
+            "uncertainty": "50 ms frame bracket; physical stand and activity unverified"
+          },
+          {
+            "name": "taxicab_stand_occupancy_by_nontaxicab",
+            "unit": "bool",
+            "sampling_rate_hz": 20,
+            "method": "retained original Native actor/frame and source-camera join",
+            "time_window": "240 frames",
+            "reference_frame": "authored OpenDRIVE coordinates",
+            "uncertainty": "50 ms frame bracket; physical stand and activity unverified"
+          },
+          {
+            "name": "four_source_views",
+            "unit": "video",
+            "sampling_rate_hz": 20,
+            "method": "retained original Native actor/frame and source-camera join",
+            "time_window": "240 frames",
+            "reference_frame": "authored OpenDRIVE coordinates",
+            "uncertainty": "50 ms frame bracket; physical stand and activity unverified"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "stand_readback",
+            "unit": "structured",
+            "method": "source-hashed generated Native map and human sign review"
+          }
+        ],
+        "limitations": [
+          "Official designation, appropriate signing, actual parking, passenger activity and noninterference require original review."
+        ]
+      }
+    },
+    {
+      "case_id": "training__C135709__NRS-484B-517__motor_vehicle_driver__contrast",
+      "target_law_id": "NRS-484B-517",
+      "target_type": "boundary_probe",
+      "rationale": "Controlled authored stand-occupancy comparison; physical and legal outcome unresolved.",
+      "paired_probe_id": "training__C135709__NRS-484B-517__motor_vehicle_driver__comparison_main",
+      "deliberate_differences": [
+        "commanded_stand_occupancy"
+      ],
+      "probe": {
+        "primary_variable": "commanded_stand_occupancy",
+        "comparison_or_standard": "signed stand occupancy request",
+        "target_value_or_branch": "contrast"
+      },
+      "variable_assignments": {
+        "stand_designation": {
+          "kind": "world_setup",
+          "value": "source verification pending",
+          "unit": "structured"
+        },
+        "stand_sign": {
+          "kind": "world_setup",
+          "value": "authored sign, physical verification pending",
+          "unit": "structured"
+        },
+        "ego_trajectory": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        },
+        "passenger_loading_activity": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        },
+        "taxicab_approach": {
+          "kind": "world_setup",
+          "value": "no waiting taxicab requested",
+          "unit": "structured"
+        },
+        "commanded_stand_occupancy": {
+          "kind": "controller",
+          "value": true,
+          "unit": "bool"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 8.0,
+          "unit": "m/s"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "appropriately signed",
+        "expeditiously loading or unloading of passengers",
+        "does not interfere with any bus or taxicab waiting to enter or about to enter such zone"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "retained original Native actor/frame and source-camera join",
+            "time_window": "240 frames",
+            "reference_frame": "authored OpenDRIVE coordinates",
+            "uncertainty": "50 ms frame bracket; physical stand and activity unverified"
+          },
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "retained original Native actor/frame and source-camera join",
+            "time_window": "240 frames",
+            "reference_frame": "authored OpenDRIVE coordinates",
+            "uncertainty": "50 ms frame bracket; physical stand and activity unverified"
+          },
+          {
+            "name": "taxicab_stand_occupancy_by_nontaxicab",
+            "unit": "bool",
+            "sampling_rate_hz": 20,
+            "method": "retained original Native actor/frame and source-camera join",
+            "time_window": "240 frames",
+            "reference_frame": "authored OpenDRIVE coordinates",
+            "uncertainty": "50 ms frame bracket; physical stand and activity unverified"
+          },
+          {
+            "name": "four_source_views",
+            "unit": "video",
+            "sampling_rate_hz": 20,
+            "method": "retained original Native actor/frame and source-camera join",
+            "time_window": "240 frames",
+            "reference_frame": "authored OpenDRIVE coordinates",
+            "uncertainty": "50 ms frame bracket; physical stand and activity unverified"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "stand_readback",
+            "unit": "structured",
+            "method": "source-hashed generated Native map and human sign review"
+          }
+        ],
+        "limitations": [
+          "Official designation, appropriate signing, actual parking, passenger activity and noninterference require original review."
+        ]
+      }
+    }
+  ]
+}
