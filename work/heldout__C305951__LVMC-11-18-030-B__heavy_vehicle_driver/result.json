@@ -81,11 +81,47 @@
       "exit_code": 0,
       "log": "crossing-primary-saved-processing.json",
       "sha256": "7461a87b53b57f81cae753100664eb5d37160d276244bcbba3e2d582a04dfd35"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver/provisional-manifest.json --case heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__passing_boundary_crossing --output .runtime-work/c305951-passing-offline-v3 --python \"$PWD/.venv-cpu/bin/python\"",
+      "exit_code": 0,
+      "log": "fallback1-offline.log",
+      "sha256": "811eabda5dc298da232b3c7953fbe433089645edff6f53063d91016c4136c0a2"
+    },
+    {
+      "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver/provisional-manifest.json --case heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__passing_boundary_crossing --attempt .runtime-work/c305951-passing-saved-original-v2 --output .runtime-work/c305951-passing-saved-output-v2 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "passing-primary-saved-processing.json",
+      "sha256": "781e8fccf47a25a4e39e248b621d8ca97541612e800887a639cec6d3d1283568"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver/provisional-manifest.json --case heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__passing_boundary_crossing --output .runtime-work/c305951-passing-compat-v4 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "passing-primary-compatibility.json",
+      "sha256": "1b5f4b43b6829447d2c86edf298c7928ef268cc4ea33d1caf17f50f5f647c651"
+    },
+    {
+      "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python work/heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver/delivery_audit.py --attempt .runtime-work/c305951-passing-saved-output-v2/v0001/analysis --case heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__passing_boundary_crossing",
+      "exit_code": 0,
+      "log": "passing-primary-delivery-positive.log",
+      "sha256": "1c571eb7f80ba1d2bb1250806807151f03ab9150a0918cbd05652f8bdac7556c"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver/delivery_audit.py --attempt .runtime-work/c305951-heavy-saved-output-v2/v0001/analysis --compare-attempt .runtime-work/c305951-crossing-saved-output-v2/v0001/analysis",
+      "exit_code": 0,
+      "log": "within-crossing-comparison-positive.log",
+      "sha256": "547b282136cd0cd24558aab5897c1b62770e31fd6bdaa5644f313b5f6c4fef57"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver/delivery_audit.py --attempt .runtime-work/c305951-crossing-saved-output-v2/v0001/analysis --compare-attempt .runtime-work/c305951-passing-saved-output-v2/v0001/analysis --passing-comparison",
+      "exit_code": 0,
+      "log": "crossing-passing-comparison-positive.log",
+      "sha256": "61042b87c935cbad82519641c0594ddfef67e163dc3fea0250deb979c38640b5"
     }
   ],
   "remaining_gpu_checks": [
     "Actual motion, geometry, camera visibility and duration remain unverified after CPU preparation."
   ],
-  "reason": "Two of four exact primary cases have current offline, positive/missing-source compatibility, saved-only and independent delivery audit proofs. The within-lane case has three validated fallback constructions. Remaining CPU work: construct and prove passing and lawful-turn-preparation primaries, three fallbacks for each remaining selected case, controlled comparisons, semantic proposals, physical/lifecycle and strict delivery manifest; no GPU dependency prevents this work.",
+  "reason": "Three of four exact primary cases pass pinned offline, source-positive/missing-source compatibility and fresh saved-only processing. Within-lane has three validated fallbacks. Independent delivery and within/crossing plus crossing/passing source comparison positives and negatives are returned and bound; synthetic passing rows show actor 306 but no order reversal or lawful premise. Remaining worker-owned CPU work: construct/prove turn-preparation primary, three distinct fallbacks for crossing/passing/turn-preparation, turn-context comparison, semantic proposals, independent physical/lifecycle audits and strict delivery manifest. No GPU dependency prevents this preparation.",
   "readiness_kind": "delivery_prepared"
 }

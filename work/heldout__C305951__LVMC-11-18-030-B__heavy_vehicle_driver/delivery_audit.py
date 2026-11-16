@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 from hashlib import sha256
 import json
+from math import isfinite
 from pathlib import Path
 import subprocess
 
@@ -67,7 +68,8 @@ def _clearance(observation: dict) -> float:
     return min(values)
 
 
-def audit(root: Path, case_id: str, *, negative_camera: bool = False) -> dict:
+def audit(root: Path, case_id: str, *, negative_camera: bool = False,
+          negative_passing: bool = False) -> dict:
     root = Path(root)
     report = json.loads(_file(root, "analysis-report.json").read_text())
     result = json.loads(_file(root, "result.json").read_text())
@@ -108,6 +110,40 @@ def audit(root: Path, case_id: str, *, negative_camera: bool = False) -> dict:
         clearances.append(value)
     if measurement["value"]["minimum_clearance_m"] != min(clearances):
         raise ValueError("Saved delivery minimum clearance differs")
+    passing = report["measurements"].get("passing_context", {}).get("value")
+    participant_ids = []
+    relative_positions = []
+    ego_ids = {part["actor_id"] for row in body for part in row["heavy_vehicle_components"]}
+    for index, row in enumerate(body):
+        other = None if negative_passing and index == 0 else row.get("overtaken")
+        if other is None:
+            participant_ids.append(None)
+            continue
+        actor_id = other.get("actor_id")
+        corners = other.get("corners_xy_m")
+        velocity = other.get("velocity_xy_mps")
+        if (not isinstance(actor_id, int) or actor_id in ego_ids or
+                not isinstance(corners, list) or len(corners) != 4 or
+                not isinstance(velocity, list) or len(velocity) != 2 or
+                any(not isinstance(point, list) or len(point) != 2 or
+                    any(not isfinite(float(value)) for value in point)
+                    for point in corners) or
+                any(not isfinite(float(value)) for value in velocity)):
+            raise ValueError("Original passing participant geometry invalid")
+        participant_ids.append(actor_id)
+        lane = row["lane"]
+        fx, fy = lane["heading_xy"]
+        ego = row["heavy_vehicle_components"][0]["corners_xy_m"]
+        relative_positions.append(sum(x * fx + y * fy for x, y in ego) / 4 -
+                                  sum(x * fx + y * fy for x, y in corners) / 4)
+    observed_ids = sorted(set(x for x in participant_ids if x is not None))
+    if (passing is not None and passing.get("overtaken_actor_ids") != observed_ids or
+            observed_ids and (len(set(participant_ids)) != 1 or
+                              len(relative_positions) != len(body))):
+        raise ValueError("Saved passing participant differs from original source")
+    order_reversal = bool(relative_positions and relative_positions[0] < 0 < relative_positions[-1])
+    if passing is not None and passing.get("order_reversal_observed") not in (None, order_reversal):
+        raise ValueError("Saved passing order reversal differs from originals")
     evidence = {item["name"]: item for item in result["recording_evidence"]}
     if set(evidence) != set(CHANNELS):
         raise ValueError("Saved delivery recording channel inventory differs")
@@ -119,17 +155,129 @@ def audit(root: Path, case_id: str, *, negative_camera: bool = False) -> dict:
     return {"format": "worker-heavy-lane-delivery-audit-fixture", "case_id": case_id,
             "fixture_only": True, "frames": len(body), "source_join_verified": True,
             "minimum_clearance_m": min(clearances), "four_camera_decode": decoded,
+            "passing_context": {"overtaken_actor_ids": observed_ids,
+                                "order_reversal_observed": order_reversal,
+                                "lawful_passing_premise": None},
+            "physical_acceptance_claimed": False, "legal_acceptance_claimed": False}
+
+
+def compare_containment(within_root: Path, crossing_root: Path, *,
+                        negative_same_body: bool = False) -> dict:
+    """Compare the source-measured footprint while checking declared fixed inputs."""
+    first = Path(within_root)
+    second = first if negative_same_body else Path(crossing_root)
+    within = audit(first, json.loads(_file(first, "result.json").read_text())["case_id"])
+    crossing = audit(second, json.loads(_file(second, "result.json").read_text())["case_id"])
+    if (within["case_id"] == crossing["case_id"] or
+            not within["case_id"].endswith("__within_marked_lane") or
+            not crossing["case_id"].endswith("__unexcused_boundary_crossing")):
+        raise ValueError("Heavy marked-lane comparison case pair differs")
+    fixed = ("native_three_lane_survey.json", "video_frames.jsonl",
+             "overview.mkv", "approach.mkv", "reference_corner.mkv",
+             "driver_reference.mkv")
+    for name in fixed:
+        if _sha(_file(first, name)) != _sha(_file(second, name)):
+            raise ValueError("Heavy marked-lane fixed comparison source differs: " + name)
+    body_first = _rows(_file(first, "heavy_lane_sources.jsonl"))
+    body_second = _rows(_file(second, "heavy_lane_sources.jsonl"))
+    if len(body_first) != len(body_second):
+        raise ValueError("Heavy marked-lane comparison sample count differs")
+    for left, right in zip(body_first, body_second):
+        if left["overtaken"] is not None or right["overtaken"] is not None:
+            raise ValueError("Passing context changed in containment comparison")
+        if (left["frame"], left["time_s"]) != (right["frame"], right["time_s"]):
+            raise ValueError("Heavy marked-lane comparison frame schedule differs")
+        components = left["heavy_vehicle_components"], right["heavy_vehicle_components"]
+        if len(components[0]) != len(components[1]):
+            raise ValueError("Heavy marked-lane component count differs")
+        for a, b in zip(*components):
+            if a["actor_id"] != b["actor_id"]:
+                raise ValueError("Heavy marked-lane component identity differs")
+            pa, pb = a["corners_xy_m"], b["corners_xy_m"]
+            if len(pa) != 4 or len(pb) != 4:
+                raise ValueError("Heavy marked-lane component corners incomplete")
+            delta = [pb[0][0] - pa[0][0], pb[0][1] - pa[0][1]]
+            if any(abs((q[0] - p[0]) - delta[0]) > 1e-6 or
+                   abs((q[1] - p[1]) - delta[1]) > 1e-6
+                   for p, q in zip(pa, pb)):
+                raise ValueError("Heavy marked-lane body dimensions changed")
+    if not within["minimum_clearance_m"] > 0 or not crossing["minimum_clearance_m"] < 0:
+        raise ValueError("Heavy marked-lane deliberate footprint difference absent")
+    return {"format": "worker-heavy-lane-comparison-fixture",
+            "case_ids": [within["case_id"], crossing["case_id"]],
+            "fixed_source_sha256": {name: _sha(_file(first, name)) for name in fixed},
+            "within_minimum_clearance_m": within["minimum_clearance_m"],
+            "crossing_minimum_clearance_m": crossing["minimum_clearance_m"],
+            "source_join_verified": True, "physical_acceptance_claimed": False,
+            "legal_acceptance_claimed": False}
+
+
+def compare_passing(crossing_root: Path, passing_root: Path, *,
+                    negative_passing: bool = False) -> dict:
+    """Check that the source-recorded participant is the declared difference."""
+    first, second = Path(crossing_root), Path(passing_root)
+    left_case = json.loads(_file(first, "result.json").read_text())["case_id"]
+    right_case = json.loads(_file(second, "result.json").read_text())["case_id"]
+    left = audit(first, left_case)
+    right = audit(second, right_case, negative_passing=negative_passing)
+    if (not left_case.endswith("__unexcused_boundary_crossing") or
+            not right_case.endswith("__passing_boundary_crossing")):
+        raise ValueError("Heavy passing comparison case pair differs")
+    fixed = ("native_three_lane_survey.json", "video_frames.jsonl",
+             "overview.mkv", "approach.mkv", "reference_corner.mkv",
+             "driver_reference.mkv")
+    for name in fixed:
+        if _sha(_file(first, name)) != _sha(_file(second, name)):
+            raise ValueError("Heavy passing fixed source differs: " + name)
+    base = _rows(_file(first, "heavy_lane_sources.jsonl"))
+    changed = _rows(_file(second, "heavy_lane_sources.jsonl"))
+    if len(base) != len(changed):
+        raise ValueError("Heavy passing sample count differs")
+    for a, b in zip(base, changed):
+        for key in ("frame", "time_s", "survey_sha256", "lane", "heavy_vehicle_components"):
+            if a[key] != b[key]:
+                raise ValueError("Heavy passing fixed source field differs: " + key)
+        if a.get("overtaken") is not None or b.get("overtaken") is None:
+            raise ValueError("Heavy passing participant difference absent")
+    if (abs(left["minimum_clearance_m"] - right["minimum_clearance_m"]) > 1e-9 or
+            not right["passing_context"]["overtaken_actor_ids"]):
+        raise ValueError("Heavy passing clearance or participant comparison differs")
+    return {"format": "worker-heavy-lane-passing-comparison-fixture",
+            "case_ids": [left_case, right_case],
+            "fixed_source_sha256": {name: _sha(_file(first, name)) for name in fixed},
+            "matched_minimum_clearance_m": left["minimum_clearance_m"],
+            "overtaken_actor_ids": right["passing_context"]["overtaken_actor_ids"],
+            "order_reversal_observed": right["passing_context"]["order_reversal_observed"],
             "physical_acceptance_claimed": False, "legal_acceptance_claimed": False}
 
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--attempt", required=True)
-    parser.add_argument("--case", required=True)
+    parser.add_argument("--attempt")
+    parser.add_argument("--case")
+    parser.add_argument("--compare-attempt")
+    parser.add_argument("--passing-comparison", action="store_true")
+    parser.add_argument("--negative-same-body", action="store_true")
     parser.add_argument("--negative-camera", action="store_true")
+    parser.add_argument("--negative-passing", action="store_true")
     args = parser.parse_args()
+    if args.compare_attempt:
+        if not args.attempt or args.case:
+            parser.error("comparison needs --attempt and --compare-attempt")
+        if args.passing_comparison:
+            print(json.dumps(compare_passing(Path(args.attempt),
+                                             Path(args.compare_attempt),
+                                             negative_passing=args.negative_passing), indent=2))
+        else:
+            print(json.dumps(compare_containment(Path(args.attempt),
+                                                 Path(args.compare_attempt),
+                                                 negative_same_body=args.negative_same_body), indent=2))
+        return
+    if not args.attempt or not args.case:
+        parser.error("delivery audit needs --attempt and --case")
     print(json.dumps(audit(Path(args.attempt), args.case,
-                           negative_camera=args.negative_camera), indent=2))
+                           negative_camera=args.negative_camera,
+                           negative_passing=args.negative_passing), indent=2))
 
 
 if __name__ == "__main__":

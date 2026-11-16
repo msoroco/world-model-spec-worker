@@ -1,15 +1,32 @@
 """Restore source-hashed compacted diagnostic logs from the return inventory."""
 
 import argparse
+import base64
 from hashlib import sha256
 import json
 from pathlib import Path
+import zlib
+
+
+def load_inventories(directory):
+    """Read plain and losslessly bundled source-hashed history inventories."""
+    inventories = []
+    for path in sorted(Path(directory).glob('prune-history*.json')):
+        data = json.loads(path.read_text())
+        if data.get('format') == 'compressed-prune-history-bundle':
+            for item in data['inventories']:
+                raw = zlib.decompress(base64.b64decode(item['zlib_base64'], validate=True))
+                if sha256(raw).hexdigest() != item['sha256']:
+                    raise ValueError('Compacted inventory source hash changed: ' + item['name'])
+                inventories.append(json.loads(raw))
+        else:
+            inventories.append(data)
+    return inventories
 
 
 def restore(assignment, skip_existing_verified=False):
     root = Path(__file__).resolve().parents[2]
-    inventories = [json.loads(path.read_text()) for path in
-                   sorted((root / 'work/_shared').glob('prune-history*.json'))]
+    inventories = load_inventories(root / 'work/_shared')
     prefix = f'work/{assignment}/'
     count = 0
     rows = [row for inventory in inventories for row in
