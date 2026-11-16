@@ -1,6 +1,7 @@
 import hashlib
 import importlib.util
 import json
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -10,6 +11,9 @@ MODULE = Path(__file__).resolve().parents[1] / "heavy_lane_source.py"
 spec = importlib.util.spec_from_file_location("heavy_lane_source", MODULE)
 source = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(source)
+sys.path.insert(0, str(MODULE.parent))
+import runner
+import heavy_lane_finalizer as finalizer
 
 
 class Point:
@@ -130,6 +134,75 @@ class HeavyLaneSourceTest(unittest.TestCase):
         lane_b.right = None
         with self.assertRaisesRegex(ValueError, "three-driving-lane"):
             source.select_three_lane_site(Map())
+
+    def test_native_runner_check_route_and_control(self):
+        config = json.loads(MODULE.with_name("config.json").read_text())
+        runner.check_config(config)
+        changed = json.loads(json.dumps(config))
+        changed["engineering"]["heavy_blueprint"] = "vehicle.tesla.model3"
+        with self.assertRaisesRegex(ValueError, "heavy truck blueprint"):
+            runner.check_config(changed)
+
+        class RoutePoint(Waypoint):
+            def __init__(self, step):
+                self.step = step
+                self.lane_id = -2
+                self.s = step
+                self.transform = type("T", (), {"location": Point(step * 2, 0)})()
+
+            def next(self, spacing):
+                return [RoutePoint(self.step + 1)]
+
+        route = runner.route_from_site(RoutePoint(0), step_m=2, count=4)
+        self.assertEqual([wp.s for wp in route], [0, 1, 2, 3])
+
+        class Vehicle(Actor):
+            def get_transform(self):
+                return type("T", (), {"location": Point(0, 0),
+                                      "get_forward_vector": lambda self: Point(1, 0)})()
+
+        command = runner.control_step(Vehicle(1, 0), route[1], 4)
+        self.assertEqual(command["steer"], 0)
+        self.assertEqual(command["throttle"], 0)
+        self.assertEqual(command["brake"], 0)
+
+    def test_saved_original_join_and_missing_camera_negative(self):
+        (self.root / "config.json").write_bytes(MODULE.with_name("config.json").read_bytes())
+        with self.recorder() as recorder:
+            first = recorder.append(20, 0.0, Waypoint())
+        survey = self.root / "native_three_lane_survey.json"
+        survey.write_bytes(self.survey.read_bytes())
+        rows = []
+        for index in range(160):
+            row = json.loads(json.dumps(first))
+            row["frame"], row["time_s"] = 20 + index, index / 20
+            rows.append(row)
+        (self.root / "heavy_lane_sources.jsonl").write_text("".join(
+            json.dumps(row) + "\n" for row in rows))
+        (self.root / "trace.jsonl").write_text("".join(
+            json.dumps({"frame": 20 + index, "time_s": index / 20}) + "\n"
+            for index in range(160)))
+        (self.root / "video_frames.jsonl").write_text("".join(
+            json.dumps({"video_frame": index, "carla_frame": 20 + index,
+                        "time_s": index / 20}) + "\n" for index in range(160)))
+        for name in finalizer.CAMERA_FILES:
+            (self.root / name).write_bytes(b"source-shaped CPU test bytes")
+        report = finalizer.analyze(self.root)
+        result = finalizer.build_result(self.root, report)
+        self.assertEqual(len(report["measurements"]["heavy_lane_footprint"]["value"]["frames"]), 160)
+        self.assertEqual(len(result["recording_evidence"]), 6)
+        self.assertEqual(result["realized_observables"]["heavy_lane_minimum_clearance_m"]
+                         ["sample_window_s"], [0.0, 159 / 20])
+        self.assertFalse(result["physical_acceptance_claimed"])
+        (self.root / "overview.mkv").unlink()
+        with self.assertRaisesRegex(ValueError, "Missing original heavy-lane source: overview"):
+            finalizer.analyze(self.root, write_channels=False)
+        (self.root / "overview.mkv").write_bytes(b"source-shaped CPU test bytes")
+        rows[0]["survey_sha256"] = "0" * 64
+        (self.root / "heavy_lane_sources.jsonl").write_text("".join(
+            json.dumps(row) + "\n" for row in rows))
+        with self.assertRaisesRegex(ValueError, "survey source hash differs"):
+            finalizer.analyze(self.root, write_channels=False)
 
     def test_stale_survey_rejected(self):
         self.survey.write_text(self.survey.read_text() + " ")
