@@ -5,7 +5,7 @@ F=Path(__file__).resolve().parent;R=F.parent.parent
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 def main():
  m=json.loads((F/'execution-manifest.json').read_text());entries=[e for e in m['cases'] if e['case_id'].endswith(('__signal_advance_100_below_25','__signal_advance_100_above_36'))]
- assert len(m['cases'])==14 and len(entries)==2
+ assert len(m['cases'])==16 and len(entries)==2
  proofs=[]
  for e in entries:
   label='below' if e['signal_target_m']==25 else 'above'

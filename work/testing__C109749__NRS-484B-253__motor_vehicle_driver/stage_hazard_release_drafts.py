@@ -9,7 +9,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parent.parent
 STAGE = REPO / '.runtime-work/c109749-hazard-release-stage-v2'
-SEMANTIC_STAGE = REPO / '.runtime-work/c109749-hazard-release-semantic-v3'
+SEMANTIC_STAGE = REPO / '.runtime-work/c109749-hazard-release-semantic-v4'
 
 
 def sha(path):
@@ -108,17 +108,23 @@ def semantic_preview():
     proposal_path = target / 'proposals/cases.json'
     proposals = json.loads(proposal_path.read_text())
     far = next(row for row in proposals['cases'] if row['case_id'].endswith('__approaching_far'))
-    for entry in [*selected['cases'], *draft['cases']]:
+    selected_ids = {entry['case_id'] for entry in selected['cases']}
+    for entry in [*selected['cases'],
+                  *(entry for entry in draft['cases'] if entry['case_id'] not in selected_ids)]:
         source = ROOT / entry['construction']
         dest = target / entry['construction']
         dest.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(source, dest)
         assert sha(dest) == entry['construction_sha256']
     for entry in draft['cases']:
-        proposal = release_proposal(far, entry)
+        proposal = next((row for row in proposals['cases']
+                         if row['case_id'] == entry['case_id']), None)
+        if proposal is None:
+            proposal = release_proposal(far, entry)
+            proposals['cases'].append(proposal)
         verify_release_binding(proposal, entry)
-        proposals['cases'].append(proposal)
-        selected['cases'].append(entry)
+        if entry['case_id'] not in selected_ids:
+            selected['cases'].append(entry)
     write(proposal_path, proposals)
     index_path = target / 'proposals/semantic-index.json'
     index = json.loads(index_path.read_text())
