@@ -30,6 +30,18 @@ def read(path):
     return json.loads(Path(path).read_text())
 
 
+def verify_capture_closure(report, case_id, candidate_id):
+    require(report.get('case_id') == case_id and
+            report.get('candidate_id') == candidate_id and
+            report.get('observed_frames') == 240 and
+            report.get('error') is None and
+            report.get('closure_failures') == [] and
+            report.get('lifecycle_events') ==
+            ['capture_finished','encoders_closed','restoration_verified'] and
+            report.get('restoration',{}).get('restored') is True,
+            'Original Native ownership closure or world restoration unverified')
+
+
 def audit(attempt, processing, case_id, candidate_id, pixel_review=None):
     attempt = Path(attempt)
     require(processing.get('case_id') == case_id and
@@ -63,6 +75,10 @@ def audit(attempt, processing, case_id, candidate_id, pixel_review=None):
                 'candidate_id':candidate_id, 'passed':False,
                 'source_shape_passed':True, 'checks':{name:False for name in CHECKS},
                 'physical_or_legal_acceptance_claimed':False}
+    require((attempt/'native-capture-report.json').is_file(),
+            'Original Native capture report missing')
+    capture_report = read(attempt/'native-capture-report.json')
+    verify_capture_closure(capture_report,case_id,candidate_id)
     require(motion['source_kind'] == 'original_native' and motion['status'] == 'met' and
             result.get('provenance_kind') == 'native' and result.get('maneuver_completed') is True and
             pixel_review is not None,

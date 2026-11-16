@@ -21,7 +21,7 @@ def prove():
     positives = []; negatives = []
     for witness in ('reference', 'contrast'):
         for candidate in ('primary', 'fallback1', 'fallback2', 'fallback3'):
-            prefix = ROOT/'.runtime-work'/f'c146314-210-2-{witness}-{candidate}-fresh-update060'
+            prefix = ROOT/'.runtime-work'/f'c146314-210-2-{witness}-{candidate}-fresh-update061'
             attempt = Path(str(prefix)+'-attempt')
             receipt = json.loads((Path(str(prefix)+'-saved')/'v0001/processing.json').read_text())
             case_id = AID+'__'+witness

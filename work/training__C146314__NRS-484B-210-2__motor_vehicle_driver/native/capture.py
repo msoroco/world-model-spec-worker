@@ -78,7 +78,8 @@ def prepare_output(bundle,output,cfg):
         write_new(target,cfg)
 
 
-def close_capture(pipeline, videos, logs, owned, changed, client, saved, restore):
+def close_capture(pipeline, videos, logs, owned, changed, client, saved, restore,
+                  capture_succeeded):
     """Close Native ownership before any saved processing may start.
 
     The event list records only completed operations. A failed close or restore
@@ -86,9 +87,9 @@ def close_capture(pipeline, videos, logs, owned, changed, client, saved, restore
     """
     events=[];failures=[];restored=None
     if pipeline is not None:
-        try:pipeline.close(confirmed=True)
+        try:pipeline.close(confirmed=capture_succeeded)
         except BaseException as exc:failures.append({'pipeline_close_error':str(exc)})
-    if not failures:events.append('capture_finished')
+    if capture_succeeded and not failures:events.append('capture_finished')
     for name,process in videos.items():
         try:
             process.stdin.close()
@@ -97,7 +98,7 @@ def close_capture(pipeline, videos, logs, owned, changed, client, saved, restore
         except BaseException as exc:failures.append({'video_encoder_error':str(exc)})
         try:logs[name].close()
         except BaseException as exc:failures.append({'video_log_close_error':str(exc)})
-    if not failures:events.append('encoders_closed')
+    if events == ['capture_finished'] and not failures:events.append('encoders_closed')
     for actor in reversed(owned):
         try:
             if actor.type_id.startswith('sensor.') and actor.is_listening:
@@ -107,7 +108,7 @@ def close_capture(pipeline, videos, logs, owned, changed, client, saved, restore
     if changed:
         try:restored=restore(client,saved)
         except BaseException as exc:failures.append({'restore_error':str(exc)})
-    if changed and not failures and isinstance(restored,dict) and restored.get('restored') is True:
+    if changed and events == ['capture_finished','encoders_closed'] and not failures and isinstance(restored,dict) and restored.get('restored') is True:
         events.append('restoration_verified')
     return {'events':events,'restoration':restored,'failures':failures}
 
@@ -294,34 +295,19 @@ def execute(bundle,output,host,port):
         error={'type':type(exc).__name__,'message':str(exc),
                'traceback':traceback.format_exc()}
     finally:
-        if pipeline is not None:
-            try:pipeline.close(confirmed=error is None)
-            except BaseException as exc:
-                error=error or {'pipeline_close_error':str(exc)}
-        for name,process in videos.items():
-            try:
-                process.stdin.close()
-                if process.wait(timeout=180)!=0:
-                    raise RuntimeError('Lossless video encoder failed: '+name)
-            except BaseException as exc:
-                error=error or {'video_encoder_error':str(exc)}
-            logs[name].close()
-        for actor in reversed(owned):
-            try:
-                if actor.type_id.startswith('sensor.') and actor.is_listening:
-                    actor.stop()
-                actor.destroy()
-            except BaseException as exc:
-                error=error or {'cleanup_error':str(exc)}
-        if changed:
-            try:restored=restore(client,saved)
-            except BaseException as exc:
-                error=error or {'restore_error':str(exc)}
+        if error is None and frames != 240:
+            error={'incomplete_capture_frames':frames}
+        closure=close_capture(pipeline,videos,logs,owned,changed,client,saved,
+                              restore,error is None and pipeline is not None)
+        restored=closure['restoration']
+        if closure['failures']:
+            error=error or closure['failures'][0]
         write_new(output/'native-capture-report.json',{
             'case_id':checked['case_id'],'candidate_id':checked['candidate_id'],
             'config_sha256':sha(bundle/'config.json'),
             'requested_frames':240,'observed_frames':frames,
-            'restoration':restored,'error':error,'accepted':False,
+            'restoration':restored,'lifecycle_events':closure['events'],
+            'closure_failures':closure['failures'],'error':error,'accepted':False,
             'legal_safety_verdict':None,'delivery_ready':False})
     if error:
         raise RuntimeError('C146314 Native attempt failed; see capture report')
