@@ -137,3 +137,5 @@ The following historical, inactive JSON receipts were preserved byte-for-byte in
 ## 2026-11-16 return-cap curation
 
 Ten unreferenced directed command logs and two unreferenced primary saved-proof receipts were archived byte-for-byte in `result.json.supplemental_unreferenced_command_logs` and `.supplemental_unreferenced_saved_receipts`, with tar and per-member SHA256 values. The direct files were removed to release twelve returned file slots. `.venv-cpu/bin/python worker_check.py --assignment heldout__C109749__NRS-484B-400-2c__motor_vehicle_driver --complete --require-delivery-ready` still exits 0 after both archives. The ready status and all referenced construction, compatibility and audit proof files remain in place.
+
+Nine additional unreferenced saved-processing/comparison copies were byte-preserved with tar and per-member hashes in `result.json.supplemental_unreferenced_saved_copies` and their direct files removed to release return slots. The scoped strict gate still exits 0.
