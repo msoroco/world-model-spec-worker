@@ -1,0 +1,68 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C146314__NRS-484B-210-2__motor_vehicle_driver",
+  "status": "draft_candidate_specific_diagnostic",
+  "runtime_manifest_sha256": "ae635d487ae988b67925bacd5ba13210f31224fc6a1ae131d1836a5557ba8714",
+  "source_branch": "right_side_pass_safety_condition",
+  "cases": [
+    {
+      "case_id": "training__C146314__NRS-484B-210-2__motor_vehicle_driver__reference",
+      "kind": "delivery",
+      "construction": "selected-primary/reference/construction.json",
+      "construction_sha256": "78376fc0603e7ddbaaa1a1abe8f5c2041f9362e916b3210364625fa773b43bf7",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native body clearance, motion and all four camera views unverified"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-fallbacks/reference/fallback1/construction.json",
+          "construction_sha256": "993d6d0fdeed3269ec3968c6c24bed9763c51b1a7e258dcac00b3b7b0d6e9ed9",
+          "trigger": {
+            "source": "native-raw-actors.jsonl",
+            "metric": "measured closing dynamics exceed reviewed bound",
+            "failure_condition": "measured closing dynamics exceed reviewed bound"
+          },
+          "changed_knobs": [
+            "lower ego and lead requested speeds"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-fallbacks/reference/fallback2/construction.json",
+          "construction_sha256": "9f3b13d432b21b215e6510556560c97d1b32ea94e6b27a3b39709061bf593daf",
+          "trigger": {
+            "source": "overview.mkv",
+            "metric": "lead or lateral body edge obscured in overview",
+            "failure_condition": "lead or lateral body edge obscured in overview"
+          },
+          "changed_knobs": [
+            "elevate overview camera"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-fallbacks/reference/fallback3/construction.json",
+          "construction_sha256": "993019dc1d72dd15f5c866b5ad1001920b76ca87e7e4dc32237dbc34520fe538",
+          "trigger": {
+            "source": "native-raw-actors.jsonl",
+            "metric": "observed lateral acceleration or gap oscillation",
+            "failure_condition": "observed lateral acceleration or gap oscillation exceeds reviewed bound"
+          },
+          "changed_knobs": [
+            "lengthen lane entry distance"
+          ]
+        }
+      ],
+      "measurement_contract": "selected-measurement-contracts/reference.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize_selected.py",
+        "output_schema": "c146314-210-2-saved-analysis-v1"
+      },
+      "fixture_recipe": "work/training__C146314__NRS-484B-210-2__motor_vehicle_driver/selected-diagnostics/reference/fallback3-recipe.json"
+    }
+  ],
+  "original_native_observed": false,
+  "delivery_ready": false
+}

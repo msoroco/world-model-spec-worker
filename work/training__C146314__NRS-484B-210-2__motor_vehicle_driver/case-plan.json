@@ -109,8 +109,8 @@
     "drv.overtaking": {
       "evidence": "Observed ego and lead body positions before, during and after a right-side pass.",
       "channels": [
-        "observed_longitudinal_gap_m",
-        "longitudinal_body_overlap"
+        "ego_pose",
+        "right_side_pass_lateral_clearance"
       ],
       "source_refs": [
         "native-raw-actors.jsonl",
@@ -120,9 +120,9 @@
     "drv.passing_side": {
       "evidence": "Original actor positions and map lane readback show passing side; pixels require review.",
       "channels": [
-        "observed_right_of_lead",
-        "observed_ego_lane_id",
-        "observed_lead_lane_id"
+        "ego_pose",
+        "right_side_pass_lateral_clearance",
+        "four_source_views"
       ],
       "source_refs": [
         "native-raw-actors.jsonl",
@@ -133,8 +133,8 @@
     "drv.time_to_conflict": {
       "evidence": "Derived from observed longitudinal gap and relative Native velocities; no legal threshold.",
       "channels": [
-        "time_to_lead_center_s",
-        "observed_relative_x_speed_mps"
+        "ego_speed",
+        "ego_pose"
       ],
       "source_refs": [
         "native-raw-actors.jsonl",
@@ -144,7 +144,7 @@
     "rel.surface_gap": {
       "evidence": "Derived from observed CARLA body vertices, not requested lateral apex.",
       "channels": [
-        "observed_body_surface_gap_m"
+        "right_side_pass_lateral_clearance"
       ],
       "source_refs": [
         "native-raw-actors.jsonl",
@@ -154,8 +154,9 @@
     "drv.lane_change_feasible": {
       "evidence": "Native lane IDs, bodies and original pixels support later physical review; feasibility remains unverified.",
       "channels": [
-        "observed_ego_lane_id",
-        "observed_body_surface_gap_m"
+        "ego_pose",
+        "right_side_pass_lateral_clearance",
+        "four_source_views"
       ],
       "source_refs": [
         "native-raw-actors.jsonl",
@@ -168,8 +169,8 @@
     "drv.hard_deceleration": {
       "evidence": "Derived from observed Native x velocity changes and applied brake control; no statutory threshold.",
       "channels": [
-        "maximum_ego_deceleration_mps2",
-        "maximum_ego_brake_control"
+        "ego_speed",
+        "ego_pose"
       ],
       "source_refs": [
         "native-raw-actors.jsonl",
@@ -179,8 +180,7 @@
     "kin.speed": {
       "evidence": "Ego and lead Native velocity samples remain the primary source.",
       "channels": [
-        "observed_relative_x_speed_mps",
-        "time_to_lead_center_s"
+        "ego_speed"
       ],
       "source_refs": [
         "native-raw-actors.jsonl",
@@ -211,11 +211,11 @@
     }
   ],
   "runtime_uncertainties": [
-    "No exact CARLA construction, four candidate variants, or offline feasibility proof exists for these case definitions.",
-    "No positive/negative saved fixture, semantic stage validation, independent saved audit, or comparison audit exists.",
+    "Original CARLA motion, realized clearance and camera pixel visibility remain unverified.",
+    "A source-bound synthetic eight-candidate matrix proves software paths only; it does not prove physical safety.",
     "Historical membership is context only; no source-hashed accepted equivalence receipt was verified.",
-    "CARLA execution, physical realization, camera framing, and legal judgment remain unverified.",
-    "Safety, practicability, reasonableness, or blocking judgment remains unresolved; no numeric legal surrogate is authorized."
+    "Original right-side passing under NRS 484B.210(2) requires independent physical and legal review without a numeric legal surrogate.",
+    "Independent selected delivery, physical and comparison audit proofs are still being completed."
   ],
   "selection_targets": [
     "full-train"

@@ -1,0 +1,439 @@
+{
+  "cell_id": "C146314",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "sweep_specs": [
+    {
+      "sweep_id": "training__C146314__NRS-484B-210-2__motor_vehicle_driver__clearance_sweep",
+      "target_law_id": "NRS-484B-210-2",
+      "judgment_refs": [
+        {
+          "phrase": "conditions permitting such movement in safety",
+          "note": "Qualitative safety of the complete right-side passing movement; no numeric legal cutoff."
+        }
+      ],
+      "rationale": "Fixed physical clearance coverage of one right-side pass; no legal safety cutoff.",
+      "status": "complete",
+      "mode": "one_dimensional",
+      "axes": [
+        {
+          "variable": "commanded_lateral_apex",
+          "observable": "right_side_pass_lateral_clearance",
+          "unit": "m",
+          "min": -5.5,
+          "max": -4.8,
+          "spacing": 0.7,
+          "range_rationale": "Two authored apex requests lie within the two 3.5 m rightward driving lanes and preserve a positive requested body gap.",
+          "spacing_rationale": "0.7 m separates the selected body-gap probes while keeping one geometry and lead schedule.",
+          "feasibility_evidence": "Authored 300 m two-lane OpenDRIVE road and source-bound 240-frame requested tracks; original motion unverified.",
+          "measurement": {
+            "method": "source-derived actor body surface gap during longitudinal overlap",
+            "time_window": "12 s complete pass",
+            "statistic": "min"
+          }
+        }
+      ],
+      "landmarks": [],
+      "variable_assignments": {
+        "road_and_actors": {
+          "kind": "world_setup",
+          "value": "authored two-lane one-way road, ego and lead Tesla"
+        },
+        "commanded_lateral_apex": {
+          "kind": "controller",
+          "value": -5.5,
+          "unit": "m"
+        },
+        "commanded_ego_speed": {
+          "kind": "controller",
+          "value": 8.0,
+          "unit": "m/s"
+        },
+        "commanded_lead_speed": {
+          "kind": "controller",
+          "value": 4.0,
+          "unit": "m/s"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "lead_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "right_side_pass_lateral_clearance": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "retained original Native actor, body, velocity and four-camera frame join",
+            "time_window": "240 frames",
+            "reference_frame": "authored OpenDRIVE coordinates",
+            "uncertainty": "50 ms bracket; physical safety and pixel visibility unverified"
+          },
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "retained original Native actor, body, velocity and four-camera frame join",
+            "time_window": "240 frames",
+            "reference_frame": "authored OpenDRIVE coordinates",
+            "uncertainty": "50 ms bracket; physical safety and pixel visibility unverified"
+          },
+          {
+            "name": "right_side_pass_lateral_clearance",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "retained original Native actor, body, velocity and four-camera frame join",
+            "time_window": "240 frames",
+            "reference_frame": "authored OpenDRIVE coordinates",
+            "uncertainty": "50 ms bracket; physical safety and pixel visibility unverified"
+          },
+          {
+            "name": "four_source_views",
+            "unit": "video",
+            "sampling_rate_hz": 20,
+            "method": "retained original Native actor, body, velocity and four-camera frame join",
+            "time_window": "240 frames",
+            "reference_frame": "authored OpenDRIVE coordinates",
+            "uncertainty": "50 ms bracket; physical safety and pixel visibility unverified"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "right_pass_map_readback",
+            "unit": "structured",
+            "method": "source-hashed Native OpenDRIVE map/lane readback"
+          }
+        ],
+        "limitations": [
+          "NRS 484B.210(2) is qualitative; engineering clearance does not determine legal safety."
+        ]
+      },
+      "spec_version": "aafa251bacf9d40247f7f40d5ff83a4ede94851b8fd9e601119058f49c8e55e9",
+      "planned_case_count": 2,
+      "selection_order": [
+        "training__C146314__NRS-484B-210-2__motor_vehicle_driver__reference",
+        "training__C146314__NRS-484B-210-2__motor_vehicle_driver__contrast"
+      ]
+    }
+  ],
+  "sweeps_expanded": true,
+  "cases": [
+    {
+      "case_id": "training__C146314__NRS-484B-210-2__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared authored right-pass setup; no baseline recording selected.",
+      "variable_assignments": {
+        "road_and_actors": {
+          "kind": "world_setup",
+          "value": "authored two-lane one-way road, ego and lead Tesla"
+        },
+        "commanded_lateral_apex": {
+          "kind": "controller",
+          "value": -5.5,
+          "unit": "m"
+        },
+        "commanded_ego_speed": {
+          "kind": "controller",
+          "value": 8.0,
+          "unit": "m/s"
+        },
+        "commanded_lead_speed": {
+          "kind": "controller",
+          "value": 4.0,
+          "unit": "m/s"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "lead_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "right_side_pass_lateral_clearance": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "retained original Native actor, body, velocity and four-camera frame join",
+            "time_window": "240 frames",
+            "reference_frame": "authored OpenDRIVE coordinates",
+            "uncertainty": "50 ms bracket; physical safety and pixel visibility unverified"
+          },
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "retained original Native actor, body, velocity and four-camera frame join",
+            "time_window": "240 frames",
+            "reference_frame": "authored OpenDRIVE coordinates",
+            "uncertainty": "50 ms bracket; physical safety and pixel visibility unverified"
+          },
+          {
+            "name": "right_side_pass_lateral_clearance",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "retained original Native actor, body, velocity and four-camera frame join",
+            "time_window": "240 frames",
+            "reference_frame": "authored OpenDRIVE coordinates",
+            "uncertainty": "50 ms bracket; physical safety and pixel visibility unverified"
+          },
+          {
+            "name": "four_source_views",
+            "unit": "video",
+            "sampling_rate_hz": 20,
+            "method": "retained original Native actor, body, velocity and four-camera frame join",
+            "time_window": "240 frames",
+            "reference_frame": "authored OpenDRIVE coordinates",
+            "uncertainty": "50 ms bracket; physical safety and pixel visibility unverified"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "right_pass_map_readback",
+            "unit": "structured",
+            "method": "source-hashed Native OpenDRIVE map/lane readback"
+          }
+        ],
+        "limitations": [
+          "NRS 484B.210(2) is qualitative; engineering clearance does not determine legal safety."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "conditions permitting such movement in safety"
+      ]
+    },
+    {
+      "case_id": "training__C146314__NRS-484B-210-2__motor_vehicle_driver__reference",
+      "target_law_id": "NRS-484B-210-2",
+      "target_type": "judgment_sweep",
+      "rationale": "Physical right-side body clearance reference; safety judgment unresolved.",
+      "paired_probe_id": "training__C146314__NRS-484B-210-2__motor_vehicle_driver__clearance_sweep",
+      "deliberate_differences": [
+        "commanded_lateral_apex"
+      ],
+      "probe": {
+        "primary_variable": "commanded_lateral_apex",
+        "comparison_or_standard": "physical coverage; legal safety unresolved",
+        "target_value_or_branch": {
+          "commanded_lateral_apex": -5.5
+        }
+      },
+      "sweep_id": "training__C146314__NRS-484B-210-2__motor_vehicle_driver__clearance_sweep",
+      "sweep_spec_version": "aafa251bacf9d40247f7f40d5ff83a4ede94851b8fd9e601119058f49c8e55e9",
+      "sweep_point": {
+        "commanded_lateral_apex": -5.5
+      },
+      "variable_assignments": {
+        "road_and_actors": {
+          "kind": "world_setup",
+          "value": "authored two-lane one-way road, ego and lead Tesla"
+        },
+        "commanded_lateral_apex": {
+          "kind": "controller",
+          "value": -5.5,
+          "unit": "m"
+        },
+        "commanded_ego_speed": {
+          "kind": "controller",
+          "value": 8.0,
+          "unit": "m/s"
+        },
+        "commanded_lead_speed": {
+          "kind": "controller",
+          "value": 4.0,
+          "unit": "m/s"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "lead_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "right_side_pass_lateral_clearance": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "retained original Native actor, body, velocity and four-camera frame join",
+            "time_window": "240 frames",
+            "reference_frame": "authored OpenDRIVE coordinates",
+            "uncertainty": "50 ms bracket; physical safety and pixel visibility unverified"
+          },
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "retained original Native actor, body, velocity and four-camera frame join",
+            "time_window": "240 frames",
+            "reference_frame": "authored OpenDRIVE coordinates",
+            "uncertainty": "50 ms bracket; physical safety and pixel visibility unverified"
+          },
+          {
+            "name": "right_side_pass_lateral_clearance",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "retained original Native actor, body, velocity and four-camera frame join",
+            "time_window": "240 frames",
+            "reference_frame": "authored OpenDRIVE coordinates",
+            "uncertainty": "50 ms bracket; physical safety and pixel visibility unverified"
+          },
+          {
+            "name": "four_source_views",
+            "unit": "video",
+            "sampling_rate_hz": 20,
+            "method": "retained original Native actor, body, velocity and four-camera frame join",
+            "time_window": "240 frames",
+            "reference_frame": "authored OpenDRIVE coordinates",
+            "uncertainty": "50 ms bracket; physical safety and pixel visibility unverified"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "right_pass_map_readback",
+            "unit": "structured",
+            "method": "source-hashed Native OpenDRIVE map/lane readback"
+          }
+        ],
+        "limitations": [
+          "NRS 484B.210(2) is qualitative; engineering clearance does not determine legal safety."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "conditions permitting such movement in safety"
+      ]
+    },
+    {
+      "case_id": "training__C146314__NRS-484B-210-2__motor_vehicle_driver__contrast",
+      "target_law_id": "NRS-484B-210-2",
+      "target_type": "judgment_sweep",
+      "rationale": "Physical right-side body clearance contrast; safety judgment unresolved.",
+      "paired_probe_id": "training__C146314__NRS-484B-210-2__motor_vehicle_driver__clearance_sweep",
+      "deliberate_differences": [
+        "commanded_lateral_apex"
+      ],
+      "probe": {
+        "primary_variable": "commanded_lateral_apex",
+        "comparison_or_standard": "physical coverage; legal safety unresolved",
+        "target_value_or_branch": {
+          "commanded_lateral_apex": -4.8
+        }
+      },
+      "sweep_id": "training__C146314__NRS-484B-210-2__motor_vehicle_driver__clearance_sweep",
+      "sweep_spec_version": "aafa251bacf9d40247f7f40d5ff83a4ede94851b8fd9e601119058f49c8e55e9",
+      "sweep_point": {
+        "commanded_lateral_apex": -4.8
+      },
+      "variable_assignments": {
+        "road_and_actors": {
+          "kind": "world_setup",
+          "value": "authored two-lane one-way road, ego and lead Tesla"
+        },
+        "commanded_lateral_apex": {
+          "kind": "controller",
+          "value": -4.8,
+          "unit": "m"
+        },
+        "commanded_ego_speed": {
+          "kind": "controller",
+          "value": 8.0,
+          "unit": "m/s"
+        },
+        "commanded_lead_speed": {
+          "kind": "controller",
+          "value": 4.0,
+          "unit": "m/s"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "lead_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "right_side_pass_lateral_clearance": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "retained original Native actor, body, velocity and four-camera frame join",
+            "time_window": "240 frames",
+            "reference_frame": "authored OpenDRIVE coordinates",
+            "uncertainty": "50 ms bracket; physical safety and pixel visibility unverified"
+          },
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "retained original Native actor, body, velocity and four-camera frame join",
+            "time_window": "240 frames",
+            "reference_frame": "authored OpenDRIVE coordinates",
+            "uncertainty": "50 ms bracket; physical safety and pixel visibility unverified"
+          },
+          {
+            "name": "right_side_pass_lateral_clearance",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "retained original Native actor, body, velocity and four-camera frame join",
+            "time_window": "240 frames",
+            "reference_frame": "authored OpenDRIVE coordinates",
+            "uncertainty": "50 ms bracket; physical safety and pixel visibility unverified"
+          },
+          {
+            "name": "four_source_views",
+            "unit": "video",
+            "sampling_rate_hz": 20,
+            "method": "retained original Native actor, body, velocity and four-camera frame join",
+            "time_window": "240 frames",
+            "reference_frame": "authored OpenDRIVE coordinates",
+            "uncertainty": "50 ms bracket; physical safety and pixel visibility unverified"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "right_pass_map_readback",
+            "unit": "structured",
+            "method": "source-hashed Native OpenDRIVE map/lane readback"
+          }
+        ],
+        "limitations": [
+          "NRS 484B.210(2) is qualitative; engineering clearance does not determine legal safety."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "conditions permitting such movement in safety"
+      ]
+    }
+  ]
+}
