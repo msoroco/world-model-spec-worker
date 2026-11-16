@@ -1934,3 +1934,30 @@ C111250 stays partial: five selected cases and fallback triples still need direc
 
 
 The settled-state full `.venv-cpu/bin/python worker_check.py --complete --require-delivery-ready` after the `three_lanes_right` fallback triple exited 1 at `runtime/scenario_pipeline/worker_exchange/preparation.py:276`: `Preparation acceptance failed: partial/missing packages remain`. Retained `work/_shared/strict-gate-latest.log` SHA256 `8a5196a775b4e25dcc5ad430d9aa36835506a570dd5afd41ee669c3da366a69e`. Effective inventory remains 40 ready/13 partial of 53. C111250 remains partial; the next direct worker CPU assignment case is `three_lanes_left` primary and three fallback constructions from the preserved source bundles, followed by its exact offline, positive/negative compatibility and saved-processing proofs. Returned file count is 10,198/10,200, with no file above 2 MiB and no `.pyc`. The Goal remains active.
+
+### 2026-11-16 19:57 UTC C111250 three_lanes_left CPU checkpoint
+
+
+## CPU checkpoint 2026-11-16 19:57 UTC: three_lanes_left direct primary and fallback triple
+
+- Returned manifest now has eight exact cases; `three_lanes_left` primary plus fallback1, fallback2, fallback3 are directly bound under `cases/three_lanes_left/`. Manifest SHA256: `1e3264f100ec074f99a238cdc22a549d9d8a3999a91a73ed5ce78553a697688c`. Three risk triggers are alternate three-lane road, alternate source camera, and alternate overview view; inspect `provisional-manifest.json` for exact trigger text.
+- Current `.venv-cpu/bin/python runtime.py preflight` passed with Python 3.11 and Lean/lake 4.28.0. Case-specific seven tests passed: `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/heldout__C111250__NRS-484B-200-1__motor_vehicle_driver/cases/three_lanes_left/tests`.
+- Direct primary and each fallback passed pinned `runtime.py offline`, positive/negative `runtime.py compatibility`, and `runtime.py process-saved` on synthetic four-camera original sources. Exact commands and receipt paths are on the manifest entries; SHA256 digests are in `result.json.three_lanes_left_direct_binding` and `result.json.three_lanes_left_fallback_direct_binding`. Candidate validator passed with four constructions. Both affected scoped non-strict checkers passed after return-cap curation.
+- Saved attempt selection was rebound to the returned manifest hash at each proof point. The final manifest changed as fallback and proof fields were attached. Replay all saved candidates after the twelve-case manifest is stable; existing CPU receipts do not assert a final stable-manifest replay.
+- Return-cap curation: 37 exact C305951 partial-package logs/receipts were archived in two new `result.json.preserved_source_artifacts` tar entries with per-file SHA256. Restore before direct proof binding for that package. C305951 remains partial and scoped non-strict checker passes. Work file count is 10,200; no physical/legal acceptance claim.
+- Next CPU actions: restore and bind `posted_one_way_right` primary and three fallbacks from existing source archives, rerun offline/compatibility/saved proofs; repeat for `posted_one_way_left` and both `insufficient_width` directions. Then validate full semantic-to-execution, bind original width-source and independent delivery audits, replay all saved candidates at final manifest hash, and run assignment strict plus batch strict gates.
+
+### 2026-11-16 20:01 UTC C111250 posted_one_way_right CPU checkpoint
+
+
+## CPU checkpoint 2026-11-16 20:01 UTC: posted_one_way_right direct primary and fallback triple
+
+- Nine exact cases now returned on `provisional-manifest.json` (SHA256 `13123b80f5a95260217b323e84ec5c5c5a8416b621daeccb8fcd19794c514394`). `posted_one_way_right` primary and three distinct triggered fallbacks are directly bound under `cases/posted_one_way_right/`.
+- Primary and each fallback passed pinned `runtime.py offline`, positive/negative `runtime.py compatibility`, and `runtime.py process-saved` on source-backed synthetic four-camera attempts. The seven case-specific tests passed. `candidate_constructions.validate(required=True, require_alternate=True, candidate_count=4)` passed. Commands and paths are in the manifest; exact hashes are in `result.json.posted_one_way_right_direct_binding` and `.posted_one_way_right_fallback_direct_binding`. Saved replay at final stable manifest remains.
+- To hold the 10,200-file return limit, 15 C111305 partial-package logs and a further 12 receipts/logs each from C111305 and C111644 were archived byte-exact in their `result.json.preserved_source_artifacts`, with per-file SHA256. Restore before direct proof binding there. Both affected scoped non-strict checkers passed after curation.
+- Next CPU construction: `posted_one_way_left` primary and fallbacks, then both `insufficient_width` directions. After all 12 cases, finish semantic-to-execution and independent audit bindings, replay saved proofs at the stable manifest, and run scoped/batch strict gates.
+
+## Strict batch gate 2026-11-16 20:07 UTC
+
+- `.venv-cpu/bin/python worker_check.py --complete --require-delivery-ready` exited 1. Exact log: `work/_shared/strict-gate-latest.log`, SHA256 `8a5196a775b4e25dcc5ad430d9aa36835506a570dd5afd41ee669c3da366a69e`. It failed at `preparation.py:276` with `Preparation acceptance failed: partial/missing packages remain`. Current returned status inventory: {'ready': 40, 'partial': 13}; this is a CPU preparation acceptance failure, not a tool/dependency blocker.
+- C111250 remains partial with nine of twelve selected cases directly bound. Continue `posted_one_way_left`, `insufficient_width_right`, `insufficient_width_left`; then stable-manifest saved replay, semantic-to-execution and audit binding, and assignment strict checks.
