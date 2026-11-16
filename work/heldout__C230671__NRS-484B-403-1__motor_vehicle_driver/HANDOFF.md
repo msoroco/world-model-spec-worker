@@ -83,3 +83,5 @@ The scoped `.venv-cpu/bin/python worker_check.py --assignment heldout__C230671__
 ### 2026-11-12 proof-preserving return compaction
 
 Twenty-two byte-identical offline test logs were consolidated with execution-manifest and result paths repointed to identical retained bytes. The assignment-scoped strict ready gate passed afterward; ready status is unchanged.
+
+2026-11-16 return-cap consolidation: 15 historical standalone logs with no current source/index references were retained byte-exact with per-file SHA-256 in `work/_shared/prune-history-bundle-all.json.preserved_source_files`; their obsolete test-log references were removed from `result.json`. Current source-backed proof files remain direct. The assignment scoped strict gate still exits 0.

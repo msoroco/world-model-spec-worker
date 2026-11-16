@@ -190,3 +190,5 @@ Local Native execution and independent original-source review must still determi
 ### 2026-11-12 return file-count compaction
 
 Removed six redundant primary compatibility stdout copies that were cited only by historical `result.json.tests` entries. The corresponding source-bound compatibility receipts, analysis logs, negative logs, exact construction hashes and manifest bindings remain. The redundant test entries were removed. The assignment-scoped strict gate still exits 0.
+
+2026-11-16 return-cap consolidation: 9 historical standalone logs with no current source/index references were retained byte-exact with per-file SHA-256 in `work/_shared/prune-history-bundle-all.json.preserved_source_files`; their obsolete test-log references were removed from `result.json`. Current source-backed proof files remain direct. The assignment scoped strict gate still exits 0.
