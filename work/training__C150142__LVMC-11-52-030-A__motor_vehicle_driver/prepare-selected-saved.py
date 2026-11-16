@@ -12,7 +12,7 @@ from worker_exchange.fixture_recipe import materialize as fixture_materialize
 from worker_exchange.saved_processing import copy_sources
 
 
-def prepare(attempt, fixture, candidate='primary'):
+def prepare(attempt, fixture, candidate='primary', witness='reference'):
     attempt,fixture=Path(attempt).resolve(),Path(fixture).resolve()
     private=(REPO/'.runtime-work').resolve()
     if private not in attempt.parents or private not in fixture.parents or \
@@ -20,9 +20,11 @@ def prepare(attempt, fixture, candidate='primary'):
         raise ValueError('Synthetic attempt and fixture belong in separate .runtime-work paths')
     if candidate not in ('primary','fallback1','fallback2','fallback3'):
         raise ValueError('Unknown exact candidate')
-    manifest=ROOT/('execution-manifest-diagnostic-reference.json' if candidate=='primary'
-        else 'execution-manifest-diagnostic-reference-'+candidate+'.json')
-    case=ROOT.name+'__reference'
+    if witness not in ('reference','contrast'):
+        raise ValueError('Unknown red-curb witness')
+    manifest=ROOT/('execution-manifest-diagnostic-'+witness+'.json' if candidate=='primary'
+        else 'execution-manifest-diagnostic-'+witness+'-'+candidate+'.json')
+    case=ROOT.name+'__'+witness
     entry=next(item for item in json.loads(manifest.read_text())['cases']
                if item['case_id']==case)
     materialize(manifest,case,attempt,candidate)
@@ -38,5 +40,6 @@ if __name__=='__main__':
     p.add_argument('--attempt',required=True)
     p.add_argument('--fixture',required=True)
     p.add_argument('--candidate',default='primary')
+    p.add_argument('--witness',default='reference')
     a=p.parse_args()
-    print(json.dumps(prepare(a.attempt,a.fixture,a.candidate),sort_keys=True))
+    print(json.dumps(prepare(a.attempt,a.fixture,a.candidate,a.witness),sort_keys=True))

@@ -1,0 +1,126 @@
+{
+  "case_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__contrast",
+  "measured_values": {
+    "red_curb_stop_or_park_observed": false,
+    "red_curb_stopped_frames": 0
+  },
+  "target_checks": [
+    {
+      "target": "red-curb occupied while stopped",
+      "requested": false,
+      "measured": false,
+      "method": "joined original body position and red paint readback",
+      "tolerance": "source observation; no legal duration threshold",
+      "matched": true,
+      "physical_cause_confirmed": false,
+      "cause_evidence": [
+        "native-raw-actors.jsonl",
+        "native-map-readback.json"
+      ]
+    }
+  ],
+  "setup_confirmed": false,
+  "behavior_attempted": false,
+  "maneuver_completed": false,
+  "termination_reason": "240 source frames; physical and legal review pending",
+  "physical_failure_flags": [
+    "Original red paint and pixel visibility unreviewed"
+  ],
+  "trace_reference": "trace.jsonl",
+  "video_references": [
+    "approach.mkv",
+    "overview.mkv",
+    "reference_corner.mkv",
+    "driver_reference.mkv"
+  ],
+  "video_frame_map_reference": "video_frames.jsonl",
+  "recording_description": {
+    "channels": [
+      {
+        "name": "ego_pose",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "retained Native actor, body, velocity and four-camera frame join",
+        "time_window": "240 frames",
+        "reference_frame": "authored OpenDRIVE coordinates",
+        "uncertainty": "50 ms bracket; physical paint and pixels unverified"
+      },
+      {
+        "name": "ego_speed",
+        "unit": "m/s",
+        "sampling_rate_hz": 20,
+        "method": "retained Native actor, body, velocity and four-camera frame join",
+        "time_window": "240 frames",
+        "reference_frame": "authored OpenDRIVE coordinates",
+        "uncertainty": "50 ms bracket; physical paint and pixels unverified"
+      },
+      {
+        "name": "red_curb_stop_or_park",
+        "unit": "bool",
+        "sampling_rate_hz": 20,
+        "method": "retained Native actor, body, velocity and four-camera frame join",
+        "time_window": "240 frames",
+        "reference_frame": "authored OpenDRIVE coordinates",
+        "uncertainty": "50 ms bracket; physical paint and pixels unverified"
+      },
+      {
+        "name": "four_source_views",
+        "unit": "video",
+        "sampling_rate_hz": 20,
+        "method": "retained Native actor, body, velocity and four-camera frame join",
+        "time_window": "240 frames",
+        "reference_frame": "authored OpenDRIVE coordinates",
+        "uncertainty": "50 ms bracket; physical paint and pixels unverified"
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "red_curb_map_readback",
+        "unit": "structured",
+        "method": "source-hashed Native OpenDRIVE parking lane and paint readback"
+      }
+    ],
+    "limitations": [
+      "Red paint, zone occupancy and statutory exceptions require independent source review."
+    ]
+  },
+  "recording_evidence": [
+    {
+      "name": "ego_pose",
+      "unit": "structured",
+      "reference": "channels/ego_pose.jsonl"
+    },
+    {
+      "name": "ego_speed",
+      "unit": "m/s",
+      "reference": "channels/ego_speed.jsonl"
+    },
+    {
+      "name": "red_curb_stop_or_park",
+      "unit": "bool",
+      "reference": "channels/red_curb_stop_or_park.jsonl"
+    },
+    {
+      "name": "four_source_views",
+      "unit": "video",
+      "reference": "channels/four_source_views.jsonl"
+    },
+    {
+      "name": "red_curb_map_readback",
+      "unit": "structured",
+      "reference": "red-curb-context.json"
+    }
+  ],
+  "realized_observables": {
+    "red_curb_stopped_frames": {
+      "value": 0,
+      "unit": "count",
+      "method": "retained Native body and curb geometry",
+      "time_window": "12 s source interval",
+      "statistic": "any stopped frame touching red",
+      "reference": "native-raw-actors.jsonl"
+    }
+  },
+  "provenance_kind": "synthetic_local_diagnostic",
+  "accepted": false
+}

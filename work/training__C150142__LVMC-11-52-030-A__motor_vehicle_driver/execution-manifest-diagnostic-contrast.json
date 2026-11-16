@@ -1,0 +1,69 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver",
+  "status": "first_primary_offline_in_progress",
+  "runtime_manifest_sha256": "ae635d487ae988b67925bacd5ba13210f31224fc6a1ae131d1836a5557ba8714",
+  "cases": [
+    {
+      "case_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__contrast",
+      "kind": "delivery",
+      "construction": "selected-primary/contrast/construction.json",
+      "construction_sha256": "41202b78741e549d24fdfa0d31c3f47518e2ad2df7b6de4b0495564332c364ff",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Paint, parked body and four views unverified in Native"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-fallbacks/contrast/fallback1/construction.json",
+          "construction_sha256": "762937f109c328cfbfd365e8f87693cd46ab78c85f877e485a5d64505836b82c",
+          "trigger": {
+            "source": "Native actor centers and red-paint extent",
+            "metric": "longitudinal parking overshoot in m",
+            "failure_condition": "Observed ego body passes the intended parking target before stopping"
+          },
+          "changed_knobs": [
+            "requested_approach_frames",
+            "controller approach speed"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-fallbacks/contrast/fallback2/construction.json",
+          "construction_sha256": "176dfcc129255f363298f440ba01b98d0227b397c1b70fbdaed838255d876b01",
+          "trigger": {
+            "source": "decoded overview source-camera pixels",
+            "metric": "visible red paint and complete ego body in overview",
+            "failure_condition": "Paint or ego body is obscured in source overview frames"
+          },
+          "changed_knobs": [
+            "overview camera elevation"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-fallbacks/contrast/fallback3/construction.json",
+          "construction_sha256": "427ba1f21ef6fca59a32fa180f6baca0b533d19e409d35e76babff827f6327b3",
+          "trigger": {
+            "source": "Native stationary body center and four-view frame join",
+            "metric": "stationary observed red-curb interval in frames",
+            "failure_condition": "Observed stopped interval is too short for manual parking review"
+          },
+          "changed_knobs": [
+            "requested_approach_frames",
+            "controller approach speed"
+          ]
+        }
+      ],
+      "measurement_contract": "selected-primary/contrast/selected-measurement-contracts/contrast.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize_selected.py",
+        "output_schema": "c150142-red-curb-saved-analysis-v1"
+      },
+      "fixture_recipe": "work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/selected-diagnostics/contrast/primary-recipe.json"
+    }
+  ],
+  "original_native_observed": false,
+  "delivery_ready": false
+}

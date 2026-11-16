@@ -1,12 +1,12 @@
-"""Package one exact source-hashed red-curb reference for pinned offline checks."""
+"""Package one exact source-hashed red-curb case for pinned offline checks."""
 import hashlib
 import json
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
 NATIVE = ROOT / 'native'
-CASE = ROOT.name + '__reference'
 
 
 def sha(path):
@@ -31,13 +31,15 @@ class SelectedReference(unittest.TestCase):
         self.assertEqual(result['frames'],240)
         self.assertFalse(result['original_native_observed'])
         cfg=json.loads((Path(__file__).resolve().parents[1]/'config.json').read_text())
-        self.assertEqual(cfg['requested_target_x_m'],40)
+        self.assertEqual(cfg['requested_target_x_m'],40 if cfg['case_id'].endswith('__reference') else 60)
         self.assertEqual([(v['width'],v['height']) for v in cfg['cameras']],
                          [(1920,1080),(1280,720),(1280,720),(1280,720)])
 
     def test_controller_uses_measured_speed(self):
-        far=parking_controller.command(5,-6.8,2,40,-6.8)
-        near=parking_controller.command(39,-6.8,2,40,-6.8)
+        cfg=json.loads((Path(__file__).resolve().parents[1]/'config.json').read_text())
+        target=cfg['requested_target_x_m']
+        far=parking_controller.command(5,-6.8,2,target,-6.8)
+        near=parking_controller.command(target-1,-6.8,2,target,-6.8)
         self.assertEqual(far['phase'],'approach')
         self.assertEqual(near['phase'],'brake_to_park')
         self.assertEqual(near['throttle'],0)
@@ -47,7 +49,7 @@ class SelectedReference(unittest.TestCase):
         cameras=runner.camera_plan(cfg['camera_policy'])
         self.assertEqual([x[0] for x in cameras],list(runner.VIEWS))
         self.assertEqual(cameras[0][4][2],45 if cfg['camera_policy']=='elevated_overview' else 35)
-        self.assertAlmostEqual(runner.approach_speed(cfg),35*20/cfg['requested_approach_frames'])
+        self.assertAlmostEqual(runner.approach_speed(cfg),(cfg['requested_target_x_m']-5)*20/cfg['requested_approach_frames'])
         with self.assertRaisesRegex(ValueError,'camera policy'):
             runner.camera_plan('unknown')
 
@@ -55,11 +57,14 @@ if __name__=='__main__': unittest.main()
 '''
 
 
-def build():
-    draft = NATIVE / 'drafts/reference/primary'
+def build(witness='reference'):
+    if witness not in ('reference','contrast'):
+        raise ValueError('Unknown red-curb witness')
+    case_id=ROOT.name+'__'+witness
+    draft = NATIVE / 'drafts' / witness / 'primary'
     cfg = json.loads((draft / 'config.json').read_text())
-    cfg.update(selected_case_id=CASE, duration_s=12, rate_hz=20,
-               required_atoms=[], source_packets=[], supported_case_ids=[CASE],
+    cfg.update(selected_case_id=case_id, duration_s=12, rate_hz=20,
+               required_atoms=[], source_packets=[], supported_case_ids=[case_id],
                physical_success_claimed=False,
                cameras=[{'name': name, 'width': width, 'height': height,
                          'pose_strategy': 'ego_attached', 'fov_deg': fov}
@@ -79,7 +84,7 @@ def build():
              for name, path in inventory.items()]
     files += [{'path':'config.json', 'content':json.dumps(cfg,indent=2)+'\n'},
               {'path':'tests/test_selected.py','content':TEST}]
-    construction = {'case_id':CASE,'law_id':'LVMC-11-52-030-A',
+    construction = {'case_id':case_id,'law_id':'LVMC-11-52-030-A',
                     'cell_id':'C150142','actor':'motor_vehicle_driver',
                     'entrypoint':'runner.py','files':files,
                     'status':'draft_selected_cpu',
@@ -99,9 +104,9 @@ def build():
                         'limitations':['Red paint, zone occupancy and statutory exceptions require independent source review.']},
                     'original_native_observed':False,'delivery_ready':False,
                     'measurement_plan':{'source':'original Native body and road paint readback',
-                                        'finalizer':'measure_red_curb.py','legal_verdict':None},
+                                        'finalizer':'finalize_selected.py','legal_verdict':None},
                     'termination_rules':{'requested_frames':240,'stop_on_error':True}}
-    target = ROOT/'selected-primary/reference/construction.json'
+    target = ROOT/'selected-primary'/witness/'construction.json'
     write(target,construction)
     plan=json.loads((ROOT/'case-plan.json').read_text())
     output_mapping={0:('statute_source_context','statute_context','object',
@@ -118,38 +123,38 @@ def build():
                         'native-map-readback.json'])}
     requirements=[]
     for index,disp in enumerate(plan['requirement_dispositions']):
-        if disp['status']=='selected_required' and CASE in disp.get('case_ids',[]):
+        if disp['status']=='selected_required' and case_id in disp.get('case_ids',[]):
             key,method,kind_type,kind,inputs=output_mapping[index]
             requirements.append({'disposition_index':index,
                                  'requirement':disp['requirement'],
                                  'source':disp['source'],'output_key':key,
                                  'method':method,'value_type':kind_type,
                                  'kind':kind,'inputs':inputs})
-    contract={'format':'worker-measurement-contract','case_id':CASE,
+    contract={'format':'worker-measurement-contract','case_id':case_id,
               'requirements':requirements,
               'negative':{'remove':['native-map-readback.json'],
                           'error_contains':'Missing required source: native-map-readback.json'},
               'scope':'Observed red paint occupancy and frozen statute context; no exception or legal verdict'}
-    write(ROOT/'selected-primary/reference/selected-measurement-contracts/reference.json',
+    write(ROOT/'selected-primary'/witness/'selected-measurement-contracts'/(witness+'.json'),
           contract)
     batch = json.loads((REPO/'batch.json').read_text())
     manifest = {'format':'worker-execution-manifest','assignment_id':ROOT.name,
                 'status':'first_primary_offline_in_progress',
                 'runtime_manifest_sha256':sha(REPO/batch['runtime']['root']/'SOURCE-MANIFEST.json'),
-                'cases':[{'case_id':CASE,'kind':'delivery',
+                'cases':[{'case_id':case_id,'kind':'delivery',
                           'construction':'construction.json',
                           'construction_sha256':sha(target),
                           'candidate_risk':{'status':'physical',
                                             'reason':'Paint, parked body and four views unverified in Native'},
                           'candidates':[],
-                          'measurement_contract':'selected-measurement-contracts/reference.json',
+                          'measurement_contract':'selected-measurement-contracts/'+witness+'.json',
                           'measurement_procedure':{'entrypoint':'finalize_selected.py',
                                                    'output_schema':'c150142-red-curb-saved-analysis-v1'}}],
                 'original_native_observed':False,'delivery_ready':False}
-    mpath=ROOT/'selected-primary/reference/draft-manifest.json'
+    mpath=ROOT/'selected-primary'/witness/'draft-manifest.json'
     write(mpath,manifest)
-    return {'case_id':CASE,'construction':str(target),'manifest':str(mpath),
+    return {'case_id':case_id,'construction':str(target),'manifest':str(mpath),
             'construction_sha256':sha(target)}
 
 
-if __name__=='__main__': print(json.dumps(build(),sort_keys=True))
+if __name__=='__main__': print(json.dumps(build(sys.argv[1] if len(sys.argv)>1 else 'reference'),sort_keys=True))

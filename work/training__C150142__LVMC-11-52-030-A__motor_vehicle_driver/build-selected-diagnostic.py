@@ -9,8 +9,6 @@ from pathlib import Path
 
 ROOT=Path(__file__).resolve().parent
 REPO=ROOT.parents[1]
-CASE=ROOT.name+'__reference'
-SELECTED=ROOT/'selected-primary/reference'
 
 
 def sha(path):
@@ -31,23 +29,28 @@ def write(path,value):
     path.write_text(encode(value))
 
 
-def make(candidate='primary'):
+def make(candidate='primary',witness='reference'):
     if candidate not in ('primary','fallback1','fallback2','fallback3'):
         raise ValueError('Unknown exact candidate')
-    selected_path=(SELECTED/'construction.json' if candidate=='primary' else
-        ROOT/'selected-fallbacks/reference'/candidate/'construction.json')
+    if witness not in ('reference','contrast'):
+        raise ValueError('Unknown red-curb witness')
+    case_id=ROOT.name+'__'+witness
+    selected=ROOT/'selected-primary'/witness
+    selected_path=(selected/'construction.json' if candidate=='primary' else
+        ROOT/'selected-fallbacks'/witness/candidate/'construction.json')
     construction=json.loads(selected_path.read_text())
     bundle={item['path']:item['content'] for item in construction['files']}
     cfg=json.loads(bundle['config.json'])
     road_hash=hashlib.sha256(bundle['red-curb-road.xodr'].encode()).hexdigest()
-    if cfg['road_sha256']!=road_hash or construction['case_id']!=CASE:
+    if cfg['road_sha256']!=road_hash or construction['case_id']!=case_id:
         raise ValueError('Selected diagnostic does not match construction')
     actor_rows=[];frames=[];trace=[];evidence=[];capture_frames=[];graphs=[]
     for i in range(240):
         approach=cfg['requested_approach_frames']
-        x=5+35*min(i,approach)/approach
+        distance=cfg['requested_target_x_m']-5
+        x=5+distance*min(i,approach)/approach
         y=-6.8;t=i/20
-        speed=35*20/approach if i<approach else 0
+        speed=distance*20/approach if i<approach else 0
         body_xy=[[x-1,y-.5],[x+1,y-.5],[x+1,y+.5],[x-1,y+.5]]
         body_xyz=[[a,b,z] for a,b in body_xy for z in (0,1.5)]
         actor_rows.append({'frame':i,'native_frame':i,'time_s':t,
@@ -112,7 +115,7 @@ def make(candidate='primary'):
             'red_curb_start_x_m':30,'red_curb_end_x_m':50,
             'curb_y_m':-7,'legal_verdict':None}),
         'native-capture-report.json':encode({
-            'case_id':CASE,'candidate_id':candidate,
+            'case_id':case_id,'candidate_id':candidate,
             'config_sha256':hashlib.sha256(bundle['config.json'].encode()).hexdigest(),
             'requested_frames':240,'observed_frames':240,
             'error':None,'accepted':False,'legal_verdict':None}),
@@ -132,44 +135,51 @@ def make(candidate='primary'):
              ('reference_corner',1280,720,'white'),
              ('driver_reference',1280,720,'blue')]]
     spec={'files':files,'graphs':graphs,'videos':videos}
-    spec_path=ROOT/'selected-diagnostics/reference'/(candidate+'.json')
+    spec_path=ROOT/'selected-diagnostics'/witness/(candidate+'.json')
     write(spec_path,spec)
     rel=spec_path.relative_to(REPO).as_posix()
     recipe={'format':'worker-fixture-recipe',
             'sources':[{'path':'diagnostic-source.json','source':rel,
                         'sha256':sha(spec_path)}],
             'generator':{'source':rel,'sha256':sha(spec_path)}}
-    recipe_path=ROOT/'selected-diagnostics/reference'/(candidate+'-recipe.json')
+    recipe_path=ROOT/'selected-diagnostics'/witness/(candidate+'-recipe.json')
     write(recipe_path,recipe)
-    proposal={'case_id':CASE,'target_law_id':'LVMC-11-52-030-A',
+    proposal={'case_id':case_id,'target_law_id':'LVMC-11-52-030-A',
         'target_type':'attempt',
-        'rationale':'Ordinary vehicle observed stopped at painted red curb; legal exceptions require separate cases.',
+        'rationale':('Ordinary vehicle observed stopped at painted red curb' if witness=='reference'
+                     else 'Ordinary vehicle observed stopped beyond painted red curb')+
+                     '; legal exceptions require separate cases.',
         'variable_assignments':{
             'road_and_actors':{'kind':'world_setup','value':'authored red-curb OpenDRIVE with one ordinary ego'},
-            'requested_parking_x_m':{'kind':'controller','value':40,'unit':'m'},
+            'requested_parking_x_m':{'kind':'controller','value':cfg['requested_target_x_m'],'unit':'m'},
             'red_curb_stop_or_park':{'kind':'subject_behavior','value':None}},
         'recording_description':construction['recording_description'],
         'unresolved_judgment_calls':['Signed and public-service exceptions require separate source review']}
-    write(SELECTED/'proposals/cases.json',{'cell_id':'C150142',
+    write(selected/'proposals/cases.json',{'cell_id':'C150142',
         'actor':'motor_vehicle_driver','status':'draft','cases':[proposal]})
-    manifest_path=SELECTED/'draft-manifest.json'
+    manifest_path=selected/'draft-manifest.json'
     manifest=json.loads(manifest_path.read_text())
     if candidate=='primary':
         manifest['cases'][0]['fixture_recipe']=recipe_path.relative_to(REPO).as_posix()
         write(manifest_path,manifest)
     root_manifest=json.loads(encode(manifest))
-    root_manifest['cases'][0]['construction']='selected-primary/reference/construction.json'
+    root_manifest['cases'][0]['construction']='selected-primary/'+witness+'/construction.json'
     root_manifest['cases'][0]['measurement_contract']=\
-        'selected-primary/reference/selected-measurement-contracts/reference.json'
+        'selected-primary/'+witness+'/selected-measurement-contracts/'+witness+'.json'
     root_manifest['cases'][0]['fixture_recipe']=recipe_path.relative_to(REPO).as_posix()
-    root_name=('execution-manifest-diagnostic-reference.json' if candidate=='primary'
-               else 'execution-manifest-diagnostic-reference-'+candidate+'.json')
+    root_name=('execution-manifest-diagnostic-'+witness+'.json' if candidate=='primary'
+               else 'execution-manifest-diagnostic-'+witness+'-'+candidate+'.json')
     write(ROOT/root_name,root_manifest)
-    write(ROOT/'proposals/cases.json',{'cell_id':'C150142',
-        'actor':'motor_vehicle_driver','status':'draft','cases':[proposal]})
-    return {'case_id':CASE,'spec_bytes':spec_path.stat().st_size,
+    shared=ROOT/'proposals/cases.json'
+    existing=json.loads(shared.read_text())['cases'] if shared.is_file() else []
+    cases=[item for item in existing if item['case_id']!=case_id]+[proposal]
+    write(shared,{'cell_id':'C150142','actor':'motor_vehicle_driver',
+                  'status':'draft','cases':sorted(cases,key=lambda item:item['case_id'])})
+    return {'case_id':case_id,'spec_bytes':spec_path.stat().st_size,
             'spec_sha256':sha(spec_path),'recipe_sha256':sha(recipe_path),
             'construction_sha256':sha(selected_path)}
 
 
-if __name__=='__main__':print(json.dumps(make(sys.argv[1] if len(sys.argv)>1 else 'primary'),sort_keys=True))
+if __name__=='__main__':print(json.dumps(make(
+    sys.argv[1] if len(sys.argv)>1 else 'primary',
+    sys.argv[2] if len(sys.argv)>2 else 'reference'),sort_keys=True))
