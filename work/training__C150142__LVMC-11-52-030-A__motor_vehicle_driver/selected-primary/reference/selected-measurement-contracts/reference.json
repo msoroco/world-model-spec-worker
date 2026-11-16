@@ -1,0 +1,77 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__reference",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "text-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "statute_source_context",
+      "method": "statute_context",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "assignment-source.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "text-1",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "red_curb_extent",
+      "method": "curb_extent",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "native-map-readback.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "text-2",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "red_curb_stop_or_park_observed",
+      "method": "red_occupancy",
+      "value_type": "boolean",
+      "kind": "measured",
+      "inputs": [
+        "native-raw-actors.jsonl",
+        "video_frames.jsonl",
+        "native-map-readback.json"
+      ]
+    },
+    {
+      "disposition_index": 8,
+      "requirement": "text-8",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "mail_exception_source_text",
+      "method": "mail_clause_context",
+      "value_type": "text",
+      "kind": "sourced_context",
+      "inputs": [
+        "assignment-source.json"
+      ]
+    },
+    {
+      "disposition_index": 9,
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "scope_red_occupancy",
+      "method": "scope_occupancy",
+      "value_type": "boolean",
+      "kind": "measured",
+      "inputs": [
+        "native-raw-actors.jsonl",
+        "video_frames.jsonl",
+        "native-map-readback.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "native-map-readback.json"
+    ],
+    "error_contains": "Missing required source: native-map-readback.json"
+  },
+  "scope": "Observed red paint occupancy and frozen statute context; no exception or legal verdict"
+}
