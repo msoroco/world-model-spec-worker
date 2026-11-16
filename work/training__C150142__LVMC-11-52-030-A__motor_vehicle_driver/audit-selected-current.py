@@ -43,7 +43,7 @@ def audit():
                        'Retained receipt changed: '+tag+'/'+name)
                 receipts[name]=json.loads(path.read_text()) if path.suffix=='.json' else path.read_text()
             for stage,checksum in row['logs'].items():
-                require(sha(ROOT/('update020b-'+witness+'-'+candidate+'-'+stage+'.log'))==checksum,
+                require(sha(ROOT/('update021a-'+witness+'-'+candidate+'-'+stage+'.log'))==checksum,
                         'Pinned command log changed: '+tag+'/'+stage)
             compat=receipts['compatibility'];saved=receipts['saved']
             result=receipts['result'];analysis=receipts['analysis']
