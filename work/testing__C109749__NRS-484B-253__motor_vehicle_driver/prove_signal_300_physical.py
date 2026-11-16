@@ -1,4 +1,5 @@
-"""Exercise the 91.44 m draft's CPU classifier and lifecycle paths."""
+"""Exercise 86/91.44/97 m draft CPU classifier and lifecycle paths."""
+import argparse
 import hashlib
 import json
 import subprocess
@@ -16,19 +17,26 @@ def sha(path):
 
 
 def main():
-    manifest = json.loads(MANIFEST.read_text())
-    assert len(manifest['cases']) == 1
-    entry = manifest['cases'][0]
-    case = ROOT.name + '__signal_advance_300_at'
-    assert entry['case_id'] == case
-    saved = (REPO / '.runtime-work/c109749-signal-300-at-primary-saved-v2'
-             / 'v0001/processing.json')
-    assert saved.is_file()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--sides', action='store_true')
+    args = parser.parse_args()
+    manifest_path = (ROOT / 'signal-300-sides-draft-manifest.json') if args.sides else MANIFEST
+    manifest = json.loads(manifest_path.read_text())
+    assert len(manifest['cases']) == (2 if args.sides else 1)
     proofs = []
-    for kind in KINDS:
-        output = REPO / '.runtime-work' / f'c109749-signal-300-at-physical-{kind}-v1.json'
+    for entry in manifest['cases']:
+      case = entry['case_id']
+      target = entry['signal_target_m']
+      assert case.startswith(ROOT.name + '__signal_advance_300_')
+      label = 'at' if target == 91.44 else str(int(target))
+      saved_tag = 'v2' if label == 'at' else 'v1'
+      saved = (REPO / '.runtime-work' /
+               f'c109749-signal-300-{label}-primary-saved-{saved_tag}/v0001/processing.json')
+      assert saved.is_file()
+      for kind in KINDS:
+        output = REPO / '.runtime-work' / f'c109749-signal-300-{label}-physical-{kind}-v1.json'
         command = [str(REPO / '.venv-cpu/bin/python'), str(SCRIPT),
-                   '--manifest', str(MANIFEST), '--case', case,
+                   '--manifest', str(manifest_path), '--case', case,
                    '--kind', kind, '--output', str(output)]
         if kind == 'lifecycle':
             command.extend(['--saved-receipt', str(saved)])
@@ -52,8 +60,9 @@ def main():
         proofs.append({'case_id': case, 'kind': kind, 'result_sha256': sha(output),
                        'source_kind': 'synthetic diagnostic',
                        'construction_sha256': entry['construction_sha256']})
-    print(json.dumps({'format': 'worker-signal-300-at-physical-lifecycle-proof',
-                      'manifest_sha256': sha(MANIFEST), 'proofs': proofs,
+    assert len(proofs) == 4 * len(manifest['cases'])
+    print(json.dumps({'format': 'worker-signal-300-physical-lifecycle-proof',
+                      'manifest_sha256': sha(manifest_path), 'proofs': proofs,
                       'physical_or_legal_acceptance_claimed': False}, indent=2))
 
 
