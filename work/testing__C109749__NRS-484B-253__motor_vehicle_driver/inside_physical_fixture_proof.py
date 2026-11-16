@@ -26,7 +26,10 @@ def write(path, value):
 
 
 def motion(entry, folder, kind, output):
-    construction = read(folder/entry['construction'])
+    construction_path = folder/entry['construction']
+    if sha(construction_path) != entry['construction_sha256']:
+        raise ValueError('Physical fixture construction hash changed')
+    construction = read(construction_path)
     config = json.loads(next(f['content'] for f in construction['files'] if f['path']=='config.json'))
     suffix = entry['case_id'].rsplit('__', 1)[-1]
     release_sources = {
@@ -46,8 +49,15 @@ def motion(entry, folder, kind, output):
         if config != read(source/'config.json'):
             raise ValueError('Release physical config differs from exact source')
     else:
-        recipe = read(REPO/entry['fixture_recipe'])
-        diagnostic = read(REPO/recipe['generator']['source'])['files']
+        recipe_path = REPO/entry['fixture_recipe']
+        recipe = read(recipe_path)
+        source_path = REPO/recipe['generator']['source']
+        if (recipe['generator']['sha256'] != sha(source_path)
+                or len(recipe['sources']) != 1
+                or recipe['sources'][0]['source'] != recipe['generator']['source']
+                or recipe['sources'][0]['sha256'] != sha(source_path)):
+            raise ValueError('Physical fixture diagnostic source hash changed')
+        diagnostic = read(source_path)['files']
     with tempfile.TemporaryDirectory(prefix='c109749-physical-') as temp:
         root = Path(temp)
         write(root/'config.json', config)
@@ -79,7 +89,10 @@ def motion(entry, folder, kind, output):
 
 
 def lifecycle(entry, folder, output, saved_override=None):
-    construction = read(folder/entry['construction'])
+    construction_path = folder/entry['construction']
+    if sha(construction_path) != entry['construction_sha256']:
+        raise ValueError('Lifecycle construction hash changed')
+    construction = read(construction_path)
     saved = (Path(saved_override) if saved_override else
              (folder/entry['construction']).parent/'proofs/primary/processing.json')
     receipt = read(saved)
