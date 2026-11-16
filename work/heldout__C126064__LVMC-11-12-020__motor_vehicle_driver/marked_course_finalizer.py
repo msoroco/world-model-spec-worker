@@ -19,6 +19,9 @@ CASE_FORMS = {
     'button_indicated_course': 'button', 'button_divergent_course': 'button',
     'other_indication_indicated_course': 'other_indication',
     'other_indication_divergent_course': 'other_indication',
+    'c126064_indication_offset-0000': 'button',
+    'c126064_indication_offset-0001': 'button',
+    'c126064_indication_offset-0002': 'button',
 }
 
 
@@ -100,6 +103,17 @@ def analyze(attempt, *, write_channel=True):
                                                            ratio['source_route_separation_m']},
                                                  allow_nan=False) + '\n'
                                       for row in inside))
+        if 'realized_indication_placement_offset_m' in names:
+            value = observation.get('realized_indication_placement_offset_m')
+            if value is None:
+                raise ValueError('Original numeric indication displacement is missing')
+            source = root / 'realized_indication_placement_offset_m.jsonl'
+            if source.exists():
+                raise ValueError('Derived indication displacement channel already exists')
+            source.write_text(''.join(json.dumps({'frame': row['frame'],
+                                                  'time_s': row['time_s'],
+                                                  'value': value}, allow_nan=False) + '\n'
+                                      for row in observation['observations']))
     source_hashes = {name: sha256(path.read_bytes()).hexdigest() for name, path in paths.items()}
     return {'format': 'worker-analysis-report', 'case_id': case,
             'measurements': {'original_marked_turn_course': {
@@ -150,6 +164,19 @@ def build_result(attempt, report):
             'statistic': summary['statistic'], 'reference': source.name,
             'value': summary['value'],
             'sample_window_s': summary['sample_window_s']}
+    if any(item['name'] == 'realized_indication_placement_offset_m'
+           for item in description['channels']):
+        source = required(root, 'realized_indication_placement_offset_m.jsonl')
+        evidence.append({'name': 'realized_indication_placement_offset_m', 'unit': 'm',
+                         'reference': source.name,
+                         'sha256': sha256(source.read_bytes()).hexdigest()})
+        realized['realized_indication_placement_offset_m'] = {
+            'unit': 'm', 'method': 'source-hashed indication pose to original Native readback',
+            'time_window': 'all recorded original frames', 'statistic': 'max',
+            'reference': source.name,
+            'value': observation['realized_indication_placement_offset_m'],
+            'sample_window_s': [observation['observations'][0]['time_s'],
+                                observation['observations'][-1]['time_s']]}
     return {'case_id': report['case_id'],
             'measured_values': {'original_marked_turn_course': observation},
             'target_checks': [{'target': 'municipal turning course with ' + form,

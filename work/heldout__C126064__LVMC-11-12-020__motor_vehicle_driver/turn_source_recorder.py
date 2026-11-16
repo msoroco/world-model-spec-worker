@@ -128,6 +128,10 @@ class SourceRecorder:
                  'authority_source_sha256': expected_sha256,
                  'authorization_verified_by_worker': False,
                  'visible_pixels_verified': False}
+        if indications.get('placement_offset_m'):
+            scene.update(source_indications_xy_m=indications['source_xy_m'],
+                         placement_offset_m=indications['placement_offset_m'],
+                         realized_placement_offset_m=indications['realized_placement_offset_m'])
         (self.output / 'marked_intersection.json').write_text(json.dumps(scene, indent=2) + '\n')
         return scene
 

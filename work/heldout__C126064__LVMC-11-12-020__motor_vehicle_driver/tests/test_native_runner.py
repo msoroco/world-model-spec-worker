@@ -73,6 +73,21 @@ class NativeRunnerTests(unittest.TestCase):
                                           path, digest)
                     self.assertEqual((plan['indication_form'], plan['variant']),
                                      (form, variant))
+                if form == 'button':
+                    for suffix, expected in module.NUMERIC_INDICATION_CASES.items():
+                        if expected:
+                            with self.assertRaisesRegex(ValueError, 'placement axis'):
+                                module.prepare(module.ASSIGNMENT + '__' + suffix,
+                                               path, digest)
+                    source['placement_axis_xy'] = [1, 0]
+                    path.write_text(json.dumps(source))
+                    digest = hashlib.sha256(path.read_bytes()).hexdigest()
+                    for suffix, expected in module.NUMERIC_INDICATION_CASES.items():
+                        sweep = module.prepare(module.ASSIGNMENT + '__' + suffix,
+                                               path, digest)
+                        self.assertEqual((sweep['indication_form'], sweep['variant'],
+                                          sweep['placement_offset_m']),
+                                         ('button', 'indicated_course', expected))
                 other = 'button' if form == 'other_indication' else 'other_indication'
                 with self.assertRaisesRegex(ValueError, 'exact indication form'):
                     module.prepare(module.ASSIGNMENT + '__' + other + '_indicated_course',
@@ -133,6 +148,26 @@ class NativeRunnerTests(unittest.TestCase):
                     patch.object(module, 'execute_marked_turn', side_effect=numeric_execute):
                 module.run(numeric, Path(directory) / 'numeric-attempt')
             self.assertEqual(numeric_seen, [.5])
+            button_source = json.loads(path.read_text())
+            button_source.pop('markers')
+            button_source['indication_form'] = 'button'
+            button_source['indications'] = [{'form': 'button', 'x': 3, 'y': 5,
+                                             'blueprint_id': 'static.prop.road_button'}]
+            button_source['placement_axis_xy'] = [1, 0]
+            path.write_text(json.dumps(button_source))
+            button_digest = hashlib.sha256(path.read_bytes()).hexdigest()
+            offset_plan = module.prepare(module.ASSIGNMENT + '__c126064_indication_offset-0002',
+                                         path, button_digest)
+            offsets = []
+            def indication_execute(*args, **kwargs):
+                offsets.append(kwargs['placement_offset_m'])
+                return {'authority_verified': False,
+                        'motion': {'actual_turn_observed': False}}
+            with patch.dict(sys.modules, {'carla': fake_carla}), \
+                    patch.object(module, 'SourceRecorder', return_value=recorder), \
+                    patch.object(module, 'execute_indication_turn', side_effect=indication_execute):
+                module.run(offset_plan, Path(directory) / 'offset-attempt')
+            self.assertEqual(offsets, [.5])
             with patch.dict(sys.modules, {'carla': fake_carla}):
                 with self.assertRaisesRegex(ValueError, 'does not match Native map'):
                     module.run(dict(plan, map_name='different-map'), Path(directory) / 'wrong-map')

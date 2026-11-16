@@ -101,6 +101,43 @@ class MarkedCourseFinalizerTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, 'non-marker readback'):
                     analyze(root, write_channel=False)
 
+    def test_numeric_indication_stream_is_bound_to_original_source(self):
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.prepare(root)
+            case = ASSIGNMENT + '__c126064_indication_offset-0002'
+            scene = json.loads((root / 'marked_intersection.json').read_text())
+            scene.update(case_id=case, indication_form='button',
+                         physical_indications_xy_m=[[1.5, 1.]],
+                         source_indications_xy_m=[[1, 1]],
+                         placement_offset_m=.5,
+                         realized_placement_offset_m=[.5])
+            scene.pop('physical_markers_xy_m')
+            authority = json.loads((root / 'authority_source_original.json').read_text())
+            authority.update(indication_form='button', placement_axis_xy=[1, 0],
+                             indications=[{'form': 'button', 'x': 1, 'y': 1}])
+            original = json.dumps(authority).encode()
+            (root / 'authority_source_original.json').write_bytes(original)
+            scene['authority_source_sha256'] = sha256(original).hexdigest()
+            (root / 'marked_intersection.json').write_text(json.dumps(scene))
+            config = json.loads((root / 'config.json').read_text())
+            config['selected_case_id'] = case
+            config['case']['recording_description']['channels'].append(
+                {'name': 'realized_indication_placement_offset_m', 'unit': 'm'})
+            (root / 'config.json').write_text(json.dumps(config))
+            report = analyze(root)
+            result = build_result(root, report)
+            summary = result['realized_observables']['realized_indication_placement_offset_m']
+            self.assertEqual((summary['value'], summary['statistic']), (.5, 'max'))
+            stream = [json.loads(line) for line in
+                      (root / summary['reference']).read_text().splitlines()]
+            self.assertEqual(len(stream), 3)
+            self.assertTrue(all(row['value'] == .5 for row in stream))
+            scene['physical_indications_xy_m'] = [[1., 1.]]
+            (root / 'marked_intersection.json').write_text(json.dumps(scene))
+            with self.assertRaisesRegex(ValueError, 'readback differs'):
+                analyze(root, write_channel=False)
+
 
 if __name__ == '__main__':
     unittest.main()

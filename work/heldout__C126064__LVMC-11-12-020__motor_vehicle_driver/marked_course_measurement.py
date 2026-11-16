@@ -6,6 +6,12 @@ import json
 from math import hypot, isfinite
 from pathlib import Path
 
+INDICATION_OFFSETS = {
+    'c126064_indication_offset-0000': 0.,
+    'c126064_indication_offset-0001': 1.,
+    'c126064_indication_offset-0002': .5,
+}
+
 
 def _inside(point, polygon):
     x, y = point
@@ -120,12 +126,29 @@ def measure(source_dir, case_id):
                 or not isinstance(expected, list) or not expected
                 or len(expected) != len(points)):
             raise ValueError('Physical indication inventory differs from authority source')
+        suffix = case_id.rsplit('__', 1)[-1]
+        numeric_offset = suffix in INDICATION_OFFSETS
+        offset = INDICATION_OFFSETS.get(suffix, 0.)
+        axis = authority.get('placement_axis_xy') if numeric_offset else [0., 0.]
+        if numeric_offset and (form != 'button' or not isinstance(axis, list) or len(axis) != 2
+                               or any(isinstance(v, bool) or not isinstance(v, (int, float))
+                                      or not isfinite(v) for v in axis)
+                               or abs(hypot(*axis) - 1.) > 1e-6
+                               or scene.get('placement_offset_m', 0.) != offset):
+            raise ValueError('Original indication placement sweep source or setpoint differs')
+        displacements = []
         for point, item in zip(points, expected):
             if (not isinstance(item, dict) or item.get('form') != form or
                     any(isinstance(item.get(k), bool) or not isinstance(item.get(k), (int, float))
                         or not isfinite(item[k]) for k in ('x', 'y')) or
-                    any(abs(point[i] - item[k]) > .05 for i, k in enumerate(('x', 'y')))):
+                    any(abs(point[i] - (item[k] + offset * axis[i])) > .05
+                        for i, k in enumerate(('x', 'y')))):
                 raise ValueError('Physical indication readback differs from original source')
+            displacements.append(hypot(point[0] - item['x'], point[1] - item['y']))
+        if numeric_offset and offset and (scene.get('source_indications_xy_m') !=
+                                          [[item['x'], item['y']] for item in expected]
+                                          or scene.get('realized_placement_offset_m') != displacements):
+            raise ValueError('Original indication displacement readback differs')
     else:
         raise ValueError('Unsupported original indication form')
     if (len(polygon) < 3 or not isinstance(points, list) or not points
@@ -160,6 +183,8 @@ def measure(source_dir, case_id):
     ratio = realized_course_ratio(rows, authority) if numeric else None
     return {'case_id': case_id, 'indication_form': form,
             'physical_indications_xy_m': points,
+            'realized_indication_placement_offset_m':
+                max(displacements) if form != 'marker' and numeric_offset else None,
             'frame_count': len(rows), 'observations': rows,
             'realized_course_deviation': realized_course_deviation(rows),
             'realized_course_deviation_ratio': ratio,

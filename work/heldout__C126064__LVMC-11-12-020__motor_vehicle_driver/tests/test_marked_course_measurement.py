@@ -77,6 +77,41 @@ class MarkedCourseTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'form differs'):
                 measure(root, 'case')
 
+    def test_numeric_indication_offset_uses_original_axis_and_readback(self):
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            scene, _ = fixture(root)
+            suffix = 'c126064_indication_offset-0002'
+            case_id = 'heldout__C126064__LVMC-11-12-020__motor_vehicle_driver__' + suffix
+            authority = json.loads((root / 'authority_source_original.json').read_text())
+            authority.update(indication_form='button', placement_axis_xy=[1, 0],
+                             indications=[{'form': 'button', 'x': 1, 'y': 1}])
+            original = json.dumps(authority).encode()
+            (root / 'authority_source_original.json').write_bytes(original)
+            scene.pop('physical_markers_xy_m')
+            scene.update(case_id=case_id, indication_form='button',
+                         physical_indications_xy_m=[[1.5, 1.]],
+                         source_indications_xy_m=[[1, 1]],
+                         placement_offset_m=.5,
+                         realized_placement_offset_m=[.5],
+                         authority_source_sha256=sha256(original).hexdigest())
+            (root / 'marked_intersection.json').write_text(json.dumps(scene))
+            self.assertEqual(measure(root, case_id)['realized_indication_placement_offset_m'], .5)
+            scene['physical_indications_xy_m'] = [[1.0, 1.]]
+            (root / 'marked_intersection.json').write_text(json.dumps(scene))
+            with self.assertRaisesRegex(ValueError, 'readback differs'):
+                measure(root, case_id)
+            scene['physical_indications_xy_m'] = [[1.5, 1.]]
+            scene['placement_offset_m'] = 1.
+            (root / 'marked_intersection.json').write_text(json.dumps(scene))
+            with self.assertRaisesRegex(ValueError, 'sweep source or setpoint'):
+                measure(root, case_id)
+            scene['placement_offset_m'] = .5
+            scene.pop('realized_placement_offset_m')
+            (root / 'marked_intersection.json').write_text(json.dumps(scene))
+            with self.assertRaisesRegex(ValueError, 'displacement readback differs'):
+                measure(root, case_id)
+
     def test_original_footprint_and_authorized_marker_join(self):
         with TemporaryDirectory() as directory:
             root = Path(directory)

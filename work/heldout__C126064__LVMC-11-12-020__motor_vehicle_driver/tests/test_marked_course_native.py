@@ -195,6 +195,46 @@ class NativeMarkerTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, 'outside sourced intersection'):
                     place_course_indications(FormWorld(), path, digest, form, make)
 
+    def test_source_axis_moves_physical_indication_and_rejects_bad_geometry(self):
+        class FormWorld(World):
+            name = 'Town05'
+            def find(self, name):
+                self.assert_blueprint = name
+                return name
+        with TemporaryDirectory() as td:
+            path = Path(td) / 'indication.json'
+            source = {'authority_document': 'unverified source claim',
+                      'intersection_id': 'junction-7', 'map_name': 'Town05',
+                      'median_opening_with_intersecting_road': True,
+                      'intersection_polygon_xy_m': [[0, 0], [10, 0], [10, 10], [0, 10]],
+                      'indication_form': 'button',
+                      'placement_axis_xy': [1, 0],
+                      'form_blueprints': {'button': ['static.prop.road_button']},
+                      'indications': [{'form': 'button', 'blueprint_id': 'static.prop.road_button',
+                                       'x': 1, 'y': 3, 'z': 0, 'yaw': 90}]}
+            make = lambda x, y, z, yaw: Transform(x, y)
+            path.write_text(json.dumps(source))
+            digest = hashlib.sha256(path.read_bytes()).hexdigest()
+            placed = place_course_indications(FormWorld(), path, digest, 'button', make,
+                                              placement_offset_m=.5)
+            self.assertEqual(placed['physical_xy_m'], [[1.5, 3.]])
+            self.assertEqual(placed['source_xy_m'], [[1., 3.]])
+            self.assertEqual(placed['realized_placement_offset_m'], [.5])
+            self.assertFalse(placed['authorization_verified_by_worker'])
+            with self.assertRaisesRegex(ValueError, 'readback'):
+                place_course_indications(FormWorld(offset=.2), path, digest, 'button', make,
+                                         placement_offset_m=.5)
+            for bad in (float('nan'), 2.1, True):
+                with self.subTest(bad=bad), self.assertRaisesRegex(ValueError, 'placement offset'):
+                    place_course_indications(FormWorld(), path, digest, 'button', make,
+                                             placement_offset_m=bad)
+            source['placement_axis_xy'] = [0, 0]
+            path.write_text(json.dumps(source))
+            digest = hashlib.sha256(path.read_bytes()).hexdigest()
+            with self.assertRaisesRegex(ValueError, 'unit placement axis'):
+                place_course_indications(FormWorld(), path, digest, 'button', make,
+                                         placement_offset_m=.5)
+
     def source(self, root):
         p = root / 'authorized-course.json'
         p.write_text(json.dumps({'authority_document': 'reviewed city plan',

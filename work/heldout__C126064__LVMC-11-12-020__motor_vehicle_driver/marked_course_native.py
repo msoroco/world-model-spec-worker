@@ -69,7 +69,7 @@ def place_markers(world, source_path, expected_sha256, make_transform):
         raise
 
 
-def place_course_indications(world, source_path, expected_sha256, form, make_transform):
+def place_course_indications(world, source_path, expected_sha256, form, make_transform, *, placement_offset_m=0.):
     """Place sourced buttons or other indications with map and pose readback.
 
     The caller retains ownership of the returned actors. A source authorization
@@ -77,6 +77,9 @@ def place_course_indications(world, source_path, expected_sha256, form, make_tra
     """
     if form not in ('button', 'other_indication'):
         raise ValueError('Unsupported non-marker indication form')
+    if (isinstance(placement_offset_m, bool) or not isinstance(placement_offset_m, (int, float))
+            or not isfinite(placement_offset_m) or abs(placement_offset_m) > 2.):
+        raise ValueError('Indication placement offset must be finite within two metres')
     raw = Path(source_path).read_bytes()
     if sha256(raw).hexdigest() != expected_sha256:
         raise ValueError('Indication source hash changed')
@@ -98,6 +101,12 @@ def place_course_indications(world, source_path, expected_sha256, form, make_tra
     road_map = world.get_map()
     if road_map.name != record['map_name']:
         raise ValueError('Native indication map differs from source')
+    axis = record.get('placement_axis_xy')
+    if placement_offset_m:
+        if (not isinstance(axis, list) or len(axis) != 2
+                or any(isinstance(v, bool) or not isinstance(v, (int, float)) or not isfinite(v) for v in axis)
+                or abs(hypot(*axis) - 1.) > 1e-6):
+            raise ValueError('Sourced unit placement axis missing')
     actors = []
     try:
         for item in indications:
@@ -107,9 +116,11 @@ def place_course_indications(world, source_path, expected_sha256, form, make_tra
                    or not isinstance(item[key], (int, float)) or not isfinite(item[key])
                    for key in ('x', 'y', 'z', 'yaw')):
                 raise ValueError('Nonfinite physical indication placement')
-            if not _inside([item['x'], item['y']], polygon):
+            x = item['x'] + placement_offset_m * axis[0] if placement_offset_m else item['x']
+            y = item['y'] + placement_offset_m * axis[1] if placement_offset_m else item['y']
+            if not _inside([x, y], polygon):
                 raise ValueError('Physical indication outside sourced intersection')
-            transform = make_transform(*(item[key] for key in ('x', 'y', 'z', 'yaw')))
+            transform = make_transform(x, y, item['z'], item['yaw'])
             waypoint = road_map.get_waypoint(transform.location)
             if waypoint is None or not waypoint.is_junction:
                 raise ValueError('Physical indication does not occupy a Native junction')
@@ -118,12 +129,18 @@ def place_course_indications(world, source_path, expected_sha256, form, make_tra
                 raise ValueError('Native indication spawn failed')
             actors.append(actor)
             actual = actor.get_transform().location
-            if max(abs(float(getattr(actual, axis)) - float(item[axis]))
-                   for axis in ('x', 'y')) > .05:
+            if max(abs(float(getattr(actual, coordinate)) - target)
+                   for coordinate, target in (('x', x), ('y', y))) > .05:
                 raise ValueError('Native indication position readback differs')
         return {'actors': actors, 'intersection_id': record['intersection_id'],
                 'indication_form': form, 'source_sha256': expected_sha256,
                 'physical_xy_m': [_xy(actor.get_transform().location) for actor in actors],
+                'source_xy_m': [[float(item['x']), float(item['y'])] for item in indications],
+                'placement_offset_m': float(placement_offset_m),
+                'realized_placement_offset_m': [
+                    hypot(actor.get_transform().location.x - item['x'],
+                          actor.get_transform().location.y - item['y'])
+                    for actor, item in zip(actors, indications)],
                 'authorization_verified_by_worker': False,
                 'visible_pixels_verified': False}
     except BaseException:
@@ -420,7 +437,7 @@ def execute_marked_turn(world, carla_module, ego, case_id, source_path, source_s
 
 def execute_indication_turn(world, carla_module, ego, case_id, source_path,
                             source_sha256, form, variant, make_transform, recorder, *,
-                            camera_factory=FourCameraCapture, drive=drive_turn):
+                            placement_offset_m=0., camera_factory=FourCameraCapture, drive=drive_turn):
     """Construct a button or other-indication turn and retain its own source form.
 
     This is the Native construction path for future exact form cases. The saved
@@ -430,7 +447,8 @@ def execute_indication_turn(world, carla_module, ego, case_id, source_path,
     cameras = None
     try:
         placed = place_course_indications(world, source_path, source_sha256,
-                                          form, make_transform)
+                                          form, make_transform,
+                                          placement_offset_m=placement_offset_m)
         plan = turn_targets(world, source_path, source_sha256, variant, make_transform)
         if plan['intersection_id'] != placed['intersection_id']:
             raise ValueError('Indication and turn plan intersection identities differ')
@@ -445,6 +463,8 @@ def execute_indication_turn(world, carla_module, ego, case_id, source_path,
                 'intersection_id': plan['intersection_id'],
                 'indication_form': form, 'variant': variant,
                 'physical_indications_xy_m': placed['physical_xy_m'],
+                'placement_offset_m': placed.get('placement_offset_m', 0.),
+                'realized_placement_offset_m': placed.get('realized_placement_offset_m', []),
                 'motion': motion, 'sources': sources,
                 'authority_verified': False, 'legal_conformance_assessed': False}
     finally:

@@ -21,6 +21,11 @@ NUMERIC_MARKER_CASES = {
     'c126064_course_blend-0001': 1.,
     'c126064_course_blend-0002': .5,
 }
+NUMERIC_INDICATION_CASES = {
+    'c126064_indication_offset-0000': 0.,
+    'c126064_indication_offset-0001': 1.,
+    'c126064_indication_offset-0002': .5,
+}
 
 
 def case_form_variant(case_id):
@@ -28,6 +33,8 @@ def case_form_variant(case_id):
     if not case_id.startswith(prefix):
         raise ValueError('Unknown exact marked-turn case')
     suffix = case_id[len(prefix):]
+    if suffix in NUMERIC_INDICATION_CASES:
+        return 'button', 'indicated_course'
     if suffix in NUMERIC_MARKER_CASES:
         return 'marker', 'indicated_course'
     if suffix in VARIANTS:
@@ -43,6 +50,7 @@ def prepare(case_id, source_path, expected_sha256):
     form, variant = case_form_variant(case_id)
     suffix = case_id.removeprefix(ASSIGNMENT + '__')
     course_blend = NUMERIC_MARKER_CASES.get(suffix)
+    placement_offset_m = NUMERIC_INDICATION_CASES.get(suffix)
     path = Path(source_path)
     raw = path.read_bytes()
     if sha256(raw).hexdigest() != expected_sha256:
@@ -58,6 +66,8 @@ def prepare(case_id, source_path, expected_sha256):
             raise ValueError('Marked-turn site source lacks markers')
     elif record.get('indication_form') != form or not record.get('indications'):
         raise ValueError('Marked-turn site source lacks exact indication form')
+    if placement_offset_m and not record.get('placement_axis_xy'):
+        raise ValueError('Marked-turn site source lacks placement axis')
     if record.get('median_opening_with_intersecting_road') is not True:
         raise ValueError('Marked-turn site lacks intersecting-road median opening')
     route = record['indicated_course_xy_m']
@@ -69,6 +79,7 @@ def prepare(case_id, source_path, expected_sha256):
     heading = degrees(atan2(second[1] - first[1], second[0] - first[0]))
     return {'case_id': case_id, 'variant': variant, 'indication_form': form,
             'course_blend': course_blend,
+            'placement_offset_m': placement_offset_m,
             'source_path': str(path), 'source_sha256': expected_sha256,
             'map_name': record['map_name'],
             'approach_xy_m': first, 'approach_heading_deg': heading,
@@ -119,7 +130,8 @@ def run(plan, output, host='127.0.0.1', port=2000):
             result = execute_indication_turn(world, carla, ego, plan['case_id'],
                                              plan['source_path'], plan['source_sha256'],
                                              plan['indication_form'], plan['variant'],
-                                             make_transform, recorder)
+                                             make_transform, recorder,
+                                             placement_offset_m=plan.get('placement_offset_m') or 0.)
         (output / 'native-turn-result.json').write_text(json.dumps(result, indent=2) + '\n')
         return result
     finally:
