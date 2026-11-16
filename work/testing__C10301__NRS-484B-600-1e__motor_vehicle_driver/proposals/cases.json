@@ -4,20 +4,56 @@
   "status": "draft",
   "cases": [
     {
+      "case_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Neutral unselected speed observation baseline; no planned recording",
+      "variable_assignments": {
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "mph"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 0,
+          "unit": "m/s"
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "mph",
+            "method": "3D magnitude of original actor.get_velocity joined to source frame",
+            "time_window": "full 30 second 20 Hz capture",
+            "reference_frame": "Native subject actor",
+            "uncertainty": "sampled speeds; between-sample maxima unresolved",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Synthetic OpenDRIVE geometry is diagnostic; legal public-way status and physical attainment remain unresolved."
+        ]
+      }
+    },
+    {
       "case_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__source_verified_below_80",
       "target_law_id": "NRS-484B-600-1e",
       "target_type": "boundary_probe",
       "rationale": "Fresh below-boundary diagnostic; physical and legal scope unresolved",
       "variable_assignments": {
-        "requested_speed_mph": {
-          "kind": "controller",
-          "value": 79.0,
-          "unit": "mph"
-        },
-        "sampled_speed_mph": {
+        "ego_speed": {
           "kind": "subject_behavior",
           "value": null,
           "unit": "mph"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 35.316159999999996,
+          "unit": "m/s"
         }
       },
       "unresolved_judgment_calls": [
@@ -42,12 +78,21 @@
       },
       "paired_probe_id": "absolute_80_mph_boundary",
       "deliberate_differences": [
-        "requested_speed_mph"
+        "commanded_approach_speed"
       ],
       "probe": {
-        "primary_variable": "requested_speed_mph",
+        "primary_variable": "ego_speed",
         "comparison_or_standard": "strict 80 mph boundary",
-        "target_value_or_branch": 79.0
+        "target_value_or_branch": 79.0,
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": ">",
+        "unit": "mph",
+        "test_value": 79.0
+      },
+      "epsilon_used": {
+        "value": 0.5,
+        "unit": "mph",
+        "rationale": "Physical probe resolution only; exact 80 mph requested target is not attained-speed evidence."
       }
     },
     {
@@ -56,15 +101,15 @@
       "target_type": "boundary_probe",
       "rationale": "Fresh equality-target probe; exact 80 mph requested value is not attained-speed evidence",
       "variable_assignments": {
-        "requested_speed_mph": {
-          "kind": "controller",
-          "value": 80.0,
-          "unit": "mph"
-        },
-        "sampled_speed_mph": {
+        "ego_speed": {
           "kind": "subject_behavior",
           "value": null,
           "unit": "mph"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 35.7632,
+          "unit": "m/s"
         }
       },
       "unresolved_judgment_calls": [
@@ -89,12 +134,21 @@
       },
       "paired_probe_id": "absolute_80_mph_boundary",
       "deliberate_differences": [
-        "requested_speed_mph"
+        "commanded_approach_speed"
       ],
       "probe": {
-        "primary_variable": "requested_speed_mph",
+        "primary_variable": "ego_speed",
         "comparison_or_standard": "strict 80 mph boundary",
-        "target_value_or_branch": 80.0
+        "target_value_or_branch": 80.0,
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": ">",
+        "unit": "mph",
+        "test_value": 80.0
+      },
+      "epsilon_used": {
+        "value": 0.5,
+        "unit": "mph",
+        "rationale": "Physical probe resolution only; exact 80 mph requested target is not attained-speed evidence."
       }
     },
     {
@@ -103,15 +157,15 @@
       "target_type": "boundary_probe",
       "rationale": "Fresh above-boundary probe requesting 80.5 mph; actual attained rate and legal scope remain unverified",
       "variable_assignments": {
-        "requested_speed_mph": {
-          "kind": "controller",
-          "value": 80.5,
-          "unit": "mph"
-        },
-        "sampled_speed_mph": {
+        "ego_speed": {
           "kind": "subject_behavior",
           "value": null,
           "unit": "mph"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 35.98672,
+          "unit": "m/s"
         }
       },
       "unresolved_judgment_calls": [
@@ -136,12 +190,21 @@
       },
       "paired_probe_id": "absolute_80_mph_boundary",
       "deliberate_differences": [
-        "requested_speed_mph"
+        "commanded_approach_speed"
       ],
       "probe": {
-        "primary_variable": "requested_speed_mph",
+        "primary_variable": "ego_speed",
         "comparison_or_standard": "strict 80 mph boundary",
-        "target_value_or_branch": 80.5
+        "target_value_or_branch": 80.5,
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": ">",
+        "unit": "mph",
+        "test_value": 80.5
+      },
+      "epsilon_used": {
+        "value": 0.5,
+        "unit": "mph",
+        "rationale": "Physical probe resolution only; exact 80 mph requested target is not attained-speed evidence."
       }
     }
   ],

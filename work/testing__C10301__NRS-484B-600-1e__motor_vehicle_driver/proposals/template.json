@@ -1,0 +1,44 @@
+{
+  "template_id": "NRS-484B-600-1e@motor_vehicle_driver",
+  "law_id": "NRS-484B-600-1e",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "It is unlawful for any person to drive or operate a vehicle of any kind or character at: In any event, a rate of speed greater than 80 miles per hour.",
+  "structure": {
+    "law_id": "NRS-484B-600-1e",
+    "activation": {
+      "condition": "person drives or operates a vehicle",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "do not drive or operate at a rate of speed greater than 80 miles per hour",
+      "type": "must_not",
+      "numeric_conditions": [
+        {
+          "variable": "ego_speed",
+          "operator": ">",
+          "value": 80,
+          "unit": "mph"
+        }
+      ]
+    },
+    "exceptions": [],
+    "timing": {
+      "description": "in any event during vehicle operation",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": []
+  },
+  "parameter_refs": [
+    {
+      "name": "ego_speed",
+      "kind": "subject_behavior",
+      "range_or_domain": "original-frame observed 3D speed in mph; outcome not guaranteed"
+    },
+    {
+      "name": "commanded_approach_speed",
+      "kind": "controller",
+      "range_or_domain": "positive target in m/s for the physical probe; not attained speed"
+    }
+  ]
+}
