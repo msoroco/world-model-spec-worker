@@ -15,7 +15,92 @@
         "status": "physical",
         "reason": "Native indication spawn, turn route and four-camera visibility require physical verification"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "marker-follow-fallback1-construction.json",
+          "construction_sha256": "c68d96018b0b01f4633856618ae84a6b695bc08bd380201e937a192741941050",
+          "changed_knobs": [
+            "Native subject spawn vertical offset 0.50 m -> 0.65 m"
+          ],
+          "trigger": {
+            "source": "Native subject spawn/readback and original body source",
+            "metric": "subject actor creation and initial ground-body clearance",
+            "failure_condition": "Primary subject spawn fails or overlaps the mapped road surface"
+          },
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/provisional-manifest.json --case heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__marker_follow --candidate fallback1 --output .runtime-work/c111644-marker-follow-fallback1-offline-20261116 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "exit_code": 0,
+            "log": "marker-follow-fallback1-offline.log",
+            "log_sha256": "3553b7c7deeeb8f0d683a1c29006bab291f093e27a14ccec2371d9f1eaf03a4c",
+            "construction_sha256": "c68d96018b0b01f4633856618ae84a6b695bc08bd380201e937a192741941050"
+          },
+          "compatibility": {
+            "receipt": "marker-follow-fallback1-compatibility.json",
+            "sha256": "96ad147847ffc14b71467785c133b86f137231a21c8aa6d7239ce4ab6c1129e3",
+            "log": "marker-follow-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "marker-follow-fallback1-negative.log",
+            "negative_log_sha256": "49531803205983416be953d9c01b303b3df839b055068e73195cca0eda015ca1"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "marker-follow-fallback2-construction.json",
+          "construction_sha256": "0f3f0532cbc7c60c0a33b1f18045c12388a28331d258d4563c90a605bbb99551",
+          "changed_knobs": [
+            "Native route waypoint arrival radius 2.0 m -> 2.8 m"
+          ],
+          "trigger": {
+            "source": "original 20 Hz subject body and target route plan",
+            "metric": "progress to final source-route waypoint",
+            "failure_condition": "Primary turn controller stalls before the indicated exit waypoint"
+          },
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/provisional-manifest.json --case heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__marker_follow --candidate fallback2 --output .runtime-work/c111644-marker-follow-fallback2-offline-20261116 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "exit_code": 0,
+            "log": "marker-follow-fallback2-offline.log",
+            "log_sha256": "2c70bfd11ebb0a464c765044723e99048cfc94108d846bf71c8752ff72dca99f",
+            "construction_sha256": "0f3f0532cbc7c60c0a33b1f18045c12388a28331d258d4563c90a605bbb99551"
+          },
+          "compatibility": {
+            "receipt": "marker-follow-fallback2-compatibility.json",
+            "sha256": "351f3add5a86bb6967f448034ea8c7b57e3a8d6eb04fc73a95c9b56df86f345e",
+            "log": "marker-follow-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "marker-follow-fallback2-negative.log",
+            "negative_log_sha256": "e65927900b46267d951f27d60c1132a38f5133244392aecaecbf350e2860826a"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "marker-follow-fallback3-construction.json",
+          "construction_sha256": "0c44a9d82e825ad86de52cef86c99f1e817f8e4fac29e6a197bce7823ca99025",
+          "changed_knobs": [
+            "original camera synchronization wait 10 s -> 15 s"
+          ],
+          "trigger": {
+            "source": "four original camera frame streams and callback frame identities",
+            "metric": "synchronized source frame arrival latency",
+            "failure_condition": "Primary 10 s source-frame wait expires despite all camera callbacks arriving intact"
+          },
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/provisional-manifest.json --case heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__marker_follow --candidate fallback3 --output .runtime-work/c111644-marker-follow-fallback3-offline-20261116 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "exit_code": 0,
+            "log": "marker-follow-fallback3-offline.log",
+            "log_sha256": "419a106a43b1399b6cad9e510703546dff1b7eebd9c779d901a6104feaa07641",
+            "construction_sha256": "0c44a9d82e825ad86de52cef86c99f1e817f8e4fac29e6a197bce7823ca99025"
+          },
+          "compatibility": {
+            "receipt": "marker-follow-fallback3-compatibility.json",
+            "sha256": "56279aada535410622a19b430b96aacd1fae7f405fb7b2060058491e9e975912",
+            "log": "marker-follow-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "marker-follow-fallback3-negative.log",
+            "negative_log_sha256": "71207516c728d1e1fc32a27346cb14424358c75c1f117abce2c15832f1930931"
+          }
+        }
+      ],
       "offline": {
         "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/provisional-manifest.json --case heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__marker_follow --output .runtime-work/c111644-marker-follow-offline-v6-20261116 --python \"$PWD/.venv-cpu/bin/python\"",
         "exit_code": 0,
@@ -86,7 +171,92 @@
         "status": "physical",
         "reason": "Native indication spawn, turn route and four-camera visibility require physical verification"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "marker-depart-fallback1-construction.json",
+          "construction_sha256": "c21d773a9eee72724e3e740b7b55743aff7a5a2f91a13cda74787d013e58da7b",
+          "changed_knobs": [
+            "Native subject spawn vertical offset 0.50 m -> 0.65 m"
+          ],
+          "trigger": {
+            "source": "Native subject spawn/readback and original body source",
+            "metric": "subject actor creation and initial ground-body clearance",
+            "failure_condition": "Primary subject spawn fails or overlaps the mapped road surface"
+          },
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/provisional-manifest.json --case heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__marker_depart --candidate fallback1 --output .runtime-work/c111644-marker-depart-fallback1-offline-20261116 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "exit_code": 0,
+            "log": "marker-depart-fallback1-offline.log",
+            "log_sha256": "374255c8745501a679c8b9243c6a6a780684f431d8d5dae124e57f2557934c82",
+            "construction_sha256": "c21d773a9eee72724e3e740b7b55743aff7a5a2f91a13cda74787d013e58da7b"
+          },
+          "compatibility": {
+            "receipt": "marker-depart-fallback1-compatibility.json",
+            "sha256": "64f04e73c41840d53cc7a21a80634070a41ff7779728f1db3fe56bcddd338714",
+            "log": "marker-follow-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "marker-depart-fallback1-negative.log",
+            "negative_log_sha256": "e8a0740d3068d8bcf67ca2ef044538c1bcf3f333264feed0a0be58f9891283dd"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "marker-depart-fallback2-construction.json",
+          "construction_sha256": "4bbae4af063580dfed9a9620d386a53ea279c69797a2c1d90b2b687d0f5d5383",
+          "changed_knobs": [
+            "Native route waypoint arrival radius 2.0 m -> 2.8 m"
+          ],
+          "trigger": {
+            "source": "original 20 Hz subject body and target route plan",
+            "metric": "progress to final source-route waypoint",
+            "failure_condition": "Primary turn controller stalls before the indicated exit waypoint"
+          },
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/provisional-manifest.json --case heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__marker_depart --candidate fallback2 --output .runtime-work/c111644-marker-depart-fallback2-offline-20261116 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "exit_code": 0,
+            "log": "marker-depart-fallback2-offline.log",
+            "log_sha256": "11358c748c14ac6d623112a9c72cfbf0c66fa9d8e1ffccf48b8633bbdbf088f1",
+            "construction_sha256": "4bbae4af063580dfed9a9620d386a53ea279c69797a2c1d90b2b687d0f5d5383"
+          },
+          "compatibility": {
+            "receipt": "marker-depart-fallback2-compatibility.json",
+            "sha256": "345becd35a950f907b7a0b91cbf286f59b1ff3c3016068573beda4395c79f620",
+            "log": "marker-follow-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "marker-depart-fallback2-negative.log",
+            "negative_log_sha256": "0180dad20617ee826ad0c053e3c1de9597a6ea45a0a1a87c099a8d53a945d1fa"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "marker-depart-fallback3-construction.json",
+          "construction_sha256": "a41a5b777623b934bb2769b92e08df5ea17bbf2724cc1b297d76fd8840a2dd43",
+          "changed_knobs": [
+            "original camera synchronization wait 10 s -> 15 s"
+          ],
+          "trigger": {
+            "source": "four original camera frame streams and callback frame identities",
+            "metric": "synchronized source frame arrival latency",
+            "failure_condition": "Primary 10 s source-frame wait expires despite all camera callbacks arriving intact"
+          },
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/provisional-manifest.json --case heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__marker_depart --candidate fallback3 --output .runtime-work/c111644-marker-depart-fallback3-offline-20261116 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "exit_code": 0,
+            "log": "marker-depart-fallback3-offline.log",
+            "log_sha256": "0d77f3ad15e4787daeb087147149a4f5c8fdc9a9082b9347b87511decce491d9",
+            "construction_sha256": "a41a5b777623b934bb2769b92e08df5ea17bbf2724cc1b297d76fd8840a2dd43"
+          },
+          "compatibility": {
+            "receipt": "marker-depart-fallback3-compatibility.json",
+            "sha256": "f601120ee6deceacd3764b77e1685293f4a7c7fa593cf17aa217dc0ca356be1d",
+            "log": "marker-follow-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "marker-depart-fallback3-negative.log",
+            "negative_log_sha256": "dd180f0c9c2d6882049043c4c5ab44887c0c5e4d9c49bb9e5dc1875881cf45a0"
+          }
+        }
+      ],
       "measurement_contract": "marker-depart-measurement-contract.json",
       "fixture_recipe": "work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/marker-depart-recipe.json",
       "acquisition": {
@@ -157,7 +327,64 @@
         "status": "physical",
         "reason": "Native indication spawn, turn route and four-camera visibility require physical verification"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "button-follow-fallback1-construction.json",
+          "construction_sha256": "e6a9019672a078e1c84d37da07845ebc9adc003815136a676730e327089dd06f",
+          "changed_knobs": [
+            "Native subject spawn vertical offset 0.50 m -> 0.65 m"
+          ],
+          "trigger": {
+            "source": "Native subject spawn/readback and original body source",
+            "metric": "subject actor creation and initial ground-body clearance",
+            "failure_condition": "Primary subject spawn fails or overlaps the mapped road surface"
+          },
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/provisional-manifest.json --case heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__button_follow --candidate fallback1 --output .runtime-work/c111644-button-follow-fallback1-offline-20261116 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "exit_code": 0,
+            "log": "button-follow-fallback1-offline.log",
+            "log_sha256": "b8ecda0baa8f03dd0a92e078e3e624fcce9d310f589ed312f75f86b7dcacb3f8",
+            "construction_sha256": "e6a9019672a078e1c84d37da07845ebc9adc003815136a676730e327089dd06f"
+          },
+          "compatibility": {
+            "receipt": "button-follow-fallback1-compatibility.json",
+            "sha256": "aa15537cfb82c6046e3a64589089a21d333e1c79d4fb31f41c6e8d0e9c71a8be",
+            "log": "marker-follow-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "button-follow-fallback1-negative.log",
+            "negative_log_sha256": "24c6fbd737a19849e17ff219fc31938718d1d68f2a6d96234088e8be09e06cf8"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "button-follow-fallback2-construction.json",
+          "construction_sha256": "1206f405e20d0796fd136cb295312a880e8c5f15e479c8b614a80b4528846621",
+          "changed_knobs": [
+            "Native route waypoint arrival radius 2.0 m -> 2.8 m"
+          ],
+          "trigger": {
+            "source": "original 20 Hz subject body and target route plan",
+            "metric": "progress to final source-route waypoint",
+            "failure_condition": "Primary turn controller stalls before the indicated exit waypoint"
+          },
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/provisional-manifest.json --case heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__button_follow --candidate fallback2 --output .runtime-work/c111644-button-follow-fallback2-offline-20261116 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "exit_code": 0,
+            "log": "button-follow-fallback2-offline.log",
+            "log_sha256": "6335570023b9dcd117e8891cacfdb838d421b0de7ce33a01842038369a86c072",
+            "construction_sha256": "1206f405e20d0796fd136cb295312a880e8c5f15e479c8b614a80b4528846621"
+          },
+          "compatibility": {
+            "receipt": "button-follow-fallback2-compatibility.json",
+            "sha256": "3b47263517d614068265d60b3a73afe783fd29843f953edb2172317631423922",
+            "log": "marker-follow-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "button-follow-fallback2-negative.log",
+            "negative_log_sha256": "10597d6b6e5bb619961fd22c57cd9e8c43add7a85b8779cd3f02c3ff01d473f4"
+          }
+        }
+      ],
       "measurement_contract": "button-follow-measurement-contract.json",
       "fixture_recipe": "work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/button-follow-recipe.json",
       "acquisition": {
@@ -228,7 +455,64 @@
         "status": "physical",
         "reason": "Native indication spawn, turn route and four-camera visibility require physical verification"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "button-depart-fallback1-construction.json",
+          "construction_sha256": "3bac044e391853fc11db84d79c5ae40fcf9fde2b6ced5445cf5e1570f41e134a",
+          "changed_knobs": [
+            "Native subject spawn vertical offset 0.50 m -> 0.65 m"
+          ],
+          "trigger": {
+            "source": "Native subject spawn/readback and original body source",
+            "metric": "subject actor creation and initial ground-body clearance",
+            "failure_condition": "Primary subject spawn fails or overlaps the mapped road surface"
+          },
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/provisional-manifest.json --case heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__button_depart --candidate fallback1 --output .runtime-work/c111644-button-depart-fallback1-offline-20261116 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "exit_code": 0,
+            "log": "button-depart-fallback1-offline.log",
+            "log_sha256": "c04c3e8a85068081e54998e54ea2e2af222f09332d70dd783178c42af8c43b08",
+            "construction_sha256": "3bac044e391853fc11db84d79c5ae40fcf9fde2b6ced5445cf5e1570f41e134a"
+          },
+          "compatibility": {
+            "receipt": "button-depart-fallback1-compatibility.json",
+            "sha256": "bb62dc815315f7be25cb3fad10f91785dc235686fd4998d944905f6ecdfd875a",
+            "log": "marker-follow-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "button-depart-fallback1-negative.log",
+            "negative_log_sha256": "1781201397e9ae647e9bf92a0b6c379444dceb35b20ee598b5071b40bdda8ba6"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "button-depart-fallback2-construction.json",
+          "construction_sha256": "dc5f3032eddd5d250eec93a7cdb7b440360e8cb22b7809cf9e06eddd20aa31ac",
+          "changed_knobs": [
+            "Native route waypoint arrival radius 2.0 m -> 2.8 m"
+          ],
+          "trigger": {
+            "source": "original 20 Hz subject body and target route plan",
+            "metric": "progress to final source-route waypoint",
+            "failure_condition": "Primary turn controller stalls before the indicated exit waypoint"
+          },
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/provisional-manifest.json --case heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__button_depart --candidate fallback2 --output .runtime-work/c111644-button-depart-fallback2-offline-20261116 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "exit_code": 0,
+            "log": "button-depart-fallback2-offline.log",
+            "log_sha256": "4847df6f39eae17d9c742c9460a44270efc031e2c58827c4e9044a0caeda9d6f",
+            "construction_sha256": "dc5f3032eddd5d250eec93a7cdb7b440360e8cb22b7809cf9e06eddd20aa31ac"
+          },
+          "compatibility": {
+            "receipt": "button-depart-fallback2-compatibility.json",
+            "sha256": "a8e8379134e29038e7f6167f6c522f4e8a08d5911a05313e91f08e555fe54eed",
+            "log": "marker-follow-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "button-depart-fallback2-negative.log",
+            "negative_log_sha256": "2f57b4bf42d1408b0f76f48efe97f1aa2297c1ea787e109fa17b42ebc470617f"
+          }
+        }
+      ],
       "measurement_contract": "button-depart-measurement-contract.json",
       "fixture_recipe": "work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/button-depart-recipe.json",
       "acquisition": {
@@ -297,7 +581,36 @@
         "status": "physical",
         "reason": "Native indication spawn, turn route and four-camera visibility require physical verification"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "other-indication-follow-fallback1-construction.json",
+          "construction_sha256": "22864ec5f14b36d981baac5e16bbefbb89e70148a521cd2a3772e1acadf128d4",
+          "changed_knobs": [
+            "Native subject spawn vertical offset 0.50 m -> 0.65 m"
+          ],
+          "trigger": {
+            "source": "Native subject spawn/readback and original body source",
+            "metric": "subject actor creation and initial ground-body clearance",
+            "failure_condition": "Primary subject spawn fails or overlaps the mapped road surface"
+          },
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/provisional-manifest.json --case heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__other_indication_follow --candidate fallback1 --output .runtime-work/c111644-other-indication-follow-fallback1-offline-20261116 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "exit_code": 0,
+            "log": "other-indication-follow-fallback1-offline.log",
+            "log_sha256": "0633b665bb2e2fd3d866b1261f241530cf052a1ae7c5d3398099d4dcb71502ba",
+            "construction_sha256": "22864ec5f14b36d981baac5e16bbefbb89e70148a521cd2a3772e1acadf128d4"
+          },
+          "compatibility": {
+            "receipt": "other-indication-follow-fallback1-compatibility.json",
+            "sha256": "ad32df5b268c943adca887fcdc132b4a03bc400c2d083968cc2b7c464afffe6c",
+            "log": "marker-follow-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "other-indication-follow-fallback1-negative.log",
+            "negative_log_sha256": "41e2c688bd8c5b5282c2503b85bfe66f35950b0a2ea00c223549a5e2610ed047"
+          }
+        }
+      ],
       "acquisition": {
         "original_course_deviation_m": {
           "entrypoint": "turn_marking.py",
@@ -368,7 +681,36 @@
         "status": "physical",
         "reason": "Native indication spawn, turn route and four-camera visibility require physical verification"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "other-indication-depart-fallback1-construction.json",
+          "construction_sha256": "76eda33ba41edc7120d7e50abc33c819c84e6197cce6bd19a58294c6cbecc45b",
+          "changed_knobs": [
+            "Native subject spawn vertical offset 0.50 m -> 0.65 m"
+          ],
+          "trigger": {
+            "source": "Native subject spawn/readback and original body source",
+            "metric": "subject actor creation and initial ground-body clearance",
+            "failure_condition": "Primary subject spawn fails or overlaps the mapped road surface"
+          },
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/provisional-manifest.json --case heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__other_indication_depart --candidate fallback1 --output .runtime-work/c111644-other-indication-depart-fallback1-offline-20261116 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "exit_code": 0,
+            "log": "other-indication-depart-fallback1-offline.log",
+            "log_sha256": "94e058f6b04de3b735bee80affd485b70440dd2ffaf8d07ced78656803e18507",
+            "construction_sha256": "76eda33ba41edc7120d7e50abc33c819c84e6197cce6bd19a58294c6cbecc45b"
+          },
+          "compatibility": {
+            "receipt": "other-indication-depart-fallback1-compatibility.json",
+            "sha256": "665b4dc7c00b95f97fd9622274f05c012030fbf7ba8bb3bc5e503c9f24104f95",
+            "log": "marker-follow-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "other-indication-depart-fallback1-negative.log",
+            "negative_log_sha256": "686b36d2127e438fa3245e6e2e6009e794d3ecd301c4b320361566ffb47c324d"
+          }
+        }
+      ],
       "acquisition": {
         "original_course_deviation_m": {
           "entrypoint": "turn_marking.py",
