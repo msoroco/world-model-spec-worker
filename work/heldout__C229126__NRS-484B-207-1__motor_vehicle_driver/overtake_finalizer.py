@@ -67,6 +67,9 @@ def build_result(attempt, report):
     )
     evidence = []
     realized = {}
+    abreast = [row for row in samples if row['abreast']]
+    return_sample = next(row for row in samples
+                         if row['frame'] == observation['first_return_frame'])
     for name, key in channels:
         path = root / (name + '.jsonl')
         if path.exists():
@@ -79,12 +82,16 @@ def build_result(attempt, report):
                  else observation['body_clearance_at_first_return_m'])
         evidence.append({'name': name, 'unit': 'm', 'reference': path.name,
                          'sha256': sha256(path.read_bytes()).hexdigest()})
-        realized[name] = {'unit': 'm', 'method': 'original Native actor body projection',
-                          'time_window': 'complete source sequence',
-                          'statistic': 'minimum abreast' if name == 'left_pass_clearance_m'
-                                       else 'first rightward return',
+        window = ([abreast[0]['time_s'], abreast[-1]['time_s']]
+                  if name == 'left_pass_clearance_m' else
+                  [return_sample['time_s'], return_sample['time_s']])
+        realized[name] = {'unit': 'm',
+                          'method': 'original Native full-body participant corners joined to 20 Hz frame map',
+                          'time_window': 'abreast interval' if name == 'left_pass_clearance_m'
+                                         else 'first rightward return',
+                          'statistic': 'min' if name == 'left_pass_clearance_m' else 'first',
                           'reference': path.name, 'value': value,
-                          'sample_window_s': [samples[0]['time_s'], samples[-1]['time_s']]}
+                          'sample_window_s': window}
     return {'case_id': report['case_id'],
             'measured_values': {'overtake_sequence': observation},
             'target_checks': [

@@ -5,7 +5,7 @@
     {
       "case_id": "heldout__C229126__NRS-484B-207-1__motor_vehicle_driver__left_pass_wide",
       "construction": "construction.json",
-      "construction_sha256": "e4e2477231e45d564034103eded1a8f0dd48661207967d2adf5910423b2b98cb",
+      "construction_sha256": "ad2a875ba099b14d3ab388ae62c7ed81f5955b38b58fc017c14a7ef56813a8de",
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "overtake_finalizer.py"
@@ -17,12 +17,113 @@
           "method": "original 20 Hz body/lane/speed measurement",
           "evidence": "participant_footprints.jsonl joined to trace.jsonl and video_frames.jsonl"
         }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native pass, return timing or camera coverage can fail despite an offline-valid primary."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/left_pass_wide/fallback1-construction.json",
+          "construction_sha256": "6678dcc42227a0fa404c71222aa8645e4e1a6cb2d18d55007019f300952dd2a3",
+          "trigger": {
+            "source": "original frame-mapped heading and body motion",
+            "metric": "Native steering overshoot or oscillation",
+            "failure_condition": "steering sign reversals or lane target overshoot"
+          },
+          "changed_knobs": [
+            "steering gain 0.8 to 0.65"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C229126__NRS-484B-207-1__motor_vehicle_driver/delivery-construction-manifest.json --case heldout__C229126__NRS-484B-207-1__motor_vehicle_driver__left_pass_wide --candidate fallback1 --output .runtime-work/c229126-left_pass_wide-fallback1-offline-fixed2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "6678dcc42227a0fa404c71222aa8645e4e1a6cb2d18d55007019f300952dd2a3",
+            "log": "cases/left_pass_wide/fallback1-offline.log",
+            "log_sha256": "defaf30680e28b2cc9db52ed49f3fbd20bef2bf53c3921551c7f02e14285b584"
+          },
+          "compatibility": {
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C229126__NRS-484B-207-1__motor_vehicle_driver/delivery-construction-manifest.json --case heldout__C229126__NRS-484B-207-1__motor_vehicle_driver__left_pass_wide --candidate fallback1 --output .runtime-work/c229126-left_pass_wide-fallback1-compat-fixed2 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+            "receipt": "cases/left_pass_wide/fallback1-compatibility-receipt.json",
+            "sha256": "a9da070d489d314c7f2435d2c73e4a527c4446e38457c3da775a099bd62104fb",
+            "log": "fallback-analysis-empty.log",
+            "negative_log": "cases/left_pass_wide/fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/left_pass_wide/fallback2-construction.json",
+          "construction_sha256": "698436bc76ed8888e31171b4204d33af40c75ec70182ef5e6fe1a7be24683c3a",
+          "trigger": {
+            "source": "original frame-mapped full-body pass and return",
+            "metric": "Pass closure fails at planned speed",
+            "failure_condition": "no complete same-direction pass within fixed 320 frames"
+          },
+          "changed_knobs": [
+            "ego target speed 8 to 6.5 m/s"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C229126__NRS-484B-207-1__motor_vehicle_driver/delivery-construction-manifest.json --case heldout__C229126__NRS-484B-207-1__motor_vehicle_driver__left_pass_wide --candidate fallback2 --output .runtime-work/c229126-left_pass_wide-fallback2-offline-fixed2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "698436bc76ed8888e31171b4204d33af40c75ec70182ef5e6fe1a7be24683c3a",
+            "log": "cases/left_pass_wide/fallback2-offline.log",
+            "log_sha256": "defaf30680e28b2cc9db52ed49f3fbd20bef2bf53c3921551c7f02e14285b584"
+          },
+          "compatibility": {
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C229126__NRS-484B-207-1__motor_vehicle_driver/delivery-construction-manifest.json --case heldout__C229126__NRS-484B-207-1__motor_vehicle_driver__left_pass_wide --candidate fallback2 --output .runtime-work/c229126-left_pass_wide-fallback2-compat-fixed2 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+            "receipt": "cases/left_pass_wide/fallback2-compatibility-receipt.json",
+            "sha256": "4bf536e5e8308eb2ef376421d1c91b385e057a66c7fa5d33efcfca07bce9e35b",
+            "log": "fallback-analysis-empty.log",
+            "negative_log": "cases/left_pass_wide/fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/left_pass_wide/fallback3-construction.json",
+          "construction_sha256": "85fcfcfa3125e85761d293da9c32a47529c106bfb6a327210a2d0e91d5111926",
+          "trigger": {
+            "source": "original overview source pixels and full decode",
+            "metric": "Overview camera clips participant bodies",
+            "failure_condition": "participant body or return event outside overview frame"
+          },
+          "changed_knobs": [
+            "overview mount height 8 to 9 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C229126__NRS-484B-207-1__motor_vehicle_driver/delivery-construction-manifest.json --case heldout__C229126__NRS-484B-207-1__motor_vehicle_driver__left_pass_wide --candidate fallback3 --output .runtime-work/c229126-left_pass_wide-fallback3-offline-fixed2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "85fcfcfa3125e85761d293da9c32a47529c106bfb6a327210a2d0e91d5111926",
+            "log": "cases/left_pass_wide/fallback3-offline.log",
+            "log_sha256": "23647b6b5f82f22241b887655fa005b67e271c456b33cadb6bb20cb490b0af80"
+          },
+          "compatibility": {
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C229126__NRS-484B-207-1__motor_vehicle_driver/delivery-construction-manifest.json --case heldout__C229126__NRS-484B-207-1__motor_vehicle_driver__left_pass_wide --candidate fallback3 --output .runtime-work/c229126-left_pass_wide-fallback3-compat-fixed2 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+            "receipt": "cases/left_pass_wide/fallback3-compatibility-receipt.json",
+            "sha256": "1d5e5f007c062324e5967410be540ccd3411738bd4c113b005a739697414d0e0",
+            "log": "fallback-analysis-empty.log",
+            "negative_log": "cases/left_pass_wide/fallback3-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C229126__NRS-484B-207-1__motor_vehicle_driver/delivery-construction-manifest.json --case heldout__C229126__NRS-484B-207-1__motor_vehicle_driver__left_pass_wide --output .runtime-work/c229126-left_pass_wide-primary-offline-fixed2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "ad2a875ba099b14d3ab388ae62c7ed81f5955b38b58fc017c14a7ef56813a8de",
+        "log": "cases/left_pass_wide/primary-offline.log",
+        "log_sha256": "defaf30680e28b2cc9db52ed49f3fbd20bef2bf53c3921551c7f02e14285b584"
+      },
+      "compatibility": {
+        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C229126__NRS-484B-207-1__motor_vehicle_driver/delivery-construction-manifest.json --case heldout__C229126__NRS-484B-207-1__motor_vehicle_driver__left_pass_wide --output .runtime-work/c229126-left_pass_wide-primary-compat-fixed2 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "receipt": "cases/left_pass_wide/primary-compatibility-receipt.json",
+        "sha256": "fd3175605a9739881599327de9f397b311ad7a890b9650d3026f94bea44546d7",
+        "log": "fallback-analysis-empty.log",
+        "negative_log": "cases/left_pass_wide/primary-negative.log"
       }
     },
     {
       "case_id": "heldout__C229126__NRS-484B-207-1__motor_vehicle_driver__left_pass_narrow",
       "construction": "cases/left_pass_narrow/construction.json",
-      "construction_sha256": "6e3927e2c24bbdb0ca85a89bb9cde36844754c6fa2a0542db3eb43e9d5cb95a6",
+      "construction_sha256": "8db8a9ee91c792d8cdf8e213474b05723bcd13833fa3bb9b78d8c89fcc09e0c0",
       "measurement_contract": "cases/left_pass_narrow/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "overtake_finalizer.py"
@@ -34,12 +135,113 @@
           "evidence": "participant_footprints.jsonl joined to trace.jsonl and video_frames.jsonl"
         }
       },
-      "fixture_recipe": "work/heldout__C229126__NRS-484B-207-1__motor_vehicle_driver/cases/left_pass_narrow/diagnostic-recipe.json"
+      "fixture_recipe": "work/heldout__C229126__NRS-484B-207-1__motor_vehicle_driver/cases/left_pass_narrow/diagnostic-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native pass, return timing or camera coverage can fail despite an offline-valid primary."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/left_pass_narrow/fallback1-construction.json",
+          "construction_sha256": "41fb9c78f07a8733060b11a3407c6593be491b5036de1493f67976525bd2b682",
+          "trigger": {
+            "source": "original frame-mapped heading and body motion",
+            "metric": "Native steering overshoot or oscillation",
+            "failure_condition": "steering sign reversals or lane target overshoot"
+          },
+          "changed_knobs": [
+            "steering gain 0.8 to 0.65"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C229126__NRS-484B-207-1__motor_vehicle_driver/delivery-construction-manifest.json --case heldout__C229126__NRS-484B-207-1__motor_vehicle_driver__left_pass_narrow --candidate fallback1 --output .runtime-work/c229126-left_pass_narrow-fallback1-offline-fixed2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "41fb9c78f07a8733060b11a3407c6593be491b5036de1493f67976525bd2b682",
+            "log": "cases/left_pass_narrow/fallback1-offline.log",
+            "log_sha256": "defaf30680e28b2cc9db52ed49f3fbd20bef2bf53c3921551c7f02e14285b584"
+          },
+          "compatibility": {
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C229126__NRS-484B-207-1__motor_vehicle_driver/delivery-construction-manifest.json --case heldout__C229126__NRS-484B-207-1__motor_vehicle_driver__left_pass_narrow --candidate fallback1 --output .runtime-work/c229126-left_pass_narrow-fallback1-compat-fixed2 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+            "receipt": "cases/left_pass_narrow/fallback1-compatibility-receipt.json",
+            "sha256": "e9685ecc220c2f2ca8fd0426580db2d5472cf07e9db039753ef11815718d3dd6",
+            "log": "fallback-analysis-empty.log",
+            "negative_log": "cases/left_pass_narrow/fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/left_pass_narrow/fallback2-construction.json",
+          "construction_sha256": "3e7430be87c002bf684492905e347d4f69477415d0101ac876d11f44fd65b6a9",
+          "trigger": {
+            "source": "original frame-mapped full-body pass and return",
+            "metric": "Pass closure fails at planned speed",
+            "failure_condition": "no complete same-direction pass within fixed 320 frames"
+          },
+          "changed_knobs": [
+            "ego target speed 8 to 6.5 m/s"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C229126__NRS-484B-207-1__motor_vehicle_driver/delivery-construction-manifest.json --case heldout__C229126__NRS-484B-207-1__motor_vehicle_driver__left_pass_narrow --candidate fallback2 --output .runtime-work/c229126-left_pass_narrow-fallback2-offline-fixed2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "3e7430be87c002bf684492905e347d4f69477415d0101ac876d11f44fd65b6a9",
+            "log": "cases/left_pass_narrow/fallback2-offline.log",
+            "log_sha256": "defaf30680e28b2cc9db52ed49f3fbd20bef2bf53c3921551c7f02e14285b584"
+          },
+          "compatibility": {
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C229126__NRS-484B-207-1__motor_vehicle_driver/delivery-construction-manifest.json --case heldout__C229126__NRS-484B-207-1__motor_vehicle_driver__left_pass_narrow --candidate fallback2 --output .runtime-work/c229126-left_pass_narrow-fallback2-compat-fixed2 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+            "receipt": "cases/left_pass_narrow/fallback2-compatibility-receipt.json",
+            "sha256": "3d2c96d4d3c3af16e4712aa2b7fa1f936bf124449328022e6b471ba8617cdaad",
+            "log": "fallback-analysis-empty.log",
+            "negative_log": "cases/left_pass_narrow/fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/left_pass_narrow/fallback3-construction.json",
+          "construction_sha256": "ee160c6594316454b1a00dc92f5105b21d15f22aeedf20b0ed65e4d2cc9d5937",
+          "trigger": {
+            "source": "original overview source pixels and full decode",
+            "metric": "Overview camera clips participant bodies",
+            "failure_condition": "participant body or return event outside overview frame"
+          },
+          "changed_knobs": [
+            "overview mount height 8 to 9 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C229126__NRS-484B-207-1__motor_vehicle_driver/delivery-construction-manifest.json --case heldout__C229126__NRS-484B-207-1__motor_vehicle_driver__left_pass_narrow --candidate fallback3 --output .runtime-work/c229126-left_pass_narrow-fallback3-offline-fixed2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "ee160c6594316454b1a00dc92f5105b21d15f22aeedf20b0ed65e4d2cc9d5937",
+            "log": "cases/left_pass_narrow/fallback3-offline.log",
+            "log_sha256": "defaf30680e28b2cc9db52ed49f3fbd20bef2bf53c3921551c7f02e14285b584"
+          },
+          "compatibility": {
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C229126__NRS-484B-207-1__motor_vehicle_driver/delivery-construction-manifest.json --case heldout__C229126__NRS-484B-207-1__motor_vehicle_driver__left_pass_narrow --candidate fallback3 --output .runtime-work/c229126-left_pass_narrow-fallback3-compat-fixed2 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+            "receipt": "cases/left_pass_narrow/fallback3-compatibility-receipt.json",
+            "sha256": "cba750f86943dd6de45cb21a0bd643f227b3d1b50df4fa53cc4b8e3490dd6bbd",
+            "log": "fallback-analysis-empty.log",
+            "negative_log": "cases/left_pass_narrow/fallback3-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C229126__NRS-484B-207-1__motor_vehicle_driver/delivery-construction-manifest.json --case heldout__C229126__NRS-484B-207-1__motor_vehicle_driver__left_pass_narrow --output .runtime-work/c229126-left_pass_narrow-primary-offline-fixed2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "8db8a9ee91c792d8cdf8e213474b05723bcd13833fa3bb9b78d8c89fcc09e0c0",
+        "log": "cases/left_pass_narrow/primary-offline.log",
+        "log_sha256": "23647b6b5f82f22241b887655fa005b67e271c456b33cadb6bb20cb490b0af80"
+      },
+      "compatibility": {
+        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C229126__NRS-484B-207-1__motor_vehicle_driver/delivery-construction-manifest.json --case heldout__C229126__NRS-484B-207-1__motor_vehicle_driver__left_pass_narrow --output .runtime-work/c229126-left_pass_narrow-primary-compat-fixed2 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "receipt": "cases/left_pass_narrow/primary-compatibility-receipt.json",
+        "sha256": "9b05c09b0512ae5f0227f3e2765375daa7b82aa26d883611ab8d07e6cb61a9df",
+        "log": "fallback-analysis-empty.log",
+        "negative_log": "cases/left_pass_narrow/primary-negative.log"
+      }
     },
     {
       "case_id": "heldout__C229126__NRS-484B-207-1__motor_vehicle_driver__return_before_clear",
       "construction": "cases/return_before_clear/construction.json",
-      "construction_sha256": "9038a2a45c5e594ae4a93616301fdcadad8ec35edf9f1758315cf111ecf4e5c6",
+      "construction_sha256": "8a9980ef023f4c3661c9668fa5ae7f7fade1bbc2c5ae1c42650207d2653096f7",
       "measurement_contract": "cases/return_before_clear/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "overtake_finalizer.py"
@@ -51,12 +253,113 @@
           "evidence": "participant_footprints.jsonl joined to trace.jsonl and video_frames.jsonl"
         }
       },
-      "fixture_recipe": "work/heldout__C229126__NRS-484B-207-1__motor_vehicle_driver/cases/return_before_clear/diagnostic-recipe.json"
+      "fixture_recipe": "work/heldout__C229126__NRS-484B-207-1__motor_vehicle_driver/cases/return_before_clear/diagnostic-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native pass, return timing or camera coverage can fail despite an offline-valid primary."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/return_before_clear/fallback1-construction.json",
+          "construction_sha256": "0aacd26272d64bec352e9bf310e4719eaf4d602d25fdfdaf4fcab19a3249276d",
+          "trigger": {
+            "source": "original frame-mapped heading and body motion",
+            "metric": "Native steering overshoot or oscillation",
+            "failure_condition": "steering sign reversals or lane target overshoot"
+          },
+          "changed_knobs": [
+            "steering gain 0.8 to 0.65"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C229126__NRS-484B-207-1__motor_vehicle_driver/delivery-construction-manifest.json --case heldout__C229126__NRS-484B-207-1__motor_vehicle_driver__return_before_clear --candidate fallback1 --output .runtime-work/c229126-return_before_clear-fallback1-offline-fixed2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "0aacd26272d64bec352e9bf310e4719eaf4d602d25fdfdaf4fcab19a3249276d",
+            "log": "cases/return_before_clear/fallback1-offline.log",
+            "log_sha256": "23647b6b5f82f22241b887655fa005b67e271c456b33cadb6bb20cb490b0af80"
+          },
+          "compatibility": {
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C229126__NRS-484B-207-1__motor_vehicle_driver/delivery-construction-manifest.json --case heldout__C229126__NRS-484B-207-1__motor_vehicle_driver__return_before_clear --candidate fallback1 --output .runtime-work/c229126-return_before_clear-fallback1-compat-fixed2 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+            "receipt": "cases/return_before_clear/fallback1-compatibility-receipt.json",
+            "sha256": "2aefbf221b07e6e316d6f5e116892da167640332e7ff3349d98264c9b1778f9d",
+            "log": "fallback-analysis-empty.log",
+            "negative_log": "cases/return_before_clear/fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/return_before_clear/fallback2-construction.json",
+          "construction_sha256": "684e4a0e20fc24a32c286fff1089fb64a5517a4926808c901eee4b5852fa858c",
+          "trigger": {
+            "source": "original frame-mapped full-body pass and return",
+            "metric": "Pass closure fails at planned speed",
+            "failure_condition": "no complete same-direction pass within fixed 320 frames"
+          },
+          "changed_knobs": [
+            "ego target speed 8 to 6.5 m/s"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C229126__NRS-484B-207-1__motor_vehicle_driver/delivery-construction-manifest.json --case heldout__C229126__NRS-484B-207-1__motor_vehicle_driver__return_before_clear --candidate fallback2 --output .runtime-work/c229126-return_before_clear-fallback2-offline-fixed2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "684e4a0e20fc24a32c286fff1089fb64a5517a4926808c901eee4b5852fa858c",
+            "log": "cases/return_before_clear/fallback2-offline.log",
+            "log_sha256": "defaf30680e28b2cc9db52ed49f3fbd20bef2bf53c3921551c7f02e14285b584"
+          },
+          "compatibility": {
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C229126__NRS-484B-207-1__motor_vehicle_driver/delivery-construction-manifest.json --case heldout__C229126__NRS-484B-207-1__motor_vehicle_driver__return_before_clear --candidate fallback2 --output .runtime-work/c229126-return_before_clear-fallback2-compat-fixed2 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+            "receipt": "cases/return_before_clear/fallback2-compatibility-receipt.json",
+            "sha256": "bc6fbc63fcecd2fd716309f6bd5ce54285b5045f2aaf9b62f5456dd5e920c981",
+            "log": "fallback-analysis-empty.log",
+            "negative_log": "cases/return_before_clear/fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/return_before_clear/fallback3-construction.json",
+          "construction_sha256": "929322553b20ce91ccce5db576e4fe34e698b0d864cb417aa937f88c4fccaa1d",
+          "trigger": {
+            "source": "original overview source pixels and full decode",
+            "metric": "Overview camera clips participant bodies",
+            "failure_condition": "participant body or return event outside overview frame"
+          },
+          "changed_knobs": [
+            "overview mount height 8 to 9 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C229126__NRS-484B-207-1__motor_vehicle_driver/delivery-construction-manifest.json --case heldout__C229126__NRS-484B-207-1__motor_vehicle_driver__return_before_clear --candidate fallback3 --output .runtime-work/c229126-return_before_clear-fallback3-offline-fixed2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "929322553b20ce91ccce5db576e4fe34e698b0d864cb417aa937f88c4fccaa1d",
+            "log": "cases/return_before_clear/fallback3-offline.log",
+            "log_sha256": "92f33dbe830c1260c382f6ed1abc0b484089b08767e8010459c169f7995afaad"
+          },
+          "compatibility": {
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C229126__NRS-484B-207-1__motor_vehicle_driver/delivery-construction-manifest.json --case heldout__C229126__NRS-484B-207-1__motor_vehicle_driver__return_before_clear --candidate fallback3 --output .runtime-work/c229126-return_before_clear-fallback3-compat-fixed2 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+            "receipt": "cases/return_before_clear/fallback3-compatibility-receipt.json",
+            "sha256": "5423d7bdee2a01c02c8316139a711a42590f7d36cfb28f875dafdc9d51cd25a3",
+            "log": "fallback-analysis-empty.log",
+            "negative_log": "cases/return_before_clear/fallback3-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C229126__NRS-484B-207-1__motor_vehicle_driver/delivery-construction-manifest.json --case heldout__C229126__NRS-484B-207-1__motor_vehicle_driver__return_before_clear --output .runtime-work/c229126-return_before_clear-primary-offline-fixed2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "8a9980ef023f4c3661c9668fa5ae7f7fade1bbc2c5ae1c42650207d2653096f7",
+        "log": "cases/return_before_clear/primary-offline.log",
+        "log_sha256": "defaf30680e28b2cc9db52ed49f3fbd20bef2bf53c3921551c7f02e14285b584"
+      },
+      "compatibility": {
+        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C229126__NRS-484B-207-1__motor_vehicle_driver/delivery-construction-manifest.json --case heldout__C229126__NRS-484B-207-1__motor_vehicle_driver__return_before_clear --output .runtime-work/c229126-return_before_clear-primary-compat-fixed2 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "receipt": "cases/return_before_clear/primary-compatibility-receipt.json",
+        "sha256": "f3ff9418c95e2b7c48f61e13aab941744014e92a0cd35055ad3ec797f161b93d",
+        "log": "fallback-analysis-empty.log",
+        "negative_log": "cases/return_before_clear/primary-negative.log"
+      }
     },
     {
       "case_id": "heldout__C229126__NRS-484B-207-1__motor_vehicle_driver__return_after_clear",
       "construction": "cases/return_after_clear/construction.json",
-      "construction_sha256": "d36cb6699cc1105cc844fd33df0b4e322831a3f3eb6848de96ece50a5b57d8ae",
+      "construction_sha256": "0002dd6e046f55a532a50803b0e59040106304b95aef2fd881d98a3b1d994f31",
       "measurement_contract": "cases/return_after_clear/measurement-contract.json",
       "fixture_recipe": "work/heldout__C229126__NRS-484B-207-1__motor_vehicle_driver/cases/return_after_clear/diagnostic-recipe.json",
       "measurement_procedure": {
@@ -68,6 +371,107 @@
           "method": "original 20 Hz body/lane/speed measurement",
           "evidence": "participant_footprints.jsonl joined to trace.jsonl and video_frames.jsonl"
         }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native pass, return timing or camera coverage can fail despite an offline-valid primary."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/return_after_clear/fallback1-construction.json",
+          "construction_sha256": "ff76052f26a5e5e0db829b7b22d2c518b1933e36c086c0ed0b5f3c707eeb504a",
+          "trigger": {
+            "source": "original frame-mapped heading and body motion",
+            "metric": "Native steering overshoot or oscillation",
+            "failure_condition": "steering sign reversals or lane target overshoot"
+          },
+          "changed_knobs": [
+            "steering gain 0.8 to 0.65"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C229126__NRS-484B-207-1__motor_vehicle_driver/delivery-construction-manifest.json --case heldout__C229126__NRS-484B-207-1__motor_vehicle_driver__return_after_clear --candidate fallback1 --output .runtime-work/c229126-return_after_clear-fallback1-offline-fixed2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "ff76052f26a5e5e0db829b7b22d2c518b1933e36c086c0ed0b5f3c707eeb504a",
+            "log": "cases/return_after_clear/fallback1-offline.log",
+            "log_sha256": "defaf30680e28b2cc9db52ed49f3fbd20bef2bf53c3921551c7f02e14285b584"
+          },
+          "compatibility": {
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C229126__NRS-484B-207-1__motor_vehicle_driver/delivery-construction-manifest.json --case heldout__C229126__NRS-484B-207-1__motor_vehicle_driver__return_after_clear --candidate fallback1 --output .runtime-work/c229126-return_after_clear-fallback1-compat-fixed2 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+            "receipt": "cases/return_after_clear/fallback1-compatibility-receipt.json",
+            "sha256": "73a71538b4c992bc8abe7cb14691b87ae47fd4216c53ecfc1fc8b357889083ed",
+            "log": "fallback-analysis-empty.log",
+            "negative_log": "cases/return_after_clear/fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/return_after_clear/fallback2-construction.json",
+          "construction_sha256": "507e76ecef01b95bb8592f26b85e5ef14d2b1c5f30ed09664aa0c178d2163062",
+          "trigger": {
+            "source": "original frame-mapped full-body pass and return",
+            "metric": "Pass closure fails at planned speed",
+            "failure_condition": "no complete same-direction pass within fixed 320 frames"
+          },
+          "changed_knobs": [
+            "ego target speed 8 to 6.5 m/s"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C229126__NRS-484B-207-1__motor_vehicle_driver/delivery-construction-manifest.json --case heldout__C229126__NRS-484B-207-1__motor_vehicle_driver__return_after_clear --candidate fallback2 --output .runtime-work/c229126-return_after_clear-fallback2-offline-fixed2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "507e76ecef01b95bb8592f26b85e5ef14d2b1c5f30ed09664aa0c178d2163062",
+            "log": "cases/return_after_clear/fallback2-offline.log",
+            "log_sha256": "2ca01b395e1430576463ddf19b56bd5b58c56406e3ba46218be355b043a4e24d"
+          },
+          "compatibility": {
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C229126__NRS-484B-207-1__motor_vehicle_driver/delivery-construction-manifest.json --case heldout__C229126__NRS-484B-207-1__motor_vehicle_driver__return_after_clear --candidate fallback2 --output .runtime-work/c229126-return_after_clear-fallback2-compat-fixed2 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+            "receipt": "cases/return_after_clear/fallback2-compatibility-receipt.json",
+            "sha256": "ab0397bb116cb9aeea6b0e59e0e61a6785125ad6a1a5a619a482e68da755894d",
+            "log": "fallback-analysis-empty.log",
+            "negative_log": "cases/return_after_clear/fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/return_after_clear/fallback3-construction.json",
+          "construction_sha256": "d4dca0aa5d68e891e4374abbfffba957b15468bb90cfc667ae6cac99749d4f74",
+          "trigger": {
+            "source": "original overview source pixels and full decode",
+            "metric": "Overview camera clips participant bodies",
+            "failure_condition": "participant body or return event outside overview frame"
+          },
+          "changed_knobs": [
+            "overview mount height 8 to 9 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C229126__NRS-484B-207-1__motor_vehicle_driver/delivery-construction-manifest.json --case heldout__C229126__NRS-484B-207-1__motor_vehicle_driver__return_after_clear --candidate fallback3 --output .runtime-work/c229126-return_after_clear-fallback3-offline-fixed2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "d4dca0aa5d68e891e4374abbfffba957b15468bb90cfc667ae6cac99749d4f74",
+            "log": "cases/return_after_clear/fallback3-offline.log",
+            "log_sha256": "23647b6b5f82f22241b887655fa005b67e271c456b33cadb6bb20cb490b0af80"
+          },
+          "compatibility": {
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C229126__NRS-484B-207-1__motor_vehicle_driver/delivery-construction-manifest.json --case heldout__C229126__NRS-484B-207-1__motor_vehicle_driver__return_after_clear --candidate fallback3 --output .runtime-work/c229126-return_after_clear-fallback3-compat-fixed2 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+            "receipt": "cases/return_after_clear/fallback3-compatibility-receipt.json",
+            "sha256": "0db53b4ff910da0dc3c05e2b328c2393cb6d7f762c581ebe60bcf050ea5dfcc3",
+            "log": "fallback-analysis-empty.log",
+            "negative_log": "cases/return_after_clear/fallback3-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C229126__NRS-484B-207-1__motor_vehicle_driver/delivery-construction-manifest.json --case heldout__C229126__NRS-484B-207-1__motor_vehicle_driver__return_after_clear --output .runtime-work/c229126-return_after_clear-primary-offline-fixed2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "0002dd6e046f55a532a50803b0e59040106304b95aef2fd881d98a3b1d994f31",
+        "log": "cases/return_after_clear/primary-offline.log",
+        "log_sha256": "2ca01b395e1430576463ddf19b56bd5b58c56406e3ba46218be355b043a4e24d"
+      },
+      "compatibility": {
+        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C229126__NRS-484B-207-1__motor_vehicle_driver/delivery-construction-manifest.json --case heldout__C229126__NRS-484B-207-1__motor_vehicle_driver__return_after_clear --output .runtime-work/c229126-return_after_clear-primary-compat-fixed2 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "receipt": "cases/return_after_clear/primary-compatibility-receipt.json",
+        "sha256": "3ef0194f33416c0d6f922c12baddfdbbe1b384a50f3d8438bd1deeb84277566e",
+        "log": "fallback-analysis-empty.log",
+        "negative_log": "cases/return_after_clear/primary-negative.log"
       }
     }
   ],
