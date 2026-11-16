@@ -1,0 +1,26 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Vehicle driven only in designated direction on designated and signposted one-way highway",
+      "source": "NRS 484B.220(1)",
+      "output_key": "one_way_direction",
+      "method": "measure_one_way_direction",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "road_context.json",
+        "site_packet.json",
+        "travel_history.jsonl",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "travel_history.jsonl"
+    ],
+    "error_contains": "Missing required source: travel_history.jsonl"
+  }
+}

@@ -717,12 +717,54 @@
       "command": ".venv-cpu/bin/python work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/prove_sweep_stage.py",
       "exit_code": 0,
       "log": "sweep-stage-proof.log",
-      "sha256": "814926dfcfe541b9bfe66681c60c289873c9ebc64a32778469687f2cafe1ef35"
+      "sha256": "3d6311a4eb9855ca3d3fd4bc1377a503106886356a62a485f4bc121d8f587a59"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/sweep-stage-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__conditions_gap_120m --candidate fallback1 --output .runtime-work/c149237-conditions-gap-120m-fallback1-offline-v1",
+      "exit_code": 0,
+      "log": "sweep-stage-fallback1-offline.log",
+      "sha256": "63fb1136f8be1eead6d3956373e76f414cad479a10d2673ddfc8424994acf0a7"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/sweep-stage-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__conditions_gap_120m --candidate fallback2 --output .runtime-work/c149237-conditions-gap-120m-fallback2-offline-v1",
+      "exit_code": 0,
+      "log": "sweep-stage-fallback2-offline.log",
+      "sha256": "24e0c28c2f477e0f58e30e5d5ce0ac9a20933781ad68e1290adf3b2eaae69112"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/sweep-stage-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__conditions_gap_120m --candidate fallback3 --output .runtime-work/c149237-conditions-gap-120m-fallback3-offline-v1",
+      "exit_code": 0,
+      "log": "sweep-stage-fallback3-offline.log",
+      "sha256": "1c543ce6cddd038a6fde4a1bf62aeff15454ecbcae639fbe1ec0047f33eb2a39"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/sweep-200-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__conditions_gap_200m --candidate fallback1 --output .runtime-work/c149237-conditions-gap-200m-fallback1-offline-v1",
+      "exit_code": 0,
+      "log": "sweep-200-fallback1-offline.log",
+      "sha256": "b58a2b5438cd1fd35a2f19422216b7a0d334e10d28891fa72f276e05f3fed988"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/sweep-200-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__conditions_gap_200m --candidate fallback2 --output .runtime-work/c149237-conditions-gap-200m-fallback2-offline-v1",
+      "exit_code": 0,
+      "log": "sweep-200-fallback2-offline.log",
+      "sha256": "6570cfee511fb27c76d3002d4433042aaffba5819aba5a8a3ed7e5f57256deec"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/sweep-200-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__conditions_gap_200m --candidate fallback3 --output .runtime-work/c149237-conditions-gap-200m-fallback3-offline-v1",
+      "exit_code": 0,
+      "log": "sweep-200-fallback3-offline.log",
+      "sha256": "01ecfab100be0ed3640cb062103a43e7f5e2e66b7f6165f2f9fc40a7975ae26f"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/prove_qualitative_sweep_comparison.py",
+      "exit_code": 0,
+      "log": "qualitative-sweep-comparison.log",
+      "sha256": "14903003270918310dd1e5b9965691f1fba152f8cb24120f403f6bfe694f3eb8"
     }
   ],
   "remaining_gpu_checks": [
     "Realized qualifying truck dimensions, roadway topology, following gap, overtaking path and camera visibility."
   ],
-  "reason": "Eleven canonical cases and 33 fallbacks retain current CPU proofs. The new source-bound 120 m conditions-permitting sweep construction passes an isolated exact offline path and positive/negative compatibility plus recorded-only saved processing (sweep-stage-offline.log, sweep-stage-proof.log); the wrapper restores canonical case-plan/proposals. This staged point is not selected in the canonical manifest, and the three-point sweep still needs canonical cases, three distinct fallbacks each, physical/delivery/comparison contracts and source-backed feasibility review. Shared full-batch branch/queue/integration artifacts are absent. These are unfinished worker-owned CPU tasks; Native motion, visibility and legal judgment remain unverified.",
+  "reason": "Eleven canonical cases and 33 fallbacks retain current CPU proofs. The staged source-bound 120 m conditions-permitting sweep point now has primary and three distinct fallbacks with exact offline, positive/negative compatibility and recorded-only saved processing; sweep-stage-proof.log restores canonical case-plan/proposals. The point is not selected in the canonical manifest. The remaining sweep points, canonical selection, physical/delivery/comparison contracts and source-backed feasibility review are unfinished worker-owned CPU tasks. Shared full-batch branch/queue/integration artifacts are absent. Native motion, visibility and legal judgment remain unverified. A second isolated 200 m engineering sweep point now also has primary and three camera fallbacks passing exact offline, positive/negative compatibility, recorded-only saved processing and pinned four-plan validation; see sweep-200-manifest.json and sweep-200-proof.log. This point likewise remains staged outside canonical selection. The independent three-point saved-source qualitative sweep comparison now verifies 120/152.4/200 m measured gaps under fixed truck width, blueprints, lane, duration, cameras and observations; changed width and missing original truck history are rejected (qualitative-sweep-comparison.log). The 120/200 points and this comparison remain staged, not canonical.",
   "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline $CARLA_PYTHON -m worker_exchange execute-delivery --repo . --batch batch.json --db $DB --run $RUN --assignment testing__C149237__NRS-484B-127-2__heavy_vehicle_driver --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_below_500ft --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT"
 }

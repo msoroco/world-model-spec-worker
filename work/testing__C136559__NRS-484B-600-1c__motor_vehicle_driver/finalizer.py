@@ -38,6 +38,16 @@ def finalize(attempt, output):
     target = config.get("requested_speed_mph")
     if type(target) not in (int, float) or target <= 0:
         raise ValueError("Missing requested speed")
+    if output.exists() or (attempt / "result.json").exists():
+        raise ValueError("Retain prior finalization; choose a fresh attempt")
+    speed_channel = attempt / "speed-channel.jsonl"
+    channel_content = "".join(json.dumps({"time_s": sample["time_s"],
+        "value": sample["measured_speed_mph"]}) + "\n" for sample in report["samples"])
+    if speed_channel.exists():
+        if speed_channel.read_text() != channel_content:
+            raise ValueError("Prior derived speed channel differs from original sources")
+    else:
+        speed_channel.write_text(channel_content)
     result = {
         "case_id": case_id,
         "measured_values": {"sampled_peak_in_zone_mph": peak, "posted_limit_mph": posted,
@@ -54,14 +64,12 @@ def finalize(attempt, output):
         "trace_reference": "trace.jsonl", "video_references": list(CAMERAS),
         "video_frame_map_reference": "video_frames.jsonl",
         "recording_description": config["recording_description"],
-        "recording_evidence": {"source_hashes": report["sources"],
-                               "capture_evidence_sha256": _sha(attempt / "capture/evidence.jsonl")},
-        "realized_observables": {"peak_in_zone": report["peak_in_zone"],
-                                 "posted_limit_mph": posted,
-                                 "public_authority_judgment": "unresolved"},
+        "recording_evidence": [{"name": "kin.speed", "unit": "mph",
+                                "reference": "speed-channel.jsonl"}],
+        "source_hashes": report["sources"],
+        "capture_evidence_sha256": _sha(attempt / "capture/evidence.jsonl"),
+        "realized_observables": {},
     }
-    if output.exists() or (attempt / "result.json").exists():
-        raise ValueError("Retain prior finalization; choose a fresh attempt")
     result = physical_result(attempt, result)
     analysis = {"format": "worker-posted-speed-analysis", "case_id": case_id,
                 "measurements": {"sampled_peak_in_zone_mph": {
