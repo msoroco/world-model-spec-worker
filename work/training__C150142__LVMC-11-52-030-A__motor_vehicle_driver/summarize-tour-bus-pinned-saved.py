@@ -12,7 +12,7 @@ def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
-def summarize(suffix, version, frames, boundary, activities):
+def summarize(suffix, version, frames, boundary, activities, candidate='primary'):
     version = Path(version).resolve()
     if REPO / '.runtime-work' not in version.parents:
         raise ValueError('Pinned synthetic output belongs under .runtime-work')
@@ -22,11 +22,16 @@ def summarize(suffix, version, frames, boundary, activities):
     adapter = json.loads((version / 'converted/adapter_report.json').read_text())
     decoder = (version / 'converted/decoder.stdout.log').read_text().strip()
     report = json.loads((version / 'analysis/analysis-report.json').read_text())
+    config = json.loads((version / 'analysis/config.json').read_text())
+    selection = json.loads((version / 'analysis/candidate-selection.json').read_text())
     observed = report['measurements']['signed_curb_observation']['value']
     source_paths = sorted(version.glob('source-*.json'))
     sources = [json.loads(path.read_text()) for path in source_paths]
-    expected_duration = (frames - 1 - 120) / 20
+    expected_duration = (frames - 1 - config['requested_approach_frames']) / 20
     if (processing.get('case_id') != case_id or processing.get('passed') is not True
+            or processing.get('candidate_id') != candidate
+            or selection.get('candidate_id') != candidate
+            or selection.get('construction_sha256') != processing.get('analysis_revision', {}).get('construction_sha256')
             or processing.get('missing_evidence') is not False
             or processing.get('originals_preserved') is not True
             or processing.get('timestamp_joins', {}).get('frames') != frames
@@ -45,7 +50,9 @@ def summarize(suffix, version, frames, boundary, activities):
             or observed.get('legal_verdict') is not None
             or observed.get('source_kind') != 'synthetic_native_sample'):
         raise ValueError('Incomplete or mismatched pinned saved-processing proof')
-    return {'case_id': case_id, 'source_kind': 'synthetic_native_sample',
+    return {'case_id': case_id, 'candidate_id': candidate,
+            'construction_sha256': selection['construction_sha256'],
+            'source_kind': 'synthetic_native_sample',
             'original_native_observed': False, 'processing_passed': True,
             'processing_sha256': sha(version / 'processing.json'),
             'originals_preserved': True, 'timestamp_join_frames': frames,
@@ -69,6 +76,8 @@ if __name__ == '__main__':
     parser.add_argument('--frames', type=int, required=True)
     parser.add_argument('--boundary', required=True)
     parser.add_argument('--activities', type=int, required=True)
+    parser.add_argument('--candidate', default='primary')
     args = parser.parse_args()
     print(json.dumps(summarize(args.case, args.version, args.frames,
-                               args.boundary, args.activities), sort_keys=True))
+                               args.boundary, args.activities,
+                               args.candidate), sort_keys=True))

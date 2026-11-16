@@ -21,7 +21,7 @@ MANIFEST = ROOT / 'execution-manifest-diagnostic-tour_bus_below-draft.json'
 PILOT = REPO / '.runtime-work/c150142-long-media-pilot/overview-36120-lossless.mkv'
 
 
-def prepare(attempt, *, case='tour_bus_below', reuse_media_from=None):
+def prepare(attempt, *, case='tour_bus_below', candidate='primary', reuse_media_from=None):
     attempt = Path(attempt).resolve()
     if REPO / '.runtime-work' not in attempt.parents:
         raise ValueError('Diagnostic acquisition belongs under .runtime-work')
@@ -31,7 +31,7 @@ def prepare(attempt, *, case='tour_bus_below', reuse_media_from=None):
                     'tour_bus_no_loading'):
         raise ValueError('Unsupported source-bound tour-bus case')
     case_id = ROOT.name + '__' + case
-    materialize(MANIFEST, case_id, attempt, 'primary')
+    materialize(MANIFEST, case_id, attempt, candidate)
     module = importlib.util.spec_from_file_location(
         'tour_bus_source_proof', ROOT / 'prove-tour-bus-saved-source.py')
     source = importlib.util.module_from_spec(module)
@@ -67,7 +67,7 @@ def prepare(attempt, *, case='tour_bus_below', reuse_media_from=None):
                    '-preset', 'ultrafast', '-x265-params',
                    'lossless=1:log-level=error', '-threads', '2', str(output)]
         subprocess.run(command, check=True, timeout=1800)
-    return {'case_id': case_id, 'attempt': str(attempt),
+    return {'case_id': case_id, 'candidate': candidate, 'attempt': str(attempt),
             'source_kind': 'synthetic_native_sample', 'camera_sources':
             ['overview.mkv', 'approach.mkv', 'reference_corner.mkv',
              'driver_reference.mkv'], 'original_native_observed': False}
@@ -77,7 +77,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--attempt', required=True)
     parser.add_argument('--case', default='tour_bus_below')
+    parser.add_argument('--candidate', default='primary')
     parser.add_argument('--reuse-media-from')
     args = parser.parse_args()
-    print(json.dumps(prepare(args.attempt, case=args.case,
+    print(json.dumps(prepare(args.attempt, case=args.case, candidate=args.candidate,
                              reuse_media_from=args.reuse_media_from), sort_keys=True))
