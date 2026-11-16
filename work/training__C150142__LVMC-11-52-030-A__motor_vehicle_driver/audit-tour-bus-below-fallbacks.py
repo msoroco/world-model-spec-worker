@@ -93,13 +93,23 @@ def audit(suffix='below'):
                 config['case_id'] == case,
                 'Fixed law-boundary configuration differs: ' + candidate)
         configs[candidate] = config
-        records.append({'candidate_id': candidate,
+        record = {'candidate_id': candidate,
                         'construction_sha256': expected_sha,
                         'processing_sha256': summary['processing_sha256'],
                         'summary_sha256': sha(ROOT / summary_name),
                         'negative_sha256': sha(ROOT / negative_name),
                         'target_x_m': config['requested_target_x_m'],
-                        'camera_policy': config['camera_policy']})
+                        'camera_policy': config['camera_policy']}
+        if suffix == 'no_loading':
+            inventory_name = f'update034-no-loading-{candidate}-inventory-negative.json'
+            inventory = read(ROOT / inventory_name)
+            require(inventory['rejected'] is True and
+                    inventory['candidate_id'] == candidate and
+                    inventory['positive_processing_sha256'] == summary['processing_sha256'] and
+                    inventory['removed'] == 'native-passenger-inventory.jsonl',
+                    'Missing passenger-inventory rejection differs: ' + candidate)
+            record['inventory_negative_sha256'] = sha(ROOT / inventory_name)
+        records.append(record)
     base = configs['primary']
     for candidate in fallback_entries:
         changed = {key for key in base.keys() | configs[candidate].keys()
