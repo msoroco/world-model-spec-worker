@@ -4,6 +4,8 @@ These constructions exercise the portable bundle and offline path. Their site
 sources are explicitly diagnostic and the Native runner rejects their capture.
 """
 import hashlib
+import copy
+import argparse
 import importlib.util
 import json
 import tempfile
@@ -61,5 +63,58 @@ def build():
     return manifest
 
 
+def build_release_sweep(output_root):
+    """Stage four Off-signal controller variants without adding case identities.
+
+    These variants prove bundled CPU execution of release policies. Their
+    synthetic site and media cannot establish realized Native entry timing.
+    """
+    output_root = Path(output_root)
+    if output_root.exists():
+        raise ValueError("Retain earlier sweep; choose a new output directory")
+    output_root.mkdir(parents=True)
+    for name in ("case-plan.json", "measurement-contract.json"):
+        (output_root / name).write_bytes((HERE / name).read_bytes())
+    (output_root / "proposals").mkdir()
+    (output_root / "proposals/cases.json").write_bytes(
+        (HERE / "proposals/cases.json").read_bytes())
+    case = next(case for case in json.loads(
+        (HERE / "candidate-proof-manifest-v2.json").read_text())["cases"]
+        if case["case_id"].endswith("__signal_off"))
+    base = json.loads((HERE / case["construction"]).read_text())
+    variants = []
+    for release in (8, 9, 10, 11):
+        variant = copy.deepcopy(base)
+        config_entry = next(item for item in variant["files"] if item["path"] == "config.json")
+        config = json.loads(config_entry["content"])
+        config["ego_release_frame"] = release
+        config["other_release_frame"] = 10
+        config_entry["content"] = json.dumps(config, indent=2) + "\n"
+        construction_path = output_root / f"construction-ego-{release}.json"
+        _dump(construction_path, variant)
+        manifest = {"format": "worker-execution-manifest", "assignment_id": ASSIGNMENT,
+                    "runtime_manifest_sha256": json.loads(
+                        (HERE / "candidate-proof-manifest-v2.json").read_text())[
+                            "runtime_manifest_sha256"],
+                    "cases": [{"case_id": case["case_id"], "kind": "delivery",
+                               "construction": construction_path.name,
+                               "construction_sha256": _sha(construction_path),
+                               "fixture_recipe": case["fixture_recipe"],
+                               "measurement_procedure": case["measurement_procedure"],
+                               "measurement_contract": case["measurement_contract"]}]}
+        manifest_path = output_root / f"manifest-ego-{release}.json"
+        _dump(manifest_path, manifest)
+        variants.append({"ego_release_frame": release, "other_release_frame": 10,
+                         "case_id": case["case_id"],
+                         "construction": str(construction_path),
+                         "construction_sha256": _sha(construction_path),
+                         "manifest": str(manifest_path)})
+    return variants
+
+
 if __name__ == "__main__":
-    print(json.dumps(build(), indent=2))
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--release-sweep-output")
+    args = parser.parse_args()
+    print(json.dumps(build_release_sweep(args.release_sweep_output)
+                     if args.release_sweep_output else build(), indent=2))

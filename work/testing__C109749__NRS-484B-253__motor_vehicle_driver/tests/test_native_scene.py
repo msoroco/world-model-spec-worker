@@ -13,6 +13,7 @@ sys.path.insert(0,str(ROOT))
 spec = importlib.util.spec_from_file_location('c109749_native_scene',ROOT/'native_scene.py')
 scene = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(scene)
+from district_site_audit import verify_district_site_packet
 
 
 def point(x,y):
@@ -61,23 +62,20 @@ class NativeSceneTests(unittest.TestCase):
                     'district_source':{'path':source.name,
                                        'sha256':hashlib.sha256(source.read_bytes()).hexdigest()}}
             packet_path.write_text(json.dumps(packet))
-            result=scene.verify_district_site_packet(context,'Town01',packet_path)
+            result=verify_district_site_packet(context,'Town01',packet_path)
             self.assertTrue(result['diagnostic_only'])
             self.assertFalse(result['physical_district_verified'])
-            selected_context=scene.junction_context(selected(),native_map_name='Town01',
-                                                    district_packet_path=packet_path)
-            self.assertEqual(selected_context['district_site_review'],result)
             with self.assertRaisesRegex(ValueError,'selected Native junction'):
-                scene.verify_district_site_packet(context,'Town02',packet_path)
+                verify_district_site_packet(context,'Town02',packet_path)
             packet['native_junction_id']=18
             packet_path.write_text(json.dumps(packet))
             with self.assertRaisesRegex(ValueError,'selected Native junction'):
-                scene.verify_district_site_packet(context,'Town01',packet_path)
+                verify_district_site_packet(context,'Town01',packet_path)
             packet['native_junction_id']=17
             packet_path.write_text(json.dumps(packet))
             source.write_text(source.read_text()+' ')
             with self.assertRaisesRegex(ValueError,'missing or changed'):
-                scene.verify_district_site_packet(context,'Town01',packet_path)
+                verify_district_site_packet(context,'Town01',packet_path)
 
     def test_district_packet_rejects_polygon_outside_junction(self):
         context=scene.junction_context(selected())
@@ -96,7 +94,7 @@ class NativeSceneTests(unittest.TestCase):
                 'district_source':{'path':source.name,
                     'sha256':hashlib.sha256(source.read_bytes()).hexdigest()}}))
             with self.assertRaisesRegex(ValueError,'does not cover'):
-                scene.verify_district_site_packet(context,'Town01',packet_path)
+                verify_district_site_packet(context,'Town01',packet_path)
 
     def test_opposing_waypoint_direction_and_sourced_geometry(self):
         context=scene.junction_context(selected())
