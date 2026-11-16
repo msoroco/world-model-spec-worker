@@ -1,0 +1,107 @@
+{
+  "format": "c111662-selected-root-dispatch-v1",
+  "case_id": "training__C111662__NRS-484B-403-3__motor_vehicle_driver__reference",
+  "cell_id": "C111662",
+  "law_id": "NRS-484B-403-3",
+  "actor": "motor_vehicle_driver",
+  "entrypoint": "runner.py",
+  "status": "selected_cpu_delivery_request",
+  "files": [
+    {
+      "path": "runner.py",
+      "source": "work/training__C111662__NRS-484B-403-3__motor_vehicle_driver/runner.py",
+      "content": "\"\"\"Dispatch one exact U-turn case to its selected runtime construction.\"\"\"\nimport argparse\nimport json\nimport subprocess\nimport sys\nfrom pathlib import Path\n\nHERE = Path(__file__).resolve().parent\nREPO = HERE.parents[1]\n\n\ndef main():\n    parser = argparse.ArgumentParser()\n    parser.add_argument('--mode', choices=('offline', 'capture'), required=True)\n    parser.add_argument('--case', required=True)\n    parser.add_argument('--candidate', choices=('primary', 'fallback1', 'fallback2', 'fallback3'),\n                        default='primary')\n    parser.add_argument('--output', type=Path, required=True)\n    parser.add_argument('--python', default=sys.executable)\n    parser.add_argument('--host')\n    parser.add_argument('--port')\n    args = parser.parse_args()\n    config = json.loads((HERE / 'config.json').read_text())\n    manifest = json.loads((HERE / 'execution-manifest.json').read_text())\n    if args.case not in config['supported_case_ids']:\n        raise ValueError('Case is outside exact selected assignment')\n    entry = next(e for e in manifest['cases'] if e['case_id'] == args.case)\n    if args.candidate != 'primary' and args.candidate not in {e['id'] for e in entry['candidates']}:\n        raise ValueError('Unknown exact fallback')\n    command = [args.python, str(REPO / 'runtime.py'), args.mode,\n               '--manifest', str(HERE / 'execution-manifest.json'), '--case', args.case,\n               '--candidate', args.candidate, '--output', str(args.output.resolve()),\n               '--python', args.python]\n    if args.mode == 'capture':\n        if not args.host or not args.port:\n            raise ValueError('Native capture needs an explicit host and port')\n        command += ['--host', args.host, '--port', args.port]\n    subprocess.run(command, cwd=REPO, check=True)\n\n\nif __name__ == '__main__':\n    main()\n"
+    },
+    {
+      "path": "config.json",
+      "source": "work/training__C111662__NRS-484B-403-3__motor_vehicle_driver/config.json",
+      "content": "{\n  \"assignment_id\": \"training__C111662__NRS-484B-403-3__motor_vehicle_driver\",\n  \"input_sha256\": \"cd26eca95ff19732358a704df7d30fae9a45f8380d6869f1e98af788f167ade5\",\n  \"cell_id\": \"C111662\",\n  \"law_id\": \"NRS-484B-403-3\",\n  \"actor\": \"motor_vehicle_driver\",\n  \"supported_case_ids\": [\n    \"training__C111662__NRS-484B-403-3__motor_vehicle_driver__reference\",\n    \"training__C111662__NRS-484B-403-3__motor_vehicle_driver__contrast\",\n    \"training__C111662__NRS-484B-403-3__motor_vehicle_driver__divided_reference\",\n    \"training__C111662__NRS-484B-403-3__motor_vehicle_driver__divided_opening\"\n  ],\n  \"duration_s\": 40,\n  \"rate_hz\": 20,\n  \"cameras\": [\n    {\n      \"name\": \"overview\",\n      \"width\": 1920,\n      \"height\": 1080,\n      \"fps\": 20,\n      \"pose_strategy\": \"fixed overhead U-turn and adjacent road context\",\n      \"fov_deg\": 90\n    },\n    {\n      \"name\": \"approach\",\n      \"width\": 1280,\n      \"height\": 720,\n      \"fps\": 20,\n      \"pose_strategy\": \"fixed eastbound approach and turning envelope\",\n      \"fov_deg\": 90\n    },\n    {\n      \"name\": \"reference_corner\",\n      \"width\": 1280,\n      \"height\": 720,\n      \"fps\": 20,\n      \"pose_strategy\": \"fixed intersection or divided crossing boundary\",\n      \"fov_deg\": 85\n    },\n    {\n      \"name\": \"driver_reference\",\n      \"width\": 1280,\n      \"height\": 720,\n      \"fps\": 20,\n      \"pose_strategy\": \"fixed departure lane and original vehicle body\",\n      \"fov_deg\": 90\n    }\n  ],\n  \"required_atoms\": [],\n  \"source_packets\": [],\n  \"physical_success_claimed\": false,\n  \"candidate_ids\": [\n    \"primary\",\n    \"fallback1\",\n    \"fallback2\",\n    \"fallback3\"\n  ]\n}\n"
+    }
+  ],
+  "measurement_plan": [
+    {
+      "case_id": "training__C111662__NRS-484B-403-3__motor_vehicle_driver__reference",
+      "contract": "native/measurement-contracts-current/reference.json",
+      "procedure": "finalize_current.py"
+    },
+    {
+      "case_id": "training__C111662__NRS-484B-403-3__motor_vehicle_driver__contrast",
+      "contract": "native/measurement-contracts-current/contrast.json",
+      "procedure": "finalize_current.py"
+    },
+    {
+      "case_id": "training__C111662__NRS-484B-403-3__motor_vehicle_driver__divided_reference",
+      "contract": "native/measurement-contracts-current/divided_reference.json",
+      "procedure": "finalize_current.py"
+    },
+    {
+      "case_id": "training__C111662__NRS-484B-403-3__motor_vehicle_driver__divided_opening",
+      "contract": "native/measurement-contracts-current/divided_opening.json",
+      "procedure": "finalize_current.py"
+    }
+  ],
+  "recording_description": {
+    "channels": [
+      {
+        "name": "ego_pose",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "saved Native body/frame join",
+        "time_window": "800 frames",
+        "reference_frame": "authored OpenDRIVE coordinates",
+        "uncertainty": "50 ms frame bracket; district/exception applicability unverified"
+      },
+      {
+        "name": "ego_speed",
+        "unit": "m/s",
+        "sampling_rate_hz": 20,
+        "method": "saved Native body/frame join",
+        "time_window": "800 frames",
+        "reference_frame": "authored OpenDRIVE coordinates",
+        "uncertainty": "50 ms frame bracket; district/exception applicability unverified"
+      },
+      {
+        "name": "u_turn_at_intersection_or_opening",
+        "unit": "bool",
+        "sampling_rate_hz": 20,
+        "method": "saved Native body/frame join",
+        "time_window": "800 frames",
+        "reference_frame": "authored OpenDRIVE coordinates",
+        "uncertainty": "50 ms frame bracket; district/exception applicability unverified"
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "authored_road",
+        "unit": "structured",
+        "method": "source-hashed OpenDRIVE"
+      },
+      {
+        "name": "authored_request",
+        "unit": "structured",
+        "method": "source-hashed requested-tracks.jsonl"
+      },
+      {
+        "name": "authored_frontage",
+        "unit": "structured",
+        "method": "source-hashed frontage plan and Native geometry readback pending"
+      }
+    ],
+    "limitations": [
+      "Original district designation, physical U-turn, and exception status unverified"
+    ]
+  },
+  "static_checks": [
+    "exact case and candidate identity",
+    "current input SHA and source-bound offline construction"
+  ],
+  "termination_rules": [
+    "retain all original source streams",
+    "stop after 800 synchronized frames and Native owner release"
+  ],
+  "mechanisms": [
+    "runtime-selected case-specific U-turn controller and authored road",
+    "four named source-camera streams",
+    "saved original-body and road geometry measurement"
+  ]
+}

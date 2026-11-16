@@ -210,6 +210,7 @@
     "drv.u_turn": {
       "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
       "channels": [
+        "ego_pose",
         "u_turn_at_intersection_or_opening"
       ],
       "source_refs": [
@@ -235,18 +236,18 @@
       ]
     },
     "kin.position": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Original Native body/heading joined by frame; current CPU fixture is synthetic",
       "channels": [
-        "u_turn_at_intersection_or_opening"
+        "ego_pose"
       ],
       "source_refs": [
         "inputs/training__C111662__NRS-484B-403-3__motor_vehicle_driver/assignment.json"
       ]
     },
     "kin.heading": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Original Native body/heading joined by frame; current CPU fixture is synthetic",
       "channels": [
-        "u_turn_at_intersection_or_opening"
+        "ego_pose"
       ],
       "source_refs": [
         "inputs/training__C111662__NRS-484B-403-3__motor_vehicle_driver/assignment.json"
@@ -335,6 +336,33 @@
         "requirement": "Source-backed qualifying business-district context and original U-turn at/away from the exception locations",
         "source": "inputs/training__C111662__NRS-484B-403-3__motor_vehicle_driver/witnesses.json",
         "why_existing_insufficient": "No accepted recording or full-train membership row is supplied."
+      }
+    ]
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 40,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "subject": "full U-turn path and road approaches",
+        "interval": "startup through clearance",
+        "view": "overview"
+      },
+      {
+        "subject": "approach vehicle body and frontage",
+        "interval": "approach and turn",
+        "view": "approach"
+      },
+      {
+        "subject": "intersection or median opening boundary",
+        "interval": "turn crossing",
+        "view": "reference_corner"
+      },
+      {
+        "subject": "departure body and crossing place",
+        "interval": "turn through final observation",
+        "view": "driver_reference"
       }
     ]
   }

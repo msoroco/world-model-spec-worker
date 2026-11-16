@@ -134,7 +134,7 @@ if __name__ == '__main__':
     parser.add_argument('--kind', choices=(*KINDS, 'lifecycle'))
     parser.add_argument('--output', type=Path)
     parser.add_argument('--manifest', type=Path, default=HERE / 'execution-manifest.json')
-    parser.add_argument('--version', choices=('update044', 'update045'), default='update044')
+    parser.add_argument('--version', choices=('update044', 'update045', 'update046b'), default='update044')
     args = parser.parse_args()
     if args.build:
         build(args.manifest, args.version)
