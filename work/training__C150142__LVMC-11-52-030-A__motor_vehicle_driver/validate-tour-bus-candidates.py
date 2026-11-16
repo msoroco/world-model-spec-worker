@@ -12,17 +12,18 @@ from worker_exchange.common import sha
 
 def main():
     manifest = json.loads((ROOT / 'execution-manifest-diagnostic-tour_bus_below-draft.json').read_text())
-    entry = manifest['cases'][0]
-    for candidate in [entry, *entry['candidates']]:
-        proof = candidate['offline']
-        if proof['exit_code'] != 0 or proof['construction_sha256'] != candidate['construction_sha256']:
-            raise ValueError('Offline proof is not bound to candidate')
-        if sha(ROOT / proof['log']) != proof['log_sha256'] or \
-           sha(ROOT / proof['wrapper_log']) != proof['wrapper_log_sha256']:
-            raise ValueError('Offline proof logs changed')
-    result = validate(ROOT, entry, 'LVMC-11-52-030-A', 'C150142',
-                      required=False, require_alternate=True, candidate_count=4)
-    print(json.dumps({'candidate_validation': result,
+    results = []
+    for entry in manifest['cases']:
+        for candidate in [entry, *entry['candidates']]:
+            proof = candidate['offline']
+            if proof['exit_code'] != 0 or proof['construction_sha256'] != candidate['construction_sha256']:
+                raise ValueError('Offline proof is not bound to candidate')
+            if sha(ROOT / proof['log']) != proof['log_sha256'] or \
+               sha(ROOT / proof['wrapper_log']) != proof['wrapper_log_sha256']:
+                raise ValueError('Offline proof logs changed')
+        results.append(validate(ROOT, entry, 'LVMC-11-52-030-A', 'C150142',
+                                required=False, require_alternate=True, candidate_count=4))
+    print(json.dumps({'candidate_validation': results,
                       'offline_proof_logs_source_bound': True}, sort_keys=True))
 
 

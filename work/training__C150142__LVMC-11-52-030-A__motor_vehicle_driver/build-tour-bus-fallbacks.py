@@ -1,10 +1,11 @@
 """Build three exact-case tour-bus alternatives from the proven primary package."""
+import argparse
 import hashlib
 import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-CASE = ROOT.name + '__tour_bus_below'
+CASES = ('tour_bus_below', 'tour_bus_at', 'tour_bus_above')
 OPTIONS = (
     ('fallback1', 38, 'standard',
      'observed Native bus body overshoots the painted red curb target'),
@@ -23,8 +24,10 @@ def sha(value):
     return hashlib.sha256(value.encode()).hexdigest()
 
 
-def build():
-    original = json.loads((ROOT / 'selected-primary/tour_bus_below/construction.json').read_text())
+def build(case_suffix='tour_bus_below'):
+    if case_suffix not in CASES:
+        raise ValueError('Unsupported tour-bus boundary case')
+    original = json.loads((ROOT / 'selected-primary' / case_suffix / 'construction.json').read_text())
     result = []
     for ident, target_x, camera_policy, trigger in OPTIONS:
         construction = json.loads(json.dumps(original))
@@ -48,7 +51,7 @@ def build():
             f"self.assertEqual(cfg['requested_target_x_m'],{target_x})")
         construction['files'] = [{'path': name, 'content': content}
                                  for name, content in files.items()]
-        path = ROOT / 'selected-fallbacks/tour_bus_below' / ident / 'construction.json'
+        path = ROOT / 'selected-fallbacks' / case_suffix / ident / 'construction.json'
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(encoded(construction))
         result.append({'id': ident, 'construction': str(path.relative_to(ROOT)),
@@ -59,4 +62,7 @@ def build():
 
 
 if __name__ == '__main__':
-    print(encoded(build()), end='')
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--case', default='tour_bus_below', choices=CASES)
+    args = parser.parse_args()
+    print(encoded(build(args.case)), end='')

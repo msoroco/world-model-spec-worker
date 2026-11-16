@@ -9,9 +9,7 @@ import tempfile
 
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
-CASE = ROOT.name + '__tour_bus_below'
 VIEWS = ('overview', 'approach', 'reference_corner', 'driver_reference')
-FRAMES = 36120
 
 
 def materialize(target, package):
@@ -25,6 +23,8 @@ def materialize(target, package):
 def source_rows(target, walker_moves=True):
     config = json.loads((target / 'config.json').read_text())
     target_x = config['requested_target_x_m']
+    approach = config['requested_approach_frames']
+    capture_frames = config['capture_frames']
     from_path = target / 'assignment-source.json'
     assignment = json.loads(from_path.read_text())
     (target / 'statutory-context.json').write_text(json.dumps({
@@ -49,11 +49,11 @@ def source_rows(target, walker_moves=True):
          (target / 'video_frames.jsonl').open('w') as frames, \
          (target / 'trace.jsonl').open('w') as trace, \
          (target / 'capture/evidence.jsonl').open('w') as evidence:
-        for i in range(FRAMES):
-            x = target_x * min(i, 120) / 120
+        for i in range(capture_frames):
+            x = target_x * min(i, approach) / approach
             y = -6.8
             t = i / 20
-            walker_y = (-10 + min(max(i - 120, 0), 60) * .05
+            walker_y = (-10 + min(max(i - approach, 0), 60) * .05
                         if walker_moves else -10)
             actor = {'frame': i, 'native_frame': i, 'time_s': t,
                      'source_kind': 'synthetic_native_sample',
@@ -61,13 +61,13 @@ def source_rows(target, walker_moves=True):
                      'ego_center_native_xy_m': [x, y],
                      'ego_body_native_xy_m': [[x - 1, y - .5], [x + 1, y - .5],
                                               [x + 1, y + .5], [x - 1, y + .5]],
-                     'velocity_native_xyz_mps': [1 if i < 120 else 0, 0, 0],
+                     'velocity_native_xyz_mps': [1 if i < approach else 0, 0, 0],
                      'yaw_deg': 0}
             walker = {'frame': i, 'native_frame': i, 'time_s': t,
                       'source_kind': 'synthetic_native_sample', 'actor_id': 2,
                       'blueprint': 'walker.pedestrian.0001',
                       'center_native_xy_m': [target_x, walker_y],
-                      'velocity_native_xyz_mps': [0, 1 if 120 <= i < 180 else 0, 0]}
+                      'velocity_native_xyz_mps': [0, 1 if approach <= i < approach + 60 else 0, 0]}
             frame = {'video_frame': i, 'native_frame': i, 'carla_frame': i,
                      'time_s': t, 'views': list(VIEWS)}
             actors.write(json.dumps(actor) + '\n')
@@ -75,7 +75,7 @@ def source_rows(target, walker_moves=True):
             frames.write(json.dumps(frame) + '\n')
             trace.write(json.dumps({'frame': i, 'time_s': t,
                                     'position_m': [x, y, 0],
-                                    'speed_mps': 1 if i < 120 else 0}) + '\n')
+                                    'speed_mps': 1 if i < approach else 0}) + '\n')
             evidence.write(json.dumps({'frame': i,
                                        'source_kind': 'synthetic_native_sample'}) + '\n')
     for view in VIEWS:
@@ -90,15 +90,19 @@ def run(target):
         cwd=target, env=env, text=True, capture_output=True)
 
 
-def prove(candidate='primary', negatives=True):
+def prove(candidate='primary', negatives=True, case_suffix='tour_bus_below'):
     if candidate not in ('primary', 'fallback1', 'fallback2', 'fallback3'):
         raise ValueError('Unknown tour-bus candidate')
-    package_path = (ROOT / 'selected-primary/tour_bus_below/construction.json' if
-                    candidate == 'primary' else ROOT / 'selected-fallbacks/tour_bus_below' /
+    if case_suffix not in ('tour_bus_below', 'tour_bus_at', 'tour_bus_above'):
+        raise ValueError('Unsupported tour-bus boundary candidate')
+    case_id = ROOT.name + '__' + case_suffix
+    package_path = (ROOT / 'selected-primary' / case_suffix / 'construction.json' if
+                    candidate == 'primary' else ROOT / 'selected-fallbacks' / case_suffix /
                     candidate / 'construction.json')
     package = json.loads(package_path.read_text())
-    if package['case_id'] != CASE:
+    if package['case_id'] != case_id:
         raise ValueError('Tour-bus construction changed')
+    config = json.loads(next(x['content'] for x in package['files'] if x['path'] == 'config.json'))
     with tempfile.TemporaryDirectory(dir=REPO / '.runtime-work', prefix='C150142-tour-bus-saved-') as tmp:
         parent = Path(tmp)
         positive = parent / 'positive'
@@ -109,8 +113,8 @@ def prove(candidate='primary', negatives=True):
             raise AssertionError('Long saved finalizer failed: ' + result.stderr[-1500:])
         report = json.loads((positive / 'analysis-report.json').read_text())
         observed = report['measurements']['signed_curb_observation']['value']
-        if observed['red_curb_stationary_duration_s'] != 1799.95 or \
-           observed['duration_relative_to_30_minutes'] != 'below' or \
+        if abs(observed['red_curb_stationary_duration_s'] - config['requested_stationary_duration_s']) > 1e-9 or \
+           observed['duration_relative_to_30_minutes'] != config['requested_boundary'] or \
            len(observed['recorded_activity_events']) != 1 or \
            observed['legal_verdict'] is not None:
             raise AssertionError('Long source observations differ')
@@ -131,9 +135,10 @@ def prove(candidate='primary', negatives=True):
             if rejected_stationary.returncode == 0 or \
                'No measured passenger approach at stopped bus' not in rejected_stationary.stderr:
                 raise AssertionError('Static passenger actor was accepted as loading')
-    return {'case_id': CASE, 'candidate_id': candidate,
+    return {'case_id': case_id, 'candidate_id': candidate,
             'source_kind': 'synthetic_native_sample',
-            'requested_boundary': 'below', 'measured_duration_s': 1799.95,
+            'requested_boundary': config['requested_boundary'],
+            'measured_duration_s': observed['red_curb_stationary_duration_s'],
             'passenger_approach_event': True, 'missing_source_rejected': negatives,
             'stationary_actor_rejected': negatives,
             'media_decoded': False, 'original_native_observed': False}
@@ -142,6 +147,7 @@ def prove(candidate='primary', negatives=True):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--candidate', default='primary')
+    parser.add_argument('--case', default='tour_bus_below')
     parser.add_argument('--skip-negatives', action='store_true')
     args = parser.parse_args()
-    print(json.dumps(prove(args.candidate, not args.skip_negatives), sort_keys=True))
+    print(json.dumps(prove(args.candidate, not args.skip_negatives, args.case), sort_keys=True))

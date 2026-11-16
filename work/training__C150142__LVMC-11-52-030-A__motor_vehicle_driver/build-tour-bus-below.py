@@ -1,4 +1,5 @@
 """Construct the exact long tour-bus below-boundary primary CPU package."""
+import argparse
 import hashlib
 import json
 from pathlib import Path
@@ -10,7 +11,7 @@ sys.path.insert(0, str(NATIVE))
 from exception_duration import plan
 from exception_road import construct, readback
 
-CASE = ROOT.name + '__tour_bus_below'
+CASES = ('tour_bus_below', 'tour_bus_at', 'tour_bus_above')
 
 
 def encode(value):
@@ -21,14 +22,18 @@ def digest(value):
     return hashlib.sha256(value.encode()).hexdigest()
 
 
-def build():
+def build(case_suffix='tour_bus_below'):
+    if case_suffix not in CASES:
+        raise ValueError('Unsupported tour-bus boundary case')
+    case_id = ROOT.name + '__' + case_suffix
     matrix = json.loads((ROOT / 'exception-case-matrix.json').read_text())
-    case = next(row for row in matrix['cases'] if row['case_id'] == CASE)
+    case = next(row for row in matrix['cases'] if row['case_id'] == case_id)
     if case['service_class'] != 'tour_bus' or case['activity_request'] != 'passenger_loading':
         raise ValueError('Exact tour-bus branch changed')
     schedule = plan(case)
-    if schedule['requested_boundary'] != 'below' or schedule['stationary_frames'] != 36000:
-        raise ValueError('Below-boundary capture request changed')
+    if schedule['requested_boundary'] != case_suffix.rsplit('_', 1)[-1] or \
+       schedule['stationary_frames'] != {'below': 36000, 'at': 36001, 'above': 36002}[schedule['requested_boundary']]:
+        raise ValueError('Tour-bus boundary capture request changed')
     source = json.loads((ROOT / 'selected-primary/ordinary_red_signed/construction.json').read_text())
     files = {row['path']: row['content'] for row in source['files']}
     road = construct(case)
@@ -52,7 +57,7 @@ def build():
     files['requested-tracks.jsonl'] = ''.join(json.dumps(row, separators=(',', ':'),
         allow_nan=False) + '\n' for row in tracks)
     cfg = json.loads(files['config.json'])
-    cfg.update(case_id=CASE, selected_case_id=CASE, supported_case_ids=[CASE],
+    cfg.update(case_id=case_id, selected_case_id=case_id, supported_case_ids=[case_id],
                service_class='tour_bus', native_blueprint='vehicle.mitsubishi.fusorosa',
                sign_classes=case['sign_classes'], activity_request=case['activity_request'],
                road_sha256=digest(road), tracks_sha256=digest(files['requested-tracks.jsonl']),
@@ -66,7 +71,7 @@ def build():
     files['config.json'] = encode(cfg)
     files['tests/test_selected.py'] = files['tests/test_selected.py'].replace(
         "self.assertEqual(result['frames'],240)",
-        "self.assertEqual(result['frames'],36120)").replace(
+        f"self.assertEqual(result['frames'],{schedule['capture_frames']})").replace(
         "self.assertEqual(cfg['sign_classes'], ['no_parking'])",
         "self.assertEqual(cfg['sign_classes'], ['tour_bus', 'shuttle_bus', 'limo'])\n"
         "        self.assertEqual(cfg['native_blueprint'], 'vehicle.mitsubishi.fusorosa')")
@@ -82,7 +87,7 @@ def build():
         "        self.assertTrue(rows[120]['requested_parked'])\n"
         "        self.assertEqual(rows[-1]['frame'],cfg['capture_frames']-1)\n\n"
         "if __name__=='__main__': unittest.main()")
-    source['case_id'] = CASE
+    source['case_id'] = case_id
     source['files'] = [{'path': name, 'content': content} for name, content in files.items()]
     source['status'] = 'draft_selected_cpu'
     source['termination_rules']['requested_frames'] = schedule['capture_frames']
@@ -92,14 +97,17 @@ def build():
         'Passenger boarding, tour-bus livery and the 30-minute legal exception remain unverified.')
     source['measurement_plan'] = {'source': 'retained Native bus, walker, velocity and sign rows',
                                   'finalizer': 'finalize_selected.py', 'legal_verdict': None}
-    target = ROOT / 'selected-primary/tour_bus_below/construction.json'
+    target = ROOT / 'selected-primary' / case_suffix / 'construction.json'
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(encode(source))
-    return {'case_id': CASE, 'construction_sha256': digest(target.read_text()),
+    return {'case_id': case_id, 'construction_sha256': digest(target.read_text()),
             'capture_frames': schedule['capture_frames'],
             'stationary_frames': schedule['stationary_frames'],
             'original_native_observed': False}
 
 
 if __name__ == '__main__':
-    print(encode(build()), end='')
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--case', default='tour_bus_below', choices=CASES)
+    args = parser.parse_args()
+    print(encode(build(args.case)), end='')
