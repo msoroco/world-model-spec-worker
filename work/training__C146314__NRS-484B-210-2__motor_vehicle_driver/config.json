@@ -1,0 +1,175 @@
+{
+  "format": "c146314-right-pass-clearance-request-v1",
+  "assignment_id": "training__C146314__NRS-484B-210-2__motor_vehicle_driver",
+  "case_id": "training__C146314__NRS-484B-210-2__motor_vehicle_driver__reference",
+  "candidate_id": "primary",
+  "law_id": "NRS-484B-210-2",
+  "cell_id": "C146314",
+  "actor": "motor_vehicle_driver",
+  "road_sha256": "ece1c4966610e59ad13434e80e15a0a2e4c2f591b9942b8ec45e692c9eb54db4",
+  "tracks_sha256": "d2c8c9351ce5aa619ef562ad1496216174533b5de8d47a4ec30cf7a403ca18fc",
+  "assignment_sha256": "c176b8e282e3593aa59138b378e9f18dacd4eaeff01049521c16fdc01105ebca",
+  "case_plan_sha256": "d300df5996cd6a1990dc0c864c8d0342337fbae050010f8b7cfef5b49ae54ee7",
+  "rate_hz": 20,
+  "frames": 240,
+  "camera_policy": "standard",
+  "ego_requested_speed_mps": 8.0,
+  "lead_requested_speed_mps": 4.0,
+  "lane_change_end_x_m": 31,
+  "requested_lateral_apex_y_m": -5.5,
+  "requested_nominal_body_gap_m": 1.95,
+  "original_native_observed": false,
+  "legal_safety_verdict": null,
+  "status": "unselected_native_request",
+  "selected_case_id": "training__C146314__NRS-484B-210-2__motor_vehicle_driver__reference",
+  "duration_s": 12,
+  "required_atoms": [],
+  "source_packets": [],
+  "case": {
+    "case_id": "training__C146314__NRS-484B-210-2__motor_vehicle_driver__reference",
+    "target_law_id": "NRS-484B-210-2",
+    "target_type": "judgment_sweep",
+    "rationale": "Physical right-side body clearance reference; safety judgment unresolved.",
+    "paired_probe_id": "training__C146314__NRS-484B-210-2__motor_vehicle_driver__clearance_sweep",
+    "deliberate_differences": [
+      "commanded_lateral_apex"
+    ],
+    "probe": {
+      "primary_variable": "commanded_lateral_apex",
+      "comparison_or_standard": "physical coverage; legal safety unresolved",
+      "target_value_or_branch": {
+        "commanded_lateral_apex": -5.5
+      }
+    },
+    "sweep_id": "training__C146314__NRS-484B-210-2__motor_vehicle_driver__clearance_sweep",
+    "sweep_spec_version": "aafa251bacf9d40247f7f40d5ff83a4ede94851b8fd9e601119058f49c8e55e9",
+    "sweep_point": {
+      "commanded_lateral_apex": -5.5
+    },
+    "variable_assignments": {
+      "road_and_actors": {
+        "kind": "world_setup",
+        "value": "authored two-lane one-way road, ego and lead Tesla"
+      },
+      "commanded_lateral_apex": {
+        "kind": "controller",
+        "value": -5.5,
+        "unit": "m"
+      },
+      "commanded_ego_speed": {
+        "kind": "controller",
+        "value": 8.0,
+        "unit": "m/s"
+      },
+      "commanded_lead_speed": {
+        "kind": "controller",
+        "value": 4.0,
+        "unit": "m/s"
+      },
+      "ego_speed": {
+        "kind": "subject_behavior",
+        "value": null
+      },
+      "lead_speed": {
+        "kind": "subject_behavior",
+        "value": null
+      },
+      "right_side_pass_lateral_clearance": {
+        "kind": "subject_behavior",
+        "value": null
+      }
+    },
+    "recording_description": {
+      "channels": [
+        {
+          "name": "ego_pose",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "retained original Native actor, body, velocity and four-camera frame join",
+          "time_window": "240 frames",
+          "reference_frame": "authored OpenDRIVE coordinates",
+          "uncertainty": "50 ms bracket; physical safety and pixel visibility unverified"
+        },
+        {
+          "name": "ego_speed",
+          "unit": "m/s",
+          "sampling_rate_hz": 20,
+          "method": "retained original Native actor, body, velocity and four-camera frame join",
+          "time_window": "240 frames",
+          "reference_frame": "authored OpenDRIVE coordinates",
+          "uncertainty": "50 ms bracket; physical safety and pixel visibility unverified"
+        },
+        {
+          "name": "right_side_pass_lateral_clearance",
+          "unit": "m",
+          "sampling_rate_hz": 20,
+          "method": "retained original Native actor, body, velocity and four-camera frame join",
+          "time_window": "240 frames",
+          "reference_frame": "authored OpenDRIVE coordinates",
+          "uncertainty": "50 ms bracket; physical safety and pixel visibility unverified"
+        },
+        {
+          "name": "four_source_views",
+          "unit": "video",
+          "sampling_rate_hz": 20,
+          "method": "retained original Native actor, body, velocity and four-camera frame join",
+          "time_window": "240 frames",
+          "reference_frame": "authored OpenDRIVE coordinates",
+          "uncertainty": "50 ms bracket; physical safety and pixel visibility unverified"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "right_pass_map_readback",
+          "unit": "structured",
+          "method": "source-hashed Native OpenDRIVE map/lane readback"
+        }
+      ],
+      "limitations": [
+        "NRS 484B.210(2) is qualitative; engineering clearance does not determine legal safety."
+      ]
+    },
+    "unresolved_judgment_calls": [
+      "conditions permitting such movement in safety"
+    ]
+  },
+  "supported_case_ids": [
+    "training__C146314__NRS-484B-210-2__motor_vehicle_driver__reference",
+    "training__C146314__NRS-484B-210-2__motor_vehicle_driver__contrast"
+  ],
+  "physical_success_claimed": false,
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "pose_strategy": "ego_attached",
+      "fov_deg": 85
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "ego_attached",
+      "fov_deg": 90
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "ego_attached",
+      "fov_deg": 90
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "ego_attached",
+      "fov_deg": 90
+    }
+  ],
+  "dispatch_case_ids": [
+    "training__C146314__NRS-484B-210-2__motor_vehicle_driver__reference",
+    "training__C146314__NRS-484B-210-2__motor_vehicle_driver__contrast"
+  ]
+}

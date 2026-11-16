@@ -77,13 +77,13 @@ def prove():
     for witness in WITNESSES:
         for candidate in CANDIDATES:
             prefix = REPO/'.runtime-work'/f'c146314-210-2-{witness}-{candidate}'
-            compatibility = read(Path(str(prefix)+'-compat-update059')/'compatibility.json')
-            saved = Path(str(prefix)+'-fresh-update059-saved')/'v0001'
+            compatibility = read(Path(str(prefix)+'-compat-update060')/'compatibility.json')
+            saved = Path(str(prefix)+'-fresh-update060-saved')/'v0001'
             receipt = read(saved/'processing.json')
             result = read(Path(receipt['result']))
             construction = read(ROOT/('selected-primary' if candidate == 'primary' else 'selected-fallbacks')/
                                 witness/('construction.json' if candidate == 'primary' else candidate+'/construction.json'))
-            attempt = Path(str(prefix)+'-fresh-update059-attempt')
+            attempt = Path(str(prefix)+'-fresh-update060-attempt')
             args = [witness, candidate, cases[witness], compatibility, receipt, result, construction, attempt]
             positives.append(check_one(*args))
             altered = copy.deepcopy(args); altered[4]['original_source_hashes']['native-raw-actors.jsonl'] = '0'*64

@@ -1,0 +1,91 @@
+{
+  "case_id": "training__C146314__NRS-484B-210-2__motor_vehicle_driver__reference",
+  "cell_id": "C146314",
+  "law_id": "NRS-484B-210-2",
+  "actor": "motor_vehicle_driver",
+  "entrypoint": "runner.py",
+  "recording_description": {
+    "channels": [
+      {
+        "name": "ego_pose",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "retained original Native actor, body, velocity and four-camera frame join",
+        "time_window": "240 frames",
+        "reference_frame": "authored OpenDRIVE coordinates",
+        "uncertainty": "50 ms bracket; physical safety and pixel visibility unverified"
+      },
+      {
+        "name": "ego_speed",
+        "unit": "m/s",
+        "sampling_rate_hz": 20,
+        "method": "retained original Native actor, body, velocity and four-camera frame join",
+        "time_window": "240 frames",
+        "reference_frame": "authored OpenDRIVE coordinates",
+        "uncertainty": "50 ms bracket; physical safety and pixel visibility unverified"
+      },
+      {
+        "name": "right_side_pass_lateral_clearance",
+        "unit": "m",
+        "sampling_rate_hz": 20,
+        "method": "retained original Native actor, body, velocity and four-camera frame join",
+        "time_window": "240 frames",
+        "reference_frame": "authored OpenDRIVE coordinates",
+        "uncertainty": "50 ms bracket; physical safety and pixel visibility unverified"
+      },
+      {
+        "name": "four_source_views",
+        "unit": "video",
+        "sampling_rate_hz": 20,
+        "method": "retained original Native actor, body, velocity and four-camera frame join",
+        "time_window": "240 frames",
+        "reference_frame": "authored OpenDRIVE coordinates",
+        "uncertainty": "50 ms bracket; physical safety and pixel visibility unverified"
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "right_pass_map_readback",
+        "unit": "structured",
+        "method": "source-hashed Native OpenDRIVE map/lane readback"
+      }
+    ],
+    "limitations": [
+      "NRS 484B.210(2) is qualitative; engineering clearance does not determine legal safety."
+    ]
+  },
+  "measurement_plan": {
+    "source": "original actor bodies, velocity, map and four cameras",
+    "finalizer": "prepare_raw.py",
+    "legal_verdict": null
+  },
+  "static_checks": [
+    "frozen law/source",
+    "240 request frames",
+    "four cameras",
+    "right-side steering and body gap"
+  ],
+  "termination_rules": {
+    "requested_frames": 240,
+    "stop_on_error": true
+  },
+  "mechanisms": {
+    "construction_status": "authored_cpu_unverified_physical",
+    "road": "right-pass-road.xodr",
+    "controller": "capture.py",
+    "dispatch": "runner.py selects exact manifest case/candidate, materializes fresh bundle, then invokes its Native runner"
+  },
+  "status": "draft_assignment_dispatch_cpu",
+  "original_native_observed": false,
+  "delivery_ready": false,
+  "files": [
+    {
+      "path": "runner.py",
+      "content": "\"\"\"Exact-case right-pass launcher; --check imports no CARLA.\n\nThe selected construction is materialized fresh by the pinned CPU runtime. An\noperator supplies the CARLA Python and an exclusively owned server for capture.\n\"\"\"\nimport argparse\nimport hashlib\nimport json\nfrom pathlib import Path\nimport subprocess\nimport sys\n\nPACKAGE=Path(__file__).resolve().parent\nREPO=PACKAGE.parents[1]\n\n\ndef sha(path):\n    return hashlib.sha256(Path(path).read_bytes()).hexdigest()\n\n\ndef require(ok,message):\n    if not ok:\n        raise ValueError(message)\n\n\ndef selected_manifest():\n    canonical=PACKAGE/'execution-manifest.json'\n    return canonical if canonical.is_file() else PACKAGE/'execution-manifest-unified-draft.json'\n\n\ndef check(manifest=None):\n    path=Path(manifest) if manifest else selected_manifest()\n    data=json.loads(path.read_text())\n    require(data.get('assignment_id')==PACKAGE.name and\n            data.get('format')=='worker-execution-manifest',\n            'Wrong exact assignment manifest')\n    cases=data.get('cases',[])\n    require(len(cases)==2 and {e['case_id'] for e in cases}==\n            {PACKAGE.name+'__reference',PACKAGE.name+'__contrast'},\n            'Selected right-pass pair missing')\n    proposal=json.loads((PACKAGE/'proposals/cases.json').read_text())\n    source={c['case_id']:c for c in proposal['cases'] if c['target_type']!='baseline'}\n    require(set(source)=={e['case_id'] for e in cases},'Canonical case coverage changed')\n    for entry in cases:\n        parts=[entry,*entry['candidates']]\n        require(len(parts)==4 and {p.get('id') for p in entry['candidates']}==\n                {'fallback1','fallback2','fallback3'},\n                'Three exact fallback constructions required')\n        for item in parts:\n            construction=PACKAGE/item['construction']\n            require(construction.is_file() and sha(construction)==item['construction_sha256'],\n                    'Selected construction hash changed')\n            payload=json.loads(construction.read_text())\n            require(payload['case_id']==entry['case_id'] and\n                    payload['recording_description']==source[entry['case_id']]['recording_description'],\n                    'Selected capture contract differs')\n            config=json.loads(next(f['content'] for f in payload['files'] if f['path']=='config.json'))\n            require(config['case']==source[entry['case_id']] and\n                    config['selected_case_id']==entry['case_id'],\n                    'Selected case definition differs')\n    return {'cases':len(cases),'fallbacks':sum(len(e['candidates']) for e in cases),\n            'native_imported':False,'physical_acceptance_claimed':False}\n\n\ndef launch(case,candidate,output,python,host,port,manifest=None):\n    manifest=Path(manifest) if manifest else selected_manifest()\n    check(manifest)\n    require(case in {PACKAGE.name+'__reference',PACKAGE.name+'__contrast'} and\n            candidate in {'primary','fallback1','fallback2','fallback3'},\n            'Unknown exact case or fallback')\n    output=Path(output).resolve()\n    require(not output.exists(),'Use a fresh output directory for an original attempt')\n    subprocess.run([sys.executable,str(REPO/'runtime.py'),'materialize',\n                    '--manifest',str(manifest),'--case',case,\n                    '--candidate',candidate,'--output',str(output)],\n                   cwd=REPO,check=True)\n    subprocess.run([str(python),str(output/'runner.py'),'--output-dir',str(output),\n                    '--host',str(host),'--port',str(port)],\n                   cwd=output,check=True)\n\n\nif __name__=='__main__':\n    p=argparse.ArgumentParser()\n    p.add_argument('--check',action='store_true')\n    p.add_argument('--manifest')\n    p.add_argument('--case')\n    p.add_argument('--candidate',default='primary')\n    p.add_argument('--output-dir')\n    p.add_argument('--python')\n    p.add_argument('--host')\n    p.add_argument('--port',type=int)\n    args=p.parse_args()\n    if args.check:\n        print(json.dumps(check(args.manifest),sort_keys=True))\n    else:\n        require(all(x is not None for x in (args.case,args.output_dir,args.python,args.host,args.port)),\n                'Original capture requires case, output, CARLA Python, host and port')\n        launch(args.case,args.candidate,args.output_dir,args.python,args.host,args.port,args.manifest)\n"
+    },
+    {
+      "path": "config.json",
+      "content": "{\n  \"format\": \"c146314-right-pass-clearance-request-v1\",\n  \"assignment_id\": \"training__C146314__NRS-484B-210-2__motor_vehicle_driver\",\n  \"case_id\": \"training__C146314__NRS-484B-210-2__motor_vehicle_driver__reference\",\n  \"candidate_id\": \"primary\",\n  \"law_id\": \"NRS-484B-210-2\",\n  \"cell_id\": \"C146314\",\n  \"actor\": \"motor_vehicle_driver\",\n  \"road_sha256\": \"ece1c4966610e59ad13434e80e15a0a2e4c2f591b9942b8ec45e692c9eb54db4\",\n  \"tracks_sha256\": \"d2c8c9351ce5aa619ef562ad1496216174533b5de8d47a4ec30cf7a403ca18fc\",\n  \"assignment_sha256\": \"c176b8e282e3593aa59138b378e9f18dacd4eaeff01049521c16fdc01105ebca\",\n  \"case_plan_sha256\": \"d300df5996cd6a1990dc0c864c8d0342337fbae050010f8b7cfef5b49ae54ee7\",\n  \"rate_hz\": 20,\n  \"frames\": 240,\n  \"camera_policy\": \"standard\",\n  \"ego_requested_speed_mps\": 8.0,\n  \"lead_requested_speed_mps\": 4.0,\n  \"lane_change_end_x_m\": 31,\n  \"requested_lateral_apex_y_m\": -5.5,\n  \"requested_nominal_body_gap_m\": 1.95,\n  \"original_native_observed\": false,\n  \"legal_safety_verdict\": null,\n  \"status\": \"unselected_native_request\",\n  \"selected_case_id\": \"training__C146314__NRS-484B-210-2__motor_vehicle_driver__reference\",\n  \"duration_s\": 12,\n  \"required_atoms\": [],\n  \"source_packets\": [],\n  \"case\": {\n    \"case_id\": \"training__C146314__NRS-484B-210-2__motor_vehicle_driver__reference\",\n    \"target_law_id\": \"NRS-484B-210-2\",\n    \"target_type\": \"judgment_sweep\",\n    \"rationale\": \"Physical right-side body clearance reference; safety judgment unresolved.\",\n    \"paired_probe_id\": \"training__C146314__NRS-484B-210-2__motor_vehicle_driver__clearance_sweep\",\n    \"deliberate_differences\": [\n      \"commanded_lateral_apex\"\n    ],\n    \"probe\": {\n      \"primary_variable\": \"commanded_lateral_apex\",\n      \"comparison_or_standard\": \"physical coverage; legal safety unresolved\",\n      \"target_value_or_branch\": {\n        \"commanded_lateral_apex\": -5.5\n      }\n    },\n    \"sweep_id\": \"training__C146314__NRS-484B-210-2__motor_vehicle_driver__clearance_sweep\",\n    \"sweep_spec_version\": \"aafa251bacf9d40247f7f40d5ff83a4ede94851b8fd9e601119058f49c8e55e9\",\n    \"sweep_point\": {\n      \"commanded_lateral_apex\": -5.5\n    },\n    \"variable_assignments\": {\n      \"road_and_actors\": {\n        \"kind\": \"world_setup\",\n        \"value\": \"authored two-lane one-way road, ego and lead Tesla\"\n      },\n      \"commanded_lateral_apex\": {\n        \"kind\": \"controller\",\n        \"value\": -5.5,\n        \"unit\": \"m\"\n      },\n      \"commanded_ego_speed\": {\n        \"kind\": \"controller\",\n        \"value\": 8.0,\n        \"unit\": \"m/s\"\n      },\n      \"commanded_lead_speed\": {\n        \"kind\": \"controller\",\n        \"value\": 4.0,\n        \"unit\": \"m/s\"\n      },\n      \"ego_speed\": {\n        \"kind\": \"subject_behavior\",\n        \"value\": null\n      },\n      \"lead_speed\": {\n        \"kind\": \"subject_behavior\",\n        \"value\": null\n      },\n      \"right_side_pass_lateral_clearance\": {\n        \"kind\": \"subject_behavior\",\n        \"value\": null\n      }\n    },\n    \"recording_description\": {\n      \"channels\": [\n        {\n          \"name\": \"ego_pose\",\n          \"unit\": \"structured\",\n          \"sampling_rate_hz\": 20,\n          \"method\": \"retained original Native actor, body, velocity and four-camera frame join\",\n          \"time_window\": \"240 frames\",\n          \"reference_frame\": \"authored OpenDRIVE coordinates\",\n          \"uncertainty\": \"50 ms bracket; physical safety and pixel visibility unverified\"\n        },\n        {\n          \"name\": \"ego_speed\",\n          \"unit\": \"m/s\",\n          \"sampling_rate_hz\": 20,\n          \"method\": \"retained original Native actor, body, velocity and four-camera frame join\",\n          \"time_window\": \"240 frames\",\n          \"reference_frame\": \"authored OpenDRIVE coordinates\",\n          \"uncertainty\": \"50 ms bracket; physical safety and pixel visibility unverified\"\n        },\n        {\n          \"name\": \"right_side_pass_lateral_clearance\",\n          \"unit\": \"m\",\n          \"sampling_rate_hz\": 20,\n          \"method\": \"retained original Native actor, body, velocity and four-camera frame join\",\n          \"time_window\": \"240 frames\",\n          \"reference_frame\": \"authored OpenDRIVE coordinates\",\n          \"uncertainty\": \"50 ms bracket; physical safety and pixel visibility unverified\"\n        },\n        {\n          \"name\": \"four_source_views\",\n          \"unit\": \"video\",\n          \"sampling_rate_hz\": 20,\n          \"method\": \"retained original Native actor, body, velocity and four-camera frame join\",\n          \"time_window\": \"240 frames\",\n          \"reference_frame\": \"authored OpenDRIVE coordinates\",\n          \"uncertainty\": \"50 ms bracket; physical safety and pixel visibility unverified\"\n        }\n      ],\n      \"context_inputs\": [\n        {\n          \"name\": \"right_pass_map_readback\",\n          \"unit\": \"structured\",\n          \"method\": \"source-hashed Native OpenDRIVE map/lane readback\"\n        }\n      ],\n      \"limitations\": [\n        \"NRS 484B.210(2) is qualitative; engineering clearance does not determine legal safety.\"\n      ]\n    },\n    \"unresolved_judgment_calls\": [\n      \"conditions permitting such movement in safety\"\n    ]\n  },\n  \"supported_case_ids\": [\n    \"training__C146314__NRS-484B-210-2__motor_vehicle_driver__reference\",\n    \"training__C146314__NRS-484B-210-2__motor_vehicle_driver__contrast\"\n  ],\n  \"physical_success_claimed\": false,\n  \"cameras\": [\n    {\n      \"name\": \"overview\",\n      \"width\": 1920,\n      \"height\": 1080,\n      \"pose_strategy\": \"ego_attached\",\n      \"fov_deg\": 85\n    },\n    {\n      \"name\": \"approach\",\n      \"width\": 1280,\n      \"height\": 720,\n      \"pose_strategy\": \"ego_attached\",\n      \"fov_deg\": 90\n    },\n    {\n      \"name\": \"reference_corner\",\n      \"width\": 1280,\n      \"height\": 720,\n      \"pose_strategy\": \"ego_attached\",\n      \"fov_deg\": 90\n    },\n    {\n      \"name\": \"driver_reference\",\n      \"width\": 1280,\n      \"height\": 720,\n      \"pose_strategy\": \"ego_attached\",\n      \"fov_deg\": 90\n    }\n  ],\n  \"dispatch_case_ids\": [\n    \"training__C146314__NRS-484B-210-2__motor_vehicle_driver__reference\",\n    \"training__C146314__NRS-484B-210-2__motor_vehicle_driver__contrast\"\n  ]\n}\n"
+    }
+  ]
+}

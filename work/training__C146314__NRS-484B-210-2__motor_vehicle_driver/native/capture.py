@@ -62,6 +62,22 @@ def write_new(path,value):
         stream.write('\n')
 
 
+def prepare_output(bundle,output,cfg):
+    """Accept a fresh materialized bundle, never a prior capture attempt."""
+    bundle,output=Path(bundle),Path(output)
+    output.mkdir(parents=True,exist_ok=True)
+    if any((output/name).exists() for name in
+           ('native-raw-actors.jsonl','video_frames.jsonl',
+            'native-capture-report.json','capture/evidence.jsonl')):
+        raise ValueError('Retain prior C146314 attempt; choose fresh output')
+    target=output/'config.json'
+    if target.exists():
+        if target.read_bytes()!=(bundle/'config.json').read_bytes():
+            raise ValueError('Materialized capture config differs from selected bundle')
+    else:
+        write_new(target,cfg)
+
+
 def pose(actor):
     transform=actor.get_transform();velocity=actor.get_velocity()
     body=actor.bounding_box.get_world_vertices(transform)
@@ -135,12 +151,7 @@ def execute(bundle,output,host,port):
         actor.type_id.startswith(('vehicle.','walker.','sensor.'))
         for actor in old.get_actors()):
         raise RuntimeError('Exclusive idle asynchronous CARLA world required')
-    output.mkdir(parents=True,exist_ok=True)
-    if any((output/name).exists() for name in
-           ('config.json','native-raw-actors.jsonl','video_frames.jsonl',
-            'native-capture-report.json')):
-        raise ValueError('Retain prior C146314 attempt; choose fresh output')
-    write_new(output/'config.json',cfg)
+    prepare_output(bundle,output,cfg)
     owned=[];videos={};logs={};camera_queues={}
     pipeline=None;changed=False;frames=0;restored=None;error=None
     try:
