@@ -1,14 +1,14 @@
 {
   "assignment_id": "training__C146314__NRS-484B-210-2__motor_vehicle_driver",
   "input_sha256": "c176b8e282e3593aa59138b378e9f18dacd4eaeff01049521c16fdc01105ebca",
-  "status": "partial",
+  "status": "ready",
   "applied_update": 16,
-  "reason": "Update064: both exact cases have mock-only positive/negative original delivery audit contract proofs bound in the manifest preview and accepted by the pinned delivery_handoff validator. An independent retained-source saved comparison audit passes four current diagnostic pairs and rejects 16 mutations. Assignment remains partial: three evidence-backed physical-outcome fixture receipts and complete six-event lifecycle CPU proof, canonical execution manifest and exact queue/local integration remain worker-owned CPU work. The diagnostic comparisons and mock audit proof do not establish original Native motion, operator release, physical or delivery acceptance, or a legal safety verdict.",
-  "readiness_kind": null,
+  "reason": null,
+  "readiness_kind": "delivery_prepared",
   "cases_planned": 2,
-  "cases_selected": 0,
-  "candidate_plans_proven": 0,
-  "comparison_audits_passed": 0,
+  "cases_selected": 2,
+  "candidate_plans_proven": 8,
+  "comparison_audits_passed": 1,
   "carla_executed": false,
   "recordings_accepted": 0,
   "tests": [
@@ -1205,6 +1205,73 @@
       "exit_code": 0,
       "log": "update064-saved-comparison-audit.log",
       "sha256": "9370e323096aff844851daed7314b30cd02e1161e785c11315eeb7c1c92e5795"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C146314__NRS-484B-210-2__motor_vehicle_driver/prove-six-event-lifecycle.py --case training__C146314__NRS-484B-210-2__motor_vehicle_driver__reference",
+      "exit_code": 0,
+      "log": "update065-reference-six-event-lifecycle.log",
+      "sha256": "b05338c846e55347d794244f9c4f5e5573ef344130487c2cba87aa0a765c645d"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C146314__NRS-484B-210-2__motor_vehicle_driver/prove-six-event-lifecycle.py --case training__C146314__NRS-484B-210-2__motor_vehicle_driver__contrast",
+      "exit_code": 0,
+      "log": "update065-contrast-six-event-lifecycle.log",
+      "sha256": "c3027980a9ae75657acb991cbd51e5a01327581968aea56b470760d29d0c1d2b"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C146314__NRS-484B-210-2__motor_vehicle_driver/bind-physical-proof-preview.py",
+      "exit_code": 0,
+      "log": "update065-bind-physical.log",
+      "sha256": "1b5b648831c647c50f8b4985e7e2e408c2613eeca9ed7a42663245c18689b343"
+    },
+    {
+      "command": "python -c pinned execution_manifest.validate for C146314 canonical manifest",
+      "exit_code": 0,
+      "log": "update065-canonical-validation.log",
+      "sha256": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3"
+    },
+    {
+      "command": "python pinned execution, semantic, delivery, compatibility validators for C146314",
+      "exit_code": 0,
+      "log": "update065-canonical-package-validation.log",
+      "sha256": "6ac02a3f847d130fceefd8fb38d98241bcf7b0fcb822a11ab25bca838bfebb9a"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C146314__NRS-484B-210-2__motor_vehicle_driver/runner.py --check",
+      "exit_code": 0,
+      "log": "update065-root-check.log",
+      "sha256": "d803800464bbfc6d6d9714348bfc0954e2ab5ec0120363668bd9130d982c8744"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C146314__NRS-484B-210-2__motor_vehicle_driver/prove-post-capture.py",
+      "exit_code": 0,
+      "log": "update065-post-capture-proof.log",
+      "sha256": "9e812ea828babf27ab89819b9bd119b0b8edf82a55186de27dc165b80f8c66eb"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/training__C146314__NRS-484B-210-2__motor_vehicle_driver/tests",
+      "exit_code": 0,
+      "log": "update065-package-unittest.log",
+      "sha256": "11779e7fb102bcbb64688c4f75dbbbfc4537cca356e705f5f38e2e55622a6ff2"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C146314__NRS-484B-210-2__motor_vehicle_driver/promote-canonical-manifest.py",
+      "exit_code": 0,
+      "log": "update065-promote-canonical.log",
+      "sha256": "c5d98c7c30ba8ec59aa75d25d89f1c57dd7814612b4e3994f91ff3f3c513d900"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "update065-preflight.log",
+      "sha256": "2b7397ef1093508740a797ab3a30754bf1d1d64067e2fc6d93f1cf993d2c0fa8"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --updates",
+      "exit_code": 0,
+      "log": "update065-updates.log",
+      "sha256": "90b50c122eca4a1903b9ce4f899146581f5fae9e6011d0317bfce22e3ab3b3b9"
     }
-  ]
+  ],
+  "first_gpu_delivery_command": "PYTHONPATH=runtime/pipeline/scenario_pipeline python3.11 -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C146314__NRS-484B-210-2__motor_vehicle_driver --case training__C146314__NRS-484B-210-2__motor_vehicle_driver__reference --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT"
 }
