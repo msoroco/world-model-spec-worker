@@ -1,0 +1,58 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__observed_gives_way_increases_speed_after_complete",
+  "requirements": [
+    {
+      "disposition_index": 1,
+      "requirement": "Do not increase speed until completely passed by the overtaking vehicle.",
+      "source": "inputs/heldout__C230259__NRS-484B-207-2__motor_vehicle_driver/assignment.json",
+      "output_key": "ego_speed_mps",
+      "method": "finalize",
+      "value_type": "array",
+      "kind": "measured",
+      "inputs": [
+        "overtake_site_original.json",
+        "overtake_bodies_original.jsonl",
+        "trace.jsonl",
+        "video_frames.jsonl",
+        "overview.mkv",
+        "approach.mkv",
+        "reference_corner.mkv",
+        "driver_reference.mkv",
+        "overview-frames.jsonl",
+        "approach-frames.jsonl",
+        "reference_corner-frames.jsonl",
+        "driver_reference-frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Establish overtaken/overtaking actor identities, passing side and full-body completion from original physical sources.",
+      "source": "inputs/heldout__C230259__NRS-484B-207-2__motor_vehicle_driver/assignment.json",
+      "output_key": "full_body_pass_gap_m",
+      "method": "finalize",
+      "value_type": "array",
+      "kind": "measured",
+      "inputs": [
+        "overtake_site_original.json",
+        "overtake_bodies_original.jsonl",
+        "trace.jsonl",
+        "video_frames.jsonl",
+        "overview.mkv",
+        "approach.mkv",
+        "reference_corner.mkv",
+        "driver_reference.mkv",
+        "overview-frames.jsonl",
+        "approach-frames.jsonl",
+        "reference_corner-frames.jsonl",
+        "driver_reference-frames.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "overtake_bodies_original.jsonl"
+    ],
+    "error_contains": "Missing required source: overtake_bodies_original.jsonl"
+  }
+}
