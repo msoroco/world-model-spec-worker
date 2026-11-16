@@ -13,7 +13,7 @@ def build():
         passenger_source = ('native-passenger-inventory.jsonl' if no_loading else
                             'native-passenger-actors.jsonl')
         sources = ['native-raw-actors.jsonl', 'native-map-readback.json',
-                   passenger_source, 'video_frames.jsonl']
+                   passenger_source]
         contract = {
             'format': 'worker-measurement-contract',
             'case_id': ROOT.name + '__' + suffix,
