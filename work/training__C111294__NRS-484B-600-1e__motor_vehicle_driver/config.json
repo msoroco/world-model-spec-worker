@@ -1,0 +1,175 @@
+{
+  "case_id": "training__C111294__NRS-484B-600-1e__motor_vehicle_driver__below_80_mph",
+  "selected_case_id": "training__C111294__NRS-484B-600-1e__motor_vehicle_driver__below_80_mph",
+  "supported_case_ids": [
+    "training__C111294__NRS-484B-600-1e__motor_vehicle_driver__above_80_mph",
+    "training__C111294__NRS-484B-600-1e__motor_vehicle_driver__at_80_mph",
+    "training__C111294__NRS-484B-600-1e__motor_vehicle_driver__below_80_mph",
+    "training__C111294__NRS-484B-600-1e__motor_vehicle_driver__inside_80_mph"
+  ],
+  "case_suffix": "below_80_mph",
+  "candidate_id": "primary",
+  "cell_id": "C111294",
+  "law_id": "NRS-484B-600-1e",
+  "actor": "motor_vehicle_driver",
+  "rate_hz": 20,
+  "duration_s": 24,
+  "requested_setting_mph": 75,
+  "comparison_variable": "observed_speed",
+  "measurement_contract": "measurement-contract.json",
+  "required_atoms": [
+    "kin.speed",
+    "kin.velocity"
+  ],
+  "source_packets": [],
+  "frozen_source_hashes": [
+    {
+      "path": "inputs/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/assignment.json",
+      "sha256": "0b991f8419ac955302708cc269d17cacac51e57abc1bf860c806131906834d50"
+    },
+    {
+      "path": "inputs/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/witnesses.json",
+      "sha256": "6f9c8032077945bec254ed0e75cdef60c692dd37f7d97fbc5e05d3fad4981c58"
+    },
+    {
+      "path": "inputs/coverage/branch-sources.json",
+      "sha256": "ab199471886c9ff9abf7aba8fb82ab1a1e4e6c08a2560def7637911a23a28d80"
+    }
+  ],
+  "mandatory_channels": [
+    "ego_pose",
+    "ego_speed",
+    "observed_speed",
+    "other_vehicle_pose"
+  ],
+  "case": {
+    "case_id": "training__C111294__NRS-484B-600-1e__motor_vehicle_driver__below_80_mph"
+  },
+  "knobs": {
+    "speed_pid_kp": 0.4,
+    "steering_lookahead_m": 8.0,
+    "brake_pid_kp": 0.3,
+    "sample_rate_hz": 20,
+    "duration_s": 24.0,
+    "camera_profile": [
+      "overview",
+      "approach",
+      "reference_corner",
+      "driver_reference"
+    ]
+  },
+  "recording_description": {
+    "channels": [
+      {
+        "name": "ego_pose",
+        "unit": "Native x,y,z metres",
+        "sampling_rate_hz": 20,
+        "method": "original frame-joined Native actor readback",
+        "time_window": "entire 24 s / 480 frame attempt",
+        "reference_frame": "surveyed Native map and original frame identity",
+        "uncertainty": "50 ms samples; velocity/pose consistency and 0.2 mph saved interval"
+      },
+      {
+        "name": "ego_speed",
+        "unit": "metres/second",
+        "sampling_rate_hz": 20,
+        "method": "original frame-joined Native actor readback",
+        "time_window": "entire 24 s / 480 frame attempt",
+        "reference_frame": "surveyed Native map and original frame identity",
+        "uncertainty": "50 ms samples; velocity/pose consistency and 0.2 mph saved interval"
+      },
+      {
+        "name": "observed_speed",
+        "unit": "miles/hour",
+        "sampling_rate_hz": 20,
+        "method": "original frame-joined Native actor readback",
+        "time_window": "entire 24 s / 480 frame attempt",
+        "reference_frame": "surveyed Native map and original frame identity",
+        "uncertainty": "50 ms samples; velocity/pose consistency and 0.2 mph saved interval"
+      },
+      {
+        "name": "other_vehicle_pose",
+        "unit": "Native x,y,z metres",
+        "sampling_rate_hz": 20,
+        "method": "original frame-joined Native actor readback",
+        "time_window": "entire 24 s / 480 frame attempt",
+        "reference_frame": "surveyed Native map and original frame identity",
+        "uncertainty": "50 ms samples; velocity/pose consistency and 0.2 mph saved interval"
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "other_vehicle",
+        "unit": "structured",
+        "method": "separate actor route, velocity, full body and frame identity"
+      }
+    ],
+    "limitations": [
+      "Requested speed and controller response require original Native readback",
+      "Synthetic CPU measurement is not physical speed or a legal verdict"
+    ]
+  },
+  "cameras": [
+    {
+      "name": "overview",
+      "attachment": "ego",
+      "xyz_m": [
+        -12.0,
+        0.0,
+        6.0
+      ],
+      "yaw_deg": 0.0,
+      "pitch_deg": -18.0,
+      "fov_deg": 100.0,
+      "width": 1920,
+      "height": 1080,
+      "pose_strategy": "ego anchored at [-12.0, 0.0, 6.0] m; verify original vehicle, road context and speed evidence"
+    },
+    {
+      "name": "approach",
+      "attachment": "ego",
+      "xyz_m": [
+        1.6,
+        0.0,
+        1.8
+      ],
+      "yaw_deg": 0.0,
+      "pitch_deg": -3.0,
+      "fov_deg": 90.0,
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "ego anchored at [1.6, 0.0, 1.8] m; verify original vehicle, road context and speed evidence"
+    },
+    {
+      "name": "reference_corner",
+      "attachment": "world",
+      "xyz_m": [
+        0.0,
+        0.0,
+        28.0
+      ],
+      "yaw_deg": 0.0,
+      "pitch_deg": -90.0,
+      "fov_deg": 110.0,
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "world anchored at [0.0, 0.0, 28.0] m; verify original vehicle, road context and speed evidence"
+    },
+    {
+      "name": "driver_reference",
+      "attachment": "ego",
+      "xyz_m": [
+        0.0,
+        1.2,
+        2.1
+      ],
+      "yaw_deg": 90.0,
+      "pitch_deg": -8.0,
+      "fov_deg": 100.0,
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "ego anchored at [0.0, 1.2, 2.1] m; verify original vehicle, road context and speed evidence"
+    }
+  ],
+  "status": "four_case_portable_catalog_cpu_prepared"
+}

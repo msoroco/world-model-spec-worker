@@ -1,0 +1,331 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C111294__NRS-484B-600-1e__motor_vehicle_driver",
+  "runtime_manifest_sha256": "ae635d487ae988b67925bacd5ba13210f31224fc6a1ae131d1836a5557ba8714",
+  "status": "selected_current_input_reproof_pending",
+  "cases": [
+    {
+      "case_id": "training__C111294__NRS-484B-600-1e__motor_vehicle_driver__below_80_mph",
+      "kind": "delivery",
+      "measurement_contract": "draft-measurement-contract-below_80_mph.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native map/actor readback, speed attainment, camera pixels and physical traffic unobserved"
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c111294-saved-speed-measurement-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-candidates/below_80_mph/fallback1/construction.json",
+          "construction_sha256": "038bcbfeff0708db7ef893b2d736def909dfffc305c7753a3b1684917497a5bd",
+          "trigger": {
+            "source": "saved Native velocity in frames 0..99",
+            "metric": "approach_speed_shortfall_mph",
+            "failure_condition": "approach_speed_shortfall_mph > 0.75"
+          },
+          "changed_knobs": [
+            "speed_pid_kp"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C111294__NRS-484B-600-1e__motor_vehicle_driver__below_80_mph --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update042r-selected-proof/below_80_mph/fallback1/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "038bcbfeff0708db7ef893b2d736def909dfffc305c7753a3b1684917497a5bd",
+            "log": "update042r-below_80_mph-fallback1-offline.log",
+            "log_sha256": "62b85577e952a8e22dba501b5da778d0943468896f020ce63ee5e7ef1c6ed2da"
+          },
+          "compatibility": {
+            "receipt": "update042r-selected-proofs/below_80_mph/fallback1/compatibility.json",
+            "sha256": "d94d47b549fd408aa68842e316b4f02b91f07128ec2a86c2fe35d2e7256ecb02",
+            "log": "update042r-selected-proofs/below_80_mph/fallback1/analysis.log",
+            "negative_log": "update042r-selected-proofs/below_80_mph/fallback1/negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-candidates/below_80_mph/fallback2/construction.json",
+          "construction_sha256": "4211d40a1150fc9ef773181821aa093223d30bcb296d641db873e4568d83cfd4",
+          "trigger": {
+            "source": "saved Native ego center x against authored lane center",
+            "metric": "max_lane_center_error_m",
+            "failure_condition": "max_lane_center_error_m > 0.35"
+          },
+          "changed_knobs": [
+            "steering_lookahead_m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C111294__NRS-484B-600-1e__motor_vehicle_driver__below_80_mph --candidate fallback2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update042r-selected-proof/below_80_mph/fallback2/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "4211d40a1150fc9ef773181821aa093223d30bcb296d641db873e4568d83cfd4",
+            "log": "update042r-below_80_mph-fallback2-offline.log",
+            "log_sha256": "c07286f3f4ffa2a902a4c74b20797582c09030cef6c6355e90f83953f7ce0293"
+          },
+          "compatibility": {
+            "receipt": "update042r-selected-proofs/below_80_mph/fallback2/compatibility.json",
+            "sha256": "9d09eb4c1599a5f4d50f98950be9f1cd5759199ee624f40e0f2d6c35ec2479df",
+            "log": "update042r-selected-proofs/below_80_mph/fallback2/analysis.log",
+            "negative_log": "update042r-selected-proofs/below_80_mph/fallback2/negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-candidates/below_80_mph/fallback3/construction.json",
+          "construction_sha256": "cf683fa57e32dbdc4ff4636a4b053d885ef6360a263939f12f939d2de2ead4a7",
+          "trigger": {
+            "source": "saved Native peak velocity over all 480 frames",
+            "metric": "peak_speed_overshoot_mph",
+            "failure_condition": "peak_speed_overshoot_mph > 0.75"
+          },
+          "changed_knobs": [
+            "brake_pid_kp"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C111294__NRS-484B-600-1e__motor_vehicle_driver__below_80_mph --candidate fallback3 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update042r-selected-proof/below_80_mph/fallback3/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "cf683fa57e32dbdc4ff4636a4b053d885ef6360a263939f12f939d2de2ead4a7",
+            "log": "update042r-below_80_mph-fallback3-offline.log",
+            "log_sha256": "1533c8e7c63a72aebfca535ee2fc7325c9710f8a53740315a9ea8770808c2274"
+          },
+          "compatibility": {
+            "receipt": "update042r-selected-proofs/below_80_mph/fallback3/compatibility.json",
+            "sha256": "2c68d0217754719ddd8341e7677f684ae057414aa6daadbd00c4c8900954c3f1",
+            "log": "update042r-selected-proofs/below_80_mph/fallback3/analysis.log",
+            "negative_log": "update042r-selected-proofs/below_80_mph/fallback3/negative.log"
+          }
+        }
+      ],
+      "fixture_recipe": "work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/update015-below_80_mph-recipe.json",
+      "id": "primary",
+      "construction": "selected-candidates/below_80_mph/primary/construction.json",
+      "construction_sha256": "96dccbe29c9a54d8d166c1e0328217dc2e473ac1f65788716498b324a13f4f11",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "preparation_status": "selected; current offline, compatibility and saved processing pending",
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C111294__NRS-484B-600-1e__motor_vehicle_driver__below_80_mph --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111294-update042r-selected-proof/below_80_mph/primary/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "96dccbe29c9a54d8d166c1e0328217dc2e473ac1f65788716498b324a13f4f11",
+        "log": "update042r-below_80_mph-primary-offline.log",
+        "log_sha256": "66085ad123fdb70706810e990925eae779b4eb832435ed1d32ede4389e982269"
+      },
+      "compatibility": {
+        "receipt": "update042r-selected-proofs/below_80_mph/primary/compatibility.json",
+        "sha256": "351c1d602d1148094d6764689e30f3cddbea68e4995b7cf149aa2cedd0f9b0f3",
+        "log": "update042r-selected-proofs/below_80_mph/primary/analysis.log",
+        "negative_log": "update042r-selected-proofs/below_80_mph/primary/negative.log"
+      },
+      "negative": {
+        "log": "update042r-selected-proofs/below_80_mph/primary/negative.log"
+      }
+    },
+    {
+      "case_id": "training__C111294__NRS-484B-600-1e__motor_vehicle_driver__inside_80_mph",
+      "kind": "delivery",
+      "measurement_contract": "draft-measurement-contract-inside_80_mph.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native map/actor readback, speed attainment, camera pixels and physical traffic unobserved"
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c111294-saved-speed-measurement-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-candidates/inside_80_mph/fallback1/construction.json",
+          "construction_sha256": "7ba06daeb523a5602896d5d3225fbc6cf48475990f2e994a41f7b02851f94a3a",
+          "trigger": {
+            "source": "saved Native velocity in frames 0..99",
+            "metric": "approach_speed_shortfall_mph",
+            "failure_condition": "approach_speed_shortfall_mph > 0.75"
+          },
+          "changed_knobs": [
+            "speed_pid_kp"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-candidates/inside_80_mph/fallback2/construction.json",
+          "construction_sha256": "2f8346ef44cb24ecfe55b6a35dcc36188100348e95f72adacef63f56cd6c83fa",
+          "trigger": {
+            "source": "saved Native ego center x against authored lane center",
+            "metric": "max_lane_center_error_m",
+            "failure_condition": "max_lane_center_error_m > 0.35"
+          },
+          "changed_knobs": [
+            "steering_lookahead_m"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-candidates/inside_80_mph/fallback3/construction.json",
+          "construction_sha256": "b166eacde005cdca07ea5167a8e00f2f41fc5cf09a96c9a866d5089540c2ed7f",
+          "trigger": {
+            "source": "saved Native peak velocity over all 480 frames",
+            "metric": "peak_speed_overshoot_mph",
+            "failure_condition": "peak_speed_overshoot_mph > 0.75"
+          },
+          "changed_knobs": [
+            "brake_pid_kp"
+          ]
+        }
+      ],
+      "fixture_recipe": "work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/update015-inside_80_mph-recipe.json",
+      "id": "primary",
+      "construction": "selected-candidates/inside_80_mph/primary/construction.json",
+      "construction_sha256": "5de6217691cdd7bc0addc9b856df7a48efd62b50c1127dbdc03657e59dd02343",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "preparation_status": "selected; current offline, compatibility and saved processing pending"
+    },
+    {
+      "case_id": "training__C111294__NRS-484B-600-1e__motor_vehicle_driver__at_80_mph",
+      "kind": "delivery",
+      "measurement_contract": "draft-measurement-contract-at_80_mph.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native map/actor readback, speed attainment, camera pixels and physical traffic unobserved"
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c111294-saved-speed-measurement-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-candidates/at_80_mph/fallback1/construction.json",
+          "construction_sha256": "b10dabdc7b74e9c64f194889d3e9a4478823bf65a8ee91f2230110b3e913c874",
+          "trigger": {
+            "source": "saved Native velocity in frames 0..99",
+            "metric": "approach_speed_shortfall_mph",
+            "failure_condition": "approach_speed_shortfall_mph > 0.75"
+          },
+          "changed_knobs": [
+            "speed_pid_kp"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-candidates/at_80_mph/fallback2/construction.json",
+          "construction_sha256": "92edb863eb53d4c378d4f19565ad690df9ee300025af53588f2a03fecf84b234",
+          "trigger": {
+            "source": "saved Native ego center x against authored lane center",
+            "metric": "max_lane_center_error_m",
+            "failure_condition": "max_lane_center_error_m > 0.35"
+          },
+          "changed_knobs": [
+            "steering_lookahead_m"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-candidates/at_80_mph/fallback3/construction.json",
+          "construction_sha256": "e78be558ccdffaefc934b49b2915e76457add18c31f3c3bc2f3e10cf5f03e735",
+          "trigger": {
+            "source": "saved Native peak velocity over all 480 frames",
+            "metric": "peak_speed_overshoot_mph",
+            "failure_condition": "peak_speed_overshoot_mph > 0.75"
+          },
+          "changed_knobs": [
+            "brake_pid_kp"
+          ]
+        }
+      ],
+      "fixture_recipe": "work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/update015-at_80_mph-recipe.json",
+      "id": "primary",
+      "construction": "selected-candidates/at_80_mph/primary/construction.json",
+      "construction_sha256": "2493da9e2d44ef242c96d4fb6ba9417a1b645898a60ba77842ac08d45afe5d9a",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "preparation_status": "selected; current offline, compatibility and saved processing pending"
+    },
+    {
+      "case_id": "training__C111294__NRS-484B-600-1e__motor_vehicle_driver__above_80_mph",
+      "kind": "delivery",
+      "measurement_contract": "draft-measurement-contract-above_80_mph.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native map/actor readback, speed attainment, camera pixels and physical traffic unobserved"
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c111294-saved-speed-measurement-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-candidates/above_80_mph/fallback1/construction.json",
+          "construction_sha256": "125ae6cf23d0d43873afe38a0712e08739dce3531459cc1c7ed8c3548180ebc2",
+          "trigger": {
+            "source": "saved Native velocity in frames 0..99",
+            "metric": "approach_speed_shortfall_mph",
+            "failure_condition": "approach_speed_shortfall_mph > 0.75"
+          },
+          "changed_knobs": [
+            "speed_pid_kp"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-candidates/above_80_mph/fallback2/construction.json",
+          "construction_sha256": "025be3a6d06259487f87c2450cc8a039f468b81dcfb110d78f64d7d152e5a02d",
+          "trigger": {
+            "source": "saved Native ego center x against authored lane center",
+            "metric": "max_lane_center_error_m",
+            "failure_condition": "max_lane_center_error_m > 0.35"
+          },
+          "changed_knobs": [
+            "steering_lookahead_m"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-candidates/above_80_mph/fallback3/construction.json",
+          "construction_sha256": "3e6ce9cae033e5fe32d06f6bbe16b9c5297d7534ff6d90a8c0bb2f1b0f4c7850",
+          "trigger": {
+            "source": "saved Native peak velocity over all 480 frames",
+            "metric": "peak_speed_overshoot_mph",
+            "failure_condition": "peak_speed_overshoot_mph > 0.75"
+          },
+          "changed_knobs": [
+            "brake_pid_kp"
+          ]
+        }
+      ],
+      "fixture_recipe": "work/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/update015-above_80_mph-recipe.json",
+      "id": "primary",
+      "construction": "selected-candidates/above_80_mph/primary/construction.json",
+      "construction_sha256": "4a26fd98c5f5ba5bd375bc8dc797f8cf1b6676244a7c023b50a90621d2704c48",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "preparation_status": "selected; current offline, compatibility and saved processing pending"
+    }
+  ],
+  "selection_review": {
+    "law_input_sha256": "0b991f8419ac955302708cc269d17cacac51e57abc1bf860c806131906834d50",
+    "case_plan_sha256": "9a2cb381e76b3ce2819761cdbc821ecba69dd083e187b79874c14d50df663350",
+    "draft_proposal_sha256": "f1ea0798cfc6c40d93970279a9dfef826b869656950fd7311ec02d624ab66972",
+    "accepted_memberships": 0,
+    "unresolved": [
+      "original Native vehicle speed and road context",
+      "exact 80 mph measurement interval",
+      "original four-view pixel coverage"
+    ],
+    "scope": "Four exact 75/79.5/80/85 mph CPU delivery cases; source-derived physical and legal outcomes remain unverified."
+  }
+}

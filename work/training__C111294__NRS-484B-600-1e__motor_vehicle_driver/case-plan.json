@@ -173,30 +173,30 @@
   ],
   "source_observation_mapping": {
     "kin.speed": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Derived from retained original Native velocity in saved finalization; original speed unverified.",
       "channels": [
         "observed_speed"
       ],
       "source_refs": [
-        "inputs/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/assignment.json"
+        "native_samples.jsonl"
       ]
     },
     "kin.velocity": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Retained original three-axis Native velocity and frame identity; original speed unverified.",
       "channels": [
-        "observed_speed"
+        "ego_speed"
       ],
       "source_refs": [
-        "inputs/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/assignment.json"
+        "native_samples.jsonl"
       ]
     },
     "ru.subject": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Original Native actor pose and role readback; vehicle operation unverified.",
       "channels": [
-        "observed_speed"
+        "ego_pose"
       ],
       "source_refs": [
-        "inputs/training__C111294__NRS-484B-600-1e__motor_vehicle_driver/assignment.json"
+        "native_samples.jsonl"
       ]
     }
   },
@@ -237,5 +237,33 @@
   "selection_targets": [
     "demo-train",
     "full-train"
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 24,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "subject": "ego vehicle body and roadway",
+        "interval": "startup through final speed observation",
+        "view": "overview"
+      },
+      {
+        "subject": "forward road and traffic context",
+        "interval": "startup through final speed observation",
+        "view": "approach"
+      },
+      {
+        "subject": "fixed roadway and other vehicle context",
+        "interval": "startup through final speed observation",
+        "view": "reference_corner"
+      },
+      {
+        "subject": "driver vehicle and controls context",
+        "interval": "startup through final speed observation",
+        "view": "driver_reference"
+      }
+    ],
+    "original_visibility_verified": false
+  }
 }

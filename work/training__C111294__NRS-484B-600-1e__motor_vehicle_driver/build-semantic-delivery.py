@@ -153,6 +153,8 @@ def build():
                                                  'Original uncertainty-qualified speed relation, especially exact 80 mph']}]}
     augmented = deepcopy(template)
     augmented['structure']['judgment_calls_needed'][0]['observable_requirements'] = judgment['observable_requirements']
+    from batch_pipeline.sweeps import expand_sweeps
+    expand_sweeps(cases, templates=[augmented], bindings=binding)
     stages.validate('cases', cases, {'request': request, 'dependencies': [binding],
                     'templates': [augmented], 'canonical_parameter_rules': rules,
                     'judgment_completion_policy': {}})
