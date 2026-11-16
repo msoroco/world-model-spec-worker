@@ -40,6 +40,7 @@ def build():
         'fixture_raw.py': NATIVE/'fixture_raw.py',
         'prepare_raw.py': NATIVE/'prepare_raw.py',
         'measure_prepared.py': NATIVE/'measure_prepared.py',
+        'finalize_selected.py': NATIVE/'finalize_selected.py',
         'measure_saved.py': NATIVE/'measure_saved.py',
         'triggers.py': NATIVE/'triggers.py',
         'stand-road.xodr': NATIVE/'stand-road.xodr',

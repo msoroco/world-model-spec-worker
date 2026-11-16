@@ -1,0 +1,37 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C135709__NRS-484B-517__motor_vehicle_driver__contrast",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "text-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "sampled_stand_occupancy_frames",
+      "method": "measure_stand_occupancy",
+      "value_type": "number",
+      "kind": "measured",
+      "inputs": [
+        "native-raw-actors.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "reviewed_sign_visibility_frames",
+      "method": "measure_sign_visibility",
+      "value_type": "number",
+      "kind": "measured",
+      "inputs": [
+        "stand-review.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "stand-review.jsonl"
+    ],
+    "error_contains": "Missing required source: stand-review.jsonl"
+  },
+  "scope": "source-bound diagnostic measurement; not official designation, signing, parking purpose, passenger exception or legal verdict"
+}
