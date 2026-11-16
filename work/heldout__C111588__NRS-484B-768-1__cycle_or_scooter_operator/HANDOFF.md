@@ -157,3 +157,6 @@ Rebound byte-identical physical fixture logs in the physical proof receipts and 
 ### 2026-11-16 byte-identical compatibility log compaction
 
 For `bicycle_signal_continuous` and `bicycle_no_signal`, each `compatibility.log` was byte-identical to the retained `compat-receipt.json`. Each case `proof.json` now points its compatibility log to that retained identical file. Exact backups are in `.runtime-work/c111588-compat-dedup/`. Current scoped strict worker check passes.
+
+
+2026-11-16 CPU file-budget preservation: 4 unreferenced saved receipt copies archived byte-exact in `result.json.preserved_unreferenced_cpu_artifacts`; per-member SHA256 recorded there.

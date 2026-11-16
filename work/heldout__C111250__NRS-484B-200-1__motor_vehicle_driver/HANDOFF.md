@@ -1431,3 +1431,488 @@ Primary construction plus three physically distinct fallback constructions are d
 
 
 Full strict gate rerun after this checkpoint exited 1 at `runtime/scenario_pipeline/worker_exchange/preparation.py:276` with `Preparation acceptance failed: partial/missing packages remain`. Log SHA256: `8a5196a775b4e25dcc5ad430d9aa36835506a570dd5afd41ee669c3da366a69e`. Pinned `.venv-cpu/bin/python runtime.py preflight` passes with Lean/lake 4.28.0 and `simulation_started=false`. The gate is not delivery-ready; remaining work is worker-owned.
+
+
+### 2026-11-16 C111250 closure left direct primary and fallback binding
+
+Primary construction plus three physically distinct fallback constructions are directly returned. The pinned validator passed at candidate_count=4. All four canonical offline, compatibility with negative source removal, and process-saved runs passed. Manifest SHA256 at proof: `7ededec0a6bf9bd90c7dc939e31fd6f28d28fd10333848ddc2be3a68cd170711`. Exact proof hashes are in `result.json.closure_left_direct_binding`. Diagnostic input is directly returned below 2 MiB; original source bundle and hashes remain in `result.json.closure_left_cpu_proof.source_archive` and `case-plan.json.fallback_cpu_source_bundles.right_half_closed_left`. Saved-processing selections for previously bound cases require final replay after manifest freeze. C111250 remains partial: six fallback triples, six archived primary cases, execution/semantic/delivery binding, and final delivery checks remain.
+
+<details><summary>primary direct canonical saved-processing receipt</summary>
+
+```json
+{
+  "format": "worker-saved-processing",
+  "case_id": "heldout__C111250__NRS-484B-200-1__motor_vehicle_driver__right_half_closed_left",
+  "passed": true,
+  "recorded_only": true,
+  "version": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c111250-closure-left-direct-primary-saved-proof/v0001",
+  "analysis_directory": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c111250-closure-left-direct-primary-saved-proof/v0001/analysis",
+  "result": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c111250-closure-left-direct-primary-saved-proof/v0001/analysis/result.json",
+  "native_revision": {
+    "construction_sha256": "45ba2e4cf80f2950f1de49dd079144f87c2716c48bb10ac530a5e3646badf7c5",
+    "analyzer_sha256": "9f31bf2b0ad90b9bceec7663f133c7a9a41c2e6d5d2e19a18aec4e156c8fda7c"
+  },
+  "candidate_id": "primary",
+  "analysis_revision": {
+    "construction_sha256": "45ba2e4cf80f2950f1de49dd079144f87c2716c48bb10ac530a5e3646badf7c5",
+    "analyzer_sha256": "9f31bf2b0ad90b9bceec7663f133c7a9a41c2e6d5d2e19a18aec4e156c8fda7c",
+    "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3"
+  },
+  "original_source_hashes": {
+    "actor_identity.json": "2eebc25c299fcb5363872dbda0033cfec0763811d38a12d7811604457b3d1248",
+    "alley_context.json": "1e3f5194da5ce8f5ee2e8a2acdfa1876e6986d7e1a221b931980cc9cd40dc6d3",
+    "approach-frames.jsonl": "3e5b7a17fe5a5e47269d3b24190074e5dc63c303360c8fc5f4bdbd12ee9be792",
+    "approach.mkv": "4d5541f025afa64755261e4f4811e6b61617fd1cd22d0a62dc785fcf61a6d230",
+    "body_history.jsonl": "1de1bd3bbd92014bc04fe44567fe457e85f4ad9143e0066074c181b647494cb7",
+    "candidate-selection.json": "3c93a57c0953f4fccde48efb9cc4f1fffe6a7f4ed482f549e236909e2fbd491d",
+    "capture/evidence.jsonl": "ac64eb198292ce211ba45ef59eba9992b19f618dee65ae0f5eacda35b97e98be",
+    "capture/manifest.json": "e2845313c782e24fbb7c6ee79ef2c644890df0837ea278df161f9be0a66e2f3b",
+    "capture/native/frames.jsonl": "b8cc751bfcf218f0ff5b56a944f25ccab5393ceef5f4507ea50d2b5d7cd6fc30",
+    "capture/native/graphs/abstract/00038033.pkl": "79b0139330765d4203a9ce4df04271aa3cc2577ebdccee32813e92376f82fa81",
+    "capture/native/graphs/abstract/00038034.pkl": "23b0f4138cc1d957c99a3b3c59b88d5f55af4593f8d24efd9a9296135f0a56ef",
+    "capture/native/graphs/abstract/00038035.pkl": "b28b225379e4ca88134d97038a078e6714b6ed20aa91b65efa89bab7ed1d4bf6",
+    "capture/native/graphs/abstract/00038036.pkl": "a02e1a86332329cfb534492cd16f3b02c057e31cdd2d6c048fa8ec576b03cbc4",
+    "capture/native/graphs/abstract/00038037.pkl": "2e0f9c0e5b040c3fbe29c690e3bb14d6874d70f171f65d6bb0b9e39c9fe32bb9",
+    "capture/native/graphs/abstract/00038038.pkl": "d1021adb002593a699c19b25c6377a30809bb2664d2476c4b2d3cda054564e1d",
+    "capture/native/graphs/abstract/00038039.pkl": "d5b1a2663d8046928bda3ab1a9c6a55367ad78de79c872e423568f3fba54ca51",
+    "capture/native/graphs/abstract/00038040.pkl": "749f7b3574e03c4cdc538089d08679eca7dbc72ae8f3a48e404f48296e5a7fb6",
+    "capture/native/graphs/abstract/00038041.pkl": "dbdacd5f0afab50d0575c3f19b60c03b9c7eac423630dfb4e4dd13feb90d8897",
+    "capture/native/graphs/base/00038033.pkl": "6a18bbaaddb01bb094c5faead741a0470f3bee99a3a45b6074120584f4335fd1",
+    "capture/native/graphs/base/00038034.pkl": "9349e6a75bb4b04b232e10908a9136b557c92f377b3c2e2cc2485b0770d692ab",
+    "capture/native/graphs/base/00038035.pkl": "a887f31f5cde4708975181d4a67b204f90c5eb5eb6dfd41a6f1673b269d56708",
+    "capture/native/graphs/base/00038036.pkl": "b169522eeff3aabd09b38928881414ac319ea9dd348aabacb7456702287e19a0",
+    "capture/native/graphs/base/00038037.pkl": "31acc816a9ddd67be882d14ae675d8fd9f54841b4bf8473ded4da9ee6e5a78d9",
+    "capture/native/graphs/base/00038038.pkl": "526665a52b8877d17e1a03f093bdb4b7e4eab908c15d7a0151aaa4ee32cb6d44",
+    "capture/native/graphs/base/00038039.pkl": "7bb0c2705e0482a90ef4cd19446ceb2d024f1833be57197304337a0887713f71",
+    "capture/native/graphs/base/00038040.pkl": "48123f4a5d5be7a723cd26ad6a6ab114bd3257cc8bc9168ae980dfdcdab75b0f",
+    "capture/native/graphs/base/00038041.pkl": "7d959972d351e6d4995c18c75a4650f67331285190ec4b4a98b1041811f8c4a4",
+    "capture/native_map_facts.json": "a1a3c57b78d06ae1124def127c34e5c8fa9d161756acaf1463fca014314c05ae",
+    "capture/recorder_info.txt": "32c438d3f7318270477a5d46dfd082406316608639cf438f1063bc4a6a74e27d",
+    "capture_contract.json": "39c03417577348b8fc6cba888ee72569fd8d31f992470f70a9191a1ac34057ae",
+    "closure_original.json": "6475bc55451e70c9845b69f9040936b88b407364e68c0e0bfb8b12fa4176ff3f",
+    "config.json": "930b2f7ded30685210f1ed06f9ad26fd2c5050b1d3fe49b0d71d215c74f9ba7c",
+    "construction.json": "45ba2e4cf80f2950f1de49dd079144f87c2716c48bb10ac530a5e3646badf7c5",
+    "delivery_audit.py": "bac16e5c21ed9a339369392b04001e3bb73eb0ebb1004b02800bf04572ea5cc0",
+    "diagnostic-input.json": "5b3edf5be02fa85e701d99ada8643c49213a6a7f44041a03abebc9025801e02f",
+    "driver_reference-frames.jsonl": "3e5b7a17fe5a5e47269d3b24190074e5dc63c303360c8fc5f4bdbd12ee9be792",
+    "driver_reference.mkv": "4d5541f025afa64755261e4f4811e6b61617fd1cd22d0a62dc785fcf61a6d230",
+    "exception_context.json": "c8354497aab348e19bb611b4674a4d0d9bfc66db5f53a8f8c71072347355b69b",
+    "finalizer.py": "9f31bf2b0ad90b9bceec7663f133c7a9a41c2e6d5d2e19a18aec4e156c8fda7c",
+    "fixture-provenance.json": "25c3a405f3170f85044f6798fe9851ca1142cb2ffefff5d51fbae3a9af4c14d7",
+    "overview-frames.jsonl": "3e5b7a17fe5a5e47269d3b24190074e5dc63c303360c8fc5f4bdbd12ee9be792",
+    "overview.mkv": "c005879bca524aa76d0fad699513b1ef3ad3c99974ff1644719e3dfa87312273",
+    "reference_corner-frames.jsonl": "3e5b7a17fe5a5e47269d3b24190074e5dc63c303360c8fc5f4bdbd12ee9be792",
+    "reference_corner.mkv": "4d5541f025afa64755261e4f4811e6b61617fd1cd22d0a62dc785fcf61a6d230",
+    "road-half-diagnostic-provenance.json": "67b584fdd7b80c8c0f12320d6ff061d058491e387cf97c9258d2388591a02401",
+    "road.xodr": "22ec54092229a0631aaeeeca5ab949178134ba5d3078906a4b290ec62d952f7b",
+    "road_geometry.json": "89cb47267594fd35e161ced75238b700d23126dcfc44b67d871e7aed67588740",
+    "road_half.py": "75871d5f9b329f740a5306fc8b34c3bbd68df1d16f8e6ae080fc18938e8cc4c9",
+    "runner.py": "4f258518a8e1440c3ebd42b4d9576b2084bdecc162cbb03bce16cb967d08a67e",
+    "speed_samples.jsonl": "1837adc80b61e2005f5eefd06215e4a3fe7604312c2f457b513023e2926804fc",
+    "tests/test_road_half.py": "9d433d5f5db0a849bdd7e837615df9606c4fcdb31c341a92165a1dc394ef0ec9",
+    "trace.jsonl": "1837adc80b61e2005f5eefd06215e4a3fe7604312c2f457b513023e2926804fc",
+    "video_frames.jsonl": "e5af07ded940775389bf8c954bef46ded699f4ce3d958a1cd8730173b00dfe9e"
+  },
+  "originals_preserved": true,
+  "timestamp_joins": {
+    "frames": 9,
+    "passed": true,
+    "missing_original_trace_or_map": false
+  },
+  "analysis_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "result_sha256": "5d097f2267c511a7530bc2adc618afa67c72a2f4cf5105c0cbf8b50209987f7c",
+  "final_video_checks": {
+    "format": "source-decode",
+    "passed": true,
+    "video_sha256": "54cf8a03746c25c89b27ffb3cd9f8a8dd1c9fa09fe65af0f4e05401ef2e6b758",
+    "frames": 9,
+    "dimensions": [
+      1920,
+      1224
+    ],
+    "rgb_sequence_sha256": "94bcbfda5bc67b37a7680e4295b89c9c2e2c84a0bb4c748cf81436be95faf6d7",
+    "mapping_sha256": null,
+    "checks": {
+      "frame_count": "all-decoded-frames"
+    },
+    "auditor_sha256": "b63af75d3599fc2401518aa9093561928c43e9c460976ea155b09860f5f02df9",
+    "threads": 4,
+    "seconds": 0.07627461105585098,
+    "ffmpeg_version": "ffmpeg version n8.0.1-48-g0592be14ff-20260116 Copyright (c) 2000-2025 the FFmpeg developers"
+  },
+  "missing_evidence": false,
+  "physical_acceptance_claimed": false,
+  "legal_acceptance_claimed": false,
+  "events": [
+    "saved_processing_started",
+    "selected_analysis_executed",
+    "originals_verified"
+  ],
+  "remaining": [
+    "original pixels and actual physical completion review",
+    "unresolved legal judgments"
+  ]
+}
+
+```
+</details>
+
+<details><summary>fallback1 direct canonical saved-processing receipt</summary>
+
+```json
+{
+  "format": "worker-saved-processing",
+  "case_id": "heldout__C111250__NRS-484B-200-1__motor_vehicle_driver__right_half_closed_left",
+  "passed": true,
+  "recorded_only": true,
+  "version": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c111250-closure-left-direct-fallback1-saved-proof/v0001",
+  "analysis_directory": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c111250-closure-left-direct-fallback1-saved-proof/v0001/analysis",
+  "result": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c111250-closure-left-direct-fallback1-saved-proof/v0001/analysis/result.json",
+  "native_revision": {
+    "construction_sha256": "f01b03e5dfc576cef545b8a26c0b093f37b690dcf989972bbeb1fcdb3f15e98e",
+    "analyzer_sha256": "9f31bf2b0ad90b9bceec7663f133c7a9a41c2e6d5d2e19a18aec4e156c8fda7c"
+  },
+  "candidate_id": "fallback1",
+  "analysis_revision": {
+    "construction_sha256": "f01b03e5dfc576cef545b8a26c0b093f37b690dcf989972bbeb1fcdb3f15e98e",
+    "analyzer_sha256": "9f31bf2b0ad90b9bceec7663f133c7a9a41c2e6d5d2e19a18aec4e156c8fda7c",
+    "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3"
+  },
+  "original_source_hashes": {
+    "actor_identity.json": "2eebc25c299fcb5363872dbda0033cfec0763811d38a12d7811604457b3d1248",
+    "alley_context.json": "1e3f5194da5ce8f5ee2e8a2acdfa1876e6986d7e1a221b931980cc9cd40dc6d3",
+    "approach-frames.jsonl": "3e5b7a17fe5a5e47269d3b24190074e5dc63c303360c8fc5f4bdbd12ee9be792",
+    "approach.mkv": "4d5541f025afa64755261e4f4811e6b61617fd1cd22d0a62dc785fcf61a6d230",
+    "body_history.jsonl": "1de1bd3bbd92014bc04fe44567fe457e85f4ad9143e0066074c181b647494cb7",
+    "candidate-selection.json": "3fd9a35bb51309f034dca468e7796cd951d90fc77ff71a8503cca558a212e6bf",
+    "capture/evidence.jsonl": "ac64eb198292ce211ba45ef59eba9992b19f618dee65ae0f5eacda35b97e98be",
+    "capture/manifest.json": "e2845313c782e24fbb7c6ee79ef2c644890df0837ea278df161f9be0a66e2f3b",
+    "capture/native/frames.jsonl": "b8cc751bfcf218f0ff5b56a944f25ccab5393ceef5f4507ea50d2b5d7cd6fc30",
+    "capture/native/graphs/abstract/00038033.pkl": "79b0139330765d4203a9ce4df04271aa3cc2577ebdccee32813e92376f82fa81",
+    "capture/native/graphs/abstract/00038034.pkl": "23b0f4138cc1d957c99a3b3c59b88d5f55af4593f8d24efd9a9296135f0a56ef",
+    "capture/native/graphs/abstract/00038035.pkl": "b28b225379e4ca88134d97038a078e6714b6ed20aa91b65efa89bab7ed1d4bf6",
+    "capture/native/graphs/abstract/00038036.pkl": "a02e1a86332329cfb534492cd16f3b02c057e31cdd2d6c048fa8ec576b03cbc4",
+    "capture/native/graphs/abstract/00038037.pkl": "2e0f9c0e5b040c3fbe29c690e3bb14d6874d70f171f65d6bb0b9e39c9fe32bb9",
+    "capture/native/graphs/abstract/00038038.pkl": "d1021adb002593a699c19b25c6377a30809bb2664d2476c4b2d3cda054564e1d",
+    "capture/native/graphs/abstract/00038039.pkl": "d5b1a2663d8046928bda3ab1a9c6a55367ad78de79c872e423568f3fba54ca51",
+    "capture/native/graphs/abstract/00038040.pkl": "749f7b3574e03c4cdc538089d08679eca7dbc72ae8f3a48e404f48296e5a7fb6",
+    "capture/native/graphs/abstract/00038041.pkl": "dbdacd5f0afab50d0575c3f19b60c03b9c7eac423630dfb4e4dd13feb90d8897",
+    "capture/native/graphs/base/00038033.pkl": "6a18bbaaddb01bb094c5faead741a0470f3bee99a3a45b6074120584f4335fd1",
+    "capture/native/graphs/base/00038034.pkl": "9349e6a75bb4b04b232e10908a9136b557c92f377b3c2e2cc2485b0770d692ab",
+    "capture/native/graphs/base/00038035.pkl": "a887f31f5cde4708975181d4a67b204f90c5eb5eb6dfd41a6f1673b269d56708",
+    "capture/native/graphs/base/00038036.pkl": "b169522eeff3aabd09b38928881414ac319ea9dd348aabacb7456702287e19a0",
+    "capture/native/graphs/base/00038037.pkl": "31acc816a9ddd67be882d14ae675d8fd9f54841b4bf8473ded4da9ee6e5a78d9",
+    "capture/native/graphs/base/00038038.pkl": "526665a52b8877d17e1a03f093bdb4b7e4eab908c15d7a0151aaa4ee32cb6d44",
+    "capture/native/graphs/base/00038039.pkl": "7bb0c2705e0482a90ef4cd19446ceb2d024f1833be57197304337a0887713f71",
+    "capture/native/graphs/base/00038040.pkl": "48123f4a5d5be7a723cd26ad6a6ab114bd3257cc8bc9168ae980dfdcdab75b0f",
+    "capture/native/graphs/base/00038041.pkl": "7d959972d351e6d4995c18c75a4650f67331285190ec4b4a98b1041811f8c4a4",
+    "capture/native_map_facts.json": "a1a3c57b78d06ae1124def127c34e5c8fa9d161756acaf1463fca014314c05ae",
+    "capture/recorder_info.txt": "32c438d3f7318270477a5d46dfd082406316608639cf438f1063bc4a6a74e27d",
+    "capture_contract.json": "39c03417577348b8fc6cba888ee72569fd8d31f992470f70a9191a1ac34057ae",
+    "closure_original.json": "6475bc55451e70c9845b69f9040936b88b407364e68c0e0bfb8b12fa4176ff3f",
+    "config.json": "13c83ff8622708f13009d391bbdda61617de0336916cf71d0b5bb08119944e25",
+    "construction.json": "f01b03e5dfc576cef545b8a26c0b093f37b690dcf989972bbeb1fcdb3f15e98e",
+    "delivery_audit.py": "bac16e5c21ed9a339369392b04001e3bb73eb0ebb1004b02800bf04572ea5cc0",
+    "diagnostic-input.json": "5b3edf5be02fa85e701d99ada8643c49213a6a7f44041a03abebc9025801e02f",
+    "driver_reference-frames.jsonl": "3e5b7a17fe5a5e47269d3b24190074e5dc63c303360c8fc5f4bdbd12ee9be792",
+    "driver_reference.mkv": "4d5541f025afa64755261e4f4811e6b61617fd1cd22d0a62dc785fcf61a6d230",
+    "exception_context.json": "c8354497aab348e19bb611b4674a4d0d9bfc66db5f53a8f8c71072347355b69b",
+    "finalizer.py": "9f31bf2b0ad90b9bceec7663f133c7a9a41c2e6d5d2e19a18aec4e156c8fda7c",
+    "fixture-provenance.json": "25c3a405f3170f85044f6798fe9851ca1142cb2ffefff5d51fbae3a9af4c14d7",
+    "overview-frames.jsonl": "3e5b7a17fe5a5e47269d3b24190074e5dc63c303360c8fc5f4bdbd12ee9be792",
+    "overview.mkv": "c005879bca524aa76d0fad699513b1ef3ad3c99974ff1644719e3dfa87312273",
+    "reference_corner-frames.jsonl": "3e5b7a17fe5a5e47269d3b24190074e5dc63c303360c8fc5f4bdbd12ee9be792",
+    "reference_corner.mkv": "4d5541f025afa64755261e4f4811e6b61617fd1cd22d0a62dc785fcf61a6d230",
+    "road-half-diagnostic-provenance.json": "67b584fdd7b80c8c0f12320d6ff061d058491e387cf97c9258d2388591a02401",
+    "road.xodr": "22ec54092229a0631aaeeeca5ab949178134ba5d3078906a4b290ec62d952f7b",
+    "road_geometry.json": "89cb47267594fd35e161ced75238b700d23126dcfc44b67d871e7aed67588740",
+    "road_half.py": "75871d5f9b329f740a5306fc8b34c3bbd68df1d16f8e6ae080fc18938e8cc4c9",
+    "runner.py": "f9794db91173296bb383585c039bfe51b42acfa920854bc0cca2b50a1b77e6e3",
+    "speed_samples.jsonl": "1837adc80b61e2005f5eefd06215e4a3fe7604312c2f457b513023e2926804fc",
+    "tests/test_road_half.py": "9d433d5f5db0a849bdd7e837615df9606c4fcdb31c341a92165a1dc394ef0ec9",
+    "trace.jsonl": "1837adc80b61e2005f5eefd06215e4a3fe7604312c2f457b513023e2926804fc",
+    "video_frames.jsonl": "e5af07ded940775389bf8c954bef46ded699f4ce3d958a1cd8730173b00dfe9e"
+  },
+  "originals_preserved": true,
+  "timestamp_joins": {
+    "frames": 9,
+    "passed": true,
+    "missing_original_trace_or_map": false
+  },
+  "analysis_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "result_sha256": "5d097f2267c511a7530bc2adc618afa67c72a2f4cf5105c0cbf8b50209987f7c",
+  "final_video_checks": {
+    "format": "source-decode",
+    "passed": true,
+    "video_sha256": "ac124f518041cc227c001a703cb80d332db68551635b08b094218a76cb360384",
+    "frames": 9,
+    "dimensions": [
+      1920,
+      1224
+    ],
+    "rgb_sequence_sha256": "94bcbfda5bc67b37a7680e4295b89c9c2e2c84a0bb4c748cf81436be95faf6d7",
+    "mapping_sha256": null,
+    "checks": {
+      "frame_count": "all-decoded-frames"
+    },
+    "auditor_sha256": "b63af75d3599fc2401518aa9093561928c43e9c460976ea155b09860f5f02df9",
+    "threads": 4,
+    "seconds": 0.06494924100115895,
+    "ffmpeg_version": "ffmpeg version n8.0.1-48-g0592be14ff-20260116 Copyright (c) 2000-2025 the FFmpeg developers"
+  },
+  "missing_evidence": false,
+  "physical_acceptance_claimed": false,
+  "legal_acceptance_claimed": false,
+  "events": [
+    "saved_processing_started",
+    "selected_analysis_executed",
+    "originals_verified"
+  ],
+  "remaining": [
+    "original pixels and actual physical completion review",
+    "unresolved legal judgments"
+  ]
+}
+
+```
+</details>
+
+<details><summary>fallback2 direct canonical saved-processing receipt</summary>
+
+```json
+{
+  "format": "worker-saved-processing",
+  "case_id": "heldout__C111250__NRS-484B-200-1__motor_vehicle_driver__right_half_closed_left",
+  "passed": true,
+  "recorded_only": true,
+  "version": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c111250-closure-left-direct-fallback2-saved-proof/v0001",
+  "analysis_directory": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c111250-closure-left-direct-fallback2-saved-proof/v0001/analysis",
+  "result": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c111250-closure-left-direct-fallback2-saved-proof/v0001/analysis/result.json",
+  "native_revision": {
+    "construction_sha256": "78d077744983feaffee286cf51ca6c961c358176985da1e470027ce22f501419",
+    "analyzer_sha256": "9f31bf2b0ad90b9bceec7663f133c7a9a41c2e6d5d2e19a18aec4e156c8fda7c"
+  },
+  "candidate_id": "fallback2",
+  "analysis_revision": {
+    "construction_sha256": "78d077744983feaffee286cf51ca6c961c358176985da1e470027ce22f501419",
+    "analyzer_sha256": "9f31bf2b0ad90b9bceec7663f133c7a9a41c2e6d5d2e19a18aec4e156c8fda7c",
+    "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3"
+  },
+  "original_source_hashes": {
+    "actor_identity.json": "2eebc25c299fcb5363872dbda0033cfec0763811d38a12d7811604457b3d1248",
+    "alley_context.json": "1e3f5194da5ce8f5ee2e8a2acdfa1876e6986d7e1a221b931980cc9cd40dc6d3",
+    "approach-frames.jsonl": "3e5b7a17fe5a5e47269d3b24190074e5dc63c303360c8fc5f4bdbd12ee9be792",
+    "approach.mkv": "4d5541f025afa64755261e4f4811e6b61617fd1cd22d0a62dc785fcf61a6d230",
+    "body_history.jsonl": "1de1bd3bbd92014bc04fe44567fe457e85f4ad9143e0066074c181b647494cb7",
+    "candidate-selection.json": "9fe8645d0f79494dfca76b5f351fee27a4a4c76d8c7befb50a8c90c228f90387",
+    "capture/evidence.jsonl": "ac64eb198292ce211ba45ef59eba9992b19f618dee65ae0f5eacda35b97e98be",
+    "capture/manifest.json": "e2845313c782e24fbb7c6ee79ef2c644890df0837ea278df161f9be0a66e2f3b",
+    "capture/native/frames.jsonl": "b8cc751bfcf218f0ff5b56a944f25ccab5393ceef5f4507ea50d2b5d7cd6fc30",
+    "capture/native/graphs/abstract/00038033.pkl": "79b0139330765d4203a9ce4df04271aa3cc2577ebdccee32813e92376f82fa81",
+    "capture/native/graphs/abstract/00038034.pkl": "23b0f4138cc1d957c99a3b3c59b88d5f55af4593f8d24efd9a9296135f0a56ef",
+    "capture/native/graphs/abstract/00038035.pkl": "b28b225379e4ca88134d97038a078e6714b6ed20aa91b65efa89bab7ed1d4bf6",
+    "capture/native/graphs/abstract/00038036.pkl": "a02e1a86332329cfb534492cd16f3b02c057e31cdd2d6c048fa8ec576b03cbc4",
+    "capture/native/graphs/abstract/00038037.pkl": "2e0f9c0e5b040c3fbe29c690e3bb14d6874d70f171f65d6bb0b9e39c9fe32bb9",
+    "capture/native/graphs/abstract/00038038.pkl": "d1021adb002593a699c19b25c6377a30809bb2664d2476c4b2d3cda054564e1d",
+    "capture/native/graphs/abstract/00038039.pkl": "d5b1a2663d8046928bda3ab1a9c6a55367ad78de79c872e423568f3fba54ca51",
+    "capture/native/graphs/abstract/00038040.pkl": "749f7b3574e03c4cdc538089d08679eca7dbc72ae8f3a48e404f48296e5a7fb6",
+    "capture/native/graphs/abstract/00038041.pkl": "dbdacd5f0afab50d0575c3f19b60c03b9c7eac423630dfb4e4dd13feb90d8897",
+    "capture/native/graphs/base/00038033.pkl": "6a18bbaaddb01bb094c5faead741a0470f3bee99a3a45b6074120584f4335fd1",
+    "capture/native/graphs/base/00038034.pkl": "9349e6a75bb4b04b232e10908a9136b557c92f377b3c2e2cc2485b0770d692ab",
+    "capture/native/graphs/base/00038035.pkl": "a887f31f5cde4708975181d4a67b204f90c5eb5eb6dfd41a6f1673b269d56708",
+    "capture/native/graphs/base/00038036.pkl": "b169522eeff3aabd09b38928881414ac319ea9dd348aabacb7456702287e19a0",
+    "capture/native/graphs/base/00038037.pkl": "31acc816a9ddd67be882d14ae675d8fd9f54841b4bf8473ded4da9ee6e5a78d9",
+    "capture/native/graphs/base/00038038.pkl": "526665a52b8877d17e1a03f093bdb4b7e4eab908c15d7a0151aaa4ee32cb6d44",
+    "capture/native/graphs/base/00038039.pkl": "7bb0c2705e0482a90ef4cd19446ceb2d024f1833be57197304337a0887713f71",
+    "capture/native/graphs/base/00038040.pkl": "48123f4a5d5be7a723cd26ad6a6ab114bd3257cc8bc9168ae980dfdcdab75b0f",
+    "capture/native/graphs/base/00038041.pkl": "7d959972d351e6d4995c18c75a4650f67331285190ec4b4a98b1041811f8c4a4",
+    "capture/native_map_facts.json": "a1a3c57b78d06ae1124def127c34e5c8fa9d161756acaf1463fca014314c05ae",
+    "capture/recorder_info.txt": "32c438d3f7318270477a5d46dfd082406316608639cf438f1063bc4a6a74e27d",
+    "capture_contract.json": "39c03417577348b8fc6cba888ee72569fd8d31f992470f70a9191a1ac34057ae",
+    "closure_original.json": "6475bc55451e70c9845b69f9040936b88b407364e68c0e0bfb8b12fa4176ff3f",
+    "config.json": "9afea752ef4b765f8a8c12328207208397d7c3dc0f034dc60883fa10c84f8f52",
+    "construction.json": "78d077744983feaffee286cf51ca6c961c358176985da1e470027ce22f501419",
+    "delivery_audit.py": "bac16e5c21ed9a339369392b04001e3bb73eb0ebb1004b02800bf04572ea5cc0",
+    "diagnostic-input.json": "5b3edf5be02fa85e701d99ada8643c49213a6a7f44041a03abebc9025801e02f",
+    "driver_reference-frames.jsonl": "3e5b7a17fe5a5e47269d3b24190074e5dc63c303360c8fc5f4bdbd12ee9be792",
+    "driver_reference.mkv": "4d5541f025afa64755261e4f4811e6b61617fd1cd22d0a62dc785fcf61a6d230",
+    "exception_context.json": "c8354497aab348e19bb611b4674a4d0d9bfc66db5f53a8f8c71072347355b69b",
+    "finalizer.py": "9f31bf2b0ad90b9bceec7663f133c7a9a41c2e6d5d2e19a18aec4e156c8fda7c",
+    "fixture-provenance.json": "25c3a405f3170f85044f6798fe9851ca1142cb2ffefff5d51fbae3a9af4c14d7",
+    "overview-frames.jsonl": "3e5b7a17fe5a5e47269d3b24190074e5dc63c303360c8fc5f4bdbd12ee9be792",
+    "overview.mkv": "c005879bca524aa76d0fad699513b1ef3ad3c99974ff1644719e3dfa87312273",
+    "reference_corner-frames.jsonl": "3e5b7a17fe5a5e47269d3b24190074e5dc63c303360c8fc5f4bdbd12ee9be792",
+    "reference_corner.mkv": "4d5541f025afa64755261e4f4811e6b61617fd1cd22d0a62dc785fcf61a6d230",
+    "road-half-diagnostic-provenance.json": "67b584fdd7b80c8c0f12320d6ff061d058491e387cf97c9258d2388591a02401",
+    "road.xodr": "22ec54092229a0631aaeeeca5ab949178134ba5d3078906a4b290ec62d952f7b",
+    "road_geometry.json": "89cb47267594fd35e161ced75238b700d23126dcfc44b67d871e7aed67588740",
+    "road_half.py": "75871d5f9b329f740a5306fc8b34c3bbd68df1d16f8e6ae080fc18938e8cc4c9",
+    "runner.py": "3953c79fef18dab295f4780a48c80fd7a6829b52396902afc3b7e95901856184",
+    "speed_samples.jsonl": "1837adc80b61e2005f5eefd06215e4a3fe7604312c2f457b513023e2926804fc",
+    "tests/test_road_half.py": "9d433d5f5db0a849bdd7e837615df9606c4fcdb31c341a92165a1dc394ef0ec9",
+    "trace.jsonl": "1837adc80b61e2005f5eefd06215e4a3fe7604312c2f457b513023e2926804fc",
+    "video_frames.jsonl": "e5af07ded940775389bf8c954bef46ded699f4ce3d958a1cd8730173b00dfe9e"
+  },
+  "originals_preserved": true,
+  "timestamp_joins": {
+    "frames": 9,
+    "passed": true,
+    "missing_original_trace_or_map": false
+  },
+  "analysis_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "result_sha256": "5d097f2267c511a7530bc2adc618afa67c72a2f4cf5105c0cbf8b50209987f7c",
+  "final_video_checks": {
+    "format": "source-decode",
+    "passed": true,
+    "video_sha256": "95d07fad4a00162e4dde184779f9ba21bddcb32776dd3c5ef1868678e49bcf11",
+    "frames": 9,
+    "dimensions": [
+      1920,
+      1224
+    ],
+    "rgb_sequence_sha256": "94bcbfda5bc67b37a7680e4295b89c9c2e2c84a0bb4c748cf81436be95faf6d7",
+    "mapping_sha256": null,
+    "checks": {
+      "frame_count": "all-decoded-frames"
+    },
+    "auditor_sha256": "b63af75d3599fc2401518aa9093561928c43e9c460976ea155b09860f5f02df9",
+    "threads": 4,
+    "seconds": 0.08078374899923801,
+    "ffmpeg_version": "ffmpeg version n8.0.1-48-g0592be14ff-20260116 Copyright (c) 2000-2025 the FFmpeg developers"
+  },
+  "missing_evidence": false,
+  "physical_acceptance_claimed": false,
+  "legal_acceptance_claimed": false,
+  "events": [
+    "saved_processing_started",
+    "selected_analysis_executed",
+    "originals_verified"
+  ],
+  "remaining": [
+    "original pixels and actual physical completion review",
+    "unresolved legal judgments"
+  ]
+}
+
+```
+</details>
+
+<details><summary>fallback3 direct canonical saved-processing receipt</summary>
+
+```json
+{
+  "format": "worker-saved-processing",
+  "case_id": "heldout__C111250__NRS-484B-200-1__motor_vehicle_driver__right_half_closed_left",
+  "passed": true,
+  "recorded_only": true,
+  "version": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c111250-closure-left-direct-fallback3-saved-proof/v0001",
+  "analysis_directory": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c111250-closure-left-direct-fallback3-saved-proof/v0001/analysis",
+  "result": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c111250-closure-left-direct-fallback3-saved-proof/v0001/analysis/result.json",
+  "native_revision": {
+    "construction_sha256": "e36c9472302e60035b1b8940fb4cf3f843bd5d376353111350061cd055d1812e",
+    "analyzer_sha256": "9f31bf2b0ad90b9bceec7663f133c7a9a41c2e6d5d2e19a18aec4e156c8fda7c"
+  },
+  "candidate_id": "fallback3",
+  "analysis_revision": {
+    "construction_sha256": "e36c9472302e60035b1b8940fb4cf3f843bd5d376353111350061cd055d1812e",
+    "analyzer_sha256": "9f31bf2b0ad90b9bceec7663f133c7a9a41c2e6d5d2e19a18aec4e156c8fda7c",
+    "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3"
+  },
+  "original_source_hashes": {
+    "actor_identity.json": "2eebc25c299fcb5363872dbda0033cfec0763811d38a12d7811604457b3d1248",
+    "alley_context.json": "1e3f5194da5ce8f5ee2e8a2acdfa1876e6986d7e1a221b931980cc9cd40dc6d3",
+    "approach-frames.jsonl": "3e5b7a17fe5a5e47269d3b24190074e5dc63c303360c8fc5f4bdbd12ee9be792",
+    "approach.mkv": "4d5541f025afa64755261e4f4811e6b61617fd1cd22d0a62dc785fcf61a6d230",
+    "body_history.jsonl": "1de1bd3bbd92014bc04fe44567fe457e85f4ad9143e0066074c181b647494cb7",
+    "candidate-selection.json": "d94b63b0ff54555ee7ed53ff63186d8df8dea8f069e5264e20a230d9b30f8d43",
+    "capture/evidence.jsonl": "ac64eb198292ce211ba45ef59eba9992b19f618dee65ae0f5eacda35b97e98be",
+    "capture/manifest.json": "e2845313c782e24fbb7c6ee79ef2c644890df0837ea278df161f9be0a66e2f3b",
+    "capture/native/frames.jsonl": "b8cc751bfcf218f0ff5b56a944f25ccab5393ceef5f4507ea50d2b5d7cd6fc30",
+    "capture/native/graphs/abstract/00038033.pkl": "79b0139330765d4203a9ce4df04271aa3cc2577ebdccee32813e92376f82fa81",
+    "capture/native/graphs/abstract/00038034.pkl": "23b0f4138cc1d957c99a3b3c59b88d5f55af4593f8d24efd9a9296135f0a56ef",
+    "capture/native/graphs/abstract/00038035.pkl": "b28b225379e4ca88134d97038a078e6714b6ed20aa91b65efa89bab7ed1d4bf6",
+    "capture/native/graphs/abstract/00038036.pkl": "a02e1a86332329cfb534492cd16f3b02c057e31cdd2d6c048fa8ec576b03cbc4",
+    "capture/native/graphs/abstract/00038037.pkl": "2e0f9c0e5b040c3fbe29c690e3bb14d6874d70f171f65d6bb0b9e39c9fe32bb9",
+    "capture/native/graphs/abstract/00038038.pkl": "d1021adb002593a699c19b25c6377a30809bb2664d2476c4b2d3cda054564e1d",
+    "capture/native/graphs/abstract/00038039.pkl": "d5b1a2663d8046928bda3ab1a9c6a55367ad78de79c872e423568f3fba54ca51",
+    "capture/native/graphs/abstract/00038040.pkl": "749f7b3574e03c4cdc538089d08679eca7dbc72ae8f3a48e404f48296e5a7fb6",
+    "capture/native/graphs/abstract/00038041.pkl": "dbdacd5f0afab50d0575c3f19b60c03b9c7eac423630dfb4e4dd13feb90d8897",
+    "capture/native/graphs/base/00038033.pkl": "6a18bbaaddb01bb094c5faead741a0470f3bee99a3a45b6074120584f4335fd1",
+    "capture/native/graphs/base/00038034.pkl": "9349e6a75bb4b04b232e10908a9136b557c92f377b3c2e2cc2485b0770d692ab",
+    "capture/native/graphs/base/00038035.pkl": "a887f31f5cde4708975181d4a67b204f90c5eb5eb6dfd41a6f1673b269d56708",
+    "capture/native/graphs/base/00038036.pkl": "b169522eeff3aabd09b38928881414ac319ea9dd348aabacb7456702287e19a0",
+    "capture/native/graphs/base/00038037.pkl": "31acc816a9ddd67be882d14ae675d8fd9f54841b4bf8473ded4da9ee6e5a78d9",
+    "capture/native/graphs/base/00038038.pkl": "526665a52b8877d17e1a03f093bdb4b7e4eab908c15d7a0151aaa4ee32cb6d44",
+    "capture/native/graphs/base/00038039.pkl": "7bb0c2705e0482a90ef4cd19446ceb2d024f1833be57197304337a0887713f71",
+    "capture/native/graphs/base/00038040.pkl": "48123f4a5d5be7a723cd26ad6a6ab114bd3257cc8bc9168ae980dfdcdab75b0f",
+    "capture/native/graphs/base/00038041.pkl": "7d959972d351e6d4995c18c75a4650f67331285190ec4b4a98b1041811f8c4a4",
+    "capture/native_map_facts.json": "a1a3c57b78d06ae1124def127c34e5c8fa9d161756acaf1463fca014314c05ae",
+    "capture/recorder_info.txt": "32c438d3f7318270477a5d46dfd082406316608639cf438f1063bc4a6a74e27d",
+    "capture_contract.json": "39c03417577348b8fc6cba888ee72569fd8d31f992470f70a9191a1ac34057ae",
+    "closure_original.json": "6475bc55451e70c9845b69f9040936b88b407364e68c0e0bfb8b12fa4176ff3f",
+    "config.json": "cc797cdbf8ed01a9dca87b96fa85bb23bf50ba4d565c8953c3e158a1b7cbe806",
+    "construction.json": "e36c9472302e60035b1b8940fb4cf3f843bd5d376353111350061cd055d1812e",
+    "delivery_audit.py": "bac16e5c21ed9a339369392b04001e3bb73eb0ebb1004b02800bf04572ea5cc0",
+    "diagnostic-input.json": "5b3edf5be02fa85e701d99ada8643c49213a6a7f44041a03abebc9025801e02f",
+    "driver_reference-frames.jsonl": "3e5b7a17fe5a5e47269d3b24190074e5dc63c303360c8fc5f4bdbd12ee9be792",
+    "driver_reference.mkv": "4d5541f025afa64755261e4f4811e6b61617fd1cd22d0a62dc785fcf61a6d230",
+    "exception_context.json": "c8354497aab348e19bb611b4674a4d0d9bfc66db5f53a8f8c71072347355b69b",
+    "finalizer.py": "9f31bf2b0ad90b9bceec7663f133c7a9a41c2e6d5d2e19a18aec4e156c8fda7c",
+    "fixture-provenance.json": "25c3a405f3170f85044f6798fe9851ca1142cb2ffefff5d51fbae3a9af4c14d7",
+    "overview-frames.jsonl": "3e5b7a17fe5a5e47269d3b24190074e5dc63c303360c8fc5f4bdbd12ee9be792",
+    "overview.mkv": "c005879bca524aa76d0fad699513b1ef3ad3c99974ff1644719e3dfa87312273",
+    "reference_corner-frames.jsonl": "3e5b7a17fe5a5e47269d3b24190074e5dc63c303360c8fc5f4bdbd12ee9be792",
+    "reference_corner.mkv": "4d5541f025afa64755261e4f4811e6b61617fd1cd22d0a62dc785fcf61a6d230",
+    "road-half-diagnostic-provenance.json": "67b584fdd7b80c8c0f12320d6ff061d058491e387cf97c9258d2388591a02401",
+    "road.xodr": "22ec54092229a0631aaeeeca5ab949178134ba5d3078906a4b290ec62d952f7b",
+    "road_geometry.json": "89cb47267594fd35e161ced75238b700d23126dcfc44b67d871e7aed67588740",
+    "road_half.py": "75871d5f9b329f740a5306fc8b34c3bbd68df1d16f8e6ae080fc18938e8cc4c9",
+    "runner.py": "45d04f80cadff6d441150af06ca40e67b16a03082027844e2d2c97dea470bfc7",
+    "speed_samples.jsonl": "1837adc80b61e2005f5eefd06215e4a3fe7604312c2f457b513023e2926804fc",
+    "tests/test_road_half.py": "9d433d5f5db0a849bdd7e837615df9606c4fcdb31c341a92165a1dc394ef0ec9",
+    "trace.jsonl": "1837adc80b61e2005f5eefd06215e4a3fe7604312c2f457b513023e2926804fc",
+    "video_frames.jsonl": "e5af07ded940775389bf8c954bef46ded699f4ce3d958a1cd8730173b00dfe9e"
+  },
+  "originals_preserved": true,
+  "timestamp_joins": {
+    "frames": 9,
+    "passed": true,
+    "missing_original_trace_or_map": false
+  },
+  "analysis_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "result_sha256": "5d097f2267c511a7530bc2adc618afa67c72a2f4cf5105c0cbf8b50209987f7c",
+  "final_video_checks": {
+    "format": "source-decode",
+    "passed": true,
+    "video_sha256": "54b592d8efefb69d956258d79cfa1d20045bd658c0d88b9d09b8fc485fff2a06",
+    "frames": 9,
+    "dimensions": [
+      1920,
+      1224
+    ],
+    "rgb_sequence_sha256": "94bcbfda5bc67b37a7680e4295b89c9c2e2c84a0bb4c748cf81436be95faf6d7",
+    "mapping_sha256": null,
+    "checks": {
+      "frame_count": "all-decoded-frames"
+    },
+    "auditor_sha256": "b63af75d3599fc2401518aa9093561928c43e9c460976ea155b09860f5f02df9",
+    "threads": 4,
+    "seconds": 0.06424302305094898,
+    "ffmpeg_version": "ffmpeg version n8.0.1-48-g0592be14ff-20260116 Copyright (c) 2000-2025 the FFmpeg developers"
+  },
+  "missing_evidence": false,
+  "physical_acceptance_claimed": false,
+  "legal_acceptance_claimed": false,
+  "events": [
+    "saved_processing_started",
+    "selected_analysis_executed",
+    "originals_verified"
+  ],
+  "remaining": [
+    "original pixels and actual physical completion review",
+    "unresolved legal judgments"
+  ]
+}
+
+```
+</details>

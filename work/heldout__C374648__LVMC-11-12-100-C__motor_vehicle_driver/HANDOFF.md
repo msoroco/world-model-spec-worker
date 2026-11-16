@@ -84,3 +84,6 @@ All six independent delivery audits passed against their exact saved attempts an
 ### 2026-11-12 proof-preserving return compaction
 
 Twenty-three byte-identical empty compatibility analysis logs were consolidated with execution-manifest paths repointed to identical retained bytes. The assignment-scoped strict ready gate passed afterward; ready status is unchanged.
+
+
+2026-11-16 CPU file-budget preservation: 2 unreferenced saved receipt copies archived byte-exact in `result.json.preserved_unreferenced_cpu_artifacts`; per-member SHA256 recorded there.

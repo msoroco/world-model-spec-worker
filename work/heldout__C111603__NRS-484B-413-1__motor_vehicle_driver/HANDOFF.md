@@ -307,3 +307,8 @@ Six byte-identical empty compatibility analysis logs were consolidated with exec
 
 
 2026-11-16 CPU file-budget preservation: 3 unreferenced saved receipt copies archived byte-exact in `result.json.preserved_unreferenced_cpu_artifacts`; member SHA256 values recorded there.
+
+
+2026-11-16 CPU file-budget preservation: 12 unreferenced standalone offline log copies archived byte-exact in `result.json.preserved_unreferenced_cpu_artifacts`; per-member SHA256 recorded there. Scoped strict validation follows.
+
+Correction: the 12 offline logs from the preceding preservation entry were restored byte-exact because scoped strict validation requires them indirectly. That archive entry was removed from result.json.

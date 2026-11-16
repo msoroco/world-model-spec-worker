@@ -269,3 +269,9 @@ The preceding channel finding was repaired as a plan-schema correction. `case-pl
 
 
 2026-11-16 CPU file-budget preservation: 1 unreferenced saved receipt copies archived byte-exact in `result.json.preserved_unreferenced_cpu_artifacts`; member SHA256 values recorded there.
+
+
+One additional unreferenced saved receipt copy was archived byte-exact in `result.json.preserved_unreferenced_cpu_artifacts` for the CPU file budget; member SHA256 recorded there.
+
+
+2026-11-16 CPU file-budget preservation: 4 unreferenced saved receipt copies archived byte-exact in `result.json.preserved_unreferenced_cpu_artifacts`; per-member SHA256 recorded there.
