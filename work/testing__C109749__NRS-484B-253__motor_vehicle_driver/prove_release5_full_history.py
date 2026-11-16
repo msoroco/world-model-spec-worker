@@ -34,9 +34,9 @@ from prove_far_approach_history import actor, make_sources, source_rows, write_j
 from worker_exchange.media import audit as decode
 
 CASE = ROOT.name + '__approaching_release_5s'
-SOURCE = REPO / '.runtime-work/c109749-far-delivery-v2/attempt'
+SOURCE = REPO / '.runtime-work/c109749-district-delivery-current-11-v2/positive/attempt'
 OUTPUT = REPO / '.runtime-work/c109749-release5-full-history-v1'
-INDEX = ROOT / 'hazard-release-draft-proof-index.json'
+INDEX = ROOT / 'district-integration-draft-proof.json'
 
 
 def sha(path):
@@ -439,7 +439,7 @@ def compare_three_four_full_history():
     """Audit all 900 rows of the controlled 5 m opposing-approach shift."""
     near = REPO / '.runtime-work/c109749-release3-full-history-v2/attempt'
     index = json.loads(INDEX.read_text())
-    proof = index['release3_full_history_diagnostic']
+    proof = index['release_source_fixture']['release3_full_history_diagnostic']
     require(proof['source_frames'] == 900 and
             proof['case_id'] == ROOT.name + '__approaching_release_3s',
             'Exact 3 s full-history proof changed')

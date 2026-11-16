@@ -11,7 +11,7 @@ from hazard_sweep_policy import HazardSweepPolicy
 
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
-SOURCE = REPO / '.runtime-work/c109749-district-delivery-current-11/positive/attempt'
+SOURCE = REPO / '.runtime-work/c109749-district-delivery-current-11-v2/positive/attempt'
 INDEX = ROOT / 'district-integration-draft-proof.json'
 FRAME = 38074
 
@@ -105,8 +105,8 @@ def compare():
         {'case_id': row['case_id'], 'candidate': candidate,
          'construction_sha256': (row['construction_sha256'] if candidate == 'primary'
                                  else next(item['construction_sha256']
-                                           for item in row['fallbacks']
-                                           if item['candidate_id'] == candidate))}
+                                           for item in row['candidates']
+                                           if item['id'] == candidate))}
         for row in release_cases for candidate in ('primary', 'fallback1', 'fallback2', 'fallback3')]
     observations = []
     for proof in index['cases']:
