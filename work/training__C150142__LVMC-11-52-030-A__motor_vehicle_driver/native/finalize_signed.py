@@ -64,6 +64,10 @@ def scope_occupancy(observation):
     return observation['red_curb_stop_or_park_observed']
 
 
+def signed_context(observation):
+    return observation
+
+
 def finalize(attempt, output):
     attempt, output = Path(attempt), Path(output)
     if output.exists() or (attempt/'result.json').exists() or (attempt/'channels').exists():
@@ -98,6 +102,9 @@ def finalize(attempt, output):
         raise ValueError('Acquired statutory context differs from frozen assignment')
     if len(actor_rows) != len(frame_map) or len(trace) != 240:
         raise ValueError('Missing synchronized saved trace')
+    blueprints={row.get('blueprint') for row in actor_rows}
+    if blueprints != {config.get('native_blueprint')}:
+        raise ValueError('Native vehicle blueprint differs from exact case')
     speeds=[]
     for i,row in enumerate(actor_rows):
         velocity=row.get('velocity_native_xyz_mps')
@@ -126,15 +133,15 @@ def finalize(attempt, output):
             'start_x_m':context['start_x_m'],
             'end_x_m':context['end_x_m'],'curb_y_m':context['curb_y_m']},
         'sign_readback':sign,
-        'vehicle_readback':{'native_blueprint':config['native_blueprint'],
+        'vehicle_readback':{'native_blueprint':next(iter(blueprints)),
             'declared_service_class':config['service_class']},
         'mailbox_readback':map_readback.get('mailbox_readback')},[])
     hashes={name:sha(attempt/name) for name in
             ('statutory-context.json','native-map-readback.json',
              'native-raw-actors.jsonl','video_frames.jsonl')}
     measurements={
-        'signed_curb_observation':{'method':'measure_exception',
-            'value':exception,
+        'signed_curb_observation':{'method':'signed_context',
+            'value':signed_context(exception),
             'sources':{name:hashes[name] for name in
                 ('native-raw-actors.jsonl','native-map-readback.json')}},
         'red_curb_stop_or_park_observed':{
@@ -180,7 +187,9 @@ def finalize(attempt, output):
                      'reference':context_path.name})
     result={'case_id':config['case_id'],
             'measured_values':{'red_curb_stop_or_park_observed':red_occupancy(observation),
-                               'signed_curb_observation':exception,
+                               'signed_curb_observation':{
+                                   key:value for key,value in exception.items()
+                                   if key != 'legal_verdict'},
                                'red_curb_stopped_frames':len(observation['red_curb_stopped_frame_ids'])},
             'target_checks':[{'target':'red-curb occupied while stopped',
                 'requested':30<=config['requested_target_x_m']<=50,

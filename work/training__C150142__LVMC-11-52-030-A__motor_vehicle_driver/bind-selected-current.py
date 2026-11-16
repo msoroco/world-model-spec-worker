@@ -24,7 +24,7 @@ def bind(witness):
         construction=ROOT/(case['construction'] if candidate=='primary' else
                            next(row['construction'] for row in case['candidates']
                                 if row['id']==candidate))
-        prefix=REPO/'.runtime-work'/('C150142-u021a-'+witness+'-'+candidate)
+        prefix=REPO/'.runtime-work'/('C150142-u023-'+witness+'-'+candidate)
         sources={'compatibility':Path(str(prefix)+'-compat/compatibility.json'),
                  'saved':Path(str(prefix)+'-saved/v0001/processing.json'),
                  'result':Path(str(prefix)+'-saved/v0001/analysis/result.json'),
@@ -45,7 +45,7 @@ def bind(witness):
                 compat['construction_sha256']==sha(construction) and
                 saved['analysis_revision']['construction_sha256']==sha(construction)):
             raise ValueError('Candidate proof incomplete or stale: '+witness+'/'+candidate)
-        logs={stage:sha(ROOT/('update021a-'+witness+'-'+candidate+'-'+stage+'.log'))
+        logs={stage:sha(ROOT/('update023-'+witness+'-'+candidate+'-'+stage+'.log'))
               for stage in ('offline','compat','prepare','saved')}
         entries[candidate]={'manifest':manifest.relative_to(ROOT).as_posix(),
             'manifest_sha256':sha(manifest),

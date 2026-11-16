@@ -63,6 +63,9 @@ def check():
     if authored['sign_readback']['displayed_classes'] != cfg.get('sign_classes') or \
        not authored['sign_readback']['present'] or authored['mailbox_readback']['present']:
         raise ValueError('Signed curb construction differs from exact case')
+    if cfg.get('native_blueprint') != 'vehicle.tesla.model3' or \
+       cfg.get('service_class') != 'ordinary':
+        raise ValueError('Signed ordinary vehicle construction differs')
     if cfg['selected_case_id'] != cfg['case_id'] or \
        cfg['candidate_id'] not in ('primary','fallback1','fallback2','fallback3') or \
        cfg['rate_hz'] != 20 or cfg['duration_s'] != 12 or len(tracks) != 240 or \

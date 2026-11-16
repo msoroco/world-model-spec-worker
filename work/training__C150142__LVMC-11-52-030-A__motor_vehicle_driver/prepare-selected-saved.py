@@ -20,7 +20,7 @@ def prepare(attempt, fixture, candidate='primary', witness='reference'):
         raise ValueError('Synthetic attempt and fixture belong in separate .runtime-work paths')
     if candidate not in ('primary','fallback1','fallback2','fallback3'):
         raise ValueError('Unknown exact candidate')
-    if witness not in ('reference','contrast'):
+    if witness not in ('reference','contrast','ordinary_red_signed'):
         raise ValueError('Unknown red-curb witness')
     manifest=ROOT/('execution-manifest-diagnostic-'+witness+'.json' if candidate=='primary'
         else 'execution-manifest-diagnostic-'+witness+'-'+candidate+'.json')
