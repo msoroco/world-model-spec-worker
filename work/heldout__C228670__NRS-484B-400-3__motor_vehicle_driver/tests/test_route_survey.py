@@ -1,10 +1,14 @@
 import hashlib
 import importlib.util
 import json
+import sys
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from types import SimpleNamespace
 import unittest
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from turn_position_finalizer import finalize
 
 
 MODULE = Path(__file__).resolve().parents[1] / "route_survey.py"
@@ -95,6 +99,26 @@ class RouteSurveyTests(unittest.TestCase):
             path.write_text(json.dumps(source()))
             with self.assertRaisesRegex(ValueError, "hash differs"):
                 survey_module.load_survey(path, "0" * 64)
+
+    def test_finalizer_joins_all_original_phases_and_rejects_duplicate_frame(self):
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            survey = root / "survey.json"
+            raw = json.dumps(source()).encode()
+            survey.write_bytes(raw)
+            body = root / "body.jsonl"
+            def row(frame, phase):
+                return {"frame": frame, "phase": phase,
+                        "body_corners_xy_m": [[1, -7], [2, -7], [2, -6], [1, -6]]}
+            rows = [row(1, "approach"), row(2, "entry"), row(3, "departure")]
+            body.write_text("\n".join(json.dumps(value) for value in rows) + "\n")
+            report = finalize(survey, hashlib.sha256(raw).hexdigest(), body, root / "measured.json")
+            self.assertEqual(report["frames"], 3)
+            self.assertIsNone(report["legal_conclusion"])
+            rows[2]["frame"] = 2
+            body.write_text("\n".join(json.dumps(value) for value in rows) + "\n")
+            with self.assertRaisesRegex(ValueError, "Duplicate original frame"):
+                finalize(survey, hashlib.sha256(raw).hexdigest(), body, root / "measured.json")
 
 
 if __name__ == "__main__":
