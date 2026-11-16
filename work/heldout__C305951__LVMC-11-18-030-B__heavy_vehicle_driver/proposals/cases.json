@@ -24,6 +24,11 @@
         "lawful_turn_premise": {
           "kind": "world_setup",
           "value": null
+        },
+        "lateral_control_setpoint_m": {
+          "kind": "controller",
+          "value": 0.0,
+          "note": "Selected rightward steering setpoint; actual footprint measured separately"
         }
       },
       "unresolved_judgment_calls": [],
@@ -111,6 +116,11 @@
         "lawful_turn_premise": {
           "kind": "world_setup",
           "value": null
+        },
+        "lateral_control_setpoint_m": {
+          "kind": "controller",
+          "value": 0.0,
+          "note": "Selected rightward steering setpoint; actual footprint measured separately"
         }
       },
       "unresolved_judgment_calls": [
@@ -184,7 +194,8 @@
       "deliberate_differences": [
         "lateral_footprint_outcome",
         "passing_permission",
-        "lawful_turn_premise"
+        "lawful_turn_premise",
+        "lateral_control_setpoint_m"
       ],
       "probe": {
         "primary_variable": "lateral_footprint_outcome",
@@ -213,6 +224,11 @@
         "lawful_turn_premise": {
           "kind": "world_setup",
           "value": null
+        },
+        "lateral_control_setpoint_m": {
+          "kind": "controller",
+          "value": 2.2,
+          "note": "Selected rightward steering setpoint; actual footprint measured separately"
         }
       },
       "unresolved_judgment_calls": [
@@ -286,7 +302,8 @@
       "deliberate_differences": [
         "lateral_footprint_outcome",
         "passing_permission",
-        "lawful_turn_premise"
+        "lawful_turn_premise",
+        "lateral_control_setpoint_m"
       ],
       "probe": {
         "primary_variable": "lateral_footprint_outcome",
@@ -315,6 +332,11 @@
         "lawful_turn_premise": {
           "kind": "world_setup",
           "value": null
+        },
+        "lateral_control_setpoint_m": {
+          "kind": "controller",
+          "value": 2.2,
+          "note": "Selected rightward steering setpoint; actual footprint measured separately"
         }
       },
       "unresolved_judgment_calls": [
@@ -388,7 +410,8 @@
       "deliberate_differences": [
         "lateral_footprint_outcome",
         "passing_permission",
-        "lawful_turn_premise"
+        "lawful_turn_premise",
+        "lateral_control_setpoint_m"
       ],
       "probe": {
         "primary_variable": "lateral_footprint_outcome",
@@ -417,6 +440,11 @@
         "lawful_turn_premise": {
           "kind": "world_setup",
           "value": null
+        },
+        "lateral_control_setpoint_m": {
+          "kind": "controller",
+          "value": 2.2,
+          "note": "Selected rightward steering setpoint; actual footprint measured separately"
         }
       },
       "unresolved_judgment_calls": [
@@ -490,7 +518,8 @@
       "deliberate_differences": [
         "lateral_footprint_outcome",
         "passing_permission",
-        "lawful_turn_premise"
+        "lawful_turn_premise",
+        "lateral_control_setpoint_m"
       ],
       "probe": {
         "primary_variable": "lateral_footprint_outcome",
@@ -512,8 +541,114 @@
       "status": "incomplete",
       "rationale": "A lawful passing judgment needs a separately sourced applicable movement rule and observed overtaken-vehicle order reversal.",
       "missing_inputs": [
-        "Independently verified passing-law applicability and physical sweep range for heavy-vehicle lateral excursion."
-      ]
+        "Expanded exact cases and construction/config bindings for each authored setpoint; exact offline, compatibility, saved-processing, physical, delivery, fallback and comparison proofs.",
+        "Independent applicable-rule premise remains unresolved; do not label a lawful passing or turn exception."
+      ],
+      "mode": "one_dimensional",
+      "axes": [
+        {
+          "variable": "lateral_control_setpoint_m",
+          "observable": "lateral_control_setpoint_m",
+          "unit": "m",
+          "min": 0.0,
+          "max": 2.2,
+          "spacing": 1.1,
+          "measurement": {
+            "method": "authored Native lateral control setpoint, recorded separately from source-measured body clearance",
+            "time_window": "selected 160-frame capture",
+            "statistic": "first"
+          },
+          "range_rationale": "The retained 3.5 m source lane and 2.0 m diagnostic body width place the starting footprint 0.75 m inside each marking; the CPU source probe spans no excursion through 2.2 m rightward, while actual Native feasibility remains unverified.",
+          "spacing_rationale": "Three distinct setpoints 0.0, 1.1 and 2.2 m probe inside, just across and farther across the geometric marking without treating the boundary as a legal cutoff.",
+          "feasibility_evidence": "17-test C305951 source and saved-finalizer suite, heavy-lane-source-tests.log SHA-256 1c1260bfd0f9288dfeef38b9a207a55cf0be90a74e98eceeb00dff69785876cb; synthetic minimum clearances about +0.75, -0.35 and -1.45 m."
+        }
+      ],
+      "landmarks": [],
+      "variable_assignments": {
+        "heavy_vehicle_blueprint": {
+          "kind": "world_setup",
+          "value": "vehicle.carlamotors.carlacola"
+        },
+        "lateral_footprint_outcome": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "passing_permission": {
+          "kind": "world_setup",
+          "value": null
+        },
+        "lawful_turn_premise": {
+          "kind": "world_setup",
+          "value": null
+        },
+        "lateral_control_setpoint_m": {
+          "kind": "controller",
+          "value": 0.0,
+          "note": "Rightward lateral target; actual footprint and legal premise are measured/reviewed separately"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "native_lane_boundaries",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Original surveyed marking geometry, lane directional allocation and governed route for every ego frame.",
+            "time_window": "original 160-frame capture",
+            "reference_frame": "source-surveyed Native three-lane road",
+            "uncertainty": "physical motion, legal exception and visibility require original-source review"
+          },
+          {
+            "name": "heavy_vehicle_footprint",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Original articulated or rigid body extents and all relevant corners projected onto the source road frame.",
+            "time_window": "original 160-frame capture",
+            "reference_frame": "source-surveyed Native three-lane road",
+            "uncertainty": "physical motion, legal exception and visibility require original-source review"
+          },
+          {
+            "name": "lane_boundary_overlap",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Signed footprint-to-boundary distances per original frame, preserving uncertainty and no invented tolerance.",
+            "time_window": "original 160-frame capture",
+            "reference_frame": "source-surveyed Native three-lane road",
+            "uncertainty": "physical motion, legal exception and visibility require original-source review"
+          },
+          {
+            "name": "passing_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Other vehicle identity, position, order reversal and independent applicable-rule source.",
+            "time_window": "original 160-frame capture",
+            "reference_frame": "source-surveyed Native three-lane road",
+            "uncertainty": "physical motion, legal exception and visibility require original-source review"
+          },
+          {
+            "name": "turn_preparation_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original indicator/heading/route/turn-intent sources and independent lawful-turn premise.",
+            "time_window": "original 160-frame capture",
+            "reference_frame": "source-surveyed Native three-lane road",
+            "uncertainty": "physical motion, legal exception and visibility require original-source review"
+          },
+          {
+            "name": "four_camera_originals",
+            "unit": "video",
+            "sampling_rate_hz": 20,
+            "method": "Original synchronized overview, approach, reference_corner and driver_reference recordings and frame joins.",
+            "time_window": "original 160-frame capture",
+            "reference_frame": "source-surveyed Native three-lane road",
+            "uncertainty": "physical motion, legal exception and visibility require original-source review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "CPU construction does not prove lane marking visibility, legal exception or physical acceptance"
+        ]
+      }
     },
     {
       "sweep_id": "heavy_turn_plan",
@@ -527,8 +662,114 @@
       "status": "incomplete",
       "rationale": "Turn-preparation judgment requires an independently supported lawful-turn premise and source-observed intent.",
       "missing_inputs": [
-        "Independently verified turn permission and physical sweep range for heavy-vehicle turn preparation."
-      ]
+        "Expanded exact cases and construction/config bindings for each authored setpoint; exact offline, compatibility, saved-processing, physical, delivery, fallback and comparison proofs.",
+        "Independent applicable-rule premise remains unresolved; do not label a lawful passing or turn exception."
+      ],
+      "mode": "one_dimensional",
+      "axes": [
+        {
+          "variable": "lateral_control_setpoint_m",
+          "observable": "lateral_control_setpoint_m",
+          "unit": "m",
+          "min": 0.0,
+          "max": 2.2,
+          "spacing": 1.1,
+          "measurement": {
+            "method": "authored Native lateral control setpoint, recorded separately from source-measured body clearance",
+            "time_window": "selected 160-frame capture",
+            "statistic": "first"
+          },
+          "range_rationale": "The retained 3.5 m source lane and 2.0 m diagnostic body width place the starting footprint 0.75 m inside each marking; the CPU source probe spans no excursion through 2.2 m rightward, while actual Native feasibility remains unverified.",
+          "spacing_rationale": "Three distinct setpoints 0.0, 1.1 and 2.2 m probe inside, just across and farther across the geometric marking without treating the boundary as a legal cutoff.",
+          "feasibility_evidence": "17-test C305951 source and saved-finalizer suite, heavy-lane-source-tests.log SHA-256 1c1260bfd0f9288dfeef38b9a207a55cf0be90a74e98eceeb00dff69785876cb; synthetic minimum clearances about +0.75, -0.35 and -1.45 m."
+        }
+      ],
+      "landmarks": [],
+      "variable_assignments": {
+        "heavy_vehicle_blueprint": {
+          "kind": "world_setup",
+          "value": "vehicle.carlamotors.carlacola"
+        },
+        "lateral_footprint_outcome": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "passing_permission": {
+          "kind": "world_setup",
+          "value": null
+        },
+        "lawful_turn_premise": {
+          "kind": "world_setup",
+          "value": null
+        },
+        "lateral_control_setpoint_m": {
+          "kind": "controller",
+          "value": 0.0,
+          "note": "Rightward lateral target; actual footprint and legal premise are measured/reviewed separately"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "native_lane_boundaries",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Original surveyed marking geometry, lane directional allocation and governed route for every ego frame.",
+            "time_window": "original 160-frame capture",
+            "reference_frame": "source-surveyed Native three-lane road",
+            "uncertainty": "physical motion, legal exception and visibility require original-source review"
+          },
+          {
+            "name": "heavy_vehicle_footprint",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Original articulated or rigid body extents and all relevant corners projected onto the source road frame.",
+            "time_window": "original 160-frame capture",
+            "reference_frame": "source-surveyed Native three-lane road",
+            "uncertainty": "physical motion, legal exception and visibility require original-source review"
+          },
+          {
+            "name": "lane_boundary_overlap",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Signed footprint-to-boundary distances per original frame, preserving uncertainty and no invented tolerance.",
+            "time_window": "original 160-frame capture",
+            "reference_frame": "source-surveyed Native three-lane road",
+            "uncertainty": "physical motion, legal exception and visibility require original-source review"
+          },
+          {
+            "name": "passing_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Other vehicle identity, position, order reversal and independent applicable-rule source.",
+            "time_window": "original 160-frame capture",
+            "reference_frame": "source-surveyed Native three-lane road",
+            "uncertainty": "physical motion, legal exception and visibility require original-source review"
+          },
+          {
+            "name": "turn_preparation_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original indicator/heading/route/turn-intent sources and independent lawful-turn premise.",
+            "time_window": "original 160-frame capture",
+            "reference_frame": "source-surveyed Native three-lane road",
+            "uncertainty": "physical motion, legal exception and visibility require original-source review"
+          },
+          {
+            "name": "four_camera_originals",
+            "unit": "video",
+            "sampling_rate_hz": 20,
+            "method": "Original synchronized overview, approach, reference_corner and driver_reference recordings and frame joins.",
+            "time_window": "original 160-frame capture",
+            "reference_frame": "source-surveyed Native three-lane road",
+            "uncertainty": "physical motion, legal exception and visibility require original-source review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "CPU construction does not prove lane marking visibility, legal exception or physical acceptance"
+        ]
+      }
     }
   ],
   "sweeps_expanded": true
