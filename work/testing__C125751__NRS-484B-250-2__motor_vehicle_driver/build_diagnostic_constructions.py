@@ -236,7 +236,7 @@ def audit_release_attempt(root):
         "physical_acceptance_claimed": False, "legal_priority_claimed": False}
 
 
-def replay_controller_commands(config, frames=14):
+def replay_controller_commands(config, frames=14, observed_other_entry_frame=None):
     """Run both production release/stop/speed controllers on a fixed CPU pose.
 
     A stationary front at each stop reference tests control commands, not vehicle
@@ -248,6 +248,11 @@ def replay_controller_commands(config, frames=14):
 
     if frames < 12:
         raise ValueError("Controller replay must extend past the release sweep")
+    if observed_other_entry_frame is not None and (
+            type(observed_other_entry_frame) is not int or
+            not 2 <= observed_other_entry_frame < frames or
+            config.get("ego_release_frame") is not None):
+        raise ValueError("Measured-entry replay requires default subject release")
     carla = SimpleNamespace(VehicleControl=lambda: SimpleNamespace(
         steer=0.0, throttle=0.0, brake=0.0))
     actors = {role: SimpleNamespace(
@@ -261,7 +266,10 @@ def replay_controller_commands(config, frames=14):
         fronts[role] = [(segment[0][axis] + segment[1][axis]) / 2 for axis in (0, 1)]
     trace = []
     for index in range(frames):
-        permissions = release_permissions(config, index, other_entered=False)
+        permissions = release_permissions(
+            config, index,
+            other_entered=observed_other_entry_frame is not None and
+            index >= observed_other_entry_frame)
         row = {"index": index, "permissions": permissions, "roles": {}}
         for role in ("ego", "other"):
             decision = stops[role].step(fronts[role], 0.0, [1.0, 0.0], permissions[role])
@@ -321,6 +329,48 @@ def prove_controller_command_sweep(ego_root, other_root, output_path):
              "cross_axis_baseline_identical": True,
              "native_motion_or_entry_proven": False,
              "physical_acceptance_claimed": False, "legal_priority_claimed": False}
+    _dump(output_path, proof)
+    return proof
+
+
+def prove_measured_yield_sweep(output_path):
+    """Exercise default subject release against four supplied body-entry frames."""
+    output_path = Path(output_path)
+    if output_path.exists():
+        raise ValueError("Retain previous yield proof; choose a new output")
+    case = next(case for case in json.loads(
+        (HERE / "candidate-proof-manifest-v2.json").read_text())["cases"]
+        if case["case_id"].endswith("__signal_off"))
+    construction = HERE / case["construction"]
+    document = json.loads(construction.read_text())
+    config = json.loads(next(item["content"] for item in document["files"]
+                             if item["path"] == "config.json"))
+    config.pop("ego_release_frame", None)
+    config["other_release_frame"] = 10
+    receipts, fixed_commands = [], None
+    for observed_entry in (8, 9, 10, 11):
+        trace = replay_controller_commands(
+            config, observed_other_entry_frame=observed_entry)
+        ego = [row["roles"]["ego"]["command"] for row in trace]
+        other = [row["roles"]["other"]["command"] for row in trace]
+        first = next((index for index, command in enumerate(ego)
+                      if command["throttle"] > 0), None)
+        if first != observed_entry or any(command["brake"] != 1.0
+                                          for command in ego[:observed_entry]):
+            raise ValueError("Default measured-entry yield control differs")
+        if fixed_commands is not None and other != fixed_commands:
+            raise ValueError("Opposing command changed across measured-entry sweep")
+        fixed_commands = other
+        receipts.append({"observed_other_entry_index": observed_entry,
+                         "first_subject_positive_throttle_index": first,
+                         "pre_entry_full_brake": True})
+    proof = {"format": "worker-c125751-measured-yield-controller-sweep",
+             "builder_sha256": _sha(HERE / "build_diagnostic_constructions.py"),
+             "selected_off_construction_sha256": _sha(construction),
+             "replay_kind": "stationary CPU pose with supplied opposing body-entry observation",
+             "receipts": receipts, "opposing_commands_identical": True,
+             "native_entry_feedback_proven": False,
+             "physical_acceptance_claimed": False, "legal_yield_claimed": False}
     _dump(output_path, proof)
     return proof
 
@@ -406,6 +456,7 @@ if __name__ == "__main__":
     parser.add_argument("--compare-release-sweeps", nargs=2)
     parser.add_argument("--prove-fixture-release-join", nargs=3)
     parser.add_argument("--prove-controller-command-sweep", nargs=3)
+    parser.add_argument("--prove-measured-yield-sweep")
     parser.add_argument("--audit-release-attempt")
     args = parser.parse_args()
     if args.audit_release_attempt:
@@ -414,6 +465,8 @@ if __name__ == "__main__":
         output = prove_fixture_release_join(*args.prove_fixture_release_join)
     elif args.prove_controller_command_sweep:
         output = prove_controller_command_sweep(*args.prove_controller_command_sweep)
+    elif args.prove_measured_yield_sweep:
+        output = prove_measured_yield_sweep(args.prove_measured_yield_sweep)
     elif args.compare_release_sweeps:
         output = audit_cross_release_sweeps(*args.compare_release_sweeps)
     elif args.audit_release_sweep:

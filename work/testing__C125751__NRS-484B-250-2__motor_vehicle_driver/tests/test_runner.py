@@ -95,36 +95,6 @@ def write_packet(root, value):
 
 
 class RunnerTests(unittest.TestCase):
-    def test_observed_other_entry_releases_subject_after_measured_yield(self):
-        """The default yield path reacts to measured occupancy, not a timer."""
-        case = next(item for item in TARGETS if item.endswith("signal_off"))
-        fixed_other_commands = []
-        for observed_entry in (8, 9, 10, 11):
-            value = config(case)
-            value["other_release_frame"] = 10
-            subject = StopApproach(value["site"]["selected_stop_references"]["ego"]["segment_xy_m"])
-            opposing = StopApproach(value["site"]["selected_stop_references"]["other"]["segment_xy_m"])
-            actor = NS(get_velocity=lambda: NS(x=0.0, y=0.0, z=0.0),
-                       apply_control=lambda command: None)
-            carla = NS(VehicleControl=lambda: NS(steer=0.0, throttle=0.0, brake=0.0))
-            subject_commands, other_commands = [], []
-            for frame in range(14):
-                permissions = release_permissions(value, frame, frame >= observed_entry)
-                subject_hold = subject.step([-5.0, 0.0], 0.0, [1.0, 0.0],
-                                            permissions["ego"])["hold"]
-                other_hold = opposing.step([0.0, -5.0], 0.0, [0.0, 1.0],
-                                           permissions["other"])["hold"]
-                subject_commands.append(apply_speed_control(carla, actor, 5.0, subject_hold))
-                other_commands.append(apply_speed_control(carla, actor, 5.0, other_hold))
-            first_subject_throttle = next(i for i, row in enumerate(subject_commands)
-                                          if row["throttle"] > 0)
-            self.assertEqual(first_subject_throttle, observed_entry)
-            self.assertTrue(all(row["brake"] == 1.0
-                                for row in subject_commands[:observed_entry]))
-            fixed_other_commands.append(other_commands)
-        self.assertTrue(all(rows == fixed_other_commands[0]
-                            for rows in fixed_other_commands[1:]))
-
     def test_four_release_sweep_points_issue_distinct_measured_commands(self):
         """Exercise the authored schedule through the actual stop/speed controllers."""
         case = next(item for item in TARGETS if item.endswith("signal_off"))
