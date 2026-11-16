@@ -248,9 +248,94 @@
       "construction_sha256": "8a8df79d64eb3872964f5c079773c34f420e37bcd21e1ba61426f89943e88910",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Native steering may not produce a measurable full-body boundary excursion or preserve camera coverage"
+        "reason": "Native route, heavy vehicle, and original-tick capture may fail on the physical selected site; each fallback changes one measured engineering control."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "unexcused_boundary_crossing-fallback1-construction.json",
+          "construction_sha256": "d028c155b47e424c023c0a79efd3eabfeb3e87d3adecde753a0c5016674dda9e",
+          "trigger": {
+            "source": "Original lane survey and heavy body frame joins",
+            "metric": "route sampling gap",
+            "failure_condition": "Primary 2.0 m route sampling fails contiguous governed-lane geometry"
+          },
+          "changed_knobs": [
+            "route_step_m: 2.0 to 1.5"
+          ],
+          "offline": {
+            "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver/provisional-manifest.json --case heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__unexcused_boundary_crossing --candidate fallback1 --output .runtime-work/c305951-crossing-fallback1-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "crossing-fallback1-offline.log",
+            "log_sha256": "370ba451febcf5a162c3cf71a1584e04873dfec7d2914e7a8a793893c5415c17",
+            "construction_sha256": "d028c155b47e424c023c0a79efd3eabfeb3e87d3adecde753a0c5016674dda9e"
+          },
+          "compatibility": {
+            "receipt": "crossing-fallback1-compatibility.json",
+            "sha256": "a013b0e58f76ca9ced8e9339243caa3388a0bf2f53d3b402bc3ada69c6bc2cdb",
+            "log": "first-primary-compatibility-analysis.log",
+            "negative_log": "compat-negative-0cb5c9a94dbca987.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log_sha256": "0cb5c9a94dbca987361404471358a0a1a6ebb6bec2870dd53f2fed4f0a3b83ea"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "unexcused_boundary_crossing-fallback2-construction.json",
+          "construction_sha256": "383c5ce22fc3fa32070e0c518edf73891c2c0d269f85a28631f9925df7099a01",
+          "trigger": {
+            "source": "Native heavy truck spawn/readback",
+            "metric": "spawn collision or ground penetration",
+            "failure_condition": "Primary 0.5 m spawn elevation fails heavy body start"
+          },
+          "changed_knobs": [
+            "spawn_height_offset_m: 0.5 to 0.8"
+          ],
+          "offline": {
+            "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver/provisional-manifest.json --case heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__unexcused_boundary_crossing --candidate fallback2 --output .runtime-work/c305951-crossing-fallback2-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "crossing-fallback2-offline.log",
+            "log_sha256": "d1c40537c7cc1dc096f026e39255e00b4e458eb766f700c49931c1fa410de194",
+            "construction_sha256": "383c5ce22fc3fa32070e0c518edf73891c2c0d269f85a28631f9925df7099a01"
+          },
+          "compatibility": {
+            "receipt": "crossing-fallback2-compatibility.json",
+            "sha256": "37bd969f48cc302c324dfa3c426ec455d0d39412645af4a82d29a5842df48693",
+            "log": "first-primary-compatibility-analysis.log",
+            "negative_log": "compat-negative-7adf214218357820.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log_sha256": "7adf214218357820495b9a763d29035aa6e907adc4f20c9707732adbb93b6e21"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "unexcused_boundary_crossing-fallback3-construction.json",
+          "construction_sha256": "57f3e4f713c155b4fe1f4174a49260eb39a74d64979f93a482ca0c948d2c3fae",
+          "trigger": {
+            "source": "Original speed and four-camera tick synchronization",
+            "metric": "speed tracking or dropped source frames",
+            "failure_condition": "Primary 4.0 m/s speed loses stable tracking or synchronized frames"
+          },
+          "changed_knobs": [
+            "target_speed_mps: 4.0 to 3.0"
+          ],
+          "offline": {
+            "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver/provisional-manifest.json --case heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__unexcused_boundary_crossing --candidate fallback3 --output .runtime-work/c305951-crossing-fallback3-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "crossing-fallback3-offline.log",
+            "log_sha256": "21ea5fed238f2ef0ad80951596884ff15c2d4276f30e80265389c56457449a5e",
+            "construction_sha256": "57f3e4f713c155b4fe1f4174a49260eb39a74d64979f93a482ca0c948d2c3fae"
+          },
+          "compatibility": {
+            "receipt": "crossing-fallback3-compatibility.json",
+            "sha256": "2587237605864681122eb097484aa5050d9fadf84b3e075a5d004c19e9d8cdb2",
+            "log": "first-primary-compatibility-analysis.log",
+            "negative_log": "compat-negative-831506235700cf34.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log_sha256": "831506235700cf3433db2424d1ac2a3bce45432c93e9fdde00a398bf20230b7d"
+          }
+        }
+      ],
       "measurement_procedure": {
         "entrypoint": "heavy_lane_finalizer.py"
       },
@@ -402,9 +487,94 @@
       "construction_sha256": "3d86be26691814bfeb810b5e4de7943a6734b95df1bd110c924ca05f482eba93",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Participant spawn, separation and order reversal require original-source physical verification"
+        "reason": "Native route, heavy vehicle, and original-tick capture may fail on the physical selected site; each fallback changes one measured engineering control."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "passing_boundary_crossing-fallback1-construction.json",
+          "construction_sha256": "ee6b711e91d620530013cf872aa9a5182afca3d95b7d55e9c2fa8eeb066cd5b0",
+          "trigger": {
+            "source": "Original overtaken actor and heavy body frame joins",
+            "metric": "passing order sample gap",
+            "failure_condition": "Primary 2.0 m route spacing loses overtaken-actor order context"
+          },
+          "changed_knobs": [
+            "route_step_m: 2.0 to 1.5"
+          ],
+          "offline": {
+            "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver/provisional-manifest.json --case heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__passing_boundary_crossing --candidate fallback1 --output .runtime-work/c305951-passing-fallback1-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "passing-fallback1-offline.log",
+            "log_sha256": "456cafef2163dee65482d3f8f1b6f0878ba03554cbeee7d32e38d295323b511d",
+            "construction_sha256": "ee6b711e91d620530013cf872aa9a5182afca3d95b7d55e9c2fa8eeb066cd5b0"
+          },
+          "compatibility": {
+            "receipt": "passing-fallback1-compatibility.json",
+            "sha256": "356c94e54dd907a7ee12f4c67327723b7aa139ed0cbf5aaae12eee23bc10f8c8",
+            "log": "first-primary-compatibility-analysis.log",
+            "negative_log": "compat-negative-6cfd6f6028dcf9aa.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log_sha256": "6cfd6f6028dcf9aa6105cd102f0c0e6338a30aae9aefce5cbf6cbed4aec483af"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "passing_boundary_crossing-fallback2-construction.json",
+          "construction_sha256": "1b64fa2fa26a4d9ad4dc68565be289e209675715c0106524b11787ddcf4fdcf6",
+          "trigger": {
+            "source": "Native truck and overtaken actor spawn/readback",
+            "metric": "heavy truck spawn collision",
+            "failure_condition": "Primary 0.5 m truck spawn height fails near passing actor"
+          },
+          "changed_knobs": [
+            "spawn_height_offset_m: 0.5 to 0.8"
+          ],
+          "offline": {
+            "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver/provisional-manifest.json --case heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__passing_boundary_crossing --candidate fallback2 --output .runtime-work/c305951-passing-fallback2-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "passing-fallback2-offline.log",
+            "log_sha256": "11dd5d24357c692624e5ddc39c8241109111eeb040736247deb33dd223cf17a7",
+            "construction_sha256": "1b64fa2fa26a4d9ad4dc68565be289e209675715c0106524b11787ddcf4fdcf6"
+          },
+          "compatibility": {
+            "receipt": "passing-fallback2-compatibility.json",
+            "sha256": "35a3a26c3a67d006b78e88279cc69f9c413e81a32f34bba07aa917be23494907",
+            "log": "first-primary-compatibility-analysis.log",
+            "negative_log": "compat-negative-aa9ce7f2b2eee786.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log_sha256": "aa9ce7f2b2eee786c0b0ee8fdcce6adc514e14fbe56174de4c8d1a4b64b3617d"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "passing_boundary_crossing-fallback3-construction.json",
+          "construction_sha256": "521fbcc9d3576274dffb11945449d9eb31e3f372825aa58fd072bcf3ab7ac660",
+          "trigger": {
+            "source": "Original participant order and source-camera frames",
+            "metric": "speed or actor-order tracking gap",
+            "failure_condition": "Primary 4.0 m/s target loses stable participant/frame joins"
+          },
+          "changed_knobs": [
+            "target_speed_mps: 4.0 to 3.0"
+          ],
+          "offline": {
+            "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver/provisional-manifest.json --case heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__passing_boundary_crossing --candidate fallback3 --output .runtime-work/c305951-passing-fallback3-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "passing-fallback3-offline.log",
+            "log_sha256": "7a8f95096dbe5e2395fcd64c1da24b27d68b6752f3f45081be94af87c48c1708",
+            "construction_sha256": "521fbcc9d3576274dffb11945449d9eb31e3f372825aa58fd072bcf3ab7ac660"
+          },
+          "compatibility": {
+            "receipt": "passing-fallback3-compatibility.json",
+            "sha256": "9584516c855f9cbd7da3333644c0caeb354c5fe7a10d054d087c971aca898beb",
+            "log": "first-primary-compatibility-analysis.log",
+            "negative_log": "compat-negative-9b87aad81c131e60.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log_sha256": "9b87aad81c131e606b650e9f50670af26c5284e8899ee14b21abe3a840cb4d9a"
+          }
+        }
+      ],
       "measurement_procedure": {
         "entrypoint": "heavy_lane_finalizer.py"
       },
@@ -557,9 +727,94 @@
       "construction_sha256": "2ce686adf71b89f23463a7c24657c0d6f0939200512a9897e5fef96e25e64e1d",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Native selected three-lane route may lack downstream connected turn or measured preparation; lawful-turn premise requires independent rule source"
+        "reason": "Native route, heavy vehicle, and original-tick capture may fail on the physical selected site; each fallback changes one measured engineering control."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "lawful_turn_preparation_boundary_crossing-fallback1-construction.json",
+          "construction_sha256": "211f4694942c4c7ea7cf3b915b562aaeca31490bb7aac4356af82959f2760fc0",
+          "trigger": {
+            "source": "Original connected turn-plan source",
+            "metric": "turn destination connectivity gap",
+            "failure_condition": "Primary 2.0 m turn search misses a connected lawful candidate route"
+          },
+          "changed_knobs": [
+            "turn_search_step_m: 2.0 to 1.5"
+          ],
+          "offline": {
+            "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver/provisional-manifest.json --case heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__lawful_turn_preparation_boundary_crossing --candidate fallback1 --output .runtime-work/c305951-turn-fallback1-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "turn-fallback1-offline.log",
+            "log_sha256": "81c020debe2638c427eebf8446f3e73fad1d48a57b53a3f4b7ec2ab8f7fe48c1",
+            "construction_sha256": "211f4694942c4c7ea7cf3b915b562aaeca31490bb7aac4356af82959f2760fc0"
+          },
+          "compatibility": {
+            "receipt": "turn-fallback1-compatibility.json",
+            "sha256": "80f765839309c2aa8a09896d76fd6adb7e8240d0bf58be39f0761e7dfa7bf734",
+            "log": "first-primary-compatibility-analysis.log",
+            "negative_log": "compat-negative-388121034b81b924.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log_sha256": "388121034b81b924ea5c72e76feb802952c68f4dc8a638954164111f43173564"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "lawful_turn_preparation_boundary_crossing-fallback2-construction.json",
+          "construction_sha256": "d6f2b9b1ef0ff1ec62db7334a43753ec81be24ebb02c128825fd43d8f3b83e78",
+          "trigger": {
+            "source": "Native turn approach heavy truck spawn/readback",
+            "metric": "heavy truck spawn collision",
+            "failure_condition": "Primary 0.5 m spawn elevation fails on turn approach"
+          },
+          "changed_knobs": [
+            "spawn_height_offset_m: 0.5 to 0.8"
+          ],
+          "offline": {
+            "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver/provisional-manifest.json --case heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__lawful_turn_preparation_boundary_crossing --candidate fallback2 --output .runtime-work/c305951-turn-fallback2-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "turn-fallback2-offline.log",
+            "log_sha256": "5a85eb34e83f663e52fe5cb2d01cac9a7ae7f71fc405392c9faf0a21d6ba1a84",
+            "construction_sha256": "d6f2b9b1ef0ff1ec62db7334a43753ec81be24ebb02c128825fd43d8f3b83e78"
+          },
+          "compatibility": {
+            "receipt": "turn-fallback2-compatibility.json",
+            "sha256": "c243a9c788f2d61391d2449e8e8ae26307d0fcb4e64bca576ba78ebdc865197e",
+            "log": "first-primary-compatibility-analysis.log",
+            "negative_log": "compat-negative-f59d551983cb785b.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log_sha256": "f59d551983cb785b966cc59fe3702887d74090707cb00199902058d4766447b7"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "lawful_turn_preparation_boundary_crossing-fallback3-construction.json",
+          "construction_sha256": "f7dbb6b0281e2f6807d622a1796c8d265c90ca964fd3d4bd6ba87aba57fedbdc",
+          "trigger": {
+            "source": "Original turn intent and four-camera frame joins",
+            "metric": "turn intent or camera synchronization gap",
+            "failure_condition": "Primary 4.0 m/s target loses stable turn-source frame joins"
+          },
+          "changed_knobs": [
+            "target_speed_mps: 4.0 to 3.0"
+          ],
+          "offline": {
+            "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver/provisional-manifest.json --case heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__lawful_turn_preparation_boundary_crossing --candidate fallback3 --output .runtime-work/c305951-turn-fallback3-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "turn-fallback3-offline.log",
+            "log_sha256": "8602c7a697fc4b0b0388a52360769f9a1ed809858373ebdf7582f5f66268257c",
+            "construction_sha256": "f7dbb6b0281e2f6807d622a1796c8d265c90ca964fd3d4bd6ba87aba57fedbdc"
+          },
+          "compatibility": {
+            "receipt": "turn-fallback3-compatibility.json",
+            "sha256": "4e7508a78af09483b97ce6d85ec506802e1020c4bbd7f7f53dfc5044622bba3d",
+            "log": "first-primary-compatibility-analysis.log",
+            "negative_log": "compat-negative-f32f2c21ec74b743.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log_sha256": "f32f2c21ec74b743d4a6824d2c9ff169563c2ac9cf7f64034bd89fd3b44ee4cb"
+          }
+        }
+      ],
       "measurement_procedure": {
         "entrypoint": "heavy_lane_finalizer.py"
       },
@@ -690,6 +945,32 @@
         "test_log": "turn-primary-saved-processing.json",
         "test_log_sha256": "9621eb09c49013679bb10695ef698df12f48d862623841ef6237b117fa71f9bb",
         "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__lawful_turn_preparation_boundary_crossing",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "turn_plan",
+          "turn_intent_readback",
+          "full_body_footprint",
+          "marked_boundary_geometry",
+          "time_join",
+          "four_camera_full_decode"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "9e944c12f718352aa1df66d7f2a8220fa12bdbfd04c3bb423df01efaa8cb5a76",
+        "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python work/heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver/delivery_audit.py --attempt .runtime-work/c305951-turn-saved-output-v2/v0001/analysis --case heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__lawful_turn_preparation_boundary_crossing",
+        "test_exit_code": 0,
+        "test_log": "turn-primary-delivery-positive.log",
+        "test_log_sha256": "573d62afc0a7862054c574e5a775ed12ae770992f253c03ca7ed904d502f4141",
+        "negative_command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python work/heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver/delivery_audit.py --attempt .runtime-work/c305951-turn-saved-output-v2/v0001/analysis --case heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__lawful_turn_preparation_boundary_crossing --negative-turn",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original turn-intent source join differs",
+        "negative_log": "turn-primary-delivery-negative.log",
+        "negative_log_sha256": "c390803b8c6be08dd53be9d727d303cbc23ad3a9c1c95999f7f5f25748daf7dd"
       }
     }
   ],
@@ -725,6 +1006,22 @@
       "negative_expected_error": "Saved passing participant differs from original source",
       "negative_log": "crossing-passing-comparison-negative.log",
       "negative_log_sha256": "df4e79b6e71d861a3002930a2801671368f37303ff4ee9b7ebe932925672eb66",
+      "fixture_only": true
+    },
+    {
+      "case_ids": [
+        "heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__unexcused_boundary_crossing",
+        "heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__lawful_turn_preparation_boundary_crossing"
+      ],
+      "script": "delivery_audit.py",
+      "script_sha256": "9e944c12f718352aa1df66d7f2a8220fa12bdbfd04c3bb423df01efaa8cb5a76",
+      "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python work/heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver/delivery_audit.py --attempt .runtime-work/c305951-crossing-saved-output-v2/v0001/analysis --compare-attempt .runtime-work/c305951-turn-saved-output-v2/v0001/analysis --turn-comparison",
+      "positive_log": "crossing-turn-comparison-positive.log",
+      "positive_log_sha256": "2d3ef7167329625edb126514050bb103fe7063efebbd8eef60ced60107e5640f",
+      "negative_command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python work/heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver/delivery_audit.py --attempt .runtime-work/c305951-crossing-saved-output-v2/v0001/analysis --compare-attempt .runtime-work/c305951-turn-saved-output-v2/v0001/analysis --turn-comparison --negative-turn",
+      "negative_expected_error": "Original turn-intent source join differs",
+      "negative_log": "crossing-turn-comparison-negative.log",
+      "negative_log_sha256": "8026af2821df0b0629af14f134993f007b1800ac84aee55ad1f9ac550b7862c1",
       "fixture_only": true
     }
   ]

@@ -153,3 +153,7 @@ For review, run the scoped strict gate above and inspect `nine-case-cpu-review.j
 ### 2026-11-15 proof-preserving return compaction
 
 Rebound byte-identical physical fixture logs in the physical proof receipts and execution manifest, then removed 44 superseded legacy physical fixture files that were not referenced by the current selected proof chain. The assignment-scoped strict `--complete --require-delivery-ready` gate passed before and after compaction. Status remains **ready**; no selected CPU proof or frozen input changed.
+
+### 2026-11-16 byte-identical compatibility log compaction
+
+For `bicycle_signal_continuous` and `bicycle_no_signal`, each `compatibility.log` was byte-identical to the retained `compat-receipt.json`. Each case `proof.json` now points its compatibility log to that retained identical file. Exact backups are in `.runtime-work/c111588-compat-dedup/`. Current scoped strict worker check passes.
