@@ -1,0 +1,158 @@
+{
+  "assignment_id": "heldout__C293604__NRS-484B-250-3__motor_vehicle_driver",
+  "law_id": "NRS-484B-250-3",
+  "cell_id": "C293604",
+  "actor": "motor_vehicle_driver",
+  "cases": [
+    {
+      "case_id": "heldout__C293604__NRS-484B-250-3__motor_vehicle_driver__opposing_left_turn",
+      "target_law_id": "NRS-484B-250-3",
+      "gap_ids": [
+        "opposing_left_turn"
+      ],
+      "description": "opposite-direction approach with one vehicle making an observed left turn",
+      "construction_status": "exact_primary_and_fallback_cpu_proofs_passed_synthetic_physical_and_audits_passed_semantic_sweep_pending"
+    },
+    {
+      "case_id": "heldout__C293604__NRS-484B-250-3__motor_vehicle_driver__opposing_left_intent_hold",
+      "target_law_id": "NRS-484B-250-3",
+      "gap_ids": [
+        "opposing_left_turn"
+      ],
+      "description": "opposite-direction approach with planned left turn held throughout original trace",
+      "construction_status": "exact_primary_and_fallback_cpu_proofs_passed_synthetic_physical_and_audits_passed_semantic_sweep_pending"
+    },
+    {
+      "case_id": "heldout__C293604__NRS-484B-250-3__motor_vehicle_driver__turn_release_delay-0000",
+      "target_law_id": "NRS-484B-250-3",
+      "gap_ids": [
+        "opposing_left_turn"
+      ],
+      "description": "fixed physical release delay 0.0 frames after opposing clearance; no legal threshold",
+      "construction_status": "exact_primary_and_three_fallback_cpu_proofs_saved_physical_and_audit_passed"
+    },
+    {
+      "case_id": "heldout__C293604__NRS-484B-250-3__motor_vehicle_driver__turn_release_delay-0001",
+      "target_law_id": "NRS-484B-250-3",
+      "gap_ids": [
+        "opposing_left_turn"
+      ],
+      "description": "fixed physical release delay 160.0 frames after opposing clearance; no legal threshold",
+      "construction_status": "exact_primary_and_three_fallback_cpu_proofs_saved_physical_and_audit_passed"
+    },
+    {
+      "case_id": "heldout__C293604__NRS-484B-250-3__motor_vehicle_driver__turn_release_delay-0002",
+      "target_law_id": "NRS-484B-250-3",
+      "gap_ids": [
+        "opposing_left_turn"
+      ],
+      "description": "fixed physical release delay 80.0 frames after opposing clearance; no legal threshold",
+      "construction_status": "exact_primary_and_three_fallback_cpu_proofs_saved_physical_and_audit_passed"
+    },
+    {
+      "case_id": "heldout__C293604__NRS-484B-250-3__motor_vehicle_driver__opposing_left_shallow_turn",
+      "target_law_id": "NRS-484B-250-3",
+      "gap_ids": [
+        "opposing_left_turn"
+      ],
+      "description": "opposite-direction approach with a source planned shallow left exit (cross about 0.714); observed turning heading remains independently measured",
+      "construction_status": "exact CPU construction in progress; Native physical realization pending"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "opposing_left_intent_vs_making",
+      "case_ids": [
+        "heldout__C293604__NRS-484B-250-3__motor_vehicle_driver__opposing_left_turn",
+        "heldout__C293604__NRS-484B-250-3__motor_vehicle_driver__opposing_left_intent_hold"
+      ],
+      "fixed_conditions": [
+        "same connected opposing approach and planned left route, actor identities, opposite-vehicle travel, camera plan and 8 s duration"
+      ],
+      "deliberate_differences": [
+        "turning actor control held versus released; actual leftward heading change measured from original 20 Hz source"
+      ]
+    },
+    {
+      "comparison_id": "turn_release_delay_sweep",
+      "case_ids": [
+        "heldout__C293604__NRS-484B-250-3__motor_vehicle_driver__turn_release_delay-0000",
+        "heldout__C293604__NRS-484B-250-3__motor_vehicle_driver__turn_release_delay-0001",
+        "heldout__C293604__NRS-484B-250-3__motor_vehicle_driver__turn_release_delay-0002"
+      ],
+      "fixed_conditions": [
+        "same connected opposing route plan, actor identities, 20 Hz duration, four-camera profile and base clearance controller"
+      ],
+      "deliberate_differences": [
+        "fixed extra release delay 0, 80 or 160 frames after opposing clearance; realized heading measured from originals"
+      ]
+    },
+    {
+      "comparison_id": "opposing_left_shallow_vs_orthogonal",
+      "case_ids": [
+        "heldout__C293604__NRS-484B-250-3__motor_vehicle_driver__opposing_left_turn",
+        "heldout__C293604__NRS-484B-250-3__motor_vehicle_driver__opposing_left_shallow_turn"
+      ],
+      "fixed_conditions": [
+        "same opposite-direction actor, source bodies, frame map, trace and four cameras in synthetic diagnostic fixture"
+      ],
+      "deliberate_differences": [
+        "planned exit heading/cross: orthogonal 1.0 versus shallow about 0.714; Native map suitability unresolved"
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "path": "work/heldout__C293604__NRS-484B-250-3__motor_vehicle_driver/assignment.json",
+      "sha256": "d6958ea392e0aa36aeb7f0fc372143de25028fa0d58a16ae92873887b266c7f3"
+    }
+  ],
+  "evidence_review": {
+    "reviewer": "CPU source inventory",
+    "method": "No accepted recording assigned to supplemental cell; original frozen assignment and statute reviewed.",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "opposing_left_turn",
+        "requirement": "Original opposite-direction approach and left-turn trajectory",
+        "source": "work/heldout__C293604__NRS-484B-250-3__motor_vehicle_driver/assignment.json",
+        "why_existing_insufficient": "No accepted recording supplied for the new cell."
+      }
+    ]
+  },
+  "observations": [
+    {
+      "name": "opposing_left_observation",
+      "mandatory": true,
+      "source": "original 20 Hz route, heading and body readback",
+      "measurement": "opposite approach and signed turn trajectory",
+      "case_ids": [
+        "heldout__C293604__NRS-484B-250-3__motor_vehicle_driver__opposing_left_turn",
+        "heldout__C293604__NRS-484B-250-3__motor_vehicle_driver__opposing_left_intent_hold",
+        "heldout__C293604__NRS-484B-250-3__motor_vehicle_driver__turn_release_delay-0000",
+        "heldout__C293604__NRS-484B-250-3__motor_vehicle_driver__turn_release_delay-0001",
+        "heldout__C293604__NRS-484B-250-3__motor_vehicle_driver__turn_release_delay-0002"
+      ]
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "Actual CARLA map suitability, actor motion and camera visibility remain unverified."
+  ],
+  "requirement_dispositions": [
+    {
+      "requirement": "Opposite-direction approaches and one left-turn intent or motion",
+      "source": "work/heldout__C293604__NRS-484B-250-3__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "case_ids": [
+        "heldout__C293604__NRS-484B-250-3__motor_vehicle_driver__opposing_left_turn",
+        "heldout__C293604__NRS-484B-250-3__motor_vehicle_driver__opposing_left_intent_hold",
+        "heldout__C293604__NRS-484B-250-3__motor_vehicle_driver__turn_release_delay-0000",
+        "heldout__C293604__NRS-484B-250-3__motor_vehicle_driver__turn_release_delay-0001",
+        "heldout__C293604__NRS-484B-250-3__motor_vehicle_driver__turn_release_delay-0002",
+        "heldout__C293604__NRS-484B-250-3__motor_vehicle_driver__opposing_left_shallow_turn"
+      ],
+      "evidence_or_gap": "No accepted original route/body/heading source supplied."
+    }
+  ]
+}

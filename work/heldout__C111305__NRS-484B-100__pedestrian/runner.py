@@ -1,4 +1,4 @@
-"""Native pedestrian/officer construction for the four exact C111305 cases.
+"""Native pedestrian/officer construction for seven exact C111305 response and cue-timing cases.
 
 The command is a staged physical cue. Authority, lawful duty, perception and
 willfulness stay open for independent review of original sources.
@@ -20,6 +20,13 @@ CASES = {
     'proceed_responds': ('proceed', True),
     'proceed_does_not_respond': ('proceed', False),
 }
+TIMING_CASES = {
+    'stop_responds_timing_early': ('stop', True),
+    'stop_responds_timing_nominal': ('stop', True),
+    'stop_responds_timing_late': ('stop', True),
+}
+TIMING_FRAMES = {'stop_responds_timing_early': 30, 'stop_responds_timing_nominal': 40, 'stop_responds_timing_late': 50}
+
 CAMERAS = {
     'overview': ((-6, 0, 7), (-15, 0, 0), (1920, 1080), 95),
     'approach': ((1, 0, 2), (0, 0, 0), (1280, 720), 90),
@@ -33,10 +40,11 @@ def check_config(config):
         raise ValueError('Wrong frozen pedestrian officer scope')
     case = config.get('selected_case_id', '')
     suffix = case.removeprefix(PREFIX)
-    if case != PREFIX + suffix or suffix not in CASES or config.get('case', {}).get('case_id') != case:
+    if case != PREFIX + suffix or suffix not in (CASES | TIMING_CASES) or config.get('case', {}).get('case_id') != case:
         raise ValueError('Unknown exact pedestrian officer case')
-    if config.get('rate_hz') != 20 or config.get('frames') != 160 or config.get('direction_frame') != 40:
-        raise ValueError('20 Hz direction and duration contract changed')
+    expected_frame = TIMING_FRAMES.get(suffix, 40)
+    if config.get('rate_hz') != 20 or config.get('frames') != 160 or config.get('direction_frame') != expected_frame:
+        raise ValueError('20 Hz direction and exact cue-timing contract changed')
     if [(c.get('name'), c.get('width'), c.get('height')) for c in config.get('cameras', [])] != [
         (name, spec[2][0], spec[2][1]) for name, spec in CAMERAS.items()]:
         raise ValueError('Four named source-camera plan changed')
@@ -44,7 +52,7 @@ def check_config(config):
         raise ValueError('Unsupported pedestrian walk speed')
     if not 0 <= float(config.get('overview_height_delta_m', 0)) <= 2:
         raise ValueError('Unsupported overview mount change')
-    return CASES[suffix]
+    return (CASES | TIMING_CASES)[suffix]
 
 
 def choose_crosswalk(world_map, carla):

@@ -279,3 +279,5 @@ Final full strict gate rerun after the six exact-case CPU proofs: `.venv-cpu/bin
 ## 2026-11-16 return-file cap checkpoint
 
 `turn-diagnostic.json` and `passing-diagnostic.json` were preserved byte-exact in `result.json.preserved_diagnostic_sources` as per-file lzma-base64 UTF-8 with original SHA-256, then their direct copies were removed to free two return-file slots. Restore each with `lzma.decompress(base64.b64decode(entry["data"]))` and verify `hashlib.sha256(bytes).hexdigest() == entry["sha256"]` before this partial package's fixture proofs. This is file-cap housekeeping, not a missing tool or external blocker. The package remains partial.
+
+The third diagnostic `cases/heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__heavy_passing_plan-0000/diagnostic.json` is preserved byte-exact under `work/_shared/prune-history-bundle-all.json.preserved_source_files` as lzma-base64 UTF-8 with SHA-256. Restore it to the listed path and verify the hash before continuing this partial package. All three preserved diagnostics remain CPU work to restore and test; no external dependency is claimed.

@@ -1,0 +1,29 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "heldout__C111305__NRS-484B-100__pedestrian__stop_responds",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Addressed officer direction to pedestrian at connected crossing, exact wait location and release, source context for duty and communication, post-indication response; lawfulness, perception and willfulness remain unresolved",
+      "source": "inputs/heldout__C111305__NRS-484B-100__pedestrian/assignment.json",
+      "output_key": "officer_response",
+      "method": "analyze_saved",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "officer_context.json",
+        "officer_direction.json",
+        "subject_motion.json",
+        "subject_motion_history.jsonl",
+        "video_frames.jsonl",
+        "trace.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "officer_direction.json"
+    ],
+    "error_contains": "Missing required source: officer_direction.json"
+  }
+}
