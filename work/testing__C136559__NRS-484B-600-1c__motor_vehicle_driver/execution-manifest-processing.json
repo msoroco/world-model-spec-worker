@@ -1,0 +1,47 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver",
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3",
+  "cases": [
+    {
+      "case_id": "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__posted_below",
+      "kind": "delivery",
+      "construction": "construction.json",
+      "construction_sha256": "4b44295b117236890388325f31a445f7cc1589956f7a1d2865c4bacab0c56583",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "mph",
+            "method": "3D magnitude of original actor.get_velocity in source-joined posted road interval",
+            "time_window": "full 30 second 20 Hz capture",
+            "reference_frame": "Native subject actor",
+            "uncertainty": "sampled speeds; between-sample maxima unresolved",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Authored OpenDRIVE signal is diagnostic; public authority and signed highway portion require independent source review."
+        ]
+      },
+      "readiness": "partial; authored sign and public-authority provenance unresolved",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "original actor.get_velocity joined to Native frame and road coordinate at 20 Hz",
+          "evidence": "subject_motion.jsonl, video_frames.jsonl and sign_context.json"
+        }
+      },
+      "fixture_recipe": "work/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/fixture-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Authored speed signal may not instantiate or govern a Native sign actor; spawn/trigger, camera visibility and public-authority posting remain unverified."
+      }
+    }
+  ]
+}

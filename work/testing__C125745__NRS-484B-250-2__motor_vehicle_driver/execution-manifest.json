@@ -304,6 +304,308 @@
         "test_exit_code": 0,
         "proof_scope": "synthetic original-source recorded-only processing; physical/legal acceptance unclaimed"
       }
+    },
+    {
+      "case_id": "testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_ego_left_separated",
+      "kind": "delivery",
+      "construction": "third-construction.json",
+      "construction_sha256": "4e2a1e18e031de7fef0d563bb7cfe5209d269fe7be10a4c57b318285ebce018b",
+      "physical_risk": {
+        "status": "physical",
+        "reason": "Controller braking may compress measured body-entry separation"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "third-fallback1-construction.json",
+          "construction_sha256": "ea52fb044e7a11bfcaaf3b69a0d54be3c3417cba968d87e5969d4a472b40bb65",
+          "trigger": {
+            "source": "retained original Native capture and four source-camera streams",
+            "metric": "ego_hold_after_clear_frames",
+            "failure_condition": "Controller braking compresses the intended entry separation"
+          },
+          "changed_knobs": [
+            "ego_hold_after_clear_frames"
+          ],
+          "remedy": "Extend ego post-clear hold from eight to twelve frames",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_ego_left_separated --candidate fallback1 --output .runtime-work/c125745-third-fallback1-offline-v1",
+            "exit_code": 0,
+            "construction_sha256": "ea52fb044e7a11bfcaaf3b69a0d54be3c3417cba968d87e5969d4a472b40bb65",
+            "log": "third-fallback1-offline-v1.log",
+            "log_sha256": "49f38c7afe60f38f5d10b8b9bd2a5bf9e1d35cb5524ec4754a69d3481fee9086"
+          },
+          "compatibility": {
+            "receipt": "third-fallback1-compatibility-receipt-v1.json",
+            "sha256": "e16eee41e3c90c8569e02aee98105080ad32a641fccb986ddf09a704ff8d517a",
+            "log": "third-fallback1-analysis-v1.log",
+            "negative_log": "third-fallback1-negative-v1.log"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_ego_left_separated --attempt .runtime-work/c125745-third-fallback1-compatibility-v1 --output .runtime-work/c125745-third-fallback1-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "test_log": "third-fallback1-saved-v1.log",
+            "test_log_sha256": "3889e63ed917cec01f2c0c7f90dd02d90b26a41ef2314a5a3cba33ec8be87d77",
+            "test_exit_code": 0,
+            "proof_scope": "synthetic original-source recorded-only processing; physical/legal acceptance unclaimed"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "third-fallback2-construction.json",
+          "construction_sha256": "f5b29caf409dfaa45a3cd2b9de74b09a5302004156176d8843dafd9700c82507",
+          "trigger": {
+            "source": "retained original Native capture and four source-camera streams",
+            "metric": "other_release_frame",
+            "failure_condition": "Other vehicle arrives too late for the planned separated ordering"
+          },
+          "changed_knobs": [
+            "other_release_frame"
+          ],
+          "remedy": "Release the other vehicle six frames earlier",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_ego_left_separated --candidate fallback2 --output .runtime-work/c125745-third-fallback2-offline-v1",
+            "exit_code": 0,
+            "construction_sha256": "f5b29caf409dfaa45a3cd2b9de74b09a5302004156176d8843dafd9700c82507",
+            "log": "third-fallback2-offline-v1.log",
+            "log_sha256": "2713ef43946e4a6dfd78f0c81ca3687865402e150f91b9a4ba8913d6553d32ee"
+          },
+          "compatibility": {
+            "receipt": "third-fallback2-compatibility-receipt-v1.json",
+            "sha256": "048adf4425804c4cbd44486888a0b83cca55359f90e0dd4806ac99164f6b3757",
+            "log": "third-fallback2-analysis-v1.log",
+            "negative_log": "third-fallback2-negative-v1.log"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_ego_left_separated --attempt .runtime-work/c125745-third-fallback2-compatibility-v1 --output .runtime-work/c125745-third-fallback2-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "test_log": "third-fallback2-saved-v1.log",
+            "test_log_sha256": "343a1f2713d49ca9a9a2a0514c71c58f7821867253baf87e9db5ce75ecefa978",
+            "test_exit_code": 0,
+            "proof_scope": "synthetic original-source recorded-only processing; physical/legal acceptance unclaimed"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "third-fallback3-construction.json",
+          "construction_sha256": "8da6f7c6c438ac929dd1308d74ff9da711417a8ac5d7b6926e07c031bd8de95a",
+          "trigger": {
+            "source": "retained original Native capture and four source-camera streams",
+            "metric": "capture_duration",
+            "failure_condition": "The longer held ego has not completely cleared within the source recording"
+          },
+          "changed_knobs": [
+            "capture_duration"
+          ],
+          "remedy": "Extend synchronized capture to 1100 frames",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_ego_left_separated --candidate fallback3 --output .runtime-work/c125745-third-fallback3-offline-v1",
+            "exit_code": 0,
+            "construction_sha256": "8da6f7c6c438ac929dd1308d74ff9da711417a8ac5d7b6926e07c031bd8de95a",
+            "log": "third-fallback3-offline-v1.log",
+            "log_sha256": "ea0c7ac5019f8802a2d1f6100f3bde0f392f9870d641fa997c19470240ff4ad5"
+          },
+          "compatibility": {
+            "receipt": "third-fallback3-compatibility-receipt-v1.json",
+            "sha256": "d105ae71e37c93d72f506c834bc31dfd2932384b695b78bb5effca8233e97428",
+            "log": "third-fallback3-analysis-v1.log",
+            "negative_log": "third-fallback3-negative-v1.log"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_ego_left_separated --attempt .runtime-work/c125745-third-fallback3-compatibility-v1 --output .runtime-work/c125745-third-fallback3-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "test_log": "third-fallback3-saved-v1.log",
+            "test_log_sha256": "a8d50df3289be132ed6eb091110a63dcae991ffc3bd68467921d55d0563c8dc9",
+            "test_exit_code": 0,
+            "proof_scope": "synthetic original-source recorded-only processing; physical/legal acceptance unclaimed"
+          }
+        }
+      ],
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "fixture_recipe": "work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/third-diagnostic-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_ego_left_separated --output .runtime-work/c125745-third-primary-offline-v1",
+        "exit_code": 0,
+        "construction_sha256": "4e2a1e18e031de7fef0d563bb7cfe5209d269fe7be10a4c57b318285ebce018b",
+        "log": "third-primary-offline-v1.log",
+        "log_sha256": "0c8d1360e1364ee94297dc37bb6b18eaf249e4bfe1e956ad3a800889ecb93603"
+      },
+      "compatibility": {
+        "receipt": "third-primary-compatibility-receipt-v2.json",
+        "sha256": "d721c20cd1ebba76d414f9d4afe4a224a95003645faa9770c4248a98ce2f2aaf",
+        "log": "third-primary-analysis-v2.log",
+        "negative_log": "third-primary-negative-v2.log"
+      },
+      "negative": {
+        "log": "third-primary-negative-v2.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_ego_left_separated --attempt .runtime-work/c125745-third-primary-compatibility-v2 --output .runtime-work/c125745-third-primary-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "test_log": "third-primary-saved-v1.log",
+        "test_log_sha256": "b5c4208b706a67bb20ec369e1a2f8ff8ac170e4ca2b88d704430db9c67ded569",
+        "test_exit_code": 0,
+        "proof_scope": "synthetic original-source recorded-only processing; physical/legal acceptance unclaimed"
+      }
+    },
+    {
+      "case_id": "testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_opposite_left_turn",
+      "kind": "delivery",
+      "construction": "fourth-construction.json",
+      "construction_sha256": "10bcda2882d9bc2761ccc437ae49091f834d2a3ce3bb7b83e81790a0ed7ba016",
+      "physical_risk": {
+        "status": "physical",
+        "reason": "Median opening may not support safe opposite-direction left turn"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fourth-fallback1-construction.json",
+          "construction_sha256": "70279046ffc4ad10f887f915760787b4f651d96a52607ce3a321a6f0b2f36330",
+          "trigger": {
+            "source": "retained original Native capture and four source-camera streams",
+            "metric": "site.approaches.other.route_xy_m",
+            "failure_condition": "The left-turn exit clips the synthetic median-opening clearance"
+          },
+          "changed_knobs": [
+            "site.approaches.other.route_xy_m"
+          ],
+          "remedy": "Extend the other vehicle southbound exit along its reviewed route",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_opposite_left_turn --candidate fallback1 --output .runtime-work/c125745-fourth-fallback1-offline-v1",
+            "exit_code": 0,
+            "construction_sha256": "70279046ffc4ad10f887f915760787b4f651d96a52607ce3a321a6f0b2f36330",
+            "log": "fourth-fallback1-offline-v1.log",
+            "log_sha256": "eb075ad0affac43294c872ff2c481521f286cd7b5c0379ea73a064ab75edcb54"
+          },
+          "compatibility": {
+            "receipt": "fourth-fallback1-compatibility-receipt-v1.json",
+            "sha256": "21d72836047caab5878a06b1db179ff92bbbe49b82509d9903f235c9cf4bc1fa",
+            "log": "fourth-fallback1-analysis-v1.log",
+            "negative_log": "fourth-fallback1-negative-v1.log"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_opposite_left_turn --attempt .runtime-work/c125745-fourth-fallback1-compatibility-v1 --output .runtime-work/c125745-fourth-fallback1-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "test_log": "fourth-fallback1-saved-v1.log",
+            "test_log_sha256": "681af05373c8c961c615984d18aab02f676e7ac92605a68283e882b61668a1f0",
+            "test_exit_code": 0,
+            "proof_scope": "synthetic original-source recorded-only processing; physical/legal acceptance unclaimed"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "fourth-fallback2-construction.json",
+          "construction_sha256": "e69044c4e42cac765c872db4dadcc80ea1c7f8fc859180e36b274293b2265a51",
+          "trigger": {
+            "source": "retained original Native capture and four source-camera streams",
+            "metric": "other_release_frame",
+            "failure_condition": "Opposite-direction arrival conflicts with the ego stopped approach"
+          },
+          "changed_knobs": [
+            "other_release_frame"
+          ],
+          "remedy": "Release the other vehicle six frames later",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_opposite_left_turn --candidate fallback2 --output .runtime-work/c125745-fourth-fallback2-offline-v1",
+            "exit_code": 0,
+            "construction_sha256": "e69044c4e42cac765c872db4dadcc80ea1c7f8fc859180e36b274293b2265a51",
+            "log": "fourth-fallback2-offline-v1.log",
+            "log_sha256": "d36f518795f6d03f452656c848d5dc5e5fdc76388fac88908541b3b03c44a8e8"
+          },
+          "compatibility": {
+            "receipt": "fourth-fallback2-compatibility-receipt-v1.json",
+            "sha256": "ef954b255358a64272922266975b26c93631851a5d48083a15445295f59881f5",
+            "log": "fourth-fallback2-analysis-v1.log",
+            "negative_log": "fourth-fallback2-negative-v1.log"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_opposite_left_turn --attempt .runtime-work/c125745-fourth-fallback2-compatibility-v1 --output .runtime-work/c125745-fourth-fallback2-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "test_log": "fourth-fallback2-saved-v1.log",
+            "test_log_sha256": "459d83ad075796e0a3115b8717f39e8be057bff668c8448607fc5da085101372",
+            "test_exit_code": 0,
+            "proof_scope": "synthetic original-source recorded-only processing; physical/legal acceptance unclaimed"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "fourth-fallback3-construction.json",
+          "construction_sha256": "448338f164a8a8322d85ad9fbab8227ae795be05bc1e92fac7816c053470b527",
+          "trigger": {
+            "source": "retained original Native capture and four source-camera streams",
+            "metric": "site.camera_poses.reference_corner",
+            "failure_condition": "The turn intention or governing sign is occluded in corner-camera pixels"
+          },
+          "changed_knobs": [
+            "site.camera_poses.reference_corner"
+          ],
+          "remedy": "Move the reference-corner camera to an elevated opposite view",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_opposite_left_turn --candidate fallback3 --output .runtime-work/c125745-fourth-fallback3-offline-v1",
+            "exit_code": 0,
+            "construction_sha256": "448338f164a8a8322d85ad9fbab8227ae795be05bc1e92fac7816c053470b527",
+            "log": "fourth-fallback3-offline-v1.log",
+            "log_sha256": "32a1b706a7ded26e756a1729abb0dc55dce005d5cd5b49e5d1a1d7d3dcd27e9f"
+          },
+          "compatibility": {
+            "receipt": "fourth-fallback3-compatibility-receipt-v1.json",
+            "sha256": "5bfd0f67cf954322dd310477d0eec942a9ef21e29a4ab893d5a6ac151f0ca70e",
+            "log": "fourth-fallback3-analysis-v1.log",
+            "negative_log": "fourth-fallback3-negative-v1.log"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_opposite_left_turn --attempt .runtime-work/c125745-fourth-fallback3-compatibility-v1 --output .runtime-work/c125745-fourth-fallback3-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "test_log": "fourth-fallback3-saved-v1.log",
+            "test_log_sha256": "a78a3cda129194bafdd76731672113de1773a1bd7bd709c1f764763111cec384",
+            "test_exit_code": 0,
+            "proof_scope": "synthetic original-source recorded-only processing; physical/legal acceptance unclaimed"
+          }
+        }
+      ],
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "fixture_recipe": "work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/fourth-diagnostic-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_opposite_left_turn --output .runtime-work/c125745-fourth-primary-offline-v1",
+        "exit_code": 0,
+        "construction_sha256": "10bcda2882d9bc2761ccc437ae49091f834d2a3ce3bb7b83e81790a0ed7ba016",
+        "log": "fourth-primary-offline-v1.log",
+        "log_sha256": "4cacfced6c1b88e666353afeeb17d7ee9364f4ad36b5c91a5a042b8136100b75"
+      },
+      "compatibility": {
+        "receipt": "fourth-primary-compatibility-receipt-v1.json",
+        "sha256": "f2bb6708b4ccd9dcf72d5e4ecd2085e35600d8abb5fb0ce3c5e19b0d8e620edc",
+        "log": "fourth-primary-analysis-v1.log",
+        "negative_log": "fourth-primary-negative-v1.log"
+      },
+      "negative": {
+        "log": "fourth-primary-negative-v1.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_opposite_left_turn --attempt .runtime-work/c125745-fourth-primary-compatibility-v1 --output .runtime-work/c125745-fourth-primary-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "test_log": "fourth-primary-saved-v1.log",
+        "test_log_sha256": "e52528503efdd77d5ccb5c2498266494ff96e76ef8a43b6a1a8389b8860376b7",
+        "test_exit_code": 0,
+        "proof_scope": "synthetic original-source recorded-only processing; physical/legal acceptance unclaimed"
+      }
     }
   ],
   "status": "partial_first_case_cpu_bundle"

@@ -1,12 +1,44 @@
-import hashlib,importlib.util,json,tempfile,unittest
+import hashlib,importlib.util,json,sys,tempfile,unittest
 from pathlib import Path
 from types import SimpleNamespace as NS
 ROOT=Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(ROOT))
 def load(name):
  s=importlib.util.spec_from_file_location(name,ROOT/(name+'.py'));m=importlib.util.module_from_spec(s);s.loader.exec_module(m);return m
-measure=load('one_way_measurements');native=load('native_one_way');comparison=load('comparison_audit');control=load('direction_control');site=load('site_review')
+measure=load('one_way_measurements');native=load('native_one_way');comparison=load('comparison_audit');control=load('direction_control');site=load('site_review');runner=load('runner')
 def body(x):return [[x-1,-1],[x+1,-1],[x+1,1],[x-1,1]]
 class Tests(unittest.TestCase):
+ def test_integrated_physical_preparation_routes_and_camera_spawns(self):
+  with tempfile.TemporaryDirectory() as tmp:
+   root=Path(tmp);self.fixture(root)
+   packet=json.loads((root/'site_packet.json').read_text())
+   packet.update({'travel_lane_id':-1,'start_z_m':0.3})
+   (root/'site_packet.json').write_text(json.dumps(packet))
+   def wp(lane,x,y):return NS(road_id=5,lane_id=lane,lane_type='Driving',transform=NS(location=NS(x=x,y=y)))
+   points=[wp(lane,x,y) for lane,y in ((-1,0),(-2,3)) for x in (0,10,20)]
+   spawned=[]
+   class Blueprint:
+    def set_attribute(self,key,value):pass
+   class Sensor:
+    def __init__(self):self.stopped=False;self.destroyed=False
+    def stop(self):self.stopped=True
+    def destroy(self):self.destroyed=True
+   world=NS(get_map=lambda:NS(name='TownX',generate_waypoints=lambda spacing:points),
+            get_blueprint_library=lambda:NS(find=lambda identifier:Blueprint()),
+            spawn_actor=lambda blueprint,transform,**kwargs:spawned.append(Sensor()) or spawned[-1])
+   config=json.loads((ROOT/'config.json').read_text())
+   for case,first in ((runner.WITH,[0.0,0.0]),(runner.AGAINST,[20.0,0.0])):
+    config['selected_case_id']=case;runner.validate_config(config)
+    prepared,route=runner.prepare_site(world,packet,root,config)
+    self.assertEqual(route[0],first)
+    self.assertEqual(prepared['site_review']['physical_sign_visibility'],'unverified')
+    carla=NS(Location=lambda **kw:NS(**kw),Rotation=lambda **kw:NS(**kw),
+            Transform=lambda location,rotation:NS(location=location,rotation=rotation))
+    transforms=runner._camera_transforms(carla,packet,route[0],0)
+    with runner.source_cameras(world,NS(),transforms,config['cameras']) as sensors:
+     self.assertEqual(set(sensors),set(runner.CAMERAS))
+    self.assertTrue(all(s.stopped and s.destroyed for s in spawned))
+   self.assertEqual(len(spawned),8)
  def fixture(self,root,reverse=False):
   (root/'designation.txt').write_text('Synthetic designation source')
   (root/'sign.txt').write_text('Synthetic sign source')

@@ -78,7 +78,7 @@ def finalize(attempt, output):
               'capture_evidence_sha256': _sha(attempt/'capture/evidence.jsonl'),
               'realized_observables': {}}
     result = physical_result(attempt, result)
-    inputs = ('road_context.json', 'site_packet.json', 'travel_history.jsonl', 'video_frames.jsonl')
+    inputs = ('road_context.json', 'travel_history.jsonl', 'video_frames.jsonl')
     measurements = {'one_way_direction': {'method': 'measure_one_way_direction',
                     'value': observed, 'sources': {name: report['sources'][name] for name in inputs}}}
     analysis = {'format': 'worker-one-way-analysis', 'case_id': config['selected_case_id'],

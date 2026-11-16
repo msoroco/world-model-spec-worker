@@ -1,0 +1,114 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver",
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3",
+  "cases": [
+    {
+      "case_id": "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__posted_below",
+      "kind": "delivery",
+      "construction": "construction.json",
+      "construction_sha256": "4b44295b117236890388325f31a445f7cc1589956f7a1d2865c4bacab0c56583",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "mph",
+            "method": "3D magnitude of original actor.get_velocity in source-joined posted road interval",
+            "time_window": "full 30 second 20 Hz capture",
+            "reference_frame": "Native subject actor",
+            "uncertainty": "sampled speeds; between-sample maxima unresolved",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Authored OpenDRIVE signal is diagnostic; public authority and signed highway portion require independent source review."
+        ]
+      },
+      "readiness": "partial; authored sign and public-authority provenance unresolved",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "original actor.get_velocity joined to Native frame and road coordinate at 20 Hz",
+          "evidence": "subject_motion.jsonl, video_frames.jsonl and sign_context.json"
+        }
+      },
+      "fixture_recipe": "work/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/fixture-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Authored speed signal may not instantiate or govern a Native sign actor; spawn/trigger, camera visibility and public-authority posting remain unverified."
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "4b44295b117236890388325f31a445f7cc1589956f7a1d2865c4bacab0c56583",
+        "log": "primary-offline.log",
+        "log_sha256": "fe008aab760eb03ccac7578e2b84665b1b50b0d7f855b17a0c7a8d039435b658"
+      },
+      "compatibility": {
+        "receipt": "primary-compatibility.json",
+        "sha256": "6144646ac40af8c405fd97fa87547c7bb7a44ead418ebcf74891b8548d4d9776",
+        "log": "primary-compatibility-analysis.log",
+        "negative_log": "primary-negative-analysis.log",
+        "camera_decode_receipt": "primary-camera-decode.json",
+        "camera_decode_sha256": "12458cd4faa7066ca26290460bdc0aabc6ddd92c004db1a09b54e3b24a0a70ed",
+        "command_log": "primary-compatibility-command.log",
+        "command_log_sha256": "6144646ac40af8c405fd97fa87547c7bb7a44ead418ebcf74891b8548d4d9776"
+      },
+      "negative": {
+        "log": "primary-negative-analysis.log"
+      },
+      "saved_processing": {
+        "receipt": "primary-saved-processing.json",
+        "sha256": "67e068c6f6d40934e95fb66830af921e0d15ae78a136ad305228792e5dddf137",
+        "log": "primary-saved-command.log",
+        "log_sha256": "67e068c6f6d40934e95fb66830af921e0d15ae78a136ad305228792e5dddf137",
+        "proof_manifest": "execution-manifest-processing.json",
+        "proof_manifest_sha256": "52858fffb0e4ad0fe1b25bd65f9032423c840301c822af9ad0fcb72cf045a9b7"
+      }
+    },
+    {
+      "case_id": "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__posted_at",
+      "kind": "delivery",
+      "construction": "cases/at/construction.json",
+      "construction_sha256": "6dcef6f7c21140d5dc1fbc11dc3832a429d03d5ae505a56fa07b35da9c7c013a",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "mph",
+            "method": "3D magnitude of original actor.get_velocity in source-joined posted road interval",
+            "time_window": "full 30 second 20 Hz capture",
+            "reference_frame": "Native subject actor",
+            "uncertainty": "sampled speeds; between-sample maxima unresolved",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Authored OpenDRIVE signal is diagnostic; public authority and signed highway portion require independent source review."
+        ]
+      },
+      "readiness": "partial; authored sign and public-authority provenance unresolved",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "original actor.get_velocity joined to Native frame and road coordinate at 20 Hz",
+          "evidence": "subject_motion.jsonl, video_frames.jsonl and sign_context.json"
+        }
+      },
+      "fixture_recipe": "work/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/cases/at/fixture-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Requested equality may be obscured by 20 Hz sampling and controller drift; Native sign/trigger, camera and authority remain unverified."
+      }
+    }
+  ]
+}

@@ -1,13 +1,13 @@
 {
   "cell_id": "C147311",
   "actor": "motor_vehicle_driver",
-  "status": "partial",
+  "status": "draft",
   "cases": [
     {
-      "case_id": "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__source_verified_with_designation",
-      "target_law_id": "NRS-484B-220-1",
-      "target_type": "compliant_attempt",
-      "rationale": "Source-joined same-lane travel in designated direction; legal authority and actual sign visibility remain unverified.",
+      "case_id": "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared sourced one-way road, lane, sign packet and camera context for the linked direction comparison; not a selected physical execution.",
       "variable_assignments": {
         "commanded_travel_direction": {
           "kind": "controller",
@@ -25,9 +25,7 @@
           "unit": "m"
         }
       },
-      "unresolved_judgment_calls": [
-        "Authority designation and installed sign visibility require independent source review."
-      ],
+      "unresolved_judgment_calls": [],
       "recording_description": {
         "channels": [
           {
@@ -68,6 +66,154 @@
         "limitations": [
           "Designation authority and actual sign visibility require independent review."
         ]
+      }
+    },
+    {
+      "case_id": "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__source_verified_with_designation",
+      "target_law_id": "NRS-484B-220-1",
+      "target_type": "compliant_attempt",
+      "rationale": "Source-joined same-lane travel in designated direction; legal authority and actual sign visibility remain unverified.",
+      "variable_assignments": {
+        "commanded_travel_direction": {
+          "kind": "controller",
+          "value": "with_designation",
+          "unit": "categorical"
+        },
+        "designation_source_status": {
+          "kind": "world_setup",
+          "value": "unverified",
+          "unit": "categorical"
+        },
+        "observed_projected_displacement": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "designated_motion",
+            "unit": "boolean",
+            "method": "original complete-body displacement projected on sourced designation",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "between-frame motion unresolved"
+          },
+          {
+            "name": "heading_alignment",
+            "unit": "scalar",
+            "method": "original heading projected on sourced designation",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "heading sampling at 20 Hz"
+          },
+          {
+            "name": "roadway_occupancy",
+            "unit": "boolean",
+            "method": "complete body covered by sourced one-way roadway polygon",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "actual map/sign authority requires independent review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "road_context",
+            "unit": "structured record",
+            "method": "hashed designation/sign docs joined to Native map, lanes and roadway"
+          }
+        ],
+        "limitations": [
+          "Designation authority and actual sign visibility require independent review."
+        ]
+      },
+      "paired_probe_id": "designated_direction_pair",
+      "deliberate_differences": [
+        "commanded_travel_direction"
+      ],
+      "probe": {
+        "primary_variable": "commanded_travel_direction",
+        "comparison_or_standard": "same sourced road, lane, designation and signs; opposite original body direction",
+        "target_value_or_branch": "with_designation"
+      }
+    },
+    {
+      "case_id": "testing__C147311__NRS-484B-220-1__motor_vehicle_driver__source_verified_against_designation",
+      "target_law_id": "NRS-484B-220-1",
+      "target_type": "violating_attempt",
+      "rationale": "Same sourced road/sign/lane with the opposite planned movement; actual wrong-way body motion and authority remain unverified.",
+      "variable_assignments": {
+        "commanded_travel_direction": {
+          "kind": "controller",
+          "value": "against_designation",
+          "unit": "categorical"
+        },
+        "designation_source_status": {
+          "kind": "world_setup",
+          "value": "unverified",
+          "unit": "categorical"
+        },
+        "observed_projected_displacement": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "designated_motion",
+            "unit": "boolean",
+            "method": "original complete-body displacement projected on sourced designation",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "between-frame motion unresolved"
+          },
+          {
+            "name": "heading_alignment",
+            "unit": "scalar",
+            "method": "original heading projected on sourced designation",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "heading sampling at 20 Hz"
+          },
+          {
+            "name": "roadway_occupancy",
+            "unit": "boolean",
+            "method": "complete body covered by sourced one-way roadway polygon",
+            "time_window": "entire captured interval",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "actual map/sign authority requires independent review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "road_context",
+            "unit": "structured record",
+            "method": "hashed designation/sign docs joined to Native map, lanes and roadway"
+          }
+        ],
+        "limitations": [
+          "Designation authority and actual sign visibility require independent review."
+        ]
+      },
+      "paired_probe_id": "designated_direction_pair",
+      "deliberate_differences": [
+        "commanded_travel_direction"
+      ],
+      "probe": {
+        "primary_variable": "commanded_travel_direction",
+        "comparison_or_standard": "same sourced road, lane, designation and signs; opposite original body direction",
+        "target_value_or_branch": "against_designation"
       }
     }
   ],

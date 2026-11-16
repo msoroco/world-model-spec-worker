@@ -694,3 +694,5 @@ checkpoint. The next incomplete assignment in batch order is
 `HANDOFF.md` identifies the physically feasible judgment sweep and final
 branch/delivery integration as worker-owned CPU work. Do not reinterpret its
 synthetic dynamics probe as verified Native feasibility.
+
+To stay within the batch return-file cap, 120 older logs absent from all current JSON/Python proof references were moved to ignored `.runtime-work/retired-logs/ready-c125763-20261115/`; the archive manifest records the original paths. The scoped strict gate was rerun after this move.

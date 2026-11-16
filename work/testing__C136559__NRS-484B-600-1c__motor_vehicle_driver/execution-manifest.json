@@ -7,7 +7,7 @@
       "case_id": "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__posted_below",
       "kind": "delivery",
       "construction": "construction.json",
-      "construction_sha256": "5fc2be6374b69fad6d20cae38ec9a5434de4f5b23b765eb33d571d21ddcd103c",
+      "construction_sha256": "4b44295b117236890388325f31a445f7cc1589956f7a1d2865c4bacab0c56583",
       "recording_description": {
         "channels": [
           {
@@ -36,7 +36,493 @@
           "method": "original actor.get_velocity joined to Native frame and road coordinate at 20 Hz",
           "evidence": "subject_motion.jsonl, video_frames.jsonl and sign_context.json"
         }
-      }
+      },
+      "fixture_recipe": "work/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/fixture-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Authored speed signal may not instantiate or govern a Native sign actor; spawn/trigger, camera visibility and public-authority posting remain unverified."
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "4b44295b117236890388325f31a445f7cc1589956f7a1d2865c4bacab0c56583",
+        "log": "primary-offline.log",
+        "log_sha256": "fe008aab760eb03ccac7578e2b84665b1b50b0d7f855b17a0c7a8d039435b658"
+      },
+      "compatibility": {
+        "receipt": "primary-compatibility.json",
+        "sha256": "6144646ac40af8c405fd97fa87547c7bb7a44ead418ebcf74891b8548d4d9776",
+        "log": "primary-compatibility-analysis.log",
+        "negative_log": "primary-negative-analysis.log",
+        "camera_decode_receipt": "primary-camera-decode.json",
+        "camera_decode_sha256": "12458cd4faa7066ca26290460bdc0aabc6ddd92c004db1a09b54e3b24a0a70ed",
+        "command_log": "primary-compatibility-command.log",
+        "command_log_sha256": "6144646ac40af8c405fd97fa87547c7bb7a44ead418ebcf74891b8548d4d9776"
+      },
+      "negative": {
+        "log": "primary-negative-analysis.log"
+      },
+      "saved_processing": {
+        "receipt": "primary-saved-processing.json",
+        "sha256": "67e068c6f6d40934e95fb66830af921e0d15ae78a136ad305228792e5dddf137",
+        "log": "primary-saved-command.log",
+        "log_sha256": "67e068c6f6d40934e95fb66830af921e0d15ae78a136ad305228792e5dddf137",
+        "proof_manifest": "execution-manifest-processing.json",
+        "proof_manifest_sha256": "52858fffb0e4ad0fe1b25bd65f9032423c840301c822af9ad0fcb72cf045a9b7"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/below/fallback1-construction.json",
+          "construction_sha256": "2eb8c6604836a0c72b29e8f0c070ca50ae65a02bdc2fddecf3a1d1d42ac940ef",
+          "trigger": {
+            "source": "Native world sign actor/trigger check at route start",
+            "metric": "matching sign actors whose trigger contains approach waypoint",
+            "failure_condition": "Primary find_governing_speed_sign finds zero matching actors at the route start"
+          },
+          "changed_knobs": [
+            "scene.xodr signal s: 350 -> 100 m",
+            "config zone_start_s_m: 350 -> 100 m"
+          ],
+          "physical_limit": "Run only after independently sourcing actual sign governance and verifying Native scene, corridor, camera, and vehicle behavior.",
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "2eb8c6604836a0c72b29e8f0c070ca50ae65a02bdc2fddecf3a1d1d42ac940ef",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 runtime.py offline --manifest work/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/execution-manifest.json --case testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__posted_below --candidate fallback1 --output .runtime-work/c136559-below-fallback1-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "log": "primary-offline.log",
+            "log_sha256": "fe008aab760eb03ccac7578e2b84665b1b50b0d7f855b17a0c7a8d039435b658"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/below/fallback2-construction.json",
+          "construction_sha256": "fa8862575c233d5981b05bf9e396b918278901b39dd5b3253bb4054fd0b3273f",
+          "trigger": {
+            "source": "Native route_construction.select_corridor and road_context.json",
+            "metric": "measured continuous lane length",
+            "failure_condition": "Primary 800 m corridor selection fails before capture"
+          },
+          "changed_knobs": [
+            "corridor_context.minimum_length_m: 800 -> 600 m"
+          ],
+          "physical_limit": "Run only after independently sourcing actual sign governance and verifying Native scene, corridor, camera, and vehicle behavior.",
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "fa8862575c233d5981b05bf9e396b918278901b39dd5b3253bb4054fd0b3273f",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 runtime.py offline --manifest work/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/execution-manifest.json --case testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__posted_below --candidate fallback2 --output .runtime-work/c136559-below-fallback2-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "log": "primary-offline.log",
+            "log_sha256": "fe008aab760eb03ccac7578e2b84665b1b50b0d7f855b17a0c7a8d039435b658"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/below/fallback3-construction.json",
+          "construction_sha256": "1b1c10a807afdb2a3aad49b9dc79d563cb2c10835f3df825ca8e4794b68c6973",
+          "trigger": {
+            "source": "approach.mkv source-camera visibility review",
+            "metric": "posted sign face pixels in approach stream",
+            "failure_condition": "Primary approach camera at x=400 does not show readable sign face"
+          },
+          "changed_knobs": [
+            "approach camera x: 400 -> 340 m",
+            "approach camera z: 8 -> 6 m"
+          ],
+          "physical_limit": "Run only after independently sourcing actual sign governance and verifying Native scene, corridor, camera, and vehicle behavior.",
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "1b1c10a807afdb2a3aad49b9dc79d563cb2c10835f3df825ca8e4794b68c6973",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 runtime.py offline --manifest work/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/execution-manifest.json --case testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__posted_below --candidate fallback3 --output .runtime-work/c136559-below-fallback3-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "log": "primary-offline.log",
+            "log_sha256": "fe008aab760eb03ccac7578e2b84665b1b50b0d7f855b17a0c7a8d039435b658"
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__posted_at",
+      "kind": "delivery",
+      "construction": "cases/at/construction.json",
+      "construction_sha256": "6dcef6f7c21140d5dc1fbc11dc3832a429d03d5ae505a56fa07b35da9c7c013a",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "mph",
+            "method": "3D magnitude of original actor.get_velocity in source-joined posted road interval",
+            "time_window": "full 30 second 20 Hz capture",
+            "reference_frame": "Native subject actor",
+            "uncertainty": "sampled speeds; between-sample maxima unresolved",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Authored OpenDRIVE signal is diagnostic; public authority and signed highway portion require independent source review."
+        ]
+      },
+      "readiness": "partial; authored sign and public-authority provenance unresolved",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "original actor.get_velocity joined to Native frame and road coordinate at 20 Hz",
+          "evidence": "subject_motion.jsonl, video_frames.jsonl and sign_context.json"
+        }
+      },
+      "fixture_recipe": "work/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/cases/at/fixture-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Requested equality may be obscured by 20 Hz sampling and controller drift; Native sign/trigger, camera and authority remain unverified."
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "6dcef6f7c21140d5dc1fbc11dc3832a429d03d5ae505a56fa07b35da9c7c013a",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/execution-manifest.json --case testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__posted_at --output .runtime-work/c136559-at-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "log": "primary-offline.log",
+        "log_sha256": "fe008aab760eb03ccac7578e2b84665b1b50b0d7f855b17a0c7a8d039435b658"
+      },
+      "compatibility": {
+        "receipt": "cases/at/compatibility.json",
+        "sha256": "23a6ba4b58bbc8af9fcd4c2432455744bbe1bb8223ccd1081aa596d2d66cc7fa",
+        "log": "primary-compatibility-analysis.log",
+        "negative_log": "cases/at/negative-analysis.log"
+      },
+      "negative": {
+        "log": "cases/at/negative-analysis.log"
+      },
+      "saved_processing": {
+        "receipt": "cases/at/saved-processing.json",
+        "sha256": "b0e8341371299da3a3b0b48130bb399358bb4a19c33f15f1d8b48052f3c27e41",
+        "proof_manifest": "execution-manifest-at-processing.json",
+        "proof_manifest_sha256": "3420a886ffe58c9f2ebf00e669c9a4e006a90dd06251f4046eeda6af0262a308"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/at/fallback1-construction.json",
+          "construction_sha256": "f9bc50677b03e9779564b8bca59aa7761f659e2d9a737b79e5af258d31cd89b0",
+          "trigger": {
+            "source": "Native world sign actor/trigger check at route start",
+            "metric": "matching sign actors whose trigger contains approach waypoint",
+            "failure_condition": "Primary find_governing_speed_sign finds zero matching actors at the route start"
+          },
+          "changed_knobs": [
+            "scene.xodr signal s: 350 -> 100 m",
+            "config zone_start_s_m: 350 -> 100 m"
+          ],
+          "physical_limit": "Run only after independently sourcing actual sign governance and verifying Native scene, corridor, camera, and vehicle behavior.",
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "f9bc50677b03e9779564b8bca59aa7761f659e2d9a737b79e5af258d31cd89b0",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 runtime.py offline --manifest work/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/execution-manifest.json --case testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__posted_at --candidate fallback1 --output .runtime-work/c136559-at-fallback1-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "log": "primary-offline.log",
+            "log_sha256": "fe008aab760eb03ccac7578e2b84665b1b50b0d7f855b17a0c7a8d039435b658"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/at/fallback2-construction.json",
+          "construction_sha256": "a2fb3352ed4c3aa7690931567cb661e18adb18b69f5e014f171d63ba5dea0cb3",
+          "trigger": {
+            "source": "Native route_construction.select_corridor and road_context.json",
+            "metric": "measured continuous lane length",
+            "failure_condition": "Primary 800 m corridor selection fails before capture"
+          },
+          "changed_knobs": [
+            "corridor_context.minimum_length_m: 800 -> 600 m"
+          ],
+          "physical_limit": "Run only after independently sourcing actual sign governance and verifying Native scene, corridor, camera, and vehicle behavior.",
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "a2fb3352ed4c3aa7690931567cb661e18adb18b69f5e014f171d63ba5dea0cb3",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 runtime.py offline --manifest work/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/execution-manifest.json --case testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__posted_at --candidate fallback2 --output .runtime-work/c136559-at-fallback2-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "log": "primary-offline.log",
+            "log_sha256": "fe008aab760eb03ccac7578e2b84665b1b50b0d7f855b17a0c7a8d039435b658"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/at/fallback3-construction.json",
+          "construction_sha256": "97475ba29f4e8b91d53ae730457fa1858042f227d12f1ee9ff697e7564270c74",
+          "trigger": {
+            "source": "approach.mkv source-camera visibility review",
+            "metric": "posted sign face pixels in approach stream",
+            "failure_condition": "Primary approach camera at x=400 does not show readable sign face"
+          },
+          "changed_knobs": [
+            "approach camera x: 400 -> 340 m",
+            "approach camera z: 8 -> 6 m"
+          ],
+          "physical_limit": "Run only after independently sourcing actual sign governance and verifying Native scene, corridor, camera, and vehicle behavior.",
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "97475ba29f4e8b91d53ae730457fa1858042f227d12f1ee9ff697e7564270c74",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 runtime.py offline --manifest work/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/execution-manifest.json --case testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__posted_at --candidate fallback3 --output .runtime-work/c136559-at-fallback3-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "log": "cases/at/fallback3-offline.log",
+            "log_sha256": "6f283ee6225d2cef4c0127d95456a6f954c45141c92b97dd89016cb1c630e8f4"
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__posted_above",
+      "kind": "delivery",
+      "construction": "cases/above/construction.json",
+      "construction_sha256": "5630a5fd6d827e79b66f03af19074291c0ee0d68468560207d97050eb17c0177",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "mph",
+            "method": "3D magnitude of original actor.get_velocity in source-joined posted road interval",
+            "time_window": "full 30 second 20 Hz capture",
+            "reference_frame": "Native subject actor",
+            "uncertainty": "sampled speeds; between-sample maxima unresolved",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Authored OpenDRIVE signal is diagnostic; public authority and signed highway portion require independent source review."
+        ]
+      },
+      "readiness": "partial; authored sign and public-authority provenance unresolved",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "original actor.get_velocity joined to Native frame and road coordinate at 20 Hz",
+          "evidence": "subject_motion.jsonl, video_frames.jsonl and sign_context.json"
+        }
+      },
+      "fixture_recipe": "work/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/cases/above/fixture-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Requested 25.1 mph may not be physically attained inside the sign-governed interval; Native sign/trigger, camera and public authority remain unverified."
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "5630a5fd6d827e79b66f03af19074291c0ee0d68468560207d97050eb17c0177",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/execution-manifest.json --case testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__posted_above --output .runtime-work/c136559-above-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "log": "primary-offline.log",
+        "log_sha256": "fe008aab760eb03ccac7578e2b84665b1b50b0d7f855b17a0c7a8d039435b658"
+      },
+      "compatibility": {
+        "receipt": "cases/above/compatibility.json",
+        "sha256": "8e73bec01101d4e2b19cdf910767fe48bc5b28716e11f6ae15700425a288a1f7",
+        "log": "primary-compatibility-analysis.log",
+        "negative_log": "cases/above/negative-analysis.log"
+      },
+      "negative": {
+        "log": "cases/above/negative-analysis.log"
+      },
+      "saved_processing": {
+        "receipt": "cases/above/saved-processing.json",
+        "sha256": "b1ba8c9748bf3c19d5d04eebeb6ecef714bd0445baae529de85e7077d9617d7c",
+        "proof_manifest": "execution-manifest-above-processing.json",
+        "proof_manifest_sha256": "9e97566fd0ffe686f2a053df7ddee1be92e83daf74953ed97fd293e716e2ce6e"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/above/fallback1-construction.json",
+          "construction_sha256": "0e62bf9ce545222ebd854fac0d116c29bde49aa6686ce745c8f8a86535b73ff5",
+          "trigger": {
+            "source": "Native world sign actor/trigger check at route start",
+            "metric": "matching sign actors whose trigger contains approach waypoint",
+            "failure_condition": "Primary find_governing_speed_sign finds zero matching actors at the route start"
+          },
+          "changed_knobs": [
+            "scene.xodr signal s: 350 -> 100 m",
+            "config zone_start_s_m: 350 -> 100 m"
+          ],
+          "physical_limit": "Run only after independently sourcing actual sign governance and verifying Native scene, corridor, camera, and vehicle behavior.",
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "0e62bf9ce545222ebd854fac0d116c29bde49aa6686ce745c8f8a86535b73ff5",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 runtime.py offline --manifest work/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/execution-manifest.json --case testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__posted_above --candidate fallback1 --output .runtime-work/c136559-above-fallback1-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "log": "primary-offline.log",
+            "log_sha256": "fe008aab760eb03ccac7578e2b84665b1b50b0d7f855b17a0c7a8d039435b658"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/above/fallback2-construction.json",
+          "construction_sha256": "bcd49d1bbf2af7aa8dc94f8e57b42222a7a3812c58cbd81916631baad3f24840",
+          "trigger": {
+            "source": "Native route_construction.select_corridor and road_context.json",
+            "metric": "measured continuous lane length",
+            "failure_condition": "Primary 800 m corridor selection fails before capture"
+          },
+          "changed_knobs": [
+            "corridor_context.minimum_length_m: 800 -> 600 m"
+          ],
+          "physical_limit": "Run only after independently sourcing actual sign governance and verifying Native scene, corridor, camera, and vehicle behavior.",
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "bcd49d1bbf2af7aa8dc94f8e57b42222a7a3812c58cbd81916631baad3f24840",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 runtime.py offline --manifest work/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/execution-manifest.json --case testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__posted_above --candidate fallback2 --output .runtime-work/c136559-above-fallback2-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "log": "primary-offline.log",
+            "log_sha256": "fe008aab760eb03ccac7578e2b84665b1b50b0d7f855b17a0c7a8d039435b658"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/above/fallback3-construction.json",
+          "construction_sha256": "efef6fe409bbca587eb9e3cfaa07f9694b3e293369732cedb73b993e8aaff790",
+          "trigger": {
+            "source": "approach.mkv source-camera visibility review",
+            "metric": "posted sign face pixels in approach stream",
+            "failure_condition": "Primary approach camera at x=400 does not show readable sign face"
+          },
+          "changed_knobs": [
+            "approach camera x: 400 -> 340 m",
+            "approach camera z: 8 -> 6 m"
+          ],
+          "physical_limit": "Run only after independently sourcing actual sign governance and verifying Native scene, corridor, camera, and vehicle behavior.",
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "efef6fe409bbca587eb9e3cfaa07f9694b3e293369732cedb73b993e8aaff790",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 runtime.py offline --manifest work/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/execution-manifest.json --case testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__posted_above --candidate fallback3 --output .runtime-work/c136559-above-fallback3-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "log": "primary-offline.log",
+            "log_sha256": "fe008aab760eb03ccac7578e2b84665b1b50b0d7f855b17a0c7a8d039435b658"
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__posted_outside_zone",
+      "kind": "delivery",
+      "construction": "cases/outside/construction.json",
+      "construction_sha256": "3d6df2467f020cb2173d19b0cccce6608e7cc613dea94ddf55c063e91571c20e",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "mph",
+            "method": "3D magnitude of original actor.get_velocity in source-joined posted road interval",
+            "time_window": "full 30 second 20 Hz capture",
+            "reference_frame": "Native subject actor",
+            "uncertainty": "sampled speeds; between-sample maxima unresolved",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Authored OpenDRIVE signal is diagnostic; public authority and signed highway portion require independent source review."
+        ]
+      },
+      "readiness": "partial; authored sign and public-authority provenance unresolved",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "original actor.get_velocity joined to Native frame and road coordinate at 20 Hz",
+          "evidence": "subject_motion.jsonl, video_frames.jsonl and sign_context.json"
+        }
+      },
+      "fixture_recipe": "work/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/cases/outside/fixture-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The signed zone extent and outside-road position may differ from authored source after Native map generation; public authority, actual above-posted motion and sign visibility remain unverified."
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "3d6df2467f020cb2173d19b0cccce6608e7cc613dea94ddf55c063e91571c20e",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/execution-manifest.json --case testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__posted_outside_zone --output .runtime-work/c136559-outside-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "log": "primary-offline.log",
+        "log_sha256": "fe008aab760eb03ccac7578e2b84665b1b50b0d7f855b17a0c7a8d039435b658"
+      },
+      "compatibility": {
+        "receipt": "cases/outside/compatibility.json",
+        "sha256": "3545573eb11c55415a90a5dccb03d35bf93b39986a898d7610e180ae10b76ac8",
+        "log": "primary-compatibility-analysis.log",
+        "negative_log": "cases/outside/negative-analysis.log"
+      },
+      "negative": {
+        "log": "cases/outside/negative-analysis.log"
+      },
+      "saved_processing": {
+        "receipt": "cases/outside/saved-processing.json",
+        "sha256": "47912dd8bac723c1dfb0c5bd3b487d15c27d9bfa41df800ab652a28ecc6b63eb",
+        "proof_manifest": "execution-manifest-outside-processing.json",
+        "proof_manifest_sha256": "fe9e53780f9eee39471e7bd69dcdcfafdb82f36eee0326ab0025fce220fb5c2c"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/outside/fallback1-construction.json",
+          "construction_sha256": "478dfeb222fb0c59e266343d1e662346cad9303380899e2294c9ffb7f1759145",
+          "trigger": {
+            "source": "Native world sign actor/trigger check at route start",
+            "metric": "matching sign actors whose trigger contains approach waypoint",
+            "failure_condition": "Primary find_governing_speed_sign finds zero matching actors at the route start"
+          },
+          "changed_knobs": [
+            "scene.xodr signal s: 350 -> 100 m",
+            "config zone_start_s_m: 350 -> 100 m"
+          ],
+          "physical_limit": "Run only after independently sourcing actual sign governance and verifying Native scene, corridor, camera, and vehicle behavior.",
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "478dfeb222fb0c59e266343d1e662346cad9303380899e2294c9ffb7f1759145",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 runtime.py offline --manifest work/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/execution-manifest.json --case testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__posted_outside_zone --candidate fallback1 --output .runtime-work/c136559-outside-fallback1-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "log": "cases/outside/fallback1-offline.log",
+            "log_sha256": "b70aaee4b98aed3c929b11d2edf077f243b297ed21e6fabbffb70bd38d82b0f9"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/outside/fallback2-construction.json",
+          "construction_sha256": "bda79c1080fa7bdc042d0e9a535299597e281ac87e2a482f6c09c1bcc07ebe57",
+          "trigger": {
+            "source": "Native route_construction.select_corridor and road_context.json",
+            "metric": "measured continuous lane length",
+            "failure_condition": "Primary 800 m corridor selection fails before capture"
+          },
+          "changed_knobs": [
+            "corridor_context.minimum_length_m: 800 -> 600 m"
+          ],
+          "physical_limit": "Run only after independently sourcing actual sign governance and verifying Native scene, corridor, camera, and vehicle behavior.",
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "bda79c1080fa7bdc042d0e9a535299597e281ac87e2a482f6c09c1bcc07ebe57",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 runtime.py offline --manifest work/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/execution-manifest.json --case testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__posted_outside_zone --candidate fallback2 --output .runtime-work/c136559-outside-fallback2-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "log": "primary-offline.log",
+            "log_sha256": "fe008aab760eb03ccac7578e2b84665b1b50b0d7f855b17a0c7a8d039435b658"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/outside/fallback3-construction.json",
+          "construction_sha256": "b327699d4c7d05ea11fa6add31fcc574c04b6a4cbe3f309807800228a39df5de",
+          "trigger": {
+            "source": "approach.mkv source-camera visibility review",
+            "metric": "posted sign face pixels in approach stream",
+            "failure_condition": "Primary approach camera at x=400 does not show readable sign face"
+          },
+          "changed_knobs": [
+            "approach camera x: 400 -> 340 m",
+            "approach camera z: 8 -> 6 m"
+          ],
+          "physical_limit": "Run only after independently sourcing actual sign governance and verifying Native scene, corridor, camera, and vehicle behavior.",
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "b327699d4c7d05ea11fa6add31fcc574c04b6a4cbe3f309807800228a39df5de",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 runtime.py offline --manifest work/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/execution-manifest.json --case testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__posted_outside_zone --candidate fallback3 --output .runtime-work/c136559-outside-fallback3-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "log": "primary-offline.log",
+            "log_sha256": "fe008aab760eb03ccac7578e2b84665b1b50b0d7f855b17a0c7a8d039435b658"
+          }
+        }
+      ]
     }
   ]
 }

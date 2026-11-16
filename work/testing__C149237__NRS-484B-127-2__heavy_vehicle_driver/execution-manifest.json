@@ -2444,7 +2444,489 @@
           "evidence": "road_context.json same_direction_lane_count and truck_history.jsonl lane_id"
         }
       }
+    },
+    {
+      "case_id": "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__conditions_gap_120m",
+      "kind": "delivery",
+      "construction": "sweep-stage-construction.json",
+      "construction_sha256": "3e092637a94ac1ae4b98c46c2c6c2641342f9677778350bb7054e00e49261b9d",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/fixture-recipe-conditions_gap_120m.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native truck bodies or 45-second motion may miss the authored 120 m gap"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "sweep-stage-fallbacks/fallback1-construction.json",
+          "construction_sha256": "986497defeee21880c35f171dd0086b5cde9112aae6f4a61fc74089215bcd1ba",
+          "trigger": {
+            "source": "overview.mkv",
+            "metric": "both truck bodies visible across original frames",
+            "failure_condition": "source-pixel review finds a truck body outside overview framing"
+          },
+          "changed_knobs": [
+            "overview camera x 450->400 m",
+            "overview camera height 90->110 m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__conditions_gap_120m --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c149237-conditions_gap_120m-fallback1-canonical-offline-v1",
+            "exit_code": 0,
+            "log": "conditions_gap_120m-fallback1-canonical-offline.log",
+            "log_sha256": "e7e946d90244c1fd3d42b447b3c835b597223da5f1a9f6b2cd3271f04ed1fd1a",
+            "construction_sha256": "986497defeee21880c35f171dd0086b5cde9112aae6f4a61fc74089215bcd1ba"
+          },
+          "compatibility": {
+            "receipt": "conditions_gap_120m-fallback1-canonical-compatibility.json",
+            "sha256": "63272281ce343eec36faadbb2d40b6dc21349fa5b1f6f18073734fd3fbea805c",
+            "log": "conditions_gap_120m-fallback1-canonical-analysis.log",
+            "negative_log": "conditions_gap_120m-fallback1-canonical-negative.log"
+          },
+          "saved_processing": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__conditions_gap_120m --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c149237-conditions_gap_120m-fallback1-canonical-compat-v1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c149237-conditions_gap_120m-fallback1-canonical-saved-v1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "log": "conditions_gap_120m-fallback1-canonical-saved.log",
+            "log_sha256": "2d99d5a3ea5c470a1dcbc12de5ff4bcfce258adb8c10ebac14468db905f290e6",
+            "recorded_only": true
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "sweep-stage-fallbacks/fallback2-construction.json",
+          "construction_sha256": "50c8f7c730abffd29c5abb4414030f006e41820e9b0f52b44c1f1e4009ad719d",
+          "trigger": {
+            "source": "reference_corner.mkv",
+            "metric": "truck body reference edge completeness",
+            "failure_condition": "source-pixel review finds a width/body reference clipped"
+          },
+          "changed_knobs": [
+            "reference corner x 300->330 m",
+            "reference corner y -24->-34 m",
+            "reference corner height 30->35 m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__conditions_gap_120m --candidate fallback2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c149237-conditions_gap_120m-fallback2-canonical-offline-v1",
+            "exit_code": 0,
+            "log": "conditions_gap_120m-fallback2-canonical-offline.log",
+            "log_sha256": "08ba6ada202eb964327ddb313b7911fcdd796078e9594f26d49f11a7fcc8206c",
+            "construction_sha256": "50c8f7c730abffd29c5abb4414030f006e41820e9b0f52b44c1f1e4009ad719d"
+          },
+          "compatibility": {
+            "receipt": "conditions_gap_120m-fallback2-canonical-compatibility.json",
+            "sha256": "4e92e7b67381bc4033075b37c9407c9e5f292d5587bb5a5722dfff1e664c9ed1",
+            "log": "conditions_gap_120m-fallback2-canonical-analysis.log",
+            "negative_log": "conditions_gap_120m-fallback2-canonical-negative.log"
+          },
+          "saved_processing": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__conditions_gap_120m --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c149237-conditions_gap_120m-fallback2-canonical-compat-v1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c149237-conditions_gap_120m-fallback2-canonical-saved-v1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "log": "conditions_gap_120m-fallback2-canonical-saved.log",
+            "log_sha256": "9e692ba6d6447ca39a5b7f86efd8bbd80012fceeff5fdf398459947d392e9e24",
+            "recorded_only": true
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "sweep-stage-fallbacks/fallback3-construction.json",
+          "construction_sha256": "b6c01c3564e6fe7ffd823c52b6eaee8b5351b1a34d992e15fccb303782062769",
+          "trigger": {
+            "source": "approach.mkv",
+            "metric": "lead and ego approach interval coverage",
+            "failure_condition": "source-pixel review finds the approach relation outside the frame"
+          },
+          "changed_knobs": [
+            "approach camera x 60->80 m",
+            "approach camera height 8->12 m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__conditions_gap_120m --candidate fallback3 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c149237-conditions_gap_120m-fallback3-canonical-offline-v1",
+            "exit_code": 0,
+            "log": "conditions_gap_120m-fallback3-canonical-offline.log",
+            "log_sha256": "fc9ae0bb3d62a218a05a1ef4f02b371d2c80c2f962ca0c312d98e7c2c99e7ddd",
+            "construction_sha256": "b6c01c3564e6fe7ffd823c52b6eaee8b5351b1a34d992e15fccb303782062769"
+          },
+          "compatibility": {
+            "receipt": "conditions_gap_120m-fallback3-canonical-compatibility.json",
+            "sha256": "39aafd608f77df619e512f68a196e7b25cfe4b8c6fa4ed15d83be311d64a437e",
+            "log": "conditions_gap_120m-fallback3-canonical-analysis.log",
+            "negative_log": "conditions_gap_120m-fallback3-canonical-negative.log"
+          },
+          "saved_processing": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__conditions_gap_120m --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c149237-conditions_gap_120m-fallback3-canonical-compat-v1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c149237-conditions_gap_120m-fallback3-canonical-saved-v1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "log": "conditions_gap_120m-fallback3-canonical-saved.log",
+            "log_sha256": "68d008fefe9bb9cf4ca6eede996bceb73f3f7a15b2b63d3e95b71db0174f717e",
+            "recorded_only": true
+          }
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "ru.subject": {
+          "entrypoint": "truck_capture_sources.py",
+          "method": "record_sample ego actor identity",
+          "evidence": "truck_history.jsonl ego.actor_id and blueprint_id"
+        },
+        "ru.truck": {
+          "entrypoint": "truck_capture_sources.py",
+          "method": "_actor pinned Native type ID and measured single-vehicle width",
+          "evidence": "truck_history.jsonl ego/lead blueprint_id, overall_width_m and body_vertices_xy_m; combination status unresolved"
+        },
+        "kin.position": {
+          "entrypoint": "truck_capture_sources.py",
+          "method": "record_sample original Native body vertices and frame",
+          "evidence": "truck_history.jsonl body_vertices_xy_m joined to capture/evidence.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "truck_capture_sources.py",
+          "method": "_actor Native get_velocity",
+          "evidence": "truck_history.jsonl velocity_mps"
+        },
+        "kin.speed": {
+          "entrypoint": "truck_capture_sources.py",
+          "method": "derive speed from original Native velocity, with pipeline trace readback",
+          "evidence": "truck_history.jsonl velocity_mps and trace.jsonl speed_mps"
+        },
+        "st.lane": {
+          "entrypoint": "truck_capture_sources.py",
+          "method": "record_sample original Native waypoint road_id and lane_id",
+          "evidence": "truck_history.jsonl road_id and lane_id"
+        },
+        "rel.surface_gap": {
+          "entrypoint": "truck_measurements.py",
+          "method": "analyze projected body-edge separation on sourced lane tangent",
+          "evidence": "truck_history.jsonl and road_context.json"
+        },
+        "rel.ahead_behind_in_lane": {
+          "entrypoint": "truck_measurements.py",
+          "method": "analyze sourced lane identity and body gap sign",
+          "evidence": "truck_history.jsonl ego/lead lane_id and longitudinal_body_gap_m"
+        },
+        "longitudinal_body_gap": {
+          "entrypoint": "truck_measurements.py",
+          "method": "analyze projected complete-body gap",
+          "evidence": "truck_history.jsonl body_vertices_xy_m and road_context.json lane_forward_xy"
+        },
+        "ego_overall_width": {
+          "entrypoint": "truck_capture_sources.py",
+          "method": "_actor Native bounding-box extent for ego single vehicle",
+          "evidence": "truck_history.jsonl ego.overall_width_m"
+        },
+        "lead_overall_width": {
+          "entrypoint": "truck_capture_sources.py",
+          "method": "_actor Native bounding-box extent for lead single vehicle",
+          "evidence": "truck_history.jsonl lead.overall_width_m"
+        },
+        "same_direction_lane_count": {
+          "entrypoint": "runner.py",
+          "method": "capture authored road lane count and Native actor lane readback",
+          "evidence": "road_context.json same_direction_lane_count and truck_history.jsonl lane_id"
+        }
+      },
+      "canonical_proof_state": "selected; canonical manifest proofs and acceptance contracts pending",
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__conditions_gap_120m --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c149237-conditions_gap_120m-primary-canonical-offline-v1",
+        "exit_code": 0,
+        "log": "conditions_gap_120m-primary-canonical-offline.log",
+        "log_sha256": "c4a76929a87e9d2a8fbd0219dc64178b912ee2718a72dd657f5fca167eaa2927",
+        "construction_sha256": "3e092637a94ac1ae4b98c46c2c6c2641342f9677778350bb7054e00e49261b9d"
+      },
+      "compatibility": {
+        "receipt": "conditions_gap_120m-primary-canonical-compatibility.json",
+        "sha256": "bbba3c0646cc40970d847ce24ce4dec06a740821584d0d9fb6fd250e08833a43",
+        "log": "conditions_gap_120m-primary-canonical-analysis.log"
+      },
+      "negative": {
+        "log": "conditions_gap_120m-primary-canonical-negative.log",
+        "log_sha256": "b558b78004cad95625ea2d2df8d59a7cd9aa9b2b4b3d776846069d3400589dc0"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__conditions_gap_120m --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c149237-conditions_gap_120m-primary-canonical-compat-v1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c149237-conditions_gap_120m-primary-canonical-saved-v1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "test_log": "conditions_gap_120m-primary-canonical-saved-analysis.log",
+        "test_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "test_exit_code": 0,
+        "receipt": "conditions_gap_120m-primary-canonical-processing.json",
+        "receipt_sha256": "db9996a87e7e8dcdae34def053df2c1b0ad90a229ee9d2a36f6de9dbb512c72a",
+        "scope": "nine-frame synthetic saved-only software processing"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proofs/conditions_gap_120m/receipt.json",
+        "sha256": "6910e6f1af6cd979fc1d1e06a52821edf2bbd890d9d2a52b51f3e5cf8693fce9"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__conditions_gap_120m",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "e872d8fc160a568c52849354331b1d2bda8033dd070ba404f3da5671982aecae",
+        "command": ".venv-cpu/bin/python work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/prove_delivery_audit.py --source .runtime-work/c149237-conditions_gap_120m-primary-canonical-saved-v1/v0001/analysis --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__conditions_gap_120m --output-root .runtime-work/c149237-delivery-conditions_gap_120m-canonical-v1",
+        "test_exit_code": 0,
+        "test_log": "conditions_gap_120m-delivery-positive.log",
+        "test_log_sha256": "24046c7e6916369a63670fc21b35e47f10193b32bd03a876528c10ad12da39a7",
+        "negative_command": ".venv-cpu/bin/python work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/delivery_audit.py --attempt .runtime-work/c149237-delivery-conditions_gap_120m-canonical-v1/attempt --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__conditions_gap_120m --job-id diagnostic-job --attempt-number 1 --recording-id diagnostic-recording --pixel-review .runtime-work/c149237-delivery-conditions_gap_120m-canonical-v1/pixel-review.json --output .runtime-work/c149237-delivery-conditions_gap_120m-canonical-v1/attempt/negative-native-audit.json --decode-receipt .runtime-work/c149237-delivery-conditions_gap_120m-canonical-v1/source-decode.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original source frame count differs from planned capture",
+        "negative_log": "conditions_gap_120m-delivery-negative.log",
+        "negative_log_sha256": "1bf3156c67232467e56cb28251b3fbc2016554e61fb10c7e1e41e10fe8cd4eee"
+      }
+    },
+    {
+      "case_id": "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__conditions_gap_200m",
+      "kind": "delivery",
+      "construction": "sweep-200-construction.json",
+      "construction_sha256": "f55ae1abdde4155e31df33cc6f2570b89bea7c521f81c3363bfeb6815e14a53a",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/fixture-recipe-conditions_gap_200m.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native truck bodies or 45-second motion may miss the authored 200 m gap"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "sweep-200-fallbacks/fallback1-construction.json",
+          "construction_sha256": "1eadec12d0483c3e966e215d1c93f62ba0696f0c80602ceda5de416bf281b670",
+          "trigger": {
+            "source": "overview.mkv",
+            "metric": "both truck bodies visible across original frames",
+            "failure_condition": "source-pixel review finds a truck body outside overview framing"
+          },
+          "changed_knobs": [
+            "overview camera x 450->400 m",
+            "overview camera height 90->110 m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__conditions_gap_200m --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c149237-conditions_gap_200m-fallback1-canonical-offline-v1",
+            "exit_code": 0,
+            "log": "conditions_gap_200m-fallback1-canonical-offline.log",
+            "log_sha256": "cbef524b1135306d34186286187e01a84fbc31ad24cd464d47dff0f383c90e29",
+            "construction_sha256": "1eadec12d0483c3e966e215d1c93f62ba0696f0c80602ceda5de416bf281b670"
+          },
+          "compatibility": {
+            "receipt": "conditions_gap_200m-fallback1-canonical-compatibility.json",
+            "sha256": "57c1a903c140914105c6f660e61d822f1ff2b66e9b50d3ec82b01f0075445b87",
+            "log": "conditions_gap_200m-fallback1-canonical-analysis.log",
+            "negative_log": "conditions_gap_200m-fallback1-canonical-negative.log"
+          },
+          "saved_processing": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__conditions_gap_200m --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c149237-conditions_gap_200m-fallback1-canonical-compat-v1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c149237-conditions_gap_200m-fallback1-canonical-saved-v1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "log": "conditions_gap_200m-fallback1-canonical-saved.log",
+            "log_sha256": "4622173740c49619d1c2a1ba190bee3ad664c58c98b10d17411ee514efa4ac4d",
+            "recorded_only": true
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "sweep-200-fallbacks/fallback2-construction.json",
+          "construction_sha256": "401d2394b101cfc3b9e6f46372ab8d21e98ce5a720bc783cf56c052855996e5d",
+          "trigger": {
+            "source": "reference_corner.mkv",
+            "metric": "truck body reference edge completeness",
+            "failure_condition": "source-pixel review finds a width/body reference clipped"
+          },
+          "changed_knobs": [
+            "reference corner x 300->330 m",
+            "reference corner y -24->-34 m",
+            "reference corner height 30->35 m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__conditions_gap_200m --candidate fallback2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c149237-conditions_gap_200m-fallback2-canonical-offline-v1",
+            "exit_code": 0,
+            "log": "conditions_gap_200m-fallback2-canonical-offline.log",
+            "log_sha256": "91dd11e06df836dbf3b6ea719434c70d15ce5f9cc75258a40179951571b0e750",
+            "construction_sha256": "401d2394b101cfc3b9e6f46372ab8d21e98ce5a720bc783cf56c052855996e5d"
+          },
+          "compatibility": {
+            "receipt": "conditions_gap_200m-fallback2-canonical-compatibility.json",
+            "sha256": "c975b02ba6c795e8ac88a20172538c590e792eacab5d7e0b0f5792c2142aad85",
+            "log": "conditions_gap_200m-fallback2-canonical-analysis.log",
+            "negative_log": "conditions_gap_200m-fallback2-canonical-negative.log"
+          },
+          "saved_processing": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__conditions_gap_200m --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c149237-conditions_gap_200m-fallback2-canonical-compat-v1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c149237-conditions_gap_200m-fallback2-canonical-saved-v1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "log": "conditions_gap_200m-fallback2-canonical-saved.log",
+            "log_sha256": "aedad3d1ba09ddca0c727cfae01cf8c51347c2e1baefe05a6458499d093d62c9",
+            "recorded_only": true
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "sweep-200-fallbacks/fallback3-construction.json",
+          "construction_sha256": "93ee6956b1dd9d68806965fb5be338788b931310dda5294d883c71e45707bd13",
+          "trigger": {
+            "source": "approach.mkv",
+            "metric": "lead and ego approach interval coverage",
+            "failure_condition": "source-pixel review finds the approach relation outside the frame"
+          },
+          "changed_knobs": [
+            "approach camera x 60->80 m",
+            "approach camera height 8->12 m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__conditions_gap_200m --candidate fallback3 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c149237-conditions_gap_200m-fallback3-canonical-offline-v1",
+            "exit_code": 0,
+            "log": "conditions_gap_200m-fallback3-canonical-offline.log",
+            "log_sha256": "c2c5d5d69df34c8b82b612ef7356cfa46fa9f9be7fd53cda70471ceb607656fd",
+            "construction_sha256": "93ee6956b1dd9d68806965fb5be338788b931310dda5294d883c71e45707bd13"
+          },
+          "compatibility": {
+            "receipt": "conditions_gap_200m-fallback3-canonical-compatibility.json",
+            "sha256": "e01111cd0b906fa103d9d3a2b246198f242d5d4a872acbb061bd458eb1a85b8b",
+            "log": "conditions_gap_200m-fallback3-canonical-analysis.log",
+            "negative_log": "conditions_gap_200m-fallback3-canonical-negative.log"
+          },
+          "saved_processing": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__conditions_gap_200m --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c149237-conditions_gap_200m-fallback3-canonical-compat-v1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c149237-conditions_gap_200m-fallback3-canonical-saved-v1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "log": "conditions_gap_200m-fallback3-canonical-saved.log",
+            "log_sha256": "c7e61dc884da3fe78c6ce5fea247e270ad346672138e87ff16bdaa4ebdd46b23",
+            "recorded_only": true
+          }
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "ru.subject": {
+          "entrypoint": "truck_capture_sources.py",
+          "method": "record_sample ego actor identity",
+          "evidence": "truck_history.jsonl ego.actor_id and blueprint_id"
+        },
+        "ru.truck": {
+          "entrypoint": "truck_capture_sources.py",
+          "method": "_actor pinned Native type ID and measured single-vehicle width",
+          "evidence": "truck_history.jsonl ego/lead blueprint_id, overall_width_m and body_vertices_xy_m; combination status unresolved"
+        },
+        "kin.position": {
+          "entrypoint": "truck_capture_sources.py",
+          "method": "record_sample original Native body vertices and frame",
+          "evidence": "truck_history.jsonl body_vertices_xy_m joined to capture/evidence.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "truck_capture_sources.py",
+          "method": "_actor Native get_velocity",
+          "evidence": "truck_history.jsonl velocity_mps"
+        },
+        "kin.speed": {
+          "entrypoint": "truck_capture_sources.py",
+          "method": "derive speed from original Native velocity, with pipeline trace readback",
+          "evidence": "truck_history.jsonl velocity_mps and trace.jsonl speed_mps"
+        },
+        "st.lane": {
+          "entrypoint": "truck_capture_sources.py",
+          "method": "record_sample original Native waypoint road_id and lane_id",
+          "evidence": "truck_history.jsonl road_id and lane_id"
+        },
+        "rel.surface_gap": {
+          "entrypoint": "truck_measurements.py",
+          "method": "analyze projected body-edge separation on sourced lane tangent",
+          "evidence": "truck_history.jsonl and road_context.json"
+        },
+        "rel.ahead_behind_in_lane": {
+          "entrypoint": "truck_measurements.py",
+          "method": "analyze sourced lane identity and body gap sign",
+          "evidence": "truck_history.jsonl ego/lead lane_id and longitudinal_body_gap_m"
+        },
+        "longitudinal_body_gap": {
+          "entrypoint": "truck_measurements.py",
+          "method": "analyze projected complete-body gap",
+          "evidence": "truck_history.jsonl body_vertices_xy_m and road_context.json lane_forward_xy"
+        },
+        "ego_overall_width": {
+          "entrypoint": "truck_capture_sources.py",
+          "method": "_actor Native bounding-box extent for ego single vehicle",
+          "evidence": "truck_history.jsonl ego.overall_width_m"
+        },
+        "lead_overall_width": {
+          "entrypoint": "truck_capture_sources.py",
+          "method": "_actor Native bounding-box extent for lead single vehicle",
+          "evidence": "truck_history.jsonl lead.overall_width_m"
+        },
+        "same_direction_lane_count": {
+          "entrypoint": "runner.py",
+          "method": "capture authored road lane count and Native actor lane readback",
+          "evidence": "road_context.json same_direction_lane_count and truck_history.jsonl lane_id"
+        }
+      },
+      "canonical_proof_state": "selected; canonical manifest proofs and acceptance contracts pending",
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__conditions_gap_200m --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c149237-conditions_gap_200m-primary-canonical-offline-v1",
+        "exit_code": 0,
+        "log": "conditions_gap_200m-primary-canonical-offline.log",
+        "log_sha256": "48fecfe9cdb7d826ebf701213c08257e9040c2f85442e9ae0cba9c02d403b003",
+        "construction_sha256": "f55ae1abdde4155e31df33cc6f2570b89bea7c521f81c3363bfeb6815e14a53a"
+      },
+      "compatibility": {
+        "receipt": "conditions_gap_200m-primary-canonical-compatibility.json",
+        "sha256": "367d838c87a8500a17b8d890c6238a1973c29d8564f64c2f27bb10ed6186010c",
+        "log": "conditions_gap_200m-primary-canonical-analysis.log"
+      },
+      "negative": {
+        "log": "conditions_gap_200m-primary-canonical-negative.log",
+        "log_sha256": "cdf2b933bf6983f5b50f5115b0931d152e3eeda09f082a83bfa9f98d3d69b1ff"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__conditions_gap_200m --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c149237-conditions_gap_200m-primary-canonical-compat-v1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c149237-conditions_gap_200m-primary-canonical-saved-v1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "test_log": "conditions_gap_200m-primary-canonical-saved-analysis.log",
+        "test_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "test_exit_code": 0,
+        "receipt": "conditions_gap_200m-primary-canonical-processing.json",
+        "receipt_sha256": "ad03926aa4d64da8f4450a52079a1670458ea29d17ac8e8295d1254868659b44",
+        "scope": "nine-frame synthetic saved-only software processing"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proofs/conditions_gap_200m/receipt.json",
+        "sha256": "75a657dc90d093f3818012bbb74fb2ddd4309d87aa9a8285396e9d4534d97af8"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__conditions_gap_200m",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "e872d8fc160a568c52849354331b1d2bda8033dd070ba404f3da5671982aecae",
+        "command": ".venv-cpu/bin/python work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/prove_delivery_audit.py --source .runtime-work/c149237-conditions_gap_200m-primary-canonical-saved-v1/v0001/analysis --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__conditions_gap_200m --output-root .runtime-work/c149237-delivery-conditions_gap_200m-canonical-v1",
+        "test_exit_code": 0,
+        "test_log": "conditions_gap_200m-delivery-positive.log",
+        "test_log_sha256": "fd30b77a04a0ea05a2968ba5a5bd736de4f37507ccafc10a5d9a69811c5e90a4",
+        "negative_command": ".venv-cpu/bin/python work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/delivery_audit.py --attempt .runtime-work/c149237-delivery-conditions_gap_200m-canonical-v1/attempt --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__conditions_gap_200m --job-id diagnostic-job --attempt-number 1 --recording-id diagnostic-recording --pixel-review .runtime-work/c149237-delivery-conditions_gap_200m-canonical-v1/pixel-review.json --output .runtime-work/c149237-delivery-conditions_gap_200m-canonical-v1/attempt/negative-native-audit.json --decode-receipt .runtime-work/c149237-delivery-conditions_gap_200m-canonical-v1/source-decode.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original source frame count differs from planned capture",
+        "negative_log": "conditions_gap_200m-delivery-negative.log",
+        "negative_log_sha256": "1bf3156c67232467e56cb28251b3fbc2016554e61fb10c7e1e41e10fe8cd4eee"
+      }
     }
   ],
-  "status": "partial_eleven_primary_and_fallback_cpu_proofs"
+  "status": "partial_thirteen_primary_and_fallback_cpu_proofs"
 }
