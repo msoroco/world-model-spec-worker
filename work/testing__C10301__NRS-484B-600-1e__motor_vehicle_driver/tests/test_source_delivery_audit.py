@@ -1,5 +1,6 @@
-import importlib.util,hashlib,json,tempfile,unittest
+import importlib.util,hashlib,json,subprocess,tempfile,unittest
 from pathlib import Path
+from PIL import Image
 ROOT=Path(__file__).resolve().parents[1]
 spec=importlib.util.spec_from_file_location('source_delivery_audit',ROOT/'source_delivery_audit.py')
 audit_module=importlib.util.module_from_spec(spec);spec.loader.exec_module(audit_module)
@@ -37,3 +38,31 @@ class Tests(unittest.TestCase):
    root=Path(tmp);case=self.fixture(root);motions=[json.loads(s) for s in (root/'subject_motion.jsonl').read_text().splitlines()];motions[1]['velocity_mps']=[3,0,0];(root/'subject_motion.jsonl').write_text(''.join(json.dumps(s)+'\n' for s in motions))
    with self.assertRaisesRegex(ValueError,'speed disagrees'):audit_module.audit(root,case,lambda *a,**k:{'passed':True})
 if __name__=='__main__':unittest.main()
+
+
+class PixelAuditTests(unittest.TestCase):
+ def test_annotated_pixels_and_stale_or_flat_rejection(self):
+  delivery_spec=importlib.util.spec_from_file_location('delivery_audit',ROOT/'delivery_audit.py')
+  delivery=importlib.util.module_from_spec(delivery_spec);delivery_spec.loader.exec_module(delivery)
+  with tempfile.TemporaryDirectory() as tmp:
+   root=Path(tmp);pixels=Image.new('RGB',(64,64))
+   for y in range(64):
+    for x in range(64):
+     value=255 if x<16 or (x//4+y//4)%2 else 0
+     pixels.putpixel((x,y),(value,value,value))
+   pixels.save(root/'frame.png')
+   subprocess.run(['ffmpeg','-v','error','-loop','1','-i',str(root/'frame.png'),
+                   '-frames:v','1','-c:v','ffv1',str(root/'overview.mkv')],check=True)
+   item={'camera':'overview.mkv','frame_index':0,
+         'source_sha256':sha(root/'overview.mkv'),
+         'subject_box':[20,4,48,28],'roadway_box':[20,32,60,60]}
+   annotations={'format':'worker-c10301-pixel-annotations','observations':[item]}
+   result=delivery.audit_pixels(root,annotations)
+   self.assertTrue(result['pixel_signal_checked'])
+   self.assertFalse(result['semantic_visibility_confirmed'])
+   item['source_sha256']='0'*64
+   with self.assertRaisesRegex(ValueError,'source hash differs'):
+    delivery.audit_pixels(root,annotations)
+   item['source_sha256']=sha(root/'overview.mkv');item['subject_box']=[0,0,12,12]
+   with self.assertRaisesRegex(ValueError,'lack visual detail'):
+    delivery.audit_pixels(root,annotations)
