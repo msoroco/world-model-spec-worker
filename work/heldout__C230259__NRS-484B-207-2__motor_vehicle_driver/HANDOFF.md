@@ -93,3 +93,5 @@ These positive proofs use source-shaped CPU fixtures. Actual Native motion, pixe
 ### 2026-11-16 historical receipt bundle
 
 The following historical, inactive JSON receipts were preserved byte-for-byte in `work/_shared/historical-receipts-bundle-20261116.json` with original relative paths and SHA-256 values, then removed from the returned tree to free file slots: `first-primary-compatibility.json`, `speed-before-comparison.json`. The current source/manifest files have no references to these names. An ignored local backup is at `.runtime-work/historical-receipts-dedup-20261116/`. Restore by base64-decoding the bundle entries to their `path`. The active scoped strict gate was rerun after compaction.
+
+Result-only historical log reconciliation, 2026-11-16: 2 exact UTF-8 logs were SHA-256-preserved in `work/_shared/prune-history-bundle-all.json.preserved_source_files` and removed from this package; matching obsolete `result.json.tests` claims were removed. Current manifest-bound proofs remain direct. Re-run the scoped strict gate before relying on ready status.

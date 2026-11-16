@@ -41,3 +41,5 @@ The updated `.venv-cpu` runtime, FFmpeg/ffprobe, and Lean 4.28.0 pass `.venv-cpu
 ## Assignment gate completion
 
 `.venv-cpu/bin/python worker_check.py --assignment heldout__C102304__NRS-484B-710__motor_vehicle_driver --complete --require-delivery-ready` passes with the source-hashed semantic chain, ten delivery acceptance receipts, 30 physical preparation fixtures, four-camera plan and prior candidate/saved-processing receipts. The first GPU command in `result.json` is for the local operator only. The complete-batch gate remains pending on the other assignments and batch queue.
+
+Result-only historical log reconciliation, 2026-11-16: 1 exact UTF-8 logs were SHA-256-preserved in `work/_shared/prune-history-bundle-all.json.preserved_source_files` and removed from this package; matching obsolete `result.json.tests` claims were removed. Current manifest-bound proofs remain direct. Re-run the scoped strict gate before relying on ready status.

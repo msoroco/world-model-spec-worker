@@ -71,3 +71,5 @@ Three unreferenced saved-processing proof copies were byte-preserved with tar an
 
 
 2026-11-16 CPU file-budget preservation: 4 unreferenced standalone artifacts archived byte-exact in `result.json.preserved_unreferenced_cpu_artifacts`; member SHA256 values are recorded there. Scoped validation follows.
+
+Result-only historical log reconciliation, 2026-11-16: 3 exact UTF-8 logs were SHA-256-preserved in `work/_shared/prune-history-bundle-all.json.preserved_source_files` and removed from this package; matching obsolete `result.json.tests` claims were removed. Current manifest-bound proofs remain direct. Re-run the scoped strict gate before relying on ready status.

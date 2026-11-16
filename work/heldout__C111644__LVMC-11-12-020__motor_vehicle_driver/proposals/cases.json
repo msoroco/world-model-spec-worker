@@ -4,18 +4,18 @@
   "actor": "motor_vehicle_driver",
   "cases": [
     {
-      "case_id": "heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__marker_follow",
-      "target_law_id": "LVMC-11-12-020",
-      "target_type": "boundary_probe",
-      "rationale": "Controlled authorized-indication form and follow/depart turn course response; physical and legal review pending",
+      "case_id": "heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__semantic_baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Neutral semantic anchor only; no additional recording.",
       "variable_assignments": {
         "indication_form": {
           "kind": "world_setup",
-          "value": "marker"
+          "value": "not_selected"
         },
         "turn_response_target": {
           "kind": "controller",
-          "value": "follow"
+          "value": "not_selected"
         },
         "municipal_authorization_verified": {
           "kind": "world_setup",
@@ -23,7 +23,7 @@
         }
       },
       "unresolved_judgment_calls": [
-        "authorized",
+        "authorized markers, buttons, or other indications",
         "disobey the direction of such indications"
       ],
       "recording_description": {
@@ -70,6 +70,84 @@
           "Source record authority is a claim; independent review needed",
           "CPU fixture does not prove physical turn or visible pixels"
         ]
+      }
+    },
+    {
+      "case_id": "heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__marker_follow",
+      "target_law_id": "LVMC-11-12-020",
+      "target_type": "boundary_probe",
+      "rationale": "Controlled authorized-indication form and follow/depart turn course response; physical and legal review pending",
+      "variable_assignments": {
+        "indication_form": {
+          "kind": "world_setup",
+          "value": "marker"
+        },
+        "turn_response_target": {
+          "kind": "controller",
+          "value": "follow"
+        },
+        "municipal_authorization_verified": {
+          "kind": "world_setup",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "authorized markers, buttons, or other indications",
+        "disobey the direction of such indications"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "original_course_deviation_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Source-joined original body center to indicated course, sampled over whole turn",
+            "time_window": "all 160 original turn frames",
+            "reference_frame": "source-hashed Native intersection",
+            "uncertainty": "physical pixels, municipal authorization and legal obedience unresolved"
+          },
+          {
+            "name": "original_turn_path_length_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Cumulative distance from source-joined original body centers",
+            "time_window": "all 160 original turn frames",
+            "reference_frame": "source-hashed Native intersection",
+            "uncertainty": "physical pixels, municipal authorization and legal obedience unresolved"
+          },
+          {
+            "name": "intersection_occupancy",
+            "unit": "boolean",
+            "sampling_rate_hz": 20,
+            "method": "Original body center within source-hashed intersection polygon",
+            "time_window": "all 160 original turn frames",
+            "reference_frame": "source-hashed Native intersection",
+            "uncertainty": "physical pixels, municipal authorization and legal obedience unresolved"
+          },
+          {
+            "name": "turn_course_source_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Source-hashed indication form, location, authority claim and course; municipal authority not verified",
+            "time_window": "all 160 original turn frames",
+            "reference_frame": "source-hashed Native intersection",
+            "uncertainty": "physical pixels, municipal authorization and legal obedience unresolved"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Source record authority is a claim; independent review needed",
+          "CPU fixture does not prove physical turn or visible pixels"
+        ]
+      },
+      "paired_probe_id": "heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__marker_route_response",
+      "deliberate_differences": [
+        "turn_response_target"
+      ],
+      "probe": {
+        "primary_variable": "turn_response_target",
+        "comparison_or_standard": "Original sourced indicated course; legal obedience unresolved",
+        "target_value_or_branch": "follow"
       }
     },
     {
@@ -92,7 +170,7 @@
         }
       },
       "unresolved_judgment_calls": [
-        "authorized",
+        "authorized markers, buttons, or other indications",
         "disobey the direction of such indications"
       ],
       "recording_description": {
@@ -139,6 +217,15 @@
           "Source record authority is a claim; independent review needed",
           "CPU fixture does not prove physical turn or visible pixels"
         ]
+      },
+      "paired_probe_id": "heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__marker_route_response",
+      "deliberate_differences": [
+        "turn_response_target"
+      ],
+      "probe": {
+        "primary_variable": "turn_response_target",
+        "comparison_or_standard": "Original sourced indicated course; legal obedience unresolved",
+        "target_value_or_branch": "depart"
       }
     },
     {
@@ -161,7 +248,7 @@
         }
       },
       "unresolved_judgment_calls": [
-        "authorized",
+        "authorized markers, buttons, or other indications",
         "disobey the direction of such indications"
       ],
       "recording_description": {
@@ -208,6 +295,15 @@
           "Source record authority is a claim; independent review needed",
           "CPU fixture does not prove physical turn or visible pixels"
         ]
+      },
+      "paired_probe_id": "heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__button_route_response",
+      "deliberate_differences": [
+        "turn_response_target"
+      ],
+      "probe": {
+        "primary_variable": "turn_response_target",
+        "comparison_or_standard": "Original sourced indicated course; legal obedience unresolved",
+        "target_value_or_branch": "follow"
       }
     },
     {
@@ -230,7 +326,7 @@
         }
       },
       "unresolved_judgment_calls": [
-        "authorized",
+        "authorized markers, buttons, or other indications",
         "disobey the direction of such indications"
       ],
       "recording_description": {
@@ -277,6 +373,15 @@
           "Source record authority is a claim; independent review needed",
           "CPU fixture does not prove physical turn or visible pixels"
         ]
+      },
+      "paired_probe_id": "heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__button_route_response",
+      "deliberate_differences": [
+        "turn_response_target"
+      ],
+      "probe": {
+        "primary_variable": "turn_response_target",
+        "comparison_or_standard": "Original sourced indicated course; legal obedience unresolved",
+        "target_value_or_branch": "depart"
       }
     },
     {
@@ -299,7 +404,7 @@
         }
       },
       "unresolved_judgment_calls": [
-        "authorized",
+        "authorized markers, buttons, or other indications",
         "disobey the direction of such indications"
       ],
       "recording_description": {
@@ -346,6 +451,15 @@
           "Source record authority is a claim; independent review needed",
           "CPU fixture does not prove physical turn or visible pixels"
         ]
+      },
+      "paired_probe_id": "heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__other_indication_route_response",
+      "deliberate_differences": [
+        "turn_response_target"
+      ],
+      "probe": {
+        "primary_variable": "turn_response_target",
+        "comparison_or_standard": "Original sourced indicated course; legal obedience unresolved",
+        "target_value_or_branch": "follow"
       }
     },
     {
@@ -368,7 +482,7 @@
         }
       },
       "unresolved_judgment_calls": [
-        "authorized",
+        "authorized markers, buttons, or other indications",
         "disobey the direction of such indications"
       ],
       "recording_description": {
@@ -415,9 +529,49 @@
           "Source record authority is a claim; independent review needed",
           "CPU fixture does not prove physical turn or visible pixels"
         ]
+      },
+      "paired_probe_id": "heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__other_indication_route_response",
+      "deliberate_differences": [
+        "turn_response_target"
+      ],
+      "probe": {
+        "primary_variable": "turn_response_target",
+        "comparison_or_standard": "Original sourced indicated course; legal obedience unresolved",
+        "target_value_or_branch": "depart"
       }
     }
   ],
-  "sweep_specs": [],
+  "sweep_specs": [
+    {
+      "sweep_id": "heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__course_deviation_sweep",
+      "target_law_id": "LVMC-11-12-020",
+      "judgment_refs": [
+        {
+          "phrase": "disobey the direction of such indications",
+          "note": "Retain the full original body path and sourced indicated course; no numeric legal deviation cutoff is supplied."
+        }
+      ],
+      "rationale": "Finite source-constrained turn-course deviation samples for unresolved obedience judgment; exact cases and proofs remain CPU work.",
+      "status": "incomplete",
+      "missing_inputs": [
+        "Construct source-constrained selected sweep cases, controllers, measurement contracts, fallback plans and exact CPU proofs."
+      ]
+    },
+    {
+      "sweep_id": "heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__indication_placement_sweep",
+      "target_law_id": "LVMC-11-12-020",
+      "judgment_refs": [
+        {
+          "phrase": "authorized markers, buttons, or other indications",
+          "note": "Retain original authority and in-intersection placement readback; municipal authorization remains a source review question."
+        }
+      ],
+      "rationale": "Finite original placement variation for claimed-authority context; exact cases and proofs remain CPU work.",
+      "status": "incomplete",
+      "missing_inputs": [
+        "Construct original-source-backed selected placement sweep cases and exact CPU proofs."
+      ]
+    }
+  ],
   "sweeps_expanded": true
 }

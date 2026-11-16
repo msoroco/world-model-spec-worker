@@ -85,3 +85,5 @@ The following historical, inactive JSON receipts were preserved byte-for-byte in
 
 
 2026-11-16 CPU file-budget preservation: 12 unreferenced standalone saved receipt copies archived byte-exact in `result.json.preserved_unreferenced_cpu_artifacts`; member SHA256 values recorded there. Scoped validation follows.
+
+Result-only historical log reconciliation, 2026-11-16: 2 exact UTF-8 logs were SHA-256-preserved in `work/_shared/prune-history-bundle-all.json.preserved_source_files` and removed from this package; matching obsolete `result.json.tests` claims were removed. Current manifest-bound proofs remain direct. Re-run the scoped strict gate before relying on ready status.
