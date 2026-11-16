@@ -1,0 +1,28 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_no_loading",
+  "requirements": [
+    {
+      "disposition_index": 4,
+      "requirement": "text-4",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "signed_curb_observation",
+      "method": "signed_context",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native-raw-actors.jsonl",
+        "native-map-readback.json",
+        "native-passenger-inventory.jsonl",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "native-passenger-inventory.jsonl"
+    ],
+    "error_contains": "Missing required source: native-passenger-inventory.jsonl"
+  },
+  "scope": "Observed tour-bus, signed red curb, 20 Hz stopped interval and absence of passenger actor; no physical acceptance or legal verdict"
+}

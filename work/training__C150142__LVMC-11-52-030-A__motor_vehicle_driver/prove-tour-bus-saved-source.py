@@ -63,7 +63,7 @@ def source_rows(target, walker_moves=True, inject_walker_actor=False):
                      'ego_center_native_xy_m': [x, y],
                      'ego_body_native_xy_m': [[x - 1, y - .5], [x + 1, y - .5],
                                               [x + 1, y + .5], [x - 1, y + .5]],
-                     'velocity_native_xyz_mps': [1 if i < approach else 0, 0, 0],
+                     'velocity_native_xyz_mps': [target_x * 20 / approach if i < approach else 0, 0, 0],
                      'yaw_deg': 0}
             walker = {'frame': i, 'native_frame': i, 'time_s': t,
                       'source_kind': 'synthetic_native_sample', 'actor_id': 2,
@@ -83,8 +83,9 @@ def source_rows(target, walker_moves=True, inject_walker_actor=False):
                 passengers.write(json.dumps(walker) + '\n')
             frames.write(json.dumps(frame) + '\n')
             trace.write(json.dumps({'frame': i, 'time_s': t,
-                                    'position_m': [x, y, 0],
-                                    'speed_mps': 1 if i < approach else 0}) + '\n')
+                                    'position': {'x': x, 'y': y, 'z': 0},
+                                    'heading_deg': 0,
+                                    'speed_mps': target_x * 20 / approach if i < approach else 0}) + '\n')
             evidence.write(json.dumps({'frame': i,
                                        'source_kind': 'synthetic_native_sample'}) + '\n')
     for view in VIEWS:
