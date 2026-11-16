@@ -41,7 +41,7 @@ def main():
             saved = ROOT/'.runtime-work'/f'c10014-update039-{suffix}-{candidate}-saved'
             if offline.exists() or attempt.exists() or saved.exists():
                 raise FileExistsError(f'Retain prior attempt; update version: {attempt}')
-            proof = HERE/'selected-proof-bindings-034'/suffix/candidate
+            proof = HERE/'selected-proof-bindings-039'/suffix/candidate
             proof.mkdir(parents=True, exist_ok=True)
             offline_command = run([str(PYTHON), str(ROOT/'runtime.py'),
                 'offline', '--manifest', str(MANIFEST), '--case', entry['case_id'],

@@ -121,6 +121,33 @@ def video_frames(path: Path):
         raise ValueError('Source video decode failed: '+path.name)
     return int(completed.stdout.strip())
 
+def derive_channels(attempt: Path, native: list[dict], mapping: list[dict], geometry: dict, config: dict):
+    """Rebuild diagnostic streams from saved Native samples when staging stripped them."""
+    folder=attempt/'channels'
+    for channel in config['recording_description']['channels']:
+        name=channel['name'];target=folder/(name+'.jsonl')
+        if target.exists():continue
+        values=[]
+        for i,sample in enumerate(native):
+            if name=='dev.traffic_signal':value={'official_devices_present':False,'native_actor_count':0}
+            elif name=='st.stop_line':value=geometry['stop_line_y_m']
+            elif name=='st.crosswalk':value=geometry['nearest_crosswalk_y_m']
+            elif name=='drv.stopped':value=sample['speed_mps']<.05
+            elif name=='kin.velocity':value=sample['speed_mps']
+            elif name=='drv.extreme_lane':value=geometry['lanes']['approach_ego_half']
+            elif name=='st.one_way_roadway':value=geometry['lanes']
+            elif name=='drv.yields_to':value={'walker_conflict_occupied':sample['walker_conflict_occupied'],
+                'pedestrian_on_ego_highway_half':sample['pedestrian_on_ego_highway_half']}
+            elif name=='crosswalk_exception':value={'pedestrian_blind_declared':sample['pedestrian_blind_declared'],
+                'white_cane_declared':sample['white_cane_declared'],
+                'white_cane_visual_prop_physically_verified':False}
+            elif name=='native_body_pose_control':value=sample
+            elif name=='camera_frame_join':value=mapping[i]
+            else:raise ValueError('Unknown channel: '+name)
+            values.append({'time_s':sample['time_s'],'value':value})
+        folder.mkdir(exist_ok=True)
+        target.write_text(''.join(json.dumps(v,allow_nan=False)+'\n' for v in values))
+
 def finalize(attempt: Path,output: Path):
     attempt=attempt.resolve();output=output.resolve()
     if output.exists() or (attempt/'result.json').exists():
@@ -144,6 +171,7 @@ def finalize(attempt: Path,output: Path):
     else:
         target='blind_white_cane_exception_applicability';expected=suffix=='exception_1_2'
         observed=exception['value']['blind_white_cane_exception_declared']
+    derive_channels(attempt,native,mapping,geometry,config)
     recording=[]
     for channel in config['recording_description']['channels']:
         name=channel['name'];relative='channels/'+name+'.jsonl';source(attempt,relative)

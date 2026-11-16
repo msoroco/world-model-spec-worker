@@ -95,77 +95,97 @@
   ],
   "observations": [
     {
-      "name": "ego_pose",
-      "unit": "m,deg",
+      "name": "kin.position",
+      "unit": "m",
       "mandatory": true,
-      "purpose": "Measured position, heading and footprint over time"
+      "purpose": "Original pedestrian center and lateral crosswalk position by frame"
     },
     {
-      "name": "ego_speed",
-      "unit": "m/s",
+      "name": "kin.heading",
+      "unit": "unit vector",
       "mandatory": true,
-      "purpose": "Observed movement and stop intervals"
+      "purpose": "Original heading for determining the right half of travel"
     },
     {
-      "name": "pedestrian_lateral_crosswalk_half",
-      "unit": "left_or_right",
+      "name": "rel.occupies",
+      "unit": "structured",
       "mandatory": true,
-      "purpose": "right-half versus left-half path under fixed practicability facts"
+      "purpose": "Original pedestrian footprint joined to authored crosswalk geometry"
+    },
+    {
+      "name": "native_pedestrian_pose",
+      "unit": "structured Native rows",
+      "mandatory": true,
+      "purpose": "Original walker identity, pose, footprint and controller request"
+    },
+    {
+      "name": "camera_frame_join",
+      "unit": "structured frame index",
+      "mandatory": true,
+      "purpose": "Four source camera streams joined to original Native frame and time"
     }
   ],
   "source_observation_mapping": {
     "ru.subject": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Original Native walker identity and pose are retained per frame; identity as the judged subject requires source review.",
       "channels": [
-        "pedestrian_lateral_crosswalk_half"
+        "native_pedestrian_pose"
       ],
       "source_refs": [
-        "inputs/training__C10316__NRS-484B-293__pedestrian/assignment.json"
+        "work/training__C10316__NRS-484B-293__pedestrian/runner.py",
+        "work/training__C10316__NRS-484B-293__pedestrian/finalize.py"
       ]
     },
     "st.crosswalk": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Authored crosswalk geometry and original Native footprint/position are joined; actual marked-highway designation remains for source review.",
       "channels": [
-        "pedestrian_lateral_crosswalk_half"
+        "rel.occupies",
+        "kin.position"
       ],
       "source_refs": [
-        "inputs/training__C10316__NRS-484B-293__pedestrian/assignment.json"
+        "work/training__C10316__NRS-484B-293__pedestrian/runner.py",
+        "work/training__C10316__NRS-484B-293__pedestrian/finalize.py"
       ]
     },
     "rel.occupies": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Original footprint and position are compared with the authored crosswalk halves; legal occupancy remains for source review.",
       "channels": [
-        "pedestrian_lateral_crosswalk_half"
+        "rel.occupies",
+        "kin.position"
       ],
       "source_refs": [
-        "inputs/training__C10316__NRS-484B-293__pedestrian/assignment.json"
+        "work/training__C10316__NRS-484B-293__pedestrian/runner.py",
+        "work/training__C10316__NRS-484B-293__pedestrian/finalize.py"
       ]
     },
     "kin.heading": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Original Native pedestrian forward vector is recorded every frame.",
       "channels": [
-        "pedestrian_lateral_crosswalk_half"
+        "kin.heading"
       ],
       "source_refs": [
-        "inputs/training__C10316__NRS-484B-293__pedestrian/assignment.json"
+        "work/training__C10316__NRS-484B-293__pedestrian/runner.py",
+        "work/training__C10316__NRS-484B-293__pedestrian/finalize.py"
       ]
     },
     "kin.position": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Original Native pedestrian position is recorded every frame.",
       "channels": [
-        "pedestrian_lateral_crosswalk_half"
+        "kin.position"
       ],
       "source_refs": [
-        "inputs/training__C10316__NRS-484B-293__pedestrian/assignment.json"
+        "work/training__C10316__NRS-484B-293__pedestrian/runner.py",
+        "work/training__C10316__NRS-484B-293__pedestrian/finalize.py"
       ]
     },
     "ru.pedestrian": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "The judged walker type is recorded, while other pedestrian presence and right-half practicability remain unverified in crosswalk-context.json and require original-source review.",
       "channels": [
-        "pedestrian_lateral_crosswalk_half"
+        "native_pedestrian_pose"
       ],
       "source_refs": [
-        "inputs/training__C10316__NRS-484B-293__pedestrian/assignment.json"
+        "work/training__C10316__NRS-484B-293__pedestrian/runner.py",
+        "work/training__C10316__NRS-484B-293__pedestrian/finalize.py"
       ]
     }
   },
@@ -218,5 +238,38 @@
         "why_existing_insufficient": "The conditional witness requires a marked highway crosswalk connected to the alley route, associated controls, passage space, obstacles and other pedestrians. These are not established by accepted Native evidence."
       }
     ]
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 12,
+    "fps": 20,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "full pedestrian and marked crosswalk path",
+        "interval": "full 12 s crossing attempt",
+        "source": "root config fixed world mount; actual pixels unverified"
+      },
+      {
+        "view": "approach",
+        "subject": "pedestrian approach and entry edge",
+        "interval": "entry through full traversal",
+        "source": "root config approach mount; actual pixels unverified"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "footprint relative to left and right crosswalk halves",
+        "interval": "full 12 s attempt",
+        "source": "root config corner mount; actual pixels unverified"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "pedestrian travel direction and passage space",
+        "interval": "full 12 s attempt",
+        "source": "root config pedestrian-relative mount; actual pixels unverified"
+      }
+    ],
+    "physical_risk": "Prospective mounts only. Original pixels, crosswalk marking, other pedestrians, obstacles and practicability require source review; fallback3 changes overhead camera mount when visibility fails."
   }
 }

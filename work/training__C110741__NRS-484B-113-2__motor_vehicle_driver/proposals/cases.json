@@ -2,11 +2,36 @@
   "cell_id": "C110741",
   "actor": "motor_vehicle_driver",
   "status": "draft",
+  "sweep_specs": [],
   "cases": [
     {
-      "case_id": "training__C110741__NRS-484B-113-2__motor_vehicle_driver__selected_55c68e79__condition_a",
-      "target_law_id": "NRS-484B-113-2",
-      "target_type": "attempt",
+      "case_id": "training__C110741__NRS-484B-113-2__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared reverse/crosswalk context; no accepted original is claimed.",
+      "variable_assignments": {
+        "crosswalk_geometry": {
+          "kind": "world_setup",
+          "value": "source surveyed crosswalk polygon and approach lane",
+          "unit": "structured"
+        },
+        "reverse_path_overlap": {
+          "kind": "world_setup",
+          "value": "clear",
+          "unit": "categorical"
+        },
+        "ego_trajectory": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        },
+        "commanded_reverse_path": {
+          "kind": "controller",
+          "value": "reverse path in C110741 lane",
+          "unit": "structured"
+        }
+      },
+      "unresolved_judgment_calls": [],
       "recording_description": {
         "channels": [
           {
@@ -95,9 +120,33 @@
       }
     },
     {
-      "case_id": "training__C110741__NRS-484B-113-2__motor_vehicle_driver__selected_55c68e79__condition_b",
+      "case_id": "training__C110741__NRS-484B-113-2__motor_vehicle_driver__selected_55c68e79__condition_a",
       "target_law_id": "NRS-484B-113-2",
-      "target_type": "attempt",
+      "target_type": "compliant_attempt",
+      "rationale": "Controlled reverse path against measured crosswalk polygon; label describes target only, actual motion unverified.",
+      "variable_assignments": {
+        "crosswalk_geometry": {
+          "kind": "world_setup",
+          "value": "source surveyed crosswalk polygon and approach lane",
+          "unit": "structured"
+        },
+        "reverse_path_overlap": {
+          "kind": "world_setup",
+          "value": "clear",
+          "unit": "categorical"
+        },
+        "ego_trajectory": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        },
+        "commanded_reverse_path": {
+          "kind": "controller",
+          "value": "reverse path in C110741 lane",
+          "unit": "structured"
+        }
+      },
+      "unresolved_judgment_calls": [],
       "recording_description": {
         "channels": [
           {
@@ -183,6 +232,139 @@
         "limitations": [
           "Synthetic CPU proof is not observed CARLA behavior or legal verdict"
         ]
+      },
+      "paired_probe_id": "crosswalk_reverse_path",
+      "deliberate_differences": [
+        "reverse_path_overlap"
+      ],
+      "probe": {
+        "primary_variable": "reverse_path_overlap",
+        "comparison_or_standard": "clear versus body overlap of surveyed crosswalk",
+        "target_value_or_branch": "clear"
+      }
+    },
+    {
+      "case_id": "training__C110741__NRS-484B-113-2__motor_vehicle_driver__selected_55c68e79__condition_b",
+      "target_law_id": "NRS-484B-113-2",
+      "target_type": "violating_attempt",
+      "rationale": "Controlled reverse path against measured crosswalk polygon; label describes target only, actual motion unverified.",
+      "variable_assignments": {
+        "crosswalk_geometry": {
+          "kind": "world_setup",
+          "value": "source surveyed crosswalk polygon and approach lane",
+          "unit": "structured"
+        },
+        "reverse_path_overlap": {
+          "kind": "world_setup",
+          "value": "over_crosswalk",
+          "unit": "categorical"
+        },
+        "ego_trajectory": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        },
+        "commanded_reverse_path": {
+          "kind": "controller",
+          "value": "reverse path in C110741 lane",
+          "unit": "structured"
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.backing",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body, map and controller sample",
+            "time_window": "24 s / 480 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical map and pixels pending"
+          },
+          {
+            "name": "st.crosswalk",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body, map and controller sample",
+            "time_window": "24 s / 480 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical map and pixels pending"
+          },
+          {
+            "name": "st.intersection",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body, map and controller sample",
+            "time_window": "24 s / 480 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical map and pixels pending"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body, map and controller sample",
+            "time_window": "24 s / 480 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical map and pixels pending"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body, map and controller sample",
+            "time_window": "24 s / 480 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical map and pixels pending"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body, map and controller sample",
+            "time_window": "24 s / 480 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical map and pixels pending"
+          },
+          {
+            "name": "native_body_pose_control",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body, map and controller sample",
+            "time_window": "24 s / 480 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical map and pixels pending"
+          },
+          {
+            "name": "camera_frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body, map and controller sample",
+            "time_window": "24 s / 480 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical map and pixels pending"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "surveyed_crosswalk",
+            "unit": "structured",
+            "method": "Native OpenDRIVE crosswalk readback and lane survey"
+          }
+        ],
+        "limitations": [
+          "Synthetic CPU proof is not observed CARLA behavior or legal verdict"
+        ]
+      },
+      "paired_probe_id": "crosswalk_reverse_path",
+      "deliberate_differences": [
+        "reverse_path_overlap"
+      ],
+      "probe": {
+        "primary_variable": "reverse_path_overlap",
+        "comparison_or_standard": "clear versus body overlap of surveyed crosswalk",
+        "target_value_or_branch": "over_crosswalk"
       }
     }
   ]

@@ -1,5 +1,6 @@
-"""Freeze the 300-foot synthetic Native source as a current-runtime text recipe."""
+"""Freeze an exact signal-distance Native diagnostic as a text recipe."""
 import hashlib
+import argparse
 import importlib.util
 import json
 from pathlib import Path
@@ -17,11 +18,17 @@ def sha(path):
 
 
 def main():
-    construction = json.loads((HERE / 'draft-candidates/300/primary/construction.json').read_text())
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--feet', type=int, choices=(90,100,110,290,300,310), default=300)
+    parser.add_argument('--candidate', choices=('primary', 'fallback1'), default='primary')
+    args = parser.parse_args()
+    candidate = args.candidate
+    feet = args.feet
+    construction = json.loads((HERE / 'draft-candidates' / str(feet) / candidate / 'construction.json').read_text())
     config = json.loads(next(x['content'] for x in construction['files'] if x['path'] == 'config.json'))
     with tempfile.TemporaryDirectory(dir=ROOT / '.runtime-work') as temporary:
         source = Path(temporary) / 'source'
-        module.build_fixture(source, 300, config)
+        module.build_fixture(source, feet, config)
         files = {}
         for path in source.rglob('*'):
             if path.is_file() and path.suffix != '.mkv' and '/graphs/' not in str(path):
@@ -36,11 +43,12 @@ def main():
                   for name, width, height in
                   (('overview', 1920, 1080), ('approach', 1280, 720),
                    ('reference_corner', 1280, 720), ('driver_reference', 1280, 720))]
-        spec = HERE / 'diagnostic-300.json'
+        label = 'diagnostic-' + str(feet) + ('-fallback1' if candidate == 'fallback1' else '')
+        spec = HERE / (label + '.json')
         spec.write_text(json.dumps({'files': files, 'graphs': graphs,
                                     'videos': videos}, separators=(',', ':')) + '\n')
     assignment = ROOT / 'inputs' / HERE.name / 'assignment.json'
-    recipe = HERE / 'diagnostic-300-recipe.json'
+    recipe = HERE / (label + '-recipe.json')
     recipe.write_text(json.dumps({'format': 'worker-fixture-recipe',
         'sources': [{'path': 'diagnostic-input-assignment.json',
                      'source': str(assignment.relative_to(ROOT)), 'sha256': sha(assignment)}],

@@ -95,77 +95,116 @@
   ],
   "observations": [
     {
-      "name": "ego_pose",
+      "name": "st.alley",
+      "unit": "structured Native road/lane",
+      "mandatory": true,
+      "purpose": "Source-backed alley identity during the stationary interval"
+    },
+    {
+      "name": "st.driveway_or_alley_entrance",
+      "unit": "structured Native geometry",
+      "mandatory": true,
+      "purpose": "Surveyed entrance bounds and eventual property-access review"
+    },
+    {
+      "name": "rel.occupies",
+      "unit": "structured relation",
+      "mandatory": true,
+      "purpose": "Original body footprint versus surveyed entrance; no numeric legal verdict"
+    },
+    {
+      "name": "kin.extent",
+      "unit": "m, polygon",
+      "mandatory": true,
+      "purpose": "Original full actor body and bounding vertices per frame"
+    },
+    {
+      "name": "kin.position",
       "unit": "m,deg",
       "mandatory": true,
-      "purpose": "Measured position, heading and footprint over time"
+      "purpose": "Original ego center, heading and pose per frame (former ego_pose observation)"
     },
     {
       "name": "ego_speed",
       "unit": "m/s",
       "mandatory": true,
-      "purpose": "Observed movement and stop intervals"
+      "purpose": "Measured Native velocity and stop interval"
     },
     {
-      "name": "stopped_footprint_at_abutting_entrance",
-      "unit": "m of entrance overlap",
+      "name": "native_body_pose_control",
+      "unit": "structured Native rows",
       "mandatory": true,
-      "purpose": "position alongside alley, with and without entrance overlap"
+      "purpose": "Frame-joined original pose, body, lane and commanded station"
+    },
+    {
+      "name": "camera_frame_join",
+      "unit": "structured frame index",
+      "mandatory": true,
+      "purpose": "Four source-camera streams joined to original Native frames"
     }
   ],
   "source_observation_mapping": {
     "st.alley": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Native road and lane identifiers plus the surveyed alley polygon, joined per frame; original map designation remains for local review.",
       "channels": [
-        "stopped_footprint_at_abutting_entrance"
+        "st.alley"
       ],
       "source_refs": [
-        "inputs/training__C10014__NRS-484B-477-2__motor_vehicle_driver/assignment.json"
+        "work/training__C10014__NRS-484B-477-2__motor_vehicle_driver/native/runner.py",
+        "work/training__C10014__NRS-484B-477-2__motor_vehicle_driver/finalize.py"
       ]
     },
     "st.driveway_or_alley_entrance": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Native surveyed entrance bounds and road geometry joined to the vehicle interval; abutting-property designation remains for local review.",
       "channels": [
-        "stopped_footprint_at_abutting_entrance"
+        "st.driveway_or_alley_entrance"
       ],
       "source_refs": [
-        "inputs/training__C10014__NRS-484B-477-2__motor_vehicle_driver/assignment.json"
+        "work/training__C10014__NRS-484B-477-2__motor_vehicle_driver/native/runner.py",
+        "work/training__C10014__NRS-484B-477-2__motor_vehicle_driver/finalize.py"
       ]
     },
     "drv.standing_or_parked": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Measured Native velocity and position through the stop interval distinguish stationary motion; standing versus parking purpose remains an independent source review.",
       "channels": [
-        "stopped_footprint_at_abutting_entrance"
+        "ego_speed",
+        "kin.position"
       ],
       "source_refs": [
-        "inputs/training__C10014__NRS-484B-477-2__motor_vehicle_driver/assignment.json"
+        "work/training__C10014__NRS-484B-477-2__motor_vehicle_driver/native/runner.py",
+        "work/training__C10014__NRS-484B-477-2__motor_vehicle_driver/finalize.py"
       ]
     },
     "rel.occupies": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Original Native actor body vertices and pose join the surveyed entrance bounds for footprint overlap; overlap alone is not a legal blockage verdict.",
       "channels": [
-        "stopped_footprint_at_abutting_entrance"
+        "rel.occupies",
+        "kin.extent",
+        "kin.position"
       ],
       "source_refs": [
-        "inputs/training__C10014__NRS-484B-477-2__motor_vehicle_driver/assignment.json"
+        "work/training__C10014__NRS-484B-477-2__motor_vehicle_driver/native/runner.py",
+        "work/training__C10014__NRS-484B-477-2__motor_vehicle_driver/finalize.py"
       ]
     },
     "kin.extent": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Original Native actor bounding-box vertices are captured per frame with the body history.",
       "channels": [
-        "stopped_footprint_at_abutting_entrance"
+        "kin.extent"
       ],
       "source_refs": [
-        "inputs/training__C10014__NRS-484B-477-2__motor_vehicle_driver/assignment.json"
+        "work/training__C10014__NRS-484B-477-2__motor_vehicle_driver/native/runner.py",
+        "work/training__C10014__NRS-484B-477-2__motor_vehicle_driver/finalize.py"
       ]
     },
     "kin.position": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Original Native actor center, heading and frame/time join are retained per frame.",
       "channels": [
-        "stopped_footprint_at_abutting_entrance"
+        "kin.position"
       ],
       "source_refs": [
-        "inputs/training__C10014__NRS-484B-477-2__motor_vehicle_driver/assignment.json"
+        "work/training__C10014__NRS-484B-477-2__motor_vehicle_driver/native/runner.py",
+        "work/training__C10014__NRS-484B-477-2__motor_vehicle_driver/finalize.py"
       ]
     }
   },

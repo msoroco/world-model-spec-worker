@@ -1,0 +1,118 @@
+{
+  "case_id": "training__C10316__NRS-484B-293__pedestrian__reference",
+  "selected_case_id": "training__C10316__NRS-484B-293__pedestrian__reference",
+  "case_suffix": "reference",
+  "candidate_id": "primary",
+  "case": {
+    "case_id": "training__C10316__NRS-484B-293__pedestrian__reference"
+  },
+  "cell_id": "C10316",
+  "law_id": "NRS-484B-293",
+  "actor": "pedestrian",
+  "duration_s": 12,
+  "rate_hz": 20,
+  "required_atoms": [
+    "ru.pedestrian",
+    "kin.position",
+    "kin.heading",
+    "st.crosswalk",
+    "rel.occupies"
+  ],
+  "source_packets": [],
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 90,
+      "pose_strategy": "fixed world mount 8 m above the full marked-crosswalk approach"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 95,
+      "pose_strategy": "fixed world mount 4 m before the pedestrian entry edge"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "fixed world mount at the right-half crosswalk corner"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "pedestrian-relative mount at 1.8 m height facing travel"
+    }
+  ],
+  "recording_description": {
+    "channels": [
+      {
+        "name": "kin.position",
+        "unit": "m",
+        "sampling_rate_hz": 20,
+        "method": "Original Native pedestrian center and footprint",
+        "time_window": "entire original 12 s / 240-frame attempt",
+        "reference_frame": "Native map and pedestrian/crosswalk coordinates",
+        "uncertainty": "50 ms frame interval; Native footprint and pixel audit required"
+      },
+      {
+        "name": "kin.heading",
+        "unit": "unit vector",
+        "sampling_rate_hz": 20,
+        "method": "Original Native pedestrian transform forward",
+        "time_window": "entire original 12 s / 240-frame attempt",
+        "reference_frame": "Native map and pedestrian/crosswalk coordinates",
+        "uncertainty": "50 ms frame interval; Native footprint and pixel audit required"
+      },
+      {
+        "name": "rel.occupies",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Original footprint and named crosswalk geometry",
+        "time_window": "entire original 12 s / 240-frame attempt",
+        "reference_frame": "Native map and pedestrian/crosswalk coordinates",
+        "uncertainty": "50 ms frame interval; Native footprint and pixel audit required"
+      },
+      {
+        "name": "native_pedestrian_pose",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Original body, pose, heading and velocity",
+        "time_window": "entire original 12 s / 240-frame attempt",
+        "reference_frame": "Native map and pedestrian/crosswalk coordinates",
+        "uncertainty": "50 ms frame interval; Native footprint and pixel audit required"
+      },
+      {
+        "name": "camera_frame_join",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Four camera frames joined to Native frame/time",
+        "time_window": "entire original 12 s / 240-frame attempt",
+        "reference_frame": "Native map and pedestrian/crosswalk coordinates",
+        "uncertainty": "50 ms frame interval; Native footprint and pixel audit required"
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "practicability_facts",
+        "unit": "structured",
+        "method": "Original Native obstruction and pedestrian inventory plus independent review"
+      }
+    ],
+    "limitations": [
+      "Right-half count is descriptive, not a practicability verdict",
+      "Authored OpenDRIVE crosswalk is not proof of Native crosswalk inventory",
+      "Source camera pixels and pedestrian physics require independent saved audit"
+    ]
+  },
+  "status": "assignment_cpu_entrypoint_physical_unverified",
+  "supported_case_ids": [
+    "training__C10316__NRS-484B-293__pedestrian__reference",
+    "training__C10316__NRS-484B-293__pedestrian__contrast"
+  ]
+}

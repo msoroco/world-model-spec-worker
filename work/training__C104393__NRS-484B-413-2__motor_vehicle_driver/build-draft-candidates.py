@@ -78,8 +78,9 @@ def main():
             "measurement_contract":contract_rel,
             "measurement_procedure":{"entrypoint":"finalize.py","status":"saved_source_diagnostic"},
             "candidates":[]}
-        if feet == 300:
-            entry['fixture_recipe'] = str((HERE/'diagnostic-300-recipe.json').relative_to(ROOT))
+        recipe = HERE/f'diagnostic-{feet}-recipe.json'
+        if recipe.is_file():
+            entry['fixture_recipe'] = str(recipe.relative_to(ROOT))
         for candidate in NAMES:
             settings=variants[candidate]["config"]
             radius=24.0 if candidate=="fallback1" else 20.0
