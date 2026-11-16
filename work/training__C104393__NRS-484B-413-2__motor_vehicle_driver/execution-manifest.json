@@ -1,0 +1,588 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C104393__NRS-484B-413-2__motor_vehicle_driver",
+  "runtime_manifest_sha256": "ae635d487ae988b67925bacd5ba13210f31224fc6a1ae131d1836a5557ba8714",
+  "status": "selected_cpu_preparation_incomplete",
+  "cases": [
+    {
+      "case_id": "training__C104393__NRS-484B-413-2__motor_vehicle_driver__90",
+      "kind": "delivery",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native map, body, indicator and pixels require original observation"
+      },
+      "measurement_contract": "draft-candidates/90/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "status": "saved_source_diagnostic"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-candidates/90/fallback1/construction.json",
+          "construction_sha256": "6da1110685b9ebae434da15d11192b0bfb61bd232ed624649fd0fea9c3c4c84f",
+          "trigger": {
+            "metric": "native_lane_link_and_body_containment",
+            "failure_condition": "Native route link absent or full body leaves the surveyed driving lane",
+            "required_source": "original Native map and body samples"
+          },
+          "changed_knobs": [
+            "road_geometry"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-candidates/90/fallback2/construction.json",
+          "construction_sha256": "efeda5c2d9f249d6bde1ea1732e023c2e404dde1614219eb50726da747b41b91",
+          "trigger": {
+            "metric": "maximum_original_turn_route_error_m",
+            "failure_condition": "maximum error exceeds 0.35 m before turn exit",
+            "required_source": "original Native pose and route samples"
+          },
+          "changed_knobs": [
+            "controller_lookahead_m"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-candidates/90/fallback3/construction.json",
+          "construction_sha256": "e9ac8a788666e95d19b18f89bc1da078566c92fd981a9069dc2cdad2127e9300",
+          "trigger": {
+            "metric": "visible_signal_and_body_fraction",
+            "failure_condition": "source-video visibility is below 95% of approach frames",
+            "required_source": "original decoded camera pixels joined to Native frames"
+          },
+          "changed_knobs": [
+            "camera_fov_deg",
+            "camera_height_m"
+          ]
+        }
+      ],
+      "fixture_recipe": "work/training__C104393__NRS-484B-413-2__motor_vehicle_driver/diagnostic-90-recipe.json",
+      "id": "primary",
+      "construction": "draft-candidates/90/primary/construction.json",
+      "construction_sha256": "014d6390d2eaaeff68f12f7a8e6e1a208180fa5d63fce603b3d8b211b150dd8c",
+      "cpu_diagnostic_proofs": {
+        "scope": "synthetic_source_bound_only",
+        "candidate_summary": "current-v2-90-summary.json",
+        "candidate_summary_sha256": "d1b16a918054739efdb729f7b37bdd0de1fbcfe89640c32fd45f2d2fe4e4d668",
+        "independent_candidate_audit": "current-v2-90-audit.log",
+        "independent_candidate_audit_sha256": "7621907ebbe8c163a4181baa64b012c517a40a8f5fc89a75a75d728ab7b9904d",
+        "saved_primary_receipt": "current-90-saved-processing-receipt.json",
+        "saved_primary_receipt_sha256": "4f97e7eaec7ce7fee456db07e89296dc4640f65dcca789da7f638cfd48e36322",
+        "saved_primary_missing_source_feedback": "current-90-saved-negative-feedback.json",
+        "saved_primary_missing_source_feedback_sha256": "6d6a707c46fc0bc77a6e8bd5dbb8ad90595bf7684fc27868d1b6a66b9955fb79"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C104393__NRS-484B-413-2__motor_vehicle_driver__90",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "native/delivery_audit.py",
+        "script_sha256": "a255eb706e4795076f3cf3f673574b6441c128a99af9e61b2b5c5e0c9c9aaa1f",
+        "command": ".venv-cpu/bin/python work/training__C104393__NRS-484B-413-2__motor_vehicle_driver/native/delivery_audit.py --case training__C104393__NRS-484B-413-2__motor_vehicle_driver__90 --selftest",
+        "test_exit_code": 0,
+        "test_log": "delivery-audit-90-positive.log",
+        "test_log_sha256": "5b473b18ece559de1fb6512c5e10ecc7b6100a9b968e261cb22ee781e52a8258",
+        "negative_command": ".venv-cpu/bin/python work/training__C104393__NRS-484B-413-2__motor_vehicle_driver/native/delivery_audit.py --case training__C104393__NRS-484B-413-2__motor_vehicle_driver__90 --negative-selftest",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Reviewed pixel box exceeds source video",
+        "negative_log": "delivery-audit-90-negative.log",
+        "negative_log_sha256": "01314fa9b4942fae37e2dc5003c572d544bd05523ade9ee19c1276a599b0da99",
+        "scope": "source-shaped synthetic CPU mechanics only; production original audit requires review"
+      }
+    },
+    {
+      "case_id": "training__C104393__NRS-484B-413-2__motor_vehicle_driver__100",
+      "kind": "delivery",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native map, body, indicator and pixels require original observation"
+      },
+      "measurement_contract": "draft-candidates/100/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "status": "saved_source_diagnostic"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-candidates/100/fallback1/construction.json",
+          "construction_sha256": "319b3596aa76271bf27c4b9edb47696f902dca20f1a1383ba547fbed1d823d04",
+          "trigger": {
+            "metric": "native_lane_link_and_body_containment",
+            "failure_condition": "Native route link absent or full body leaves the surveyed driving lane",
+            "required_source": "original Native map and body samples"
+          },
+          "changed_knobs": [
+            "road_geometry"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-candidates/100/fallback2/construction.json",
+          "construction_sha256": "ab5c65a4be4b4e452590a7b74ccb3e48199aa5f8143516de1f1513304548bec6",
+          "trigger": {
+            "metric": "maximum_original_turn_route_error_m",
+            "failure_condition": "maximum error exceeds 0.35 m before turn exit",
+            "required_source": "original Native pose and route samples"
+          },
+          "changed_knobs": [
+            "controller_lookahead_m"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-candidates/100/fallback3/construction.json",
+          "construction_sha256": "e3a5eb2a583523f78e847b350844c14a10b1dd7d656e3cca3d10e0f432a30299",
+          "trigger": {
+            "metric": "visible_signal_and_body_fraction",
+            "failure_condition": "source-video visibility is below 95% of approach frames",
+            "required_source": "original decoded camera pixels joined to Native frames"
+          },
+          "changed_knobs": [
+            "camera_fov_deg",
+            "camera_height_m"
+          ]
+        }
+      ],
+      "fixture_recipe": "work/training__C104393__NRS-484B-413-2__motor_vehicle_driver/diagnostic-100-recipe.json",
+      "id": "primary",
+      "construction": "draft-candidates/100/primary/construction.json",
+      "construction_sha256": "398b9911008dd8f265853b44bb4838a7077efd585cf3e98d8ff48c90200e9749",
+      "cpu_diagnostic_proofs": {
+        "scope": "synthetic_source_bound_only",
+        "candidate_summary": "current-v2-100-summary.json",
+        "candidate_summary_sha256": "3279cbba6b379a8e2b44e19729a174fb90293a0ca87ee2310a510df9094cb2fc",
+        "independent_candidate_audit": "current-v2-100-audit.log",
+        "independent_candidate_audit_sha256": "7621907ebbe8c163a4181baa64b012c517a40a8f5fc89a75a75d728ab7b9904d",
+        "saved_primary_receipt": "current-100-saved-processing-receipt.json",
+        "saved_primary_receipt_sha256": "2b74477d8ae9856c2a8be8153f0e6ca308b261265f5858d5c17476fdce5855e1",
+        "saved_primary_missing_source_feedback": "current-100-saved-negative-feedback.json",
+        "saved_primary_missing_source_feedback_sha256": "88ac57c9c99050fd13fe29fec4650d84a24aa17efc5519183c1c80267a331c8e"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C104393__NRS-484B-413-2__motor_vehicle_driver__100",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "native/delivery_audit.py",
+        "script_sha256": "a255eb706e4795076f3cf3f673574b6441c128a99af9e61b2b5c5e0c9c9aaa1f",
+        "command": ".venv-cpu/bin/python work/training__C104393__NRS-484B-413-2__motor_vehicle_driver/native/delivery_audit.py --case training__C104393__NRS-484B-413-2__motor_vehicle_driver__100 --selftest",
+        "test_exit_code": 0,
+        "test_log": "delivery-audit-100-positive.log",
+        "test_log_sha256": "472d240d13573b0e51e16b074278d946a24046f579f0dfb5a2069c2c86eb6430",
+        "negative_command": ".venv-cpu/bin/python work/training__C104393__NRS-484B-413-2__motor_vehicle_driver/native/delivery_audit.py --case training__C104393__NRS-484B-413-2__motor_vehicle_driver__100 --negative-selftest",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Reviewed pixel box exceeds source video",
+        "negative_log": "delivery-audit-100-negative.log",
+        "negative_log_sha256": "01314fa9b4942fae37e2dc5003c572d544bd05523ade9ee19c1276a599b0da99",
+        "scope": "source-shaped synthetic CPU mechanics only; production original audit requires review"
+      }
+    },
+    {
+      "case_id": "training__C104393__NRS-484B-413-2__motor_vehicle_driver__110",
+      "kind": "delivery",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native map, body, indicator and pixels require original observation"
+      },
+      "measurement_contract": "draft-candidates/110/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "status": "saved_source_diagnostic"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-candidates/110/fallback1/construction.json",
+          "construction_sha256": "a34efeedf1dcca2a22d4497fcf08e005cb172ab9d70a3f6ded359fb5c893f76f",
+          "trigger": {
+            "metric": "native_lane_link_and_body_containment",
+            "failure_condition": "Native route link absent or full body leaves the surveyed driving lane",
+            "required_source": "original Native map and body samples"
+          },
+          "changed_knobs": [
+            "road_geometry"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-candidates/110/fallback2/construction.json",
+          "construction_sha256": "6208161f7994cabfe65c4860fe20552fe1a89f5085f4deb239538d6343ddd99e",
+          "trigger": {
+            "metric": "maximum_original_turn_route_error_m",
+            "failure_condition": "maximum error exceeds 0.35 m before turn exit",
+            "required_source": "original Native pose and route samples"
+          },
+          "changed_knobs": [
+            "controller_lookahead_m"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-candidates/110/fallback3/construction.json",
+          "construction_sha256": "765ccedd7377219c2e87827e7bfc5400e58fc485b26b5fe3b2e2d86f0b465fc3",
+          "trigger": {
+            "metric": "visible_signal_and_body_fraction",
+            "failure_condition": "source-video visibility is below 95% of approach frames",
+            "required_source": "original decoded camera pixels joined to Native frames"
+          },
+          "changed_knobs": [
+            "camera_fov_deg",
+            "camera_height_m"
+          ]
+        }
+      ],
+      "fixture_recipe": "work/training__C104393__NRS-484B-413-2__motor_vehicle_driver/diagnostic-110-recipe.json",
+      "id": "primary",
+      "construction": "draft-candidates/110/primary/construction.json",
+      "construction_sha256": "a35934139933c68a9825ad32f4159eabe8f18e9557c3082a8be41e75ac709dbe",
+      "cpu_diagnostic_proofs": {
+        "scope": "synthetic_source_bound_only",
+        "candidate_summary": "current-v2-110-summary.json",
+        "candidate_summary_sha256": "7b52fd6b9ac252c01b38436ade50f771ba2e6e71f19f040f12cd78869091ada5",
+        "independent_candidate_audit": "current-v2-110-audit.log",
+        "independent_candidate_audit_sha256": "7621907ebbe8c163a4181baa64b012c517a40a8f5fc89a75a75d728ab7b9904d",
+        "saved_primary_receipt": "current-110-saved-processing-receipt.json",
+        "saved_primary_receipt_sha256": "32d25a8978c74b3df11436c60c7f8eca135a4eea2df0cd30d79e4a7a5d9b0bb3",
+        "saved_primary_missing_source_feedback": "current-110-saved-negative-feedback.json",
+        "saved_primary_missing_source_feedback_sha256": "cd2019f1448fac6e2d5d0f60387a20d2e1b8fbd7a15ada65d2b49f9d9c953952"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C104393__NRS-484B-413-2__motor_vehicle_driver__110",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "native/delivery_audit.py",
+        "script_sha256": "a255eb706e4795076f3cf3f673574b6441c128a99af9e61b2b5c5e0c9c9aaa1f",
+        "command": ".venv-cpu/bin/python work/training__C104393__NRS-484B-413-2__motor_vehicle_driver/native/delivery_audit.py --case training__C104393__NRS-484B-413-2__motor_vehicle_driver__110 --selftest",
+        "test_exit_code": 0,
+        "test_log": "delivery-audit-110-positive.log",
+        "test_log_sha256": "cfedf77c9ef918736cdd235af114384b7402db977a9853c1991bcefa0d22ee9e",
+        "negative_command": ".venv-cpu/bin/python work/training__C104393__NRS-484B-413-2__motor_vehicle_driver/native/delivery_audit.py --case training__C104393__NRS-484B-413-2__motor_vehicle_driver__110 --negative-selftest",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Reviewed pixel box exceeds source video",
+        "negative_log": "delivery-audit-110-negative.log",
+        "negative_log_sha256": "01314fa9b4942fae37e2dc5003c572d544bd05523ade9ee19c1276a599b0da99",
+        "scope": "source-shaped synthetic CPU mechanics only; production original audit requires review"
+      }
+    },
+    {
+      "case_id": "training__C104393__NRS-484B-413-2__motor_vehicle_driver__290",
+      "kind": "delivery",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native map, body, indicator and pixels require original observation"
+      },
+      "measurement_contract": "draft-candidates/290/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "status": "saved_source_diagnostic"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-candidates/290/fallback1/construction.json",
+          "construction_sha256": "2e8280f34022590be6dda1fb0ff57c23a1cf2bcd29c87b2995abc6964bf0457c",
+          "trigger": {
+            "metric": "native_lane_link_and_body_containment",
+            "failure_condition": "Native route link absent or full body leaves the surveyed driving lane",
+            "required_source": "original Native map and body samples"
+          },
+          "changed_knobs": [
+            "road_geometry"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-candidates/290/fallback2/construction.json",
+          "construction_sha256": "101283789ed15a4ecd6ed46728836c98101221f8109944a61335fb33d56d48e8",
+          "trigger": {
+            "metric": "maximum_original_turn_route_error_m",
+            "failure_condition": "maximum error exceeds 0.35 m before turn exit",
+            "required_source": "original Native pose and route samples"
+          },
+          "changed_knobs": [
+            "controller_lookahead_m"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-candidates/290/fallback3/construction.json",
+          "construction_sha256": "b60800e892117aa236e769d1b0401be18c53f7af4a0343ace60331499d9915d6",
+          "trigger": {
+            "metric": "visible_signal_and_body_fraction",
+            "failure_condition": "source-video visibility is below 95% of approach frames",
+            "required_source": "original decoded camera pixels joined to Native frames"
+          },
+          "changed_knobs": [
+            "camera_fov_deg",
+            "camera_height_m"
+          ]
+        }
+      ],
+      "fixture_recipe": "work/training__C104393__NRS-484B-413-2__motor_vehicle_driver/diagnostic-290-recipe.json",
+      "id": "primary",
+      "construction": "draft-candidates/290/primary/construction.json",
+      "construction_sha256": "7486d0d8d3f8a4e673ecfbf738f1a52fc2c5103c41452b55f2b8ad6a43a047c9",
+      "cpu_diagnostic_proofs": {
+        "scope": "synthetic_source_bound_only",
+        "candidate_summary": "current-v2-290-summary.json",
+        "candidate_summary_sha256": "d63c5da2736677edb07d27e9cb9b69af268b44e71b983ec5f3b41a8cc7b0eff0",
+        "independent_candidate_audit": "current-v2-290-audit.log",
+        "independent_candidate_audit_sha256": "7621907ebbe8c163a4181baa64b012c517a40a8f5fc89a75a75d728ab7b9904d",
+        "saved_primary_receipt": "current-290-saved-processing-receipt.json",
+        "saved_primary_receipt_sha256": "0932f004d64274719fa84d825ffaf26a7dc33c94c20d7889471e434946d0318b",
+        "saved_primary_missing_source_feedback": "current-290-saved-negative-feedback.json",
+        "saved_primary_missing_source_feedback_sha256": "91754a48834ecdda7317042454ec03277c70d0571b88afc2c236451cb27ec2a5"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C104393__NRS-484B-413-2__motor_vehicle_driver__290",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "native/delivery_audit.py",
+        "script_sha256": "a255eb706e4795076f3cf3f673574b6441c128a99af9e61b2b5c5e0c9c9aaa1f",
+        "command": ".venv-cpu/bin/python work/training__C104393__NRS-484B-413-2__motor_vehicle_driver/native/delivery_audit.py --case training__C104393__NRS-484B-413-2__motor_vehicle_driver__290 --selftest",
+        "test_exit_code": 0,
+        "test_log": "delivery-audit-290-positive.log",
+        "test_log_sha256": "1e6ae22b0e6edbf165ac1cd3e637ebc923126f3b693cacec7c6c00e92fee87ea",
+        "negative_command": ".venv-cpu/bin/python work/training__C104393__NRS-484B-413-2__motor_vehicle_driver/native/delivery_audit.py --case training__C104393__NRS-484B-413-2__motor_vehicle_driver__290 --negative-selftest",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Reviewed pixel box exceeds source video",
+        "negative_log": "delivery-audit-290-negative.log",
+        "negative_log_sha256": "01314fa9b4942fae37e2dc5003c572d544bd05523ade9ee19c1276a599b0da99",
+        "scope": "source-shaped synthetic CPU mechanics only; production original audit requires review"
+      }
+    },
+    {
+      "case_id": "training__C104393__NRS-484B-413-2__motor_vehicle_driver__300",
+      "kind": "delivery",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native map, body, indicator and pixels require original observation"
+      },
+      "measurement_contract": "draft-candidates/300/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "status": "saved_source_diagnostic"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-candidates/300/fallback1/construction.json",
+          "construction_sha256": "7c998e34005b7ad496037096cb892d91fd5fcf57fe5846ea9e9aec4caf7ca15c",
+          "trigger": {
+            "metric": "native_lane_link_and_body_containment",
+            "failure_condition": "Native route link absent or full body leaves the surveyed driving lane",
+            "required_source": "original Native map and body samples"
+          },
+          "changed_knobs": [
+            "road_geometry"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-candidates/300/fallback2/construction.json",
+          "construction_sha256": "5c052dbe56732054ff8c66793f4f46e06f31489ef861520d5238f81c6ad63d6b",
+          "trigger": {
+            "metric": "maximum_original_turn_route_error_m",
+            "failure_condition": "maximum error exceeds 0.35 m before turn exit",
+            "required_source": "original Native pose and route samples"
+          },
+          "changed_knobs": [
+            "controller_lookahead_m"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-candidates/300/fallback3/construction.json",
+          "construction_sha256": "76c8bfcf894f3126ad3adf9a28f004b5e1416e5c32504d622f6cf2a41ceed2aa",
+          "trigger": {
+            "metric": "visible_signal_and_body_fraction",
+            "failure_condition": "source-video visibility is below 95% of approach frames",
+            "required_source": "original decoded camera pixels joined to Native frames"
+          },
+          "changed_knobs": [
+            "camera_fov_deg",
+            "camera_height_m"
+          ]
+        }
+      ],
+      "fixture_recipe": "work/training__C104393__NRS-484B-413-2__motor_vehicle_driver/diagnostic-300-recipe.json",
+      "id": "primary",
+      "construction": "draft-candidates/300/primary/construction.json",
+      "construction_sha256": "6eeb1a786df02c866c07cbfe0b05f48e393ee438b6ea3f2e93d2b3babab1aab7",
+      "cpu_diagnostic_proofs": {
+        "scope": "synthetic_source_bound_only",
+        "candidate_summary": "current-v2-300-summary.json",
+        "candidate_summary_sha256": "4eafc2fb765b605720d02dc056df07f00767f60f67a1a1c4435c649bb8cae33e",
+        "independent_candidate_audit": "current-v2-300-audit.log",
+        "independent_candidate_audit_sha256": "7621907ebbe8c163a4181baa64b012c517a40a8f5fc89a75a75d728ab7b9904d",
+        "saved_primary_receipt": "current-saved-processing-receipt.json",
+        "saved_primary_receipt_sha256": "9cdcbf854d6307d63fc0105df8916607779a176b8a0e619324a80dd9d22705d0",
+        "saved_primary_missing_source_feedback": "current-saved-negative-feedback.json",
+        "saved_primary_missing_source_feedback_sha256": "a9890b4ec44b3e97989cc7750b359bd1af28cf8513c5577c5fe7bb4e9b1e286e"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C104393__NRS-484B-413-2__motor_vehicle_driver__300",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "native/delivery_audit.py",
+        "script_sha256": "a255eb706e4795076f3cf3f673574b6441c128a99af9e61b2b5c5e0c9c9aaa1f",
+        "command": ".venv-cpu/bin/python work/training__C104393__NRS-484B-413-2__motor_vehicle_driver/native/delivery_audit.py --case training__C104393__NRS-484B-413-2__motor_vehicle_driver__300 --selftest",
+        "test_exit_code": 0,
+        "test_log": "delivery-audit-300-positive.log",
+        "test_log_sha256": "3570eab829cf855310dc7540fb7446cedced570fdd62f53b2790693c0a7b9892",
+        "negative_command": ".venv-cpu/bin/python work/training__C104393__NRS-484B-413-2__motor_vehicle_driver/native/delivery_audit.py --case training__C104393__NRS-484B-413-2__motor_vehicle_driver__300 --negative-selftest",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Reviewed pixel box exceeds source video",
+        "negative_log": "delivery-audit-300-negative.log",
+        "negative_log_sha256": "01314fa9b4942fae37e2dc5003c572d544bd05523ade9ee19c1276a599b0da99",
+        "scope": "source-shaped synthetic CPU mechanics only; production original audit requires review"
+      }
+    },
+    {
+      "case_id": "training__C104393__NRS-484B-413-2__motor_vehicle_driver__310",
+      "kind": "delivery",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native map, body, indicator and pixels require original observation"
+      },
+      "measurement_contract": "draft-candidates/310/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "status": "saved_source_diagnostic"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-candidates/310/fallback1/construction.json",
+          "construction_sha256": "4d1fd8b291a8e7e068eaee5a0895173724cafd3e7d5ddc45e04fc01d12895c71",
+          "trigger": {
+            "metric": "native_lane_link_and_body_containment",
+            "failure_condition": "Native route link absent or full body leaves the surveyed driving lane",
+            "required_source": "original Native map and body samples"
+          },
+          "changed_knobs": [
+            "road_geometry"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-candidates/310/fallback2/construction.json",
+          "construction_sha256": "85a5879d378f9837780525ebdf9e9fc2c5c592f0ef1c0d57cf869991f4a59bbf",
+          "trigger": {
+            "metric": "maximum_original_turn_route_error_m",
+            "failure_condition": "maximum error exceeds 0.35 m before turn exit",
+            "required_source": "original Native pose and route samples"
+          },
+          "changed_knobs": [
+            "controller_lookahead_m"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-candidates/310/fallback3/construction.json",
+          "construction_sha256": "86ba9ac8b6c8c038dbb272eb59a512a04ea9410e70c24515e0c2453dbfe3e65a",
+          "trigger": {
+            "metric": "visible_signal_and_body_fraction",
+            "failure_condition": "source-video visibility is below 95% of approach frames",
+            "required_source": "original decoded camera pixels joined to Native frames"
+          },
+          "changed_knobs": [
+            "camera_fov_deg",
+            "camera_height_m"
+          ]
+        }
+      ],
+      "fixture_recipe": "work/training__C104393__NRS-484B-413-2__motor_vehicle_driver/diagnostic-310-recipe.json",
+      "id": "primary",
+      "construction": "draft-candidates/310/primary/construction.json",
+      "construction_sha256": "9a42ffb610ad82c74188355d9d70da5d6b4e2773155c1cdc04fe65994b6f2a50",
+      "cpu_diagnostic_proofs": {
+        "scope": "synthetic_source_bound_only",
+        "candidate_summary": "current-v2-310-summary.json",
+        "candidate_summary_sha256": "418d5d6169b17cc280924c7fe555133c5ccfe98e05a4f215d8511ab7da74ecc1",
+        "independent_candidate_audit": "current-v2-310-audit.log",
+        "independent_candidate_audit_sha256": "7621907ebbe8c163a4181baa64b012c517a40a8f5fc89a75a75d728ab7b9904d",
+        "saved_primary_receipt": "current-310-saved-processing-receipt.json",
+        "saved_primary_receipt_sha256": "cc80419105c532a0c4860f056c3837972237d87a5e90e7668b98c2f0074e0b58",
+        "saved_primary_missing_source_feedback": "current-310-saved-negative-feedback.json",
+        "saved_primary_missing_source_feedback_sha256": "cadb5f601c4b3e0d11105819aec6dfa272dd05e1704efe5112dd604143242da8"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C104393__NRS-484B-413-2__motor_vehicle_driver__310",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "native/delivery_audit.py",
+        "script_sha256": "a255eb706e4795076f3cf3f673574b6441c128a99af9e61b2b5c5e0c9c9aaa1f",
+        "command": ".venv-cpu/bin/python work/training__C104393__NRS-484B-413-2__motor_vehicle_driver/native/delivery_audit.py --case training__C104393__NRS-484B-413-2__motor_vehicle_driver__310 --selftest",
+        "test_exit_code": 0,
+        "test_log": "delivery-audit-310-positive.log",
+        "test_log_sha256": "b935d326f9fc45d2522a65a9295732058f3b1da4df0cec10033580fb0d3b6451",
+        "negative_command": ".venv-cpu/bin/python work/training__C104393__NRS-484B-413-2__motor_vehicle_driver/native/delivery_audit.py --case training__C104393__NRS-484B-413-2__motor_vehicle_driver__310 --negative-selftest",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Reviewed pixel box exceeds source video",
+        "negative_log": "delivery-audit-310-negative.log",
+        "negative_log_sha256": "01314fa9b4942fae37e2dc5003c572d544bd05523ade9ee19c1276a599b0da99",
+        "scope": "source-shaped synthetic CPU mechanics only; production original audit requires review"
+      }
+    }
+  ],
+  "selection_review": {
+    "path": "selection-review.json",
+    "sha256": "1c7eec8486e3f30746b379483c9a469d139a6189a7b8b2226e5a80a634d6801a"
+  }
+}

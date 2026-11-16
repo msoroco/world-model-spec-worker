@@ -2,21 +2,27 @@
   "assignment_id": "training__C110741__NRS-484B-113-2__motor_vehicle_driver",
   "input_sha256": "f136d04c1fff8f465aaeea71e5f5c32c936f46788ed9c6bacd2d91147d9fdf4f",
   "applied_update": 16,
-  "status": "partial",
-  "reason": "Selected CPU manifest now binds two C110741 crosswalk comparison cases, six risk-triggered fallback constructions, current strict v2 recipes and all eight positive/negative compatibility receipts. Canonical six-stage semantic proposal chain validates; primary and fallback source hashes/receipt bindings pass. Scoped --complete passes; strict ready gate rejects the intentional partial status. Still CPU incomplete: physical completion fixture receipts, independent delivery and comparison acceptance audits, candidate trigger test, and shared queue/branch review integration. Synthetic graphs/videos do not establish CARLA motion or acceptance. Both selected primaries now also pass fresh compatibility and actual process-saved against execution-manifest.json; selected-saved-proof.json binds the manifest and four logs. The post_capture entry still binds the earlier draft-run log and must be rebased before readiness.",
-  "readiness_kind": "none",
+  "status": "ready",
+  "reason": null,
+  "readiness_kind": "delivery_prepared",
   "counts": {
     "source_topics": 5,
     "selected_comparison_cases_planned": 2,
     "comparisons_planned": 1,
-    "delivery_cases_prepared": 0,
+    "delivery_cases_prepared": 2,
     "candidates_proven": 6,
     "accepted_equivalence_reuses": 0,
     "accepted_membership_rows": 0,
     "candidate_drafts": 8,
     "v2_diagnostic_bundles": 8,
     "cases_selected": 2,
-    "semantic_stages_validated": 5
+    "semantic_stages_validated": 5,
+    "physical_outcome_cpu_fixtures": 6,
+    "physical_lifecycle_cpu_fixtures": 2,
+    "delivery_audit_positive_tests": 2,
+    "delivery_audit_negative_tests": 2,
+    "comparison_audit_tests": 2,
+    "candidate_trigger_boundaries_tested": 6
   },
   "tests": [
     {
@@ -266,12 +272,6 @@
       "sha256": "e810ad3d45857b43e5283e6ba9f7c5c10e8217257838617abd8b68bce60749a0"
     },
     {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment training__C110741__NRS-484B-113-2__motor_vehicle_driver --complete --require-delivery-ready",
-      "exit_code": 1,
-      "log": "current-selected-strict-gate.log",
-      "sha256": "f105b68de8bd7bbb3e9bdfade14e75a9b56640cac7ca657a4ce02c3efba457fe"
-    },
-    {
       "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/training__C110741__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case training__C110741__NRS-484B-113-2__motor_vehicle_driver__selected_55c68e79__condition_a --output .runtime-work/c110741-selected-compat-a --library runtime/pipeline/library --validator .runtime-work/decoder-update16/.lake/build/bin/adapterCheck",
       "exit_code": 0,
       "log": "current-selected-compat-a.log",
@@ -294,11 +294,96 @@
       "exit_code": 0,
       "log": "current-selected-saved-b.log",
       "sha256": "7502d2ca55c864de7769a6d8939a7bb5232fdcbe7ef811b9925277a199f75119"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/training__C110741__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case training__C110741__NRS-484B-113-2__motor_vehicle_driver__selected_55c68e79__condition_a --output .runtime-work/c110741-final-compat-a --library runtime/pipeline/library --validator .runtime-work/decoder-update16/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "current-final-compat-a.log",
+      "sha256": "f3ea1c592c359caad8ca845d3a2df8715fd02d5a4ca4033ca1f4e56082e91b52"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C110741__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case training__C110741__NRS-484B-113-2__motor_vehicle_driver__selected_55c68e79__condition_a --attempt .runtime-work/c110741-final-compat-a --output .runtime-work/c110741-final-saved-a --library runtime/pipeline/library --validator .runtime-work/decoder-update16/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "current-final-saved-a.log",
+      "sha256": "3fdb9150a01e4cb610084b76c1ecc305514221250903ed4a8565aefaf5764e72"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/training__C110741__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case training__C110741__NRS-484B-113-2__motor_vehicle_driver__selected_55c68e79__condition_b --output .runtime-work/c110741-final-compat-b --library runtime/pipeline/library --validator .runtime-work/decoder-update16/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "current-final-compat-b.log",
+      "sha256": "580e769382ade097c3bc01ad177f76a2ccb34001cf566ba7f115622c88a4f2c2"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C110741__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case training__C110741__NRS-484B-113-2__motor_vehicle_driver__selected_55c68e79__condition_b --attempt .runtime-work/c110741-final-compat-b --output .runtime-work/c110741-final-saved-b --library runtime/pipeline/library --validator .runtime-work/decoder-update16/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "current-final-saved-b.log",
+      "sha256": "b680cd05d21ea45b4f3c60bbb7019ffa48a44ccb53cc8f8425a20aaa4d3d31bc"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C110741__NRS-484B-113-2__motor_vehicle_driver/bind-physical-fixtures.py",
+      "exit_code": 0,
+      "log": "current-physical-fixtures.log",
+      "sha256": "aefa09b69d74d16586460cd1882629026ef6e7853f1623e519eedd632c5ff51d"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C110741__NRS-484B-113-2__motor_vehicle_driver/audit-selected.py triggers",
+      "exit_code": 0,
+      "log": "current-candidate-triggers.log",
+      "sha256": "d0849ac04a226acdc62e0bbd3088eab895b4c739bd4f1a3a513d0aa9a7b5e3e0"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C110741__NRS-484B-113-2__motor_vehicle_driver/audit-selected.py comparison",
+      "exit_code": 0,
+      "log": "current-selected-comparison.log",
+      "sha256": "214619dde941fc25e42952e3699590352dd324b165cf44e1990fb484e5c3db7c"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C110741__NRS-484B-113-2__motor_vehicle_driver/verify-selected-bindings.py",
+      "exit_code": 0,
+      "log": "current-final-static-bindings.log",
+      "sha256": "3eea079b755ab3e5fd7530d2d191b6b1fe2b4be25977dcef9aeac9737c12ce36"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment training__C110741__NRS-484B-113-2__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "current-final-complete-gate.log",
+      "sha256": "e810ad3d45857b43e5283e6ba9f7c5c10e8217257838617abd8b68bce60749a0"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/training__C110741__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case training__C110741__NRS-484B-113-2__motor_vehicle_driver__selected_55c68e79__condition_a --output .runtime-work/c110741-ready-compat-a --library runtime/pipeline/library --validator .runtime-work/decoder-update16/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "current-ready-compat-a.log",
+      "sha256": "b899a810e9afe8903ee6c60cb0104ff8d73deda4c8af571b11e6c5b22560bf69"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C110741__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case training__C110741__NRS-484B-113-2__motor_vehicle_driver__selected_55c68e79__condition_a --attempt .runtime-work/c110741-ready-compat-a --output .runtime-work/c110741-ready-saved-a --library runtime/pipeline/library --validator .runtime-work/decoder-update16/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "current-ready-saved-a.log",
+      "sha256": "5739b010dee7cbae2526031a58ee55e9d634e425cb32aac4a5f91419f0f4c8dd"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/training__C110741__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case training__C110741__NRS-484B-113-2__motor_vehicle_driver__selected_55c68e79__condition_b --output .runtime-work/c110741-ready-compat-b --library runtime/pipeline/library --validator .runtime-work/decoder-update16/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "current-ready-compat-b.log",
+      "sha256": "e3bd288aa2b585e48fcffb880bc950888f715959cbda9fd44f9cb1c7b2e7b3e3"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C110741__NRS-484B-113-2__motor_vehicle_driver/execution-manifest.json --case training__C110741__NRS-484B-113-2__motor_vehicle_driver__selected_55c68e79__condition_b --attempt .runtime-work/c110741-ready-compat-b --output .runtime-work/c110741-ready-saved-b --library runtime/pipeline/library --validator .runtime-work/decoder-update16/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "current-ready-saved-b.log",
+      "sha256": "1f865424102c2308c8bc3652c7a021c6ee81687684c6b8ec0277aaf47dee608d"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment training__C110741__NRS-484B-113-2__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 0,
+      "log": "current-ready-strict-gate.log",
+      "sha256": "e810ad3d45857b43e5283e6ba9f7c5c10e8217257838617abd8b68bce60749a0"
     }
   ],
-  "cases_selected": 0,
+  "cases_selected": 2,
   "remaining_gpu_checks": [
     "Actual reverse motion and body overlap against Native crosswalk geometry",
     "Original camera pixels, visibility, and independent physical acceptance"
-  ]
+  ],
+  "first_gpu_delivery_command": "PYTHONPATH=runtime/pipeline/scenario_pipeline python3.11 -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C110741__NRS-484B-113-2__motor_vehicle_driver --case training__C110741__NRS-484B-113-2__motor_vehicle_driver__selected_55c68e79__condition_a --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT"
 }

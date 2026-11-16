@@ -105,7 +105,7 @@
       "case_id": "training__C110741__NRS-484B-113-2__motor_vehicle_driver__selected_55c68e79__condition_a",
       "target_law_id": "NRS-484B-113-2",
       "target_type": "planned_delivery_comparison",
-      "planning_status": "native_draft_unselected",
+      "planning_status": "selected_cpu_delivery_prepared",
       "source_branch": "on or over a crosswalk",
       "comparison_variable": "reverse_path_overlap",
       "condition_index": 0,
@@ -122,7 +122,7 @@
         ]
       },
       "source_text": "The driver of a vehicle: Shall not back into an intersection, on or over a crosswalk, or around a street corner.",
-      "claim": "No legal outcome or physical execution is asserted.",
+      "claim": "Software delivery prepared; no CARLA physical or legal outcome is asserted.",
       "candidate_ids": [
         "primary",
         "fallback1",
@@ -134,7 +134,7 @@
       "case_id": "training__C110741__NRS-484B-113-2__motor_vehicle_driver__selected_55c68e79__condition_b",
       "target_law_id": "NRS-484B-113-2",
       "target_type": "planned_delivery_comparison",
-      "planning_status": "native_draft_unselected",
+      "planning_status": "selected_cpu_delivery_prepared",
       "source_branch": "on or over a crosswalk",
       "comparison_variable": "reverse_path_overlap",
       "condition_index": 1,
@@ -151,7 +151,7 @@
         ]
       },
       "source_text": "The driver of a vehicle: Shall not back into an intersection, on or over a crosswalk, or around a street corner.",
-      "claim": "No legal outcome or physical execution is asserted.",
+      "claim": "Software delivery prepared; no CARLA physical or legal outcome is asserted.",
       "candidate_ids": [
         "primary",
         "fallback1",
@@ -182,8 +182,8 @@
           "full-train"
         ]
       },
-      "status": "native_draft_unselected",
-      "audit_gap": "Authored and 480-frame synthetic controlled pair audited; original Native and strict delivery acceptance pending."
+      "status": "selected_cpu_delivery_prepared",
+      "audit_gap": "CPU comparison audit passes; original Native physical comparison remains pending."
     }
   ],
   "observations": [
@@ -213,9 +213,10 @@
     },
     {
       "name": "drv.turning",
-      "mandatory": true,
-      "source_note": "'around a street corner' — a heading change while reversing",
-      "status": "unmapped_to_native_and_core"
+      "mandatory": false,
+      "source_note": "'around a street corner' \u2014 a heading change while reversing",
+      "status": "separate_corner_branch_at_C110812",
+      "scope_note": "Corner turning is a statutory alternative assigned to C110812; C110741 measures crosswalk reverse overlap, with heading retained for control and exclusion."
     },
     {
       "name": "kin.heading",
@@ -240,58 +241,96 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Measure reverse motion relative to actual intersection, crosswalk and corner polygons; isolate inside versus outside each location.",
-    "A street-corner case cannot substitute for an intersection or crosswalk branch.",
-    "No verified CARLA mechanism or target-specific Native construction for this assignment.",
-    "No full four-candidate offline and compatibility proof.",
-    "No measured saved evidence or independent acceptance audit."
+    "Actual CARLA reverse motion, surveyed crosswalk alignment, and full-body overlap remain unverified.",
+    "Original four-view pixels and physical source decode/visibility remain unverified.",
+    "Canonical local acceptance into the target set requires independent review."
   ],
   "source_observation_mapping": {
     "drv.backing": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Retained original Native samples and surveyed road geometry reconstructed by native/finalize.py; strict v2 synthetic compatibility passed, physical CARLA source pending.",
+      "channels": [
+        "drv.backing"
+      ],
       "source_refs": [
         "inputs/training__C110741__NRS-484B-113-2__motor_vehicle_driver/assignment.json"
       ]
     },
     "st.intersection": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Retained original Native samples and surveyed road geometry reconstructed by native/finalize.py; strict v2 synthetic compatibility passed, physical CARLA source pending.",
+      "channels": [
+        "st.intersection"
+      ],
       "source_refs": [
         "inputs/training__C110741__NRS-484B-113-2__motor_vehicle_driver/assignment.json"
       ]
     },
     "st.crosswalk": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Retained original Native samples and surveyed road geometry reconstructed by native/finalize.py; strict v2 synthetic compatibility passed, physical CARLA source pending.",
+      "channels": [
+        "st.crosswalk"
+      ],
       "source_refs": [
         "inputs/training__C110741__NRS-484B-113-2__motor_vehicle_driver/assignment.json"
       ]
     },
     "rel.occupies": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Retained original Native samples and surveyed road geometry reconstructed by native/finalize.py; strict v2 synthetic compatibility passed, physical CARLA source pending.",
+      "channels": [
+        "rel.occupies"
+      ],
       "source_refs": [
         "inputs/training__C110741__NRS-484B-113-2__motor_vehicle_driver/assignment.json"
       ]
     },
     "drv.turning": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Retained original Native pose, signed velocity, surveyed geometry and 480-frame join reconstructed by native/finalize.py; crosswalk scope selected. Corner turning is delegated to C110812.",
+      "channels": [
+        "kin.heading"
+      ],
       "source_refs": [
         "inputs/training__C110741__NRS-484B-113-2__motor_vehicle_driver/assignment.json"
       ]
     },
     "kin.heading": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Retained original Native samples and surveyed road geometry reconstructed by native/finalize.py; strict v2 synthetic compatibility passed, physical CARLA source pending.",
+      "channels": [
+        "kin.heading"
+      ],
       "source_refs": [
         "inputs/training__C110741__NRS-484B-113-2__motor_vehicle_driver/assignment.json"
       ]
     }
   },
   "legal_analysis_note": "The statutory text-1 clause is required for the selected draft scope. Other source alternatives or exceptions remain pending where listed. All cases remain unverified and unselected; no physical applicability or legal outcome is asserted.",
-  "readiness": "native_draft_unselected",
+  "readiness": "selected_cpu_delivery_prepared",
   "physical_prerequisites": "Measure reverse motion relative to actual intersection, crosswalk and corner polygons; isolate inside versus outside each location.",
-  "legal_interpretation_limit": "A street-corner case cannot substitute for an intersection or crosswalk branch."
+  "legal_interpretation_limit": "A street-corner case cannot substitute for an intersection or crosswalk branch.",
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 24,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "ego full body, crosswalk and intersection boundary",
+        "interval": "startup through reverse endpoint and clearance"
+      },
+      {
+        "view": "approach",
+        "subject": "reverse approach lane and body",
+        "interval": "full 24 s"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "crosswalk and street-corner reference geometry",
+        "interval": "full 24 s"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "driver reference and surrounding geometry",
+        "interval": "full 24 s"
+      }
+    ],
+    "physical_status": "camera mounting/visibility not verified in CARLA"
+  }
 }

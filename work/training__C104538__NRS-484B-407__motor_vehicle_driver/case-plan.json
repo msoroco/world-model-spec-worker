@@ -139,86 +139,130 @@
   ],
   "observations": [
     {
-      "name": "ego_pose",
-      "unit": "m,deg",
+      "name": "drv.u_turn",
+      "unit": "structured",
       "mandatory": true,
-      "purpose": "Measured position, heading and footprint over time"
+      "purpose": "Original Native heading and body trajectory establish reversal at the judged point; realized motion remains unverified."
     },
     {
-      "name": "ego_speed",
-      "unit": "m/s",
+      "name": "st.curvature",
+      "unit": "structured",
       "mandatory": true,
-      "purpose": "Observed movement and stop intervals"
+      "purpose": "Authored road curve and original Native position are joined; loaded Native geometry requires source verification."
     },
     {
-      "name": "opposing_approach_visibility",
-      "unit": "ft",
+      "name": "st.grade",
+      "unit": "structured",
       "mandatory": true,
-      "purpose": "reversal on curve/crest with sight distance around 500 ft"
+      "purpose": "Authored grade profile and original Native position are joined; loaded Native crest geometry requires source verification."
+    },
+    {
+      "name": "st.sight_distance",
+      "unit": "ft, structured",
+      "mandatory": true,
+      "purpose": "Original approaching-driver eye/body poses and sightline rays are retained in both directions; actual pixel visibility requires independent review."
+    },
+    {
+      "name": "rel.oncoming",
+      "unit": "structured",
+      "mandatory": true,
+      "purpose": "Original approaching actor body and lane direction are retained for both approach directions."
+    },
+    {
+      "name": "drv.approaching",
+      "unit": "structured",
+      "mandatory": true,
+      "purpose": "Original approaching actor position and direction are retained through the 500-foot interval."
+    },
+    {
+      "name": "kin.position",
+      "unit": "m, structured",
+      "mandatory": true,
+      "purpose": "Original ego position at reversal is retained per Native frame."
+    },
+    {
+      "name": "st.crest",
+      "unit": "structured",
+      "mandatory": true,
+      "purpose": "Original position relative to authored crest geometry; loaded Native geometry remains for review."
     }
   ],
   "source_observation_mapping": {
     "drv.u_turn": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Original Native heading and body trajectory establish reversal at the judged point; realized motion remains unverified.",
       "channels": [
-        "opposing_approach_visibility"
+        "drv.u_turn"
       ],
       "source_refs": [
-        "inputs/training__C104538__NRS-484B-407__motor_vehicle_driver/assignment.json"
+        "work/training__C104538__NRS-484B-407__motor_vehicle_driver/runner.py",
+        "work/training__C104538__NRS-484B-407__motor_vehicle_driver/measure_native.py",
+        "work/training__C104538__NRS-484B-407__motor_vehicle_driver/finalize.py"
       ]
     },
     "st.curvature": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Authored road curve and original Native position are joined; loaded Native geometry requires source verification.",
       "channels": [
-        "opposing_approach_visibility"
+        "st.curvature"
       ],
       "source_refs": [
-        "inputs/training__C104538__NRS-484B-407__motor_vehicle_driver/assignment.json"
+        "work/training__C104538__NRS-484B-407__motor_vehicle_driver/runner.py",
+        "work/training__C104538__NRS-484B-407__motor_vehicle_driver/measure_native.py",
+        "work/training__C104538__NRS-484B-407__motor_vehicle_driver/finalize.py"
       ]
     },
     "st.grade": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Authored grade profile and original Native position are joined; loaded Native crest geometry requires source verification.",
       "channels": [
-        "opposing_approach_visibility"
+        "st.grade"
       ],
       "source_refs": [
-        "inputs/training__C104538__NRS-484B-407__motor_vehicle_driver/assignment.json"
+        "work/training__C104538__NRS-484B-407__motor_vehicle_driver/runner.py",
+        "work/training__C104538__NRS-484B-407__motor_vehicle_driver/measure_native.py",
+        "work/training__C104538__NRS-484B-407__motor_vehicle_driver/finalize.py"
       ]
     },
     "st.sight_distance": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Original approaching-driver eye/body poses and sightline rays are retained in both directions; actual pixel visibility requires independent review.",
       "channels": [
-        "opposing_approach_visibility"
+        "st.sight_distance"
       ],
       "source_refs": [
-        "inputs/training__C104538__NRS-484B-407__motor_vehicle_driver/assignment.json"
+        "work/training__C104538__NRS-484B-407__motor_vehicle_driver/runner.py",
+        "work/training__C104538__NRS-484B-407__motor_vehicle_driver/measure_native.py",
+        "work/training__C104538__NRS-484B-407__motor_vehicle_driver/finalize.py"
       ]
     },
     "rel.oncoming": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Original approaching actor body and lane direction are retained for both approach directions.",
       "channels": [
-        "opposing_approach_visibility"
+        "rel.oncoming"
       ],
       "source_refs": [
-        "inputs/training__C104538__NRS-484B-407__motor_vehicle_driver/assignment.json"
+        "work/training__C104538__NRS-484B-407__motor_vehicle_driver/runner.py",
+        "work/training__C104538__NRS-484B-407__motor_vehicle_driver/measure_native.py",
+        "work/training__C104538__NRS-484B-407__motor_vehicle_driver/finalize.py"
       ]
     },
     "drv.approaching": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Original approaching actor position and direction are retained through the 500-foot interval.",
       "channels": [
-        "opposing_approach_visibility"
+        "drv.approaching"
       ],
       "source_refs": [
-        "inputs/training__C104538__NRS-484B-407__motor_vehicle_driver/assignment.json"
+        "work/training__C104538__NRS-484B-407__motor_vehicle_driver/runner.py",
+        "work/training__C104538__NRS-484B-407__motor_vehicle_driver/measure_native.py",
+        "work/training__C104538__NRS-484B-407__motor_vehicle_driver/finalize.py"
       ]
     },
     "kin.position": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Original ego position at reversal is retained per Native frame.",
       "channels": [
-        "opposing_approach_visibility"
+        "kin.position"
       ],
       "source_refs": [
-        "inputs/training__C104538__NRS-484B-407__motor_vehicle_driver/assignment.json"
+        "work/training__C104538__NRS-484B-407__motor_vehicle_driver/runner.py",
+        "work/training__C104538__NRS-484B-407__motor_vehicle_driver/measure_native.py",
+        "work/training__C104538__NRS-484B-407__motor_vehicle_driver/finalize.py"
       ]
     }
   },
@@ -376,5 +420,38 @@
         "why_existing_insufficient": "The statutory visibility condition concerns a driver approaching from either direction within 500 feet at the reversal point. Authored center-reference limits and synthetic Core rays do not establish original Native eye-to-body or pixel visibility in either direction."
       }
     ]
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 24,
+    "fps": 20,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "full vehicle reversal and curve/crest context",
+        "interval": "entire 24 s approach and U-turn",
+        "source": "root config fixed overview mount; actual pixels unverified"
+      },
+      {
+        "view": "approach",
+        "subject": "first approaching driver's eye and complete vehicle body",
+        "interval": "500-foot approach through judged reversal",
+        "source": "root config approach mount; actual pixels unverified"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "opposite approach and sightline to vehicle body",
+        "interval": "500-foot opposite approach through judged reversal",
+        "source": "root config corner mount; actual pixels unverified"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "driver direction view of road, crest and opposing traffic",
+        "interval": "entire 24 s interval",
+        "source": "root config ego mount; actual pixels unverified"
+      }
+    ],
+    "physical_risk": "Prospective camera mounts only. Native curve/crest, actual reversal, two-direction driver-eye/body visibility at 500 feet and source pixels require independent local review."
   }
 }

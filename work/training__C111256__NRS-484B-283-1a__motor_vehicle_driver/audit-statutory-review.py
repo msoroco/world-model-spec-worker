@@ -15,6 +15,10 @@ assert len(review['branches'])==7
 assert {b['id'] for b in review['branches']}>=set(('cited_287_crossing_restrictions','cited_290_blind_white_cane','cited_350_school_pedestrian_lane','opposite_half_near_danger_alternative','directional_half_definition'))
 assert all(b['status']=='unproven' and b['cpu_draft_evidence'] and b['remaining_exact_evidence'] for b in review['branches'])
 assert all((ROOT/ref).is_file() for ref in review['source_refs'])
-assert result['status']=='partial' and result.get('cases_selected',0)==0
+assert result['status']=='partial' and result.get('cases_selected',0)==4
+selection=json.loads((HERE/'native/selection-review.json').read_text())
+assert selection['selected_case_ids']==[source['assignment_id']+'__'+suffix for suffix in
+    ('witness_1','witness_2','exception_1_1','exception_1_2')]
+assert selection['legal_verdict'] is None and not selection['original_native_observed']
 assert not review['cpu_readiness'] and not review['physical_observation_claimed']
-print('C111256 four exact source topics, seven branch scopes and unselected limitations passed')
+print('C111256 four exact source topics, seven unproven branches and conditional selection limits passed')

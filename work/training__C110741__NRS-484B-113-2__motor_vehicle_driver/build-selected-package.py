@@ -65,5 +65,6 @@ for s,letter in [('condition_a','a'),('condition_b','b')]:
     entry['acquisition']={name:{'entrypoint':'finalize.py','method':'derive from retained original Native sample, frame map, road geometry and synchronized source cameras','evidence':'native_samples.jsonl; video_frames.jsonl; road_geometry.json; four named source videos'} for name in ['drv.backing','st.crosswalk','st.intersection','rel.occupies','kin.heading','kin.velocity','native_body_pose_control','camera_frame_join']}
     entry['post_capture']={'recorded_only':True,'command':f'.venv-cpu/bin/python runtime.py process-saved --manifest work/{AID}/execution-manifest.json --case {CID[s]} --attempt "$ATTEMPT" --output "$OUTPUT" --library runtime/pipeline/library --validator "$DECODER"','feedback_command':'inspect "$OUTPUT/feedback.json" on failure','test_log':f'current-v2-saved-{letter}.log','test_log_sha256':sha(ROOT/f'current-v2-saved-{letter}.log'),'test_exit_code':0}
     manifest['cases'].append(entry)
-write(ROOT/'execution-manifest.json',manifest)
+if not (ROOT/'execution-manifest.json').exists():
+    write(ROOT/'execution-manifest.json',manifest)
 print('authored canonical proposals and selected CPU manifest:',len(cases)-1,'cases,',sum(len(e['candidates']) for e in manifest['cases']),'fallbacks')
