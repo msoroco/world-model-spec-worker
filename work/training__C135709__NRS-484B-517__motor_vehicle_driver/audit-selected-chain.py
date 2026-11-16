@@ -63,8 +63,8 @@ def audit():
             processing['physical_acceptance_claimed'] is not False or
             processing['legal_acceptance_claimed'] is not False):
             raise ValueError('Compatibility or saved receipt lacks source/negative checks')
-        compatible = REPO/'.runtime-work/update051-c135709-compat-all-v1'/witness/candidate
-        processed = (REPO/'.runtime-work/update051-c135709-saved-all-v1'/witness/
+        compatible = REPO/'.runtime-work/update052-c135709-compat-all-v2'/witness/candidate
+        processed = (REPO/'.runtime-work/update052-c135709-saved-all-v2'/witness/
                      candidate/'processed/v0001/analysis')
         a = read(compatible/'analysis-report.json')
         b = read(processed/'analysis-report.json')

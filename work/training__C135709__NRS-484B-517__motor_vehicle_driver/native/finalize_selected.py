@@ -36,6 +36,60 @@ def measure_sign_visibility(rows):
     return sum(row['stand_sign_visible'] and row['stand_polygon_visible'] for row in rows)
 
 
+def assess_physical_stand(actors, frames, reviews, cfg, sources):
+    """Assess sampled maneuver completion, without deciding stand legality.
+
+    Source rows must be original Native readback at acceptance time. CPU mocks
+    exercise the branches separately and cannot establish actual completion.
+    """
+    required = ('native-raw-actors.jsonl', 'video_frames.jsonl',
+                'stand-review.jsonl', 'native-map-readback.json')
+    bound = {name: sources[name] for name in required if name in sources}
+    method = '240 joined original Native actor/body/speed, map and reviewed camera frames'
+    if (len(actors) != 240 or len(frames) != 240 or len(reviews) != 240 or
+        any(name not in bound for name in required)):
+        return {'status': 'unverified', 'method': method, 'sources': bound,
+                'missing_evidence': ['complete original Native actor/frame/review/map join'],
+                'details': {}, 'legal_verdict_claimed': False,
+                'physical_causation_claimed': False}
+    try:
+        for i, (actor, frame, review) in enumerate(zip(actors, frames, reviews)):
+            if (actor['frame'] != i or frame['video_frame'] != i or
+                actor['native_frame'] != frame['native_frame'] or
+                actor['native_frame'] != review['native_frame'] or
+                actor['source_kind'] != 'original_native' or
+                actor['speed_source'] != 'original_native' or
+                review['review_provenance'] != 'human_frame_review' or
+                abs(actor['time_s']-frame['time_s']) > 1e-5 or
+                abs(actor['time_s']-review['time_s']) > 1e-5):
+                raise ValueError('Original source identity differs')
+    except (KeyError, TypeError, ValueError):
+        return {'status': 'unverified', 'method': method, 'sources': bound,
+                'missing_evidence': ['joined original Native actor/frame/review rows'],
+                'details': {}, 'legal_verdict_claimed': False,
+                'physical_causation_claimed': False}
+    centers = [row['ego']['center_native_xyz_m'] for row in actors]
+    sampled_path = sum(math.dist(a[:2], b[:2]) for a, b in zip(centers, centers[1:]))
+    final = actors[-30:]
+    stopped = sum(row['ego']['speed_mps'] <= .1 for row in final)
+    occupied = measure_stand_occupancy(final)
+    visible = measure_sign_visibility(reviews[-30:])
+    expected = 30 if cfg['requested_stand_occupancy'] else 0
+    met = (sampled_path >= 5 and stopped == 30 and occupied == expected and
+           visible >= 20)
+    return {'status': 'met' if met else 'not_met', 'method': method,
+        'sources': bound, 'missing_evidence': [],
+        'details': {'sampled_path_m': sampled_path,
+                    'final_30_stopped_frames': stopped,
+                    'final_30_occupied_frames': occupied,
+                    'expected_final_30_occupied_frames': expected,
+                    'final_30_reviewed_visible_frames': visible,
+                    'engineering_minimum_path_m': 5,
+                    'engineering_minimum_visibility_frames': 20,
+                    'not_legal_thresholds': True},
+        'legal_verdict_claimed': False, 'physical_causation_claimed': False}
+
+
 def finalize(attempt, output):
     attempt, output = Path(attempt), Path(output)
     if (attempt/'result.json').exists() or output.exists() or (attempt/'channels').exists():
@@ -152,6 +206,21 @@ def finalize(attempt, output):
                      'reference': context.name})
     requested = cfg['requested_stand_occupancy']
     measured = occupied >= 20
+    if source_kind == 'original_native':
+        physical = assess_physical_stand(actors, frames, reviews, cfg, source_hashes)
+        maneuver_completed = physical['status'] == 'met'
+        setup_confirmed = physical['status'] != 'unverified'
+        behavior_attempted = physical['details'].get('sampled_path_m', 0) >= 1
+        failure_flags = ([] if maneuver_completed else
+                         ['Observed original stand maneuver did not meet engineering completion criteria'])
+    else:
+        physical = {'status': 'unverified',
+            'method': 'synthetic diagnostic cannot establish original stand motion',
+            'sources': source_hashes,
+            'missing_evidence': ['original Native acquisition and human frame review'],
+            'legal_verdict_claimed': False, 'physical_causation_claimed': False}
+        maneuver_completed = setup_confirmed = behavior_attempted = False
+        failure_flags = ['Original stand designation, parking purpose and passenger exception unverified']
     result = {'case_id': cfg['case_id'],
         'measured_values': {'sampled_stand_occupancy_frames': occupied},
         'target_checks': [{'target': 'sampled non-taxicab stationary stand occupancy',
@@ -160,14 +229,11 @@ def finalize(attempt, output):
             'tolerance': 'one 50 ms frame', 'matched': requested == measured,
             'physical_cause_confirmed': False,
             'cause_evidence': ['native-raw-actors.jsonl']}],
-        'setup_confirmed': False, 'behavior_attempted': False,
-        'maneuver_completed': False,
+        'setup_confirmed': setup_confirmed, 'behavior_attempted': behavior_attempted,
+        'maneuver_completed': maneuver_completed,
         'termination_reason': '240-frame diagnostic window; physical and legal review pending',
-        'physical_failure_flags': ['Original stand designation, parking purpose and passenger exception unverified'],
-        'physical_checks': {'maneuver': {'status': 'unverified',
-            'method': 'retained Native stand readback requires physical review',
-            'sources': source_hashes, 'missing_evidence': ['accepted original stand review'],
-            'legal_verdict_claimed': False, 'physical_causation_claimed': False}},
+        'physical_failure_flags': failure_flags,
+        'physical_checks': {'maneuver': physical},
         'trace_reference': 'trace.jsonl',
         'video_references': [n+'.mkv' for n in
             ('overview', 'approach', 'reference_corner', 'driver_reference')],

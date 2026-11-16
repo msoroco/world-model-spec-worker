@@ -17,7 +17,7 @@ def read_rows(path):
 
 
 def compare(candidate, change=None):
-    folders = {w: REPO/'.runtime-work/update051-c135709-saved-all-v1'/w/
+    folders = {w: REPO/'.runtime-work/update052-c135709-saved-all-v2'/w/
                candidate/'processed/v0001/analysis' for w in ('reference', 'contrast')}
     configs = {w: json.loads((folder/'config.json').read_text())
                for w, folder in folders.items()}
