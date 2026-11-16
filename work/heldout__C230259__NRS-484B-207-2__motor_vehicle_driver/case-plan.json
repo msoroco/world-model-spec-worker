@@ -3,9 +3,168 @@
   "actor": "motor_vehicle_driver",
   "cell_id": "C230259",
   "law_id": "NRS-484B-207-2",
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__observed_gives_way_holds_speed",
+      "target_law_id": "NRS-484B-207-2",
+      "gap_ids": [
+        "right-yield",
+        "speed-until-passed",
+        "notice-source"
+      ],
+      "construction_state": "source_shaped_motion_measurement_cpu_tested_exact_native_construction_pending",
+      "purpose": "Reference original observed-notice context, rightward body displacement and speed history through full-body pass completion."
+    },
+    {
+      "case_id": "heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__observed_no_right_yield_holds_speed",
+      "target_law_id": "NRS-484B-207-2",
+      "gap_ids": [
+        "right-yield"
+      ],
+      "construction_state": "source_shaped_motion_measurement_cpu_tested_exact_native_construction_pending",
+      "purpose": "Hold notice, overtaker and speed path fixed; vary only intended rightward displacement."
+    },
+    {
+      "case_id": "heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__audible_signal_gives_way_holds_speed",
+      "target_law_id": "NRS-484B-207-2",
+      "gap_ids": [
+        "notice-source",
+        "right-yield"
+      ],
+      "construction_state": "source_shaped_motion_measurement_cpu_tested_exact_native_construction_pending",
+      "purpose": "Hold overtaker and ego motion fixed; replace observed-notice evidence path with source-recorded signal/audio. Actual hearing remains unresolved."
+    },
+    {
+      "case_id": "heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__observed_gives_way_increases_speed_before_complete",
+      "target_law_id": "NRS-484B-207-2",
+      "gap_ids": [
+        "speed-until-passed"
+      ],
+      "construction_state": "source_shaped_motion_measurement_cpu_tested_exact_native_construction_pending",
+      "purpose": "Hold observation and lateral path fixed; vary original ego speed before full-body pass completion."
+    },
+    {
+      "case_id": "heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__observed_gives_way_increases_speed_after_complete",
+      "target_law_id": "NRS-484B-207-2",
+      "gap_ids": [
+        "speed-until-passed"
+      ],
+      "construction_state": "source_shaped_motion_measurement_cpu_tested_exact_native_construction_pending",
+      "purpose": "Hold precompletion speed path fixed; vary speed only after first source-bracketed full-body completion."
+    },
+    {
+      "case_id": "heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__right_pass_permission_premise_no_right_yield",
+      "target_law_id": "NRS-484B-207-2",
+      "gap_ids": [
+        "right-pass-exception",
+        "right-yield"
+      ],
+      "construction_state": "source_shaped_motion_measurement_cpu_tested_exact_native_construction_pending",
+      "purpose": "Hold no-yield physical path fixed while attaching a separately source-verified right-pass permission premise; no legal permission is inferred from a side flag."
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "rightward_yield",
+      "case_ids": [
+        "heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__observed_gives_way_holds_speed",
+        "heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__observed_no_right_yield_holds_speed"
+      ],
+      "fixed_conditions": [
+        "same C230259 road, actors and left-side overtaking trajectory",
+        "same observed-notice source and full-body pass bracket",
+        "same ego speed history, four cameras and duration"
+      ],
+      "deliberate_differences": [
+        "original full-body rightward displacement after the notice"
+      ],
+      "audit_status": "planned_cpu_implementation_pending"
+    },
+    {
+      "comparison_id": "notice_alternative",
+      "case_ids": [
+        "heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__observed_gives_way_holds_speed",
+        "heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__audible_signal_gives_way_holds_speed"
+      ],
+      "fixed_conditions": [
+        "same C230259 road, actors, overtaking motion and ego rightward response",
+        "same speed history, full-body pass bracket, cameras and duration"
+      ],
+      "deliberate_differences": [
+        "original observed-notice evidence path versus source-recorded audible signal path; hearing remains unresolved"
+      ],
+      "audit_status": "planned_cpu_implementation_pending"
+    },
+    {
+      "comparison_id": "speed_before_after_completion",
+      "case_ids": [
+        "heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__observed_gives_way_holds_speed",
+        "heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__observed_gives_way_increases_speed_before_complete",
+        "heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__observed_gives_way_increases_speed_after_complete"
+      ],
+      "fixed_conditions": [
+        "same C230259 road, actors, notice and rightward response",
+        "same full-body pass geometry, cameras and duration"
+      ],
+      "deliberate_differences": [
+        "original ego speed change before versus only after first source-bracketed complete-pass frame"
+      ],
+      "audit_status": "planned_cpu_implementation_pending"
+    },
+    {
+      "comparison_id": "right_pass_exception_premise",
+      "case_ids": [
+        "heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__observed_no_right_yield_holds_speed",
+        "heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__right_pass_permission_premise_no_right_yield"
+      ],
+      "fixed_conditions": [
+        "same C230259 road, actors, notice and measured no-yield/speed path",
+        "same four cameras and duration"
+      ],
+      "deliberate_differences": [
+        "source-verified right-pass permission premise and physical passing side; applicability remains unresolved"
+      ],
+      "audit_status": "planned_cpu_implementation_pending"
+    }
+  ],
+  "observations": [
+    {
+      "name": "full_body_pass_gap_m",
+      "unit": "m",
+      "mandatory": true,
+      "method": "Source-joined overtaker rear versus ego front full-body longitudinal gap per original 20 Hz frame."
+    },
+    {
+      "name": "ego_right_shift_m",
+      "unit": "m",
+      "mandatory": true,
+      "method": "Original ego full-body center projected onto source-surveyed road-right direction."
+    },
+    {
+      "name": "ego_speed_mps",
+      "unit": "m/s",
+      "mandatory": true,
+      "method": "Original ego speed history before and after source-bracketed complete passing."
+    },
+    {
+      "name": "overtaker_lateral_offset_right_m",
+      "unit": "m",
+      "mandatory": true,
+      "method": "Original overtaker center relative to ego and source-surveyed road-right direction."
+    },
+    {
+      "name": "notice_source_context",
+      "unit": "structured",
+      "mandatory": true,
+      "method": "Original observation/line-of-sight or emitted signal/audio evidence; subjective observation or hearing not inferred."
+    },
+    {
+      "name": "right_pass_permission_context",
+      "unit": "structured",
+      "mandatory": true,
+      "method": "Separate authority/source premise for permitted passing on the right, not a scenario flag."
+    }
+  ],
   "sources": [
     {
       "path": "inputs/heldout__C230259__NRS-484B-207-2__motor_vehicle_driver/assignment.json",
@@ -47,9 +206,84 @@
     "source": "inputs/heldout__C230259__NRS-484B-207-2__motor_vehicle_driver/assignment.json",
     "status": "planning_only",
     "alternatives_and_boundaries": [
-      "Overtaking on right permitted is an express exception and requires external-rule context.",
-      "Upon observing overtaking vehicle or hearing a signal, compare measured giving way right against failure to give way; preserve each trigger separately.",
-      "Compare speed history until completely passed against increase before completion, with relative body-clearance measurements."
+      "Observation and hearing are separate notice alternatives; emitted horn or line of sight alone does not prove subjective perception.",
+      "The expressly permitted right-pass exception attaches to the give-way sentence only; it does not erase the no-speed-increase sentence.",
+      "Compare rightward response and no response under fixed notice/overtaking context.",
+      "Measure full-body pass-completion bracket and compare speed history before and after it; no numeric legal clearance cutoff is authored."
     ]
-  }
+  },
+  "evidence_review": {
+    "reviewer": "worker",
+    "method": "Read frozen exact law, evidence inventory and C230259 cell; inventory lists no accepted recordings, so no reuse is claimed.",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "right-yield",
+        "requirement": "Rightward give-way response after observation or hearing, subject to the right-pass exception.",
+        "source": "inputs/heldout__C230259__NRS-484B-207-2__motor_vehicle_driver/assignment.json",
+        "why_existing_insufficient": "No accepted recordings are listed; original Native and acoustic evidence remains uncollected."
+      },
+      {
+        "id": "speed-until-passed",
+        "requirement": "No increase in ego speed until full-body passing is complete; compare before and after.",
+        "source": "inputs/heldout__C230259__NRS-484B-207-2__motor_vehicle_driver/assignment.json",
+        "why_existing_insufficient": "No accepted recordings are listed; original Native and acoustic evidence remains uncollected."
+      },
+      {
+        "id": "notice-source",
+        "requirement": "Separate observed overtaker and heard-signal activation evidence, without inferring perception from a visibility or horn flag.",
+        "source": "inputs/heldout__C230259__NRS-484B-207-2__motor_vehicle_driver/assignment.json",
+        "why_existing_insufficient": "No accepted recordings are listed; original Native and acoustic evidence remains uncollected."
+      },
+      {
+        "id": "right-pass-exception",
+        "requirement": "Sourced permission for passing on right, confined to the give-way sentence.",
+        "source": "inputs/heldout__C230259__NRS-484B-207-2__motor_vehicle_driver/assignment.json",
+        "why_existing_insufficient": "No accepted recordings are listed; original Native and acoustic evidence remains uncollected."
+      }
+    ]
+  },
+  "requirement_dispositions": [
+    {
+      "requirement": "Give way to the right upon observing the overtaking vehicle or hearing a signal, except when passing on the right is permitted.",
+      "source": "inputs/heldout__C230259__NRS-484B-207-2__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "evidence_or_gap": "No accepted recording; exact original-source case construction and saved proof pending",
+      "case_ids": [
+        "heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__observed_gives_way_holds_speed",
+        "heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__observed_no_right_yield_holds_speed",
+        "heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__audible_signal_gives_way_holds_speed",
+        "heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__observed_gives_way_increases_speed_before_complete",
+        "heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__right_pass_permission_premise_no_right_yield"
+      ]
+    },
+    {
+      "requirement": "Do not increase speed until completely passed by the overtaking vehicle.",
+      "source": "inputs/heldout__C230259__NRS-484B-207-2__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "evidence_or_gap": "No accepted recording; exact original-source case construction and saved proof pending",
+      "case_ids": [
+        "heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__observed_gives_way_holds_speed",
+        "heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__observed_no_right_yield_holds_speed",
+        "heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__audible_signal_gives_way_holds_speed",
+        "heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__observed_gives_way_increases_speed_before_complete",
+        "heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__observed_gives_way_increases_speed_after_complete",
+        "heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__right_pass_permission_premise_no_right_yield"
+      ]
+    },
+    {
+      "requirement": "Establish overtaken/overtaking actor identities, passing side and full-body completion from original physical sources.",
+      "source": "inputs/heldout__C230259__NRS-484B-207-2__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "evidence_or_gap": "No accepted recording; exact original-source case construction and saved proof pending",
+      "case_ids": [
+        "heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__observed_gives_way_holds_speed",
+        "heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__observed_no_right_yield_holds_speed",
+        "heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__audible_signal_gives_way_holds_speed",
+        "heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__observed_gives_way_increases_speed_before_complete",
+        "heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__observed_gives_way_increases_speed_after_complete",
+        "heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__right_pass_permission_premise_no_right_yield"
+      ]
+    }
+  ]
 }
