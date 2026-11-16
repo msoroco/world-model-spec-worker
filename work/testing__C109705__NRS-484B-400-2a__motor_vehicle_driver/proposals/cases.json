@@ -1,0 +1,62 @@
+{
+  "cell_id": "C109705",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "cases": [
+    {
+      "case_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__source_verified_near_centerline",
+      "target_law_id": "NRS-484B-400-2a",
+      "target_type": "boundary_probe",
+      "rationale": "Source-shaped synthetic marked-centerline approach diagnostic; Native legal and physical review pending",
+      "variable_assignments": {
+        "centerline_kind": {
+          "kind": "world_setup",
+          "value": "marked",
+          "unit": "categorical"
+        },
+        "approach_lateral_offset_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "both_highways_two_directional": {
+          "kind": "world_setup",
+          "value": "source review required",
+          "unit": "categorical"
+        },
+        "commanded_left_turn": {
+          "kind": "controller",
+          "value": "checked route from site packet",
+          "unit": "structured record"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "nearest the centerline",
+        "physical highway direction authority"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "complete_body_approach_lateral_position",
+            "unit": "boolean and meters",
+            "method": "original-frame body vertices against sourced centerline and right-half polygon",
+            "time_window": "before intersection entry",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical body position and legal nearest-centerline judgment unverified"
+          }
+        ],
+        "limitations": [
+          "Synthetic site only; real Native capture and source-camera visibility unverified. Saved finalizer and delivery audit remain unfinished."
+        ]
+      },
+      "paired_probe_id": "c109705-marked-lateral",
+      "deliberate_differences": [],
+      "probe": {
+        "primary_variable": "approach_lateral_offset_m",
+        "comparison_or_standard": "source-bound body geometry and near/far ordering; no legal cutoff",
+        "target_value_or_branch": "near_centerline"
+      }
+    }
+  ]
+}

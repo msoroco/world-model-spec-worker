@@ -116,6 +116,31 @@ def compare_near_far(near_root:Path, far_root:Path)->dict:
             "legal_nearest_judgment":"unresolved"}
 
 
+def measure_two_way_activation(observations:dict)->dict:
+    context=observations["native_road_context"]
+    return {"two_directional_highways":context["both_highways_two_directional"],
+            "intended_turn":context["intended_turn"],
+            "intersection_id":context["intersection_id"],
+            "approach_road_id":context["approach_road_id"],
+            "outgoing_road_id":context["outgoing_road_id"],
+            "source_status":"synthetic diagnostic; Native physical status unverified"}
+
+
+def measure_right_half_approach(observations:dict)->dict:
+    return {"sampled_frames":[row["frame"] for row in observations["approach_samples"]],
+            "all_sampled_bodies_in_right_half":observations["all_sampled_bodies_in_right_half"],
+            "first_entry_frame":observations["native_road_context"].get("first_entry_frame")}
+
+
+def measure_centerline_offsets(observations:dict)->dict:
+    return {"centerline_kind":observations["native_road_context"]["centerline_kind"],
+            "body_centroid_distance_m":[row["body_centroid_distance_to_centerline_m"]
+                                        for row in observations["approach_samples"]],
+            "body_minimum_vertex_distance_m":[row["minimum_body_vertex_distance_to_centerline_m"]
+                                               for row in observations["approach_samples"]],
+            "legal_nearest_judgment":"unresolved"}
+
+
 def finalize(attempt:Path, output:Path)->dict:
     """Rebuild C109705(2a) measurements from saved original sources only."""
     from worker_exchange.native_output import physical_result, write_result
@@ -166,6 +191,13 @@ def finalize(attempt:Path, output:Path)->dict:
               "body_minimum_vertex_centerline_distance_m":[row["minimum_body_vertex_distance_to_centerline_m"] for row in samples],
               "first_entry_frame":context.get("first_entry_frame"),
               "nearest_centerline_judgment":"unresolved; no statutory numeric cutoff"}
+    for key,method,inputs,value in (
+            ("two_way_activation","measure_two_way_activation",("road_context.json",),measure_two_way_activation(observations)),
+            ("right_half_approach","measure_right_half_approach",("approach_history.jsonl","video_frames.jsonl","road_context.json"),measure_right_half_approach(observations)),
+            ("centerline_offsets","measure_centerline_offsets",("approach_history.jsonl","road_context.json","video_frames.jsonl"),measure_centerline_offsets(observations))):
+        measured[key]={"method":method,"value":value,
+                       "sources":{name:hashlib.sha256((attempt/name).read_bytes()).hexdigest()
+                                  for name in inputs}}
     channels=attempt/"channels";channels.mkdir()
     (channels/"approach_context.json").write_text(json.dumps({
         "case_id":case,"measurements":measured,"source_evidence_hashes":sources,

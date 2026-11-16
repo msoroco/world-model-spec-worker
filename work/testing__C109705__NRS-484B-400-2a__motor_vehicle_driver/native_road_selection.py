@@ -447,6 +447,9 @@ def capture(output_dir, host="127.0.0.1", port=2000):
         (output/"road_context.json").write_text(json.dumps(context, indent=2)+"\n")
     except BaseException as caught:
         error = caught
+        (output/"native-run-status.json").write_text(json.dumps({
+            "errors": [type(caught).__name__+": "+str(caught)],
+            "frames": frames, "capture_sealed": False}, indent=2)+"\n")
         raise
     finally:
         cleanup = []

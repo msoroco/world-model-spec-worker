@@ -145,3 +145,6 @@ Remaining worker-owned CPU preparation includes three tested distinct physical-r
 ## Historical build-log compaction — 2026-11-16
 
 Three old build-script logs (`primary-bundle-build-v1.log`, `second-build-v1.log`, `third-build-v2.log`) were removed from the returned `result.json.tests` list and retained byte-for-byte under ignored `.runtime-work/archived-historical-c125745-build-logs/` to free returned-file slots. No current execution-manifest receipt, exact offline/compatibility/saved proof, current CPU test log, or partial status was changed. Their build scripts and current construction files remain returned. This is returned-file housekeeping, not a readiness promotion.
+
+Historical build logs first-fallback-build-v1.log and second-fallback-build-v1.log were moved to ignored .runtime-work/archived-historical-c125745-build-logs/ to keep the returned-file count within the 8,600 cap. Only their superseded result.json test claims were removed; current manifest receipts are unchanged.
+Historical third-fallback-build-v1.log and fourth-build-v1.log were also archived at .runtime-work/archived-historical-c125745-build-logs/; their superseded result.json claims were removed. Current manifest proof files remain.

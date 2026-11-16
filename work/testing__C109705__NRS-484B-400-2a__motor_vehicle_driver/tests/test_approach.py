@@ -1,5 +1,6 @@
 import importlib.util
 import hashlib
+import sys
 from queue import Queue
 import json
 import tempfile
@@ -9,6 +10,7 @@ from types import SimpleNamespace as NS
 
 
 ROOT=Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(ROOT.parents[1]/"runtime"/"scenario_pipeline"))
 
 
 def load(name):
@@ -135,7 +137,7 @@ class ApproachTests(unittest.TestCase):
              "opposing_lane_source":"native-lane-links","centerline_source":"native-map-and-front-video",
              "right_half_source":"native-road-boundary","junction_source":"native-junction",
              "left_turn_route_source":"native-waypoint-chain","both_highways_two_directional":True,
-             "intended_turn":"left","centerline_xy_m":[[0,0],[100,0]],
+             "intended_turn":"left","centerline_kind":"marked","centerline_xy_m":[[0,0],[100,0]],
              "right_half_polygon_xy_m":[[0,0],[100,0],[100,-5],[0,-5]]}
         (root/"road_context.json").write_text(json.dumps(ctx))
         rows=[{"frame":100+i,"time_s":1+i*.05,"road_id":1,"lane_id":-1,
@@ -207,6 +209,38 @@ class ApproachTests(unittest.TestCase):
             (root/"road_context.json").write_text(json.dumps(context))
             with self.assertRaisesRegex(ValueError,"First intersection entry"):
                 measure.analyze(root)
+
+    def test_saved_finalizer_rebuilds_channels_and_rejects_missing_body_source(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);self.fixture(root,-1)
+            case="testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__source_verified_near_centerline"
+            config={"selected_case_id":case,"law_id":"NRS-484B-400-2a",
+                    "cell_id":"C109705","actor":"motor_vehicle_driver",
+                    "recording_description":{"channels":[]}}
+            (root/"config.json").write_text(json.dumps(config))
+            rows=[json.loads(r) for r in (root/"approach_history.jsonl").read_text().splitlines()]
+            body_rows=[{"frame":r["frame"],"time_s":r["time_s"],
+                        "road_id":r["road_id"],"lane_id":r["lane_id"],
+                        "body_vertices_m":[v+[0.8] for v in r["ego_body_vertices_xy_m"]]}
+                       for r in rows]
+            (root/"body_history.jsonl").write_text("".join(json.dumps(r)+"\n" for r in body_rows))
+            geometry={"intersection_xy_m":[[14,-6],[24,-6],[24,4],[14,4]],
+                      "approach_road_id":1,"connector_road_id":3,"departure_road_id":2,
+                      "departure_direction_xy":[0,1],"two_way":True}
+            (root/"road_geometry.json").write_text(json.dumps(geometry))
+            (root/"trace.jsonl").write_text("".join(json.dumps({"frame":r["frame"],
+                 "time_s":r["time_s"],"position_m":[11,-1,0.8]})+"\n" for r in rows))
+            (root/"capture").mkdir();(root/"capture"/"evidence.jsonl").write_text("{}\n")
+            for name in selection.CAMERA_PROFILE:(root/(name+".mkv")).write_bytes(b"fixture-placeholder")
+            report=measure.finalize(root,root/"analysis-report.json")
+            self.assertEqual(report["case_id"],case)
+            self.assertTrue((root/"channels"/"approach_lateral.jsonl").is_file())
+            result=json.loads((root/"result.json").read_text())
+            self.assertFalse(result["maneuver_completed"])
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);self.fixture(root,-1)
+            with self.assertRaisesRegex(ValueError,"Missing required source: config.json"):
+                measure.finalize(root,root/"analysis-report.json")
 
     def test_both_intersecting_native_roads_need_opposing_lanes(self):
         def wp(road,lane):return NS(road_id=road,lane_id=lane,lane_type="Driving")
