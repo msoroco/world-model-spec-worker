@@ -95,7 +95,7 @@
   ],
   "observations": [
     {
-      "name": "minimum_abreast_left_gap_m",
+      "name": "left_pass_clearance_m",
       "mandatory": true,
       "source": "retained original participant_footprints.jsonl joined to Native frames",
       "measurement": "minimum left body gap during observed abreast phase",
@@ -107,7 +107,7 @@
       ]
     },
     {
-      "name": "body_clearance_at_first_return_m",
+      "name": "return_clearance_m",
       "mandatory": true,
       "source": "retained original participant_footprints.jsonl joined to Native frames",
       "measurement": "longitudinal full-body clearance at first measured rightward return",
@@ -120,8 +120,8 @@
     },
     {
       "name": "time_gap_at_first_return_s",
-      "mandatory": true,
-      "source": "retained original participant_footprints.jsonl joined to Native frames",
+      "mandatory": false,
+      "source": "retained original participant_footprints.jsonl joined to Native frames; derived in analysis, not a separately captured stream",
       "measurement": "full-body clearance divided by overtaken vehicle original speed; engineering observation only",
       "case_ids": [
         "heldout__C229126__NRS-484B-207-1__motor_vehicle_driver__left_pass_wide",
@@ -166,9 +166,8 @@
     "drv.overtaking": {
       "evidence": "Original 20 Hz participant corner, heading and speed packets measured by overtake_sequence.py; no statutory threshold inferred",
       "channels": [
-        "minimum_abreast_left_gap_m",
-        "body_clearance_at_first_return_m",
-        "time_gap_at_first_return_s"
+        "left_pass_clearance_m",
+        "return_clearance_m"
       ],
       "source_refs": [
         "inputs/heldout__C229126__NRS-484B-207-1__motor_vehicle_driver/assignment.json"
@@ -177,9 +176,7 @@
     "drv.passing_side": {
       "evidence": "Original 20 Hz participant corner, heading and speed packets measured by overtake_sequence.py; no statutory threshold inferred",
       "channels": [
-        "minimum_abreast_left_gap_m",
-        "body_clearance_at_first_return_m",
-        "time_gap_at_first_return_s"
+        "left_pass_clearance_m"
       ],
       "source_refs": [
         "inputs/heldout__C229126__NRS-484B-207-1__motor_vehicle_driver/assignment.json"
@@ -188,9 +185,7 @@
     "rel.same_direction": {
       "evidence": "Original 20 Hz participant corner, heading and speed packets measured by overtake_sequence.py; no statutory threshold inferred",
       "channels": [
-        "minimum_abreast_left_gap_m",
-        "body_clearance_at_first_return_m",
-        "time_gap_at_first_return_s"
+        "left_pass_clearance_m"
       ],
       "source_refs": [
         "inputs/heldout__C229126__NRS-484B-207-1__motor_vehicle_driver/assignment.json"
@@ -199,9 +194,7 @@
     "rel.surface_gap": {
       "evidence": "Original 20 Hz participant corner, heading and speed packets measured by overtake_sequence.py; no statutory threshold inferred",
       "channels": [
-        "minimum_abreast_left_gap_m",
-        "body_clearance_at_first_return_m",
-        "time_gap_at_first_return_s"
+        "left_pass_clearance_m"
       ],
       "source_refs": [
         "inputs/heldout__C229126__NRS-484B-207-1__motor_vehicle_driver/assignment.json"
@@ -210,9 +203,7 @@
     "rel.longitudinal_overlap": {
       "evidence": "Original 20 Hz participant corner, heading and speed packets measured by overtake_sequence.py; no statutory threshold inferred",
       "channels": [
-        "minimum_abreast_left_gap_m",
-        "body_clearance_at_first_return_m",
-        "time_gap_at_first_return_s"
+        "return_clearance_m"
       ],
       "source_refs": [
         "inputs/heldout__C229126__NRS-484B-207-1__motor_vehicle_driver/assignment.json"
@@ -221,9 +212,7 @@
     "rel.ahead_behind_in_lane": {
       "evidence": "Original 20 Hz participant corner, heading and speed packets measured by overtake_sequence.py; no statutory threshold inferred",
       "channels": [
-        "minimum_abreast_left_gap_m",
-        "body_clearance_at_first_return_m",
-        "time_gap_at_first_return_s"
+        "return_clearance_m"
       ],
       "source_refs": [
         "inputs/heldout__C229126__NRS-484B-207-1__motor_vehicle_driver/assignment.json"
@@ -232,9 +221,8 @@
     "drv.lane_change": {
       "evidence": "Original 20 Hz participant corner, heading and speed packets measured by overtake_sequence.py; no statutory threshold inferred",
       "channels": [
-        "minimum_abreast_left_gap_m",
-        "body_clearance_at_first_return_m",
-        "time_gap_at_first_return_s"
+        "left_pass_clearance_m",
+        "return_clearance_m"
       ],
       "source_refs": [
         "inputs/heldout__C229126__NRS-484B-207-1__motor_vehicle_driver/assignment.json"
@@ -243,9 +231,7 @@
     "drv.time_gap": {
       "evidence": "Original 20 Hz participant corner, heading and speed packets measured by overtake_sequence.py; no statutory threshold inferred",
       "channels": [
-        "minimum_abreast_left_gap_m",
-        "body_clearance_at_first_return_m",
-        "time_gap_at_first_return_s"
+        "return_clearance_m"
       ],
       "source_refs": [
         "inputs/heldout__C229126__NRS-484B-207-1__motor_vehicle_driver/assignment.json"
@@ -266,5 +252,33 @@
       "evidence_or_gap": "No accepted recording is supplied. Original body corners, same-direction lane and speed source must show the pass and return sequence; safe distance and safely clear remain legal judgments."
     }
   ],
-  "selected_branch": "Full approach-pass-return sequence"
+  "selected_branch": "Full approach-pass-return sequence",
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 16,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "both vehicle bodies and same-direction lane geometry",
+        "interval": "entire 16 s original-frame interval"
+      },
+      {
+        "view": "approach",
+        "subject": "both vehicle bodies during approach and pass",
+        "interval": "entire 16 s original-frame interval"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "body corners at left pass and right return",
+        "interval": "entire 16 s original-frame interval"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "travel direction and first rightward return",
+        "interval": "entire 16 s original-frame interval"
+      }
+    ],
+    "source_review": "Decode all four original streams and review body and road pixels independently on Native output."
+  }
 }

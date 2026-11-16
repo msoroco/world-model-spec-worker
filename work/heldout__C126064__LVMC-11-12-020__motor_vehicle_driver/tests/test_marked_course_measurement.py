@@ -73,6 +73,21 @@ class MarkedCourseTests(unittest.TestCase):
             self.assertIsNone(result['direction_disobedience_legal_judgment'])
             self.assertTrue(all(row['inside_intersection'] for row in result['observations']))
 
+    def test_realized_numeric_course_offset_follows_original_body(self):
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            _, bodies = fixture(root)
+            before = measure(root, 'case')['realized_course_deviation']
+            self.assertEqual(before['statistic'], 'max')
+            self.assertIsNone(before['legal_cutoff'])
+            for corner in bodies[1]['corners_xy_m']:
+                corner[1] += 1.0
+            (root / 'turn_body.jsonl').write_text(''.join(json.dumps(row) + '\n'
+                                                        for row in bodies))
+            after = measure(root, 'case')['realized_course_deviation']
+            self.assertGreater(after['value_m'], before['value_m'])
+            self.assertEqual(after['sample_window_s'], [0.0, 0.1])
+
     def test_outside_marker_and_wrong_actor_rejected(self):
         with TemporaryDirectory() as directory:
             root = Path(directory)

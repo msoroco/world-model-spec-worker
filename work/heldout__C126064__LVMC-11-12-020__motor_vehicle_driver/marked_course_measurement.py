@@ -32,6 +32,23 @@ def _distance(point, polyline):
     return min(values)
 
 
+def realized_course_deviation(observations):
+    """Measure the largest original centroid offset inside the intersection."""
+    selected = [row for row in observations if row['inside_intersection']]
+    if not selected:
+        raise ValueError('No original turn frame inside intersection')
+    values = [row['centroid_to_indicated_course_m'] for row in selected]
+    if any(isinstance(value, bool) or not isinstance(value, (int, float))
+           or not isfinite(value) or value < 0 for value in values):
+        raise ValueError('Original course deviation is invalid')
+    return {'value_m': max(values), 'statistic': 'max',
+            'method': 'original full-body centroid distance to sourced indicated course',
+            'time_window': 'inside intersection',
+            'sample_window_s': [selected[0]['time_s'], selected[-1]['time_s']],
+            'source_field': 'observations[].centroid_to_indicated_course_m',
+            'legal_cutoff': None}
+
+
 def measure(source_dir, case_id):
     root = Path(source_dir)
     names = ('marked_intersection.json', 'turn_body.jsonl', 'video_frames.jsonl',
@@ -113,6 +130,7 @@ def measure(source_dir, case_id):
     return {'case_id': case_id, 'indication_form': form,
             'physical_indications_xy_m': points,
             'frame_count': len(rows), 'observations': rows,
+            'realized_course_deviation': realized_course_deviation(rows),
             'source_sha256': {name: sha256(path.read_bytes()).hexdigest()
                               for name, path in paths.items()},
             'direction_disobedience_legal_judgment': None}
