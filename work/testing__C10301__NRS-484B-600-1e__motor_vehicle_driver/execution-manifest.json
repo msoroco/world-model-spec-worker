@@ -1,0 +1,91 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver",
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3",
+  "cases": [
+    {
+      "case_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__source_verified_below_80",
+      "kind": "delivery",
+      "construction": "construction.json",
+      "construction_sha256": "a3a35f5c16b85921fdd5d9ad18d38b535776d9451b848d324fee1f100a2d71b8",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "mph",
+            "method": "3D magnitude of original actor.get_velocity joined to source frame",
+            "time_window": "full 30 second 20 Hz capture",
+            "reference_frame": "Native subject actor",
+            "uncertainty": "sampled speeds; between-sample maxima unresolved",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Synthetic OpenDRIVE geometry is diagnostic; legal public-way status and physical attainment remain unresolved."
+        ]
+      },
+      "readiness": "partial; synthetic geometry and legal authority unresolved",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "fixture_recipe": "work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/fixture-recipe.json",
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "a3a35f5c16b85921fdd5d9ad18d38b535776d9451b848d324fee1f100a2d71b8",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__source_verified_below_80 --output .runtime-work/c10301-offline-authored-04 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+        "log": "primary-offline.log",
+        "log_sha256": "fe008aab760eb03ccac7578e2b84665b1b50b0d7f855b17a0c7a8d039435b658"
+      },
+      "compatibility": {
+        "receipt": "primary-compatibility.json",
+        "sha256": "abf10883a7dd4e9315b4fde20e8ea57e50d8b97d125a8bea805d50870f32ff93",
+        "log": "primary-compatibility-analysis.log",
+        "negative_log": "primary-negative-analysis.log",
+        "camera_decode_receipt": "primary-camera-decode.json",
+        "camera_decode_sha256": "a8fa98b2c5c566935a41d9c999c75552e199743a8a1248216c6538b9eb0a2636",
+        "command_log": "primary-compatibility-command.log",
+        "command_log_sha256": "abf10883a7dd4e9315b4fde20e8ea57e50d8b97d125a8bea805d50870f32ff93"
+      },
+      "negative": {
+        "log": "primary-negative-analysis.log"
+      },
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "original actor.get_velocity joined to Native frame and sampled at 20 Hz",
+          "evidence": "subject_motion.jsonl plus video_frames.jsonl"
+        }
+      },
+      "saved_processing": {
+        "receipt": "primary-saved-processing.json",
+        "sha256": "256868bc85ebd405acd8f2f847d82c4180c28ae02d8bb55e4972587d14ee1493",
+        "log": "primary-saved-command.log",
+        "log_sha256": "256868bc85ebd405acd8f2f847d82c4180c28ae02d8bb55e4972587d14ee1493",
+        "proof_manifest": "execution-manifest-processing.json",
+        "proof_manifest_sha256": "3e617aea708328c62e8d5bf49adba87c4b7a0510cdf60997ffaaabd2a9b242d7"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Authored 1500 m route may lack a Native spawn point with a full uninterrupted lane or enough braking margin; actual Native map not yet run."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallbacks/fallback1-construction.json",
+          "construction_sha256": "179925c007f3cd264f78529aeebb0fd97e45ffc8848ca57be4cf1585119b0f42",
+          "trigger": {
+            "source": "Native route selection and road_context.json",
+            "metric": "measured uninterrupted lane length",
+            "failure_condition": "Primary select_corridor raises No source-reviewed Native corridor meets requested length at 1500 m"
+          },
+          "changed_knobs": [
+            "corridor_context.minimum_length_m: 1500 -> 1300 m"
+          ],
+          "physical_limit": "Do not run if 1300 m cannot fit acceleration, 30 s target-speed travel and braking; no source-backed feasibility claim."
+        }
+      ]
+    }
+  ]
+}

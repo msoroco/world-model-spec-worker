@@ -9,11 +9,34 @@
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "873c7faaacfa76d5ad1a7e58ec04b0cbdf3511ae411ef37545377bb9f398084a"
+      "sha256": "cf7d4350dce69cd0ed814c9929585419311782980aa8aeb632061960e971ccf8"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__source_verified_below_80 --output .runtime-work/c10301-offline-authored-04 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "primary-offline.log",
+      "sha256": "fe008aab760eb03ccac7578e2b84665b1b50b0d7f855b17a0c7a8d039435b658",
+      "construction_sha256": "a3a35f5c16b85921fdd5d9ad18d38b535776d9451b848d324fee1f100a2d71b8"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest-processing.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__source_verified_below_80 --output .runtime-work/c10301-primary-compat-03 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "primary-compatibility-command.log",
+      "sha256": "abf10883a7dd4e9315b4fde20e8ea57e50d8b97d125a8bea805d50870f32ff93",
+      "receipt": "primary-compatibility.json",
+      "receipt_sha256": "abf10883a7dd4e9315b4fde20e8ea57e50d8b97d125a8bea805d50870f32ff93"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest-processing.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__source_verified_below_80 --attempt .runtime-work/c10301-primary-compat-03 --output .runtime-work/c10301-primary-saved-03 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "primary-saved-command.log",
+      "sha256": "256868bc85ebd405acd8f2f847d82c4180c28ae02d8bb55e4972587d14ee1493",
+      "receipt": "primary-saved-processing.json",
+      "receipt_sha256": "256868bc85ebd405acd8f2f847d82c4180c28ae02d8bb55e4972587d14ee1493"
     }
   ],
   "remaining_gpu_checks": [
     "Attained real vehicle speed in selected alley/access aisle, route/road status, four-camera visibility and between-frame behavior."
   ],
-  "reason": "28 CPU tests pass. Runner uses pinned PipelineCapture and source-bound four-camera joins; saved finalizer now invokes pinned physical_result and tests positive original-trace travel progress versus missing-position rejection without legal acceptance. Concrete source-reviewed corridor/camera config, exact manifest, offline/compatibility/saved-processing proofs, three fallbacks per case, semantic proposals and delivery acceptance audit remain unfinished. See HANDOFF.md."
+  "reason": "28 assignment CPU tests, exact primary offline (2 materialized tests), positive/negative diagnostic compatibility, four-source-camera decode and recorded-only saved processing pass. The source-hashed synthetic 1,800 m scene and 9-frame colored diagnostic are software fixtures. No real Native run, physical speed or visual coverage proof, public-way legal authority or original accepted trace is available. Remaining two cases, three physical-risk fallbacks each, full semantic proposals, physical/comparison and independent delivery acceptance remain. See HANDOFF.md."
 }

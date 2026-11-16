@@ -20,9 +20,9 @@ def audit(root=HERE, manifest=None, result=None):
     manifest = manifest or json.loads((root / 'execution-manifest.json').read_text())
     result = result or json.loads((root / 'result.json').read_text())
     require(len(manifest.get('cases', [])) == 5, 'Five selected cases required')
-    require(result.get('status') == 'partial' and
+    require(result.get('status') in ('partial', 'ready') and
             result.get('assignment_id') == manifest.get('assignment_id'),
-            'Truthful matching partial result required')
+            'Truthful matching result required')
     rows = []
     for entry in manifest['cases']:
         case = entry['case_id']

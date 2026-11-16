@@ -45,9 +45,13 @@ def audit(attempt:Path,case_id:str,media_auditor=None)->dict:
     if type(measured) not in (int,float) or not math.isfinite(measured) or abs(peak-measured)>1e-4:
         raise ValueError('Finalized peak speed differs from original velocity')
     for name in ('subject_motion.jsonl','video_frames.jsonl','road_context.json'):
-        expected=result.get('recording_evidence',{}).get('source_hashes',{}).get(name)
+        evidence=result.get('recording_evidence',{})
+        hashes=result.get('source_hashes', evidence.get('source_hashes',{}) if isinstance(evidence,dict) else {})
+        expected=hashes.get(name)
         if not expected or _sha(attempt/name)!=expected:raise ValueError('Original source hash mismatch: '+name)
-    if _sha(attempt/'capture/evidence.jsonl')!=result.get('recording_evidence',{}).get('capture_evidence_sha256'):
+    evidence=result.get('recording_evidence',{})
+    capture_sha=result.get('capture_evidence_sha256', evidence.get('capture_evidence_sha256') if isinstance(evidence,dict) else None)
+    if _sha(attempt/'capture/evidence.jsonl')!=capture_sha:
         raise ValueError('Capture evidence hash mismatch')
     receipts={}
     for name in CAMERAS:

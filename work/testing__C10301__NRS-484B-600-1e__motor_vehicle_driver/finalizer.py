@@ -37,10 +37,20 @@ def finalize(attempt: Path, output: Path) -> dict:
     report = analyze(attempt)
     if not config.get("selected_case_id") or not config.get("recording_description"):
         raise ValueError("Missing exact case or recording description")
+    if output.exists() or (attempt / "result.json").exists():
+        raise ValueError("Retain prior finalization; choose a fresh attempt")
     requested = config.get("requested_speed_mph")
     if isinstance(requested, bool) or not isinstance(requested, (int, float)) or requested <= 0:
         raise ValueError("Missing requested speed")
     speed = measure_peak_speed(report)
+    speed_channel = attempt / "speed-channel.jsonl"
+    channel_content = "".join(json.dumps({"time_s": sample["time_s"],
+        "value": sample["speed_mph"]}) + "\n" for sample in report["samples"])
+    if speed_channel.exists():
+        if speed_channel.read_text() != channel_content:
+            raise ValueError("Prior derived speed channel differs from original sources")
+    else:
+        speed_channel.write_text(channel_content)
     sources = {name: report["sources"][name] for name in
                ("subject_motion.jsonl", "video_frames.jsonl", "road_context.json")}
     result = {
@@ -63,12 +73,11 @@ def finalize(attempt: Path, output: Path) -> dict:
         "video_references": list(CAMERAS),
         "video_frame_map_reference": "video_frames.jsonl",
         "recording_description": config["recording_description"],
-        "recording_evidence": {"source_hashes": sources,
-                               "capture_evidence_sha256": _hash(attempt / "capture/evidence.jsonl")},
-        "realized_observables": {"sampled_peak": report["peak_sample"],
-                                 "sample_count": len(report["samples"]),
-                                 "between_sample_peak": "unresolved",
-                                 "road_public_way_judgment": "unresolved"},
+        "recording_evidence": [{"name": "kin.speed", "unit": "mph",
+                                "reference": "speed-channel.jsonl"}],
+        "source_hashes": sources,
+        "capture_evidence_sha256": _hash(attempt / "capture/evidence.jsonl"),
+        "realized_observables": {},
     }
     analysis = {
         "format": "worker-speed-analysis",
@@ -79,8 +88,6 @@ def finalize(attempt: Path, output: Path) -> dict:
         },
         "source_report": report,
     }
-    if output.exists() or (attempt / "result.json").exists():
-        raise ValueError("Retain prior finalization; choose a fresh attempt")
     result = physical_result(attempt, result)
     analysis["physical_checks"] = result["physical_checks"]
     analysis["realized_observables"] = result["realized_observables"]

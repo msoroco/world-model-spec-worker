@@ -100,11 +100,36 @@
     "uncovered": "All exact cases; evidence.json has zero accepted recordings."
   },
   "observations": [
-    "source-backed same statutory crossing through median opening and two different highways",
-    "complete original-frame body entry times and approach bearings/right-side geometry",
-    "all entrance signal head identities, installed/uncovered status and Off state at entry",
-    "official-device exclusion and subsection-4 qualification",
-    "opposite-direction left-turn intention/action and yielding context"
+    {
+      "name": "crossing_context",
+      "description": "source-backed one statutory median-opening crossing and different highways",
+      "mandatory": false,
+      "source_role": "original_context_or_measurement"
+    },
+    {
+      "name": "entry_timing",
+      "description": "complete original-frame body entry timing and right-side approach geometry",
+      "mandatory": true,
+      "source_role": "captured_channel"
+    },
+    {
+      "name": "signal_context",
+      "description": "all-entrance signal head identity, installed/uncovered status and Off readback",
+      "mandatory": false,
+      "source_role": "original_context_or_measurement"
+    },
+    {
+      "name": "priority_context",
+      "description": "other traffic and ego yielding behavior with legal judgment unresolved",
+      "mandatory": false,
+      "source_role": "original_context_or_measurement"
+    },
+    {
+      "name": "exception_context",
+      "description": "official-device and opposite-direction left-turn exclusions",
+      "mandatory": false,
+      "source_role": "original_context_or_measurement"
+    }
   ],
   "sources": [
     {
@@ -398,5 +423,97 @@
       ],
       "evidence_or_gap": "controller_history.jsonl and crossing_history.jsonl retain the hold command and sampled motion; physical yielding and legal priority remain open."
     }
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "both vehicles, median crossing and all entrance signal heads",
+        "interval": "startup through complete exit"
+      },
+      {
+        "view": "approach",
+        "subject": "ego entrance Off readback and approach body",
+        "interval": "startup through complete exit"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "other approach and crossing conflict area",
+        "interval": "startup through complete exit"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "ego driver reference and governing entrance",
+        "interval": "startup through complete exit"
+      }
+    ],
+    "limitations": [
+      "Prospective camera placement; Native body/head visibility and device authority require independent physical review"
+    ]
+  },
+  "source_observation_mapping": {
+    "st.intersection": {
+      "evidence": "Reviewed site packet and Native map/intersection ID",
+      "channels": [],
+      "source_refs": [
+        "site_packet.py"
+      ]
+    },
+    "st.lane_enters": {
+      "evidence": "Original Native road/lane IDs for both complete bodies",
+      "channels": [],
+      "source_refs": [
+        "capture_sources.py"
+      ]
+    },
+    "drv.entering_intersection": {
+      "evidence": "Complete body vertices per original Native frame",
+      "channels": [],
+      "source_refs": [
+        "capture_sources.py"
+      ]
+    },
+    "drv.arrival_order": {
+      "evidence": "Body entry frames and entry-time difference; legal tolerance unresolved",
+      "channels": [
+        "entry_timing"
+      ],
+      "source_refs": [
+        "finalizer.py"
+      ]
+    },
+    "rel.bearing": {
+      "evidence": "Both original positions and approach forward vectors; right-side relation requires site review",
+      "channels": [],
+      "source_refs": [
+        "capture_sources.py"
+      ]
+    },
+    "drv.yields_to": {
+      "evidence": "Original held/released controller states, body motion and conflict context; legal yielding unresolved",
+      "channels": [],
+      "source_refs": [
+        "capture_sources.py",
+        "controlled_pair.py"
+      ]
+    },
+    "dev.traffic_signal": {
+      "evidence": "All-entrance Native head readback and governance source packet; official status unresolved",
+      "channels": [],
+      "source_refs": [
+        "signal_control.py",
+        "site_packet.py"
+      ]
+    },
+    "drv.turning": {
+      "evidence": "Opposite-direction left-turn controller intention and Native route history",
+      "channels": [],
+      "source_refs": [
+        "runner.py"
+      ]
+    }
+  }
 }

@@ -1,0 +1,25 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Shall not back on or over a crosswalk",
+      "source": "NRS 484B.113(2)",
+      "output_key": "reverse_crosswalk",
+      "method": "measure_reverse_crosswalk",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "crosswalk_context.json",
+        "reverse_history.jsonl",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "reverse_history.jsonl"
+    ],
+    "error_contains": "Missing required source: reverse_history.jsonl"
+  }
+}

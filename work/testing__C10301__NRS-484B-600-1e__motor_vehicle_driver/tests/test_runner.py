@@ -68,6 +68,7 @@ class RunnerTests(unittest.TestCase):
                 self.sensors = {name: FakeSensor() for name in config()["camera_transforms"]}
                 self.settings = NS(synchronous_mode=False, fixed_delta_seconds=None)
             def get_settings(self): return self.settings
+            def get_map(self): return NS(name="GeneratedDiagnosticMap")
             def apply_settings(self, value): self.settings = value
             def tick(self):
                 self.frame += 1
@@ -118,7 +119,11 @@ class RunnerTests(unittest.TestCase):
             yield world.sensors
 
         world = FakeWorld()
-        client = NS(get_world=lambda: world)
+        generated = []
+        def generate(scene):
+            generated.append(scene)
+            return world
+        client = NS(get_world=lambda: world, generate_opendrive_world=generate)
         carla = NS(Transform=lambda *args: args, Location=lambda **kw: kw,
                    Rotation=lambda **kw: kw, VehicleControl=lambda **kw: kw)
         restored = []
@@ -126,6 +131,10 @@ class RunnerTests(unittest.TestCase):
             output = Path(temp)
             short_config = config()
             short_config["duration_s"] = 1
+            scene = "<OpenDRIVE><header name='diagnostic'/></OpenDRIVE>"
+            (output / "scene.xodr").write_text(scene)
+            short_config["authored_scene"] = "scene.xodr"
+            short_config["authored_scene_sha256"] = __import__("hashlib").sha256(scene.encode()).hexdigest()
             (output / "runner.py").write_text("fake materialized runner")
             (output / "construction.json").write_text("{}")
             (output / "config.json").write_text(json.dumps(short_config))
@@ -142,6 +151,9 @@ class RunnerTests(unittest.TestCase):
             self.assertEqual(len((output / "capture/evidence.jsonl").read_text().splitlines()), 20)
             self.assertEqual(len(seal["sources"]), 13)
             self.assertEqual(restored, [{"saved": True}])
+            self.assertEqual(generated, [scene])
+            context = json.loads((output / "road_context.json").read_text())
+            self.assertEqual(context["native_map_id"], "GeneratedDiagnosticMap")
 
 
 if __name__ == "__main__":

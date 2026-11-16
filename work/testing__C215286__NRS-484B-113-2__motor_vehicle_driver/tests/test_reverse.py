@@ -2,9 +2,11 @@ import hashlib,importlib.util,json,sys,tempfile,unittest
 from pathlib import Path
 from types import SimpleNamespace as NS
 ROOT=Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(ROOT))
+sys.path.insert(0,str(ROOT.parents[1]/'runtime'/'scenario_pipeline'))
 def load(name):
  s=importlib.util.spec_from_file_location(name,ROOT/(name+'.py'));m=importlib.util.module_from_spec(s);s.loader.exec_module(m);return m
-measure=load('crosswalk_reverse');control=load('reverse_control');comparison=load('comparison_audit');route=load('reverse_route')
+measure=load('crosswalk_reverse');control=load('reverse_control');comparison=load('comparison_audit');route=load('reverse_route');runner=load('runner');finalizer=load('finalizer')
 def body(x):return [[x-1,-1],[x+1,-1],[x+1,1],[x-1,1]]
 class Tests(unittest.TestCase):
  def fixture(self,root,on_crosswalk=True):
@@ -124,6 +126,70 @@ class Tests(unittest.TestCase):
    for row in rows:row.pop('velocity_mps')
    (root/'reverse_history.jsonl').write_text(''.join(json.dumps(s)+'\n' for s in rows))
    self.assertEqual(assess_physical(root,config,[])['physical_checks']['maneuver']['status'],'unverified')
+ def test_runner_static_and_site_preparation(self):
+  config=json.loads((ROOT/'config.json').read_text())
+  self.assertEqual(runner.validate_config(config)['rate_hz'],20)
+  with tempfile.TemporaryDirectory() as tmp:
+   root=Path(tmp);self.fixture(root)
+   packet=json.loads((root/'site_packet.json').read_text())
+   packet['start_transform']={'x':16,'y':0,'z':0.3,'yaw_deg':0}
+   packet['start_body_vertices_xy_m']=body(16)
+   packet['target_distances_m']={'over':6,'short':2}
+   prepared,start,forward,target=runner.prepare_site(packet,root,config)
+   self.assertEqual(target,6)
+   self.assertEqual(prepared['targets']['short_distance_m'],2)
+   self.assertEqual(forward,[1,0])
+   config['selected_case_id']=runner.SHORT
+   self.assertEqual(runner.prepare_site(packet,root,config)[-1],2)
+   packet['start_transform']['yaw_deg']=180
+   with self.assertRaisesRegex(ValueError,'Over target body misses'):
+    runner.prepare_site(packet,root,config)
+ def test_four_native_camera_spawn_and_cleanup(self):
+  from camera_setup import source_cameras,PROFILE
+  class Blueprint:
+   def __init__(self):self.attributes={}
+   def set_attribute(self,key,value):self.attributes[key]=value
+  class Sensor:
+   def __init__(self):self.stopped=False;self.destroyed=False
+   def stop(self):self.stopped=True
+   def destroy(self):self.destroyed=True
+  sensors=[];blueprint=Blueprint()
+  def spawn(bp,transform,**kwargs):
+   self.assertIs(bp,blueprint)
+   self.assertEqual(transform,'pose')
+   sensor=Sensor();sensors.append(sensor);return sensor
+  world=NS(get_blueprint_library=lambda:NS(find=lambda name:blueprint),spawn_actor=spawn)
+  config=json.loads((ROOT/'config.json').read_text())
+  with source_cameras(world,object(),{name:'pose' for name in PROFILE},config['cameras']) as active:
+   self.assertEqual(set(active),set(PROFILE))
+   self.assertEqual(blueprint.attributes['sensor_tick'],'0.05')
+  self.assertEqual(len(sensors),4)
+  self.assertTrue(all(s.stopped and s.destroyed for s in sensors))
+ def test_saved_finalizer_writes_source_bound_result_and_rejects_missing_original(self):
+  with tempfile.TemporaryDirectory() as tmp:
+   root=Path(tmp);attempt=root/'attempt';attempt.mkdir();self.fixture(attempt)
+   config=json.loads((ROOT/'config.json').read_text())
+   config['duration_s']=.15
+   config['motion_route_xy_m']=[[10,0]]
+   (attempt/'config.json').write_text(json.dumps(config))
+   (attempt/'trace.jsonl').write_text('{}\n')
+   (attempt/'capture').mkdir();(attempt/'capture'/'evidence.jsonl').write_text('{}\n')
+   for name in finalizer.CAMERAS:(attempt/name).write_text('synthetic placeholder; no decode claim')
+   report=finalizer.finalize(attempt,root/'analysis-report.json')
+   self.assertTrue(report['measurements']['reverse_crosswalk']['value']['reverse_body_on_or_over_crosswalk'])
+   result=json.loads((attempt/'result.json').read_text())
+   self.assertTrue(result['target_checks'][0]['matched'])
+   self.assertEqual(result['physical_checks']['maneuver']['status'],'met')
+   self.assertFalse(report['legal_verdict_asserted'])
+   self.assertTrue((attempt/'channels'/'crosswalk_overlap.jsonl').is_file())
+   fresh=root/'negative';fresh.mkdir();self.fixture(fresh)
+   (fresh/'config.json').write_text(json.dumps(config))
+   (fresh/'trace.jsonl').write_text('{}\n')
+   (fresh/'capture').mkdir();(fresh/'capture'/'evidence.jsonl').write_text('{}\n')
+   for name in finalizer.CAMERAS:(fresh/name).write_text('synthetic placeholder')
+   (fresh/'site_packet.json').unlink()
+   with self.assertRaisesRegex(ValueError,'site_packet.json'):
+    finalizer.finalize(fresh,root/'negative-analysis.json')
  def test_real_native_reverse_request_and_restore(self):
   original=NS(throttle=0,brake=0,reverse=False)
   vehicle=NS(control=original)

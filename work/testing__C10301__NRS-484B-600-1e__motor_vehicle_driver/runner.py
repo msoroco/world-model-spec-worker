@@ -53,6 +53,10 @@ def check_config(config):
         if any(type(v) not in (int, float) or not math.isfinite(v) for v in (*location.values(), *rotation.values())):
             raise ValueError("Finite source-camera pose required: " + name)
     validate_context(config["corridor_context"])
+    scene = config.get("authored_scene")
+    if scene is not None:
+        if scene != "scene.xodr" or config.get("authored_scene_sha256", "") == "":
+            raise ValueError("Exact authored OpenDRIVE scene and hash required")
     return config
 
 
@@ -86,20 +90,30 @@ def capture(client, carla, config, output):
         raise ValueError("Materialized exact construction required")
     if any((output / name).exists() for name in ("capture-seal.json", "result.json", "video_frames.jsonl")):
         raise ValueError("Retain prior acquisition; choose a fresh attempt")
+    if config.get("authored_scene"):
+        scene = output / config["authored_scene"]
+        if not scene.is_file() or _sha(scene) != config["authored_scene_sha256"]:
+            raise ValueError("Authored OpenDRIVE scene changed")
+        corridor_context = dict(config["corridor_context"])
+    else:
+        corridor_context = config["corridor_context"]
     saved = snapshot(client)
-    world = client.get_world()
-    settings = world.get_settings()
-    settings.synchronous_mode = True
-    settings.fixed_delta_seconds = 0.05
-    world.apply_settings(settings)
     capture_error = None
     restored = False
     try:
-        with construct_vehicle(world, config["corridor_context"]) as (vehicle, corridor):
+        world = (client.generate_opendrive_world(scene.read_text())
+                 if config.get("authored_scene") else client.get_world())
+        if config.get("authored_scene"):
+            corridor_context["native_map_id"] = world.get_map().name
+        settings = world.get_settings()
+        settings.synchronous_mode = True
+        settings.fixed_delta_seconds = 0.05
+        world.apply_settings(settings)
+        with construct_vehicle(world, corridor_context) as (vehicle, corridor):
             drive = NativeDrive(corridor, config["requested_speed_mph"], carla.VehicleControl)
             camera_queues = {name: Queue() for name in SIZES}
             transforms = _transforms(carla, config["camera_transforms"])
-            context = dict(config["corridor_context"], subject_actor_id=vehicle.id,
+            context = dict(corridor_context, subject_actor_id=vehicle.id,
                            road_id=corridor["road_id"], lane_id=corridor["lane_id"],
                            measured_corridor_length_m=corridor["measured_length_m"])
             _write(output / "road_context.json", context)
