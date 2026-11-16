@@ -38,10 +38,12 @@ def motion(entry, folder, kind, output):
     }
     if suffix in release_sources:
         source = release_sources[suffix]
-        index = read(folder/'hazard-release-draft-proof-index.json')
+        index = read(folder/'district-integration-draft-proof.json')['release_source_fixture']
         proof = index['release3_full_history_diagnostic' if suffix.endswith('3s')
                       else 'release5_full_history_diagnostic']
-        if proof['case_id'] != entry['case_id'] or proof['construction_sha256'] != entry['construction_sha256']:
+        if (proof['case_id'] != entry['case_id']
+                or proof['selected_construction_sha256'] != entry['construction_sha256']
+                or not proof.get('fixture_kind', '').startswith('synthetic')):
             raise ValueError('Release physical source does not bind exact construction')
         for name, digest in proof['source_hashes'].items():
             if not (source/name).is_file() or hashlib.sha256((source/name).read_bytes()).hexdigest() != digest:

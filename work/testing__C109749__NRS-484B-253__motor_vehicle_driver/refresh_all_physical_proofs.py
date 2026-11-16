@@ -18,8 +18,15 @@ def write(path, value):
     path.write_text(json.dumps(value, indent=2) + '\n')
 
 
+def current_manifest_command(command):
+    args = shlex.split(command)
+    if '--manifest' in args:
+        args[args.index('--manifest') + 1] = str(manifest_path)
+    return args
+
+
 manifest = json.loads(manifest_path.read_text())
-for entry in manifest['cases']:
+for case_index, entry in enumerate(manifest['cases']):
     case = entry['case_id']
     label = case.split('__')[-1]
     spec = entry['physical_preparation']
@@ -27,7 +34,8 @@ for entry in manifest['cases']:
     proof = json.loads(path.read_text())
     proof['construction_sha256'] = entry['construction_sha256']
     for fixture in proof['fixtures']:
-        command = shlex.split(fixture['command'])
+        command = current_manifest_command(fixture['command'])
+        fixture['command'] = shlex.join(command)
         with (folder / fixture['log']).open('w') as log:
             subprocess.run(command, cwd=repo, stdout=log, stderr=subprocess.STDOUT, check=True)
         fixture['log_sha256'] = sha(folder / fixture['log'])
@@ -44,7 +52,16 @@ for entry in manifest['cases']:
         life['command'] = command
         life['fixture_receipt'] = output
     with (folder / life['log']).open('w') as log:
-        subprocess.run(shlex.split(command), cwd=repo, stdout=log,
+        command = current_manifest_command(command)
+        life['command'] = shlex.join(command)
+        if '--saved-receipt' in command:
+            target = repo / command[command.index('--saved-receipt') + 1]
+            current = repo / f'.runtime-work/c109749-district-selected-v1-{case_index*4:02d}-saved/v0001/processing.json'
+            if not current.is_file():
+                raise ValueError('Current primary saved receipt missing: '+str(current))
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(current.read_bytes())
+        subprocess.run(command, cwd=repo, stdout=log,
                        stderr=subprocess.STDOUT, check=True)
     life['log_sha256'] = sha(folder / life['log'])
     life['exit_code'] = 0
@@ -54,3 +71,10 @@ for entry in manifest['cases']:
     spec['sha256'] = sha(path)
     print(label, 'physical classifier and lifecycle receipts rebound', flush=True)
 write(manifest_path, manifest)
+result_path = folder / 'result.json'
+result = json.loads(result_path.read_text())
+for claim in result['tests']:
+    log = folder / claim['log']
+    if log.is_file():
+        claim['sha256'] = sha(log)
+write(result_path, result)
