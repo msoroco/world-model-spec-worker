@@ -100,8 +100,19 @@ def validate_config(config, base_dir=Path.cwd()):
     release = config.get("other_release_frame")
     if type(release) is not int or not 0 <= release < 1100:
         raise ValueError("Valid other release frame required")
+    ego_release = config.get("ego_release_frame")
+    if ego_release is not None and (type(ego_release) is not int or
+                                    not 0 <= ego_release < 1100):
+        raise ValueError("Valid ego release frame required for sweep variant")
     verify_site_packet(config, base_dir)
     return config
+
+
+def release_permissions(config, index, other_entered):
+    """Controller permissions; StopApproach still requires a measured near-line stop."""
+    ego_release = config.get("ego_release_frame")
+    return {"ego": other_entered if ego_release is None else index >= ego_release,
+            "other": index >= config["other_release_frame"]}
 
 
 def _transform(carla, pose):
@@ -201,6 +212,7 @@ def capture(args, config):
                                 for index in range(1100):
                                     other_inside = body_in_crossing(other, site["crossing_polygon_xy_m"])
                                     other_entered = other_entered or other_inside
+                                    permissions = release_permissions(config, index, other_entered)
                                     decisions = {}
                                     for role, actor in (("ego", ego), ("other", other)):
                                         pose = actor.get_transform()
@@ -208,7 +220,7 @@ def capture(args, config):
                                             float(pose.location.x), float(pose.location.y),
                                             float(pose.rotation.yaw), site["routes"][role], progress[role])
                                         front, speed, forward = front_speed(actor)
-                                        release_allowed = other_entered if role == "ego" else index >= config["other_release_frame"]
+                                        release_allowed = permissions[role]
                                         stop_decision = stop_controllers[role].step(front, speed, forward, release_allowed)
                                         decisions[role] = {"steer": steer, "stop": stop_decision}
                                     ego_control = apply_speed_control(carla, ego, config["ego_target_speed_mps"],
@@ -229,6 +241,7 @@ def capture(args, config):
                                         "time_s": snap.timestamp.elapsed_seconds,
                                         "other_inside_before_tick": other_inside,
                                         "other_entered_once": other_entered,
+                                        "release_permissions": permissions,
                                         "ego_control": ego_control, "other_control": other_control,
                                         "route_target_index": progress.copy(),
                                         "steering": decisions}, allow_nan=False) + "\n")

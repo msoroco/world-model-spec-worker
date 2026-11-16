@@ -13,7 +13,7 @@ from unittest.mock import patch
 
 PACKAGE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PACKAGE))
-from runner import TARGETS, _camera_frame, capture, main, validate_config
+from runner import TARGETS, _camera_frame, capture, main, release_permissions, validate_config
 from site_packet import source_bindings
 from camera_setup import SIZES
 
@@ -93,6 +93,23 @@ def write_packet(root, value):
 
 
 class RunnerTests(unittest.TestCase):
+    def test_declared_ego_release_sweep_keeps_default_order_gate(self):
+        baseline = config(next(iter(TARGETS)))
+        self.assertEqual(release_permissions(baseline, 21, False),
+                         {"ego": False, "other": True})
+        self.assertEqual(release_permissions(baseline, 21, True),
+                         {"ego": True, "other": True})
+        sweep = dict(baseline, ego_release_frame=18)
+        self.assertEqual(release_permissions(sweep, 17, False),
+                         {"ego": False, "other": False})
+        self.assertEqual(release_permissions(sweep, 18, False),
+                         {"ego": True, "other": False})
+        self.assertEqual(release_permissions(sweep, 20, False),
+                         {"ego": True, "other": True})
+        sweep["ego_release_frame"] = True
+        with self.assertRaisesRegex(ValueError, "Valid ego release frame"):
+            validate_config(sweep)
+
     def test_probe_site_cli_does_not_load_diagnostic_capture_config(self):
         world = object()
         client = NS(set_timeout=lambda seconds: self.assertEqual(seconds, 30),

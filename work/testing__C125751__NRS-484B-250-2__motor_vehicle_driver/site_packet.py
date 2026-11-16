@@ -120,6 +120,26 @@ def verify_site_packet(config, base_dir):
             "head_pixel_visibility_verified": False}
 
 
+def _governed_predecessor(waypoint, lanes, sample_m, search_radius_m):
+    """Find one governed approach upstream of a Native junction sample."""
+    current = waypoint
+    for step in range(int(search_radius_m / sample_m) + 1):
+        key = (int(current.road_id), int(current.lane_id))
+        governing = lanes.get(key, ())
+        if len(governing) > 1:
+            return None
+        if len(governing) == 1:
+            return key, next(iter(governing)), step * sample_m
+        previous = getattr(current, "previous", None)
+        if previous is None:
+            return None
+        predecessors = previous(sample_m)
+        if len(predecessors) != 1:
+            return None
+        current = predecessors[0]
+    return None
+
+
 def probe_native_signal_crossings(world, sample_m=2.0, search_radius_m=25.0):
     """Find review candidates from Native map/signal calls, without legal classification.
 
@@ -138,9 +158,10 @@ def probe_native_signal_crossings(world, sample_m=2.0, search_radius_m=25.0):
     for waypoint in native_map.generate_waypoints(sample_m):
         if not waypoint.is_junction:
             continue
-        key = (int(waypoint.road_id), int(waypoint.lane_id))
-        if len(lanes.get(key, ())) != 1:
+        governed = _governed_predecessor(waypoint, lanes, sample_m, search_radius_m)
+        if governed is None:
             continue
+        key, signal_id, trace_m = governed
         transform = waypoint.transform
         location, rotation = transform.location, transform.rotation
         values = (location.x, location.y, rotation.yaw)
@@ -148,7 +169,7 @@ def probe_native_signal_crossings(world, sample_m=2.0, search_radius_m=25.0):
             continue
         junction_id = int(waypoint.get_junction().id)
         junctions.setdefault(junction_id, {}).setdefault(key, []).append(
-            (float(location.x), float(location.y), float(rotation.yaw)))
+            (float(location.x), float(location.y), float(rotation.yaw), signal_id, trace_m))
     candidates = []
     for junction_id, approaches in sorted(junctions.items()):
         keys = sorted(approaches)
@@ -171,7 +192,8 @@ def probe_native_signal_crossings(world, sample_m=2.0, search_radius_m=25.0):
                     "native_junction_id": junction_id,
                     "approach_road_lanes": [list(left), list(right)],
                     "governing_signal_ids": [next(iter(lanes[left])), next(iter(lanes[right]))],
-                    "sample_xy_yaw": [list(a), list(b)],
+                    "sample_xy_yaw": [list(a[:3]), list(b[:3])],
+                    "governance_trace_m": [a[4], b[4]],
                     "sample_separation_m": distance,
                     "crossing_angle_deg": angle,
                     "probe_spacing_m": sample_m,

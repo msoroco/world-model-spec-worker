@@ -211,6 +211,23 @@ class SignalTests(unittest.TestCase):
         ambiguous = NativeWorld(world.lights + [Light(10, 22, -1)], crossing)
         self.assertEqual(site_packet.probe_native_signal_crossings(ambiguous), [])
 
+        def upstream_sample(junction_road, approach_road, x, y, yaw):
+            approach = waypoint(approach_road, -1, x - 2, y - 2, yaw)
+            sample = waypoint(junction_road, -1, x, y, yaw)
+            sample.previous = lambda distance: [approach]
+            return sample
+
+        split_roads = NativeWorld(world.lights, [
+            upstream_sample(111, 11, -1, 0, 0),
+            upstream_sample(222, 22, 0, -1, 90)])
+        traced = site_packet.probe_native_signal_crossings(split_roads)
+        self.assertEqual(len(traced), 1)
+        self.assertEqual(traced[0]["approach_road_lanes"], [[11, -1], [22, -1]])
+        self.assertEqual(traced[0]["governance_trace_m"], [2.0, 2.0])
+        split_roads.native_map.points[0].previous = lambda distance: [
+            waypoint(11, -1, -3, 0, 0), waypoint(11, -2, -3, 1, 0)]
+        self.assertEqual(site_packet.probe_native_signal_crossings(split_roads), [])
+
 
 if __name__ == "__main__":
     unittest.main()
