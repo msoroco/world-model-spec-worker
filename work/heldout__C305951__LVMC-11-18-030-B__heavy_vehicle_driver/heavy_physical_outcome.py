@@ -135,6 +135,21 @@ def audit_saved(attempt, case_id, pixel_review, *, allow_fixture=False):
     attempt = Path(attempt)
     joined = audit(attempt, case_id)
     report = json.loads((attempt / "analysis-report.json").read_text())
+    body_rows = [json.loads(line) for line in (attempt / "heavy_lane_sources.jsonl").read_text().splitlines()
+                 if line.strip()]
+    heavy_ids = [{part.get("actor_id") for part in row.get("heavy_vehicle_components", [])}
+                 for row in body_rows]
+    if (len(body_rows) != joined["frames"] or not heavy_ids or not heavy_ids[0]
+            or any(not all(isinstance(actor_id, int) for actor_id in ids)
+                   or ids != heavy_ids[0] for ids in heavy_ids)):
+        raise ValueError("Physical audit lacks complete heavy-body participant history")
+    overtaken_ids = {row["overtaken"]["actor_id"] for row in body_rows
+                     if row.get("overtaken") is not None}
+    if (overtaken_ids != set(joined["passing_context"]["overtaken_actor_ids"])
+            or (case_id.endswith("__passing_boundary_crossing")
+                and (len(overtaken_ids) != 1 or any(row.get("overtaken") is None for row in body_rows)))
+            or overtaken_ids & heavy_ids[0]):
+        raise ValueError("Physical audit lacks complete overtaken participant history")
     trace = [json.loads(line) for line in (attempt / "trace.jsonl").read_text().splitlines()
              if line.strip()]
     result = evaluate(report, joined, pixel_review, trace)
@@ -143,6 +158,7 @@ def audit_saved(attempt, case_id, pixel_review, *, allow_fixture=False):
     result["pixel_reviewer_id"] = pixel_review["reviewer_id"]
     result["diagnostic_fixture"] = fixture
     result["actual_native_capture"] = not fixture
+    result["audited_participant_ids"] = sorted(heavy_ids[0] | overtaken_ids)
     return result
 
 

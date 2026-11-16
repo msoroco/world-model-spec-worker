@@ -1,4 +1,7 @@
 import unittest
+import json
+from tempfile import TemporaryDirectory
+from unittest.mock import patch
 
 import sys
 from pathlib import Path
@@ -19,6 +22,23 @@ class HeavyPhysicalLifecycleTest(unittest.TestCase):
         real_without_provenance = dict(fixture, fixture_only=False)
         with self.assertRaisesRegex(ValueError, "Native capture provenance"):
             physical.audit_saved("unused", case, real_without_provenance)
+
+    def test_saved_review_rejects_incomplete_participant_history(self):
+        case = "heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__within_marked_lane"
+        review = {"case_id": case, "fixture_only": True,
+                  "review_method": "frame_by_frame_originals",
+                  "reviewer_id": "synthetic-cpu-fixture",
+                  "reviewed_at_utc": "fixture-clock-only"}
+        with TemporaryDirectory() as directory:
+            attempt = Path(directory)
+            (attempt / "analysis-report.json").write_text("{}\n")
+            rows = [{"heavy_vehicle_components": [{"actor_id": 1}]},
+                    {"heavy_vehicle_components": [{"actor_id": 2}]}]
+            (attempt / "heavy_lane_sources.jsonl").write_text(
+                "".join(json.dumps(row) + "\n" for row in rows))
+            with patch("delivery_audit.audit", return_value={"frames": 2}):
+                with self.assertRaisesRegex(ValueError, "complete heavy-body participant history"):
+                    physical.audit_saved(attempt, case, review, allow_fixture=True)
 
     def test_physical_case_events_and_missing_pixel_review(self):
         prefix = "heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__"

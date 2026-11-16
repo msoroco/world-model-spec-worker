@@ -74,7 +74,7 @@ def _alter(attempt, suffix, kind):
     _put(body_path, body)
 
 
-def run(case_id, kind):
+def run(case_id, kind, *, negative_review=False):
     if not case_id.startswith(PREFIX):
         raise ValueError("Wrong heavy-lane case identity")
     suffix = case_id[len(PREFIX):]
@@ -132,7 +132,8 @@ def run(case_id, kind):
                                                            "required_bodies_visible": True}
                                                           for index in range(joined["frames"])]}
                                         for name in CAMERAS}}
-            result = audit_saved(attempt, case_id, pixel_review, allow_fixture=True)
+            result = audit_saved(attempt, case_id, pixel_review,
+                                 allow_fixture=not negative_review)
             expected = "met" if kind == "complete_motion" else "not_met"
             if result["physical_checks"]["maneuver"]["status"] != expected:
                 raise ValueError("Physical fixture yielded another branch: " +
@@ -151,8 +152,12 @@ if __name__ == "__main__":
     parser.add_argument("--kind", required=True,
                         choices=("complete_motion", "incomplete_motion", "missing_evidence"))
     parser.add_argument("--output", required=True)
+    parser.add_argument("--negative-review", action="store_true",
+                        help="Verify that the real-capture path rejects fixture pixel review")
     args = parser.parse_args()
-    value = run(args.case, args.kind)
+    if args.negative_review and args.kind != "complete_motion":
+        parser.error("negative review probe requires complete_motion")
+    value = run(args.case, args.kind, negative_review=args.negative_review)
     output = Path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(value, indent=2, allow_nan=False) + "\n")
