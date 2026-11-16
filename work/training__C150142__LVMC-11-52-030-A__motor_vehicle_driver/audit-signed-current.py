@@ -1,6 +1,7 @@
 """Independent signed-case receipt and unsigned comparison audit."""
 import hashlib
 import json
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
@@ -66,12 +67,18 @@ def audit(index=None):
                 ordinary_config['requested_approach_frames'] and
                 config['camera_policy'] == ordinary_config['camera_policy'],
                 'Unsigned/signed fixed conditions differ: ' + candidate)
-        from_xml = __import__('xml.etree.ElementTree', fromlist=['fromstring'])
-        signed_xml = from_xml.fromstring(files['red-curb-road.xodr'])
-        unsigned_xml = from_xml.fromstring(ordinary_files['red-curb-road.xodr'])
+        signed_xml = ET.fromstring(files['red-curb-road.xodr'])
+        unsigned_xml = ET.fromstring(ordinary_files['red-curb-road.xodr'])
         require(len(signed_xml.findall('.//signals/signal')) == 1 and
                 not unsigned_xml.findall('.//signals/signal'),
                 'Signed comparison lacks sole signal difference')
+        signed_road = signed_xml.find('road')
+        signed_road.remove(signed_road.find('signals'))
+        require(ET.canonicalize(ET.tostring(signed_xml, encoding='unicode'),
+                                strip_text=True) ==
+                ET.canonicalize(ET.tostring(unsigned_xml, encoding='unicode'),
+                                strip_text=True),
+                'Signed/unsigned roads differ beyond sign geometry')
         receipts = {}
         for name, spec in row['receipts'].items():
             path = ROOT / spec['path']
