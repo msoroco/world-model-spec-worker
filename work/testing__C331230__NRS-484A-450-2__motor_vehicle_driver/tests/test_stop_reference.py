@@ -68,4 +68,20 @@ class StopReferenceTests(unittest.TestCase):
    self.assertTrue(compare_crosswalk_priority(before,both)['diagnostic_comparison_passed'])
    p=both/'approach_context.json';ctx=json.loads(p.read_text());ctx['native_stop_sign_id']=999;p.write_text(json.dumps(ctx))
    with self.assertRaisesRegex(ValueError,'native_stop_sign_id'):compare_crosswalk_priority(before,both)
+ def test_marked_vs_sidewalk_crosswalk_sources(self):
+  import os,subprocess,shutil
+  repo=ROOT.parents[1];sys.path.insert(0,str(repo/'runtime/scenario_pipeline'))
+  from worker_exchange.fixture_recipe import materialize
+  from stop_reference_comparison import compare_marked_unmarked
+  with tempfile.TemporaryDirectory() as tmp:
+   base=Path(tmp);marked=base/'marked';unmarked=base/'unmarked'
+   for source,target in ((ROOT,marked),(ROOT/'cases/unmarked_crosswalk_stop_before',unmarked)):
+    materialize(repo,source/'diagnostic-recipe.json',target)
+    for name in ('config.json','site.json','construction.json'):
+     shutil.copyfile(source/name,target/name)
+    env=dict(os.environ,PYTHONPATH=str(ROOT)+os.pathsep+str(repo/'runtime/scenario_pipeline'))
+    subprocess.run([sys.executable,str(source/'finalizer.py'),'--attempt',str(target),'--output',str(target/'analysis-report.json')],env=env,check=True,capture_output=True,text=True)
+   self.assertTrue(compare_marked_unmarked(marked,unmarked)['diagnostic_comparison_passed'])
+   p=unmarked/'approach_context.json';ctx=json.loads(p.read_text());ctx['native_stop_sign_id']=999;p.write_text(json.dumps(ctx))
+   with self.assertRaisesRegex(ValueError,'native_stop_sign_id'):compare_marked_unmarked(marked,unmarked)
 if __name__=='__main__':unittest.main()

@@ -120,6 +120,41 @@ def compare_crosswalk_priority(crosswalk_root, both_root):
             'physical_acceptance_claimed': False, 'legal_acceptance_claimed': False}
 
 
+def compare_marked_unmarked(marked_root, unmarked_root):
+    """Check the exact origin change while holding signed approach and motion fixed."""
+    marked_root, unmarked_root = Path(marked_root), Path(unmarked_root)
+    marked = json.loads((marked_root / 'approach_context.json').read_text())
+    unmarked = json.loads((unmarked_root / 'approach_context.json').read_text())
+    fixed = ('native_map_id', 'intersection_id', 'approach_road_id',
+             'approach_lane_id', 'native_stop_sign_id', 'crosswalk_polygon_xy_m',
+             'intersection_polygon_xy_m', 'approach_forward_xy', 'stop_line_exists')
+    for key in fixed:
+        if marked.get(key) != unmarked.get(key):
+            raise ValueError('Fixed source condition differs: ' + key)
+    if (marked.get('crosswalk_origin'), unmarked.get('crosswalk_origin')) != ('marked', 'sidewalk_connection'):
+        raise ValueError('Deliberate marked versus sidewalk origin differs')
+    marked_lines, marked_crosswalks, marked_map = _painted(marked_root)
+    unmarked_lines, unmarked_crosswalks, unmarked_map = _painted(unmarked_root)
+    if marked_lines or unmarked_lines or len(marked_crosswalks) != 1 or unmarked_crosswalks:
+        raise ValueError('Marked versus unmarked OpenDRIVE inventory differs')
+    road = ET.parse(unmarked_root / 'road.xodr').getroot()
+    if len(road.findall(".//lane[@type='sidewalk']")) < 2:
+        raise ValueError('Opposed sidewalk lane sources missing')
+    sources = ('stop_history.jsonl', 'video_frames.jsonl', *CAMERAS)
+    for name in sources:
+        if digest(marked_root / name) != digest(unmarked_root / name):
+            raise ValueError('Fixed source differs: ' + name)
+    values = [json.loads((root / 'analysis-report.json').read_text())['measurements']['crosswalk_halt_observation']['value']
+              for root in (marked_root, unmarked_root)]
+    if values[0] != values[1] or values[0]['selected_reference'] != 'near_side_crosswalk' or not values[0]['halt_before_crosswalk_and_junction_observed']:
+        raise ValueError('Fixed halt and crosswalk ordering differ')
+    return {'format': 'worker-marked-unmarked-comparison',
+            'fixed_source_sha256': {name: digest(marked_root / name) for name in sources},
+            'map_sha256': {'marked': marked_map, 'unmarked': unmarked_map},
+            'diagnostic_comparison_passed': True,
+            'physical_acceptance_claimed': False, 'legal_acceptance_claimed': False}
+
+
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()
@@ -127,15 +162,20 @@ if __name__ == '__main__':
     parser.add_argument('--view', type=Path)
     parser.add_argument('--crosswalk', type=Path)
     parser.add_argument('--both', type=Path)
+    parser.add_argument('--marked', type=Path)
+    parser.add_argument('--unmarked', type=Path)
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
-    if args.crosswalk and args.both and not (args.line or args.view):
+    if args.marked and args.unmarked and not (args.line or args.view or args.crosswalk or args.both):
+        receipt = compare_marked_unmarked(args.marked, args.unmarked)
+        receipt['comparison_id'] = 'marked_vs_unmarked_crosswalk'
+    elif args.crosswalk and args.both and not (args.line or args.view or args.marked or args.unmarked):
         receipt = compare_crosswalk_priority(args.crosswalk, args.both)
         receipt['comparison_id'] = 'crosswalk_vs_crosswalk_and_line'
-    elif args.line and args.view and not (args.crosswalk or args.both):
+    elif args.line and args.view and not (args.crosswalk or args.both or args.marked or args.unmarked):
         receipt = compare(args.line, args.view)
     else:
-        parser.error('Supply --line and --view, or --crosswalk and --both')
+        parser.error('Supply one complete comparison pair')
     args.output.write_text(json.dumps(receipt, indent=2) + '\n')
     print(json.dumps({'comparison_id': receipt['comparison_id'],
                       'diagnostic_comparison_passed': receipt['diagnostic_comparison_passed']}))
