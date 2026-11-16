@@ -1,0 +1,186 @@
+{
+  "case_id": "training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver__contrast",
+  "measured_values": {
+    "right_lane_exit": false
+  },
+  "target_checks": [
+    {
+      "target": "right lane while taking intended right exit",
+      "requested": false,
+      "measured": false,
+      "method": "retained actor road/lane and exit rows",
+      "tolerance": "one 50 ms frame",
+      "matched": true,
+      "physical_cause_confirmed": false,
+      "cause_evidence": [
+        "native-raw-actors.jsonl"
+      ]
+    }
+  ],
+  "setup_confirmed": false,
+  "behavior_attempted": false,
+  "maneuver_completed": false,
+  "termination_reason": "240-frame diagnostic window; original Native review pending",
+  "physical_failure_flags": [
+    "Synthetic Native motion cannot establish original physical completion"
+  ],
+  "physical_checks": {
+    "method": "synthetic diagnostic only",
+    "legal_verdict_claimed": false,
+    "maneuver": {
+      "status": "unverified",
+      "method": "synthetic diagnostic cannot establish Native motion",
+      "sources": {
+        "native-raw-actors.jsonl": "9a0d6caaef44c98a9972c21400f0edd8d8f107f48248c0efb4c5be986444ad0f"
+      },
+      "missing_evidence": [
+        "original Native acquisition"
+      ],
+      "legal_verdict_claimed": false,
+      "physical_causation_claimed": false
+    }
+  },
+  "trace_reference": "trace.jsonl",
+  "video_references": [
+    "overview.mkv",
+    "approach.mkv",
+    "reference_corner.mkv",
+    "driver_reference.mkv"
+  ],
+  "video_frame_map_reference": "video_frames.jsonl",
+  "recording_description": {
+    "channels": [
+      {
+        "name": "ego_pose",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "retained Native actor/frame join",
+        "time_window": "240 frames",
+        "reference_frame": "authored OpenDRIVE coordinates",
+        "uncertainty": "50 ms frame bracket; physical lane/exit unverified"
+      },
+      {
+        "name": "ego_speed",
+        "unit": "m/s",
+        "sampling_rate_hz": 20,
+        "method": "retained Native actor/frame join",
+        "time_window": "240 frames",
+        "reference_frame": "authored OpenDRIVE coordinates",
+        "uncertainty": "50 ms frame bracket; physical lane/exit unverified"
+      },
+      {
+        "name": "ego_lane_id",
+        "unit": "index",
+        "sampling_rate_hz": 20,
+        "method": "retained Native actor/frame join",
+        "time_window": "240 frames",
+        "reference_frame": "authored OpenDRIVE coordinates",
+        "uncertainty": "50 ms frame bracket; physical lane/exit unverified"
+      },
+      {
+        "name": "ego_road_id",
+        "unit": "index",
+        "sampling_rate_hz": 20,
+        "method": "retained Native actor/frame join",
+        "time_window": "240 frames",
+        "reference_frame": "authored OpenDRIVE coordinates",
+        "uncertainty": "50 ms frame bracket; physical lane/exit unverified"
+      },
+      {
+        "name": "path_length_m",
+        "unit": "m",
+        "sampling_rate_hz": 20,
+        "method": "retained Native actor/frame join",
+        "time_window": "240 frames",
+        "reference_frame": "authored OpenDRIVE coordinates",
+        "uncertainty": "50 ms frame bracket; physical lane/exit unverified"
+      },
+      {
+        "name": "right_lane_exit",
+        "unit": "bool",
+        "sampling_rate_hz": 20,
+        "method": "retained Native actor/frame join",
+        "time_window": "240 frames",
+        "reference_frame": "authored OpenDRIVE coordinates",
+        "uncertainty": "50 ms frame bracket; physical lane/exit unverified"
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "authored_road",
+        "unit": "structured",
+        "method": "source-hashed OpenDRIVE"
+      },
+      {
+        "name": "predeclared_intention",
+        "unit": "structured",
+        "method": "controller intention hashed before motion"
+      }
+    ],
+    "limitations": [
+      "Native lane allocation, actual right exit, pixels and legal status unverified"
+    ]
+  },
+  "recording_evidence": [
+    {
+      "name": "ego_pose",
+      "unit": "structured",
+      "reference": "channels/ego_pose.jsonl"
+    },
+    {
+      "name": "ego_speed",
+      "unit": "m/s",
+      "reference": "channels/ego_speed.jsonl"
+    },
+    {
+      "name": "ego_lane_id",
+      "unit": "index",
+      "reference": "channels/ego_lane_id.jsonl"
+    },
+    {
+      "name": "ego_road_id",
+      "unit": "index",
+      "reference": "channels/ego_road_id.jsonl"
+    },
+    {
+      "name": "path_length_m",
+      "unit": "m",
+      "reference": "channels/path_length_m.jsonl"
+    },
+    {
+      "name": "right_lane_exit",
+      "unit": "bool",
+      "reference": "channels/right_lane_exit.jsonl"
+    },
+    {
+      "name": "authored_road",
+      "unit": "structured",
+      "reference": "road-context.json"
+    },
+    {
+      "name": "predeclared_intention",
+      "unit": "structured",
+      "reference": "intention-context.json"
+    }
+  ],
+  "realized_observables": {
+    "right_lane_frames": {
+      "value": 0,
+      "unit": "frames",
+      "method": "source-bound saved actor road/lane join",
+      "time_window": "12 s diagnostic window",
+      "statistic": "circulation right-lane frames",
+      "reference": "native-raw-actors.jsonl"
+    },
+    "path_length_m": {
+      "value": 79.9973541745945,
+      "unit": "m",
+      "method": "retained consecutive actor center distances",
+      "time_window": "12 s diagnostic window",
+      "statistic": "cumulative path length",
+      "reference": "native-raw-actors.jsonl"
+    }
+  },
+  "provenance_kind": "synthetic_local_diagnostic",
+  "accepted": false
+}

@@ -16,7 +16,7 @@ def build():
     assignment=ROOT/'inputs'/CASE.name/'assignment.json'
     plan=CASE/'case-plan.json'
     source=json.loads(assignment.read_text());planned=json.loads(plan.read_text())
-    if source['law_record']['text']!=planned['source_law_text']:
+    if source['law']['text']!=planned['source_law_text']:
         raise ValueError('C132497 exact law differs')
     measured={w:measure_saved.measure(CASE/'offline'/'bundles'/w/'primary')
         for w in ('reference','contrast')}
@@ -33,7 +33,7 @@ def build():
             'physical_roundabout_verified':False,'legal_verdict':None,
             'status':'pending_original_evidence'})
     result={'format':'c132497-statutory-review-v1','law_id':'LVMC-11-43-010-C2',
-        'exact_law_text':source['law_record']['text'],
+        'exact_law_text':source['law']['text'],
         'topics':topics,'synthetic_case_measurements':{
             w:{'right_lane_used':m['right_lane_used'],
                 'phase_frames':m['phase_frames'],

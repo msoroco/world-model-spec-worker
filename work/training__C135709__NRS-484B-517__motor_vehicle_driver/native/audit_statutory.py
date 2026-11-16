@@ -17,7 +17,7 @@ def audit():
         review['assignment_sha256']!=sha(assignment) or
         review['case_plan_sha256']!=sha(plan) or
         review['law_id']!='NRS-484B-517' or
-        review['exact_law_text']!=source['law_record']['text'] or
+        review['exact_law_text']!=source['law']['text'] or
         review['selected_scope']!=cases['scope_branches'][0] or
         review['exception_adjudicated'] is not False or
         review['legal_verdict'] is not None or review['delivery_ready']):

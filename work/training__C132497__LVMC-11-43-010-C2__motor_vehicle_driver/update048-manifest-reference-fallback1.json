@@ -1,0 +1,250 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver",
+  "status": "current_input_reproof_in_progress",
+  "runtime_manifest_sha256": "ae635d487ae988b67925bacd5ba13210f31224fc6a1ae131d1836a5557ba8714",
+  "source_branch": "roundabout_right_exit",
+  "cases": [
+    {
+      "case_id": "training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver__reference",
+      "kind": "delivery",
+      "construction": "native/package-current-input-v2/reference/primary/construction.json",
+      "construction_sha256": "dd50f2504a6e49d083aedd522d6aa0e56735325fc7bcfe3231d7307bf01664ff",
+      "measurement_contract": "native/measurement-contracts-current/reference.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize_current.py",
+        "output_schema": "c132497-current-saved-diagnostic-v1"
+      },
+      "fixture_recipe": "work/training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver/update015-current-reference-fallback1-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native road connectivity, governed right lane, actual exit and pixels unverified"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/package-current-input-v2/reference/fallback1/construction.json",
+          "construction_sha256": "7cc685a2e8a1c874482f48aaebde4b66a838944c4c4c52386a5e5a56895ba698",
+          "trigger": {
+            "source": "saved Native rows",
+            "metric": "lane_center_deviation_m",
+            "failure_condition": "> 0.2 m"
+          },
+          "changed_knobs": [
+            "requested_speed_mps"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "native/package-current-input-v2/reference/fallback2/construction.json",
+          "construction_sha256": "f9c5e3edf083d2e0786841b918d38a9432e59d347fb777c3f66b6a5ba7638abf",
+          "trigger": {
+            "source": "saved Native rows",
+            "metric": "first_40_visible_frames",
+            "failure_condition": "< 20 frames"
+          },
+          "changed_knobs": [
+            "camera_policy"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "native/package-current-input-v2/reference/fallback3/construction.json",
+          "construction_sha256": "b078a2f24e4c6c4d0b20a7bdf8bdd5bf06f74d3e33d369998707f2225d6a0159",
+          "trigger": {
+            "source": "saved Native rows",
+            "metric": "first_40_stopped_frames",
+            "failure_condition": "< 20 frames"
+          },
+          "changed_knobs": [
+            "pre_entry_dwell_s"
+          ]
+        }
+      ],
+      "delivery_acceptance": {
+        "case_id": "training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver__reference",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver/prove-delivery-contract.py --case training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver__reference",
+        "negative_command": ".venv-cpu/bin/python work/training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver/prove-delivery-contract.py --case training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver__reference --reject-synthetic",
+        "script": "prove-delivery-contract.py",
+        "script_sha256": "f9aef93faada75a7b1f783a2674cd46c9a85e11c564fd0bcec35f45b12e1d386",
+        "test_exit_code": 0,
+        "test_log": "update015-delivery-contract-reference-positive.log",
+        "test_log_sha256": "4062671540021bd1793184d732b20a3be464b4ee8e0a09547130a1cde3a0e9d7",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original actor/frame/trace join differs at 0",
+        "negative_log": "update015-delivery-contract-reference-negative.log",
+        "negative_log_sha256": "a22869093dbb4c30fb8b4bdf4d3d27aeacc2dbbcbdc1f52e56e5883da908819a"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "ego_pose": {
+          "entrypoint": "finalize_current.py",
+          "method": "derive ego_pose from retained Native actor/frame rows",
+          "evidence": "native-raw-actors.jsonl and video_frames.jsonl"
+        },
+        "ego_speed": {
+          "entrypoint": "finalize_current.py",
+          "method": "derive ego_speed from retained Native actor/frame rows",
+          "evidence": "native-raw-actors.jsonl and video_frames.jsonl"
+        },
+        "ego_lane_id": {
+          "entrypoint": "finalize_current.py",
+          "method": "derive ego_lane_id from retained Native actor/frame rows",
+          "evidence": "native-raw-actors.jsonl and video_frames.jsonl"
+        },
+        "ego_road_id": {
+          "entrypoint": "finalize_current.py",
+          "method": "derive ego_road_id from retained Native actor/frame rows",
+          "evidence": "native-raw-actors.jsonl and video_frames.jsonl"
+        },
+        "path_length_m": {
+          "entrypoint": "finalize_current.py",
+          "method": "derive path_length_m from retained Native actor/frame rows",
+          "evidence": "native-raw-actors.jsonl and video_frames.jsonl"
+        },
+        "right_lane_exit": {
+          "entrypoint": "finalize_current.py",
+          "method": "derive right_lane_exit from retained Native actor/frame rows",
+          "evidence": "native-raw-actors.jsonl and video_frames.jsonl"
+        }
+      }
+    },
+    {
+      "case_id": "training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver__contrast",
+      "kind": "delivery",
+      "construction": "native/package-current-input-v2/contrast/primary/construction.json",
+      "construction_sha256": "a8a180065a683f2631563d59e57d05effdf819a012d7fc263ffaace5dbbf2417",
+      "measurement_contract": "native/measurement-contracts-current/contrast.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize_current.py",
+        "output_schema": "c132497-current-saved-diagnostic-v1"
+      },
+      "fixture_recipe": "work/training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver/update015-current-contrast-primary-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native road connectivity, governed right lane, actual exit and pixels unverified"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/package-current-input-v2/contrast/fallback1/construction.json",
+          "construction_sha256": "c3e3f84598accd3d82e9df08402a3b0e9e031b7910b7a1905aff4a307b467b9d",
+          "trigger": {
+            "source": "saved Native rows",
+            "metric": "lane_center_deviation_m",
+            "failure_condition": "> 0.2 m"
+          },
+          "changed_knobs": [
+            "requested_speed_mps"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "native/package-current-input-v2/contrast/fallback2/construction.json",
+          "construction_sha256": "ee9f7b11dbcb39796b28c4c50f85d33e842816f4e28e5453cfdc9e8b357829c4",
+          "trigger": {
+            "source": "saved Native rows",
+            "metric": "first_40_visible_frames",
+            "failure_condition": "< 20 frames"
+          },
+          "changed_knobs": [
+            "camera_policy"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "native/package-current-input-v2/contrast/fallback3/construction.json",
+          "construction_sha256": "db0306d102b3328c1cf1e35b74e06be93e76a9fb2a99e0e1fd3311fd4c6c1980",
+          "trigger": {
+            "source": "saved Native rows",
+            "metric": "first_40_stopped_frames",
+            "failure_condition": "< 20 frames"
+          },
+          "changed_knobs": [
+            "pre_entry_dwell_s"
+          ]
+        }
+      ],
+      "delivery_acceptance": {
+        "case_id": "training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver__contrast",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver/prove-delivery-contract.py --case training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver__contrast",
+        "negative_command": ".venv-cpu/bin/python work/training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver/prove-delivery-contract.py --case training__C132497__LVMC-11-43-010-C2__motor_vehicle_driver__contrast --reject-synthetic",
+        "script": "prove-delivery-contract.py",
+        "script_sha256": "f9aef93faada75a7b1f783a2674cd46c9a85e11c564fd0bcec35f45b12e1d386",
+        "test_exit_code": 0,
+        "test_log": "update015-delivery-contract-contrast-positive.log",
+        "test_log_sha256": "3abc2b5212fc3415fb299c03bd98d4a6e0d16cb2046908908b370be25bb5950c",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original actor/frame/trace join differs at 0",
+        "negative_log": "update015-delivery-contract-contrast-negative.log",
+        "negative_log_sha256": "a22869093dbb4c30fb8b4bdf4d3d27aeacc2dbbcbdc1f52e56e5883da908819a"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "ego_pose": {
+          "entrypoint": "finalize_current.py",
+          "method": "derive ego_pose from retained Native actor/frame rows",
+          "evidence": "native-raw-actors.jsonl and video_frames.jsonl"
+        },
+        "ego_speed": {
+          "entrypoint": "finalize_current.py",
+          "method": "derive ego_speed from retained Native actor/frame rows",
+          "evidence": "native-raw-actors.jsonl and video_frames.jsonl"
+        },
+        "ego_lane_id": {
+          "entrypoint": "finalize_current.py",
+          "method": "derive ego_lane_id from retained Native actor/frame rows",
+          "evidence": "native-raw-actors.jsonl and video_frames.jsonl"
+        },
+        "ego_road_id": {
+          "entrypoint": "finalize_current.py",
+          "method": "derive ego_road_id from retained Native actor/frame rows",
+          "evidence": "native-raw-actors.jsonl and video_frames.jsonl"
+        },
+        "path_length_m": {
+          "entrypoint": "finalize_current.py",
+          "method": "derive path_length_m from retained Native actor/frame rows",
+          "evidence": "native-raw-actors.jsonl and video_frames.jsonl"
+        },
+        "right_lane_exit": {
+          "entrypoint": "finalize_current.py",
+          "method": "derive right_lane_exit from retained Native actor/frame rows",
+          "evidence": "native-raw-actors.jsonl and video_frames.jsonl"
+        }
+      }
+    }
+  ],
+  "original_native_observed": false,
+  "delivery_ready": false,
+  "native_handoff_scope": "env_only_no_original_claim"
+}

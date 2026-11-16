@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-SOURCE = ROOT/'native/package-current/reference/primary/construction.json'
+SOURCE = ROOT/'native/package-current-input-v2/reference/primary/construction.json'
 
 
 def write(path, content):
@@ -17,6 +17,7 @@ def main():
     config_item = next(item for item in package['files']
                        if item['path'] == 'config.json')
     config = json.loads(config_item['content'])
+    config['supported_case_ids'] = [ROOT.name+'__reference', ROOT.name+'__contrast']
     config['cameras'] = [
         {'name':'overview','width':1920,'height':1080,'pose_strategy':'fixed_elevated_arc',
          'fov_deg':85},
@@ -35,6 +36,14 @@ def main():
     elif bundled['content'] != runner:
         raise ValueError('Bundled Native runner differs from root entrypoint')
     package['entrypoint'] = 'runner.py'
+    if not any(channel['name']=='right_turn_lane_used' for channel in package['recording_description']['channels']):
+        package['recording_description']['channels'].append({
+            'name':'right_turn_lane_used','unit':'bool','sampling_rate_hz':20,
+            'method':'saved frame-joined ego_lane_id classification',
+            'time_window':'240 frames','reference_frame':'authored OpenDRIVE lane topology',
+            'uncertainty':'original Native lane identity and legal applicability unverified'})
+    config['case']['recording_description'] = package['recording_description']
+    config_item['content'] = json.dumps(config, indent=2)+'\n'
     plan = json.loads((ROOT/'case-plan.json').read_text())
     package['measurement_plan'] = {
         'case_id':package['case_id'],

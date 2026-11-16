@@ -15,7 +15,7 @@ def audit():
     planned=json.loads(plan.read_text())
     if (review['format']!='c132497-statutory-review-v1' or
         review['law_id']!=source['law_id'] or
-        review['exact_law_text']!=source['law_record']['text'] or
+        review['exact_law_text']!=source['law']['text'] or
         {x['topic'] for x in review['topics']}!={'text-0','text-1','text-2'} or
         any(x['source_assignment_sha256']!=sha(assignment) or
             x['case_plan_sha256']!=sha(plan) or

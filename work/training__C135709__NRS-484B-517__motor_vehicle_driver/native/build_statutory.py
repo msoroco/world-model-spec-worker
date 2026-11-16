@@ -14,7 +14,7 @@ def build():
     review={'format':'c135709-statutory-review-v1',
         'assignment_id':CASE.name,'assignment_sha256':sha(assignment),
         'case_plan_sha256':sha(plan),'law_id':'NRS-484B-517',
-        'exact_law_text':source['law_record']['text'],
+        'exact_law_text':source['law']['text'],
         'selected_scope':'Non-taxicab parking in a taxicab stand',
         'source_topics':[{'requirement':d['requirement'],'status':'pending_original_review',
             'case_ids':d['case_ids']} for d in cases['requirement_dispositions']],

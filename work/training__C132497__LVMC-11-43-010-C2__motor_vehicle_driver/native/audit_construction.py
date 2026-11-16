@@ -16,7 +16,7 @@ def rows(path):return [json.loads(x) for x in Path(path).read_text().splitlines(
 def audit():
     assignment=ROOT/'inputs'/CASE.name/'assignment.json'
     source=json.loads(assignment.read_text())
-    if (source['law_record']['text']!=
+    if (source['law']['text']!=
         'The following regulations pertain to the operation of vehicles within a roundabout: The operator of a vehicle who intends to exit a roundabout: Shall use the right lane to turn right.' or
         source['local_snapshot']['memberships']['full-train']):
         raise ValueError('C132497 exact law or accepted membership differs')

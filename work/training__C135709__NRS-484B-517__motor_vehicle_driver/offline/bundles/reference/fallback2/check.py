@@ -30,7 +30,7 @@ def check(bundle):
         cfg.get('original_native_observed') is not False or
         cfg.get('status')!='unselected_native_request'):
         raise ValueError('C135709 source/config mismatch')
-    law=assignment.get('law_record',{})
+    law=assignment.get('law',{})
     if (assignment.get('assignment_id')!=cfg['assignment_id'] or
         law.get('id')!='NRS-484B-517' or
         'taxicab in a taxicab stand' not in law.get('text','') or

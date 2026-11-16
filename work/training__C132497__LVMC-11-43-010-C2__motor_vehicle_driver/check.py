@@ -18,7 +18,7 @@ def check(bundle):
     candidate=cfg.get('candidate_id')
     if (cfg.get('format')!='c132497-right-exit-request-v1' or
         assignment.get('assignment_id')!=cfg.get('assignment_id') or
-        assignment['law_record']['text']!=LAW or
+        assignment['law']['text']!=LAW or
         plan.get('assignment_id')!=cfg.get('assignment_id') or
         plan.get('source_law_text')!=LAW or
         cfg.get('case_id') not in {x['case_id'] for x in plan['cases']} or
