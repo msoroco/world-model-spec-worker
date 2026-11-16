@@ -42,8 +42,11 @@ def classify(samples, frames, requested_mph):
                 'Native/video frame-time join differs')
         require(row.get('ego_actor_id') and row.get('ego_role') == 'motor_vehicle_driver' and
                 row.get('ego_blueprint', '').startswith('vehicle.') and
-                len(row.get('ego_body_vertices_m', [])) >= 4,
-                'Vehicle actor identity or full body missing')
+                len(row.get('ego_body_vertices_m', [])) >= 4 and
+                row.get('other_actor_id') and
+                row.get('other_blueprint', '').startswith('vehicle.') and
+                len(row.get('other_body_vertices_m', [])) >= 4,
+                'Vehicle participant identity or full body missing')
         velocity = row.get('ego_velocity_mps')
         position = row.get('ego_position_m')
         require(isinstance(velocity, list) and len(velocity) == 3 and

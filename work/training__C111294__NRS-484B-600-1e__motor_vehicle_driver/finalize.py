@@ -1,4 +1,4 @@
-"""Saved-only C111294 measurement finalizer for unselected CPU fixtures."""
+"""Saved-only C111294 measurement finalizer for exact speed cases."""
 from __future__ import annotations
 
 import argparse
@@ -76,7 +76,7 @@ def finalize(folder: Path, contract: dict, expected_source_sha256: str) -> dict:
                "unconditional_scope": "measure_unconditional_scope",
                "other_vehicle_context": "measure_other_vehicle_context"}
     report = {"case_id": contract["case_id"], "source_kind": speed["source_kind"],
-              "source_complete": True, "selected": False, "accepted": False,
+              "source_complete": True, "accepted": False,
               "legal_verdict": None, "measurements": {}}
     for row in contract["requirements"]:
         key = row["output_key"]
@@ -211,7 +211,7 @@ def finalize_attempt(folder: Path, output: Path) -> dict:
             "cause_evidence": ["native_samples.jsonl", "trace.jsonl",
                                "video_frames.jsonl"]}],
         "setup_confirmed": False, "behavior_attempted": original,
-        "maneuver_completed": original,
+        "maneuver_completed": False,
         "termination_reason": "480 saved source frames checked; territorial and legal review pending",
         "physical_failure_flags": ["territorial_applicability_unverified",
                                    "physical_speed_causation_unverified"],
@@ -256,5 +256,4 @@ if __name__ == "__main__":
             json.dump(report, stream, indent=2, allow_nan=False)
             stream.write("\n")
     print(json.dumps({"case_id": report["case_id"], "passed": True,
-                      "source_kind": report["source_kind"],
-                      "selected": False}, sort_keys=True))
+                      "source_kind": report["source_kind"]}, sort_keys=True))
