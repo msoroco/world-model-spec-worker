@@ -98,7 +98,7 @@ def main():
             write(HERE/request_rel,request)
             config={"case_id":case_id,"selected_case_id":case_id,"candidate_id":candidate,
                 "law_id":plan["law_id"],"cell_id":plan["cell_id"],"actor":plan["actor"],
-                "rate_hz":20,"duration_s":42,"required_atoms":["sig.turn_indicator","drv.turning","kin.speed"],
+                "rate_hz":20,"duration_s":42,"required_atoms":["sig.turn_indicator","kin.heading","kin.speed"],
                 "source_packets":[],"mandatory_channels":[c["name"] for c in recording["channels"]],
                 "cameras":[{"name":name,"width":width,"height":height} for name,width,height in
                     (("overview",1920,1080),("approach",1280,720),
@@ -126,8 +126,11 @@ def main():
                 entry["candidates"].append(selected)
         manifest["cases"].append(entry)
     write(HERE/"draft-execution-manifest.json",manifest)
-    write(HERE/"proposals/cases.json",{"cell_id":plan["cell_id"],"actor":plan["actor"],
-        "status":"unselected_draft","cases":proposals})
+    cases_path=HERE/"proposals/cases.json"
+    if not cases_path.is_file() or not any(c.get("target_type")=="baseline"
+            for c in json.loads(cases_path.read_text()).get("cases",[])):
+        write(cases_path,{"cell_id":plan["cell_id"],"actor":plan["actor"],
+            "status":"unselected_draft","cases":proposals})
     print(json.dumps({"cases":len(manifest["cases"]),"candidates":len(manifest["cases"])*4,
         "status":manifest["status"]}))
 

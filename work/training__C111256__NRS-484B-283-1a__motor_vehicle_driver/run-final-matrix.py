@@ -18,7 +18,7 @@ def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
 
 def run(case,candidate):
     key=f'{case}-{candidate}'
-    prefix=ROOT/'.runtime-work'/('c111256-final-'+key)
+    prefix=ROOT/'.runtime-work'/('c111256-final2-'+key)
     offline=Path(str(prefix)+'-offline');output=Path(str(prefix)+'-compat');saved=Path(str(prefix)+'-saved')
     log=Path(str(prefix)+'-command.log')
     env=dict(os.environ)

@@ -29,7 +29,7 @@ def sha(path):
 
 
 def copy_proof(feet, candidate):
-    source = ROOT / f'.runtime-work/c104393-current-v2-{feet}-{candidate}'
+    source = ROOT / f'.runtime-work/c104393-current-v3-{feet}-{candidate}'
     item = {'candidate_id': candidate,
             'recipe': f"diagnostic-{feet}{'-fallback1' if candidate == 'fallback1' else ''}-recipe.json"}
     for key, src, suffix in [('receipt', 'compatibility.json', 'receipt.json'),
@@ -46,17 +46,17 @@ def compat(feet, candidate):
     manifest = (f'diagnostic-{feet}-fallback1-manifest.json' if candidate == 'fallback1'
                 else 'draft-execution-manifest.json')
     run(['compatibility', '--manifest', HERE / manifest, '--case', f'{CASE_PREFIX}__{feet}',
-         '--candidate', candidate, '--output', ROOT / f'.runtime-work/c104393-current-v2-{feet}-{candidate}',
+         '--candidate', candidate, '--output', ROOT / f'.runtime-work/c104393-current-v3-{feet}-{candidate}',
          '--library', LIBRARY, '--validator', VALIDATOR], f'current-v2-{feet}-{candidate}.log')
     return copy_proof(feet, candidate)
 
 
 def saved(feet):
     fixture = ROOT / f'.runtime-work/c104393-{feet}-saved-fixture'
-    attempt = ROOT / f'.runtime-work/c104393-{feet}-saved-attempt'
-    output = ROOT / f'.runtime-work/c104393-{feet}-saved-output'
-    negative_attempt = ROOT / f'.runtime-work/c104393-{feet}-saved-negative-attempt'
-    negative_output = ROOT / f'.runtime-work/c104393-{feet}-saved-negative-output'
+    attempt = ROOT / f'.runtime-work/c104393-{feet}-v3-saved-attempt'
+    output = ROOT / f'.runtime-work/c104393-{feet}-v3-saved-output'
+    negative_attempt = ROOT / f'.runtime-work/c104393-{feet}-v3-saved-negative-attempt'
+    negative_output = ROOT / f'.runtime-work/c104393-{feet}-v3-saved-negative-output'
     manifest = HERE / 'draft-execution-manifest.json'
     case = f'{CASE_PREFIX}__{feet}'
     if not fixture.exists():
