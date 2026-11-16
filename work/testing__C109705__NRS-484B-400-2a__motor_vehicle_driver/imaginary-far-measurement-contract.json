@@ -1,0 +1,53 @@
+{
+  "format": "worker-measurement-contract",
+  "assignment_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver",
+  "selected_case_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__source_verified_imaginary_farther_from_centerline",
+  "requirements": [
+    {
+      "requirement": "Both intersecting highways are two-directional and the driver intends a left turn at the junction",
+      "source": "NRS 484B.400(2)(a); inputs/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/assignment.json",
+      "output_key": "two_way_activation",
+      "method": "measure_two_way_activation",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "road_context.json"
+      ],
+      "disposition_index": 0
+    },
+    {
+      "requirement": "The complete vehicle body remains in the right half before intersection entry",
+      "source": "NRS 484B.400(2)(a); inputs/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/assignment.json",
+      "output_key": "right_half_approach",
+      "method": "measure_right_half_approach",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "approach_history.jsonl",
+        "video_frames.jsonl",
+        "road_context.json"
+      ],
+      "disposition_index": 1
+    },
+    {
+      "requirement": "The imaginary centerline and complete-body approach offset are observed through the approach without a legal numeric cutoff",
+      "source": "NRS 484B.400(2)(a); inputs/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/assignment.json",
+      "output_key": "centerline_offsets",
+      "method": "measure_centerline_offsets",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "approach_history.jsonl",
+        "road_context.json",
+        "video_frames.jsonl"
+      ],
+      "disposition_index": 3
+    }
+  ],
+  "negative": {
+    "remove": [
+      "approach_history.jsonl"
+    ],
+    "error_contains": "Missing required source: approach_history.jsonl"
+  }
+}
