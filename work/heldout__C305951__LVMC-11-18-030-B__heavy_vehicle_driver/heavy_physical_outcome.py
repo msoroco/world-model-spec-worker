@@ -41,10 +41,17 @@ def evaluate(report, source_audit, pixel_review, trace):
         if info.get("decoded_frames") != len(frames) or info.get("sha256") != sources.get(name + ".mkv"):
             raise ValueError("Physical original camera decode/source differs: " + name)
         checked = review.get(name, {})
+        observations = checked.get("frames")
+        frame_visibility = (isinstance(observations, list)
+                            and len(observations) == len(frames)
+                            and all(isinstance(row, dict)
+                                    and row.get("video_frame") == index
+                                    and row.get("required_markings_visible") is True
+                                    and row.get("required_bodies_visible") is True
+                                    for index, row in enumerate(observations)))
         pixel_ok &= (checked.get("source_sha256") == info["sha256"]
                      and checked.get("reviewed_frames") == len(frames)
-                     and checked.get("required_markings_visible") is True
-                     and checked.get("required_bodies_visible") is True)
+                     and frame_visibility)
     progress_m = 0.0
     previous = None
     for motion, frame in zip(trace, frames):

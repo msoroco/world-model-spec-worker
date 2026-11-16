@@ -123,8 +123,10 @@ def run(case_id, kind):
             pixel_review = {"case_id": case_id, "fixture_only": True,
                             "cameras": {name: {"source_sha256": joined["four_camera_decode"][name]["sha256"],
                                                "reviewed_frames": joined["frames"],
-                                               "required_markings_visible": True,
-                                               "required_bodies_visible": True}
+                                               "frames": [{"video_frame": index,
+                                                           "required_markings_visible": True,
+                                                           "required_bodies_visible": True}
+                                                          for index in range(joined["frames"])]}
                                         for name in CAMERAS}}
             trace = _rows(attempt / "trace.jsonl")
             result = evaluate(report, joined, pixel_review, trace)

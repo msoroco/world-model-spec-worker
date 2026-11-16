@@ -23,7 +23,8 @@ class HeavyPhysicalLifecycleTest(unittest.TestCase):
         sources.update({name + ".mkv": name for name in physical.CAMERAS})
         decoded = {name: {"sha256": name, "decoded_frames": 2} for name in physical.CAMERAS}
         review = {"cameras": {name: {"source_sha256": name, "reviewed_frames": 2,
-                     "required_markings_visible": True, "required_bodies_visible": True}
+                     "frames": [{"video_frame": index, "required_markings_visible": True,
+                                 "required_bodies_visible": True} for index in range(2)]}
                      for name in physical.CAMERAS}}
 
         def evaluate(suffix, *, passing=None, turn=None, rows=frames, pixels=review):
@@ -54,8 +55,17 @@ class HeavyPhysicalLifecycleTest(unittest.TestCase):
         self.assertEqual(evaluate("lawful_turn_preparation_boundary_crossing", turn=turn)
                          ["physical_checks"]["maneuver"]["status"], "met")
         missing_review = {"cameras": {name: dict(value) for name, value in review["cameras"].items()}}
-        missing_review["cameras"]["approach"]["required_markings_visible"] = False
+        missing_review["cameras"]["approach"]["frames"][0]["required_markings_visible"] = False
         self.assertEqual(evaluate("unexcused_boundary_crossing", pixels=missing_review)
+                         ["physical_checks"]["maneuver"]["status"], "unverified")
+        incomplete_review = {"cameras": {name: dict(value) for name, value in review["cameras"].items()}}
+        incomplete_review["cameras"]["approach"]["frames"] = review["cameras"]["approach"]["frames"][:1]
+        self.assertEqual(evaluate("unexcused_boundary_crossing", pixels=incomplete_review)
+                         ["physical_checks"]["maneuver"]["status"], "unverified")
+        wrong_frame = {"cameras": {name: dict(value) for name, value in review["cameras"].items()}}
+        wrong_frame["cameras"]["overview"]["frames"] = [dict(row) for row in review["cameras"]["overview"]["frames"]]
+        wrong_frame["cameras"]["overview"]["frames"][1]["video_frame"] = 0
+        self.assertEqual(evaluate("unexcused_boundary_crossing", pixels=wrong_frame)
                          ["physical_checks"]["maneuver"]["status"], "unverified")
         bad = [dict(row) for row in frames]
         bad[1]["component_clearances"] = []
