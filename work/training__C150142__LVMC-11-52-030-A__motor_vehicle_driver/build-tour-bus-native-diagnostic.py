@@ -70,6 +70,7 @@ def build(attempt):
                 'velocity_mps': walker['velocity_native_xyz_mps'],
                 'speed_mps': abs(walker['velocity_native_xyz_mps'][1]),
                 'acceleration_mps2': [0, 0, 0],
+                'accel_longitudinal_mps2': 0,
                 'body_vertices_m': body_3d([[wx - .2, wy - .2],
                                             [wx + .2, wy - .2],
                                             [wx + .2, wy + .2],

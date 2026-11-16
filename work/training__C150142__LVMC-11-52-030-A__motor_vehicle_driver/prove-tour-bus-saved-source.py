@@ -89,7 +89,8 @@ def source_rows(target, walker_moves=True, inject_walker_actor=False):
                                     'heading_deg': 0,
                                     'speed_mps': speed_mps,
                                     'speed_mph': speed_mps / .44704,
-                                    'velocity_mps': [speed_mps, 0, 0]}) + '\n')
+                                    'velocity_mps': [speed_mps, 0, 0],
+                                    'control': {}}) + '\n')
             evidence.write(json.dumps({'frame': i,
                                        'source_kind': 'synthetic_native_sample'}) + '\n')
     for view in VIEWS:
