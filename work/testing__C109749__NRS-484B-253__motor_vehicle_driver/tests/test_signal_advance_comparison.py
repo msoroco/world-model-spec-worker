@@ -7,6 +7,7 @@ from pathlib import Path
 ASSIGNMENT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ASSIGNMENT))
 from signal_advance_comparison_audit import compare_rows, fixed_config
+from prove_signal_distance_comparison import compare_fixed_motion
 
 
 class SignalAdvanceComparisonTests(unittest.TestCase):
@@ -54,6 +55,13 @@ class SignalAdvanceComparisonTests(unittest.TestCase):
         self.assertEqual(fixed_config(left), fixed_config(right))
         right['case']['approach_speed_mps'] = 4
         self.assertNotEqual(fixed_config(left), fixed_config(right))
+
+    def test_three_distance_sources_reject_changed_opposing_motion(self):
+        third = copy.deepcopy(self.signalled)
+        compare_fixed_motion((self.signalled, self.omitted, third))
+        third[380]['oncoming']['position_xy_m'][0] += 0.5
+        with self.assertRaisesRegex(ValueError, 'non-signal source condition changed'):
+            compare_fixed_motion((self.signalled, self.omitted, third))
 
 
 if __name__ == '__main__':

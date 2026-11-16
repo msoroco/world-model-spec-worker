@@ -44,9 +44,11 @@ def source(case, candidate):
         changed_config = {key: value for key, value in candidate_config.items()
                           if primary_config.get(key) != value and
                           key not in ('selected_case_id', 'supported_case_ids')}
-        recipe = json.loads((repo / entry['fixture_recipe']).read_text())
+        label = case.rsplit('source_verified_', 1)[1]
+        expected_source = repo / '.runtime-work/c101303-fixed-following-candidate-v1/delivery' / (
+            label + '-positive-v1/attempt/vehicle_history.jsonl')
         if (spec['changed_config'] != changed_config or
-                spec['source_specification'] != recipe['generator']['source']):
+                spec['source_specification'] != str(expected_source.relative_to(repo))):
             raise ValueError('Fallback projection does not match exact candidate knobs')
         path = repo / spec['path']
         if (not path.is_file() or sha(path) != spec['sha256'] or spec['frames'] != 900 or
@@ -60,8 +62,8 @@ def source(case, candidate):
                 'physical_motion_proven': False} for row in rows):
             raise ValueError('Fallback source lacks candidate-bound projection: ' + case + '/' + candidate)
         return path
-    version = 'v2' if label == 'faster_ego' else 'v1'
-    path = repo / '.runtime-work/c101303-full-duration' / (label + '-positive-' + version + '/attempt/vehicle_history.jsonl')
+    path = repo / '.runtime-work/c101303-fixed-following-candidate-v1/delivery' / (
+        label + '-positive-v1/attempt/vehicle_history.jsonl')
     receipt = json.loads((folder / 'delivery-proofs' / label / 'diagnostic-audit.json').read_text())
     if (receipt['frames'] != 900 or receipt['passed'] is not False or
             receipt['original_sources']['history_sha256'] != sha(path)):

@@ -31,14 +31,16 @@ def source_rows(entry):
         if len(rows) != 900:
             raise ValueError('Midpoint projection lacks full duration')
         return source, rows
-    recipe = json.loads((repo / entry['fixture_recipe']).read_text())
-    source = repo / recipe['generator']['source']
-    if sha(source) != recipe['generator']['sha256']:
-        raise ValueError('Diagnostic recipe source changed: ' + entry['case_id'])
-    value = json.loads(source.read_text())
-    rows = [json.loads(line) for line in value['files']['vehicle_history.jsonl'].splitlines() if line]
-    if not rows or len(rows) > 900:
-        raise ValueError('Missing compact source history')
+    label = entry['case_id'].rsplit('source_verified_', 1)[1]
+    source = repo / '.runtime-work/c101303-fixed-following-candidate-v1/delivery' / (
+        label + '-positive-v1/attempt/vehicle_history.jsonl')
+    delivery = json.loads((folder / 'delivery-proofs' / label / 'diagnostic-audit.json').read_text())
+    if (delivery.get('frames') != 900 or delivery.get('passed') is not False or
+            delivery['original_sources']['history_sha256'] != sha(source)):
+        raise ValueError('Current 900-frame delivery source changed: ' + entry['case_id'])
+    rows = [json.loads(line) for line in source.read_text().splitlines() if line]
+    if len(rows) != 900:
+        raise ValueError('Missing full-duration source history')
     return source, rows
 
 

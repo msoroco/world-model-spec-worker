@@ -2,6 +2,7 @@
 import hashlib
 import json
 import sys
+import argparse
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parent
@@ -9,8 +10,9 @@ REPO=ROOT.parents[1]
 sys.path.insert(0,str(ROOT))
 from comparison_audit import audit_pair
 
-MANIFEST=ROOT/'midpoint-promotion-ready.json'
+MANIFEST=ROOT/'execution-manifest.json'
 TEMP=REPO/'.runtime-work/c101303-midpoint-comparison-v1'
+SOURCE_ROOT=REPO/'.runtime-work/c101303-fixed-following-candidate-v1/delivery'
 
 
 def sha(path):
@@ -18,7 +20,7 @@ def sha(path):
 
 
 def source(label):
-    path=REPO/'.runtime-work/c101303-full-duration'/(label+'-positive-v1/attempt/vehicle_history.jsonl')
+    path=SOURCE_ROOT/(label+'-positive-v1/attempt/vehicle_history.jsonl')
     receipt=json.loads((ROOT/'delivery-proofs'/label/'diagnostic-audit.json').read_text())
     if (receipt.get('frames')!=900 or receipt.get('passed') is not False
             or receipt['original_sources']['history_sha256']!=sha(path)):

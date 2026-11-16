@@ -6,6 +6,7 @@ from pathlib import Path
 
 folder=Path(__file__).resolve().parent
 repo=folder.parent.parent
+source_root=repo/'.runtime-work/c101303-fixed-following-candidate-v1/delivery'
 sys.path.insert(0,str(folder))
 from comparison_audit import audit_pair
 
@@ -22,8 +23,7 @@ def source(case):
                 receipt['source_sha256']['midpoint_projection']!=sha(path)):
             raise ValueError('Midpoint diagnostic projection changed')
         return path
-    version='v2' if label=='faster_ego' else 'v1'
-    path=repo/'.runtime-work/c101303-full-duration'/(label+'-positive-'+version+'/attempt/vehicle_history.jsonl')
+    path=source_root/(label+'-positive-v1/attempt/vehicle_history.jsonl')
     receipt=json.loads((folder/'delivery-proofs'/label/'diagnostic-audit.json').read_text())
     if (receipt['frames']!=900 or receipt['passed'] is not False or
             receipt['original_sources']['history_sha256']!=sha(path)):
@@ -42,6 +42,13 @@ for pair in plan['comparisons']:
     print(json.dumps(result,sort_keys=True))
 if len(results)!=9:
     raise ValueError('Expected nine exact controlled comparisons')
+receipt_path=folder/'midpoint-promotion-proofs/comparison-proof.json'
+receipt=json.loads(receipt_path.read_text())
+if receipt['manifest_sha256']!=sha(folder/'execution-manifest.json'):
+    raise ValueError('Midpoint comparison proof binds another selected manifest')
+receipt['selected_comparisons']=results
+receipt['selected_comparison_count']=len(results)
+receipt_path.write_text(json.dumps(receipt,indent=2)+'\n')
 
 pair=next(p for p in plan['comparisons'] if p['comparison_id']=='body_gap')
 left,right=map(source,pair['case_ids'])
