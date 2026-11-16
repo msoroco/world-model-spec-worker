@@ -858,6 +858,222 @@
         "receipt": "speed-after-primary-saved-processing.json",
         "receipt_sha256": "5e74b1d5c578b277e96139c5f8db82e778d7d6f8158c550513d4a1f25ace0578"
       }
+    },
+    {
+      "case_id": "heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__audible_signal_gives_way_holds_speed",
+      "kind": "delivery",
+      "construction": "audible-construction.json",
+      "construction_sha256": "e9f81c546a63337d2cabf15a7b356a298e298c6a371e2e7c311ecdfed948821a",
+      "measurement_procedure": {
+        "entrypoint": "overtake_finalizer.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native signal command and generated envelope need acoustic propagation and hearing verification alongside physical passing."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "audible-fallback1-construction.json",
+          "construction_sha256": "97a997d255b3a611013034d2435764edd39f9120b578e522a182433f5382d122",
+          "changed_knobs": [
+            "spawn_height_offset_m=0.7"
+          ],
+          "trigger": {
+            "source": "Native actor spawn/readback",
+            "metric": "both actors spawned at surveyed waypoints",
+            "failure_condition": "Native ego or overtaker spawn intersects surface at primary 0.5 m offset"
+          },
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C230259__NRS-484B-207-2__motor_vehicle_driver/provisional-manifest.json --case heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__audible_signal_gives_way_holds_speed --candidate fallback1 --output .runtime-work/c230259-audible-fallback1-offline-proof --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "audible-fallback1-offline.log",
+            "log_sha256": "474dae795f951822d9efb3cb10d4f6cb5ba05f2e84b3534f42c92c4745add0d8",
+            "construction_sha256": "97a997d255b3a611013034d2435764edd39f9120b578e522a182433f5382d122"
+          },
+          "compatibility": {
+            "receipt": "audible-fallback1-compatibility.json",
+            "sha256": "1b09ab3b4bcf1470938073470388f8eaf8692cdddf0da56e19bccebd64fbe66a",
+            "log": "first-primary-compatibility-analysis.log",
+            "negative_log": "audible-fallback1-negative-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log_sha256": "8e91d09e30da2a5308416bdae7391320ae48380108bbd2d9af29ba2594d7f28f"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "audible-fallback2-construction.json",
+          "construction_sha256": "687a8c98b22cf93bf6e83f7cfb103f48cfd934b6716e5a57edf900b04c61d904",
+          "changed_knobs": [
+            "overview_mount_z_m=9.0"
+          ],
+          "trigger": {
+            "source": "original overview pixel/source-camera audit",
+            "metric": "both actors and road context visible in overview",
+            "failure_condition": "Primary overview mount hides an overtaking body or road context"
+          },
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C230259__NRS-484B-207-2__motor_vehicle_driver/provisional-manifest.json --case heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__audible_signal_gives_way_holds_speed --candidate fallback2 --output .runtime-work/c230259-audible-fallback2-offline-proof --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "audible-fallback2-offline.log",
+            "log_sha256": "4cf7f1d1a01e0a87de085e4e4242cda3c66c0ff89e95a7b50cce948ed3d375cf",
+            "construction_sha256": "687a8c98b22cf93bf6e83f7cfb103f48cfd934b6716e5a57edf900b04c61d904"
+          },
+          "compatibility": {
+            "receipt": "audible-fallback2-compatibility.json",
+            "sha256": "0370b24cb6e9568acf6922c485d23908f88c52d6da46dcdeb2e52dfd0678c2fe",
+            "log": "first-primary-compatibility-analysis.log",
+            "negative_log": "audible-fallback2-negative-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log_sha256": "f4bdcce7d55d5e3a2e81e724cae457adc9e63c5202dfb82eb379ea611e448e40"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "audible-fallback3-construction.json",
+          "construction_sha256": "100383168ef92fc3736961404fc947cdcc972d20606eeabc8831b0cb0ddb4670",
+          "changed_knobs": [
+            "overtaker_target_speed_mps=9.0"
+          ],
+          "trigger": {
+            "source": "original full-body pass gap bracket",
+            "metric": "first complete frame exists within capture",
+            "failure_condition": "Primary overtaker does not complete pass within 160 original frames"
+          },
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C230259__NRS-484B-207-2__motor_vehicle_driver/provisional-manifest.json --case heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__audible_signal_gives_way_holds_speed --candidate fallback3 --output .runtime-work/c230259-audible-fallback3-offline-proof --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "audible-fallback3-offline.log",
+            "log_sha256": "474dae795f951822d9efb3cb10d4f6cb5ba05f2e84b3534f42c92c4745add0d8",
+            "construction_sha256": "100383168ef92fc3736961404fc947cdcc972d20606eeabc8831b0cb0ddb4670"
+          },
+          "compatibility": {
+            "receipt": "audible-fallback3-compatibility.json",
+            "sha256": "7ea3fb57dce41dcb7722f1c0e118eacd7ea9e96a01eca61217782e09cfdee7db",
+            "log": "first-primary-compatibility-analysis.log",
+            "negative_log": "audible-fallback3-negative-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log_sha256": "1f333ab0ffcf75e898c04fa6eaf4124b4382542eee9c84ff711e29be2aa6c713"
+          }
+        }
+      ],
+      "measurement_contract": "audible-measurement-contract.json",
+      "fixture_recipe": "work/heldout__C230259__NRS-484B-207-2__motor_vehicle_driver/audible-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "full_body_pass_gap_m": {
+          "entrypoint": "overtake_finalizer.py",
+          "method": "source-hashed original frame join",
+          "evidence": [
+            "overtake_bodies_original.jsonl",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "ego_right_shift_m": {
+          "entrypoint": "overtake_finalizer.py",
+          "method": "source-hashed original frame join",
+          "evidence": [
+            "overtake_bodies_original.jsonl",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "ego_speed_mps": {
+          "entrypoint": "overtake_finalizer.py",
+          "method": "source-hashed original frame join",
+          "evidence": [
+            "overtake_bodies_original.jsonl",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "overtaker_lateral_offset_right_m": {
+          "entrypoint": "overtake_finalizer.py",
+          "method": "source-hashed original frame join",
+          "evidence": [
+            "overtake_bodies_original.jsonl",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "notice_source_context": {
+          "entrypoint": "overtake_finalizer.py",
+          "method": "source-hashed original frame join",
+          "evidence": [
+            "overtake_bodies_original.jsonl",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv",
+            "signal_command_original.jsonl",
+            "signal_audio_envelope_original.jsonl"
+          ]
+        },
+        "right_pass_permission_context": {
+          "entrypoint": "overtake_finalizer.py",
+          "method": "source-hashed original frame join",
+          "evidence": [
+            "overtake_bodies_original.jsonl",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        }
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C230259__NRS-484B-207-2__motor_vehicle_driver/provisional-manifest.json --case heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__audible_signal_gives_way_holds_speed --candidate primary --output .runtime-work/c230259-audible-primary-offline-proof --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "log": "audible-primary-offline.log",
+        "log_sha256": "474dae795f951822d9efb3cb10d4f6cb5ba05f2e84b3534f42c92c4745add0d8",
+        "construction_sha256": "e9f81c546a63337d2cabf15a7b356a298e298c6a371e2e7c311ecdfed948821a"
+      },
+      "compatibility": {
+        "receipt": "audible-primary-compatibility.json",
+        "sha256": "c9660d46fd9a373382fa1298486d5b5b2f3e0ad0afb4416f1156284076a37243",
+        "log": "first-primary-compatibility-analysis.log",
+        "negative_log": "audible-primary-negative-analysis.log",
+        "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "negative_log_sha256": "d50115f93190667cf2023cee55c7b1c74197c9c8a73c915d81d15248f259d938"
+      },
+      "negative": {
+        "log": "audible-primary-negative-analysis.log",
+        "sha256": "d50115f93190667cf2023cee55c7b1c74197c9c8a73c915d81d15248f259d938",
+        "log_sha256": "d50115f93190667cf2023cee55c7b1c74197c9c8a73c915d81d15248f259d938"
+      },
+      "saved_processing": {
+        "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C230259__NRS-484B-207-2__motor_vehicle_driver/provisional-manifest.json --case heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__audible_signal_gives_way_holds_speed --attempt .runtime-work/c230259-audible-saved-attempt --output .runtime-work/c230259-audible-saved-proof --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "exit_code": 0,
+        "log": "audible-primary-saved-processing.json",
+        "log_sha256": "c804f4b408c82d1b6ac8c6c576002cf19d791ba56ae6fe33d36e01beea2d8aaf",
+        "receipt": "audible-primary-saved-processing.json",
+        "receipt_sha256": "c804f4b408c82d1b6ac8c6c576002cf19d791ba56ae6fe33d36e01beea2d8aaf"
+      }
     }
   ]
 }
