@@ -43,8 +43,8 @@ def classify(rows):
             'joined_frames': len(rows)}
 
 
-def fixture(case, kind, output):
-    manifest = json.loads((HERE / 'execution-manifest.json').read_text())
+def fixture(case, kind, output, manifest_path):
+    manifest = json.loads(manifest_path.read_text())
     entry = next(e for e in manifest['cases'] if e['case_id'].endswith('__' + case))
     base = {'case_id': entry['case_id'], 'construction_sha256': entry['construction_sha256'],
             'cpu_fixture_mock': True, 'mock_input_provenance': 'synthetic_cpu_fixture',
@@ -92,18 +92,17 @@ def fixture(case, kind, output):
                       'status': value.get('physical_checks', {}).get('maneuver', {}).get('status')}))
 
 
-def build():
-    manifest_path = HERE / 'execution-manifest.json'
+def build(manifest_path, version):
     manifest = json.loads(manifest_path.read_text())
     for case in CASES:
         entry = next(e for e in manifest['cases'] if e['case_id'].endswith('__' + case))
-        folder = HERE / 'update044-physical' / case
+        folder = HERE / f'{version}-physical' / case
         refs = []
         for kind in (*KINDS, 'lifecycle'):
             output = folder / f'{kind}.json'
             log = folder / f'{kind}.log'
             command = [sys.executable, str(Path(__file__).resolve()), '--case', case,
-                       '--kind', kind, '--output', str(output)]
+                       '--kind', kind, '--output', str(output), '--manifest', str(manifest_path)]
             folder.mkdir(parents=True, exist_ok=True)
             with log.open('w') as stream:
                 result = subprocess.run(command, cwd=ROOT, stdout=stream,
@@ -134,10 +133,12 @@ if __name__ == '__main__':
     parser.add_argument('--case', choices=CASES)
     parser.add_argument('--kind', choices=(*KINDS, 'lifecycle'))
     parser.add_argument('--output', type=Path)
+    parser.add_argument('--manifest', type=Path, default=HERE / 'execution-manifest.json')
+    parser.add_argument('--version', choices=('update044', 'update045'), default='update044')
     args = parser.parse_args()
     if args.build:
-        build()
+        build(args.manifest, args.version)
     elif args.case and args.kind and args.output:
-        fixture(args.case, args.kind, args.output)
+        fixture(args.case, args.kind, args.output, args.manifest)
     else:
         parser.error('Select --build or an exact --case/--kind/--output fixture')
