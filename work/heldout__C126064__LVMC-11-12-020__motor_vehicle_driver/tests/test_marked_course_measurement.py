@@ -7,7 +7,7 @@ from tempfile import TemporaryDirectory
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from marked_course_measurement import measure
+from marked_course_measurement import measure, realized_course_ratio
 
 
 def fixture(root):
@@ -36,6 +36,20 @@ def fixture(root):
 
 
 class MarkedCourseTests(unittest.TestCase):
+    def test_numeric_route_ratio_uses_source_separation(self):
+        rows = [{'time_s': 0.0, 'inside_intersection': True,
+                 'centroid_to_indicated_course_m': 0.5},
+                {'time_s': 0.05, 'inside_intersection': True,
+                 'centroid_to_indicated_course_m': 1.0}]
+        authority = {'indicated_course_xy_m': [[0, 0], [2, 0], [4, 0]],
+                     'divergent_course_xy_m': [[0, 0], [2, 2], [4, 0]]}
+        result = realized_course_ratio(rows, authority)
+        self.assertEqual((result['value'], result['source_route_separation_m']),
+                         (0.5, 2.0))
+        authority['divergent_course_xy_m'][1] = [2, 0]
+        with self.assertRaisesRegex(ValueError, 'zero source route separation'):
+            realized_course_ratio(rows, authority)
+
     def test_button_source_readback_is_measured_as_button(self):
         with TemporaryDirectory() as directory:
             root = Path(directory)

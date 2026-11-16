@@ -85,6 +85,21 @@ def analyze(attempt, *, write_channel=True):
                                                    'value': row['centroid_to_indicated_course_m']},
                                                   allow_nan=False) + '\n'
                                        for row in inside))
+        if 'realized_course_deviation_ratio' in names:
+            ratio = observation.get('realized_course_deviation_ratio')
+            if not ratio:
+                raise ValueError('Numeric source route separation is missing')
+            source = root / 'realized_course_deviation_ratio.jsonl'
+            if source.exists():
+                raise ValueError('Derived course ratio channel already exists')
+            inside = [row for row in observation['observations']
+                      if row['inside_intersection']]
+            source.write_text(''.join(json.dumps({'frame': row['frame'],
+                                                  'time_s': row['time_s'],
+                                                  'value': row['centroid_to_indicated_course_m'] /
+                                                           ratio['source_route_separation_m']},
+                                                 allow_nan=False) + '\n'
+                                      for row in inside))
     source_hashes = {name: sha256(path.read_bytes()).hexdigest() for name, path in paths.items()}
     return {'format': 'worker-analysis-report', 'case_id': case,
             'measurements': {'original_marked_turn_course': {
@@ -121,6 +136,19 @@ def build_result(attempt, report):
             'time_window': summary['time_window'],
             'statistic': summary['statistic'], 'reference': numeric.name,
             'value': summary['value_m'],
+            'sample_window_s': summary['sample_window_s']}
+    if any(item['name'] == 'realized_course_deviation_ratio'
+           for item in description['channels']):
+        source = required(root, 'realized_course_deviation_ratio.jsonl')
+        evidence.append({'name': 'realized_course_deviation_ratio', 'unit': 'ratio',
+                         'reference': source.name,
+                         'sha256': sha256(source.read_bytes()).hexdigest()})
+        summary = observation['realized_course_deviation_ratio']
+        realized['realized_course_deviation_ratio'] = {
+            'unit': 'ratio', 'method': summary['method'],
+            'time_window': summary['time_window'],
+            'statistic': summary['statistic'], 'reference': source.name,
+            'value': summary['value'],
             'sample_window_s': summary['sample_window_s']}
     return {'case_id': report['case_id'],
             'measured_values': {'original_marked_turn_course': observation},

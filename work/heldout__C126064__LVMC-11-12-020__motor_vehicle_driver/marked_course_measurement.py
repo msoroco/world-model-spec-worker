@@ -49,6 +49,34 @@ def realized_course_deviation(observations):
             'legal_cutoff': None}
 
 
+def realized_course_ratio(observations, authority):
+    """Normalize original offset by the two source-hashed route separations."""
+    indicated = authority.get('indicated_course_xy_m')
+    divergent = authority.get('divergent_course_xy_m')
+    if (not isinstance(indicated, list) or not isinstance(divergent, list)
+            or len(indicated) != len(divergent) or len(indicated) < 3
+            or indicated[0] != divergent[0] or indicated[-1] != divergent[-1]):
+        raise ValueError('Numeric course lacks paired sourced routes')
+    separation = []
+    for left, right in zip(indicated, divergent):
+        if (not isinstance(left, list) or not isinstance(right, list)
+                or len(left) != 2 or len(right) != 2
+                or any(isinstance(v, bool) or not isinstance(v, (int, float))
+                       or not isfinite(v) for v in left + right)):
+            raise ValueError('Numeric course has invalid sourced coordinates')
+        separation.append(hypot(left[0] - right[0], left[1] - right[1]))
+    scale = max(separation)
+    if scale <= 0:
+        raise ValueError('Numeric course has zero source route separation')
+    selected = [row for row in observations if row['inside_intersection']]
+    values = [row['centroid_to_indicated_course_m'] / scale for row in selected]
+    return {'value': max(values), 'statistic': 'max',
+            'method': 'original body-centroid offset divided by source route separation',
+            'time_window': 'inside intersection',
+            'sample_window_s': [selected[0]['time_s'], selected[-1]['time_s']],
+            'source_route_separation_m': scale, 'legal_cutoff': None}
+
+
 def measure(source_dir, case_id):
     root = Path(source_dir)
     names = ('marked_intersection.json', 'turn_body.jsonl', 'video_frames.jsonl',
@@ -127,10 +155,14 @@ def measure(source_dir, case_id):
                      'corner_to_indicated_course_m': [_distance(p, course) for p in corners]})
     if not any(row['inside_intersection'] for row in rows):
         raise ValueError('No original turn frame inside intersection')
+    numeric = ('__c126064_course_blend-' in case_id or
+               case_id.endswith('__marker_course_blend_050'))
+    ratio = realized_course_ratio(rows, authority) if numeric else None
     return {'case_id': case_id, 'indication_form': form,
             'physical_indications_xy_m': points,
             'frame_count': len(rows), 'observations': rows,
             'realized_course_deviation': realized_course_deviation(rows),
+            'realized_course_deviation_ratio': ratio,
             'source_sha256': {name: sha256(path.read_bytes()).hexdigest()
                               for name, path in paths.items()},
             'direction_disobedience_legal_judgment': None}
