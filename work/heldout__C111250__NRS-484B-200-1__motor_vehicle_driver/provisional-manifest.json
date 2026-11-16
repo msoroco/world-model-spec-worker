@@ -357,7 +357,89 @@
         "status": "physical",
         "reason": "Loaded road geometry and camera/vehicle motion require physical verification"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction_sha256": "7e92185507fc07e09336b549c8508f5b66dcc41abfc7ee3b0549510a3b1c893e",
+          "trigger": {
+            "source": "road_geometry.json",
+            "metric": "connected driving lane and passed vehicle lane survey",
+            "failure_condition": "primary surveyed road cannot support the overtaking same direction geometry"
+          },
+          "changed_knobs": [
+            "required_site_profile=alternate_overtaking_road"
+          ],
+          "construction": "cases/overtaking_same_direction_right/candidates/fallback1/construction.json",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111250__NRS-484B-200-1__motor_vehicle_driver/provisional-manifest.json --case heldout__C111250__NRS-484B-200-1__motor_vehicle_driver__overtaking_same_direction_right --candidate fallback1 --output .runtime-work/c111250-overtaking-right-direct-fallback1-offline",
+            "exit_code": 0,
+            "construction_sha256": "7e92185507fc07e09336b549c8508f5b66dcc41abfc7ee3b0549510a3b1c893e",
+            "log": "cases/overtaking_same_direction_right/candidates/fallback1/offline.log",
+            "log_sha256": "a0fe5bbf6e3a9701698077a0567debc62e51ce5a8bfa4cb5aa1c5d74f7ea08bb"
+          },
+          "compatibility": {
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C111250__NRS-484B-200-1__motor_vehicle_driver/provisional-manifest.json --case heldout__C111250__NRS-484B-200-1__motor_vehicle_driver__overtaking_same_direction_right --candidate fallback1 --output .runtime-work/c111250-overtaking-right-direct-fallback1-compat --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+            "receipt": "cases/overtaking_same_direction_right/candidates/fallback1/compatibility.json",
+            "sha256": "b31452cf614c022aaddc1744a4875c50304c63980519449309e5f6d4dc6d4f2f",
+            "log": "first-primary-compatibility-analysis.log",
+            "negative_log": "cases/overtaking_same_direction_right/candidates/fallback1/negative-analysis.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction_sha256": "2c895c152809c43a8edfa74b4549228d7dc3259f2e5de1b661783df48a38c1b5",
+          "trigger": {
+            "source": "passed_vehicle_original.json",
+            "metric": "passed vehicle spawn and original route separation",
+            "failure_condition": "primary passed vehicle spawn is occupied or overlap prevents a usable pass"
+          },
+          "changed_knobs": [
+            "passed_vehicle_spawn_offset_m=2.0"
+          ],
+          "construction": "cases/overtaking_same_direction_right/candidates/fallback2/construction.json",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111250__NRS-484B-200-1__motor_vehicle_driver/provisional-manifest.json --case heldout__C111250__NRS-484B-200-1__motor_vehicle_driver__overtaking_same_direction_right --candidate fallback2 --output .runtime-work/c111250-overtaking-right-direct-fallback2-offline",
+            "exit_code": 0,
+            "construction_sha256": "2c895c152809c43a8edfa74b4549228d7dc3259f2e5de1b661783df48a38c1b5",
+            "log": "cases/overtaking_same_direction_right/candidates/fallback2/offline.log",
+            "log_sha256": "b5f3f02f737aa75a9bc3470f356b0f316a530cd44374446fbd5125d72c848d48"
+          },
+          "compatibility": {
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C111250__NRS-484B-200-1__motor_vehicle_driver/provisional-manifest.json --case heldout__C111250__NRS-484B-200-1__motor_vehicle_driver__overtaking_same_direction_right --candidate fallback2 --output .runtime-work/c111250-overtaking-right-direct-fallback2-compat --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+            "receipt": "cases/overtaking_same_direction_right/candidates/fallback2/compatibility.json",
+            "sha256": "ba3e3f1ca30b3159c8b168260e069ece0a527445f38e95588401f9041019fccc",
+            "log": "first-primary-compatibility-analysis.log",
+            "negative_log": "cases/overtaking_same_direction_right/candidates/fallback2/negative-analysis.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction_sha256": "20d1a20e45ec0c6c10750f7675612f93ca85b0865bfca95623e967e27ccfd92a",
+          "trigger": {
+            "source": "overview.mkv",
+            "metric": "subject and passed vehicle pixel coverage across original frames",
+            "failure_condition": "primary overview view omits either vehicle during the pass"
+          },
+          "changed_knobs": [
+            "overview_mount_shift_m=[-2.0,2.0,1.0]"
+          ],
+          "construction": "cases/overtaking_same_direction_right/candidates/fallback3/construction.json",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111250__NRS-484B-200-1__motor_vehicle_driver/provisional-manifest.json --case heldout__C111250__NRS-484B-200-1__motor_vehicle_driver__overtaking_same_direction_right --candidate fallback3 --output .runtime-work/c111250-overtaking-right-direct-fallback3-offline",
+            "exit_code": 0,
+            "construction_sha256": "20d1a20e45ec0c6c10750f7675612f93ca85b0865bfca95623e967e27ccfd92a",
+            "log": "cases/overtaking_same_direction_right/candidates/fallback3/offline.log",
+            "log_sha256": "08b0f9d1c57e01d3fbf35eceadfb8058ee818ef657c16360615dbf0640db6244"
+          },
+          "compatibility": {
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C111250__NRS-484B-200-1__motor_vehicle_driver/provisional-manifest.json --case heldout__C111250__NRS-484B-200-1__motor_vehicle_driver__overtaking_same_direction_right --candidate fallback3 --output .runtime-work/c111250-overtaking-right-direct-fallback3-compat --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+            "receipt": "cases/overtaking_same_direction_right/candidates/fallback3/compatibility.json",
+            "sha256": "2e0dce2ca2ab4c0e51bd701068dfdd871c352e85d4b46905573750177a610c41",
+            "log": "first-primary-compatibility-analysis.log",
+            "negative_log": "cases/overtaking_same_direction_right/candidates/fallback3/negative-analysis.log"
+          }
+        }
+      ],
       "measurement_procedure": {
         "entrypoint": "finalizer.py"
       },

@@ -68,3 +68,6 @@ The assignment strict CPU command `.venv-cpu/bin/python worker_check.py --assign
 ## 2026-11-16 return-cap curation
 
 Three unreferenced saved-processing proof copies were byte-preserved with tar and per-member SHA256 values in `result.json.supplemental_unreferenced_saved_copies`, then their direct copies were removed to release returned file slots. `.venv-cpu/bin/python worker_check.py --assignment heldout__C10365__NRS-484B-100__motor_vehicle_driver --complete --require-delivery-ready` still exits 0. Referenced proof files remain direct; ready status is unchanged.
+
+
+2026-11-16 CPU file-budget preservation: 4 unreferenced standalone artifacts archived byte-exact in `result.json.preserved_unreferenced_cpu_artifacts`; member SHA256 values are recorded there. Scoped validation follows.

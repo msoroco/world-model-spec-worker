@@ -205,3 +205,373 @@ The `none_left` fallback source archive in `result.json.none_left_fallback_cpu_p
 All three canonical `runtime.py offline` replays for `none_left` exited 0. All three pinned `runtime.py compatibility` replays exited 0 with selected measurements, missing-body-history rejection, Lean decode, and full four-camera decode. The exact current commands, construction hashes, log hashes, and receipt paths are in `provisional-manifest.json`. Three fresh `runtime.py process-saved` runs against synthetic attempts rebound to the current returned manifest SHA passed original-preservation and saved analysis. Their exact receipt texts, hashes, and commands are preserved in `result.json.none_left_direct_binding`. C111250's seven road-half audit tests, scoped nonstrict complete checker and pinned CPU preflight pass. No physical or legal result is claimed.
 
 Twelve more return slots were freed by exact byte/hash archiving of nine unreferenced C109749 saved-proof copies and three unreferenced C10365 saved-proof copies into those packages' `result.json`; both ready packages still pass their scoped strict gates. The returned tree remains 10,200/10,200 files. C111250 stays partial: ten fallback triples, eight archived primary cases, canonical execution/semantic/delivery bindings, and strict gates remain worker-owned CPU work. Next direct binding is `overtaking_same_direction_right`, after proof-preserving curation of returned slots.
+
+The full `.venv-cpu/bin/python worker_check.py --complete --require-delivery-ready` after the second direct baseline binding exited 1 at `runtime/scenario_pipeline/worker_exchange/preparation.py:276`: `Preparation acceptance failed: partial/missing packages remain`. `work/_shared/strict-gate-latest.log` SHA256 `8a5196a775b4e25dcc5ad430d9aa36835506a570dd5afd41ee669c3da366a69e`. Effective inventory is 40 ready/13 partial of 53; the return is 10200/10,200 files. This is the expected incomplete CPU checkpoint, not a delivery-ready result. C111250 remains partial with ten fallback triples, eight archived primary cases and canonical execution/semantic/delivery bindings still to complete. The Goal stays active.
+
+
+### 2026-11-16 C111250 overtaking right direct fallback binding
+
+All three physically distinct candidates were bound into the returned manifest. The pinned candidate validator passed at candidate_count=4. Each canonical `runtime.py offline`, `compatibility` (including expected negative source removal), and `process-saved` run passed. Current manifest SHA256: `a965b88e1a44a38a325810897195a4a21559f7340c7a595ae5498feb1430bb04`. Exact proof hashes are in `result.json.overtaking_right_direct_binding`. Original source bundle and staged proofs remain in `case-plan.json.fallback_cpu_source_bundles.overtaking_same_direction_right`.
+
+<details><summary>fallback1 direct canonical saved-processing receipt</summary>
+
+```json
+{
+  "format": "worker-saved-processing",
+  "case_id": "heldout__C111250__NRS-484B-200-1__motor_vehicle_driver__overtaking_same_direction_right",
+  "passed": true,
+  "recorded_only": true,
+  "version": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c111250-overtaking-right-direct-fallback1-saved-proof/v0001",
+  "analysis_directory": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c111250-overtaking-right-direct-fallback1-saved-proof/v0001/analysis",
+  "result": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c111250-overtaking-right-direct-fallback1-saved-proof/v0001/analysis/result.json",
+  "native_revision": {
+    "construction_sha256": "7e92185507fc07e09336b549c8508f5b66dcc41abfc7ee3b0549510a3b1c893e",
+    "analyzer_sha256": "f502e01f39c3b61c2c3827a76881606d465344eb7513e2f3272fb861a3a7944e"
+  },
+  "candidate_id": "fallback1",
+  "analysis_revision": {
+    "construction_sha256": "7e92185507fc07e09336b549c8508f5b66dcc41abfc7ee3b0549510a3b1c893e",
+    "analyzer_sha256": "f502e01f39c3b61c2c3827a76881606d465344eb7513e2f3272fb861a3a7944e",
+    "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3"
+  },
+  "original_source_hashes": {
+    "actor_identity.json": "2eebc25c299fcb5363872dbda0033cfec0763811d38a12d7811604457b3d1248",
+    "alley_context.json": "1e3f5194da5ce8f5ee2e8a2acdfa1876e6986d7e1a221b931980cc9cd40dc6d3",
+    "approach-frames.jsonl": "3e5b7a17fe5a5e47269d3b24190074e5dc63c303360c8fc5f4bdbd12ee9be792",
+    "approach.mkv": "4d5541f025afa64755261e4f4811e6b61617fd1cd22d0a62dc785fcf61a6d230",
+    "body_history.jsonl": "feb7bb25e6abc3459988b60a6a350a5859d8dfdf9d247cce1cf07ef38561149d",
+    "candidate-selection.json": "2cca134e6c7319e06bd3de27eb9b35f1a979fcab0dfe314d3d56200382a7d7b6",
+    "capture/evidence.jsonl": "246cbf089aed8f2f1198ca9d9f1f95cd1ac34c036221a646cb41efc7eb98069b",
+    "capture/manifest.json": "f2984be967f357d93db2b17f55a9a45803b60a158b911c0c7f9281eb723d79b6",
+    "capture/native/frames.jsonl": "b8cc751bfcf218f0ff5b56a944f25ccab5393ceef5f4507ea50d2b5d7cd6fc30",
+    "capture/native/graphs/abstract/00038033.pkl": "f765f0bca9680a0b928e145de8d28052c0df760fdfea07cd5cb2006d67f69562",
+    "capture/native/graphs/abstract/00038034.pkl": "0a4fc8816ae53269602b41eb740be53e5f5ca4fd26c3824184ae65ef34b0c02c",
+    "capture/native/graphs/abstract/00038035.pkl": "4f77821b072b1b0c0cde42097d49f524d58a8fb758eee2a1be627617381399b9",
+    "capture/native/graphs/abstract/00038036.pkl": "070f5bd81bb9084fbc90e5b8bfb0eb464405c1c3c2faac757490d05170132222",
+    "capture/native/graphs/abstract/00038037.pkl": "7cefb5580160aa8adafe502b7b58c31fd8bed59cb249cd7e20978eaffe287200",
+    "capture/native/graphs/abstract/00038038.pkl": "7088f5900114254483eefd2c43e4015e8385c8c0517c52cea3615fe20f61096e",
+    "capture/native/graphs/abstract/00038039.pkl": "1b9ffd6d913a81735628e8221d0c2f925a1505b82d7c7518a75281269f494247",
+    "capture/native/graphs/abstract/00038040.pkl": "1bd9b0b186618a8d8785aefd2fb6d6e86c1d2d345c95402d5ad266e2758b2a16",
+    "capture/native/graphs/abstract/00038041.pkl": "d828472fa8da2febd4794f05491422b2fdec37f3ee2f37d43f8e6d6aee0318d0",
+    "capture/native/graphs/base/00038033.pkl": "feff49a8caf2fbcf70827b25a46bf60bf0d3a6314333a3a13d4080692e054e84",
+    "capture/native/graphs/base/00038034.pkl": "f4cffccbbe581608c366cd5360b6c915d3e2da183017d3f9baf232b1d81878a7",
+    "capture/native/graphs/base/00038035.pkl": "82c1dcd3bed9e2d3f2c1cd444c1966255af7e637a87172b368908355072911c8",
+    "capture/native/graphs/base/00038036.pkl": "903436dc96ed5b118ee4ba497fdd1f38e5226dbf1349b552460ed79cd2bec829",
+    "capture/native/graphs/base/00038037.pkl": "259f978cecfeda92458d4443c454880a8cf9a9f6b7ffded00066b3d54533b3fc",
+    "capture/native/graphs/base/00038038.pkl": "c95826558c3f93b5979f6c714dcc037613c4e055e61f7228dcd4ff1b4e697c2a",
+    "capture/native/graphs/base/00038039.pkl": "96fc56b3d4c4906049299ae8a951a760df83cebd8585c7d20edabddfc3f411ac",
+    "capture/native/graphs/base/00038040.pkl": "900ac8b051f33c3d20ec01f0aa6dbc69fc760fe4095c01ae22a3500b7ee516b2",
+    "capture/native/graphs/base/00038041.pkl": "8cce1b9cb36532670a940e21113c7d4675913de89db6c2673997e0d6080305b6",
+    "capture/native_map_facts.json": "a1a3c57b78d06ae1124def127c34e5c8fa9d161756acaf1463fca014314c05ae",
+    "capture/recorder_info.txt": "32c438d3f7318270477a5d46dfd082406316608639cf438f1063bc4a6a74e27d",
+    "capture_contract.json": "39c03417577348b8fc6cba888ee72569fd8d31f992470f70a9191a1ac34057ae",
+    "config.json": "820b39e132f4dc090766141e49b3b645a4668a1d0c3d578e7fe2d1eb77899adb",
+    "construction.json": "7e92185507fc07e09336b549c8508f5b66dcc41abfc7ee3b0549510a3b1c893e",
+    "delivery_audit.py": "bac16e5c21ed9a339369392b04001e3bb73eb0ebb1004b02800bf04572ea5cc0",
+    "diagnostic-input.json": "afec400167a6cfd397ef4af76c63e7b28d421e8024ffc34e4c6af0354809d5b2",
+    "driver_reference-frames.jsonl": "3e5b7a17fe5a5e47269d3b24190074e5dc63c303360c8fc5f4bdbd12ee9be792",
+    "driver_reference.mkv": "4d5541f025afa64755261e4f4811e6b61617fd1cd22d0a62dc785fcf61a6d230",
+    "exception_context.json": "1ff7e28e26fcbbf88483404bde5981cf1e1cbeb785376dcedb02165a9d3c6f89",
+    "finalizer.py": "f502e01f39c3b61c2c3827a76881606d465344eb7513e2f3272fb861a3a7944e",
+    "fixture-provenance.json": "25c3a405f3170f85044f6798fe9851ca1142cb2ffefff5d51fbae3a9af4c14d7",
+    "overview-frames.jsonl": "3e5b7a17fe5a5e47269d3b24190074e5dc63c303360c8fc5f4bdbd12ee9be792",
+    "overview.mkv": "c005879bca524aa76d0fad699513b1ef3ad3c99974ff1644719e3dfa87312273",
+    "passed_vehicle_history.jsonl": "7bc35538e3f0bdb55e09793b4e6112f76955cb5a34f6093fe61d58f075ef2f81",
+    "passed_vehicle_original.json": "9e06e7e6b5f8e601aaee6a61a43e3748e6a2cd6fef37893b4e6a0bf0f312cbb0",
+    "reference_corner-frames.jsonl": "3e5b7a17fe5a5e47269d3b24190074e5dc63c303360c8fc5f4bdbd12ee9be792",
+    "reference_corner.mkv": "4d5541f025afa64755261e4f4811e6b61617fd1cd22d0a62dc785fcf61a6d230",
+    "road-half-diagnostic-provenance.json": "13467f04c42975494cff92b7ec382fd2f135367927b2262946cdfce5c553ffdb",
+    "road.xodr": "22ec54092229a0631aaeeeca5ab949178134ba5d3078906a4b290ec62d952f7b",
+    "road_geometry.json": "89cb47267594fd35e161ced75238b700d23126dcfc44b67d871e7aed67588740",
+    "road_half.py": "75871d5f9b329f740a5306fc8b34c3bbd68df1d16f8e6ae080fc18938e8cc4c9",
+    "runner.py": "dd9597598b73d5c86e24334f92b3cf4875c8bb7db5155a2a7cfc6b5faac3ea28",
+    "speed_samples.jsonl": "88e441eaa50ff37c131e31631bb7f1a18e9e65e49624a2f1b8e8afde530fca48",
+    "tests/test_road_half.py": "9d433d5f5db0a849bdd7e837615df9606c4fcdb31c341a92165a1dc394ef0ec9",
+    "trace.jsonl": "88e441eaa50ff37c131e31631bb7f1a18e9e65e49624a2f1b8e8afde530fca48",
+    "video_frames.jsonl": "e5af07ded940775389bf8c954bef46ded699f4ce3d958a1cd8730173b00dfe9e"
+  },
+  "originals_preserved": true,
+  "timestamp_joins": {
+    "frames": 9,
+    "passed": true,
+    "missing_original_trace_or_map": false
+  },
+  "analysis_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "result_sha256": "628211f80ba908fa9e1daa081ffcef7c0cb43338a8e5db5e0514ac2fe194d948",
+  "final_video_checks": {
+    "format": "source-decode",
+    "passed": true,
+    "video_sha256": "754d1d73afa24e60009d3fc47517f3b2bc72c0c1006b7b456c93889e52dbee80",
+    "frames": 9,
+    "dimensions": [
+      1920,
+      1224
+    ],
+    "rgb_sequence_sha256": "bea42846c865dc5df9a5c027b0dab7fa400b7c70101f3bc3f987d66ff83457b7",
+    "mapping_sha256": null,
+    "checks": {
+      "frame_count": "all-decoded-frames"
+    },
+    "auditor_sha256": "b63af75d3599fc2401518aa9093561928c43e9c460976ea155b09860f5f02df9",
+    "threads": 4,
+    "seconds": 0.060387141071259975,
+    "ffmpeg_version": "ffmpeg version n8.0.1-48-g0592be14ff-20260116 Copyright (c) 2000-2025 the FFmpeg developers"
+  },
+  "missing_evidence": false,
+  "physical_acceptance_claimed": false,
+  "legal_acceptance_claimed": false,
+  "events": [
+    "saved_processing_started",
+    "selected_analysis_executed",
+    "originals_verified"
+  ],
+  "remaining": [
+    "original pixels and actual physical completion review",
+    "unresolved legal judgments"
+  ]
+}
+
+```
+</details>
+
+<details><summary>fallback2 direct canonical saved-processing receipt</summary>
+
+```json
+{
+  "format": "worker-saved-processing",
+  "case_id": "heldout__C111250__NRS-484B-200-1__motor_vehicle_driver__overtaking_same_direction_right",
+  "passed": true,
+  "recorded_only": true,
+  "version": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c111250-overtaking-right-direct-fallback2-saved-proof/v0001",
+  "analysis_directory": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c111250-overtaking-right-direct-fallback2-saved-proof/v0001/analysis",
+  "result": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c111250-overtaking-right-direct-fallback2-saved-proof/v0001/analysis/result.json",
+  "native_revision": {
+    "construction_sha256": "2c895c152809c43a8edfa74b4549228d7dc3259f2e5de1b661783df48a38c1b5",
+    "analyzer_sha256": "f502e01f39c3b61c2c3827a76881606d465344eb7513e2f3272fb861a3a7944e"
+  },
+  "candidate_id": "fallback2",
+  "analysis_revision": {
+    "construction_sha256": "2c895c152809c43a8edfa74b4549228d7dc3259f2e5de1b661783df48a38c1b5",
+    "analyzer_sha256": "f502e01f39c3b61c2c3827a76881606d465344eb7513e2f3272fb861a3a7944e",
+    "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3"
+  },
+  "original_source_hashes": {
+    "actor_identity.json": "2eebc25c299fcb5363872dbda0033cfec0763811d38a12d7811604457b3d1248",
+    "alley_context.json": "1e3f5194da5ce8f5ee2e8a2acdfa1876e6986d7e1a221b931980cc9cd40dc6d3",
+    "approach-frames.jsonl": "3e5b7a17fe5a5e47269d3b24190074e5dc63c303360c8fc5f4bdbd12ee9be792",
+    "approach.mkv": "4d5541f025afa64755261e4f4811e6b61617fd1cd22d0a62dc785fcf61a6d230",
+    "body_history.jsonl": "feb7bb25e6abc3459988b60a6a350a5859d8dfdf9d247cce1cf07ef38561149d",
+    "candidate-selection.json": "a456afb31c040723397853f78a986f7d76ace39030248727237b2d0cc04a6402",
+    "capture/evidence.jsonl": "246cbf089aed8f2f1198ca9d9f1f95cd1ac34c036221a646cb41efc7eb98069b",
+    "capture/manifest.json": "f2984be967f357d93db2b17f55a9a45803b60a158b911c0c7f9281eb723d79b6",
+    "capture/native/frames.jsonl": "b8cc751bfcf218f0ff5b56a944f25ccab5393ceef5f4507ea50d2b5d7cd6fc30",
+    "capture/native/graphs/abstract/00038033.pkl": "f765f0bca9680a0b928e145de8d28052c0df760fdfea07cd5cb2006d67f69562",
+    "capture/native/graphs/abstract/00038034.pkl": "0a4fc8816ae53269602b41eb740be53e5f5ca4fd26c3824184ae65ef34b0c02c",
+    "capture/native/graphs/abstract/00038035.pkl": "4f77821b072b1b0c0cde42097d49f524d58a8fb758eee2a1be627617381399b9",
+    "capture/native/graphs/abstract/00038036.pkl": "070f5bd81bb9084fbc90e5b8bfb0eb464405c1c3c2faac757490d05170132222",
+    "capture/native/graphs/abstract/00038037.pkl": "7cefb5580160aa8adafe502b7b58c31fd8bed59cb249cd7e20978eaffe287200",
+    "capture/native/graphs/abstract/00038038.pkl": "7088f5900114254483eefd2c43e4015e8385c8c0517c52cea3615fe20f61096e",
+    "capture/native/graphs/abstract/00038039.pkl": "1b9ffd6d913a81735628e8221d0c2f925a1505b82d7c7518a75281269f494247",
+    "capture/native/graphs/abstract/00038040.pkl": "1bd9b0b186618a8d8785aefd2fb6d6e86c1d2d345c95402d5ad266e2758b2a16",
+    "capture/native/graphs/abstract/00038041.pkl": "d828472fa8da2febd4794f05491422b2fdec37f3ee2f37d43f8e6d6aee0318d0",
+    "capture/native/graphs/base/00038033.pkl": "feff49a8caf2fbcf70827b25a46bf60bf0d3a6314333a3a13d4080692e054e84",
+    "capture/native/graphs/base/00038034.pkl": "f4cffccbbe581608c366cd5360b6c915d3e2da183017d3f9baf232b1d81878a7",
+    "capture/native/graphs/base/00038035.pkl": "82c1dcd3bed9e2d3f2c1cd444c1966255af7e637a87172b368908355072911c8",
+    "capture/native/graphs/base/00038036.pkl": "903436dc96ed5b118ee4ba497fdd1f38e5226dbf1349b552460ed79cd2bec829",
+    "capture/native/graphs/base/00038037.pkl": "259f978cecfeda92458d4443c454880a8cf9a9f6b7ffded00066b3d54533b3fc",
+    "capture/native/graphs/base/00038038.pkl": "c95826558c3f93b5979f6c714dcc037613c4e055e61f7228dcd4ff1b4e697c2a",
+    "capture/native/graphs/base/00038039.pkl": "96fc56b3d4c4906049299ae8a951a760df83cebd8585c7d20edabddfc3f411ac",
+    "capture/native/graphs/base/00038040.pkl": "900ac8b051f33c3d20ec01f0aa6dbc69fc760fe4095c01ae22a3500b7ee516b2",
+    "capture/native/graphs/base/00038041.pkl": "8cce1b9cb36532670a940e21113c7d4675913de89db6c2673997e0d6080305b6",
+    "capture/native_map_facts.json": "a1a3c57b78d06ae1124def127c34e5c8fa9d161756acaf1463fca014314c05ae",
+    "capture/recorder_info.txt": "32c438d3f7318270477a5d46dfd082406316608639cf438f1063bc4a6a74e27d",
+    "capture_contract.json": "39c03417577348b8fc6cba888ee72569fd8d31f992470f70a9191a1ac34057ae",
+    "config.json": "2d9b9bc321443a4fe1e64864e99dfdda102f622db99f7ef68eb165cdf8eaca5f",
+    "construction.json": "2c895c152809c43a8edfa74b4549228d7dc3259f2e5de1b661783df48a38c1b5",
+    "delivery_audit.py": "bac16e5c21ed9a339369392b04001e3bb73eb0ebb1004b02800bf04572ea5cc0",
+    "diagnostic-input.json": "afec400167a6cfd397ef4af76c63e7b28d421e8024ffc34e4c6af0354809d5b2",
+    "driver_reference-frames.jsonl": "3e5b7a17fe5a5e47269d3b24190074e5dc63c303360c8fc5f4bdbd12ee9be792",
+    "driver_reference.mkv": "4d5541f025afa64755261e4f4811e6b61617fd1cd22d0a62dc785fcf61a6d230",
+    "exception_context.json": "1ff7e28e26fcbbf88483404bde5981cf1e1cbeb785376dcedb02165a9d3c6f89",
+    "finalizer.py": "f502e01f39c3b61c2c3827a76881606d465344eb7513e2f3272fb861a3a7944e",
+    "fixture-provenance.json": "25c3a405f3170f85044f6798fe9851ca1142cb2ffefff5d51fbae3a9af4c14d7",
+    "overview-frames.jsonl": "3e5b7a17fe5a5e47269d3b24190074e5dc63c303360c8fc5f4bdbd12ee9be792",
+    "overview.mkv": "c005879bca524aa76d0fad699513b1ef3ad3c99974ff1644719e3dfa87312273",
+    "passed_vehicle_history.jsonl": "7bc35538e3f0bdb55e09793b4e6112f76955cb5a34f6093fe61d58f075ef2f81",
+    "passed_vehicle_original.json": "9e06e7e6b5f8e601aaee6a61a43e3748e6a2cd6fef37893b4e6a0bf0f312cbb0",
+    "reference_corner-frames.jsonl": "3e5b7a17fe5a5e47269d3b24190074e5dc63c303360c8fc5f4bdbd12ee9be792",
+    "reference_corner.mkv": "4d5541f025afa64755261e4f4811e6b61617fd1cd22d0a62dc785fcf61a6d230",
+    "road-half-diagnostic-provenance.json": "13467f04c42975494cff92b7ec382fd2f135367927b2262946cdfce5c553ffdb",
+    "road.xodr": "22ec54092229a0631aaeeeca5ab949178134ba5d3078906a4b290ec62d952f7b",
+    "road_geometry.json": "89cb47267594fd35e161ced75238b700d23126dcfc44b67d871e7aed67588740",
+    "road_half.py": "75871d5f9b329f740a5306fc8b34c3bbd68df1d16f8e6ae080fc18938e8cc4c9",
+    "runner.py": "2f95a5d6f8f4829584efd5294ada28100d4d4b548fc02a9574fcc7afdb16d78e",
+    "speed_samples.jsonl": "88e441eaa50ff37c131e31631bb7f1a18e9e65e49624a2f1b8e8afde530fca48",
+    "tests/test_road_half.py": "9d433d5f5db0a849bdd7e837615df9606c4fcdb31c341a92165a1dc394ef0ec9",
+    "trace.jsonl": "88e441eaa50ff37c131e31631bb7f1a18e9e65e49624a2f1b8e8afde530fca48",
+    "video_frames.jsonl": "e5af07ded940775389bf8c954bef46ded699f4ce3d958a1cd8730173b00dfe9e"
+  },
+  "originals_preserved": true,
+  "timestamp_joins": {
+    "frames": 9,
+    "passed": true,
+    "missing_original_trace_or_map": false
+  },
+  "analysis_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "result_sha256": "628211f80ba908fa9e1daa081ffcef7c0cb43338a8e5db5e0514ac2fe194d948",
+  "final_video_checks": {
+    "format": "source-decode",
+    "passed": true,
+    "video_sha256": "362be9c21dd5903095433a44a011d119336c0edf7a2d47c76f250f55655d6a59",
+    "frames": 9,
+    "dimensions": [
+      1920,
+      1224
+    ],
+    "rgb_sequence_sha256": "bea42846c865dc5df9a5c027b0dab7fa400b7c70101f3bc3f987d66ff83457b7",
+    "mapping_sha256": null,
+    "checks": {
+      "frame_count": "all-decoded-frames"
+    },
+    "auditor_sha256": "b63af75d3599fc2401518aa9093561928c43e9c460976ea155b09860f5f02df9",
+    "threads": 4,
+    "seconds": 0.06035459809936583,
+    "ffmpeg_version": "ffmpeg version n8.0.1-48-g0592be14ff-20260116 Copyright (c) 2000-2025 the FFmpeg developers"
+  },
+  "missing_evidence": false,
+  "physical_acceptance_claimed": false,
+  "legal_acceptance_claimed": false,
+  "events": [
+    "saved_processing_started",
+    "selected_analysis_executed",
+    "originals_verified"
+  ],
+  "remaining": [
+    "original pixels and actual physical completion review",
+    "unresolved legal judgments"
+  ]
+}
+
+```
+</details>
+
+<details><summary>fallback3 direct canonical saved-processing receipt</summary>
+
+```json
+{
+  "format": "worker-saved-processing",
+  "case_id": "heldout__C111250__NRS-484B-200-1__motor_vehicle_driver__overtaking_same_direction_right",
+  "passed": true,
+  "recorded_only": true,
+  "version": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c111250-overtaking-right-direct-fallback3-saved-proof/v0001",
+  "analysis_directory": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c111250-overtaking-right-direct-fallback3-saved-proof/v0001/analysis",
+  "result": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c111250-overtaking-right-direct-fallback3-saved-proof/v0001/analysis/result.json",
+  "native_revision": {
+    "construction_sha256": "20d1a20e45ec0c6c10750f7675612f93ca85b0865bfca95623e967e27ccfd92a",
+    "analyzer_sha256": "f502e01f39c3b61c2c3827a76881606d465344eb7513e2f3272fb861a3a7944e"
+  },
+  "candidate_id": "fallback3",
+  "analysis_revision": {
+    "construction_sha256": "20d1a20e45ec0c6c10750f7675612f93ca85b0865bfca95623e967e27ccfd92a",
+    "analyzer_sha256": "f502e01f39c3b61c2c3827a76881606d465344eb7513e2f3272fb861a3a7944e",
+    "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3"
+  },
+  "original_source_hashes": {
+    "actor_identity.json": "2eebc25c299fcb5363872dbda0033cfec0763811d38a12d7811604457b3d1248",
+    "alley_context.json": "1e3f5194da5ce8f5ee2e8a2acdfa1876e6986d7e1a221b931980cc9cd40dc6d3",
+    "approach-frames.jsonl": "3e5b7a17fe5a5e47269d3b24190074e5dc63c303360c8fc5f4bdbd12ee9be792",
+    "approach.mkv": "4d5541f025afa64755261e4f4811e6b61617fd1cd22d0a62dc785fcf61a6d230",
+    "body_history.jsonl": "feb7bb25e6abc3459988b60a6a350a5859d8dfdf9d247cce1cf07ef38561149d",
+    "candidate-selection.json": "aa092e5a55e86f1a7728f12cf684740afb57236e963bf0a3abf9fa574e57a2b7",
+    "capture/evidence.jsonl": "246cbf089aed8f2f1198ca9d9f1f95cd1ac34c036221a646cb41efc7eb98069b",
+    "capture/manifest.json": "f2984be967f357d93db2b17f55a9a45803b60a158b911c0c7f9281eb723d79b6",
+    "capture/native/frames.jsonl": "b8cc751bfcf218f0ff5b56a944f25ccab5393ceef5f4507ea50d2b5d7cd6fc30",
+    "capture/native/graphs/abstract/00038033.pkl": "f765f0bca9680a0b928e145de8d28052c0df760fdfea07cd5cb2006d67f69562",
+    "capture/native/graphs/abstract/00038034.pkl": "0a4fc8816ae53269602b41eb740be53e5f5ca4fd26c3824184ae65ef34b0c02c",
+    "capture/native/graphs/abstract/00038035.pkl": "4f77821b072b1b0c0cde42097d49f524d58a8fb758eee2a1be627617381399b9",
+    "capture/native/graphs/abstract/00038036.pkl": "070f5bd81bb9084fbc90e5b8bfb0eb464405c1c3c2faac757490d05170132222",
+    "capture/native/graphs/abstract/00038037.pkl": "7cefb5580160aa8adafe502b7b58c31fd8bed59cb249cd7e20978eaffe287200",
+    "capture/native/graphs/abstract/00038038.pkl": "7088f5900114254483eefd2c43e4015e8385c8c0517c52cea3615fe20f61096e",
+    "capture/native/graphs/abstract/00038039.pkl": "1b9ffd6d913a81735628e8221d0c2f925a1505b82d7c7518a75281269f494247",
+    "capture/native/graphs/abstract/00038040.pkl": "1bd9b0b186618a8d8785aefd2fb6d6e86c1d2d345c95402d5ad266e2758b2a16",
+    "capture/native/graphs/abstract/00038041.pkl": "d828472fa8da2febd4794f05491422b2fdec37f3ee2f37d43f8e6d6aee0318d0",
+    "capture/native/graphs/base/00038033.pkl": "feff49a8caf2fbcf70827b25a46bf60bf0d3a6314333a3a13d4080692e054e84",
+    "capture/native/graphs/base/00038034.pkl": "f4cffccbbe581608c366cd5360b6c915d3e2da183017d3f9baf232b1d81878a7",
+    "capture/native/graphs/base/00038035.pkl": "82c1dcd3bed9e2d3f2c1cd444c1966255af7e637a87172b368908355072911c8",
+    "capture/native/graphs/base/00038036.pkl": "903436dc96ed5b118ee4ba497fdd1f38e5226dbf1349b552460ed79cd2bec829",
+    "capture/native/graphs/base/00038037.pkl": "259f978cecfeda92458d4443c454880a8cf9a9f6b7ffded00066b3d54533b3fc",
+    "capture/native/graphs/base/00038038.pkl": "c95826558c3f93b5979f6c714dcc037613c4e055e61f7228dcd4ff1b4e697c2a",
+    "capture/native/graphs/base/00038039.pkl": "96fc56b3d4c4906049299ae8a951a760df83cebd8585c7d20edabddfc3f411ac",
+    "capture/native/graphs/base/00038040.pkl": "900ac8b051f33c3d20ec01f0aa6dbc69fc760fe4095c01ae22a3500b7ee516b2",
+    "capture/native/graphs/base/00038041.pkl": "8cce1b9cb36532670a940e21113c7d4675913de89db6c2673997e0d6080305b6",
+    "capture/native_map_facts.json": "a1a3c57b78d06ae1124def127c34e5c8fa9d161756acaf1463fca014314c05ae",
+    "capture/recorder_info.txt": "32c438d3f7318270477a5d46dfd082406316608639cf438f1063bc4a6a74e27d",
+    "capture_contract.json": "39c03417577348b8fc6cba888ee72569fd8d31f992470f70a9191a1ac34057ae",
+    "config.json": "56a4b6e75b853efd1c256d1e084821da10671b5d65594ac05fb6ee31c0d8f80e",
+    "construction.json": "20d1a20e45ec0c6c10750f7675612f93ca85b0865bfca95623e967e27ccfd92a",
+    "delivery_audit.py": "bac16e5c21ed9a339369392b04001e3bb73eb0ebb1004b02800bf04572ea5cc0",
+    "diagnostic-input.json": "afec400167a6cfd397ef4af76c63e7b28d421e8024ffc34e4c6af0354809d5b2",
+    "driver_reference-frames.jsonl": "3e5b7a17fe5a5e47269d3b24190074e5dc63c303360c8fc5f4bdbd12ee9be792",
+    "driver_reference.mkv": "4d5541f025afa64755261e4f4811e6b61617fd1cd22d0a62dc785fcf61a6d230",
+    "exception_context.json": "1ff7e28e26fcbbf88483404bde5981cf1e1cbeb785376dcedb02165a9d3c6f89",
+    "finalizer.py": "f502e01f39c3b61c2c3827a76881606d465344eb7513e2f3272fb861a3a7944e",
+    "fixture-provenance.json": "25c3a405f3170f85044f6798fe9851ca1142cb2ffefff5d51fbae3a9af4c14d7",
+    "overview-frames.jsonl": "3e5b7a17fe5a5e47269d3b24190074e5dc63c303360c8fc5f4bdbd12ee9be792",
+    "overview.mkv": "c005879bca524aa76d0fad699513b1ef3ad3c99974ff1644719e3dfa87312273",
+    "passed_vehicle_history.jsonl": "7bc35538e3f0bdb55e09793b4e6112f76955cb5a34f6093fe61d58f075ef2f81",
+    "passed_vehicle_original.json": "9e06e7e6b5f8e601aaee6a61a43e3748e6a2cd6fef37893b4e6a0bf0f312cbb0",
+    "reference_corner-frames.jsonl": "3e5b7a17fe5a5e47269d3b24190074e5dc63c303360c8fc5f4bdbd12ee9be792",
+    "reference_corner.mkv": "4d5541f025afa64755261e4f4811e6b61617fd1cd22d0a62dc785fcf61a6d230",
+    "road-half-diagnostic-provenance.json": "13467f04c42975494cff92b7ec382fd2f135367927b2262946cdfce5c553ffdb",
+    "road.xodr": "22ec54092229a0631aaeeeca5ab949178134ba5d3078906a4b290ec62d952f7b",
+    "road_geometry.json": "89cb47267594fd35e161ced75238b700d23126dcfc44b67d871e7aed67588740",
+    "road_half.py": "75871d5f9b329f740a5306fc8b34c3bbd68df1d16f8e6ae080fc18938e8cc4c9",
+    "runner.py": "c4963f846f67472e04f5ada5828f5f3400928976f7a60476b374cc481ae8e9c4",
+    "speed_samples.jsonl": "88e441eaa50ff37c131e31631bb7f1a18e9e65e49624a2f1b8e8afde530fca48",
+    "tests/test_road_half.py": "9d433d5f5db0a849bdd7e837615df9606c4fcdb31c341a92165a1dc394ef0ec9",
+    "trace.jsonl": "88e441eaa50ff37c131e31631bb7f1a18e9e65e49624a2f1b8e8afde530fca48",
+    "video_frames.jsonl": "e5af07ded940775389bf8c954bef46ded699f4ce3d958a1cd8730173b00dfe9e"
+  },
+  "originals_preserved": true,
+  "timestamp_joins": {
+    "frames": 9,
+    "passed": true,
+    "missing_original_trace_or_map": false
+  },
+  "analysis_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "result_sha256": "628211f80ba908fa9e1daa081ffcef7c0cb43338a8e5db5e0514ac2fe194d948",
+  "final_video_checks": {
+    "format": "source-decode",
+    "passed": true,
+    "video_sha256": "2aca1df554b09ccf7e74617ed6d51cf526cb4dcfcda954be3869b42f7544b710",
+    "frames": 9,
+    "dimensions": [
+      1920,
+      1224
+    ],
+    "rgb_sequence_sha256": "bea42846c865dc5df9a5c027b0dab7fa400b7c70101f3bc3f987d66ff83457b7",
+    "mapping_sha256": null,
+    "checks": {
+      "frame_count": "all-decoded-frames"
+    },
+    "auditor_sha256": "b63af75d3599fc2401518aa9093561928c43e9c460976ea155b09860f5f02df9",
+    "threads": 4,
+    "seconds": 0.061125229112803936,
+    "ffmpeg_version": "ffmpeg version n8.0.1-48-g0592be14ff-20260116 Copyright (c) 2000-2025 the FFmpeg developers"
+  },
+  "missing_evidence": false,
+  "physical_acceptance_claimed": false,
+  "legal_acceptance_claimed": false,
+  "events": [
+    "saved_processing_started",
+    "selected_analysis_executed",
+    "originals_verified"
+  ],
+  "remaining": [
+    "original pixels and actual physical completion review",
+    "unresolved legal judgments"
+  ]
+}
+
+```
+</details>
