@@ -11,7 +11,89 @@
         "status": "physical",
         "reason": "Loaded road geometry and camera/vehicle motion require physical verification"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "candidates/fallback1/construction.json",
+          "construction_sha256": "8319c0bafe9d653244e5c97323758a5d61ddc59307b6ef4e5838238efd4838d3",
+          "trigger": {
+            "source": "road_geometry.json",
+            "metric": "connected driving-lane inventory and width at sampled stations",
+            "failure_condition": "primary Native site lacks the requested connected right-half road geometry"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111250__NRS-484B-200-1__motor_vehicle_driver/provisional-manifest.json --case heldout__C111250__NRS-484B-200-1__motor_vehicle_driver__none_right --candidate fallback1 --output .runtime-work/c111250-none-right-direct-fallback1-offline",
+            "exit_code": 0,
+            "construction_sha256": "8319c0bafe9d653244e5c97323758a5d61ddc59307b6ef4e5838238efd4838d3",
+            "log": "candidates/fallback1/offline.log",
+            "log_sha256": "b21cee3a10e155e150e31b238b11c91cf87013bef9120828e2a1da48f75589d4"
+          },
+          "compatibility": {
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C111250__NRS-484B-200-1__motor_vehicle_driver/provisional-manifest.json --case heldout__C111250__NRS-484B-200-1__motor_vehicle_driver__none_right --candidate fallback1 --output .runtime-work/c111250-none-right-direct-fallback1-compat --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+            "receipt": "candidates/fallback1/compatibility.json",
+            "sha256": "1cca9a1e442e147fb11b4490e3e8f9c679564986d2d0bc89cfe1046e1142da61",
+            "log": "first-primary-compatibility-analysis.log",
+            "negative_log": "candidates/fallback1/negative-analysis.log"
+          },
+          "changed_knobs": [
+            "required_site_profile=alternate_surveyed_road"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "candidates/fallback2/construction.json",
+          "construction_sha256": "df4357127a981f2086a899d19f016d3ad35c750ecfa5e9029b09698fb543de0c",
+          "trigger": {
+            "source": "acquisition-provenance.json",
+            "metric": "ego spawn success and Native actor identity",
+            "failure_condition": "primary spawn station is occupied or ego spawn fails"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111250__NRS-484B-200-1__motor_vehicle_driver/provisional-manifest.json --case heldout__C111250__NRS-484B-200-1__motor_vehicle_driver__none_right --candidate fallback2 --output .runtime-work/c111250-none-right-direct-fallback2-offline",
+            "exit_code": 0,
+            "construction_sha256": "df4357127a981f2086a899d19f016d3ad35c750ecfa5e9029b09698fb543de0c",
+            "log": "candidates/fallback2/offline.log",
+            "log_sha256": "bf4ac01ee756f8af7c14e3eba154735da77e358bc472779167436b498e6b004a"
+          },
+          "compatibility": {
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C111250__NRS-484B-200-1__motor_vehicle_driver/provisional-manifest.json --case heldout__C111250__NRS-484B-200-1__motor_vehicle_driver__none_right --candidate fallback2 --output .runtime-work/c111250-none-right-direct-fallback2-compat --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+            "receipt": "candidates/fallback2/compatibility.json",
+            "sha256": "23c47a885e17dc36bbe091b93ef8e536ee073135c0dac194a6e0176cc7f864cf",
+            "log": "first-primary-compatibility-analysis.log",
+            "negative_log": "candidates/fallback2/negative-analysis.log"
+          },
+          "changed_knobs": [
+            "ego_spawn_offset_m=2.0"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "candidates/fallback3/construction.json",
+          "construction_sha256": "09a532cb4023bdbf5abc5ae05c386b02d9c07b4523d06b8ec0d69678ce1c659c",
+          "trigger": {
+            "source": "overview.mkv",
+            "metric": "full body and road centerline pixel coverage across original frames",
+            "failure_condition": "primary overview view omits the subject footprint or surveyed road edge"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111250__NRS-484B-200-1__motor_vehicle_driver/provisional-manifest.json --case heldout__C111250__NRS-484B-200-1__motor_vehicle_driver__none_right --candidate fallback3 --output .runtime-work/c111250-none-right-direct-fallback3-offline",
+            "exit_code": 0,
+            "construction_sha256": "09a532cb4023bdbf5abc5ae05c386b02d9c07b4523d06b8ec0d69678ce1c659c",
+            "log": "candidates/fallback3/offline.log",
+            "log_sha256": "e855c0a21a7c0ad23952c0d61cbf517b574b64acc739bc158cc4af8b37ae9afa"
+          },
+          "compatibility": {
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C111250__NRS-484B-200-1__motor_vehicle_driver/provisional-manifest.json --case heldout__C111250__NRS-484B-200-1__motor_vehicle_driver__none_right --candidate fallback3 --output .runtime-work/c111250-none-right-direct-fallback3-compat --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+            "receipt": "candidates/fallback3/compatibility.json",
+            "sha256": "63c34b85b12ced132c97b3ad9ada5fc56f3bf94f96a9cbfc8d97b4785075692e",
+            "log": "first-primary-compatibility-analysis.log",
+            "negative_log": "candidates/fallback3/negative-analysis.log"
+          },
+          "changed_knobs": [
+            "overview_mount_shift_m=[-2.0,2.0,1.0]"
+          ]
+        }
+      ],
       "measurement_procedure": {
         "entrypoint": "finalizer.py"
       },
