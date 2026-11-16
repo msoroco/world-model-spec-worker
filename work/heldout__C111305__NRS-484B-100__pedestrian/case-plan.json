@@ -63,6 +63,51 @@
         "trigger_metric": "post-indication motion samples",
         "failure_condition": "indication or at least two later original motion samples absent"
       }
+    },
+    {
+      "case_id": "heldout__C111305__NRS-484B-100__pedestrian__stop_responds_timing_early",
+      "target_law_id": "NRS-484B-100",
+      "branch": "stop_indication_timing_early",
+      "gap_ids": [
+        "uncovered-full-text"
+      ],
+      "construction_status": "primary_and_three_fallbacks_offline_compatibility_cpu_tested_saved_proofs_pending",
+      "physical_risk": {
+        "risk": "Native timing of officer indication and pedestrian response may differ from constructed cue",
+        "trigger_source": "retained original officer_direction.json and subject_motion_history.jsonl",
+        "trigger_metric": "ordered indication frame and post-indication motion samples",
+        "failure_condition": "original cue timing differs or fewer than two following motion samples"
+      }
+    },
+    {
+      "case_id": "heldout__C111305__NRS-484B-100__pedestrian__stop_responds_timing_nominal",
+      "target_law_id": "NRS-484B-100",
+      "branch": "stop_indication_timing_nominal",
+      "gap_ids": [
+        "uncovered-full-text"
+      ],
+      "construction_status": "primary_and_three_fallbacks_offline_compatibility_cpu_tested_saved_proofs_pending",
+      "physical_risk": {
+        "risk": "Native timing of officer indication and pedestrian response may differ from constructed cue",
+        "trigger_source": "retained original officer_direction.json and subject_motion_history.jsonl",
+        "trigger_metric": "ordered indication frame and post-indication motion samples",
+        "failure_condition": "original cue timing differs or fewer than two following motion samples"
+      }
+    },
+    {
+      "case_id": "heldout__C111305__NRS-484B-100__pedestrian__stop_responds_timing_late",
+      "target_law_id": "NRS-484B-100",
+      "branch": "stop_indication_timing_late",
+      "gap_ids": [
+        "uncovered-full-text"
+      ],
+      "construction_status": "primary_and_three_fallbacks_offline_compatibility_cpu_tested_saved_proofs_pending",
+      "physical_risk": {
+        "risk": "Native timing of officer indication and pedestrian response may differ from constructed cue",
+        "trigger_source": "retained original officer_direction.json and subject_motion_history.jsonl",
+        "trigger_metric": "ordered indication frame and post-indication motion samples",
+        "failure_condition": "original cue timing differs or fewer than two following motion samples"
+      }
     }
   ],
   "comparisons": [
@@ -96,6 +141,23 @@
       ],
       "deliberate_differences": [
         "subject post-indication motion; observed response, without willfulness inference"
+      ]
+    },
+    {
+      "comparison_id": "stop_judgment_timing",
+      "case_ids": [
+        "heldout__C111305__NRS-484B-100__pedestrian__stop_responds_timing_early",
+        "heldout__C111305__NRS-484B-100__pedestrian__stop_responds_timing_nominal",
+        "heldout__C111305__NRS-484B-100__pedestrian__stop_responds_timing_late"
+      ],
+      "fixed_conditions": [
+        "intersection cell",
+        "pedestrian subject",
+        "same sourced officer, recipient, stop text and duty/lawfulness source context",
+        "same original pedestrian motion and four-camera diagnostic sources"
+      ],
+      "deliberate_differences": [
+        "officer indication timing (early/nominal/late) only; no willfulness inference"
       ]
     }
   ],
@@ -227,7 +289,10 @@
         "heldout__C111305__NRS-484B-100__pedestrian__stop_responds",
         "heldout__C111305__NRS-484B-100__pedestrian__stop_does_not_respond",
         "heldout__C111305__NRS-484B-100__pedestrian__proceed_responds",
-        "heldout__C111305__NRS-484B-100__pedestrian__proceed_does_not_respond"
+        "heldout__C111305__NRS-484B-100__pedestrian__proceed_does_not_respond",
+        "heldout__C111305__NRS-484B-100__pedestrian__stop_responds_timing_early",
+        "heldout__C111305__NRS-484B-100__pedestrian__stop_responds_timing_nominal",
+        "heldout__C111305__NRS-484B-100__pedestrian__stop_responds_timing_late"
       ],
       "evidence_or_gap": "No accepted recording is supplied; four exact stop/release response contrasts remain selected."
     }

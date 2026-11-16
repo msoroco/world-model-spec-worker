@@ -43,7 +43,9 @@ def run(case_id,kind):
             raise ValueError('officer direction recipient differs from subject')
         post=[r.copy() for r in rows if r['frame']>=direction['frame']]
         if len(post)<2:raise ValueError('no post-direction subject frames')
-        intended='responds' if case_id.endswith('_responds') else 'does_not_respond'
+        suffix=case_id.rsplit('__',1)[-1]
+        intended=('responds' if suffix in ('stop_responds','proceed_responds')
+                  or suffix.startswith('stop_responds_timing_') else 'does_not_respond')
         # Stationary and walking are controlled synthetic outcomes; the source
         # packets remain joined by original frame identity and timestamps.
         should_walk=(direction['command']=='proceed')==(intended=='responds')
