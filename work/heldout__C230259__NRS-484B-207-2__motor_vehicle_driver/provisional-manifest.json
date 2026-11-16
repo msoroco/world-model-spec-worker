@@ -216,6 +216,220 @@
           ]
         }
       }
+    },
+    {
+      "case_id": "heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__observed_no_right_yield_holds_speed",
+      "kind": "delivery",
+      "construction": "no-yield-construction.json",
+      "construction_sha256": "b9983316050ce405e84844ab4e57566f1696ccd7a51c89071f38600840fe90fd",
+      "measurement_procedure": {
+        "entrypoint": "overtake_finalizer.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "No-rightward-response trajectory, Native two-vehicle spawn, pass duration and four original camera coverage require physical verification"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "no-yield-fallback1-construction.json",
+          "construction_sha256": "32dcc5ae341e518be46d377bea7c00d75f80af9a4dbb452b9d102ba686019e28",
+          "changed_knobs": [
+            "spawn_height_offset_m=0.7"
+          ],
+          "trigger": {
+            "source": "Native actor spawn/readback",
+            "metric": "both actors spawned at surveyed waypoints",
+            "failure_condition": "Native ego or overtaker spawn intersects surface at primary 0.5 m offset"
+          },
+          "offline": {
+            "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C230259__NRS-484B-207-2__motor_vehicle_driver/provisional-manifest.json --case heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__observed_no_right_yield_holds_speed --candidate fallback1 --output .runtime-work/c230259-no-yield-fallback1-offline --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "no-yield-fallback1-offline.log",
+            "log_sha256": "c7b34a5496ad700f83f0a636156c0b29dafe3e8cd924431b7e51daeb9e628156",
+            "construction_sha256": "32dcc5ae341e518be46d377bea7c00d75f80af9a4dbb452b9d102ba686019e28"
+          },
+          "compatibility": {
+            "receipt": "no-yield-fallback1-compatibility.json",
+            "sha256": "7822d513b40604deca5b02a47594971e730deeacd48c0552aadc112220d3cf8b",
+            "log": "first-primary-compatibility-analysis.log",
+            "negative_log": "no-yield-fallback1-negative.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log_sha256": "220933c1f3acec8b6af3f51da7a3e5bbd6d20978fc9163be4bb91c1058b3c9eb"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "no-yield-fallback2-construction.json",
+          "construction_sha256": "ff9ddeba890b49a60fcaa6c3d37a2fe0f4863f8ec1642b3f5a53ca63c960c404",
+          "changed_knobs": [
+            "overview_mount_z_m=9.0"
+          ],
+          "trigger": {
+            "source": "original overview pixel/source-camera audit",
+            "metric": "both actors and road context visible in overview",
+            "failure_condition": "Primary overview mount hides an overtaking body or road context"
+          },
+          "offline": {
+            "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C230259__NRS-484B-207-2__motor_vehicle_driver/provisional-manifest.json --case heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__observed_no_right_yield_holds_speed --candidate fallback2 --output .runtime-work/c230259-no-yield-fallback2-offline --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "no-yield-fallback2-offline.log",
+            "log_sha256": "931a7b68feaa67c2a6fed89ad79194f57666fdfc5031d70724ffb8013c9592b1",
+            "construction_sha256": "ff9ddeba890b49a60fcaa6c3d37a2fe0f4863f8ec1642b3f5a53ca63c960c404"
+          },
+          "compatibility": {
+            "receipt": "no-yield-fallback2-compatibility.json",
+            "sha256": "f7f53a24bb03a77f0cc8a9792f6931bebe2ac02271125c58d8e07d8c27b8ba6c",
+            "log": "first-primary-compatibility-analysis.log",
+            "negative_log": "no-yield-fallback2-negative.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log_sha256": "04a9e7cf78e3bd15ea23a874836f62a4fb26973e488db6bcc8a1ca5d6d9dbe9b"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "no-yield-fallback3-construction.json",
+          "construction_sha256": "5c9fa2bc5778c9a594bdf2d526cfcbec4b88ef7fe041a4812ef74c3dc5ababeb",
+          "changed_knobs": [
+            "overtaker_target_speed_mps=9.0"
+          ],
+          "trigger": {
+            "source": "original full-body pass gap bracket",
+            "metric": "first complete frame exists within capture",
+            "failure_condition": "Primary overtaker does not complete pass within 160 original frames"
+          },
+          "offline": {
+            "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C230259__NRS-484B-207-2__motor_vehicle_driver/provisional-manifest.json --case heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__observed_no_right_yield_holds_speed --candidate fallback3 --output .runtime-work/c230259-no-yield-fallback3-offline --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "no-yield-fallback3-offline.log",
+            "log_sha256": "e1136ff52f1590135b2ef46232ab6eeb128f42799b8302c7d410aaf638b96ced",
+            "construction_sha256": "5c9fa2bc5778c9a594bdf2d526cfcbec4b88ef7fe041a4812ef74c3dc5ababeb"
+          },
+          "compatibility": {
+            "receipt": "no-yield-fallback3-compatibility.json",
+            "sha256": "9a823bee166a2bb10156db5fc74c974d6358ea4106b22d2cdc9dd9efa56c5ebe",
+            "log": "first-primary-compatibility-analysis.log",
+            "negative_log": "no-yield-fallback3-negative.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log_sha256": "ca714f455ad2bf8b081a66e33852b75b05d5189a130d0e7bb0077650fdec7224"
+          }
+        }
+      ],
+      "measurement_contract": "measurement-contract-no-yield.json",
+      "fixture_recipe": "work/heldout__C230259__NRS-484B-207-2__motor_vehicle_driver/recipe-no-yield.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "full_body_pass_gap_m": {
+          "entrypoint": "overtake_finalizer.py",
+          "method": "source-hashed original frame join",
+          "evidence": [
+            "overtake_bodies_original.jsonl",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "ego_right_shift_m": {
+          "entrypoint": "overtake_finalizer.py",
+          "method": "source-hashed original frame join",
+          "evidence": [
+            "overtake_bodies_original.jsonl",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "ego_speed_mps": {
+          "entrypoint": "overtake_finalizer.py",
+          "method": "source-hashed original frame join",
+          "evidence": [
+            "overtake_bodies_original.jsonl",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "overtaker_lateral_offset_right_m": {
+          "entrypoint": "overtake_finalizer.py",
+          "method": "source-hashed original frame join",
+          "evidence": [
+            "overtake_bodies_original.jsonl",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "notice_source_context": {
+          "entrypoint": "overtake_finalizer.py",
+          "method": "source-hashed original frame join",
+          "evidence": [
+            "overtake_bodies_original.jsonl",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "right_pass_permission_context": {
+          "entrypoint": "overtake_finalizer.py",
+          "method": "source-hashed original frame join",
+          "evidence": [
+            "overtake_bodies_original.jsonl",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        }
+      },
+      "offline": {
+        "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C230259__NRS-484B-207-2__motor_vehicle_driver/provisional-manifest.json --case heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__observed_no_right_yield_holds_speed --candidate primary --output .runtime-work/c230259-no-yield-primary-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "log": "no-yield-primary-offline.log",
+        "log_sha256": "9cfe53b07b7f4701e51cff727583f52aba617bb9970e7ac69f7fa8adeca1a864",
+        "construction_sha256": "b9983316050ce405e84844ab4e57566f1696ccd7a51c89071f38600840fe90fd"
+      },
+      "compatibility": {
+        "receipt": "no-yield-primary-compatibility.json",
+        "sha256": "43eef74ac7d55cc4372552a706b06ee180335140ff6bbc63ec227332aa8225ff",
+        "log": "first-primary-compatibility-analysis.log",
+        "negative_log": "no-yield-primary-negative.log",
+        "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "negative_log_sha256": "0300ec934d4214372778cb575c0e841575fc65edd634964cc26229c4d262fd47"
+      },
+      "negative": {
+        "log": "no-yield-primary-negative.log",
+        "sha256": "0300ec934d4214372778cb575c0e841575fc65edd634964cc26229c4d262fd47",
+        "log_sha256": "0300ec934d4214372778cb575c0e841575fc65edd634964cc26229c4d262fd47"
+      },
+      "saved_processing": {
+        "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C230259__NRS-484B-207-2__motor_vehicle_driver/provisional-manifest.json --case heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__observed_no_right_yield_holds_speed --attempt .runtime-work/c230259-no-yield-primary-saved-attempt --output .runtime-work/c230259-no-yield-primary-saved-proof --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "exit_code": 0,
+        "log": "no-yield-primary-saved-processing.json",
+        "log_sha256": "e817b2ce5187471515908c483a226667e7a0b60dea1db56be17c845aad714c22",
+        "receipt": "no-yield-primary-saved-processing.json",
+        "receipt_sha256": "e817b2ce5187471515908c483a226667e7a0b60dea1db56be17c845aad714c22"
+      }
     }
   ]
 }

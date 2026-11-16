@@ -8,7 +8,7 @@
       "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/heldout__C230259__NRS-484B-207-2__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "645a56183e892d8407c4f85ab15ed779e6e91c532d098494aad48f272ea54fba"
+      "sha256": "680009804acd13415156abf1ff673548f717bbf6892f28a146e401a183f83765"
     },
     {
       "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C230259__NRS-484B-207-2__motor_vehicle_driver/provisional-manifest.json --case heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__observed_gives_way_holds_speed --candidate primary --output .runtime-work/c230259-primary-offline-pipeline --python \"$PWD/.venv-cpu/bin/python\"",
@@ -17,7 +17,7 @@
       "sha256": "ca03d52de82beef950922fc9080b84fb6f08668ba1011b34d9a225e4e74864ca"
     },
     {
-      "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C230259__NRS-484B-207-2__motor_vehicle_driver/provisional-manifest.json --case heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__observed_gives_way_holds_speed --candidate primary --output .runtime-work/c230259-primary-compat-final --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+      "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C230259__NRS-484B-207-2__motor_vehicle_driver/provisional-manifest.json --case heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__observed_gives_way_holds_speed --candidate primary --output .runtime-work/c230259-primary-compat-pipeline --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
       "exit_code": 0,
       "log": "primary-compatibility.json",
       "sha256": "1bf868b292a29f9e290bc979e1619e08dc383744b315840c09cca2e64bca7cd7"
@@ -27,11 +27,35 @@
       "exit_code": 0,
       "log": "first-primary-saved-processing.json",
       "sha256": "af93ce9fd30139e2f5f86b2abe1ec58e0387ba2eec236955d13ffdcf3362ba8e"
+    },
+    {
+      "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C230259__NRS-484B-207-2__motor_vehicle_driver/provisional-manifest.json --case heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__observed_no_right_yield_holds_speed --candidate primary --output .runtime-work/c230259-no-yield-primary-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+      "exit_code": 0,
+      "log": "no-yield-primary-offline.log",
+      "sha256": "9cfe53b07b7f4701e51cff727583f52aba617bb9970e7ac69f7fa8adeca1a864"
+    },
+    {
+      "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C230259__NRS-484B-207-2__motor_vehicle_driver/provisional-manifest.json --case heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__observed_no_right_yield_holds_speed --candidate primary --output .runtime-work/c230259-no-yield-primary-compat --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "no-yield-primary-compatibility.json",
+      "sha256": "43eef74ac7d55cc4372552a706b06ee180335140ff6bbc63ec227332aa8225ff"
+    },
+    {
+      "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C230259__NRS-484B-207-2__motor_vehicle_driver/provisional-manifest.json --case heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__observed_no_right_yield_holds_speed --attempt .runtime-work/c230259-no-yield-primary-saved-attempt --output .runtime-work/c230259-no-yield-primary-saved-proof --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "no-yield-primary-saved-processing.json",
+      "sha256": "e817b2ce5187471515908c483a226667e7a0b60dea1db56be17c845aad714c22"
+    },
+    {
+      "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python work/heldout__C230259__NRS-484B-207-2__motor_vehicle_driver/audit_right_response.py work/heldout__C230259__NRS-484B-207-2__motor_vehicle_driver/diagnostic.json work/heldout__C230259__NRS-484B-207-2__motor_vehicle_driver/diagnostic-no-yield.json --output work/heldout__C230259__NRS-484B-207-2__motor_vehicle_driver/right-response-comparison.json",
+      "exit_code": 0,
+      "log": "right-response-comparison.json",
+      "sha256": "43281cc349d3db546654f1f76d9eaeec2ff0b20f2c23f3576ac5ae673cf7c594"
     }
   ],
   "remaining_gpu_checks": [
     "Actual motion, geometry, camera visibility and duration remain unverified after CPU preparation."
   ],
-  "reason": "CPU preparation remains incomplete. The first exact observed_gives_way_holds_speed primary and three fallbacks pass current offline and source-bound positive/missing-source compatibility; its primary passes fresh-original saved processing. The Native runner now uses pinned PipelineCapture for original trace, evidence, graph, map and recorder acquisition and CPU checks frame/graph joins, but actual Native execution is untested. Five other exact cases, their fallback/proof chains, canonical semantic proposals, independent physical/lifecycle/delivery/comparison audits and shared delivery work remain worker-owned CPU tasks. Synthetic fixture does not establish subjective notice, right-pass permission, physical visibility or legal outcome.",
+  "reason": "CPU preparation remains incomplete. The observed_gives_way_holds_speed and observed_no_right_yield_holds_speed exact primaries and their six distinct fallbacks pass current offline and positive/missing-source compatibility; both primaries pass fresh-original saved processing, and the independent right-response comparison audit passes positive/rebound-source-negative synthetic probes. Native PipelineCapture acquisition is implemented and CPU-checked but not physically executed. Four exact cases, their fallback/proof chains, canonical semantic proposals, remaining independent physical/lifecycle/delivery/comparison audits and shared delivery work remain worker-owned CPU tasks. Synthetic sources do not establish subjective notice, right-pass permission, physical visibility or legal outcome.",
   "readiness_kind": "delivery_prepared"
 }
