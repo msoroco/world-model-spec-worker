@@ -696,3 +696,5 @@ branch/delivery integration as worker-owned CPU work. Do not reinterpret its
 synthetic dynamics probe as verified Native feasibility.
 
 To stay within the batch return-file cap, 120 older logs absent from all current JSON/Python proof references were moved to ignored `.runtime-work/retired-logs/ready-c125763-20261115/`; the archive manifest records the original paths. The scoped strict gate was rerun after this move.
+
+2026-11-16 file-cap maintenance: moved 8 historical `.log` files absent from this assignment's current `execution-manifest.json` and `result.json` to ignored `.runtime-work/archived-unbound-logs/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/`. The current scoped `worker_check.py --complete` passed after moving them. This preserves local bytes for restoration while keeping the returned `work/` file count within 8,600; older handoff references to those historical logs point to the ignored local archive.

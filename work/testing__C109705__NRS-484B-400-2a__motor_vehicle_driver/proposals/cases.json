@@ -4,6 +4,61 @@
   "status": "draft",
   "cases": [
     {
+      "case_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__shared_baseline",
+      "target_law_id": "NRS-484B-400-2a",
+      "target_type": "baseline",
+      "rationale": "Shared two-way left-turn setup reference; no physical or legal acceptance",
+      "variable_assignments": {
+        "centerline_kind": {
+          "kind": "world_setup",
+          "value": "marked",
+          "unit": "categorical"
+        },
+        "approach_lateral_offset_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "both_highways_two_directional": {
+          "kind": "world_setup",
+          "value": "source review required",
+          "unit": "categorical"
+        },
+        "commanded_left_turn": {
+          "kind": "controller",
+          "value": "checked route from site packet",
+          "unit": "structured record"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "nearest the centerline",
+        "physical highway direction authority"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "approach_lateral",
+            "unit": "structured record",
+            "method": "original complete body polygon against sourced marked centerline and right-half polygon",
+            "time_window": "before first intersection entry",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "synthetic diagnostic only; legal nearest position unresolved"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "approach_context",
+            "unit": "structured record",
+            "method": "source-hashed Native road context and full-body approach measurements"
+          }
+        ],
+        "limitations": [
+          "Synthetic CPU site and media; actual Native highway status, turn, body position and camera visibility require later acceptance."
+        ]
+      }
+    },
+    {
       "case_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__source_verified_near_centerline",
       "target_law_id": "NRS-484B-400-2a",
       "target_type": "boundary_probe",
@@ -137,7 +192,7 @@
       "variable_assignments": {
         "centerline_kind": {
           "kind": "world_setup",
-          "value": "marked",
+          "value": "imaginary",
           "unit": "categorical"
         },
         "approach_lateral_offset_m": {
@@ -199,7 +254,7 @@
       "variable_assignments": {
         "centerline_kind": {
           "kind": "world_setup",
-          "value": "marked",
+          "value": "imaginary",
           "unit": "categorical"
         },
         "approach_lateral_offset_m": {
@@ -254,6 +309,71 @@
         "comparison_or_standard": "source-bound body geometry and near/far ordering; no legal cutoff",
         "target_value_or_branch": "farther_from_centerline"
       }
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "c109705-centerline-position",
+      "target_law_id": "NRS-484B-400-2a",
+      "judgment_refs": [
+        {
+          "phrase": "nearest the centerline thereof",
+          "note": "The supplied law gives no numeric nearest-position cutoff; retain complete-body lateral geometry and source authority."
+        }
+      ],
+      "status": "incomplete",
+      "mode": "one_dimensional",
+      "axes": [],
+      "landmarks": [],
+      "rationale": "Marked and imaginary near/far constructions are authored; original Native road, body and camera evidence is required to confirm realized geometry and legal nearest-position judgment.",
+      "variable_assignments": {
+        "centerline_kind": {
+          "kind": "world_setup",
+          "value": "marked",
+          "unit": "categorical"
+        },
+        "approach_lateral_offset_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "both_highways_two_directional": {
+          "kind": "world_setup",
+          "value": "source review required",
+          "unit": "categorical"
+        },
+        "commanded_left_turn": {
+          "kind": "controller",
+          "value": "checked route from site packet",
+          "unit": "structured record"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "approach_lateral",
+            "unit": "structured record",
+            "method": "original complete body polygon against sourced marked centerline and right-half polygon",
+            "time_window": "before first intersection entry",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "synthetic diagnostic only; legal nearest position unresolved"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "approach_context",
+            "unit": "structured record",
+            "method": "source-hashed Native road context and full-body approach measurements"
+          }
+        ],
+        "limitations": [
+          "Synthetic CPU site and media; actual Native highway status, turn, body position and camera visibility require later acceptance."
+        ]
+      },
+      "missing_inputs": [
+        "Source-reviewed Native marked/unmarked road geometry and original complete-body/camera evidence for the four authored constructions"
+      ]
     }
   ]
 }
