@@ -23,13 +23,15 @@
         "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off"
       ],
       "deliberate_differences": [
-        "Native signal operating state at body entry"
+        "requested Native governing signal state: Green/Red versus Off/Off",
+        "measured Native signal states at each body-entry frame; retain actual trajectory and entry-time differences as observations"
       ],
       "fixed_conditions": [
-        "same map and identified median-opening junction",
-        "same governed approach lanes and vehicle geometry",
-        "same camera positions and traffic trajectories"
-      ]
+        "same reviewed map, identified median-opening junction, crossing polygon and highway approaches",
+        "same planned routes, source-selected stop references and vehicle geometry",
+        "same camera poses, duration, rate and target speeds; observed camera pixels and trajectories may differ between Native runs"
+      ],
+      "comparison_id": "governing_signal_operative_vs_off"
     }
   ],
   "observations": [
@@ -262,7 +264,7 @@
   "off_signal_release_sweep_cpu_proof": {
     "status": "diagnostic_controller_variant_paths_passed;_native_entry_feasibility_unverified",
     "builder": "build_diagnostic_constructions.py:build_release_sweep",
-    "builder_sha256": "0cabaabef972916e4e2ba1c561abfd10bf3c38aa6c3b0bdf0f82627e535a7f09",
+    "builder_sha256": "181676ddd4c20c9e5b8423b68ac979eb1d08849a34221f0e12eda3e62452edbc",
     "selected_case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
     "fixed_conditions": [
       "same selected Off-signal case ID",
@@ -350,6 +352,29 @@
       "Fixture histories are independent of controller schedule",
       "No Native release-to-body-entry response or feasible entry-time range measured",
       "No statutory approximately-same-time cutoff or legal priority verdict asserted"
-    ]
+    ],
+    "release_entry_audit": {
+      "entrypoint": "build_diagnostic_constructions.py:audit_release_attempt",
+      "source_sha256": "181676ddd4c20c9e5b8423b68ac979eb1d08849a34221f0e12eda3e62452edbc",
+      "proof_log": ".runtime-work/c125751-release-entry-audit-proof.log",
+      "proof_log_sha256": "ab3b9993bf3925f8064f7f087814a67c34448503e2076f9a6aa59e2e7ede4e6d",
+      "status": "synthetic_join_positive_and_four_negative_checks_passed;_no_native_response_claim",
+      "required_original_sources": [
+        "config.json",
+        "controller_history.jsonl",
+        "crossing_history.jsonl",
+        "road_geometry.json",
+        "video_frames.jsonl"
+      ],
+      "four_point_diagnostic_proof_log": ".runtime-work/c125751-release-entry-four-point.log",
+      "four_point_diagnostic_proof_log_sha256": "654bed2bf90c33445f2e7eecfc9ca6c8198cd8393edca33fbfe1b08e9554a39a",
+      "four_point_observed_ego_minus_other_entry_time_s": [
+        -0.1,
+        -0.05,
+        0,
+        0.05
+      ],
+      "four_point_limit": "Authored synthetic crossing and controller histories prove source join sensitivity only; staged offline fixtures do not contain controller history and no Native schedule response is established."
+    }
   }
 }

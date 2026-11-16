@@ -112,9 +112,73 @@ def build_release_sweep(output_root):
     return variants
 
 
+def audit_release_attempt(root):
+    """Join an actual controller trace to original-frame body-entry measurements.
+
+    This reports engineering timing only. A diagnostic fixture cannot establish
+    that a requested release schedule is feasible at the selected Native site.
+    """
+    from entry_measurements import analyze
+
+    root = Path(root)
+    config_path = root / "config.json"
+    controller_path = root / "controller_history.jsonl"
+    crossing_path = root / "crossing_history.jsonl"
+    for path in (config_path, controller_path, crossing_path):
+        if not path.is_file():
+            raise ValueError("Missing original release source: " + path.name)
+    config = json.loads(config_path.read_text())
+    for role in ("ego", "other"):
+        value = config.get(role + "_release_frame")
+        if type(value) is not int or value < 0:
+            raise ValueError("Explicit nonnegative release index required: " + role)
+    measured = analyze(root)
+    controls = [json.loads(line) for line in controller_path.read_text().splitlines() if line.strip()]
+    crossings = [json.loads(line) for line in crossing_path.read_text().splitlines() if line.strip()]
+    if len(controls) != len(crossings):
+        raise ValueError("Controller/crossing history length differs")
+    releases = {}
+    for index, (control, crossing) in enumerate(zip(controls, crossings)):
+        if (control.get("frame"), control.get("time_s")) != (crossing.get("frame"), crossing.get("time_s")):
+            raise ValueError("Controller/original-frame join failed")
+        permissions = control.get("release_permissions")
+        if not isinstance(permissions, dict) or any(type(permissions.get(role)) is not bool for role in ("ego", "other")):
+            raise ValueError("Missing Boolean controller release permissions")
+        for role in ("ego", "other"):
+            expected = index >= config[role + "_release_frame"]
+            if permissions[role] != expected:
+                raise ValueError("Controller release schedule differs: " + role)
+            if expected and role not in releases:
+                releases[role] = {"index": index, "frame": crossing["frame"],
+                                  "time_s": crossing["time_s"]}
+    delays = {}
+    for role in ("ego", "other"):
+        entry = measured["first_body_entry"][role]
+        if entry is None or role not in releases:
+            raise ValueError("Release and body entry both required: " + role)
+        release = releases[role]
+        if entry["frame"] < release["frame"] or entry["time_s"] < release["time_s"]:
+            raise ValueError("Body entered before controller release: " + role)
+        delays[role] = entry["time_s"] - release["time_s"]
+    return {"format": "worker-release-entry-audit", "sources": {
+        "config.json": _sha(config_path), "controller_history.jsonl": _sha(controller_path),
+        **measured["sources"]}, "releases": releases,
+        "first_body_entry": measured["first_body_entry"],
+        "release_to_entry_delay_s": delays,
+        "ego_minus_other_entry_time_s": measured["ego_minus_other_entry_time_s"],
+        "approximately_same_time_judgment": measured["approximately_same_time_judgment"],
+        "physical_acceptance_claimed": False, "legal_priority_claimed": False}
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--release-sweep-output")
+    parser.add_argument("--audit-release-attempt")
     args = parser.parse_args()
-    print(json.dumps(build_release_sweep(args.release_sweep_output)
-                     if args.release_sweep_output else build(), indent=2))
+    if args.audit_release_attempt:
+        output = audit_release_attempt(args.audit_release_attempt)
+    elif args.release_sweep_output:
+        output = build_release_sweep(args.release_sweep_output)
+    else:
+        output = build()
+    print(json.dumps(output, indent=2))
