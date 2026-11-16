@@ -17,3 +17,9 @@ Resume commands:
 Pinned CPU preflight passes. No frozen input, runtime or batch file was edited. Assignment and full-gate output are retained in `assignment-check.log` and `strict-gate.log` after this checkpoint.
 
 Checkpoint: assignment-scoped `worker_check.py --complete` passed. The full strict gate next reports missing result `testing__C149752__NRS-484B-127-2__heavy_vehicle_driver` in `strict-gate.log`; that assignment was subsequently checkpointed separately.
+
+Latest CPU progress: `finalizer.py` reads saved original motion/frame map/sign context, all four source camera paths, trace and capture evidence; it writes the measured in-zone peak and posted limit to a Native result via pinned `write_result` and `physical_result`. It makes no public-authority or legal conclusion. `tests/test_finalizer.py` verifies the positive path and that removing `sign_context.json` fails without producing a result. Six tests now pass. Measurement contract, exact runner, manifest and proof receipts remain unfinished.
+
+`case-plan.json` now binds the exact posted-rate and governed-portion comparisons, the zero-recording evidence gap, all six supplied observation terms, and the selected statutory requirement to exact case IDs. These mappings are plans; no road authority, sign face, highway portion or physical realization has been established by the CPU fixture.
+
+`measurement-contract.json` binds disposition 0 to `measure_peak_in_signed_zone` and original motion, frame-map and sign-context sources. The positive fixture validates and verifies the report against the pinned measurement-contract checker; removal of sign context remains the negative proof. This is component-level, not `runtime.py compatibility` or saved-processing readiness.

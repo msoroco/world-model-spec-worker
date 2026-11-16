@@ -11,6 +11,10 @@ from posted_speed_measurements import analyze
 CAMERAS = ("overview.mkv", "approach.mkv", "reference_corner.mkv", "driver_reference.mkv")
 
 
+def measure_peak_in_signed_zone(report):
+    return report["peak_in_zone"]["measured_speed_mph"]
+
+
 def _sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
@@ -29,7 +33,7 @@ def finalize(attempt, output):
     if not config.get("recording_description"):
         raise ValueError("Missing recording description")
     report = analyze(attempt)
-    peak = report["peak_in_zone"]["measured_speed_mph"]
+    peak = measure_peak_in_signed_zone(report)
     posted = report["posted_limit_mph"]
     target = config.get("requested_speed_mph")
     if type(target) not in (int, float) or target <= 0:

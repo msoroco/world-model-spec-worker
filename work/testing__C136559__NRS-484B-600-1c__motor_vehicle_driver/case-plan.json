@@ -9,25 +9,37 @@
       "case_id": "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__posted_below",
       "target_law_id": "NRS-484B-600-1c",
       "purpose": "Source-confirmed signed narrow-road portion, observed just below posted value",
-      "physical_risk": "vehicle cannot hold just below target without drift"
+      "physical_risk": "vehicle cannot hold just below target without drift",
+      "gap_ids": [
+        "source_confirmed_posting_and_motion"
+      ]
     },
     {
       "case_id": "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__posted_at",
       "target_law_id": "NRS-484B-600-1c",
       "purpose": "Same portion, observed at posted value within declared instrument resolution",
-      "physical_risk": "sample timing and quantization obscure equality"
+      "physical_risk": "sample timing and quantization obscure equality",
+      "gap_ids": [
+        "source_confirmed_posting_and_motion"
+      ]
     },
     {
       "case_id": "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__posted_above",
       "target_law_id": "NRS-484B-600-1c",
       "purpose": "Same portion, observed just above posted value",
-      "physical_risk": "short/curved route or traffic prevents target safely"
+      "physical_risk": "short/curved route or traffic prevents target safely",
+      "gap_ids": [
+        "source_confirmed_posting_and_motion"
+      ]
     },
     {
       "case_id": "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__posted_outside_zone",
       "target_law_id": "NRS-484B-600-1c",
       "purpose": "Speed above the candidate posted value outside its sourced governed portion",
-      "physical_risk": "road/s lane mapping or sign extent ambiguous"
+      "physical_risk": "road/s lane mapping or sign extent ambiguous",
+      "gap_ids": [
+        "source_confirmed_posting_and_motion"
+      ]
     }
   ],
   "comparisons": [
@@ -43,7 +55,8 @@
       ],
       "deliberate_differences": [
         "source-observed speed below, at and above posted rate"
-      ]
+      ],
+      "comparison_id": "posted_rate_boundary"
     },
     {
       "case_ids": [
@@ -55,14 +68,29 @@
       ],
       "deliberate_differences": [
         "source-observed location inside versus outside posted portion"
-      ]
+      ],
+      "comparison_id": "governed_portion_extent"
     }
   ],
   "evidence_review": {
     "recordings_reviewed": [],
     "accepted_recording_count": 0,
     "supported_reuses": [],
-    "uncovered": "All exact cases; evidence.json contains zero accepted recordings."
+    "uncovered": "All exact cases; evidence.json contains zero accepted recordings.",
+    "reviewer": "C136559 CPU preparation owner",
+    "method": "Read frozen evidence.json; it inventories zero accepted recordings, so no existing video/trace can be reused or compared.",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "source_confirmed_posting_and_motion",
+        "requirement": "Original public-authority posting, governed highway portion/direction and source-joined vehicle speed",
+        "source": {
+          "path": "inputs/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/evidence.json",
+          "sha256": "e0673877b9b6d5cc1dac09658216b3e834dc00c19e63d0d6a55c0355de648c8f"
+        },
+        "why_existing_insufficient": "Frozen evidence inventory has zero accepted recordings."
+      }
+    ]
   },
   "observations": [
     "posted sign face, rate and unit from original camera",
@@ -91,5 +119,93 @@
     "No numeric statutory tolerance or duration is added; sampled observations cannot prove unsampled maxima.",
     "CPU-tested selector/controller/measurement are components, not complete exact construction, saved processing or physical evidence."
   ],
-  "planning_status": "partial; Native speed-limit sign selection, control and source-bound speed measurement CPU-tested; exact package pending"
+  "planning_status": "partial; Native speed-limit sign selection, control and source-bound speed measurement CPU-tested; exact package pending",
+  "requirement_dispositions": [
+    {
+      "requirement": "rate greater than that posted by a public authority for the particular portion of highway being traversed",
+      "source": "NRS 484B.600(1)(c)",
+      "status": "selected_required",
+      "evidence_or_gap": "No accepted recording; exact signed-zone source and original speed capture pending.",
+      "case_ids": [
+        "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__posted_below",
+        "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__posted_at",
+        "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__posted_above",
+        "testing__C136559__NRS-484B-600-1c__motor_vehicle_driver__posted_outside_zone"
+      ]
+    }
+  ],
+  "source_observation_mapping": {
+    "dev.speed_limit_sign": {
+      "evidence": "posted_limit_mph and sign actor/landmark from sign_context.json",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/assignment.json",
+          "sha256": "f1fef09152a262b8411a5d5a884fb92aa287b2a8fe7d7201425e1dcfac2f14eb"
+        }
+      ],
+      "source_file": "sign_context.json",
+      "status": "planned_unverified"
+    },
+    "dev.governs": {
+      "evidence": "governed_road_id and zone_start_s_m/zone_end_s_m from sign_context.json",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/assignment.json",
+          "sha256": "f1fef09152a262b8411a5d5a884fb92aa287b2a8fe7d7201425e1dcfac2f14eb"
+        }
+      ],
+      "source_file": "sign_context.json",
+      "status": "planned_unverified"
+    },
+    "drv.within_signed_zone": {
+      "evidence": "in_signed_zone derived from original road_id/road_s_m and sourced sign zone",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/assignment.json",
+          "sha256": "f1fef09152a262b8411a5d5a884fb92aa287b2a8fe7d7201425e1dcfac2f14eb"
+        }
+      ],
+      "source_file": "subject_motion.jsonl",
+      "status": "planned_unverified"
+    },
+    "kin.speed": {
+      "evidence": "measured_speed_mph from original actor.get_velocity 3D magnitude",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/assignment.json",
+          "sha256": "f1fef09152a262b8411a5d5a884fb92aa287b2a8fe7d7201425e1dcfac2f14eb"
+        }
+      ],
+      "source_file": "subject_motion.jsonl",
+      "status": "planned_unverified"
+    },
+    "rel.occupies": {
+      "evidence": "original road_id and road_s_m joined to each source video frame",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/assignment.json",
+          "sha256": "f1fef09152a262b8411a5d5a884fb92aa287b2a8fe7d7201425e1dcfac2f14eb"
+        }
+      ],
+      "source_file": "subject_motion.jsonl",
+      "status": "planned_unverified"
+    },
+    "dev.position": {
+      "evidence": "sign_actor_id and sign_landmark_id plus original face camera source",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/assignment.json",
+          "sha256": "f1fef09152a262b8411a5d5a884fb92aa287b2a8fe7d7201425e1dcfac2f14eb"
+        }
+      ],
+      "source_file": "sign_context.json",
+      "status": "planned_unverified"
+    }
+  }
 }

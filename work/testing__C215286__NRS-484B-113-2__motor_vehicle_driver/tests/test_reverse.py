@@ -1,4 +1,4 @@
-import hashlib,importlib.util,json,tempfile,unittest
+import hashlib,importlib.util,json,sys,tempfile,unittest
 from pathlib import Path
 from types import SimpleNamespace as NS
 ROOT=Path(__file__).resolve().parents[1]
@@ -23,7 +23,10 @@ class Tests(unittest.TestCase):
   ctx={'native_map_id':'TownX','road_id':7,'crosswalk_id':55,'crosswalk_geometry_source':'native-map','crosswalk_camera_source':'front-original','reverse_route_source':'native-waypoints','residence_district_source':'district-map','crosswalk_polygon_xy_m':[[8,-3],[12,-3],[12,3],[8,3]]}
   (root/'crosswalk_context.json').write_text(json.dumps(ctx))
   xs=[16,10,6] if on_crosswalk else [16,15,14]
-  rows=[{'frame':100+i,'time_s':1+i*.05,'road_id':7,'crosswalk_id':55,'native_reverse':True,'ego_forward_xy':[1,0],'ego_body_vertices_xy_m':body(x)} for i,x in enumerate(xs)]
+  rows=[{'frame':100+i,'time_s':1+i*.05,'road_id':7,'crosswalk_id':55,
+         'native_reverse':True,'ego_forward_xy':[1,0],
+         'ego_body_vertices_xy_m':body(x),'body_vertices_m':body(x),
+         'heading_deg':0,'velocity_mps':[-1,0]} for i,x in enumerate(xs)]
   frames=[{'video_frame':i,'carla_frame':r['frame'],'time_s':r['time_s']} for i,r in enumerate(rows)]
   (root/'reverse_history.jsonl').write_text(''.join(json.dumps(r)+'\n' for r in rows));(root/'video_frames.jsonl').write_text(''.join(json.dumps(r)+'\n' for r in frames))
  def test_reverse_on_and_over_crosswalk(self):
@@ -36,12 +39,22 @@ class Tests(unittest.TestCase):
    with self.assertRaisesRegex(ValueError,'identity'):measure.analyze(root)
    self.fixture(root);frames=[json.loads(s) for s in (root/'video_frames.jsonl').read_text().splitlines()];frames[1]['carla_frame']=999;(root/'video_frames.jsonl').write_text(''.join(json.dumps(s)+'\n' for s in frames))
    with self.assertRaisesRegex(ValueError,'frame join'):measure.analyze(root)
+   self.fixture(root);rows=[json.loads(s) for s in (root/'reverse_history.jsonl').read_text().splitlines()]
+   rows[1]['body_vertices_m']=body(99)
+   (root/'reverse_history.jsonl').write_text(''.join(json.dumps(s)+'\n' for s in rows))
+   with self.assertRaisesRegex(ValueError,'completion body differs'):measure.analyze(root)
+   self.fixture(root);rows=[json.loads(s) for s in (root/'reverse_history.jsonl').read_text().splitlines()]
+   rows[1]['velocity_mps']=[1,0]
+   (root/'reverse_history.jsonl').write_text(''.join(json.dumps(s)+'\n' for s in rows))
+   with self.assertRaisesRegex(ValueError,'velocity contradicts'):measure.analyze(root)
  def test_reverse_gear_without_backward_motion_does_not_count(self):
   with tempfile.TemporaryDirectory() as tmp:
    root=Path(tmp);self.fixture(root)
    rows=[json.loads(s) for s in (root/'reverse_history.jsonl').read_text().splitlines()]
    rows[1]['ego_forward_xy']=[-1,0]
    rows[2]['ego_forward_xy']=[-1,0]
+   rows[1]['heading_deg']=180;rows[2]['heading_deg']=180
+   rows[1]['velocity_mps']=[1,0];rows[2]['velocity_mps']=[1,0]
    (root/'reverse_history.jsonl').write_text(''.join(json.dumps(s)+'\n' for s in rows))
    report=measure.analyze(root)
    self.assertFalse(report['backward_motion_observed'])
@@ -94,6 +107,23 @@ class Tests(unittest.TestCase):
   with self.assertRaisesRegex(ValueError,'Over target body misses'):
    route.validate_pair(body(16),[1,0],crossing,
                        over_distance_m=2,short_distance_m=1)
+ def test_pinned_reverse_completion_reads_same_original_fields(self):
+  sys.path.insert(0,str(ROOT.parents[1]/'runtime'/'scenario_pipeline'))
+  from worker_exchange.native_output import assess_physical
+  with tempfile.TemporaryDirectory() as tmp:
+   root=Path(tmp);self.fixture(root)
+   config={'law_id':'NRS-484B-113-2','cell_id':'C215286','rate_hz':20,
+           'duration_s':0.15,'motion_route_xy_m':[[10,0]]}
+   (root/'config.json').write_text(json.dumps(config))
+   (root/'trace.jsonl').write_text('{}\n')
+   self.assertTrue(measure.analyze(root)['reverse_body_on_or_over_crosswalk'])
+   checked=assess_physical(root,config,[])
+   self.assertEqual(checked['physical_checks']['setup']['status'],'met')
+   self.assertEqual(checked['physical_checks']['maneuver']['status'],'met')
+   rows=[json.loads(s) for s in (root/'reverse_history.jsonl').read_text().splitlines()]
+   for row in rows:row.pop('velocity_mps')
+   (root/'reverse_history.jsonl').write_text(''.join(json.dumps(s)+'\n' for s in rows))
+   self.assertEqual(assess_physical(root,config,[])['physical_checks']['maneuver']['status'],'unverified')
  def test_real_native_reverse_request_and_restore(self):
   original=NS(throttle=0,brake=0,reverse=False)
   vehicle=NS(control=original)

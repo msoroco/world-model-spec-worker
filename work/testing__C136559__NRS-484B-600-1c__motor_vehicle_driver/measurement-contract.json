@@ -1,0 +1,23 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "rate greater than that posted by a public authority for the particular portion of highway being traversed",
+      "source": "NRS 484B.600(1)(c)",
+      "output_key": "sampled_peak_in_zone_mph",
+      "method": "measure_peak_in_signed_zone",
+      "value_type": "number",
+      "kind": "measured",
+      "inputs": [
+        "subject_motion.jsonl",
+        "video_frames.jsonl",
+        "sign_context.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": ["sign_context.json"],
+    "error_contains": "Missing required source: sign_context.json"
+  }
+}

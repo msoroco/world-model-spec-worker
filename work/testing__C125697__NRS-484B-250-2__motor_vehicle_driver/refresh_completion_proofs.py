@@ -36,6 +36,7 @@ def run(command, log):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--only', help='Exact case suffix to refresh')
+    parser.add_argument('--candidate', help='Only one of primary/fallback1/fallback2/fallback3')
     parser.add_argument('--revision', default='v2', help='Unique ignored diagnostic run revision')
     args = parser.parse_args()
     if not VALIDATOR.is_file():
@@ -48,6 +49,8 @@ def main():
             continue
         for selected in [entry, *entry['candidates']]:
             candidate = selected.get('id', 'primary')
+            if args.candidate and args.candidate != candidate:
+                continue
             tag = f'completion-{suffix}-{candidate}-{args.revision}'
             case = entry['case_id']
             selector = [] if candidate == 'primary' else ['--candidate', candidate]

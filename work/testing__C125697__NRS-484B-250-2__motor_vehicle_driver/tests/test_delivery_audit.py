@@ -24,8 +24,11 @@ class DeliveryAuditTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'Missing positive/negative'):
             module.audit(manifest=broken, result=result)
         result = copy.deepcopy(result)
+        target = manifest['cases'][-1]['case_id']
         result['tests'] = [row for row in result['tests']
-                           if row.get('log') != 'opposite-fallback3-bound-saved-v1.log']
+                           if not ('runtime.py process-saved' in row.get('command', '')
+                                   and '--case ' + target + ' ' in row.get('command', '')
+                                   and 'fallback3' in row.get('log', ''))]
         with self.assertRaisesRegex(ValueError, 'Missing recorded-only saved proof'):
             module.audit(manifest=manifest, result=result)
 

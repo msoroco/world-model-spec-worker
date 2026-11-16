@@ -43,6 +43,15 @@ def analyze(root:Path)->dict:
   fx,fy=fx/norm,fy/norm
   vertices=row.get('ego_body_vertices_xy_m')
   if not isinstance(vertices,list) or len(vertices)<4:raise ValueError('Missing complete ego body')
+  if row.get('body_vertices_m')!=vertices:
+   raise ValueError('Pinned reverse completion body differs from measurement body')
+  heading=_finite(row.get('heading_deg'),'Native heading')
+  if math.cos(math.radians(heading))*fx+math.sin(math.radians(heading))*fy<0.999:
+   raise ValueError('Pinned reverse completion heading differs from measurement heading')
+  velocity=row.get('velocity_mps')
+  if not isinstance(velocity,list) or len(velocity)<2:
+   raise ValueError('Missing Native reverse velocity')
+  vx,vy=(_finite(v,'Native velocity') for v in velocity[:2])
   body=MultiPoint([(_finite(v[0],'body x'),_finite(v[1],'body y')) for v in vertices]).convex_hull
   if body.area<=0:raise ValueError('Degenerate body')
   center=(body.centroid.x,body.centroid.y)
@@ -50,6 +59,8 @@ def analyze(root:Path)->dict:
   prior_center=center
   # Projection sign is a motion observation, not a legal distance threshold.
   backward=bool(prior_reverse is True and row['native_reverse'] and projected_step is not None and projected_step<0)
+  if backward and vx*fx+vy*fy>=0:
+   raise ValueError('Native velocity contradicts observed backward displacement')
   prior_reverse=row['native_reverse']
   samples.append({'frame':fid,'time_s':t,'native_reverse':row['native_reverse'],
                   'projected_step_along_heading_m':projected_step,
