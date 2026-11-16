@@ -1,12 +1,35 @@
 {
-  "status": "unselected_cpu_drafts",
+  "cell_id": "C111294",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
   "cases": [
     {
-      "case_id": "training__C111294__NRS-484B-600-1e__motor_vehicle_driver__below_80_mph",
-      "target_law_id": "NRS-484B-600-1e",
-      "target_type": "boundary_probe",
-      "cell_id": "C111294",
-      "actor": "motor_vehicle_driver",
+      "case_id": "training__C111294__NRS-484B-600-1e__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared road, actor and capture setup; no baseline recording selected.",
+      "variable_assignments": {
+        "road_and_territory_context": {
+          "kind": "world_setup",
+          "value": "authored road; original Nevada road and Native designation pending"
+        },
+        "subject_vehicle_context": {
+          "kind": "world_setup",
+          "value": "authored motor vehicle; original actor identity pending"
+        },
+        "requested_speed_mph": {
+          "kind": "controller",
+          "value": 75
+        },
+        "native_velocity_history": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "camera_policy": {
+          "kind": "controller",
+          "value": "four_view_nominal"
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -58,17 +81,126 @@
           "Synthetic CPU measurement is not physical speed or a legal verdict"
         ]
       },
-      "sweep_measurements": [],
-      "comparison_variable": "observed_speed",
-      "requested_setting": 75,
-      "status": "unselected_draft"
+      "unresolved_judgment_calls": []
+    },
+    {
+      "case_id": "training__C111294__NRS-484B-600-1e__motor_vehicle_driver__below_80_mph",
+      "target_law_id": "NRS-484B-600-1e",
+      "target_type": "boundary_probe",
+      "rationale": "Four fixed-context requests bracket the strict greater-than-80 clause; observed speed and legal status remain unverified.",
+      "variable_assignments": {
+        "road_and_territory_context": {
+          "kind": "world_setup",
+          "value": "authored road; original Nevada road and Native designation pending"
+        },
+        "subject_vehicle_context": {
+          "kind": "world_setup",
+          "value": "authored motor vehicle; original actor identity pending"
+        },
+        "requested_speed_mph": {
+          "kind": "controller",
+          "value": 75
+        },
+        "native_velocity_history": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "camera_policy": {
+          "kind": "controller",
+          "value": "four_view_nominal"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "Native x,y,z metres",
+            "sampling_rate_hz": 20,
+            "method": "original frame-joined Native actor readback",
+            "time_window": "entire 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame identity",
+            "uncertainty": "50 ms samples; velocity/pose consistency and 0.2 mph saved interval"
+          },
+          {
+            "name": "ego_speed",
+            "unit": "metres/second",
+            "sampling_rate_hz": 20,
+            "method": "original frame-joined Native actor readback",
+            "time_window": "entire 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame identity",
+            "uncertainty": "50 ms samples; velocity/pose consistency and 0.2 mph saved interval"
+          },
+          {
+            "name": "observed_speed",
+            "unit": "miles/hour",
+            "sampling_rate_hz": 20,
+            "method": "original frame-joined Native actor readback",
+            "time_window": "entire 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame identity",
+            "uncertainty": "50 ms samples; velocity/pose consistency and 0.2 mph saved interval"
+          },
+          {
+            "name": "other_vehicle_pose",
+            "unit": "Native x,y,z metres",
+            "sampling_rate_hz": 20,
+            "method": "original frame-joined Native actor readback",
+            "time_window": "entire 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame identity",
+            "uncertainty": "50 ms samples; velocity/pose consistency and 0.2 mph saved interval"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "other_vehicle",
+            "unit": "structured",
+            "method": "separate actor route, velocity, full body and frame identity"
+          }
+        ],
+        "limitations": [
+          "Requested speed and controller response require original Native readback",
+          "Synthetic CPU measurement is not physical speed or a legal verdict"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "a rate of speed greater than 80 miles per hour"
+      ],
+      "paired_probe_id": "absolute_speed_boundary",
+      "deliberate_differences": [
+        "requested_speed_mph"
+      ],
+      "probe": {
+        "primary_variable": "requested_speed_mph",
+        "comparison_or_standard": "original Native observed peak velocity versus strict 80 mph boundary",
+        "target_value_or_branch": 75
+      }
     },
     {
       "case_id": "training__C111294__NRS-484B-600-1e__motor_vehicle_driver__inside_80_mph",
       "target_law_id": "NRS-484B-600-1e",
       "target_type": "boundary_probe",
-      "cell_id": "C111294",
-      "actor": "motor_vehicle_driver",
+      "rationale": "Four fixed-context requests bracket the strict greater-than-80 clause; observed speed and legal status remain unverified.",
+      "variable_assignments": {
+        "road_and_territory_context": {
+          "kind": "world_setup",
+          "value": "authored road; original Nevada road and Native designation pending"
+        },
+        "subject_vehicle_context": {
+          "kind": "world_setup",
+          "value": "authored motor vehicle; original actor identity pending"
+        },
+        "requested_speed_mph": {
+          "kind": "controller",
+          "value": 79.5
+        },
+        "native_velocity_history": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "camera_policy": {
+          "kind": "controller",
+          "value": "four_view_nominal"
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -120,17 +252,46 @@
           "Synthetic CPU measurement is not physical speed or a legal verdict"
         ]
       },
-      "sweep_measurements": [],
-      "comparison_variable": "observed_speed",
-      "requested_setting": 79.5,
-      "status": "unselected_draft"
+      "unresolved_judgment_calls": [
+        "a rate of speed greater than 80 miles per hour"
+      ],
+      "paired_probe_id": "absolute_speed_boundary",
+      "deliberate_differences": [
+        "requested_speed_mph"
+      ],
+      "probe": {
+        "primary_variable": "requested_speed_mph",
+        "comparison_or_standard": "original Native observed peak velocity versus strict 80 mph boundary",
+        "target_value_or_branch": 79.5
+      }
     },
     {
       "case_id": "training__C111294__NRS-484B-600-1e__motor_vehicle_driver__at_80_mph",
       "target_law_id": "NRS-484B-600-1e",
       "target_type": "boundary_probe",
-      "cell_id": "C111294",
-      "actor": "motor_vehicle_driver",
+      "rationale": "Four fixed-context requests bracket the strict greater-than-80 clause; observed speed and legal status remain unverified.",
+      "variable_assignments": {
+        "road_and_territory_context": {
+          "kind": "world_setup",
+          "value": "authored road; original Nevada road and Native designation pending"
+        },
+        "subject_vehicle_context": {
+          "kind": "world_setup",
+          "value": "authored motor vehicle; original actor identity pending"
+        },
+        "requested_speed_mph": {
+          "kind": "controller",
+          "value": 80.0
+        },
+        "native_velocity_history": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "camera_policy": {
+          "kind": "controller",
+          "value": "four_view_nominal"
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -182,17 +343,46 @@
           "Synthetic CPU measurement is not physical speed or a legal verdict"
         ]
       },
-      "sweep_measurements": [],
-      "comparison_variable": "observed_speed",
-      "requested_setting": 80.0,
-      "status": "unselected_draft"
+      "unresolved_judgment_calls": [
+        "a rate of speed greater than 80 miles per hour"
+      ],
+      "paired_probe_id": "absolute_speed_boundary",
+      "deliberate_differences": [
+        "requested_speed_mph"
+      ],
+      "probe": {
+        "primary_variable": "requested_speed_mph",
+        "comparison_or_standard": "original Native observed peak velocity versus strict 80 mph boundary",
+        "target_value_or_branch": 80.0
+      }
     },
     {
       "case_id": "training__C111294__NRS-484B-600-1e__motor_vehicle_driver__above_80_mph",
       "target_law_id": "NRS-484B-600-1e",
       "target_type": "boundary_probe",
-      "cell_id": "C111294",
-      "actor": "motor_vehicle_driver",
+      "rationale": "Four fixed-context requests bracket the strict greater-than-80 clause; observed speed and legal status remain unverified.",
+      "variable_assignments": {
+        "road_and_territory_context": {
+          "kind": "world_setup",
+          "value": "authored road; original Nevada road and Native designation pending"
+        },
+        "subject_vehicle_context": {
+          "kind": "world_setup",
+          "value": "authored motor vehicle; original actor identity pending"
+        },
+        "requested_speed_mph": {
+          "kind": "controller",
+          "value": 85
+        },
+        "native_velocity_history": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "camera_policy": {
+          "kind": "controller",
+          "value": "four_view_nominal"
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -244,10 +434,36 @@
           "Synthetic CPU measurement is not physical speed or a legal verdict"
         ]
       },
-      "sweep_measurements": [],
-      "comparison_variable": "observed_speed",
-      "requested_setting": 85,
-      "status": "unselected_draft"
+      "unresolved_judgment_calls": [
+        "a rate of speed greater than 80 miles per hour"
+      ],
+      "paired_probe_id": "absolute_speed_boundary",
+      "deliberate_differences": [
+        "requested_speed_mph"
+      ],
+      "probe": {
+        "primary_variable": "requested_speed_mph",
+        "comparison_or_standard": "original Native observed peak velocity versus strict 80 mph boundary",
+        "target_value_or_branch": 85
+      }
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "observed_speed_boundary",
+      "target_law_id": "NRS-484B-600-1e",
+      "judgment_refs": [
+        {
+          "phrase": "a rate of speed greater than 80 miles per hour",
+          "note": "Derive peak speed from original Native velocity and preserve the measurement interval; an exact-80 diagnostic cannot establish a legal relation."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "The four engineering speed requests are selected; an original Native velocity and measurement-interval sweep requires physical capture.",
+      "missing_inputs": [
+        "Original 480-frame Native velocity and actor identity",
+        "Original uncertainty-qualified speed relation, especially exact 80 mph"
+      ]
     }
   ]
 }

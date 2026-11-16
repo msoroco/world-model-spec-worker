@@ -1,0 +1,50 @@
+{
+  "template_id": "NRS-484B-600-1e@motor_vehicle_driver",
+  "phrase": "a rate of speed greater than 80 miles per hour",
+  "note": "Derive peak speed from original Native velocity and preserve the measurement interval; an exact-80 diagnostic cannot establish a legal relation.",
+  "status": "draft",
+  "observable_requirements": {
+    "observables": [
+      {
+        "name": "kin.velocity",
+        "unit": "metres/second",
+        "description": "Original Native three-axis velocity and frame identity."
+      },
+      {
+        "name": "kin.speed",
+        "unit": "miles/hour",
+        "description": "Peak speed computed from original velocity with declared uncertainty."
+      },
+      {
+        "name": "ru.subject",
+        "unit": "structured",
+        "description": "Original actor identity and vehicle operation."
+      }
+    ],
+    "context_inputs": [],
+    "sweep_dimensions": [],
+    "landmarks": [],
+    "recording_needs": [
+      {
+        "name": "ego_speed",
+        "unit": "metres/second",
+        "description": "All 480 original Native velocity samples."
+      },
+      {
+        "name": "ego_pose",
+        "unit": "Native x,y,z metres",
+        "description": "Original actor position and frame identity."
+      },
+      {
+        "name": "observed_speed",
+        "unit": "miles/hour",
+        "description": "Derived original speed with declared uncertainty."
+      }
+    ],
+    "limitations": [
+      "Requested speed is not observed speed.",
+      "Synthetic source velocity is only a CPU diagnostic.",
+      "The 80 mph probe remains unresolved within the stated ±0.2 mph interval."
+    ]
+  }
+}
