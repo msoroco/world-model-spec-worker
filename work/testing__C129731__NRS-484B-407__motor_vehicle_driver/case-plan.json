@@ -631,11 +631,21 @@
   "existing_evidence": [],
   "law_id": "NRS-484B-407",
   "observations": [
-    "500 feet is 152.4 meters; preserve below, at and above probes without assigning a legal verdict",
-    "record U-turn position and completed heading reversal",
-    "record curve or approach/near-crest location",
-    "inventory both approach directions and retain ray source/brackets, including any censored extent",
-    "record approaching vehicle trajectories and camera visibility"
+    {
+      "description": "500 feet is 152.4 meters; preserve below, at and above probes without assigning a legal verdict; inventory both approach directions and retain ray source/brackets, including any censored extent",
+      "mandatory": true,
+      "name": "sight_distance"
+    },
+    {
+      "description": "record U-turn position and completed heading reversal; record curve or approach/near-crest location",
+      "mandatory": true,
+      "name": "u_turn_motion"
+    },
+    {
+      "description": "record approaching vehicle trajectories and camera visibility",
+      "mandatory": true,
+      "name": "approaching_actors"
+    }
   ],
   "planning_status": "Twenty-four canonical manifest cases and all 72 risk-triggered fallbacks have current offline, positive/negative compatibility and recorded-only saved-processing proofs. Seven semantic stages, the twenty-four-case canonical execution manifest, twenty-four physical classifier/lifecycle receipts and twenty-four independent full-path diagnostic delivery audit positive/negative proofs validate. Twelve CPU-tested diagnostic crest alternatives construct near-summit and approach-to-crest turn sites for all three 500-foot probes and both obscured approach directions. Their planned prop near faces align with the synthetic ray stations at 150, 152.4 and 160 m. All twelve have exact offline, positive/negative compatibility and recorded-only saved processing proofs; each four-branch probe group has an independent source comparison and two negative tampering proofs. A source-bound OpenDRIVE crest plan checks twelve lane/grade sites; a curved road plan checks six curve probe/direction sites. All twelve distinct crest placement/direction cases have complete CPU paths and four source-audited controlled comparisons per boundary probe. Six distinct curve probe/direction cases have complete CPU paths and one independently audited direction comparison per probe, including swapped-identity rejection. A source-bound engineering judgment grid now lists all 18 distinct curve/crest direction points, with legal thresholds unasserted and Native driver visibility still unverified. Strict delivery readiness remains open: physical feasibility review for that grid and shared branch review/GPU queue/local integration proof, and full-batch ready packages are unfinished worker CPU work. Synthetic pixels/rays prove no physical or legal acceptance.",
   "requirement_dispositions": [
@@ -725,9 +735,26 @@
     "The pinned sight-distance proxy uses virtual observers 1.4 m above lane waypoints and ego center/corners; it does not establish an actual driver-eye view."
   ],
   "selected_branch": "Mountain-road curve with documented visibility circumstances.",
-  "source_observation_mapping": [
-    {
-      "measurement": "recorded trajectory and heading reversal",
+  "source_observation_mapping": {
+    "drv.approaching": {
+      "channels": [
+        "approaching_actors"
+      ],
+      "evidence": "approach-b vehicle trajectory; CPU construction and synthetic diagnostics define the measurement. Native delivery must verify the physical observation.",
+      "planned_source": "Native participant poses",
+      "source_refs": [
+        {
+          "path": "inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json",
+          "sha256": "881fe9b8379dcee9c1113b607615d051d189b29559cbc7e6d65502ce84f8047b"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "drv.u_turn": {
+      "channels": [
+        "u_turn_motion"
+      ],
+      "evidence": "recorded trajectory and heading reversal; CPU construction and synthetic diagnostics define the measurement. Native delivery must verify the physical observation.",
       "planned_source": "Native ego poses and route intent",
       "source_refs": [
         {
@@ -735,71 +762,13 @@
           "sha256": "881fe9b8379dcee9c1113b607615d051d189b29559cbc7e6d65502ce84f8047b"
         }
       ],
-      "status": "planned_unverified",
-      "term": "drv.u_turn"
+      "status": "planned_unverified"
     },
-    {
-      "measurement": "map lane geometry and local curvature",
-      "planned_source": "Native map waypoints",
-      "source_refs": [
-        {
-          "path": "inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json",
-          "sha256": "881fe9b8379dcee9c1113b607615d051d189b29559cbc7e6d65502ce84f8047b"
-        }
+    "kin.position": {
+      "channels": [
+        "u_turn_motion"
       ],
-      "status": "planned_unverified",
-      "term": "st.curvature"
-    },
-    {
-      "measurement": "elevation and grade profile",
-      "planned_source": "Native map waypoints and surface measurements",
-      "source_refs": [
-        {
-          "path": "inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json",
-          "sha256": "881fe9b8379dcee9c1113b607615d051d189b29559cbc7e6d65502ce84f8047b"
-        }
-      ],
-      "status": "planned_unverified",
-      "term": "st.grade"
-    },
-    {
-      "measurement": "two-direction virtual-observer sight-line brackets",
-      "planned_source": "retained PipelineCapture rays and ego body samples",
-      "source_refs": [
-        {
-          "path": "inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json",
-          "sha256": "881fe9b8379dcee9c1113b607615d051d189b29559cbc7e6d65502ce84f8047b"
-        }
-      ],
-      "status": "planned_unverified",
-      "term": "st.sight_distance"
-    },
-    {
-      "measurement": "approach-a vehicle trajectory",
-      "planned_source": "Native participant poses",
-      "source_refs": [
-        {
-          "path": "inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json",
-          "sha256": "881fe9b8379dcee9c1113b607615d051d189b29559cbc7e6d65502ce84f8047b"
-        }
-      ],
-      "status": "planned_unverified",
-      "term": "rel.oncoming"
-    },
-    {
-      "measurement": "approach-b vehicle trajectory",
-      "planned_source": "Native participant poses",
-      "source_refs": [
-        {
-          "path": "inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json",
-          "sha256": "881fe9b8379dcee9c1113b607615d051d189b29559cbc7e6d65502ce84f8047b"
-        }
-      ],
-      "status": "planned_unverified",
-      "term": "drv.approaching"
-    },
-    {
-      "measurement": "U-turn site and trajectory positions",
+      "evidence": "U-turn site and trajectory positions; CPU construction and synthetic diagnostics define the measurement. Native delivery must verify the physical observation.",
       "planned_source": "Native ego poses",
       "source_refs": [
         {
@@ -807,11 +776,25 @@
           "sha256": "881fe9b8379dcee9c1113b607615d051d189b29559cbc7e6d65502ce84f8047b"
         }
       ],
-      "status": "planned_unverified",
-      "term": "kin.position"
+      "status": "planned_unverified"
     },
-    {
-      "measurement": "crest station relative to maneuver site",
+    "rel.oncoming": {
+      "channels": [
+        "approaching_actors"
+      ],
+      "evidence": "approach-a vehicle trajectory; CPU construction and synthetic diagnostics define the measurement. Native delivery must verify the physical observation.",
+      "planned_source": "Native participant poses",
+      "source_refs": [
+        {
+          "path": "inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json",
+          "sha256": "881fe9b8379dcee9c1113b607615d051d189b29559cbc7e6d65502ce84f8047b"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "st.crest": {
+      "channels": [],
+      "evidence": "crest station relative to maneuver site; CPU construction and synthetic diagnostics define the measurement. Native delivery must verify the physical observation.",
       "planned_source": "Native map waypoints and surface measurements",
       "source_refs": [
         {
@@ -819,10 +802,47 @@
           "sha256": "881fe9b8379dcee9c1113b607615d051d189b29559cbc7e6d65502ce84f8047b"
         }
       ],
-      "status": "planned_unverified",
-      "term": "st.crest"
+      "status": "planned_unverified"
+    },
+    "st.curvature": {
+      "channels": [],
+      "evidence": "map lane geometry and local curvature; CPU construction and synthetic diagnostics define the measurement. Native delivery must verify the physical observation.",
+      "planned_source": "Native map waypoints",
+      "source_refs": [
+        {
+          "path": "inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json",
+          "sha256": "881fe9b8379dcee9c1113b607615d051d189b29559cbc7e6d65502ce84f8047b"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "st.grade": {
+      "channels": [],
+      "evidence": "elevation and grade profile; CPU construction and synthetic diagnostics define the measurement. Native delivery must verify the physical observation.",
+      "planned_source": "Native map waypoints and surface measurements",
+      "source_refs": [
+        {
+          "path": "inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json",
+          "sha256": "881fe9b8379dcee9c1113b607615d051d189b29559cbc7e6d65502ce84f8047b"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "st.sight_distance": {
+      "channels": [
+        "sight_distance"
+      ],
+      "evidence": "two-direction virtual-observer sight-line brackets; CPU construction and synthetic diagnostics define the measurement. Native delivery must verify the physical observation.",
+      "planned_source": "retained PipelineCapture rays and ego body samples",
+      "source_refs": [
+        {
+          "path": "inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json",
+          "sha256": "881fe9b8379dcee9c1113b607615d051d189b29559cbc7e6d65502ce84f8047b"
+        }
+      ],
+      "status": "planned_unverified"
     }
-  ],
+  },
   "sources": [
     {
       "path": "inputs/testing__C129731__NRS-484B-407__motor_vehicle_driver/assignment.json",
