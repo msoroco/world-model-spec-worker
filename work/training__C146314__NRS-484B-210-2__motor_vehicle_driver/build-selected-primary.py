@@ -121,6 +121,7 @@ def build():
         'capture.py':NATIVE/'capture.py',
         'check.py':NATIVE/'portable_check.py',
         'measure_raw.py':NATIVE/'measure_raw.py',
+        'audit_physical_motion.py':NATIVE/'audit_physical_motion.py',
         'prepare_raw.py':NATIVE/'prepare_raw.py',
         'finalize_selected.py':NATIVE/'finalize_selected.py',
         'right-pass-road.xodr':NATIVE/'right-pass-road.xodr',

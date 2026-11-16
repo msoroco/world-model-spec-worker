@@ -36,8 +36,16 @@ def prove():
         output=Path(temporary)/'fresh'
         capture.prepare_output(source,output,cfg)
         assert (output/'config.json').read_bytes()==(source/'config.json').read_bytes()
+    frame=capture.frame_join_record(7,1207,.35)
+    assert frame['video_frame']==7 and frame['native_frame']==frame['carla_frame']==1207
+    assert frame['views']==[x[0] for x in capture.CAMERAS]
+    negatives.append(rejected(lambda:capture.frame_join_record(7,'1207',.35),
+                              'noninteger-native-frame'))
+    negatives.append(rejected(lambda:capture.frame_join_record(7,1207,float('nan')),
+                              'nonfinite-frame-time'))
     return {'format':'c146314-capture-output-proof-v1','passed':True,
             'fresh_materialized_accepted':True,'fresh_empty_accepted':True,
+            'native_frame_join_names_checked':True,
             'negative_rejections':negatives,'carla_executed':False}
 
 

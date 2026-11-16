@@ -28,6 +28,61 @@ def selected_manifest():
     return canonical if canonical.is_file() else PACKAGE/'execution-manifest-unified-draft.json'
 
 
+def record_native_exit_observation(output,case,candidate):
+    """Record child exit and report closure, without attesting operator release."""
+    output=Path(output)
+    report_path=output/'native-capture-report.json'
+    config_path=output/'config.json'
+    require(report_path.is_file() and config_path.is_file(),
+            'Native child exited without capture report or selected config')
+    seal_path=output/'capture-seal.json'
+    exit_path=output/'native-exit.json'
+    require(seal_path.is_file() and not exit_path.exists(),
+            'Native child exited without a fresh sealed capture')
+    report=json.loads(report_path.read_text())
+    prefix=['capture_finished','encoders_closed','restoration_verified']
+    require(report.get('case_id')==case and report.get('candidate_id')==candidate and
+            report.get('config_sha256')==sha(config_path) and
+            report.get('requested_frames')==report.get('observed_frames')==240 and
+            report.get('error') is None and report.get('closure_failures')==[] and
+            report.get('lifecycle_events')==prefix and
+            isinstance(report.get('restoration'),dict) and
+            report['restoration'].get('restored') is True,
+            'Native child exit did not establish exact capture closure')
+    seal=json.loads(seal_path.read_text())
+    require(seal.get('format')=='worker-sealed-capture' and
+            seal.get('provenance_kind')=='native' and
+            seal.get('events')==prefix and
+            seal.get('frames')==240 and
+            seal.get('restoration',{}).get('restored') is True and
+            seal.get('native_revision',{}).get('construction_sha256')==
+            sha(output/'construction.json') and
+            seal['native_revision'].get('runner_sha256')==sha(output/'runner.py'),
+            'Native capture seal differs from selected bundle')
+    runtime_package=REPO/'runtime/pipeline/scenario_pipeline'
+    if str(runtime_package) not in sys.path:
+        sys.path.insert(0,str(runtime_package))
+    from worker_exchange.saved_processing import record_native_exit
+    exit_receipt=record_native_exit(output)
+    require(exit_receipt.get('event')=='native_exit' and
+            exit_receipt.get('capture_seal_sha256')==sha(seal_path),
+            'Pinned runtime did not bind Native exit to capture seal')
+    receipt={'format':'c146314-native-exit-observation-v1',
+             'case_id':case,'candidate_id':candidate,
+             'capture_report_sha256':sha(report_path),
+             'capture_seal_sha256':sha(seal_path),
+             'native_exit_sha256':sha(exit_path),
+             'config_sha256':sha(config_path),
+             'events':prefix+['native_exit'],
+             'operator_owner_release_attested':False,
+             'saved_processing_started':False,
+             'physical_acceptance_claimed':False}
+    with (output/'native-exit-observation.json').open('x') as stream:
+        json.dump(receipt,stream,indent=2,allow_nan=False)
+        stream.write('\n')
+    return receipt
+
+
 def check(manifest=None):
     path=Path(manifest) if manifest else selected_manifest()
     data=json.loads(path.read_text())
@@ -77,6 +132,7 @@ def launch(case,candidate,output,python,host,port,manifest=None):
     subprocess.run([str(python),str(output/'runner.py'),'--output-dir',str(output),
                     '--host',str(host),'--port',str(port)],
                    cwd=output,check=True)
+    return record_native_exit_observation(output,case,candidate)
 
 
 if __name__=='__main__':

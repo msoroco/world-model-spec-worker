@@ -16,7 +16,7 @@ MANIFEST = ROOT / (
     else 'execution-manifest-diagnostic-' + witness + '-' + candidate + '.json' if witness=='contrast'
     else 'execution-manifest-diagnostic-reference-' + candidate + '.json')
 CASE = ROOT.name + '__' + witness
-PREFIX = REPO / ('.runtime-work/c146314-210-2-' + witness + '-' + candidate + '-fresh-update061')
+PREFIX = REPO / ('.runtime-work/c146314-210-2-' + witness + '-' + candidate + '-fresh-update063')
 FIXTURE = Path(str(PREFIX) + '-fixture')
 ATTEMPT = Path(str(PREFIX) + '-attempt')
 SAVED = Path(str(PREFIX) + '-saved')

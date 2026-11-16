@@ -6,6 +6,7 @@ import math
 from pathlib import Path
 
 import prepare_raw
+from audit_physical_motion import audit as audit_motion
 
 
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
@@ -26,6 +27,32 @@ def measure_time_to_conflict(measures):
             if row['time_to_lead_center_s'] is not None]
     if not values:raise ValueError('No observed positive closing motion')
     return min(values)
+
+
+def motion_fields(kind,motion,source_hashes):
+    """Translate independent motion evidence without deciding legal safety."""
+    if kind=='synthetic_native_sample':
+        if motion is not None:raise ValueError('Synthetic motion cannot be original review')
+        return {'maneuver_completed':False,
+                'provenance_kind':'synthetic_local_diagnostic',
+                'check':{'status':'unverified',
+                    'method':'synthetic diagnostic cannot establish original right-pass motion',
+                    'sources':source_hashes,
+                    'missing_evidence':['original Native motion'],
+                    'legal_verdict_claimed':False,'physical_causation_claimed':False}}
+    if kind!='original_native' or not isinstance(motion,dict) or \
+       motion.get('source_kind')!='original_native' or \
+       motion.get('status') not in ('met','not_met','unverified') or \
+       not motion.get('method') or not motion.get('sources'):
+        raise ValueError('Original motion audit missing or unbound')
+    status=motion['status']
+    if motion.get('maneuver_completed')!=(status=='met'):
+        raise ValueError('Original motion completion differs from audit')
+    return {'maneuver_completed':status=='met','provenance_kind':'native',
+            'check':{'status':status,'method':motion['method'],
+                'sources':motion['sources'],
+                'missing_evidence':motion.get('missing_evidence',[]),
+                'legal_verdict_claimed':False,'physical_causation_claimed':False}}
 
 
 def finalize(attempt,output):
@@ -69,6 +96,8 @@ def finalize(attempt,output):
          'trace.jsonl','capture/evidence.jsonl')}
     clearance=measure_pass_clearance(measures)
     ttc=measure_time_to_conflict(measures)
+    motion=audit_motion(attempt) if kind=='original_native' else None
+    motion_summary=motion_fields(kind,motion,source_hashes)
     measurement_report={'format':'c146314-210-2-saved-analysis-v1',
         'case_id':cfg['case_id'],'candidate_id':cfg['candidate_id'],
         'measurements':{
@@ -118,14 +147,10 @@ def finalize(attempt,output):
             'matched':match,'physical_cause_confirmed':False,
             'cause_evidence':['native-raw-actors.jsonl','video_frames.jsonl']}],
         'setup_confirmed':False,'behavior_attempted':False,
-        'maneuver_completed':False,
-        'termination_reason':'240 source frames; original physical and legal review pending',
-        'physical_failure_flags':['Original right-pass physical safety and pixels unreviewed'],
-        'physical_checks':{'maneuver':{'status':'unverified',
-            'method':'synthetic diagnostic cannot establish original right-pass motion' if
-                kind=='synthetic_native_sample' else 'original motion requires independent physical review',
-            'sources':source_hashes,'missing_evidence':['independent physical review'],
-            'legal_verdict_claimed':False,'physical_causation_claimed':False}},
+        'maneuver_completed':motion_summary['maneuver_completed'],
+        'termination_reason':'240 source frames; legal safety and pixel review pending',
+        'physical_failure_flags':['Original right-pass safety and pixels unreviewed'],
+        'physical_checks':{'maneuver':motion_summary['check']},
         'trace_reference':'trace.jsonl',
         'video_references':[name+'.mkv' for name in
             ('overview','approach','reference_corner','driver_reference')],
@@ -136,8 +161,7 @@ def finalize(attempt,output):
             'value':clearance,'unit':'m','method':'retained Native body geometry',
             'time_window':'12 s diagnostic window','statistic':'minimum pass overlap gap',
             'reference':'native-raw-actors.jsonl'}},
-        'provenance_kind':'synthetic_local_diagnostic' if
-            kind=='synthetic_native_sample' else 'original_native_unreviewed',
+        'provenance_kind':motion_summary['provenance_kind'],
         'accepted':False}
     from worker_exchange.native_output import validate_result
     validate_result(result)

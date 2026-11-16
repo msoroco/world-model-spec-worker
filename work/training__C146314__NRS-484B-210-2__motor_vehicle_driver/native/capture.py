@@ -85,7 +85,7 @@ def close_capture(pipeline, videos, logs, owned, changed, client, saved, restore
     The event list records only completed operations. A failed close or restore
     remains an error and cannot be mistaken for an ownership-release receipt.
     """
-    events=[];failures=[];restored=None
+    events=[];failures=[];restored=None;encoder_exit_codes={}
     if pipeline is not None:
         try:pipeline.close(confirmed=capture_succeeded)
         except BaseException as exc:failures.append({'pipeline_close_error':str(exc)})
@@ -93,7 +93,9 @@ def close_capture(pipeline, videos, logs, owned, changed, client, saved, restore
     for name,process in videos.items():
         try:
             process.stdin.close()
-            if process.wait(timeout=180)!=0:
+            code=process.wait(timeout=180)
+            encoder_exit_codes[name]=code
+            if code!=0:
                 raise RuntimeError('Lossless video encoder failed: '+name)
         except BaseException as exc:failures.append({'video_encoder_error':str(exc)})
         try:logs[name].close()
@@ -110,7 +112,8 @@ def close_capture(pipeline, videos, logs, owned, changed, client, saved, restore
         except BaseException as exc:failures.append({'restore_error':str(exc)})
     if changed and events == ['capture_finished','encoders_closed'] and not failures and isinstance(restored,dict) and restored.get('restored') is True:
         events.append('restoration_verified')
-    return {'events':events,'restoration':restored,'failures':failures}
+    return {'events':events,'restoration':restored,'failures':failures,
+            'encoder_exit_codes':encoder_exit_codes}
 
 
 def pose(actor):
@@ -123,6 +126,17 @@ def pose(actor):
         'velocity_native_xyz_mps':[velocity.x,velocity.y,velocity.z],
         'speed_mps':math.sqrt(velocity.x**2+velocity.y**2+velocity.z**2),
         'body_native_xyz_m':[[p.x,p.y,p.z] for p in body]}
+
+
+def frame_join_record(index,native_frame,time_s):
+    """Bind every encoded frame to both names used by saved processing."""
+    if type(index) is not int or index<0 or type(native_frame) is not int or native_frame<0:
+        raise ValueError('Invalid Native frame identity')
+    if not isinstance(time_s,(int,float)) or not math.isfinite(time_s):
+        raise ValueError('Invalid Native frame time')
+    return {'video_frame':index,'native_frame':native_frame,
+            'carla_frame':native_frame,'time_s':time_s,
+            'views':[x[0] for x in CAMERAS]}
 
 
 def steer_to(carla,actor,target_x,target_y,target_speed):
@@ -179,6 +193,7 @@ def execute(bundle,output,host,port):
     import numpy as np
     from pipeline_capture import PipelineCapture
     from worker_exchange.world_restore import snapshot,restore
+    from worker_exchange.native_output import seal_capture
 
     client=carla.Client(host,int(port));client.set_timeout(180)
     old=client.get_world();saved=snapshot(client)
@@ -286,9 +301,7 @@ def execute(bundle,output,host,port):
                     rgb=np.frombuffer(image.raw_data,dtype=np.uint8).reshape(
                         height,width,4)[:,:,:3][:,:,::-1]
                     videos[name].stdin.write(rgb.tobytes())
-                frame_map.write(json.dumps({'video_frame':i,
-                    'native_frame':frame,'time_s':time_s,
-                    'views':[x[0] for x in CAMERAS]},
+                frame_map.write(json.dumps(frame_join_record(i,frame,time_s),
                     allow_nan=False)+'\n')
                 frames+=1
     except BaseException as exc:
@@ -309,6 +322,15 @@ def execute(bundle,output,host,port):
             'restoration':restored,'lifecycle_events':closure['events'],
             'closure_failures':closure['failures'],'error':error,'accepted':False,
             'legal_safety_verdict':None,'delivery_ready':False})
+        if error is None:
+            try:
+                seal_capture(output,frames=frames,restoration=restored,
+                             errors=[],encoder_exit_codes=closure['encoder_exit_codes'],
+                             context={'case_id':checked['case_id'],
+                                      'candidate_id':checked['candidate_id'],
+                                      'legal_safety_verdict':None})
+            except BaseException as exc:
+                error={'capture_seal_error':str(exc)}
     if error:
         raise RuntimeError('C146314 Native attempt failed; see capture report')
 
