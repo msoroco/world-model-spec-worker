@@ -4,6 +4,7 @@ All candidate sources here are synthetic diagnostics. The production entrypoint
 must reject them and cannot emit an accepted original recording receipt.
 """
 import argparse
+import copy
 import importlib.util
 import json
 from pathlib import Path
@@ -35,14 +36,40 @@ def prove(case):
         assert config['case_id'] == result['case_id'] == case
         assert config['candidate_id'] == candidate
         assert result['provenance_kind'] == 'synthetic_local_diagnostic'
-        joined = audit.validate_rows(
-            audit.rows(analysis/'native-raw-actors.jsonl'),
-            audit.rows(analysis/'video_frames.jsonl'),
-            audit.rows(analysis/'trace.jsonl'),
-            audit.rows(analysis/'stand-review.jsonl'), source_kind='synthetic_cpu')
+        actors = audit.rows(analysis/'native-raw-actors.jsonl')
+        frames = audit.rows(analysis/'video_frames.jsonl')
+        trace = audit.rows(analysis/'trace.jsonl')
+        reviews = audit.rows(analysis/'stand-review.jsonl')
+        joined = audit.validate_rows(actors, frames, trace, reviews,
+                                     source_kind='synthetic_cpu')
         assert joined['frames'] == 240
+        if candidate == 'primary':
+            damaged = copy.deepcopy(actors)
+            damaged[0]['ego']['speed_mps'] += 1
+            try:
+                audit.validate_rows(damaged, frames, trace, reviews,
+                                    source_kind='synthetic_cpu')
+            except ValueError as error:
+                assert 'join differs' in str(error)
+            else:
+                raise AssertionError('Changed source speed was accepted')
+            try:
+                audit.validate_rows(actors, frames, trace, reviews[:-1],
+                                    source_kind='synthetic_cpu')
+            except ValueError as error:
+                assert 'count differs' in str(error)
+            else:
+                raise AssertionError('Missing review frame was accepted')
         media.check_four_view_sources({name: analysis/(name+'.mkv')
                                        for name in audit.CAMERAS})
+        if candidate == 'primary':
+            try:
+                media.check_four_view_sources({name: analysis/(name+'.mkv')
+                                               for name in audit.CAMERAS[:-1]})
+            except ValueError as error:
+                assert 'Four named' in str(error)
+            else:
+                raise AssertionError('Missing source camera was accepted')
         # Saved processing already decoded every review frame; verify its exact
         # source-bound receipt rather than claiming semantic pixel visibility.
         media.verify_receipt(analysis/'event_review.webm',
@@ -65,6 +92,7 @@ def prove(case):
             'joined_synthetic_frames_per_candidate': 240,
             'full_decode_receipts_verified': 4,
             'pixel_checker_positive_and_flat_negative': True,
+            'changed_speed_missing_review_and_camera_negatives': True,
             'original_native_observed': False, 'accepted_recording': False}
 
 

@@ -111,7 +111,8 @@ def media_module():
     raise ValueError('Pinned media auditor unavailable')
 
 
-def audit_original(attempt, case, review_path, output, decode_receipt):
+def audit_original(attempt, case, review_path, output, decode_receipt,
+                   job_id=None, attempt_number=None, recording_id=None):
     attempt, output = Path(attempt).resolve(), Path(output).resolve()
     require(not output.exists() and not Path(decode_receipt).exists(),
             'Retain prior independent audit; choose fresh outputs')
@@ -121,6 +122,10 @@ def audit_original(attempt, case, review_path, output, decode_receipt):
             result.get('provenance_kind') == 'original_native_unreviewed' and
             result.get('accepted') is False,
             'Synthetic or wrong-case result cannot establish original Native delivery')
+    require(type(job_id) is int and job_id > 0 and
+            type(attempt_number) is int and attempt_number > 0 and
+            isinstance(recording_id, str) and bool(recording_id.strip()),
+            'Canonical job, attempt or recording identity absent')
     actors = rows(attempt/'native-raw-actors.jsonl')
     frames = rows(attempt/'video_frames.jsonl')
     trace = rows(attempt/'trace.jsonl')
@@ -129,9 +134,17 @@ def audit_original(attempt, case, review_path, output, decode_receipt):
                            source_kind='original_native')
     required = ('native-raw-actors.jsonl', 'video_frames.jsonl', 'trace.jsonl',
                 'stand-review.jsonl', 'native-map-readback.json', 'config.json',
-                'result.json')
+                'result.json', 'native-capture-report.json', 'raw.mkv')
     sources = {name: sha(attempt/name) for name in required}
     sources.update({name+'.mkv': sha(attempt/(name+'.mkv')) for name in CAMERAS})
+    map_row = read(attempt/'native-map-readback.json')
+    capture = read(attempt/'native-capture-report.json')
+    require(map_row.get('road_sha256') == config.get('road_sha256') and
+            capture.get('case_id') == case and
+            capture.get('candidate_id') == config.get('candidate_id') and
+            capture.get('error') is None and
+            capture.get('observed_frames') == 240,
+            'Original map or capture identity differs')
     review = read(review_path)
     require(review.get('case_id') == case and
             review.get('candidate_id') == config.get('candidate_id') and
@@ -139,6 +152,9 @@ def audit_original(attempt, case, review_path, output, decode_receipt):
             bool(review['reviewer_id'].strip()) and
             review.get('source_kind') == 'original_native_review' and
             review.get('legal_verdict') is None and
+            all(review.get('participant_checks', {}).get(key) is True for key in
+                ('ego_non_taxicab', 'taxicab_actors_accounted',
+                 'passenger_activity_reviewed')) and
             all(review.get('sources', {}).get(name) == value
                 for name, value in sources.items()),
             'Independent original stand review or source hashes differ')
@@ -151,6 +167,11 @@ def audit_original(attempt, case, review_path, output, decode_receipt):
                              'stand-review.jsonl', 'native-map-readback.json')) and
             physical.get('legal_verdict_claimed') is False,
             'Original physical completion missing or stale')
+    core = read(attempt/'converted/trace.json').get('scenes')
+    require(isinstance(core, list) and len(core) == 240 and
+            all(scene.get('t') == round(frame['time_s']*1000)
+                for scene, frame in zip(core, frames)),
+            'Original Core/frame timestamp join differs')
     media = media_module()
     media.check_four_view_sources({name: attempt/(name+'.mkv') for name in CAMERAS})
     check, seen = pixel_checker(review.get('pixel_boxes'))
@@ -160,13 +181,39 @@ def audit_original(attempt, case, review_path, output, decode_receipt):
                           mapping_sha256=sources['video_frames.jsonl'],
                           receipt=decode_receipt)
     require(CLAIMS <= seen, 'Full decode omitted reviewed visible features')
-    receipt = {'format': 'c135709-original-delivery-audit-v1',
-        'passed': True, 'case_id': case, 'candidate_id': config['candidate_id'],
+    receipt = {'format': 'worker-delivery-audit', 'passed': True,
+        'case_id': case, 'candidate_id': config['candidate_id'],
+        'job_id': job_id, 'attempt': attempt_number,
+        'recording_id': recording_id,
+        'source_result_sha256': sources['result.json'], 'frames': 240,
+        'video': 'raw.mkv', 'video_sha256': sources['raw.mkv'],
+        'trace': 'converted/trace.json',
+        'trace_sha256': sha(attempt/'converted/trace.json'),
+        'frame_map_sha256': sources['video_frames.jsonl'],
         'checks': {name: True for name in CHECKS}, 'joined': joined,
         'sources': sources, 'review_sha256': sha(review_path),
-        'decode_sha256': sha(decode_receipt),
+        'auditor_path': str(Path(__file__).resolve()),
+        'auditor_sha256': sha(Path(__file__)),
+        'source_decode_receipt_path': str(Path(decode_receipt).resolve()),
+        'source_decode_receipt_sha256': sha(decode_receipt),
+        'source_decode_auditor_sha256': decoded['auditor_sha256'],
         'rgb_sequence_sha256': decoded['rgb_sequence_sha256'],
         'original_native_observed': True, 'legal_verdict': None}
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(receipt, indent=2)+'\n')
     return receipt
+
+
+if __name__ == '__main__':
+    import argparse
+    parser = argparse.ArgumentParser()
+    for name in ('attempt', 'case', 'review', 'output', 'decode-receipt',
+                 'recording-id'):
+        parser.add_argument('--'+name, required=True)
+    parser.add_argument('--job-id', type=int, required=True)
+    parser.add_argument('--attempt-number', type=int, required=True)
+    args = parser.parse_args()
+    print(json.dumps(audit_original(args.attempt, args.case, args.review,
+                                    args.output, args.decode_receipt, args.job_id,
+                                    args.attempt_number, args.recording_id),
+                     sort_keys=True))
