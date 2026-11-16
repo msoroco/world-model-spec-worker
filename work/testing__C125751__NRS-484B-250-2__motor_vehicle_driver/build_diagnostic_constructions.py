@@ -11,6 +11,7 @@ import json
 import shutil
 import tempfile
 from pathlib import Path
+from types import SimpleNamespace
 
 
 HERE = Path(__file__).resolve().parent
@@ -235,6 +236,95 @@ def audit_release_attempt(root):
         "physical_acceptance_claimed": False, "legal_priority_claimed": False}
 
 
+def replay_controller_commands(config, frames=14):
+    """Run both production release/stop/speed controllers on a fixed CPU pose.
+
+    A stationary front at each stop reference tests control commands, not vehicle
+    motion. The resulting trace is never an original Native controller history.
+    """
+    from runner import release_permissions
+    from stop_control import StopApproach
+    from yield_controller import apply_speed_control
+
+    if frames < 12:
+        raise ValueError("Controller replay must extend past the release sweep")
+    carla = SimpleNamespace(VehicleControl=lambda: SimpleNamespace(
+        steer=0.0, throttle=0.0, brake=0.0))
+    actors = {role: SimpleNamespace(
+        get_velocity=lambda: SimpleNamespace(x=0.0, y=0.0, z=0.0),
+        apply_control=lambda control: None) for role in ("ego", "other")}
+    stops = {}
+    fronts = {}
+    for role in ("ego", "other"):
+        segment = config["site"]["selected_stop_references"][role]["segment_xy_m"]
+        stops[role] = StopApproach(segment)
+        fronts[role] = [(segment[0][axis] + segment[1][axis]) / 2 for axis in (0, 1)]
+    trace = []
+    for index in range(frames):
+        permissions = release_permissions(config, index, other_entered=False)
+        row = {"index": index, "permissions": permissions, "roles": {}}
+        for role in ("ego", "other"):
+            decision = stops[role].step(fronts[role], 0.0, [1.0, 0.0], permissions[role])
+            command = apply_speed_control(carla, actors[role],
+                                          config[role + "_target_speed_mps"],
+                                          decision["hold"])
+            row["roles"][role] = {"stop_phase": decision["phase"],
+                                   "zero_speed_frames": decision["recorded_zero_speed_frames_near_reference"],
+                                   "command": command}
+        trace.append(row)
+    return trace
+
+
+def prove_controller_command_sweep(ego_root, other_root, output_path):
+    """Bind eight staged schedules to actual CPU controller command transitions."""
+    output_path = Path(output_path)
+    if output_path.exists():
+        raise ValueError("Retain previous controller proof; choose a new output")
+    traces, receipts = {}, []
+    for axis, root in (("ego", Path(ego_root)), ("other", Path(other_root))):
+        for release in (8, 9, 10, 11):
+            construction = root / f"construction-{axis}-{release}.json"
+            document = json.loads(construction.read_text())
+            config = json.loads(next(item["content"] for item in document["files"]
+                                     if item["path"] == "config.json"))
+            if config.get(axis + "_release_frame") != release or config.get(
+                    ("other" if axis == "ego" else "ego") + "_release_frame") != 10:
+                raise ValueError("Staged release schedule differs from declared axis")
+            trace = replay_controller_commands(config)
+            first = {}
+            for role in ("ego", "other"):
+                enabled = [row["index"] for row in trace
+                           if row["roles"][role]["command"]["throttle"] > 0]
+                expected = config[role + "_release_frame"]
+                if not enabled or enabled[0] != expected:
+                    raise ValueError("Production controller command did not follow release: " + role)
+                if any(row["roles"][role]["command"]["brake"] != 1.0
+                       for row in trace[:expected]):
+                    raise ValueError("Production controller did not hold before release: " + role)
+                first[role] = enabled[0]
+            traces[(axis, release)] = trace
+            receipts.append({"axis": axis, "release_frame": release,
+                             "construction_sha256": _sha(construction),
+                             "first_positive_throttle_index": first,
+                             "pre_release_full_brake": True})
+    for axis, fixed in (("ego", "other"), ("other", "ego")):
+        baseline = [row["roles"][fixed] for row in traces[(axis, 10)]]
+        if any([row["roles"][fixed] for row in traces[(axis, release)]] != baseline
+               for release in (8, 9, 11)):
+            raise ValueError("Fixed-role production commands changed across release axis")
+    if traces[("ego", 10)] != traces[("other", 10)]:
+        raise ValueError("Cross-axis production controller baseline differs")
+    proof = {"format": "worker-c125751-controller-command-sweep",
+             "builder_sha256": _sha(HERE / "build_diagnostic_constructions.py"),
+             "replay_kind": "stationary CPU pose at source-selected stop references",
+             "receipts": receipts, "fixed_role_commands_identical": True,
+             "cross_axis_baseline_identical": True,
+             "native_motion_or_entry_proven": False,
+             "physical_acceptance_claimed": False, "legal_priority_claimed": False}
+    _dump(output_path, proof)
+    return proof
+
+
 def prove_fixture_release_join(ego_root, other_root, output_root):
     """Show static diagnostic crossing tracks cannot prove release response."""
     output = Path(output_root)
@@ -315,12 +405,15 @@ if __name__ == "__main__":
     parser.add_argument("--audit-release-sweep")
     parser.add_argument("--compare-release-sweeps", nargs=2)
     parser.add_argument("--prove-fixture-release-join", nargs=3)
+    parser.add_argument("--prove-controller-command-sweep", nargs=3)
     parser.add_argument("--audit-release-attempt")
     args = parser.parse_args()
     if args.audit_release_attempt:
         output = audit_release_attempt(args.audit_release_attempt)
     elif args.prove_fixture_release_join:
         output = prove_fixture_release_join(*args.prove_fixture_release_join)
+    elif args.prove_controller_command_sweep:
+        output = prove_controller_command_sweep(*args.prove_controller_command_sweep)
     elif args.compare_release_sweeps:
         output = audit_cross_release_sweeps(*args.compare_release_sweeps)
     elif args.audit_release_sweep:
