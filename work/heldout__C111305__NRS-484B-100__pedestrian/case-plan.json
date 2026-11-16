@@ -11,7 +11,7 @@
       "gap_ids": [
         "uncovered-full-text"
       ],
-      "construction_status": "measurement_and_comparison_cpu_tested_exact_construction_pending",
+      "construction_status": "native_runner_cpu_tested_exact_construction_and_saved_proofs_pending",
       "physical_risk": {
         "risk": "Native pedestrian may not respond to officer indication within the captured span",
         "trigger_source": "retained timed direction and original subject motion",
@@ -26,7 +26,7 @@
       "gap_ids": [
         "uncovered-full-text"
       ],
-      "construction_status": "measurement_and_comparison_cpu_tested_exact_construction_pending",
+      "construction_status": "native_runner_cpu_tested_exact_construction_and_saved_proofs_pending",
       "physical_risk": {
         "risk": "Native pedestrian may not respond to officer indication within the captured span",
         "trigger_source": "retained timed direction and original subject motion",
@@ -41,7 +41,7 @@
       "gap_ids": [
         "uncovered-full-text"
       ],
-      "construction_status": "measurement_and_comparison_cpu_tested_exact_construction_pending",
+      "construction_status": "native_runner_cpu_tested_exact_construction_and_saved_proofs_pending",
       "physical_risk": {
         "risk": "Native pedestrian may not respond to officer indication within the captured span",
         "trigger_source": "retained timed direction and original subject motion",
@@ -56,7 +56,7 @@
       "gap_ids": [
         "uncovered-full-text"
       ],
-      "construction_status": "measurement_and_comparison_cpu_tested_exact_construction_pending",
+      "construction_status": "native_runner_cpu_tested_exact_construction_and_saved_proofs_pending",
       "physical_risk": {
         "risk": "Native pedestrian may not respond to officer indication within the captured span",
         "trigger_source": "retained timed direction and original subject motion",
@@ -101,24 +101,14 @@
   ],
   "observations": [
     {
-      "term": "dev.human_direction",
-      "note": "a person directing traffic with role police_officer, and the indication given"
+      "name": "officer_direction",
+      "mandatory": true,
+      "description": "Timed addressed command, gesture and communication source context"
     },
     {
-      "term": "dev.governs",
-      "note": "the direction is addressed to the subject"
-    },
-    {
-      "term": "ru.subject",
-      "note": "the person whose conduct is judged \u2014 any road user, not only a driver"
-    },
-    {
-      "term": "kin.velocity",
-      "note": "what the subject did after the direction"
-    },
-    {
-      "term": "drv.officer_directed",
-      "note": "an officer's indication governs the subject"
+      "name": "subject_speed_mps",
+      "mandatory": true,
+      "description": "Original pedestrian velocity after indication"
     }
   ],
   "sources": [
@@ -165,14 +155,11 @@
       "status": "planning_pending_exact_cases"
     }
   ],
-  "source_observation_mapping": [
-    {
-      "term": "dev.human_direction",
-      "measurement": "officer_response.py timed direction, source context and original subject motion",
+  "source_observation_mapping": {
+    "dev.human_direction": {
+      "evidence": "Timed officer pose, identity and original four-view source; authority and duty remain review questions.",
       "channels": [
-        "officer_direction",
-        "subject_motion",
-        "officer_context"
+        "officer_direction"
       ],
       "source_refs": [
         {
@@ -181,13 +168,10 @@
         }
       ]
     },
-    {
-      "term": "dev.governs",
-      "measurement": "officer_response.py timed direction, source context and original subject motion",
+    "dev.governs": {
+      "evidence": "Addressed recipient, exact wait/release text, location and modality are retained; lawfulness remains unresolved.",
       "channels": [
-        "officer_direction",
-        "subject_motion",
-        "officer_context"
+        "officer_direction"
       ],
       "source_refs": [
         {
@@ -196,13 +180,10 @@
         }
       ]
     },
-    {
-      "term": "ru.subject",
-      "measurement": "officer_response.py timed direction, source context and original subject motion",
+    "ru.subject": {
+      "evidence": "Pedestrian actor identity joins officer indication and original subject motion.",
       "channels": [
-        "officer_direction",
-        "subject_motion",
-        "officer_context"
+        "subject_speed_mps"
       ],
       "source_refs": [
         {
@@ -211,13 +192,10 @@
         }
       ]
     },
-    {
-      "term": "kin.velocity",
-      "measurement": "officer_response.py timed direction, source context and original subject motion",
+    "kin.velocity": {
+      "evidence": "Original 20 Hz pedestrian motion spans before and after the indication.",
       "channels": [
-        "officer_direction",
-        "subject_motion",
-        "officer_context"
+        "subject_speed_mps"
       ],
       "source_refs": [
         {
@@ -226,13 +204,10 @@
         }
       ]
     },
-    {
-      "term": "drv.officer_directed",
-      "measurement": "officer_response.py timed direction, source context and original subject motion",
+    "drv.officer_directed": {
+      "evidence": "Officer indication, modality and opportunity-source references are retained; actual perception remains unknown.",
       "channels": [
-        "officer_direction",
-        "subject_motion",
-        "officer_context"
+        "officer_direction"
       ],
       "source_refs": [
         {
@@ -241,5 +216,50 @@
         }
       ]
     }
-  ]
+  },
+  "selected_branch": "Pedestrian-directed officer order",
+  "requirement_dispositions": [
+    {
+      "requirement": "Addressed officer direction to pedestrian at connected crossing, exact wait location and release, source context for duty and communication, post-indication response; lawfulness, perception and willfulness remain unresolved",
+      "source": "inputs/heldout__C111305__NRS-484B-100__pedestrian/assignment.json",
+      "status": "selected_required",
+      "case_ids": [
+        "heldout__C111305__NRS-484B-100__pedestrian__stop_responds",
+        "heldout__C111305__NRS-484B-100__pedestrian__stop_does_not_respond",
+        "heldout__C111305__NRS-484B-100__pedestrian__proceed_responds",
+        "heldout__C111305__NRS-484B-100__pedestrian__proceed_does_not_respond"
+      ],
+      "evidence_or_gap": "No accepted recording is supplied; four exact stop/release response contrasts remain selected."
+    }
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 8,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "subject": "officer arm pose, pedestrian body and crossing entrance",
+        "interval": "before and after indication",
+        "view": "overview"
+      },
+      {
+        "subject": "pedestrian approach and officer indication",
+        "interval": "all original frames",
+        "view": "approach"
+      },
+      {
+        "subject": "crosswalk, sidewalks and timed wait location",
+        "interval": "all original frames",
+        "view": "reference_corner"
+      },
+      {
+        "subject": "pedestrian eye-level opportunity to see officer",
+        "interval": "all original frames",
+        "view": "driver_reference"
+      }
+    ],
+    "limitations": [
+      "Original pixel visibility, communication and actual perception require independent review."
+    ]
+  }
 }

@@ -1,0 +1,110 @@
+{
+  "cell_id": "C111305",
+  "law_id": "NRS-484B-100",
+  "actor": "pedestrian",
+  "selected_case_id": "heldout__C111305__NRS-484B-100__pedestrian__stop_responds",
+  "supported_case_ids": [
+    "heldout__C111305__NRS-484B-100__pedestrian__stop_responds",
+    "heldout__C111305__NRS-484B-100__pedestrian__stop_does_not_respond",
+    "heldout__C111305__NRS-484B-100__pedestrian__proceed_responds",
+    "heldout__C111305__NRS-484B-100__pedestrian__proceed_does_not_respond"
+  ],
+  "required_atoms": [],
+  "source_packets": [],
+  "rate_hz": 20,
+  "duration_s": 8,
+  "frames": 160,
+  "direction_frame": 40,
+  "walk_speed_mps": 1.2,
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "pose_strategy": "pedestrian-mounted original officer/crosswalk visibility view",
+      "fov_deg": 95
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "pedestrian-mounted original officer/crosswalk visibility view",
+      "fov_deg": 90
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "pedestrian-mounted original officer/crosswalk visibility view",
+      "fov_deg": 100
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "pedestrian-mounted original officer/crosswalk visibility view",
+      "fov_deg": 85
+    }
+  ],
+  "case": {
+    "case_id": "heldout__C111305__NRS-484B-100__pedestrian__stop_responds",
+    "intended_observed_response": "stopped_after_indication",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "subject_speed_mps",
+          "unit": "m/s",
+          "method": "original pedestrian velocity at every joined Native frame",
+          "sampling_rate_hz": 20,
+          "time_window": "all original frames",
+          "reference_frame": "Native world",
+          "uncertainty": "20 Hz sampled velocity; no legal threshold"
+        },
+        {
+          "name": "officer_direction",
+          "unit": "boolean",
+          "method": "timed officer walker arm pose joined to original four-view frame",
+          "sampling_rate_hz": 20,
+          "time_window": "all original frames",
+          "reference_frame": "addressed officer and pedestrian",
+          "uncertainty": "physical gesture visibility, meaning and lawful authority require independent review"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "officer_context",
+          "unit": "structured record",
+          "method": "original officer/subject identities and unresolved duty/lawfulness source references"
+        },
+        {
+          "name": "officer_direction_context",
+          "unit": "structured record",
+          "method": "addressed exact wait or release text, location, modality, opportunity and timed pose"
+        },
+        {
+          "name": "subject_motion_context",
+          "unit": "structured record",
+          "method": "original pedestrian motion batch"
+        },
+        {
+          "name": "subject_motion_history",
+          "unit": "structured record",
+          "method": "original 20 Hz pedestrian motion rows"
+        }
+      ],
+      "limitations": [
+        "Officer authority, lawful duty, actual perception and willfulness require independent source/legal review."
+      ]
+    }
+  },
+  "physical_completion": {
+    "criterion": "travel_progress",
+    "motion_source": "subject_motion_history.jsonl",
+    "position_key": "position_m",
+    "minimum_progress_m": 0.5,
+    "context_sources": [
+      "officer_context.json",
+      "officer_direction.json"
+    ]
+  }
+}

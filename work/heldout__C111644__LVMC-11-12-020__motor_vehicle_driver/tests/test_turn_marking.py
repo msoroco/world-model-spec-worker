@@ -1,10 +1,14 @@
 from __future__ import annotations
-import hashlib,importlib.util,json,tempfile,unittest
+import hashlib,importlib.util,io,json,sys,tempfile,unittest
 from pathlib import Path
+from types import SimpleNamespace
+from unittest.mock import patch
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 s=importlib.util.spec_from_file_location('turn_marking',Path(__file__).resolve().parents[1]/'turn_marking.py')
 m=importlib.util.module_from_spec(s);s.loader.exec_module(m)
 n=importlib.util.spec_from_file_location('indication_native',Path(__file__).resolve().parents[1]/'indication_native.py')
 native=importlib.util.module_from_spec(n);n.loader.exec_module(native)
+import runner
 class Fake:
  def __init__(self):self.calls=[]
  def intersection(self,**x):self.calls.append(('intersection',x));return x
@@ -37,6 +41,34 @@ class MarkingTests(unittest.TestCase):
   b=dict(a,max_center_deviation_m=3)
   self.assertTrue(m.audit_comparison(a,b,'route_response')['comparison_complete'])
   with self.assertRaisesRegex(ValueError,'fixed condition'):m.audit_comparison(a,dict(b,course_hash='x'),'route_response')
+
+ def test_sourced_routes_isolate_response_from_both_approaches(self):
+  for kind in ('marker','button','other_indication'):
+   for approach in (-20.,20.):
+    with self.subTest(kind=kind,approach=approach):
+     source={'indication_form':kind,'intersection_id':'junction-1',
+       'intersection_polygon_xy_m':[[-10.,-10.],[10.,-10.],[10.,10.],[-10.,10.]],
+       'indicated_course_xy_m':[[approach,0.],[0.,0.],[0.,20.]]}
+     follow=m.native_route_plan(source,'follow')
+     depart=m.native_route_plan(source,'depart')
+     self.assertEqual(follow['course_xy_m'],depart['course_xy_m'])
+     self.assertEqual(follow['target_route_xy_m'][:2],depart['target_route_xy_m'][:2])
+     self.assertEqual(follow['target_route_xy_m'][-1],[0.,20.])
+     self.assertEqual(depart['target_route_xy_m'][-1],[4.,20.])
+     self.assertIsNone(depart['legal_obedience_judgment'])
+
+ def test_native_route_controller_steers_brakes_and_rejects_bad_source(self):
+  source={'indication_form':'marker','intersection_id':'junction-1',
+    'intersection_polygon_xy_m':[[-10.,-10.],[10.,-10.],[10.,10.],[-10.,10.]],
+    'indicated_course_xy_m':[[-20.,0.],[0.,0.],[0.,20.]]}
+  self.assertGreater(m.control_to_target((0.,0.),(1.,0.),(2.,0.),(0.,10.),3.)['steer'],0.)
+  self.assertGreater(m.control_to_target((0.,0.),(1.,0.),(8.,0.),(10.,0.),3.)['brake'],0.)
+  self.assertEqual(m.control_to_target((0.,0.),(1.,0.),(0.,0.),(0.,0.),3.)['brake'],1.)
+  with self.assertRaisesRegex(ValueError,'Nonfinite'):
+   m.control_to_target((float('nan'),0.),(1.,0.),(0.,0.),(10.,0.),3.)
+  source['indicated_course_xy_m']=[[-20.,-20.],[-18.,-18.],[-16.,-16.]]
+  with self.assertRaisesRegex(ValueError,'misses intersection'):
+   m.native_route_plan(source,'follow')
 
 class NativeIndicationTests(unittest.TestCase):
  def record(self,kind):
@@ -96,4 +128,86 @@ class NativeIndicationTests(unittest.TestCase):
    world,transform=self.world(readback_shift=1.)
    with self.assertRaisesRegex(ValueError,'readback'):native.place_indications(world,path,digest,'other_indication',transform)
    self.assertTrue(world.spawned[0][1].destroyed)
+
+ def test_exact_runner_checks_identity_and_builds_all_four_native_cameras(self):
+  case='heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__marker_follow'
+  config={'selected_case_id':case,'supported_case_ids':[case],
+    'law_id':'LVMC-11-12-020','cell_id':'C111644','actor':'motor_vehicle_driver',
+    'rate_hz':20,'frames':160,'duration_s':8,
+    'cameras':[{'name':name,'width':spec[2][0],'height':spec[2][1]}
+               for name,spec in runner.CAMERAS.items()]}
+  self.assertEqual(runner._check_config(config),('marker','follow'))
+  with self.assertRaisesRegex(ValueError,'configuration changed'):
+   runner._check_config(dict(config,frames=159))
+  class Blueprint:
+   def __init__(self):self.attributes={}
+   def set_attribute(self,key,value):self.attributes[key]=value
+  class Sensor:
+   def listen(self,callback):self.callback=callback
+   def stop(self):self.stopped=True
+   def destroy(self):self.destroyed=True
+  class World:
+   def __init__(self):self.blueprints=[];self.sensors=[]
+   def get_blueprint_library(self):return self
+   def find(self,name):
+    self.asserted=name;item=Blueprint();self.blueprints.append(item);return item
+   def spawn_actor(self,blueprint,transform,attach_to):
+    self.assertEqualAttach=attach_to;item=Sensor();self.sensors.append(item);return item
+  class Process:
+   def __init__(self):self.stdin=io.BytesIO()
+   def poll(self):return None
+   def wait(self,timeout):return 0
+  world=World()
+  carla=SimpleNamespace(Transform=lambda *parts:parts,Location=lambda *parts:parts,
+                        Rotation=lambda *parts:parts)
+  with tempfile.TemporaryDirectory() as directory,patch.object(runner.subprocess,'Popen',return_value=Process()):
+   camera=runner.OriginalCameras(world,carla,'ego',directory)
+   self.assertEqual(len(world.sensors),4)
+   self.assertEqual(world.assertEqualAttach,'ego')
+   self.assertEqual([item.attributes['sensor_tick'] for item in world.blueprints],['0.05']*4)
+   with self.assertRaisesRegex(ValueError,'Missing synchronized'):
+    camera.wait(1,timeout_s=.001)
+   camera.close()
+   self.assertTrue(all(sensor.destroyed and sensor.stopped for sensor in world.sensors))
+
+ def test_saved_original_turn_sources_derive_channels_and_reject_missing_camera(self):
+  with tempfile.TemporaryDirectory() as directory:
+   root=Path(directory)
+   source=self.record('marker')
+   (root/'turn_indication_original.json').write_text(json.dumps(source))
+   plan={'course_xy_m':source['indicated_course_xy_m'],'indication_form':'marker',
+         'intersection_id':'junction-1','route_variant':'follow'}
+   (root/'turn_route_plan.json').write_text(json.dumps(plan))
+   locations=[[-20.,0.],[0.,0.],[0.,20.]]
+   body=[];trace=[];mapping=[]
+   for i,(x,y) in enumerate(locations):
+    frame,time=100+i,5.+i*.05
+    corners=[[x-.1,y-.1],[x+.1,y-.1],[x+.1,y+.1],[x-.1,y+.1]]
+    body.append({'frame':frame,'time_s':time,'subject':{
+     'actor_id':1,'body_vertices_m':corners,'center_xy_m':[x,y]}})
+    trace.append({'frame':frame,'time_s':time,'position':{'x':x,'y':y}})
+    mapping.append({'video_frame':i,'carla_frame':frame,'native_frame':frame,'time_s':time})
+   def put(name,rows):
+    (root/name).write_text(''.join(json.dumps(row)+'\n' for row in rows))
+   put('turn_body_original.jsonl',body);put('trace.jsonl',trace)
+   put('video_frames.jsonl',mapping)
+   for name in m.CAMERAS:
+    (root/(name+'.mkv')).write_bytes(b'fixture bytes only')
+    put(name+'-frames.jsonl',[{'video_frame':i,'native_frame':row['frame'],
+                               'time_s':row['time_s']} for i,row in enumerate(body)])
+   names=['turn_indication_original.json','turn_route_plan.json',
+          'turn_body_original.jsonl','trace.jsonl','video_frames.jsonl']
+   names += [name+'.mkv' for name in m.CAMERAS]
+   names += [name+'-frames.jsonl' for name in m.CAMERAS]
+   (root/'turn_source_receipt.json').write_text(json.dumps({
+    'case_id':'heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__marker_follow',
+    'source_sha256':{name:hashlib.sha256((root/name).read_bytes()).hexdigest()
+                     for name in names}}))
+   report=m.finalize_original_sources(root)
+   self.assertEqual(set(report['measurements']),set(m.CHANNELS))
+   self.assertEqual(report['measurements']['original_course_deviation_m']['value'][-1]['value'],0.)
+   self.assertFalse(report['physical_acceptance_claimed'])
+   (root/'overview.mkv').unlink()
+   with self.assertRaisesRegex(ValueError,'Missing original turn source'):
+    m.analyze_original_sources(root)
 if __name__=='__main__':unittest.main()

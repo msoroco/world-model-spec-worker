@@ -3,6 +3,7 @@ import importlib.util
 import json
 import tempfile
 import unittest
+import types
 from pathlib import Path
 
 HERE=Path(__file__).resolve().parents[1]
@@ -10,6 +11,8 @@ spec=importlib.util.spec_from_file_location("officer_response", HERE/"officer_re
 module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
 spec2=importlib.util.spec_from_file_location("officer_comparison_audit", HERE/"officer_comparison_audit.py")
 audit_module=importlib.util.module_from_spec(spec2);spec2.loader.exec_module(audit_module)
+spec3=importlib.util.spec_from_file_location("pedestrian_runner", HERE/"runner.py")
+runner=importlib.util.module_from_spec(spec3);spec3.loader.exec_module(runner)
 ACTOR="pedestrian"
 
 class OfficerResponseTests(unittest.TestCase):
@@ -18,7 +21,12 @@ class OfficerResponseTests(unittest.TestCase):
         self.root=Path(self.temp.name)
         self.context={"actor_role":ACTOR,"officer_role":"police_officer","officer_id":"officer-1","subject_id":"subject-1",
                       "duty_source":"authored-duty-context.json","lawfulness_source":"pending-original-review.json"}
-        self.direction={"officer_id":"officer-1","subject_id":"subject-1","frame":1,"indication_source":"officer-indication.json","command":"stop"}
+        self.direction={"officer_id":"officer-1","subject_id":"subject-1","recipient_id":"subject-1",
+                        "frame":1,"indication_source":"officer-indication.json","command":"stop",
+                        "exact_direction_text":"Wait at the marked sidewalk location until released",
+                        "wait_location_source":"sidewalk-location.json","communication_modality":"visual",
+                        "communication_source":"original-camera-source.mkv",
+                        "opportunity_source":"officer-subject-sightline.json","actual_perception":None}
         self.motion={"frames":[{"frame":i,"subject_id":"subject-1","speed_mps":s} for i,s in enumerate((2,2,1,0))]}
     def write(self,name,obj):
         p=self.root/name;p.write_text(json.dumps(obj));return p
@@ -35,6 +43,15 @@ class OfficerResponseTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,"source-bound"):self.measure()
         self.direction["subject_id"]="subject-1";self.context["lawfulness_source"]=""
         with self.assertRaisesRegex(ValueError,"source references"):self.measure()
+    def test_exact_direction_and_perception_sources_required(self):
+        self.direction["wait_location_source"]=""
+        with self.assertRaisesRegex(ValueError,"wait location"):self.measure()
+        self.direction["wait_location_source"]="sidewalk-location.json"
+        self.direction["communication_modality"]="unspecified"
+        with self.assertRaisesRegex(ValueError,"modality"):self.measure()
+        self.direction["communication_modality"]="visual"
+        self.direction["actual_perception"]=True
+        with self.assertRaisesRegex(ValueError,"perception"):self.measure()
     def test_response_span_and_legal_assertion_rejected(self):
         self.motion["frames"]=self.motion["frames"][:2]
         with self.assertRaisesRegex(ValueError,"span|post-indication"):self.measure()
@@ -50,5 +67,53 @@ class OfficerResponseTests(unittest.TestCase):
         second["officer_id"]="other";self.write("second-result.json",second)
         with self.assertRaisesRegex(ValueError,"fixed subject or officer"):
             audit_module.audit([p1,p2],expected_actor=ACTOR,expected_command="stop",fixed_subject_id="subject-1",fixed_officer_id="officer-1")
+        second["officer_id"]="officer-1";second["wait_location_source"]="other-sidewalk.json";self.write("second-result.json",second)
+        with self.assertRaisesRegex(ValueError,"condition changed"):
+            audit_module.audit([p1,p2],expected_actor=ACTOR,expected_command="stop",fixed_subject_id="subject-1",fixed_officer_id="officer-1")
+
+class PedestrianNativeConstructionTests(unittest.TestCase):
+    def test_all_four_exact_cases_have_distinct_post_direction_controls(self):
+        for suffix,(command,responds) in runner.CASES.items():
+            case=runner.PREFIX+suffix
+            cfg={"law_id":"NRS-484B-100","cell_id":"C111305","actor":"pedestrian",
+                 "selected_case_id":case,"case":{"case_id":case},"rate_hz":20,"frames":160,
+                 "direction_frame":40,"cameras":[{"name":name,"width":spec[2][0],"height":spec[2][1]}
+                                                   for name,spec in runner.CAMERAS.items()]}
+            self.assertEqual(runner.check_config(cfg),(command,responds))
+            self.assertNotEqual(runner.walker_speed(command,True,40,40,1.2),
+                                runner.walker_speed(command,False,40,40,1.2))
+            cfg["selected_case_id"]="wrong"
+            with self.assertRaisesRegex(ValueError,"Unknown exact"):runner.check_config(cfg)
+    def test_crosswalk_requires_connected_sidewalk_and_junction(self):
+        Point=lambda x,y:types.SimpleNamespace(x=x,y=y,z=0)
+        p=[Point(0,0),Point(0,2),Point(8,2),Point(8,0),Point(0,0)]
+        class Map:
+            def __init__(self):self.junction=True;self.sidewalk=True
+            def get_crosswalks(self):return p
+            def get_waypoint(self,point,**kwargs):
+                if kwargs["lane_type"]=="sidewalk":
+                    return types.SimpleNamespace(transform=types.SimpleNamespace(location=point)) if self.sidewalk else None
+                return types.SimpleNamespace(is_junction=self.junction)
+        carla=types.SimpleNamespace(LaneType=types.SimpleNamespace(Sidewalk="sidewalk",Driving="driving"),
+                                    Location=lambda x,y,z:Point(x,y))
+        world=Map()
+        first,last,start,end,direction=runner.choose_crosswalk(world,carla)
+        self.assertGreaterEqual((last.x-first.x)**2+(last.y-first.y)**2,16)
+        self.assertAlmostEqual(sum(value*value for value in direction),1)
+        world.junction=False
+        with self.assertRaisesRegex(ValueError,"crosswalk"):runner.choose_crosswalk(world,carla)
+        world.junction=True;world.sidewalk=False
+        with self.assertRaisesRegex(ValueError,"sidewalk"):runner.choose_crosswalk(world,carla)
+    def test_officer_gesture_uses_actual_walker_bone_api(self):
+        class Walker:
+            def get_bones(self):return types.SimpleNamespace(bone_transforms=[("upperarm_r",None,None,None)])
+            def set_bones(self,value):self.bones=value
+            def blend_pose(self,value):self.blend=value
+        carla=types.SimpleNamespace(Location=lambda *args:None,Rotation=lambda **kw:kw,
+                                    Transform=lambda loc,rot:(loc,rot),WalkerBoneControlIn=lambda rows:rows)
+        officer=Walker();stop=runner.pose_direction(carla,officer,"stop")
+        proceed=runner.pose_direction(carla,officer,"proceed")
+        self.assertNotEqual(stop["relative_pitch_deg"],proceed["relative_pitch_deg"])
+        self.assertEqual(officer.blend,1.0)
 
 if __name__=="__main__":unittest.main()

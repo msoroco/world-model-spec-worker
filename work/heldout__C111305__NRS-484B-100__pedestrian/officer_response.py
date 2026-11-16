@@ -29,6 +29,19 @@ def measure(context_path, direction_path, motion_path, *, expected_actor, expect
         raise ValueError("direction is not source-bound to this officer and subject")
     if direction.get("command") != expected_command or expected_command not in ("stop", "proceed"):
         raise ValueError("direction differs from exact case")
+    # The selected pedestrian witness calls for a particular wait location and
+    # release direction. These fields identify what was attempted; they do not
+    # establish that the officer had authority or that the subject perceived it.
+    if direction.get("recipient_id") != context["subject_id"]:
+        raise ValueError("officer direction recipient differs from subject")
+    if not direction.get("wait_location_source") or not direction.get("exact_direction_text"):
+        raise ValueError("exact wait location and direction source required")
+    if direction.get("communication_modality") not in ("visual", "auditory", "both"):
+        raise ValueError("communication modality must be sourced")
+    if not direction.get("opportunity_source") or not direction.get("communication_source"):
+        raise ValueError("communication and opportunity sources required")
+    if direction.get("actual_perception") is not None:
+        raise ValueError("actual perception cannot be inferred from fixture")
     frame = direction.get("frame")
     if type(frame) is not int or frame < 0 or not direction.get("indication_source"):
         raise ValueError("timed officer indication source missing")
@@ -56,13 +69,20 @@ def measure(context_path, direction_path, motion_path, *, expected_actor, expect
         response = "moved_after_indication" if moving else "no_observed_movement"
     return {"actor_role": expected_actor, "subject_id": context["subject_id"],
             "officer_id": context["officer_id"], "command": expected_command,
+            "recipient_id": direction["recipient_id"],
+            "exact_direction_text": direction["exact_direction_text"],
+            "wait_location_source": direction["wait_location_source"],
+            "communication_modality": direction["communication_modality"],
+            "communication_source": direction["communication_source"],
+            "opportunity_source": direction["opportunity_source"],
             "indication_frame": frame, "first_motion_frame": indices[0],
             "last_motion_frame": indices[-1], "post_indication_samples": len(following),
             "min_post_speed_mps": min(r["speed_mps"] for r in following),
             "max_post_speed_mps": max(r["speed_mps"] for r in following),
             "observed_response": response,
             "source_refs": [str(context_path), str(direction_path), str(motion_path)],
-            "legal_conclusion": None, "willfulness_conclusion": None}
+            "legal_conclusion": None, "willfulness_conclusion": None,
+            "actual_perception": None}
 
 
 def main():

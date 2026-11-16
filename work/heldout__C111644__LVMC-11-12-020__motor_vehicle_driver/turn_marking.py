@@ -1,6 +1,13 @@
 """Authorized intersection turn-course indication construction and observations."""
 from __future__ import annotations
-from math import hypot
+import hashlib
+import json
+from math import atan2, cos, hypot, isfinite, sin
+from pathlib import Path
+
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
+CHANNELS = ('original_course_deviation_m', 'original_turn_path_length_m',
+            'intersection_occupancy', 'turn_course_source_context')
 
 
 def construct(adapter, indication_type, route_variant):
@@ -33,8 +40,14 @@ def measure(indication,frames):
         raise ValueError('indicated course geometry missing')
     if not isinstance(frames,list) or len(frames)<3:raise ValueError('original turn motion missing')
     rows=[]
+    first_frame=frames[0].get('frame')
+    first_time=frames[0].get('time_s')
+    if type(first_frame) is not int or not isinstance(first_time,(int,float)):
+        raise ValueError('original synchronized subject source missing')
     for i,f in enumerate(frames):
-        if f.get('frame')!=i or abs(f.get('time_s',-1)-i*.05)>.005 or not f.get('subject_source'):
+        if (f.get('frame')!=first_frame+i or
+                abs(f.get('time_s',-1)-first_time-i*.05)>.005 or
+                not f.get('subject_source')):
             raise ValueError('original synchronized subject source missing')
         p=f.get('subject_center_xy')
         if not isinstance(p,list) or len(p)!=2:raise ValueError('original subject position missing')
@@ -52,3 +65,210 @@ def audit_comparison(a,b,variable):
     if a.get(fixed)!=b.get(fixed):raise ValueError('held condition changed: '+fixed)
     if a.get(varied)==b.get(varied):raise ValueError('deliberate difference absent')
     return {'comparison_complete':True,'fixed_conditions_checked':True,'legal_obedience_judgment':None}
+
+
+def native_route_plan(indication_source, route_variant, *, departure_side='right',
+                      departure_m=4.0):
+    """Use the sourced turn course to make a follow/depart route.
+
+    A departure is an engineering counterfactual, not a legal threshold. The
+    source file must already have passed indication_native.load_source.
+    """
+    if route_variant not in ('follow', 'depart'):
+        raise ValueError('Unknown turn route variant')
+    if departure_side not in ('right', 'left') or not 2.0 <= departure_m <= 8.0:
+        raise ValueError('Invalid departure engineering knob')
+    course = indication_source['indicated_course_xy_m']
+    polygon = indication_source['intersection_polygon_xy_m']
+    if len(course) < 3:
+        raise ValueError('Sourced turn course too short')
+    from indication_native import _inside
+    interior = [index for index in range(1, len(course) - 1)
+                if _inside(course[index], polygon)]
+    if not interior:
+        raise ValueError('Sourced turn course misses intersection interior')
+    # The first interior vertex is held fixed in the comparison. Changing the
+    # latter portion isolates route response while retaining the approach.
+    last = interior[-1]
+    if last == len(course) - 1:
+        raise ValueError('Turn route needs an exit beyond the intersection')
+    route = [list(point) for point in course]
+    if route_variant == 'depart':
+        anchor = course[last]
+        exit_point = course[-1]
+        dx, dy = exit_point[0] - anchor[0], exit_point[1] - anchor[1]
+        distance = hypot(dx, dy)
+        if distance < 1.0:
+            raise ValueError('Sourced turn exit segment is degenerate')
+        sign = -1.0 if departure_side == 'right' else 1.0
+        lateral = (-dy / distance * departure_m * sign,
+                   dx / distance * departure_m * sign)
+        # Move the exit and all subsequent samples to a parallel, visibly
+        # distinct course. The Native run will measure the realized body path.
+        for index in range(last + 1, len(route)):
+            route[index][0] += lateral[0]
+            route[index][1] += lateral[1]
+    return {'indication_form': indication_source['indication_form'],
+            'intersection_id': indication_source['intersection_id'],
+            'course_xy_m': [list(point) for point in course],
+            'target_route_xy_m': route, 'route_variant': route_variant,
+            'departure_side': departure_side if route_variant == 'depart' else None,
+            'departure_m': departure_m if route_variant == 'depart' else None,
+            'legal_obedience_judgment': None}
+
+
+def control_to_target(position_xy, heading_xy, velocity_xy, target_xy,
+                      target_speed_mps):
+    """Pure 20 Hz vehicle control for a later CARLA-lazy Native runner."""
+    values = (*position_xy, *heading_xy, *velocity_xy, *target_xy,
+              target_speed_mps)
+    if any(isinstance(value, bool) or not isinstance(value, (int, float))
+           or not isfinite(value) for value in values):
+        raise ValueError('Nonfinite route control input')
+    if not 1.0 <= target_speed_mps <= 12.0:
+        raise ValueError('Invalid target turn speed')
+    forward_length = hypot(*heading_xy)
+    if forward_length < .8:
+        raise ValueError('Native forward vector missing')
+    direction = (target_xy[0] - position_xy[0],
+                 target_xy[1] - position_xy[1])
+    distance = hypot(*direction)
+    if distance < .6:
+        return {'throttle': 0.0, 'steer': 0.0, 'brake': 1.0}
+    current_angle = atan2(heading_xy[1], heading_xy[0])
+    desired_angle = atan2(direction[1], direction[0])
+    error = atan2(sin(desired_angle - current_angle),
+                  cos(desired_angle - current_angle))
+    steer = max(-1.0, min(1.0, error / .65))
+    speed = hypot(*velocity_xy)
+    return {'throttle': max(0.0, min(.6, (target_speed_mps - speed) * .22)),
+            'steer': steer,
+            'brake': max(0.0, min(.8, (speed - target_speed_mps) * .3))}
+
+
+def analyze_original_sources(attempt):
+    """Join retained Native sources and derive turn geometry without a verdict."""
+    root = Path(attempt)
+    receipt = json.loads((root / 'turn_source_receipt.json').read_text())
+    hashes = receipt.get('source_sha256')
+    required = {'turn_indication_original.json', 'turn_route_plan.json',
+                'turn_body_original.jsonl', 'trace.jsonl', 'video_frames.jsonl'}
+    required |= {name + '.mkv' for name in CAMERAS}
+    required |= {name + '-frames.jsonl' for name in CAMERAS}
+    if not isinstance(hashes, dict) or set(hashes) != required:
+        raise ValueError('Original turn source inventory incomplete')
+    for name, digest in hashes.items():
+        path = root / name
+        if not path.is_file():
+            raise ValueError('Missing original turn source: ' + name)
+        if hashlib.sha256(path.read_bytes()).hexdigest() != digest:
+            raise ValueError('Original turn source SHA-256 mismatch: ' + name)
+    source = json.loads((root / 'turn_indication_original.json').read_text())
+    plan = json.loads((root / 'turn_route_plan.json').read_text())
+    from indication_native import _inside, load_source
+    kind = source.get('indication_form')
+    load_source(root / 'turn_indication_original.json',
+                hashes['turn_indication_original.json'], kind)
+    if (plan.get('course_xy_m') != source['indicated_course_xy_m'] or
+            plan.get('indication_form') != kind or
+            plan.get('intersection_id') != source['intersection_id']):
+        raise ValueError('Sourced turn course and route plan differ')
+    if receipt.get('case_id') is None or not receipt['case_id'].endswith(
+            kind + '_' + plan['route_variant']):
+        raise ValueError('Turn source receipt case identity differs')
+    def rows(name):
+        return [json.loads(line) for line in (root / name).read_text().splitlines()
+                if line.strip()]
+    body = rows('turn_body_original.jsonl')
+    trace = rows('trace.jsonl')
+    mapping = rows('video_frames.jsonl')
+    if not body or len(body) != len(trace) or len(body) != len(mapping):
+        raise ValueError('Original turn body/trace/frame count differs')
+    frames = []
+    centers = []
+    for index, (sample, trow, fmap) in enumerate(zip(body, trace, mapping)):
+        frame, time_s = sample.get('frame'), sample.get('time_s')
+        if (type(frame) is not int or not isinstance(time_s,(int,float)) or
+                fmap.get('video_frame') != index or fmap.get('native_frame') != frame or
+                fmap.get('carla_frame') != frame or trow.get('frame') != frame or
+                abs(fmap.get('time_s', -1000)-time_s) > .005 or
+                abs(trow.get('time_s', -1000)-time_s) > .005):
+            raise ValueError('Original turn body/trace/frame identity join differs')
+        participant = sample.get('subject', {})
+        vertices = participant.get('body_vertices_m')
+        if (not isinstance(vertices,list) or len(vertices) != 4 or
+                any(not isinstance(v,list) or len(v) != 2 or
+                    any(type(x) not in (int,float) or not isfinite(x) for x in v)
+                    for v in vertices)):
+            raise ValueError('Original turn body footprint incomplete')
+        center = [sum(v[axis] for v in vertices)/4 for axis in (0,1)]
+        reported = participant.get('center_xy_m')
+        if (not isinstance(reported,list) or len(reported) != 2 or
+                hypot(center[0]-reported[0],center[1]-reported[1]) > .05):
+            raise ValueError('Original turn center/body geometry differs')
+        position = trow.get('position', {})
+        if (not isinstance(position,dict) or
+                hypot(center[0]-position.get('x',1e9),
+                      center[1]-position.get('y',1e9)) > .4):
+            raise ValueError('Original turn body/trace position differs')
+        frames.append({'frame':frame,'time_s':time_s,
+                       'subject_source':'turn_body_original.jsonl',
+                       'subject_center_xy':center})
+        centers.append(center)
+    for name in CAMERAS:
+        camera_rows = rows(name + '-frames.jsonl')
+        if len(camera_rows) != len(frames):
+            raise ValueError('Original turn camera frame count differs: ' + name)
+        for index,(camera,frame) in enumerate(zip(camera_rows,frames)):
+            if (camera.get('video_frame') != index or
+                    camera.get('native_frame') != frame['frame'] or
+                    abs(camera.get('time_s', -1000)-frame['time_s']) > .05):
+                raise ValueError('Original turn camera frame join differs: ' + name)
+    indication = {'kind':kind, 'authorized':True, 'within_intersection':True,
+                  'authorization_source':'turn_indication_original.json',
+                  'course_xy':source['indicated_course_xy_m']}
+    geometry = measure(indication, frames)
+    total = 0.0
+    samples = []
+    for index,(frame,center,deviation) in enumerate(zip(frames,centers,geometry['samples'])):
+        if index:
+            total += hypot(center[0]-centers[index-1][0],
+                           center[1]-centers[index-1][1])
+        samples.append({'frame':frame['frame'],'time_s':frame['time_s'],
+                        'deviation_m':deviation['distance_to_indicated_course_m'],
+                        'path_length_m':total,
+                        'inside_intersection':_inside(center,source['intersection_polygon_xy_m'])})
+    return {'case_id':receipt['case_id'],'source_sha256':hashes,'samples':samples,
+            'indication_form':kind,'intersection_id':source['intersection_id'],
+            'authority_claim':source['authority_document'],
+            'physical_acceptance_claimed':False,'legal_acceptance_claimed':False}
+
+
+def finalize_original_sources(attempt):
+    root = Path(attempt)
+    source = analyze_original_sources(root)
+    streams = {name:[] for name in CHANNELS}
+    for sample in source['samples']:
+        shared = {'frame':sample['frame'],'time_s':sample['time_s']}
+        values = {'original_course_deviation_m':sample['deviation_m'],
+                  'original_turn_path_length_m':sample['path_length_m'],
+                  'intersection_occupancy':sample['inside_intersection'],
+                  'turn_course_source_context':{
+                      'indication_form':source['indication_form'],
+                      'intersection_id':source['intersection_id'],
+                      'authority_source':'turn_indication_original.json',
+                      'authorization_verified_by_worker':False}}
+        for name,value in values.items():
+            streams[name].append(dict(shared,value=value))
+    for name,entries in streams.items():
+        path = root / (name + '.jsonl')
+        if path.exists():
+            raise ValueError('Derived turn source channel already exists: ' + name)
+        path.write_text(''.join(json.dumps(row,allow_nan=False)+'\n' for row in entries))
+    return {'format':'worker-analysis-report','case_id':source['case_id'],
+            'measurements':{name:{'method':'source-joined original turn geometry',
+                                  'value':rows,'sources':source['source_sha256']}
+                            for name,rows in streams.items()},
+            'physical_acceptance_claimed':False,'legal_acceptance_claimed':False,
+            'limitations':['Source record contains an authority claim, not municipal verification',
+                           'Original pixels and physical turn completion require independent review']}
