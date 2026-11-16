@@ -36,13 +36,13 @@ def main():
    compat=f'.runtime-work/c109749-canonical-{label}-{ident}-compat-v1';saved=f'.runtime-work/c109749-canonical-{label}-{ident}-saved-v1'
    cmd=[PYTHON,'runtime.py','compatibility','--manifest',str(M.relative_to(R)),'--case',e['case_id'],'--output',compat,'--library',LIB,'--validator',VALIDATOR]
    if ident!='primary':cmd+=['--candidate',ident]
-   replay=f'{stem}/compatibility-replay.log';run(cmd,replay)
-   for src,dst in [('compatibility.json','compatibility.json'),('compatibility-analysis.log','compatibility-analysis.log'),('negative-analysis.log','negative-analysis.log')]:
+   replay=f'{stem}/replay.log';run(cmd,replay)
+   for src,dst in [('compatibility.json','compatibility.json'),('analysis.log','analysis.log'),('negative-analysis.log','negative-analysis.log')]:
     p=F/stem/dst;p.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(R/compat/src,p)
    rec=json.loads((F/stem/'compatibility.json').read_text())
    assert rec['passed'] is True and rec['candidate_id']==ident and rec['construction_sha256']==item['construction_sha256']
    assert b'Missing required source: interaction_history.jsonl' in (F/stem/'negative-analysis.log').read_bytes()
-   item['compatibility']={'receipt':f'{stem}/compatibility.json','sha256':sha(F/stem/'compatibility.json'),'log':f'{stem}/compatibility-analysis.log','negative_log':f'{stem}/negative-analysis.log','replay_command':shlex.join(cmd),'replay_log':replay}
+   item['compatibility']={'receipt':f'{stem}/compatibility.json','sha256':sha(F/stem/'compatibility.json'),'log':f'{stem}/analysis.log','negative_log':f'{stem}/negative-analysis.log','replay_command':shlex.join(cmd),'replay_log':replay}
    item['negative']={'log':f'{stem}/negative-analysis.log'}
    cmd=[PYTHON,'runtime.py','process-saved','--manifest',str(M.relative_to(R)),'--case',e['case_id'],'--attempt',compat,'--output',saved,'--library',LIB,'--validator',VALIDATOR]
    savedlog=f'{stem}/saved.log';digest=run(cmd,savedlog)

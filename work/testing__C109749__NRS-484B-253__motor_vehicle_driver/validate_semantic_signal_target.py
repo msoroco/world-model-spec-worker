@@ -20,7 +20,8 @@ def main():
     for case in proposal['cases']:
         target = case['variable_assignments']['signal_target_m']
         assert target['kind'] == 'controller' and target['unit'] == 'm'
-        assert target['value'] == 30.48
+        expected = 25.0 if case['case_id'].endswith('__signal_advance_100_below_25') else (36.0 if case['case_id'].endswith('__signal_advance_100_above_36') else 30.48)
+        assert target['value'] == expected
     print(validate(HERE, assignment, manifest))
 
 

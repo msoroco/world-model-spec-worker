@@ -28,6 +28,18 @@
       "target_law_id": "NRS-484A-450-2",
       "purpose": "Both near-side crosswalk and marked stop line; crosswalk keeps statutory priority",
       "physical_risk": "marking geometry may not coexist on selected map"
+    },
+    {
+      "case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__no_crosswalk_marked_stop_line",
+      "target_law_id": "NRS-484A-450-2",
+      "purpose": "No near-side marked or sidewalk-derived crosswalk; clearly marked stop line governs the stopping reference",
+      "physical_risk": "Native lane marking or braking may not be physically realized"
+    },
+    {
+      "case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__no_crosswalk_no_line_first_view",
+      "target_law_id": "NRS-484A-450-2",
+      "purpose": "No near-side crosswalk or marked stop line; record first observed view of approaching intersecting-highway traffic",
+      "physical_risk": "Native sight opening and approaching actor may not be realized"
     }
   ],
   "comparisons": [
@@ -69,6 +81,32 @@
       "deliberate_differences": [
         "presence of an additional marked stop line, which remains lower priority under this exact subsection"
       ]
+    },
+    {
+      "comparison_id": "stop_line_hierarchy",
+      "case_ids": [
+        "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_before",
+        "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__no_crosswalk_marked_stop_line"
+      ],
+      "fixed_conditions": [
+        "same stop sign, two-way junction, approach lane, body-stop behavior and camera contract"
+      ],
+      "deliberate_differences": [
+        "near-side crosswalk present versus absent; marked stop line is selected only when crosswalk absent"
+      ]
+    },
+    {
+      "comparison_id": "sight_point_hierarchy",
+      "case_ids": [
+        "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_stop_before",
+        "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__no_crosswalk_no_line_first_view"
+      ],
+      "fixed_conditions": [
+        "same stop sign, two-way junction, approach lane, body-stop behavior and camera contract"
+      ],
+      "deliberate_differences": [
+        "crosswalk and marked stop line absent; source-measured first view of approaching traffic becomes reference"
+      ]
     }
   ],
   "evidence_review": {
@@ -82,7 +120,9 @@
     "marked or sidewalk-derived near-side crosswalk geometry and approach direction",
     "source-backed intersection boundary and any stop line",
     "original-frame complete ego body position and speed at halt, crosswalk and junction entry",
-    "crosswalk-before-stop-line priority specific to NRS 484A.450(2)"
+    "crosswalk-before-stop-line priority specific to NRS 484A.450(2)",
+    "original marked stop-line source and complete-body crossing only when no near-side crosswalk exists",
+    "original per-frame approaching-traffic visibility and first sight point only when both crosswalk and marked stop line are absent"
   ],
   "sources": [
     {
