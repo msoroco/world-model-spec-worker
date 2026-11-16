@@ -78,6 +78,40 @@ def prepare_output(bundle,output,cfg):
         write_new(target,cfg)
 
 
+def close_capture(pipeline, videos, logs, owned, changed, client, saved, restore):
+    """Close Native ownership before any saved processing may start.
+
+    The event list records only completed operations. A failed close or restore
+    remains an error and cannot be mistaken for an ownership-release receipt.
+    """
+    events=[];failures=[];restored=None
+    if pipeline is not None:
+        try:pipeline.close(confirmed=True)
+        except BaseException as exc:failures.append({'pipeline_close_error':str(exc)})
+    if not failures:events.append('capture_finished')
+    for name,process in videos.items():
+        try:
+            process.stdin.close()
+            if process.wait(timeout=180)!=0:
+                raise RuntimeError('Lossless video encoder failed: '+name)
+        except BaseException as exc:failures.append({'video_encoder_error':str(exc)})
+        try:logs[name].close()
+        except BaseException as exc:failures.append({'video_log_close_error':str(exc)})
+    if not failures:events.append('encoders_closed')
+    for actor in reversed(owned):
+        try:
+            if actor.type_id.startswith('sensor.') and actor.is_listening:
+                actor.stop()
+            actor.destroy()
+        except BaseException as exc:failures.append({'cleanup_error':str(exc)})
+    if changed:
+        try:restored=restore(client,saved)
+        except BaseException as exc:failures.append({'restore_error':str(exc)})
+    if changed and not failures and isinstance(restored,dict) and restored.get('restored') is True:
+        events.append('restoration_verified')
+    return {'events':events,'restoration':restored,'failures':failures}
+
+
 def pose(actor):
     transform=actor.get_transform();velocity=actor.get_velocity()
     body=actor.bounding_box.get_world_vertices(transform)
