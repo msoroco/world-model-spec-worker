@@ -1150,10 +1150,52 @@
       "exit_code": 1,
       "log": "strict-batch-five-case-v1.log",
       "sha256": "d4b85e02abadf9887c5d52bf3276202c8dd2b3055887744644a2e989a1a39674"
+    },
+    {
+      "command": "PYTHONPATH=work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver .venv-cpu/bin/python -m unittest discover -s work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-tests-semantic-v1.log",
+      "sha256": "179c37f0bb0649b3c81a30b2fde04ea72e6643a7cc6af11a9d9ef95a13cb2cfb"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C125697__NRS-484B-250-2__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "assignment-semantic-v1.log",
+      "sha256": "adcb565c905f7a7789c64fec5a01e06c63f2e6c4d5f976b310f91d2996f0bb68"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C125697__NRS-484B-250-2__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "strict-assignment-semantic-v1.log",
+      "sha256": "8aef413169724d9407e9d952cba2ff32a092e36fc56cfd20e5c6db11ce83d5aa"
+    },
+    {
+      "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -c \"import json,pathlib;from worker_exchange.semantic_delivery import validate;w=pathlib.Path('work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver');print(validate(w,json.load(open('inputs/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/assignment.json')),json.load(open(w/'execution-manifest.json'))))\"",
+      "exit_code": 0,
+      "log": "semantic-validation-v2.log",
+      "sha256": "b950ed83d2e07add7da932ddaab37de13b7029b67d40fb8de3919b3cacb0983f"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/physical_motion_fixture.py --kind complete_motion",
+      "exit_code": 0,
+      "log": "physical-motion-complete_motion.log",
+      "sha256": "6ab084fb160945a0719f19f71b46c0d8da4afbaa10c98dfb16eda00724f4f046"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/physical_motion_fixture.py --kind incomplete_motion",
+      "exit_code": 0,
+      "log": "physical-motion-incomplete_motion.log",
+      "sha256": "fda5081493ac9245b8e4858d655183d65bc59eb35a6982b0c3f04a1092d4f90c"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/physical_motion_fixture.py --kind missing_evidence",
+      "exit_code": 0,
+      "log": "physical-motion-missing_evidence.log",
+      "sha256": "87a9770c11eac8d3a014fe793e3c0c752fdd9089835df5612434c57b68992b33"
     }
   ],
   "remaining_gpu_checks": [
     "Actual crossing and public-highway identities, median spacing, physical entry timing and source-camera visibility, all-device Off readback, observed yield and legal qualification."
   ],
-  "reason": "Five selected cases and fifteen distinct fallback constructions are source-hashed. The opposite left-turn case has a 121-frame synthetic original-source turn and four camera streams; its four constructions pass exact offline, positive/negative compatibility and recorded-only saved processing on the five-case manifest. Independent comparison and twenty-construction delivery audits pass with negative branches. Real median-site source review, semantic stage chain, final integration review and other batch packages remain worker-owned; no physical/legal acceptance or strict delivery readiness is claimed."
+  "reason": "Five selected cases and fifteen fallback constructions retain source-hashed offline, compatibility and saved-processing CPU proofs. The nine-stage canonical semantic chain validates with five selected cases. A new first-case diagnostic classifier fixture passes complete, incomplete and missing original-motion branches; it exposes that the bundled config still lacks the crossing-specific physical_completion polygon, so current exact construction proofs must be refreshed after that repair. Real median-site identity, all-entrance signal governance and independent final integration review remain unresolved. Scoped strict readiness exits 1 while this result is partial; no physical or legal acceptance is claimed."
 }

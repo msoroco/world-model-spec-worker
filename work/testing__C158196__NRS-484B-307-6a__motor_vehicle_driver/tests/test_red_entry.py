@@ -59,6 +59,21 @@ class RedEntryTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "frame join"):
                 measure.analyze(root)
 
+    def test_yellow_stop_has_no_body_entry(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            self.fixture(root)
+            rows = [json.loads(line) for line in (root / "signal_vehicle_history.jsonl").read_text().splitlines()]
+            for row in rows:
+                row["ego_body_vertices_xy_m"] = body(-2)
+                row["ego_speed_mps"] = 0 if row["signal_state"] == "Red" else 4
+            (root / "signal_vehicle_history.jsonl").write_text("".join(json.dumps(row) + "\n" for row in rows))
+            result = measure.analyze(root)
+            self.assertIsNone(result["first_body_entry"])
+            self.assertIsNone(result["entry_minus_red_onset_s"])
+            self.assertIsNone(result["entry_with_red_exhibited_observed"])
+            self.assertFalse(any(row["body_in_intersection"] for row in result["samples"]))
+
 
 if __name__ == "__main__":
     unittest.main()

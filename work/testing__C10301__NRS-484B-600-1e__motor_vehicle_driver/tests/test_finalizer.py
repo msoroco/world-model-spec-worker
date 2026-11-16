@@ -20,7 +20,9 @@ class FinalizerTests(unittest.TestCase):
                    "subject_blueprint_id": "vehicle.sample", "route_source": "native-route",
                    "alley_source": "map-front-camera", "access_aisle_source": "map-side-camera"}
         (attempt / "road_context.json").write_text(json.dumps(context))
-        config = {"selected_case_id": CASE, "requested_speed_mph": 79.99,
+        config = {"selected_case_id": CASE, "law_id": "NRS-484B-600-1e",
+                  "cell_id": "C10301", "actor": "motor_vehicle_driver",
+                  "duration_s": 30, "rate_hz": 20, "requested_speed_mph": 79.99,
                   "recording_description": {"channels": [{"name": "kin.speed"}]}}
         (attempt / "config.json").write_text(json.dumps(config))
         motion = [{"frame": 100 + i, "time_s": 1 + i * .05,
@@ -73,6 +75,30 @@ class FinalizerTests(unittest.TestCase):
             self.assertNotEqual(run.returncode, 0)
             self.assertIn("Missing required source: subject_motion.jsonl", run.stderr)
             self.assertFalse((attempt / "result.json").exists())
+
+    def test_saved_physical_progress_uses_original_trace_and_rejects_missing_position(self):
+        with tempfile.TemporaryDirectory() as temp:
+            attempt = Path(temp)
+            self.fixture(attempt)
+            trace = [json.loads(line) for line in (attempt / "trace.jsonl").read_text().splitlines()]
+            trace[0]["position_m"] = [0, 0, 0]
+            trace[1]["position_m"] = [100, 0, 0]
+            (attempt / "trace.jsonl").write_text("".join(json.dumps(row) + "\n" for row in trace))
+            config = json.loads((attempt / "config.json").read_text())
+            config["duration_s"] = .1
+            (attempt / "config.json").write_text(json.dumps(config))
+            run = self.command(attempt)
+            self.assertEqual(run.returncode, 0, run.stderr)
+            result = json.loads((attempt / "result.json").read_text())
+            self.assertEqual(result["physical_checks"]["maneuver"]["status"], "met")
+            self.assertFalse(result["physical_acceptance_claimed"])
+        with tempfile.TemporaryDirectory() as temp:
+            attempt = Path(temp)
+            self.fixture(attempt)
+            run = self.command(attempt)
+            self.assertEqual(run.returncode, 0, run.stderr)
+            result = json.loads((attempt / "result.json").read_text())
+            self.assertEqual(result["physical_checks"]["maneuver"]["status"], "unverified")
 
 
 if __name__ == "__main__":

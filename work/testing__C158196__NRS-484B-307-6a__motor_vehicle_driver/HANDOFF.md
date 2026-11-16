@@ -9,3 +9,7 @@ Next CPU work: implement the actual governed-signal phase controller and ego app
 The pinned CPU preflight passes. No frozen input, runtime or batch file was edited.
 
 Checkpoint: assignment-scoped `worker_check.py --complete` passed; see `assignment-check.log`. The batch strict gate then failed at missing C177008 result in `strict-gate.log`; that assignment has since received a partial checkpoint.
+
+## Yellow-stop measurement repair, 2026-11-15
+
+`red_entry_measurements.py` now returns null first-entry, entry-minus-red and red-entry fields when the body never enters. This permits the planned `__stops_on_yellow` case to use the same source-bound analysis as the three entry cases without inventing an entry event. `tests/test_red_entry.py` verifies the four-case behavior and rejects missing Yellow-to-Red transition and stale frame joins. Run `.venv-cpu/bin/python -m unittest discover -s work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/tests -v` (exit 0, `cpu-tests.log`). Resume with actual exact runner, source capture/finalizer, case proofs and audits; keep partial.

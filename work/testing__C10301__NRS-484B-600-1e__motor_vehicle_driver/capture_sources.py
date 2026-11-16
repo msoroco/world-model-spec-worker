@@ -30,5 +30,6 @@ def record_sample(frame_map, motion_stream, trace_stream, subject, snapshot):
              "velocity_mps": xyz, "speed_mps": speed,
              "heading_deg": heading}
     motion_stream.write(json.dumps(motion, allow_nan=False) + "\n")
-    trace_stream.write(json.dumps(trace, allow_nan=False) + "\n")
+    if trace_stream is not None:
+        trace_stream.write(json.dumps(trace, allow_nan=False) + "\n")
     return {"video_frame": mapping["video_frame"], "motion": motion, "trace": trace}

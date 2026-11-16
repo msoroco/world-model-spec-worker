@@ -88,13 +88,13 @@ def analyze(root: Path) -> dict:
         prior_state, prior_inside = state, inside
     if red_onset is None:
         raise ValueError("No observed Yellow-to-Red transition")
-    if first_entry is None:
-        raise ValueError("No observed ego body entry")
     return {"format": "worker-yellow-red-body-entry-observations", "sources": sources,
             "intersection_id": context["intersection_id"],
             "yellow_to_red_onset": red_onset, "first_body_entry": first_entry,
-            "entry_minus_red_onset_s": first_entry["time_s"] - red_onset["time_s"],
-            "entry_with_red_exhibited_observed": first_entry["signal_state"] == "Red",
+            "entry_minus_red_onset_s": (first_entry["time_s"] - red_onset["time_s"])
+            if first_entry is not None else None,
+            "entry_with_red_exhibited_observed": (first_entry["signal_state"] == "Red")
+            if first_entry is not None else None,
             "samples": observed,
             "yellow_stop_feasibility_judgment": "unresolved",
             "physical_head_visibility_judgment": "unresolved"}

@@ -1,8 +1,8 @@
 """Source-joined travel direction on a signposted multilane one-way highway."""
-import hashlib,json,math
+import hashlib,importlib.util,json,math
 from pathlib import Path
 from shapely.geometry import MultiPoint,Polygon
-REQUIRED=('road_context.json','travel_history.jsonl','video_frames.jsonl')
+REQUIRED=('road_context.json','site_packet.json','travel_history.jsonl','video_frames.jsonl')
 def _finite(x,label):
  if isinstance(x,bool) or not isinstance(x,(float,int)) or not math.isfinite(x):raise ValueError('Missing finite '+label)
  return float(x)
@@ -18,6 +18,13 @@ def analyze(root:Path)->dict:
   if not ctx.get(key):raise ValueError('Missing road context: '+key)
  lanes=ctx.get('driving_lane_ids')
  if not isinstance(lanes,list) or len(set(lanes))<2:raise ValueError('Multilane highway not sourced')
+ packet=json.loads((root/'site_packet.json').read_text())
+ spec=importlib.util.spec_from_file_location('one_way_saved_site_review',Path(__file__).with_name('site_review.py'))
+ site=importlib.util.module_from_spec(spec);spec.loader.exec_module(site)
+ review=site.validate(packet,root,expected_map_id=ctx['native_map_id'],
+                      road_id=ctx['road_id'],lane_ids=lanes)
+ if review['highway_id']!=ctx['highway_id'] or packet['designated_forward_xy']!=ctx.get('designated_forward_xy'):
+  raise ValueError('Saved site packet differs from road context')
  direction=ctx.get('designated_forward_xy')
  if not isinstance(direction,list) or len(direction)!=2:raise ValueError('Designated direction missing')
  dx,dy=(_finite(v,'designated direction') for v in direction);norm=math.hypot(dx,dy)
@@ -45,4 +52,9 @@ def analyze(root:Path)->dict:
   samples.append({'frame':fid,'time_s':time,'lane_id':row['lane_id'],'complete_body_on_one_way_roadway':polygon.covers(body),'heading_alignment':(fx*dx+fy*dy)/fn})
   centers.append((body.centroid.x,body.centroid.y))
  projected=[(centers[i+1][0]-centers[i][0])*dx+(centers[i+1][1]-centers[i][1])*dy for i in range(len(centers)-1)]
- return {'format':'worker-one-way-direction-observations','sources':hashes,'samples':samples,'projected_step_m':projected,'all_steps_designated_direction':all(v>0 for v in projected),'legal_conclusion':'unresolved pending sign/designation source and physical review'}
+ for bound in [review['designation_source'],*(item['source'] for item in review['sign_sources'])]:
+  hashes[bound['path']]=bound['sha256']
+ return {'format':'worker-one-way-direction-observations','sources':hashes,
+         'site_source_review':review,'samples':samples,'projected_step_m':projected,
+         'all_steps_designated_direction':all(v>0 for v in projected),
+         'legal_conclusion':'unresolved pending independent designation and physical review'}

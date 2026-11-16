@@ -8,17 +8,26 @@
     {
       "case_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__source_verified_below_80",
       "target_law_id": "NRS-484B-600-1e",
-      "purpose": "New source-grounded alley/access-aisle construction with sampled peak below strict 80 mph boundary; not replay of accepted original."
+      "purpose": "New source-grounded alley/access-aisle construction with sampled peak below strict 80 mph boundary; not replay of accepted original.",
+      "gap_ids": [
+        "original_velocity_and_road_authority"
+      ]
     },
     {
       "case_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__source_verified_at_80",
       "target_law_id": "NRS-484B-600-1e",
-      "purpose": "New source-grounded construction targeting exact 80 mph; independently measure attained rate and resolve physical equality feasibility."
+      "purpose": "New source-grounded construction targeting exact 80 mph; independently measure attained rate and resolve physical equality feasibility.",
+      "gap_ids": [
+        "original_velocity_and_road_authority"
+      ]
     },
     {
       "case_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__source_verified_above_80",
       "target_law_id": "NRS-484B-600-1e",
-      "purpose": "New source-grounded construction targeting just above 80 mph, subject to Native route/clearance feasibility."
+      "purpose": "New source-grounded construction targeting just above 80 mph, subject to Native route/clearance feasibility.",
+      "gap_ids": [
+        "original_velocity_and_road_authority"
+      ]
     }
   ],
   "comparisons": [
@@ -35,7 +44,8 @@
         "same Native alley/access-aisle location and road authority",
         "same motor vehicle class, route, weather and source cameras",
         "same capture rate and measurement method"
-      ]
+      ],
+      "comparison_id": "absolute_80_mph_boundary"
     }
   ],
   "observations": [
@@ -112,7 +122,7 @@
     "Runner, four cameras, saved finalizer, three fallbacks per selected case, semantic proposals, exact compatibility/saved-processing and independent audits remain worker-owned CPU work."
   ],
   "evidence_review": {
-    "method": "Verified all three frozen metadata hashes/identities/decoder flags with evidence_audit.py and read review-context comparison; no original replay or reuse claim.",
+    "method": "Read all three frozen accepted metadata inventories and supplied review-context; verified metadata identities, hashes, frame counts and decoder flags with evidence_audit.py. Compared each reported sampled maximum against the exact 80 mph boundary. Original velocity traces, videos and road classification are absent, so accepted membership and expected labels cannot establish full source-backed reuse.",
     "reported_sampled_maxima_mph": {
       "below": 74.95,
       "equal_requested": 79.73,
@@ -122,6 +132,53 @@
       {
         "path": "inputs/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/review-context/review.json",
         "sha256": "d7ea2dce3c32d876149d908a4c323f264391ed60806c2ceabae5b874f750da90"
+      }
+    ],
+    "reviewer": "C10301 CPU preparation owner",
+    "facts": [
+      {
+        "recording_id": "d40367aa09c6a2317bc0d75bdd79f4a2cb0987e2c2950f84153cea1445172370",
+        "demonstrated_fact": "Accepted metadata has 900 frames and decoder_passed=True.",
+        "limitations": "Original velocity trace/video and public-way context are absent from standalone export; no source-backed reuse is claimed.",
+        "sources": [
+          {
+            "path": "inputs/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/accepted/d40367aa09c6a2317bc0d75bdd79f4a2cb0987e2c2950f84153cea1445172370/metadata.json",
+            "sha256": "d188a117855ba5c2135c04ae7bc2693ceef99f33f85864a8081bedceb4caf51f"
+          }
+        ]
+      },
+      {
+        "recording_id": "c76134bfaae4877b8b4b022dec93e217dd3cf840319a3c1b69ecd6cb09f33197",
+        "demonstrated_fact": "Accepted metadata has 900 frames and decoder_passed=True.",
+        "limitations": "Original velocity trace/video and public-way context are absent from standalone export; no source-backed reuse is claimed.",
+        "sources": [
+          {
+            "path": "inputs/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/accepted/c76134bfaae4877b8b4b022dec93e217dd3cf840319a3c1b69ecd6cb09f33197/metadata.json",
+            "sha256": "de0040369dfd832159e6338893d9e8f8cf86db0bd30edf76f8019f091c37784f"
+          }
+        ]
+      },
+      {
+        "recording_id": "94949cafef78412a15ef3d77525b0bf58967b7708c5ed46b90fa391740bd8462",
+        "demonstrated_fact": "Accepted metadata has 900 frames and decoder_passed=True.",
+        "limitations": "Original velocity trace/video and public-way context are absent from standalone export; no source-backed reuse is claimed.",
+        "sources": [
+          {
+            "path": "inputs/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/accepted/94949cafef78412a15ef3d77525b0bf58967b7708c5ed46b90fa391740bd8462/metadata.json",
+            "sha256": "d68963db36b578914d474cff0409bef368aaaddac33a89f6f7d8b05ce713b72d"
+          }
+        ]
+      }
+    ],
+    "gaps": [
+      {
+        "id": "original_velocity_and_road_authority",
+        "requirement": "Source-joined original velocity and highway/public-way context for below, at and above 80 mph probes",
+        "source": {
+          "path": "inputs/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/evidence.json",
+          "sha256": "6c1b7ab285fac7931398c60ad601670f86f2c4b11fadcc383b44ebf8e9720b61"
+        },
+        "why_existing_insufficient": "Frozen inventory supplies metadata and summaries but no original velocity traces or road-authority source; requested equality reached a reported 79.73 mph sampled maximum."
       }
     ]
   },

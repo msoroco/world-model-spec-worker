@@ -24,7 +24,7 @@ def _hash(path):
 
 
 def finalize(attempt: Path, output: Path) -> dict:
-    from worker_exchange.native_output import write_result
+    from worker_exchange.native_output import physical_result, write_result
 
     attempt, output = Path(attempt), Path(output)
     config_path = attempt / "config.json"
@@ -81,6 +81,10 @@ def finalize(attempt: Path, output: Path) -> dict:
     }
     if output.exists() or (attempt / "result.json").exists():
         raise ValueError("Retain prior finalization; choose a fresh attempt")
+    result = physical_result(attempt, result)
+    analysis["physical_checks"] = result["physical_checks"]
+    analysis["realized_observables"] = result["realized_observables"]
+    analysis["physical_acceptance_claimed"] = False
     write_result(attempt, result)
     output.write_text(json.dumps(analysis, indent=2, allow_nan=False) + "\n")
     return analysis

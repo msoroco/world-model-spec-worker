@@ -214,3 +214,7 @@ Its offline, positive/negative compatibility, recorded-only saved processing, an
 
 Resume by constructing `__source_verified_opposite_makes_left` with an actual observed turn, then `__source_verified_wide_separate_crossing`; prove each exact offline, compatibility, saved path and fixed-condition comparison. Finish three tested, physically distinct risk-triggered fallback constructions for every selected case, semantic stage proposals, independent delivery and comparison audits, physical-preparation/lifecycle CPU fixtures, and shared branch/queue integration. Keep all statuses partial until assignment-scoped and full strict delivery gates pass. No physical or legal acceptance is claimed.
 
+
+## Assignment-scoped strict readiness, 2026-11-15
+
+The current eight-case package passes `.venv-cpu/bin/python worker_check.py --assignment testing__C125714__NRS-484B-250-2__motor_vehicle_driver --complete --require-delivery-ready` (exit 0; `strict-assignment-current.log`). `result.json` is now `ready` / `delivery_prepared` for this assignment. This establishes the pinned CPU contract only; actual Native motion, camera visibility, source-pixel quality, legal judgment and canonical acceptance remain unverified. The full batch still requires the other assignments and shared branch matrix, ordered GPU queue, local integration proof and independent final review.
