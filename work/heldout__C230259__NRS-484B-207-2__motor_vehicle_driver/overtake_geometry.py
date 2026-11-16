@@ -31,7 +31,7 @@ def measure(frames,ego_id,overtaker_id):
     for row in frames:
         frame,time=row.get('frame'),row.get('time_s')
         if type(frame) is not int or frame<0 or not _number(time):raise ValueError('Invalid original frame identity')
-        if previous is not None and (frame<=previous[0] or abs(time-previous[1]-.05)>1e-6):
+        if previous is not None and (frame!=previous[0]+1 or abs(time-previous[1]-.05)>1e-6):
             raise ValueError('Original overtaking frames are unordered or not 20 Hz')
         previous=(frame,time)
         direction=row.get('road_forward_xy')
@@ -61,6 +61,7 @@ def measure(frames,ego_id,overtaker_id):
             'completion_interval_s':[before[-1]['time_s'],samples[first]['time_s']] if first is not None else None,
             'max_precompletion_speed_increase_mps':max(x['ego_speed_mps']-start['ego_speed_mps'] for x in before),
             'max_precompletion_step_speed_increase_mps':max((max(0.,b['ego_speed_mps']-a['ego_speed_mps']) for a,b in zip(before,before[1:])),default=0.),
+            'completion_interval_speed_change_mps':(samples[first]['ego_speed_mps']-before[-1]['ego_speed_mps']) if first is not None else None,
             'post_completion_overlap_recurrence':any(not x['full_body_passed_at_sample'] for x in samples[first+1:]) if first is not None else None,
             'max_precompletion_right_shift_m':max(x['ego_right_projection_m']-start['ego_right_projection_m'] for x in before),
             'passing_side_at_first_frame':'right' if start['overtaker_lateral_offset_right_m']>0 else 'left' if start['overtaker_lateral_offset_right_m']<0 else 'aligned',

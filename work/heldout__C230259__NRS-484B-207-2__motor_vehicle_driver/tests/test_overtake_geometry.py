@@ -16,6 +16,7 @@ class OvertakeGeometryTests(unittest.TestCase):
         self.assertEqual(value['completion_interval_s'],[.05,.1])
         self.assertEqual(value['first_complete_frame'],102)
         self.assertEqual(value['max_precompletion_speed_increase_mps'],.5)
+        self.assertEqual(value['completion_interval_speed_change_mps'],.5)
         self.assertAlmostEqual(value['max_precompletion_right_shift_m'],.2)
         self.assertEqual(value['passing_side_at_first_frame'],'left')
         self.assertIsNone(value['observation_or_hearing_confirmed'])
