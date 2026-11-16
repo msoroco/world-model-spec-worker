@@ -16,7 +16,7 @@ def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
 
 def audit():
     law=json.loads((ROOT/'inputs/training__C104538__NRS-484B-407__motor_vehicle_driver/assignment.json').read_text())
-    assert law['law_record']['text'].endswith('within 500 feet.')
+    assert law['law']['text'].endswith('within 500 feet.')
     assert law['cell']['layout']=='hill_crest' and law['cell']['maneuver']=='u_turn'
     folder=HERE/'draft-sightline'
     summary=json.loads((folder/'summary.json').read_text())

@@ -31,7 +31,6 @@ def reject(folder, assignment, manifest, expected):
 
 
 assignment = read(ROOT / 'inputs' / HERE.name / 'assignment.json')
-assignment['law'] = assignment['law_record']
 manifest = read(HERE / 'execution-manifest.json')
 positive = validate(HERE, assignment, manifest)
 with tempfile.TemporaryDirectory(prefix='c104538-semantic-') as directory:

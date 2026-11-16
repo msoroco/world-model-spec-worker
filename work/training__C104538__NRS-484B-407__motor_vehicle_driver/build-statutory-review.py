@@ -13,7 +13,7 @@ def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
 
 def build():
     assignment=json.loads(SOURCE.read_text())
-    law=assignment['law_record']
+    law=assignment['law']
     if law['id']!='NRS-484B-407' or assignment['cell']['layout']!='hill_crest':
         raise ValueError('Frozen assignment identity differs')
     branches=[

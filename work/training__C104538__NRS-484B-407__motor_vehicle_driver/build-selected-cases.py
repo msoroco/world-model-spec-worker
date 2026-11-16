@@ -35,7 +35,7 @@ def build() -> dict:
     proposal = read(HERE / "proposals/cases.json")
     draft = read(HERE / "draft-execution-manifest.json")
     accepted = assignment["local_snapshot"]["memberships"]["full-train"]
-    if (assignment["law_record"]["text"] != LAW or
+    if (assignment["law"]["text"] != LAW or
             len(accepted) != 2 or
             any(row["status"] != "accepted" for row in accepted) or
             draft["assignment_id"] != HERE.name):

@@ -27,10 +27,11 @@ def main():
             path = HERE / ("portable-proof-" + suffix + "-" + candidate + ".json")
             proof = json.loads(path.read_text())
             positive = proof["positive"]; negative = proof["negative"]
-            if positive["format"] != "worker-package-compatibility-v1" or positive["passed"] is not True:
+            if positive["format"] != "worker-package-compatibility" or positive["passed"] is not True:
                 raise ValueError("Pinned portable positive absent")
             if not {"actual_analysis", "native_validation", "mandatory_observations",
-                    "lean_decoder", "render", "final_decode", "acquisition_unchanged"} <= set(positive["checks"]):
+                    "lean_decoder", "render", "final_decode", "acquisition_unchanged",
+                    "derived_outputs_rebuilt", "four_camera_sources"} <= set(positive["checks"]):
                 raise ValueError("Portable checks incomplete")
             if positive["case_id"] != entry["case_id"] or positive["candidate_id"] != candidate or \
                positive["construction_sha256"] != ref["construction_sha256"] or \
@@ -55,9 +56,11 @@ def main():
                 raise ValueError("Portable missing-source negative differs")
             scratch = Path(proof["scratch"])
             fixture = Path(proof["fixture"])
-            receipt = json.loads((scratch / "output/compatibility.json").read_text())
-            if {k: v for k, v in receipt.items() if k != "fixture_manifest"} != positive:
-                raise ValueError("Saved runtime receipt differs from exported proof")
+            final_decode = json.loads((scratch / "output/final-decode.json").read_text())
+            if final_decode.get("passed") is not True or final_decode.get("frames") != 480:
+                raise ValueError("Current portable final decode differs")
+            if not (scratch / "output/converted/manifest.json").is_file():
+                raise ValueError("Current portable Core manifest absent")
             report = json.loads((scratch / "output/analysis-report.json").read_text())
             if set(report["measurements"]) != {"reverse_motion_frames",
                                                "backing_crosswalk_relation",
@@ -92,7 +95,7 @@ def main():
                outcomes["condition_b/" + c]["overlap_m2"] > 3
                for c in ("primary", "fallback1", "fallback2", "fallback3")):
         raise ValueError("Controlled backing-crosswalk contrast differs")
-    print(json.dumps({"passed": True, "scope": "independent exact portable v1 synthetic audit",
+    print(json.dumps({"passed": True, "scope": "independent current portable synthetic audit",
                       "ready": False, "packages": len(outcomes),
                       "controlled_variable": "reverse_path_overlap",
                       "fixed_conditions_checked": True, "cases": outcomes}, indent=2))

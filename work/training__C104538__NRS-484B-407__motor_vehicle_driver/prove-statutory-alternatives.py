@@ -64,7 +64,7 @@ def assess(construction, case_id, candidate_id):
 def main():
     assignment_path = ROOT / "inputs" / HERE.name / "assignment.json"
     assignment = json.loads(assignment_path.read_text())
-    law = assignment["law_record"]["text"]
+    law = assignment["law"]["text"]
     review_path = HERE / "statutory-review.json"
     review = json.loads(review_path.read_text())
     require(review["law_text"] == law and

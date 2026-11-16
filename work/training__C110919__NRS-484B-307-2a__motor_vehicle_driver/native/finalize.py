@@ -164,7 +164,7 @@ def finalize(attempt: Path,output: Path):
     prohibition=measure_no_turn_prohibition(attempt,native,geometry)
     witness=measure_witness_branch(attempt,native,geometry)
     permission=measure_right_turn_permission(attempt,signal,stop,turn,geometry)
-    videos=[f'{name}.mkv' for name in ('overview','approach','signal','destination')]
+    videos=[f'{name}.mkv' for name in ('overview','approach','reference_corner','driver_reference')]
     counts={name:video_frames(attempt/name) for name in videos}
     if any(value!=count for value in counts.values()):
         raise ValueError('Original source video frame count differs')

@@ -8,7 +8,7 @@ coverage=json.loads((ROOT/'inputs/coverage/branch-sources.json').read_text())
 review=json.loads((HERE/'statutory-review.json').read_text())
 result=json.loads((HERE/'result.json').read_text())
 law=coverage.get('laws',coverage)[source['law_id']]
-assert source['law_record']['text']==law['law']['text']
+assert source['law']['text']==law['law']['text']
 assert review['assignment_id']==source['assignment_id']==HERE.name
 assert review['frozen_cell']=={k:source['cell'][k] for k in ('layout','maneuver','control')}|{'actor':source['actor']}
 assert {t for b in review['branches'] for t in b['source_topics']}==set(law['topics'])
@@ -17,6 +17,6 @@ assert all(b['status']=='unproven' and b['cpu_draft_evidence'] and b['remaining_
 assert review['branches'][1]['id']=='right_turn_unless_prohibited'
 assert 'outside the frozen right_turn' in review['scope_disposition']
 assert all((ROOT/ref).is_file() for ref in review['source_refs'])
-assert result['status']=='blocked' and result.get('cases_selected',0)==0
+assert result['status']=='partial' and result.get('cases_selected',0)==0
 assert not review['cpu_readiness'] and not review['physical_observation_claimed']
 print('C110919 2a exact four topics, right-turn scope and unselected limitations passed')

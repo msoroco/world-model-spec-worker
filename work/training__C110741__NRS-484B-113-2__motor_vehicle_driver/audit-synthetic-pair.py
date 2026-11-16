@@ -11,7 +11,7 @@ ROOT=HERE.parents[1]
 def main():
     source=ROOT/'inputs'/HERE.name/'assignment.json'
     a=json.loads(source.read_text())
-    if a['law_record']['text']!='The driver of a vehicle: Shall not back into an intersection, on or over a crosswalk, or around a street corner.':
+    if a['law']['text']!='The driver of a vehicle: Shall not back into an intersection, on or over a crosswalk, or around a street corner.':
         raise ValueError('Frozen law differs')
     if (a['cell']['layout'],a['cell']['maneuver'],a['cell']['control'])!=('intersection','reverse','crosswalk'):
         raise ValueError('Frozen cell differs')

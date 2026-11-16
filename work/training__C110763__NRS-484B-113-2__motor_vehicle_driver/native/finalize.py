@@ -20,6 +20,39 @@ def rows(path):
     return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
 
 
+def rebuild_channels(attempt, motion, mapping, survey):
+    """Derive observations from retained Native samples and the frame map."""
+    if len(motion) != len(mapping):
+        raise ValueError('Native samples and frame map differ')
+    destination = attempt / 'channels'
+    destination.mkdir(exist_ok=True)
+    values = {name: [] for name in (
+        'drv.backing', 'st.crosswalk', 'st.intersection', 'rel.occupies',
+        'kin.heading', 'kin.velocity', 'native_body_pose_control', 'camera_frame_join')}
+    for sample, frame_map in zip(motion, mapping):
+        if sample['native_frame'] != frame_map['native_frame']:
+            raise ValueError('Native sample and frame map join differs')
+        signed = sample['signed_forward_velocity_m_s']
+        row_values = {
+            'drv.backing': {'signed_forward_velocity_m_s': signed,
+                            'controller': sample.get('controller_request')},
+            'st.crosswalk': {'marked_crosswalks_near_route': 0, 'surveyed': True},
+            'st.intersection': {'intersection_polygon_xy_m': survey['intersection_polygon_xy_m']},
+            'rel.occupies': {'body_xy_m': sample['body_xy_m'],
+                             'intersection_polygon_xy_m': survey['intersection_polygon_xy_m']},
+            'kin.heading': {'heading_deg': sample['heading_deg']},
+            'kin.velocity': {'speed_m_s': sample['speed_m_s'],
+                             'signed_forward_velocity_m_s': signed},
+            'native_body_pose_control': sample,
+            'camera_frame_join': frame_map,
+        }
+        for name, value in row_values.items():
+            values[name].append(json.dumps({'time_s': sample['time_s'], 'value': value},
+                                           allow_nan=False))
+    for name, lines in values.items():
+        (destination / (name + '.jsonl')).write_text('\n'.join(lines) + '\n')
+
+
 def verify_original_joins(attempt,expected_frames):
     attempt=Path(attempt)
     trace=rows(attempt/'trace.jsonl')
@@ -117,7 +150,7 @@ def finalize(attempt,output):
         raise ValueError("Recording duration/rate does not yield an integral frame count")
     original=verify_original_joins(attempt,count)
     measured=measure_intersection(attempt)
-    videos=[f'{name}.mkv' for name in ('overview','approach','intersection','reverse')]
+    videos=[f'{name}.mkv' for name in ('overview','approach','reference_corner','driver_reference')]
     video_counts={name:video_frames(attempt/name) for name in videos}
     if any(frames!=count for frames in video_counts.values()):
         raise ValueError("Source camera frame count differs from delivered trace")
@@ -126,6 +159,8 @@ def finalize(attempt,output):
                'condition_b':'backing_into_intersection'}[config['case_suffix']]
     matched=actual['relation']==requested
     saved_motion=rows(attempt/'native_samples.jsonl')
+    rebuild_channels(attempt, saved_motion, rows(attempt/'video_frames.jsonl'),
+                     json.loads((attempt/'road_geometry.json').read_text()))
     endpoint=saved_motion[-1]['native_center_xy_m']
     target_x={'condition_a':10.0,'condition_b':8.0}[config['case_suffix']]
     completed=math.dist(endpoint,[target_x,-1.75])<=.4 and \

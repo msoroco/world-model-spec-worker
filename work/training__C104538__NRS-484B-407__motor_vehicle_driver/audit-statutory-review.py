@@ -13,8 +13,8 @@ def audit():
     review=json.loads((HERE/'statutory-review.json').read_text())
     assert review['frozen_assignment_sha256']==hashlib.sha256(source.read_bytes()).hexdigest()
     assert review['assignment_id']==original['assignment_id']
-    assert review['law_id']==original['law_record']['id']
-    assert review['law_text']==original['law_record']['text']
+    assert review['law_id']==original['law']['id']
+    assert review['law_text']==original['law']['text']
     branches={row['id']:row for row in review['branches']}
     assert set(branches)=={'reverse_direction','curve','crest','either_direction','five_hundred_feet'}
     assert set(review['location_alternatives'])=={'curve','crest'}

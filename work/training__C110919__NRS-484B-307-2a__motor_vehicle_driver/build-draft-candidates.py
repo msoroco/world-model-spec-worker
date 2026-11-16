@@ -69,7 +69,7 @@ def build():
                           source_packets=[],recording_description=recording,
                           cameras=[{'name':n,'width':w,'height':h} for n,w,h in
                                    (('overview',1920,1080),('approach',1280,720),
-                                    ('signal',1280,720),('destination',1280,720))])
+                                    ('reference_corner',1280,720),('driver_reference',1280,720))])
             files=[{'path':name,'content':code} for name,code in shared.items()]
             files.append({'path':'config.json','content':json.dumps(config,indent=2)+'\n'})
             construction={'case_id':case_id,'cell_id':'C110919','law_id':'NRS-484B-307-2a',

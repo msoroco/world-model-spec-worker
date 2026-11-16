@@ -65,7 +65,7 @@ def make_attempt(destination: Path,case: str,full_resolution: bool=False):
                          'actor_id':107,
                          'ego':{'body_vertices_m':vertices,'position_m':[x,y,.5],
                                 'heading_deg':heading,'speed_mps':speed,
-                                'speed_provenance':'original_trace_actor_get_velocity'},
+                                'speed_provenance':'synthetic_native_sample'},
                          'world':{'weather':{'cloudiness':0,'precipitation':0,
                                              'wetness':0,'fog_density':0},
                                   'road_projection':{'road_id':1 if i<turn else 13 if i<=turn+60 else 2,
@@ -106,7 +106,7 @@ def make_attempt(destination: Path,case: str,full_resolution: bool=False):
             values.append({'time_s':sample['time_s'],'value':value})
         write_rows(destination/'channels'/(name+'.jsonl'),values)
     sizes={camera['name']:f"{camera['width']}x{camera['height']}" for camera in config['cameras']}
-    for name in ('overview','approach','signal','destination'):
+    for name in ('overview','approach','reference_corner','driver_reference'):
         size=sizes[name] if full_resolution else '32x32'
         subprocess.run([str(ROOT/'.runtime-work/linux_arm64/ffmpeg'),'-nostdin','-hide_banner','-loglevel','error','-y',
             '-f','lavfi','-i',f'color=c=black:s={size}:r=20:d=24',

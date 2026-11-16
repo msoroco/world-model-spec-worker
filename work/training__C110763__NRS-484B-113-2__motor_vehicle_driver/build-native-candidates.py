@@ -83,7 +83,7 @@ def main() -> None:
                       "cameras": [{"name": name, "width": width, "height": height}
                                   for name, width, height in
                                   (("overview", 1920, 1080), ("approach", 1280, 720),
-                                   ("intersection", 1280, 720), ("reverse", 1280, 720))],
+                                   ("reference_corner", 1280, 720), ("driver_reference", 1280, 720))],
                       "engineering_knobs": plan["knobs"],
                       "status": "unselected_native_runner_prototype"}
             files = shared + [{"path": "config.json", "content": json.dumps(config, indent=2) + "\n"}]

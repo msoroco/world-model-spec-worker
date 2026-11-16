@@ -19,7 +19,7 @@ def write(name, value):
 
 
 assignment = json.loads((ROOT / 'inputs' / HERE.name / 'assignment.json').read_text())
-law = assignment['law_record']
+law = assignment['law']
 law_id, cell_id, actor = assignment['law_id'], assignment['cell_id'], assignment['actor']
 template_id = law_id + '@' + actor
 phrase = 'cannot be seen by the driver of any other vehicle approaching from either direction within 500 feet'
