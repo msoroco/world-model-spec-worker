@@ -27,12 +27,12 @@ def lines(path,items):
     path.write_text(''.join(json.dumps(item,allow_nan=False,separators=(',',':'))+'\n' for item in items))
 
 
-def build_positive(root,case):
+def build_positive(root,case,manifest):
     if root.exists():
         raise ValueError('Use a fresh diagnostic root')
     root.mkdir(parents=True)
     attempt=root/'attempt';attempt.mkdir()
-    entry=next(x for x in json.loads((FOLDER/'signal-distance-draft-manifest.json').read_text())['cases']
+    entry=next(x for x in json.loads(manifest.read_text())['cases']
                if x['case_id']==case)
     draft=FOLDER/'cases'/case.rsplit('__',1)[1]
     recipe=json.loads((draft/'diagnostic-recipe.json').read_text())
@@ -111,8 +111,8 @@ def build_positive(root,case):
     return attempt
 
 
-def positive(root,case):
-    attempt=build_positive(root,case)
+def positive(root,case,manifest):
+    attempt=build_positive(root,case,manifest)
     receipt=audit_attempt(attempt,case,'diagnostic-job',1,'diagnostic-recording',
                           root/'pixel-review.json',attempt/'diagnostic-audit.json',
                           root/'source-decode.json',diagnostic_selftest=True)
@@ -144,6 +144,7 @@ def main():
     p=argparse.ArgumentParser()
     p.add_argument('--case',required=True)
     p.add_argument('--output-root',type=Path,required=True)
+    p.add_argument('--manifest',type=Path,default=FOLDER/'execution-manifest.json')
     p.add_argument('--negative-source-root',type=Path)
     a=p.parse_args()
     if a.case not in CASES:
@@ -151,7 +152,7 @@ def main():
     if a.negative_source_root:
         negative(a.output_root.resolve(),a.negative_source_root.resolve(),a.case)
     else:
-        positive(a.output_root.resolve(),a.case)
+        positive(a.output_root.resolve(),a.case,a.manifest.resolve())
 
 
 if __name__=='__main__':main()

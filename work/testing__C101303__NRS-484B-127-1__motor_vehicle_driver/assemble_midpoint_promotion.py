@@ -3,6 +3,7 @@ import copy
 import hashlib
 import json
 import shutil
+import argparse
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parent
@@ -20,6 +21,13 @@ def sha(path):
 
 
 def main():
+    global SOURCE,TEMP
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--manifest',type=Path,default=SOURCE)
+    parser.add_argument('--attempt-root',type=Path,default=TEMP)
+    args=parser.parse_args()
+    SOURCE=args.manifest.resolve()
+    TEMP=args.attempt_root.resolve()
     manifest=json.loads(SOURCE.read_text())
     index=json.loads(INDEX.read_text())
     if index['manifest_sha256']!=sha(SOURCE) or index['passed_count']!=36:

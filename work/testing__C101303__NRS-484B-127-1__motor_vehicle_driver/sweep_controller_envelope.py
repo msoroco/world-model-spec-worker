@@ -86,9 +86,11 @@ def build_capture_candidate(output):
                 old = "                lead_speed_mps=config['lead_target_speed_mps'])"
                 new = ("                lead_speed_mps=config['lead_target_speed_mps'],\n"
                        "                minimum_following_frames=40, unbraked_lead=True)")
-            if runner.count(old) != 1:
+            if runner.count(old) == 1:
+                runner = runner.replace(old, new)
+            elif runner.count(new) != 1:
                 raise ValueError('Runner controller anchor changed: ' + case_name)
-            files['runner.py']['content'] = runner.replace(old, new)
+            files['runner.py']['content'] = runner
             files['runner.py'].pop('source', None)
             files['following_controller.py']['content'] = controller
             files['following_controller.py'].pop('source', None)

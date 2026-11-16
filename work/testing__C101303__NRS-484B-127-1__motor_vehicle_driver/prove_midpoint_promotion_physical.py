@@ -3,6 +3,7 @@ import hashlib
 import json
 import shutil
 import subprocess
+import argparse
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parent
@@ -17,14 +18,20 @@ def sha(path):
 
 
 def main():
-    cases=json.loads(MANIFEST.read_text())['cases']
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--manifest',type=Path,default=MANIFEST)
+    parser.add_argument('--attempt-root',type=Path,default=TEMP)
+    args=parser.parse_args()
+    manifest=args.manifest.resolve()
+    attempt_root=args.attempt_root.resolve()
+    cases=json.loads(manifest.read_text())['cases']
     if len(cases)!=9:
         raise ValueError('Nine exact primaries required')
     for case in cases:
         label=case['case_id'].rsplit('source_verified_',1)[1]
         folder=OUT/label
         folder.mkdir(parents=True,exist_ok=True)
-        saved=TEMP/(label+'-primary')/'saved/v0001/processing.json'
+        saved=attempt_root/(label+'-primary')/'saved/v0001/processing.json'
         copied=folder/'primary-saved-processing.json'
         shutil.copyfile(saved,copied)
         processing=json.loads(copied.read_text())
@@ -39,7 +46,7 @@ def main():
         for kind in ('complete_motion','incomplete_motion','missing_evidence','lifecycle'):
             target=folder/(kind+'.json')
             command=[str(REPO/'.venv-cpu/bin/python'),str(ROOT/'physical_fixture_proof.py'),
-                     '--manifest',str(MANIFEST),'--case',case['case_id'],
+                     '--manifest',str(manifest),'--case',case['case_id'],
                      '--kind',kind,'--output',str(target)]
             if kind=='lifecycle':
                 command.extend(['--saved-receipt',str(copied)])

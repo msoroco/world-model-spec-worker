@@ -2,6 +2,7 @@
 import hashlib
 import json
 import subprocess
+import argparse
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parent
@@ -27,7 +28,13 @@ def run(label, command, stage):
 
 
 def main():
-    manifest=json.loads(MANIFEST.read_text())
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--manifest',type=Path,default=MANIFEST)
+    parser.add_argument('--attempt-root',type=Path,default=TEMP)
+    args=parser.parse_args()
+    manifest_path=args.manifest.resolve()
+    attempt_root=args.attempt_root.resolve()
+    manifest=json.loads(manifest_path.read_text())
     rows=[(case, candidate, entry)
           for case in manifest['cases']
           for candidate,entry in [('primary',case),*[(x['id'],x) for x in case['candidates']]]]
@@ -41,17 +48,17 @@ def main():
     for case,candidate,entry in rows:
         case_id=case['case_id']
         label=case_id.rsplit('source_verified_',1)[1]+'-'+candidate
-        output=TEMP/label
+        output=attempt_root/label
         construction=ROOT/entry['construction']
         if sha(construction)!=entry['construction_sha256']:
             raise ValueError('Exact construction changed: '+label)
         selected=['--candidate',candidate] if candidate!='primary' else []
-        offline=run(label,[py,runtime,'offline','--manifest',str(MANIFEST),
+        offline=run(label,[py,runtime,'offline','--manifest',str(manifest_path),
                            '--case',case_id,'--output',str(output/'offline'),*selected],'offline')
-        compatibility=run(label,[py,runtime,'compatibility','--manifest',str(MANIFEST),
+        compatibility=run(label,[py,runtime,'compatibility','--manifest',str(manifest_path),
                            '--case',case_id,*selected,'--output',str(output/'compat'),
                            '--library',str(REPO/'runtime/library'),'--validator',str(VALIDATOR)],'compatibility')
-        saved=run(label,[py,runtime,'process-saved','--manifest',str(MANIFEST),
+        saved=run(label,[py,runtime,'process-saved','--manifest',str(manifest_path),
                        '--case',case_id,'--attempt',str(output/'compat'),
                        '--output',str(output/'saved'),'--library',str(REPO/'runtime/library'),
                        '--validator',str(VALIDATOR)],'saved')
@@ -78,7 +85,7 @@ def main():
         print(label,'offline compatibility saved passed',flush=True)
     (PROOFS/'proof-index.json').write_text(json.dumps({
         'format':'c101303-nine-case-cpu-proofs',
-        'manifest_sha256':sha(MANIFEST),'passed_count':len(evidence),
+        'manifest_sha256':sha(manifest_path),'passed_count':len(evidence),
         'diagnostic_only':True,'physical_acceptance_claimed':False,
         'legal_acceptance_claimed':False,'proofs':evidence},indent=2)+'\n')
 
