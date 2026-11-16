@@ -170,11 +170,59 @@ def audit(case_id, attempt, diagnostic=False, pixel_review=None):
         if i and abs(time - previous_time - .05) > .001:
             raise ValueError('Original frame rate differs')
         previous_frame, previous_time = frame, time
+    original_histories = {}
     for name in ('stop_history.jsonl', 'trace.jsonl'):
         original = rows(attempt / name)
         if len(original) != frames or any(row.get('frame') != mapping[i]['carla_frame'] or
                 row.get('time_s') != mapping[i]['time_s'] for i, row in enumerate(original)):
             raise ValueError('Original participant/time join differs: ' + name)
+        original_histories[name] = original
+    capture = rows(attempt / 'capture/evidence.jsonl')
+    if len(capture) != frames:
+        raise ValueError('Original capture frame/time join differs')
+    for i, row in enumerate(capture):
+        mapped = mapping[i]
+        if (row.get('original_frame') != mapped['carla_frame'] or
+                row.get('recording_time_s') != mapped['time_s']):
+            raise ValueError('Original capture frame/time join differs')
+        observations = row.get('original_observations')
+        if observations is None:
+            if not diagnostic:
+                raise ValueError('Original participant inventory missing')
+            continue
+        if (not isinstance(observations, dict) or
+                observations.get('frame') != mapped['carla_frame'] or
+                observations.get('time_s') != mapped['time_s']):
+            raise ValueError('Original observation frame/time join differs')
+        participants = observations.get('participants')
+        actor_id = row.get('actor_id')
+        if (not isinstance(participants, list) or not participants or
+                type(actor_id) is not int or
+                len({participant.get('actor_id') for participant in participants}) != len(participants) or
+                actor_id not in {participant.get('actor_id') for participant in participants}):
+            raise ValueError('Original participant inventory missing or inconsistent')
+        ego = next(participant for participant in participants if participant['actor_id'] == actor_id)
+        measured_speed = original_histories['stop_history.jsonl'][i].get('ego_speed_mps')
+        if (ego.get('speed_mps') != measured_speed or
+                row.get('ego', {}).get('speed_mps') != measured_speed):
+            raise ValueError('Original ego speed/capture join differs')
+    if case_id.endswith('__no_crosswalk_no_line_first_view'):
+        if hashes.get('sight_history.jsonl') != digest(attempt / 'sight_history.jsonl'):
+            raise ValueError('Original sight source hash missing or stale')
+        sight = rows(attempt / 'sight_history.jsonl')
+        if len(sight) != frames:
+            raise ValueError('Original sight frame/time join differs')
+        for i, row in enumerate(sight):
+            mapped = mapping[i]
+            approaching, visible = row.get('approaching_traffic_ids'), row.get('visible_approaching_traffic_ids')
+            if (row.get('frame') != mapped['carla_frame'] or row.get('time_s') != mapped['time_s'] or
+                    not isinstance(approaching, list) or not isinstance(visible, list) or
+                    not set(visible) <= set(approaching)):
+                raise ValueError('Original sight frame/time or visible-participant join differs')
+            observations = capture[i].get('original_observations')
+            if observations is not None and not set(approaching) <= {
+                    participant.get('actor_id') for participant in observations['participants']}:
+                raise ValueError('Original sight participant missing from capture')
     scenes = read(attempt / 'converted/trace.json').get('scenes')
     if not isinstance(scenes, list) or len(scenes) != frames or any(
             scene.get('t') != round(frame['time_s'] * 1000)
@@ -278,6 +326,39 @@ if __name__ == '__main__':
                         raise
                 else:
                     raise AssertionError('Changed converted time join accepted')
+                shutil.copy2(attempt / 'converted/trace.json', altered / 'converted/trace.json')
+                capture_path = altered / 'capture/evidence.jsonl'
+                capture_rows = rows(capture_path)
+                capture_rows[0]['recording_time_s'] += .05
+                capture_path.write_text(''.join(json.dumps(row) + '\n' for row in capture_rows))
+                result = read(altered / 'result.json')
+                result['source_evidence_hashes']['capture/evidence.jsonl'] = digest(capture_path)
+                result['capture_evidence_sha256'] = digest(capture_path)
+                (altered / 'result.json').write_text(json.dumps(result) + '\n')
+                try:
+                    audit(case_id, altered, diagnostic=True)
+                except ValueError as exc:
+                    if 'Original capture frame/time join differs' not in str(exc):
+                        raise
+                else:
+                    raise AssertionError('Changed original capture time accepted')
+                if case_id.endswith('__no_crosswalk_no_line_first_view'):
+                    shutil.copy2(attempt / 'capture/evidence.jsonl', capture_path)
+                    sight_path = altered / 'sight_history.jsonl'
+                    sight_rows = rows(sight_path)
+                    sight_rows[0]['time_s'] += .05
+                    sight_path.write_text(''.join(json.dumps(row) + '\n' for row in sight_rows))
+                    result['source_evidence_hashes']['capture/evidence.jsonl'] = digest(capture_path)
+                    result['capture_evidence_sha256'] = digest(capture_path)
+                    result['source_evidence_hashes']['sight_history.jsonl'] = digest(sight_path)
+                    (altered / 'result.json').write_text(json.dumps(result) + '\n')
+                    try:
+                        audit(case_id, altered, diagnostic=True)
+                    except ValueError as exc:
+                        if 'Original sight frame/time or visible-participant join differs' not in str(exc):
+                            raise
+                    else:
+                        raise AssertionError('Changed original sight time accepted')
             try:
                 audit(case_id, attempt, diagnostic=False)
             except ValueError as exc:
@@ -288,6 +369,8 @@ if __name__ == '__main__':
             print(json.dumps({'case_id': case_id, 'source_and_media': 'passed',
                               'cameras': len(receipt['camera_decodes']),
                               'removed_source': 'rejected', 'changed_core_time': 'rejected',
+                              'changed_capture_time': 'rejected',
+                              'changed_sight_time': ('rejected' if case_id.endswith('__no_crosswalk_no_line_first_view') else 'not_applicable'),
                               'synthetic_as_native': 'rejected',
                               'physical_acceptance_claimed': False}, sort_keys=True))
     else:

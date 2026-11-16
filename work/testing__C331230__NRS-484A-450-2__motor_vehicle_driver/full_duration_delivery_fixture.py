@@ -205,6 +205,8 @@ def extend_rows(source, destination, name):
     original = [json.loads(line) for line in (source / name).read_text().splitlines() if line.strip()]
     if len(original) != 4:
         raise ValueError('Expected exact four-frame source shape: ' + name)
+    history = ([json.loads(line) for line in (destination / 'stop_history.jsonl').read_text().splitlines()]
+               if name == 'capture/evidence.jsonl' else None)
     with (destination / name).open('x') as stream:
         for index in range(FRAMES):
             row = json.loads(json.dumps(original[index if index < 4 else -1]))
@@ -212,6 +214,20 @@ def extend_rows(source, destination, name):
             if name == 'capture/evidence.jsonl':
                 row.update(original_frame=frame, replay_frame=frame,
                            recording_time_s=time, replay_simulation_time_s=time)
+                observations = row.get('original_observations')
+                if observations is not None:
+                    observations.update(frame=frame, time_s=time)
+                if index >= 4 and observations is not None:
+                    measured = history[index]
+                    body = measured['ego_body_vertices_xy_m']
+                    x = sum(point[0] for point in body) / len(body)
+                    vertices = [[point[0], point[1], z] for point in body for z in (0.0, 1.5)]
+                    speed = measured['ego_speed_mps']
+                    row['ego'].update(position_m=[x, 0, 0], speed_mps=speed, body_vertices_m=vertices)
+                    ego = next(participant for participant in observations['participants']
+                               if participant['actor_id'] == row['actor_id'])
+                    ego.update(position_m=[x, 0, 0], speed_mps=speed,
+                               velocity_mps=[speed, 0, 0], body_vertices_m=vertices)
             else:
                 row.update(frame=frame, time_s=time)
             if name == 'stop_history.jsonl' and index >= 4:
