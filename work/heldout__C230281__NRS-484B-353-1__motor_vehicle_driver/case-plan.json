@@ -20,6 +20,21 @@
       }
     },
     {
+      "case_id": "heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__meeting_restart_before_red_ceases",
+      "target_law_id": "NRS-484B-353-1",
+      "branch": "meeting_restart_before_red_ceases",
+      "gap_ids": [
+        "uncovered-full-text"
+      ],
+      "construction_status": "original_signal_motion_measurement_cpu_tested_exact_construction_pending",
+      "physical_risk": {
+        "risk": "Bus lights, pupil-stop context or approach direction may not be observed through the full pass interval",
+        "trigger_source": "original bus signals, equipment, road and motion streams",
+        "trigger_metric": "active flashing-red frames, pass state and subject speed",
+        "failure_condition": "red onset/cessation or at least two active original motion frames missing"
+      }
+    },
+    {
       "case_id": "heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__meeting_pass_red",
       "target_law_id": "NRS-484B-353-1",
       "branch": "meeting_pass_red",
@@ -198,6 +213,22 @@
       "deliberate_differences": [
         "original motion after cessation of flashing red"
       ]
+    },
+    {
+      "comparison_id": "premature_restart_during_red",
+      "case_ids": [
+        "heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__meeting_stop",
+        "heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__meeting_restart_before_red_ceases"
+      ],
+      "fixed_conditions": [
+        "same bus and subject, meeting direction, pupil-stop and equipment context",
+        "same flashing-red onset/cessation, same roadway, no traffic officer",
+        "same stop frame before red ceases and no pass",
+        "four-camera/duration plan"
+      ],
+      "deliberate_differences": [
+        "source-measured restart after stop while flashing red remains active"
+      ]
     }
   ],
   "observations": [
@@ -375,7 +406,7 @@
     },
     {
       "branch": "Temporal prohibition on proceeding past bus until flashing red ceases: compare hold until off and early proceed.",
-      "status": "planning_pending_exact_cases"
+      "status": "eight_planned_cases_including_premature_restart; exact_construction_pending"
     },
     {
       "branch": "Exception: divided highway, bus in other roadway.",
