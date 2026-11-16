@@ -2,12 +2,16 @@
 import ast
 import hashlib
 import json
+import sys
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parent
 REPO=ROOT.parents[1]
 NATIVE=ROOT/'native'
-CASE=ROOT.name+'__reference'
+WITNESS=sys.argv[1] if len(sys.argv)>1 else 'reference'
+if WITNESS not in ('reference','contrast'):
+    raise ValueError('Unknown selected witness')
+CASE=ROOT.name+'__'+WITNESS
 
 
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
@@ -77,7 +81,7 @@ if __name__=='__main__':unittest.main()
 
 
 def build():
-    source=NATIVE/'drafts/reference/primary'
+    source=NATIVE/'drafts'/WITNESS/'primary'
     cfg=json.loads((source/'config.json').read_text())
     plan=json.loads((ROOT/'case-plan.json').read_text())
     case=next(x for x in plan['cases'] if x['case_id']==CASE)
@@ -94,12 +98,12 @@ def build():
         'limitations':['NRS 484B.210(2) is qualitative; engineering clearance does not determine legal safety.']}
     selected={'case_id':CASE,'target_law_id':'NRS-484B-210-2',
         'target_type':'boundary_probe',
-        'rationale':'Controlled right-side-pass lateral-clearance reference; legal safety unresolved.',
+        'rationale':'Controlled right-side-pass lateral-clearance '+WITNESS+'; legal safety unresolved.',
         'paired_probe_id':ROOT.name+'__comparison_main',
         'deliberate_differences':['right_side_pass_lateral_clearance'],
         'probe':{'primary_variable':'right_side_pass_lateral_clearance',
                  'comparison_or_standard':'physical clearance sweep, no legal cutoff',
-                 'target_value_or_branch':'reference'},
+                 'target_value_or_branch':WITNESS},
         'variable_assignments':{
             'road_and_actors':{'kind':'world_setup','value':'authored two-lane one-way road, ego and lead Tesla','unit':'structured'},
             'commanded_lateral_apex':{'kind':'controller','value':cfg['requested_lateral_apex_y_m'],'unit':'m'},
@@ -147,7 +151,7 @@ def build():
         'termination_rules':{'requested_frames':240,'stop_on_error':True},
         'mechanisms':{'construction_status':'authored_cpu_unverified_physical',
                       'road':'right-pass-road.xodr','controller':'capture.py'}}
-    path=ROOT/'selected-primary/reference/construction.json'
+    path=ROOT/'selected-primary'/WITNESS/'construction.json'
     write(path,construction)
     batch=json.loads((REPO/'batch.json').read_text())
     runtime=REPO/batch['runtime']['root']/'SOURCE-MANIFEST.json'
@@ -160,11 +164,11 @@ def build():
             'candidate_risk':{'status':'physical',
                 'reason':'Native body clearance, motion and all four camera views unverified'},
             'candidates':[],
-            'measurement_contract':'selected-measurement-contracts/reference.json',
+            'measurement_contract':'selected-measurement-contracts/'+WITNESS+'.json',
             'measurement_procedure':{'entrypoint':'finalize_selected.py',
                 'output_schema':'c146314-210-2-saved-analysis-v1'}}],
         'original_native_observed':False,'delivery_ready':False}
-    target=ROOT/'selected-primary/reference/draft-manifest.json'
+    target=ROOT/'selected-primary'/WITNESS/'draft-manifest.json'
     write(target,manifest)
     return {'case_id':CASE,'construction_sha256':sha(path),
             'construction_bytes':path.stat().st_size,'manifest':str(target)}

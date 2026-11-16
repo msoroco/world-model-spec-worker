@@ -18,8 +18,14 @@ def write(path,value):
     path.write_text(encode(value))
 
 
-def build():
-    construction=json.loads((ROOT/'selected-primary/reference/construction.json').read_text())
+def build(candidate='primary',witness='reference'):
+    if candidate not in ('primary','fallback1','fallback2','fallback3'):
+        raise ValueError('Unknown selected candidate')
+    if witness not in ('reference','contrast'):
+        raise ValueError('Unknown selected witness')
+    selected_path=(ROOT/'selected-primary'/witness/'construction.json' if candidate=='primary'
+                   else ROOT/'selected-fallbacks'/witness/candidate/'construction.json')
+    construction=json.loads(selected_path.read_text())
     bundle={x['path']:x['content'] for x in construction['files']}
     cfg=json.loads(bundle['config.json'])
     track=[json.loads(x) for x in bundle['requested-tracks.jsonl'].splitlines()]
@@ -99,20 +105,22 @@ def build():
         (('overview','blue'),('approach','green'),
          ('reference_corner','white'),('driver_reference','red'))]
     spec={'files':files,'graphs':graphs,'videos':videos}
-    path=ROOT/'selected-diagnostics/reference/primary.json'
+    path=ROOT/'selected-diagnostics'/witness/(candidate+'.json')
     write(path,spec)
     relative=path.relative_to(REPO).as_posix()
     recipe={'format':'worker-fixture-recipe',
         'sources':[{'path':'diagnostic-source.json','source':relative,'sha256':sha(path)}],
         'generator':{'source':relative,'sha256':sha(path)}}
-    recipe_path=ROOT/'selected-diagnostics/reference/primary-recipe.json'
+    recipe_path=ROOT/'selected-diagnostics'/witness/(candidate+'-recipe.json')
     write(recipe_path,recipe)
-    manifest_path=ROOT/'selected-primary/reference/draft-manifest.json'
-    manifest=json.loads(manifest_path.read_text())
-    manifest['cases'][0]['fixture_recipe']='work/'+ROOT.name+'/selected-diagnostics/reference/primary-recipe.json'
-    write(manifest_path,manifest)
+    if candidate=='primary':
+        manifest_path=ROOT/'selected-primary'/witness/'draft-manifest.json'
+        manifest=json.loads(manifest_path.read_text())
+        manifest['cases'][0]['fixture_recipe']='work/'+ROOT.name+'/selected-diagnostics/'+witness+'/primary-recipe.json'
+        write(manifest_path,manifest)
     return {'spec_sha256':sha(path),'recipe_sha256':sha(recipe_path),
-            'spec_bytes':path.stat().st_size,'construction_sha256':sha(ROOT/'selected-primary/reference/construction.json')}
+            'spec_bytes':path.stat().st_size,'construction_sha256':sha(selected_path)}
 
 
-if __name__=='__main__':print(json.dumps(build(),sort_keys=True))
+if __name__=='__main__':print(json.dumps(build(sys.argv[1] if len(sys.argv)>1 else 'primary',
+                                           sys.argv[2] if len(sys.argv)>2 else 'reference'),sort_keys=True))
