@@ -254,86 +254,82 @@
   ],
   "observations": [
     {
-      "name": "ego_pose",
-      "unit": "m,deg",
+      "name": "native_body_pose_control",
+      "unit": "structured",
       "mandatory": true,
-      "purpose": "Actual pose, trajectory and footprint over full event"
+      "purpose": "Retain Native ego pose, trajectory, full body and controller state for the entire course change"
     },
     {
-      "name": "continuous_signal_distance_before_course_change",
+      "name": "drv.distance_while",
       "unit": "ft",
       "mandatory": true,
-      "purpose": "Integrate path distance along actual trajectory while turn indication remains continuous immediately before measured course change."
+      "purpose": "Measure path distance during continuous left indication before course change"
     }
   ],
   "source_observation_mapping": {
     "sig.turn_indicator": {
-      "evidence": "Proposed capture only: the signal, left or right. No Native channel or Core atom proof yet.",
+      "evidence": "Original Native-shaped channel and saved measurement; physical and pixel review pending",
       "channels": [
-        "continuous_signal_distance_before_course_change"
+        "sig.turn_indicator"
       ],
       "source_refs": [
         "inputs/training__C104393__NRS-484B-413-2__motor_vehicle_driver/assignment.json"
       ]
     },
     "sig.hand_signal": {
-      "evidence": "Proposed capture only: or the arm signal with its meaning. No Native channel or Core atom proof yet.",
-      "channels": [
-        "continuous_signal_distance_before_course_change"
-      ],
+      "evidence": "Source-law term recorded for scope; this selected turn route does not establish the alternative hand-signal or lane-change branch",
+      "channels": [],
       "source_refs": [
         "inputs/training__C104393__NRS-484B-413-2__motor_vehicle_driver/assignment.json"
       ]
     },
     "drv.distance_while": {
-      "evidence": "Proposed capture only: the path length over which the signal has been shown continuously. No Native channel or Core atom proof yet.",
+      "evidence": "Original Native-shaped channel and saved measurement; physical and pixel review pending",
       "channels": [
-        "continuous_signal_distance_before_course_change"
+        "drv.distance_while"
       ],
       "source_refs": [
         "inputs/training__C104393__NRS-484B-413-2__motor_vehicle_driver/assignment.json"
       ]
     },
     "kin.path_length": {
-      "evidence": "Proposed capture only: the 100-foot and 300-foot thresholds. No Native channel or Core atom proof yet.",
+      "evidence": "Original Native-shaped channel and saved measurement; physical and pixel review pending",
       "channels": [
-        "continuous_signal_distance_before_course_change"
+        "kin.path_length"
       ],
       "source_refs": [
         "inputs/training__C104393__NRS-484B-413-2__motor_vehicle_driver/assignment.json"
       ]
     },
     "drv.turning": {
-      "evidence": "Proposed capture only: the turn or course change that follows. No Native channel or Core atom proof yet.",
+      "evidence": "Original Native-shaped channel and saved measurement; physical and pixel review pending",
       "channels": [
-        "continuous_signal_distance_before_course_change"
+        "drv.turning"
       ],
       "source_refs": [
         "inputs/training__C104393__NRS-484B-413-2__motor_vehicle_driver/assignment.json"
       ]
     },
     "drv.lane_change": {
-      "evidence": "Proposed capture only: 'otherwise turn from a direct course'. No Native channel or Core atom proof yet.",
-      "channels": [
-        "continuous_signal_distance_before_course_change"
-      ],
+      "evidence": "Source-law term recorded for scope; this selected turn route does not establish the alternative hand-signal or lane-change branch",
+      "channels": [],
       "source_refs": [
         "inputs/training__C104393__NRS-484B-413-2__motor_vehicle_driver/assignment.json"
       ]
     },
     "env.precipitation": {
-      "evidence": "Proposed capture only: 'regardless of the weather' — no weather excuse. No Native channel or Core atom proof yet.",
+      "evidence": "Original Native-shaped channel and saved measurement; physical and pixel review pending",
       "channels": [
-        "continuous_signal_distance_before_course_change"
+        "env.precipitation"
       ],
       "source_refs": [
         "inputs/training__C104393__NRS-484B-413-2__motor_vehicle_driver/assignment.json"
       ]
     },
     "kin.speed": {
-      "evidence": "Proposed capture only: the speed that converts the distance into a time. No Native channel or Core atom proof yet.",
+      "evidence": "Original Native-shaped channel and saved measurement; physical and pixel review pending",
       "channels": [
-        "continuous_signal_distance_before_course_change"
+        "kin.speed"
       ],
       "source_refs": [
         "inputs/training__C104393__NRS-484B-413-2__motor_vehicle_driver/assignment.json"
@@ -405,5 +401,37 @@
     "independent_audit": "independent-weather-audit.json",
     "independent_audit_sha256": "2659de2a70748c92fb6afbbeed6eb67196192e8761f5c2ec8a4099ab4dfdfb3c",
     "native_executed": false
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 42,
+    "fps": 20,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "full hill crest, ego vehicle, other vehicle and junction",
+        "interval": "full 42 s / 840-frame attempt",
+        "source": "fixed world mount; actual pixels pending"
+      },
+      {
+        "view": "approach",
+        "subject": "ego approach, indication onset and following vehicle",
+        "interval": "approach through course change",
+        "source": "ego camera; actual pixels pending"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "junction edge, full body and departure path",
+        "interval": "course change through clearance",
+        "source": "ego reference camera; actual pixels pending"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "driver sight line and signal context",
+        "interval": "full 42 s / 840-frame attempt",
+        "source": "ego camera; actual pixels pending"
+      }
+    ]
   }
 }

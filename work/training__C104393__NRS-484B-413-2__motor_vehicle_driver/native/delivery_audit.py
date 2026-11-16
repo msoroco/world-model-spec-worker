@@ -161,8 +161,7 @@ def selftest(case, negative=False):
     require(entry is not None and entry['kind'] == 'delivery', 'Exact selected case missing')
     feet = int(case.split('__')[-1])
     spec = read(HERE / f'diagnostic-{feet}.json')
-    receipt_name = (f'current-{feet}-saved-processing-receipt.json' if feet != 300
-                    else 'current-saved-processing-receipt.json')
+    receipt_name = f'current-{feet}-saved-processing-receipt.json'
     receipt = read(HERE / receipt_name)
     require(receipt.get('passed') is True and receipt.get('case_id') == case and
             receipt.get('native_revision', {}).get('construction_sha256') == entry['construction_sha256'],

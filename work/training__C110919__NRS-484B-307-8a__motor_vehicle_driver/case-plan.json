@@ -704,153 +704,178 @@
   ],
   "observations": [
     {
-      "name": "ego_pose",
-      "unit": "m,deg",
+      "name": "native_body_pose_control",
+      "unit": "structured",
       "mandatory": true,
-      "purpose": "Measured position, heading and footprint over time"
+      "purpose": "Retained frame-joined ego body/pose/heading; source for ego_pose and body-reference measurements"
     },
     {
-      "name": "ego_speed",
+      "name": "kin.velocity",
       "unit": "m/s",
       "mandatory": true,
-      "purpose": "Observed movement and stop intervals"
+      "purpose": "Retained source speed; source for ego_speed and stop intervals"
     },
     {
-      "name": "halt_before_nearest_boundary",
+      "name": "drv.stopped",
       "unit": "bool",
       "mandatory": true,
-      "purpose": "halt before legally applicable boundary versus entry without halt; right-turn yield separately"
+      "purpose": "Sampled stop state; saved measure_stop combines this with body/nearest road boundary for halt_before_nearest_boundary"
     },
     {
-      "name": "body_pedestrian_conflict_overlap",
-      "unit": "frame_indices",
+      "name": "drv.yields_to",
+      "unit": "structured",
       "mandatory": true,
-      "purpose": "Source-measured full-body and pedestrian-center occupancy in the destination conflict zone; not a legal yield verdict"
+      "purpose": "Retained pedestrian center/conflict occupancy; saved measure_turn_yield combines this with ego body for body_pedestrian_conflict_overlap"
+    },
+    {
+      "name": "dev.traffic_signal",
+      "unit": "structured",
+      "mandatory": true,
+      "purpose": "Observed signal indication with Native actor and governed lane context"
+    },
+    {
+      "name": "st.stop_line",
+      "unit": "structured",
+      "mandatory": true,
+      "purpose": "Surveyed nearest stop line or explicit absence"
+    },
+    {
+      "name": "st.crosswalk",
+      "unit": "structured",
+      "mandatory": true,
+      "purpose": "Surveyed nearest crosswalk or explicit absence"
     }
   ],
   "source_observation_mapping": {
     "dev.traffic_signal": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Saved Native frame/body/signal/road-derived channels in exact selected construction; selected measurement contract and finalizer recompute target quantities from retained raw sources. Original physical applicability and camera pixels require local review.",
       "channels": [
-        "halt_before_nearest_boundary"
+        "dev.traffic_signal"
       ],
       "source_refs": [
         "inputs/training__C110919__NRS-484B-307-8a__motor_vehicle_driver/assignment.json"
       ]
     },
     "dev.governs": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Saved Native frame/body/signal/road-derived channels in exact selected construction; selected measurement contract and finalizer recompute target quantities from retained raw sources. Original physical applicability and camera pixels require local review.",
       "channels": [
-        "halt_before_nearest_boundary"
+        "dev.traffic_signal",
+        "st.stop_line"
       ],
       "source_refs": [
         "inputs/training__C110919__NRS-484B-307-8a__motor_vehicle_driver/assignment.json"
       ]
     },
     "st.lane_enters": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Saved Native frame/body/signal/road-derived channels in exact selected construction; selected measurement contract and finalizer recompute target quantities from retained raw sources. Original physical applicability and camera pixels require local review.",
       "channels": [
-        "halt_before_nearest_boundary"
+        "native_body_pose_control",
+        "st.stop_line"
       ],
       "source_refs": [
         "inputs/training__C110919__NRS-484B-307-8a__motor_vehicle_driver/assignment.json"
       ]
     },
     "st.crosswalk": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Saved Native frame/body/signal/road-derived channels in exact selected construction; selected measurement contract and finalizer recompute target quantities from retained raw sources. Original physical applicability and camera pixels require local review.",
       "channels": [
-        "halt_before_nearest_boundary"
+        "st.crosswalk"
       ],
       "source_refs": [
         "inputs/training__C110919__NRS-484B-307-8a__motor_vehicle_driver/assignment.json"
       ]
     },
     "dev.regulatory_sign": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Saved Native frame/body/signal/road-derived channels in exact selected construction; selected measurement contract and finalizer recompute target quantities from retained raw sources. Original physical applicability and camera pixels require local review.",
       "channels": [
-        "halt_before_nearest_boundary"
+        "dev.traffic_signal"
       ],
       "source_refs": [
         "inputs/training__C110919__NRS-484B-307-8a__motor_vehicle_driver/assignment.json"
       ]
     },
     "st.stop_line": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Saved Native frame/body/signal/road-derived channels in exact selected construction; selected measurement contract and finalizer recompute target quantities from retained raw sources. Original physical applicability and camera pixels require local review.",
       "channels": [
-        "halt_before_nearest_boundary"
+        "st.stop_line"
       ],
       "source_refs": [
         "inputs/training__C110919__NRS-484B-307-8a__motor_vehicle_driver/assignment.json"
       ]
     },
     "st.intersection": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Saved Native frame/body/signal/road-derived channels in exact selected construction; selected measurement contract and finalizer recompute target quantities from retained raw sources. Original physical applicability and camera pixels require local review.",
       "channels": [
-        "halt_before_nearest_boundary"
+        "native_body_pose_control",
+        "st.stop_line"
       ],
       "source_refs": [
         "inputs/training__C110919__NRS-484B-307-8a__motor_vehicle_driver/assignment.json"
       ]
     },
     "drv.stopped": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Saved Native frame/body/signal/road-derived channels in exact selected construction; selected measurement contract and finalizer recompute target quantities from retained raw sources. Original physical applicability and camera pixels require local review.",
       "channels": [
-        "halt_before_nearest_boundary"
+        "drv.stopped",
+        "kin.velocity"
       ],
       "source_refs": [
         "inputs/training__C110919__NRS-484B-307-8a__motor_vehicle_driver/assignment.json"
       ]
     },
     "drv.crossing_line": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Saved Native frame/body/signal/road-derived channels in exact selected construction; selected measurement contract and finalizer recompute target quantities from retained raw sources. Original physical applicability and camera pixels require local review.",
       "channels": [
-        "halt_before_nearest_boundary"
+        "native_body_pose_control",
+        "st.stop_line"
       ],
       "source_refs": [
         "inputs/training__C110919__NRS-484B-307-8a__motor_vehicle_driver/assignment.json"
       ]
     },
     "drv.entering_intersection": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Saved Native frame/body/signal/road-derived channels in exact selected construction; selected measurement contract and finalizer recompute target quantities from retained raw sources. Original physical applicability and camera pixels require local review.",
       "channels": [
-        "halt_before_nearest_boundary"
+        "native_body_pose_control",
+        "st.stop_line"
       ],
       "source_refs": [
         "inputs/training__C110919__NRS-484B-307-8a__motor_vehicle_driver/assignment.json"
       ]
     },
     "kin.velocity": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Saved Native frame/body/signal/road-derived channels in exact selected construction; selected measurement contract and finalizer recompute target quantities from retained raw sources. Original physical applicability and camera pixels require local review.",
       "channels": [
-        "halt_before_nearest_boundary"
+        "kin.velocity"
       ],
       "source_refs": [
         "inputs/training__C110919__NRS-484B-307-8a__motor_vehicle_driver/assignment.json"
       ]
     },
     "drv.extreme_lane": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Saved Native frame/body/signal/road-derived channels in exact selected construction; selected measurement contract and finalizer recompute target quantities from retained raw sources. Original physical applicability and camera pixels require local review.",
       "channels": [
-        "halt_before_nearest_boundary"
+        "drv.extreme_lane",
+        "native_body_pose_control"
       ],
       "source_refs": [
         "inputs/training__C110919__NRS-484B-307-8a__motor_vehicle_driver/assignment.json"
       ]
     },
     "st.one_way_roadway": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Saved Native frame/body/signal/road-derived channels in exact selected construction; selected measurement contract and finalizer recompute target quantities from retained raw sources. Original physical applicability and camera pixels require local review.",
       "channels": [
-        "halt_before_nearest_boundary"
+        "st.one_way_roadway"
       ],
       "source_refs": [
         "inputs/training__C110919__NRS-484B-307-8a__motor_vehicle_driver/assignment.json"
       ]
     },
     "drv.yields_to": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Saved Native frame/body/signal/road-derived channels in exact selected construction; selected measurement contract and finalizer recompute target quantities from retained raw sources. Original physical applicability and camera pixels require local review.",
       "channels": [
-        "halt_before_nearest_boundary",
-        "body_pedestrian_conflict_overlap"
+        "drv.yields_to",
+        "native_body_pose_control"
       ],
       "source_refs": [
         "inputs/training__C110919__NRS-484B-307-8a__motor_vehicle_driver/assignment.json"
@@ -940,27 +965,28 @@
       {
         "view": "overview",
         "subject": "governing signal, complete ego body, turn path and directed participants",
-        "interval": "startup through final clearance (0–24 s)"
+        "interval": "startup through final clearance (0\u201324 s)"
       },
       {
         "view": "approach",
         "subject": "nearest stopping line, crosswalk and ego full-body approach",
-        "interval": "startup through intersection entry (0–24 s)"
+        "interval": "startup through intersection entry (0\u201324 s)"
       },
       {
         "view": "reference_corner",
         "subject": "governing signal and ego driver reference",
-        "interval": "startup through signal transition or red-turn entry (0–24 s)"
+        "interval": "startup through signal transition or red-turn entry (0\u201324 s)"
       },
       {
         "view": "driver_reference",
         "subject": "pedestrian and other-traffic conflict occupancy at destination",
-        "interval": "startup through final clearance (0–24 s)"
+        "interval": "startup through final clearance (0\u201324 s)"
       }
     ],
     "limitations": [
       "Original Native camera pixels and participant visibility require postcapture review",
       "The runtime capture profile is a prospective capability, not verified scene coverage"
-    ]
+    ],
+    "composition": "synchronized_four_view_primary"
   }
 }

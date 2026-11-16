@@ -29,7 +29,8 @@ def sha(path):
 
 
 def copy_proof(feet, candidate):
-    source = ROOT / f'.runtime-work/c104393-current-v3-{feet}-{candidate}'
+    version = 'v4' if feet in (300, 310) else 'v3'
+    source = ROOT / f'.runtime-work/c104393-current-{version}-{feet}-{candidate}'
     item = {'candidate_id': candidate,
             'recipe': f"diagnostic-{feet}{'-fallback1' if candidate == 'fallback1' else ''}-recipe.json"}
     for key, src, suffix in [('receipt', 'compatibility.json', 'receipt.json'),
@@ -43,10 +44,12 @@ def copy_proof(feet, candidate):
 
 
 def compat(feet, candidate):
-    manifest = (f'diagnostic-{feet}-fallback1-manifest.json' if candidate == 'fallback1'
+    manifest = (f'diagnostic-{feet}-fallback1-manifest.json' if candidate == 'fallback1' and feet != 300
+                else 'diagnostic-fallback1-manifest.json' if candidate == 'fallback1'
                 else 'draft-execution-manifest.json')
+    version = 'v4' if feet in (300, 310) else 'v3'
     run(['compatibility', '--manifest', HERE / manifest, '--case', f'{CASE_PREFIX}__{feet}',
-         '--candidate', candidate, '--output', ROOT / f'.runtime-work/c104393-current-v3-{feet}-{candidate}',
+         '--candidate', candidate, '--output', ROOT / f'.runtime-work/c104393-current-{version}-{feet}-{candidate}',
          '--library', LIBRARY, '--validator', VALIDATOR], f'current-v2-{feet}-{candidate}.log')
     return copy_proof(feet, candidate)
 
