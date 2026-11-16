@@ -1,0 +1,92 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_left_curb_departure",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "The turn is a left turn from a two-directional highway onto a one-way highway at an intersection.",
+      "source": "inputs/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/assignment.json",
+      "output_key": "highway_directions",
+      "method": "analyze_attempt",
+      "value_type": "array",
+      "kind": "sourced_context",
+      "inputs": [
+        "route_survey_original.json",
+        "route_survey_capture_receipt.json",
+        "body_corners_original.jsonl",
+        "video_frames.jsonl",
+        "trace.jsonl",
+        "overview.mkv",
+        "approach.mkv",
+        "reference_corner.mkv",
+        "driver_reference.mkv"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "The approach for the left turn must be made in the portion of the right half nearest the centerline.",
+      "source": "inputs/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/assignment.json",
+      "output_key": "approach_body_to_centerline",
+      "method": "analyze_attempt",
+      "value_type": "array",
+      "kind": "measured",
+      "inputs": [
+        "route_survey_original.json",
+        "route_survey_capture_receipt.json",
+        "body_corners_original.jsonl",
+        "video_frames.jsonl",
+        "trace.jsonl",
+        "overview.mkv",
+        "approach.mkv",
+        "reference_corner.mkv",
+        "driver_reference.mkv"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "The turn must be made from the right of the centerline where it enters the intersection.",
+      "source": "inputs/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/assignment.json",
+      "output_key": "entry_body_right_of_centerline",
+      "method": "analyze_attempt",
+      "value_type": "array",
+      "kind": "measured",
+      "inputs": [
+        "route_survey_original.json",
+        "route_survey_capture_receipt.json",
+        "body_corners_original.jsonl",
+        "video_frames.jsonl",
+        "trace.jsonl",
+        "overview.mkv",
+        "approach.mkv",
+        "reference_corner.mkv",
+        "driver_reference.mkv"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "The turn must proceed as close as practicable to the left-hand curb of the one-way highway.",
+      "source": "inputs/heldout__C228670__NRS-484B-400-3__motor_vehicle_driver/assignment.json",
+      "output_key": "departure_body_to_left_curb",
+      "method": "analyze_attempt",
+      "value_type": "array",
+      "kind": "measured",
+      "inputs": [
+        "route_survey_original.json",
+        "route_survey_capture_receipt.json",
+        "body_corners_original.jsonl",
+        "video_frames.jsonl",
+        "trace.jsonl",
+        "overview.mkv",
+        "approach.mkv",
+        "reference_corner.mkv",
+        "driver_reference.mkv"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "route_survey_original.json"
+    ],
+    "error_contains": "Missing required source: route_survey_original.json"
+  }
+}

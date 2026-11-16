@@ -138,7 +138,7 @@ def analyze_attempt(attempt, write_channels=True):
                 raise ValueError("Derived turn channel already exists: " + name)
             channel.write_text("".join(json.dumps(row, allow_nan=False) + "\n" for row in stream))
     return {"format": "worker-analysis-report", "case_id": case_id,
-            "measurements": {name: {"method": "source_joined_original_turn_geometry",
+            "measurements": {name: {"method": "analyze_attempt",
                                      "value": stream, "sources": {key: sha256(path) for key, path in source_paths.items()}}
                              for name, stream in streams.items()},
             "limitations": ["Native route survey provenance does not establish public highway access or legal proximity; original pixels need review."],
@@ -149,14 +149,15 @@ def build_native_result(attempt, report):
     root = Path(attempt)
     config = json.loads(required(root, "config.json").read_text())
     description = config["case"]["recording_description"]
+    units = {channel["name"]: channel["unit"] for channel in description["channels"]}
     evidence = []
     realized = {}
     for name in CHANNELS:
         channel = required(root, name + ".jsonl")
         stream = report["measurements"][name]["value"]
-        evidence.append({"name": name, "unit": "structured", "reference": channel.name,
+        evidence.append({"name": name, "unit": units[name], "reference": channel.name,
                          "sha256": sha256(channel)})
-        realized[name] = {"unit": "structured", "method": "source-joined original turn geometry",
+        realized[name] = {"unit": units[name], "method": "source-joined original turn geometry",
                           "time_window": "original turn frames", "statistic": "sample count",
                           "reference": channel.name, "value": len(stream),
                           "sample_window_s": [stream[0]["time_s"], stream[-1]["time_s"]]}

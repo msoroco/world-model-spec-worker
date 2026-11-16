@@ -36,6 +36,9 @@ def main():
     if not source or not digest:
         raise ValueError("Native capture requires exact route site source and SHA-256")
     plan = prepare(expected, source, digest)
+    engineering = config["engineering"]
+    for key in ("spawn_height_offset_m", "target_speed_mps", "overview_mount_z_m"):
+        plan[key] = float(engineering[key])
     run(plan, args.output_dir, args.host, args.port)
 
 

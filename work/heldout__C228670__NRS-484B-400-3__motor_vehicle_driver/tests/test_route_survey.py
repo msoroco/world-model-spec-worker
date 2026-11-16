@@ -133,7 +133,7 @@ class RouteSurveyTests(unittest.TestCase):
             raw = json.dumps(source()).encode()
             (root / "route_survey_original.json").write_bytes(raw)
             case_id = "heldout__C228670__NRS-484B-400-3__motor_vehicle_driver__centerline_approach_left_curb_departure"
-            description = {"channels": [{"name": name} for name in (
+            description = {"channels": [{"name": name, "unit": "structured"} for name in (
                 "approach_body_to_centerline", "entry_body_right_of_centerline",
                 "departure_body_to_left_curb", "highway_directions")]}
             config = {"selected_case_id": case_id, "law_id": "NRS-484B-400-3",
@@ -258,6 +258,7 @@ class RouteSurveyTests(unittest.TestCase):
                 return item
             def spawn_actor(self, blueprint, transform, attach_to):
                 assert attach_to == "ego"
+                self.transforms = getattr(self, "transforms", []) + [transform]
                 sensor = Sensor()
                 self.sensors.append(sensor)
                 return sensor
@@ -265,11 +266,13 @@ class RouteSurveyTests(unittest.TestCase):
         carla = SimpleNamespace(Transform=lambda *parts: parts,
                                 Location=lambda *values: values,
                                 Rotation=lambda *values: values)
-        cameras = FourCameraCapture(world, carla, "ego", lambda name, image: None)
+        cameras = FourCameraCapture(world, carla, "ego", lambda name, image: None,
+                                    overview_mount_z_m=9.)
         self.assertEqual(len(world.sensors), 4)
         self.assertEqual([(int(b.attributes["image_size_x"]), int(b.attributes["image_size_y"]))
                           for b in world.blueprints], [spec[2] for spec in CAMERAS.values()])
         self.assertTrue(all(b.attributes["sensor_tick"] == "0.05" for b in world.blueprints))
+        self.assertEqual(world.transforms[0][0][2], 9.)
         cameras.close()
 
 

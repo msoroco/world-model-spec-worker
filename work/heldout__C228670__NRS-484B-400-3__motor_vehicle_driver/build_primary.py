@@ -23,12 +23,12 @@ FILES = ("runner.py", "turn_native_plan.py",
 
 def build():
     description = {
-        "channels": [{"name": name, "unit": unit, "sampling_rate_hz": 20,
+        "channels": [{"name": name, "unit": "structured", "sampling_rate_hz": 20,
                       "method": method, "time_window": "all relevant original turn frames",
                       "reference_frame": "source-surveyed Native road geometry",
                       "uncertainty": "public access, legal proximity and camera visibility require original review"}
                      for name, unit, method in CHANNELS],
-        "context_inputs": ["source-hashed Native XODR route survey", "original four-camera RGB"],
+        "context_inputs": [],
         "limitations": ["No legal distance threshold or physical acceptance inferred from CPU fixtures"]}
     cameras = [{"name": name, "width": spec[2][0], "height": spec[2][1],
                 "pose_strategy": "subject-mounted provisional turn view", "fov_deg": spec[3]}
@@ -40,6 +40,9 @@ def build():
               "case": {"case_id": CASE, "recording_description": description},
               "engineering": {"approach_target_offset_m": 1.2,
                               "departure_target_offset_m": 1.2,
+                              "spawn_height_offset_m": .5,
+                              "target_speed_mps": 4.,
+                              "overview_mount_z_m": 8.,
                               "route_source": "Native XODR survey supplied with exact SHA-256 at capture"}}
     (ROOT / "config.json").write_text(json.dumps(config, indent=2) + "\n")
     files = [{"path": "config.json", "content": (ROOT / "config.json").read_text()}]

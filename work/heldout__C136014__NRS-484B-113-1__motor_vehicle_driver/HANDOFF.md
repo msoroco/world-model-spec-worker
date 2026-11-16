@@ -39,3 +39,7 @@ Two more byte-identical zero-byte nested compatibility logs for
 `reverse_close_traffic_steady` (fallback2 and fallback3) were consolidated into
 the same retained root log, with manifest paths rebound. The scoped strict
 gate still passes; no compatibility receipt or negative log was removed.
+
+### 2026-11-15 proof-preserving return compaction
+
+Removed 70 byte-identical case logs and rebound their exact references in `execution-manifest.json` to retained identical bytes. The assignment-scoped `--complete --require-delivery-ready` gate passed before and after compaction. Result remains ready; no source proof was weakened.

@@ -19,7 +19,9 @@ CAMERAS = {
 
 
 class FourCameraCapture:
-    def __init__(self, world, carla_module, ego, on_frame):
+    def __init__(self, world, carla_module, ego, on_frame, *, overview_mount_z_m=8.):
+        if not 6. <= overview_mount_z_m <= 12.:
+            raise ValueError("Invalid engineering overview mount height")
         self.condition = Condition()
         self.frames = {name: set() for name in CAMERAS}
         self.errors = []
@@ -27,6 +29,8 @@ class FourCameraCapture:
         self.closed = False
         try:
             for name, (location, rotation, size, fov) in CAMERAS.items():
+                if name == "overview":
+                    location = (location[0], location[1], overview_mount_z_m)
                 blueprint = world.get_blueprint_library().find("sensor.camera.rgb")
                 for key, value in (("image_size_x", size[0]), ("image_size_y", size[1]),
                                    ("fov", fov), ("sensor_tick", .05)):
@@ -141,7 +145,8 @@ def drive(world, carla_module, ego, plan, route, cameras, recorder, *, frames=16
             forward = transform.get_forward_vector()
             velocity = ego.get_velocity()
             controls = control_step(position, (float(forward.x), float(forward.y)),
-                                    (float(velocity.x), float(velocity.y)), target)
+                                    (float(velocity.x), float(velocity.y)), target,
+                                    target_speed_mps=plan.get("target_speed_mps", 4.))
             ego.apply_control(carla_module.VehicleControl(**controls))
             record_tick()
         if not reached:
@@ -182,13 +187,17 @@ def run(plan, output, host="127.0.0.1", port=2000):
         settings.fixed_delta_seconds = .05
         world.apply_settings(settings)
         spawn = route[0].transform
-        spawn.location.z += .5
+        offset = plan.get("spawn_height_offset_m", .5)
+        if not .3 <= offset <= 1.:
+            raise ValueError("Invalid engineering spawn height")
+        spawn.location.z += offset
         ego = world.try_spawn_actor(world.get_blueprint_library().find("vehicle.tesla.model3"), spawn)
         if ego is None:
             raise ValueError("Native left-turn ego spawn failed")
         recorder = SourceRecorder(output, {name: spec[2] for name, spec in CAMERAS.items()})
         seal_route_source(world_map, plan, carla.LaneType.Driving, output)
-        cameras = FourCameraCapture(world, carla, ego, recorder.on_frame)
+        cameras = FourCameraCapture(world, carla, ego, recorder.on_frame,
+                                    overview_mount_z_m=plan.get("overview_mount_z_m", 8.))
         outcome = drive(world, carla, ego, plan, route, cameras, recorder)
         recorder.seal()
         (output / "native-turn-result.json").write_text(json.dumps(outcome, indent=2) + "\n")
