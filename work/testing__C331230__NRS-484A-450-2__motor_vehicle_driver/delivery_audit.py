@@ -7,7 +7,9 @@ import argparse
 import hashlib
 import json
 import math
+import shutil
 import sys
+import tempfile
 from pathlib import Path
 
 PACKAGE = Path(__file__).resolve().parent
@@ -38,6 +40,43 @@ def rows(path):
     if not path.is_file():
         raise ValueError('Missing original source: ' + str(path))
     return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
+
+
+def verify_native_closure(attempt, expected_frames):
+    seal = read(attempt / 'capture-seal.json')
+    if (seal.get('format') != 'worker-sealed-capture' or
+            seal.get('provenance_kind') != 'native' or
+            seal.get('diagnostic_fixture') is not False or
+            seal.get('frames') != expected_frames or
+            seal.get('events') != ['capture_finished', 'encoders_closed', 'restoration_verified'] or
+            seal.get('restoration', {}).get('restored') is not True or
+            seal.get('physical_acceptance_claimed') is not False):
+        raise ValueError('Native capture closure absent or inconsistent')
+    sources = seal.get('sources')
+    if not isinstance(sources, dict) or not SOURCES <= set(sources):
+        raise ValueError('Native capture seal omits original source')
+    for name, expected in sources.items():
+        source = (attempt / name).resolve()
+        if attempt not in source.parents or not source.is_file() or digest(source) != expected:
+            raise ValueError('Sealed Native original missing or stale: ' + name)
+    revision = seal.get('native_revision')
+    if (not isinstance(revision, dict) or
+            revision.get('construction_sha256') != digest(attempt / 'construction.json') or
+            revision.get('runner_sha256') != digest(attempt / 'runner.py')):
+        raise ValueError('Native construction revision differs')
+    native_exit = read(attempt / 'native-exit.json')
+    if (native_exit.get('event') != 'native_exit' or
+            native_exit.get('native_revision') != revision or
+            native_exit.get('capture_seal_sha256') != digest(attempt / 'capture-seal.json')):
+        raise ValueError('Native exit does not bind sealed capture')
+    owner = read(attempt / 'owner-release.json')
+    if (owner.get('event') != 'owner_released' or owner.get('operator_attested') is not True or
+            owner.get('native_construction_sha256') != digest(attempt / 'construction.json') or
+            owner.get('native_exit_sha256') != digest(attempt / 'native-exit.json')):
+        raise ValueError('Owner release does not bind Native exit')
+    return {'capture_seal_sha256': digest(attempt / 'capture-seal.json'),
+            'native_exit_sha256': digest(attempt / 'native-exit.json'),
+            'owner_release_sha256': digest(attempt / 'owner-release.json')}
 
 
 def verify_pixels(attempt, review, frames, mapping_hash):
@@ -136,6 +175,11 @@ def audit(case_id, attempt, diagnostic=False, pixel_review=None):
         if len(original) != frames or any(row.get('frame') != mapping[i]['carla_frame'] or
                 row.get('time_s') != mapping[i]['time_s'] for i, row in enumerate(original)):
             raise ValueError('Original participant/time join differs: ' + name)
+    scenes = read(attempt / 'converted/trace.json').get('scenes')
+    if not isinstance(scenes, list) or len(scenes) != frames or any(
+            scene.get('t') != round(frame['time_s'] * 1000)
+            for scene, frame in zip(scenes, mapping)):
+        raise ValueError('Converted Core trace/original frame time join differs')
     report = read(attempt / 'analysis-report.json')
     if report.get('case_id') != case_id or report.get('physical_acceptance_claimed') is not False:
         raise ValueError('Saved analysis identity or acceptance claim differs')
@@ -148,12 +192,24 @@ def audit(case_id, attempt, diagnostic=False, pixel_review=None):
             raise ValueError('Original camera dimensions differ: ' + camera)
         decodes[camera] = {'source_sha256': digest(source), 'frames': decoded['frames'],
                            'rgb_sequence_sha256': decoded['rgb_sequence_sha256']}
+    composed = audit_video(attempt / 'raw.mkv', frames,
+                           mapping_sha256=digest(attempt / 'video_frames.jsonl'))
+    composition = read(attempt / 'four-view-receipt.json')
+    if (composition.get('format') != 'synchronized-four-view' or
+            composition.get('sources') != {name: digest(attempt / (name + '.mkv')) for name in CAMERAS} or
+            composition.get('frame_map_sha256') != digest(attempt / 'video_frames.jsonl') or
+            composition.get('primary_sha256') != composed['video_sha256'] or
+            composition.get('frames') != frames or
+            composition.get('dimensions') != composed['dimensions']):
+        raise ValueError('Four-view composition receipt missing or stale')
     if diagnostic:
         return {'format': 'worker-c331230-independent-delivery-audit', 'case_id': case_id,
                 'diagnostic_only': True, 'software_checks_passed': True,
                 'physical_completion_verified': False, 'actual_pixels_verified': False,
                 'physical_acceptance_claimed': False, 'frames': frames,
-                'measurement_names': sorted(measurements), 'camera_decodes': decodes}
+                'measurement_names': sorted(measurements), 'camera_decodes': decodes,
+                'composed_video_sha256': composed['video_sha256']}
+    closure = verify_native_closure(attempt, frames)
     # Native acceptance requires a separate human review of the original pixels.
     review = read(pixel_review) if pixel_review else None
     if not review or review.get('case_id') != case_id or not review.get('reviewer') or not review.get('method'):
@@ -179,14 +235,62 @@ def audit(case_id, attempt, diagnostic=False, pixel_review=None):
             'diagnostic_only': False, 'software_checks_passed': True,
             'physical_completion_verified': True, 'actual_pixels_verified': True,
             'physical_acceptance_claimed': False, 'frames': frames,
-            'measurement_names': sorted(measurements), 'camera_decodes': decodes}
+            'measurement_names': sorted(measurements), 'camera_decodes': decodes,
+            'composed_video_sha256': composed['video_sha256'], 'native_closure': closure}
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--case', required=True)
-    parser.add_argument('--attempt', required=True, type=Path)
+    parser.add_argument('--case')
+    parser.add_argument('--attempt', type=Path)
     parser.add_argument('--diagnostic', action='store_true')
     parser.add_argument('--pixel-review', type=Path)
+    parser.add_argument('--all-diagnostics', action='store_true')
     args = parser.parse_args()
-    print(json.dumps(audit(args.case, args.attempt, args.diagnostic, args.pixel_review), sort_keys=True))
+    if args.all_diagnostics:
+        for entry in read(PACKAGE / 'execution-manifest.json')['cases']:
+            case_id = entry['case_id']
+            command = entry['post_capture']['command'].split()
+            attempt = (REPO / command[command.index('--attempt') + 1]).resolve()
+            receipt = audit(case_id, attempt, diagnostic=True)
+            if (not receipt['software_checks_passed'] or receipt['physical_acceptance_claimed'] or
+                    receipt['actual_pixels_verified'] or receipt['physical_completion_verified']):
+                raise AssertionError('Diagnostic acceptance boundary differs')
+            with tempfile.TemporaryDirectory(dir=REPO / '.runtime-work', prefix='c331230-audit-') as temporary:
+                altered = Path(temporary) / 'attempt'
+                shutil.copytree(attempt, altered)
+                (altered / 'stop_history.jsonl').unlink()
+                try:
+                    audit(case_id, altered, diagnostic=True)
+                except ValueError as exc:
+                    if 'Missing or changed original source: stop_history.jsonl' not in str(exc):
+                        raise
+                else:
+                    raise AssertionError('Removed original source accepted')
+                shutil.copy2(attempt / 'stop_history.jsonl', altered / 'stop_history.jsonl')
+                trace = read(altered / 'converted/trace.json')
+                trace['scenes'][0]['t'] += 1
+                (altered / 'converted/trace.json').write_text(json.dumps(trace) + '\n')
+                try:
+                    audit(case_id, altered, diagnostic=True)
+                except ValueError as exc:
+                    if 'Converted Core trace/original frame time join differs' not in str(exc):
+                        raise
+                else:
+                    raise AssertionError('Changed converted time join accepted')
+            try:
+                audit(case_id, attempt, diagnostic=False)
+            except ValueError as exc:
+                if 'Original provenance' not in str(exc):
+                    raise
+            else:
+                raise AssertionError('Synthetic source accepted as Native')
+            print(json.dumps({'case_id': case_id, 'source_and_media': 'passed',
+                              'cameras': len(receipt['camera_decodes']),
+                              'removed_source': 'rejected', 'changed_core_time': 'rejected',
+                              'synthetic_as_native': 'rejected',
+                              'physical_acceptance_claimed': False}, sort_keys=True))
+    else:
+        if not args.case or not args.attempt:
+            parser.error('--case and --attempt required without --all-diagnostics')
+        print(json.dumps(audit(args.case, args.attempt, args.diagnostic, args.pixel_review), sort_keys=True))
