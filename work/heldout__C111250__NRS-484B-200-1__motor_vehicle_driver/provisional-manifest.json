@@ -1053,6 +1053,99 @@
         "log": "cases/right_half_closed_left/saved-processing.json",
         "log_sha256": "b0b04e5589cdba0b503c29147b71e426c1bb65ca825020d2f01d5fe47fb0edc6"
       }
+    },
+    {
+      "case_id": "heldout__C111250__NRS-484B-200-1__motor_vehicle_driver__three_lanes_right",
+      "kind": "delivery",
+      "construction": "cases/three_lanes_right/construction.json",
+      "construction_sha256": "c52b8b16a2da839852aa505621156b3c0164f41d2058cefd0e8ca4b730144031",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Loaded Native map three-lane geometry and body route require physical review"
+      },
+      "candidates": [],
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "measurement_contract": "cases/three_lanes_right/measurement-contract.json",
+      "fixture_recipe": "work/heldout__C111250__NRS-484B-200-1__motor_vehicle_driver/cases/three_lanes_right/recipe.json",
+      "acquisition": {
+        "full_body_leftward_clearance_m": {
+          "entrypoint": "finalizer.py",
+          "method": "source-hashed original body/frame and four-camera join",
+          "evidence": [
+            "road_geometry.json",
+            "exception_context.json",
+            "body_history.jsonl",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "any_left_half_body": {
+          "entrypoint": "finalizer.py",
+          "method": "source-hashed original body/frame and four-camera join",
+          "evidence": [
+            "road_geometry.json",
+            "exception_context.json",
+            "body_history.jsonl",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "exception_source_context": {
+          "entrypoint": "finalizer.py",
+          "method": "source-hashed original body/frame and four-camera join",
+          "evidence": [
+            "road_geometry.json",
+            "exception_context.json",
+            "body_history.jsonl",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv",
+            "lane_survey_original.json"
+          ]
+        }
+      },
+      "negative": {
+        "log": "cases/three_lanes_right/negative-analysis.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111250__NRS-484B-200-1__motor_vehicle_driver/provisional-manifest.json --case heldout__C111250__NRS-484B-200-1__motor_vehicle_driver__three_lanes_right --candidate primary --output .runtime-work/c111250-three-lanes-right-direct-primary-offline",
+        "exit_code": 0,
+        "construction_sha256": "c52b8b16a2da839852aa505621156b3c0164f41d2058cefd0e8ca4b730144031",
+        "log": "cases/three_lanes_right/offline.log",
+        "log_sha256": "116aa9e2bc953cbc3ac40f3e864e3272a8f4c3fd1e50102b84aebfecc0d49b32"
+      },
+      "compatibility": {
+        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C111250__NRS-484B-200-1__motor_vehicle_driver/provisional-manifest.json --case heldout__C111250__NRS-484B-200-1__motor_vehicle_driver__three_lanes_right --candidate primary --output .runtime-work/c111250-three-lanes-right-direct-primary-compat --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "receipt": "cases/three_lanes_right/compatibility.json",
+        "sha256": "d1211cc64a874b740724b1849b7088a902d975eecfd3f0b9d2443b9374c35511",
+        "log": "cases/three_lanes_right/analysis.log"
+      },
+      "saved_processing": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111250__NRS-484B-200-1__motor_vehicle_driver/provisional-manifest.json --case heldout__C111250__NRS-484B-200-1__motor_vehicle_driver__three_lanes_right --attempt .runtime-work/c111250-three-lanes-right-direct-primary-saved-attempt --output .runtime-work/c111250-three-lanes-right-direct-primary-saved-proof --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "exit_code": 0,
+        "receipt": "cases/three_lanes_right/saved-processing.json",
+        "receipt_sha256": "3ea500aa09c45be74d18da3b2350345e790b3372f876130215426c4b7a3f5966",
+        "log": "cases/three_lanes_right/saved-processing.json",
+        "log_sha256": "3ea500aa09c45be74d18da3b2350345e790b3372f876130215426c4b7a3f5966"
+      }
     }
   ],
   "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3"

@@ -1914,3 +1914,10 @@ Correction to this checkpoint: the first full strict gate found `Partial constru
 
 
 The repaired settled-state full `.venv-cpu/bin/python worker_check.py --complete --require-delivery-ready` exited 1 at `runtime/scenario_pipeline/worker_exchange/preparation.py:276`: `Preparation acceptance failed: partial/missing packages remain`. Log SHA256 `8a5196a775b4e25dcc5ad430d9aa36835506a570dd5afd41ee669c3da366a69e`. This confirms the construction-content mismatch was repaired. Effective inventory remains 40 ready/13 partial of 53. C111250 remains partial with six direct primary/fallback bundles, stable-manifest saved replays, full semantic-to-execution validation, and delivery audit bindings still worker-owned CPU work.
+
+
+## 2026-11-16 C111250 three-lane right primary returned
+
+C111250 now directly returns `three_lanes_right` primary construction and exact pinned offline, positive/missing-source compatibility, and saved-processing receipts. Its returned manifest has seven primary cases and six complete fallback triples. The new primary source archive was restored with tar/member SHA256 verification. Exact commands, hashes and source limitations are in C111250 `HANDOFF.md` and `result.json.three_lanes_right_direct_binding`. Eight CPU tests and C111250 scoped nonstrict complete check pass. C111250 remains partial: six fallback triples and five other primaries still need direct binding, followed by stable-manifest saved replays, full semantic/delivery audit and scoped strict. No physical or legal acceptance is claimed.
+
+Return cap is 10,200/10,200 files. Seven unused standalone source copies were archived byte-exact with SHA256 into existing ready-package result files (C125714, C136539, C111588, C111603); every affected ready package passed scoped strict after curation. A trial removal of two required C10364 physical logs was fully reverted and its scoped strict gate passes. Pinned CPU preflight passes. Next worker-owned CPU action: extract and prove the three `three_lanes_right` fallbacks from its preserved bundle, with proof-preserving file-slot curation.
