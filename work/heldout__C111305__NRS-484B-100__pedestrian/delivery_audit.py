@@ -136,7 +136,53 @@ def compare_saved_pair(responding_attempt, nonresponding_attempt, *, command):
             "legal_acceptance_claimed": False}
 
 
-def run_suite(attempts):
+def compare_timing_sources(attempts):
+    """Audit the three diagnostic timing variants against retained originals."""
+    if len(attempts) != 3:
+        raise ValueError("Three exact timing attempts required")
+    labels = ("early", "nominal", "late")
+    audited = [audit_saved_sources(path) for path in attempts]
+    directions = [json.loads((Path(path) / "officer_direction.json").read_text())
+                  for path in attempts]
+    configs = [json.loads((Path(path) / "config.json").read_text())
+               for path in attempts]
+    for label, row, config in zip(labels, audited, configs):
+        if not row["case_id"].endswith("__stop_responds_timing_" + label):
+            raise ValueError("Timing case identity or order differs")
+        if config.get("direction_frame") != {"early": 30, "nominal": 40,
+                                             "late": 50}[label]:
+            raise ValueError("Construction cue timing differs: " + label)
+        if row["observed_response"] != "stopped_after_indication":
+            raise ValueError("Original response differs across timing sweep")
+    fixed_sources = ("officer_context.json", "subject_motion.json",
+                     "subject_motion_history.jsonl", "video_frames.jsonl",
+                     "trace.jsonl")
+    for name in fixed_sources:
+        if len({row["source_sha256"][name] for row in audited}) != 1:
+            raise ValueError("Fixed timing source differs: " + name)
+    if any(row["video_sha256"] != audited[0]["video_sha256"]
+           for row in audited[1:]):
+        raise ValueError("Fixed timing camera sources differ")
+    base = {key: value for key, value in directions[0].items() if key != "frame"}
+    if any({key: value for key, value in direction.items() if key != "frame"}
+           != base for direction in directions[1:]):
+        raise ValueError("Officer direction changed beyond timing")
+    frames = [direction.get("frame") for direction in directions]
+    if not all(type(frame) is int for frame in frames) or not frames[0] < frames[1] < frames[2]:
+        raise ValueError("Original indication timing is not early/nominal/late")
+    return {"case_ids": [row["case_id"] for row in audited],
+            "original_indication_frames": frames,
+            "construction_direction_frames": [30, 40, 50],
+            "fixed_originals": {name: audited[0]["source_sha256"][name]
+                                for name in fixed_sources},
+            "fixed_cameras": audited[0]["video_sha256"],
+            "deliberate_difference": "officer indication timing only",
+            "scope": "synthetic compatibility-source comparison",
+            "physical_acceptance_claimed": False,
+            "legal_acceptance_claimed": False}
+
+
+def run_suite(attempts, timing_attempts=()):
     if len(attempts) != 4:
         raise ValueError("Four exact saved pedestrian attempts required")
     audited = [audit_saved_sources(path) for path in attempts]
@@ -167,9 +213,23 @@ def run_suite(attempts):
                               "rejected": True, "error": str(error)})
         else:
             raise ValueError("Invalid response comparison was accepted")
+    timing = None
+    if timing_attempts:
+        timing = compare_timing_sources(timing_attempts)
+        for changed in ("officer_context.json", "overview.mkv"):
+            try:
+                audit_saved_sources(timing_attempts[0], missing_source=changed)
+            except ValueError as error:
+                if str(error) != "Missing required original: " + changed:
+                    raise
+                negatives.append({"timing_missing": changed, "rejected": True,
+                                  "error": str(error)})
+            else:
+                raise ValueError("Missing timing original was accepted: " + changed)
     return {"format": "worker-pedestrian-officer-delivery-audit-fixture",
             "audit_sha256": digest_file(Path(__file__)), "case_audits": audited,
             "comparison_audits": comparisons, "negative_probes": negatives,
+            "timing_comparison_audit": timing,
             "physical_acceptance_claimed": False, "legal_acceptance_claimed": False}
 
 
@@ -181,7 +241,8 @@ if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument("--attempt", action="append", required=True)
+    parser.add_argument("--timing-attempt", action="append", default=[])
     parser.add_argument("--output", required=True)
     args = parser.parse_args()
-    result = run_suite(args.attempt)
+    result = run_suite(args.attempt, args.timing_attempt)
     Path(args.output).write_text(json.dumps(result, indent=2, allow_nan=False) + "\n")
