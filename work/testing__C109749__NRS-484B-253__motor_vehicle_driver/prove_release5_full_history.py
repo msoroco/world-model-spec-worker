@@ -17,6 +17,10 @@ sys.path.insert(0, str(REPO / 'runtime/scenario_pipeline'))
 
 from approaching_delivery_audit import CAMERAS, validate_originals
 from approaching_yield_observation import observe
+from far_approach_observation import observe as observe_far
+from hazard_sweep_policy import HazardSweepPolicy
+from far_delivery_audit import far_sequence
+from approaching_delivery_audit import validate_approaching_sequence
 from prove_far_approach_history import actor, make_sources, source_rows, write_jsonl
 from worker_exchange.media import audit as decode
 
@@ -232,5 +236,200 @@ def prove():
     return proof
 
 
+def prove_three(output_root=None):
+    """Exercise the exact 3 s finalizer on a full, separately sealed source."""
+    case = ROOT.name + '__approaching_release_3s'
+    index = json.loads(INDEX.read_text())
+    row = next(x for x in index['cases'] if x['case_id'] == case and x['candidate'] == 'primary')
+    construction = ROOT / 'cases/approaching_release_3s/construction.json'
+    require(sha(construction) == row['construction_sha256'], 'Exact 3 s draft construction changed')
+    files = {item['path']: item['content'] for item in json.loads(construction.read_text())['files']}
+    output_root = Path(output_root or REPO / '.runtime-work/c109749-release3-full-history-v2').resolve()
+    require((REPO / '.runtime-work').resolve() in output_root.parents,
+            'Diagnostic output must stay under ignored .runtime-work')
+    attempt = output_root / 'attempt'
+    require(not attempt.exists(), 'Use a fresh ignored 3 s full-history output root')
+    rows = source_rows()
+    for source_row in rows:
+        opposing = source_row['oncoming']
+        opposing['position_xy_m'][0] -= 5
+        for vertex in opposing['body_vertices_xy_m']:
+            vertex[0] -= 5
+    make_sources(attempt, rows)
+    (attempt / 'config.json').write_text(files['config.json'])
+    for camera in CAMERAS:
+        shutil.copy2(SOURCE / (camera + '.mkv'), attempt / (camera + '.mkv'))
+    write_jsonl(attempt / 'trace.jsonl', [
+        {'frame': source_row['frame'], 'time_s': source_row['time_s'],
+         'position_m': [*source_row['ego']['position_xy_m'], 0],
+         'heading_deg': source_row['ego_heading_deg'],
+         'speed_mps': math.hypot(*source_row['ego']['velocity_xy_mps'])}
+        for source_row in rows])
+    (attempt / 'capture').mkdir()
+    write_jsonl(attempt / 'capture/evidence.jsonl', [
+        {'original_frame': source_row['frame'], 'recording_time_s': source_row['time_s'],
+         'fixture_only': True} for source_row in rows])
+    namespace = {'__name__': 'release3_draft_finalizer',
+                 '__file__': str(ROOT / 'cases/approaching_release_3s/finalizer.py')}
+    exec(compile(files['finalizer.py'], namespace['__file__'], 'exec'), namespace)
+    namespace['finalize'](attempt, attempt / 'analysis-report.json')
+    result = json.loads((attempt / 'result.json').read_text())
+    require(result['case_id'] == case and result.get('physical_acceptance_claimed') is False,
+            'Diagnostic finalizer claimed another case or physical acceptance')
+    sources = ('config.json', 'intersection_geometry.json', 'interaction_history.jsonl',
+               'video_frames.jsonl', 'trace.jsonl', 'capture/evidence.jsonl',
+               *(name + '.mkv' for name in CAMERAS))
+    sealed = {name: sha(attempt / name) for name in sources}
+    (attempt / 'capture-seal.json').write_text(json.dumps({
+        'format': 'worker-sealed-capture', 'provenance_kind': 'synthetic_fixture',
+        'diagnostic_fixture': True, 'frames': 900, 'sources': sealed,
+        'physical_acceptance_claimed': False}, indent=2) + '\n')
+
+    def audit():
+        for name, digest in sealed.items():
+            require((attempt / name).is_file() and sha(attempt / name) == digest,
+                    'Sealed original source changed: ' + name)
+        joined = validate_originals(attempt, case)
+        observation = observe_far(attempt)
+        measured = json.loads((attempt / 'result.json').read_text())['measured_values']
+        require(measured['ego_turn_start_frame'] == observation['ego_turn_start_frame'] and
+                measured['opposing_entry_frame'] == observation['opposing_entry_frame'],
+                'Finalizer and independent far-approach observation differ')
+        return joined, observation
+
+    joined, observation = audit()
+    require(3.9 < observation['turn_sample']['kinematic_time_to_conflict_s'] < 4.0,
+            'Full 3 s source does not separate 3 s and 4 s releases')
+    remaining = observation['turn_sample']['remaining_distance_m']
+    closing = observation['turn_sample']['closing_speed_mps']
+    actions = {}
+    for release in (3.0, 4.0):
+        actions[str(release)] = HazardSweepPolicy(release_ttc_s=release,
+            approach_speed_mps=5.0).step(distance_to_hold_m=0.0, ego_speed_mps=0.0,
+            oncoming_distance_to_conflict_m=remaining,
+            oncoming_closing_speed_mps=closing, oncoming_in_intersection=False,
+            oncoming_cleared=False, turn_complete=False)['state']
+    require(actions == {'3.0': 'turn', '4.0': 'yield'},
+            'Same-source 3 s/4 s release actions did not separate')
+    decoded = {}
+    for camera in CAMERAS:
+        decoded[camera] = decode(attempt / (camera + '.mkv'), 900,
+                                 mapping_sha256=joined['frame_map_sha256'],
+                                 receipt=attempt.parent / (camera + '-decode.json'))
+        require(decoded[camera]['passed'], 'Four-camera source decode failed: ' + camera)
+    camera = attempt / 'overview.mkv'
+    hidden = attempt / 'overview.mkv.negative-hidden'
+    camera.rename(hidden)
+    try:
+        try:
+            audit()
+        except ValueError as exc:
+            require('Sealed original source changed: overview.mkv' in str(exc),
+                    'Missing-camera negative failed elsewhere')
+        else:
+            raise ValueError('Missing sealed overview camera was accepted')
+    finally:
+        hidden.rename(camera)
+    motion = attempt / 'interaction_history.jsonl'
+    original = motion.read_bytes()
+    changed = [json.loads(line) for line in original.splitlines()]
+    changed[0]['oncoming']['position_xy_m'][0] += 1
+    motion.write_text(''.join(json.dumps(item) + '\n' for item in changed))
+    try:
+        try:
+            audit()
+        except ValueError as exc:
+            require('Sealed original source changed: interaction_history.jsonl' in str(exc),
+                    'Changed-history negative failed elsewhere')
+        else:
+            raise ValueError('Changed sealed opposing history was accepted')
+    finally:
+        motion.write_bytes(original)
+    audit()
+    proof = {'format': 'worker-release3-full-duration-diagnostic', 'case_id': case,
+             'construction_sha256': row['construction_sha256'],
+             'source_frames': joined['frames'], 'source_hashes': sealed,
+             'capture_seal_sha256': sha(attempt / 'capture-seal.json'),
+             'ego_turn_start_frame': observation['ego_turn_start_frame'],
+             'opposing_entry_frame': observation['opposing_entry_frame'],
+             'measured_time_to_conflict_s': observation['turn_sample']['kinematic_time_to_conflict_s'],
+             'same_source_release_actions': actions, 'four_camera_decode_passed': True,
+             'missing_camera_rejected': True, 'changed_history_rejected': True,
+             'fixture_kind': 'synthetic 900-frame source and reused static diagnostic cameras',
+             'actor_pixel_visibility_verified': False,
+             'native_or_legal_acceptance_claimed': False}
+    index['release3_full_history_diagnostic'] = proof
+    INDEX.write_text(json.dumps(index, indent=2) + '\n')
+    return proof
+
+
+def prove_independent_delivery_sequences():
+    """Bind existing independent delivery sequence checks to both sealed drafts."""
+    index = json.loads(INDEX.read_text())
+    cases = (
+        ('release3_full_history_diagnostic',
+         REPO / '.runtime-work/c109749-release3-full-history-v2/attempt',
+         ROOT / 'far_delivery_audit.py',
+         lambda attempt, result: far_sequence(attempt, result),
+         'turn_sample'),
+        ('release5_full_history_diagnostic',
+         REPO / '.runtime-work/c109749-release5-full-history-v1/attempt',
+         ROOT / 'approaching_delivery_audit.py',
+         lambda attempt, result: validate_approaching_sequence(attempt, 'yield', result),
+         'approaching_yield_samples'),
+    )
+    bound = {}
+    for name, attempt, auditor, check, key in cases:
+        prior = index[name]
+        require(prior['source_frames'] == 900 and prior['construction_sha256'] and
+                prior['case_id'].endswith('__approaching_release_3s' if key == 'turn_sample'
+                                          else '__approaching_release_5s'),
+                'Full-duration draft proof changed')
+        for source, digest in prior['source_hashes'].items():
+            require((attempt / source).is_file() and sha(attempt / source) == digest,
+                    'Sealed original source changed: ' + source)
+        require(sha(attempt / 'capture-seal.json') == prior['capture_seal_sha256'],
+                'Source capture seal changed')
+        result = json.loads((attempt / 'result.json').read_text())
+        require(result['case_id'] == prior['case_id'] and
+                result.get('physical_acceptance_claimed') is False,
+                'Exact diagnostic result or physical claim changed')
+        observed = check(attempt, result)
+        require(observed.get('legal_verdict_asserted') is False,
+                'Independent sequence asserted a legal verdict')
+        altered = json.loads(json.dumps(result))
+        if key == 'turn_sample':
+            altered['measured_values'][key]['remaining_distance_m'] += 1
+        else:
+            altered['measured_values'][key][0]['distance_to_conflict_m'] += 1
+        try:
+            check(attempt, altered)
+        except ValueError:
+            pass
+        else:
+            raise ValueError('Independent delivery sequence accepted changed saved measurement')
+        bound[name] = {
+            'case_id': prior['case_id'],
+            'source_history_sha256': prior['source_hashes']['interaction_history.jsonl'],
+            'source_geometry_sha256': prior['source_hashes']['intersection_geometry.json'],
+            'source_result_sha256': sha(attempt / 'result.json'),
+            'auditor_sha256': sha(auditor),
+            'sequence': {k: v for k, v in observed.items() if k != 'approaching_yield_samples'},
+            'yield_sample_count': len(observed.get('approaching_yield_samples', [])),
+            'changed_saved_measurement_rejected': True,
+        }
+    proof = {'format': 'worker-release-grid-independent-sequence-diagnostic',
+             'cases': bound, 'source_kind': 'sealed synthetic diagnostic',
+             'physical_or_legal_acceptance_claimed': False}
+    index['independent_delivery_sequence_diagnostic'] = proof
+    INDEX.write_text(json.dumps(index, indent=2) + '\n')
+    return proof
+
+
 if __name__ == '__main__':
-    print(json.dumps(prove(), indent=2))
+    if len(sys.argv) == 3 and sys.argv[1] == '--three-output':
+        print(json.dumps(prove_three(sys.argv[2]), indent=2))
+    elif len(sys.argv) == 1:
+        print(json.dumps(prove_independent_delivery_sequences(), indent=2))
+    else:
+        raise SystemExit('Usage: prove_release5_full_history.py [--three-output .runtime-work/FRESH_ROOT]')
