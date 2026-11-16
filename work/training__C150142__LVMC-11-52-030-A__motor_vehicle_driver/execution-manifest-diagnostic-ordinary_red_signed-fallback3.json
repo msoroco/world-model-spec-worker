@@ -1,0 +1,69 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver",
+  "status": "signed_primary_offline_in_progress",
+  "runtime_manifest_sha256": "ae635d487ae988b67925bacd5ba13210f31224fc6a1ae131d1836a5557ba8714",
+  "cases": [
+    {
+      "case_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__ordinary_red_signed",
+      "kind": "delivery",
+      "construction": "selected-primary/ordinary_red_signed/construction.json",
+      "construction_sha256": "12be834126f904d2054b470e49c64195578137b38737962b7e5f5df9195796c9",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native sign rendering, red paint, parked body and four views unverified"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-fallbacks/ordinary_red_signed/fallback1/construction.json",
+          "construction_sha256": "eb477a79c93564233aacbeb47d5dc99bdf68be266ad399caa6003bbb549021e1",
+          "trigger": {
+            "source": "Native body centers and signed red-curb extent",
+            "metric": "longitudinal parking overshoot in m",
+            "failure_condition": "Observed ego passes the signed curb target before stopping"
+          },
+          "changed_knobs": [
+            "requested_approach_frames",
+            "controller approach speed"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-fallbacks/ordinary_red_signed/fallback2/construction.json",
+          "construction_sha256": "9f5e9ebc4eec7cb32f6456fdeebb6b531780331af478791041674f9ca18ea775",
+          "trigger": {
+            "source": "decoded overview pixels and Native signal readback",
+            "metric": "visible sign, red paint and complete ego body",
+            "failure_condition": "Sign or body is obscured in the source overview"
+          },
+          "changed_knobs": [
+            "overview camera elevation"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-fallbacks/ordinary_red_signed/fallback3/construction.json",
+          "construction_sha256": "29cf7ef80dff30bedc59046a31edb77a875815033c66f1c4e54ba10dbeb4cbde",
+          "trigger": {
+            "source": "Native stationary body interval and four-view frame join",
+            "metric": "signed red-curb stationary interval in frames",
+            "failure_condition": "Stopped interval is too short for manual signed-curb review"
+          },
+          "changed_knobs": [
+            "requested_approach_frames",
+            "controller approach speed"
+          ]
+        }
+      ],
+      "measurement_contract": "selected-primary/ordinary_red_signed/selected-measurement-contracts/ordinary_red_signed.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize_selected.py",
+        "output_schema": "c150142-red-curb-saved-analysis-v1"
+      },
+      "fixture_recipe": "work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/selected-diagnostics/ordinary_red_signed/fallback3-recipe.json"
+    }
+  ],
+  "original_native_observed": false,
+  "delivery_ready": false
+}

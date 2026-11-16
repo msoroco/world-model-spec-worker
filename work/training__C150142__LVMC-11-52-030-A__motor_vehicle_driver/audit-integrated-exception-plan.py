@@ -29,13 +29,19 @@ def audit():
                 mapped['status']=='planned_unverified',
                 'Exact exception comparison missing or altered: '+row['comparison_id'])
     dispositions={row['requirement']:row for row in plan['requirement_dispositions']}
-    for topic in ('text-3','text-4','text-5','text-6','text-7','text-8'):
+    signed=ROOT.name+'__ordinary_red_signed'
+    row=dispositions['text-3']
+    require(row['status']=='selected_required' and row['case_ids']==[signed] and
+            signed in cases,
+            'Signed ordinary red-curb selection differs')
+    for topic in ('text-4','text-5','text-6','text-7','text-8'):
         row=dispositions[topic]
         require(row['status']=='exception_pending' and row['case_ids'] and
                 set(row['case_ids'])<=set(cases),
                 'Exception disposition falsely selected or unassigned: '+topic)
     return {'format':'c150142-integrated-exception-plan-audit-v1',
             'passed':True,'planned_cases':30,'planned_comparisons':18,
-            'exception_topics_pending':6,'original_native_observed':False}
+            'exception_topics_pending':5,'signed_topics_selected':1,
+            'original_native_observed':False}
 
 if __name__=='__main__':print(json.dumps(audit(),sort_keys=True))
