@@ -1,0 +1,41 @@
+{
+  "format": "c146314-210-2-right-pass-measurement-contract-v1",
+  "assignment_id": "training__C146314__NRS-484B-210-2__motor_vehicle_driver",
+  "law_id": "NRS-484B-210-2",
+  "source_law_text": "The driver of a vehicle may overtake and pass another vehicle upon the right only under conditions permitting such movement in safety.",
+  "source_law_is_qualitative": true,
+  "legal_safety_threshold": null,
+  "source_rows": [
+    "native-raw-actors.jsonl",
+    "video_frames.jsonl",
+    "native-map-readback.json",
+    "native-capture-report.json"
+  ],
+  "source_video_views": {
+    "overview": [1920, 1080],
+    "approach": [1280, 720],
+    "reference_corner": [1280, 720],
+    "driver_reference": [1280, 720]
+  },
+  "rate_hz": 20,
+  "frames": 240,
+  "measurement_implementation": "native/measure_raw.py",
+  "raw_to_saved_preparation": "native/prepare_raw.py",
+  "measurements": {
+    "right_side_pass": "Observed ego center to lead's right, overlapping longitudinal body footprints, with positive lead-ahead and negative ego-ahead longitudinal center gaps in the 240-frame run",
+    "minimum_pass_body_surface_gap_m": "Minimum planar distance between convex hulls of observed CARLA body vertices while ego passes on lead's right",
+    "time_to_lead_center_s": "Positive observed longitudinal center gap divided by positive observed relative x velocity; otherwise null",
+    "maximum_ego_deceleration_mps2": "Maximum frame-to-frame decrease in observed ego x velocity divided by Native elapsed time",
+    "maximum_ego_brake_control": "Maximum applied Native ego brake control"
+  },
+  "candidate_physical_risk_triggers": {
+    "primary": "Observed unsafe clearance, time-to-conflict or braking cues require independent physical review; no CPU legal verdict",
+    "fallback1": "Loss of clearance or unstable motion calls for a lower paired-speed rerun",
+    "fallback2": "Unresolved vehicle/lane visibility calls for an elevated overview rerun",
+    "fallback3": "Late return or insufficient post-pass separation calls for a later lane-change-completion rerun"
+  },
+  "original_motion_required_for_acceptance": true,
+  "synthetic_native_sample_is_diagnostic_only": true,
+  "pixel_review_required_for_visibility": true,
+  "legal_safety_verdict_from_geometry_alone": false
+}

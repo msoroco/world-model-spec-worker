@@ -15,7 +15,7 @@ import traceback
 import check
 
 CAMERAS = (
-    ('overview', 1920, 1080, 85, (65, -17, 38), -49, False),
+    ('overview', 1920, 1080, 85, (-6, -5, 35), -70, True),
     ('approach', 1280, 720, 90, (4, 0, 2.1), -5, True),
     ('reference_corner', 1280, 720, 90, (1, -1.4, 1.8), -12, True),
     ('driver_reference', 1280, 720, 90, (0.2, -0.35, 1.6), -4, True),
@@ -89,6 +89,32 @@ def steer_to(carla,actor,target_x,target_y,target_speed):
         brake=max(0,min(1,.35*(speed-target_speed))))
 
 
+def spawn_source_cameras(carla, world, library, ego, output, policy,
+                         owned, camera_queues, logs, videos, popen=subprocess.Popen):
+    """Create actual Native sensors and lossless encoders; injectable for CPU proof."""
+    if policy not in ('standard','elevated_overview'):
+        raise ValueError('Unsupported camera policy')
+    for name,width,height,fov,location,pitch,attached in CAMERAS:
+        bp=library.find('sensor.camera.rgb')
+        for key,value in (('image_size_x',width),('image_size_y',height),
+                          ('fov',fov),('sensor_tick',0)):
+            bp.set_attribute(key,str(value))
+        if name=='overview' and policy=='elevated_overview':
+            location=(location[0],location[1],location[2]+10)
+        transform=carla.Transform(carla.Location(*location),
+                                  carla.Rotation(pitch=pitch))
+        sensor=world.spawn_actor(bp,transform,
+                                 attach_to=ego if attached else None)
+        owned.append(sensor);camera_queues[name]=queue.Queue()
+        logs[name]=(output/(name+'.encoder.log')).open('x')
+        videos[name]=popen(['ffmpeg','-nostdin','-hide_banner',
+            '-loglevel','error','-n','-f','rawvideo','-pix_fmt','rgb24',
+            '-s',f'{width}x{height}','-r','20','-i','pipe:0','-an',
+            '-c:v','ffv1','-level','1',str(output/(name+'.mkv'))],
+            stdin=subprocess.PIPE,stderr=logs[name])
+        sensor.listen(camera_queues[name].put)
+
+
 def execute(bundle,output,host,port):
     bundle=Path(bundle).resolve();output=Path(output).resolve()
     checked=check_bundle(bundle)
@@ -111,9 +137,10 @@ def execute(bundle,output,host,port):
         raise RuntimeError('Exclusive idle asynchronous CARLA world required')
     output.mkdir(parents=True,exist_ok=True)
     if any((output/name).exists() for name in
-           ('native-raw-actors.jsonl','video_frames.jsonl',
+           ('config.json','native-raw-actors.jsonl','video_frames.jsonl',
             'native-capture-report.json')):
         raise ValueError('Retain prior C146314 attempt; choose fresh output')
+    write_new(output/'config.json',cfg)
     owned=[];videos={};logs={};camera_queues={}
     pipeline=None;changed=False;frames=0;restored=None;error=None
     try:
@@ -163,25 +190,8 @@ def execute(bundle,output,host,port):
             'lead_actor_id':lead.id,
             'road_geometry_readback':True,
             'legal_verdict':None})
-        for name,width,height,fov,location,pitch,attached in CAMERAS:
-            bp=library.find('sensor.camera.rgb')
-            for key,value in (('image_size_x',width),('image_size_y',height),
-                              ('fov',fov),('sensor_tick',0)):
-                bp.set_attribute(key,str(value))
-            if name=='overview' and cfg['camera_policy']=='elevated_overview':
-                location=(location[0],location[1],location[2]+10)
-            transform=carla.Transform(carla.Location(*location),
-                                      carla.Rotation(pitch=pitch))
-            sensor=world.spawn_actor(bp,transform,
-                attach_to=ego if attached else None)
-            owned.append(sensor);camera_queues[name]=queue.Queue()
-            logs[name]=(output/(name+'.encoder.log')).open('x')
-            videos[name]=subprocess.Popen(['ffmpeg','-nostdin','-hide_banner',
-                '-loglevel','error','-n','-f','rawvideo','-pix_fmt','rgb24',
-                '-s',f'{width}x{height}','-r','20','-i','pipe:0','-an',
-                '-c:v','ffv1','-level','1',str(output/(name+'.mkv'))],
-                stdin=subprocess.PIPE,stderr=logs[name])
-            sensor.listen(camera_queues[name].put)
+        spawn_source_cameras(carla,world,library,ego,output,
+            cfg['camera_policy'],owned,camera_queues,logs,videos)
         pipeline=PipelineCapture(client,ego,output,cfg['case_id'],
             visibility=False,required_observations=[])
         start=world.get_snapshot().timestamp.elapsed_seconds

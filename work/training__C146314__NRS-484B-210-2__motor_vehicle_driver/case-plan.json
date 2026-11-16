@@ -107,66 +107,84 @@
   ],
   "source_observation_mapping": {
     "drv.overtaking": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Observed ego and lead body positions before, during and after a right-side pass.",
       "channels": [
-        "right_side_pass_lateral_clearance"
+        "observed_longitudinal_gap_m",
+        "longitudinal_body_overlap"
       ],
       "source_refs": [
-        "inputs/training__C146314__NRS-484B-210-2__motor_vehicle_driver/assignment.json"
+        "native-raw-actors.jsonl",
+        "video_frames.jsonl"
       ]
     },
     "drv.passing_side": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Original actor positions and map lane readback show passing side; pixels require review.",
       "channels": [
-        "right_side_pass_lateral_clearance"
+        "observed_right_of_lead",
+        "observed_ego_lane_id",
+        "observed_lead_lane_id"
       ],
       "source_refs": [
-        "inputs/training__C146314__NRS-484B-210-2__motor_vehicle_driver/assignment.json"
+        "native-raw-actors.jsonl",
+        "native-map-readback.json",
+        "video_frames.jsonl"
       ]
     },
     "drv.time_to_conflict": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Derived from observed longitudinal gap and relative Native velocities; no legal threshold.",
       "channels": [
-        "right_side_pass_lateral_clearance"
+        "time_to_lead_center_s",
+        "observed_relative_x_speed_mps"
       ],
       "source_refs": [
-        "inputs/training__C146314__NRS-484B-210-2__motor_vehicle_driver/assignment.json"
+        "native-raw-actors.jsonl",
+        "video_frames.jsonl"
       ]
     },
     "rel.surface_gap": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Derived from observed CARLA body vertices, not requested lateral apex.",
       "channels": [
-        "right_side_pass_lateral_clearance"
+        "observed_body_surface_gap_m"
       ],
       "source_refs": [
-        "inputs/training__C146314__NRS-484B-210-2__motor_vehicle_driver/assignment.json"
+        "native-raw-actors.jsonl",
+        "video_frames.jsonl"
       ]
     },
     "drv.lane_change_feasible": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Native lane IDs, bodies and original pixels support later physical review; feasibility remains unverified.",
       "channels": [
-        "right_side_pass_lateral_clearance"
+        "observed_ego_lane_id",
+        "observed_body_surface_gap_m"
       ],
       "source_refs": [
-        "inputs/training__C146314__NRS-484B-210-2__motor_vehicle_driver/assignment.json"
+        "native-raw-actors.jsonl",
+        "native-map-readback.json",
+        "video_frames.jsonl",
+        "overview.mkv",
+        "approach.mkv"
       ]
     },
     "drv.hard_deceleration": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Derived from observed Native x velocity changes and applied brake control; no statutory threshold.",
       "channels": [
-        "right_side_pass_lateral_clearance"
+        "maximum_ego_deceleration_mps2",
+        "maximum_ego_brake_control"
       ],
       "source_refs": [
-        "inputs/training__C146314__NRS-484B-210-2__motor_vehicle_driver/assignment.json"
+        "native-raw-actors.jsonl",
+        "video_frames.jsonl"
       ]
     },
     "kin.speed": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Ego and lead Native velocity samples remain the primary source.",
       "channels": [
-        "right_side_pass_lateral_clearance"
+        "observed_relative_x_speed_mps",
+        "time_to_lead_center_s"
       ],
       "source_refs": [
-        "inputs/training__C146314__NRS-484B-210-2__motor_vehicle_driver/assignment.json"
+        "native-raw-actors.jsonl",
+        "video_frames.jsonl"
       ]
     }
   },
@@ -201,5 +219,33 @@
   ],
   "selection_targets": [
     "full-train"
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 12,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "subject": "ego and lead bodies, lane boundaries and complete right-side pass",
+        "interval": "0-12 s",
+        "view": "overview"
+      },
+      {
+        "subject": "lead approach and relative closing motion",
+        "interval": "0-12 s",
+        "view": "approach"
+      },
+      {
+        "subject": "lateral body clearance beside lead and lane divider",
+        "interval": "0-12 s",
+        "view": "reference_corner"
+      },
+      {
+        "subject": "driver view of lead and right lane during maneuver",
+        "interval": "0-12 s",
+        "view": "driver_reference"
+      }
+    ],
+    "verification": "Original Native pixels and measured motion need independent review; no legal safety verdict from CPU geometry."
+  }
 }
