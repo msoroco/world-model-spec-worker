@@ -27,6 +27,9 @@ from approaching_delivery_audit import validate_approaching_sequence
 from worker_exchange.native_output import physical_result, seal_capture
 from worker_exchange.saved_processing import record_native_exit, acknowledge_owner_release
 from worker_exchange.physical_preparation import validate as validate_physical
+from worker_exchange.delivery_handoff import validate_case as validate_delivery_case
+from worker_exchange.media import compose_four_views
+from release_grid_delivery_audit import audit_attempt as audit_release
 from prove_far_approach_history import actor, make_sources, source_rows, write_jsonl
 from worker_exchange.media import audit as decode
 
@@ -606,6 +609,149 @@ def prove_returned_physical():
     return index['returned_physical_preparation']
 
 
+def release_delivery(case, output_root, negative_source_root=None):
+    """Run a full-duration synthetic delivery audit or missing-camera negative."""
+    suffix = case.rsplit('__', 1)[-1]
+    require(suffix in ('approaching_release_3s', 'approaching_release_5s'),
+            'Exact release-grid delivery case required')
+    index = json.loads(INDEX.read_text())
+    key = 'release3_full_history_diagnostic' if suffix.endswith('3s') else 'release5_full_history_diagnostic'
+    prior = index[key]
+    require(prior['case_id'] == case, 'Delivery source does not match exact case')
+    source = (REPO / ('.runtime-work/c109749-release3-full-history-v2/attempt'
+                     if suffix.endswith('3s') else
+                     '.runtime-work/c109749-release5-full-history-v1/attempt'))
+    root = Path(output_root).resolve()
+    require((REPO / '.runtime-work').resolve() in root.parents and not root.exists(),
+            'Use a fresh ignored release delivery output root')
+    attempt = root / 'attempt'
+    attempt.mkdir(parents=True)
+    if negative_source_root:
+        positive_root = Path(negative_source_root).resolve()
+        require((positive_root / 'attempt/delivery-diagnostic-audit.json').is_file(),
+                'Positive release delivery diagnostic required first')
+        source = positive_root / 'attempt'
+    for name, digest in prior['source_hashes'].items():
+        if negative_source_root and name == 'overview.mkv':
+            continue
+        original = source / name
+        require(original.is_file() and sha(original) == digest,
+                'Sealed release delivery source changed: ' + name)
+        target = attempt / name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(original, target)
+    for name in ('result.json', 'capture-seal.json'):
+        shutil.copy2(source / name, attempt / name)
+    require(sha(attempt / 'capture-seal.json') == prior['capture_seal_sha256'],
+            'Release delivery capture seal changed')
+    if negative_source_root:
+        for name in ('native-exit.json', 'owner-release.json'):
+            shutil.copy2(source / name, attempt / name)
+        audit_release(attempt, case, 'diagnostic-job', 1, 'diagnostic-recording',
+                      positive_root / 'pixel-review.json',
+                      attempt / 'delivery-diagnostic-audit.json',
+                      root / 'source-decode.json', diagnostic_selftest=True)
+        raise ValueError('Missing sealed overview camera was accepted')
+    mapping = [json.loads(line) for line in
+               (attempt / 'video_frames.jsonl').read_text().splitlines()]
+    history = [json.loads(line) for line in
+               (attempt / 'interaction_history.jsonl').read_text().splitlines()]
+    require(len(mapping) == len(history) == 900, 'Full release source required')
+    trace = attempt / 'converted/trace.json'
+    trace.parent.mkdir()
+    trace.write_text(json.dumps({'scenes': [
+        {'t': round(row['time_s'] * 1000)} for row in mapping]}, indent=2) + '\n')
+    sources = {name: attempt / (name + '.mkv') for name in CAMERAS}
+    compose_four_views(sources, attempt / 'video_frames.jsonl', attempt / 'raw.mkv')
+    (attempt / 'native-exit.json').write_text(json.dumps({
+        'event': 'native_exit', 'capture_seal_sha256': sha(attempt / 'capture-seal.json')},
+        indent=2) + '\n')
+    (attempt / 'owner-release.json').write_text(json.dumps({
+        'event': 'owner_released', 'operator_attested': True,
+        'native_exit_sha256': sha(attempt / 'native-exit.json'),
+        'diagnostic_fixture': True}, indent=2) + '\n')
+    samples = (0, 41, 116, 899)
+    review = {'case_id': case, 'reviewer': 'synthetic CPU fixture generator',
+              'method': 'static test-pattern ROI; no actor identity or real visibility assertion',
+              'frame_map_sha256': sha(attempt / 'video_frames.jsonl'),
+              'source_sha256': {name: sha(path) for name, path in sources.items()},
+              'observations': [
+                  {'camera': name, 'video_frame': frame, 'actor': role,
+                   'actor_id': history[frame][role]['actor_id'],
+                   'bbox_xyxy': [0, 0, 100, 100]}
+                  for name in CAMERAS for frame in samples
+                  for role in ('ego', 'oncoming', 'reciprocal')]}
+    (root / 'pixel-review.json').write_text(json.dumps(review, indent=2) + '\n')
+    receipt = audit_release(attempt, case, 'diagnostic-job', 1,
+                            'diagnostic-recording', root / 'pixel-review.json',
+                            attempt / 'delivery-diagnostic-audit.json',
+                            root / 'source-decode.json', diagnostic_selftest=True)
+    require(receipt['passed'] is False and receipt['software_checks_passed'] is True and
+            receipt['diagnostic_fixture'] is True and receipt['frames'] == 900,
+            'Release diagnostic audit claimed physical acceptance or incomplete source')
+    return {'case_id': case, 'frames': 900, 'software_checks_passed': True,
+            'diagnostic_fixture': True, 'physical_acceptance_claimed': False,
+            'audit_sha256': sha(attempt / 'delivery-diagnostic-audit.json')}
+
+
+def prove_delivery_contracts(tag='v2'):
+    """Return exact positive/negative logs and pinned handoff contracts."""
+    require(tag.replace('-', '').isalnum() and '/' not in tag,
+            'Simple ignored diagnostic output tag required')
+    index = json.loads(INDEX.read_text())
+    manifest = json.loads((ROOT / 'hazard-release-draft-manifest.json').read_text())
+    script = ROOT / 'release_grid_delivery_audit.py'
+    checked = {}
+    for suffix in ('approaching_release_3s', 'approaching_release_5s'):
+        entry = next(item for item in manifest['cases'] if item['case_id'].endswith('__' + suffix))
+        case = entry['case_id']
+        label = '3s' if suffix.endswith('3s') else '5s'
+        positive_root = REPO / ('.runtime-work/c109749-release-' + label + '-delivery-' + tag)
+        negative_root = REPO / ('.runtime-work/c109749-release-' + label + '-delivery-negative-' + tag)
+        command = [str(REPO / '.venv-cpu/bin/python'), str(ROOT / 'prove_release5_full_history.py'),
+                   '--delivery-case', case, '--delivery-output-root', str(positive_root)]
+        negative = command[:]
+        negative[-1] = str(negative_root)
+        negative += ['--negative-source-root', str(positive_root)]
+        folder = ROOT / 'cases' / suffix
+        positive_log = folder / 'delivery-positive.log'
+        negative_log = folder / 'delivery-negative.log'
+        first = subprocess.run(command, cwd=REPO, capture_output=True, text=True, timeout=240)
+        positive_log.write_text(first.stdout + first.stderr)
+        require(first.returncode == 0, 'Release delivery positive failed: ' + first.stderr[-1200:])
+        second = subprocess.run(negative, cwd=REPO, capture_output=True, text=True, timeout=60)
+        negative_log.write_text(second.stdout + second.stderr)
+        require(second.returncode != 0 and
+                'Sealed original source changed: overview.mkv' in negative_log.read_text(),
+                'Release missing-camera negative did not reject exact source')
+        spec = {'case_id': case, 'sets': ['demo-test', 'full-test'],
+                'checks': ['native_source', 'all_participants', 'time_join',
+                           'full_video_decode', 'actual_pixels', 'physical_completion'],
+                'script': str(script.relative_to(ROOT)), 'script_sha256': sha(script),
+                'command': ' '.join(command), 'test_exit_code': 0,
+                'test_log': str(positive_log.relative_to(ROOT)),
+                'test_log_sha256': sha(positive_log),
+                'negative_command': ' '.join(negative),
+                'negative_exit_code': second.returncode,
+                'negative_expected_error': 'Sealed original source changed: overview.mkv',
+                'negative_log': str(negative_log.relative_to(ROOT)),
+                'negative_log_sha256': sha(negative_log)}
+        validate_delivery_case(ROOT, dict(entry, delivery_acceptance=spec),
+                               ('demo-test', 'full-test'))
+        checked[suffix] = {'contract': spec,
+                           'base_auditor_sha256': sha(ROOT / ('far_delivery_audit.py'
+                            if label == '3s' else 'approaching_delivery_audit.py')),
+                           'diagnostic_audit_sha256': sha(positive_root /
+                                'attempt/delivery-diagnostic-audit.json'),
+                           'software_checks_passed': True,
+                           'physical_acceptance_claimed': False}
+    index['release_delivery_contracts'] = {
+        'format': 'worker-release-grid-delivery-contracts',
+        'cases': checked, 'native_or_legal_acceptance_claimed': False}
+    INDEX.write_text(json.dumps(index, indent=2) + '\n')
+    return index['release_delivery_contracts']
+
+
 if __name__ == '__main__':
     if len(sys.argv) == 3 and sys.argv[1] == '--three-output':
         print(json.dumps(prove_three(sys.argv[2]), indent=2))
@@ -613,7 +759,17 @@ if __name__ == '__main__':
         print(json.dumps(prove_physical_lifecycle_diagnostics(), indent=2))
     elif len(sys.argv) == 2 and sys.argv[1] == '--return-physical':
         print(json.dumps(prove_returned_physical(), indent=2))
+    elif len(sys.argv) == 2 and sys.argv[1] == '--return-delivery':
+        print(json.dumps(prove_delivery_contracts(), indent=2))
+    elif len(sys.argv) == 4 and sys.argv[1] == '--return-delivery' and sys.argv[2] == '--delivery-tag':
+        print(json.dumps(prove_delivery_contracts(sys.argv[3]), indent=2))
+    elif len(sys.argv) in (5, 7) and sys.argv[1] == '--delivery-case' and sys.argv[3] == '--delivery-output-root':
+        source_root = None
+        if len(sys.argv) == 7:
+            require(sys.argv[5] == '--negative-source-root', 'Expected negative source root')
+            source_root = sys.argv[6]
+        print(json.dumps(release_delivery(sys.argv[2], sys.argv[4], source_root), indent=2))
     elif len(sys.argv) == 1:
         print(json.dumps(prove_independent_delivery_sequences(), indent=2))
     else:
-        raise SystemExit('Usage: prove_release5_full_history.py [--three-output .runtime-work/FRESH_ROOT | --physical | --return-physical]')
+        raise SystemExit('Usage: prove_release5_full_history.py [--three-output .runtime-work/FRESH_ROOT | --physical | --return-physical | --return-delivery [--delivery-tag FRESH] | --delivery-case ID --delivery-output-root FRESH [--negative-source-root POSITIVE]]')
