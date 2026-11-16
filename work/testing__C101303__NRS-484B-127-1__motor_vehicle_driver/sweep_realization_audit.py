@@ -20,7 +20,7 @@ FIXED_COMMANDS = ('ego_target_speed_mps', 'lead_target_speed_mps',
                   'minimum_corridor_length_m', 'minimum_crest_rise_m',
                   'rate_hz', 'duration_s')
 SEALED = ('config.json', 'vehicle_history.jsonl',
-          'video_frames.jsonl', 'trace.jsonl')
+          'video_frames.jsonl', 'trace.jsonl', 'road_context.json')
 PACKAGE = Path(__file__).resolve().parent
 REPO = PACKAGE.parent.parent
 
@@ -74,7 +74,7 @@ def audit_point(root, requested_gap, *, diagnostic_selftest=False):
     context = read(root/'road_context.json')
     return {'requested_engineering_gap_m': requested_gap,
             'case_id': result['case_id'], 'source_root': str(root),
-            'source_sha256': {name:digest(root/name) for name in (*SEALED, 'road_context.json')},
+            'source_sha256': {name:digest(root/name) for name in SEALED},
             'capture_seal_sha256': digest(root/'capture-seal.json'),
             'frames':len(samples), 'pre_change_following_frames':len(following),
             'first_lane_change':observation['first_lane_change'],
@@ -129,7 +129,7 @@ def build_diagnostic_grid(output_root):
         source = source_root / (label + '-positive-v1/attempt')
         target = output_root / label
         target.mkdir(parents=True)
-        for name in (*SEALED, 'result.json', 'road_context.json'):
+        for name in (*SEALED, 'result.json'):
             shutil.copy2(source / name, target / name)
         original = [json.loads(line) for line in (target / 'vehicle_history.jsonl').read_text().splitlines()]
         if (len(original) != 900 or
@@ -156,7 +156,7 @@ def build_diagnostic_grid(output_root):
                 'provenance_kind': 'synthetic_fixture', 'diagnostic_fixture': True,
                 'projection_kind': 'extended_pre_change_following_cpu_selftest',
                 'frames': 900, 'physical_acceptance_claimed': False,
-                'sources': {name: digest(target / name) for name in (*SEALED, 'road_context.json')},
+                'sources': {name: digest(target / name) for name in SEALED},
                 'source_attempt': str(source.relative_to(REPO)),
                 'source_capture_seal_sha256': digest(source / 'capture-seal.json'),
                 'synthetic_modifications': {'held_following_through_index': 39,
