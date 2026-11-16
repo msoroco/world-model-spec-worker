@@ -7,7 +7,7 @@
       "case_id": "heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__marker_follow",
       "kind": "delivery",
       "construction": "construction.json",
-      "construction_sha256": "74f4f8bd108e33f3befb36afffa780617b9c15515ed4a7c890e41053efe4d721",
+      "construction_sha256": "8a6bbd83578a364f36ac72ec2fdc11a7aafbc8db3a942aa4f9d7b2463a298620",
       "measurement_procedure": {
         "entrypoint": "turn_marking.py"
       },
@@ -17,21 +17,21 @@
       },
       "candidates": [],
       "offline": {
-        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/provisional-manifest.json --case heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__marker_follow --output .runtime-work/c111644-marker-follow-offline-v3-20261116 --python \"$PWD/.venv-cpu/bin/python\"",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/provisional-manifest.json --case heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__marker_follow --output .runtime-work/c111644-marker-follow-offline-v6-20261116 --python \"$PWD/.venv-cpu/bin/python\"",
         "exit_code": 0,
         "log": "marker-follow-offline.log",
-        "log_sha256": "099a72c953712d20318b6179a330d9d9a849a2425c65016a0093dcce1e93c525",
-        "construction_sha256": "74f4f8bd108e33f3befb36afffa780617b9c15515ed4a7c890e41053efe4d721"
+        "log_sha256": "f83d6b14995e9f575f34fcfefd16a778ed7dcb97050e5c8c46a0fcca7cba2061",
+        "construction_sha256": "8a6bbd83578a364f36ac72ec2fdc11a7aafbc8db3a942aa4f9d7b2463a298620"
       },
       "measurement_contract": "measurement-contract.json",
       "fixture_recipe": "work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/recipe.json",
       "compatibility": {
         "receipt": "marker-follow-compatibility.json",
-        "sha256": "5f28574d5ea5a6874e428c90e5de6a4695c500fb0735eb1b6cec2b857a8d540d",
+        "sha256": "063f421e60f077331b4f76531b2e52aed1e8cb674850fb666b78aeeafc2b7c38",
         "log": "marker-follow-analysis.log",
         "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
         "negative_log": "marker-follow-negative.log",
-        "negative_log_sha256": "98d40afcc6b4efa0d72d661ba0842c3af6128ac293da8d1e7b655b386ce39037"
+        "negative_log_sha256": "1190edf80406bef681162a6756dffddadb485d3bb4fb610a26ee2125409e1c25"
       },
       "negative": {
         "log": "marker-follow-negative.log"
@@ -61,15 +61,159 @@
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
-        "port_env_var": "CARLA_PORT"
+        "port_env_var": "CARLA_PORT",
+        "indication_source_env_var": "TURN_INDICATION_SOURCE",
+        "indication_sha256_env_var": "TURN_INDICATION_SHA256"
       },
       "saved_processing": {
-        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/provisional-manifest.json --case heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__marker_follow --attempt .runtime-work/c111644-primary-saved-attempt-v2-20261116 --output .runtime-work/c111644-primary-saved-output-20261116 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/provisional-manifest.json --case heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__marker_follow --attempt .runtime-work/c111644-marker-follow-saved-audit-v2-20261116 --output .runtime-work/c111644-marker-follow-saved-proof-v2-20261116 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
         "exit_code": 0,
         "log": "marker-follow-saved-processing.json",
-        "log_sha256": "0eb6005e7b62260f1e0ed0dd396b33acf67cf6dd42542d7e7bec9c88214767de",
+        "log_sha256": "46747c1013226526f83d985cd10b0c282315f4a1b754f7898b480b89e765d2e3",
         "receipt": "marker-follow-saved-processing.json",
-        "receipt_sha256": "0eb6005e7b62260f1e0ed0dd396b33acf67cf6dd42542d7e7bec9c88214767de"
+        "receipt_sha256": "46747c1013226526f83d985cd10b0c282315f4a1b754f7898b480b89e765d2e3"
+      }
+    },
+    {
+      "case_id": "heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__marker_depart",
+      "kind": "delivery",
+      "construction": "marker-depart-construction.json",
+      "construction_sha256": "d61532f900e0f60b6ec63a9b4030d50b0071fd1ae50e84a274be116840da67f0",
+      "measurement_procedure": {
+        "entrypoint": "turn_marking.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native indication spawn, turn route and four-camera visibility require physical verification"
+      },
+      "candidates": [],
+      "measurement_contract": "marker-depart-measurement-contract.json",
+      "fixture_recipe": "work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/marker-depart-recipe.json",
+      "acquisition": {
+        "original_course_deviation_m": {
+          "entrypoint": "turn_marking.py",
+          "method": "source-joined original body/trace/frame and four source-camera derivation",
+          "evidence": "analyze_original_sources verifies SHA-256-bound originals before emitting original_course_deviation_m"
+        },
+        "original_turn_path_length_m": {
+          "entrypoint": "turn_marking.py",
+          "method": "source-joined original body/trace/frame and four source-camera derivation",
+          "evidence": "analyze_original_sources verifies SHA-256-bound originals before emitting original_turn_path_length_m"
+        },
+        "intersection_occupancy": {
+          "entrypoint": "turn_marking.py",
+          "method": "source-joined original body/trace/frame and four source-camera derivation",
+          "evidence": "analyze_original_sources verifies SHA-256-bound originals before emitting intersection_occupancy"
+        },
+        "turn_course_source_context": {
+          "entrypoint": "turn_marking.py",
+          "method": "source-joined original body/trace/frame and four source-camera derivation",
+          "evidence": "analyze_original_sources verifies SHA-256-bound originals before emitting turn_course_source_context"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "indication_source_env_var": "TURN_INDICATION_SOURCE",
+        "indication_sha256_env_var": "TURN_INDICATION_SHA256"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/provisional-manifest.json --case heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__marker_depart --output .runtime-work/c111644-marker-depart-offline-v3-20261116",
+        "exit_code": 0,
+        "log": "marker-depart-offline.log",
+        "log_sha256": "b2c76af2daba53fc2c781311aa6e8d2d24886fd6dd3fb7b4b285bea2060db4cf",
+        "construction_sha256": "d61532f900e0f60b6ec63a9b4030d50b0071fd1ae50e84a274be116840da67f0"
+      },
+      "compatibility": {
+        "receipt": "marker-depart-compatibility.json",
+        "sha256": "ef86761025395f61ab6fc63eb555c14fed232f261fe4ae77b39e2e57729834f0",
+        "log": "marker-depart-analysis.log",
+        "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "negative_log": "marker-depart-negative.log",
+        "negative_log_sha256": "42b5918d3f0326e2b2befe9b1809d27acc48b504dbc759f4fe2c3226d51d6958"
+      },
+      "negative": {
+        "log": "marker-depart-negative.log"
+      },
+      "saved_processing": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/provisional-manifest.json --case heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__marker_depart --attempt .runtime-work/c111644-marker-depart-saved-audit-v2-20261116 --output .runtime-work/c111644-marker-depart-saved-proof-v2-20261116 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "exit_code": 0,
+        "log": "marker-depart-saved-processing.json",
+        "log_sha256": "4bcb94a88f1544edfb2fbf9de3e24189a4c6a934504acc334fc02e0326358677",
+        "receipt": "marker-depart-saved-processing.json",
+        "receipt_sha256": "4bcb94a88f1544edfb2fbf9de3e24189a4c6a934504acc334fc02e0326358677"
+      }
+    },
+    {
+      "case_id": "heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__button_follow",
+      "kind": "delivery",
+      "construction": "button-follow-construction.json",
+      "construction_sha256": "b559324b28b5250f7a19b44186b4beb9fb6b4e2441dae33367f6776423bbeed5",
+      "measurement_procedure": {
+        "entrypoint": "turn_marking.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native indication spawn, turn route and four-camera visibility require physical verification"
+      },
+      "candidates": [],
+      "measurement_contract": "button-follow-measurement-contract.json",
+      "fixture_recipe": "work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/button-follow-recipe.json",
+      "acquisition": {
+        "original_course_deviation_m": {
+          "entrypoint": "turn_marking.py",
+          "method": "source-joined original body/trace/frame and four source-camera derivation",
+          "evidence": "analyze_original_sources verifies SHA-256-bound originals before emitting original_course_deviation_m"
+        },
+        "original_turn_path_length_m": {
+          "entrypoint": "turn_marking.py",
+          "method": "source-joined original body/trace/frame and four source-camera derivation",
+          "evidence": "analyze_original_sources verifies SHA-256-bound originals before emitting original_turn_path_length_m"
+        },
+        "intersection_occupancy": {
+          "entrypoint": "turn_marking.py",
+          "method": "source-joined original body/trace/frame and four source-camera derivation",
+          "evidence": "analyze_original_sources verifies SHA-256-bound originals before emitting intersection_occupancy"
+        },
+        "turn_course_source_context": {
+          "entrypoint": "turn_marking.py",
+          "method": "source-joined original body/trace/frame and four source-camera derivation",
+          "evidence": "analyze_original_sources verifies SHA-256-bound originals before emitting turn_course_source_context"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "indication_source_env_var": "TURN_INDICATION_SOURCE",
+        "indication_sha256_env_var": "TURN_INDICATION_SHA256"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/provisional-manifest.json --case heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__button_follow --output .runtime-work/c111644-button-follow-offline-v2-20261116",
+        "exit_code": 0,
+        "log": "button-follow-offline.log",
+        "log_sha256": "191db6de8ec39119c2c520ff4b9711b81c2625de7af5fee71edd62527c649d30",
+        "construction_sha256": "b559324b28b5250f7a19b44186b4beb9fb6b4e2441dae33367f6776423bbeed5"
+      },
+      "compatibility": {
+        "receipt": "button-follow-compatibility.json",
+        "sha256": "9775521e32fc1b5b301598f38bf2e917110978261fdef045a27be1b51ed8c48f",
+        "log": "marker-follow-analysis.log",
+        "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "negative_log": "button-follow-negative.log",
+        "negative_log_sha256": "2afa0af392d576e32c0fbfaea07c8835e42628fe137efcf41b20e177d19c1995"
+      },
+      "negative": {
+        "log": "button-follow-negative.log"
+      },
+      "saved_processing": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/provisional-manifest.json --case heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__button_follow --attempt .runtime-work/c111644-button-follow-saved-audit-v2-20261116 --output .runtime-work/c111644-button-follow-saved-proof-v2-20261116 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "exit_code": 0,
+        "log": "button-follow-saved-processing.json",
+        "log_sha256": "2d3ba0b839ab093b47c42777b61d68885882cb0b573b69e695b7cc87396a2319",
+        "receipt": "button-follow-saved-processing.json",
+        "receipt_sha256": "2d3ba0b839ab093b47c42777b61d68885882cb0b573b69e695b7cc87396a2319"
       }
     }
   ]

@@ -14,7 +14,86 @@
         "status": "physical",
         "reason": "Crosswalk connectivity and four-view officer/pedestrian visibility may fail in Native."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-stop_responds-fallback1.json",
+          "construction_sha256": "3d7553369aa4994f7f8609870ed06b61558450af2d7d9e092c2959dd6b7404f9",
+          "trigger": {
+            "source": "subject_motion_history.jsonl",
+            "metric": "post-direction travel progress",
+            "failure_condition": "Original pedestrian progress falls below crossing travel requirement"
+          },
+          "changed_knobs": [
+            "walk_speed_mps"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111305__NRS-484B-100__pedestrian/provisional-manifest.json --case heldout__C111305__NRS-484B-100__pedestrian__stop_responds --candidate fallback1 --output .runtime-work/c111305-stop_responds-fallback1-offline2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "primary-offline-stop_responds.log",
+            "log_sha256": "8c4b1532288f3c2237a75b4778a19116380135ed2658033225c3d1a1a8446867",
+            "construction_sha256": "3d7553369aa4994f7f8609870ed06b61558450af2d7d9e092c2959dd6b7404f9"
+          },
+          "compatibility": {
+            "receipt": "stop_responds-fallback1-compat.json",
+            "sha256": "315e0cb51c3320ac53a324f64402d25c27168fa7e53b51641790857f92974fd4",
+            "log": "primary-compat-analysis.log",
+            "negative_log": "stop_responds-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-stop_responds-fallback2.json",
+          "construction_sha256": "830f25f5650f7e64edfc30ffcfccb860e28c4d13a3fd03ea6d88c29eefd952c0",
+          "trigger": {
+            "source": "overview.mkv",
+            "metric": "officer and crosswalk frame visibility",
+            "failure_condition": "Officer or crosswalk not visible in overview source"
+          },
+          "changed_knobs": [
+            "overview_height_delta_m"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111305__NRS-484B-100__pedestrian/provisional-manifest.json --case heldout__C111305__NRS-484B-100__pedestrian__stop_responds --candidate fallback2 --output .runtime-work/c111305-stop_responds-fallback2-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "primary-offline-stop_responds.log",
+            "log_sha256": "8c4b1532288f3c2237a75b4778a19116380135ed2658033225c3d1a1a8446867",
+            "construction_sha256": "830f25f5650f7e64edfc30ffcfccb860e28c4d13a3fd03ea6d88c29eefd952c0"
+          },
+          "compatibility": {
+            "receipt": "stop_responds-fallback2-compat.json",
+            "sha256": "139c6d2daae3494978cb11a7902b5dde558b2ea4919bb91c152fb40f873c4bb6",
+            "log": "primary-compat-analysis.log",
+            "negative_log": "stop_responds-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-stop_responds-fallback3.json",
+          "construction_sha256": "9341337f0c28d3a9e060fe0299e921f474d5c03633e3a5f36a27eb975b34ba13",
+          "trigger": {
+            "source": "officer_direction.json",
+            "metric": "arm pose versus camera view",
+            "failure_condition": "Officer arm cue not distinguishable in four-view source"
+          },
+          "changed_knobs": [
+            "pose_pitch_delta_deg"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111305__NRS-484B-100__pedestrian/provisional-manifest.json --case heldout__C111305__NRS-484B-100__pedestrian__stop_responds --candidate fallback3 --output .runtime-work/c111305-stop_responds-fallback3-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "primary-offline-stop_responds.log",
+            "log_sha256": "8c4b1532288f3c2237a75b4778a19116380135ed2658033225c3d1a1a8446867",
+            "construction_sha256": "9341337f0c28d3a9e060fe0299e921f474d5c03633e3a5f36a27eb975b34ba13"
+          },
+          "compatibility": {
+            "receipt": "stop_responds-fallback3-compat.json",
+            "sha256": "fd42cab2304aebdb3142c91c93d208bb123196c89082e790677d54de8ebf6c46",
+            "log": "primary-compat-analysis.log",
+            "negative_log": "stop_responds-fallback3-negative.log"
+          }
+        }
+      ],
       "measurement_contract": "measurement-contract-stop_responds.json",
       "fixture_recipe": "work/heldout__C111305__NRS-484B-100__pedestrian/diagnostic-recipe-stop_responds.json",
       "acquisition": {
@@ -51,6 +130,265 @@
         "log_sha256": "93e6101659dc8c9de03026446a6c2a9766b258ac1537d760a1f9c3f4ba489ef6",
         "receipt": "primary-saved-stop_responds.json",
         "receipt_sha256": "93e6101659dc8c9de03026446a6c2a9766b258ac1537d760a1f9c3f4ba489ef6"
+      }
+    },
+    {
+      "case_id": "heldout__C111305__NRS-484B-100__pedestrian__stop_does_not_respond",
+      "kind": "delivery",
+      "construction": "construction-stop_does_not_respond.json",
+      "construction_sha256": "6bafddff45bc48274b63cad06c2678719436c2a35bb1836aa61f770dd1f8a6f8",
+      "measurement_procedure": {
+        "entrypoint": "officer_response.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Crosswalk and gesture visibility require Native validation."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-stop_does_not_respond-fallback1.json",
+          "construction_sha256": "fcafd97f6818b38c433404c94522362146072bf0a82440827ed268d96095162a",
+          "trigger": {
+            "source": "subject_motion_history.jsonl",
+            "metric": "post-direction travel progress",
+            "failure_condition": "Original pedestrian progress falls below crossing travel requirement"
+          },
+          "changed_knobs": [
+            "walk_speed_mps"
+          ],
+          "offline": {
+            "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111305__NRS-484B-100__pedestrian/provisional-manifest.json --case heldout__C111305__NRS-484B-100__pedestrian__stop_does_not_respond --candidate fallback1 --output .runtime-work/c111305-stop_does_not_respond-fallback1-offline-returned --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "primary-offline-stop_responds.log",
+            "log_sha256": "8c4b1532288f3c2237a75b4778a19116380135ed2658033225c3d1a1a8446867",
+            "construction_sha256": "fcafd97f6818b38c433404c94522362146072bf0a82440827ed268d96095162a"
+          },
+          "compatibility": {
+            "receipt": "stop_does_not_respond-fallback1-compat.json",
+            "sha256": "593689ae37d8e244a12b419ce36f6aa219e05f940ac03db4572359265585a078",
+            "log": "primary-compat-analysis.log",
+            "negative_log": "stop_does_not_respond-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-stop_does_not_respond-fallback2.json",
+          "construction_sha256": "0ae201bb323f59decd7bb3d403e373124c960b7d73cf8efa7bc920da446aab43",
+          "trigger": {
+            "source": "overview.mkv",
+            "metric": "officer and crosswalk frame visibility",
+            "failure_condition": "Officer or crosswalk not visible in overview source"
+          },
+          "changed_knobs": [
+            "overview_height_delta_m"
+          ],
+          "offline": {
+            "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111305__NRS-484B-100__pedestrian/provisional-manifest.json --case heldout__C111305__NRS-484B-100__pedestrian__stop_does_not_respond --candidate fallback2 --output .runtime-work/c111305-stop_does_not_respond-fallback2-offline-returned --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "primary-offline-stop_responds.log",
+            "log_sha256": "8c4b1532288f3c2237a75b4778a19116380135ed2658033225c3d1a1a8446867",
+            "construction_sha256": "0ae201bb323f59decd7bb3d403e373124c960b7d73cf8efa7bc920da446aab43"
+          },
+          "compatibility": {
+            "receipt": "stop_does_not_respond-fallback2-compat.json",
+            "sha256": "79adc1070596a3c1650eb11bdca87299450e14b0bf2314918a376397bba617ba",
+            "log": "primary-compat-analysis.log",
+            "negative_log": "stop_does_not_respond-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-stop_does_not_respond-fallback3.json",
+          "construction_sha256": "d592c0c42e21f3a826da1d3a38d45222e72b1c88b823784204dcc24b5c4939d0",
+          "trigger": {
+            "source": "officer_direction.json",
+            "metric": "arm pose versus camera view",
+            "failure_condition": "Officer arm cue not distinguishable in four-view source"
+          },
+          "changed_knobs": [
+            "pose_pitch_delta_deg"
+          ],
+          "offline": {
+            "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111305__NRS-484B-100__pedestrian/provisional-manifest.json --case heldout__C111305__NRS-484B-100__pedestrian__stop_does_not_respond --candidate fallback3 --output .runtime-work/c111305-stop_does_not_respond-fallback3-offline-returned --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "primary-offline-stop_responds.log",
+            "log_sha256": "8c4b1532288f3c2237a75b4778a19116380135ed2658033225c3d1a1a8446867",
+            "construction_sha256": "d592c0c42e21f3a826da1d3a38d45222e72b1c88b823784204dcc24b5c4939d0"
+          },
+          "compatibility": {
+            "receipt": "stop_does_not_respond-fallback3-compat.json",
+            "sha256": "e8e00186c2d6c1e10b80e740437627faedf40a5c4b0b34133a98caca7771d5c7",
+            "log": "primary-compat-analysis.log",
+            "negative_log": "stop_does_not_respond-fallback3-negative.log"
+          }
+        }
+      ],
+      "measurement_contract": "measurement-contract-stop_does_not_respond.json",
+      "fixture_recipe": "work/heldout__C111305__NRS-484B-100__pedestrian/diagnostic-recipe-stop_does_not_respond.json",
+      "acquisition": {
+        "subject_speed_mps": {
+          "entrypoint": "officer_response.py",
+          "method": "original pedestrian velocity joined at every frame",
+          "evidence": "subject_motion_history.jsonl and video_frames.jsonl"
+        },
+        "officer_direction": {
+          "entrypoint": "officer_response.py",
+          "method": "timed addressed officer pose joined to original frame",
+          "evidence": "officer_direction.json, officer_context.json and video_frames.jsonl"
+        }
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111305__NRS-484B-100__pedestrian/provisional-manifest.json --case heldout__C111305__NRS-484B-100__pedestrian__stop_does_not_respond --output .runtime-work/c111305-stop_does_not_respond-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "primary-offline-stop_responds.log",
+        "log_sha256": "8c4b1532288f3c2237a75b4778a19116380135ed2658033225c3d1a1a8446867",
+        "construction_sha256": "6bafddff45bc48274b63cad06c2678719436c2a35bb1836aa61f770dd1f8a6f8"
+      },
+      "compatibility": {
+        "receipt": "primary-compat-stop_does_not_respond.json",
+        "sha256": "eec5fc7eb7b4f3cf4295243f3ce149ba996c4d5fe9c3021a24d44193a1c0e163",
+        "log": "primary-compat-analysis.log"
+      },
+      "negative": {
+        "log": "primary-negative-stop_does_not_respond.log"
+      },
+      "saved_processing": {
+        "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111305__NRS-484B-100__pedestrian/provisional-manifest.json --case heldout__C111305__NRS-484B-100__pedestrian__stop_does_not_respond --attempt .runtime-work/c111305-stop_does_not_respond-saved-attempt --output .runtime-work/c111305-stop_does_not_respond-saved-proof --library runtime/library --validator .runtime-work/c111305-validator/.lake/build/bin/adapterCheck",
+        "exit_code": 0,
+        "log": "primary-saved-stop_does_not_respond.json",
+        "log_sha256": "783ece76037a897a9d3a0d8c0754a9969413ef2367a26a57ed5939aa00918eeb",
+        "receipt": "primary-saved-stop_does_not_respond.json",
+        "receipt_sha256": "783ece76037a897a9d3a0d8c0754a9969413ef2367a26a57ed5939aa00918eeb"
+      }
+    },
+    {
+      "case_id": "heldout__C111305__NRS-484B-100__pedestrian__proceed_responds",
+      "kind": "delivery",
+      "construction": "construction-proceed_responds.json",
+      "construction_sha256": "47c10be31b64cee50b8b1fe51d7eb7c7e4e244509a0c54525afaf8efc7a9f0d9",
+      "measurement_procedure": {
+        "entrypoint": "officer_response.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Crosswalk and gesture visibility require Native validation."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-proceed_responds-fallback1.json",
+          "construction_sha256": "1412cb22fd73f7f3aba2e007c5b9979c69c1129393cfda7568488031ae31f971",
+          "trigger": {
+            "source": "subject_motion_history.jsonl",
+            "metric": "post-direction travel progress",
+            "failure_condition": "Original pedestrian progress falls below crossing travel requirement"
+          },
+          "changed_knobs": [
+            "walk_speed_mps"
+          ],
+          "offline": {
+            "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111305__NRS-484B-100__pedestrian/provisional-manifest.json --case heldout__C111305__NRS-484B-100__pedestrian__proceed_responds --candidate fallback1 --output .runtime-work/c111305-proceed_responds-fallback1-offline-returned --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "primary-offline-stop_responds.log",
+            "log_sha256": "8c4b1532288f3c2237a75b4778a19116380135ed2658033225c3d1a1a8446867",
+            "construction_sha256": "1412cb22fd73f7f3aba2e007c5b9979c69c1129393cfda7568488031ae31f971"
+          },
+          "compatibility": {
+            "receipt": "proceed_responds-fallback1-compat.json",
+            "sha256": "0cdd3db69d67545625de03eeaebdd4806deed0fbc43c7a800d1f06887aff6077",
+            "log": "primary-compat-analysis.log",
+            "negative_log": "proceed_responds-fallback1-negative.log"
+          }
+        }
+      ],
+      "measurement_contract": "measurement-contract-proceed_responds.json",
+      "fixture_recipe": "work/heldout__C111305__NRS-484B-100__pedestrian/diagnostic-recipe-proceed_responds.json",
+      "acquisition": {
+        "subject_speed_mps": {
+          "entrypoint": "officer_response.py",
+          "method": "original pedestrian velocity joined at every frame",
+          "evidence": "subject_motion_history.jsonl and video_frames.jsonl"
+        },
+        "officer_direction": {
+          "entrypoint": "officer_response.py",
+          "method": "timed addressed officer pose joined to original frame",
+          "evidence": "officer_direction.json, officer_context.json and video_frames.jsonl"
+        }
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111305__NRS-484B-100__pedestrian/provisional-manifest.json --case heldout__C111305__NRS-484B-100__pedestrian__proceed_responds --output .runtime-work/c111305-proceed_responds-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "primary-offline-stop_responds.log",
+        "log_sha256": "8c4b1532288f3c2237a75b4778a19116380135ed2658033225c3d1a1a8446867",
+        "construction_sha256": "47c10be31b64cee50b8b1fe51d7eb7c7e4e244509a0c54525afaf8efc7a9f0d9"
+      },
+      "compatibility": {
+        "receipt": "primary-compat-proceed_responds.json",
+        "sha256": "131b5b7dd427c3d54e2ce92478471e3cfe119a0f7e740e5d337f98f4f6ac6e0d",
+        "log": "primary-compat-analysis.log"
+      },
+      "negative": {
+        "log": "primary-negative-proceed_responds.log"
+      },
+      "saved_processing": {
+        "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111305__NRS-484B-100__pedestrian/provisional-manifest.json --case heldout__C111305__NRS-484B-100__pedestrian__proceed_responds --attempt .runtime-work/c111305-proceed_responds-saved-attempt --output .runtime-work/c111305-proceed_responds-saved-proof --library runtime/library --validator .runtime-work/c111305-validator/.lake/build/bin/adapterCheck",
+        "exit_code": 0,
+        "log": "primary-saved-proceed_responds.json",
+        "log_sha256": "a049571d97b34134edb390b2c654413e3b9f0337ae2ad233822813d9a8af7df6",
+        "receipt": "primary-saved-proceed_responds.json",
+        "receipt_sha256": "a049571d97b34134edb390b2c654413e3b9f0337ae2ad233822813d9a8af7df6"
+      }
+    },
+    {
+      "case_id": "heldout__C111305__NRS-484B-100__pedestrian__proceed_does_not_respond",
+      "kind": "delivery",
+      "construction": "construction-proceed_does_not_respond.json",
+      "construction_sha256": "e24ad09185f5a9754720a4c6df8e501c63d442bbd9416804b015431bd37750e2",
+      "measurement_procedure": {
+        "entrypoint": "officer_response.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Crosswalk and gesture visibility require Native validation."
+      },
+      "candidates": [],
+      "measurement_contract": "measurement-contract-proceed_does_not_respond.json",
+      "fixture_recipe": "work/heldout__C111305__NRS-484B-100__pedestrian/diagnostic-recipe-proceed_does_not_respond.json",
+      "acquisition": {
+        "subject_speed_mps": {
+          "entrypoint": "officer_response.py",
+          "method": "original pedestrian velocity joined at every frame",
+          "evidence": "subject_motion_history.jsonl and video_frames.jsonl"
+        },
+        "officer_direction": {
+          "entrypoint": "officer_response.py",
+          "method": "timed addressed officer pose joined to original frame",
+          "evidence": "officer_direction.json, officer_context.json and video_frames.jsonl"
+        }
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111305__NRS-484B-100__pedestrian/provisional-manifest.json --case heldout__C111305__NRS-484B-100__pedestrian__proceed_does_not_respond --output .runtime-work/c111305-proceed_does_not_respond-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "primary-offline-stop_responds.log",
+        "log_sha256": "8c4b1532288f3c2237a75b4778a19116380135ed2658033225c3d1a1a8446867",
+        "construction_sha256": "e24ad09185f5a9754720a4c6df8e501c63d442bbd9416804b015431bd37750e2"
+      },
+      "compatibility": {
+        "receipt": "primary-compat-proceed_does_not_respond.json",
+        "sha256": "0005dd6075c3ca3530d340d8448cbdb46565c0eadad0db1ed3a994da82f62d25",
+        "log": "primary-compat-analysis.log"
+      },
+      "negative": {
+        "log": "primary-negative-proceed_does_not_respond.log"
+      },
+      "saved_processing": {
+        "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111305__NRS-484B-100__pedestrian/provisional-manifest.json --case heldout__C111305__NRS-484B-100__pedestrian__proceed_does_not_respond --attempt .runtime-work/c111305-proceed_does_not_respond-saved-attempt --output .runtime-work/c111305-proceed_does_not_respond-saved-proof --library runtime/library --validator .runtime-work/c111305-validator/.lake/build/bin/adapterCheck",
+        "exit_code": 0,
+        "log": "primary-saved-proceed_does_not_respond.json",
+        "log_sha256": "226a2985f44001c76ffb2a48c87c2c1e9217352642d8482d9925a24e2c24f1eb",
+        "receipt": "primary-saved-proceed_does_not_respond.json",
+        "receipt_sha256": "226a2985f44001c76ffb2a48c87c2c1e9217352642d8482d9925a24e2c24f1eb"
       }
     }
   ],

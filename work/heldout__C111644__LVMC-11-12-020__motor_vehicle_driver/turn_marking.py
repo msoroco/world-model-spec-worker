@@ -245,6 +245,54 @@ def analyze_original_sources(attempt):
             'physical_acceptance_claimed':False,'legal_acceptance_claimed':False}
 
 
+def _route_response_from_reports(follow, depart, follow_source, depart_source,
+                                 follow_plan, depart_plan):
+    """Compare retained follow/depart outcomes without deciding legal obedience."""
+    forms = ('marker', 'button', 'other_indication')
+    matched = [form for form in forms
+               if follow['case_id'].endswith('__' + form + '_follow') and
+               depart['case_id'].endswith('__' + form + '_depart')]
+    if len(matched) != 1:
+        raise ValueError('Turn route comparison case identity differs')
+    if follow_source != depart_source:
+        raise ValueError('Fixed indication source changed between route responses')
+    if (follow_plan.get('route_variant') != 'follow' or
+            depart_plan.get('route_variant') != 'depart' or
+            follow_plan.get('course_xy_m') != depart_plan.get('course_xy_m') or
+            follow_plan.get('target_route_xy_m') == depart_plan.get('target_route_xy_m')):
+        raise ValueError('Declared route response difference absent or course changed')
+    left, right = follow['samples'], depart['samples']
+    if (len(left) < 3 or len(left) != len(right) or
+            [(r['frame'],r['time_s']) for r in left] !=
+            [(r['frame'],r['time_s']) for r in right]):
+        raise ValueError('Fixed frame/time sampling changed')
+    follow_deviation = max(r['deviation_m'] for r in left)
+    depart_deviation = max(r['deviation_m'] for r in right)
+    if not isfinite(follow_deviation) or not isfinite(depart_deviation) or depart_deviation <= follow_deviation:
+        raise ValueError('Original route response difference absent')
+    return {'comparison_complete':True,'source_joined':True,'frames':len(left),
+            'follow_max_course_deviation_m':follow_deviation,
+            'depart_max_course_deviation_m':depart_deviation,
+            'fixed_source_sha256':hashlib.sha256(follow_source).hexdigest(),
+            'legal_obedience_judgment':None,'physical_acceptance_claimed':False}
+
+
+def audit_saved_turn_route_response(follow_attempt, depart_attempt):
+    """Recompute both cases from their retained SHA-bound original acquisition."""
+    follow_root, depart_root = Path(follow_attempt), Path(depart_attempt)
+    follow = analyze_original_sources(follow_root)
+    depart = analyze_original_sources(depart_root)
+    follow_source = (follow_root / 'turn_indication_original.json').read_bytes()
+    depart_source = (depart_root / 'turn_indication_original.json').read_bytes()
+    follow_plan = json.loads((follow_root / 'turn_route_plan.json').read_text())
+    depart_plan = json.loads((depart_root / 'turn_route_plan.json').read_text())
+    return _route_response_from_reports(follow, depart, follow_source,
+                                        depart_source, follow_plan, depart_plan)
+
+
+audit_saved_marker_route_response = audit_saved_turn_route_response
+
+
 def finalize_original_sources(attempt):
     root = Path(attempt)
     source = analyze_original_sources(root)

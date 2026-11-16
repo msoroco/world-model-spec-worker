@@ -70,6 +70,28 @@ class MarkingTests(unittest.TestCase):
   with self.assertRaisesRegex(ValueError,'misses intersection'):
    m.native_route_plan(source,'follow')
 
+ def test_route_response_audit_requires_fixed_source_and_observed_difference(self):
+  cid='heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__marker_'
+  rows=lambda values:[{'frame':i,'time_s':i*.05,'deviation_m':value}
+                      for i,value in enumerate(values)]
+  a={'case_id':cid+'follow','samples':rows([0.,0.,.1])}
+  b={'case_id':cid+'depart','samples':rows([0.,.5,2.])}
+  plan={'route_variant':'follow','course_xy_m':[[0,0],[1,0],[1,1]],
+        'target_route_xy_m':[[0,0],[1,0],[1,1]]}
+  departed=dict(plan,route_variant='depart',target_route_xy_m=[[0,0],[1,0],[3,1]])
+  self.assertTrue(m._route_response_from_reports(a,b,b'same',b'same',plan,departed)['comparison_complete'])
+  button_a=dict(a,case_id=cid.replace('marker_','button_')+'follow')
+  button_b=dict(b,case_id=cid.replace('marker_','button_')+'depart')
+  self.assertTrue(m._route_response_from_reports(button_a,button_b,b'same',b'same',plan,departed)['comparison_complete'])
+  with self.assertRaisesRegex(ValueError,'case identity'):
+   m._route_response_from_reports(a,button_b,b'same',b'same',plan,departed)
+  with self.assertRaisesRegex(ValueError,'Fixed indication source'):
+   m._route_response_from_reports(a,b,b'same',b'changed',plan,departed)
+  with self.assertRaisesRegex(ValueError,'response difference absent'):
+   m._route_response_from_reports(a,dict(b,samples=rows([0.,0.,.1])),b'same',b'same',plan,departed)
+  with self.assertRaisesRegex(ValueError,'frame/time sampling'):
+   m._route_response_from_reports(a,dict(b,samples=[{'frame':5,'time_s':0.,'deviation_m':2.}]),b'same',b'same',plan,departed)
+
 class NativeIndicationTests(unittest.TestCase):
  def record(self,kind):
   return {'authority_document':'fixture claim only','intersection_id':'junction-1','map_name':'TestMap',
@@ -169,6 +191,22 @@ class NativeIndicationTests(unittest.TestCase):
     camera.wait(1,timeout_s=.001)
    camera.close()
    self.assertTrue(all(sensor.destroyed and sensor.stopped for sensor in world.sensors))
+
+ def test_native_capture_handoff_accepts_materialized_directory_and_sourced_env(self):
+  digest='a'*64
+  self.assertEqual(runner._native_source_args(None,None,{'TURN_INDICATION_SOURCE':'source.json',
+                   'TURN_INDICATION_SHA256':digest}),('source.json',digest))
+  with self.assertRaisesRegex(ValueError,'TURN_INDICATION_SOURCE'):
+   runner._native_source_args(None,None,{})
+  with tempfile.TemporaryDirectory() as directory:
+   root=Path(directory)
+   (root/'construction.json').write_text('{}')
+   (root/'config.json').write_text('{}')
+   (root/'runner.py').write_text('')
+   runner._check_attempt_dir(root)
+   (root/'turn_body_original.jsonl').write_text('')
+   with self.assertRaisesRegex(ValueError,'already has acquisition'):
+    runner._check_attempt_dir(root)
 
  def test_saved_original_turn_sources_derive_channels_and_reject_missing_camera(self):
   with tempfile.TemporaryDirectory() as directory:

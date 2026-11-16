@@ -11,7 +11,92 @@
         "status": "physical",
         "reason": "Native heavy-truck spawn and narrow marked-lane clearance require measured physical verification"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback1-construction.json",
+          "construction_sha256": "ccf8c895234bbd82af47c2251f20a6902c6f4a8a5d049205725730bd9cb82dcc",
+          "trigger": {
+            "source": "Native route site survey and waypoint continuation record",
+            "metric": "count of connected governed-lane waypoint steps at 2.0 m",
+            "failure_condition": "Primary 2.0 m sampling has no contiguous governed-lane continuation"
+          },
+          "changed_knobs": [
+            "route_step_m: 2.0 m to 1.5 m"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver/provisional-manifest.json --case heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__within_marked_lane --candidate fallback1 --output .runtime-work/c305951-fallback1-offline --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "fallback1-offline.log",
+            "log_sha256": "811eabda5dc298da232b3c7953fbe433089645edff6f53063d91016c4136c0a2",
+            "construction_sha256": "ccf8c895234bbd82af47c2251f20a6902c6f4a8a5d049205725730bd9cb82dcc"
+          },
+          "compatibility": {
+            "receipt": "fallback1-compatibility.json",
+            "sha256": "2904ff2550bfac731a9cdc13b887567d0ad05235d57c8294e530b6c07c207a70",
+            "log": "fallback1-analysis.log",
+            "negative_log": "fallback1-negative.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log_sha256": "31f2cd902e4ead8547e41ec399914b918f19d3b9172ba9fac65213260b5968de"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "fallback2-construction.json",
+          "construction_sha256": "fabd75fc7216434b2ac5dcd42e040a67280cef1e1209c6c9a31004dd94b8cec2",
+          "trigger": {
+            "source": "Native heavy-vehicle spawn result and ground-clearance readback",
+            "metric": "spawn success and initial lower-body ground clearance",
+            "failure_condition": "Primary 0.5 m spawn offset fails or initially intersects road mesh"
+          },
+          "changed_knobs": [
+            "spawn_height_offset_m: 0.5 to 0.8"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver/provisional-manifest.json --case heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__within_marked_lane --candidate fallback2 --output .runtime-work/c305951-fallback2-offline --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "fallback1-offline.log",
+            "log_sha256": "811eabda5dc298da232b3c7953fbe433089645edff6f53063d91016c4136c0a2",
+            "construction_sha256": "fabd75fc7216434b2ac5dcd42e040a67280cef1e1209c6c9a31004dd94b8cec2"
+          },
+          "compatibility": {
+            "receipt": "fallback2-compatibility.json",
+            "sha256": "2dfa59544268b6ccbd897b5f3f5ed6598d41096981d302e25bada47519c42b6c",
+            "log": "fallback1-analysis.log",
+            "negative_log": "fallback2-negative.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log_sha256": "b843072a5ccd592e0c6759c69722ba4c68200fe3ae4c473e98e8cb6181203396"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "fallback3-construction.json",
+          "construction_sha256": "f6e919fef22ea9d5b8f8431bc17407c9160bd78c943ba9abc985697c040f3ebd",
+          "trigger": {
+            "source": "Native original tick speed and camera frame synchronization",
+            "metric": "speed tracking error and missing synchronized frames",
+            "failure_condition": "Primary 4.0 m/s target yields unstable tracking or dropped source-camera frames"
+          },
+          "changed_knobs": [
+            "target_speed_mps: 4.0 to 3.0"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver/provisional-manifest.json --case heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__within_marked_lane --candidate fallback3 --output .runtime-work/c305951-fallback3-offline --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "fallback1-offline.log",
+            "log_sha256": "811eabda5dc298da232b3c7953fbe433089645edff6f53063d91016c4136c0a2",
+            "construction_sha256": "f6e919fef22ea9d5b8f8431bc17407c9160bd78c943ba9abc985697c040f3ebd"
+          },
+          "compatibility": {
+            "receipt": "fallback3-compatibility.json",
+            "sha256": "512bb4f2572b60554a61e05fa91e828cf6e848df79ef96ee10612a5fe5edfe8e",
+            "log": "fallback1-analysis.log",
+            "negative_log": "fallback3-negative.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log_sha256": "9527ba57b1cc4af53565047dd03783b7107165444dcdc9ca5c571b366bf6f5ce"
+          }
+        }
+      ],
       "measurement_procedure": {
         "entrypoint": "heavy_lane_finalizer.py"
       },
@@ -130,6 +215,30 @@
         "test_log": "first-primary-saved-processing.json",
         "test_log_sha256": "56dd536887219fe7e8b7d48a1ec3ce01f3ea7b88f8b9e79ebf268814ef1614ab",
         "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__within_marked_lane",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "full_body_footprint",
+          "marked_boundary_geometry",
+          "time_join",
+          "four_camera_full_decode"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "6c0eb63c4d45321d2777a5f751c69d7fff248fb12460d5375d67ea1bd56e51dc",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver/delivery_audit.py --attempt .runtime-work/c305951-heavy-saved-output-v2/v0001/analysis --case heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__within_marked_lane",
+        "test_exit_code": 0,
+        "test_log": "first-primary-delivery-positive.log",
+        "test_log_sha256": "bc597ee83f14e7b78a139989447087129e3d1460ae7aa44b3190ec9f66968091",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver/delivery_audit.py --attempt .runtime-work/c305951-heavy-saved-output-v2/v0001/analysis --case heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__within_marked_lane --negative-camera",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original delivery source: overview.mkv.missing",
+        "negative_log": "first-primary-delivery-negative.log",
+        "negative_log_sha256": "ef6b5218a54ec0c711769a13b42ec34126c98cfc48e0326dd53f5dfbeffa8fc0"
       }
     }
   ],

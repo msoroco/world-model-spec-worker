@@ -7,6 +7,7 @@ visible pixels, realized route, or legal obedience.
 import argparse
 import hashlib
 import json
+import os
 from math import hypot
 from pathlib import Path
 import subprocess
@@ -160,8 +161,29 @@ def _check_config(config):
     return form, response
 
 
+def _native_source_args(indication_source, source_sha256, environ=None):
+    """Accept the operator's reviewed source through the runtime capture handoff."""
+    env = os.environ if environ is None else environ
+    path = indication_source or env.get('TURN_INDICATION_SOURCE')
+    checksum = source_sha256 or env.get('TURN_INDICATION_SHA256')
+    if not path or not checksum or len(checksum) != 64 or any(c not in '0123456789abcdef' for c in checksum):
+        raise ValueError('Native run requires TURN_INDICATION_SOURCE and TURN_INDICATION_SHA256')
+    return path, checksum
+
+
+def _check_attempt_dir(output):
+    output = Path(output)
+    if not output.is_dir() or not (output / 'construction.json').is_file():
+        raise ValueError('Native run requires materialized construction directory')
+    allowed = {'config.json', 'construction.json', 'candidate-selection.json',
+               'runner.py', 'turn_marking.py', 'indication_native.py', 'tests'}
+    if any(path.name not in allowed for path in output.iterdir()):
+        raise ValueError('Native attempt already has acquisition or derived output')
+
+
 def run(config, source_path, source_sha256, output, host='127.0.0.1', port=2000):
     # CARLA and pipeline capture are loaded only at the authorized Native run.
+    _check_attempt_dir(output)
     import carla
     from pipeline_capture import PipelineCapture
     from worker_exchange.native_output import seal_capture
@@ -169,9 +191,6 @@ def run(config, source_path, source_sha256, output, host='127.0.0.1', port=2000)
     source = load_source(source_path, source_sha256, form)
     route = native_route_plan(source, response)
     output = Path(output)
-    output.mkdir(parents=True, exist_ok=True)
-    if any(output.iterdir()):
-        raise ValueError('Native attempt directory must be empty; retain originals')
     client = carla.Client(host, int(port))
     client.set_timeout(30.)
     world = client.get_world()
@@ -304,9 +323,10 @@ def main():
                           'form': form, 'response': response,
                           'native_launched': False, 'physical_verified': False}))
         return
-    if not all((args.indication_source, args.source_sha256, args.output_dir)):
-        raise ValueError('Native run requires source path, SHA-256 and fresh output directory')
-    print(json.dumps(run(config, args.indication_source, args.source_sha256,
+    if not args.output_dir:
+        raise ValueError('Native run requires materialized output directory')
+    source_path, source_sha256 = _native_source_args(args.indication_source, args.source_sha256)
+    print(json.dumps(run(config, source_path, source_sha256,
                          args.output_dir, args.host, args.port)))
 
 
