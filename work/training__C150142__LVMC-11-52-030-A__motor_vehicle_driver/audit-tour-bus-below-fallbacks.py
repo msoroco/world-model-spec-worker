@@ -9,7 +9,9 @@ REPO = ROOT.parents[1]
 ALLOWED_CONFIG_CHANGES = {'candidate_id', 'risk_trigger', 'requested_target_x_m',
                           'camera_policy', 'tracks_sha256'}
 BOUNDARIES = {'below': (36120, 1799.95, 'below'),
-              'at': (36121, 1800, 'at')}
+              'at': (36121, 1800, 'at'),
+              'above': (36122, 1800.05, 'above'),
+              'no_loading': (36121, 1800, 'at')}
 
 
 def require(condition, message):
@@ -29,8 +31,11 @@ def audit(suffix='below'):
     if suffix not in BOUNDARIES:
         raise ValueError('Unsupported pinned tour-bus boundary')
     frames, duration, boundary = BOUNDARIES[suffix]
+    update = {'below': '032', 'at': '033', 'above': '034',
+              'no_loading': '034'}[suffix]
+    slug = suffix.replace('_', '-')
     case = ROOT.name + '__tour_bus_' + suffix
-    prefix = 'c150142-tour-bus-pinned-saved-' + suffix + '-'
+    prefix = 'c150142-tour-bus-pinned-saved-' + slug + '-'
     fixed = {'capture_frames': frames, 'requested_approach_frames': 120,
              'requested_stationary_duration_s': duration,
              'requested_boundary': boundary, 'rate_hz': 20}
@@ -49,14 +54,14 @@ def audit(suffix='below'):
                 if candidate == 'primary' else candidate + '-result-v1')
         version = REPO / '.runtime-work' / (prefix + stem) / 'v0001'
         summary_name = (('update032-below-primary-pinned-saved-recheck.json'
-                         if suffix == 'below' else 'update033-tour-bus-at-primary-recheck.json')
+                         if suffix == 'below' else f'update033-tour-bus-{slug}-primary-recheck.json')
                         if candidate == 'primary' else
-                        f'update0{32 if suffix == "below" else 33}-{suffix}-{candidate}-pinned-saved-v1.json')
+                        f'update{update}-{slug}-{candidate}-pinned-saved-v1.json')
         negative_name = (f'update032-below-{candidate}-negative.json'
                          if suffix == 'below' else
-                         ('update032-tour-bus-at-primary-negative.json'
+                         (f'update032-tour-bus-{slug}-primary-negative.json'
                           if candidate == 'primary' else
-                          f'update033-at-{candidate}-negative.json'))
+                          f'update{update}-{slug}-{candidate}-negative.json'))
         summary = read(ROOT / summary_name)
         processing = read(version / 'processing.json')
         selected = read(version / 'analysis/candidate-selection.json')
@@ -74,7 +79,7 @@ def audit(suffix='below'):
                 summary['timestamp_join_frames'] == summary['final_decode_frames'] == frames and
                 summary['reported_duration_s'] == duration and
                 summary['reported_boundary'] == boundary and
-                summary['reported_activity_events'] == 1 and
+                summary['reported_activity_events'] == (0 if suffix == 'no_loading' else 1) and
                 len(summary['source_decodes']) == 4 and
                 all(s['passed'] and s['frames'] == frames for s in summary['source_decodes']) and
                 'full_core=true' in summary['decoder_stdout'],
@@ -106,7 +111,7 @@ def audit(suffix='below'):
             configs['fallback3']['requested_target_x_m'] and
             configs['fallback2']['camera_policy'] != base['camera_policy'],
             'Fallback mitigations do not match physical-risk triggers')
-    return {'format': 'c150142-tour-bus-' + suffix + '-fallback-audit-v1',
+    return {'format': 'c150142-tour-bus-' + slug + '-fallback-audit-v1',
             'source_kind': 'synthetic_native_sample',
             'original_native_observed': False, 'passed': True,
             'case_id': case, 'records': records,

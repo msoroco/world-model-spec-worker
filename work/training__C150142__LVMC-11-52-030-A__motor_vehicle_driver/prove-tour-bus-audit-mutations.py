@@ -33,21 +33,24 @@ def exercise(name, path_suffix, mutate, expected, boundary):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--case', choices=('below', 'at'), default='below')
+    parser.add_argument('--case', choices=('below', 'at', 'above', 'no_loading'), default='below')
     args = parser.parse_args()
     boundary = args.case
-    update = '032' if boundary == 'below' else '033'
+    update = {'below': '032', 'at': '033', 'above': '034',
+              'no_loading': '034'}[boundary]
+    slug = boundary.replace('_', '-')
     def duplicate_trigger(value):
         entry = next(e for e in value['cases'] if e['case_id'].endswith('tour_bus_' + boundary))
         entry['candidates'][1]['trigger'] = entry['candidates'][0]['trigger']
     results = [
         exercise('changed_processing_sha',
-                 f'update{update}-{boundary}-fallback1-pinned-saved-v1.json',
+                 f'update{update}-{slug}-fallback1-pinned-saved-v1.json',
                  lambda value: value.__setitem__('processing_sha256', '0' * 64),
                  'Full pinned CPU proof differs', boundary),
         exercise('changed_fixed_boundary',
-                 f'{boundary}-fallback2-result-v1/v0001/analysis/config.json',
-                 lambda value: value.__setitem__('requested_boundary', 'above'),
+                 f'{slug}-fallback2-result-v1/v0001/analysis/config.json',
+                 lambda value: value.__setitem__('requested_boundary',
+                                                  'below' if boundary == 'above' else 'above'),
                  'Fixed law-boundary configuration differs', boundary),
         exercise('duplicate_physical_trigger',
                  'execution-manifest-diagnostic-tour_bus_below-draft.json',
