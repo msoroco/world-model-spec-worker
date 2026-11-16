@@ -13,11 +13,11 @@ def module(name):
 def audit():
     source=json.loads((HERE.parent.parent/'inputs'/HERE.name/'assignment.json').read_text())
     geom=module('geometry');eng=module('engineering');meas=module('measure')
-    assert source['law_record']['id']=='NRS-484B-307-3a'
+    assert source['law']['id']=='NRS-484B-307-3a'
     assert source['cell']['maneuver']=='right_turn' and source['cell']['control']=='traffic_light'
-    assert 'circular green with a green turn arrow' in source['law_record']['text']
-    assert 'opposing traffic simultaneously faces a steady red signal' in source['law_record']['text']
-    assert 'must yield the right-of-way' in source['law_record']['text']
+    assert 'circular green with a green turn arrow' in source['law']['text']
+    assert 'opposing traffic simultaneously faces a steady red signal' in source['law']['text']
+    assert 'must yield the right-of-way' in source['law']['text']
     assert geom.check()['passed']
     assert (NATIVE/'road.xodr').read_text()==geom.open_drive()
     assert json.loads((NATIVE/'route.json').read_text())==geom.route()

@@ -59,7 +59,7 @@ def main() -> None:
                  "measurement_contract": f"draft-candidates/{suffix}/measurement-contract.json",
                  "candidates": []}
         write(HERE / entry["measurement_contract"], {
-            "format": "worker-measurement-contract-v1", "case_id": case_id,
+            "format": "worker-measurement-contract", "case_id": case_id,
             "requirements": [
                 {"disposition_index": 0, "requirement": "NRS-484B-113-2",
                  "source": "NRS 484B.113(2)",

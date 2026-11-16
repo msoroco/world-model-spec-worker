@@ -134,7 +134,7 @@ def finalize(attempt: Path,output: Path):
     crossing=measure_crosswalk_yield(attempt,native,geometry)
     half=measure_directional_half(attempt,native,geometry)
     witness=measure_witness_branch(attempt,native,geometry)
-    videos=[f'{name}.mkv' for name in ('overview','approach','signal','destination')]
+    videos=[f'{name}.mkv' for name in ('overview','approach','reference_corner','driver_reference')]
     counts={name:video_frames(attempt/name) for name in videos}
     if any(v!=count for v in counts.values()):raise ValueError('Original video frame count differs')
     suffix=config['case_suffix']

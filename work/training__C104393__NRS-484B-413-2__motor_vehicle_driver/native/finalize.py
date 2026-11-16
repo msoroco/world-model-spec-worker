@@ -105,6 +105,30 @@ def measure_other_area_duplicate(attempt, config):
     return item
 
 
+def derive_channels(attempt, description, samples, mapping, trace):
+    """Build adapter channels from retained samples; ignore fixture derivatives."""
+    folder = attempt / 'channels'
+    folder.mkdir(exist_ok=True)
+    for channel in description['channels']:
+        name = channel['name']
+        output = []
+        for row, frame_map, trace_row in zip(samples, mapping, trace):
+            values = {
+                'sig.turn_indicator': {'observed_left_indicator_state': row['signal'] == 'left'},
+                'drv.distance_while': {'signal': row['signal'], 'xy_m': row['ego_xy_m']},
+                'kin.path_length': {'xy_m': row['ego_xy_m']},
+                'drv.turning': {'heading_deg': row['heading_deg']},
+                'env.precipitation': row['weather'],
+                'kin.speed': trace_row['speed_mps'],
+                'native_body_pose_control': row,
+                'camera_frame_join': frame_map,
+            }
+            if name not in values:
+                raise ValueError('Unsupported derived channel: ' + name)
+            output.append(json.dumps({'time_s': row['time_s'], 'value': values[name]}, allow_nan=False))
+        (folder / (name + '.jsonl')).write_text('\n'.join(output) + '\n')
+
+
 def finalize(attempt,output):
     attempt=Path(attempt).resolve();output=Path(output).resolve()
     if output.exists() or (attempt/'result.json').exists():
@@ -118,7 +142,7 @@ def finalize(attempt,output):
     synthetic=geometry.get('provenance')=='synthetic_cpu_fixture'
     signal=measure_signal_distance(attempt,config)
     weather=measure_weather_context(attempt,config)
-    videos=[f'{name}.mkv' for name in ('overview','approach','signal_close','driver_reference')]
+    videos=[f'{name}.mkv' for name in ('overview','approach','reference_corner','driver_reference')]
     video_counts={name:video_frames(attempt/name) for name in videos}
     if any(frames!=count for frames in video_counts.values()):
         raise ValueError('Source camera frame count differs from delivered trace')
@@ -126,6 +150,8 @@ def finalize(attempt,output):
     actual=signal['value']
     matched=abs(actual-target)<=.5
     description=config['recording_description']
+    derive_channels(attempt, description, rows(attempt/'native_samples.jsonl'),
+                    rows(attempt/'video_frames.jsonl'), rows(attempt/'trace.jsonl'))
     recording_evidence=[]
     for channel in description['channels']:
         reference='channels/'+channel['name']+'.jsonl'

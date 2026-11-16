@@ -41,7 +41,7 @@ def audit(delivery_audit_path: Path, review_path: Path, *,
     require(case_id in {HERE.name + "__reference", HERE.name + "__contrast"},
             "Qualitative review selects another case")
     assignment = read(REPO / "inputs" / HERE.name / "assignment.json")
-    require(assignment["law_record"]["text"] == LAW and
+    require(assignment["law"]["text"] == LAW and
             review.get("law_input_sha256") == sha(REPO / "inputs" / HERE.name /
                                                    "assignment.json"),
             "Qualitative review law source changed")

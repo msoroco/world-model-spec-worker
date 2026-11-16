@@ -57,9 +57,10 @@ def main() -> None:
                  "measurement_procedure": {"entrypoint": "finalize.py",
                                             "output_schema": "c110741-113-2-saved-analysis-v1"},
                  "measurement_contract": f"draft-candidates/{suffix}/measurement-contract.json",
+                 "fixture_recipe": f"work/{ASSIGNMENT}/diagnostic-{suffix}-recipe.json",
                  "candidates": []}
         write(HERE / entry["measurement_contract"], {
-            "format": "worker-measurement-contract-v1", "case_id": case_id,
+            "format": "worker-measurement-contract", "case_id": case_id,
             "requirements": [
                 {"disposition_index": 0, "requirement": "text-0",
                  "source": "NRS 484B.113(2)",

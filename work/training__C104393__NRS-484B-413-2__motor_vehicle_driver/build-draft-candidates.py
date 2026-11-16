@@ -67,7 +67,7 @@ def main():
                     "method":method,"value_type":value_type,
                     "kind":"measured" if d["requirement"]=="text-0" else "sourced_context",
                     "inputs":["native_samples.jsonl","road_geometry.json"]})
-        write(HERE/contract_rel,{"format":"worker-measurement-contract-v1",
+        write(HERE/contract_rel,{"format":"worker-measurement-contract",
             "case_id":case_id,"target_distance_ft":feet,"area":"any_other_area",
             "rate_hz":20,"duration_s":42,"requirements":requirements,
             "negative":{"remove":["native_samples.jsonl"],
@@ -78,6 +78,8 @@ def main():
             "measurement_contract":contract_rel,
             "measurement_procedure":{"entrypoint":"finalize.py","status":"saved_source_diagnostic"},
             "candidates":[]}
+        if feet == 300:
+            entry['fixture_recipe'] = str((HERE/'diagnostic-300-recipe.json').relative_to(ROOT))
         for candidate in NAMES:
             settings=variants[candidate]["config"]
             radius=24.0 if candidate=="fallback1" else 20.0
@@ -99,7 +101,7 @@ def main():
                 "source_packets":[],"mandatory_channels":[c["name"] for c in recording["channels"]],
                 "cameras":[{"name":name,"width":width,"height":height} for name,width,height in
                     (("overview",1920,1080),("approach",1280,720),
-                     ("signal_close",1280,720),("driver_reference",1280,720))],
+                     ("reference_corner",1280,720),("driver_reference",1280,720))],
                 "case":{"case_id":case_id},"recording_description":recording,
                 "native_request":request,"status":"unselected_native_runner_prototype"}
             files=[{"path":name,"content":content} for name,content in common.items()]

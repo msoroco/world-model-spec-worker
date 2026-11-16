@@ -61,7 +61,7 @@ def make_attempt(destination: Path,case: str,full_resolution: bool=False):
                          'actor_id':107,
                          'ego':{'body_vertices_m':vertices,'position_m':[x,y,.5],
                                 'heading_deg':heading,'speed_mps':speed,
-                                'speed_provenance':'original_trace_actor_get_velocity'},
+                                'speed_provenance':'synthetic_native_sample'},
                          'world':{'weather':{'cloudiness':0,'precipitation':0,
                                              'wetness':0,'fog_density':0},
                                   'road_projection':{'road_id':1 if y<-7 else 13 if y<=7 else 4,
@@ -107,7 +107,7 @@ def make_attempt(destination: Path,case: str,full_resolution: bool=False):
             values.append({'time_s':sample['time_s'],'value':value})
         write_rows(destination/'channels'/(name+'.jsonl'),values)
     sizes={camera['name']:f"{camera['width']}x{camera['height']}" for camera in config['cameras']}
-    for name in ('overview','approach','signal','destination'):
+    for name in ('overview','approach','reference_corner','driver_reference'):
         size=sizes[name] if full_resolution else '32x32'
         subprocess.run([str(ROOT/'.runtime-work/linux_arm64/ffmpeg'),'-nostdin','-hide_banner','-loglevel','error','-y',
             '-f','lavfi','-i',f'color=c=black:s={size}:r=20:d=24',
@@ -117,14 +117,19 @@ def make_attempt(destination: Path,case: str,full_resolution: bool=False):
         # Retained graph topology is diagnostic software input. Frame/pose and
         # provenance are synthesized here and never presented as original CARLA.
         sys.path.insert(0,str(ROOT/'runtime/pipeline/scenario_pipeline'))
-        from traffic_spec_adapter.adapter import load_graph
+        import networkx as nx
         from geometry import open_drive
-        graph=load_graph(ROOT/'runtime/pipeline/fixtures/retained-speed/capture/native/graphs/base/00021714.pkl')
         graph_dir=destination/'capture/native/graphs/base';graph_dir.mkdir(parents=True)
         frame_rows=[]
-        for item in mapping:
+        for item, observation in zip(mapping, evidence):
             frame=item['native_frame'];time=item['time_s']
-            graph.graph['frame']=frame
+            graph=nx.DiGraph()
+            graph.graph.update(frame=frame, simulation_time_s=time,
+                               synthetic_diagnostic=True,
+                               source='C111256 worker-authored crosswalk diagnostic')
+            graph.add_node('ego', sem_class='ego', entity_id=observation['actor_id'],
+                           vertex=observation['ego']['position_m'], forward=[0.0,1.0,0.0],
+                           threedbbox=observation['ego']['body_vertices_m'])
             (graph_dir/f'{frame:08d}.pkl').write_bytes(pickle.dumps(graph,protocol=4))
             frame_rows.append({'frame':frame,'simulation_time':time,'time_s':time,
                                'base':f'graphs/base/{frame:08d}.pkl',

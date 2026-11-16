@@ -9,8 +9,8 @@ def audit():
  a=json.loads((HERE.parent.parent/'inputs'/HERE.name/'assignment.json').read_text())
  geom=module('geometry');eng=module('engineering');meas=module('measure')
  assert a['cell']['layout']=='intersection' and a['cell']['maneuver']=='travel' and a['cell']['control']=='crosswalk'
- assert 'official traffic-control devices are not in place or not in operation' in a['law_record']['text']
- assert 'half of the highway' in a['law_record']['text']
+ assert 'official traffic-control devices are not in place or not in operation' in a['law']['text']
+ assert 'half of the highway' in a['law']['text']
  assert geom.check()['passed'] and (NATIVE/'road.xodr').read_text()==geom.open_drive()
  assert json.loads((NATIVE/'route.json').read_text())==geom.route()
  xml=ET.parse(NATIVE/'road.xodr').getroot()

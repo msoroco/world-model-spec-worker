@@ -24,7 +24,7 @@ def write(name, value):
 def build():
     source = ROOT/'inputs'/HERE.name/'assignment.json'
     assignment = json.loads(source.read_text())
-    law = assignment['law_record']
+    law = assignment['law']
     law_id, cell_id, actor = (assignment[k] for k in ('law_id', 'cell_id', 'actor'))
     request = {'cell': assignment['cell'], 'actor': actor}
     common = {'request': request, 'law_records': {law_id: law}, 'dependencies': []}

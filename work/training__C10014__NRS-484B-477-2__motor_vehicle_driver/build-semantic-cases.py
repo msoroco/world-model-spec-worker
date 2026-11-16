@@ -111,18 +111,14 @@ def build() -> dict:
     }
     index_path = proposals / "semantic-index.json"
     index_path.write_text(json.dumps(index, indent=2) + "\n")
-    # The standalone frozen assignment exports this object as law_record;
-    # the current semantic validator expects the local adopter's law key.
-    # Test the exact stage chain with a read-only adapter, leaving inputs and
-    # runtime untouched and retaining the mismatch for the strict gate.
+    # Validate against the current frozen assignment without an adapter.
     from worker_exchange.semantic_delivery import validate as validate_delivery
-    normalized = {**assignment, "law": assignment["law_record"]}
-    stage_proof = validate_delivery(ROOT, normalized, manifest)
+    stage_proof = validate_delivery(ROOT, assignment, manifest)
     proof_path = proposals / "semantic-cases-proof.json"
     proof_path.write_text(json.dumps({
         "format": "c10014-semantic-cases-proof-v1",
         "cases_sha256": sha(path), "index_sha256": sha(index_path),
-        "read_only_law_record_adapter": True,
+        "canonical_law_input": True,
         "stage_validation": stage_proof,
         "judgment_sweep_complete": False,
         "original_native_observed": False,

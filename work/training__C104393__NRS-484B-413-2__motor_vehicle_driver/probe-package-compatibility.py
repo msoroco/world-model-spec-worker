@@ -16,8 +16,8 @@ ROOT=HERE.parent.parent
 sys.path.insert(0,str(ROOT/"runtime/pipeline/scenario_pipeline"))
 sys.path.insert(0,str(HERE/"native"))
 from geometry import open_drive
-from traffic_spec_adapter.adapter import load_graph
-from worker_exchange.package_compatibility import run,materialize_case
+from worker_exchange.fixture_generator import _graph
+from worker_exchange.package_compatibility import _process_fixture,materialize_case
 from worker_exchange.runtime_cli import execution_env
 
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
@@ -46,10 +46,11 @@ def build_fixture(source,feet,config):
         "native_map_sha256":request["map_sha256"],"authored_map_sha256":request["map_sha256"],
         "turn_radius_m":request["turn_radius_m"],"lane_link_confirmed":True,
         "area_classification":request["area"],"provenance":"synthetic_cpu_fixture"})+"\n")
-    graph=load_graph(ROOT/"runtime/pipeline/fixtures/retained-speed/capture/native/graphs/base/00021714.pkl")
+    example=json.loads((ROOT/"runtime/pipeline/fixtures/example.json").read_text())
+    graph=_graph(next(item for item in example['graphs']
+        if item['path'].startswith('capture/native/graphs/base/')))
     graph_dir=source/"capture/native/graphs/base";graph_dir.mkdir(parents=True)
     trace=[];evidence=[];mapping=[];body=[];frames=[]
-    channels={c["name"]:[] for c in config["recording_description"]["channels"]}
     for i,row in enumerate(rows):
         frame=row["native_frame"];time=row["time_s"]
         x,y=row["ego_xy_m"]
@@ -62,7 +63,7 @@ def build_fixture(source,feet,config):
             "replay_frame":frame,"replay_simulation_time_s":time,"actor_id":107,
             "ego":{"body_vertices_m":vertices,"position_m":[x,y,.5],
                    "heading_deg":row["heading_deg"],"speed_mps":speed,
-                   "speed_provenance":"original_trace_actor_get_velocity","synthetic_diagnostic":True},
+                   "speed_provenance":"synthetic_native_sample","synthetic_diagnostic":True},
             "world":{"weather":{"cloudiness":0,"precipitation":0,"wetness":0,"fog_density":0},
                 "road_projection":{"road_id":1 if i<520 else 2,"section_id":0,
                     "lane_id":-1,"s_m":x+130}}})
@@ -73,20 +74,12 @@ def build_fixture(source,feet,config):
             "abstract":f"graphs/abstract/{frame:08d}.pkl","synthetic_diagnostic":True})
         graph.graph["frame"]=frame
         (graph_dir/f"{frame:08d}.pkl").write_bytes(pickle.dumps(graph,protocol=4))
-        values={"sig.turn_indicator":{"observed_left_indicator_state":row["signal"]=="left"},
-            "drv.distance_while":{"signal":row["signal"],"xy_m":[x,y]},
-            "kin.path_length":{"xy_m":[x,y]},
-            "drv.turning":{"heading_deg":row["heading_deg"]},
-            "env.precipitation":row["weather"],"kin.speed":speed,
-            "native_body_pose_control":row,"camera_frame_join":mapping[-1]}
-        for name in channels:channels[name].append({"time_s":time,"value":values[name]})
     write_rows(source/"trace.jsonl",trace)
     write_rows(source/"capture/evidence.jsonl",evidence)
     write_rows(source/"video_frames.jsonl",mapping)
     write_rows(source/"native_samples.jsonl",rows)
     write_rows(source/"body_history.jsonl",body)
     write_rows(source/"capture/native/frames.jsonl",frames)
-    for name,values in channels.items():write_rows(source/"channels"/(name+".jsonl"),values)
     (source/"road.xodr").write_text(open_drive(radius))
     (source/"capture/recorder_info.txt").write_text("Create 107: vehicle.lincoln.mkz_2020\n")
     (source/"capture/manifest.json").write_text(json.dumps({"extraction_confirmed":True,
@@ -94,7 +87,7 @@ def build_fixture(source,feet,config):
         "sources":{"road.xodr":sha(source/"road.xodr"),"trace.jsonl":sha(source/"trace.jsonl")}})+"\n")
     for camera in config["cameras"]:
         subprocess.run(["ffmpeg","-nostdin","-hide_banner","-loglevel","error","-y",
-            "-f","lavfi","-i","color=c=black:s=32x32:r=20:d=42",
+            "-f","lavfi","-i",f"color=c=black:s={camera['width']}x{camera['height']}:r=20:d=42",
             "-frames:v","840","-c:v","ffv1",str(source/(camera["name"]+".mkv"))],
             check=True,timeout=180)
 
@@ -110,8 +103,8 @@ def main():
     scratch=Path(tempfile.mkdtemp(dir=ROOT/".runtime-work",prefix="c104393-413-v1-"))
     source=scratch/"source"
     build_fixture(source,args.feet,config)
-    receipt=run(manifest,case,source,scratch/"output",ROOT/"runtime/pipeline/library",
-        ROOT/".runtime-work/decoder-refresh-20261105/.lake/build/bin/adapterCheck",args.candidate)
+    receipt=_process_fixture(manifest,case,source,scratch/"output",ROOT/"runtime/pipeline/library",
+        ROOT/".runtime-work/c110812-current-decoder/.lake/build/bin/adapterCheck",args.candidate)
     negative=scratch/"negative"
     materialize_case(manifest,case,negative,source,args.candidate)
     (negative/"native_samples.jsonl").unlink()
