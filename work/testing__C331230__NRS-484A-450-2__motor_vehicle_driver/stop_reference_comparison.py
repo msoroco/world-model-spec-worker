@@ -10,11 +10,154 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 from stop_reference_measurements import analyze
+from delivery_audit import audit as audit_delivery
 
 CAMERAS = ('overview.mkv', 'approach.mkv', 'reference_corner.mkv', 'driver_reference.mkv')
 FIXED = ('native_map_id', 'intersection_id', 'approach_road_id',
          'approach_lane_id', 'native_stop_sign_id', 'intersection_polygon_xy_m',
          'approach_forward_xy', 'near_side_crosswalk_exists')
+
+# Each pair names a declared physical change. Separate Native recordings need
+# not have identical encoded pixels, frame numbers, or braking trajectories.
+RECORDED_PAIRS = {
+    'halt_position': ('marked_crosswalk_stop_before', 'marked_crosswalk_stop_inside',
+                      {'full_halt_location'}),
+    'crosswalk_origin': ('marked_crosswalk_stop_before', 'unmarked_crosswalk_stop_before',
+                         {'crosswalk_origin'}),
+    'reference_precedence': ('marked_crosswalk_stop_before', 'crosswalk_and_stop_line',
+                             {'stop_line_exists'}),
+    'stop_line_hierarchy': ('marked_crosswalk_stop_before', 'no_crosswalk_marked_stop_line',
+                            {'near_side_crosswalk_exists', 'crosswalk_origin', 'stop_line_exists'}),
+    'sight_point_hierarchy': ('marked_crosswalk_stop_before', 'no_crosswalk_no_line_first_view',
+                              {'near_side_crosswalk_exists', 'crosswalk_origin'}),
+    'stop_line_vs_first_view': ('no_crosswalk_marked_stop_line', 'no_crosswalk_no_line_first_view',
+                                {'stop_line_exists'}),
+}
+
+
+def compare_recorded(comparison_id, left_root, right_root, diagnostic=False,
+                     left_pixel_review=None, right_pixel_review=None):
+    """Audit each saved attempt, then test shared context and declared branch change.
+
+    Native mode delegates the independent pixel, lifecycle and physical checks
+    to delivery_audit. Diagnostic mode proves only the software comparison path.
+    """
+    if comparison_id not in RECORDED_PAIRS:
+        raise ValueError('Unknown exact comparison')
+    left_suffix, right_suffix, differences = RECORDED_PAIRS[comparison_id]
+    roots = [Path(left_root).resolve(), Path(right_root).resolve()]
+    receipts = []
+    for suffix, root, review in zip((left_suffix, right_suffix), roots,
+                                    (left_pixel_review, right_pixel_review)):
+        case_id = 'testing__C331230__NRS-484A-450-2__motor_vehicle_driver__' + suffix
+        receipts.append(audit_delivery(case_id, root, diagnostic=diagnostic,
+                                       pixel_review=review))
+    contexts = [json.loads((root / 'approach_context.json').read_text()) for root in roots]
+    shared = ('native_map_id', 'intersection_id', 'approach_road_id',
+              'approach_lane_id', 'native_stop_sign_id',
+              'intersection_polygon_xy_m', 'approach_forward_xy')
+    for key in shared:
+        if key not in contexts[0] or contexts[0][key] != contexts[1].get(key):
+            raise ValueError('Fixed source condition differs: ' + key)
+    for key in ('near_side_crosswalk_exists', 'crosswalk_origin', 'stop_line_exists'):
+        if key not in differences and contexts[0].get(key) != contexts[1].get(key):
+            raise ValueError('Undeclared source condition differs: ' + key)
+    if comparison_id == 'halt_position':
+        if (contexts[0].get('near_side_crosswalk_exists') is not True or
+                contexts[0].get('crosswalk_origin') != 'marked'):
+            raise ValueError('Halt comparison lost marked crossing')
+    elif comparison_id == 'crosswalk_origin':
+        if [c.get('crosswalk_origin') for c in contexts] != ['marked', 'sidewalk_connection']:
+            raise ValueError('Declared crosswalk origin change absent')
+        if contexts[0].get('crosswalk_polygon_xy_m') != contexts[1].get('crosswalk_polygon_xy_m'):
+            raise ValueError('Fixed crosswalk geometry differs')
+    elif comparison_id == 'reference_precedence':
+        if [c.get('stop_line_exists') for c in contexts] != [False, True]:
+            raise ValueError('Declared additional stop line absent')
+        if contexts[0].get('crosswalk_polygon_xy_m') != contexts[1].get('crosswalk_polygon_xy_m'):
+            raise ValueError('Fixed crosswalk geometry differs')
+    elif comparison_id == 'stop_line_hierarchy':
+        if [(c.get('near_side_crosswalk_exists'), c.get('stop_line_exists')) for c in contexts] != [(True, False), (False, True)]:
+            raise ValueError('Declared crosswalk versus line change absent')
+    elif comparison_id == 'sight_point_hierarchy':
+        if [(c.get('near_side_crosswalk_exists'), c.get('stop_line_exists')) for c in contexts] != [(True, False), (False, False)]:
+            raise ValueError('Declared crosswalk versus view change absent')
+    else:
+        if [(c.get('near_side_crosswalk_exists'), c.get('stop_line_exists')) for c in contexts] != [(False, True), (False, False)]:
+            raise ValueError('Declared line versus view change absent')
+    # The saved attempt retains a site packet, not an OpenDRIVE export. The
+    # source-bound capture context must agree with that exact selected packet.
+    for root, context in zip(roots, contexts):
+        config = json.loads((root / 'config.json').read_text())
+        packet = config.get('site_packet', {})
+        site_path = root / packet.get('path', '')
+        if not site_path.is_file() or digest(site_path) != packet.get('sha256'):
+            raise ValueError('Saved site packet missing or stale')
+        site = json.loads(site_path.read_text())
+        for key in ('intersection_id', 'approach_road_id', 'approach_lane_id',
+                    'near_side_crosswalk_exists', 'crosswalk_origin',
+                    'crosswalk_polygon_xy_m', 'intersection_polygon_xy_m',
+                    'stop_line_exists'):
+            if key in site and site[key] != context.get(key):
+                raise ValueError('Saved site/context differs: ' + key)
+    reports = [json.loads((root / 'analysis-report.json').read_text()) for root in roots]
+    selected = []
+    for report in reports:
+        values = [measurement['value'] for measurement in report['measurements'].values()
+                  if isinstance(measurement.get('value'), dict) and 'selected_reference' in measurement['value']]
+        if len(values) != 1:
+            raise ValueError('Selected reference measurement missing or ambiguous')
+        selected.append(values[0])
+    expected = {
+        'halt_position': ('near_side_crosswalk', 'near_side_crosswalk'),
+        'crosswalk_origin': ('near_side_crosswalk', 'near_side_crosswalk'),
+        'reference_precedence': ('near_side_crosswalk', 'near_side_crosswalk'),
+        'stop_line_hierarchy': ('near_side_crosswalk', 'marked_stop_line'),
+        'sight_point_hierarchy': ('near_side_crosswalk', 'first_observed_view'),
+        'stop_line_vs_first_view': ('marked_stop_line', 'first_observed_view'),
+    }[comparison_id]
+    if tuple(value['selected_reference'] for value in selected) != expected:
+        raise ValueError('Measured stopping-reference selection differs')
+    histories = [[json.loads(line) for line in (root / 'stop_history.jsonl').read_text().splitlines()
+                  if line.strip()] for root in roots]
+    halts = [next((row for row in history if row.get('ego_speed_mps') == 0), None)
+             for history in histories]
+    if not all(halts):
+        raise ValueError('Original complete-body halt missing')
+    centers = []
+    for halt in halts:
+        vertices = halt.get('ego_body_vertices_xy_m')
+        if not isinstance(vertices, list) or len(vertices) != 4:
+            raise ValueError('Original complete-body geometry missing at halt')
+        centers.append((sum(float(v[0]) for v in vertices) / 4,
+                        sum(float(v[1]) for v in vertices) / 4))
+    halt_separation_m = math.dist(*centers)
+    if comparison_id == 'halt_position':
+        before = selected[0].get('halt_before_crosswalk_and_junction_observed')
+        after = selected[1].get('halt_before_crosswalk_and_junction_observed')
+        if before is not True or after is not False or halt_separation_m < .5:
+            raise ValueError('Declared halt-order difference absent')
+    elif halt_separation_m > .5:
+        raise ValueError('Fixed complete-body halt location differs by more than 0.5 m')
+    return {'format': 'worker-c331230-recorded-comparison',
+            'comparison_id': comparison_id,
+            'case_ids': [receipt['case_id'] for receipt in receipts],
+            'source_sha256': [{name: digest(root / name) for name in
+                               ('approach_context.json', 'site.json', 'stop_history.jsonl',
+                                'analysis-report.json', 'capture/evidence.jsonl')}
+                              for root in roots],
+            'selected_references': list(expected),
+            'first_halt_center_xy_m': centers,
+            'halt_center_separation_m': halt_separation_m,
+            'fixed_halt_tolerance_m': None if comparison_id == 'halt_position' else .5,
+            'fixed_conditions_checked': list(shared),
+            'declared_differences': sorted(differences),
+            'diagnostic_only': diagnostic,
+            'software_checks_passed': True,
+            'physical_completion_verified': all(r['physical_completion_verified'] for r in receipts),
+            'actual_pixels_verified': all(r['actual_pixels_verified'] for r in receipts),
+            'physical_acceptance_claimed': False,
+            'legal_acceptance_claimed': False}
 
 
 def digest(path):
@@ -317,9 +460,22 @@ if __name__ == '__main__':
     parser.add_argument('--inside', type=Path)
     parser.add_argument('--line-only', type=Path)
     parser.add_argument('--first-view', type=Path)
+    parser.add_argument('--recorded-comparison', choices=sorted(RECORDED_PAIRS))
+    parser.add_argument('--left', type=Path)
+    parser.add_argument('--right', type=Path)
+    parser.add_argument('--diagnostic', action='store_true')
+    parser.add_argument('--left-pixel-review', type=Path)
+    parser.add_argument('--right-pixel-review', type=Path)
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
-    if args.crosswalk and args.first_view and not (args.line or args.view or args.both or args.marked or args.unmarked or args.before or args.inside or args.line_only):
+    if args.recorded_comparison and args.left and args.right and not any(
+            (args.crosswalk, args.first_view, args.line, args.view, args.both,
+             args.marked, args.unmarked, args.before, args.inside, args.line_only)):
+        receipt = compare_recorded(args.recorded_comparison, args.left, args.right,
+                                   diagnostic=args.diagnostic,
+                                   left_pixel_review=args.left_pixel_review,
+                                   right_pixel_review=args.right_pixel_review)
+    elif args.crosswalk and args.first_view and not (args.line or args.view or args.both or args.marked or args.unmarked or args.before or args.inside or args.line_only):
         receipt = compare_crosswalk_to_view(args.crosswalk, args.first_view)
     elif args.crosswalk and args.line_only and not (args.line or args.view or args.both or args.marked or args.unmarked or args.before or args.inside or args.first_view):
         receipt = compare_crosswalk_to_line(args.crosswalk, args.line_only)
@@ -337,4 +493,5 @@ if __name__ == '__main__':
         parser.error('Supply one complete comparison pair')
     args.output.write_text(json.dumps(receipt, indent=2) + '\n')
     print(json.dumps({'comparison_id': receipt['comparison_id'],
-                      'diagnostic_comparison_passed': receipt['diagnostic_comparison_passed']}))
+                      'software_checks_passed': receipt.get('software_checks_passed',
+                                                            receipt.get('diagnostic_comparison_passed'))}))
