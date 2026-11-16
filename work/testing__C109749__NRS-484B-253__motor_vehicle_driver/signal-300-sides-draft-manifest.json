@@ -1,0 +1,275 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver",
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3",
+  "cases": [
+    {
+      "case_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver__signal_advance_300_below_86",
+      "kind": "diagnostic_unselected",
+      "construction": "cases/signal_advance_300_below_86/construction.json",
+      "construction_sha256": "1a961657c5ac792250cbb9c00ab7ad8606e15ea3e29e5b7fb0d8d6dc55e55b6d",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "upstream lane extent, signalled path length, occupied junction and subject speed may not realize in Native motion"
+      },
+      "measurement_contract": "cases/signal_advance_100_at/measurement-contract.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame",
+          "evidence": "trace.jsonl and capture/evidence.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame",
+          "evidence": "trace.jsonl and capture/evidence.jsonl"
+        },
+        "st.intersection": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame",
+          "evidence": "trace.jsonl and capture/evidence.jsonl"
+        },
+        "st.lane_enters": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame",
+          "evidence": "trace.jsonl and capture/evidence.jsonl"
+        },
+        "sig.turn_indicator": {
+          "entrypoint": "capture_sources.py",
+          "method": "original actor readback",
+          "evidence": "interaction_history.jsonl and Native frame join"
+        },
+        "rel.oncoming": {
+          "entrypoint": "capture_sources.py",
+          "method": "original actor readback",
+          "evidence": "interaction_history.jsonl and Native frame join"
+        },
+        "ego_speed": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original interaction history and geometry",
+          "evidence": "interaction_history.jsonl and intersection_geometry.json"
+        },
+        "oncoming_speed": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original interaction history and geometry",
+          "evidence": "interaction_history.jsonl and intersection_geometry.json"
+        },
+        "reciprocal_speed": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original interaction history and geometry",
+          "evidence": "interaction_history.jsonl and intersection_geometry.json"
+        },
+        "ego_heading": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original interaction history and geometry",
+          "evidence": "interaction_history.jsonl and intersection_geometry.json"
+        },
+        "ego_left_indicator": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original interaction history and geometry",
+          "evidence": "interaction_history.jsonl and intersection_geometry.json"
+        },
+        "ego_in_intersection": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original interaction history and geometry",
+          "evidence": "interaction_history.jsonl and intersection_geometry.json"
+        },
+        "initial_oncoming_in_intersection": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original interaction history and geometry",
+          "evidence": "interaction_history.jsonl and intersection_geometry.json"
+        },
+        "reciprocal_in_intersection": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original interaction history and geometry",
+          "evidence": "interaction_history.jsonl and intersection_geometry.json"
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction_sha256": "1bfba1e58788836fa26d9f8711cfd37ff4a247cb81517337c07ea88a2683afd4",
+          "trigger": {
+            "source": "interaction_history.jsonl and intersection_geometry.json",
+            "metric": "signal_onset_margin_m original-source physical-risk check",
+            "failure_condition": "original signal onset has insufficient continuous preturn distance"
+          },
+          "changed_knobs": [
+            "signal_onset_margin_m"
+          ],
+          "construction": "cases/signal_advance_300_below_86/fallback1-construction.json"
+        },
+        {
+          "id": "fallback2",
+          "construction_sha256": "e5b5f9e5319920f96de000301a1406d2055a5a61b448119658b627cd93de3d2b",
+          "trigger": {
+            "source": "interaction_history.jsonl and intersection_geometry.json",
+            "metric": "approach_speed_mps original-source physical-risk check",
+            "failure_condition": "subject reaches the occupied junction at excessive measured speed"
+          },
+          "changed_knobs": [
+            "approach_speed_mps"
+          ],
+          "construction": "cases/signal_advance_300_below_86/fallback2-construction.json"
+        },
+        {
+          "id": "fallback3",
+          "construction_sha256": "89a517aa45f5f768b9b4b85bc38e4b22404951d6b58fd2b53774c620c2ca3d38",
+          "trigger": {
+            "source": "interaction_history.jsonl and intersection_geometry.json",
+            "metric": "inside_oncoming_travel_m original-source physical-risk check",
+            "failure_condition": "initial opposing complete body does not fit in the selected junction"
+          },
+          "changed_knobs": [
+            "inside_oncoming_travel_m"
+          ],
+          "construction": "cases/signal_advance_300_below_86/fallback3-construction.json"
+        }
+      ],
+      "signal_target_m": 86.0,
+      "fixture_recipe": "work/testing__C109749__NRS-484B-253__motor_vehicle_driver/cases/signal_advance_300_below_86/diagnostic-recipe.json"
+    },
+    {
+      "case_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver__signal_advance_300_above_97",
+      "kind": "diagnostic_unselected",
+      "construction": "cases/signal_advance_300_above_97/construction.json",
+      "construction_sha256": "e3a5f0ff7c5f552f95dfaf76af21978d0be6ae00f993b8b049f11348c36e625f",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "upstream lane extent, signalled path length, occupied junction and subject speed may not realize in Native motion"
+      },
+      "measurement_contract": "cases/signal_advance_100_at/measurement-contract.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame",
+          "evidence": "trace.jsonl and capture/evidence.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame",
+          "evidence": "trace.jsonl and capture/evidence.jsonl"
+        },
+        "st.intersection": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame",
+          "evidence": "trace.jsonl and capture/evidence.jsonl"
+        },
+        "st.lane_enters": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame",
+          "evidence": "trace.jsonl and capture/evidence.jsonl"
+        },
+        "sig.turn_indicator": {
+          "entrypoint": "capture_sources.py",
+          "method": "original actor readback",
+          "evidence": "interaction_history.jsonl and Native frame join"
+        },
+        "rel.oncoming": {
+          "entrypoint": "capture_sources.py",
+          "method": "original actor readback",
+          "evidence": "interaction_history.jsonl and Native frame join"
+        },
+        "ego_speed": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original interaction history and geometry",
+          "evidence": "interaction_history.jsonl and intersection_geometry.json"
+        },
+        "oncoming_speed": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original interaction history and geometry",
+          "evidence": "interaction_history.jsonl and intersection_geometry.json"
+        },
+        "reciprocal_speed": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original interaction history and geometry",
+          "evidence": "interaction_history.jsonl and intersection_geometry.json"
+        },
+        "ego_heading": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original interaction history and geometry",
+          "evidence": "interaction_history.jsonl and intersection_geometry.json"
+        },
+        "ego_left_indicator": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original interaction history and geometry",
+          "evidence": "interaction_history.jsonl and intersection_geometry.json"
+        },
+        "ego_in_intersection": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original interaction history and geometry",
+          "evidence": "interaction_history.jsonl and intersection_geometry.json"
+        },
+        "initial_oncoming_in_intersection": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original interaction history and geometry",
+          "evidence": "interaction_history.jsonl and intersection_geometry.json"
+        },
+        "reciprocal_in_intersection": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original interaction history and geometry",
+          "evidence": "interaction_history.jsonl and intersection_geometry.json"
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction_sha256": "8a908b65a424c72687e317c184857ab56e143ff531c37a16af5b0aa3a445fdb4",
+          "trigger": {
+            "source": "interaction_history.jsonl and intersection_geometry.json",
+            "metric": "signal_onset_margin_m original-source physical-risk check",
+            "failure_condition": "original signal onset has insufficient continuous preturn distance"
+          },
+          "changed_knobs": [
+            "signal_onset_margin_m"
+          ],
+          "construction": "cases/signal_advance_300_above_97/fallback1-construction.json"
+        },
+        {
+          "id": "fallback2",
+          "construction_sha256": "9bcb4199ede5dcdba0e012db55c65ce34ea1830e8baeabe7feb85078708dc0fb",
+          "trigger": {
+            "source": "interaction_history.jsonl and intersection_geometry.json",
+            "metric": "approach_speed_mps original-source physical-risk check",
+            "failure_condition": "subject reaches the occupied junction at excessive measured speed"
+          },
+          "changed_knobs": [
+            "approach_speed_mps"
+          ],
+          "construction": "cases/signal_advance_300_above_97/fallback2-construction.json"
+        },
+        {
+          "id": "fallback3",
+          "construction_sha256": "0dc5d00f0f2ad54fdd4489ba0aa15e1496db59e4d1aef28aded72eeee1bc1303",
+          "trigger": {
+            "source": "interaction_history.jsonl and intersection_geometry.json",
+            "metric": "inside_oncoming_travel_m original-source physical-risk check",
+            "failure_condition": "initial opposing complete body does not fit in the selected junction"
+          },
+          "changed_knobs": [
+            "inside_oncoming_travel_m"
+          ],
+          "construction": "cases/signal_advance_300_above_97/fallback3-construction.json"
+        }
+      ],
+      "signal_target_m": 97.0,
+      "fixture_recipe": "work/testing__C109749__NRS-484B-253__motor_vehicle_driver/cases/signal_advance_300_above_97/diagnostic-recipe.json"
+    }
+  ]
+}
