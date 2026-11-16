@@ -4,6 +4,7 @@ import argparse
 import base64
 from hashlib import sha256
 import json
+import lzma
 from pathlib import Path
 import zlib
 
@@ -13,7 +14,18 @@ def load_inventories(directory):
     inventories = []
     for path in sorted(Path(directory).glob('prune-history*.json')):
         data = json.loads(path.read_text())
-        if data.get('format') == 'compressed-prune-history-bundle':
+        if data.get('format') == 'compressed-prune-history-bundle-v2':
+            raw = lzma.decompress(base64.b64decode(data['lzma_base64'], validate=True))
+            offset = 0
+            for item in data['inventories']:
+                part = raw[offset:offset + item['bytes']]
+                offset += item['bytes']
+                if sha256(part).hexdigest() != item['sha256']:
+                    raise ValueError('Compacted inventory source hash changed: ' + item['name'])
+                inventories.append(json.loads(part))
+            if offset != len(raw):
+                raise ValueError('Compacted inventory byte count differs')
+        elif data.get('format') == 'compressed-prune-history-bundle':
             for item in data['inventories']:
                 raw = zlib.decompress(base64.b64decode(item['zlib_base64'], validate=True))
                 if sha256(raw).hexdigest() != item['sha256']:

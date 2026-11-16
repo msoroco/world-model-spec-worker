@@ -178,7 +178,7 @@ physical motion and visibility as later GPU checks.
 
 The rerun of `.venv-cpu/bin/python worker_check.py --complete --require-delivery-ready`
 still fails with `Preparation acceptance failed: partial/missing packages remain`;
-see `work/_shared/batch-strict-gate.log`. This package remains partial for the
+see `work/_shared/strict-gate-latest.log`. This package remains partial for the
 CPU tasks above, as do other incomplete assignments. The failure is not a tool
 or package dependency failure.
 

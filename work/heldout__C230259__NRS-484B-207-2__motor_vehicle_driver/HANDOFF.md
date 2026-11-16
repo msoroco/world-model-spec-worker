@@ -76,7 +76,7 @@ Added `audible-{construction,fallback1-construction,fallback2-construction,fallb
 
 Remaining exact work: build `__right_pass_permission_premise_no_right_yield` with independent authority and roadway source verification, its three fallbacks and CPU proof chain; complete the permission comparison, canonical semantic proposals, independent physical/lifecycle/delivery audits, and shared strict delivery. Keep this package partial until those pass.
 
-Full batch strict gate rerun after the five-case manifest exits 1 at pinned `preparation.py:276` with `Preparation acceptance failed: partial/missing packages remain`. Its `work/_shared/batch-strict-gate.log` SHA-256 is `8a5196a775b4e25dcc5ad430d9aa36835506a570dd5afd41ee669c3da366a69e`. The gate reached the package-status acceptance check; no dependency, tool, source-integrity or case-receipt exception preceded it.
+Full batch strict gate rerun after the five-case manifest exits 1 at pinned `preparation.py:276` with `Preparation acceptance failed: partial/missing packages remain`. Its `work/_shared/strict-gate-latest.log` SHA-256 is `8a5196a775b4e25dcc5ad430d9aa36835506a570dd5afd41ee669c3da366a69e`. The gate reached the package-status acceptance check; no dependency, tool, source-integrity or case-receipt exception preceded it.
 
 ## 2026-11-15 six-case scoped-ready CPU delivery
 
