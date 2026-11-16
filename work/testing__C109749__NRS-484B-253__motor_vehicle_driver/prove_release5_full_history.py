@@ -8,6 +8,9 @@ import json
 import math
 import shutil
 import sys
+import tempfile
+import io
+import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
@@ -21,6 +24,9 @@ from far_approach_observation import observe as observe_far
 from hazard_sweep_policy import HazardSweepPolicy
 from far_delivery_audit import far_sequence
 from approaching_delivery_audit import validate_approaching_sequence
+from worker_exchange.native_output import physical_result, seal_capture
+from worker_exchange.saved_processing import record_native_exit, acknowledge_owner_release
+from worker_exchange.physical_preparation import validate as validate_physical
 from prove_far_approach_history import actor, make_sources, source_rows, write_jsonl
 from worker_exchange.media import audit as decode
 
@@ -426,10 +432,188 @@ def prove_independent_delivery_sequences():
     return proof
 
 
+def prove_physical_lifecycle_diagnostics():
+    """Exercise source-bound classifier negatives and ordered capture lifecycle."""
+    index = json.loads(INDEX.read_text())
+    cases = (
+        ('release3_full_history_diagnostic',
+         REPO / '.runtime-work/c109749-release3-full-history-v2/attempt',
+         'approaching_release_3s'),
+        ('release5_full_history_diagnostic',
+         REPO / '.runtime-work/c109749-release5-full-history-v1/attempt',
+         'approaching_release_5s'),
+    )
+    output = {}
+    for key, source, suffix in cases:
+        prior = index[key]
+        for name, digest in prior['source_hashes'].items():
+            require((source / name).is_file() and sha(source / name) == digest,
+                    'Sealed physical fixture source changed: ' + name)
+        bundle = ROOT / 'cases' / suffix / 'construction.json'
+        require(sha(bundle) == prior['construction_sha256'],
+                'Physical fixture construction changed')
+        saved = ROOT / 'cases' / suffix / 'draft-proofs/primary/processing.json'
+        candidate = next(row for row in index['cases'] if row['case_id'] == prior['case_id']
+                         and row['candidate'] == 'primary')
+        require(sha(saved) == candidate['saved_receipt_sha256'],
+                'Current recorded-only saved-processing receipt changed')
+        processing = json.loads(saved.read_text())
+        require(processing['passed'] is True and processing['recorded_only'] is True and
+                processing['analysis_revision']['construction_sha256'] == sha(bundle),
+                'Saved processing does not bind exact construction')
+        statuses = {}
+        for kind in ('complete_motion', 'incomplete_motion', 'missing_evidence'):
+            with tempfile.TemporaryDirectory(prefix='c109749-release-physical-',
+                                             dir=REPO / '.runtime-work') as temporary:
+                attempt = Path(temporary)
+                for name in ('config.json', 'interaction_history.jsonl',
+                             'intersection_geometry.json', 'video_frames.jsonl', 'trace.jsonl'):
+                    shutil.copy2(source / name, attempt / name)
+                (attempt / 'acquisition-provenance.json').write_text(json.dumps({
+                    'provenance_kind': 'native', 'diagnostic_fixture': True,
+                    'scope': 'synthetic CPU classifier fixture only'}) + '\n')
+                if kind == 'incomplete_motion':
+                    motion = attempt / 'interaction_history.jsonl'
+                    rows = [json.loads(line) for line in motion.read_text().splitlines()]
+                    for row in rows:
+                        row['ego_heading_deg'] = rows[0]['ego_heading_deg']
+                    motion.write_text(''.join(json.dumps(row) + '\n' for row in rows))
+                elif kind == 'missing_evidence':
+                    (attempt / 'interaction_history.jsonl').unlink()
+                physical = physical_result(attempt, {
+                    'target_checks': [], 'realized_observables': {},
+                    'setup_confirmed': False, 'behavior_attempted': False,
+                    'maneuver_completed': False})
+                status = physical['physical_checks']['maneuver']['status']
+                require(status == {'complete_motion': 'met',
+                                   'incomplete_motion': 'not_met',
+                                   'missing_evidence': 'unverified'}[kind] and
+                        physical['diagnostic_fixture'] is True and
+                        physical['physical_acceptance_claimed'] is False,
+                        'Physical classifier diagnostic changed: ' + kind)
+                statuses[kind] = status
+        with tempfile.TemporaryDirectory(prefix='c109749-release-lifecycle-',
+                                         dir=REPO / '.runtime-work') as temporary:
+            attempt = Path(temporary)
+            construction = json.loads(bundle.read_text())
+            (attempt / 'construction.json').write_bytes(bundle.read_bytes())
+            (attempt / 'runner.py').write_text(next(item['content'] for item in
+                construction['files'] if item['path'] == 'runner.py'))
+            (attempt / 'trace.jsonl').write_text('{"frame":1,"time_s":0.05}\n')
+            (attempt / 'video_frames.jsonl').write_text(
+                '{"video_frame":0,"carla_frame":1,"time_s":0.05}\n')
+            (attempt / 'acquisition-provenance.json').write_text(json.dumps({
+                'provenance_kind': 'native', 'diagnostic_fixture': True,
+                'scope': 'synthetic lifecycle fixture only'}) + '\n')
+            resource = io.StringIO('fixture camera resource')
+            resource.close()
+            require(resource.closed, 'Fixture camera resource remains open')
+            seal = seal_capture(attempt, frames=1,
+                restoration={'restored': True, 'fixture_only': True}, errors=[],
+                encoder_exit_codes={'fixture_encoder': 0},
+                context={'diagnostic_fixture': True})
+            exited = record_native_exit(attempt)
+            released = acknowledge_owner_release(attempt,
+                attempt / 'owner-release.json', True)
+            require(exited['capture_seal_sha256'] == sha(attempt / 'capture-seal.json') and
+                    released['native_exit_sha256'] == sha(attempt / 'native-exit.json'),
+                    'Capture lifecycle hashes differ')
+            events = seal['events'] + [exited['event'], released['event'],
+                                       processing['events'][0]]
+            require(events == ['capture_finished', 'encoders_closed',
+                               'restoration_verified', 'native_exit',
+                               'owner_released', 'saved_processing_started'],
+                    'Release capture lifecycle order differs')
+        output[suffix] = {'case_id': prior['case_id'],
+            'construction_sha256': sha(bundle),
+            'source_history_sha256': prior['source_hashes']['interaction_history.jsonl'],
+            'saved_processing_sha256': sha(saved),
+            'physical_classifier_statuses': statuses,
+            'capture_to_saved_events': events,
+            'diagnostic_fixture': True, 'physical_acceptance_claimed': False}
+    proof = {'format': 'worker-release-grid-physical-lifecycle-diagnostic',
+             'cases': output, 'native_or_legal_acceptance_claimed': False}
+    index['physical_lifecycle_diagnostic'] = proof
+    INDEX.write_text(json.dumps(index, indent=2) + '\n')
+    return proof
+
+
+def prove_returned_physical():
+    """Return exact source-bound outcome/lifecycle receipts for both draft cases."""
+    index = json.loads(INDEX.read_text())
+    manifest = ROOT / 'hazard-release-draft-manifest.json'
+    entries = json.loads(manifest.read_text())['cases']
+    source_script = ROOT / 'inside_physical_fixture_proof.py'
+    kinds = ('complete_motion', 'incomplete_motion', 'missing_evidence', 'lifecycle')
+    returned = {}
+    for suffix in ('approaching_release_3s', 'approaching_release_5s'):
+        entry = next(item for item in entries if item['case_id'].endswith('__' + suffix))
+        primary = ROOT / entry['construction']
+        require(sha(primary) == entry['construction_sha256'],
+                'Draft physical construction changed: ' + suffix)
+        candidate = next(item for item in index['cases'] if item['case_id'] == entry['case_id']
+                         and item['candidate'] == 'primary')
+        require(candidate['construction_sha256'] == sha(primary),
+                'Exact draft proof differs from physical construction')
+        saved = ROOT / 'cases' / suffix / 'draft-proofs/primary/processing.json'
+        require(sha(saved) == candidate['saved_receipt_sha256'],
+                'Current saved receipt differs from draft proof')
+        folder = ROOT / 'cases' / suffix / 'physical-proofs'
+        folder.mkdir(exist_ok=True)
+        fixtures = []
+        lifecycle = None
+        for kind in kinds:
+            result_path = folder / (kind + '.json')
+            log_path = folder / (kind + '.log')
+            command = [str(REPO / '.venv-cpu/bin/python'), str(source_script),
+                       '--manifest', str(manifest), '--case', entry['case_id'],
+                       '--kind', kind, '--output', str(result_path)]
+            if kind == 'lifecycle':
+                command.extend(['--saved-receipt', str(saved)])
+            process = subprocess.run(command, cwd=REPO, capture_output=True,
+                                     text=True, timeout=60)
+            log_path.write_text(process.stdout + process.stderr)
+            require(process.returncode == 0,
+                    'Release physical fixture failed: ' + kind + ' ' + process.stderr[-1000:])
+            row = {'command': ' '.join(command), 'exit_code': 0,
+                   'log': str(log_path.relative_to(ROOT)), 'log_sha256': sha(log_path),
+                   'result': str(result_path.relative_to(ROOT)),
+                   'result_sha256': sha(result_path)}
+            if kind == 'lifecycle':
+                lifecycle = dict(row, events=json.loads(result_path.read_text())['events'])
+            else:
+                fixtures.append(dict(row, kind=kind))
+        receipt = {'format': 'worker-physical-preparation', 'case_id': entry['case_id'],
+                   'construction_sha256': entry['construction_sha256'],
+                   'fixtures': fixtures, 'lifecycle': lifecycle,
+                   'diagnostic_fixture': True, 'physical_acceptance_claimed': False}
+        path = folder / 'receipt.json'
+        path.write_text(json.dumps(receipt, indent=2) + '\n')
+        check = dict(entry, physical_preparation={
+            'receipt': str(path.relative_to(ROOT)), 'sha256': sha(path)})
+        validate_physical(REPO, ROOT, check)
+        returned[suffix] = {'case_id': entry['case_id'],
+                            'construction_sha256': entry['construction_sha256'],
+                            'receipt': str(path.relative_to(ROOT)),
+                            'receipt_sha256': sha(path),
+                            'validator_passed': True,
+                            'diagnostic_fixture': True,
+                            'physical_acceptance_claimed': False}
+    index['returned_physical_preparation'] = {
+        'format': 'worker-release-grid-returned-physical-preparation',
+        'cases': returned, 'native_or_legal_acceptance_claimed': False}
+    INDEX.write_text(json.dumps(index, indent=2) + '\n')
+    return index['returned_physical_preparation']
+
+
 if __name__ == '__main__':
     if len(sys.argv) == 3 and sys.argv[1] == '--three-output':
         print(json.dumps(prove_three(sys.argv[2]), indent=2))
+    elif len(sys.argv) == 2 and sys.argv[1] == '--physical':
+        print(json.dumps(prove_physical_lifecycle_diagnostics(), indent=2))
+    elif len(sys.argv) == 2 and sys.argv[1] == '--return-physical':
+        print(json.dumps(prove_returned_physical(), indent=2))
     elif len(sys.argv) == 1:
         print(json.dumps(prove_independent_delivery_sequences(), indent=2))
     else:
-        raise SystemExit('Usage: prove_release5_full_history.py [--three-output .runtime-work/FRESH_ROOT]')
+        raise SystemExit('Usage: prove_release5_full_history.py [--three-output .runtime-work/FRESH_ROOT | --physical | --return-physical]')

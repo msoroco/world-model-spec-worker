@@ -4,6 +4,7 @@ Synthetic Native-shaped data tests code paths. It is never physical acceptance.
 """
 import argparse
 import io
+import hashlib
 import json
 import sys
 import tempfile
@@ -27,13 +28,34 @@ def write(path, value):
 def motion(entry, folder, kind, output):
     construction = read(folder/entry['construction'])
     config = json.loads(next(f['content'] for f in construction['files'] if f['path']=='config.json'))
-    recipe = read(REPO/entry['fixture_recipe'])
-    diagnostic = read(REPO/recipe['generator']['source'])['files']
+    suffix = entry['case_id'].rsplit('__', 1)[-1]
+    release_sources = {
+        'approaching_release_3s': REPO/'.runtime-work/c109749-release3-full-history-v2/attempt',
+        'approaching_release_5s': REPO/'.runtime-work/c109749-release5-full-history-v1/attempt',
+    }
+    if suffix in release_sources:
+        source = release_sources[suffix]
+        index = read(folder/'hazard-release-draft-proof-index.json')
+        proof = index['release3_full_history_diagnostic' if suffix.endswith('3s')
+                      else 'release5_full_history_diagnostic']
+        if proof['case_id'] != entry['case_id'] or proof['construction_sha256'] != entry['construction_sha256']:
+            raise ValueError('Release physical source does not bind exact construction')
+        for name, digest in proof['source_hashes'].items():
+            if not (source/name).is_file() or hashlib.sha256((source/name).read_bytes()).hexdigest() != digest:
+                raise ValueError('Sealed release physical source changed: '+name)
+        if config != read(source/'config.json'):
+            raise ValueError('Release physical config differs from exact source')
+    else:
+        recipe = read(REPO/entry['fixture_recipe'])
+        diagnostic = read(REPO/recipe['generator']['source'])['files']
     with tempfile.TemporaryDirectory(prefix='c109749-physical-') as temp:
         root = Path(temp)
         write(root/'config.json', config)
         for name in ('trace.jsonl','video_frames.jsonl','interaction_history.jsonl','intersection_geometry.json'):
-            (root/name).write_text(diagnostic[name])
+            if suffix in release_sources:
+                (root/name).write_bytes((source/name).read_bytes())
+            else:
+                (root/name).write_text(diagnostic[name])
         write(root/'acquisition-provenance.json', {'provenance_kind':'native',
               'diagnostic_fixture':True,'scope':'Synthetic CPU classifier fixture only'})
         if kind == 'incomplete_motion':
