@@ -1,0 +1,125 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C135709__NRS-484B-517__motor_vehicle_driver",
+  "status": "selected_offline_proof_in_progress",
+  "runtime_manifest_sha256": "ae635d487ae988b67925bacd5ba13210f31224fc6a1ae131d1836a5557ba8714",
+  "source_branch": "non_taxicab_parking_in_taxicab_stand",
+  "cases": [
+    {
+      "case_id": "training__C135709__NRS-484B-517__motor_vehicle_driver__reference",
+      "kind": "delivery",
+      "construction": "selected-all/reference/primary/construction.json",
+      "construction_sha256": "f6313125ad2a1bec605c4c8e8bf8261ce74bd184a2177489c260123213d7e28c",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Generated curb stand, actual stopping and source-camera visibility remain unverified"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-all/reference/fallback1/construction.json",
+          "construction_sha256": "99ea31b35c23db04ae541847bc42ac2f594c3c29e3d92a6646adf8c60be17dcb",
+          "trigger": {
+            "source": "saved source-camera visibility rows",
+            "metric": "first_40_visible_frames",
+            "failure_condition": "< 20 frames"
+          },
+          "changed_knobs": [
+            "approach_frames"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-all/reference/fallback2/construction.json",
+          "construction_sha256": "fe799c6de45da7c27d22dc8347d4a93cb710cfd641e66e1128e15501bacd9888",
+          "trigger": {
+            "source": "saved reviewed stand position rows",
+            "metric": "maximum_reviewed_trajectory_deviation_m",
+            "failure_condition": "> 0.2 m"
+          },
+          "changed_knobs": [
+            "camera_policy"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-all/reference/fallback3/construction.json",
+          "construction_sha256": "eb49caa71812afe3949473db3ede85d19657b74205396aa7fd3a87ff11207428",
+          "trigger": {
+            "source": "saved Native actor speed rows",
+            "metric": "first_40_stopped_frames",
+            "failure_condition": "< 10 frames"
+          },
+          "changed_knobs": [
+            "motion_policy"
+          ]
+        }
+      ],
+      "measurement_contract": "selected-measurement-contracts/reference.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize_selected.py",
+        "output_schema": "c135709-selected-saved-diagnostic-v1"
+      },
+      "fixture_recipe": "work/training__C135709__NRS-484B-517__motor_vehicle_driver/selected-diagnostics/reference/primary-recipe.json"
+    },
+    {
+      "case_id": "training__C135709__NRS-484B-517__motor_vehicle_driver__contrast",
+      "kind": "delivery",
+      "construction": "selected-all/contrast/primary/construction.json",
+      "construction_sha256": "33ef3e5e3f0079970e98bc77944c636ae2127f14019a1e93c4c7530ead48952f",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Generated curb stand, actual stopping and source-camera visibility remain unverified"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-all/contrast/fallback1/construction.json",
+          "construction_sha256": "ccf37e9f33d5612bc31a3b389734a51ef69ba5fb32becbd8f95c2d6250972a9c",
+          "trigger": {
+            "source": "saved source-camera visibility rows",
+            "metric": "first_40_visible_frames",
+            "failure_condition": "< 20 frames"
+          },
+          "changed_knobs": [
+            "approach_frames"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-all/contrast/fallback2/construction.json",
+          "construction_sha256": "0ac1f43d2a231a6f7168b1e74e5daaa88addb91f047675b0335b3a67791e841b",
+          "trigger": {
+            "source": "saved reviewed stand position rows",
+            "metric": "maximum_reviewed_trajectory_deviation_m",
+            "failure_condition": "> 0.2 m"
+          },
+          "changed_knobs": [
+            "camera_policy"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-all/contrast/fallback3/construction.json",
+          "construction_sha256": "0e15ab3c6af35522e05fce6c63ebe1b50e3e29bd1da22d8b2c7ca96fcf702826",
+          "trigger": {
+            "source": "saved Native actor speed rows",
+            "metric": "first_40_stopped_frames",
+            "failure_condition": "< 10 frames"
+          },
+          "changed_knobs": [
+            "motion_policy"
+          ]
+        }
+      ],
+      "measurement_contract": "selected-measurement-contracts/contrast.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize_selected.py",
+        "output_schema": "c135709-selected-saved-diagnostic-v1"
+      },
+      "fixture_recipe": "work/training__C135709__NRS-484B-517__motor_vehicle_driver/selected-diagnostics/contrast/fallback2-recipe.json"
+    }
+  ],
+  "original_native_observed": false,
+  "delivery_ready": false
+}

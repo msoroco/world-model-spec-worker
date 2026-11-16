@@ -106,7 +106,9 @@ def build_candidate(witness, candidate):
             'native-capture-report.json': (raw/'native-capture-report.json').read_text(),
             'capture/evidence.jsonl': lines(capture_evidence),
             'capture/native/frames.jsonl': lines(capture_frames),
-            'capture/recorder_info.txt': 'Synthetic CPU diagnostic; no CARLA recorder ran.\n',
+            'capture/recorder_info.txt': (
+                'Synthetic CPU diagnostic; no CARLA recorder ran.\n'
+                'Create 135709: vehicle.tesla.model3\n'),
             'acquisition-provenance.json': encode({
                 'provenance_kind': 'synthetic_fixture',
                 'diagnostic_fixture': True, 'native_executed': False}),
