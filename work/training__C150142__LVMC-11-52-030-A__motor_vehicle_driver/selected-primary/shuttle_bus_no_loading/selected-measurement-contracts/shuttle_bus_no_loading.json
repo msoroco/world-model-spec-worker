@@ -1,0 +1,27 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__shuttle_bus_no_loading",
+  "requirements": [
+    {
+      "disposition_index": 4,
+      "requirement": "text-4",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "signed_curb_observation",
+      "method": "signed_context",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native-raw-actors.jsonl",
+        "native-map-readback.json",
+        "native-passenger-inventory.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "native-passenger-inventory.jsonl"
+    ],
+    "error_contains": "Missing required source: native-passenger-inventory.jsonl"
+  },
+  "scope": "Observed bus chassis with authored shuttle service identity, signed red curb and 20 Hz stopped interval; no physical acceptance or legal verdict"
+}
