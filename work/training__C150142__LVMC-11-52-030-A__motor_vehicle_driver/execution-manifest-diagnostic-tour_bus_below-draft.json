@@ -1,0 +1,97 @@
+{
+  "format": "worker-execution-manifest-diagnostic-draft",
+  "assignment_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver",
+  "status": "partial",
+  "cases": [
+    {
+      "case_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_below",
+      "kind": "delivery",
+      "construction": "selected-primary/tour_bus_below/construction.json",
+      "construction_sha256": "dca67464489814d64d24a94cc6d6800f2e4778c7e6c011e8f68aa964369f4c60",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Long capture may miss passenger proximity or stop timing in Native"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-fallbacks/tour_bus_below/fallback1/construction.json",
+          "construction_sha256": "48f19067d05654b1bdcdba11b2c2b6567d4ec7287c87277d07fdcbaa2c4a1708",
+          "trigger": {
+            "source": "retained Native bus body and red paint extent",
+            "metric": "longitudinal stop overshoot in meters",
+            "failure_condition": "Observed bus body overshoots the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest-diagnostic-tour_bus_below-draft.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_below --candidate fallback1 --output .runtime-work/c150142-tour-bus-below-fallback1-offline-reproof --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "48f19067d05654b1bdcdba11b2c2b6567d4ec7287c87277d07fdcbaa2c4a1708",
+            "log": "update026-tour-bus-fallback1-bundle-tests.log",
+            "log_sha256": "8b79ce13b82d515775972ed7735cd1ba6e00f88e71dd9263cb8036a2f85659e9",
+            "wrapper_log": "update026b-tour-bus-fallback1-offline.log",
+            "wrapper_log_sha256": "bd66330d01e0763466f685a8a91787c6be0afa3e7f9e099d9a20fa99701a23be"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-fallbacks/tour_bus_below/fallback2/construction.json",
+          "construction_sha256": "0f046ae4930b15e6162b6b5aca154fce610bbf0b21a52b71f21127213db5042e",
+          "trigger": {
+            "source": "decoded overview and retained Native signal readback",
+            "metric": "visible signed curb and complete bus body",
+            "failure_condition": "Overview obscures sign, red paint or complete bus body"
+          },
+          "changed_knobs": [
+            "camera_policy",
+            "overview camera elevation"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest-diagnostic-tour_bus_below-draft.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_below --candidate fallback2 --output .runtime-work/c150142-tour-bus-below-fallback2-offline --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "0f046ae4930b15e6162b6b5aca154fce610bbf0b21a52b71f21127213db5042e",
+            "log": "update026-tour-bus-fallback2-bundle-tests.log",
+            "log_sha256": "76464af100da381c57a292cb6ac675fc2b4cee4444f2ab815b61745bbded4603",
+            "wrapper_log": "update026-tour-bus-fallback2-offline.log",
+            "wrapper_log_sha256": "d2d5e1a72d617a72531bd5fccbac035a53184a7979faf0dfe7e4f22226fa0261"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-fallbacks/tour_bus_below/fallback3/construction.json",
+          "construction_sha256": "095dbc3aed723b7cf4dfc06ce28e279ef0b3ec27121486c4789b18f18f12b60e",
+          "trigger": {
+            "source": "retained Native bus body and red paint extent",
+            "metric": "longitudinal stop undershoot in meters",
+            "failure_condition": "Observed bus body stops short of the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest-diagnostic-tour_bus_below-draft.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_below --candidate fallback3 --output .runtime-work/c150142-tour-bus-below-fallback3-offline-reproof --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "095dbc3aed723b7cf4dfc06ce28e279ef0b3ec27121486c4789b18f18f12b60e",
+            "log": "update026-tour-bus-fallback3-bundle-tests.log",
+            "log_sha256": "de51e1f553773dfa4febc6dc25e615fa0b52e8bec7352103f28110fc91e99b59",
+            "wrapper_log": "update026b-tour-bus-fallback3-offline.log",
+            "wrapper_log_sha256": "793a030f419b8aafe8d782fefd9193e1d6ea16c8a457ac96e51d7fd968ed2c6b"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest-diagnostic-tour_bus_below-draft.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_below --candidate primary --output .runtime-work/c150142-tour-bus-below-primary-offline-abs --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "construction_sha256": "dca67464489814d64d24a94cc6d6800f2e4778c7e6c011e8f68aa964369f4c60",
+        "log": "update026-tour-bus-primary-bundle-tests.log",
+        "log_sha256": "c6afe28fd50d962120a18e4c1891d192d9c649834d0dadecb32eef86495aa439",
+        "wrapper_log": "update026b-tour-bus-pinned-offline.log",
+        "wrapper_log_sha256": "0e2a0c0e00f9ec5be7a1c22da45cb271ba42fe1db683c85a63697652e333ea0d"
+      }
+    }
+  ]
+}

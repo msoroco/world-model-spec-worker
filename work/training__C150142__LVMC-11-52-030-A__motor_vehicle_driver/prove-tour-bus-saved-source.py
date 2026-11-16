@@ -1,4 +1,5 @@
 """Run the exact 1,799.95 s saved finalizer on explicit synthetic rows."""
+import argparse
 import hashlib
 import json
 from pathlib import Path
@@ -22,6 +23,8 @@ def materialize(target, package):
 
 
 def source_rows(target, walker_moves=True):
+    config = json.loads((target / 'config.json').read_text())
+    target_x = config['requested_target_x_m']
     from_path = target / 'assignment-source.json'
     assignment = json.loads(from_path.read_text())
     (target / 'statutory-context.json').write_text(json.dumps({
@@ -47,7 +50,7 @@ def source_rows(target, walker_moves=True):
          (target / 'trace.jsonl').open('w') as trace, \
          (target / 'capture/evidence.jsonl').open('w') as evidence:
         for i in range(FRAMES):
-            x = 40 * min(i, 120) / 120
+            x = target_x * min(i, 120) / 120
             y = -6.8
             t = i / 20
             walker_y = (-10 + min(max(i - 120, 0), 60) * .05
@@ -63,7 +66,7 @@ def source_rows(target, walker_moves=True):
             walker = {'frame': i, 'native_frame': i, 'time_s': t,
                       'source_kind': 'synthetic_native_sample', 'actor_id': 2,
                       'blueprint': 'walker.pedestrian.0001',
-                      'center_native_xy_m': [40, walker_y],
+                      'center_native_xy_m': [target_x, walker_y],
                       'velocity_native_xyz_mps': [0, 1 if 120 <= i < 180 else 0, 0]}
             frame = {'video_frame': i, 'native_frame': i, 'carla_frame': i,
                      'time_s': t, 'views': list(VIEWS)}
@@ -87,8 +90,13 @@ def run(target):
         cwd=target, env=env, text=True, capture_output=True)
 
 
-def prove():
-    package = json.loads((ROOT / 'selected-primary/tour_bus_below/construction.json').read_text())
+def prove(candidate='primary', negatives=True):
+    if candidate not in ('primary', 'fallback1', 'fallback2', 'fallback3'):
+        raise ValueError('Unknown tour-bus candidate')
+    package_path = (ROOT / 'selected-primary/tour_bus_below/construction.json' if
+                    candidate == 'primary' else ROOT / 'selected-fallbacks/tour_bus_below' /
+                    candidate / 'construction.json')
+    package = json.loads(package_path.read_text())
     if package['case_id'] != CASE:
         raise ValueError('Tour-bus construction changed')
     with tempfile.TemporaryDirectory(dir=REPO / '.runtime-work', prefix='C150142-tour-bus-saved-') as tmp:
@@ -106,28 +114,34 @@ def prove():
            len(observed['recorded_activity_events']) != 1 or \
            observed['legal_verdict'] is not None:
             raise AssertionError('Long source observations differ')
-        negative = parent / 'missing-walker'
-        materialize(negative, package)
-        for name in ('statutory-context.json', 'native-map-readback.json',
-                     'native-raw-actors.jsonl'):
-            (negative / name).write_text('')
-        rejected = run(negative)
-        if rejected.returncode == 0 or \
-           'Missing required source: native-passenger-actors.jsonl' not in rejected.stderr:
-            raise AssertionError('Missing passenger actor source was accepted')
-        stationary = parent / 'stationary-walker'
-        materialize(stationary, package)
-        source_rows(stationary, walker_moves=False)
-        rejected_stationary = run(stationary)
-        if rejected_stationary.returncode == 0 or \
-           'No measured passenger approach at stopped bus' not in rejected_stationary.stderr:
-            raise AssertionError('Static passenger actor was accepted as loading')
-    return {'case_id': CASE, 'source_kind': 'synthetic_native_sample',
+        if negatives:
+            negative = parent / 'missing-walker'
+            materialize(negative, package)
+            for name in ('statutory-context.json', 'native-map-readback.json',
+                         'native-raw-actors.jsonl'):
+                (negative / name).write_text('')
+            rejected = run(negative)
+            if rejected.returncode == 0 or \
+               'Missing required source: native-passenger-actors.jsonl' not in rejected.stderr:
+                raise AssertionError('Missing passenger actor source was accepted')
+            stationary = parent / 'stationary-walker'
+            materialize(stationary, package)
+            source_rows(stationary, walker_moves=False)
+            rejected_stationary = run(stationary)
+            if rejected_stationary.returncode == 0 or \
+               'No measured passenger approach at stopped bus' not in rejected_stationary.stderr:
+                raise AssertionError('Static passenger actor was accepted as loading')
+    return {'case_id': CASE, 'candidate_id': candidate,
+            'source_kind': 'synthetic_native_sample',
             'requested_boundary': 'below', 'measured_duration_s': 1799.95,
-            'passenger_approach_event': True, 'missing_source_rejected': True,
-            'stationary_actor_rejected': True,
+            'passenger_approach_event': True, 'missing_source_rejected': negatives,
+            'stationary_actor_rejected': negatives,
             'media_decoded': False, 'original_native_observed': False}
 
 
 if __name__ == '__main__':
-    print(json.dumps(prove(), sort_keys=True))
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--candidate', default='primary')
+    parser.add_argument('--skip-negatives', action='store_true')
+    args = parser.parse_args()
+    print(json.dumps(prove(args.candidate, not args.skip_negatives), sort_keys=True))
