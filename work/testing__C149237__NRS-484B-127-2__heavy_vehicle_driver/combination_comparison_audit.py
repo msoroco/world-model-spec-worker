@@ -23,7 +23,7 @@ def _sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def _body(actor, tangent, combination):
+def _body(actor, tangent, combination, road_id, lane_id):
     vertices = actor['body_vertices_xy_m']
     if combination:
         parts = actor.get('components', {})
@@ -31,6 +31,23 @@ def _body(actor, tangent, combination):
             raise ValueError('Missing original combination components')
         if parts['tractor']['actor_id'] == parts['trailer']['actor_id']:
             raise ValueError('Combination component identities overlap')
+        if (actor.get('actor_id') != parts['tractor'].get('actor_id') or
+                actor.get('blueprint_id') != parts['tractor'].get('blueprint_id') or
+                actor.get('velocity_mps') != parts['tractor'].get('velocity_mps')):
+            raise ValueError('Combined tractor identity or velocity differs from component')
+        for part in ('tractor', 'trailer'):
+            component = parts[part]
+            if (component.get('road_id'), component.get('lane_id')) != (road_id, lane_id):
+                raise ValueError('Combination component changed sourced road or lane')
+            velocity = component.get('velocity_mps')
+            if (not isinstance(velocity, list) or len(velocity) != 3 or
+                    not all(isinstance(v, (int, float)) and math.isfinite(v) for v in velocity)):
+                raise ValueError('Missing original combination component velocity')
+        tx, ty = tangent
+        tractor_rear = min(float(x)*tx + float(y)*ty for x, y in parts['tractor']['body_vertices_xy_m'])
+        trailer_front = max(float(x)*tx + float(y)*ty for x, y in parts['trailer']['body_vertices_xy_m'])
+        if not 0 <= tractor_rear - trailer_front <= 5.0:
+            raise ValueError('Combination component hitch geometry differs')
         merged = parts['tractor']['body_vertices_xy_m'] + parts['trailer']['body_vertices_xy_m']
         if vertices != merged:
             raise ValueError('Combination body differs from original components')
@@ -77,7 +94,7 @@ def inspect(source, suffix):
             actor = row[role]
             if (actor['road_id'], actor['lane_id']) != (road['road_id'], road['lane_id']):
                 raise ValueError('Comparison changed sourced road or lane')
-            spans[role] = _body(actor, tangent, combination)
+            spans[role] = _body(actor, tangent, combination, road['road_id'], road['lane_id'])
             velocity = actor['velocity_mps']
             if len(velocity) != 3 or not all(math.isfinite(float(v)) for v in velocity):
                 raise ValueError('Missing original velocity')
