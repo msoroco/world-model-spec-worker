@@ -222,3 +222,184 @@ class NativeYellowController:
             if self.light.get_state()!=self.initial:
                 raise ValueError('Native signal restoration readback differs')
             self.initial=None
+
+
+class NativeSampleCollector:
+    """Join post-tick signal/actor readbacks to a canonical original frame map."""
+    def __init__(self, scene, case, official_control_source, cameras):
+        if scene['selected']['direction'] != case.direction or scene['ego'] is None:
+            raise ValueError('Native scene and selected case differ')
+        if not str(official_control_source or '').strip():
+            raise ValueError('official-control premise missing')
+        if set(cameras.sensors)!=set(SOURCE_CAMERAS):
+            raise ValueError('original four-camera source inventory differs')
+        self.scene,self.case,self.official_control_source=scene,case,official_control_source
+        self.cameras=cameras
+        self.first_elapsed=None
+        self.last_frame=None
+        self.last_elapsed=None
+        self.index=0
+
+    def capture(self, snapshot, commanded):
+        """Call only after world.tick and all four source cameras report this frame."""
+        frame=int(snapshot.frame)
+        elapsed=float(snapshot.timestamp.elapsed_seconds)
+        if self.last_frame is not None and (frame != self.last_frame+1 or
+                abs(elapsed-self.last_elapsed-.05)>.001):
+            raise ValueError('Native source frames are not contiguous at 20 Hz')
+        self.cameras.wait_for_frame(frame)
+        if int(commanded['light_actor_id']) != int(self.scene['selected']['light'].id):
+            raise ValueError('commanded light differs from governed head')
+        observed=str(self.scene['selected']['light'].get_state())
+        if observed!=commanded['native_light_state']:
+            raise ValueError('post-tick Native signal state differs from command')
+        if self.first_elapsed is None:self.first_elapsed=elapsed
+        time_s=elapsed-self.first_elapsed
+        if abs(time_s-self.index*.05)>.001:
+            raise ValueError('Native source time differs from 20 Hz frame index')
+        ego=self.scene['ego']
+        pose=ego.get_transform().location
+        velocity=ego.get_velocity()
+        speed=hypot(float(velocity.x),float(velocity.y))
+        if hasattr(velocity,'z'):
+            speed=hypot(speed,float(velocity.z))
+        crossing=self.scene['crossing']
+        crossing_source=None
+        if crossing is not None:
+            cross_pose=crossing.get_transform().location
+            crossing_source={'actor_id':int(crossing.id),
+                             'center_xy':[float(cross_pose.x),float(cross_pose.y)]}
+        selected=self.scene['selected']
+        row={'frame':frame,'time_s':time_s,
+             'source_cameras':list(SOURCE_CAMERAS),
+             'signal_head_visible':None,
+             'yellow_lens_on':commanded['yellow_lens_on'],
+             'official_device_source':self.official_control_source,
+             'official_device_status':'premise_unverified',
+             'signal_source':{'light_actor_id':int(selected['light'].id),
+                              'opendrive_id':selected['opendrive_id'],
+                              'native_state':observed,'junction_id':selected['junction_id']},
+             'ego_source':{'actor_id':int(ego.id),'blueprint_id':self.scene['heavy_blueprint_id']},
+             'ego_vehicle_class':'heavy_vehicle',
+             'approach_direction':self.case.direction,
+             'ego_speed_mps':speed,
+             'ego_center_xy':[float(pose.x),float(pose.y)],
+             'crossing_source':crossing_source,
+             'legal_caution_judgment':None}
+        frame_map={'video_frame':self.index,'carla_frame':frame,'time_s':time_s}
+        self.last_frame,self.last_elapsed=frame,elapsed
+        self.index+=1
+        return row,frame_map
+
+
+SOURCE_CAMERAS={
+    'overview':((-12.0,0.0,10.0),(-12.0,0.0,0.0),(1920,1080),100),
+    'approach':((2.0,0.0,2.8),(0.0,0.0,0.0),(1280,720),90),
+    'reference_corner':((-6.0,3.0,4.5),(-8.0,0.0,0.0),(1280,720),100),
+    'driver_reference':((1.0,-0.5,2.4),(0.0,0.0,0.0),(1280,720),85),
+}
+
+
+class FFV1SourceSink:
+    """Retain original BGRA sensor pixels as one lossless camera stream."""
+    def __init__(self, output, name, *, popen=None):
+        import subprocess
+        from pathlib import Path
+        if name not in SOURCE_CAMERAS:raise ValueError('unknown source camera')
+        path=Path(output)/(name+'.mkv')
+        if path.exists():raise ValueError('source camera stream already exists')
+        width,height=SOURCE_CAMERAS[name][2]
+        self.expected_bytes=width*height*4
+        launch=popen or subprocess.Popen
+        self.process=launch(['ffmpeg','-nostdin','-loglevel','error','-y',
+            '-f','rawvideo','-pixel_format','bgra','-video_size',f'{width}x{height}',
+            '-framerate','20','-i','pipe:0','-an','-c:v','ffv1',str(path)],
+            stdin=subprocess.PIPE)
+        self.closed=False
+
+    def write(self,image):
+        if self.closed:raise ValueError('source camera sink closed')
+        if len(image.raw_data)!=self.expected_bytes:
+            raise ValueError('source camera raw byte count changed')
+        self.process.stdin.write(image.raw_data)
+
+    def close(self):
+        if not self.closed:
+            self.closed=True
+            self.process.stdin.close()
+            if self.process.wait()!=0:
+                raise ValueError('source camera FFV1 encoder failed')
+
+
+class NativeSourceCameras:
+    """Attach the four original RGB sensors and join their frames before a tick is recorded."""
+    def __init__(self,world,carla_module,subject,sinks):
+        from threading import Condition
+        if set(sinks)!=set(SOURCE_CAMERAS):
+            raise ValueError('exactly four named source camera sinks required')
+        self.sinks=sinks
+        self.sensors={}
+        self.frames={name:set() for name in SOURCE_CAMERAS}
+        self.condition=Condition()
+        self.errors=[]
+        self.closed=False
+        library=world.get_blueprint_library()
+        try:
+            for name,(location,rotation,size,fov) in SOURCE_CAMERAS.items():
+                blueprint=library.find('sensor.camera.rgb')
+                for key,value in (('image_size_x',size[0]),('image_size_y',size[1]),
+                                  ('fov',fov),('sensor_tick',.05)):
+                    blueprint.set_attribute(key,str(value))
+                transform=carla_module.Transform(carla_module.Location(*location),
+                    carla_module.Rotation(*rotation))
+                sensor=world.spawn_actor(blueprint,transform,attach_to=subject)
+                self.sensors[name]=sensor
+                sensor.listen(lambda image,camera_name=name:self._on_frame(camera_name,image))
+        except BaseException:
+            self.close()
+            raise
+
+    def _on_frame(self,name,image):
+        with self.condition:
+            if self.closed:return
+            try:
+                if image.frame in self.frames[name]:
+                    raise ValueError('duplicate original source camera frame: '+name)
+                if (image.width,image.height)!=SOURCE_CAMERAS[name][2]:
+                    raise ValueError('original source camera dimensions changed: '+name)
+                self.sinks[name].write(image)
+                self.frames[name].add(image.frame)
+            except BaseException as error:
+                self.errors.append(error)
+                raise
+            finally:
+                self.condition.notify_all()
+
+    def wait_for_frame(self,frame,timeout_s=10):
+        from time import monotonic
+        deadline=monotonic()+timeout_s
+        with self.condition:
+            while True:
+                if self.errors:raise ValueError('original source camera callback failed') from self.errors[0]
+                if all(frame in frames for frames in self.frames.values()):return
+                remaining=deadline-monotonic()
+                if remaining<=0:
+                    missing=[name for name,frames in self.frames.items() if frame not in frames]
+                    raise ValueError('missing original source camera frame '+str(frame)+': '+', '.join(missing))
+                self.condition.wait(remaining)
+
+    def verify_frames(self,ordered_frames):
+        if self.errors:raise ValueError('original source camera callback failed') from self.errors[0]
+        if not ordered_frames or len(set(ordered_frames))!=len(ordered_frames):
+            raise ValueError('invalid expected original frame inventory')
+        expected=set(ordered_frames)
+        for name,observed in self.frames.items():
+            if observed!=expected:
+                raise ValueError('incomplete original source camera stream: '+name)
+        return {name:len(ordered_frames) for name in SOURCE_CAMERAS}
+
+    def close(self):
+        if not self.closed:
+            self.closed=True
+            for sensor in self.sensors.values():
+                sensor.stop();sensor.destroy()
