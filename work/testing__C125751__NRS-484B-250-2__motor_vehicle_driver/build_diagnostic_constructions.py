@@ -9,6 +9,8 @@ import argparse
 import importlib.util
 import json
 import shutil
+import subprocess
+import sys
 import tempfile
 from pathlib import Path
 from types import SimpleNamespace
@@ -655,6 +657,9 @@ def prove_opposite_entry_sweep(output_root):
         polygon = Polygon(json.loads((root / "road_geometry.json").read_text())[
             "intersection_polygon_xy_m"])
         crossing, signals, stops, mapping, bodies, trace, evidence = ([] for _ in range(7))
+        native_frames, native_graphs = [], []
+        diagnostic_template = json.loads((HERE / "diagnostic-off-sources/capture/evidence.jsonl")
+                                         .read_text().splitlines()[0])
         for index in range(5):
             frame, time_s = 100 + index, index * .05
             row = {"frame": frame, "time_s": time_s}
@@ -674,21 +679,75 @@ def prove_opposite_entry_sweep(output_root):
                 "camera_source_frames": {name: frame for name in
                     ("overview", "approach", "reference_corner", "driver_reference")}})
             ego_body = row["ego"]["body_vertices_xy_m"]
+            position = [sum(p[0] for p in ego_body) / len(ego_body),
+                        sum(p[1] for p in ego_body) / len(ego_body), 0.]
             trace.append({"frame": frame, "time_s": time_s,
                           "position": {"x": sum(p[0] for p in ego_body) / len(ego_body),
                                        "y": sum(p[1] for p in ego_body) / len(ego_body),
                                        "z": 0.},
+                          "position_m": position,
                           "heading_deg": row["ego"]["heading_deg"],
-                          "speed_mps": row["ego"]["speed_mps"]})
-            evidence.append({"original_frame": frame, "recording_time_s": time_s})
+                          "speed_mps": row["ego"]["speed_mps"],
+                          "speed_mph": row["ego"]["speed_mps"] / .44704,
+                          "velocity_mps": [row["ego"]["speed_mps"], 0., 0.],
+                          "control": diagnostic_template.get("control", {
+                              "throttle": 0, "steer": 0, "brake": 0,
+                              "hand_brake": False, "reverse": False})})
+            packet = copy.deepcopy(diagnostic_template)
+            packet.update(original_frame=frame, replay_frame=frame,
+                          recording_time_s=time_s, replay_simulation_time_s=time_s)
+            packet["ego"].update(position_m=position,
+                heading_deg=row["ego"]["heading_deg"],
+                speed_mps=row["ego"]["speed_mps"],
+                speed_provenance="synthetic_native_sample")
+            packet["ego"]["body_vertices_m"] = [
+                [x, y, z] for x, y in ego_body for z in (0., 1.5)]
+            participants = []
+            for role, actor_id in (("ego", 101), ("other", 102)):
+                body = row[role]["body_vertices_xy_m"]
+                participant = copy.deepcopy(diagnostic_template["original_observations"]["participants"][
+                    0 if role == "ego" else 1])
+                participant.update(actor_id=actor_id,
+                    position_m=[sum(p[0] for p in body) / len(body),
+                                sum(p[1] for p in body) / len(body), 0.],
+                    heading_deg=row[role]["heading_deg"],
+                    speed_mps=row[role]["speed_mps"],
+                    velocity_mps=[row[role]["speed_mps"] * (1 if role == "ego" else -1), 0., 0.],
+                    body_vertices_m=[[x, y, z] for x, y in body for z in (0., 1.5)])
+                participants.append(participant)
+            observation = packet["original_observations"]
+            observation.update(frame=frame, time_s=time_s, participants=participants)
+            evidence.append(packet)
+            graph_path = f"graphs/base/{frame:08d}.pkl"
+            native_frames.append({"frame": frame, "simulation_time": time_s,
+                "base": graph_path, "nodes": 0, "edges": 0,
+                "extraction_seconds": 0, "capture_seconds": 0})
+            native_graphs.append({"path": "capture/native/" + graph_path,
+                "attributes": {"frame": frame, "observed_evidence": observation},
+                "nodes": [], "edges": []})
+        (root / "capture/native").mkdir(parents=True, exist_ok=True)
         for name, values in (("crossing_history.jsonl", crossing),
                              ("signal_history.jsonl", signals),
                              ("stop_history.jsonl", stops),
                              ("video_frames.jsonl", mapping),
                              ("body_history.jsonl", bodies),
                              ("trace.jsonl", trace),
-                             ("capture/evidence.jsonl", evidence)):
+                             ("capture/evidence.jsonl", evidence),
+                             ("capture/native/frames.jsonl", native_frames)):
             (root / name).write_text("".join(json.dumps(value) + "\n" for value in values))
+        generate_media({"files": {}, "graphs": native_graphs, "videos": []}, root)
+        road = (HERE / "diagnostic-off-sources/road.xodr").read_text()
+        road = road.replace("synthetic C125714 orthogonal crossing", "synthetic opposite approach join")
+        road = road.replace("synthetic ego highway", "synthetic two-way approach")
+        road = road[:road.index('<road name="synthetic other highway"')] + '</OpenDRIVE>'
+        (root / "road.xodr").write_text(road)
+        (root / "capture/recorder_info.txt").write_text("Create 101: vehicle.tesla.model3\nCreate 102: vehicle.tesla.model3\n")
+        _dump(root / "capture/manifest.json", {"status": "draft",
+            "acquisition": "synthetic_diagnostic",
+            "case_id": json.loads((root / "config.json").read_text())["selected_case_id"],
+            "map": "synthetic diagnostic", "frames": len(evidence),
+            "required_observations": [], "extraction_confirmed": True,
+            "sources": {name: _sha(root / name) for name in ("road.xodr", "trace.jsonl")}})
         videos = []
         for name, (width, height) in SIZES.items():
             (root / (name + ".mkv")).unlink()
@@ -750,6 +809,68 @@ def prove_opposite_entry_sweep(output_root):
              "receipts": receipts, "native_motion_proven": False,
              "decodable_diagnostic_video_proven": True,
              "native_pixels_proven": False, "legal_time_cutoff_asserted": False,
+             "physical_acceptance_claimed": False}
+    _dump(output_root / "proof.json", proof)
+    return proof
+
+
+def prove_opposite_positive_compatibility(manifest_path, sweep_attempt, output_root):
+    """Run four diagnostic candidates through actual analysis, Core and decode."""
+    from worker_exchange.package_compatibility import _process_fixture
+    from worker_exchange.runtime_cli import execution_env, materialize
+    from worker_exchange.saved_processing import copy_sources
+    manifest_path = Path(manifest_path).resolve()
+    sweep_attempt = Path(sweep_attempt).resolve()
+    output_root = Path(output_root).resolve()
+    if output_root.exists() or ".runtime-work" not in output_root.parts:
+        raise ValueError("Choose a fresh ignored .runtime-work output directory")
+    output_root.mkdir(parents=True)
+    fixture = output_root / "fixture"
+    fixture.mkdir()
+    excluded = {"config.json", "result.json", "analysis-report.json", "channels",
+                "raw.mkv", "raw-decode.json", "receipts", "four-view-receipt.json"}
+    for path in sweep_attempt.iterdir():
+        if (path.name in excluded or path.name.endswith("-decode.json") or
+                path.name.startswith("opposite-")):
+            continue
+        target = fixture / path.name
+        if path.is_dir():
+            shutil.copytree(path, target)
+        else:
+            shutil.copy2(path, target)
+    if not (fixture / "capture/native/frames.jsonl").is_file():
+        raise ValueError("Diagnostic native frame packet missing")
+    case = json.loads((sweep_attempt / "config.json").read_text())["selected_case_id"]
+    repo = HERE.parent.parent
+    receipts = []
+    for candidate in ("primary", "fallback1", "fallback2", "fallback3"):
+        attempt = output_root / candidate
+        receipt = _process_fixture(manifest_path, case, fixture, attempt,
+            repo / "runtime/library",
+            repo / ".runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            candidate)
+        receipts.append({"candidate": candidate,
+                         "construction_sha256": receipt["construction_sha256"],
+                         "fixture_sha256": receipt["fixture_sha256"],
+                         "positive_compatibility_passed": receipt["passed"],
+                         "converted_report_sha256": _sha(attempt / "converted/adapter_report.json")})
+    negative = output_root / "missing-body-negative"
+    materialize(manifest_path, case, negative, "primary")
+    copy_sources(fixture, negative)
+    (negative / "body_history.jsonl").unlink()
+    failed = subprocess.run([sys.executable, str(negative / "runner.py"),
+        "--attempt", str(negative), "--output", str(negative / "negative-analysis.json")],
+        cwd=negative, env=execution_env(), capture_output=True, text=True, timeout=120)
+    (output_root / "missing-body-negative.log").write_text(failed.stdout + failed.stderr)
+    if failed.returncode == 0 or "body_history.jsonl" not in failed.stderr:
+        raise ValueError("Missing original body source was not rejected")
+    proof = {"format": "worker-c125751-opposite-positive-compatibility-probe",
+             "builder_sha256": _sha(HERE / "build_diagnostic_constructions.py"),
+             "manifest_sha256": _sha(manifest_path),
+             "source_attempt": str(sweep_attempt.relative_to(repo)),
+             "receipts": receipts, "missing_body_source_rejected": True,
+             "formal_measurement_contract_proven": False,
+             "recorded_only_saved_processing_proven": False,
              "physical_acceptance_claimed": False}
     _dump(output_root / "proof.json", proof)
     return proof
@@ -840,9 +961,12 @@ if __name__ == "__main__":
     parser.add_argument("--audit-release-attempt")
     parser.add_argument("--opposite-offline-bundle")
     parser.add_argument("--prove-opposite-entry-sweep")
+    parser.add_argument("--prove-opposite-positive-compatibility", nargs=3)
     args = parser.parse_args()
     if args.opposite_offline_bundle:
         output = {"manifest": str(build_opposite_offline_bundle(args.opposite_offline_bundle))}
+    elif args.prove_opposite_positive_compatibility:
+        output = prove_opposite_positive_compatibility(*args.prove_opposite_positive_compatibility)
     elif args.prove_opposite_entry_sweep:
         output = prove_opposite_entry_sweep(args.prove_opposite_entry_sweep)
     elif args.audit_release_attempt:
