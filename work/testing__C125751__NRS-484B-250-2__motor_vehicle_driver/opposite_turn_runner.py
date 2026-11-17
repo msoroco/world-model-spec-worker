@@ -372,6 +372,12 @@ def analyze_candidate_opposite_entry(root):
     body_path = root / "body_history.jsonl"
     if not body_path.is_file():
         raise ValueError("Missing original opposite-turn body history")
+    body_hash = hashlib.sha256(body_path.read_bytes()).hexdigest()
+    result_path = root / "result.json"
+    if result_path.is_file():
+        recorded_hash = json.loads(result_path.read_text()).get("source_evidence_hashes", {}).get("body_history.jsonl")
+        if recorded_hash != body_hash:
+            raise ValueError("Opposite-turn body source differs from saved result")
     frames = [json.loads(line) for line in (root / "video_frames.jsonl").read_text().splitlines() if line.strip()]
     crossing = [json.loads(line) for line in (root / "crossing_history.jsonl").read_text().splitlines() if line.strip()]
     bodies = [json.loads(line) for line in body_path.read_text().splitlines() if line.strip()]
@@ -411,6 +417,16 @@ def analyze_candidate_opposite_entry(root):
         raise ValueError("Opposite-turn route and crossing identities differ")
     geometry = check_routes(route_context.get("routes"), turning_role,
                             road_context["intersection_polygon_xy_m"])
+    from stop_measurements import analyze as measure_stop
+    stop_order = measure_stop(root, {"intersection_id": road_context["intersection_id"],
+                                    "first_body_entry": first})
+    device_by_frame = {row["frame"]: row for row in device["observations"]}
+    signal_at_entry = {
+        party: {"frame": first[party]["frame"],
+                "time_s": first[party]["time_s"],
+                "native_signal_id": device["native_signal_ids"][party],
+                "native_state": device_by_frame[first[party]["frame"]][party + "_signal_state"]}
+        for party in ("ego", "other")}
     return {"format": "worker-c125751-opposite-entry-candidate-v1",
             "intersection_id": road_context["intersection_id"],
             "turning_role": turning_role,
@@ -418,8 +434,10 @@ def analyze_candidate_opposite_entry(root):
             "turning_minus_other_entry_time_s": first[turning_role]["time_s"] -
                 first["other" if turning_role == "ego" else "ego"]["time_s"],
             "construction_geometry": geometry,
-            "source_hashes": {**device["source_hashes"],
-                              "body_history.jsonl": hashlib.sha256(body_path.read_bytes()).hexdigest()},
+            "signal_at_body_entry": signal_at_entry,
+            "stop_order": stop_order,
+            "source_hashes": {**device["source_hashes"], **stop_order["sources"],
+                              "body_history.jsonl": body_hash},
             "official_device_judgment": "unresolved",
             "statutory_exception_judgment": "unresolved",
             "physical_acceptance_claimed": False}

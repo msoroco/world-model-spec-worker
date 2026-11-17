@@ -537,8 +537,18 @@ class DeviceSourceJoinTests(unittest.TestCase):
                 "other": {"frame": 101, "time_s": .05}})
             self.assertEqual(entry["turning_minus_other_entry_time_s"], 0)
             self.assertEqual(entry["construction_geometry"]["approach_separation_deg"], 180)
+            self.assertEqual(entry["signal_at_body_entry"]["ego"]["native_state"], "Off")
+            self.assertEqual(entry["signal_at_body_entry"]["other"]["native_signal_id"], 18)
+            self.assertEqual(entry["stop_order"]["first_recorded_zero_speed_before_entry"]["ego"]["frame"], 100)
+            self.assertEqual(entry["stop_order"]["statutory_yield_judgment"], "unresolved")
             self.assertEqual(entry["statutory_exception_judgment"], "unresolved")
             self.assertFalse(entry["physical_acceptance_claimed"])
+            (root / "result.json").write_text(json.dumps({"source_evidence_hashes": entry["source_hashes"]}))
+            self.assertEqual(runner.analyze_candidate_opposite_entry(root)["first_body_entry"], entry["first_body_entry"])
+            (root / "body_history.jsonl").write_text((root / "body_history.jsonl").read_text()+" ")
+            with self.assertRaisesRegex(ValueError, "body source differs from saved result"):
+                runner.analyze_candidate_opposite_entry(root)
+            (root / "result.json").unlink()
             (root / "body_history.jsonl").unlink()
             with self.assertRaisesRegex(ValueError, "Missing original opposite-turn body history"):
                 runner.analyze_candidate_opposite_entry(root)
