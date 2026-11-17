@@ -3,6 +3,7 @@ import importlib.util
 import json
 import tempfile
 import unittest
+import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parents[1]
@@ -16,6 +17,8 @@ def load(name):
 measure = load("overtaken_response").measure
 audit = load("overtaken_comparison_audit").audit
 controller = load("overtaken_controller")
+sys.path.insert(0, str(HERE))
+native = load("overtaken_native")
 
 class OvertakenTests(unittest.TestCase):
     def setUp(self):
@@ -114,7 +117,41 @@ class OvertakenTests(unittest.TestCase):
             command=controller.apply(car,dict,active,right_offset_m=0,speed_mps=4)
             self.assertEqual(car.control,command)
             self.assertGreater(command["throttle"],0)
+            self.assertLess(command["steer"],0) if active["target_right_offset_m"] else self.assertEqual(command["steer"],0)
         with self.assertRaisesRegex(ValueError,"Notice mode"):
             controller.target("observed_gives_way_holds_speed",notice_kind="audible_signal",notice_source="original-event",pass_complete=False)
+
+    def test_native_plan_all_cases_and_source_readback(self):
+        plan=json.loads((HERE/"case-plan.json").read_text())
+        for suffix in controller.CASES:
+            case_id=native.PREFIX+suffix
+            self.assertEqual(native.check_plan(plan,case_id),suffix)
+        with self.assertRaisesRegex(ValueError,"Unselected"):
+            native.check_plan(plan,native.PREFIX+"invented")
+        class V:
+            def __init__(self,x,y=0,z=0):self.x,self.y,self.z=x,y,z
+        class Transform:
+            def __init__(self,x):self.location=V(x)
+            def get_forward_vector(self):return V(1)
+        class Box:
+            def __init__(self,x):self.x=x
+            def get_world_vertices(self,transform):
+                return [V(self.x+dx,dy,z) for dx in (-1,1) for dy in (-.5,.5) for z in (0,1)]
+        class Actor:
+            def __init__(self,x,name):self.x,self.id=x,name;self.bounding_box=Box(x)
+            def get_transform(self):return Transform(self.x)
+            def get_velocity(self):return V(5)
+        class Waypoint:
+            transform=Transform(0)
+        subject,passing=Actor(0,"subject"),Actor(-3,"passing")
+        row=native.readback(subject,passing,Waypoint(),101,0.05,notice_stimulus=True)
+        self.assertFalse(row["body_pass_complete"])
+        self.assertIsNone(row["notice_observed"])
+        self.assertIsNone(row["right_pass_permission_verified"])
+        passing.x=3;passing.bounding_box=Box(3)
+        self.assertTrue(native.readback(subject,passing,Waypoint(),102,0.1,notice_stimulus=True)["body_pass_complete"])
+        passing.bounding_box=Box(float("nan"))
+        with self.assertRaisesRegex(ValueError,"nonfinite"):
+            native.readback(subject,passing,Waypoint(),103,0.15,notice_stimulus=True)
 
 if __name__ == "__main__": unittest.main()

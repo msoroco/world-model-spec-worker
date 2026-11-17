@@ -47,7 +47,8 @@ def feedback(plan, *, right_offset_m, speed_mps):
         raise ValueError("Original motion feedback must be finite")
     right_error = plan["target_right_offset_m"] - right_offset_m
     speed_error = plan["target_speed_mps"] - speed_mps
-    return {"steer": max(-1.0, min(1.0, 0.7 * right_error)),
+    # CARLA positive steer turns left; the measured offset is positive right.
+    return {"steer": max(-1.0, min(1.0, -0.7 * right_error)),
             "throttle": max(0.0, min(1.0, 0.3 * speed_error)),
             "brake": max(0.0, min(1.0, -0.4 * speed_error))}
 
