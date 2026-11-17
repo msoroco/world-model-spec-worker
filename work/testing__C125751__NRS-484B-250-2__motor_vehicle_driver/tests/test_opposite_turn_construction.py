@@ -499,6 +499,80 @@ class DeviceSourceJoinTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "speed differs from velocity"):
                 runner.analyze_device_sources(root)
 
+    def _opposite_entry_sources(self, root):
+        self._sources(root)
+        route = json.loads((root / "turn_route_context.json").read_text())
+        route["routes"] = {"ego": [[-10, 0], [-4, 0], [0, 0], [0, 10]],
+                           "other": [[10, 0], [4, 0], [0, 0], [-10, 0]]}
+        (root / "turn_route_context.json").write_text(json.dumps(route))
+        road = json.loads((root / "road_geometry.json").read_text())
+        road["other_approach_heading_deg"] = 180
+        (root / "road_geometry.json").write_text(json.dumps(road))
+        rows = [json.loads(line) for line in (root / "crossing_history.jsonl").read_text().splitlines()]
+        for row in rows:
+            row["other"]["heading_deg"] = 180
+        rows[1]["ego"]["body_vertices_xy_m"] = [[-1, -1], [-1, 1], [1, -1], [1, 1]]
+        rows[1]["other"]["body_vertices_xy_m"] = [[-1, -1], [-1, 1], [1, -1], [1, 1]]
+        (root / "crossing_history.jsonl").write_text("".join(json.dumps(row)+"\n" for row in rows))
+        polygon = Polygon(road["intersection_polygon_xy_m"])
+        stops = [json.loads(line) for line in (root / "stop_history.jsonl").read_text().splitlines()]
+        for row, stop in zip(rows, stops):
+            for role in ("ego", "other"):
+                stop[role] = runner._stop_state(row[role], polygon)
+        (root / "stop_history.jsonl").write_text("".join(json.dumps(row)+"\n" for row in stops))
+        body_rows = [{"native_frame": row["frame"], "frame_index": index,
+                      "turning_role": "ego", "actor_sources": {role: row[role] for role in ("ego", "other")},
+                      "camera_source_frames": {name: row["frame"] for name in
+                                               ("overview", "approach", "reference_corner", "driver_reference")}}
+                     for index, row in enumerate(rows)]
+        (root / "body_history.jsonl").write_text("".join(json.dumps(row)+"\n" for row in body_rows))
+
+    def test_opposite_candidate_entry_uses_original_body_and_camera_sources(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp); self._opposite_entry_sources(root)
+            entry = runner.analyze_candidate_opposite_entry(root)
+            self.assertEqual(entry["turning_role"], "ego")
+            self.assertEqual(entry["first_body_entry"], {
+                "ego": {"frame": 101, "time_s": .05},
+                "other": {"frame": 101, "time_s": .05}})
+            self.assertEqual(entry["turning_minus_other_entry_time_s"], 0)
+            self.assertEqual(entry["construction_geometry"]["approach_separation_deg"], 180)
+            self.assertEqual(entry["statutory_exception_judgment"], "unresolved")
+            self.assertFalse(entry["physical_acceptance_claimed"])
+            (root / "body_history.jsonl").unlink()
+            with self.assertRaisesRegex(ValueError, "Missing original opposite-turn body history"):
+                runner.analyze_candidate_opposite_entry(root)
+
+    def test_opposite_candidate_entry_rejects_camera_and_actor_substitution(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp); self._opposite_entry_sources(root)
+            rows = [json.loads(line) for line in (root / "body_history.jsonl").read_text().splitlines()]
+            rows[1]["camera_source_frames"]["overview"] += 1
+            (root / "body_history.jsonl").write_text("".join(json.dumps(row)+"\n" for row in rows))
+            with self.assertRaisesRegex(ValueError, "body/camera original-frame join"):
+                runner.analyze_candidate_opposite_entry(root)
+            self._opposite_entry_sources(root)
+            rows = [json.loads(line) for line in (root / "body_history.jsonl").read_text().splitlines()]
+            rows[1]["actor_sources"]["ego"]["native_lane_id"] = 5
+            (root / "body_history.jsonl").write_text("".join(json.dumps(row)+"\n" for row in rows))
+            with self.assertRaisesRegex(ValueError, "body/camera original-frame join"):
+                runner.analyze_candidate_opposite_entry(root)
+
+    def test_opposite_candidate_entry_rejects_start_inside_crossing(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp); self._opposite_entry_sources(root)
+            rows = [json.loads(line) for line in (root / "crossing_history.jsonl").read_text().splitlines()]
+            rows[0]["ego"]["body_vertices_xy_m"] = [[-1, -1], [-1, 1], [1, -1], [1, 1]]
+            (root / "crossing_history.jsonl").write_text("".join(json.dumps(row)+"\n" for row in rows))
+            body_rows = [json.loads(line) for line in (root / "body_history.jsonl").read_text().splitlines()]
+            body_rows[0]["actor_sources"]["ego"] = rows[0]["ego"]
+            (root / "body_history.jsonl").write_text("".join(json.dumps(row)+"\n" for row in body_rows))
+            stop_rows = [json.loads(line) for line in (root / "stop_history.jsonl").read_text().splitlines()]
+            stop_rows[0]["ego"] = runner._stop_state(rows[0]["ego"], Polygon([[-2, -2], [2, -2], [2, 2], [-2, 2]]))
+            (root / "stop_history.jsonl").write_text("".join(json.dumps(row)+"\n" for row in stop_rows))
+            with self.assertRaisesRegex(ValueError, "starts inside crossing"):
+                runner.analyze_candidate_opposite_entry(root)
+
 
 if __name__ == "__main__":
     unittest.main()

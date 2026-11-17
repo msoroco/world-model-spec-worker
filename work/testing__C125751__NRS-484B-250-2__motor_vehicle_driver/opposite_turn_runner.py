@@ -9,7 +9,7 @@ import json
 from contextlib import ExitStack, contextmanager
 from pathlib import Path
 from queue import Empty, Queue
-from shapely.geometry import Polygon
+from shapely.geometry import MultiPoint, Polygon
 
 from camera_setup import SIZES, source_cameras
 from camera_encoder import FFV1Writer
@@ -354,5 +354,73 @@ def analyze_device_sources(root):
             "observations": observations,
             "official_device_judgment": "unresolved",
             "governance_judgment": "unresolved",
+            "physical_acceptance_claimed": False}
+
+
+def analyze_candidate_opposite_entry(root):
+    """Measure paired body entries from saved candidate sources, without priority claims.
+
+    The selected signal-case entry analyzer requires a lateral right-side approach.
+    Opposing approaches have no such side, so this path measures entry order only.
+    """
+    import hashlib
+    root = Path(root)
+    device = analyze_device_sources(root)
+    route_context = json.loads((root / "turn_route_context.json").read_text())
+    road_context = json.loads((root / "road_geometry.json").read_text())
+    from opposite_turn_construction import check_routes
+    body_path = root / "body_history.jsonl"
+    if not body_path.is_file():
+        raise ValueError("Missing original opposite-turn body history")
+    frames = [json.loads(line) for line in (root / "video_frames.jsonl").read_text().splitlines() if line.strip()]
+    crossing = [json.loads(line) for line in (root / "crossing_history.jsonl").read_text().splitlines() if line.strip()]
+    bodies = [json.loads(line) for line in body_path.read_text().splitlines() if line.strip()]
+    if len(bodies) != len(frames) or len(crossing) != len(frames):
+        raise ValueError("Complete original opposite-turn body/camera history required")
+    polygon = Polygon(road_context["intersection_polygon_xy_m"])
+    first = {"ego": None, "other": None}
+    turning_role = None
+    for index, (frame, recorded, crossed) in enumerate(zip(frames, bodies, crossing)):
+        native_frame = frame["carla_frame"]
+        if (recorded.get("native_frame") != native_frame or
+                recorded.get("frame_index") != index or
+                recorded.get("actor_sources") != {role: crossed.get(role) for role in ("ego", "other")} or
+                not isinstance(recorded.get("camera_source_frames"), dict) or
+                set(recorded["camera_source_frames"]) != set(SIZES) or
+                any(value != native_frame for value in recorded["camera_source_frames"].values())):
+            raise ValueError("Opposite-turn body/camera original-frame join failed")
+        role = recorded.get("turning_role")
+        if role not in ("ego", "other") or (turning_role is not None and role != turning_role):
+            raise ValueError("Stable opposite-turn turning role required")
+        turning_role = role
+        for party in ("ego", "other"):
+            vertices = crossed[party].get("body_vertices_xy_m")
+            if (not isinstance(vertices, list) or len(vertices) < 4 or
+                    any(not isinstance(point, list) or len(point) != 2 or
+                        any(type(value) not in (int, float) or not math.isfinite(value)
+                            for value in point) for point in vertices)):
+                raise ValueError("Complete finite original body vertices required: " + party)
+            inside = MultiPoint(vertices).convex_hull.intersects(polygon)
+            if index == 0 and inside:
+                raise ValueError("Opposite-turn original body starts inside crossing: " + party)
+            if first[party] is None and inside:
+                first[party] = {"frame": native_frame, "time_s": frame["time_s"]}
+    if not all(first.values()):
+        raise ValueError("Both opposite-turn original body entries required")
+    if route_context.get("intersection_id") != road_context.get("intersection_id"):
+        raise ValueError("Opposite-turn route and crossing identities differ")
+    geometry = check_routes(route_context.get("routes"), turning_role,
+                            road_context["intersection_polygon_xy_m"])
+    return {"format": "worker-c125751-opposite-entry-candidate-v1",
+            "intersection_id": road_context["intersection_id"],
+            "turning_role": turning_role,
+            "first_body_entry": first,
+            "turning_minus_other_entry_time_s": first[turning_role]["time_s"] -
+                first["other" if turning_role == "ego" else "ego"]["time_s"],
+            "construction_geometry": geometry,
+            "source_hashes": {**device["source_hashes"],
+                              "body_history.jsonl": hashlib.sha256(body_path.read_bytes()).hexdigest()},
+            "official_device_judgment": "unresolved",
+            "statutory_exception_judgment": "unresolved",
             "physical_acceptance_claimed": False}
 
