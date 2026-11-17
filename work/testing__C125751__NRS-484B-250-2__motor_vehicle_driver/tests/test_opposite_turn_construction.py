@@ -311,8 +311,16 @@ class OppositeTurnConstructionTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             (Path(temp) / "config.json").write_text(json.dumps({
                 "selected_case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_left_turn",
-                "law_id": "NRS-484B-250-2", "cell_id": "C125751", "turning_role": "ego"}))
-            (Path(temp) / "construction.json").write_text("{}\n")
+                "law_id": "NRS-484B-250-2", "cell_id": "C125751",
+                "turning_role": "ego", "site": value}))
+            site_digest = hashlib.sha256(json.dumps(value, sort_keys=True,
+                                                    allow_nan=False).encode()).hexdigest()
+            (Path(temp) / "construction.json").write_text(json.dumps({
+                "selected_case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_left_turn",
+                "site_sha256": site_digest, "turning_role": "ego",
+                "release_frames": {"ego": 1, "other": 2},
+                "target_speeds_mps": {"ego": 5., "other": 5.},
+                "frames": 3}) + "\n")
             with patch.object(runner, "source_cameras", cameras), patch.object(runner, "FFV1Writer", Writer):
                 receipt = runner.capture_candidate_media(
                     Path(temp), world, carla, value, "ego",
@@ -437,10 +445,35 @@ class OppositeTurnConstructionTest(unittest.TestCase):
             (root / "config.json").write_text(json.dumps({
                 "selected_case_id": "wrong_case", "law_id": "NRS-484B-250-2",
                 "cell_id": "C125751", "turning_role": "ego"}))
-            with self.assertRaisesRegex(ValueError, "Exact C125751 candidate case identity"):
+            with self.assertRaisesRegex(ValueError, "Exact C125751 candidate case/site identity"):
                 runner.capture_candidate_media(root, None, None, {}, "ego",
                                                None, None, None, None, 1, client=object())
             self.assertEqual({p.name for p in root.iterdir()},
+                             {"config.json", "construction.json"})
+
+    def test_native_candidate_capture_rejects_changed_site_and_controls_before_tick(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            candidate = site()
+            case = "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_left_turn"
+            (root / "config.json").write_text(json.dumps({
+                "selected_case_id": case, "law_id": "NRS-484B-250-2",
+                "cell_id": "C125751", "turning_role": "ego", "site": candidate}))
+            digest = hashlib.sha256(json.dumps(candidate, sort_keys=True).encode()).hexdigest()
+            construction = {"selected_case_id": case, "site_sha256": digest,
+                            "turning_role": "ego", "release_frames": {"ego": 1, "other": 2},
+                            "target_speeds_mps": {"ego": 5., "other": 5.}, "frames": 3}
+            (root / "construction.json").write_text(json.dumps(construction))
+            with self.assertRaisesRegex(ValueError, "candidate case/site identity"):
+                runner.capture_candidate_media(root, None, None,
+                                               dict(candidate, native_map_name="changed"), "ego",
+                                               None, None, construction["release_frames"],
+                                               construction["target_speeds_mps"], 3, client=object())
+            with self.assertRaisesRegex(ValueError, "construction differs"):
+                runner.capture_candidate_media(root, None, None, candidate, "ego",
+                                               None, None, {"ego": 0, "other": 2},
+                                               construction["target_speeds_mps"], 3, client=object())
+            self.assertEqual({path.name for path in root.iterdir()},
                              {"config.json", "construction.json"})
 
 
