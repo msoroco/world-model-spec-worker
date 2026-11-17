@@ -1,13 +1,37 @@
 import hashlib
 import json
+import sys
+import tempfile
 import unittest
 from pathlib import Path
 
 
 HERE = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(HERE))
+from build_third_fallbacks import build_yield_sweep_point
 
 
 class ThirdCaseTests(unittest.TestCase):
+    def test_16_frame_yield_hold_sweep_point_preserves_exact_case(self):
+        primary = json.loads((HERE / 'third-construction.json').read_text())
+        with tempfile.TemporaryDirectory() as temporary:
+            output = Path(temporary) / 'yield16'
+            manifest = build_yield_sweep_point(output)
+            construction = json.loads((output / 'construction.json').read_text())
+            config = json.loads((output / 'config.json').read_text())
+            baseline = json.loads((HERE / 'third-config.json').read_text())
+            self.assertEqual(config.pop('ego_hold_after_clear_frames'), 16)
+            baseline.pop('ego_hold_after_clear_frames')
+            self.assertEqual(config, baseline)
+            self.assertEqual(construction['sweep_point']['sweep_id'], 'c125745-2')
+            self.assertEqual(construction['case_id'], primary['case_id'])
+            self.assertEqual({item['path'] for item in construction['files']},
+                             {item['path'] for item in primary['files']})
+            self.assertEqual(json.loads(next(item['content'] for item in construction['files']
+                                             if item['path'] == 'config.json'))['ego_hold_after_clear_frames'], 16)
+            self.assertEqual(manifest['cases'][0]['construction_sha256'],
+                             hashlib.sha256((output / 'construction.json').read_bytes()).hexdigest())
+
     def test_separated_original_entry_measurement_and_hold_construction(self):
         manifest = json.loads((HERE / 'execution-manifest.json').read_text())
         third = next(c for c in manifest['cases']

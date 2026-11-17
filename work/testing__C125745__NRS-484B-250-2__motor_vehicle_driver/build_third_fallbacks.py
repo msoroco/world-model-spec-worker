@@ -17,6 +17,37 @@ def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def build_yield_sweep_point(output, hold_frames=16):
+    """Build an exact diagnostic hold variant of the separated selected case."""
+    output = Path(output)
+    config = json.loads((HERE / 'third-config.json').read_text())
+    if type(hold_frames) is not int or not 0 <= hold_frames < config['frames']:
+        raise ValueError('Hold frames outside planned capture')
+    output.mkdir(parents=True, exist_ok=False)
+    config['ego_hold_after_clear_frames'] = hold_frames
+    emit(output / 'config.json', config)
+    construction = json.loads((HERE / 'third-construction.json').read_text())
+    construction['sweep_point'] = {
+        'sweep_id': 'c125745-2', 'axis': 'ego_hold_after_clear_frames',
+        'commanded_value': hold_frames, 'unit': 'Native frame',
+        'scope': 'CPU offline construction only; physical yielding unverified',
+    }
+    for item in construction['files']:
+        if item['path'] == 'config.json':
+            item['content'] = (output / 'config.json').read_text()
+            item.pop('source', None)
+    emit(output / 'construction.json', construction)
+    manifest = {
+        'format': 'worker-execution-manifest',
+        'assignment_id': config['assignment_id'],
+        'cases': [{'case_id': config['selected_case_id'],
+                   'construction': 'construction.json',
+                   'construction_sha256': sha(output / 'construction.json')}],
+    }
+    emit(output / 'execution-manifest.json', manifest)
+    return manifest
+
+
 def build():
     construction = json.loads((HERE / 'third-construction.json').read_text())
     config = json.loads((HERE / 'third-config.json').read_text())
