@@ -1,12 +1,13 @@
 import copy
 import json
 import sys
+import tempfile
 import types
 import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from view_location_range_audit import audit
+from view_location_range_audit import audit, audit_files
 
 
 def sources():
@@ -58,6 +59,30 @@ class ViewRangeAuditTests(unittest.TestCase):
         result = audit(rows, context)
         self.assertEqual(len(result['observed_transition_frames']), 2)
         self.assertFalse(result['physical_acceptance_claimed'])
+
+    def test_capture_joins_600_video_frames_to_shorter_approach_history(self):
+        rows, context = sources()
+        rays = []
+        for i in range(120):
+            ray = copy.deepcopy(rows[round(i * 599 / 119)])
+            ray['frame'] = 100 + i
+            ray['time_s'] = i * .05
+            rays.append(ray)
+        video = [{'video_frame': i, 'carla_frame': 100 + i, 'time_s': i * .05}
+                 for i in range(600)]
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / 'rays.jsonl').write_text(''.join(json.dumps(row) + '\n' for row in rays))
+            (root / 'context.json').write_text(json.dumps(context))
+            video_path = root / 'video.jsonl'
+            video_path.write_text(''.join(json.dumps(row) + '\n' for row in video))
+            result = audit_files(root / 'rays.jsonl', root / 'context.json', video_path)
+            self.assertEqual(result['video_frames'], 600)
+            self.assertEqual(result['frames'], 120)
+            video[7]['time_s'] += .01
+            video_path.write_text(''.join(json.dumps(row) + '\n' for row in video))
+            with self.assertRaisesRegex(ValueError, 'does not join'):
+                audit_files(root / 'rays.jsonl', root / 'context.json', video_path)
 
     def test_rejects_fixture_and_short_history(self):
         rows, context = sources()

@@ -151,9 +151,22 @@ def build():
             "                   'yield_nearest_view_occluder_y18',\n")
         runner = files['runner.py']
         runner['content'] = runner['content'].replace('from yield_site import validate_authored_site', 'from yield_site import validate_authored_site\nfrom view_location_world_setup import view_occluder')
+        runner['content'] = runner['content'].replace('from view_location_world_setup import view_occluder', 'from view_location_world_setup import view_occluder\nfrom view_location_range_audit import audit_files')
         runner['content'] = runner['content'].replace("with stage_case(world, config['selected_case_id']) as staging:", f"with stage_case(world, config['selected_case_id']) as staging, view_occluder(world, center_y={center_y:.1f}) as obstruction:")
         runner['content'] = runner['content'].replace("'native_map_id': world.get_map().name,", "'native_map_id': world.get_map().name,\n                'view_occluder': obstruction,")
+        seal_anchor = "    if succeeded:\n        seal_capture(output, frames=frames, restoration=restoration, errors=[],"
+        if runner['content'].count(seal_anchor) != 1:
+            raise ValueError('View capture seal anchor changed')
+        runner['content'] = runner['content'].replace(
+            seal_anchor,
+            "    if succeeded:\n"
+            "        view_audit = audit_files(output / 'visibility_rays.jsonl',\n"
+            "                                 output / 'road_context.json',\n"
+            "                                 output / 'video_frames.jsonl')\n"
+            "        (output / 'view_location_range_audit.json').write_text(json.dumps(view_audit, indent=2) + '\\n')\n"
+            "        seal_capture(output, frames=frames, restoration=restoration, errors=[],")
         draft['files'].append({'path': 'view_location_world_setup.py', 'content': OCCLUDER})
+        draft['files'].append({'path': 'view_location_range_audit.py', 'content': (ROOT / 'view_location_range_audit.py').read_text()})
         draft['files'].append({'path': 'tests/test_view_location_world_setup.py', 'content': TEST.replace('CENTER_Y', f'{center_y:.1f}')})
         path = ROOT / f'cases/view_location_y{label}/construction.json'
         path.parent.mkdir(parents=True, exist_ok=True)

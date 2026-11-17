@@ -103,6 +103,9 @@ def validate():
         assert 'actor.bounding_box.get_world_vertices(actor.get_transform())' in files['view_location_world_setup.py']
         assert 'Native roadside obstruction cannot intersect authored eye ray' in files['view_location_world_setup.py']
         assert "'source_kind': 'original_native'" in files['view_location_world_setup.py']
+        assert files['view_location_range_audit.py'] == (ROOT / 'view_location_range_audit.py').read_text()
+        assert "audit_files(output / 'visibility_rays.jsonl'" in files['runner.py']
+        assert "output / 'video_frames.jsonl'" in files['runner.py']
         assert 'test_short_body_rejected_and_destroyed' in files['tests/test_view_location_world_setup.py']
         assert 'world.cast_ray(eye, target)' in files['yield_capture_sources.py']
         log = ROOT / f'cases/view_location_y{center}/offline.log'

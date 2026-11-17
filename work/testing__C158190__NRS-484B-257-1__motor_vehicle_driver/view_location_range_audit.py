@@ -16,7 +16,7 @@ def _point(value):
     return isinstance(value, list) and len(value) == 3 and all(_number(x) for x in value)
 
 
-def audit(rows, context, *, min_frames=600, max_frame_gap=1):
+def audit(rows, context, *, min_frames=100, max_frame_gap=1):
     prop = context.get('view_occluder', {})
     if prop.get('source_kind') != 'original_native':
         raise ValueError('Original Native road context required')
@@ -84,9 +84,32 @@ def audit(rows, context, *, min_frames=600, max_frame_gap=1):
             'physical_acceptance_claimed': False, 'legal_acceptance_claimed': False}
 
 
-def audit_files(ray_path, context_path):
+def audit_files(ray_path, context_path, video_path=None):
     rays = [json.loads(line) for line in Path(ray_path).read_text().splitlines()]
-    return audit(rays, json.loads(Path(context_path).read_text()))
+    result = audit(rays, json.loads(Path(context_path).read_text()))
+    if video_path is None:
+        return result
+    video = [json.loads(line) for line in Path(video_path).read_text().splitlines()]
+    if len(video) != 600:
+        raise ValueError('Original video capture must have 600 frames')
+    by_frame = {}
+    previous_time = None
+    for index, row in enumerate(video):
+        frame, time_s = row.get('carla_frame'), row.get('time_s')
+        if (row.get('video_frame') != index or type(frame) is not int
+                or (index and frame != video[index-1]['carla_frame'] + 1)
+                or not _number(time_s)
+                or (previous_time is not None and time_s <= previous_time)):
+            raise ValueError('Original video frame sequence is not contiguous')
+        by_frame[frame] = row
+        previous_time = time_s
+    for ray in rays:
+        frame = by_frame.get(ray['frame'])
+        if frame is None or not _number(ray.get('time_s')) or abs(frame['time_s'] - ray['time_s']) > .001:
+            raise ValueError('Original sight ray does not join to video frame')
+    result['video_frames'] = len(video)
+    result['ray_video_join'] = 'exact_original_frame_and_time'
+    return result
 
 
 if __name__ == '__main__':
@@ -94,5 +117,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('rays')
     parser.add_argument('road_context')
+    parser.add_argument('video_frames', nargs='?')
     args = parser.parse_args()
-    print(json.dumps(audit_files(args.rays, args.road_context), indent=2))
+    print(json.dumps(audit_files(args.rays, args.road_context, args.video_frames), indent=2))
