@@ -5,7 +5,6 @@ blueprints. Angular bounds are construction checks, not statutory definitions.
 """
 
 from contextlib import contextmanager
-import copy
 import math
 from shapely.geometry import Point, Polygon
 
@@ -16,7 +15,13 @@ from yield_controller import apply_speed_control
 FALLBACK_RISKS = {
     "fallback1": ("spawn_occupied", "transforms"),
     "fallback2": ("entry_timing_missed", "target_speeds_mps"),
-    "fallback3": ("camera_view_blocked", "cameras"),
+    "fallback3": ("turn_path_missed", "lookahead_m"),
+}
+
+TRIGGER_SOURCES = {
+    "fallback1": ("spawn_attempt.json", "approach_spawn_succeeded"),
+    "fallback2": ("crossing_history.jsonl", "paired_body_entry_observed_by_planned_frame"),
+    "fallback3": ("body_history.jsonl", "turning_body_route_deviation_m"),
 }
 
 
@@ -26,7 +31,7 @@ def validate_opposite_fallbacks(primary, fallbacks, turning_role):
     These are alternate attempts for the same case. Trigger thresholds are
     engineering observations and never statutory priority or legal cutoffs.
     """
-    fields = {"site", "transforms", "release_frames", "target_speeds_mps", "frames"}
+    fields = {"site", "transforms", "release_frames", "target_speeds_mps", "frames", "lookahead_m"}
     if not isinstance(primary, dict) or set(primary) != fields:
         raise ValueError("Complete primary opposite-turn construction required")
     if not isinstance(fallbacks, dict) or set(fallbacks) != set(FALLBACK_RISKS):
@@ -37,6 +42,9 @@ def validate_opposite_fallbacks(primary, fallbacks, turning_role):
     check_routes(site.get("routes"), turning_role, site.get("crossing_polygon_xy_m"))
     if type(primary["frames"]) is not int or not 2 <= primary["frames"] <= 1100:
         raise ValueError("Bounded primary frame count required")
+    if (type(primary["lookahead_m"]) not in (int, float) or
+            not math.isfinite(primary["lookahead_m"]) or primary["lookahead_m"] <= 0):
+        raise ValueError("Finite positive primary route lookahead required")
     if not isinstance(primary["transforms"], dict) or set(primary["transforms"]) != {"ego", "other"}:
         raise ValueError("Two primary spawn transforms required")
     if (not isinstance(primary["release_frames"], dict) or
@@ -55,29 +63,21 @@ def validate_opposite_fallbacks(primary, fallbacks, turning_role):
     accepted = {}
     for name, (risk, changed) in FALLBACK_RISKS.items():
         item = fallbacks[name]
+        trigger = item.get("trigger_measurement") if isinstance(item, dict) else None
         if (not isinstance(item, dict) or
                 set(item) != fields | {"physical_risk_trigger", "trigger_measurement", "source_review"} or
                 item["physical_risk_trigger"] != risk or
-                not isinstance(item["trigger_measurement"], dict) or
-                not item["trigger_measurement"] or
+                not isinstance(trigger, dict) or set(trigger) != {"source", "metric", "failure_condition"} or
+                (trigger["source"], trigger["metric"]) != TRIGGER_SOURCES[name] or
+                not isinstance(trigger["failure_condition"], str) or
+                not trigger["failure_condition"].strip() or
                 not isinstance(item["source_review"], str) or not item["source_review"].strip()):
             raise ValueError("Predeclared sourced physical-risk trigger required: " + name)
         if item["frames"] != primary["frames"] or item["release_frames"] != primary["release_frames"]:
             raise ValueError("Fallback changes frame count or release schedule: " + name)
-        for field in fields - {"site", changed}:
+        for field in fields - {changed}:
             if item[field] != primary[field]:
                 raise ValueError("Fallback changes fixed construction field: " + name + ": " + field)
-        if changed == "cameras":
-            revised = copy.deepcopy(site)
-            revised["cameras"] = item["site"].get("cameras") if isinstance(item["site"], dict) else None
-            if item["site"] != revised or set(item["site"].get("cameras", {})) != camera_names or item["site"]["cameras"] == site["cameras"]:
-                raise ValueError("Camera fallback must change only four sourced camera poses")
-            for pose in item["site"]["cameras"].values():
-                if (not isinstance(pose, list) or len(pose) != 6 or
-                        any(type(value) not in (int, float) or not math.isfinite(value) for value in pose)):
-                    raise ValueError("Finite sourced fallback camera pose required")
-        elif item["site"] != site:
-            raise ValueError("Fallback changes fixed site geometry: " + name)
         if changed == "transforms":
             if (not isinstance(item["transforms"], dict) or set(item["transforms"]) != {"ego", "other"} or
                     item["transforms"] == primary["transforms"]):
@@ -89,6 +89,11 @@ def validate_opposite_fallbacks(primary, fallbacks, turning_role):
                     any(type(value) not in (int, float) or not math.isfinite(value) or value <= 0
                         for value in speeds.values())):
                 raise ValueError("Timing fallback needs alternate finite target speeds")
+        elif changed == "lookahead_m":
+            value = item["lookahead_m"]
+            if (type(value) not in (int, float) or not math.isfinite(value) or
+                    value <= 0 or value == primary["lookahead_m"]):
+                raise ValueError("Turn-path fallback needs alternate finite lookahead")
         accepted[name] = item
     return {"primary": primary, "fallbacks": accepted,
             "case_count_added": 0, "physical_or_legal_acceptance_claimed": False}
@@ -177,7 +182,8 @@ def construct_opposite_turn_pair(world, blueprints, transforms, site, turning_ro
 
 
 def command_opposite_turn_pair(carla, actors, site, progress, frame_index,
-                               release_frames, target_speeds_mps, turning_role):
+                               release_frames, target_speeds_mps, turning_role,
+                               lookahead_m=5.0):
     """Apply one source-route command to each Native vehicle before a world tick.
 
     Release frames are engineering capture inputs. They do not encode which
@@ -206,7 +212,8 @@ def command_opposite_turn_pair(carla, actors, site, progress, frame_index,
         pose = actors[role].get_transform()
         location, yaw = pose.location, float(pose.rotation.yaw)
         steer, next_index = steering_command(float(location.x), float(location.y),
-                                              yaw, site["routes"][role], progress[role])
+                                              yaw, site["routes"][role], progress[role],
+                                              lookahead_m=lookahead_m)
         decisions[role] = {"steer": steer, "next_index": next_index,
                            "release_allowed": frame_index >= release_frames[role]}
     for role in roles:

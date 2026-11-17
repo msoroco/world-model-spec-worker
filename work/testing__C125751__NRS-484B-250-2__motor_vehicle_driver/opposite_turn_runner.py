@@ -22,7 +22,7 @@ from opposite_turn_construction import (construct_opposite_turn_pair,
 def run_candidate_opposite_turn(world, carla, site, turning_role, blueprints,
                                 transforms, release_frames, target_speeds_mps,
                                 frames, collect_camera_frames, write_source,
-                                camera_factory=None):
+                                camera_factory=None, lookahead_m=5.0):
     """Apply paired controls and retain one original source record per tick."""
     if type(frames) is not int or not 1 <= frames <= 1100:
         raise ValueError("Bounded positive capture frame count required")
@@ -39,7 +39,7 @@ def run_candidate_opposite_turn(world, carla, site, turning_role, blueprints,
             for index in range(frames):
                 command = command_opposite_turn_pair(
                 carla, actors, site, progress, index, release_frames,
-                target_speeds_mps, turning_role)
+                target_speeds_mps, turning_role, lookahead_m=lookahead_m)
                 native_frame = world.tick()
                 if type(native_frame) is not int or (frame_ids and native_frame <= frame_ids[-1]):
                     raise ValueError("Increasing original Native frame IDs required")
@@ -90,7 +90,7 @@ def _joined_image(queue, frame):
 
 def _validate_candidate_construction(root, config, site, turning_role,
                                      release_frames, target_speeds_mps, frames,
-                                     transforms=None):
+                                     transforms=None, lookahead_m=5.0):
     """Bind a preseeded exact attempt to the supplied construction inputs."""
     case = "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_left_turn"
     if (config.get("selected_case_id") != case or
@@ -110,9 +110,11 @@ def _validate_candidate_construction(root, config, site, turning_role,
             construction.get("turning_role") != turning_role or
             construction.get("release_frames") != release_frames or
             construction.get("target_speeds_mps") != target_speeds_mps or
+            construction.get("lookahead_m", 5.0) != lookahead_m or
             construction.get("frames") != frames):
         raise ValueError("Exact C125751 candidate construction differs from attempted controls")
     if (type(frames) is not int or not 2 <= frames <= 1100 or
+            type(lookahead_m) not in (int, float) or not math.isfinite(lookahead_m) or lookahead_m <= 0 or
             not isinstance(release_frames, dict) or set(release_frames) != {"ego", "other"} or
             any(type(value) is not int or not 1 <= value < frames for value in release_frames.values()) or
             not isinstance(target_speeds_mps, dict) or set(target_speeds_mps) != {"ego", "other"} or
@@ -131,7 +133,8 @@ def _validate_candidate_construction(root, config, site, turning_role,
         chosen = validated["primary"] if variant == "primary" else validated["fallbacks"][variant]
         attempted = {"site": site, "transforms": transforms,
                      "release_frames": release_frames,
-                     "target_speeds_mps": target_speeds_mps, "frames": frames}
+                     "target_speeds_mps": target_speeds_mps, "frames": frames,
+                     "lookahead_m": lookahead_m}
         if attempted != {key: chosen[key] for key in attempted}:
             raise ValueError("Opposite-turn candidate differs from predeclared variant")
 
@@ -139,7 +142,8 @@ def _validate_candidate_construction(root, config, site, turning_role,
 def capture_candidate_media(output_dir, world, carla, site, turning_role,
                             blueprints, transforms, release_frames,
                             target_speeds_mps, frames, governed_lights=None,
-                            client=None, original_capture_factory=None):
+                            client=None, original_capture_factory=None,
+                            lookahead_m=5.0):
     """Write four FFV1 sources, frame map and paired original actor records.
 
     This is a candidate capture path; the exact selected manifest, source site
@@ -160,7 +164,7 @@ def capture_candidate_media(output_dir, world, carla, site, turning_role,
         case_id = config.get("selected_case_id")
         _validate_candidate_construction(root, config, site, turning_role,
                                          release_frames, target_speeds_mps, frames,
-                                         transforms)
+                                         transforms, lookahead_m)
         from opposite_site_probe import verify_opposite_site_packet
         reviewed = verify_opposite_site_packet(config, root)
         if reviewed["diagnostic_only"]:
@@ -168,7 +172,8 @@ def capture_candidate_media(output_dir, world, carla, site, turning_role,
         generated = {"capture", "road_geometry.json", "turn_route_context.json",
                      "stop_context.json", "signal_context.json", "body_history.jsonl",
                      "crossing_history.jsonl", "stop_history.jsonl", "signal_history.jsonl",
-                     "video_frames.jsonl", "trace.jsonl", *(name + ".mkv" for name in SIZES)}
+                     "video_frames.jsonl", "trace.jsonl", "spawn_attempt.json",
+                     *(name + ".mkv" for name in SIZES)}
         if existing & generated:
             raise ValueError("Retain prior candidate acquisition; choose a fresh attempt")
     if original_capture_factory is not None and client is None:
@@ -320,10 +325,26 @@ def capture_candidate_media(output_dir, world, carla, site, turning_role,
                           "other_state": _native_state(governed_lights["other"])}
                 signal_stream.write(json.dumps(signal, allow_nan=False) + "\n")
 
-        receipt = run_candidate_opposite_turn(
-            world, carla, site, turning_role, blueprints, transforms,
-            release_frames, target_speeds_mps, frames,
-            lambda frame: None, write_source, camera_factory=camera_factory)
+        try:
+            receipt = run_candidate_opposite_turn(
+                world, carla, site, turning_role, blueprints, transforms,
+                release_frames, target_speeds_mps, frames,
+                lambda frame: None, write_source, camera_factory=camera_factory,
+                lookahead_m=lookahead_m)
+        except ValueError as error:
+            prefix = "Native actor spawn failed: "
+            if str(error).startswith(prefix):
+                role = str(error)[len(prefix):]
+                (root / "spawn_attempt.json").write_text(json.dumps({
+                    "format": "worker-c125751-opposite-spawn-attempt-v1",
+                    "selected_case_id": case_id,
+                    "attempted_role": role,
+                    "approach_spawn_succeeded": False,
+                    "observation": "Native try_spawn_actor returned None",
+                    "site_review_sha256": reviewed["packet_sha256"] if client is not None else None,
+                    "physical_or_legal_acceptance_claimed": False},
+                    allow_nan=False) + "\n")
+            raise
     return receipt
 
 

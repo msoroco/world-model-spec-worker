@@ -131,17 +131,21 @@ class OppositeTurnConstructionTest(unittest.TestCase):
                                          ("overview", "approach", "reference_corner", "driver_reference")})
         primary = {"site": base_site, "transforms": {"ego": "pose1", "other": "pose2"},
                    "release_frames": {"ego": 8, "other": 10},
-                   "target_speeds_mps": {"ego": 5., "other": 5.}, "frames": 100}
+                   "target_speeds_mps": {"ego": 5., "other": 5.},
+                   "frames": 100, "lookahead_m": 5.0}
         fallbacks = {}
         for name, risk in (("fallback1", "spawn_occupied"),
                            ("fallback2", "entry_timing_missed"),
-                           ("fallback3", "camera_view_blocked")):
+                           ("fallback3", "turn_path_missed")):
             fallbacks[name] = dict(copy.deepcopy(primary), physical_risk_trigger=risk,
-                                   trigger_measurement={"observed_failure": risk},
+                                   trigger_measurement={
+                                       "source": module.TRIGGER_SOURCES[name][0],
+                                       "metric": module.TRIGGER_SOURCES[name][1],
+                                       "failure_condition": "predeclared engineering failure"},
                                    source_review="synthetic fake-Native alternative for CPU proof")
         fallbacks["fallback1"]["transforms"] = {"ego": "rearward_pose1", "other": "pose2"}
         fallbacks["fallback2"]["target_speeds_mps"] = {"ego": 4., "other": 5.}
-        fallbacks["fallback3"]["site"]["cameras"]["approach"] = [0, 1, 10, 0, 0, 0]
+        fallbacks["fallback3"]["lookahead_m"] = 3.0
         validated = module.validate_opposite_fallbacks(primary, fallbacks, "ego")
         self.assertEqual(set(validated["fallbacks"]), set(fallbacks))
         self.assertEqual(validated["case_count_added"], 0)
@@ -165,8 +169,22 @@ class OppositeTurnConstructionTest(unittest.TestCase):
             fallbacks["fallback2"]["target_speeds_mps"], "ego")
         self.assertTrue(decision["decisions"]["ego"]["release_allowed"])
         self.assertGreater(pair["ego"].control.throttle, 0.)
-        self.assertNotEqual(runner._camera_pose(carla, primary["site"]["cameras"]["approach"]),
-                            runner._camera_pose(carla, fallbacks["fallback3"]["site"]["cameras"]["approach"]))
+        path_pair = {"ego": Actor([11, -1], 0), "other": Actor([11, 1], 180)}
+        path_pair["ego"].get_transform = lambda: SimpleNamespace(
+            location=SimpleNamespace(x=-8, y=0), rotation=SimpleNamespace(yaw=0))
+        path_decision = module.command_opposite_turn_pair(
+            carla, path_pair, fallbacks["fallback3"]["site"],
+            {"ego": 1, "other": 1}, 8, fallbacks["fallback3"]["release_frames"],
+            fallbacks["fallback3"]["target_speeds_mps"], "ego",
+            lookahead_m=fallbacks["fallback3"]["lookahead_m"])
+        self.assertTrue(path_decision["decisions"]["ego"]["release_allowed"])
+        self.assertEqual(path_decision["decisions"]["ego"]["next_index"], 1)
+        primary_path = module.command_opposite_turn_pair(
+            carla, path_pair, primary["site"], {"ego": 1, "other": 1}, 8,
+            primary["release_frames"], primary["target_speeds_mps"], "ego",
+            lookahead_m=primary["lookahead_m"])
+        self.assertEqual(primary_path["decisions"]["ego"]["next_index"], 2)
+        self.assertEqual(fallbacks["fallback3"]["site"]["cameras"], primary["site"]["cameras"])
 
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
@@ -180,7 +198,8 @@ class OppositeTurnConstructionTest(unittest.TestCase):
                             "turning_role": "ego", "candidate_variant": "fallback2",
                             "release_frames": chosen["release_frames"],
                             "target_speeds_mps": chosen["target_speeds_mps"],
-                            "frames": chosen["frames"]}
+                            "frames": chosen["frames"],
+                            "lookahead_m": chosen["lookahead_m"]}
             (root / "construction.json").write_text(json.dumps(construction))
             runner._validate_candidate_construction(
                 root, config, chosen["site"], "ego", chosen["release_frames"],
@@ -190,14 +209,32 @@ class OppositeTurnConstructionTest(unittest.TestCase):
                     root, config, chosen["site"], "ego", chosen["release_frames"],
                     chosen["target_speeds_mps"], chosen["frames"],
                     {"ego": "unreviewed_pose", "other": "pose2"})
+            turn_variant = fallbacks["fallback3"]
+            construction["candidate_variant"] = "fallback3"
+            construction["target_speeds_mps"] = turn_variant["target_speeds_mps"]
+            construction["lookahead_m"] = turn_variant["lookahead_m"]
+            (root / "construction.json").write_text(json.dumps(construction))
+            runner._validate_candidate_construction(
+                root, config, turn_variant["site"], "ego", turn_variant["release_frames"],
+                turn_variant["target_speeds_mps"], turn_variant["frames"],
+                turn_variant["transforms"], turn_variant["lookahead_m"])
+            with self.assertRaisesRegex(ValueError, "construction differs"):
+                runner._validate_candidate_construction(
+                    root, config, turn_variant["site"], "ego", turn_variant["release_frames"],
+                    turn_variant["target_speeds_mps"], turn_variant["frames"],
+                    turn_variant["transforms"], 5.0)
 
         wrong = copy.deepcopy(fallbacks)
         wrong["fallback2"]["physical_risk_trigger"] = "spawn_occupied"
         with self.assertRaisesRegex(ValueError, "physical-risk trigger"):
             module.validate_opposite_fallbacks(primary, wrong, "ego")
         wrong = copy.deepcopy(fallbacks)
+        wrong["fallback3"]["trigger_measurement"]["source"] = "synthetic_flag.json"
+        with self.assertRaisesRegex(ValueError, "physical-risk trigger"):
+            module.validate_opposite_fallbacks(primary, wrong, "ego")
+        wrong = copy.deepcopy(fallbacks)
         wrong["fallback3"]["site"]["routes"]["ego"][0] = [-9, 0]
-        with self.assertRaisesRegex(ValueError, "Camera fallback"):
+        with self.assertRaisesRegex(ValueError, "fixed construction field"):
             module.validate_opposite_fallbacks(primary, wrong, "ego")
         wrong = copy.deepcopy(fallbacks)
         wrong["fallback1"]["release_frames"]["ego"] = 11
@@ -503,6 +540,32 @@ class OppositeTurnConstructionTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "Sourced Native crossing polygon"):
                 runner.capture_candidate_media(Path(temp), None, None, value, "ego",
                                                None, None, None, None, 3)
+
+    def test_failed_native_spawn_retains_fallback_trigger_source(self):
+        value = dict(site(), cameras={name: [0, 0, 10, 0, 0, 0] for name in
+                                      ("overview", "approach", "reference_corner", "driver_reference")},
+                     crossing_polygon_source="synthetic fake-Native test polygon",
+                     native_junction_id=77,
+                     approach_headings_deg={"ego": 0, "other": 180},
+                     approach_geometry_source="synthetic fake-Native test route",
+                     selected_stop_references=stop_references())
+        world = World([])
+        world.try_spawn_actor = lambda blueprint, transform: None
+        carla = SimpleNamespace(Location=lambda **values: values,
+                                Rotation=lambda **values: values,
+                                Transform=lambda location, rotation: (location, rotation))
+        with tempfile.TemporaryDirectory() as temp:
+            with self.assertRaisesRegex(ValueError, "Native actor spawn failed: ego"):
+                runner.capture_candidate_media(
+                    Path(temp), world, carla, value, "ego",
+                    {"ego": "car", "other": "car"},
+                    {"ego": "pose1", "other": "pose2"},
+                    {"ego": 1, "other": 2}, {"ego": 5., "other": 5.}, 3)
+            failed = json.loads((Path(temp) / "spawn_attempt.json").read_text())
+            self.assertEqual(failed["attempted_role"], "ego")
+            self.assertFalse(failed["approach_spawn_succeeded"])
+            self.assertEqual(failed["observation"], "Native try_spawn_actor returned None")
+            self.assertFalse(failed["physical_or_legal_acceptance_claimed"])
 
     def test_candidate_media_rejects_missing_approach_source(self):
         value = dict(site(), cameras={name: [0, 0, 10, 0, 0, 0] for name in
