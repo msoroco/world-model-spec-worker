@@ -12,6 +12,55 @@ class Fake:
  def official_control_device(self,**x):self.calls.append(('official_device',x));return x
  def vehicle(self,**x):self.calls.append(('vehicle',x));return x
 class FlashHeavyTests(unittest.TestCase):
+ def test_saved_heavy_finalizer_joins_sources_and_rejects_missing_or_changed(self):
+  import json
+  with TemporaryDirectory() as tmp:
+   root=Path(tmp)
+   config={'law_id':'NRS-484B-310-2','cell_id':'C24753','actor':'heavy_vehicle_driver',
+    'case_branch':'east_cautious_proxy',
+    'selected_case_id':'heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver__east_cautious_proxy',
+    'rate_hz':20,'frames':160,'duration_s':8,'camera_names':list(m.SOURCE_CAMERAS),
+    'target_speed_mps':3.0,'official_control_source':'identified-device-premise',
+    'heavy_blueprint_id':'vehicle.carlamotors.firetruck',
+    'crossing_blueprint_id':'vehicle.tesla.model3',
+    'case':{'recording_description':{'channels':[{'name':name,'unit':'sample'} for name in
+     ('native_yellow_on','ego_speed_mps','ego_center_xy','crossing_center_xy')]}}}
+   context={'official_control_source':'identified-device-premise','selected_direction':'east',
+    'opendrive_id':'road-1','heavy_blueprint_id':config['heavy_blueprint_id'],'light_actor_id':10}
+   (root/'config.json').write_text(json.dumps(config))
+   (root/'signal_context.json').write_text(json.dumps(context))
+   source={name:[] for name in ('signal_state.jsonl','participant_state.jsonl','video_frames.jsonl','trace.jsonl')}
+   for index in range(20):
+    frame=100+index;time_s=index*.05;on=m.lamp_on(time_s)
+    source['signal_state.jsonl'].append({'frame':frame,'time_s':time_s,'light_actor_id':10,
+     'opendrive_id':'road-1','native_light_state':'Yellow' if on else 'Off',
+     'yellow_commanded':on,'lens_pixel_visible':None})
+    source['participant_state.jsonl'].append({'frame':frame,'time_s':time_s,
+     'ego':{'actor_id':20,'blueprint_id':config['heavy_blueprint_id'],
+            'vehicle_class':'heavy_vehicle','center_xy':[float(index),0.0],'speed_mps':3.0},
+     'crossing':{'actor_id':21,'center_xy':[0.0,float(index)],'speed_mps':5.0}})
+    source['video_frames.jsonl'].append({'video_frame':index,'carla_frame':frame,'time_s':time_s})
+    source['trace.jsonl'].append({'frame':frame,'time_s':time_s})
+   for name,rows in source.items():
+    (root/name).write_text(''.join(json.dumps(row)+'\n' for row in rows))
+   report=m.analyze_saved(root)
+   measured=report['measurements']['flashing_yellow_heavy']['value']
+   self.assertEqual(measured['native_transitions'],3)
+   self.assertEqual(measured['official_device_status'],'premise_unverified')
+   result=m.build_saved_result(root,report)
+   self.assertFalse(result['setup_confirmed'])
+   self.assertFalse(result['target_checks'][0]['physical_cause_confirmed'])
+   self.assertEqual(len(result['recording_evidence']),4)
+   with self.assertRaisesRegex(ValueError,'Retain prior derived channel'):
+    m.analyze_saved(root)
+   (root/'crossing_center_xy.jsonl').unlink()
+   source['signal_state.jsonl'][5]['native_light_state']='Yellow'
+   (root/'signal_state.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in source['signal_state.jsonl']))
+   with self.assertRaisesRegex(ValueError,'signal readback differs'):
+    m.analyze_saved(root,write_channels=False)
+   (root/'participant_state.jsonl').unlink()
+   with self.assertRaisesRegex(ValueError,'Missing required source: participant_state.jsonl'):
+    m.analyze_saved(root,write_channels=False)
  def test_first_case_native_config_and_lane_controller(self):
   cfg={'law_id':'NRS-484B-310-2','cell_id':'C24753','actor':'heavy_vehicle_driver',
        'case_branch':'east_cautious_proxy',

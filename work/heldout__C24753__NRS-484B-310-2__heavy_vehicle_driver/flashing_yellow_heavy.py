@@ -595,15 +595,158 @@ def check_native_config(config):
     return True
 
 
+def analyze_saved(attempt, *, write_channels=True):
+    """Derive heavy flashing-yellow measurements from retained original sources."""
+    import hashlib,json,math
+    from pathlib import Path
+    root=Path(attempt)
+    source_names=('config.json','signal_context.json','signal_state.jsonl',
+                  'participant_state.jsonl','video_frames.jsonl','trace.jsonl')
+    paths={};hashes={}
+    for name in source_names:
+        path=root/name
+        if not path.is_file() or not path.read_bytes():
+            raise ValueError('Missing required source: '+name)
+        paths[name]=path;hashes[name]=hashlib.sha256(path.read_bytes()).hexdigest()
+    config=json.loads(paths['config.json'].read_text())
+    check_native_config(config)
+    context=json.loads(paths['signal_context.json'].read_text())
+    if (not context.get('official_control_source') or
+        context.get('selected_direction')!='east' or
+        not context.get('opendrive_id') or
+        context.get('heavy_blueprint_id')!=config['heavy_blueprint_id']):
+        raise ValueError('Original official control or heavy governed context missing')
+    streams={name:[json.loads(line) for line in paths[name].read_text().splitlines() if line.strip()]
+             for name in source_names if name.endswith('.jsonl')}
+    signal=streams['signal_state.jsonl'];participants=streams['participant_state.jsonl']
+    mapping=streams['video_frames.jsonl'];trace=streams['trace.jsonl']
+    if len(mapping)<2 or len({len(mapping),len(signal),len(participants),len(trace)})!=1:
+        raise ValueError('Original heavy signal/frame source count differs')
+    observations=[];ego_id=None;crossing_id=None;previous=None
+    for index,(fm,light,party,motion) in enumerate(zip(mapping,signal,participants,trace)):
+        frame=fm.get('carla_frame');time_s=fm.get('time_s')
+        if (fm.get('video_frame')!=index or type(frame) is not int or
+            type(time_s) not in (int,float) or not math.isfinite(time_s)):
+            raise ValueError('Invalid original heavy frame identity')
+        if previous is not None and (frame!=previous[0]+1 or abs(time_s-previous[1]-.05)>.005):
+            raise ValueError('Original heavy source is not consecutive 20 Hz')
+        previous=(frame,time_s)
+        if any(row.get('frame')!=frame or abs(row.get('time_s',-100)-time_s)>1e-4
+               for row in (light,party,motion)):
+            raise ValueError('Original heavy source/frame-map join failed')
+        native_state=light.get('native_light_state')
+        if isinstance(native_state,str) and native_state.startswith('TrafficLightState.'):
+            native_state=native_state.removeprefix('TrafficLightState.')
+        if (light.get('light_actor_id')!=context.get('light_actor_id') or
+            light.get('opendrive_id')!=context['opendrive_id'] or
+            native_state not in ('Yellow','Off') or
+            type(light.get('yellow_commanded')) is not bool or
+            (native_state=='Yellow')!=light['yellow_commanded']):
+            raise ValueError('Original heavy signal readback differs')
+        ego=party.get('ego');crossing=party.get('crossing')
+        if (not isinstance(ego,dict) or not isinstance(crossing,dict) or
+            ego.get('vehicle_class')!='heavy_vehicle' or
+            ego.get('blueprint_id')!=config['heavy_blueprint_id'] or
+            type(ego.get('actor_id')) is not int or
+            type(crossing.get('actor_id')) is not int):
+            raise ValueError('Original heavy/crossing actor source missing')
+        if ego_id is None:ego_id=ego['actor_id'];crossing_id=crossing['actor_id']
+        if ego['actor_id']!=ego_id or crossing['actor_id']!=crossing_id:
+            raise ValueError('Original heavy/crossing actor identity changed')
+        for actor in (ego,crossing):
+            xy=actor.get('center_xy');speed=actor.get('speed_mps')
+            if (not isinstance(xy,list) or len(xy)!=2 or
+                any(type(value) not in (int,float) or not math.isfinite(value) for value in xy) or
+                type(speed) not in (int,float) or not math.isfinite(speed) or speed<0):
+                raise ValueError('Original heavy/crossing motion missing')
+        observations.append({'frame':frame,'time_s':time_s,
+                             'native_yellow_on':native_state=='Yellow',
+                             'ego_speed_mps':ego['speed_mps'],
+                             'ego_center_xy':ego['center_xy'],
+                             'crossing_center_xy':crossing['center_xy']})
+    states={row['native_yellow_on'] for row in observations}
+    if states!={True,False}:
+        raise ValueError('Original intermittent Yellow/Off transition missing')
+    keys=('native_yellow_on','ego_speed_mps','ego_center_xy','crossing_center_xy')
+    if write_channels:
+        for key in keys:
+            target=root/(key+'.jsonl')
+            if target.exists():raise ValueError('Retain prior derived channel: '+key)
+            target.write_text(''.join(json.dumps({'frame':row['frame'],'time_s':row['time_s'],
+                                                   'value':row[key]},allow_nan=False)+'\n'
+                                      for row in observations))
+    return {'format':'worker-analysis-report','case_id':config['selected_case_id'],
+            'measurements':{'flashing_yellow_heavy':{'method':'analyze_saved',
+                'sources':{name:hashes[name] for name in source_names[1:]},
+                'value':{'source_hashes':hashes,
+                         'native_transitions':sum(a['native_yellow_on']!=b['native_yellow_on']
+                                                  for a,b in zip(observations,observations[1:])),
+                         'ego_speed_samples_mps':[row['ego_speed_mps'] for row in observations],
+                         'crossing_present':True,
+                         'lens_pixel_visibility':'unverified',
+                         'official_device_status':'premise_unverified',
+                         'legal_caution_judgment':'unresolved'}}},
+            'limitations':['Native Yellow/Off readback does not establish lens pixels, official authority or legal caution.'],
+            'physical_acceptance_claimed':False,'legal_acceptance_claimed':False}
+
+
+def build_saved_result(attempt,report):
+    """Build a Native-shaped result while preserving physical/legal uncertainty."""
+    import hashlib,json
+    from pathlib import Path
+    root=Path(attempt);config=json.loads((root/'config.json').read_text())
+    description=config['case']['recording_description']
+    evidence=[]
+    for item in description['channels']:
+        path=root/(item['name']+'.jsonl')
+        if not path.is_file():raise ValueError('Derived selected channel missing: '+item['name'])
+        evidence.append({'name':item['name'],'unit':item['unit'],
+                         'reference':path.name,'sha256':hashlib.sha256(path.read_bytes()).hexdigest()})
+    measured=report['measurements']['flashing_yellow_heavy']['value']
+    return {'case_id':report['case_id'],'measured_values':{'flashing_yellow_heavy':measured},
+            'target_checks':[{'target':'original Native intermittent Yellow/Off readback',
+                              'requested':'flashing yellow signal at governed heavy approach',
+                              'measured':measured['native_transitions'],
+                              'method':'count original frame-joined Native signal state transitions',
+                              'tolerance':None,'matched':measured['native_transitions']>0,
+                              'physical_cause_confirmed':False,
+                              'cause_evidence':'Native state only; actual lens pixels and authority require review'}],
+            'setup_confirmed':False,'behavior_attempted':True,'maneuver_completed':False,
+            'termination_reason':'Saved heavy signal measurements complete; physical outcome unverified',
+            'physical_failure_flags':{'pixel_visibility_unverified':True,
+                                      'official_status_unverified':True,
+                                      'legal_caution_unresolved':True},
+            'trace_reference':'trace.jsonl',
+            'video_references':[name+'.mkv' for name in SOURCE_CAMERAS],
+            'video_frame_map_reference':'video_frames.jsonl',
+            'recording_description':description,'recording_evidence':evidence,
+            'realized_observables':{'native_yellow_on':{
+                'value':measured['native_transitions'],'unit':'transitions',
+                'method':'count transitions in original 20 Hz Native readback',
+                'time_window':'all original frames','statistic':'transition_count',
+                'reference':'native_yellow_on.jsonl'}},
+            'physical_acceptance_claimed':False,'legal_acceptance_claimed':False}
+
+
 if __name__=='__main__':
     import argparse,json
     from pathlib import Path
     parser=argparse.ArgumentParser()
     parser.add_argument('--check',action='store_true')
     parser.add_argument('--output-dir',default='.')
+    parser.add_argument('--attempt')
+    parser.add_argument('--output')
     parser.add_argument('--host',default='127.0.0.1')
     parser.add_argument('--port',type=int,default=2000)
     args=parser.parse_args()
-    config=json.loads((Path(args.output_dir)/'config.json').read_text())
-    if args.check:check_native_config(config)
-    else:run_native_case(args.output_dir,config,host=args.host,port=args.port)
+    if args.attempt:
+        from worker_exchange.native_output import write_result
+        report=analyze_saved(args.attempt)
+        output=Path(args.output)
+        if output.exists():raise ValueError('Retain prior analysis report; choose fresh attempt')
+        output.write_text(json.dumps(report,indent=2,allow_nan=False)+'\n')
+        write_result(args.attempt,build_saved_result(args.attempt,report))
+    else:
+        config=json.loads((Path(args.output_dir)/'config.json').read_text())
+        if args.check:check_native_config(config)
+        else:run_native_case(args.output_dir,config,host=args.host,port=args.port)
