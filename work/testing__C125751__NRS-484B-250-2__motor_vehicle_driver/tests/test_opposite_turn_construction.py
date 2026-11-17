@@ -283,7 +283,8 @@ class OppositeTurnConstructionTest(unittest.TestCase):
 
         class OriginalCapture:
             def __init__(self, supplied_client, ego, root, case_id):
-                if supplied_client is not client or ego is not actors[0] or case_id != "candidate_opposite_turn":
+                if (supplied_client is not client or ego is not actors[0] or
+                        case_id != "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_left_turn"):
                     raise AssertionError("Original recorder was not bound to the candidate ego and client")
                 self.root = root
 
@@ -305,6 +306,10 @@ class OppositeTurnConstructionTest(unittest.TestCase):
                 self.evidence.close()
 
         with tempfile.TemporaryDirectory() as temp:
+            (Path(temp) / "config.json").write_text(json.dumps({
+                "selected_case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_left_turn",
+                "law_id": "NRS-484B-250-2", "cell_id": "C125751", "turning_role": "ego"}))
+            (Path(temp) / "construction.json").write_text("{}\n")
             with patch.object(runner, "source_cameras", cameras), patch.object(runner, "FFV1Writer", Writer):
                 receipt = runner.capture_candidate_media(
                     Path(temp), world, carla, value, "ego",
@@ -418,6 +423,22 @@ class OppositeTurnConstructionTest(unittest.TestCase):
                 runner.capture_candidate_media(Path(temp), None, None, value, "ego",
                                                None, None, None, None, 3)
             self.assertEqual(list(Path(temp).iterdir()), [])
+
+    def test_native_candidate_capture_requires_exact_preseeded_case(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            with self.assertRaisesRegex(ValueError, "Exact candidate config and construction"):
+                runner.capture_candidate_media(root, None, None, {}, "ego",
+                                               None, None, None, None, 1, client=object())
+            (root / "construction.json").write_text("{}\n")
+            (root / "config.json").write_text(json.dumps({
+                "selected_case_id": "wrong_case", "law_id": "NRS-484B-250-2",
+                "cell_id": "C125751", "turning_role": "ego"}))
+            with self.assertRaisesRegex(ValueError, "Exact C125751 candidate case identity"):
+                runner.capture_candidate_media(root, None, None, {}, "ego",
+                                               None, None, None, None, 1, client=object())
+            self.assertEqual({p.name for p in root.iterdir()},
+                             {"config.json", "construction.json"})
 
 
 class DeviceSourceJoinTests(unittest.TestCase):
@@ -616,6 +637,67 @@ class DeviceSourceJoinTests(unittest.TestCase):
             (root / "stop_history.jsonl").write_text("".join(json.dumps(row)+"\n" for row in stop_rows))
             with self.assertRaisesRegex(ValueError, "starts inside crossing"):
                 runner.analyze_candidate_opposite_entry(root)
+
+    def _opposite_finalizer_sources(self, root):
+        self._opposite_entry_sources(root)
+        case = "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_left_turn"
+        (root / "config.json").write_text(json.dumps({
+            "selected_case_id": case, "law_id": "NRS-484B-250-2",
+            "cell_id": "C125751", "turning_role": "ego",
+            "duration_s": .1, "rate_hz": 20,
+            "recording_description": {"channels": [
+                {"name": "signal_state", "unit": "structured record"},
+                {"name": "stop_state", "unit": "structured record"}],
+                "context_inputs": [{"name": "entry_context", "unit": "structured record"}]}}))
+        frame_map = [json.loads(line) for line in
+                     (root / "video_frames.jsonl").read_text().splitlines()]
+        (root / "trace.jsonl").write_text("".join(json.dumps({
+            "frame": row["carla_frame"], "time_s": row["time_s"],
+            "position_m": [-8. + 8*i, 0., 0.]}) + "\n"
+            for i, row in enumerate(frame_map)))
+        (root / "capture").mkdir(exist_ok=True)
+        (root / "capture/evidence.jsonl").write_text("".join(json.dumps({
+            "original_frame": row["carla_frame"], "recording_time_s": row["time_s"]}) + "\n"
+            for row in frame_map))
+        for name in ("overview", "approach", "reference_corner", "driver_reference"):
+            (root / (name + ".mkv")).write_bytes(b"synthetic placeholder; no pixel proof")
+
+    def test_opposite_candidate_saved_finalizer_uses_original_sources(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp); self._opposite_finalizer_sources(root)
+            measurement = runner.finalize_candidate_opposite_turn(root, root / "analysis.json")
+            self.assertEqual(measurement["first_body_entry"]["ego"]["frame"], 101)
+            self.assertTrue((root / "channels/signal_state.jsonl").is_file())
+            self.assertTrue((root / "channels/stop_state.jsonl").is_file())
+            result = json.loads((root / "result.json").read_text())
+            self.assertEqual(result["case_id"],
+                             "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_left_turn")
+            self.assertFalse(result["physical_acceptance_claimed"])
+            self.assertEqual(result["source_evidence_hashes"]["body_history.jsonl"],
+                             hashlib.sha256((root / "body_history.jsonl").read_bytes()).hexdigest())
+            self.assertEqual(result["capture_evidence_sha256"],
+                             hashlib.sha256((root / "capture/evidence.jsonl").read_bytes()).hexdigest())
+
+    def test_opposite_candidate_saved_finalizer_rejects_missing_and_misaligned_evidence(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp); self._opposite_finalizer_sources(root)
+            (root / "capture/evidence.jsonl").unlink()
+            with self.assertRaisesRegex(ValueError, "Missing required opposite-turn source"):
+                runner.finalize_candidate_opposite_turn(root, root / "analysis.json")
+            self._opposite_finalizer_sources(root)
+            rows = [json.loads(line) for line in (root / "trace.jsonl").read_text().splitlines()]
+            rows[1]["frame"] += 1
+            (root / "trace.jsonl").write_text("".join(json.dumps(row) + "\n" for row in rows))
+            with self.assertRaisesRegex(ValueError, "Original trace/evidence frame join failed"):
+                runner.finalize_candidate_opposite_turn(root, root / "analysis.json")
+            self._opposite_finalizer_sources(root)
+            rows = [json.loads(line) for line in
+                    (root / "capture/evidence.jsonl").read_text().splitlines()]
+            rows[1]["recording_time_s"] += .05
+            (root / "capture/evidence.jsonl").write_text(
+                "".join(json.dumps(row) + "\n" for row in rows))
+            with self.assertRaisesRegex(ValueError, "Original trace/evidence frame join failed"):
+                runner.finalize_candidate_opposite_turn(root, root / "analysis.json")
 
 
 if __name__ == "__main__":

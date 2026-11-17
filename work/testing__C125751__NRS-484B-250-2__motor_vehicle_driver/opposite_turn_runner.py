@@ -97,8 +97,29 @@ def capture_candidate_media(output_dir, world, carla, site, turning_role,
     review, finalizer and independent delivery audit are separate requirements.
     """
     root = Path(output_dir)
-    if not root.is_dir() or any(root.iterdir()):
-        raise ValueError("Fresh existing candidate capture directory required")
+    if not root.is_dir():
+        raise ValueError("Existing candidate capture directory required")
+    existing = {path.name for path in root.iterdir()}
+    if client is None:
+        if existing:
+            raise ValueError("Fresh existing candidate capture directory required")
+        case_id = "candidate_opposite_turn"
+    else:
+        if not {"config.json", "construction.json"} <= existing:
+            raise ValueError("Exact candidate config and construction required before Native capture")
+        config = json.loads((root / "config.json").read_text())
+        case_id = config.get("selected_case_id")
+        if (case_id != "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_left_turn" or
+                config.get("law_id") != "NRS-484B-250-2" or
+                config.get("cell_id") != "C125751" or
+                config.get("turning_role") != turning_role):
+            raise ValueError("Exact C125751 candidate case identity required")
+        generated = {"capture", "road_geometry.json", "turn_route_context.json",
+                     "stop_context.json", "signal_context.json", "body_history.jsonl",
+                     "crossing_history.jsonl", "stop_history.jsonl", "signal_history.jsonl",
+                     "video_frames.jsonl", "trace.jsonl", *(name + ".mkv" for name in SIZES)}
+        if existing & generated:
+            raise ValueError("Retain prior candidate acquisition; choose a fresh attempt")
     if original_capture_factory is not None and client is None:
         raise ValueError("Original capture factory requires the Native client")
     if client is not None:
@@ -197,7 +218,7 @@ def capture_candidate_media(output_dir, world, carla, site, turning_role,
             nonlocal original_capture
             if original_capture_factory is not None:
                 original_capture = stack.enter_context(original_capture_factory(
-                    client, actors["ego"], root, "candidate_opposite_turn"))
+                    client, actors["ego"], root, case_id))
             sensors = stack.enter_context(source_cameras(active_world, actors["ego"], poses))
             queues = {name: Queue() for name in SIZES}
             for name, sensor in sensors.items():
@@ -456,4 +477,108 @@ def analyze_candidate_opposite_entry(root):
             "official_device_judgment": "unresolved",
             "statutory_exception_judgment": "unresolved",
             "physical_acceptance_claimed": False}
+
+
+def finalize_candidate_opposite_turn(attempt, output):
+    """Finalize saved opposing-turn candidate sources without a legal verdict."""
+    import hashlib
+    from worker_exchange.native_output import physical_result, write_result
+
+    attempt, output = Path(attempt), Path(output)
+    if output.exists() or (attempt / "result.json").exists() or (attempt / "channels").exists():
+        raise ValueError("Retain prior opposite-turn finalization; choose a fresh attempt")
+    required = ("config.json", "road_geometry.json", "turn_route_context.json",
+                "body_history.jsonl", "crossing_history.jsonl", "signal_context.json",
+                "signal_history.jsonl", "stop_context.json", "stop_history.jsonl",
+                "video_frames.jsonl", "trace.jsonl", "capture/evidence.jsonl",
+                *(name + ".mkv" for name in SIZES))
+    for name in required:
+        if not (attempt / name).is_file():
+            raise ValueError("Missing required opposite-turn source: " + name)
+    config = json.loads((attempt / "config.json").read_text())
+    case = config.get("selected_case_id")
+    if (config.get("law_id") != "NRS-484B-250-2" or
+            config.get("cell_id") != "C125751" or
+            case != "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_left_turn" or
+            config.get("turning_role") not in ("ego", "other") or
+            not isinstance(config.get("recording_description"), dict)):
+        raise ValueError("Exact C125751 opposing-turn candidate config required")
+    entry = analyze_candidate_opposite_entry(attempt)
+    if entry["turning_role"] != config["turning_role"]:
+        raise ValueError("Saved turning role differs from exact config")
+    def rows(name):
+        return [json.loads(line) for line in (attempt / name).read_text().splitlines() if line.strip()]
+    frames, trace, evidence = (rows(name) for name in
+                               ("video_frames.jsonl", "trace.jsonl", "capture/evidence.jsonl"))
+    if not (len(frames) >= 2 and len(frames) == len(trace) == len(evidence)):
+        raise ValueError("Complete original trace/evidence frame join required")
+    for mapped, motion, observed in zip(frames, trace, evidence):
+        if (motion.get("frame") != mapped["carla_frame"] or
+                observed.get("original_frame") != mapped["carla_frame"] or
+                motion.get("time_s") != mapped["time_s"] or
+                observed.get("recording_time_s") != mapped["time_s"]):
+            raise ValueError("Original trace/evidence frame join failed")
+    channels = attempt / "channels"
+    channels.mkdir()
+    signal = rows("signal_history.jsonl")
+    stops = rows("stop_history.jsonl")
+    with (channels / "signal_state.jsonl").open("x") as stream:
+        for row in signal:
+            stream.write(json.dumps({"time_s": row["time_s"], "value": {
+                "frame": row["frame"], "native_signal_id": row["native_signal_id"],
+                "native_state": row["state"],
+                "other_native_signal_id": row["other_native_signal_id"],
+                "other_native_state": row["other_state"]}}, allow_nan=False) + "\n")
+    with (channels / "stop_state.jsonl").open("x") as stream:
+        for row in stops:
+            stream.write(json.dumps({"time_s": row["time_s"], "value": {
+                "frame": row["frame"], "ego": row["ego"], "other": row["other"]}},
+                allow_nan=False) + "\n")
+    (channels / "entry_context.json").write_text(json.dumps({
+        "entry_context": entry}, indent=2, allow_nan=False) + "\n")
+    sources = {name: hashlib.sha256((attempt / name).read_bytes()).hexdigest()
+               for name in required}
+    result = {"case_id": case,
+        "measured_values": {"turning_minus_other_entry_time_s":
+                            entry["turning_minus_other_entry_time_s"],
+                            "signal_at_body_entry": entry["signal_at_body_entry"]},
+        "target_checks": [{"target": "opposing_left_turn_body_entries",
+            "requested": True, "measured": True,
+            "method": "original paired body/camera/source-route join", "tolerance": 0,
+            "matched": True, "physical_cause_confirmed": False,
+            "cause_evidence": ["body_history.jsonl", "crossing_history.jsonl",
+                               "video_frames.jsonl", "turn_route_context.json"]}],
+        "setup_confirmed": False, "behavior_attempted": False,
+        "maneuver_completed": False,
+        "termination_reason": "Saved opposing-turn sources measured; physical/legal review pending",
+        "physical_failure_flags": ["official device and statutory exception judgments unresolved"],
+        "trace_reference": "trace.jsonl", "video_references": [name + ".mkv" for name in SIZES],
+        "video_frame_map_reference": "video_frames.jsonl",
+        "recording_description": config["recording_description"],
+        "recording_evidence": [{"name": name, "unit": "structured record",
+                                "reference": "channels/" + name + ext}
+                               for name, ext in (("signal_state", ".jsonl"),
+                                                 ("stop_state", ".jsonl"),
+                                                 ("entry_context", ".json"))],
+        "source_evidence_hashes": sources,
+        "capture_evidence_sha256": sources["capture/evidence.jsonl"],
+        "realized_observables": {}}
+    result = physical_result(attempt, result)
+    write_result(attempt, result)
+    output.write_text(json.dumps({
+        "format": "worker-c125751-opposite-turn-saved-analysis-v1",
+        "case_id": case, "measurements": entry,
+        "source_evidence_hashes": sources,
+        "physical_acceptance_claimed": False,
+        "legal_acceptance_claimed": False}, indent=2, allow_nan=False) + "\n")
+    return entry
+
+
+if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--attempt", required=True, type=Path)
+    parser.add_argument("--output", required=True, type=Path)
+    args = parser.parse_args()
+    finalize_candidate_opposite_turn(args.attempt, args.output)
 
