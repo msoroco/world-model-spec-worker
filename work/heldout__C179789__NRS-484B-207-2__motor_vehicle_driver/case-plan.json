@@ -63,6 +63,21 @@
         "trigger_metric": "frame ordering, original lateral offset and speed",
         "failure_condition": "signal or passing overlap does not bracket at least one precompletion motion frame"
       }
+    },
+    {
+      "case_id": "heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__observed_gives_way_holds_speed",
+      "target_law_id": "NRS-484B-207-2",
+      "branch": "observed_gives_way_holds_speed",
+      "gap_ids": [
+        "uncovered-full-text"
+      ],
+      "construction_status": "planned_observed_notice_exact_construction_pending",
+      "physical_risk": {
+        "risk": "Original driver-facing camera may not establish the overtaken driver observing the overtaker before the response interval",
+        "trigger_source": "original driver_reference and approach camera frames plus subject/overtaker pose readback",
+        "trigger_metric": "frame-ordered overtaker visibility and body response",
+        "failure_condition": "no source-backed overtaker visibility before the first rightward response frame"
+      }
     }
   ],
   "comparisons": [
@@ -108,6 +123,22 @@
       ],
       "deliberate_differences": [
         "sourced premise of permission to overtake on the right; legal applicability remains for independent review"
+      ]
+    },
+    {
+      "comparison_id": "notice_modality",
+      "case_ids": [
+        "heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__gives_way_holds_speed",
+        "heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__observed_gives_way_holds_speed"
+      ],
+      "fixed_conditions": [
+        "C179789 road and same actors",
+        "same right-pass exception premise",
+        "same planned rightward response and precompletion speed path",
+        "same four-camera duration and body geometry"
+      ],
+      "deliberate_differences": [
+        "sourced audible-signal notice versus sourced observed-overtaker notice; no legal outcome asserted"
       ]
     }
   ],
@@ -191,6 +222,46 @@
     {
       "branch": "Overtaken driver may not increase speed until completely passed: compare pre-completion and post-completion speed change, with measured pass completion.",
       "status": "planning_pending_exact_cases"
+    },
+    {
+      "branch": "observing overtaking vehicle before rightward yield",
+      "disposition": "selected exact comparison case; construction and source-visible CPU proof pending",
+      "case_id": "heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__observed_gives_way_holds_speed"
     }
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 8,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "overtaken subject and overtaking vehicle bodies plus same-direction lane boundaries",
+        "interval": "entire original-frame interval including notice and pass completion"
+      },
+      {
+        "view": "approach",
+        "subject": "overtaker approach, overtaken subject and any visible audible-signal cue",
+        "interval": "before notice through pass completion"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "both vehicle body corners and right-side clearance during yield",
+        "interval": "notice through pass completion"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "overtaken driver travel direction, rightward response and passing vehicle",
+        "interval": "entire original-frame interval"
+      }
+    ],
+    "source_review": "Fully decode each original stream; inspect both vehicle bodies, signal evidence, pass-completion order and right-side lane clearance in original pixels. This is a prospective CPU capture plan, not observed visibility."
+  },
+  "source_observation_mapping": {
+    "notice_frame": "retained original visual-event or signal stream with frame ID and source hash",
+    "pass_complete_frame": "original overtaker and subject body pose overlap/clearance readbacks",
+    "rightward_response": "source-hashed original subject body and lane geometry per frame",
+    "speed_change": "source-hashed original subject velocity history per frame",
+    "right_pass_exception": "sourced road-context and passing-side premise retained for independent review"
+  }
 }

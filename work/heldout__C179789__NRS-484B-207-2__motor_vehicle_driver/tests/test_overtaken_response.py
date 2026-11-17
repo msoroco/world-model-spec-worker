@@ -55,5 +55,19 @@ class OvertakenTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,"held motion"):audit([p,q],"right_shift")
         second=dict(first);second["right_pass_permitted_premise"]=True;self.write("second-result.json",second)
         self.assertTrue(audit([p,q],"right_pass_exception")["comparison_complete"])
+    def test_comparison_rejects_changed_original_source(self):
+        first=self.measure();p=self.write("first-result.json",first);q=self.write("second-result.json",dict(first,max_right_shift_m=2))
+        self.write("motion.json",{"frames":[]})
+        with self.assertRaisesRegex(ValueError,"original source changed"):
+            audit([p,q],"right_shift")
+    def test_speed_and_notice_comparisons(self):
+        first=self.measure();p=self.write("first-result.json",first)
+        q=self.write("second-result.json",dict(first,max_precompletion_speed_delta_mps=1))
+        self.assertTrue(audit([p,q],"speed_hold_until_complete")["comparison_complete"])
+        self.write("second-result.json",dict(first,notice_kind="observed_vehicle",notice_source="original-visibility-stream"))
+        self.assertTrue(audit([p,q],"notice_modality")["comparison_complete"])
+        self.write("second-result.json",dict(first,notice_kind="observed_vehicle",max_right_shift_m=2))
+        with self.assertRaisesRegex(ValueError,"held motion"):
+            audit([p,q],"notice_modality")
 
 if __name__ == "__main__": unittest.main()
