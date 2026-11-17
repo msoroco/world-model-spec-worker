@@ -1,4 +1,4 @@
-"""Bind Update053 above-boundary saved receipts to the selected manifest."""
+"""Bind Update053 remaining long primary saved receipts to the selected manifest."""
 import hashlib
 import json
 from pathlib import Path
@@ -6,8 +6,13 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
-ITEMS = {'tour_bus_above': 36122, 'shuttle_bus_above': 36122,
-         'limo_above': 36122}
+ITEMS = {
+    'tour_bus_above': 36122, 'shuttle_bus_above': 36122,
+    'limo_above': 36122, 'rtc_bus_above': 36122,
+    'tour_bus_no_loading': 36121, 'shuttle_bus_no_loading': 36121,
+    'limo_no_loading': 36121, 'rtc_bus_at': 36121,
+    'rtc_bus_no_loading': 36121,
+}
 
 
 def read(path):
