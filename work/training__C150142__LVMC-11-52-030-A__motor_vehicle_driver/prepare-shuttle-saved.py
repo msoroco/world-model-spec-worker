@@ -39,10 +39,15 @@ def prepare(case, candidate, attempt, media_from, manifest_override=None):
     if attempt.exists():
         raise ValueError('Use a fresh acquisition directory')
     manifest = Path(manifest_override).resolve() if manifest_override else MANIFESTS[service]
-    if manifest_override and (service != 'limo' or manifest != ROOT / 'execution-manifest-diagnostic-limo_below-draft-v2.json'):
-        raise ValueError('Only the corrected limousine draft manifest is supported')
+    if manifest_override and manifest.parent != ROOT:
+        raise ValueError('Selected manifest must belong to this assignment')
     materialize(manifest, ROOT.name + '__' + case, attempt, candidate)
     SOURCE.source_rows(attempt)
+    graph_spec = importlib.util.spec_from_file_location(
+        'long_native_diagnostic', ROOT / 'build-tour-bus-native-diagnostic.py')
+    graph_module = importlib.util.module_from_spec(graph_spec)
+    graph_spec.loader.exec_module(graph_module)
+    graph_module.build(attempt)
     expected = json.loads((attempt / 'config.json').read_text())['capture_frames']
     actual = json.loads((media_from / 'config.json').read_text())['capture_frames']
     if expected != actual:

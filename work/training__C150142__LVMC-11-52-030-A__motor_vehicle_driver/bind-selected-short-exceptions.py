@@ -3,6 +3,7 @@
 This only selects diagnostic inputs. It does not assert delivery readiness or
 carry pilot receipts across the changed manifest.
 """
+import argparse
 import json
 from pathlib import Path
 
@@ -22,6 +23,9 @@ SLUGS = (
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--output', type=Path)
+    args = parser.parse_args()
     path = ROOT / 'execution-manifest.json'
     manifest = json.loads(path.read_text())
     entries = {entry['case_id']: entry for entry in manifest['cases']}
@@ -41,7 +45,10 @@ def main():
         entry['fixture_recipe'] = str(recipe)
     manifest['status'] = 'selected_short_exception_cpu_proofs_pending'
     manifest['delivery_ready'] = False
-    path.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + '\n')
+    output = args.output.resolve() if args.output else path
+    if output.parent != ROOT:
+        raise ValueError('Output manifest must remain in the assignment directory')
+    output.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + '\n')
     print(json.dumps({'bound_cases': len(SLUGS), 'delivery_ready': False}))
 
 

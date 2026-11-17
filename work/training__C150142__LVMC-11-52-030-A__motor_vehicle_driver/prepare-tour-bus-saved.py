@@ -41,6 +41,11 @@ def prepare(attempt, *, case='tour_bus_below', candidate='primary',
     source = importlib.util.module_from_spec(module)
     module.loader.exec_module(source)
     source.source_rows(attempt)
+    graph_spec = importlib.util.spec_from_file_location(
+        'tour_bus_native_diagnostic', ROOT / 'build-tour-bus-native-diagnostic.py')
+    graph_module = importlib.util.module_from_spec(graph_spec)
+    graph_spec.loader.exec_module(graph_module)
+    graph_module.build(attempt)
     frames = json.loads((attempt / 'config.json').read_text())['capture_frames']
     if reuse_media_from is not None:
         reuse_media_from = Path(reuse_media_from).resolve()

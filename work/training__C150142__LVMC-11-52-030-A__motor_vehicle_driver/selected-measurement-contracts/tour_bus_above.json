@@ -1,0 +1,27 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_above",
+  "requirements": [
+    {
+      "source": "inputs/coverage/branch-sources.json",
+      "disposition_index": 4,
+      "requirement": "text-4",
+      "output_key": "signed_curb_observation",
+      "method": "signed_context",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native-raw-actors.jsonl",
+        "native-map-readback.json",
+        "native-passenger-actors.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "native-passenger-actors.jsonl"
+    ],
+    "error_contains": "Missing required source: native-passenger-actors.jsonl"
+  },
+  "scope": "Measured synthetic curb duration, source-bound sign and passenger activity; actual service identity, boarding, physical acceptance and legal verdict unverified"
+}
