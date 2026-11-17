@@ -142,4 +142,22 @@ class NativePairTests(unittest.TestCase):
         self.assertEqual(separated['probe']['primary_variable'],
                          'ego_hold_after_clear_frames')
 
+    def test_judgment_sweeps_keep_the_selected_stop_sign_and_yield_axis(self):
+        proposal=json.loads((ROOT/'proposals/cases.json').read_text())
+        sweeps={item['sweep_id']:item for item in proposal['sweep_specs']}
+        self.assertEqual(len(sweeps),4)
+        for sweep in sweeps.values():
+            values=sweep['variable_assignments']
+            self.assertEqual(values['native_stop_sign_id']['value'],17)
+            self.assertEqual(values['official_device_status']['value'],
+                             'stop sign commanded; official status unverified')
+            self.assertEqual(sweep['status'],'incomplete')
+        yield_sweep=sweeps['c125745-2']
+        self.assertEqual(yield_sweep['axes'][0]['variable'],
+                         'ego_hold_after_clear_frames')
+        self.assertEqual([yield_sweep['axes'][0][key] for key in
+                          ('min','max','spacing')],[0,16,8])
+        self.assertEqual({item['value'] for item in yield_sweep['landmarks']},
+                         {0,8})
+
 if __name__=='__main__':unittest.main()

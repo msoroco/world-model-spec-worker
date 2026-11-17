@@ -26,6 +26,33 @@ def vehicle(x,y,road):
             "body_vertices_xy_m":[[x+dx,y+dy] for dx,dy in ((-1,-1),(-1,1),(1,1),(1,-1))]}
 
 
+def kinetic_rows(release_frame, ego_hold_after_clear_frames=0):
+    """CPU-only command-to-body surrogate; frame 80 is measured conflict clear."""
+    carla=NS(VehicleControl=lambda:NS())
+    ego,other=Actor(8,0,speed=.05),Actor(15,-15,speed=0)
+    progress={'ego':1,'other':1};stopped=False;rows=[]
+    for i in range(135):
+        progress,stopped,commands=step_pair(
+            carla,ego,other,scene(),progress,stopped,
+            i>=80+ego_hold_after_clear_frames,i>=release_frame)
+        for role,actor in (('ego',ego),('other',other)):
+            command=commands[role]
+            speed=math.hypot(actor.velocity.x,actor.velocity.y)
+            speed=max(0,min(5,speed+1.5*command['throttle']
+                            -2*command['brake']))
+            if role=='ego':
+                actor.velocity.x=speed
+                actor.pose.location.x+=speed*.05
+            else:
+                actor.velocity.y=speed
+                actor.pose.location.y+=speed*.05
+        rows.append({'frame':1000+i,'time_s':i*.05,
+                     'governing_stop_sign_id':17,
+                     'ego':vehicle(ego.pose.location.x,0,1),
+                     'other':vehicle(15,other.pose.location.y,2)})
+    return rows
+
+
 class EntryTests(unittest.TestCase):
     def test_native_stop_sign_governs_approach(self):
         class Actors(list):
@@ -99,30 +126,9 @@ class EntryTests(unittest.TestCase):
     def test_exact_release_setpoints_feed_original_shaped_entry_measurement(self):
         # A simple kinetic CPU surrogate checks the control-to-source wiring.
         # It is deliberately not a claim about CARLA vehicle dynamics.
-        carla=NS(VehicleControl=lambda:NS())
         observed=[]
         for release_frame in (32,40,48):
-            ego,other=Actor(8,0,speed=.05),Actor(15,-15,speed=0)
-            progress={'ego':1,'other':1};stopped=False;rows=[]
-            for i in range(135):
-                progress,stopped,commands=step_pair(
-                    carla,ego,other,scene(),progress,stopped,i>=80,
-                    i>=release_frame)
-                for role,actor in (('ego',ego),('other',other)):
-                    command=commands[role]
-                    speed=math.hypot(actor.velocity.x,actor.velocity.y)
-                    speed=max(0,min(5,speed+1.5*command['throttle']
-                                    -2*command['brake']))
-                    if role=='ego':
-                        actor.velocity.x=speed
-                        actor.pose.location.x+=speed*.05
-                    else:
-                        actor.velocity.y=speed
-                        actor.pose.location.y+=speed*.05
-                rows.append({'frame':1000+i,'time_s':i*.05,
-                             'governing_stop_sign_id':17,
-                             'ego':vehicle(ego.pose.location.x,0,1),
-                             'other':vehicle(15,other.pose.location.y,2)})
+            rows=kinetic_rows(release_frame)
             with tempfile.TemporaryDirectory() as tmp:
                 root=Path(tmp);self.fixture(root)
                 context=json.loads((root/'junction_context.json').read_text())
@@ -141,6 +147,28 @@ class EntryTests(unittest.TestCase):
                                  result['first_body_entry']['other']['frame']))
         self.assertEqual(observed,[(32,1087,1079),(40,1087,1087),
                                    (48,1087,1095)])
+
+    def test_post_clear_ego_hold_moves_original_shaped_entry(self):
+        observed=[]
+        for hold in (0,8,16):
+            rows=kinetic_rows(40,hold)
+            with tempfile.TemporaryDirectory() as tmp:
+                root=Path(tmp);self.fixture(root)
+                context=json.loads((root/'junction_context.json').read_text())
+                context['intersection_polygon_xy_m']=scene()['crossing_polygon_xy_m']
+                (root/'junction_context.json').write_text(json.dumps(context))
+                frames=[{'video_frame':i,'carla_frame':row['frame'],
+                         'time_s':row['time_s']} for i,row in enumerate(rows)]
+                (root/'crossing_history.jsonl').write_text(
+                    ''.join(json.dumps(row)+'\n' for row in rows))
+                (root/'video_frames.jsonl').write_text(
+                    ''.join(json.dumps(row)+'\n' for row in frames))
+                report=measure.analyze(root)
+                self.assertEqual(report['legal_conclusion'],'unresolved')
+                observed.append((hold,report['first_body_entry']['ego']['frame'],
+                                 report['first_body_entry']['other']['frame']))
+        self.assertEqual(observed,[(0,1087,1087),(8,1095,1087),
+                                   (16,1103,1087)])
 
     def test_wrong_sign_and_stale_frame_rejected(self):
         with tempfile.TemporaryDirectory() as tmp:

@@ -482,7 +482,7 @@
         },
         "official_device_status": {
           "kind": "world_setup",
-          "value": "Off commanded; physical state unverified",
+          "value": "stop sign commanded; official status unverified",
           "unit": "categorical"
         },
         "other_approach_relation": {
@@ -502,8 +502,8 @@
         },
         "native_stop_sign_id": {
           "kind": "world_setup",
-          "value": "all_Off",
-          "unit": "categorical"
+          "value": 17,
+          "unit": "Native actor id"
         },
         "ego_hold_after_clear_frames": {
           "kind": "controller",
@@ -549,9 +549,43 @@
       ],
       "status": "incomplete",
       "mode": "one_dimensional",
-      "axes": [],
-      "landmarks": [],
-      "rationale": "C125745 stop-sign synthetic diagnostics do not resolve this legal judgment; physical source and independent review inputs are required.",
+      "axes": [
+        {
+          "variable": "ego_hold_after_clear_frames",
+          "observable": "ego_first_body_entry_frame",
+          "unit": "frame",
+          "min": 0,
+          "max": 16,
+          "spacing": 8,
+          "measurement": {
+            "method": "first complete ego-body polygon entry in crossing_history.jsonl joined to video_frames.jsonl; retain original controller stop and conflict-clear rows",
+            "time_window": "entire 20 Hz capture",
+            "statistic": "first"
+          },
+          "range_rationale": "The exact near-time primary has zero post-clear hold and the exact separated primary has eight frames; 16 frames extends the same executable controller hold. No delay is a legal yield threshold.",
+          "spacing_rationale": "Eight 20 Hz frames give 0.4-second commanded spacing and include both exact primary settings.",
+          "feasibility_evidence": "third-runner.py applies ego_hold_after_clear_frames after first original conflict-clear observation; tests/test_third_case.py and tests/test_native_pair.py bind the eight-frame exact construction; finalizer.py measures original stop and conflict rows."
+        }
+      ],
+      "landmarks": [
+        {
+          "name": "near_time_zero_post_clear_hold",
+          "value": 0,
+          "unit": "frame",
+          "source": "construction.json config.json",
+          "verification_evidence": "tests/test_native_pair.py test_canonical_cases_bind_exact_release_and_clear_hold_controls",
+          "purpose": "coverage_landmark"
+        },
+        {
+          "name": "separated_eight_frame_post_clear_hold",
+          "value": 8,
+          "unit": "frame",
+          "source": "third-construction.json config.json",
+          "verification_evidence": "tests/test_third_case.py test_separated_original_entry_measurement_and_hold_construction",
+          "purpose": "coverage_landmark"
+        }
+      ],
+      "rationale": "Fixed controller hold sweep measures original ego body-entry frame with recorded stop and conflict-control context. The observed motion remains separate from any legal yield judgment.",
       "variable_assignments": {
         "other_release_frame": {
           "kind": "controller",
@@ -565,7 +599,7 @@
         },
         "official_device_status": {
           "kind": "world_setup",
-          "value": "Off commanded; physical state unverified",
+          "value": "stop sign commanded; official status unverified",
           "unit": "categorical"
         },
         "other_approach_relation": {
@@ -585,8 +619,8 @@
         },
         "native_stop_sign_id": {
           "kind": "world_setup",
-          "value": "all_Off",
-          "unit": "categorical"
+          "value": 17,
+          "unit": "Native actor id"
         },
         "ego_hold_after_clear_frames": {
           "kind": "controller",
@@ -618,7 +652,7 @@
         ]
       },
       "missing_inputs": [
-        "Source-reviewed crossing, actual Native motion and original camera evidence for yield the right-of-way"
+        "Exact expanded 0/8/16-frame sweep delivery cases and source-bound compatibility, recorded-only saved-processing and independent audit proofs are not yet authored."
       ]
     },
     {
@@ -648,7 +682,7 @@
         },
         "official_device_status": {
           "kind": "world_setup",
-          "value": "Off commanded; physical state unverified",
+          "value": "stop sign commanded; official status unverified",
           "unit": "categorical"
         },
         "other_approach_relation": {
@@ -668,8 +702,8 @@
         },
         "native_stop_sign_id": {
           "kind": "world_setup",
-          "value": "all_Off",
-          "unit": "categorical"
+          "value": 17,
+          "unit": "Native actor id"
         },
         "ego_hold_after_clear_frames": {
           "kind": "controller",
@@ -731,7 +765,7 @@
         },
         "official_device_status": {
           "kind": "world_setup",
-          "value": "Off commanded; physical state unverified",
+          "value": "stop sign commanded; official status unverified",
           "unit": "categorical"
         },
         "other_approach_relation": {
@@ -751,8 +785,8 @@
         },
         "native_stop_sign_id": {
           "kind": "world_setup",
-          "value": "all_Off",
-          "unit": "categorical"
+          "value": 17,
+          "unit": "Native actor id"
         },
         "ego_hold_after_clear_frames": {
           "kind": "controller",
