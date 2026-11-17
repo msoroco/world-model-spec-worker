@@ -1,0 +1,95 @@
+{
+  "status": "draft",
+  "cell_id": "C179789",
+  "actor": "motor_vehicle_driver",
+  "cases": [
+    {
+      "case_id": "heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__observed_gives_way_holds_speed",
+      "target_law_id": "NRS-484B-207-2",
+      "target_type": "boundary_probe",
+      "rationale": "First source-bound overtaken response and speed-history primary; legal observation and permission unresolved",
+      "variable_assignments": {
+        "ego_right_shift_target_m": {
+          "kind": "controller",
+          "value": 1.0
+        },
+        "overtaker_speed_target_mps": {
+          "kind": "controller",
+          "value": 8.0
+        },
+        "actual_observation": {
+          "kind": "world_setup",
+          "value": null
+        },
+        "horn_command_requested": {
+          "kind": "controller",
+          "value": false
+        },
+        "full_body_pass_completion": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "ego_precompletion_speed_target_mps": {
+          "kind": "controller",
+          "value": 4.0
+        },
+        "ego_postcompletion_speed_target_mps": {
+          "kind": "controller",
+          "value": 4.0
+        },
+        "right_pass_survey_basis": {
+          "kind": "world_setup",
+          "value": null
+        },
+        "right_pass_permission": {
+          "kind": "world_setup",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "give way to the right",
+        "upon observing the overtaking vehicle",
+        "hearing a signal",
+        "completely passed by the overtaking vehicle",
+        "overtaking and passing on the right is permitted"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "subject_right_offset_m",
+            "unit": "m",
+            "method": "original actor pose against Native road tangent",
+            "sampling_rate_hz": 20,
+            "time_window": "notice through pass completion",
+            "reference_frame": "road tangent",
+            "uncertainty": "Native pose and waypoint precision"
+          },
+          {
+            "name": "subject_speed_mps",
+            "unit": "m/s",
+            "method": "original actor velocity",
+            "sampling_rate_hz": 20,
+            "time_window": "entire capture",
+            "reference_frame": "world",
+            "uncertainty": "Native actor velocity precision"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Original collision rays are a simulated line-of-sight proxy; human observation, right-pass permission, physical outcome and legal outcome remain unverified."
+        ]
+      },
+      "paired_probe_id": "C179789_observed_gives_way_holds_speed",
+      "deliberate_differences": [
+        "ego_right_shift_target_m"
+      ],
+      "probe": {
+        "primary_variable": "ego_right_shift_target_m",
+        "comparison_or_standard": "Matched source-bound case in case-plan.json; no statutory numeric cutoff",
+        "target_value_or_branch": 1.0
+      }
+    }
+  ],
+  "sweep_specs": [],
+  "sweeps_expanded": false
+}
