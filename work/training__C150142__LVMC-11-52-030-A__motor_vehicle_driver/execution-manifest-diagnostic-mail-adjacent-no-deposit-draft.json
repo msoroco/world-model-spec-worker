@@ -1,0 +1,66 @@
+{
+  "format": "worker-execution-manifest-diagnostic-draft",
+  "assignment_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver",
+  "status": "draft_selected_cpu",
+  "cases": [
+    {
+      "case_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__mail_adjacent_no_deposit",
+      "kind": "delivery",
+      "construction": "selected-primary/mail_adjacent_no_deposit/construction.json",
+      "construction_sha256": "3f3353af2b10d1ff9d7e06e24ce8bc6ea8dd43f32a8d08f1f790ad81a4823f8f",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Ordinary vehicle may overshoot red paint; overview may hide its body or authored U.S. mail box; unexpected walker or parcel would invalidate no-deposit probe"
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize_selected.py",
+        "output_schema": "c150142-red-curb-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-fallbacks/mail_adjacent_no_deposit/fallback1/construction.json",
+          "construction_sha256": "52781be6198bb355e53c84d74e07e93c588bfc5b0bd2d3ef08d5cd4303cf495c",
+          "trigger": {
+            "source": "retained Native ordinary vehicle body and red paint extent",
+            "metric": "longitudinal stop overshoot in meters",
+            "failure_condition": "Observed ordinary vehicle body overshoots the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-fallbacks/mail_adjacent_no_deposit/fallback2/construction.json",
+          "construction_sha256": "f0cf6009042985efdbac440621b7f1e857a400b195f4955de82789e459cb6310",
+          "trigger": {
+            "source": "decoded overview and retained Native signal readback",
+            "metric": "visible red curb and complete ordinary vehicle body",
+            "failure_condition": "Overview obscures red paint or complete ordinary vehicle body"
+          },
+          "changed_knobs": [
+            "camera_policy",
+            "overview camera elevation"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-fallbacks/mail_adjacent_no_deposit/fallback3/construction.json",
+          "construction_sha256": "04d5287b22d9b8a874957ecd49b871cfd6396d7bcc65f855353b919dc2096bd1",
+          "trigger": {
+            "source": "retained Native ordinary vehicle body and red paint extent",
+            "metric": "longitudinal stop undershoot in meters",
+            "failure_condition": "Observed ordinary vehicle body stops short of the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ]
+        }
+      ]
+    }
+  ],
+  "runtime_manifest_sha256": "ae635d487ae988b67925bacd5ba13210f31224fc6a1ae131d1836a5557ba8714"
+}
