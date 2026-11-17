@@ -116,10 +116,13 @@ def verify_native_signal_governance(site, governed_lights):
 
 
 def verify_native_approach_routes(world, carla, site):
-    """Read back the reviewed map and both route starts before Native capture."""
+    """Read back the reviewed map, route starts and common junction."""
     native_map = world.get_map()
     if not isinstance(site.get("native_map_name"), str) or native_map.name != site["native_map_name"]:
         raise ValueError("Native map differs from reviewed opposite-turn site")
+    junction_id = site.get("native_junction_id")
+    if type(junction_id) is not int or junction_id <= 0:
+        raise ValueError("Reviewed Native opposite-turn junction required")
     routes = site.get("routes")
     lanes = site.get("expected_approach_lanes")
     if not isinstance(routes, dict) or set(routes) != {"ego", "other"} or not isinstance(lanes, dict) or set(lanes) != {"ego", "other"}:
@@ -128,15 +131,21 @@ def verify_native_approach_routes(world, carla, site):
     for role in ("ego", "other"):
         route, lane = routes[role], lanes[role]
         if (not isinstance(route, list) or len(route) < 2 or
-                not isinstance(route[0], list) or len(route[0]) != 2 or
-                any(type(value) not in (int, float) or not math.isfinite(value) for value in route[0]) or
+                any(not isinstance(point, list) or len(point) != 2 or
+                    any(type(value) not in (int, float) or not math.isfinite(value) for value in point)
+                    for point in route) or
                 not isinstance(lane, list) or len(lane) != 2 or
                 any(type(value) is not int for value in lane)):
             raise ValueError("Sourced opposite-turn route start and lane required: " + role)
-        waypoint = native_map.get_waypoint(
-            carla.Location(x=route[0][0], y=route[0][1], z=0.0), project_to_road=False)
+        waypoints = [native_map.get_waypoint(
+            carla.Location(x=point[0], y=point[1], z=0.0), project_to_road=False)
+            for point in route]
+        waypoint = waypoints[0]
         if waypoint is None or [int(waypoint.road_id), int(waypoint.lane_id)] != lane or waypoint.is_junction:
             raise ValueError("Native route start differs from reviewed approach lane: " + role)
+        if not any(point is not None and point.is_junction and
+                   int(point.get_junction().id) == junction_id for point in waypoints[1:]):
+            raise ValueError("Native route does not enter reviewed junction: " + role)
         found[role] = lane
     if found["ego"] == found["other"]:
         raise ValueError("Distinct opposite-turn approach lanes required")
@@ -228,6 +237,14 @@ def capture_candidate_media(output_dir, world, carla, site, turning_role,
         reviewed = verify_opposite_site_packet(config, root)
         if reviewed["diagnostic_only"]:
             raise ValueError("Diagnostic opposite-turn site cannot enter Native capture")
+        try:
+            live_map_export = world.get_map().to_opendrive()
+        except (AttributeError, TypeError, RuntimeError) as error:
+            raise ValueError("Original Native map export readback unavailable") from error
+        if (not isinstance(live_map_export, str) or
+                hashlib.sha256(live_map_export.encode("utf-8")).hexdigest() !=
+                reviewed["native_map_sha256"]):
+            raise ValueError("Original Native map export differs from reviewed site")
         verify_native_approach_routes(world, carla, site)
         verify_native_signal_governance(site, governed_lights)
         generated = {"capture", "road_geometry.json", "turn_route_context.json",

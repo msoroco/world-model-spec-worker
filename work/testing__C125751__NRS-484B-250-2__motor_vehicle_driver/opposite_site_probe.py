@@ -230,8 +230,24 @@ def verify_opposite_site_packet(config, base_dir):
                 type(document.get("diagnostic_only")) is not bool):
             raise ValueError("Opposite-turn source identity/content invalid: " + kind)
         diagnostic_only = diagnostic_only or document["diagnostic_only"]
+    map_sha256 = None
+    if not diagnostic_only:
+        map_ref = packet.get("native_map_export")
+        if not isinstance(map_ref, dict) or set(map_ref) != {"path", "sha256"}:
+            raise ValueError("Hashed original Native map export required")
+        map_path = Path(map_ref["path"])
+        if not map_path.is_absolute():
+            map_path = packet_path.parent / map_path
+        if not map_path.resolve().is_relative_to(Path(base_dir).resolve()):
+            raise ValueError("Original Native map export required inside attempt")
+        if not map_path.is_file() or _sha(map_path) != map_ref["sha256"]:
+            raise ValueError("Original Native map export missing or changed")
+        if not map_path.read_bytes().strip():
+            raise ValueError("Original Native map export empty")
+        map_sha256 = map_ref["sha256"]
     return {"packet_path": str(packet_path), "packet_sha256": reference["sha256"],
-            "diagnostic_only": diagnostic_only, "physical_site_verified": False,
+            "diagnostic_only": diagnostic_only, "native_map_sha256": map_sha256,
+            "physical_site_verified": False,
             "official_device_status_verified": False}
 
 def audit_opposite_candidate(attempt, analysis_path):

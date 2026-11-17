@@ -67,6 +67,11 @@ def write_opposite_site_packet(root, candidate, diagnostic_only=False):
     packet = {"format": "worker-c125751-opposite-site-review-v1",
               "review_status": "candidate_reviewed", "site": candidate,
               "source_documents": references}
+    if not diagnostic_only:
+        map_path = root / "native-map.xodr"
+        map_path.write_text("<OpenDRIVE><header name='SyntheticTown'/></OpenDRIVE>\n")
+        packet["native_map_export"] = {"path": map_path.name,
+                                       "sha256": hashlib.sha256(map_path.read_bytes()).hexdigest()}
     (root / "opposite-site-review.json").write_text(json.dumps(packet) + "\n")
     return {"path": "opposite-site-review.json",
             "sha256": hashlib.sha256((root / "opposite-site-review.json").read_bytes()).hexdigest()}
@@ -120,20 +125,26 @@ class World:
     def get_map(self):
         return self
 
+    def to_opendrive(self):
+        return "<OpenDRIVE><header name='SyntheticTown'/></OpenDRIVE>\n"
+
     def get_waypoint(self, actor, project_to_road):
         if isinstance(actor, dict):
+            inside = actor["x"] == 0
             return SimpleNamespace(road_id=11, lane_id=-1 if actor["x"] < 0 else 1,
-                                   is_junction=False)
+                                   is_junction=inside,
+                                   get_junction=lambda: SimpleNamespace(id=77))
         return SimpleNamespace(road_id=actor.lane[0], lane_id=actor.lane[1],
                                is_junction=False)
 
 
 class OppositeTurnConstructionTest(unittest.TestCase):
     def test_native_route_starts_match_reviewed_map_and_lanes(self):
-        candidate = dict(site(), native_map_name="reviewed_map")
+        candidate = dict(site(), native_map_name="reviewed_map", native_junction_id=77)
         native_map = SimpleNamespace(name="reviewed_map")
         native_map.get_waypoint = lambda point, project_to_road: SimpleNamespace(
-            road_id=11, lane_id=-1 if point.x < 0 else 1, is_junction=False)
+            road_id=11, lane_id=-1 if point.x < 0 else 1, is_junction=point.x == 0,
+            get_junction=lambda: SimpleNamespace(id=77))
         world = SimpleNamespace(get_map=lambda: native_map)
         carla = SimpleNamespace(Location=lambda **values: SimpleNamespace(**values))
         self.assertEqual(runner.verify_native_approach_routes(world, carla, candidate),
@@ -143,8 +154,17 @@ class OppositeTurnConstructionTest(unittest.TestCase):
             runner.verify_native_approach_routes(world, carla, candidate)
         native_map.name = "reviewed_map"
         native_map.get_waypoint = lambda point, project_to_road: SimpleNamespace(
-            road_id=11, lane_id=-1, is_junction=False)
+            road_id=11, lane_id=1, is_junction=False)
         with self.assertRaisesRegex(ValueError, "route start differs"):
+            runner.verify_native_approach_routes(world, carla, candidate)
+        native_map.get_waypoint = lambda point, project_to_road: SimpleNamespace(
+            road_id=11, lane_id=-1 if point.x < 0 else 1, is_junction=False)
+        with self.assertRaisesRegex(ValueError, "does not enter reviewed junction"):
+            runner.verify_native_approach_routes(world, carla, candidate)
+        native_map.get_waypoint = lambda point, project_to_road: SimpleNamespace(
+            road_id=11, lane_id=-1 if point.x < 0 else 1, is_junction=point.x == 0,
+            get_junction=lambda: SimpleNamespace(id=78))
+        with self.assertRaisesRegex(ValueError, "does not enter reviewed junction"):
             runner.verify_native_approach_routes(world, carla, candidate)
 
     def test_native_signal_governance_requires_original_lane_readback(self):
@@ -523,6 +543,16 @@ class OppositeTurnConstructionTest(unittest.TestCase):
                 "release_frames": {"ego": 1, "other": 2},
                 "target_speeds_mps": {"ego": 5., "other": 5.},
                 "frames": 3}) + "\n")
+            world.to_opendrive = lambda: "<OpenDRIVE><header name='different'/></OpenDRIVE>\n"
+            with self.assertRaisesRegex(ValueError, "map export differs"):
+                runner.capture_candidate_media(
+                    Path(temp), world, carla, value, "ego",
+                    {"ego": "car", "other": "car"},
+                    {"ego": "pose1", "other": "pose2"},
+                    {"ego": 1, "other": 2}, {"ego": 5., "other": 5.}, 3,
+                    governed_lights=lights, client=client,
+                    original_capture_factory=OriginalCapture)
+            del world.to_opendrive
             with patch.object(runner, "source_cameras", cameras), patch.object(runner, "FFV1Writer", Writer):
                 receipt = runner.capture_candidate_media(
                     Path(temp), world, carla, value, "ego",
