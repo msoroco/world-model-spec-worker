@@ -31,6 +31,19 @@ def rows(path):
     return [json.loads(line) for line in Path(path).read_text().splitlines() if line.strip()]
 
 
+def decoded_frame_count(path):
+    probe = subprocess.run(
+        ["ffprobe", "-v", "error", "-select_streams", "v:0", "-count_frames",
+         "-show_entries", "stream=nb_read_frames", "-of", "json", str(path)],
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=60,
+    )
+    require(probe.returncode == 0, "Original camera frame probe failed: " + path.name)
+    streams = json.loads(probe.stdout).get("streams", [])
+    require(len(streams) == 1 and str(streams[0].get("nb_read_frames", "")).isdigit(),
+            "Original camera frame count absent: " + path.name)
+    return int(streams[0]["nb_read_frames"])
+
+
 def nearest(corners, line):
     require(isinstance(line, list) and len(line) == 2, "Original left-curb line missing")
     a, z = line
@@ -93,9 +106,11 @@ def audit(case_id, attempt, processed, manifest):
         video = root / (name + ".mkv")
         decoded = subprocess.run(["ffmpeg", "-v", "error", "-i", str(video), "-f", "null", "-"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=60)
         require(decoded.returncode == 0, "Original camera decode failed: " + name)
+        require(decoded_frame_count(video) == len(frames), "Original camera video/frame-map count differs: " + name)
     require(saved.get("physical_acceptance_claimed") is False and saved.get("legal_acceptance_claimed") is False, "Diagnostic claims physical or legal acceptance")
     return {"format": "worker-oneway-curb-delivery-audit", "case_id": case_id,
             "source_sha256": hashes, "frames": len(frames), "four_original_cameras_decoded": True,
+            "four_original_camera_frame_counts": {name: len(frames) for name in CAMERAS},
             "approach_left_curb_nearest_m": min(measured["approach"]),
             "departure_left_curb_nearest_m": min(measured["leaving_intersection"]),
             "saved_processing_sha256": digest(versions[0]),
