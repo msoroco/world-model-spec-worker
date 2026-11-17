@@ -90,7 +90,7 @@ class OnewayTurnTests(unittest.TestCase):
   for case in sweep_cases:
    ident=case["case_id"]
    expected={"approach":case["variable_assignments"]["approach_left_curb_setpoint_m"]["value"],"departure":case["variable_assignments"]["departure_left_curb_setpoint_m"]["value"]}
-   config={"case_branch":ident,"selected_case_id":ident,"law_id":"NRS-484B-400-5","cell_id":"C152972","frames":160,"duration_s":8,"source_geometry_sha256":hashlib.sha256(geometry.read_bytes()).hexdigest(),"curb_offsets_m":expected,"vehicle_blueprint_id":"vehicle.tesla.model3"}
+   config={"case_branch":ident.rsplit("__",1)[-1],"selected_case_id":ident,"law_id":"NRS-484B-400-5","cell_id":"C152972","frames":160,"duration_s":8,"source_geometry_sha256":hashlib.sha256(geometry.read_bytes()).hexdigest(),"curb_offsets_m":expected,"vehicle_blueprint_id":"vehicle.tesla.model3"}
    route=check_native_config(config,geometry)
    self.assertEqual(route["approach"]["left_curb_offset_setpoint_m"],expected["approach"])
    self.assertEqual(route["departure"]["left_curb_offset_setpoint_m"],expected["departure"])

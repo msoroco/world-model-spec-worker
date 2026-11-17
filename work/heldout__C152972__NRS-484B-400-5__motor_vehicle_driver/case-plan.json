@@ -378,6 +378,558 @@
         "log": "candidate-analysis-empty.log",
         "negative_log": "third-primary-negative.log"
       }
+    },
+    {
+      "case_id": "heldout__C152972__NRS-484B-400-5__motor_vehicle_driver__C152972-approach-curb-coverage-0000",
+      "target_law_id": "NRS-484B-400-5",
+      "branch": "C152972-approach-curb-coverage-0000",
+      "gap_ids": [
+        "uncovered-full-text"
+      ],
+      "construction_status": "exact_primary_and_three_risk_fallbacks_returned_offline_only",
+      "physical_risk": {
+        "risk": "Native body path may fail to realize the exact source or destination left-curb setpoint",
+        "trigger_source": "original map curb lines and ground body footprints",
+        "trigger_metric": "approach left-curb distance",
+        "failure_condition": "actual original body corners miss the selected curb sweep point"
+      },
+      "construction": "sweep-approach-0000-construction.json",
+      "construction_sha256": "fc2aa542d8dc6cf5881ac03e03b85dad1f0f5b4961df3c2e2b0c5fc73bd193fd",
+      "measurement_procedure": {
+        "entrypoint": "runner.py",
+        "args": [
+          "--attempt",
+          "{attempt}",
+          "--output",
+          "{analysis_report}"
+        ]
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native spawn, route waypoint and camera callback risks can prevent the exact fixed-curb sweep attempt"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "sweep-approach-0000-fallback1-construction.json",
+          "construction_sha256": "1a0b2ab2566fe1c5d692db8fe60ecb8f1b42452a2c6dbe65cd98acd8590bc727",
+          "trigger": {
+            "source": "original vehicle-spawn collision or insufficient ground clearance",
+            "metric": "Native spawn result",
+            "failure_condition": "vehicle fails to spawn or original body contacts the curb"
+          },
+          "changed_knobs": [
+            "z=.5 -> z=.65"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C152972__NRS-484B-400-5__motor_vehicle_driver/case-plan.json --case C152972-approach-curb-coverage-0000 --candidate fallback1 --output .runtime-work/c152972-case-plan-fallback-offline-20261117/C152972-approach-curb-coverage-0000-fallback1",
+            "exit_code": 0,
+            "log": "sweep-candidate-offline.log",
+            "log_sha256": "2ef47637a0f137af1467d5b1ffca6763fc357c04d8acac684b5fe199a6438d06",
+            "construction_sha256": "bc421cf63c043460f9eac6a3c82e52482580d69015b949e055b50cefcbf05430"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "sweep-approach-0000-fallback2-construction.json",
+          "construction_sha256": "ff1a145bdaf3a912bd8978cce253f42446e94c78cd3f966febb4a19d51cec1ba",
+          "trigger": {
+            "source": "route waypoint progress stalls near curb corner",
+            "metric": "original body waypoint-distance trace",
+            "failure_condition": "vehicle does not reach the next source route waypoint"
+          },
+          "changed_knobs": [
+            "distance<.75 -> distance<.95"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C152972__NRS-484B-400-5__motor_vehicle_driver/case-plan.json --case C152972-approach-curb-coverage-0000 --candidate fallback2 --output .runtime-work/c152972-case-plan-fallback-offline-20261117/C152972-approach-curb-coverage-0000-fallback2",
+            "exit_code": 0,
+            "log": "sweep-candidate-offline.log",
+            "log_sha256": "2ef47637a0f137af1467d5b1ffca6763fc357c04d8acac684b5fe199a6438d06",
+            "construction_sha256": "043e3c34fee1600edf9872c4dbba96434e9c88cb1ed01065811109dce8659937"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "sweep-approach-0000-fallback3-construction.json",
+          "construction_sha256": "b5ca40aba88bc23f158200192126d6b38a02762fa019268c5af5cc88275c4dd3",
+          "trigger": {
+            "source": "one original camera callback misses the 10 s synchronization window",
+            "metric": "original four-camera callback timing",
+            "failure_condition": "camera frame absent by the default synchronization deadline"
+          },
+          "changed_knobs": [
+            "timeout_s=10 -> timeout_s=15"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C152972__NRS-484B-400-5__motor_vehicle_driver/case-plan.json --case C152972-approach-curb-coverage-0000 --candidate fallback3 --output .runtime-work/c152972-case-plan-fallback-offline-20261117/C152972-approach-curb-coverage-0000-fallback3",
+            "exit_code": 0,
+            "log": "sweep-candidate-offline.log",
+            "log_sha256": "2ef47637a0f137af1467d5b1ffca6763fc357c04d8acac684b5fe199a6438d06",
+            "construction_sha256": "b15c99f36fc89fe4f6f37b0e4ca8d38f6d627300c5b89f2a481d64616359f7e9"
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "heldout__C152972__NRS-484B-400-5__motor_vehicle_driver__C152972-approach-curb-coverage-0001",
+      "target_law_id": "NRS-484B-400-5",
+      "branch": "C152972-approach-curb-coverage-0001",
+      "gap_ids": [
+        "uncovered-full-text"
+      ],
+      "construction_status": "exact_primary_and_three_risk_fallbacks_returned_offline_only",
+      "physical_risk": {
+        "risk": "Native body path may fail to realize the exact source or destination left-curb setpoint",
+        "trigger_source": "original map curb lines and ground body footprints",
+        "trigger_metric": "approach left-curb distance",
+        "failure_condition": "actual original body corners miss the selected curb sweep point"
+      },
+      "construction": "sweep-approach-0001-construction.json",
+      "construction_sha256": "320a1b906b84917d2ddc68b89dcd339afe5693cc5d80dd98f2c0abe9a692c9fd",
+      "measurement_procedure": {
+        "entrypoint": "runner.py",
+        "args": [
+          "--attempt",
+          "{attempt}",
+          "--output",
+          "{analysis_report}"
+        ]
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native spawn, route waypoint and camera callback risks can prevent the exact fixed-curb sweep attempt"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "sweep-approach-0001-fallback1-construction.json",
+          "construction_sha256": "4247c2cdf220d1f9e897cae38359b0fa62fbb91ee3cd68d5b0f4f533a1695dd4",
+          "trigger": {
+            "source": "original vehicle-spawn collision or insufficient ground clearance",
+            "metric": "Native spawn result",
+            "failure_condition": "vehicle fails to spawn or original body contacts the curb"
+          },
+          "changed_knobs": [
+            "z=.5 -> z=.65"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C152972__NRS-484B-400-5__motor_vehicle_driver/case-plan.json --case C152972-approach-curb-coverage-0001 --candidate fallback1 --output .runtime-work/c152972-case-plan-fallback-offline-20261117/C152972-approach-curb-coverage-0001-fallback1",
+            "exit_code": 0,
+            "log": "sweep-candidate-offline.log",
+            "log_sha256": "2ef47637a0f137af1467d5b1ffca6763fc357c04d8acac684b5fe199a6438d06",
+            "construction_sha256": "aff3320430dd3254ad22d37abfcb422d2e8c9f5640f8471bcda49f30d08ac97a"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "sweep-approach-0001-fallback2-construction.json",
+          "construction_sha256": "53114ac59e0905db6f7e95682a8448ed38ceea452b99fdd5bd02e94838e308ad",
+          "trigger": {
+            "source": "route waypoint progress stalls near curb corner",
+            "metric": "original body waypoint-distance trace",
+            "failure_condition": "vehicle does not reach the next source route waypoint"
+          },
+          "changed_knobs": [
+            "distance<.75 -> distance<.95"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C152972__NRS-484B-400-5__motor_vehicle_driver/case-plan.json --case C152972-approach-curb-coverage-0001 --candidate fallback2 --output .runtime-work/c152972-case-plan-fallback-offline-20261117/C152972-approach-curb-coverage-0001-fallback2",
+            "exit_code": 0,
+            "log": "sweep-candidate-offline.log",
+            "log_sha256": "2ef47637a0f137af1467d5b1ffca6763fc357c04d8acac684b5fe199a6438d06",
+            "construction_sha256": "fe429de3daf42692c0c4f0d07dd33617f31be022b9f286db32645c1991e38981"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "sweep-approach-0001-fallback3-construction.json",
+          "construction_sha256": "12de9bfde867e95b54db609fd7f608597cf4d2bc5bc7e9caaaee9a8770e17607",
+          "trigger": {
+            "source": "one original camera callback misses the 10 s synchronization window",
+            "metric": "original four-camera callback timing",
+            "failure_condition": "camera frame absent by the default synchronization deadline"
+          },
+          "changed_knobs": [
+            "timeout_s=10 -> timeout_s=15"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C152972__NRS-484B-400-5__motor_vehicle_driver/case-plan.json --case C152972-approach-curb-coverage-0001 --candidate fallback3 --output .runtime-work/c152972-case-plan-fallback-offline-20261117/C152972-approach-curb-coverage-0001-fallback3",
+            "exit_code": 0,
+            "log": "sweep-candidate-offline.log",
+            "log_sha256": "2ef47637a0f137af1467d5b1ffca6763fc357c04d8acac684b5fe199a6438d06",
+            "construction_sha256": "e1680a25f92439f7b7487d2dc0b6fe72817efc9325ffb4787eec7214da4626d0"
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "heldout__C152972__NRS-484B-400-5__motor_vehicle_driver__C152972-approach-curb-coverage-0002",
+      "target_law_id": "NRS-484B-400-5",
+      "branch": "C152972-approach-curb-coverage-0002",
+      "gap_ids": [
+        "uncovered-full-text"
+      ],
+      "construction_status": "exact_primary_and_three_risk_fallbacks_returned_offline_only",
+      "physical_risk": {
+        "risk": "Native body path may fail to realize the exact source or destination left-curb setpoint",
+        "trigger_source": "original map curb lines and ground body footprints",
+        "trigger_metric": "approach left-curb distance",
+        "failure_condition": "actual original body corners miss the selected curb sweep point"
+      },
+      "construction": "sweep-approach-0002-construction.json",
+      "construction_sha256": "cc1c286fc9e03e4dcdbe8a148d0376819784645f4d34d5f1f0e52532e38b7648",
+      "measurement_procedure": {
+        "entrypoint": "runner.py",
+        "args": [
+          "--attempt",
+          "{attempt}",
+          "--output",
+          "{analysis_report}"
+        ]
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native spawn, route waypoint and camera callback risks can prevent the exact fixed-curb sweep attempt"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "sweep-approach-0002-fallback1-construction.json",
+          "construction_sha256": "681a2b133c8374d99485c85dbd73bdefa7cf26fda0c53fd2ca753888066f403f",
+          "trigger": {
+            "source": "original vehicle-spawn collision or insufficient ground clearance",
+            "metric": "Native spawn result",
+            "failure_condition": "vehicle fails to spawn or original body contacts the curb"
+          },
+          "changed_knobs": [
+            "z=.5 -> z=.65"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C152972__NRS-484B-400-5__motor_vehicle_driver/case-plan.json --case C152972-approach-curb-coverage-0002 --candidate fallback1 --output .runtime-work/c152972-case-plan-fallback-offline-20261117/C152972-approach-curb-coverage-0002-fallback1",
+            "exit_code": 0,
+            "log": "sweep-candidate-offline.log",
+            "log_sha256": "2ef47637a0f137af1467d5b1ffca6763fc357c04d8acac684b5fe199a6438d06",
+            "construction_sha256": "350bac51d4c5175658bbdbedd5bbd0aaae398cf1fdff9eaffbedd32f8d3f6f75"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "sweep-approach-0002-fallback2-construction.json",
+          "construction_sha256": "cb503a8cdca0e360116a48c485a488a4eacaed2e94dee2f139969164aa81b546",
+          "trigger": {
+            "source": "route waypoint progress stalls near curb corner",
+            "metric": "original body waypoint-distance trace",
+            "failure_condition": "vehicle does not reach the next source route waypoint"
+          },
+          "changed_knobs": [
+            "distance<.75 -> distance<.95"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C152972__NRS-484B-400-5__motor_vehicle_driver/case-plan.json --case C152972-approach-curb-coverage-0002 --candidate fallback2 --output .runtime-work/c152972-case-plan-fallback-offline-20261117/C152972-approach-curb-coverage-0002-fallback2",
+            "exit_code": 0,
+            "log": "sweep-candidate-offline.log",
+            "log_sha256": "2ef47637a0f137af1467d5b1ffca6763fc357c04d8acac684b5fe199a6438d06",
+            "construction_sha256": "b57d6022abd762cf66027239ae8be6f264c8c1c3e78fb44993d854e367208ebf"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "sweep-approach-0002-fallback3-construction.json",
+          "construction_sha256": "5ca1cdbea6a6d429cc82e24989b6971c02de9953bace769b1b71dd1706608ccc",
+          "trigger": {
+            "source": "one original camera callback misses the 10 s synchronization window",
+            "metric": "original four-camera callback timing",
+            "failure_condition": "camera frame absent by the default synchronization deadline"
+          },
+          "changed_knobs": [
+            "timeout_s=10 -> timeout_s=15"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C152972__NRS-484B-400-5__motor_vehicle_driver/case-plan.json --case C152972-approach-curb-coverage-0002 --candidate fallback3 --output .runtime-work/c152972-case-plan-fallback-offline-20261117/C152972-approach-curb-coverage-0002-fallback3",
+            "exit_code": 0,
+            "log": "sweep-candidate-offline.log",
+            "log_sha256": "2ef47637a0f137af1467d5b1ffca6763fc357c04d8acac684b5fe199a6438d06",
+            "construction_sha256": "d9cee9b0390d41642b047ed3f23bcc5bf1adba7b4948f68b4d4b00a79686d439"
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "heldout__C152972__NRS-484B-400-5__motor_vehicle_driver__C152972-departure-curb-coverage-0000",
+      "target_law_id": "NRS-484B-400-5",
+      "branch": "C152972-departure-curb-coverage-0000",
+      "gap_ids": [
+        "uncovered-full-text"
+      ],
+      "construction_status": "exact_primary_and_three_risk_fallbacks_returned_offline_only",
+      "physical_risk": {
+        "risk": "Native body path may fail to realize the exact source or destination left-curb setpoint",
+        "trigger_source": "original map curb lines and ground body footprints",
+        "trigger_metric": "departure left-curb distance",
+        "failure_condition": "actual original body corners miss the selected curb sweep point"
+      },
+      "construction": "sweep-departure-0000-construction.json",
+      "construction_sha256": "4c38da8adc9285ddcc5f5314c55408a6826d6f99734a06bd944b4db3ec273031",
+      "measurement_procedure": {
+        "entrypoint": "runner.py",
+        "args": [
+          "--attempt",
+          "{attempt}",
+          "--output",
+          "{analysis_report}"
+        ]
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native spawn, route waypoint and camera callback risks can prevent the exact fixed-curb sweep attempt"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "sweep-departure-0000-fallback1-construction.json",
+          "construction_sha256": "98868630249b9b09c8a7e4faa9d8ca52688388dd5168a98e00cbf266ee27e9e9",
+          "trigger": {
+            "source": "original vehicle-spawn collision or insufficient ground clearance",
+            "metric": "Native spawn result",
+            "failure_condition": "vehicle fails to spawn or original body contacts the curb"
+          },
+          "changed_knobs": [
+            "z=.5 -> z=.65"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C152972__NRS-484B-400-5__motor_vehicle_driver/case-plan.json --case C152972-departure-curb-coverage-0000 --candidate fallback1 --output .runtime-work/c152972-case-plan-fallback-offline-20261117/C152972-departure-curb-coverage-0000-fallback1",
+            "exit_code": 0,
+            "log": "sweep-candidate-offline.log",
+            "log_sha256": "2ef47637a0f137af1467d5b1ffca6763fc357c04d8acac684b5fe199a6438d06",
+            "construction_sha256": "8ca875894e43b2f569ce896862fd6025a4c6a1091c29f1df106dd196b147d60c"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "sweep-departure-0000-fallback2-construction.json",
+          "construction_sha256": "d65a7415fae111fb8e9eb6f2e1b09be8b1311886ccb45f62c1f56eaf6c482b9a",
+          "trigger": {
+            "source": "route waypoint progress stalls near curb corner",
+            "metric": "original body waypoint-distance trace",
+            "failure_condition": "vehicle does not reach the next source route waypoint"
+          },
+          "changed_knobs": [
+            "distance<.75 -> distance<.95"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C152972__NRS-484B-400-5__motor_vehicle_driver/case-plan.json --case C152972-departure-curb-coverage-0000 --candidate fallback2 --output .runtime-work/c152972-case-plan-fallback-offline-20261117/C152972-departure-curb-coverage-0000-fallback2",
+            "exit_code": 0,
+            "log": "sweep-candidate-offline.log",
+            "log_sha256": "2ef47637a0f137af1467d5b1ffca6763fc357c04d8acac684b5fe199a6438d06",
+            "construction_sha256": "51c1d3e843fe569b5435ebeaec736a074904eae478610129e0f27e506fbabf07"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "sweep-departure-0000-fallback3-construction.json",
+          "construction_sha256": "36db0b10d799d0480af8aa3f56c9895b37922e1e5c7c138ce8346a978f350da7",
+          "trigger": {
+            "source": "one original camera callback misses the 10 s synchronization window",
+            "metric": "original four-camera callback timing",
+            "failure_condition": "camera frame absent by the default synchronization deadline"
+          },
+          "changed_knobs": [
+            "timeout_s=10 -> timeout_s=15"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C152972__NRS-484B-400-5__motor_vehicle_driver/case-plan.json --case C152972-departure-curb-coverage-0000 --candidate fallback3 --output .runtime-work/c152972-case-plan-fallback-offline-20261117/C152972-departure-curb-coverage-0000-fallback3",
+            "exit_code": 0,
+            "log": "sweep-candidate-offline.log",
+            "log_sha256": "2ef47637a0f137af1467d5b1ffca6763fc357c04d8acac684b5fe199a6438d06",
+            "construction_sha256": "10dcba039b2cfb359b8ff8ff7e97065e48cc297cff23e3b0e1f254d426b15986"
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "heldout__C152972__NRS-484B-400-5__motor_vehicle_driver__C152972-departure-curb-coverage-0001",
+      "target_law_id": "NRS-484B-400-5",
+      "branch": "C152972-departure-curb-coverage-0001",
+      "gap_ids": [
+        "uncovered-full-text"
+      ],
+      "construction_status": "exact_primary_and_three_risk_fallbacks_returned_offline_only",
+      "physical_risk": {
+        "risk": "Native body path may fail to realize the exact source or destination left-curb setpoint",
+        "trigger_source": "original map curb lines and ground body footprints",
+        "trigger_metric": "departure left-curb distance",
+        "failure_condition": "actual original body corners miss the selected curb sweep point"
+      },
+      "construction": "sweep-departure-0001-construction.json",
+      "construction_sha256": "e44778477f7543d16bf10a8d2344efc4365f0682992882cb4a6872d7d3a5789c",
+      "measurement_procedure": {
+        "entrypoint": "runner.py",
+        "args": [
+          "--attempt",
+          "{attempt}",
+          "--output",
+          "{analysis_report}"
+        ]
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native spawn, route waypoint and camera callback risks can prevent the exact fixed-curb sweep attempt"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "sweep-departure-0001-fallback1-construction.json",
+          "construction_sha256": "5b88bbda823fa771d03c44a184ad00a08e5f5b479b61e5e532ef9b11b4ad5a4e",
+          "trigger": {
+            "source": "original vehicle-spawn collision or insufficient ground clearance",
+            "metric": "Native spawn result",
+            "failure_condition": "vehicle fails to spawn or original body contacts the curb"
+          },
+          "changed_knobs": [
+            "z=.5 -> z=.65"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C152972__NRS-484B-400-5__motor_vehicle_driver/case-plan.json --case C152972-departure-curb-coverage-0001 --candidate fallback1 --output .runtime-work/c152972-case-plan-fallback-offline-20261117/C152972-departure-curb-coverage-0001-fallback1",
+            "exit_code": 0,
+            "log": "sweep-candidate-offline.log",
+            "log_sha256": "2ef47637a0f137af1467d5b1ffca6763fc357c04d8acac684b5fe199a6438d06",
+            "construction_sha256": "46a52ea4b9d5d4be9a5564c742dc219a59de1fa7dc0f027027b350d7e1b977d9"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "sweep-departure-0001-fallback2-construction.json",
+          "construction_sha256": "8e731e45ffeb31275b2f3d6c32438f43b47c2689422d0306bf3f36998a68b4fe",
+          "trigger": {
+            "source": "route waypoint progress stalls near curb corner",
+            "metric": "original body waypoint-distance trace",
+            "failure_condition": "vehicle does not reach the next source route waypoint"
+          },
+          "changed_knobs": [
+            "distance<.75 -> distance<.95"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C152972__NRS-484B-400-5__motor_vehicle_driver/case-plan.json --case C152972-departure-curb-coverage-0001 --candidate fallback2 --output .runtime-work/c152972-case-plan-fallback-offline-20261117/C152972-departure-curb-coverage-0001-fallback2",
+            "exit_code": 0,
+            "log": "sweep-candidate-offline.log",
+            "log_sha256": "2ef47637a0f137af1467d5b1ffca6763fc357c04d8acac684b5fe199a6438d06",
+            "construction_sha256": "1b31caaf415b4e6e5952a2644139cb79e9f5031847232a435340fa3cba8bec76"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "sweep-departure-0001-fallback3-construction.json",
+          "construction_sha256": "1d8f570e59ae2899ddff3cc3d68c2e986accbba83ec1820d5ec092c2a15b8e99",
+          "trigger": {
+            "source": "one original camera callback misses the 10 s synchronization window",
+            "metric": "original four-camera callback timing",
+            "failure_condition": "camera frame absent by the default synchronization deadline"
+          },
+          "changed_knobs": [
+            "timeout_s=10 -> timeout_s=15"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C152972__NRS-484B-400-5__motor_vehicle_driver/case-plan.json --case C152972-departure-curb-coverage-0001 --candidate fallback3 --output .runtime-work/c152972-case-plan-fallback-offline-20261117/C152972-departure-curb-coverage-0001-fallback3",
+            "exit_code": 0,
+            "log": "sweep-candidate-offline.log",
+            "log_sha256": "2ef47637a0f137af1467d5b1ffca6763fc357c04d8acac684b5fe199a6438d06",
+            "construction_sha256": "ca2650acee4da9c15ac2e63db2bb685da5e98afa5ee4b0398c858bcfa3e78960"
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "heldout__C152972__NRS-484B-400-5__motor_vehicle_driver__C152972-departure-curb-coverage-0002",
+      "target_law_id": "NRS-484B-400-5",
+      "branch": "C152972-departure-curb-coverage-0002",
+      "gap_ids": [
+        "uncovered-full-text"
+      ],
+      "construction_status": "exact_primary_and_three_risk_fallbacks_returned_offline_only",
+      "physical_risk": {
+        "risk": "Native body path may fail to realize the exact source or destination left-curb setpoint",
+        "trigger_source": "original map curb lines and ground body footprints",
+        "trigger_metric": "departure left-curb distance",
+        "failure_condition": "actual original body corners miss the selected curb sweep point"
+      },
+      "construction": "sweep-departure-0002-construction.json",
+      "construction_sha256": "39f5afb85ae2a5f1840467e11093b4e55ef406e30e170abc6185b53a8c98003d",
+      "measurement_procedure": {
+        "entrypoint": "runner.py",
+        "args": [
+          "--attempt",
+          "{attempt}",
+          "--output",
+          "{analysis_report}"
+        ]
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native spawn, route waypoint and camera callback risks can prevent the exact fixed-curb sweep attempt"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "sweep-departure-0002-fallback1-construction.json",
+          "construction_sha256": "5899dc16d05c83a56fd3a375bdf6048f1de925c0bd74636a599cd1bbc59869b3",
+          "trigger": {
+            "source": "original vehicle-spawn collision or insufficient ground clearance",
+            "metric": "Native spawn result",
+            "failure_condition": "vehicle fails to spawn or original body contacts the curb"
+          },
+          "changed_knobs": [
+            "z=.5 -> z=.65"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C152972__NRS-484B-400-5__motor_vehicle_driver/case-plan.json --case C152972-departure-curb-coverage-0002 --candidate fallback1 --output .runtime-work/c152972-case-plan-fallback-offline-20261117/C152972-departure-curb-coverage-0002-fallback1",
+            "exit_code": 0,
+            "log": "sweep-candidate-offline.log",
+            "log_sha256": "2ef47637a0f137af1467d5b1ffca6763fc357c04d8acac684b5fe199a6438d06",
+            "construction_sha256": "abaf2613980a445f7cb052a1b4d40a1738061bba855536f69e24c4abb594358c"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "sweep-departure-0002-fallback2-construction.json",
+          "construction_sha256": "80b443e623ffbfce533b11a929d063c4556e780e59b97285be369e521d5ac578",
+          "trigger": {
+            "source": "route waypoint progress stalls near curb corner",
+            "metric": "original body waypoint-distance trace",
+            "failure_condition": "vehicle does not reach the next source route waypoint"
+          },
+          "changed_knobs": [
+            "distance<.75 -> distance<.95"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C152972__NRS-484B-400-5__motor_vehicle_driver/case-plan.json --case C152972-departure-curb-coverage-0002 --candidate fallback2 --output .runtime-work/c152972-case-plan-fallback-offline-20261117/C152972-departure-curb-coverage-0002-fallback2",
+            "exit_code": 0,
+            "log": "sweep-candidate-offline.log",
+            "log_sha256": "2ef47637a0f137af1467d5b1ffca6763fc357c04d8acac684b5fe199a6438d06",
+            "construction_sha256": "9ebc953f6ad3339e6d3f491937b0be7bcb37ec51b0890cc74766a59cfa6dfe21"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "sweep-departure-0002-fallback3-construction.json",
+          "construction_sha256": "c79916d5f0480dc14f6c0b80aba2cbc20ce2d3c5111670e4e05a69f7c7ccdf1a",
+          "trigger": {
+            "source": "one original camera callback misses the 10 s synchronization window",
+            "metric": "original four-camera callback timing",
+            "failure_condition": "camera frame absent by the default synchronization deadline"
+          },
+          "changed_knobs": [
+            "timeout_s=10 -> timeout_s=15"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C152972__NRS-484B-400-5__motor_vehicle_driver/case-plan.json --case C152972-departure-curb-coverage-0002 --candidate fallback3 --output .runtime-work/c152972-case-plan-fallback-offline-20261117/C152972-departure-curb-coverage-0002-fallback3",
+            "exit_code": 0,
+            "log": "sweep-candidate-offline.log",
+            "log_sha256": "2ef47637a0f137af1467d5b1ffca6763fc357c04d8acac684b5fe199a6438d06",
+            "construction_sha256": "ab2fc741f241aebdad8919d543b1835e1fc459a1fb0a63409647a9bcb12d698e"
+          }
+        }
+      ]
     }
   ],
   "comparisons": [
