@@ -7,10 +7,10 @@ from math import hypot, isfinite
 
 START_Y = -10.0
 VEHICLE_Y = -6.8
-APPROACH_START = 30
-DWELL_START = 80
-DWELL_END = 140
-DEPART_END = 190
+APPROACH_START = 20
+DWELL_START = 70
+DWELL_END = 130
+DEPART_END = 180
 
 
 def spawn(world, library, carla):
@@ -24,12 +24,14 @@ def spawn(world, library, carla):
     return actor
 
 
-def control(actor, carla, frame):
-    if type(frame) is not int or frame < 0:
+def control(actor, carla, frame, stationary_first_frame):
+    if type(frame) is not int or frame < 0 or \
+            type(stationary_first_frame) is not int or stationary_first_frame < 0:
         raise ValueError('Invalid business-activity frame')
-    if APPROACH_START <= frame < DWELL_START:
+    since_stop = frame - stationary_first_frame
+    if APPROACH_START <= since_stop < DWELL_START:
         direction, moving = 1, True
-    elif DWELL_END <= frame < DEPART_END:
+    elif DWELL_END <= since_stop < DEPART_END:
         direction, moving = -1, True
     else:
         direction, moving = 1, False
@@ -39,7 +41,7 @@ def control(actor, carla, frame):
     return {'frame': frame, 'requested_phase':
             'approach' if direction == 1 and moving else
             'depart' if moving else
-            'dwell' if DWELL_START <= frame < DWELL_END else 'idle',
+            'dwell' if DWELL_START <= since_stop < DWELL_END else 'idle',
             'source_kind': 'controller_request', 'observed_native_motion': False}
 
 
