@@ -21,7 +21,7 @@ SOURCE = module('armored_source', 'prove-armored-source.py')
 GRAPH = module('armored_graph', 'build-armored-native-diagnostic.py')
 
 
-def prepare(slug, candidate, attempt):
+def prepare(slug, candidate, attempt, manifest_override=None):
     if slug not in {'armored_car_' + sign + '_' + activity
                     for sign in ('unsigned', 'signed')
                     for activity in ('business', 'no_business')} or \
@@ -35,7 +35,8 @@ def prepare(slug, candidate, attempt):
     emergency_slug = 'emergency-' + ('signed-' if sign == 'signed' else '') + (
         'business' if activity == 'business' else 'no-business')
     helper = module('emergency_source', 'prove-' + emergency_slug + '-source.py')
-    manifest = ROOT / ('execution-manifest-diagnostic-' + slug + '-draft.json')
+    manifest = (Path(manifest_override).resolve() if manifest_override else
+                ROOT / ('execution-manifest-diagnostic-' + slug + '-draft.json'))
     helper.materialize(manifest, ROOT.name + '__' + slug, attempt, candidate)
     helper.source_rows(attempt)
     SOURCE.write_readback(attempt, SOURCE.readback(attempt))
@@ -58,5 +59,7 @@ if __name__ == '__main__':
     parser.add_argument('--slug', required=True)
     parser.add_argument('--candidate', required=True)
     parser.add_argument('--attempt', required=True)
+    parser.add_argument('--manifest')
     args = parser.parse_args()
-    print(json.dumps(prepare(args.slug, args.candidate, args.attempt), sort_keys=True))
+    print(json.dumps(prepare(args.slug, args.candidate, args.attempt,
+                             args.manifest), sort_keys=True))
