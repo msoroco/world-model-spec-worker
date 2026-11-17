@@ -22,6 +22,7 @@ measure_observed_saved = load("overtaken_response").measure_observed_saved
 measure_audible_saved = load("overtaken_response").measure_audible_saved
 audit = load("overtaken_comparison_audit").audit
 saved_behavior = load("overtaken_saved_behavior_audit")
+pass_gap = load("pass_gap_audit")
 controller = load("overtaken_controller")
 sys.path.insert(0, str(HERE))
 native = load("overtaken_native")
@@ -232,6 +233,10 @@ class OvertakenTests(unittest.TestCase):
         paths=sources()
         report=verify_saved_sources(*paths)
         self.assertEqual([row["body_pass_complete"] for row in report["frames"]],[False,False,False,True])
+        gap_report=pass_gap.audit(*paths)
+        self.assertEqual([row["signed_gap_m"] for row in gap_report["frames"]],[-6,-2,0,2])
+        self.assertEqual(gap_report["first_positive_gap_frame"],103)
+        self.assertFalse(gap_report["physical_acceptance_claimed"])
         self.assertIsNone(report["frames"][1]["notice_observed"])
         with self.assertRaisesRegex(ValueError,"visibility notice"):
             measure_observed_saved(*paths)

@@ -12,6 +12,7 @@ import math
 from pathlib import Path
 
 from overtaken_controller import CASES, apply as apply_subject, target as subject_target
+from right_pass_survey import collect as collect_right_pass_survey
 
 
 PREFIX = "heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__"
@@ -101,6 +102,16 @@ def generated_signal_rows(overtaker_id, frame, time_s, requested):
              "source_kind": "generated_signal_envelope",
              "acoustic_propagation_confirmed": None,
              "subjective_hearing_confirmed": None})
+
+
+def write_right_pass_survey(output, map_name, waypoint, frame, time_s, vehicle_ids):
+    """Retain original roadway facts, leaving permission for separate review."""
+    path = Path(output) / "right_pass_road_survey.json"
+    survey = collect_right_pass_survey(map_name, waypoint, frame, time_s, vehicle_ids)
+    with path.open("x") as stream:
+        json.dump(survey, stream, indent=2, allow_nan=False)
+        stream.write("\n")
+    return path
 
 
 def run(plan, case_id, output, host="127.0.0.1", port=2000):
@@ -200,6 +211,15 @@ def run(plan, case_id, output, host="127.0.0.1", port=2000):
                            notice_stimulus=notice_stimulus,
                            visibility_relation=visible_relation(world, subject, overtaker)
                            if observed_case else None)
+            if right_pass and index == 0:
+                current_waypoint = world.get_map().get_waypoint(subject.get_transform().location)
+                if current_waypoint is None:
+                    raise ValueError("Original right-pass road waypoint unavailable")
+                vehicle_ids = sorted(actor.id for actor in world.get_actors().filter("vehicle.*"))
+                if subject.id not in vehicle_ids or overtaker.id not in vehicle_ids:
+                    raise ValueError("Right-pass participant inventory incomplete")
+                write_right_pass_survey(output, world.get_map().name, current_waypoint,
+                                        frame, time_s, vehicle_ids)
             source.write(json.dumps(row, allow_nan=False)+"\n")
             source.flush()
             if signal_commands is not None:
