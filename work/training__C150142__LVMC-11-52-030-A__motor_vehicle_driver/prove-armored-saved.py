@@ -62,7 +62,7 @@ def verify(slug, candidate, attempt, output):
     if len(set(source_decodes)) != 4:
         raise ValueError('Distinct armored source views missing')
     return {'case': slug, 'candidate': candidate,
-            'construction_sha256': sha(attempt / 'construction.json'),
+            'construction_sha256': sha(construction),
             'processing_sha256': sha(version / 'processing.json'),
             'four_source_decodes': True, 'frames': 361,
             'visual_proxy_only': True, 'native_executed': False,
@@ -81,7 +81,7 @@ def main():
                 special = sign == 'unsigned' and activity == 'business' and candidate == 'primary'
                 output = REPO / '.runtime-work' / (prefix + candidate +
                                                   ('-result-v2' if special else '-result-v1'))
-                if not special:
+                if not special and not (output / 'v0001/processing.json').exists():
                     prep = subprocess.run([PYTHON, str(ROOT / 'prepare-armored-saved.py'),
                         '--slug', slug, '--candidate', candidate, '--attempt', str(attempt)],
                         cwd=REPO, capture_output=True, text=True, timeout=300)
