@@ -39,7 +39,8 @@ def main():
                                             'ordinary_red_signed',
                                             'mail_adjacent_deposit',
                                             'mail_no_box_deposit',
-                                            'mail_adjacent_no_deposit'),
+                                            'mail_adjacent_no_deposit',
+                                            'armored_car_signed_business'),
                         default='reference')
     parser.add_argument('--candidates', nargs='+',
                         choices=('primary', 'fallback1', 'fallback2', 'fallback3'),
