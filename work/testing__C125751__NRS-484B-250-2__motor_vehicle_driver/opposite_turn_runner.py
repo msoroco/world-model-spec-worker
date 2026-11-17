@@ -12,6 +12,7 @@ from queue import Empty, Queue
 
 from camera_setup import SIZES, source_cameras
 from camera_encoder import FFV1Writer
+from capture_sources import _actor
 from opposite_turn_construction import (construct_opposite_turn_pair,
                                         command_opposite_turn_pair)
 
@@ -45,16 +46,10 @@ def run_candidate_opposite_turn(world, carla, site, turning_role, blueprints,
                     type(frame) is not int or frame != native_frame
                     for frame in cameras.values()):
                     raise ValueError("All four camera sources must join original Native frame")
-                bodies = {}
-                for role, actor in actors.items():
-                    pose = actor.get_transform()
-                    velocity = actor.get_velocity()
-                    values = [float(pose.location.x), float(pose.location.y),
-                          float(pose.rotation.yaw), float(velocity.x),
-                          float(velocity.y), float(velocity.z)]
-                    if not all(math.isfinite(value) for value in values):
-                        raise ValueError("Finite original actor pose and velocity required")
-                    bodies[role] = {"xy_yaw": values[:3], "velocity_xyz": values[3:]}
+                bodies = {role: _actor(actor, world.get_map())
+                          for role, actor in actors.items()}
+                if bodies["ego"]["actor_id"] == bodies["other"]["actor_id"]:
+                    raise ValueError("Distinct original Native actors required")
                 write_source({"native_frame": native_frame,
                           "frame_index": index,
                           "turning_role": turning_role,
@@ -109,7 +104,9 @@ def capture_candidate_media(output_dir, world, carla, site, turning_role,
     from worker_exchange.native_output import FrameMap
     with ExitStack() as stack:
         body_stream = stack.enter_context((root / "body_history.jsonl").open("x", buffering=1))
+        crossing_stream = stack.enter_context((root / "crossing_history.jsonl").open("x", buffering=1))
         frame_map = stack.enter_context(FrameMap(root / "video_frames.jsonl"))
+        frame_times = {}
 
         @contextmanager
         def camera_factory(active_world, actors):
@@ -131,12 +128,19 @@ def capture_candidate_media(output_dir, world, carla, site, turning_role,
                     image = _joined_image(queues[name], frame)
                     writers[name].write(bytes(image.raw_data))
                 frame_map.append(frame, time_s)
+                frame_times[frame] = time_s
                 return {name: frame for name in SIZES}
 
             yield collect
 
         def write_source(record):
             body_stream.write(json.dumps(record, allow_nan=False) + "\n")
+            bodies = record["actor_sources"]
+            crossing = {"frame": record["native_frame"],
+                        "time_s": frame_times.pop(record["native_frame"]),
+                        "ego": bodies["ego"], "other": bodies["other"],
+                        "ego_vertices_m": bodies["ego"]["body_vertices_xy_m"]}
+            crossing_stream.write(json.dumps(crossing, allow_nan=False) + "\n")
 
         receipt = run_candidate_opposite_turn(
             world, carla, site, turning_role, blueprints, transforms,

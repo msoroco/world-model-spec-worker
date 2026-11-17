@@ -2,6 +2,7 @@ import importlib.util
 import json
 import tempfile
 import unittest
+import turn_context
 from contextlib import contextmanager
 from pathlib import Path
 from types import SimpleNamespace
@@ -26,6 +27,13 @@ def site():
 class Actor:
     def __init__(self, lane, yaw):
         self.lane, self.yaw, self.destroyed = lane, yaw, False
+        self.id = id(self)
+        self.bounding_box = SimpleNamespace(get_world_vertices=self.body_vertices)
+
+    def body_vertices(self, pose):
+        x, y = pose.location.x, pose.location.y
+        return [SimpleNamespace(x=x+dx, y=y+dy)
+                for dx, dy in ((-2, -1), (-2, 1), (2, -1), (2, 1))]
 
     def get_location(self):
         return self
@@ -64,7 +72,8 @@ class World:
         return self
 
     def get_waypoint(self, actor, project_to_road):
-        return SimpleNamespace(road_id=actor.lane[0], lane_id=actor.lane[1])
+        return SimpleNamespace(road_id=actor.lane[0], lane_id=actor.lane[1],
+                               is_junction=False)
 
 
 class OppositeTurnConstructionTest(unittest.TestCase):
@@ -155,7 +164,8 @@ class OppositeTurnConstructionTest(unittest.TestCase):
             records.append)
         self.assertEqual([record["native_frame"] for record in records], [2, 3, 4])
         self.assertEqual(receipt["frames_recorded"], 3)
-        self.assertEqual(records[0]["actor_sources"]["ego"]["xy_yaw"], [-10., 0., 0.])
+        self.assertEqual(records[0]["actor_sources"]["ego"]["position_xy_m"], [-10., 0.])
+        self.assertEqual(len(records[0]["actor_sources"]["ego"]["body_vertices_xy_m"]), 4)
         self.assertFalse(records[0]["physical_or_legal_acceptance_claimed"])
         self.assertTrue(all(actor.destroyed for actor in actors))
 
@@ -233,9 +243,25 @@ class OppositeTurnConstructionTest(unittest.TestCase):
                       (Path(temp) / "body_history.jsonl").read_text().splitlines()]
             frames = [json.loads(line) for line in
                       (Path(temp) / "video_frames.jsonl").read_text().splitlines()]
+            crossings = [json.loads(line) for line in
+                         (Path(temp) / "crossing_history.jsonl").read_text().splitlines()]
+            (Path(temp) / "road_geometry.json").write_text(json.dumps({
+                "intersection_id": 77,
+                "ego_approach_heading_deg": 0,
+                "other_approach_heading_deg": 180}))
+            (Path(temp) / "turn_route_context.json").write_text(json.dumps({
+                "intersection_id": 77, "routes": value["routes"]}))
+            measured = turn_context.analyze(temp)
         self.assertEqual(receipt["frames_recorded"], 3)
         self.assertEqual([item["native_frame"] for item in source], [2, 3, 4])
         self.assertEqual(len(frames), 3)
+        self.assertEqual([row["frame"] for row in crossings], [2, 3, 4])
+        self.assertEqual([row["time_s"] for row in crossings],
+                         [row["time_s"] for row in frames])
+        self.assertEqual(crossings[0]["ego_vertices_m"],
+                         crossings[0]["ego"]["body_vertices_xy_m"])
+        self.assertTrue(measured["original_heading_complete"])
+        self.assertEqual(measured["first_original_headings"]["other"]["native_lane_id"], 1)
         self.assertEqual(set(written), {name + ".mkv" for name in value["cameras"]})
         self.assertTrue(all(len(images) == 3 for images in written.values()))
         self.assertTrue(all(actor.destroyed for actor in actors))
