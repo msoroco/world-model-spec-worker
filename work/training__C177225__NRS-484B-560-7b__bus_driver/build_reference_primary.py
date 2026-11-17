@@ -7,7 +7,7 @@ import hashlib
 import json
 from pathlib import Path
 
-from native_scene import VIEWS
+from native_scene import VIEWS, camera_plan
 from native_runner import ASSIGNMENT, FRAMES, RATE_HZ
 
 
@@ -15,6 +15,8 @@ ROOT = Path(__file__).resolve().parent
 CONSTRUCTION = ROOT / 'constructions' / 'reference-primary.json'
 MANIFEST = ROOT / 'execution-manifest.json'
 MEASUREMENT = ROOT / 'constructions' / 'reference-measurement-contract.json'
+RECIPE = ROOT / 'fixtures' / 'reference-recipe.json'
+PROPOSALS = ROOT / 'proposals' / 'cases.json'
 SOURCE_FILES = ('native_runner.py', 'camera_recorder.py', 'measure_direction.py',
                 'native_scene.py', 'officer_direction.py', 'officer_pose.py',
                 'rail_road.py', 'finalize_direction.py')
@@ -36,11 +38,13 @@ def make():
         'law_id': 'NRS-484B-560-7b', 'cell_id': 'C177225',
         'actor': 'bus_driver', 'rate_hz': RATE_HZ,
         'duration_s': FRAMES / RATE_HZ, 'frames': FRAMES,
-        'cameras': list(VIEWS),
+        'cameras': [{'name': view['name'], 'width': view['size'][0],
+                     'height': view['size'][1], 'pose_strategy': 'authored_world_pose',
+                     'fov_deg': view['fov']} for view in camera_plan(1)],
         'rail_asset_blueprint': 'static.prop.ironplank',
         'rail_asset_scope': 'generic visual proxy; railroad crossing not physically verified',
         'required_atoms': [], 'source_packets': [], 'weather': 'ClearNoon',
-        'authored_test_context': {'core_assumptions': [
+        'authored_test_context': {'core_assumptions': [], 'scenario_assumptions': [
             'Named officer role and authorization are authored scenario assumptions.',
             'Installed prop shape, driver comprehension and crossing status are unverified.']},
         'comparison_variable': 'bus_obeys_officer_direction',
@@ -85,7 +89,8 @@ def make():
     CONSTRUCTION.write_text(encode(construction))
     dispositions = json.loads((ROOT / 'case-plan.json').read_text())['requirement_dispositions']
     measures = (
-        ('vehicle_scope', 'measure_vehicle_scope', ['config.json', 'bus_native_rows.jsonl']),
+        ('vehicle_scope', 'measure_vehicle_scope',
+         ['capture/recorder_info.txt', 'bus_native_rows.jsonl']),
         ('directed_officer_stop', 'measure_directed_officer_stop',
          ['bus_native_rows.jsonl', 'officer_signal_rows.jsonl', 'video_frames.jsonl']),
         ('authorized_direction', 'measure_authorized_direction',
@@ -100,6 +105,23 @@ def make():
                 'negative': {'remove': ['officer_signal_definition.json'],
                              'error_contains': 'Missing required source: officer_signal_definition.json'}}
     MEASUREMENT.write_text(encode(contract))
+    plan = json.loads((ROOT / 'case-plan.json').read_text())
+    proposals = {'format': 'worker-case-proposals', 'status': 'draft',
+                 'cell_id': 'C177225', 'actor': 'bus_driver',
+                 'sweep_specs': [], 'cases': [
+                     {'case_id': case['case_id'], 'target_law_id': 'NRS-484B-560-7b',
+                      'target_type': 'attempt', 'rationale': case['case_description'],
+                      'variable_assignments': {
+                          'bus_obeys_officer_direction': {
+                              'kind': 'controller', 'unit': 'bool',
+                              'value': case['requested_setting'] == 'reference'}},
+                      'fixed_context': case['fixed_context'],
+                      'unresolved_judgment_calls': [
+                          'Officer status, direction comprehension, and physical crossing require original review'],
+                      'recording_description': recording}
+                     for case in plan['cases']]}
+    PROPOSALS.parent.mkdir(parents=True, exist_ok=True)
+    PROPOSALS.write_text(encode(proposals))
     runtime_manifest = ROOT.parents[1] / 'runtime' / 'pipeline' / 'SOURCE-MANIFEST.json'
     manifest = {
         'format': 'worker-execution-manifest',
@@ -112,6 +134,7 @@ def make():
                    'construction': str(CONSTRUCTION.relative_to(ROOT)),
                    'construction_sha256': sha(CONSTRUCTION),
                    'measurement_contract': str(MEASUREMENT.relative_to(ROOT)),
+                   'fixture_recipe': str(RECIPE.relative_to(ROOT.parents[1])),
                    'measurement_procedure': {'entrypoint': 'finalize_direction.py',
                                              'output_schema': 'c177225-saved-analysis-v1'},
                    'candidates': []}],

@@ -130,6 +130,7 @@ def run(client, carla, output, *, case_suffix, direction, rail_asset_blueprint=N
     map_rows = []
     error = None
     restored = None
+    recorder_codes = {}
     changed = False
     try:
         world = client.generate_opendrive_world(open_drive(),
@@ -215,7 +216,7 @@ def run(client, carla, output, *, case_suffix, direction, rail_asset_blueprint=N
                 error = error or {'type': type(exc).__name__, 'message': str(exc)}
         if recorder is not None:
             try:
-                recorder.close(check=error is None)
+                recorder_codes = recorder.close(check=error is None)
             except BaseException as exc:
                 error = error or {'type': type(exc).__name__, 'message': str(exc)}
         if scene is not None:
@@ -235,8 +236,18 @@ def run(client, carla, output, *, case_suffix, direction, rail_asset_blueprint=N
             'case_id': spec['case_id'], 'frames_observed': len(bus_rows),
             'restoration': restored, 'error': error,
             'physical_acceptance_claimed': False, 'legal_verdict': None})
+        _write_new(output / 'native-run-status.json', {
+            'case_id': spec['case_id'], 'errors': [] if error is None else [error],
+            'frames_observed': len(bus_rows), 'restoration': restored,
+            'encoder_exit_codes': recorder_codes,
+            'physical_acceptance_claimed': False})
     if error:
         raise RuntimeError('C177225 original Native attempt failed: ' + error['message'])
+    from worker_exchange.native_output import seal_capture
+    seal_capture(output, frames=len(bus_rows), restoration=restored,
+                 errors=[], encoder_exit_codes=recorder_codes,
+                 context={'road_id': ROAD_ID, 'railway_identity_verified': False,
+                          'officer_authority_verified': False})
     from finalize_direction import finalize_attempt, process_saved
     try:
         _write_new(output / 'saved_direction_observation.json',

@@ -32,7 +32,7 @@ def camera_plan(direction):
     return (
         {'name': 'overview', 'xyz': (-18 * direction, -12, 24),
          'yaw': 35 if direction == 1 else 145, 'pitch': -50,
-         'fov': 85, 'size': (1280, 720), 'attach_to_bus': False},
+         'fov': 85, 'size': (1920, 1080), 'attach_to_bus': False},
         {'name': 'approach', 'xyz': (-42 * direction, -7, 8),
          'yaw': 0 if direction == 1 else 180, 'pitch': -16,
          'fov': 72, 'size': (1280, 720), 'attach_to_bus': False},

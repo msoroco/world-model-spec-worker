@@ -4,6 +4,7 @@ import hashlib
 import json
 import math
 from pathlib import Path
+import re
 import subprocess
 
 from measure_direction import derive_observation
@@ -74,7 +75,7 @@ def process_saved(root, *, source_kind='original_native'):
     if not len(bus) == len(officer) == len(mapping) == config['frames']:
         raise ValueError('Saved Native row count differs from exact capture profile')
     specs = {name: size for name, size in (
-        ('overview', (1280, 720)), ('approach', (1280, 720)),
+        ('overview', (1920, 1080)), ('approach', (1280, 720)),
         ('reference_corner', (1280, 720)), ('driver_reference', (1280, 720)))}
     if set(specs) != set(VIEWS):
         raise ValueError('Four source camera names differ')
@@ -161,13 +162,18 @@ def measure_directed_officer_stop(root, observation):
                          'video_frames.jsonl')}}
 
 
-def measure_vehicle_scope(root, config, bus):
-    return {'value': {'actor': config['actor'],
-                      'bus_actor_ids': sorted({row['actor_id'] for row in bus}),
-                      'bus_blueprint_requested': 'vehicle.mitsubishi.fusorosa'},
+def measure_vehicle_scope(root, bus):
+    recorder = _required(root, 'capture/recorder_info.txt').read_text()
+    ids = sorted({row['actor_id'] for row in bus})
+    if len(ids) != 1 or not re.search(
+            r'Create ' + re.escape(ids[0]) +
+            r': vehicle\.mitsubishi\.fusorosa\b', recorder):
+        raise ValueError('Recorded bus creation identity/blueprint differs')
+    return {'value': {'bus_actor_ids': ids,
+                      'recorded_bus_blueprint': 'vehicle.mitsubishi.fusorosa'},
             'method': 'measure_vehicle_scope',
             'sources': {name: _sha(_required(root, name)) for name in
-                        ('config.json', 'bus_native_rows.jsonl')}}
+                        ('capture/recorder_info.txt', 'bus_native_rows.jsonl')}}
 
 
 def measure_authorized_direction(root, signal, officer):
@@ -189,7 +195,11 @@ def finalize_attempt(root, output):
     if output.exists() or (root / 'result.json').exists():
         raise ValueError('Retain prior finalization; use a fresh attempt')
     config = json.loads(_required(root, 'config.json').read_text())
-    observation = process_saved(root, source_kind='original_native')
+    from worker_exchange.native_output import provenance_record
+    provenance = provenance_record(root)
+    source_kind = ('original_native' if provenance['provenance_kind'] == 'native'
+                   else 'synthetic_native_sample')
+    observation = process_saved(root, source_kind=source_kind)
     mapping = _rows(_required(root, 'video_frames.jsonl'))
     bus = _rows(_required(root, 'bus_native_rows.jsonl'))
     officer = _rows(_required(root, 'officer_signal_rows.jsonl'))
@@ -201,7 +211,7 @@ def finalize_attempt(root, output):
     requested = config['case_suffix'] == 'reference'
     target = {'target': 'bus_obeys_officer_direction', 'requested': requested,
               'measured': measured,
-              'method': 'saved original bus velocity/station and directed officer frame join',
+              'method': 'saved source bus velocity/station and directed officer frame join',
               'tolerance': 0, 'matched': measured == requested,
               'physical_cause_confirmed': False,
               'cause_evidence': ['bus_native_rows.jsonl',
@@ -226,17 +236,22 @@ def finalize_attempt(root, output):
                       'unit': 'm/s', 'method': 'raw Native velocity vector norm',
                       'time_window': 'full saved capture', 'statistic': 'minimum',
                       'reference': 'bus_native_rows.jsonl'}},
-              'provenance_kind': 'native', 'accepted': False,
+              'provenance_kind': provenance['provenance_kind'],
+              'diagnostic_fixture': provenance['diagnostic_fixture'],
+              'accepted': False,
               'legal_verdict_claimed': False}
     from worker_exchange.native_output import validate_result
     validate_result(result)
     report = {'format': 'c177225-saved-analysis-v1',
               'case_id': config['case_id'],
               'measurements': {
-                  'vehicle_scope': measure_vehicle_scope(root, config, bus),
+                  'vehicle_scope': measure_vehicle_scope(root, bus),
                   'directed_officer_stop': measure_directed_officer_stop(root, observation),
                   'authorized_direction': measure_authorized_direction(root, signal, officer)},
-              'trace_frames': len(trace), 'scope': 'saved Native source diagnosis only'}
+              'trace_frames': len(trace),
+              'provenance_kind': provenance['provenance_kind'],
+              'diagnostic_fixture': provenance['diagnostic_fixture'],
+              'scope': 'saved source diagnosis only; no physical acceptance'}
     output.write_text(json.dumps(report, indent=2, allow_nan=False) + '\n')
     with (root / 'result.json').open('x') as stream:
         json.dump(result, stream, indent=2, allow_nan=False)

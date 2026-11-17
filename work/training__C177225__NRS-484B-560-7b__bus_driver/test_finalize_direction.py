@@ -60,6 +60,8 @@ class SavedDirectionTest(unittest.TestCase):
                                  ('video_frames.jsonl', maps)):
                 (root / name).write_text(''.join(json.dumps(row) + '\n' for row in values))
             (root / 'capture').mkdir()
+            (root / 'capture' / 'recorder_info.txt').write_text(
+                'Frame 1\nCreate bus-1: vehicle.mitsubishi.fusorosa\n')
             _write_json(root / 'capture' / 'manifest.json',
                         {'extraction_confirmed': True, 'frames': 2})
             (root / 'trace.jsonl').write_text(''.join(json.dumps({
@@ -71,8 +73,9 @@ class SavedDirectionTest(unittest.TestCase):
                 json.dumps({'original_frame': m['native_frame'],
                             'recording_time_s': m['time_s']}) + '\n' for m in maps))
             for name in VIEWS:
+                size = '1920x1080' if name == 'overview' else '1280x720'
                 subprocess.run(['ffmpeg', '-nostdin', '-hide_banner', '-loglevel', 'error',
-                                '-f', 'lavfi', '-i', 'color=c=blue:s=1280x720:r=20',
+                                '-f', 'lavfi', '-i', 'color=c=blue:s=' + size + ':r=20',
                                 '-frames:v', '2', '-c:v', 'ffv1', str(root / (name + '.mkv'))],
                                check=True, timeout=30)
             observed = process_saved(root, source_kind='synthetic_native_sample')
@@ -98,6 +101,9 @@ class SavedDirectionTest(unittest.TestCase):
             report = finalize_attempt(root, root / 'analysis-report.json')
             result = json.loads((root / 'result.json').read_text())
             self.assertEqual(2, report['trace_frames'])
+            self.assertEqual('synthetic_fixture', report['provenance_kind'])
+            self.assertEqual('synthetic_native_sample',
+                             result['measured_values']['officer_direction']['source_kind'])
             self.assertEqual(5, len(result['recording_evidence']))
             self.assertFalse(result['target_checks'][0]['physical_cause_confirmed'])
             from batch_pipeline.validation import recording_evidence
