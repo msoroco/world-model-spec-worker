@@ -343,3 +343,7 @@ The selected manifest's 12-case execution, semantic, delivery, and compatibility
 2026-11-16 CPU file-budget preservation: 10 unreferenced standalone saved receipt copies archived byte-exact in `result.json.preserved_unreferenced_cpu_artifacts`; per-member SHA256 recorded there. Scoped validation follows.
 
 Result-only historical log reconciliation, 2026-11-16: 1 exact UTF-8 logs were SHA-256-preserved in `work/_shared/prune-history-bundle-all.json.preserved_source_files` and removed from this package; matching obsolete `result.json.tests` claims were removed. Current manifest-bound proofs remain direct. Re-run the scoped strict gate before relying on ready status.
+
+## 2026-11-16 lossless proof-log curation
+
+Thirty-six distinct fallback offline logs were consolidated into `fallback-offline-combined.log` (SHA-256 `c44754767533c4e9dc5a69bebb75dd4a6d3a639d01a9835ea430370cf65315e6`), with full original bytes and per-file hashes identified in the transcript. Manifest/test references were rebound. The scoped strict worker check passed; this assignment remains ready.

@@ -12,14 +12,22 @@ from heavy_lane_source import HeavyLaneSourceRecorder, save_three_lane_survey, s
 
 
 CASE = "heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__within_marked_lane"
+PACKAGE_SUFFIXES = (
+    "within_marked_lane", "unexcused_boundary_crossing",
+    "passing_boundary_crossing", "lawful_turn_preparation_boundary_crossing",
+    "heavy_passing_plan-0000", "heavy_passing_plan-0001",
+    "heavy_passing_plan-0002", "heavy_turn_plan-0000",
+    "heavy_turn_plan-0001", "heavy_turn_plan-0002",
+)
+PACKAGE_CASES = [CASE.rsplit("__", 1)[0] + "__" + name for name in PACKAGE_SUFFIXES]
 
 
 def check_config(config):
     if (config.get("selected_case_id"), config.get("law_id"), config.get("cell_id"),
             config.get("actor")) != (CASE, "LVMC-11-18-030-B", "C305951", "heavy_vehicle_driver"):
         raise ValueError("Exact heavy marked-lane identity mismatch")
-    if config.get("supported_case_ids") != [CASE]:
-        raise ValueError("First heavy marked-lane construction supports one exact case")
+    if config.get("supported_case_ids") != PACKAGE_CASES:
+        raise ValueError("Heavy marked-lane package case inventory differs")
     if (config.get("rate_hz"), config.get("frames"), config.get("duration_s")) != (20, 160, 8):
         raise ValueError("Original 20 Hz, eight-second timing required")
     if config.get("case", {}).get("case_id") != CASE or not isinstance(

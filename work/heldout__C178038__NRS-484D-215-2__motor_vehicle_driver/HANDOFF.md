@@ -133,3 +133,7 @@ The strict gate exposed one plan-shape defect: `case-plan.json.observations` was
 2026-11-16 CPU file-budget preservation: 1 unreferenced standalone artifacts archived byte-exact in `result.json.preserved_unreferenced_cpu_artifacts`; member SHA256 values are recorded there. Scoped validation follows.
 
 Result-only historical log reconciliation, 2026-11-16: 5 exact UTF-8 logs were SHA-256-preserved in `work/_shared/prune-history-bundle-all.json.preserved_source_files` and removed from this package; matching obsolete `result.json.tests` claims were removed. Current manifest-bound proofs remain direct. Re-run the scoped strict gate before relying on ready status.
+
+## 2026-11-16 lossless proof-log curation
+
+Twenty-seven distinct fallback offline logs were consolidated into `fallback-offline-combined.log` (SHA-256 `5f338eaf252282c6dd143dce8b4f57ac09913542b6e213d6041b7f97b3caf64f`), with full original bytes and per-file hashes identified in the transcript. Manifest/test references were rebound. The scoped strict worker check passed; this assignment remains ready.
