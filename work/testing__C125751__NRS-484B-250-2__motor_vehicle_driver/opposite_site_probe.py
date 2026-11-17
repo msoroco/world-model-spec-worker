@@ -2,6 +2,44 @@
 import math
 
 
+def _left_exits(entry, step_m, radius_m):
+    """Trace bounded Native branches to a non-junction exit on the driver's left."""
+    start = entry.transform
+    start_yaw = float(start.rotation.yaw)
+    start_xy = (float(start.location.x), float(start.location.y))
+    junction_id = int(entry.get_junction().id)
+    if not all(math.isfinite(v) for v in (*start_xy, start_yaw)):
+        return []
+    exits = {}
+    frontier = [(entry, 0)]
+    seen = set()
+    max_steps = int(radius_m / step_m) + 2
+    while frontier:
+        current, depth = frontier.pop(0)
+        if depth >= max_steps or id(current) in seen:
+            continue
+        seen.add(id(current))
+        for successor in current.next(step_m):
+            pose = successor.transform
+            x, y, yaw = (float(pose.location.x), float(pose.location.y),
+                         float(pose.rotation.yaw))
+            if not all(math.isfinite(v) for v in (x, y, yaw)):
+                continue
+            if math.hypot(x - start_xy[0], y - start_xy[1]) > radius_m:
+                continue
+            if successor.is_junction:
+                if int(successor.get_junction().id) == junction_id:
+                    frontier.append((successor, depth + 1))
+                continue
+            turn = (yaw - start_yaw + 180) % 360 - 180
+            if 45 <= turn <= 135:
+                key = (int(successor.road_id), int(successor.lane_id))
+                exits[key] = {"exit_road_lane": list(key),
+                              "exit_xy_yaw": [x, y, yaw],
+                              "turn_angle_deg": turn}
+    return [exits[key] for key in sorted(exits)]
+
+
 def probe_native_opposite_approaches(world, sample_m=2.0, search_radius_m=25.0):
     """Locate Native same-junction opposing entries for later route/site review.
 
@@ -37,7 +75,7 @@ def probe_native_opposite_approaches(world, sample_m=2.0, search_radius_m=25.0):
             continue
         junction_id = int(waypoint.get_junction().id)
         lane = (int(upstream.road_id), int(upstream.lane_id))
-        junctions.setdefault(junction_id, {}).setdefault(lane, []).append((x, y, yaw))
+        junctions.setdefault(junction_id, {}).setdefault(lane, []).append((x, y, yaw, waypoint))
     candidates = []
     for junction_id, lanes in sorted(junctions.items()):
         lane_ids = sorted(lanes)
@@ -52,18 +90,23 @@ def probe_native_opposite_approaches(world, sample_m=2.0, search_radius_m=25.0):
                             matches.append((distance, -angle, first, second))
                 if not matches:
                     continue
-                distance, negative_angle, first, second = min(matches)
+                distance, negative_angle, first, second = min(
+                    matches, key=lambda match: (match[0], match[1],
+                                                 match[2][:3], match[3][:3]))
+                left_exits = [_left_exits(first[3], sample_m, search_radius_m),
+                              _left_exits(second[3], sample_m, search_radius_m)]
                 candidates.append({
                     "native_map_name": native_map.name,
                     "native_junction_id": junction_id,
                     "approach_road_lanes": [list(first_lane), list(second_lane)],
-                    "junction_sample_xy_yaw": [list(first), list(second)],
+                    "junction_sample_xy_yaw": [list(first[:3]), list(second[:3])],
+                    "left_turn_exit_candidates": left_exits,
                     "sample_separation_m": distance,
                     "approach_angle_deg": -negative_angle,
                     "probe_spacing_m": sample_m,
                     "review_status": "candidate_only",
                     "unresolved": ["median-opening and statutory intersection identity",
-                                   "source-reviewed routes and left-turn exit",
+                                   "source-reviewed route, exit and turn feasibility",
                                    "original approach, intention and trajectory evidence"],
                 })
     return candidates

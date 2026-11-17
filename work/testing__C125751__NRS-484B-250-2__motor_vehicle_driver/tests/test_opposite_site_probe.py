@@ -13,9 +13,13 @@ class Waypoint:
             location=SimpleNamespace(x=x, y=y),
             rotation=SimpleNamespace(yaw=yaw))
         self.predecessors = [] if previous is None else [previous]
+        self.successors = []
 
     def previous(self, distance):
         return self.predecessors
+
+    def next(self, distance):
+        return self.successors
 
     def get_junction(self):
         return SimpleNamespace(id=self.junction)
@@ -55,7 +59,39 @@ class OppositeSiteProbeTest(unittest.TestCase):
         self.assertEqual(candidate['approach_road_lanes'], [[11, -1], [11, 1]])
         self.assertEqual(candidate['approach_angle_deg'], 180)
         self.assertEqual(candidate['review_status'], 'candidate_only')
-        self.assertIn('source-reviewed routes and left-turn exit', candidate['unresolved'])
+        self.assertEqual(candidate['left_turn_exit_candidates'], [[], []])
+        self.assertIn('source-reviewed route, exit and turn feasibility', candidate['unresolved'])
+
+    def test_traces_left_exit_and_excludes_right_straight_and_other_junction(self):
+        first = entry(11, -1, -4, 0, 0)
+        second = entry(11, 1, 4, 0, 180)
+        middle = Waypoint(30, -1, -2, 1, 45)
+        left = Waypoint(31, -1, 0, 3, 90, junction=None)
+        right = Waypoint(32, -1, 0, -3, -90, junction=None)
+        straight = Waypoint(33, -1, 0, 0, 0, junction=None)
+        middle.successors = [left, right, straight]
+        first.successors = [middle]
+        other_left = Waypoint(34, -1, 1, -3, -90, junction=None)
+        second.successors = [other_left]
+        candidate = probe_native_opposite_approaches(World([first, second]))[0]
+        self.assertEqual(candidate['left_turn_exit_candidates'][0], [
+            {'exit_road_lane': [31, -1], 'exit_xy_yaw': [0, 3, 90],
+             'turn_angle_deg': 90}])
+        self.assertEqual(candidate['left_turn_exit_candidates'][1][0]['exit_road_lane'], [34, -1])
+
+    def test_rejects_distant_or_nonfinite_exit_and_terminates_cycle(self):
+        first = entry(11, -1, -4, 0, 0)
+        second = entry(11, 1, 4, 0, 180)
+        cycle = Waypoint(30, -1, -2, 0, 20)
+        first.successors = [cycle]
+        cycle.successors = [cycle,
+                            Waypoint(31, -1, 50, 0, 90, junction=None),
+                            Waypoint(32, -1, 0, float('nan'), 90, junction=None)]
+        foreign = Waypoint(40, -1, -1, 0, 45, junction=9)
+        foreign.successors = [Waypoint(41, -1, 0, 3, 90, junction=None)]
+        cycle.successors.append(foreign)
+        candidate = probe_native_opposite_approaches(World([first, second]))[0]
+        self.assertEqual(candidate['left_turn_exit_candidates'], [[], []])
 
     def test_rejects_perpendicular_and_other_junction(self):
         world = World([entry(11, -1, -4, 0, 0),
