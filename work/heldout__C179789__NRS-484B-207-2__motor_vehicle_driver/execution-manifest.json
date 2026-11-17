@@ -11,7 +11,92 @@
         "status": "physical",
         "reason": "The overtaker may pass before the scripted notice interval or not remain visible in original cameras; source frame overlap is unverified."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-gives_way_holds_speed.json",
+          "construction_sha256": "e242251e7f37417e3ba3cb1e894a410d6d8f17ebdf313392dedfd5185648256f",
+          "trigger": {
+            "source": "Native connected lane-chain readback",
+            "metric": "unique same-road same-lane left/right continuation at each 2.5 m waypoint step",
+            "failure_condition": "primary 2.5 m sampling has an ambiguous or missing continuation before the required 160-frame route is covered"
+          },
+          "changed_knobs": [
+            "route_step_m: 2.5 -> 2.0"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C179789__NRS-484B-207-2__motor_vehicle_driver/execution-manifest.json --case heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__gives_way_holds_speed --candidate fallback1 --output .runtime-work/c179789-audible-fallback1-offline-20261117 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "audible-fallback1-offline.log",
+            "log_sha256": "65e028d9927eea93eda6259d5cea618c53e56cb2cd899853ffdf58495fe731d1",
+            "construction_sha256": "e242251e7f37417e3ba3cb1e894a410d6d8f17ebdf313392dedfd5185648256f"
+          },
+          "compatibility": {
+            "receipt": "audible-fallback1-compatibility.json",
+            "sha256": "f6b6336d19e78922c860eca5ea424e7c89cf7e3543d7616465806edd073cd10c",
+            "log": "audible-fallback1-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "audible-fallback1-negative.log",
+            "negative_log_sha256": "42d52bce25f602b3ede45e8240c309ae479fb3eb128e92289b7ae7e769916fd4"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-fallback2-gives_way_holds_speed.json",
+          "construction_sha256": "c19cdb505d5b9802ab511f6fe080ea716765767f7eddffa63eb11e0d52066076",
+          "trigger": {
+            "source": "Native original overtaker and subject body poses joined to signal command frames",
+            "metric": "number of post-signal precompletion body-motion frames",
+            "failure_condition": "primary overtaker completes pass before at least one post-signal precompletion response frame can be observed"
+          },
+          "changed_knobs": [
+            "overtaker_target_speed_mps: 8.0 -> 7.5"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C179789__NRS-484B-207-2__motor_vehicle_driver/execution-manifest.json --case heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__gives_way_holds_speed --candidate fallback2 --output .runtime-work/c179789-audible-fallback2-offline-20261117 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "audible-fallback2-offline.log",
+            "log_sha256": "2c077bdba128ca0fb47263d37406350dc3338d6181c13e75167d8d96ba953550",
+            "construction_sha256": "c19cdb505d5b9802ab511f6fe080ea716765767f7eddffa63eb11e0d52066076"
+          },
+          "compatibility": {
+            "receipt": "audible-fallback2-compatibility.json",
+            "sha256": "434a2f07159f69e38f35abaa2d68148ac26f8b930e1c8430d62b1ed9672a8816",
+            "log": "audible-fallback1-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "audible-fallback2-negative.log",
+            "negative_log_sha256": "943ce666babab866dc465d7104260abbd421547489dd3f94163498a67019dd6e"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-fallback3-gives_way_holds_speed.json",
+          "construction_sha256": "622301d6f14496d91d6722c41e767b7e42b9ac289a3edf8e816a7c3d901e6c68",
+          "trigger": {
+            "source": "original overview pixels and frame map",
+            "metric": "fraction of source frames containing subject body, overtaker and near-side lane boundary",
+            "failure_condition": "primary overview mount obscures the passing actor or near-side lane boundary in a required response interval"
+          },
+          "changed_knobs": [
+            "overview_mount_height_m: 8 -> 10"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C179789__NRS-484B-207-2__motor_vehicle_driver/execution-manifest.json --case heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__gives_way_holds_speed --candidate fallback3 --output .runtime-work/c179789-audible-fallback3-offline-20261117 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "audible-fallback3-offline.log",
+            "log_sha256": "ab6fcc8487bcf9ceead427c0269b2a9c52031539ee70da305bc1d165e65b51b1",
+            "construction_sha256": "622301d6f14496d91d6722c41e767b7e42b9ac289a3edf8e816a7c3d901e6c68"
+          },
+          "compatibility": {
+            "receipt": "audible-fallback3-compatibility.json",
+            "sha256": "dc47fde3804315c1fd723dad0d3e9ea6d58ee478b7874ebe5c7b001d34da05ea",
+            "log": "audible-fallback1-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "audible-fallback3-negative.log",
+            "negative_log_sha256": "7a667f63921e6d712661f07d77e5d2b06af6ac38d64b44442f226a1356319677"
+          }
+        }
+      ],
       "measurement_procedure": {
         "entrypoint": "overtaken_finalizer.py"
       },
@@ -170,7 +255,7 @@
       "compatibility": {
         "receipt": "observed-primary-compatibility.json",
         "sha256": "363eae821920acf5037a5f817bfe7a3fd8428b3ff4e5d4bed34576b0df0568ea",
-        "log": "observed-primary-analysis.log",
+        "log": "audible-primary-analysis.log",
         "negative_log": "observed-primary-negative.log",
         "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
         "negative_log_sha256": "e1f1bf0bd6ecc0a22fa9cf1caff0b87343b50ba730d5bdd654613b6e276cdf9a"
@@ -414,7 +499,7 @@
       "compatibility": {
         "receipt": "no-right-primary-compatibility.json",
         "sha256": "0e8a801e9a1ed1dc26006963d8ba72314e78da60244d95466bbb8270304cf57c",
-        "log": "no-right-primary-analysis.log",
+        "log": "audible-primary-analysis.log",
         "negative_log": "no-right-primary-negative.log",
         "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
         "negative_log_sha256": "aee44e28049ce779d719ce305ca437db027b2b7d8392a719635d5c01a94334fb"
@@ -557,7 +642,7 @@
       "compatibility": {
         "receipt": "speed-primary-compatibility.json",
         "sha256": "dc40039a593505bb6904329a305f752f58dab5a8a0c9f7e762864b94bfda7b0e",
-        "log": "speed-primary-analysis.log",
+        "log": "audible-primary-analysis.log",
         "negative_log": "speed-primary-negative.log",
         "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
         "negative_log_sha256": "f328601b7a87b7f5deff048a0a851fdae0d9ae0ae39b7303b51d459dc10cc102"
@@ -701,7 +786,7 @@
       "compatibility": {
         "receipt": "right-pass-primary-compatibility.json",
         "sha256": "44e7ed75414c382e152fdd7bad5ffa7880dd7567c1d28338f6564c2e28928429",
-        "log": "right-pass-primary-analysis.log",
+        "log": "audible-primary-analysis.log",
         "negative_log": "right-pass-primary-negative.log",
         "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
         "negative_log_sha256": "0fccbd9ca3f60d2709d35de263501c16a84caa97770a4bf8ac7dd0fb9272fce1"
