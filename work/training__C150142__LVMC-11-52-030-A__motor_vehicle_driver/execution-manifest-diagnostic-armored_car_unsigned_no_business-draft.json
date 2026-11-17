@@ -1,0 +1,66 @@
+{
+  "format": "worker-execution-manifest-diagnostic-draft",
+  "assignment_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver",
+  "status": "draft_selected_cpu",
+  "cases": [
+    {
+      "case_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__armored_car_unsigned_no_business",
+      "kind": "delivery",
+      "construction": "selected-primary/armored_car_unsigned_no_business/construction.json",
+      "construction_sha256": "46c6668fcadab7d34d69a6a2aa7e811c4c65ff256b1cbac7610b58ebda7bf108",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native firetruck stop may overshoot red paint; overview may hide body or an unexpected worker, and actor inventory may show a pedestrian; attached-panel proxy appearance and actual armored identity unverified"
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize_selected.py",
+        "output_schema": "c150142-red-curb-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-fallbacks/armored_car_unsigned_no_business/fallback1/construction.json",
+          "construction_sha256": "fb33fb4d0d16852650d72e2e91e05606d52801f74dcee3f08778d9526e603e2a",
+          "trigger": {
+            "source": "retained Native firetruck body and red paint extent",
+            "metric": "longitudinal stop overshoot in meters",
+            "failure_condition": "Observed firetruck body overshoots the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-fallbacks/armored_car_unsigned_no_business/fallback2/construction.json",
+          "construction_sha256": "b5bc71ed6ec37ede3d48ef2a687a77000abafdf1f1c27e5a9ab67bed1ae697ca",
+          "trigger": {
+            "source": "decoded overview and retained Native signal readback",
+            "metric": "visible red curb and complete firetruck body",
+            "failure_condition": "Overview obscures red paint or complete firetruck body"
+          },
+          "changed_knobs": [
+            "camera_policy",
+            "overview camera elevation"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-fallbacks/armored_car_unsigned_no_business/fallback3/construction.json",
+          "construction_sha256": "1b9e699b9e833a850081de590418b12de80b783b02d0285319b4ca25b83a5e5f",
+          "trigger": {
+            "source": "retained Native firetruck body and red paint extent",
+            "metric": "longitudinal stop undershoot in meters",
+            "failure_condition": "Observed firetruck body stops short of the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ]
+        }
+      ]
+    }
+  ],
+  "runtime_manifest_sha256": "ae635d487ae988b67925bacd5ba13210f31224fc6a1ae131d1836a5557ba8714"
+}
