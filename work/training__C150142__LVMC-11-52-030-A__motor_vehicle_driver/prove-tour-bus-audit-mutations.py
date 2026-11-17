@@ -12,7 +12,8 @@ spec.loader.exec_module(audit_module)
 original_read = audit_module.read
 
 
-def exercise(name, path_suffix, mutate, expected, boundary, service='tour_bus'):
+def exercise(name, path_suffix, mutate, expected, boundary, service='tour_bus',
+             manifest_version=1):
     def changed(path):
         value = original_read(path)
         if str(path).endswith(path_suffix):
@@ -21,7 +22,7 @@ def exercise(name, path_suffix, mutate, expected, boundary, service='tour_bus'):
     audit_module.read = changed
     try:
         try:
-            audit_module.audit(boundary, service)
+            audit_module.audit(boundary, service, manifest_version)
         except ValueError as error:
             if expected not in str(error):
                 raise
@@ -36,16 +37,20 @@ if __name__ == '__main__':
     parser.add_argument('--case', choices=('below', 'at', 'above', 'no_loading'), default='below')
     parser.add_argument('--service', choices=('tour_bus', 'shuttle_bus', 'rtc_bus', 'limo'),
                         default='tour_bus')
+    parser.add_argument('--manifest-version', type=int, choices=(1, 2), default=1)
     args = parser.parse_args()
     boundary = args.case
     service = args.service
+    manifest_version = args.manifest_version
+    if manifest_version == 2 and (service != 'limo' or boundary != 'below'):
+        raise ValueError('Only limo_below has a corrected v2 draft')
     update = {'below': '032', 'at': '033', 'above': '034',
               'no_loading': '034'}[boundary]
     slug = boundary.replace('_', '-')
     def duplicate_trigger(value):
         entry = next(e for e in value['cases'] if e['case_id'].endswith(service + '_' + boundary))
         entry['candidates'][1]['trigger'] = entry['candidates'][0]['trigger']
-    summary_path = (f'update038-limo-{slug}-fallback1-pinned-saved-v1.json'
+    summary_path = (f'update038-limo-{slug}-fallback1-pinned-saved-v{manifest_version}.json'
                     if service == 'limo' else
                     f'update037-rtc-{slug}-fallback1-pinned-saved-v1.json'
                     if service == 'rtc_bus' else
@@ -58,27 +63,31 @@ if __name__ == '__main__':
                     'shuttle_bus': f'shuttle-{slug}-',
                     'rtc_bus': f'rtc-{slug}-',
                     'limo': f'limo-{slug}-'}[service] +
-                   'fallback2-result-v1/v0001/analysis/config.json')
+                   f'fallback2-result-v{manifest_version}/v0001/analysis/config.json')
     manifest_path = {
         'tour_bus': 'execution-manifest-diagnostic-tour_bus_below-draft.json',
         'shuttle_bus': 'execution-manifest-diagnostic-shuttle_bus_below-draft.json',
         'rtc_bus': 'execution-manifest-diagnostic-rtc_bus_below-draft.json',
         'limo': 'execution-manifest-diagnostic-limo_below-draft.json',
     }[service]
+    if manifest_version == 2:
+        manifest_path = 'execution-manifest-diagnostic-limo_below-draft-v2.json'
     results = [
         exercise('changed_processing_sha',
                  summary_path,
                  lambda value: value.__setitem__('processing_sha256', '0' * 64),
-                 'Full pinned CPU proof differs', boundary, service),
+                 'Full pinned CPU proof differs', boundary, service, manifest_version),
         exercise('changed_fixed_boundary',
                  config_path,
                  lambda value: value.__setitem__('requested_boundary',
                                                   'below' if boundary == 'above' else 'above'),
-                 'Fixed law-boundary configuration differs', boundary, service),
+                 'Fixed law-boundary configuration differs', boundary, service,
+                 manifest_version),
         exercise('duplicate_physical_trigger',
                  manifest_path,
                  duplicate_trigger,
-                 'Fallback physical-risk triggers overlap', boundary, service),
+                 'Fallback physical-risk triggers overlap', boundary, service,
+                 manifest_version),
     ]
     print(json.dumps({'format': 'c150142-' +
                       (service.replace('_bus', '') + '-' if service != 'tour_bus' else '') +

@@ -27,11 +27,14 @@ def read(path):
     return json.loads(Path(path).read_text())
 
 
-def audit(suffix='below', service='tour_bus'):
+def audit(suffix='below', service='tour_bus', manifest_version=1):
     if suffix not in BOUNDARIES:
         raise ValueError('Unsupported pinned tour-bus boundary')
     if service not in ('tour_bus', 'shuttle_bus', 'rtc_bus', 'limo'):
         raise ValueError('Unsupported pinned signed-bus audit')
+    if manifest_version not in (1, 2) or (manifest_version == 2 and
+            (service != 'limo' or suffix != 'below')):
+        raise ValueError('Unsupported corrected manifest version')
     frames, duration, boundary = BOUNDARIES[suffix]
     update = {'below': '032', 'at': '033', 'above': '034',
               'no_loading': '034'}[suffix]
@@ -44,12 +47,15 @@ def audit(suffix='below', service='tour_bus'):
     fixed = {'capture_frames': frames, 'requested_approach_frames': 120,
              'requested_stationary_duration_s': duration,
              'requested_boundary': boundary, 'rate_hz': 20}
-    manifest = read(ROOT / {
+    manifest_path = ROOT / {
         'tour_bus': 'execution-manifest-diagnostic-tour_bus_below-draft.json',
         'shuttle_bus': 'execution-manifest-diagnostic-shuttle_bus_below-draft.json',
         'rtc_bus': 'execution-manifest-diagnostic-rtc_bus_below-draft.json',
         'limo': 'execution-manifest-diagnostic-limo_below-draft.json',
-    }[service])
+    }[service]
+    if manifest_version == 2:
+        manifest_path = ROOT / 'execution-manifest-diagnostic-limo_below-draft-v2.json'
+    manifest = read(manifest_path)
     entry = next(e for e in manifest['cases'] if e['case_id'] == case)
     fallback_entries = {c['id']: c for c in entry['candidates']}
     require(set(fallback_entries) == {'fallback1', 'fallback2', 'fallback3'},
@@ -65,10 +71,13 @@ def audit(suffix='below', service='tour_bus'):
                  'primary-result-v2' if service == 'shuttle_bus' and suffix == 'below'
                  else 'primary-result-v1')
                 if candidate == 'primary' else candidate + '-result-v1')
+        if manifest_version == 2:
+            stem = stem[:-1] + '2'
         version = REPO / '.runtime-work' / (prefix + stem) / 'v0001'
         if service == 'limo':
-            summary_name = f'update038-limo-{slug}-{candidate}-pinned-saved-v1.json'
-            negative_name = f'update038-limo-{slug}-{candidate}-negative.json'
+            summary_name = (f'update038-limo-{slug}-{candidate}-pinned-saved-v{manifest_version}.json')
+            negative_name = (f'update038-limo-{slug}-{candidate}-negative' +
+                             ('-v2' if manifest_version == 2 else '') + '.json')
         elif service == 'rtc_bus':
             summary_name = f'update037-rtc-{slug}-{candidate}-pinned-saved-v1.json'
             negative_name = f'update037-rtc-{slug}-{candidate}-negative.json'
@@ -168,5 +177,6 @@ if __name__ == '__main__':
     parser.add_argument('--case', choices=sorted(BOUNDARIES), default='below')
     parser.add_argument('--service', choices=('tour_bus', 'shuttle_bus', 'rtc_bus', 'limo'),
                         default='tour_bus')
+    parser.add_argument('--manifest-version', type=int, choices=(1, 2), default=1)
     args = parser.parse_args()
-    print(json.dumps(audit(args.case, args.service), sort_keys=True))
+    print(json.dumps(audit(args.case, args.service, args.manifest_version), sort_keys=True))
