@@ -184,7 +184,9 @@ def audit_first_case_attempt(attempt, front_roi, rear_roi, purpose):
         raise ValueError('Original school-bus source inventory incomplete')
     for name in required:
         path = attempt / name
-        if not path.is_file() or not path.stat().st_size or _sha_file(path) != declared[name]:
+        if not path.is_file():
+            raise ValueError('Missing required source: ' + name)
+        if not path.stat().st_size or _sha_file(path) != declared[name]:
             raise ValueError('Original school-bus source hash differs: ' + name)
     frame_map = _frame_map(attempt / 'video_frames.jsonl')
     if inventory.get('frames') != [r['frame'] for r in frame_map]:
@@ -255,9 +257,9 @@ def finalize_first_case(attempt):
                 'held_stop_until_cessation_candidate':held,
                 'first_full_body_pass_frame':signal[first_pass]['frame'] if first_pass is not None else None,
                 'passed_during_red_candidate':first_pass is not None and first_pass < cessation,
-                'source_sha256':{'motion':source['source_sha256']['motion_original.jsonl'],
-                                 'command':source['source_sha256']['signal_command_original.jsonl'],
-                                 'frame_map':source['source_sha256']['video_frames.jsonl']},
+                'source_sha256':{name:source['source_sha256'][name] for name in
+                                 ('motion_original.jsonl','signal_command_original.jsonl',
+                                  'video_frames.jsonl')},
                 'physical_acceptance_claimed':False,'legal_conclusion':None}
     channel = attempt / 'subject_speed_mps.jsonl'
     content = ''.join(json.dumps({'frame':row['frame'], 'time_s':row['time_s'],
@@ -302,7 +304,7 @@ def finalize_first_case(attempt):
     report = {'format':'worker-analysis-report','case_id':FIRST_CASE_ID,
               'measurements':{'first_case_sources':{'method':'audit_first_case_attempt',
                   'value':source,'sources':source['source_sha256']},
-                  'stop_response_candidate':{'method':'original motion/body gap joined to red command interval',
+                  'stop_response_candidate':{'method':'finalize_first_case',
                   'value':response,'sources':response['source_sha256']}},
               'limitations':['Equipment, lamp identity, pupil purpose and roadway remain unverified'],
               'physical_acceptance_claimed':False,'legal_acceptance_claimed':False}

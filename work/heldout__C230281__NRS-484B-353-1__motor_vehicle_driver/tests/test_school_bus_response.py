@@ -246,6 +246,24 @@ class SourceResponse(unittest.TestCase):
         self.assertFalse(response['passed_during_red_candidate'])
         self.assertEqual(response['first_full_body_pass_frame'],105)
         self.assertEqual(json.loads(saved.read_text())['case_id'],CASE_ID)
+        sys.path.insert(0, str(Path(__file__).resolve().parents[3]/'runtime'))
+        from scenario_pipeline.worker_exchange.measurement_contract import validate, verify_report
+        package=Path(__file__).resolve().parents[1]
+        contract=json.loads((package/'measurement-contract.json').read_text())
+        dispositions=json.loads((package/'case-plan.json').read_text())['requirement_dispositions']
+        self.assertEqual(len(validate(contract,dispositions,script.read_text(),case_id=CASE_ID)),2)
+        self.assertEqual(len(verify_report(contract,json.loads(saved.read_text()),attempt)),2)
+        from delivery_audit import audit as independent_audit
+        accepted=independent_audit(attempt,saved,package/'measurement-contract.json')
+        self.assertTrue(accepted['software_source_join_passed'])
+        self.assertFalse(accepted['physical_acceptance_claimed'])
+        pupil=(attempt/'pupil_original.jsonl').read_bytes()
+        (attempt/'pupil_original.jsonl').unlink()
+        with self.assertRaisesRegex(ValueError,'Missing required source: pupil_original.jsonl'):
+            finalize_first_case(attempt)
+        with self.assertRaisesRegex(ValueError,'Missing required source: pupil_original.jsonl'):
+            independent_audit(attempt,saved,package/'measurement-contract.json')
+        (attempt/'pupil_original.jsonl').write_bytes(pupil)
         (attempt/'road.xodr').write_text('<OpenDRIVE><road/></OpenDRIVE>\n')
         with self.assertRaisesRegex(ValueError,'source hash differs: road.xodr'):
             audit_first_case_attempt(attempt,[1,1,5,3],[1,1,5,3],'receiving')
