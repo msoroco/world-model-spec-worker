@@ -62,10 +62,10 @@ def compare_diagnostic_sources(baseline, candidate, case_id, center):
     return len(sources) - len(variable)
 
 
-def validate_y15_fallbacks(compat_manifest):
+def validate_view_fallbacks(compat_manifest, center):
     """Bind each distinct response to its exact CPU construction and replay."""
     entry = next(row for row in compat_manifest['cases']
-                 if row['case_id'].endswith('occluder_y15'))
+                 if row['case_id'].endswith(f'occluder_y{center}'))
     primary = {item['path']: item['content'] for item in
                json.loads((ROOT / entry['construction']).read_text())['files']}
     expected_changes = {
@@ -76,7 +76,7 @@ def validate_y15_fallbacks(compat_manifest):
     candidates = entry.get('candidates', [])
     assert [row['id'] for row in candidates] == list(expected_changes)
     assert len({json.dumps(row['trigger'], sort_keys=True) for row in candidates}) == 3
-    source_manifest = json.loads((ROOT / 'view-location-fallback1-source-manifest.json').read_text())
+    source_manifest = json.loads((ROOT / f'view-location-y{center}-fallback1-source-manifest.json').read_text())
     source_entry = next(row for row in source_manifest['cases'] if row['case_id'] == entry['case_id'])
     source_recipe = json.loads((REPO / source_entry['fixture_recipe']).read_text())
     primary_recipe = json.loads((REPO / entry['fixture_recipe']).read_text())
@@ -86,7 +86,7 @@ def validate_y15_fallbacks(compat_manifest):
     assert all(source_map[name] == primary_map[name] for name in source_map if name != 'road_context.json')
     context = json.loads((REPO / source_map['road_context.json']['source']).read_text())
     original = json.loads((REPO / primary_map['road_context.json']['source']).read_text())
-    original['view_occluder']['native_location_m'][1] = 14.5
+    original['view_occluder']['native_location_m'][1] = center - .5
     assert context == original
     assert sha(REPO / source_map['road_context.json']['source']) == source_map['road_context.json']['sha256']
     out = []
@@ -99,8 +99,8 @@ def validate_y15_fallbacks(compat_manifest):
         assert set(files) == set(primary)
         assert {name for name in files if files[name] != primary[name]} == expected_changes[ident]
         if ident == 'fallback1':
-            assert 'view_occluder(world, center_y=14.5)' in files['runner.py']
-            assert '15.0' not in files['tests/test_view_location_world_setup.py']
+            assert f'view_occluder(world, center_y={center - .5:.1f})' in files['runner.py']
+            assert f'{center:.1f}' not in files['tests/test_view_location_world_setup.py']
             source_candidate = source_entry['candidates'][0]
             assert source_candidate['construction_sha256'] == candidate['construction_sha256']
             assert source_candidate['source_equivalence']['road_context_sha256'] == source_map['road_context.json']['sha256']
@@ -111,7 +111,7 @@ def validate_y15_fallbacks(compat_manifest):
         else:
             assert 'EGO_POINT = opendrive_to_carla(-70.0, -1.8)' in files['yield_construction.py']
             recipe = entry['fixture_recipe']
-        local = REPO / f'.runtime-work/c158190-view-y15-{ident}'
+        local = REPO / f'.runtime-work/c158190-view-y{center}-{ident}'
         offline = local.with_name(local.name + '-offline') / 'offline.log'
         positive_path = local.with_name(local.name + '-compat') / 'compatibility.json'
         saved_path = local.with_name(local.name + '-saved') / 'v0001/processing.json'
@@ -133,15 +133,15 @@ def validate_y15_fallbacks(compat_manifest):
     return out
 
 
-def validate_y15_physical_fixtures():
+def validate_view_physical_fixtures(center):
     """Check classifier contrast and saved-processing lifecycle on CPU fixtures."""
-    base = REPO / '.runtime-work/c158190-view-y15-physical'
+    base = REPO / f'.runtime-work/c158190-view-y{center}-physical'
     statuses = {'complete_motion': 'met', 'incomplete_motion': 'not_met',
                 'missing_evidence': 'unverified'}
     rows = []
     for kind, expected in statuses.items():
         path = base / f'{kind}.json'
-        log = REPO / f'.runtime-work/c158190-view-y15-{kind}.log'
+        log = REPO / f'.runtime-work/c158190-view-y{center}-{kind}.log'
         assert log.is_file() and path.is_file()
         result = json.loads(path.read_text())
         assert result['physical_checks']['maneuver']['status'] == expected
@@ -151,7 +151,7 @@ def validate_y15_physical_fixtures():
         rows.append({'kind': kind, 'status': expected, 'result_sha256': sha(path),
                      'log_sha256': sha(log)})
     life_path = base / 'lifecycle.json'
-    life_log = REPO / '.runtime-work/c158190-view-y15-lifecycle.log'
+    life_log = REPO / f'.runtime-work/c158190-view-y{center}-lifecycle.log'
     life = json.loads(life_path.read_text())
     assert life['events'] == ['capture_finished', 'encoders_closed',
                               'restoration_verified', 'native_exit',
@@ -283,8 +283,10 @@ def validate():
     else:
         raise AssertionError('Changed fixed diagnostic source escaped comparison audit')
     return {'status': 'pass', 'drafts': sources,
-            'y15_fallbacks': validate_y15_fallbacks(compat_manifest),
-            'y15_physical_fixtures': validate_y15_physical_fixtures(),
+            'view_fallbacks': {str(center): validate_view_fallbacks(compat_manifest, center)
+                               for center in (12, 15, 18)},
+            'view_physical_fixtures': {str(center): validate_view_physical_fixtures(center)
+                                       for center in (12, 15, 18)},
             'fixed_source_count': len(fixed),
             'fixed_diagnostic_source_count': fixed_diagnostic_source_count,
             'negative_diagnostic_change_rejected': True,

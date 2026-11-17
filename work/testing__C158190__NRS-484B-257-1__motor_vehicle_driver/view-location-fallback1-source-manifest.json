@@ -94,7 +94,48 @@
           "evidence": "interaction_history.jsonl and video_frames.jsonl"
         }
       },
-      "occluder_center_y_m": 12.0
+      "occluder_center_y_m": 12.0,
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/view_location_y12/fallbacks/fallback1-construction.json",
+          "construction_sha256": "8a63d157e164c4bdc21050a20033b5cb8ff76933c32ec9594443575d863bb335",
+          "trigger": {
+            "source": "visibility_rays.jsonl and road_context.json",
+            "metric": "original Native streetbarrier hits and clear/blocked transition over the approach",
+            "failure_condition": "the y=12 m obstruction produces no attributable clear/blocked transition"
+          },
+          "changed_knobs": [
+            "roadside streetbarrier center y from 12.0 m to 11.5 m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/view_location_y12/fallbacks/fallback2-construction.json",
+          "construction_sha256": "ad971091a56557933ffa3f2648796a5ab7f3da682ecba6eb584e0b86c8e09397",
+          "trigger": {
+            "source": "reference_corner.mkv and video_frames.jsonl",
+            "metric": "original source frames containing both roadside body and through-highway lane",
+            "failure_condition": "the reference camera fails to frame the body and governed view corridor"
+          },
+          "changed_knobs": [
+            "reference-corner camera from (19,-25,15,135,-24) to (23,-28,18,135,-27)"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/view_location_y12/fallbacks/fallback3-construction.json",
+          "construction_sha256": "452bb4a8bfccb16def260af7fd848acf31c9d7f02f4a255dd029cd1b0c914466",
+          "trigger": {
+            "source": "approach_history.jsonl and video_frames.jsonl",
+            "metric": "original approach frames spanning 50 m to 1 m before junction entry",
+            "failure_condition": "the near-view transition is outside the retained approach frame span"
+          },
+          "changed_knobs": [
+            "ego OpenDRIVE approach spawn x from -60 m to -70 m"
+          ]
+        }
+      ]
     },
     {
       "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_occluder_y15",

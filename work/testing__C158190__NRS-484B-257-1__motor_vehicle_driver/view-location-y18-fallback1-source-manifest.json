@@ -1,0 +1,413 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver",
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3",
+  "cases": [
+    {
+      "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_occluder_y12",
+      "kind": "diagnostic_unselected",
+      "construction": "cases/view_location_y12/construction.json",
+      "construction_sha256": "454756f27c16837cd7ddcb02ec2896d8f23d48100decb4bf879c332bfb6667b7",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/cases/view_location_y12/diagnostic-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Prop mesh, realized ray occlusion and original pixels unverified"
+      },
+      "acquisition": {
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "st.lane": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "st.sight_distance": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "rel.visible": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "dev.yield_sign": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "ego_approach_speed": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original approach velocity samples",
+          "evidence": "approach_history.jsonl"
+        },
+        "through_highway_sight_clear": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original sight rays",
+          "evidence": "visibility_rays.jsonl"
+        },
+        "ego_distance_to_junction_m": {
+          "entrypoint": "finalizer.py",
+          "method": "join original approach distance to intersection with saved frame map",
+          "evidence": "approach_history.jsonl and video_frames.jsonl"
+        },
+        "ego_crossing_body": {
+          "entrypoint": "finalizer.py",
+          "method": "join original Native ego body vertices and lane state to saved frame map",
+          "evidence": "interaction_history.jsonl and video_frames.jsonl"
+        },
+        "through_vehicle_position": {
+          "entrypoint": "finalizer.py",
+          "method": "join original Native through actor body vertices and lane state; retain explicit absent actor state",
+          "evidence": "interaction_history.jsonl and video_frames.jsonl"
+        },
+        "through_vehicle_speed": {
+          "entrypoint": "finalizer.py",
+          "method": "derive finite difference through actor center motion from original Native body history with explicit absent state",
+          "evidence": "interaction_history.jsonl and video_frames.jsonl"
+        }
+      },
+      "occluder_center_y_m": 12.0,
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/view_location_y12/fallbacks/fallback1-construction.json",
+          "construction_sha256": "8a63d157e164c4bdc21050a20033b5cb8ff76933c32ec9594443575d863bb335",
+          "trigger": {
+            "source": "visibility_rays.jsonl and road_context.json",
+            "metric": "original Native streetbarrier hits and clear/blocked transition over the approach",
+            "failure_condition": "the y=12 m obstruction produces no attributable clear/blocked transition"
+          },
+          "changed_knobs": [
+            "roadside streetbarrier center y from 12.0 m to 11.5 m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/view_location_y12/fallbacks/fallback2-construction.json",
+          "construction_sha256": "ad971091a56557933ffa3f2648796a5ab7f3da682ecba6eb584e0b86c8e09397",
+          "trigger": {
+            "source": "reference_corner.mkv and video_frames.jsonl",
+            "metric": "original source frames containing both roadside body and through-highway lane",
+            "failure_condition": "the reference camera fails to frame the body and governed view corridor"
+          },
+          "changed_knobs": [
+            "reference-corner camera from (19,-25,15,135,-24) to (23,-28,18,135,-27)"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/view_location_y12/fallbacks/fallback3-construction.json",
+          "construction_sha256": "452bb4a8bfccb16def260af7fd848acf31c9d7f02f4a255dd029cd1b0c914466",
+          "trigger": {
+            "source": "approach_history.jsonl and video_frames.jsonl",
+            "metric": "original approach frames spanning 50 m to 1 m before junction entry",
+            "failure_condition": "the near-view transition is outside the retained approach frame span"
+          },
+          "changed_knobs": [
+            "ego OpenDRIVE approach spawn x from -60 m to -70 m"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_occluder_y15",
+      "kind": "diagnostic_unselected",
+      "construction": "cases/view_location_y15/construction.json",
+      "construction_sha256": "4697c54c70fa97d015e25dd5e883c0f81f27457ac76aacd94bc89f80273ebd1a",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/cases/view_location_y15/diagnostic-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Prop mesh, realized ray occlusion and original pixels unverified"
+      },
+      "acquisition": {
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "st.lane": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "st.sight_distance": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "rel.visible": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "dev.yield_sign": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "ego_approach_speed": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original approach velocity samples",
+          "evidence": "approach_history.jsonl"
+        },
+        "through_highway_sight_clear": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original sight rays",
+          "evidence": "visibility_rays.jsonl"
+        },
+        "ego_distance_to_junction_m": {
+          "entrypoint": "finalizer.py",
+          "method": "join original approach distance to intersection with saved frame map",
+          "evidence": "approach_history.jsonl and video_frames.jsonl"
+        },
+        "ego_crossing_body": {
+          "entrypoint": "finalizer.py",
+          "method": "join original Native ego body vertices and lane state to saved frame map",
+          "evidence": "interaction_history.jsonl and video_frames.jsonl"
+        },
+        "through_vehicle_position": {
+          "entrypoint": "finalizer.py",
+          "method": "join original Native through actor body vertices and lane state; retain explicit absent actor state",
+          "evidence": "interaction_history.jsonl and video_frames.jsonl"
+        },
+        "through_vehicle_speed": {
+          "entrypoint": "finalizer.py",
+          "method": "derive finite difference through actor center motion from original Native body history with explicit absent state",
+          "evidence": "interaction_history.jsonl and video_frames.jsonl"
+        }
+      },
+      "occluder_center_y_m": 15.0,
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/view_location_y15/fallbacks/fallback1-construction.json",
+          "construction_sha256": "eefd886549d4fa0155b6033933a244f53ebe45a24c5eec929983e606929655ac",
+          "trigger": {
+            "source": "visibility_rays.jsonl and road_context.json",
+            "metric": "original Native streetbarrier hits and clear/blocked transition over the approach",
+            "failure_condition": "the y=15 m obstruction produces no attributable clear/blocked transition"
+          },
+          "changed_knobs": [
+            "roadside streetbarrier center y from 15.0 m to 14.5 m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/view_location_y15/fallbacks/fallback2-construction.json",
+          "construction_sha256": "0d764021ba2341b33459a9c955174cfe905312e13b3004856caa86ec95af4f30",
+          "trigger": {
+            "source": "reference_corner.mkv and video_frames.jsonl",
+            "metric": "original source frames containing both roadside body and through-highway lane",
+            "failure_condition": "the reference camera fails to frame the body and governed view corridor"
+          },
+          "changed_knobs": [
+            "reference-corner camera from (19,-25,15,135,-24) to (23,-28,18,135,-27)"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/view_location_y15/fallbacks/fallback3-construction.json",
+          "construction_sha256": "2ff048e88e7ddd46e9710ecd7f601fbd0ed7cd3538b3c124485c72ae4b040e78",
+          "trigger": {
+            "source": "approach_history.jsonl and video_frames.jsonl",
+            "metric": "original approach frames spanning 50 m to 1 m before junction entry",
+            "failure_condition": "the near-view transition is outside the retained approach frame span"
+          },
+          "changed_knobs": [
+            "ego OpenDRIVE approach spawn x from -60 m to -70 m"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_occluder_y18",
+      "kind": "diagnostic_unselected",
+      "construction": "cases/view_location_y18/construction.json",
+      "construction_sha256": "58ee2dc1e5884a378ee9a94cef51792fb3d5191b8d9023cda7f43e0f8b536b37",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/cases/view_location_y18/fallbacks/fallback1-sources/diagnostic-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Prop mesh, realized ray occlusion and original pixels unverified"
+      },
+      "acquisition": {
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "st.lane": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "st.sight_distance": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "rel.visible": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "dev.yield_sign": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "ego_approach_speed": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original approach velocity samples",
+          "evidence": "approach_history.jsonl"
+        },
+        "through_highway_sight_clear": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original sight rays",
+          "evidence": "visibility_rays.jsonl"
+        },
+        "ego_distance_to_junction_m": {
+          "entrypoint": "finalizer.py",
+          "method": "join original approach distance to intersection with saved frame map",
+          "evidence": "approach_history.jsonl and video_frames.jsonl"
+        },
+        "ego_crossing_body": {
+          "entrypoint": "finalizer.py",
+          "method": "join original Native ego body vertices and lane state to saved frame map",
+          "evidence": "interaction_history.jsonl and video_frames.jsonl"
+        },
+        "through_vehicle_position": {
+          "entrypoint": "finalizer.py",
+          "method": "join original Native through actor body vertices and lane state; retain explicit absent actor state",
+          "evidence": "interaction_history.jsonl and video_frames.jsonl"
+        },
+        "through_vehicle_speed": {
+          "entrypoint": "finalizer.py",
+          "method": "derive finite difference through actor center motion from original Native body history with explicit absent state",
+          "evidence": "interaction_history.jsonl and video_frames.jsonl"
+        }
+      },
+      "occluder_center_y_m": 18.0,
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/view_location_y18/fallbacks/fallback1-construction.json",
+          "construction_sha256": "80ac359cb1dbbd27ed97bcc4755e2d14d358f2436322779e4bde62a37bbfbf16",
+          "trigger": {
+            "source": "visibility_rays.jsonl and road_context.json",
+            "metric": "original Native streetbarrier hits and clear/blocked transition over the approach",
+            "failure_condition": "the y=18 m obstruction produces no attributable clear/blocked transition"
+          },
+          "changed_knobs": [
+            "roadside streetbarrier center y from 18.0 m to 17.5 m"
+          ],
+          "source_equivalence": {
+            "road_context_sha256": "c62ec15001950d06e59d43a2ddacbe13d84af5b5678166f478993ab0dd003c47",
+            "fixture_recipe_sha256": "e63295df29f3bdad32aadc13c940233f0b1667fc3a4396074923ec9d0a002c9e"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/view_location_y18/fallbacks/fallback2-construction.json",
+          "construction_sha256": "6688be1fba82512294dc152e5ae5f7cb543c5ef2f7a325d1049b9092cd4f8fa4",
+          "trigger": {
+            "source": "reference_corner.mkv and video_frames.jsonl",
+            "metric": "original source frames containing both roadside body and through-highway lane",
+            "failure_condition": "the reference camera fails to frame the body and governed view corridor"
+          },
+          "changed_knobs": [
+            "reference-corner camera from (19,-25,15,135,-24) to (23,-28,18,135,-27)"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/view_location_y18/fallbacks/fallback3-construction.json",
+          "construction_sha256": "2a62e8b876b985cc35ed9b96e5bac1e94cd7d36134e06a78ad2252293e05f4f0",
+          "trigger": {
+            "source": "approach_history.jsonl and video_frames.jsonl",
+            "metric": "original approach frames spanning 50 m to 1 m before junction entry",
+            "failure_condition": "the near-view transition is outside the retained approach frame span"
+          },
+          "changed_knobs": [
+            "ego OpenDRIVE approach spawn x from -60 m to -70 m"
+          ]
+        }
+      ]
+    }
+  ]
+}
