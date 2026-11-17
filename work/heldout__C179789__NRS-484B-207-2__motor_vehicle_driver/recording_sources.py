@@ -25,10 +25,14 @@ def emit(root, verified_rows, *, audible):
 
     def write_stream(name, values, unit):
         path = root / (name + '.jsonl')
-        with path.open('x') as stream:
-            for row, value in zip(verified_rows, values):
-                stream.write(json.dumps({'frame': row['frame'], 'time_s': row['time_s'],
-                                         'value': value}, allow_nan=False) + '\n')
+        content = ''.join(json.dumps({'frame': row['frame'], 'time_s': row['time_s'],
+                                        'value': value}, allow_nan=False) + '\n'
+                          for row, value in zip(verified_rows, values))
+        if path.exists():
+            if path.read_text() != content:
+                raise ValueError('Preexisting semantic channel differs from original source: ' + path.name)
+        else:
+            path.write_text(content)
         evidence.append({'name': name, 'unit': unit, 'reference': path.name,
                          'sha256': hashlib.sha256(path.read_bytes()).hexdigest()})
 
@@ -72,9 +76,12 @@ def emit(root, verified_rows, *, audible):
         'legal_conclusion': None,
         'source_status': 'source review incomplete'}}
     path = root / 'right_pass_permission_context.json'
-    with path.open('x') as stream:
-        json.dump(context, stream, indent=2, allow_nan=False)
-        stream.write('\n')
+    content = json.dumps(context, indent=2, allow_nan=False) + '\n'
+    if path.exists():
+        if path.read_text() != content:
+            raise ValueError('Preexisting permission context differs from original source')
+    else:
+        path.write_text(content)
     evidence.append({'name': 'right_pass_permission_context', 'unit': 'structured',
                      'reference': path.name, 'sha256': hashlib.sha256(path.read_bytes()).hexdigest()})
     return evidence

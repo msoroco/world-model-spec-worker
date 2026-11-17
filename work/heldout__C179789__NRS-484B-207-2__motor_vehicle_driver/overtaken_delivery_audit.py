@@ -120,8 +120,21 @@ def audit(attempt, saved_receipt, analysis_override=None):
             response.get("pass_complete_frame") != expected["pass_complete_frame"]):
         raise ValueError("Saved delivery result differs from original motion")
     evidence = {item["name"]: item for item in result.get("recording_evidence", [])}
-    if set(evidence) != {"subject_right_offset_m", "subject_speed_mps"}:
+    required_evidence = {"subject_right_offset_m", "subject_speed_mps",
+                         "observed_notice_source_context", "audible_signal_source_context",
+                         "full_body_pass_gap_m", "right_pass_permission_context"}
+    if set(evidence) != required_evidence:
         raise ValueError("Saved delivery channel inventory differs")
+    for name in required_evidence - {"subject_right_offset_m", "subject_speed_mps"}:
+        path = required(stage, evidence[name]["reference"])
+        if digest(path) != evidence[name]["sha256"]:
+            raise ValueError("Saved semantic channel hash differs: " + name)
+        if name == "right_pass_permission_context":
+            context = json.loads(path.read_text())
+            if context.get("right_pass_permission_context", {}).get("legal_conclusion") is not None:
+                raise ValueError("Saved permission channel asserts a legal outcome")
+        elif len(rows(path)) != len(body):
+            raise ValueError("Saved semantic channel frame count differs: " + name)
     for name, values in (("subject_right_offset_m", [s[2] for s in samples]),
                          ("subject_speed_mps", [s[3] for s in samples])):
         path = required(stage, evidence[name]["reference"])

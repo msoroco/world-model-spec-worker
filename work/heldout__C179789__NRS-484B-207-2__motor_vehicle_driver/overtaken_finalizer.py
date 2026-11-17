@@ -83,11 +83,14 @@ def build_result(attempt, report):
     for key, unit in (("right_offset_m", "m"), ("speed_mps", "m/s")):
         name = "subject_" + key + ".jsonl"
         path = root / name
-        if path.exists():
-            raise ValueError("Retain prior derived channel: " + name)
-        path.write_text("".join(json.dumps({"frame":row["frame"],
+        content = "".join(json.dumps({"frame":row["frame"],
             "time_s":row["time_s"], "value":row[key]}, allow_nan=False)+"\n"
-            for row in rows))
+            for row in rows)
+        if path.exists():
+            if path.read_text() != content:
+                raise ValueError("Preexisting derived channel differs from original source: " + name)
+        else:
+            path.write_text(content)
         evidence.append({"name":"subject_"+key,"unit":unit,"reference":name,
                          "sha256":hashlib.sha256(path.read_bytes()).hexdigest()})
     audible = case_id == AUDIBLE_CASE_ID

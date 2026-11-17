@@ -115,10 +115,7 @@ class OvertakenTests(unittest.TestCase):
             saved_behavior.audit_right_pass_exception(*receipts)
         staged = []
         roots = []
-        diagnostic_source = Path(".runtime-work/c179789-no-right-saved-output-20261117fixed/v0001/processing.json")
-        if not diagnostic_source.is_file():
-            self.skipTest("Retained diagnostic saved source unavailable")
-        base_receipt = json.loads(diagnostic_source.read_text())
+        base_receipt = json.loads(receipts[0].read_text())
         base_source = Path(base_receipt["analysis_directory"])
         for index, receipt_path in enumerate(receipts):
             # Both branches share one synthetic original motion source; only the
