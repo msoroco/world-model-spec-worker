@@ -8,11 +8,21 @@ plan = json.loads((folder / 'case-plan.json').read_text())
 for item in source['files']:
     path = folder / item['path']
     path.parent.mkdir(parents=True, exist_ok=True)
+    if item['path'] == 'config.json' and path.exists():
+        authored = json.loads(path.read_text())
+        selected = json.loads(item['content'])
+        if {key: value for key, value in authored.items()
+                if key != 'supported_case_ids'} != selected:
+            raise ValueError('Top-level config differs from pinned primary beyond case inventory')
+        continue
     if path.exists() and path.read_text() != item['content']:
         raise ValueError(f'Existing source differs from pinned primary: {path}')
     if not path.exists():
         path.write_text(item['content'])
 construction = dict(source)
+for item in construction['files']:
+    if item['path'] == 'config.json':
+        item['content'] = (folder / 'config.json').read_text()
 construction['format'] = 'worker-construction'
 construction['measurement_plan'] = {
     'source': 'case-plan.json',
