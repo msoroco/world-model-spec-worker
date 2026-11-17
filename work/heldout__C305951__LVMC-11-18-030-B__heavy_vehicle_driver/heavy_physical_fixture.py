@@ -93,13 +93,12 @@ def _apply_lateral_target(attempt, offset_m):
     heading = body[0]["lane"]["heading_xy"]
     right = (heading[1], -heading[0])
     longitudinal = (last["x"] - first["x"]) * right[0] + (last["y"] - first["y"]) * right[1]
-    if abs(longitudinal) < 0.1:
-        raise ValueError("Diagnostic has no lateral motion to rescale")
-    for motion, observation in zip(trace, body):
+    use_frame_progress = abs(longitudinal) < 0.1
+    for index, (motion, observation) in enumerate(zip(trace, body)):
         old = motion["position"]
         current_lateral = ((old["x"] - first["x"]) * right[0] +
                            (old["y"] - first["y"]) * right[1])
-        fraction = current_lateral / longitudinal
+        fraction = index / (len(trace) - 1) if use_frame_progress else current_lateral / longitudinal
         lateral_change = offset_m * fraction - current_lateral
         desired_x = old["x"] + right[0] * lateral_change
         desired_y = old["y"] + right[1] * lateral_change
@@ -116,18 +115,25 @@ def _apply_lateral_target(attempt, offset_m):
     _put(body_path, body)
 
 
-def run(case_id, kind, *, negative_review=False, lateral_offset_m=None):
+def run(case_id, kind, *, negative_review=False, lateral_offset_m=None,
+        manifest_path=None):
     if not case_id.startswith(PREFIX):
         raise ValueError("Wrong heavy-lane case identity")
     suffix = case_id[len(PREFIX):]
-    manifest = HERE / "provisional-manifest.json"
+    if suffix.startswith("heavy_passing_plan-"):
+        source_kind = "passing_boundary_crossing"
+    elif suffix.startswith("heavy_turn_plan-"):
+        source_kind = "lawful_turn_preparation_boundary_crossing"
+    else:
+        source_kind = suffix
+    manifest = Path(manifest_path) if manifest_path else HERE / "provisional-manifest.json"
     entries = [entry for entry in json.loads(manifest.read_text())["cases"]
                if entry["case_id"] == case_id]
     if len(entries) != 1 or kind not in (
             "complete_motion", "incomplete_motion", "missing_evidence"):
         raise ValueError("Unknown heavy-lane physical fixture")
     entry = entries[0]
-    if lateral_offset_m is not None and (kind != "complete_motion" or suffix not in (
+    if lateral_offset_m is not None and (kind != "complete_motion" or source_kind not in (
             "passing_boundary_crossing", "lawful_turn_preparation_boundary_crossing")):
         raise ValueError("Lateral sweep is for complete passing/turn diagnostic sources")
     with TemporaryDirectory(dir=ROOT / ".runtime-work", prefix="heavy-physical-") as temp:
@@ -141,7 +147,7 @@ def run(case_id, kind, *, negative_review=False, lateral_offset_m=None):
         if kind == "missing_evidence":
             (attempt / "heavy_lane_sources.jsonl").unlink()
         else:
-            _alter(attempt, suffix, kind)
+            _alter(attempt, source_kind, kind)
             if lateral_offset_m is not None:
                 _apply_lateral_target(attempt, lateral_offset_m)
         command = [sys.executable, str(attempt / "heavy_lane_finalizer.py"),
@@ -201,6 +207,7 @@ if __name__ == "__main__":
     parser.add_argument("--kind", required=True,
                         choices=("complete_motion", "incomplete_motion", "missing_evidence"))
     parser.add_argument("--output", required=True)
+    parser.add_argument("--manifest", help="Exact provisional manifest for a sweep case")
     parser.add_argument("--negative-review", action="store_true",
                         help="Verify that the real-capture path rejects fixture pixel review")
     parser.add_argument("--lateral-offset-m", type=float,
@@ -209,7 +216,7 @@ if __name__ == "__main__":
     if args.negative_review and args.kind != "complete_motion":
         parser.error("negative review probe requires complete_motion")
     value = run(args.case, args.kind, negative_review=args.negative_review,
-                lateral_offset_m=args.lateral_offset_m)
+                lateral_offset_m=args.lateral_offset_m, manifest_path=args.manifest)
     output = Path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(value, indent=2, allow_nan=False) + "\n")

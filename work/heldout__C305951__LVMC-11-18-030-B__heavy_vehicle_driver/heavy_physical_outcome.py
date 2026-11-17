@@ -78,6 +78,10 @@ def evaluate(report, source_audit, pixel_review, trace):
     inside = all(frame["minimum_clearance_m"] >= 0 for frame in frames)
     crossing = any(frame["minimum_clearance_m"] < 0 for frame in frames)
     suffix = case.rsplit("__", 1)[-1]
+    if suffix.startswith("heavy_passing_plan-"):
+        suffix = "passing_boundary_crossing"
+    elif suffix.startswith("heavy_turn_plan-"):
+        suffix = "lawful_turn_preparation_boundary_crossing"
     if suffix == "within_marked_lane":
         event = inside
     elif suffix == "unexcused_boundary_crossing":

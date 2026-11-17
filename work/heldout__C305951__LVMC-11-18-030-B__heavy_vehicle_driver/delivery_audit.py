@@ -79,7 +79,8 @@ def audit(root: Path, case_id: str, *, negative_camera: bool = False,
     sources = measurement["sources"]
     required = {"native_three_lane_survey.json", "heavy_lane_sources.jsonl",
                 "trace.jsonl", "video_frames.jsonl", *(name + ".mkv" for name in CAMERAS)}
-    turn_case = case_id.endswith("__lawful_turn_preparation_boundary_crossing")
+    turn_case = (case_id.endswith("__lawful_turn_preparation_boundary_crossing")
+                 or "__heavy_turn_plan-" in case_id)
     if turn_case:
         required.update(("native_turn_plan.json", "turn_intent_sources.jsonl"))
     if set(sources) != required:
@@ -305,6 +306,76 @@ def compare_passing(crossing_root: Path, passing_root: Path, *,
             "physical_acceptance_claimed": False, "legal_acceptance_claimed": False}
 
 
+def compare_sweep(first_root: Path, second_root: Path) -> dict:
+    """Audit one authored lateral setpoint change against original saved sources."""
+    first, second = Path(first_root), Path(second_root)
+    left_case = json.loads(_file(first, "result.json").read_text())["case_id"]
+    right_case = json.loads(_file(second, "result.json").read_text())["case_id"]
+    family = next((name for name in ("heavy_passing_plan", "heavy_turn_plan")
+                   if "__" + name + "-" in left_case and "__" + name + "-" in right_case), None)
+    if family is None or left_case == right_case:
+        raise ValueError("Heavy sweep comparison case pair differs")
+    left, right = audit(first, left_case), audit(second, right_case)
+    old_config = json.loads(_file(first, "config.json").read_text())
+    new_config = json.loads(_file(second, "config.json").read_text())
+    old_engineering, new_engineering = old_config["engineering"], new_config["engineering"]
+    old_target = old_engineering["lateral_offset_m"]
+    new_target = new_engineering["lateral_offset_m"]
+    if (not isinstance(old_target, (int, float)) or
+            not isinstance(new_target, (int, float)) or
+            abs(old_target - new_target) < 1e-9 or
+            {key: value for key, value in old_engineering.items() if key != "lateral_offset_m"} !=
+            {key: value for key, value in new_engineering.items() if key != "lateral_offset_m"}):
+        raise ValueError("Heavy sweep fixed engineering settings differ")
+    fixed = ("native_three_lane_survey.json", "video_frames.jsonl", "overview.mkv",
+             "approach.mkv", "reference_corner.mkv", "driver_reference.mkv",
+             "passing_context.jsonl", "four_camera_originals.jsonl")
+    if family == "heavy_turn_plan":
+        fixed += ("native_turn_plan.json", "turn_intent_sources.jsonl")
+    for name in fixed:
+        if _sha(_file(first, name)) != _sha(_file(second, name)):
+            raise ValueError("Heavy sweep fixed source differs: " + name)
+    old_trace, new_trace = _rows(_file(first, "trace.jsonl")), _rows(_file(second, "trace.jsonl"))
+    old_body, new_body = _rows(_file(first, "heavy_lane_sources.jsonl")), _rows(_file(second, "heavy_lane_sources.jsonl"))
+    if not (len(old_trace) == len(new_trace) == len(old_body) == len(new_body) and len(old_trace) > 1):
+        raise ValueError("Heavy sweep frame inventory differs")
+    delta = new_target - old_target
+    for index, (before, after, old_obs, new_obs) in enumerate(
+            zip(old_trace, new_trace, old_body, new_body)):
+        offset = -delta * index / (len(old_trace) - 1)
+        if ({key: value for key, value in before.items() if key not in ("position", "position_m")} !=
+                {key: value for key, value in after.items() if key not in ("position", "position_m")} or
+                any(abs(before["position"][key] - after["position"][key]) > 1e-6 for key in ("x", "z")) or
+                abs(after["position"]["y"] - before["position"]["y"] - offset) > 1e-5 or
+                any(abs(before["position_m"][i] - after["position_m"][i]) > 1e-6 for i in (0, 2)) or
+                abs(after["position_m"][1] - before["position_m"][1] - offset) > 1e-5):
+            raise ValueError("Heavy sweep trace changed outside the authored lateral setpoint")
+        if ({key: value for key, value in old_obs.items() if key != "heavy_vehicle_components"} !=
+                {key: value for key, value in new_obs.items() if key != "heavy_vehicle_components"}):
+            raise ValueError("Heavy sweep participant or lane source differs")
+        old_parts, new_parts = old_obs["heavy_vehicle_components"], new_obs["heavy_vehicle_components"]
+        if len(old_parts) != len(new_parts):
+            raise ValueError("Heavy sweep component count differs")
+        for old_part, new_part in zip(old_parts, new_parts):
+            if ({key: value for key, value in old_part.items() if key != "corners_xy_m"} !=
+                    {key: value for key, value in new_part.items() if key != "corners_xy_m"} or
+                    len(old_part["corners_xy_m"]) != len(new_part["corners_xy_m"])):
+                raise ValueError("Heavy sweep component shape differs")
+            for old_corner, new_corner in zip(old_part["corners_xy_m"], new_part["corners_xy_m"]):
+                if (abs(old_corner[0] - new_corner[0]) > 1e-6 or
+                        abs(new_corner[1] - old_corner[1] - offset) > 1e-5):
+                    raise ValueError("Heavy sweep body changed outside lateral translation")
+    if abs((right["minimum_clearance_m"] - left["minimum_clearance_m"]) + delta) > 1e-4:
+        raise ValueError("Heavy sweep clearance does not follow the authored setpoint")
+    return {"format": "worker-heavy-lane-sweep-comparison-fixture",
+            "case_ids": [left_case, right_case], "family": family,
+            "lateral_setpoints_m": [old_target, new_target],
+            "minimum_clearances_m": [left["minimum_clearance_m"], right["minimum_clearance_m"]],
+            "fixed_source_sha256": {name: _sha(_file(first, name)) for name in fixed},
+            "source_join_verified": True, "physical_acceptance_claimed": False,
+            "legal_acceptance_claimed": False}
+
+
 def compare_turn(crossing_root: Path, turn_root: Path, *,
                  negative_turn: bool = False) -> dict:
     """Verify fixed source context and the declared rightward turn controller."""
@@ -376,6 +447,7 @@ def main() -> None:
     parser.add_argument("--compare-attempt")
     parser.add_argument("--passing-comparison", action="store_true")
     parser.add_argument("--turn-comparison", action="store_true")
+    parser.add_argument("--sweep-comparison", action="store_true")
     parser.add_argument("--negative-same-body", action="store_true")
     parser.add_argument("--negative-camera", action="store_true")
     parser.add_argument("--negative-passing", action="store_true")
@@ -384,7 +456,9 @@ def main() -> None:
     if args.compare_attempt:
         if not args.attempt or args.case:
             parser.error("comparison needs --attempt and --compare-attempt")
-        if args.turn_comparison:
+        if args.sweep_comparison:
+            print(json.dumps(compare_sweep(Path(args.attempt), Path(args.compare_attempt)), indent=2))
+        elif args.turn_comparison:
             print(json.dumps(compare_turn(Path(args.attempt),
                                           Path(args.compare_attempt),
                                           negative_turn=args.negative_turn), indent=2))
