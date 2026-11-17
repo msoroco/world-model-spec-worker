@@ -4,6 +4,7 @@ import json
 import tempfile
 import unittest
 import turn_context
+import stop_measurements
 from contextlib import contextmanager
 from pathlib import Path
 from types import SimpleNamespace
@@ -23,6 +24,14 @@ def site():
     return {"routes": {"ego": [[-10, 0], [-5, 0], [0, 0], [0, 5]],
                        "other": [[10, 0], [5, 0], [0, 0], [-5, 0]]},
             "expected_approach_lanes": {"ego": [11, -1], "other": [11, 1]}}
+
+
+def stop_references():
+    return {role: {"kind": "marked_stop_line",
+                   "segment_xy_m": [[x, -2], [x, 2]],
+                   "geometry_source": "synthetic fake-Native line",
+                   "reference_review_source": "synthetic fake-Native review"}
+            for role, x in (("ego", -5), ("other", 5))}
 
 
 class Actor:
@@ -240,7 +249,8 @@ class OppositeTurnConstructionTest(unittest.TestCase):
                      approach_geometry_source="synthetic fake-Native test route",
                      governed_signal_ids={"ego": 101, "other": 102},
                      native_map_name="SyntheticTown",
-                     device_inventory_source="synthetic fake-Native signal inventory")
+                     device_inventory_source="synthetic fake-Native signal inventory",
+                     selected_stop_references=stop_references())
         lights = {"ego": SimpleNamespace(id=101, get_state=lambda: "Green"),
                   "other": SimpleNamespace(id=102, get_state=lambda: "Red")}
         with tempfile.TemporaryDirectory() as temp:
@@ -268,6 +278,8 @@ class OppositeTurnConstructionTest(unittest.TestCase):
             signal_context = json.loads((Path(temp) / "signal_context.json").read_text())
             self.assertEqual(signal_context["review_status"], "candidate_only")
             self.assertEqual(signal_context["governed_lane_id"], -1)
+            stop_context = json.loads((Path(temp) / "stop_context.json").read_text())
+            self.assertEqual(stop_context["selected_references"], stop_references())
         self.assertEqual(receipt["frames_recorded"], 3)
         self.assertEqual([item["native_frame"] for item in source], [2, 3, 4])
         self.assertEqual(len(frames), 3)
@@ -288,6 +300,7 @@ class OppositeTurnConstructionTest(unittest.TestCase):
         self.assertTrue(measured["original_heading_complete"])
         self.assertEqual([row["frame"] for row in measured_device["observations"]], [2, 3, 4])
         self.assertEqual(measured_device["native_signal_ids"], {"ego": 101, "other": 102})
+        self.assertEqual(measured_device["selected_stop_references"], stop_references())
         self.assertEqual(measured_device["official_device_judgment"], "unresolved")
         self.assertEqual(measured["first_original_headings"]["other"]["native_lane_id"], 1)
         self.assertEqual(set(written), {name + ".mkv" for name in value["cameras"]})
@@ -332,6 +345,20 @@ class OppositeTurnConstructionTest(unittest.TestCase):
                                                governed_lights=wrong)
             self.assertEqual(list(Path(temp).iterdir()), [])
 
+    def test_candidate_media_rejects_missing_stop_reference_before_writing(self):
+        value = dict(site(), cameras={name: [0, 0, 10, 0, 0, 0] for name in
+                                      ("overview", "approach", "reference_corner", "driver_reference")},
+                     crossing_polygon_xy_m=[[-3, -3], [3, -3], [3, 3], [-3, 3]],
+                     crossing_polygon_source="synthetic polygon",
+                     native_junction_id=77,
+                     approach_headings_deg={"ego": 0, "other": 180},
+                     approach_geometry_source="synthetic route")
+        with tempfile.TemporaryDirectory() as temp:
+            with self.assertRaisesRegex(ValueError, "Source-selected stop references"):
+                runner.capture_candidate_media(Path(temp), None, None, value, "ego",
+                                               None, None, None, None, 3)
+            self.assertEqual(list(Path(temp).iterdir()), [])
+
 
 class DeviceSourceJoinTests(unittest.TestCase):
     def _sources(self, root):
@@ -349,6 +376,9 @@ class DeviceSourceJoinTests(unittest.TestCase):
             "other_governed_road_id": 2, "other_governed_lane_id": -1,
             "device_inventory_source": "synthetic candidate inventory",
             "review_status": "candidate_only"}))
+        (root / "stop_context.json").write_text(json.dumps({
+            "intersection_id": 7, "selected_references": stop_references(),
+            "review_status": "candidate_only"}))
         rows = [{"frame": 100+i, "time_s": i*.05,
                  "ego": {"heading_deg": 0, "native_road_id": 1, "native_lane_id": -1},
                  "other": {"heading_deg": 90, "native_road_id": 2, "native_lane_id": -1}}
@@ -358,9 +388,11 @@ class DeviceSourceJoinTests(unittest.TestCase):
                    for i in range(2)]
         stops = [{"frame": 100+i, "time_s": i*.05,
                   "ego": {"speed_mps": float(i), "body_inside_crossing": False,
-                          "native_road_id": 1, "native_lane_id": -1},
+                          "native_road_id": 1, "native_lane_id": -1,
+                          "front_xy_m": [-6+i, 0]},
                   "other": {"speed_mps": float(i), "body_inside_crossing": False,
-                            "native_road_id": 2, "native_lane_id": -1}} for i in range(2)]
+                            "native_road_id": 2, "native_lane_id": -1,
+                            "front_xy_m": [6-i, 0]}} for i in range(2)]
         frames = [{"carla_frame": 100+i, "time_s": i*.05, "video_frame": i}
                   for i in range(2)]
         for name, values in (("crossing_history.jsonl", rows),
@@ -368,6 +400,17 @@ class DeviceSourceJoinTests(unittest.TestCase):
                              ("stop_history.jsonl", stops),
                              ("video_frames.jsonl", frames)):
             (root / name).write_text("".join(json.dumps(x)+"\n" for x in values))
+
+    def test_candidate_stop_context_feeds_saved_stop_measurement(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp); self._sources(root)
+            entries = {"intersection_id": 7, "first_body_entry": {
+                "ego": {"frame": 101, "time_s": .05},
+                "other": {"frame": 100, "time_s": 0.}}}
+            measured = stop_measurements.analyze(root, entries)
+            self.assertEqual(measured["first_recorded_zero_speed_before_entry"]["ego"]["frame"], 100)
+            self.assertIsNone(measured["first_recorded_zero_speed_before_entry"]["other"])
+            self.assertEqual(measured["statutory_stop_judgment"], "unresolved")
 
     def test_device_join_rejects_missing_tampered_and_changed_sources(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -387,6 +430,12 @@ class DeviceSourceJoinTests(unittest.TestCase):
             context["other_governed_lane_id"] = 8
             (root / "signal_context.json").write_text(json.dumps(context))
             with self.assertRaisesRegex(ValueError, "differs from governed signal lane"):
+                runner.analyze_device_sources(root)
+            self._sources(root)
+            stop_context = json.loads((root / "stop_context.json").read_text())
+            stop_context["selected_references"]["ego"]["segment_xy_m"] = [[0, 0], [0, 0]]
+            (root / "stop_context.json").write_text(json.dumps(stop_context))
+            with self.assertRaisesRegex(ValueError, "nondegenerate stop reference"):
                 runner.analyze_device_sources(root)
             self._sources(root)
             hashes = {name: hashlib.sha256((root / name).read_bytes()).hexdigest()

@@ -129,6 +129,21 @@ def capture_candidate_media(output_dir, world, carla, site, turning_role,
                     any(type(value) is not int for value in lanes[role])
                     for role in ("ego", "other"))):
             raise ValueError("Two sourced governed Native signal actors required")
+    references = site.get("selected_stop_references")
+    if not isinstance(references, dict) or set(references) != {"ego", "other"}:
+        raise ValueError("Source-selected stop references required for both approaches")
+    for role, reference in references.items():
+        if (not isinstance(reference, dict) or
+                reference.get("kind") not in ("marked_stop_line", "near_side_crosswalk", "nearest_view_point") or
+                not reference.get("geometry_source") or not reference.get("reference_review_source")):
+            raise ValueError("Sourced candidate stop reference required: " + role)
+        segment = reference.get("segment_xy_m")
+        if (not isinstance(segment, list) or len(segment) != 2 or
+                any(not isinstance(point, list) or len(point) != 2 or
+                    any(type(value) not in (int, float) or not math.isfinite(value) for value in point)
+                    for point in segment) or
+                math.dist(segment[0], segment[1]) <= 0):
+            raise ValueError("Finite nondegenerate stop reference segment required: " + role)
     poses = {name: _camera_pose(carla, camera_values[name]) for name in SIZES}
     (root / "road_geometry.json").write_text(json.dumps({
         "intersection_id": junction_id,
@@ -142,6 +157,10 @@ def capture_candidate_media(output_dir, world, carla, site, turning_role,
         "intersection_id": junction_id, "routes": site["routes"],
         "approach_geometry_source": site["approach_geometry_source"],
         "turn_intention_source": "Native route candidate; original trajectory requires review",
+        "review_status": "candidate_only"}, allow_nan=False) + "\n")
+    (root / "stop_context.json").write_text(json.dumps({
+        "intersection_id": junction_id,
+        "selected_references": references,
         "review_status": "candidate_only"}, allow_nan=False) + "\n")
     if governed_lights is not None:
         (root / "signal_context.json").write_text(json.dumps({
@@ -217,7 +236,7 @@ def capture_candidate_media(output_dir, world, carla, site, turning_role,
     return receipt
 
 
-DEVICE_SOURCES = ("signal_context.json", "signal_history.jsonl", "stop_history.jsonl")
+DEVICE_SOURCES = ("signal_context.json", "signal_history.jsonl", "stop_context.json", "stop_history.jsonl")
 
 def analyze_device_sources(root):
     """Join captured stop and governed-light observations to original frames.
@@ -253,6 +272,23 @@ def analyze_device_sources(root):
                 "other": (context.get("other_governed_road_id"), context.get("other_governed_lane_id"))}
     if any(any(type(value) is not int for value in pair) for pair in governed.values()):
         raise ValueError("Sourced governed approach lanes required")
+    stop_context = json.loads(paths["stop_context.json"].read_text())
+    references = stop_context.get("selected_references")
+    if (stop_context.get("intersection_id") != base["intersection_id"] or
+            stop_context.get("review_status") != "candidate_only" or
+            not isinstance(references, dict) or set(references) != {"ego", "other"}):
+        raise ValueError("Sourced candidate stop context required")
+    for role, reference in references.items():
+        if (not isinstance(reference, dict) or
+                reference.get("kind") not in ("marked_stop_line", "near_side_crosswalk", "nearest_view_point") or
+                not reference.get("geometry_source") or not reference.get("reference_review_source")):
+            raise ValueError("Sourced candidate stop reference required: " + role)
+        segment = reference.get("segment_xy_m")
+        if (not isinstance(segment, list) or len(segment) != 2 or
+                any(not isinstance(point, list) or len(point) != 2 or
+                    any(type(value) not in (int, float) or not math.isfinite(value) for value in point)
+                    for point in segment) or math.dist(segment[0], segment[1]) <= 0):
+            raise ValueError("Finite nondegenerate stop reference segment required: " + role)
     frames = [json.loads(line) for line in (root / "video_frames.jsonl").read_text().splitlines() if line.strip()]
     crossing = [json.loads(line) for line in (root / "crossing_history.jsonl").read_text().splitlines() if line.strip()]
     signals = [json.loads(line) for line in paths["signal_history.jsonl"].read_text().splitlines() if line.strip()]
@@ -296,6 +332,7 @@ def analyze_device_sources(root):
             "native_map_id": context["native_map_id"],
             "source_hashes": {**base["source_hashes"], **hashes},
             "native_signal_ids": {"ego": ids[0], "other": ids[1]},
+            "selected_stop_references": references,
             "observations": observations,
             "official_device_judgment": "unresolved",
             "governance_judgment": "unresolved",
