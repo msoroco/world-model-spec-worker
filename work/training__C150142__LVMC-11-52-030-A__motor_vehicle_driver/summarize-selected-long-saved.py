@@ -24,7 +24,7 @@ def main():
     parser.add_argument('--frames', type=int, required=True)
     parser.add_argument('--result-root', type=Path, required=True)
     parser.add_argument('--log', type=Path, required=True)
-    parser.add_argument('--composition-receipt', type=Path, required=True)
+    parser.add_argument('--composition-receipt', type=Path)
     args = parser.parse_args()
     result_root = args.result_root.resolve()
     if REPO / '.runtime-work' not in result_root.parents:
@@ -32,8 +32,8 @@ def main():
     log = args.log.resolve()
     if log.parent != ROOT or not log.is_file():
         raise ValueError('Full processing log must belong to this assignment')
-    composition = args.composition_receipt.resolve()
-    if composition.parent != ROOT or not composition.is_file():
+    composition = args.composition_receipt.resolve() if args.composition_receipt else None
+    if composition is not None and (composition.parent != ROOT or not composition.is_file()):
         raise ValueError('Missing returned composition source check')
     version = result_root / 'v0001'
     processing = version / 'processing.json'
@@ -76,8 +76,11 @@ def main():
         'final_decode_sha256': sha(final_path),
         'source_decode_sha256': [sha(version / f'source-{i}.json')
                                  for i in range(4)],
-        'reused_composition_receipt_sha256': sha(composition),
+        'composition_mode': ('checked_identical_reuse' if composition is not None
+                             else 'pinned_saved_processing'),
     }
+    if composition is not None:
+        summary['reused_composition_receipt_sha256'] = sha(composition)
     log.write_text(json.dumps(summary, indent=2) + '\n')
     print(json.dumps(summary, sort_keys=True))
 
