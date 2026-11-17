@@ -184,6 +184,10 @@ def build_combination_draft():
     change('finalizer.py', 'from truck_measurements import analyze',
            'from truck_measurements import analyze\n'
            'from combination_construction import audit_combination_source_row')
+    change('finalizer.py', "'gap_above_500ft': 155.0}",
+           "'gap_above_500ft': 155.0, 'combination_at_500ft': 152.4}")
+    change('finalizer.py', "suffix not in GAP_TARGETS_M and suffix not in WIDTH_CASES and suffix not in ('two_same_direction_lanes','overtaking')",
+           "suffix not in GAP_TARGETS_M and suffix not in WIDTH_CASES and suffix not in ('two_same_direction_lanes','overtaking','combination_at_500ft')")
     change('finalizer.py', 'report = analyze(attempt)',
            "rows = [json.loads(line) for line in (attempt/'truck_history.jsonl').read_text().splitlines() if line.strip()]\n"
            "    context = json.loads((attempt/'road_context.json').read_text())\n"
@@ -209,6 +213,26 @@ def build_combination_draft():
 if __name__ == '__main__':''')
     draft_dir = ROOT.parents[1] / '.runtime-work/c149237-combination-draft'
     draft_dir.mkdir(parents=True, exist_ok=True)
+    (draft_dir / 'measurement-contract.json').write_bytes(
+        (ROOT / 'measurement-contract.json').read_bytes())
+    plan = json.loads((ROOT / 'case-plan.json').read_text())
+    for index, disposition in enumerate(plan['requirement_dispositions']):
+        if index < 3 and disposition['status'] == 'selected_required' and case_id not in disposition.get('case_ids', []):
+            disposition.setdefault('case_ids', []).append(case_id)
+    (draft_dir / 'case-plan.json').write_text(json.dumps(plan, indent=2) + '\n')
+    proposals = json.loads((ROOT / 'proposals/cases.json').read_text())
+    template_proposal = next(row for row in proposals['cases']
+                             if row['case_id'].endswith('__gap_at_500ft'))
+    combination_proposal = deepcopy(template_proposal)
+    combination_proposal['case_id'] = case_id
+    combination_proposal['rationale'] = (
+        'Controlled 500-foot following comparison with tractor plus attached '
+        'towed vehicle in both subject and lead roles; Native class and coupling unverified.')
+    combination_proposal['variable_assignments']['combination_trailer_blueprint_id'] = {
+        'kind': 'world_setup', 'value': 'vehicle.ford.crown', 'unit': 'blueprint_id'}
+    proposals['cases'].append(combination_proposal)
+    (draft_dir / 'proposals').mkdir(exist_ok=True)
+    (draft_dir / 'proposals/cases.json').write_text(json.dumps(proposals, indent=2) + '\n')
     construction = draft_dir / 'construction.json'
     construction.write_text(json.dumps(draft, indent=2) + '\n')
     diagnostic = json.loads((ROOT / 'diagnostic-gap_at_500ft.json').read_text())
@@ -243,8 +267,8 @@ if __name__ == '__main__':''')
     capture = json.loads(diagnostic['files']['capture/manifest.json'])
     capture['case_id'] = case_id
     diagnostic['files']['capture/manifest.json'] = json.dumps(capture) + '\n'
-    diagnostic_path = draft_dir / 'diagnostic.json'
-    diagnostic_path.write_text(json.dumps(diagnostic, indent=2) + '\n')
+    diagnostic_path = ROOT / 'combination-at-500ft-diagnostic.json'
+    diagnostic_path.write_text(json.dumps(diagnostic, separators=(',', ':')) + '\n')
     recipe = json.loads((ROOT / 'fixture-recipe-gap_at_500ft.json').read_text())
     recipe['generator'] = {
         'source': str(diagnostic_path.relative_to(ROOT.parents[1])),
@@ -263,6 +287,45 @@ if __name__ == '__main__':''')
                  kind='diagnostic_unselected',
                  candidate_risk={'status': 'physical',
                                  'reason': 'Attached vehicle motion, body gap and cameras unverified'})
+    fallback_plans = {
+        'fallback1': {
+            'path': 'runner.py', 'old': "('lead', 300.)", 'new': "('lead', 340.)",
+            'trigger': {'source': 'Native spawn result and capture/evidence.jsonl',
+                        'metric': 'lead combination staging spawn and attachment readback',
+                        'failure_condition': 'lead component cannot spawn or attach at x=300 m'},
+            'changed_knobs': ['lead combination staging origin x=300 m to x=340 m; measured final body gap fixed at 152.4 m']},
+        'fallback2': {
+            'path': 'runner.py',
+            'old': "'reference_corner': static(300, -24, 30, 90, -25)",
+            'new': "'reference_corner': static(330, -30, 35, 90, -28)",
+            'trigger': {'source': 'reference_corner.mkv',
+                        'metric': 'original frames showing both tractor and attached-vehicle bodies',
+                        'failure_condition': 'the required reference camera does not show both combinations together'},
+            'changed_knobs': ['reference-corner camera origin (300,-24,30) to (330,-30,35) m and pitch -25 to -28 degrees']},
+        'fallback3': {
+            'path': 'truck_follow_controller.py',
+            'old': '0.25 * speed_error', 'new': '0.35 * speed_error',
+            'trigger': {'source': 'truck_history.jsonl',
+                        'metric': 'original tractor speed error from the 12 m/s engineering target',
+                        'failure_condition': 'either tractor misses the target by more than 1 m/s during the following interval'},
+            'changed_knobs': ['bounded throttle gain 0.25 to 0.35; target speed and exact case fixed']},
+    }
+    candidates = []
+    candidate_dir = draft_dir / 'candidates'
+    candidate_dir.mkdir(exist_ok=True)
+    for ident, spec in fallback_plans.items():
+        alternate = deepcopy(draft)
+        source_file = next(row for row in alternate['files'] if row['path'] == spec['path'])
+        if source_file['content'].count(spec['old']) != 1:
+            raise ValueError('Combination fallback source anchor changed: ' + ident)
+        source_file['content'] = source_file['content'].replace(spec['old'], spec['new'])
+        source_file.pop('source', None)
+        candidate_path = candidate_dir / (ident + '.json')
+        candidate_path.write_text(json.dumps(alternate, indent=2) + '\n')
+        candidates.append({'id': ident, 'construction': 'candidates/' + ident + '.json',
+                           'construction_sha256': hashlib.sha256(candidate_path.read_bytes()).hexdigest(),
+                           'trigger': spec['trigger'], 'changed_knobs': spec['changed_knobs']})
+    entry['candidates'] = candidates
     manifest = {'format': 'worker-execution-manifest', 'assignment_id': ROOT.name,
                 'runtime_manifest_sha256': base['runtime_manifest_sha256'],
                 'cases': [entry]}

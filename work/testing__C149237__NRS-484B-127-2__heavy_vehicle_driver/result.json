@@ -4,7 +4,7 @@
   "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline $CARLA_PYTHON -m worker_exchange execute-delivery --repo . --batch batch.json --db $DB --run $RUN --assignment testing__C149237__NRS-484B-127-2__heavy_vehicle_driver --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_below_500ft --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT",
   "input_sha256": "25b365e5565f5d528a89b79eea5ec05f76d91fe6a8d02e683d5a9a9edab8d9fc",
   "readiness_kind": "delivery_preparation_in_progress",
-  "reason": "The 13 selected single-truck cases and their three fallbacks each retain current offline, positive/negative compatibility and recorded-only saved-processing CPU proofs, and the assignment static strict gate passed after root reproof. Independent NRS 484B.127(2) review found the separate truck-or-combination alternative still unselected: current capture states single vehicles and ru.trailer_or_combination is planned_unverified. A new CPU-tested combination actor/envelope construction draft checks four component spawns, Native attachment calls, 80-inch combined width, lane identity, body gap and cleanup, with no physical/legal claim. Next select controlled tractor/trailer exact cases, source-review available Native components and coupling, integrate runner/capture/finalizer, run exact primary and fallback proofs and audits, then rerun strict. Shared branch matrix, ordered queue and integration also remain worker CPU work. The combination draft now rejects selected combined-body-gap drift and trailer lane divergence; its expanded fake-Native suite passed. Component blueprint/coupling review and selected-case integration remain worker-owned. Original tractor and trailer component bodies now have a CPU-tested source-row builder accepted by the existing saved analyzer; this draft is not yet wired into a selected capture runner or receipt. An independent saved-row audit now recomputes combined width and gap from component vertices and rejects forged width or missing trailer data; integration into selected exact cases remains pending. A prospective 600-frame original combination capture function now ticks both attached groups, records tractor/trailer Native body vertices and lane readback each frame, rejects noncontiguous frames, bad width/gap and absent motion in any component; fake-Native positive and stationary-trailer negatives pass. It is not wired into a selected delivery case yet.",
+  "reason": "The 13 selected single-truck cases and their three fallbacks each retain current offline, positive/negative compatibility and recorded-only saved-processing CPU proofs, and the assignment static strict gate passed after root reproof. Independent NRS 484B.127(2) review found the separate truck-or-combination alternative still unselected: current capture states single vehicles and ru.trailer_or_combination is planned_unverified. A new CPU-tested combination actor/envelope construction draft checks four component spawns, Native attachment calls, 80-inch combined width, lane identity, body gap and cleanup, with no physical/legal claim. Next select controlled tractor/trailer exact cases, source-review available Native components and coupling, integrate runner/capture/finalizer, run exact primary and fallback proofs and audits, then rerun strict. Shared branch matrix, ordered queue and integration also remain worker CPU work. The combination draft now rejects selected combined-body-gap drift and trailer lane divergence; its expanded fake-Native suite passed. Component blueprint/coupling review and selected-case integration remain worker-owned. Original tractor and trailer component bodies now have a CPU-tested source-row builder accepted by the existing saved analyzer; this draft is not yet wired into a selected capture runner or receipt. An independent saved-row audit now recomputes combined width and gap from component vertices and rejects forged width or missing trailer data; integration into selected exact cases remains pending. A prospective 600-frame original combination capture function now ticks both attached groups, records tractor/trailer Native body vertices and lane readback each frame, rejects noncontiguous frames, bad width/gap and absent motion in any component; fake-Native positive and stationary-trailer negatives pass. It is not wired into a selected delivery case yet. An unselected combination_at_500ft exact draft now has returned source-hashed construction and synthetic component diagnostic, passing pinned offline, positive/negative compatibility, and recorded-only saved processing; the saved finalizer rejects a missing trailer component. These are draft CPU software proofs, not selected delivery or Native physical acceptance. Selection, three risk fallbacks, original component class/coupling and physical/delivery audits remain worker-owned. Three distinct unselected combination fallbacks now each pass pinned offline, positive/negative compatibility, and recorded-only saved processing. They remain drafts pending selected-case integration, Native physical review and independent delivery proofs.",
   "remaining_gpu_checks": [
     "Realized qualifying truck dimensions, roadway topology, following gap, overtaking path and camera visibility."
   ],
@@ -608,13 +608,13 @@
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests-current.log",
-      "sha256": "11ae2bcfaa4b234f6e96fdd6c6e726924a5c9859039744875342bd11904064eb"
+      "sha256": "f9e4cd6ad6a05b3ccda88888fb04ac9b8d3dc4bba445fa7fd063dffd99c9e06f"
     },
     {
       "command": ".venv-cpu/bin/python runtime.py preflight",
       "exit_code": 0,
       "log": "preflight-current.log",
-      "sha256": "126f05fe02e961d46be7745f92ba6141b7988b398db35ef412e6f2b5d78b091d"
+      "sha256": "aac80a1ef3a52a890261a84d1727f13b91b45567f473750052cdf154b7d44d5d"
     },
     {
       "command": "PYTHONPATH=runtime/scenario_pipeline:runtime/python .venv-cpu/bin/python runtime/scenario_pipeline/worker_exchange/atom_preflight.py --runtime runtime --config work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/config.json",
@@ -873,6 +873,78 @@
       "exit_code": 0,
       "log": "canonical-sweep-delivery-proof.log",
       "sha256": "9816d7217b400bdbb0b6f203c866e80f4779e952045c323c37ea0a726f06587f"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c149237-combination-draft/manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__combination_at_500ft --output .runtime-work/c149237-combination-draft/offline-v9",
+      "exit_code": 0,
+      "log": "combination-at-500ft-offline.log",
+      "sha256": "0ccf70453ffd370da0a8a352a0c163cf9822b29ffd3106449a71ba16b907cb12"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest .runtime-work/c149237-combination-draft/manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__combination_at_500ft --output .runtime-work/c149237-combination-draft/compat-v9 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "combination-at-500ft-compatibility.json",
+      "sha256": "b50b505b7670b5d7caf73384ee0b09061c87e841c96638a94752873ad682b2f9"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest .runtime-work/c149237-combination-draft/manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__combination_at_500ft --attempt .runtime-work/c149237-combination-draft/compat-v9 --output .runtime-work/c149237-combination-draft/saved-v2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "combination-at-500ft-saved-processing.json",
+      "sha256": "a5799c896abd44d5a3c9adf4f2dbd43c797c5463d224f47d7c63b5053b2ae9f0"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c149237-combination-draft/manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__combination_at_500ft --candidate fallback1 --output .runtime-work/c149237-combination-draft/fallback1-offline-v1",
+      "exit_code": 0,
+      "log": "combination-fallback1-offline.log",
+      "sha256": "1a84f1087bc3a3974dae5786e29f494c805e0917e4b358034954378c21780299"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest .runtime-work/c149237-combination-draft/manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__combination_at_500ft --candidate fallback1 --output .runtime-work/c149237-combination-draft/fallback1-compat-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "combination-fallback1-compatibility.json",
+      "sha256": "a14004b164e37437cf83de20323c6e1416e5a83e6955963ee9dd1909496bff0b"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest .runtime-work/c149237-combination-draft/manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__combination_at_500ft --attempt .runtime-work/c149237-combination-draft/fallback1-compat-v1 --output .runtime-work/c149237-combination-draft/fallback1-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "combination-fallback1-saved-processing.json",
+      "sha256": "0700f43ae3348073e5ce3d1c5824cad10a68fbebeeb2637bc38889d9308030ef"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c149237-combination-draft/manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__combination_at_500ft --candidate fallback2 --output .runtime-work/c149237-combination-draft/fallback2-offline-v1",
+      "exit_code": 0,
+      "log": "combination-fallback2-offline.log",
+      "sha256": "f7d6409c050b260373a3aacc67a98000d98936dff1621a9d9e2b959ed759ba49"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest .runtime-work/c149237-combination-draft/manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__combination_at_500ft --candidate fallback2 --output .runtime-work/c149237-combination-draft/fallback2-compat-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "combination-fallback2-compatibility.json",
+      "sha256": "672594ffbfb7238f67a3c0f214428c48a787172f309cb8f1faba63fe0c98bb6c"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest .runtime-work/c149237-combination-draft/manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__combination_at_500ft --attempt .runtime-work/c149237-combination-draft/fallback2-compat-v1 --output .runtime-work/c149237-combination-draft/fallback2-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "combination-fallback2-saved-processing.json",
+      "sha256": "852e77262f8ee38f79b266d906e19b7d47ee9a313e462e69f4b419b0c87f3caf"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c149237-combination-draft/manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__combination_at_500ft --candidate fallback3 --output .runtime-work/c149237-combination-draft/fallback3-offline-v1",
+      "exit_code": 0,
+      "log": "combination-fallback3-offline.log",
+      "sha256": "0ab3b871948808fd71b45f95a1591d87ebde70936b8e1df40423369a3843f60d"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest .runtime-work/c149237-combination-draft/manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__combination_at_500ft --candidate fallback3 --output .runtime-work/c149237-combination-draft/fallback3-compat-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "combination-fallback3-compatibility.json",
+      "sha256": "ff8542db19f8bc880ec92e163e3d1adb20e935dd8b0764cbd3c4a7a94c9adbf9"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest .runtime-work/c149237-combination-draft/manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__combination_at_500ft --attempt .runtime-work/c149237-combination-draft/fallback3-compat-v1 --output .runtime-work/c149237-combination-draft/fallback3-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "combination-fallback3-saved-processing.json",
+      "sha256": "c80110f548e1da0d9233493346c2697eeecc46e4936a992c5ec532a251415d87"
     }
   ]
 }
