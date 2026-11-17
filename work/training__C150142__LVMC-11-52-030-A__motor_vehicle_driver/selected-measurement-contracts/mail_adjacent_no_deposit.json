@@ -1,0 +1,40 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__mail_adjacent_no_deposit",
+  "requirements": [
+    {
+      "source": "inputs/coverage/branch-sources.json",
+      "disposition_index": 7,
+      "requirement": "text-7",
+      "output_key": "signed_curb_observation",
+      "method": "signed_context",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native-raw-actors.jsonl",
+        "native-map-readback.json",
+        "native-business-worker-inventory.jsonl",
+        "native-mail-parcel-absence.jsonl"
+      ]
+    },
+    {
+      "source": "inputs/coverage/branch-sources.json",
+      "disposition_index": 8,
+      "requirement": "text-8",
+      "output_key": "mail_exception_source_text",
+      "method": "mail_clause_context",
+      "value_type": "text",
+      "kind": "sourced_context",
+      "inputs": [
+        "statutory-context.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "native-mail-parcel-absence.jsonl"
+    ],
+    "error_contains": "Missing required source: native-mail-parcel-absence.jsonl"
+  },
+  "scope": "Observed mail worker and parcel source context plus exact mail clause; no legal verdict or physical acceptance"
+}

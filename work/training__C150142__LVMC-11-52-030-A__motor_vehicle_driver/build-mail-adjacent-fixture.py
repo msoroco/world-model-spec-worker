@@ -11,6 +11,7 @@ REPO = ROOT.parents[1]
 SOURCES = {
     'mail_adjacent_deposit': '.runtime-work/c150142-mail-adjacent-primary-native-v3',
     'mail_no_box_deposit': '.runtime-work/c150142-mail-no-box-primary-native-v3',
+    'mail_adjacent_no_deposit': '.runtime-work/c150142-mail-no-deposit-primary-native-v1',
 }
 sys.path.insert(0, str(REPO / 'runtime/pipeline/scenario_pipeline'))
 
@@ -31,10 +32,15 @@ def main():
     if config['case_id'] != case_id or config['capture_frames'] != 361:
         raise ValueError('Prior CPU diagnostic identity or frame count changed')
     files = {}
+    participant_files = (('native-business-worker-inventory.jsonl',
+                          'native-mail-parcel-absence.jsonl')
+                         if slug == 'mail_adjacent_no_deposit'
+                         else ('native-mail-worker-actors.jsonl',
+                               'native-mail-parcel-inventory.jsonl'))
     for name in ('road.xodr', 'statutory-context.json',
                  'native-raw-actors.jsonl', 'video_frames.jsonl', 'trace.jsonl',
-                 'native-map-readback.json', 'native-mail-worker-actors.jsonl',
-                 'native-mail-parcel-inventory.jsonl', 'acquisition-provenance.json',
+                 'native-map-readback.json', *participant_files,
+                 'acquisition-provenance.json',
                  'capture/evidence.jsonl', 'capture/native/frames.jsonl',
                  'capture/recorder_info.txt', 'capture/manifest.json'):
         source = source_root / name
