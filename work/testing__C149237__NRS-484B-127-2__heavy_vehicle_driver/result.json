@@ -4,7 +4,7 @@
   "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline $CARLA_PYTHON -m worker_exchange execute-delivery --repo . --batch batch.json --db $DB --run $RUN --assignment testing__C149237__NRS-484B-127-2__heavy_vehicle_driver --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_below_500ft --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT",
   "input_sha256": "25b365e5565f5d528a89b79eea5ec05f76d91fe6a8d02e683d5a9a9edab8d9fc",
   "readiness_kind": "delivery_preparation_in_progress",
-  "reason": "The 14 selected cases include combination_at_500ft with primary and three distinct fallback offline, positive/negative compatibility, recorded-only saved processing, synthetic physical outcome/lifecycle, independent comparison, and delivery-audit CPU proofs. This assignment remains partial: root construction/config still cover 13 cases, shared GPU queue lacks the combination case and comparison, and full-batch strict gate rejects a pre-existing generated file under frozen runtime. Actual Native combination attachment, qualification, motion, visibility, and legal status remain unverified.",
+  "reason": "The 14 selected cases now have root configuration coverage; the combination case has its own exact runner and primary/fallback offline, positive/negative compatibility, recorded-only saved, synthetic physical, comparison, and delivery CPU proofs. This assignment remains partial pending final source-reviewed Native tractor/trailer component and coupling design, independent full-law branch review, and the shared ordered GPU queue/local integration proof. The full-batch strict gate also encounters an existing generated file inside frozen runtime, which was left untouched. Actual Native attachment, classification, motion, visibility, and legal status remain unverified.",
   "remaining_gpu_checks": [
     "Realized qualifying truck dimensions, roadway topology, following gap, overtaking path and camera visibility."
   ],
@@ -551,70 +551,16 @@
       "sha256": "9bad759be1330aa47f38615b91bc96521b88ac5fe18dd11eb919555b02ae6c38"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_below_500ft --output .runtime-work/c149237-root-support-primary-offline-v1",
-      "exit_code": 0,
-      "log": "gap_below_500ft-offline.log",
-      "sha256": "a855de09414b3499b4fb861f57643a71f1bcfefa801fe968a659069d0806c6a4"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_below_500ft --output .runtime-work/c149237-root-support-primary-compat-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
-      "exit_code": 0,
-      "log": "gap_below_500ft-compat-launch-v17.log",
-      "sha256": "c41b3d6f564e589bcacff0297b9c742c34a2fc2f05faaa61d2b2423d7dcc1303"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_below_500ft --attempt .runtime-work/c149237-root-support-primary-compat-v1 --output .runtime-work/c149237-root-support-primary-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
-      "exit_code": 0,
-      "log": "gap_below_500ft-saved-launch-v17.log",
-      "sha256": "4a53bf9889afd2e30a32c404cca06bee201640bf7e831bc870bc5036a91360a4"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_below_500ft --candidate fallback1 --output .runtime-work/c149237-root-support-fallback1-offline-v1",
-      "exit_code": 0,
-      "log": "gap_below_500ft-fallback1-offline.log",
-      "sha256": "ffffd7e858ad08bed7f232f5ad4dc1e42c192bea7b9e81faf5f5450359127f55"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_below_500ft --candidate fallback1 --output .runtime-work/c149237-root-support-fallback1-compat-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
-      "exit_code": 0,
-      "log": "gap_below_500ft-fallback1-compat-launch-v17.log",
-      "sha256": "885bf3216f5dabf7546cd0ad2371a2035a9caaa30a4f6f43a0eadd74b6d6abcb"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_below_500ft --candidate fallback2 --output .runtime-work/c149237-root-support-fallback2-offline-v1",
-      "exit_code": 0,
-      "log": "gap_below_500ft-fallback2-offline.log",
-      "sha256": "ffffd7e858ad08bed7f232f5ad4dc1e42c192bea7b9e81faf5f5450359127f55"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_below_500ft --candidate fallback2 --output .runtime-work/c149237-root-support-fallback2-compat-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
-      "exit_code": 0,
-      "log": "gap_below_500ft-fallback2-compat-launch-v17.log",
-      "sha256": "dd4585283b382bbf6131a74d783adfd4d2c3757609160aa9186f958dbcfa351f"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_below_500ft --candidate fallback3 --output .runtime-work/c149237-root-support-fallback3-offline-v1",
-      "exit_code": 0,
-      "log": "gap_below_500ft-fallback3-offline.log",
-      "sha256": "fa1c2e4eb559377c9f5c48f1207cb8399f3081c76143d9ddb93406bb6d59f148"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_below_500ft --candidate fallback3 --output .runtime-work/c149237-root-support-fallback3-compat-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
-      "exit_code": 0,
-      "log": "gap_below_500ft-fallback3-compat-launch-v17.log",
-      "sha256": "b451fca317b91206bd07cf8d81195c35ba2b86232815a73356fad70f3b9ddfff"
-    },
-    {
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/tests",
       "exit_code": 0,
       "log": "cpu-tests-current.log",
-      "sha256": "5274fa0f05ac1128c0223da9e8dcf544084f3e53fcd1439ad8e8f5c31c1012df"
+      "sha256": "e2db0f2863f357166158c30f17b9ece033fa4796b6f17c42a2535947dda3df85"
     },
     {
       "command": ".venv-cpu/bin/python runtime.py preflight",
       "exit_code": 0,
       "log": "preflight-current.log",
-      "sha256": "9334ff9b3b71a497a72e82c2f5c09fb2d6eba118e79ba609dff502b7c0ba1c83"
+      "sha256": "8d8e454525c805297922c59f7532dec5419d771818ac583f203829cdefb902e0"
     },
     {
       "command": "PYTHONPATH=runtime/scenario_pipeline:runtime/python .venv-cpu/bin/python runtime/scenario_pipeline/worker_exchange/atom_preflight.py --runtime runtime --config work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/config.json",
@@ -693,12 +639,6 @@
       "exit_code": 0,
       "log": "overtaking-exception-proof-v17.log",
       "sha256": "c99ddd83e7826c70d88b807bc1500934b8c744d48121f3177e67b9d5dec57e54"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_below_500ft --attempt .runtime-work/c149237-full-converter-v3/processed --output .runtime-work/c149237-full-converter-saved-v3 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
-      "exit_code": 0,
-      "log": "full-converter-saved-v3.log",
-      "sha256": "628233f58c2ceba10f8df34d6d21539e999a2071c6194f0358ad3d93d92e5c8b"
     },
     {
       "command": "PYTHONPATH=runtime/scenario_pipeline:runtime/python .venv-cpu/bin/python work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/prove_full_converter.py --output-root .runtime-work/c149237-full-converter-v4 --receipt work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/full-converter-proof-v4.json",
@@ -981,6 +921,60 @@
       "exit_code": 0,
       "log": "combination-comparison-proof.log",
       "sha256": "aa006a2b10992c70f04a423b6e71ef8161466273025607d3b31c4a134a32da00"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_below_500ft --output .runtime-work/c149237-root-support-primary-offline-v2",
+      "exit_code": 0,
+      "log": "gap_below_500ft-offline.log",
+      "sha256": "fa1c2e4eb559377c9f5c48f1207cb8399f3081c76143d9ddb93406bb6d59f148"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_below_500ft --output .runtime-work/c149237-root-support-primary-compat-v2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "gap_below_500ft-compatibility.json",
+      "sha256": "db5961768848f1cf9959fec9a3a664bcf9273723aaa6558f729ff6f3a20f33f1"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_below_500ft --attempt .runtime-work/c149237-root-support-primary-compat-v2 --output .runtime-work/c149237-root-support-primary-saved-v2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "gap_below_500ft-saved-processing.json",
+      "sha256": "897e760f3ca001dab2c8f6ce76f435991596ca48b93f3030b2768dd5bddab833"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_below_500ft --candidate fallback1 --output .runtime-work/c149237-root-support-fallback1-offline-v2",
+      "exit_code": 0,
+      "log": "gap_below_500ft-fallback1-offline.log",
+      "sha256": "fa1c2e4eb559377c9f5c48f1207cb8399f3081c76143d9ddb93406bb6d59f148"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_below_500ft --candidate fallback1 --output .runtime-work/c149237-root-support-fallback1-compat-v2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "gap_below_500ft-fallback1-compatibility.json",
+      "sha256": "c1b2a5f4de077b07b78d427d939dd8d3cf9fc7bdcc4d31cbcf26f58153b2edf9"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_below_500ft --candidate fallback2 --output .runtime-work/c149237-root-support-fallback2-offline-v2",
+      "exit_code": 0,
+      "log": "gap_below_500ft-fallback2-offline.log",
+      "sha256": "ffffd7e858ad08bed7f232f5ad4dc1e42c192bea7b9e81faf5f5450359127f55"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_below_500ft --candidate fallback2 --output .runtime-work/c149237-root-support-fallback2-compat-v2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "gap_below_500ft-fallback2-compatibility.json",
+      "sha256": "ea4be588da3d014cfb921c931d7e3dfb63071455049b1a40e393f8798b7bc351"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_below_500ft --candidate fallback3 --output .runtime-work/c149237-root-support-fallback3-offline-v2",
+      "exit_code": 0,
+      "log": "gap_below_500ft-fallback3-offline.log",
+      "sha256": "65f52b78ceffbf4647a35a20b687655f0809f3b0bf4d42169491cf908747ac57"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C149237__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149237__NRS-484B-127-2__heavy_vehicle_driver__gap_below_500ft --candidate fallback3 --output .runtime-work/c149237-root-support-fallback3-compat-v2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "gap_below_500ft-fallback3-compatibility.json",
+      "sha256": "bb03c9d31ee39fc01f08be013415eb65674f67b9c23bf5ea861ddcbdeba52ce2"
     }
   ]
 }

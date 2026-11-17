@@ -34,8 +34,8 @@ def main():
         if not entry['case_id'].endswith('__gap_below_500ft'):continue
         case=entry['case_id']
         suffix=case.removeprefix(HERE.name+'__')
-        source='.runtime-work/c149237-root-support-primary-saved-v1/v0001/analysis'
-        output='.runtime-work/c149237-delivery-root-support-v1'
+        source='.runtime-work/c149237-root-support-primary-saved-v2/v0001/analysis'
+        output='.runtime-work/c149237-delivery-root-support-v2'
         positive=[PYTHON,str((HERE/'prove_delivery_audit.py').relative_to(ROOT)),
                   '--source',source,'--case',case,'--output-root',output]
         positive_log=HERE/(suffix+'-delivery-positive.log')
