@@ -36,11 +36,19 @@ def sample_native(world, carla, ego, follower):
     center_lane = mapping.get_waypoint(ego_position, project_to_road=False,
                                        lane_type=carla.LaneType.Driving)
     follower_position = follower.get_transform().location
-    def speed(actor):
-        v = actor.get_velocity()
-        return hypot(hypot(v.x, v.y), v.z)
+    follower_lane = mapping.get_waypoint(follower_position, project_to_road=False,
+                                         lane_type=carla.LaneType.Driving)
+    ego_velocity = ego.get_velocity()
+    follower_velocity = follower.get_velocity()
+    def vector(velocity):
+        return [velocity.x, velocity.y, velocity.z]
+    def speed(velocity):
+        return hypot(hypot(velocity.x, velocity.y), velocity.z)
     return {
-        'ego_speed_mps': speed(ego),
+        'ego_speed_mps': speed(ego_velocity),
+        'ego_velocity_xyz_mps': vector(ego_velocity),
+        'ego_body_vertices_xyz_m': [[v.x, v.y, v.z] for v in vertices],
+        'ego_yaw_deg': ego_transform.rotation.yaw,
         'ego_on_roadway': center_lane is not None,
         'ego_lane_overlap': overlap,
         'ego_body_lateral_min_m': min(offsets),
@@ -51,7 +59,12 @@ def sample_native(world, carla, ego, follower):
         'ego_x_m': ego_position.x, 'ego_y_m': ego_position.y,
         'following_x_m': follower_position.x,
         'following_y_m': follower_position.y,
-        'following_speed_mps': speed(follower),
+        'following_speed_mps': speed(follower_velocity),
+        'following_velocity_xyz_mps': vector(follower_velocity),
+        'following_yaw_deg': follower.get_transform().rotation.yaw,
+        'following_on_driving_lane': follower_lane is not None,
+        'following_road_id': follower_lane.road_id if follower_lane else None,
+        'following_lane_id': follower_lane.lane_id if follower_lane else None,
         'following_gap_m': hypot(ego_position.x-follower_position.x,
                                  ego_position.y-follower_position.y),
         'source_kind': 'original_carla_actor_and_map_readback',
@@ -100,7 +113,7 @@ def _frame_map(path):
 
 
 def acquire(world, carla, ego, follower, blueprints, stop_xy, attempt,
-            *, frames, sample, sink_factory=FFV1Sink, timeout_s=10):
+            *, frames, sample=None, sink_factory=FFV1Sink, timeout_s=10):
     """Drive, tick and retain exact synchronized original actor/video sources.
 
     `sample` must read the current world and return the source fields expected
@@ -121,6 +134,8 @@ def acquire(world, carla, ego, follower, blueprints, stop_xy, attempt,
     rows = None
     prior_frame = -1
     controller = StopControl(*stop_xy)
+    if sample is None:
+        sample = lambda world, ego, follower: sample_native(world, carla, ego, follower)
     try:
         sensors = install_cameras(world, blueprints, carla, ego,
                                   lambda name, image: queues[name].put(image))
