@@ -12,19 +12,33 @@ REQUIRED = {'frame', 'ego_speed_mps', 'ego_on_roadway', 'ego_lane_overlap',
             'following_speed_mps', 'following_gap_m'}
 
 
-def load_rows(path):
+def load_rows(path, frame_map_path):
     rows = []
     with Path(path).open(encoding='utf-8') as stream:
         for line in stream:
             if line.strip():
                 rows.append(json.loads(line))
+    with Path(frame_map_path).open(encoding='utf-8') as stream:
+        mapping = [json.loads(line) for line in stream if line.strip()]
     if not rows:
         raise ValueError('Missing original actor history')
+    if len(rows) != len(mapping):
+        raise ValueError('Original actor/frame map length differs')
+    previous_frame = -1
+    previous_time = float('-inf')
     for index, row in enumerate(rows):
         if not REQUIRED <= set(row):
             raise ValueError('Missing required actor source field')
-        if row['frame'] != index:
+        frame = mapping[index]
+        if (frame.get('video_frame') != index
+                or frame.get('carla_frame') != row['frame']
+                or row['frame'] <= previous_frame
+                or not isinstance(frame.get('time_s'), (int, float))
+                or not isfinite(frame['time_s'])
+                or frame['time_s'] <= previous_time):
             raise ValueError('Actor frame join is incomplete')
+        previous_frame = row['frame']
+        previous_time = frame['time_s']
         if type(row['ego_on_roadway']) is not bool or type(row['ego_lane_overlap']) is not bool:
             raise ValueError('Roadway and lane readback must be Boolean')
         for key in ('ego_speed_mps', 'following_speed_mps', 'following_gap_m'):
@@ -61,5 +75,5 @@ def measure(rows, *, fps=20, stop_tolerance_mps=0.05):
     }
 
 
-def analyze(path):
-    return measure(load_rows(path))
+def analyze(path, frame_map_path):
+    return measure(load_rows(path, frame_map_path))

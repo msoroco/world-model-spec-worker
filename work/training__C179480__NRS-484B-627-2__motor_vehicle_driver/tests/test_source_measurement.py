@@ -16,20 +16,29 @@ spec.loader.exec_module(module)
 class SourceMeasurementTest(unittest.TestCase):
     def rows(self):
         return [
-            dict(frame=0, ego_speed_mps=3.0, ego_on_roadway=True,
+            dict(frame=101, ego_speed_mps=3.0, ego_on_roadway=True,
                  ego_lane_overlap=True, following_speed_mps=4.0, following_gap_m=15.0),
-            dict(frame=1, ego_speed_mps=0.0, ego_on_roadway=True,
+            dict(frame=102, ego_speed_mps=0.0, ego_on_roadway=True,
                  ego_lane_overlap=True, following_speed_mps=2.0, following_gap_m=8.0),
-            dict(frame=2, ego_speed_mps=0.0, ego_on_roadway=True,
+            dict(frame=103, ego_speed_mps=0.0, ego_on_roadway=True,
                  ego_lane_overlap=True, following_speed_mps=0.0, following_gap_m=5.0),
         ]
 
+    def write_sources(self, directory, rows):
+        source = directory / 'native-actors.jsonl'
+        mapping = directory / 'video_frames.jsonl'
+        source.write_text(''.join(json.dumps(row)+'\n' for row in rows))
+        mapping.write_text(''.join(json.dumps(dict(video_frame=i,
+                                                 carla_frame=row['frame'],
+                                                 time_s=i / 20))+'\n'
+                                   for i, row in enumerate(rows)))
+        return source, mapping
+
     def test_original_frame_values_are_measured_without_legal_verdict(self):
         with tempfile.TemporaryDirectory() as tmp:
-            source = Path(tmp) / 'native-actors.jsonl'
-            source.write_text(''.join(json.dumps(row)+'\n' for row in self.rows()))
-            result = module.analyze(source)
-        self.assertEqual(result['roadway_lane_overlap_frames'], [1, 2])
+            source, mapping = self.write_sources(Path(tmp), self.rows())
+            result = module.analyze(source, mapping)
+        self.assertEqual(result['roadway_lane_overlap_frames'], [102, 103])
         self.assertEqual(result['following_speed_drop_mps'], 4.0)
         self.assertEqual(result['following_min_gap_m'], 5.0)
         self.assertEqual(result['normal_reasonable_movement_impeded'],
@@ -37,17 +46,25 @@ class SourceMeasurementTest(unittest.TestCase):
 
     def test_missing_frame_or_source_field_is_rejected(self):
         with tempfile.TemporaryDirectory() as tmp:
-            source = Path(tmp) / 'native-actors.jsonl'
             rows = self.rows()
-            rows[1]['frame'] = 3
+            source, mapping = self.write_sources(Path(tmp), rows)
+            rows[1]['frame'] = 105
             source.write_text(''.join(json.dumps(row)+'\n' for row in rows))
             with self.assertRaisesRegex(ValueError, 'frame join'):
-                module.analyze(source)
-            rows[1]['frame'] = 1
+                module.analyze(source, mapping)
+            rows[1]['frame'] = 102
             del rows[1]['following_gap_m']
             source.write_text(''.join(json.dumps(row)+'\n' for row in rows))
             with self.assertRaisesRegex(ValueError, 'source field'):
-                module.analyze(source)
+                module.analyze(source, mapping)
+
+    def test_stale_or_missing_frame_map_is_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            source, mapping = self.write_sources(Path(tmp), self.rows())
+            lines = mapping.read_text().splitlines()
+            mapping.write_text('\n'.join(lines[:-1])+'\n')
+            with self.assertRaisesRegex(ValueError, 'length differs'):
+                module.analyze(source, mapping)
 
     def test_nonroadway_stop_does_not_claim_roadway_stop(self):
         rows = self.rows()
