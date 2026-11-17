@@ -24,6 +24,10 @@
         "course_deviation_setpoint_m": {
           "kind": "controller",
           "value": "not_selected"
+        },
+        "indication_placement_setpoint_m": {
+          "kind": "world_setup",
+          "value": 0.0
         }
       },
       "unresolved_judgment_calls": [
@@ -96,6 +100,10 @@
         },
         "course_deviation_setpoint_m": {
           "kind": "controller",
+          "value": 0.0
+        },
+        "indication_placement_setpoint_m": {
+          "kind": "world_setup",
           "value": 0.0
         }
       },
@@ -180,6 +188,10 @@
         "course_deviation_setpoint_m": {
           "kind": "controller",
           "value": 4.0
+        },
+        "indication_placement_setpoint_m": {
+          "kind": "world_setup",
+          "value": 0.0
         }
       },
       "unresolved_judgment_calls": [
@@ -262,6 +274,10 @@
         },
         "course_deviation_setpoint_m": {
           "kind": "controller",
+          "value": 0.0
+        },
+        "indication_placement_setpoint_m": {
+          "kind": "world_setup",
           "value": 0.0
         }
       },
@@ -346,6 +362,10 @@
         "course_deviation_setpoint_m": {
           "kind": "controller",
           "value": 4.0
+        },
+        "indication_placement_setpoint_m": {
+          "kind": "world_setup",
+          "value": 0.0
         }
       },
       "unresolved_judgment_calls": [
@@ -428,6 +448,10 @@
         },
         "course_deviation_setpoint_m": {
           "kind": "controller",
+          "value": 0.0
+        },
+        "indication_placement_setpoint_m": {
+          "kind": "world_setup",
           "value": 0.0
         }
       },
@@ -512,6 +536,10 @@
         "course_deviation_setpoint_m": {
           "kind": "controller",
           "value": 4.0
+        },
+        "indication_placement_setpoint_m": {
+          "kind": "world_setup",
+          "value": 0.0
         }
       },
       "unresolved_judgment_calls": [
@@ -595,6 +623,10 @@
         "course_deviation_setpoint_m": {
           "kind": "controller",
           "value": 2.0
+        },
+        "indication_placement_setpoint_m": {
+          "kind": "world_setup",
+          "value": 0.0
         }
       },
       "unresolved_judgment_calls": [
@@ -683,6 +715,10 @@
         "course_deviation_setpoint_m": {
           "kind": "controller",
           "value": 6.0
+        },
+        "indication_placement_setpoint_m": {
+          "kind": "world_setup",
+          "value": 0.0
         }
       },
       "unresolved_judgment_calls": [
@@ -748,6 +784,98 @@
       "sweep_id": "heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__course_deviation_sweep",
       "sweep_point": {
         "course_deviation_setpoint_m": 6.0
+      }
+    },
+    {
+      "case_id": "heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__placement_075m__marker_follow",
+      "target_law_id": "LVMC-11-12-020",
+      "target_type": "judgment_sweep",
+      "rationale": "Source-bound 0.75 m in-intersection marker placement shift from the same original claimed-authority record; actual Native readback and legal authorization remain unresolved.",
+      "variable_assignments": {
+        "indication_form": {
+          "kind": "world_setup",
+          "value": "marker"
+        },
+        "turn_response_target": {
+          "kind": "controller",
+          "value": "follow"
+        },
+        "municipal_authorization_verified": {
+          "kind": "world_setup",
+          "value": null
+        },
+        "course_deviation_setpoint_m": {
+          "kind": "controller",
+          "value": 0.0
+        },
+        "indication_placement_setpoint_m": {
+          "kind": "world_setup",
+          "value": 0.75
+        }
+      },
+      "unresolved_judgment_calls": [
+        "authorized markers, buttons, or other indications",
+        "disobey the direction of such indications"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "original_course_deviation_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Source-joined original body center to indicated course, sampled over whole turn",
+            "time_window": "all 160 original turn frames",
+            "reference_frame": "source-hashed Native intersection",
+            "uncertainty": "physical pixels, municipal authorization and legal obedience unresolved"
+          },
+          {
+            "name": "original_turn_path_length_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Cumulative distance from source-joined original body centers",
+            "time_window": "all 160 original turn frames",
+            "reference_frame": "source-hashed Native intersection",
+            "uncertainty": "physical pixels, municipal authorization and legal obedience unresolved"
+          },
+          {
+            "name": "intersection_occupancy",
+            "unit": "boolean",
+            "sampling_rate_hz": 20,
+            "method": "Original body center within source-hashed intersection polygon",
+            "time_window": "all 160 original turn frames",
+            "reference_frame": "source-hashed Native intersection",
+            "uncertainty": "physical pixels, municipal authorization and legal obedience unresolved"
+          },
+          {
+            "name": "turn_course_source_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Source-hashed indication form, location, authority claim and course; municipal authority not verified",
+            "time_window": "all 160 original turn frames",
+            "reference_frame": "source-hashed Native intersection",
+            "uncertainty": "physical pixels, municipal authorization and legal obedience unresolved"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Source record authority is a claim; independent review needed",
+          "CPU fixture does not prove physical turn or visible pixels"
+        ]
+      },
+      "paired_probe_id": "heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__indication_placement_sweep",
+      "deliberate_differences": [
+        "indication_placement_setpoint_m"
+      ],
+      "probe": {
+        "primary_variable": "indication_placement_setpoint_m",
+        "comparison_or_standard": "Original marker placement readback and source-camera coverage; no legal cutoff",
+        "target_value_or_branch": {
+          "indication_placement_setpoint_m": 0.75
+        }
+      },
+      "sweep_id": "heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__indication_placement_sweep",
+      "sweep_point": {
+        "indication_placement_setpoint_m": 0.75
       }
     }
   ],
