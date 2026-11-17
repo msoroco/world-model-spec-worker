@@ -121,16 +121,24 @@ def capture(root, host, port):
     return receipt
 
 
+def analyze(attempt, output):
+    return finalize_candidate_opposite_turn(Path(attempt), Path(output))
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--output-dir", type=Path)
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=2000)
+    parser.add_argument("--attempt", type=Path)
+    parser.add_argument("--output", type=Path)
     args = parser.parse_args()
     root = Path(__file__).resolve().parent
     if args.check:
         check(root)
+    elif args.attempt and args.output:
+        analyze(args.attempt, args.output)
     elif args.output_dir:
         if args.output_dir.resolve() != root:
             raise ValueError("Capture output must be the materialized exact bundle")
@@ -174,6 +182,18 @@ class MaterializedOppositeBundleTest(unittest.TestCase):
 '''
 
 
+def opposite_recording_description():
+    return {"channels": [
+        {"name": name, "unit": "structured record", "method": method,
+         "time_window": "entire capture", "reference_frame": "original Native frame",
+         "uncertainty": "synthetic diagnostic only", "sampling_rate_hz": 20}
+        for name, method in (("signal_state", "original Native signal state by frame"),
+                             ("stop_state", "original speed/body occupancy by frame"))],
+        "context_inputs": [{"name": "entry_context", "unit": "structured record",
+                            "method": "saved original-source join"}],
+        "limitations": ["Synthetic opposite-turn site; no physical/legal acceptance"]}
+
+
 def build_opposite_offline_bundle(output_root):
     """Generate four exact-ID, diagnostic-only bundles for pinned offline tests.
 
@@ -188,15 +208,14 @@ def build_opposite_offline_bundle(output_root):
     fixture = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(fixture)
     from opposite_turn_construction import TRIGGER_SOURCES, validate_opposite_fallbacks
-    site = dict(fixture.site(), native_map_name="TownSynthetic",
-        native_junction_id=7, crossing_polygon_source="synthetic opposite polygon",
-        approach_headings_deg={"ego": 0, "other": 180},
-        approach_geometry_source="synthetic opposite routes",
-        governed_signal_ids={"ego": 17, "other": 18},
-        device_inventory_source="synthetic signal inventory",
-        selected_stop_references=fixture.stop_references(),
-        cameras={name: [0, 0, 10, 0, 0, 0] for name in
-                 ("overview", "approach", "reference_corner", "driver_reference")})
+    with tempfile.TemporaryDirectory() as temporary:
+        packet_root = Path(temporary)
+        fixture.DeviceSourceJoinTests()._opposite_finalizer_sources(packet_root)
+        source_config = json.loads((packet_root / "config.json").read_text())
+        site = source_config["site"]
+        site_review = source_config["site_review"]
+        site_files = [{"path": path.name, "content": path.read_text()}
+                      for path in sorted(packet_root.glob("opposite-*.json"))]
     primary = {"site": site,
         "transforms": {"ego": [-10, 0, 0, 0, 0, 0],
                        "other": [10, 0, 0, 180, 0, 0]},
@@ -224,21 +243,8 @@ def build_opposite_offline_bundle(output_root):
               "candidate_plan": {"primary": primary, "fallbacks": fallbacks},
               "blueprint_ids": {"ego": "vehicle.tesla.model3",
                                 "other": "vehicle.audi.a2"},
-              "recording_description": {"channels": [
-                  {"name": name, "unit": "structured record", "method": method,
-                   "time_window": "entire capture", "reference_frame": "original Native frame",
-                   "uncertainty": "synthetic diagnostic only", "sampling_rate_hz": 20}
-                  for name, method in (("signal_state", "original Native signal state by frame"),
-                                       ("stop_state", "original speed/body occupancy by frame"))],
-                  "context_inputs": [{"name": "entry_context", "unit": "structured record",
-                                      "method": "saved original-source join"}],
-                  "limitations": ["Synthetic opposite-turn site; no physical/legal acceptance"]}}
-    with tempfile.TemporaryDirectory() as temporary:
-        packet_root = Path(temporary)
-        config["site_review"] = fixture.write_opposite_site_packet(
-            packet_root, site, diagnostic_only=True)
-        site_files = [{"path": path.name, "content": path.read_text()}
-                      for path in sorted(packet_root.iterdir())]
+              "recording_description": opposite_recording_description()}
+    config["site_review"] = site_review
     code_files = sorted(path for path in HERE.glob("*.py") if path.name not in
         {"runner.py", "build_diagnostic_constructions.py", "saved_source_proof.py"})
     code_files += [HERE / "tests/test_opposite_turn_construction.py",
@@ -253,6 +259,22 @@ def build_opposite_offline_bundle(output_root):
                 "runtime_manifest_sha256": json.loads(
                     (HERE / "candidate-proof-manifest-v2.json").read_text())["runtime_manifest_sha256"],
                 "cases": []}
+    source_proposals = json.loads((HERE / "proposals/cases.json").read_text())
+    proposal_case = copy.deepcopy(next(item for item in source_proposals["cases"]
+        if item["case_id"].endswith("__signal_off")))
+    proposal_case.update(case_id=case,
+        rationale="Synthetic opposite-approach left-turn diagnostic source join",
+        variable_assignments={"turning_role": "ego", "opposing_approach": True,
+                              "governing_states": {"ego": "Off", "other": "Off"}},
+        unresolved_judgment_calls=["official device status", "approximately same time",
+                                   "opposite-left-turn exception and statutory yield"],
+        recording_description=config["recording_description"])
+    for key in ("paired_probe_id", "deliberate_differences", "probe"):
+        proposal_case.pop(key, None)
+    (output_root / "proposals").mkdir()
+    _dump(output_root / "proposals/cases.json", {"cell_id": "C125751",
+        "actor": "motor_vehicle_driver", "status": "synthetic_diagnostic_only",
+        "cases": [proposal_case], "sweep_specs": [], "sweeps_expanded": True})
     for variant in ("primary", "fallback1", "fallback2", "fallback3"):
         chosen = primary if variant == "primary" else fallbacks[variant]
         metadata = {"selected_case_id": case,
@@ -274,6 +296,7 @@ def build_opposite_offline_bundle(output_root):
         if variant == "primary":
             manifest["cases"].append({"case_id": case, "kind": "delivery",
                 **{key: entry[key] for key in ("construction", "construction_sha256")},
+                "measurement_procedure": {"entrypoint": "runner.py"},
                 "candidate_risk": {"status": "physical",
                     "reason": "Sourced spawn, entry timing and turn path may fail in Native capture"},
                 "candidates": []})
@@ -615,6 +638,11 @@ def prove_opposite_entry_sweep(output_root):
     from shapely.geometry import Polygon
     from opposite_turn_runner import analyze_candidate_opposite_entry, finalize_candidate_opposite_turn, _stop_state
     from opposite_site_probe import audit_opposite_candidate
+    from worker_exchange.fixture_generator import generate as generate_media
+    from worker_exchange.media import audit as audit_media, check_four_view_sources
+    from worker_exchange.saved_processing import prepare_video
+    from camera_setup import SIZES
+    from batch_pipeline.carla import validate_attempt
 
     output_root.mkdir(parents=True)
     receipts = []
@@ -645,8 +673,13 @@ def prove_opposite_entry_sweep(output_root):
                     role: row[role] for role in ("ego", "other")},
                 "camera_source_frames": {name: frame for name in
                     ("overview", "approach", "reference_corner", "driver_reference")}})
+            ego_body = row["ego"]["body_vertices_xy_m"]
             trace.append({"frame": frame, "time_s": time_s,
-                          "position_m": [float(index), 0., 0.]})
+                          "position": {"x": sum(p[0] for p in ego_body) / len(ego_body),
+                                       "y": sum(p[1] for p in ego_body) / len(ego_body),
+                                       "z": 0.},
+                          "heading_deg": row["ego"]["heading_deg"],
+                          "speed_mps": row["ego"]["speed_mps"]})
             evidence.append({"original_frame": frame, "recording_time_s": time_s})
         for name, values in (("crossing_history.jsonl", crossing),
                              ("signal_history.jsonl", signals),
@@ -656,14 +689,36 @@ def prove_opposite_entry_sweep(output_root):
                              ("trace.jsonl", trace),
                              ("capture/evidence.jsonl", evidence)):
             (root / name).write_text("".join(json.dumps(value) + "\n" for value in values))
+        videos = []
+        for name, (width, height) in SIZES.items():
+            (root / (name + ".mkv")).unlink()
+            videos.append({"path": name + ".mkv", "frames": len(mapping),
+                           "width": width, "height": height,
+                           "fps": 20, "color": "black"})
+        generate_media({"files": {}, "graphs": [], "videos": videos}, root)
+        check_four_view_sources({name: root / (name + ".mkv") for name in SIZES})
+        map_sha = _sha(root / "video_frames.jsonl")
+        source_audits = {}
+        for name in SIZES:
+            source_audits[name + ".mkv"] = audit_media(
+                root / (name + ".mkv"), len(mapping),
+                mapping_sha256=map_sha, receipt=root / (name + "-decode.json"))
+        prepare_video(root)
+        audit_media(root / "raw.mkv", len(mapping), mapping_sha256=map_sha,
+                    receipt=root / "raw-decode.json")
         config_path = root / "config.json"
         config = json.loads(config_path.read_text())
         config["duration_s"] = .25
+        config["recording_description"] = opposite_recording_description()
         _dump(config_path, config)
         before = analyze_candidate_opposite_entry(root)
         analysis_path = root / "analysis-report.json"
         measured = finalize_candidate_opposite_turn(root, analysis_path)
         audited = audit_opposite_candidate(root, analysis_path)
+        validate_attempt(root, {"case": {"case_id": config["selected_case_id"]},
+            "cell": {"cell_id": config["cell_id"]}, "actor": "motor_vehicle_driver"},
+            {"recording_description": config["recording_description"]},
+            {"recorded_exit_code": 0}, {}, source_audits=source_audits)
         expected = round((ego_index - other_index) * .05, 9)
         if (round(measured["turning_minus_other_entry_time_s"], 9) != expected or
                 measured["first_body_entry"] != before["first_body_entry"] or
@@ -685,12 +740,16 @@ def prove_opposite_entry_sweep(output_root):
                          "turning_minus_other_entry_time_s": expected,
                          "body_history_sha256": _sha(body_path),
                          "analysis_sha256": _sha(analysis_path),
+                         "four_camera_decodes_passed": True,
+                         "composed_video_decode_passed": True,
+                         "native_output_validation_passed": True,
                          "independent_audit_passed": True,
                          "changed_body_source_rejected": True})
     proof = {"format": "worker-c125751-opposite-entry-saved-diagnostic-sweep",
              "builder_sha256": _sha(HERE / "build_diagnostic_constructions.py"),
              "receipts": receipts, "native_motion_proven": False,
-             "decodable_video_proven": False, "legal_time_cutoff_asserted": False,
+             "decodable_diagnostic_video_proven": True,
+             "native_pixels_proven": False, "legal_time_cutoff_asserted": False,
              "physical_acceptance_claimed": False}
     _dump(output_root / "proof.json", proof)
     return proof
