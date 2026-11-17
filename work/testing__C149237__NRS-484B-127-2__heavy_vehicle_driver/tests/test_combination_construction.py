@@ -44,6 +44,9 @@ class Actor:
     def get_location(self):
         return self
 
+    def get_velocity(self):
+        return type("Velocity", (), {"x": 12.0, "y": 0.0, "z": 0.0})()
+
     def destroy(self):
         self.destroyed = True
 
@@ -274,6 +277,8 @@ class CombinationConstructionTests(unittest.TestCase):
             self.assertEqual(len(row["ego"]["body_vertices_xy_m"]), 8)
             self.assertEqual(row["ego"]["overall_width_m"], 2.2)
             self.assertEqual(row["lead"]["components"]["trailer"]["actor_id"], 4)
+            self.assertEqual(row["ego"]["velocity_mps"], [12.0, 0.0, 0.0])
+            self.assertEqual(row["ego"]["components"]["trailer"]["velocity_mps"], [12.0, 0.0, 0.0])
             self.assertFalse(row["lead"]["legal_vehicle_class_verified"])
             audit = combination.audit_combination_source_row(row, [1, 0], 4, -1)
             self.assertEqual(audit["longitudinal_body_gap_m"], 184)
@@ -284,6 +289,14 @@ class CombinationConstructionTests(unittest.TestCase):
             forged = copy.deepcopy(row)
             forged["lead"]["components"].pop("trailer")
             with self.assertRaisesRegex(ValueError, "Missing saved combination component"):
+                combination.audit_combination_source_row(forged, [1, 0], 4, -1)
+            forged = copy.deepcopy(row)
+            forged["lead"]["components"]["trailer"]["velocity_mps"] = [float("nan"), 0, 0]
+            with self.assertRaisesRegex(ValueError, "Missing saved combination velocity"):
+                combination.audit_combination_source_row(forged, [1, 0], 4, -1)
+            forged = copy.deepcopy(row)
+            forged["ego"]["velocity_mps"] = [0, 0, 0]
+            with self.assertRaisesRegex(ValueError, "tractor identity or velocity differs"):
                 combination.audit_combination_source_row(forged, [1, 0], 4, -1)
             with tempfile.TemporaryDirectory() as directory:
                 root = Path(directory)

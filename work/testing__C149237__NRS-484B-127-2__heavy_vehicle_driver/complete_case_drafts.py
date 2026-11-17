@@ -254,10 +254,12 @@ if __name__ == '__main__':''')
             part['components'] = {
                 'tractor': {'actor_id': part['actor_id'], 'blueprint_id': part['blueprint_id'],
                             'road_id': part['road_id'], 'lane_id': part['lane_id'],
-                            'body_vertices_xy_m': tractor},
+                            'body_vertices_xy_m': tractor,
+                            'velocity_mps': part['velocity_mps']},
                 'trailer': {'actor_id': trailer_id, 'blueprint_id': 'vehicle.ford.crown',
                             'road_id': part['road_id'], 'lane_id': part['lane_id'],
-                            'body_vertices_xy_m': trailer}}
+                            'body_vertices_xy_m': trailer,
+                            'velocity_mps': part['velocity_mps']}}
         history.append(json.dumps(row, allow_nan=False))
     diagnostic['files']['truck_history.jsonl'] = '\n'.join(history) + '\n'
     context = json.loads(diagnostic['files']['road_context.json'])

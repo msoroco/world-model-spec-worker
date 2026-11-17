@@ -89,14 +89,22 @@ def combination_source_row(groups, waypoints, lane_forward_xy, road_id, lane_id,
                     raise ValueError("Nonfinite original combination body")
                 points.append(point)
             vertices.extend(points)
+            velocity = actor.get_velocity()
+            velocity_mps = [float(velocity.x), float(velocity.y), float(velocity.z)]
+            if not all(map(math.isfinite, velocity_mps)):
+                raise ValueError("Nonfinite original combination velocity: " + role)
             components[part] = {"actor_id": actor.id, "blueprint_id": actor.type_id,
                                 "road_id": lane.road_id, "lane_id": lane.lane_id,
-                                "body_vertices_xy_m": points}
+                                "body_vertices_xy_m": points,
+                                "velocity_mps": velocity_mps}
         envelope = combination_envelope(actors["tractor"], actors["trailer"], tangent)
-        row[role] = {"road_id": road_id, "lane_id": lane_id,
+        row[role] = {"actor_id": actors["tractor"].id,
+                     "blueprint_id": actors["tractor"].type_id,
+                     "road_id": road_id, "lane_id": lane_id,
                      "overall_width_m": envelope["overall_width_m"],
                      "overall_width_source": "original Native tractor and trailer body vertices",
                      "body_vertices_xy_m": vertices, "components": components,
+                     "velocity_mps": components["tractor"]["velocity_mps"],
                      "is_truck_or_combination": True,
                      "legal_vehicle_class_verified": False,
                      "native_attachment_verified": False}
@@ -118,6 +126,12 @@ def audit_combination_source_row(row, lane_forward_xy, road_id, lane_id):
             if (component.get("road_id"), component.get("lane_id")) != (road_id, lane_id):
                 raise ValueError("Saved combination component lane mismatch: " + role)
             points = component.get("body_vertices_xy_m")
+            velocity = component.get("velocity_mps")
+            if not isinstance(velocity, list) or len(velocity) != 3 or not all(
+                isinstance(value, (int, float)) and math.isfinite(value)
+                for value in velocity
+            ):
+                raise ValueError("Missing saved combination velocity: " + role + "/" + part)
             if not isinstance(points, list) or len(points) < 4:
                 raise ValueError("Missing saved combination body: " + role)
             for point in points:
@@ -128,6 +142,10 @@ def audit_combination_source_row(row, lane_forward_xy, road_id, lane_id):
             merged.extend(points)
         if group.get("body_vertices_xy_m") != merged:
             raise ValueError("Combined body differs from saved components: " + role)
+        if (group.get("actor_id") != parts["tractor"].get("actor_id") or
+                group.get("blueprint_id") != parts["tractor"].get("blueprint_id") or
+                group.get("velocity_mps") != parts["tractor"]["velocity_mps"]):
+            raise ValueError("Combined tractor identity or velocity differs from saved component: " + role)
         along = [x * tx + y * ty for x, y in merged]
         lateral = [-x * ty + y * tx for x, y in merged]
         width = max(lateral) - min(lateral)
