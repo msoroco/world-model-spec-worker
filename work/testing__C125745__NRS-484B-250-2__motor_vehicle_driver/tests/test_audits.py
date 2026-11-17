@@ -14,7 +14,7 @@ from finalizer import finalize
 from runner import ASSIGNMENT
 from audit_delivery import audit as audit_delivery
 from audit_comparisons import audit_pair,audit as audit_comparisons
-from audit_compatibility_comparisons import audit_surrogate_grid
+from audit_compatibility_comparisons import audit_surrogate_grid,audit_opposite_context,audit_device_context
 
 
 def _write_rows(path,rows):
@@ -60,6 +60,43 @@ def build_attempt(root,variant='left',map_name=None):
 
 
 class AuditTests(unittest.TestCase):
+    def test_device_context_receipts_require_fixed_sign_sources_and_open_review(self):
+        names={
+            'stop_ego_left_near_time':'primary-compatibility-receipt-v3.json',
+            'stop_ego_right_near_time':'second-primary-compatibility-receipt-v2.json',
+            'stop_ego_left_separated':'third-primary-compatibility-receipt-v2.json',
+            'stop_opposite_left_turn':'fourth-primary-compatibility-receipt-v1.json',
+        }
+        receipts={suffix:json.loads((ROOT/file).read_text()) for suffix,file in names.items()}
+        report=audit_device_context(receipts)
+        self.assertTrue(report['fixed_sign_and_source_contract_passed'])
+        self.assertFalse(report['delivery_ready'])
+        changed=copy.deepcopy(receipts)
+        changed['stop_ego_left_separated']['fixture_manifest'].pop('overview.mkv')
+        with self.assertRaisesRegex(ValueError,'four original camera'):
+            audit_device_context(changed)
+        changed=copy.deepcopy(receipts)
+        changed['stop_opposite_left_turn']['measurement_examples']['device_qualification_context']['value']['official_device_judgment']='official'
+        with self.assertRaisesRegex(ValueError,'unresolved official-device review'):
+            audit_device_context(changed)
+
+    def test_opposite_context_receipts_preserve_crossing_sign_and_open_judgment(self):
+        receipts={
+            'stop_ego_left_near_time':json.loads((ROOT/'primary-compatibility-receipt-v3.json').read_text()),
+            'stop_opposite_left_turn':json.loads((ROOT/'fourth-primary-compatibility-receipt-v1.json').read_text()),
+        }
+        report=audit_opposite_context(receipts)
+        self.assertTrue(report['opposite_approach_contrast_passed'])
+        self.assertFalse(report['delivery_ready'])
+        changed=copy.deepcopy(receipts)
+        changed['stop_opposite_left_turn']['measurement_examples']['device_qualification_context']['value']['native_stop_sign_id']=999
+        with self.assertRaisesRegex(ValueError,'Fixed stop-sign identity'):
+            audit_opposite_context(changed)
+        changed=copy.deepcopy(receipts)
+        changed['stop_opposite_left_turn']['measurement_examples']['opposite_left_turn_context']['value']['exception_judgment']='left turn proved'
+        with self.assertRaisesRegex(ValueError,'unresolved turn judgment'):
+            audit_opposite_context(changed)
+
     def test_independent_surrogate_grid_audit_and_tamper_rejection(self):
         from build_primary_diagnostic import build
         with tempfile.TemporaryDirectory() as tmp:

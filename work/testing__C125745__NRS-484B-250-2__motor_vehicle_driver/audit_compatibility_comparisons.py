@@ -14,6 +14,10 @@ EXPECTED = {
     'stop_sign_entry_timing': ('stop_ego_left_near_time', 'stop_ego_left_separated'),
 }
 
+OPPOSITE_CASES = ('stop_ego_left_near_time', 'stop_opposite_left_turn')
+DEVICE_CASES = ('stop_ego_left_near_time', 'stop_ego_right_near_time',
+                'stop_ego_left_separated', 'stop_opposite_left_turn')
+
 
 def require(value, message):
     if not value:
@@ -99,6 +103,86 @@ def audit_surrogate_grid(points, axis):
             'delivery_ready': False}
 
 
+def audit_opposite_context(receipts):
+    """Compare source-bound approach context; retain the turn judgment as open."""
+    require(set(receipts) == set(OPPOSITE_CASES), 'Exact opposite-context receipt pair required')
+    rows = [receipts[suffix] for suffix in OPPOSITE_CASES]
+    for suffix, receipt in zip(OPPOSITE_CASES, rows):
+        require(receipt.get('passed') is True and
+                receipt.get('case_id') == HERE.name + '__' + suffix and
+                receipt.get('negative_removed') == 'controller_history.jsonl',
+                'Exact source-bound opposite-context receipt required')
+        examples = receipt.get('measurement_examples', {})
+        for key in ('crossing_identity', 'device_qualification_context',
+                    'opposite_left_turn_context', 'entry_timing'):
+            require(examples.get(key, {}).get('sources'),
+                    'Missing original source hashes for ' + key)
+    left, opposite = (row['measurement_examples'] for row in rows)
+    a, b = left['crossing_identity']['value'], opposite['crossing_identity']['value']
+    require(all(a[k] == b[k] for k in
+                ('native_map_id', 'intersection_id', 'ego_highway_id',
+                 'same_statutory_crossing')) and
+            a['other_highway_id'] != b['other_highway_id'] and
+            b['other_highway_id'] == b['ego_highway_id'],
+            'Fixed crossing or opposite-highway contrast missing')
+    device_a, device_b = (x['device_qualification_context']['value']
+                          for x in (left, opposite))
+    require(device_a == device_b and device_a['native_stop_sign_id'] == 17 and
+            device_a['official_device_judgment'] == 'unresolved' and
+            device_a['governance_judgment'] == 'unresolved',
+            'Fixed stop-sign identity or unresolved device review changed')
+    approach_a, approach_b = (x['opposite_left_turn_context']['value']
+                              for x in (left, opposite))
+    require(approach_a['opposite_approach'] is False and
+            approach_b['opposite_approach'] is True and
+            approach_a['exception_judgment'] == approach_b['exception_judgment'] == 'unresolved',
+            'Opposite approach or unresolved turn judgment changed')
+    time_a, time_b = (x['entry_timing']['value']['absolute_difference_s']
+                      for x in (left, opposite))
+    require(abs(time_a - time_b) < 1e-9,
+            'Fixed measured entry timing changed')
+    return {'format': 'worker-c125745-opposite-context-audit',
+            'case_ids': [row['case_id'] for row in rows],
+            'fixed_crossing_and_sign_passed': True,
+            'opposite_approach_contrast_passed': True,
+            'turn_intention_judgment': 'unresolved',
+            'physical_acceptance_claimed': False,
+            'legal_acceptance_claimed': False, 'delivery_ready': False}
+
+
+def audit_device_context(receipts):
+    """Check source-backed device identity across selected alternatives."""
+    require(set(receipts) == set(DEVICE_CASES), 'Exact device-context receipt set required')
+    observed = []
+    for suffix in DEVICE_CASES:
+        receipt = receipts[suffix]
+        require(receipt.get('passed') is True and
+                receipt.get('case_id') == HERE.name + '__' + suffix and
+                receipt.get('negative_removed') == 'controller_history.jsonl',
+                'Exact source-bound device-context receipt required')
+        examples = receipt.get('measurement_examples', {})
+        device = examples.get('device_qualification_context', {})
+        require(set(device.get('sources', {})) ==
+                {'junction_context.json', 'crossing_history.jsonl'},
+                'Device context lacks original source hashes')
+        require(all(name + '.mkv' in receipt.get('fixture_manifest', {})
+                    for name in ('overview', 'approach', 'reference_corner', 'driver_reference')),
+                'Device context lacks four original camera sources')
+        observed.append(device.get('value'))
+    require(all(value == observed[0] for value in observed) and
+            observed[0]['native_stop_sign_id'] == 17 and
+            all(observed[0][key] == 'unresolved' for key in
+                ('official_device_judgment', 'governance_judgment',
+                 'subsection_4_judgment')),
+            'Fixed sign identity or unresolved official-device review changed')
+    return {'format': 'worker-c125745-device-context-audit',
+            'case_ids': [receipts[suffix]['case_id'] for suffix in DEVICE_CASES],
+            'fixed_sign_and_source_contract_passed': True,
+            'official_device_judgment': 'unresolved',
+            'physical_acceptance_claimed': False,
+            'legal_acceptance_claimed': False, 'delivery_ready': False}
+
+
 def audit():
     manifest = read(HERE / 'execution-manifest.json')
     plan = read(HERE / 'case-plan.json')
@@ -153,8 +237,26 @@ def audit():
         pairs.append({'comparison_id': key, 'case_ids': declared[key]['case_ids'],
                       'entry_time_differences_s': [at, bt],
                       'other_spatially_right': [ar, br]})
+    opposite_id = HERE.name + '__stop_opposite_left_turn'
+    opposite_entry = entries[opposite_id]
+    opposite_path = HERE / opposite_entry['compatibility']['receipt']
+    require(sha(opposite_path) == opposite_entry['compatibility']['sha256'],
+            'Opposite-context compatibility receipt hash changed')
+    opposite_receipt = read(opposite_path)
+    require(opposite_receipt['construction_sha256'] == opposite_entry['construction_sha256'],
+            'Opposite-context construction receipt changed')
+    opposite_context = audit_opposite_context({
+        'stop_ego_left_near_time': receipts[HERE.name + '__stop_ego_left_near_time'],
+        'stop_opposite_left_turn': opposite_receipt})
+    all_receipts = dict(receipts)
+    all_receipts[opposite_id] = opposite_receipt
+    device_context = audit_device_context({
+        suffix: all_receipts[HERE.name + '__' + suffix]
+        for suffix in DEVICE_CASES})
     return {'format': 'worker-c125745-compatibility-comparison-audit',
             'software_comparisons_passed': True, 'comparisons': pairs,
+            'opposite_context': opposite_context,
+            'device_context': device_context,
             'scope': 'retained synthetic original-source compatibility receipts',
             'physical_acceptance_claimed': False, 'legal_acceptance_claimed': False,
             'delivery_ready': False}
