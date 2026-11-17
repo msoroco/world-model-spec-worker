@@ -61,6 +61,106 @@ def compare_diagnostic_sources(baseline, candidate, case_id, center):
         raise ValueError('Capture manifest changed beyond case identity')
     return len(sources) - len(variable)
 
+
+def validate_y15_fallbacks(compat_manifest):
+    """Bind each distinct response to its exact CPU construction and replay."""
+    entry = next(row for row in compat_manifest['cases']
+                 if row['case_id'].endswith('occluder_y15'))
+    primary = {item['path']: item['content'] for item in
+               json.loads((ROOT / entry['construction']).read_text())['files']}
+    expected_changes = {
+        'fallback1': {'runner.py', 'tests/test_view_location_world_setup.py'},
+        'fallback2': {'runner.py'},
+        'fallback3': {'yield_construction.py', 'tests/test_yield_construction.py'},
+    }
+    candidates = entry.get('candidates', [])
+    assert [row['id'] for row in candidates] == list(expected_changes)
+    assert len({json.dumps(row['trigger'], sort_keys=True) for row in candidates}) == 3
+    source_manifest = json.loads((ROOT / 'view-location-fallback1-source-manifest.json').read_text())
+    source_entry = next(row for row in source_manifest['cases'] if row['case_id'] == entry['case_id'])
+    source_recipe = json.loads((REPO / source_entry['fixture_recipe']).read_text())
+    primary_recipe = json.loads((REPO / entry['fixture_recipe']).read_text())
+    source_map = {item['path']: item for item in source_recipe['sources']}
+    primary_map = {item['path']: item for item in primary_recipe['sources']}
+    assert set(source_map) == set(primary_map)
+    assert all(source_map[name] == primary_map[name] for name in source_map if name != 'road_context.json')
+    context = json.loads((REPO / source_map['road_context.json']['source']).read_text())
+    original = json.loads((REPO / primary_map['road_context.json']['source']).read_text())
+    original['view_occluder']['native_location_m'][1] = 14.5
+    assert context == original
+    assert sha(REPO / source_map['road_context.json']['source']) == source_map['road_context.json']['sha256']
+    out = []
+    for candidate in candidates:
+        ident = candidate['id']
+        construction = ROOT / candidate['construction']
+        assert sha(construction) == candidate['construction_sha256']
+        files = {item['path']: item['content'] for item in
+                 json.loads(construction.read_text())['files']}
+        assert set(files) == set(primary)
+        assert {name for name in files if files[name] != primary[name]} == expected_changes[ident]
+        if ident == 'fallback1':
+            assert 'view_occluder(world, center_y=14.5)' in files['runner.py']
+            assert '15.0' not in files['tests/test_view_location_world_setup.py']
+            source_candidate = source_entry['candidates'][0]
+            assert source_candidate['construction_sha256'] == candidate['construction_sha256']
+            assert source_candidate['source_equivalence']['road_context_sha256'] == source_map['road_context.json']['sha256']
+            recipe = source_entry['fixture_recipe']
+        elif ident == 'fallback2':
+            assert "'reference_corner': pose(23, -28, 18, 135, -27)" in files['runner.py']
+            recipe = entry['fixture_recipe']
+        else:
+            assert 'EGO_POINT = opendrive_to_carla(-70.0, -1.8)' in files['yield_construction.py']
+            recipe = entry['fixture_recipe']
+        local = REPO / f'.runtime-work/c158190-view-y15-{ident}'
+        offline = local.with_name(local.name + '-offline') / 'offline.log'
+        positive_path = local.with_name(local.name + '-compat') / 'compatibility.json'
+        saved_path = local.with_name(local.name + '-saved') / 'v0001/processing.json'
+        assert 'OK' in offline.read_text()
+        positive = json.loads(positive_path.read_text())
+        saved = json.loads(saved_path.read_text())
+        assert positive['case_id'] == entry['case_id'] and positive['candidate_id'] == ident
+        assert positive['passed'] is True and positive['construction_sha256'] == candidate['construction_sha256']
+        assert positive['fixture_recipe_sha256'] == sha(REPO / recipe)
+        assert positive['negative_removed'] == 'visibility_rays.jsonl'
+        assert {'negative_case_source', 'four_camera_sources', 'final_decode'} <= set(positive['checks'])
+        assert saved['case_id'] == entry['case_id'] and saved['passed'] is True
+        assert saved['recorded_only'] is True and saved['originals_preserved'] is True
+        assert saved['physical_acceptance_claimed'] is False and saved['legal_acceptance_claimed'] is False
+        assert saved['native_revision']['construction_sha256'] == candidate['construction_sha256']
+        out.append({'id': ident, 'construction_sha256': candidate['construction_sha256'],
+                    'offline_log_sha256': sha(offline), 'compatibility_sha256': sha(positive_path),
+                    'saved_processing_sha256': sha(saved_path)})
+    return out
+
+
+def validate_y15_physical_fixtures():
+    """Check classifier contrast and saved-processing lifecycle on CPU fixtures."""
+    base = REPO / '.runtime-work/c158190-view-y15-physical'
+    statuses = {'complete_motion': 'met', 'incomplete_motion': 'not_met',
+                'missing_evidence': 'unverified'}
+    rows = []
+    for kind, expected in statuses.items():
+        path = base / f'{kind}.json'
+        log = REPO / f'.runtime-work/c158190-view-y15-{kind}.log'
+        assert log.is_file() and path.is_file()
+        result = json.loads(path.read_text())
+        assert result['physical_checks']['maneuver']['status'] == expected
+        assert result['maneuver_completed'] is (expected == 'met')
+        assert result['diagnostic_fixture'] is True
+        assert result['physical_acceptance_claimed'] is False
+        rows.append({'kind': kind, 'status': expected, 'result_sha256': sha(path),
+                     'log_sha256': sha(log)})
+    life_path = base / 'lifecycle.json'
+    life_log = REPO / '.runtime-work/c158190-view-y15-lifecycle.log'
+    life = json.loads(life_path.read_text())
+    assert life['events'] == ['capture_finished', 'encoders_closed',
+                              'restoration_verified', 'native_exit',
+                              'owner_released', 'saved_processing_started']
+    assert life['diagnostic_fixture'] is True
+    rows.append({'kind': 'lifecycle', 'result_sha256': sha(life_path),
+                 'log_sha256': sha(life_log)})
+    return rows
+
 def validate():
     manifest = json.loads((ROOT / 'view-location-draft-manifest.json').read_text())
     compat_manifest = json.loads((ROOT / 'view-location-compatibility-manifest.json').read_text())
@@ -183,6 +283,8 @@ def validate():
     else:
         raise AssertionError('Changed fixed diagnostic source escaped comparison audit')
     return {'status': 'pass', 'drafts': sources,
+            'y15_fallbacks': validate_y15_fallbacks(compat_manifest),
+            'y15_physical_fixtures': validate_y15_physical_fixtures(),
             'fixed_source_count': len(fixed),
             'fixed_diagnostic_source_count': fixed_diagnostic_source_count,
             'negative_diagnostic_change_rejected': True,

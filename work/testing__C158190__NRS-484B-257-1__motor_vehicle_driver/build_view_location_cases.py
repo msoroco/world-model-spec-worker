@@ -274,6 +274,92 @@ def build_compatibility():
                       'source_kind': 'synthetic_diagnostic'}))
 
 
+def build_y15_fallbacks():
+    """Prepare three physical-risk responses for the middle view location."""
+    path = ROOT / 'view-location-compatibility-manifest.json'
+    manifest = json.loads(path.read_text())
+    entry = next(row for row in manifest['cases'] if row['case_id'].endswith('occluder_y15'))
+    primary = json.loads((ROOT / entry['construction']).read_text())
+    plans = {
+        'fallback1': {
+            'trigger': {'source': 'visibility_rays.jsonl and road_context.json',
+                        'metric': 'original Native streetbarrier hits and clear/blocked transition over the approach',
+                        'failure_condition': 'the y=15 m obstruction produces no attributable clear/blocked transition'},
+            'changed_knobs': ['roadside streetbarrier center y from 15.0 m to 14.5 m'],
+            'replacements': {'runner.py': [('view_occluder(world, center_y=15.0)',
+                                            'view_occluder(world, center_y=14.5)')],
+                             'tests/test_view_location_world_setup.py': [('15.0', '14.5')]},
+        },
+        'fallback2': {
+            'trigger': {'source': 'reference_corner.mkv and video_frames.jsonl',
+                        'metric': 'original source frames containing both roadside body and through-highway lane',
+                        'failure_condition': 'the reference camera fails to frame the body and governed view corridor'},
+            'changed_knobs': ['reference-corner camera from (19,-25,15,135,-24) to (23,-28,18,135,-27)'],
+            'replacements': {'runner.py': [("'reference_corner': pose(19, -25, 15, 135, -24)",
+                                            "'reference_corner': pose(23, -28, 18, 135, -27)")]},
+        },
+        'fallback3': {
+            'trigger': {'source': 'approach_history.jsonl and video_frames.jsonl',
+                        'metric': 'original approach frames spanning 50 m to 1 m before junction entry',
+                        'failure_condition': 'the near-view transition is outside the retained approach frame span'},
+            'changed_knobs': ['ego OpenDRIVE approach spawn x from -60 m to -70 m'],
+            'replacements': {'yield_construction.py': [
+                ('EGO_POINT = opendrive_to_carla(-60.0, -1.8)',
+                 'EGO_POINT = opendrive_to_carla(-70.0, -1.8)')],
+                'tests/test_yield_construction.py': [
+                    ('(-60, 1.8): (158190, -1, False)',
+                     '(-70, 1.8): (158190, -1, False)')]},
+        },
+    }
+    candidates = []
+    for ident, plan in plans.items():
+        draft = copy.deepcopy(primary)
+        files = {item['path']: item for item in draft['files']}
+        for name, replacements in plan['replacements'].items():
+            item = files[name]
+            for old, new in replacements:
+                expected = 4 if name == 'tests/test_view_location_world_setup.py' else 1
+                if item['content'].count(old) != expected:
+                    raise ValueError(f'{ident}: changed anchor {name}: {old}')
+                item['content'] = item['content'].replace(old, new)
+            item.pop('source', None)
+        output = ROOT / f'cases/view_location_y15/fallbacks/{ident}-construction.json'
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(json.dumps(draft, indent=2) + '\n')
+        candidates.append({'id': ident, 'construction': str(output.relative_to(ROOT)),
+                           'construction_sha256': hashlib.sha256(output.read_bytes()).hexdigest(),
+                           'trigger': plan['trigger'], 'changed_knobs': plan['changed_knobs']})
+    entry['candidates'] = candidates
+    path.write_text(json.dumps(manifest, indent=2) + '\n')
+    # A second manifest binds a matching diagnostic road-context source for
+    # fallback1, whose authored roadside center differs from the primary.
+    source_manifest = copy.deepcopy(manifest)
+    source_entry = next(row for row in source_manifest['cases']
+                        if row['case_id'].endswith('occluder_y15'))
+    source_dir = ROOT / 'cases/view_location_y15/fallbacks/fallback1-sources'
+    source_dir.mkdir(parents=True, exist_ok=True)
+    original_recipe = json.loads((REPO / entry['fixture_recipe']).read_text())
+    source_row = next(item for item in original_recipe['sources']
+                      if item['path'] == 'road_context.json')
+    context = json.loads((REPO / source_row['source']).read_text())
+    if context['view_occluder']['native_location_m'] != [-4.0, 15.0, 0.0]:
+        raise ValueError('Middle-view diagnostic source center changed')
+    context['view_occluder']['native_location_m'][1] = 14.5
+    context_path = source_dir / 'road_context.json'
+    context_path.write_text(json.dumps(context, indent=2) + '\n')
+    source_row['source'] = str(context_path.relative_to(REPO))
+    source_row['sha256'] = hashlib.sha256(context_path.read_bytes()).hexdigest()
+    recipe_path = source_dir / 'diagnostic-recipe.json'
+    recipe_path.write_text(json.dumps(original_recipe, indent=2) + '\n')
+    source_entry['fixture_recipe'] = str(recipe_path.relative_to(REPO))
+    source_entry['candidates'][0]['source_equivalence'] = {
+        'road_context_sha256': source_row['sha256'],
+        'fixture_recipe_sha256': hashlib.sha256(recipe_path.read_bytes()).hexdigest()}
+    (ROOT / 'view-location-fallback1-source-manifest.json').write_text(
+        json.dumps(source_manifest, indent=2) + '\n')
+    print(json.dumps({'view_y15_fallbacks': len(candidates)}))
+
+
 def bind_semantics():
     draft = json.loads((ROOT / 'view-location-draft-manifest.json').read_text())
     plan_path = ROOT / 'case-plan.json'
@@ -335,3 +421,4 @@ if __name__ == '__main__':
     build()
     bind_semantics()
     build_compatibility()
+    build_y15_fallbacks()
