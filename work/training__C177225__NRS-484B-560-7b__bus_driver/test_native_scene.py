@@ -107,6 +107,10 @@ class SceneConstructionTest(unittest.TestCase):
                 self.assertEqual('driving', world.road_map.lookups[0][1]['lane_type'])
                 self.assertEqual(-70 * direction,
                                  scene['bus'].transform.location.x)
+                self.assertEqual(-1.75 * direction,
+                                 scene['bus'].transform.location.y)
+                self.assertTrue(all(row[0].y == -1.75 * direction
+                                    for row in world.road_map.lookups))
                 self.assertEqual(-7 * direction,
                                  scene['requested_stop_x_m'])
                 self.assertIs(scene['cameras']['driver_reference'].attached_to,

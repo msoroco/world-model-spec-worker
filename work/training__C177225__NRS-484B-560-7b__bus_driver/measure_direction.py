@@ -63,7 +63,9 @@ def derive_observation(layout, signal, bus_rows, signal_rows, frame_map_rows,
                 officer.get('direction') != signal.direction or
                 officer.get('authorized') is not True or
                 officer.get('hand_signal') != signal.hand_signal or
-                officer.get('governing') is not expected_active):
+                officer.get('governing') is not expected_active or
+                officer.get('pose_control_applied') is not expected_active or
+                officer.get('pose_bone_readback') != 'crl_arm__R'):
             raise ValueError('Raw officer direction lacks authorization, scope or timing')
         if expected_active:
             witnessed.append(frame)

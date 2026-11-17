@@ -66,8 +66,9 @@ def spawn_scene(world, carla, layout, assets, *, direction, camera_width_m=7.0):
     road_map = world.get_map()
     start_x = layout.approach_station(direction)
     stop_x = layout.stop_station(direction)
+    lane_y = -1.75 * direction
     for x in (start_x, stop_x):
-        waypoint = road_map.get_waypoint(carla.Location(x=x, y=0, z=0),
+        waypoint = road_map.get_waypoint(carla.Location(x=x, y=lane_y, z=0),
                                         project_to_road=False,
                                         lane_type=carla.LaneType.Driving)
         if waypoint is None:
@@ -76,7 +77,7 @@ def spawn_scene(world, carla, layout, assets, *, direction, camera_width_m=7.0):
     try:
         bus_bp = blueprint_library.find(assets.bus_blueprint)
         bus_bp.set_attribute('role_name', 'c177225_bus')
-        bus = world.spawn_actor(bus_bp, _transform(carla, (start_x, 0, 0.5),
+        bus = world.spawn_actor(bus_bp, _transform(carla, (start_x, lane_y, 0.5),
                                                    yaw=0 if direction == 1 else 180))
         owned.append(bus)
         if bus.bounding_box.extent.x * 2 > layout.exit_clearance_m:
@@ -84,7 +85,8 @@ def spawn_scene(world, carla, layout, assets, *, direction, camera_width_m=7.0):
         officer_bp = blueprint_library.find(assets.officer_blueprint)
         officer_bp.set_attribute('role_name', 'c177225_directing_officer')
         officer = world.spawn_actor(officer_bp,
-                                    _transform(carla, (stop_x, camera_width_m / 2 + 1, 0.2),
+                                    _transform(carla, (stop_x,
+                                                       -direction * (camera_width_m / 2 + 1), 0.2),
                                                yaw=90 if direction == 1 else -90))
         owned.append(officer)
         rail_bp = blueprint_library.find(assets.rail_asset_blueprint)
@@ -112,6 +114,7 @@ def spawn_scene(world, carla, layout, assets, *, direction, camera_width_m=7.0):
                 'cameras': cameras, 'owned': tuple(owned),
                 'requested_bus_start_x_m': start_x,
                 'requested_stop_x_m': stop_x,
+                'requested_driving_lane_center_y_m': lane_y,
                 'source_kind': 'authored_scene_request',
                 'physical_success_claimed': False}
     except BaseException:

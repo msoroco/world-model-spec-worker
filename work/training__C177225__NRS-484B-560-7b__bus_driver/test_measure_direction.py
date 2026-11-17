@@ -20,7 +20,8 @@ class SourceObservationTest(unittest.TestCase):
             {'native_frame': frame, 'actor_id': 'officer-1',
              'recipient_actor_id': 'bus-1', 'crossing_id': 'crossing-1',
              'direction': 1, 'authorized': True, 'hand_signal': 'STOP',
-             'governing': frame >= 1}
+             'governing': frame >= 1, 'pose_control_applied': frame >= 1,
+             'pose_bone_readback': 'crl_arm__R'}
             for frame in range(6)]
         self.video = [{'native_frame': frame, 'carla_frame': frame}
                       for frame in range(6)]
@@ -65,6 +66,10 @@ class SourceObservationTest(unittest.TestCase):
             self.derive(officer=self.officer[:-1])
         officer = copy.deepcopy(self.officer)
         officer[3]['recipient_actor_id'] = 'other-bus'
+        with self.assertRaisesRegex(ValueError, 'scope or timing'):
+            self.derive(officer=officer)
+        officer = copy.deepcopy(self.officer)
+        officer[3]['pose_control_applied'] = False
         with self.assertRaisesRegex(ValueError, 'scope or timing'):
             self.derive(officer=officer)
 
