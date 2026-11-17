@@ -12,6 +12,7 @@ from pathlib import Path
 import sys
 
 from measure_red_curb import measure
+from measure_exceptions import measure as measure_exception
 
 ASSIGNMENT = 'training__C150142__LVMC-11-52-030-A__motor_vehicle_driver'
 VIEWS = ('overview', 'approach', 'reference_corner', 'driver_reference')
@@ -46,7 +47,7 @@ def finite(value):
 
 
 def validate_rows(raw, frames, trace, map_readback, case, expected_frames,
-                  source_kind='original_native'):
+                  source_kind='original_native', expected_red_stop=None):
     require(len(raw) == len(frames) == len(trace) == expected_frames and
             expected_frames >= 2, 'Original actor/frame/trace count differs')
     require(map_readback.get('source_kind') ==
@@ -86,8 +87,11 @@ def validate_rows(raw, frames, trace, map_readback, case, expected_frames,
             'end_x_m': map_readback.get('red_curb_end_x_m'),
             'curb_y_m': map_readback.get('curb_y_m')}
     observation = measure(raw, frames, curb, expected_frames)
-    expected = case == ASSIGNMENT + '__reference'
-    require(case in (ASSIGNMENT + '__reference', ASSIGNMENT + '__contrast') and
+    expected = (case == ASSIGNMENT + '__reference' if expected_red_stop is None
+                else expected_red_stop)
+    require((case in (ASSIGNMENT + '__reference', ASSIGNMENT + '__contrast')
+             if expected_red_stop is None else
+             case.startswith(ASSIGNMENT + '__') and expected_red_stop is True) and
             observation['stopped_frame_ids'] and
             observation['red_curb_stop_or_park_observed'] is expected,
             'Original red-curb occupancy differs from exact case')
@@ -97,7 +101,9 @@ def validate_rows(raw, frames, trace, map_readback, case, expected_frames,
             'red_curb_stop_or_park_observed': expected}
 
 
-def validate_review(review, case, candidate, attempt, primary):
+def validate_review(review, case, candidate, attempt, primary,
+                    extra_sources=(), required_claims=PIXEL_CLAIMS,
+                    exception=False):
     require(review.get('source_kind') == 'original_native_review' and
             review.get('case_id') == case and
             review.get('candidate_id') == candidate and
@@ -108,18 +114,24 @@ def validate_review(review, case, candidate, attempt, primary):
                  'original_motion_reviewed', 'jurisdiction_and_signage_reviewed')) and
             review.get('legal_verdict') is None,
             'Independent original red-curb review incomplete')
+    if exception:
+        require(all(review.get(key) is True for key in
+                    ('service_class_reviewed', 'activity_or_absence_reviewed',
+                     'signage_readback_reviewed', 'mailbox_readback_reviewed')),
+                'Independent original exception review incomplete')
     sources = review.get('sources', {})
     paths = {name: attempt / name for name in
              ('native-raw-actors.jsonl', 'native-map-readback.json',
               'video_frames.jsonl', 'trace.jsonl', 'config.json', 'result.json')}
     paths.update({name + '.mkv': attempt / (name + '.mkv') for name in VIEWS})
     paths['raw.mkv'] = primary
+    paths.update({name: attempt / name for name in extra_sources})
     for name, path in paths.items():
         require(path.is_file() and sources.get(name) == sha(path),
                 'Independent original review source hash differs: ' + name)
     boxes = review.get('pixel_boxes')
     require(isinstance(boxes, list) and
-            {box.get('claim') for box in boxes} >= PIXEL_CLAIMS,
+            {box.get('claim') for box in boxes} >= set(required_claims),
             'Independent review lacks red-paint/body pixel claims')
     return boxes
 
@@ -135,12 +147,106 @@ def validate_composition(receipt, attempt, primary, frames):
             'Composed four-view source binding differs')
 
 
-def pixel_checker(boxes, frames):
+def validate_exception_measurement(attempt, case_plan, case,
+                                   source_kind='original_native'):
+    """Recompute nonlegal exception facts from retained source rows."""
+    attempt = Path(attempt)
+    entries = [item for item in case_plan.get('cases', [])
+               if item.get('case_id') == case and 'exception_spec' in item]
+    require(len(entries) == 1, 'Unknown exact exception case')
+    spec = entries[0]['exception_spec']
+    config = read(attempt / 'config.json')
+    report = read(attempt / 'analysis-report.json')
+    result = read(attempt / 'result.json')
+    map_readback = read(attempt / 'native-map-readback.json')
+    raw = lines(attempt / 'native-raw-actors.jsonl')
+    signed = report.get('measurements', {}).get('signed_curb_observation', {})
+    value = signed.get('value', {})
+    sources = signed.get('sources', {})
+    require(config.get('case_id') == report.get('case_id') == case and
+            result.get('case_id') == case and
+            result.get('measured_values', {}).get('signed_curb_observation') ==
+            {key: item for key, item in value.items() if key != 'legal_verdict'} and
+            report.get('source_kind') == value.get('source_kind') == source_kind and
+            map_readback.get('source_kind') ==
+            ('native_readback' if source_kind == 'original_native'
+             else 'synthetic_native_sample') and
+            type(config.get('capture_frames', config.get('frames'))) is int and
+            len(raw) == value.get('frames') ==
+            config.get('capture_frames', config.get('frames')) and
+            len(raw) >= 2 and
+            config.get('service_class') == spec['service_class'] ==
+            value.get('declared_service_class') and
+            config.get('sign_classes') == spec['sign_classes'] ==
+            value.get('displayed_sign_classes') and
+            value.get('sign_present') is bool(spec['sign_classes']) and
+            value.get('mailbox_present') is spec['mailbox_requested'],
+            'Exception case, provenance or declared context differs')
+    require(map_readback.get('sign_readback', {}).get('present') is
+            value['sign_present'] and
+            map_readback['sign_readback'].get('displayed_classes') ==
+            value['displayed_sign_classes'] and
+            map_readback.get('mailbox_readback', {}).get('present') is
+            value['mailbox_present'],
+            'Exception Native sign/mailbox readback differs')
+    require({'native-raw-actors.jsonl', 'native-map-readback.json'} <= set(sources) and
+            all(name.startswith('native-') and name.endswith(('.jsonl', '.json'))
+                and '/' not in name and (attempt / name).is_file() and
+                sources[name] == sha(attempt / name)
+                for name in sources),
+            'Exception measurement source hash differs')
+    blueprints = {row.get('blueprint') for row in raw}
+    require(blueprints == {config.get('native_blueprint')} and
+            {row.get('source_kind') for row in raw} == {source_kind},
+            'Exception Native vehicle identity/provenance differs')
+    for name in sources:
+        if name.endswith('-actors.jsonl') and name != 'native-raw-actors.jsonl':
+            participant = lines(attempt / name)
+            require(len(participant) == len(raw) and
+                    all(row.get('source_kind') == source_kind and
+                        row.get('frame') == index and
+                        row.get('native_frame') == raw[index].get('native_frame') and
+                        finite(row.get('time_s')) and
+                        abs(row['time_s'] - raw[index]['time_s']) <= 1e-6
+                        for index, row in enumerate(participant)),
+                    'Exception participant Native frame join differs: ' + name)
+    context = {'source_kind': source_kind,
+               'red_curb': {'paint_color': map_readback.get('paint_color'),
+                            'start_x_m': map_readback.get('red_curb_start_x_m'),
+                            'end_x_m': map_readback.get('red_curb_end_x_m'),
+                            'curb_y_m': map_readback.get('curb_y_m')},
+               'sign_readback': map_readback['sign_readback'],
+               'vehicle_readback': {'native_blueprint': config['native_blueprint'],
+                                    'declared_service_class': config['service_class']},
+               'mailbox_readback': map_readback['mailbox_readback']}
+    computed = measure_exception(raw, context, [])
+    require(abs(computed['red_curb_stationary_duration_s'] -
+                value.get('red_curb_stationary_duration_s', -999)) <= 1e-6 and
+            computed['duration_relative_to_30_minutes'] ==
+            value.get('duration_relative_to_30_minutes'),
+            'Exception measured stationary duration differs')
+    events = value.get('recorded_activity_events')
+    expected_activity = spec.get('activity_request')
+    require(isinstance(events, list) and
+            ({event.get('name') for event in events} ==
+             ({expected_activity} if expected_activity else set())) and
+            (not events or len(sources) > 2),
+            'Exception activity lacks source-bound observation')
+    return {'case_id': case, 'frames': len(raw),
+            'stationary_duration_s': computed['red_curb_stationary_duration_s'],
+            'duration_relative_to_30_minutes':
+                computed['duration_relative_to_30_minutes'],
+            'declared_service_class': config['service_class'],
+            'recorded_activity_names': [event['name'] for event in events],
+            'source_kind': source_kind, 'legal_verdict': None}
+
+
+def pixel_checker(boxes, frames, required_claims=PIXEL_CLAIMS):
     by_frame = {}; seen = set(); identities = set()
     for box in boxes:
         index = box.get('frame'); rect = box.get('rect_xywh')
         require(type(index) is int and 0 <= index < frames and
-                box.get('claim') in PIXEL_CLAIMS and
+                box.get('claim') in set(required_claims) and
                 isinstance(rect, list) and len(rect) == 4 and
                 all(type(v) is int for v in rect) and
                 rect[2] >= 2 and rect[3] >= 2,
@@ -180,8 +286,6 @@ def audit(case, job_id, attempt_number, recording_id, attempt, review_path,
           primary, decode_receipt, output):
     attempt = Path(attempt).resolve(); primary = Path(primary).resolve()
     output = Path(output).resolve(); decode_receipt = Path(decode_receipt).resolve()
-    require(case in (ASSIGNMENT + '__reference', ASSIGNMENT + '__contrast'),
-            'Wrong exact delivery case')
     require(type(job_id) is int and job_id > 0 and
             type(attempt_number) is int and attempt_number > 0 and
             isinstance(recording_id, str) and recording_id and
@@ -192,6 +296,16 @@ def audit(case, job_id, attempt_number, recording_id, attempt, review_path,
             attempt in primary.parents and primary.is_file(),
             'Use fresh independent audit and operations-owned decode receipt')
     config = read(attempt / 'config.json')
+    plan_path = attempt / 'case-plan.json'
+    case_plan = read(plan_path)
+    require(config.get('case_plan_sha256') == sha(plan_path),
+            'Exact case-plan source hash differs')
+    planned = [item for item in case_plan.get('cases', [])
+               if item.get('case_id') == case]
+    require(len(planned) == 1 and
+            (case in (ASSIGNMENT + '__reference', ASSIGNMENT + '__contrast') or
+             'exception_spec' in planned[0]), 'Wrong exact delivery case')
+    exception = 'exception_spec' in planned[0]
     result = read(attempt / 'result.json')
     capture = read(attempt / 'native-capture-report.json')
     map_readback = read(attempt / 'native-map-readback.json')
@@ -207,25 +321,44 @@ def audit(case, job_id, attempt_number, recording_id, attempt, review_path,
     raw = lines(attempt / 'native-raw-actors.jsonl')
     frames = lines(attempt / 'video_frames.jsonl')
     trace = lines(attempt / 'trace.jsonl')
-    physical = validate_rows(raw, frames, trace, map_readback, case, config['frames'])
+    physical = validate_rows(raw, frames, trace, map_readback, case,
+                             config['frames'],
+                             expected_red_stop=True if exception else None)
+    extra_sources = set()
+    claims = set(PIXEL_CLAIMS)
+    if exception:
+        physical['exception'] = validate_exception_measurement(
+            attempt, case_plan, case)
+        extra_sources.update(read(attempt / 'analysis-report.json')
+                             ['measurements']['signed_curb_observation']['sources'])
+        claims.add('service_vehicle')
+        spec = planned[0]['exception_spec']
+        if spec['sign_classes']:
+            claims.add('sign_text')
+        if spec['mailbox_requested']:
+            claims.add('mailbox')
+        if spec.get('activity_request'):
+            claims.add('activity_actor')
     review = read(review_path)
-    boxes = validate_review(review, case, candidate, attempt, primary)
+    boxes = validate_review(review, case, candidate, attempt, primary,
+                            extra_sources, claims, exception)
     media = media_module()
     media.check_four_view_sources({name: attempt / (name + '.mkv') for name in VIEWS})
     validate_composition(read(attempt / 'four-view-receipt.json'), attempt,
                          primary, config['frames'])
-    checker, seen = pixel_checker(boxes, config['frames'])
+    checker, seen = pixel_checker(boxes, config['frames'], claims)
     media.audit(primary, config['frames'],
                 checkers={'c150142_red_curb_pixels': (sha(Path(__file__)), checker)},
                 mapping_sha256=sha(attempt / 'video_frames.jsonl'),
                 receipt=decode_receipt)
-    require(PIXEL_CLAIMS <= seen, 'Full decode omitted reviewed red curb/body pixels')
+    require(claims <= seen, 'Full decode omitted reviewed exception/body pixels')
     sources = {name: sha(attempt / name) for name in
                ('config.json', 'result.json', 'native-capture-report.json',
                 'four-view-receipt.json',
                 'native-raw-actors.jsonl', 'native-map-readback.json',
                 'video_frames.jsonl', 'trace.jsonl')}
     sources.update({name + '.mkv': sha(attempt / (name + '.mkv')) for name in VIEWS})
+    sources.update({name: sha(attempt / name) for name in extra_sources})
     sources['raw.mkv'] = sha(primary)
     core = attempt / 'converted/trace.json'
     require(core.is_file(), 'Missing converted trace')
