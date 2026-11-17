@@ -23,6 +23,18 @@ def measure_response(root):
     return measure_observed_saved(*(root / name for name in SOURCES))
 
 
+def measure_right_shift(observed):
+    return observed["max_right_shift_m"]
+
+
+def measure_speed_delta(observed):
+    return observed["max_precompletion_speed_delta_mps"]
+
+
+def measure_pass_completion(observed):
+    return observed["pass_complete_frame"]
+
+
 def analyze(attempt):
     root = Path(attempt)
     config_path = root / "config.json"
@@ -38,7 +50,13 @@ def analyze(attempt):
     return {"format":"worker-analysis-report", "case_id":CASE_ID,
             "measurements":{"overtaken_response":{
                 "method":"measure_response", "value":observed,
-                "sources":observed["source_sha256"]}},
+                "sources":observed["source_sha256"]},
+                "right_shift_m":{"method":"measure_right_shift",
+                    "value":measure_right_shift(observed),"sources":observed["source_sha256"]},
+                "speed_delta_mps":{"method":"measure_speed_delta",
+                    "value":measure_speed_delta(observed),"sources":observed["source_sha256"]},
+                "pass_complete_frame":{"method":"measure_pass_completion",
+                    "value":measure_pass_completion(observed),"sources":observed["source_sha256"]}},
             "limitations":observed["limitations"],
             "physical_acceptance_claimed":False,
             "legal_acceptance_claimed":False}

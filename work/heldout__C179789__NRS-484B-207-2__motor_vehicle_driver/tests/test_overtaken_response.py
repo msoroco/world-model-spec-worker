@@ -195,6 +195,9 @@ class OvertakenTests(unittest.TestCase):
             "law_id":"NRS-484B-207-2","cell_id":"C179789","actor":"motor_vehicle_driver",
             "case":{"recording_description":{"channels":[],"context_inputs":[],"limitations":[]}}})
         report=finalizer.analyze(self.root)
+        self.assertEqual(report["measurements"]["right_shift_m"]["value"],observed["max_right_shift_m"])
+        self.assertEqual(report["measurements"]["speed_delta_mps"]["value"],0)
+        self.assertEqual(report["measurements"]["pass_complete_frame"]["value"],103)
         result=finalizer.build_result(self.root,report)
         self.assertEqual(result["case_id"],finalizer.CASE_ID)
         self.assertFalse(result["physical_acceptance_claimed"])
