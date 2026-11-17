@@ -4,6 +4,88 @@
   "actor": "motor_vehicle_driver",
   "cases": [
     {
+      "case_id": "C179789__semantic_baseline_reference",
+      "target_law_id": "NRS-484B-207-2",
+      "target_type": "baseline",
+      "rationale": "Shared source-planning reference only; no delivered recording, actual notice, right-pass permission or legal finding.",
+      "variable_assignments": {
+        "ego_right_shift_target_m": {
+          "kind": "controller",
+          "value": 0.0
+        },
+        "overtaker_speed_target_mps": {
+          "kind": "controller",
+          "value": 8.0
+        },
+        "actual_observation": {
+          "kind": "world_setup",
+          "value": null
+        },
+        "horn_command_requested": {
+          "kind": "controller",
+          "value": false
+        },
+        "full_body_pass_completion": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "ego_precompletion_speed_target_mps": {
+          "kind": "controller",
+          "value": 4.0
+        },
+        "ego_postcompletion_speed_target_mps": {
+          "kind": "controller",
+          "value": 4.0
+        },
+        "right_pass_survey_basis": {
+          "kind": "world_setup",
+          "value": null
+        },
+        "right_pass_permission": {
+          "kind": "world_setup",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "give way to the right",
+        "upon observing the overtaking vehicle",
+        "hearing a signal",
+        "completely passed by the overtaking vehicle",
+        "overtaking and passing on the right is permitted"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "subject_right_offset_m",
+            "unit": "m",
+            "method": "original actor pose against Native road tangent",
+            "sampling_rate_hz": 20,
+            "time_window": "notice through pass completion",
+            "reference_frame": "road tangent",
+            "uncertainty": "Native pose and waypoint precision"
+          },
+          {
+            "name": "subject_speed_mps",
+            "unit": "m/s",
+            "method": "original actor velocity",
+            "sampling_rate_hz": 20,
+            "time_window": "entire capture",
+            "reference_frame": "world",
+            "uncertainty": "Native actor velocity precision"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Scripted notice is a construction stimulus; audible/visual notice and right-pass permission are unverified by this prototype. No legal outcome is inferred."
+        ]
+      },
+      "paired_probe_id": null,
+      "deliberate_differences": [],
+      "probe": {
+        "status": "source-planning reference only"
+      }
+    },
+    {
       "case_id": "heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__gives_way_holds_speed",
       "target_law_id": "NRS-484B-207-2",
       "target_type": "boundary_probe",
@@ -434,6 +516,82 @@
       }
     }
   ],
-  "sweep_specs": [],
-  "sweeps_expanded": false
+  "sweep_specs": [
+    {
+      "sweep_id": "review_1",
+      "target_law_id": "NRS-484B-207-2",
+      "judgment_refs": [
+        {
+          "phrase": "give way to the right",
+          "note": "Measure original full-body rightward displacement without a legal displacement threshold."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "No numeric legal threshold or subjective fact is inferred from a CPU fixture.",
+      "missing_inputs": [
+        "Original Native recording and independent review of give way to the right"
+      ]
+    },
+    {
+      "sweep_id": "review_2",
+      "target_law_id": "NRS-484B-207-2",
+      "judgment_refs": [
+        {
+          "phrase": "upon observing the overtaking vehicle",
+          "note": "Original camera pixels and frame joins may support later observation review; visibility alone does not prove actual observation."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "No numeric legal threshold or subjective fact is inferred from a CPU fixture.",
+      "missing_inputs": [
+        "Original Native recording and independent review of upon observing the overtaking vehicle"
+      ]
+    },
+    {
+      "sweep_id": "review_3",
+      "target_law_id": "NRS-484B-207-2",
+      "judgment_refs": [
+        {
+          "phrase": "hearing a signal",
+          "note": "Original command and generated envelope do not prove propagation or subjective hearing."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "No numeric legal threshold or subjective fact is inferred from a CPU fixture.",
+      "missing_inputs": [
+        "Original Native recording and independent review of hearing a signal"
+      ]
+    },
+    {
+      "sweep_id": "review_4",
+      "target_law_id": "NRS-484B-207-2",
+      "judgment_refs": [
+        {
+          "phrase": "completely passed by the overtaking vehicle",
+          "note": "Bracket full-body passing from original corners and retain between-frame uncertainty."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "No numeric legal threshold or subjective fact is inferred from a CPU fixture.",
+      "missing_inputs": [
+        "Original Native recording and independent review of completely passed by the overtaking vehicle"
+      ]
+    },
+    {
+      "sweep_id": "review_5",
+      "target_law_id": "NRS-484B-207-2",
+      "judgment_refs": [
+        {
+          "phrase": "overtaking and passing on the right is permitted",
+          "note": "Record separate statutory source and surveyed road facts while leaving safety and permission undecided."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "No numeric legal threshold or subjective fact is inferred from a CPU fixture.",
+      "missing_inputs": [
+        "Original Native recording and independent review of overtaking and passing on the right is permitted"
+      ]
+    }
+  ],
+  "sweeps_expanded": true
 }
