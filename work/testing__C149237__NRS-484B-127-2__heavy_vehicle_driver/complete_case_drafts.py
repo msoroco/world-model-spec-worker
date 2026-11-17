@@ -106,7 +106,8 @@ def build_combination_draft():
     config['selected_case_id'] = case_id
     config['supported_case_ids'].append(case_id)
     config['combination_trailer_blueprint_id'] = 'vehicle.ford.crown'
-    config['required_atoms'].append('ru.trailer_or_combination')
+    # Combination qualification is retained as case-specific Native evidence;
+    # the pinned Core adapter has no acquisition path for this class atom.
     for channel in config['recording_description']['channels']:
         if channel['name'] in ('ego_overall_width', 'lead_overall_width'):
             channel['method'] = 'original Native tractor and attached-vehicle body envelope'
@@ -203,7 +204,7 @@ def build_combination_draft():
         "\nif __name__ == '__main__':", '''\n    def test_combination_source_is_packaged(self):
         config = json.loads(Path(runner.__file__).with_name('config.json').read_text())
         self.assertEqual(config['combination_trailer_blueprint_id'], 'vehicle.ford.crown')
-        self.assertIn('ru.trailer_or_combination', config['required_atoms'])
+        self.assertNotIn('ru.trailer_or_combination', config['required_atoms'])
         source = Path(runner.__file__).with_name('combination_construction.py').read_text()
         self.assertIn('position_lead(groups["lead"]', source)
         self.assertIn('capture_combination_history', source)

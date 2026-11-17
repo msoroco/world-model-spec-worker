@@ -38,7 +38,7 @@ def fixture(entry, kind, output):
     if suffix == 'gap_below_500ft':
         source = ROOT/'.runtime-work/c149237-root-support-primary-saved-v1/v0001/analysis'
     elif suffix == 'combination_at_500ft':
-        source = ROOT/'.runtime-work/c149237-combination-selected/saved-v2/v0001/analysis'
+        source = ROOT/'.runtime-work/c149237-combination-selected/saved-v3/v0001/analysis'
     else:
         source = ROOT/'.runtime-work'/f'c149237-{suffix}-saved-v16/v0001/analysis'
     with tempfile.TemporaryDirectory(prefix='c149237-physical-') as temporary:
