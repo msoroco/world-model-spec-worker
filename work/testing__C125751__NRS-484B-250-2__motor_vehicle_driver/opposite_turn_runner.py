@@ -89,7 +89,8 @@ def _joined_image(queue, frame):
 
 def capture_candidate_media(output_dir, world, carla, site, turning_role,
                             blueprints, transforms, release_frames,
-                            target_speeds_mps, frames, governed_lights=None):
+                            target_speeds_mps, frames, governed_lights=None,
+                            client=None, original_capture_factory=None):
     """Write four FFV1 sources, frame map and paired original actor records.
 
     This is a candidate capture path; the exact selected manifest, source site
@@ -98,6 +99,12 @@ def capture_candidate_media(output_dir, world, carla, site, turning_role,
     root = Path(output_dir)
     if not root.is_dir() or any(root.iterdir()):
         raise ValueError("Fresh existing candidate capture directory required")
+    if original_capture_factory is not None and client is None:
+        raise ValueError("Original capture factory requires the Native client")
+    if client is not None:
+        if original_capture_factory is None:
+            from pipeline_capture import PipelineCapture
+            original_capture_factory = PipelineCapture
     camera_values = site.get("cameras")
     if not isinstance(camera_values, dict) or set(camera_values) != set(SIZES):
         raise ValueError("Four reviewed camera poses required")
@@ -183,9 +190,14 @@ def capture_candidate_media(output_dir, world, carla, site, turning_role,
                          if governed_lights is not None else None)
         frame_map = stack.enter_context(FrameMap(root / "video_frames.jsonl"))
         frame_times = {}
+        original_capture = None
 
         @contextmanager
         def camera_factory(active_world, actors):
+            nonlocal original_capture
+            if original_capture_factory is not None:
+                original_capture = stack.enter_context(original_capture_factory(
+                    client, actors["ego"], root, "candidate_opposite_turn"))
             sensors = stack.enter_context(source_cameras(active_world, actors["ego"], poses))
             queues = {name: Queue() for name in SIZES}
             for name, sensor in sensors.items():
@@ -212,8 +224,11 @@ def capture_candidate_media(output_dir, world, carla, site, turning_role,
         def write_source(record):
             body_stream.write(json.dumps(record, allow_nan=False) + "\n")
             bodies = record["actor_sources"]
+            time_s = frame_times.pop(record["native_frame"])
+            if original_capture is not None:
+                original_capture.capture(record["native_frame"], time_s)
             crossing = {"frame": record["native_frame"],
-                        "time_s": frame_times.pop(record["native_frame"]),
+                        "time_s": time_s,
                         "ego": bodies["ego"], "other": bodies["other"],
                         "ego_vertices_m": bodies["ego"]["body_vertices_xy_m"]}
             crossing_stream.write(json.dumps(crossing, allow_nan=False) + "\n")

@@ -279,6 +279,31 @@ class OppositeTurnConstructionTest(unittest.TestCase):
                      selected_stop_references=stop_references())
         lights = {"ego": SimpleNamespace(id=101, get_state=lambda: "Green"),
                   "other": SimpleNamespace(id=102, get_state=lambda: "Red")}
+        client = object()
+
+        class OriginalCapture:
+            def __init__(self, supplied_client, ego, root, case_id):
+                if supplied_client is not client or ego is not actors[0] or case_id != "candidate_opposite_turn":
+                    raise AssertionError("Original recorder was not bound to the candidate ego and client")
+                self.root = root
+
+            def __enter__(self):
+                (self.root / "capture").mkdir()
+                self.trace = (self.root / "trace.jsonl").open("x")
+                self.evidence = (self.root / "capture" / "evidence.jsonl").open("x")
+                return self
+
+            def capture(self, frame, time_s):
+                if world.get_snapshot().frame != frame:
+                    raise AssertionError("Original capture must follow the matching tick")
+                self.trace.write(json.dumps({"frame": frame, "time_s": time_s}) + "\n")
+                self.evidence.write(json.dumps({"original_frame": frame,
+                                                "recording_time_s": time_s}) + "\n")
+
+            def __exit__(self, *args):
+                self.trace.close()
+                self.evidence.close()
+
         with tempfile.TemporaryDirectory() as temp:
             with patch.object(runner, "source_cameras", cameras), patch.object(runner, "FFV1Writer", Writer):
                 receipt = runner.capture_candidate_media(
@@ -286,7 +311,8 @@ class OppositeTurnConstructionTest(unittest.TestCase):
                     {"ego": "car", "other": "car"},
                     {"ego": "pose1", "other": "pose2"},
                     {"ego": 1, "other": 2}, {"ego": 5., "other": 5.}, 3,
-                    governed_lights=lights)
+                    governed_lights=lights, client=client,
+                    original_capture_factory=OriginalCapture)
             source = [json.loads(line) for line in
                       (Path(temp) / "body_history.jsonl").read_text().splitlines()]
             frames = [json.loads(line) for line in
@@ -297,6 +323,10 @@ class OppositeTurnConstructionTest(unittest.TestCase):
                      (Path(temp) / "stop_history.jsonl").read_text().splitlines()]
             signals = [json.loads(line) for line in
                        (Path(temp) / "signal_history.jsonl").read_text().splitlines()]
+            trace = [json.loads(line) for line in
+                     (Path(temp) / "trace.jsonl").read_text().splitlines()]
+            evidence = [json.loads(line) for line in
+                        (Path(temp) / "capture" / "evidence.jsonl").read_text().splitlines()]
             measured = turn_context.analyze(temp)
             measured_device = runner.analyze_device_sources(temp)
             self.assertEqual(json.loads((Path(temp) / "road_geometry.json").read_text())
@@ -323,6 +353,10 @@ class OppositeTurnConstructionTest(unittest.TestCase):
                                                 (4, "Green", "Red")])
         self.assertEqual([row["time_s"] for row in signals],
                          [row["time_s"] for row in frames])
+        self.assertEqual([(row["frame"], row["time_s"]) for row in trace],
+                         [(row["native_frame"], row["time_s"]) for row in frames])
+        self.assertEqual([(row["original_frame"], row["recording_time_s"]) for row in evidence],
+                         [(row["native_frame"], row["time_s"]) for row in frames])
         self.assertTrue(measured["original_heading_complete"])
         self.assertEqual([row["frame"] for row in measured_device["observations"]], [2, 3, 4])
         self.assertEqual(measured_device["native_signal_ids"], {"ego": 101, "other": 102})
