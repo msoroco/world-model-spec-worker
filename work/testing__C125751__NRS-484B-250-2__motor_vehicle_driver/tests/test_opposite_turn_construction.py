@@ -231,7 +231,12 @@ class OppositeTurnConstructionTest(unittest.TestCase):
             Rotation=lambda **kwargs: kwargs,
             Transform=lambda location, rotation: (location, rotation))
         value = dict(site(), cameras={name: [0, 0, 10, 0, 0, 0] for name in
-                                      ("overview", "approach", "reference_corner", "driver_reference")})
+                                      ("overview", "approach", "reference_corner", "driver_reference")},
+                     crossing_polygon_xy_m=[[-3, -3], [3, -3], [3, 3], [-3, 3]],
+                     crossing_polygon_source="synthetic fake-Native test polygon",
+                     native_junction_id=77,
+                     approach_headings_deg={"ego": 0, "other": 180},
+                     approach_geometry_source="synthetic fake-Native test route")
         with tempfile.TemporaryDirectory() as temp:
             with patch.object(runner, "source_cameras", cameras), patch.object(runner, "FFV1Writer", Writer):
                 receipt = runner.capture_candidate_media(
@@ -245,13 +250,11 @@ class OppositeTurnConstructionTest(unittest.TestCase):
                       (Path(temp) / "video_frames.jsonl").read_text().splitlines()]
             crossings = [json.loads(line) for line in
                          (Path(temp) / "crossing_history.jsonl").read_text().splitlines()]
-            (Path(temp) / "road_geometry.json").write_text(json.dumps({
-                "intersection_id": 77,
-                "ego_approach_heading_deg": 0,
-                "other_approach_heading_deg": 180}))
-            (Path(temp) / "turn_route_context.json").write_text(json.dumps({
-                "intersection_id": 77, "routes": value["routes"]}))
+            stops = [json.loads(line) for line in
+                     (Path(temp) / "stop_history.jsonl").read_text().splitlines()]
             measured = turn_context.analyze(temp)
+            self.assertEqual(json.loads((Path(temp) / "road_geometry.json").read_text())
+                             ["review_status"], "candidate_only")
         self.assertEqual(receipt["frames_recorded"], 3)
         self.assertEqual([item["native_frame"] for item in source], [2, 3, 4])
         self.assertEqual(len(frames), 3)
@@ -260,11 +263,33 @@ class OppositeTurnConstructionTest(unittest.TestCase):
                          [row["time_s"] for row in frames])
         self.assertEqual(crossings[0]["ego_vertices_m"],
                          crossings[0]["ego"]["body_vertices_xy_m"])
+        self.assertEqual([row["frame"] for row in stops], [2, 3, 4])
+        self.assertFalse(stops[0]["ego"]["body_inside_crossing"])
+        self.assertFalse(stops[0]["other"]["body_inside_crossing"])
         self.assertTrue(measured["original_heading_complete"])
         self.assertEqual(measured["first_original_headings"]["other"]["native_lane_id"], 1)
         self.assertEqual(set(written), {name + ".mkv" for name in value["cameras"]})
         self.assertTrue(all(len(images) == 3 for images in written.values()))
         self.assertTrue(all(actor.destroyed for actor in actors))
+
+    def test_candidate_media_requires_sourced_crossing_polygon(self):
+        value = dict(site(), cameras={name: [0, 0, 10, 0, 0, 0] for name in
+                                      ("overview", "approach", "reference_corner", "driver_reference")})
+        with tempfile.TemporaryDirectory() as temp:
+            with self.assertRaisesRegex(ValueError, "Sourced Native crossing polygon"):
+                runner.capture_candidate_media(Path(temp), None, None, value, "ego",
+                                               None, None, None, None, 3)
+
+    def test_candidate_media_rejects_missing_approach_source(self):
+        value = dict(site(), cameras={name: [0, 0, 10, 0, 0, 0] for name in
+                                      ("overview", "approach", "reference_corner", "driver_reference")},
+                     crossing_polygon_xy_m=[[-3, -3], [3, -3], [3, 3], [-3, 3]],
+                     crossing_polygon_source="synthetic fake-Native test polygon")
+        with tempfile.TemporaryDirectory() as temp:
+            with self.assertRaisesRegex(ValueError, "Native candidate junction and approach source"):
+                runner.capture_candidate_media(Path(temp), None, None, value, "ego",
+                                               None, None, None, None, 3)
+            self.assertEqual(list(Path(temp).iterdir()), [])
 
 
 if __name__ == "__main__":

@@ -9,10 +9,11 @@ import json
 from contextlib import ExitStack, contextmanager
 from pathlib import Path
 from queue import Empty, Queue
+from shapely.geometry import Polygon
 
 from camera_setup import SIZES, source_cameras
 from camera_encoder import FFV1Writer
-from capture_sources import _actor
+from capture_sources import _actor, _stop_state
 from opposite_turn_construction import (construct_opposite_turn_pair,
                                         command_opposite_turn_pair)
 
@@ -100,11 +101,37 @@ def capture_candidate_media(output_dir, world, carla, site, turning_role,
     camera_values = site.get("cameras")
     if not isinstance(camera_values, dict) or set(camera_values) != set(SIZES):
         raise ValueError("Four reviewed camera poses required")
+    polygon = Polygon(site.get("crossing_polygon_xy_m", []))
+    if (not polygon.is_valid or polygon.area <= 0 or
+            not site.get("crossing_polygon_source")):
+        raise ValueError("Sourced Native crossing polygon required")
+    junction_id = site.get("native_junction_id")
+    headings = site.get("approach_headings_deg")
+    if (type(junction_id) is not int or junction_id <= 0 or
+            not isinstance(headings, dict) or set(headings) != {"ego", "other"} or
+            any(type(value) not in (int, float) or not math.isfinite(value)
+                for value in headings.values()) or
+            not site.get("approach_geometry_source")):
+        raise ValueError("Native candidate junction and approach source required")
     poses = {name: _camera_pose(carla, camera_values[name]) for name in SIZES}
+    (root / "road_geometry.json").write_text(json.dumps({
+        "intersection_id": junction_id,
+        "intersection_polygon_xy_m": site["crossing_polygon_xy_m"],
+        "intersection_polygon_source": site["crossing_polygon_source"],
+        "ego_approach_heading_deg": headings["ego"],
+        "other_approach_heading_deg": headings["other"],
+        "approach_geometry_source": site["approach_geometry_source"],
+        "review_status": "candidate_only"}, allow_nan=False) + "\n")
+    (root / "turn_route_context.json").write_text(json.dumps({
+        "intersection_id": junction_id, "routes": site["routes"],
+        "approach_geometry_source": site["approach_geometry_source"],
+        "turn_intention_source": "Native route candidate; original trajectory requires review",
+        "review_status": "candidate_only"}, allow_nan=False) + "\n")
     from worker_exchange.native_output import FrameMap
     with ExitStack() as stack:
         body_stream = stack.enter_context((root / "body_history.jsonl").open("x", buffering=1))
         crossing_stream = stack.enter_context((root / "crossing_history.jsonl").open("x", buffering=1))
+        stop_stream = stack.enter_context((root / "stop_history.jsonl").open("x", buffering=1))
         frame_map = stack.enter_context(FrameMap(root / "video_frames.jsonl"))
         frame_times = {}
 
@@ -141,6 +168,10 @@ def capture_candidate_media(output_dir, world, carla, site, turning_role,
                         "ego": bodies["ego"], "other": bodies["other"],
                         "ego_vertices_m": bodies["ego"]["body_vertices_xy_m"]}
             crossing_stream.write(json.dumps(crossing, allow_nan=False) + "\n")
+            stop = {"frame": crossing["frame"], "time_s": crossing["time_s"],
+                    "ego": _stop_state(bodies["ego"], polygon),
+                    "other": _stop_state(bodies["other"], polygon)}
+            stop_stream.write(json.dumps(stop, allow_nan=False) + "\n")
 
         receipt = run_candidate_opposite_turn(
             world, carla, site, turning_role, blueprints, transforms,
