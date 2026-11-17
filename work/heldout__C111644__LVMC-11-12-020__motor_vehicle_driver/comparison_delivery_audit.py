@@ -3,6 +3,7 @@
 import argparse
 import hashlib
 import json
+import math
 from pathlib import Path
 
 from indication_form_audit import audit as audit_forms
@@ -14,6 +15,34 @@ ROUTE_FORMS = {
     "button_route_response": "button",
     "other_indication_route_response": "other_indication",
 }
+
+
+def marker_readback_offset(attempt):
+    """Independently measure the retained marker readback from its source reference."""
+    attempt = Path(attempt)
+    receipt = json.loads((attempt / "turn_source_receipt.json").read_text())
+    name = "turn_indication_readback_original.json"
+    source = attempt / name
+    if not source.is_file() or hashlib.sha256(source.read_bytes()).hexdigest() != receipt["source_sha256"].get(name):
+        raise ValueError("Missing or changed original placement source: " + name)
+    readback = json.loads(source.read_text())
+    indication = attempt / "turn_indication_original.json"
+    if readback.get("source_sha256") != hashlib.sha256(indication.read_bytes()).hexdigest():
+        raise ValueError("Placement readback changed indication source")
+    authored = json.loads(indication.read_text())
+    if readback.get("reference_kind") != "unchanged_sourced_indicated_course_point_1" or readback.get("reference_xy_m") != authored["indicated_course_xy_m"][1]:
+        raise ValueError("Placement readback changed sourced reference")
+    positions = readback.get("physical_xy_m")
+    if not isinstance(positions, list) or len(positions) != 1 or not isinstance(positions[0], list) or len(positions[0]) != 2:
+        raise ValueError("Placement readback needs one actor position")
+    xy = positions[0]
+    if not all(isinstance(value, (int, float)) and math.isfinite(value) for value in xy):
+        raise ValueError("Placement readback position is not finite")
+    original = authored["indications"][0]
+    if math.hypot(xy[0] - original["x"], xy[1] - original["y"]) > .05:
+        raise ValueError("Placement readback differs from sourced marker")
+    ref = readback["reference_xy_m"]
+    return math.hypot(xy[0] - ref[0], xy[1] - ref[1])
 
 
 def audit_course_deviation(attempts):
@@ -150,9 +179,13 @@ def audit_marker_placement(attempts):
     expected["indications"] = [dict(item, x=item["x"] + 0.75) for item in original["indications"]]
     if derived != expected:
         raise ValueError("Placement comparison changed more than marker x position")
+    realized = [marker_readback_offset(path) for path in attempts]
+    if not all(math.isclose(actual, planned, abs_tol=1e-9) for actual, planned in zip(realized, (0.0, 0.75))):
+        raise ValueError("Placement comparison readback differs from source-bound sweep")
     return {"comparison_id": "marker_placement_0m_075m",
             "case_ids": [base["selected_case_id"], shift["selected_case_id"]],
             "source_bound_placement_shift_m": 0.75,
+            "diagnostic_marker_readback_offsets_m": realized,
             "actual_marker_readback_verified": False,
             "physical_acceptance_claimed": False, "legal_acceptance_claimed": False}
 
@@ -195,10 +228,14 @@ def audit_marker_placement_sweep(attempts):
     expected["indications"] = [dict(item, x=item["x"] + 1.5) for item in original["indications"]]
     if derived != expected:
         raise ValueError("Placement sweep changed more than marker x position")
+    realized = [marker_readback_offset(path) for path in attempts]
+    if not all(math.isclose(actual, planned, abs_tol=1e-9) for actual, planned in zip(realized, (0.0, 0.75, 1.5))):
+        raise ValueError("Placement sweep readback differs from source-bound sweep")
     return {"comparison_id": "marker_placement_0m_075m_15m",
             "case_ids": [config["selected_case_id"] for config in configs],
             "source_bound_placement_shifts_m": [0.0, 0.75, 1.5],
             "planned_adjacent_separations_m": [0.75, 0.75],
+            "diagnostic_marker_readback_offsets_m": realized,
             "actual_marker_readback_verified": False,
             "physical_acceptance_claimed": False, "legal_acceptance_claimed": False}
 
