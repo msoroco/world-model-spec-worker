@@ -8,6 +8,7 @@ import copy
 import argparse
 import importlib.util
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -69,6 +70,7 @@ def build():
 
 OPPOSITE_ENTRYPOINT = '''"""Portable opposite-turn candidate entrypoint; diagnostic sites cannot capture."""
 import argparse
+import hashlib
 import json
 from pathlib import Path
 
@@ -124,7 +126,51 @@ def capture(root, host, port):
 
 
 def analyze(attempt, output):
-    return finalize_candidate_opposite_turn(Path(attempt), Path(output))
+    attempt, output = Path(attempt), Path(output)
+    if not (attempt / "body_history.jsonl").is_file():
+        raise ValueError("Missing required source: body_history.jsonl")
+    entry = finalize_candidate_opposite_turn(attempt, output)
+    report = json.loads(output.read_text())
+    report["raw_opposite_measurements"] = report.pop("measurements")
+    report["measurements"] = {
+        "body_entry_timing": measure_opposite_entry(entry, attempt),
+        "opposite_turn_context": measure_opposite_route(entry, attempt),
+        "signal_at_entry": measure_opposite_signal(entry, attempt),
+        "stop_order": measure_opposite_stop(entry, attempt)}
+    output.write_text(json.dumps(report, indent=2, allow_nan=False) + "\\n")
+    return report
+
+
+def _measurement(method, value, attempt, names):
+    return {"method": method, "value": value,
+            "sources": {name: hashlib.sha256((attempt / name).read_bytes()).hexdigest()
+                        for name in names}}
+
+
+def measure_opposite_entry(entry, attempt):
+    return _measurement("measure_opposite_entry", {
+        "first_body_entry": entry["first_body_entry"],
+        "turning_minus_other_entry_time_s": entry["turning_minus_other_entry_time_s"]},
+        attempt, ("body_history.jsonl", "crossing_history.jsonl",
+                  "road_geometry.json", "video_frames.jsonl"))
+
+
+def measure_opposite_route(entry, attempt):
+    return _measurement("measure_opposite_route", entry["construction_geometry"],
+        attempt, ("turn_route_context.json", "road_geometry.json",
+                  "crossing_history.jsonl", "video_frames.jsonl"))
+
+
+def measure_opposite_signal(entry, attempt):
+    return _measurement("measure_opposite_signal", entry["signal_at_body_entry"],
+        attempt, ("signal_context.json", "signal_history.jsonl",
+                  "video_frames.jsonl"))
+
+
+def measure_opposite_stop(entry, attempt):
+    return _measurement("measure_opposite_stop", entry["stop_order"],
+        attempt, ("stop_context.json", "stop_history.jsonl",
+                  "video_frames.jsonl"))
 
 
 if __name__ == "__main__":
@@ -194,6 +240,42 @@ def opposite_recording_description():
         "context_inputs": [{"name": "entry_context", "unit": "structured record",
                             "method": "saved original-source join"}],
         "limitations": ["Synthetic opposite-turn site; no physical/legal acceptance"]}
+
+
+def opposite_measurement_contract():
+    """Draft case-specific witness contract for the unselected left-turn branch."""
+    source = ("NRS 484B.250(2), including its subsection-4 exception; "
+              f"inputs/{ASSIGNMENT}/assignment.json")
+    requirements = [
+        ("Both complete vehicle bodies enter one sourced crossing; retain their original "
+         "frame/time delta without a legal simultaneity cutoff", "body_entry_timing",
+         "measure_opposite_entry", "measured",
+         ["body_history.jsonl", "crossing_history.jsonl", "road_geometry.json",
+          "video_frames.jsonl"]),
+        ("Retain opposing approach bearings and the turning vehicle's source route "
+         "and trajectory for the opposite-direction left-turn exception",
+         "opposite_turn_context", "measure_opposite_route", "sourced_context",
+         ["turn_route_context.json", "road_geometry.json", "crossing_history.jsonl",
+          "video_frames.jsonl"]),
+        ("Retain both governed Native signal states at body entry without treating Off "
+         "as statutory inoperability or resolving official-device status",
+         "signal_at_entry", "measure_opposite_signal", "sourced_context",
+         ["signal_context.json", "signal_history.jsonl", "video_frames.jsonl"]),
+        ("Retain both source-selected stop references, zero-speed histories and entry "
+         "order for the subsection-4 stop and yield exception",
+         "stop_order", "measure_opposite_stop", "measured",
+         ["stop_context.json", "stop_history.jsonl", "video_frames.jsonl"])]
+    dispositions = [{"requirement": wording, "source": source,
+                     "status": "selected_required", "case_ids": [ASSIGNMENT + "__opposite_left_turn"]}
+                    for wording, *_ in requirements]
+    contract = {"format": "worker-measurement-contract", "requirements": [
+        {"disposition_index": index, "requirement": wording, "source": source,
+         "output_key": key, "method": method, "value_type": "object",
+         "kind": kind, "inputs": inputs}
+        for index, (wording, key, method, kind, inputs) in enumerate(requirements)],
+        "negative": {"remove": ["body_history.jsonl"],
+                     "error_contains": "Missing required source: body_history.jsonl"}}
+    return dispositions, contract
 
 
 def build_opposite_offline_bundle(output_root):
@@ -311,6 +393,9 @@ def build_opposite_offline_bundle(output_root):
             manifest["cases"][0]["candidates"].append(entry)
     manifest_path = output_root / "manifest.json"
     _dump(manifest_path, manifest)
+    dispositions, contract = opposite_measurement_contract()
+    _dump(output_root / "draft-requirement-dispositions.json", dispositions)
+    _dump(output_root / "draft-measurement-contract.json", contract)
     return manifest_path
 
 
@@ -816,9 +901,14 @@ def prove_opposite_entry_sweep(output_root):
 
 def prove_opposite_positive_compatibility(manifest_path, sweep_attempt, output_root):
     """Run four diagnostic candidates through actual analysis, Core and decode."""
+    repo = HERE.parent.parent
+    os.environ["SCENARIO_PIPELINE_OUTPUT_ROOT"] = str(
+        repo / ".runtime-work/scenario-pipeline-artifacts")
     from worker_exchange.package_compatibility import _process_fixture
     from worker_exchange.runtime_cli import execution_env, materialize
     from worker_exchange.saved_processing import copy_sources
+    from worker_exchange.measurement_contract import validate as validate_measurements
+    from worker_exchange.measurement_contract import verify_report
     manifest_path = Path(manifest_path).resolve()
     sweep_attempt = Path(sweep_attempt).resolve()
     output_root = Path(output_root).resolve()
@@ -841,7 +931,11 @@ def prove_opposite_positive_compatibility(manifest_path, sweep_attempt, output_r
     if not (fixture / "capture/native/frames.jsonl").is_file():
         raise ValueError("Diagnostic native frame packet missing")
     case = json.loads((sweep_attempt / "config.json").read_text())["selected_case_id"]
-    repo = HERE.parent.parent
+    dispositions, contract = opposite_measurement_contract()
+    construction = json.loads((manifest_path.parent / "primary-construction.json").read_text())
+    analyzer = next(item["content"] for item in construction["files"]
+                    if item["path"] == "runner.py")
+    validate_measurements(contract, dispositions, analyzer, case)
     receipts = []
     for candidate in ("primary", "fallback1", "fallback2", "fallback3"):
         attempt = output_root / candidate
@@ -849,10 +943,13 @@ def prove_opposite_positive_compatibility(manifest_path, sweep_attempt, output_r
             repo / "runtime/library",
             repo / ".runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
             candidate)
+        measured = verify_report(contract,
+            json.loads((attempt / "analysis-report.json").read_text()), fixture)
         receipts.append({"candidate": candidate,
                          "construction_sha256": receipt["construction_sha256"],
                          "fixture_sha256": receipt["fixture_sha256"],
                          "positive_compatibility_passed": receipt["passed"],
+                         "draft_measurements_verified": sorted(measured),
                          "converted_report_sha256": _sha(attempt / "converted/adapter_report.json")})
     negative = output_root / "missing-body-negative"
     materialize(manifest_path, case, negative, "primary")
@@ -869,7 +966,8 @@ def prove_opposite_positive_compatibility(manifest_path, sweep_attempt, output_r
              "manifest_sha256": _sha(manifest_path),
              "source_attempt": str(sweep_attempt.relative_to(repo)),
              "receipts": receipts, "missing_body_source_rejected": True,
-             "formal_measurement_contract_proven": False,
+             "draft_measurement_contract_verified": True,
+             "formal_selected_fixture_recipe_proven": False,
              "recorded_only_saved_processing_proven": False,
              "physical_acceptance_claimed": False}
     _dump(output_root / "proof.json", proof)
