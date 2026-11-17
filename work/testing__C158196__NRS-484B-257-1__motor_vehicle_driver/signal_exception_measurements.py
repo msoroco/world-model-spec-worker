@@ -13,6 +13,7 @@ from shapely.geometry import MultiPoint, Polygon
 
 
 REQUIRED=("signal_context.json","signal_history.jsonl","video_frames.jsonl")
+CAMERAS=("overview","approach","reference_corner","driver_reference")
 
 
 def _number(value,label):
@@ -48,6 +49,10 @@ def analyze(root:Path)->dict:
         previous=fid,time
         if frame.get("video_frame")!=i or frame.get("carla_frame")!=fid or frame.get("time_s")!=time:
             raise ValueError("Original frame join failed")
+        camera_frames=frame.get("camera_frames")
+        if (not isinstance(camera_frames,dict) or set(camera_frames)!=set(CAMERAS) or
+                any(camera_frames[name]!=fid for name in CAMERAS)):
+            raise ValueError("Four original camera frame joins required")
         if row.get("native_signal_id")!=ctx["native_signal_id"]:
             raise ValueError("Native governing light identity mismatch")
         if row.get("ego_road_id")!=ctx["ego_road_id"] or row.get("ego_lane_id")!=ctx["ego_lane_id"]:
