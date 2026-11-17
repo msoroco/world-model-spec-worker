@@ -1,7 +1,11 @@
 import importlib.util
+import json
+import tempfile
 import unittest
+from contextlib import contextmanager
 from pathlib import Path
 from types import SimpleNamespace
+from unittest.mock import patch
 
 
 HERE = Path(__file__).resolve().parents[1]
@@ -165,6 +169,75 @@ class OppositeTurnConstructionTest(unittest.TestCase):
                 {"ego": "pose1", "other": "pose2"},
                 {"ego": 1, "other": 2}, {"ego": 5., "other": 5.}, 1,
                 lambda frame: {"overview": frame}, lambda record: None)
+        self.assertTrue(all(actor.destroyed for actor in actors))
+
+    def test_candidate_media_writes_four_streams_and_original_source_records(self):
+        actors = [Actor([11, -1], 0), Actor([11, 1], 180)]
+        world = World(actors)
+        sensors = {}
+        written = {}
+
+        class Sensor:
+            def listen(self, callback):
+                self.callback = callback
+
+        original_tick = world.tick
+
+        def tick():
+            frame = original_tick()
+            for sensor in sensors.values():
+                sensor.callback(SimpleNamespace(frame=frame, raw_data=b"BGRA"))
+            return frame
+
+        world.tick = tick
+        world.get_snapshot = lambda: SimpleNamespace(
+            frame=world.ticks,
+            timestamp=SimpleNamespace(elapsed_seconds=world.ticks * .05))
+
+        @contextmanager
+        def cameras(active_world, ego, poses):
+            self.assertIs(active_world, world)
+            self.assertIs(ego, actors[0])
+            sensors.update({name: Sensor() for name in poses})
+            yield sensors
+
+        class Writer:
+            def __init__(self, path, width, height):
+                written[path.name] = []
+                self.name = path.name
+
+            def __enter__(self):
+                return self
+
+            def write(self, data):
+                written[self.name].append(data)
+
+            def __exit__(self, *args):
+                return None
+
+        carla = SimpleNamespace(
+            VehicleControl=lambda: SimpleNamespace(),
+            Location=lambda **kwargs: kwargs,
+            Rotation=lambda **kwargs: kwargs,
+            Transform=lambda location, rotation: (location, rotation))
+        value = dict(site(), cameras={name: [0, 0, 10, 0, 0, 0] for name in
+                                      ("overview", "approach", "reference_corner", "driver_reference")})
+        with tempfile.TemporaryDirectory() as temp:
+            with patch.object(runner, "source_cameras", cameras), patch.object(runner, "FFV1Writer", Writer):
+                receipt = runner.capture_candidate_media(
+                    Path(temp), world, carla, value, "ego",
+                    {"ego": "car", "other": "car"},
+                    {"ego": "pose1", "other": "pose2"},
+                    {"ego": 1, "other": 2}, {"ego": 5., "other": 5.}, 3)
+            source = [json.loads(line) for line in
+                      (Path(temp) / "body_history.jsonl").read_text().splitlines()]
+            frames = [json.loads(line) for line in
+                      (Path(temp) / "video_frames.jsonl").read_text().splitlines()]
+        self.assertEqual(receipt["frames_recorded"], 3)
+        self.assertEqual([item["native_frame"] for item in source], [2, 3, 4])
+        self.assertEqual(len(frames), 3)
+        self.assertEqual(set(written), {name + ".mkv" for name in value["cameras"]})
+        self.assertTrue(all(len(images) == 3 for images in written.values()))
         self.assertTrue(all(actor.destroyed for actor in actors))
 
 

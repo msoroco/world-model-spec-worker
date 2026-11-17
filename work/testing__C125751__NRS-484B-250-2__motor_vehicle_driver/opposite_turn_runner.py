@@ -5,15 +5,21 @@ module does not mark a candidate site reviewed or create accepted media.
 """
 
 import math
+import json
+from contextlib import ExitStack, contextmanager
+from pathlib import Path
+from queue import Empty, Queue
 
-from camera_setup import SIZES
+from camera_setup import SIZES, source_cameras
+from camera_encoder import FFV1Writer
 from opposite_turn_construction import (construct_opposite_turn_pair,
                                         command_opposite_turn_pair)
 
 
 def run_candidate_opposite_turn(world, carla, site, turning_role, blueprints,
                                 transforms, release_frames, target_speeds_mps,
-                                frames, collect_camera_frames, write_source):
+                                frames, collect_camera_frames, write_source,
+                                camera_factory=None):
     """Apply paired controls and retain one original source record per tick."""
     if type(frames) is not int or not 1 <= frames <= 1100:
         raise ValueError("Bounded positive capture frame count required")
@@ -24,37 +30,116 @@ def run_candidate_opposite_turn(world, carla, site, turning_role, blueprints,
     with construct_opposite_turn_pair(world, blueprints, transforms,
                                       site, turning_role) as built:
         actors = built["actors"]
-        for index in range(frames):
-            command = command_opposite_turn_pair(
+        with ExitStack() as camera_stack:
+            if camera_factory is not None:
+                collect_camera_frames = camera_stack.enter_context(camera_factory(world, actors))
+            for index in range(frames):
+                command = command_opposite_turn_pair(
                 carla, actors, site, progress, index, release_frames,
                 target_speeds_mps, turning_role)
-            native_frame = world.tick()
-            if type(native_frame) is not int or (frame_ids and native_frame <= frame_ids[-1]):
-                raise ValueError("Increasing original Native frame IDs required")
-            cameras = collect_camera_frames(native_frame)
-            if not isinstance(cameras, dict) or set(cameras) != set(SIZES) or any(
+                native_frame = world.tick()
+                if type(native_frame) is not int or (frame_ids and native_frame <= frame_ids[-1]):
+                    raise ValueError("Increasing original Native frame IDs required")
+                cameras = collect_camera_frames(native_frame)
+                if not isinstance(cameras, dict) or set(cameras) != set(SIZES) or any(
                     type(frame) is not int or frame != native_frame
                     for frame in cameras.values()):
-                raise ValueError("All four camera sources must join original Native frame")
-            bodies = {}
-            for role, actor in actors.items():
-                pose = actor.get_transform()
-                velocity = actor.get_velocity()
-                values = [float(pose.location.x), float(pose.location.y),
+                    raise ValueError("All four camera sources must join original Native frame")
+                bodies = {}
+                for role, actor in actors.items():
+                    pose = actor.get_transform()
+                    velocity = actor.get_velocity()
+                    values = [float(pose.location.x), float(pose.location.y),
                           float(pose.rotation.yaw), float(velocity.x),
                           float(velocity.y), float(velocity.z)]
-                if not all(math.isfinite(value) for value in values):
-                    raise ValueError("Finite original actor pose and velocity required")
-                bodies[role] = {"xy_yaw": values[:3], "velocity_xyz": values[3:]}
-            write_source({"native_frame": native_frame,
+                    if not all(math.isfinite(value) for value in values):
+                        raise ValueError("Finite original actor pose and velocity required")
+                    bodies[role] = {"xy_yaw": values[:3], "velocity_xyz": values[3:]}
+                write_source({"native_frame": native_frame,
                           "frame_index": index,
                           "turning_role": turning_role,
                           "camera_source_frames": cameras,
                           "actor_sources": bodies,
                           "applied_decisions": command["decisions"],
                           "physical_or_legal_acceptance_claimed": False})
-            frame_ids.append(native_frame)
+                frame_ids.append(native_frame)
     return {"frames_recorded": len(frame_ids),
             "first_native_frame": frame_ids[0],
             "last_native_frame": frame_ids[-1],
             "physical_or_legal_acceptance_claimed": False}
+
+
+def _camera_pose(carla, values):
+    if (not isinstance(values, list) or len(values) != 6 or
+            any(type(value) not in (int, float) or not math.isfinite(value)
+                for value in values)):
+        raise ValueError("Finite six-value camera pose required")
+    return carla.Transform(carla.Location(x=values[0], y=values[1], z=values[2]),
+                           carla.Rotation(yaw=values[3], pitch=values[4], roll=values[5]))
+
+
+def _joined_image(queue, frame):
+    for _ in range(6):
+        try:
+            image = queue.get(timeout=10)
+        except Empty as error:
+            raise ValueError("Missing original source-camera frame") from error
+        if image.frame == frame:
+            return image
+        if image.frame > frame:
+            raise ValueError("Source camera skipped original Native frame")
+    raise ValueError("Camera frame join exhausted")
+
+
+def capture_candidate_media(output_dir, world, carla, site, turning_role,
+                            blueprints, transforms, release_frames,
+                            target_speeds_mps, frames):
+    """Write four FFV1 sources, frame map and paired original actor records.
+
+    This is a candidate capture path; the exact selected manifest, source site
+    review, finalizer and independent delivery audit are separate requirements.
+    """
+    root = Path(output_dir)
+    if not root.is_dir() or any(root.iterdir()):
+        raise ValueError("Fresh existing candidate capture directory required")
+    camera_values = site.get("cameras")
+    if not isinstance(camera_values, dict) or set(camera_values) != set(SIZES):
+        raise ValueError("Four reviewed camera poses required")
+    poses = {name: _camera_pose(carla, camera_values[name]) for name in SIZES}
+    from worker_exchange.native_output import FrameMap
+    with ExitStack() as stack:
+        body_stream = stack.enter_context((root / "body_history.jsonl").open("x", buffering=1))
+        frame_map = stack.enter_context(FrameMap(root / "video_frames.jsonl"))
+
+        @contextmanager
+        def camera_factory(active_world, actors):
+            sensors = stack.enter_context(source_cameras(active_world, actors["ego"], poses))
+            queues = {name: Queue() for name in SIZES}
+            for name, sensor in sensors.items():
+                sensor.listen(lambda image, camera_name=name: queues[camera_name].put(image))
+            writers = {name: stack.enter_context(FFV1Writer(root / (name + ".mkv"), *size))
+                       for name, size in SIZES.items()}
+
+            def collect(frame):
+                snapshot = active_world.get_snapshot()
+                if snapshot.frame != frame:
+                    raise ValueError("Native snapshot differs from tick frame")
+                time_s = float(snapshot.timestamp.elapsed_seconds)
+                if not math.isfinite(time_s):
+                    raise ValueError("Finite original Native time required")
+                for name in SIZES:
+                    image = _joined_image(queues[name], frame)
+                    writers[name].write(bytes(image.raw_data))
+                frame_map.append(frame, time_s)
+                return {name: frame for name in SIZES}
+
+            yield collect
+
+        def write_source(record):
+            body_stream.write(json.dumps(record, allow_nan=False) + "\n")
+
+        receipt = run_candidate_opposite_turn(
+            world, carla, site, turning_role, blueprints, transforms,
+            release_frames, target_speeds_mps, frames,
+            lambda frame: None, write_source, camera_factory=camera_factory)
+    return receipt
