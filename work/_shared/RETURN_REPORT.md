@@ -2536,3 +2536,31 @@ After adding manifest pointers, twelve exact `runtime.py offline` commands passe
 Status remains **partial**. The exact next worker-owned CPU actions are to finish the canonical relevance/template/two judgment-observable/bindings/cases stage files with a baseline and finite complete physical sweep, align selected case IDs and constructions with expanded sweep selection, author physical complete/incomplete/missing-evidence and lifecycle receipts, build and validate `execution-manifest.json` and queue integration, then run the scoped strict gate. The current nine-frame diagnostic sources do not prove 160-frame CARLA motion, visibility or legal practicability. No external blocker or physical/legal acceptance is claimed.
 
 The full strict gate `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --complete --require-delivery-ready` completed exit 1 after the manifest-integrated reproof. It reached `runtime/scenario_pipeline/worker_exchange/preparation.py:276` and raised `Preparation acceptance failed: partial/missing packages remain`. Ignored transcript `.runtime-work/strict-gate-c152972-manifest-reproof-20261117.log` SHA-256 `8a5196a775b4e25dcc5ad430d9aa36835506a570dd5afd41ee669c3da366a69e`. Current frozen inventory: 51 assignments, 44 ready, 7 partial, 0 missing. Partial IDs: C152972, C179789, C230281, C24753, C223016, C295149, C329654. The Goal remains active.
+
+## 2026-11-17 C152972 semantic checkpoint
+
+The returned canonical stage files now cover relevance, the exact one-way left-turn template (`obligation.type=must`), both value-free curb judgment observables, bindings including the explicit `commanded_turn_path` controller, and a pinned-validated cases plan. `proposals/cases.json` has one neutral shared baseline, preserves the three already proved exact diagnostic cases, and expands two independent physical curb sweeps (approach and departure, each 0.5/1.0/1.5 m controller targets). These are finite engineering targets; the source-retained measured curb distances and legal practicability remain separate. No legal cutoff or CARLA outcome is asserted.
+
+`PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/heldout__C152972__NRS-484B-400-5__motor_vehicle_driver/prove_semantic_stages.py` exits 0 and runs seven pinned stage validations. Script SHA-256 `90e2c32989339e2834bc64a2a33f8ddbace681c16b1c4fa6cdb4fa169a26e288`. Source-hashed stage files:
+
+- `work/heldout__C152972__NRS-484B-400-5__motor_vehicle_driver/proposals/relevance.json` SHA-256 `2128e0df6cddf392cde58736618cdd566478aae49614a7d867a79ad35ef628e6`
+- `work/heldout__C152972__NRS-484B-400-5__motor_vehicle_driver/proposals/template.json` SHA-256 `73069022c4102790ad802ebb14e25e31f3604c927916230abcc7f8766f6c4986`
+- `work/heldout__C152972__NRS-484B-400-5__motor_vehicle_driver/proposals/judgment_1.json` SHA-256 `03d9ac1d6a0dc2642ff95441eb9f25371280487aad1148e144efb25f3123cffa`
+- `work/heldout__C152972__NRS-484B-400-5__motor_vehicle_driver/proposals/judgment_2.json` SHA-256 `9beb7a47739c1d85021ef00ea72b4e1ebe96ee98d0de4d521f0e93ad5b0f05df`
+- `work/heldout__C152972__NRS-484B-400-5__motor_vehicle_driver/proposals/bindings.json` SHA-256 `41093ccd46ad549063471e13ad48575f62c33fbeaea2487e953c903b0efe964e`
+- `work/heldout__C152972__NRS-484B-400-5__motor_vehicle_driver/proposals/cases.json` SHA-256 `b84f83429763a5d82448989b4cf5411276fe4821cd8bf2979e2b3a05160d6ee1`
+
+The canonical plan has nine nonbaseline cases; `case-plan.json` still has the three existing cases with complete exact CPU diagnostic proofs. The six new sweep case IDs below require their own construction, three distinct physical-risk fallbacks, source-bound fixture and measurement contracts, exact offline and positive/missing-source compatibility, saved processing, and independent audits before semantic-index selected-case equality and delivery readiness can pass:
+
+- `C152972-approach-curb-coverage-0000`
+- `C152972-approach-curb-coverage-0001`
+- `C152972-approach-curb-coverage-0002`
+- `C152972-departure-curb-coverage-0000`
+- `C152972-departure-curb-coverage-0001`
+- `C152972-departure-curb-coverage-0002`
+
+`PYTHONPATH=runtime/scenario_pipeline PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/heldout__C152972__NRS-484B-400-5__motor_vehicle_driver/tests -v` passes 10/10. `.venv-cpu/bin/python worker_check.py --assignment heldout__C152972__NRS-484B-400-5__motor_vehicle_driver --complete` passes static partial-package validation. Pinned preflight passes with Lean 4.28.0 and CPU runtime; `worker_check.py --updates` reports version 0 and no paused assignments.
+
+To hold the 10,200 returned-file cap, five superseded one-shot scripts were losslessly archived with original byte SHA-256 and base64 in `work/_shared/historical-receipts-bundle-20261116.json` SHA-256 `f6854c682cb3ca14c9c6a281b991fa7bed90d4e90fdbc8a878dd97cfbcf5d75e`. Ready-only scoped gates still pass for C111603 and C110779. C136014's required audit script was restored after its scoped gate exposed that dependency. The bundle is a recovery path, not new proof of physical facts.
+
+Status remains **partial**. Exact next CPU work: construct the six fixed sweep points in `case-plan.json` with source-backed runner configurations and candidate bundles; rerun affected current-manifest proofs, then emit `proposals/semantic-index.json`, add a matched executable delivery manifest/queue and run C152972's ready-only scoped gate. Continue the other six partial assignments after this one is accepted.

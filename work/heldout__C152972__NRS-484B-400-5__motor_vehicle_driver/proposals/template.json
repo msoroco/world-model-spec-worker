@@ -1,0 +1,56 @@
+{
+  "template_id": "NRS-484B-400-5@motor_vehicle_driver",
+  "law_id": "NRS-484B-400-5",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "If the driver of a vehicle intends to turn at an intersection and: The turn is a left turn where both intersecting highways are one-way, both the approach for the left turn and the left turn must be made as close as practicable to the left-hand curb or edge of the highway.",
+  "structure": {
+    "law_id": "NRS-484B-400-5",
+    "activation": {
+      "condition": "Vehicle intends a left turn at an intersection where both intersecting highways are one-way.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "type": "must",
+      "description": "Both approach and left turn must be made as close as practicable to the left-hand curb or edge of the highway.",
+      "numeric_conditions": []
+    },
+    "exceptions": [],
+    "timing": {
+      "description": "Measure approach separately from the left turn and leaving-intersection interval.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "as close as practicable to the left-hand curb or edge on approach",
+        "note": "Retain source one-way directionality and original approach body-to-left-curb geometry; no legal numeric cutoff."
+      },
+      {
+        "phrase": "as close as practicable to the left-hand curb or edge through the turn",
+        "note": "Retain original leaving-intersection body-to-destination-left-curb geometry; no legal numeric cutoff."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "approach_left_curb_setpoint_m",
+      "kind": "controller",
+      "range_or_domain": "Finite engineering target values 0.5 and 1.5 m, not a legal cutoff"
+    },
+    {
+      "name": "departure_left_curb_setpoint_m",
+      "kind": "controller",
+      "range_or_domain": "Finite engineering target values 0.5 and 1.5 m, not a legal cutoff"
+    },
+    {
+      "name": "approach_left_curb_nearest_m",
+      "kind": "subject_behavior",
+      "range_or_domain": "Original source-joined body-corner minimum distance in meters"
+    },
+    {
+      "name": "departure_left_curb_nearest_m",
+      "kind": "subject_behavior",
+      "range_or_domain": "Original source-joined body-corner minimum distance in meters"
+    }
+  ]
+}

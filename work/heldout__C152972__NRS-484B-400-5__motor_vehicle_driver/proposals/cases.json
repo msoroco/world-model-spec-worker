@@ -4,6 +4,105 @@
   "actor": "motor_vehicle_driver",
   "cases": [
     {
+      "case_id": "C152972-oneway-left-curb-baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared one-way intersection and left-turn setup with no legal judgment label.",
+      "variable_assignments": {
+        "one_way_source_destination": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "turn_direction": {
+          "kind": "controller",
+          "value": "left"
+        },
+        "approach_left_curb_setpoint_m": {
+          "kind": "controller",
+          "value": 0.5
+        },
+        "departure_left_curb_setpoint_m": {
+          "kind": "controller",
+          "value": 0.5
+        },
+        "realized_approach_left_curb_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "realized_departure_left_curb_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "approach_left_curb_nearest_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "departure_left_curb_nearest_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "one_way_left_curb_to_left_curb"
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "approach_left_curb_nearest_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Original source map and body-ground frame join",
+            "time_window": "all 160 original Native frames",
+            "reference_frame": "source-hashed one-way intersection",
+            "uncertainty": "Actual pixels and legal practicability require independent review"
+          },
+          {
+            "name": "departure_left_curb_nearest_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Original source map and body-ground frame join",
+            "time_window": "all 160 original Native frames",
+            "reference_frame": "source-hashed one-way intersection",
+            "uncertainty": "Actual pixels and legal practicability require independent review"
+          },
+          {
+            "name": "original_turn_phase",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original source map and body-ground frame join",
+            "time_window": "all 160 original Native frames",
+            "reference_frame": "source-hashed one-way intersection",
+            "uncertainty": "Actual pixels and legal practicability require independent review"
+          },
+          {
+            "name": "original_one_way_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original source map and body-ground frame join",
+            "time_window": "all 160 original Native frames",
+            "reference_frame": "source-hashed one-way intersection",
+            "uncertainty": "Actual pixels and legal practicability require independent review"
+          },
+          {
+            "name": "original_left_curb_geometry",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original source map and body-ground frame join",
+            "time_window": "all 160 original Native frames",
+            "reference_frame": "source-hashed one-way intersection",
+            "uncertainty": "Actual pixels and legal practicability require independent review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Diagnostic source geometry is CPU-only; exact Native map readback must be checked",
+          "No legal practicability threshold or outcome is asserted"
+        ]
+      }
+    },
+    {
       "case_id": "heldout__C152972__NRS-484B-400-5__motor_vehicle_driver__approach_near_depart_near",
       "target_law_id": "NRS-484B-400-5",
       "target_type": "judgment_sweep",
@@ -32,6 +131,18 @@
         "realized_departure_left_curb_m": {
           "kind": "subject_behavior",
           "value": null
+        },
+        "approach_left_curb_nearest_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "departure_left_curb_nearest_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "one_way_left_curb_to_left_curb"
         }
       },
       "unresolved_judgment_calls": [
@@ -91,6 +202,19 @@
           "Diagnostic source geometry is CPU-only; exact Native map readback must be checked",
           "No legal practicability threshold or outcome is asserted"
         ]
+      },
+      "paired_probe_id": "c152972_existing_approach_departure_comparison",
+      "deliberate_differences": [
+        "approach_left_curb_setpoint_m",
+        "departure_left_curb_setpoint_m"
+      ],
+      "probe": {
+        "primary_variable": "approach_left_curb_setpoint_m",
+        "comparison_or_standard": "source-retained diagnostic curb proximity comparison; legal judgment unresolved",
+        "target_value_or_branch": {
+          "approach": 0.5,
+          "departure": 0.5
+        }
       }
     },
     {
@@ -122,6 +246,18 @@
         "realized_departure_left_curb_m": {
           "kind": "subject_behavior",
           "value": null
+        },
+        "approach_left_curb_nearest_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "departure_left_curb_nearest_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "one_way_left_curb_to_left_curb"
         }
       },
       "unresolved_judgment_calls": [
@@ -181,6 +317,19 @@
           "Diagnostic source geometry is CPU-only; exact Native map readback must be checked",
           "No legal practicability threshold or outcome is asserted"
         ]
+      },
+      "paired_probe_id": "c152972_existing_approach_departure_comparison",
+      "deliberate_differences": [
+        "approach_left_curb_setpoint_m",
+        "departure_left_curb_setpoint_m"
+      ],
+      "probe": {
+        "primary_variable": "approach_left_curb_setpoint_m",
+        "comparison_or_standard": "source-retained diagnostic curb proximity comparison; legal judgment unresolved",
+        "target_value_or_branch": {
+          "approach": 1.5,
+          "departure": 0.5
+        }
       }
     },
     {
@@ -212,6 +361,18 @@
         "realized_departure_left_curb_m": {
           "kind": "subject_behavior",
           "value": null
+        },
+        "approach_left_curb_nearest_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "departure_left_curb_nearest_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "one_way_left_curb_to_left_curb"
         }
       },
       "unresolved_judgment_calls": [
@@ -271,10 +432,1071 @@
           "Diagnostic source geometry is CPU-only; exact Native map readback must be checked",
           "No legal practicability threshold or outcome is asserted"
         ]
+      },
+      "paired_probe_id": "c152972_existing_approach_departure_comparison",
+      "deliberate_differences": [
+        "approach_left_curb_setpoint_m",
+        "departure_left_curb_setpoint_m"
+      ],
+      "probe": {
+        "primary_variable": "approach_left_curb_setpoint_m",
+        "comparison_or_standard": "source-retained diagnostic curb proximity comparison; legal judgment unresolved",
+        "target_value_or_branch": {
+          "approach": 0.5,
+          "departure": 1.5
+        }
       }
+    },
+    {
+      "case_id": "C152972-approach-curb-coverage-0000",
+      "target_law_id": "NRS-484B-400-5",
+      "target_type": "judgment_sweep",
+      "rationale": "Vary only approach curb target at the fixed one-way left-turn intersection; measure original body-to-curb geometry and retain legal practicability unresolved.",
+      "paired_probe_id": "C152972-approach-curb-coverage",
+      "deliberate_differences": [
+        "approach_left_curb_setpoint_m"
+      ],
+      "probe": {
+        "primary_variable": "approach_left_curb_setpoint_m",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "approach_left_curb_setpoint_m": 0.5
+        }
+      },
+      "sweep_id": "C152972-approach-curb-coverage",
+      "sweep_spec_version": "bdee3959ab7860478c98d7b4683f8b8aaad8edfe9b76281a0e5842ee18a7f6aa",
+      "sweep_point": {
+        "approach_left_curb_setpoint_m": 0.5
+      },
+      "selection_rank": 0,
+      "variable_assignments": {
+        "one_way_source_destination": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "turn_direction": {
+          "kind": "controller",
+          "value": "left"
+        },
+        "approach_left_curb_setpoint_m": {
+          "kind": "controller",
+          "value": 0.5,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        },
+        "departure_left_curb_setpoint_m": {
+          "kind": "controller",
+          "value": 0.5
+        },
+        "realized_approach_left_curb_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "realized_departure_left_curb_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "approach_left_curb_nearest_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "departure_left_curb_nearest_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "one_way_left_curb_to_left_curb"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "approach_left_curb_nearest_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Original source map and body-ground frame join",
+            "time_window": "all 160 original Native frames",
+            "reference_frame": "source-hashed one-way intersection",
+            "uncertainty": "Actual pixels and legal practicability require independent review"
+          },
+          {
+            "name": "departure_left_curb_nearest_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Original source map and body-ground frame join",
+            "time_window": "all 160 original Native frames",
+            "reference_frame": "source-hashed one-way intersection",
+            "uncertainty": "Actual pixels and legal practicability require independent review"
+          },
+          {
+            "name": "original_turn_phase",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original source map and body-ground frame join",
+            "time_window": "all 160 original Native frames",
+            "reference_frame": "source-hashed one-way intersection",
+            "uncertainty": "Actual pixels and legal practicability require independent review"
+          },
+          {
+            "name": "original_one_way_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original source map and body-ground frame join",
+            "time_window": "all 160 original Native frames",
+            "reference_frame": "source-hashed one-way intersection",
+            "uncertainty": "Actual pixels and legal practicability require independent review"
+          },
+          {
+            "name": "original_left_curb_geometry",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original source map and body-ground frame join",
+            "time_window": "all 160 original Native frames",
+            "reference_frame": "source-hashed one-way intersection",
+            "uncertainty": "Actual pixels and legal practicability require independent review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Diagnostic source geometry is CPU-only; exact Native map readback must be checked",
+          "No legal practicability threshold or outcome is asserted"
+        ]
+      },
+      "sweep_measurements": [
+        {
+          "observable": "approach_left_curb_nearest_m",
+          "unit": "m",
+          "measurement": {
+            "method": "original source map left-curb line joined to subject body-ground corners",
+            "time_window": "applicable approach frames",
+            "statistic": "min"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "as close as practicable to the left-hand curb or edge on approach",
+        "as close as practicable to the left-hand curb or edge through the turn"
+      ]
+    },
+    {
+      "case_id": "C152972-approach-curb-coverage-0001",
+      "target_law_id": "NRS-484B-400-5",
+      "target_type": "judgment_sweep",
+      "rationale": "Vary only approach curb target at the fixed one-way left-turn intersection; measure original body-to-curb geometry and retain legal practicability unresolved.",
+      "paired_probe_id": "C152972-approach-curb-coverage",
+      "deliberate_differences": [
+        "approach_left_curb_setpoint_m"
+      ],
+      "probe": {
+        "primary_variable": "approach_left_curb_setpoint_m",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "approach_left_curb_setpoint_m": 1.5
+        }
+      },
+      "sweep_id": "C152972-approach-curb-coverage",
+      "sweep_spec_version": "bdee3959ab7860478c98d7b4683f8b8aaad8edfe9b76281a0e5842ee18a7f6aa",
+      "sweep_point": {
+        "approach_left_curb_setpoint_m": 1.5
+      },
+      "selection_rank": 1,
+      "variable_assignments": {
+        "one_way_source_destination": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "turn_direction": {
+          "kind": "controller",
+          "value": "left"
+        },
+        "approach_left_curb_setpoint_m": {
+          "kind": "controller",
+          "value": 1.5,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        },
+        "departure_left_curb_setpoint_m": {
+          "kind": "controller",
+          "value": 0.5
+        },
+        "realized_approach_left_curb_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "realized_departure_left_curb_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "approach_left_curb_nearest_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "departure_left_curb_nearest_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "one_way_left_curb_to_left_curb"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "approach_left_curb_nearest_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Original source map and body-ground frame join",
+            "time_window": "all 160 original Native frames",
+            "reference_frame": "source-hashed one-way intersection",
+            "uncertainty": "Actual pixels and legal practicability require independent review"
+          },
+          {
+            "name": "departure_left_curb_nearest_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Original source map and body-ground frame join",
+            "time_window": "all 160 original Native frames",
+            "reference_frame": "source-hashed one-way intersection",
+            "uncertainty": "Actual pixels and legal practicability require independent review"
+          },
+          {
+            "name": "original_turn_phase",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original source map and body-ground frame join",
+            "time_window": "all 160 original Native frames",
+            "reference_frame": "source-hashed one-way intersection",
+            "uncertainty": "Actual pixels and legal practicability require independent review"
+          },
+          {
+            "name": "original_one_way_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original source map and body-ground frame join",
+            "time_window": "all 160 original Native frames",
+            "reference_frame": "source-hashed one-way intersection",
+            "uncertainty": "Actual pixels and legal practicability require independent review"
+          },
+          {
+            "name": "original_left_curb_geometry",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original source map and body-ground frame join",
+            "time_window": "all 160 original Native frames",
+            "reference_frame": "source-hashed one-way intersection",
+            "uncertainty": "Actual pixels and legal practicability require independent review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Diagnostic source geometry is CPU-only; exact Native map readback must be checked",
+          "No legal practicability threshold or outcome is asserted"
+        ]
+      },
+      "sweep_measurements": [
+        {
+          "observable": "approach_left_curb_nearest_m",
+          "unit": "m",
+          "measurement": {
+            "method": "original source map left-curb line joined to subject body-ground corners",
+            "time_window": "applicable approach frames",
+            "statistic": "min"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "as close as practicable to the left-hand curb or edge on approach",
+        "as close as practicable to the left-hand curb or edge through the turn"
+      ]
+    },
+    {
+      "case_id": "C152972-approach-curb-coverage-0002",
+      "target_law_id": "NRS-484B-400-5",
+      "target_type": "judgment_sweep",
+      "rationale": "Vary only approach curb target at the fixed one-way left-turn intersection; measure original body-to-curb geometry and retain legal practicability unresolved.",
+      "paired_probe_id": "C152972-approach-curb-coverage",
+      "deliberate_differences": [
+        "approach_left_curb_setpoint_m"
+      ],
+      "probe": {
+        "primary_variable": "approach_left_curb_setpoint_m",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "approach_left_curb_setpoint_m": 1.0
+        }
+      },
+      "sweep_id": "C152972-approach-curb-coverage",
+      "sweep_spec_version": "bdee3959ab7860478c98d7b4683f8b8aaad8edfe9b76281a0e5842ee18a7f6aa",
+      "sweep_point": {
+        "approach_left_curb_setpoint_m": 1.0
+      },
+      "selection_rank": 2,
+      "variable_assignments": {
+        "one_way_source_destination": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "turn_direction": {
+          "kind": "controller",
+          "value": "left"
+        },
+        "approach_left_curb_setpoint_m": {
+          "kind": "controller",
+          "value": 1.0,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        },
+        "departure_left_curb_setpoint_m": {
+          "kind": "controller",
+          "value": 0.5
+        },
+        "realized_approach_left_curb_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "realized_departure_left_curb_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "approach_left_curb_nearest_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "departure_left_curb_nearest_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "one_way_left_curb_to_left_curb"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "approach_left_curb_nearest_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Original source map and body-ground frame join",
+            "time_window": "all 160 original Native frames",
+            "reference_frame": "source-hashed one-way intersection",
+            "uncertainty": "Actual pixels and legal practicability require independent review"
+          },
+          {
+            "name": "departure_left_curb_nearest_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Original source map and body-ground frame join",
+            "time_window": "all 160 original Native frames",
+            "reference_frame": "source-hashed one-way intersection",
+            "uncertainty": "Actual pixels and legal practicability require independent review"
+          },
+          {
+            "name": "original_turn_phase",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original source map and body-ground frame join",
+            "time_window": "all 160 original Native frames",
+            "reference_frame": "source-hashed one-way intersection",
+            "uncertainty": "Actual pixels and legal practicability require independent review"
+          },
+          {
+            "name": "original_one_way_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original source map and body-ground frame join",
+            "time_window": "all 160 original Native frames",
+            "reference_frame": "source-hashed one-way intersection",
+            "uncertainty": "Actual pixels and legal practicability require independent review"
+          },
+          {
+            "name": "original_left_curb_geometry",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original source map and body-ground frame join",
+            "time_window": "all 160 original Native frames",
+            "reference_frame": "source-hashed one-way intersection",
+            "uncertainty": "Actual pixels and legal practicability require independent review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Diagnostic source geometry is CPU-only; exact Native map readback must be checked",
+          "No legal practicability threshold or outcome is asserted"
+        ]
+      },
+      "sweep_measurements": [
+        {
+          "observable": "approach_left_curb_nearest_m",
+          "unit": "m",
+          "measurement": {
+            "method": "original source map left-curb line joined to subject body-ground corners",
+            "time_window": "applicable approach frames",
+            "statistic": "min"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "as close as practicable to the left-hand curb or edge on approach",
+        "as close as practicable to the left-hand curb or edge through the turn"
+      ]
+    },
+    {
+      "case_id": "C152972-departure-curb-coverage-0000",
+      "target_law_id": "NRS-484B-400-5",
+      "target_type": "judgment_sweep",
+      "rationale": "Vary only departure curb target at the fixed one-way left-turn intersection; measure original body-to-curb geometry and retain legal practicability unresolved.",
+      "paired_probe_id": "C152972-departure-curb-coverage",
+      "deliberate_differences": [
+        "departure_left_curb_setpoint_m"
+      ],
+      "probe": {
+        "primary_variable": "departure_left_curb_setpoint_m",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "departure_left_curb_setpoint_m": 0.5
+        }
+      },
+      "sweep_id": "C152972-departure-curb-coverage",
+      "sweep_spec_version": "82c5a044b482e450948454cda1d377f92afacf5c6f0845f9b4ce40a4c1fee99f",
+      "sweep_point": {
+        "departure_left_curb_setpoint_m": 0.5
+      },
+      "selection_rank": 0,
+      "variable_assignments": {
+        "one_way_source_destination": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "turn_direction": {
+          "kind": "controller",
+          "value": "left"
+        },
+        "approach_left_curb_setpoint_m": {
+          "kind": "controller",
+          "value": 0.5
+        },
+        "departure_left_curb_setpoint_m": {
+          "kind": "controller",
+          "value": 0.5,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        },
+        "realized_approach_left_curb_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "realized_departure_left_curb_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "approach_left_curb_nearest_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "departure_left_curb_nearest_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "one_way_left_curb_to_left_curb"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "approach_left_curb_nearest_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Original source map and body-ground frame join",
+            "time_window": "all 160 original Native frames",
+            "reference_frame": "source-hashed one-way intersection",
+            "uncertainty": "Actual pixels and legal practicability require independent review"
+          },
+          {
+            "name": "departure_left_curb_nearest_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Original source map and body-ground frame join",
+            "time_window": "all 160 original Native frames",
+            "reference_frame": "source-hashed one-way intersection",
+            "uncertainty": "Actual pixels and legal practicability require independent review"
+          },
+          {
+            "name": "original_turn_phase",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original source map and body-ground frame join",
+            "time_window": "all 160 original Native frames",
+            "reference_frame": "source-hashed one-way intersection",
+            "uncertainty": "Actual pixels and legal practicability require independent review"
+          },
+          {
+            "name": "original_one_way_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original source map and body-ground frame join",
+            "time_window": "all 160 original Native frames",
+            "reference_frame": "source-hashed one-way intersection",
+            "uncertainty": "Actual pixels and legal practicability require independent review"
+          },
+          {
+            "name": "original_left_curb_geometry",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original source map and body-ground frame join",
+            "time_window": "all 160 original Native frames",
+            "reference_frame": "source-hashed one-way intersection",
+            "uncertainty": "Actual pixels and legal practicability require independent review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Diagnostic source geometry is CPU-only; exact Native map readback must be checked",
+          "No legal practicability threshold or outcome is asserted"
+        ]
+      },
+      "sweep_measurements": [
+        {
+          "observable": "departure_left_curb_nearest_m",
+          "unit": "m",
+          "measurement": {
+            "method": "original source map left-curb line joined to subject body-ground corners",
+            "time_window": "applicable leaving-intersection turn frames",
+            "statistic": "min"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "as close as practicable to the left-hand curb or edge on approach",
+        "as close as practicable to the left-hand curb or edge through the turn"
+      ]
+    },
+    {
+      "case_id": "C152972-departure-curb-coverage-0001",
+      "target_law_id": "NRS-484B-400-5",
+      "target_type": "judgment_sweep",
+      "rationale": "Vary only departure curb target at the fixed one-way left-turn intersection; measure original body-to-curb geometry and retain legal practicability unresolved.",
+      "paired_probe_id": "C152972-departure-curb-coverage",
+      "deliberate_differences": [
+        "departure_left_curb_setpoint_m"
+      ],
+      "probe": {
+        "primary_variable": "departure_left_curb_setpoint_m",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "departure_left_curb_setpoint_m": 1.5
+        }
+      },
+      "sweep_id": "C152972-departure-curb-coverage",
+      "sweep_spec_version": "82c5a044b482e450948454cda1d377f92afacf5c6f0845f9b4ce40a4c1fee99f",
+      "sweep_point": {
+        "departure_left_curb_setpoint_m": 1.5
+      },
+      "selection_rank": 1,
+      "variable_assignments": {
+        "one_way_source_destination": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "turn_direction": {
+          "kind": "controller",
+          "value": "left"
+        },
+        "approach_left_curb_setpoint_m": {
+          "kind": "controller",
+          "value": 0.5
+        },
+        "departure_left_curb_setpoint_m": {
+          "kind": "controller",
+          "value": 1.5,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        },
+        "realized_approach_left_curb_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "realized_departure_left_curb_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "approach_left_curb_nearest_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "departure_left_curb_nearest_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "one_way_left_curb_to_left_curb"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "approach_left_curb_nearest_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Original source map and body-ground frame join",
+            "time_window": "all 160 original Native frames",
+            "reference_frame": "source-hashed one-way intersection",
+            "uncertainty": "Actual pixels and legal practicability require independent review"
+          },
+          {
+            "name": "departure_left_curb_nearest_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Original source map and body-ground frame join",
+            "time_window": "all 160 original Native frames",
+            "reference_frame": "source-hashed one-way intersection",
+            "uncertainty": "Actual pixels and legal practicability require independent review"
+          },
+          {
+            "name": "original_turn_phase",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original source map and body-ground frame join",
+            "time_window": "all 160 original Native frames",
+            "reference_frame": "source-hashed one-way intersection",
+            "uncertainty": "Actual pixels and legal practicability require independent review"
+          },
+          {
+            "name": "original_one_way_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original source map and body-ground frame join",
+            "time_window": "all 160 original Native frames",
+            "reference_frame": "source-hashed one-way intersection",
+            "uncertainty": "Actual pixels and legal practicability require independent review"
+          },
+          {
+            "name": "original_left_curb_geometry",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original source map and body-ground frame join",
+            "time_window": "all 160 original Native frames",
+            "reference_frame": "source-hashed one-way intersection",
+            "uncertainty": "Actual pixels and legal practicability require independent review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Diagnostic source geometry is CPU-only; exact Native map readback must be checked",
+          "No legal practicability threshold or outcome is asserted"
+        ]
+      },
+      "sweep_measurements": [
+        {
+          "observable": "departure_left_curb_nearest_m",
+          "unit": "m",
+          "measurement": {
+            "method": "original source map left-curb line joined to subject body-ground corners",
+            "time_window": "applicable leaving-intersection turn frames",
+            "statistic": "min"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "as close as practicable to the left-hand curb or edge on approach",
+        "as close as practicable to the left-hand curb or edge through the turn"
+      ]
+    },
+    {
+      "case_id": "C152972-departure-curb-coverage-0002",
+      "target_law_id": "NRS-484B-400-5",
+      "target_type": "judgment_sweep",
+      "rationale": "Vary only departure curb target at the fixed one-way left-turn intersection; measure original body-to-curb geometry and retain legal practicability unresolved.",
+      "paired_probe_id": "C152972-departure-curb-coverage",
+      "deliberate_differences": [
+        "departure_left_curb_setpoint_m"
+      ],
+      "probe": {
+        "primary_variable": "departure_left_curb_setpoint_m",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "departure_left_curb_setpoint_m": 1.0
+        }
+      },
+      "sweep_id": "C152972-departure-curb-coverage",
+      "sweep_spec_version": "82c5a044b482e450948454cda1d377f92afacf5c6f0845f9b4ce40a4c1fee99f",
+      "sweep_point": {
+        "departure_left_curb_setpoint_m": 1.0
+      },
+      "selection_rank": 2,
+      "variable_assignments": {
+        "one_way_source_destination": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "turn_direction": {
+          "kind": "controller",
+          "value": "left"
+        },
+        "approach_left_curb_setpoint_m": {
+          "kind": "controller",
+          "value": 0.5
+        },
+        "departure_left_curb_setpoint_m": {
+          "kind": "controller",
+          "value": 1.0,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        },
+        "realized_approach_left_curb_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "realized_departure_left_curb_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "approach_left_curb_nearest_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "departure_left_curb_nearest_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "one_way_left_curb_to_left_curb"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "approach_left_curb_nearest_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Original source map and body-ground frame join",
+            "time_window": "all 160 original Native frames",
+            "reference_frame": "source-hashed one-way intersection",
+            "uncertainty": "Actual pixels and legal practicability require independent review"
+          },
+          {
+            "name": "departure_left_curb_nearest_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Original source map and body-ground frame join",
+            "time_window": "all 160 original Native frames",
+            "reference_frame": "source-hashed one-way intersection",
+            "uncertainty": "Actual pixels and legal practicability require independent review"
+          },
+          {
+            "name": "original_turn_phase",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original source map and body-ground frame join",
+            "time_window": "all 160 original Native frames",
+            "reference_frame": "source-hashed one-way intersection",
+            "uncertainty": "Actual pixels and legal practicability require independent review"
+          },
+          {
+            "name": "original_one_way_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original source map and body-ground frame join",
+            "time_window": "all 160 original Native frames",
+            "reference_frame": "source-hashed one-way intersection",
+            "uncertainty": "Actual pixels and legal practicability require independent review"
+          },
+          {
+            "name": "original_left_curb_geometry",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original source map and body-ground frame join",
+            "time_window": "all 160 original Native frames",
+            "reference_frame": "source-hashed one-way intersection",
+            "uncertainty": "Actual pixels and legal practicability require independent review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Diagnostic source geometry is CPU-only; exact Native map readback must be checked",
+          "No legal practicability threshold or outcome is asserted"
+        ]
+      },
+      "sweep_measurements": [
+        {
+          "observable": "departure_left_curb_nearest_m",
+          "unit": "m",
+          "measurement": {
+            "method": "original source map left-curb line joined to subject body-ground corners",
+            "time_window": "applicable leaving-intersection turn frames",
+            "statistic": "min"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "as close as practicable to the left-hand curb or edge on approach",
+        "as close as practicable to the left-hand curb or edge through the turn"
+      ]
     }
   ],
-  "sweep_specs": [],
-  "sweeps_expanded": false,
-  "construction_note": "Three exact selected diagnostic cases and nine distinct physical-risk fallbacks have current-manifest CPU software proofs. Independent original-source delivery and fixed-condition comparison auditors pass positive and negative diagnostics. Canonical sweep expansion, returned proof files, physical lifecycle receipts and ready-only gate remain worker-owned CPU work; no Native motion or legal result is asserted."
+  "sweep_specs": [
+    {
+      "sweep_id": "C152972-approach-curb-coverage",
+      "target_law_id": "NRS-484B-400-5",
+      "judgment_refs": [
+        {
+          "phrase": "as close as practicable to the left-hand curb or edge on approach",
+          "note": "Retain source one-way directionality and original approach body-to-left-curb geometry; no legal numeric cutoff."
+        }
+      ],
+      "status": "complete",
+      "mode": "one_dimensional",
+      "axes": [
+        {
+          "variable": "approach_left_curb_setpoint_m",
+          "observable": "approach_left_curb_nearest_m",
+          "unit": "m",
+          "min": 0.5,
+          "max": 1.5,
+          "spacing": 0.5,
+          "measurement": {
+            "method": "original source map left-curb line joined to subject body-ground corners",
+            "time_window": "applicable approach frames",
+            "statistic": "min"
+          },
+          "range_rationale": "Finite engineering setpoints bracket the three existing diagnostic proximity cases without selecting a legal cutoff.",
+          "spacing_rationale": "Half-meter steps distinguish near, midpoint and far authored targets while retaining source measurement.",
+          "feasibility_evidence": "Existing 0.5 and 1.5 m diagnostic constructions pass exact offline, compatibility and saved processing; midpoint is an interpolation target requiring its own CPU proof and later physical realization."
+        }
+      ],
+      "landmarks": [],
+      "rationale": "Vary only approach curb target at the fixed one-way left-turn intersection; measure original body-to-curb geometry and retain legal practicability unresolved.",
+      "variable_assignments": {
+        "one_way_source_destination": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "turn_direction": {
+          "kind": "controller",
+          "value": "left"
+        },
+        "approach_left_curb_setpoint_m": {
+          "kind": "controller",
+          "value": 0.5
+        },
+        "departure_left_curb_setpoint_m": {
+          "kind": "controller",
+          "value": 0.5
+        },
+        "realized_approach_left_curb_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "realized_departure_left_curb_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "approach_left_curb_nearest_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "departure_left_curb_nearest_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "one_way_left_curb_to_left_curb"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "approach_left_curb_nearest_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Original source map and body-ground frame join",
+            "time_window": "all 160 original Native frames",
+            "reference_frame": "source-hashed one-way intersection",
+            "uncertainty": "Actual pixels and legal practicability require independent review"
+          },
+          {
+            "name": "departure_left_curb_nearest_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Original source map and body-ground frame join",
+            "time_window": "all 160 original Native frames",
+            "reference_frame": "source-hashed one-way intersection",
+            "uncertainty": "Actual pixels and legal practicability require independent review"
+          },
+          {
+            "name": "original_turn_phase",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original source map and body-ground frame join",
+            "time_window": "all 160 original Native frames",
+            "reference_frame": "source-hashed one-way intersection",
+            "uncertainty": "Actual pixels and legal practicability require independent review"
+          },
+          {
+            "name": "original_one_way_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original source map and body-ground frame join",
+            "time_window": "all 160 original Native frames",
+            "reference_frame": "source-hashed one-way intersection",
+            "uncertainty": "Actual pixels and legal practicability require independent review"
+          },
+          {
+            "name": "original_left_curb_geometry",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original source map and body-ground frame join",
+            "time_window": "all 160 original Native frames",
+            "reference_frame": "source-hashed one-way intersection",
+            "uncertainty": "Actual pixels and legal practicability require independent review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Diagnostic source geometry is CPU-only; exact Native map readback must be checked",
+          "No legal practicability threshold or outcome is asserted"
+        ]
+      },
+      "spec_version": "bdee3959ab7860478c98d7b4683f8b8aaad8edfe9b76281a0e5842ee18a7f6aa",
+      "planned_case_count": 3,
+      "selection_order": [
+        "C152972-approach-curb-coverage-0000",
+        "C152972-approach-curb-coverage-0001",
+        "C152972-approach-curb-coverage-0002"
+      ]
+    },
+    {
+      "sweep_id": "C152972-departure-curb-coverage",
+      "target_law_id": "NRS-484B-400-5",
+      "judgment_refs": [
+        {
+          "phrase": "as close as practicable to the left-hand curb or edge through the turn",
+          "note": "Retain original leaving-intersection body-to-destination-left-curb geometry; no legal numeric cutoff."
+        }
+      ],
+      "status": "complete",
+      "mode": "one_dimensional",
+      "axes": [
+        {
+          "variable": "departure_left_curb_setpoint_m",
+          "observable": "departure_left_curb_nearest_m",
+          "unit": "m",
+          "min": 0.5,
+          "max": 1.5,
+          "spacing": 0.5,
+          "measurement": {
+            "method": "original source map left-curb line joined to subject body-ground corners",
+            "time_window": "applicable leaving-intersection turn frames",
+            "statistic": "min"
+          },
+          "range_rationale": "Finite engineering setpoints bracket the three existing diagnostic proximity cases without selecting a legal cutoff.",
+          "spacing_rationale": "Half-meter steps distinguish near, midpoint and far authored targets while retaining source measurement.",
+          "feasibility_evidence": "Existing 0.5 and 1.5 m diagnostic constructions pass exact offline, compatibility and saved processing; midpoint is an interpolation target requiring its own CPU proof and later physical realization."
+        }
+      ],
+      "landmarks": [],
+      "rationale": "Vary only departure curb target at the fixed one-way left-turn intersection; measure original body-to-curb geometry and retain legal practicability unresolved.",
+      "variable_assignments": {
+        "one_way_source_destination": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "turn_direction": {
+          "kind": "controller",
+          "value": "left"
+        },
+        "approach_left_curb_setpoint_m": {
+          "kind": "controller",
+          "value": 0.5
+        },
+        "departure_left_curb_setpoint_m": {
+          "kind": "controller",
+          "value": 0.5
+        },
+        "realized_approach_left_curb_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "realized_departure_left_curb_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "approach_left_curb_nearest_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "departure_left_curb_nearest_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "one_way_left_curb_to_left_curb"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "approach_left_curb_nearest_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Original source map and body-ground frame join",
+            "time_window": "all 160 original Native frames",
+            "reference_frame": "source-hashed one-way intersection",
+            "uncertainty": "Actual pixels and legal practicability require independent review"
+          },
+          {
+            "name": "departure_left_curb_nearest_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Original source map and body-ground frame join",
+            "time_window": "all 160 original Native frames",
+            "reference_frame": "source-hashed one-way intersection",
+            "uncertainty": "Actual pixels and legal practicability require independent review"
+          },
+          {
+            "name": "original_turn_phase",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original source map and body-ground frame join",
+            "time_window": "all 160 original Native frames",
+            "reference_frame": "source-hashed one-way intersection",
+            "uncertainty": "Actual pixels and legal practicability require independent review"
+          },
+          {
+            "name": "original_one_way_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original source map and body-ground frame join",
+            "time_window": "all 160 original Native frames",
+            "reference_frame": "source-hashed one-way intersection",
+            "uncertainty": "Actual pixels and legal practicability require independent review"
+          },
+          {
+            "name": "original_left_curb_geometry",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original source map and body-ground frame join",
+            "time_window": "all 160 original Native frames",
+            "reference_frame": "source-hashed one-way intersection",
+            "uncertainty": "Actual pixels and legal practicability require independent review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Diagnostic source geometry is CPU-only; exact Native map readback must be checked",
+          "No legal practicability threshold or outcome is asserted"
+        ]
+      },
+      "spec_version": "82c5a044b482e450948454cda1d377f92afacf5c6f0845f9b4ce40a4c1fee99f",
+      "planned_case_count": 3,
+      "selection_order": [
+        "C152972-departure-curb-coverage-0000",
+        "C152972-departure-curb-coverage-0001",
+        "C152972-departure-curb-coverage-0002"
+      ]
+    }
+  ],
+  "sweeps_expanded": true
 }
