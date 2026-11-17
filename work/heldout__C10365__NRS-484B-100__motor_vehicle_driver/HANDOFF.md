@@ -73,3 +73,7 @@ Three unreferenced saved-processing proof copies were byte-preserved with tar an
 2026-11-16 CPU file-budget preservation: 4 unreferenced standalone artifacts archived byte-exact in `result.json.preserved_unreferenced_cpu_artifacts`; member SHA256 values are recorded there. Scoped validation follows.
 
 Result-only historical log reconciliation, 2026-11-16: 3 exact UTF-8 logs were SHA-256-preserved in `work/_shared/prune-history-bundle-all.json.preserved_source_files` and removed from this package; matching obsolete `result.json.tests` claims were removed. Current manifest-bound proofs remain direct. Re-run the scoped strict gate before relying on ready status.
+
+## 2026-11-17 lossless historical proof-driver archive
+
+To keep the returned tree at the frozen 10,200-file limit while returning C152972 exact proof receipts, these historical proof-driver scripts were SHA-256 verified and preserved byte-for-byte in `work/_shared/historical-receipts-bundle-20261116.json` (SHA-256 `e70840e6971ac1c2bf5577b27ec57a542ae1eb31bff903d23d56f1650677cbeb`): `prove_all_candidates.py`, `validate_semantic_stages.py`, `officer_sweep_comparison_audit.py`, `prove_execution_saved.py`. Restore a script from its bundle entry before rerunning that historical driver. The current assignment-scoped `--complete --require-delivery-ready` gate passes after archival; active constructions and receipt files remain in place.

@@ -137,3 +137,7 @@ Result-only historical log reconciliation, 2026-11-16: 5 exact UTF-8 logs were S
 ## 2026-11-16 lossless proof-log curation
 
 Twenty-seven distinct fallback offline logs were consolidated into `fallback-offline-combined.log` (SHA-256 `5f338eaf252282c6dd143dce8b4f57ac09913542b6e213d6041b7f97b3caf64f`), with full original bytes and per-file hashes identified in the transcript. Manifest/test references were rebound. The scoped strict worker check passed; this assignment remains ready.
+
+## 2026-11-17 lossless historical proof-driver archive
+
+To keep the returned tree at the frozen 10,200-file limit while returning C152972 exact proof receipts, these historical proof-driver scripts were SHA-256 verified and preserved byte-for-byte in `work/_shared/historical-receipts-bundle-20261116.json` (SHA-256 `e70840e6971ac1c2bf5577b27ec57a542ae1eb31bff903d23d56f1650677cbeb`): `validate_semantic_proposals.py`, `make_night_299_diagnostic.py`, `reprove_dispatch_revision.py`, `reprove_saved_dispatch.py`. Restore a script from its bundle entry before rerunning that historical driver. The current assignment-scoped `--complete --require-delivery-ready` gate passes after archival; active constructions and receipt files remain in place.
