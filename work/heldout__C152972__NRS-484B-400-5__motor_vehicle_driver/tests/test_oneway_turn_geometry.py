@@ -253,14 +253,21 @@ class OnewayTurnTests(unittest.TestCase):
  def test_original_turn_physical_outcome_classes(self):
   self.g.update(source_left_curb=[[0,0],[10,0]],destination_left_curb=[[10,0],[10,10]],source_left_curb_inward_unit=[0,-1],destination_left_curb_inward_unit=[1,0],source_road_width_m=4,destination_road_width_m=4,source_travel_unit=[1,0],destination_travel_unit=[0,1],source_road_id=11,destination_road_id=22)
   geometry=self.write("oneway_geometry_original.json",self.g)
-  config={"case_branch":"approach_near_depart_near","selected_case_id":"heldout__C152972__NRS-484B-400-5__motor_vehicle_driver__approach_near_depart_near","law_id":"NRS-484B-400-5","cell_id":"C152972","frames":160,"duration_s":8,"source_geometry_sha256":hashlib.sha256(geometry.read_bytes()).hexdigest(),"curb_offsets_m":{"approach":.5,"departure":.5},"vehicle_blueprint_id":"vehicle.test"}
+  case_id=os.environ.get("C152972_PHYSICAL_CASE_ID","heldout__C152972__NRS-484B-400-5__motor_vehicle_driver__approach_near_depart_near")
+  case=next((c for c in json.loads((H/"case-plan.json").read_text())["cases"] if c["case_id"]==case_id),None)
+  self.assertIsNotNone(case)
+  construction=json.loads((H/case["construction"]).read_text())
+  config=json.loads(next(f["content"] for f in construction["files"] if f["path"]=="config.json"))
+  config["source_geometry_sha256"]=hashlib.sha256(geometry.read_bytes()).hexdigest()
+  approach_offset=config["curb_offsets_m"]["approach"]
+  departure_offset=config["curb_offsets_m"]["departure"]
   self.write("config.json",config)
   body=[];trace=[];mapping=[]
   for i in range(160):
    phase="approach" if i<50 else "turning" if i<110 else "leaving_intersection"
-   if i<50:x,y=i*.1,-.5
-   elif i<110:x,y=5+(i-50)*5/60,-.5+(i-50)/60
-   else:x,y=10.5,.5+(i-110)*.1
+   if i<50:x,y=i*.1,-approach_offset
+   elif i<110:x,y=5+(i-50)*(5+departure_offset)/60,-approach_offset+(i-50)*(approach_offset+.5)/60
+   else:x,y=10+departure_offset,.5+(i-110)*.1
    corners=[[x-.2,y-.2],[x+.2,y-.2],[x+.2,y+.2],[x-.2,y+.2]]
    body.append({"frame":1000+i,"time_s":i*.05,"subject_id":"ego","road_id":11 if i<50 else 22,"phase":phase,"ground_corners":corners})
    trace.append({"frame":1000+i,"time_s":i*.05,"position_m":[x,y,0],"heading_deg":0 if i<50 else 90 if i>=110 else (i-50)*1.5})
@@ -305,7 +312,7 @@ class OnewayTurnTests(unittest.TestCase):
                   diagnostic_fixture=True,physical_acceptance_claimed=False,
                   legal_acceptance_claimed=False)
     destination.joinpath(kind+".json").write_text(json.dumps(result,indent=2)+"\n")
-   destination.joinpath("source-snapshots.json").write_text(json.dumps({"diagnostic_fixture":True,"sources":{"complete_motion":complete_sources,"incomplete_motion":incomplete_sources,"missing_evidence":missing_sources}},indent=2)+"\n")
+   destination.joinpath("source-snapshots.json").write_text(json.dumps({"diagnostic_fixture":True,"case_id":case_id,"construction_sha256":hashlib.sha256((H/case["construction"]).read_bytes()).hexdigest(),"sources":{"complete_motion":complete_sources,"incomplete_motion":incomplete_sources,"missing_evidence":missing_sources}},indent=2)+"\n")
  def test_diagnostic_native_closure_order(self):
   from worker_exchange.native_output import seal_capture
   from worker_exchange.saved_processing import record_native_exit,acknowledge_owner_release,_closure
