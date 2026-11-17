@@ -1,6 +1,8 @@
 from __future__ import annotations
 import importlib.util
 import json
+import hashlib
+import shutil
 import tempfile
 import unittest
 import sys
@@ -19,6 +21,7 @@ verify_saved_sources = load("overtaken_response").verify_saved_sources
 measure_observed_saved = load("overtaken_response").measure_observed_saved
 measure_audible_saved = load("overtaken_response").measure_audible_saved
 audit = load("overtaken_comparison_audit").audit
+saved_behavior = load("overtaken_saved_behavior_audit")
 controller = load("overtaken_controller")
 sys.path.insert(0, str(HERE))
 native = load("overtaken_native")
@@ -104,6 +107,44 @@ class OvertakenTests(unittest.TestCase):
         p=self.write("first-result.json",first);q=self.write("second-result.json",second)
         with self.assertRaisesRegex(ValueError,"measurement differs"):
             audit([p,q],"right_shift")
+    def test_saved_right_pass_requires_distinct_sourced_premise(self):
+        receipts = [HERE/"no-right-primary-saved-processing.json",
+                    HERE/"right-pass-primary-saved-processing.json"]
+        with self.assertRaisesRegex(ValueError,"lacks original permission premise"):
+            saved_behavior.audit_right_pass_exception(*receipts)
+        staged = []
+        roots = []
+        for index, receipt_path in enumerate(receipts):
+            receipt = json.loads(receipt_path.read_text())
+            source = Path(receipt["analysis_directory"])
+            root = self.root/("permission-base" if index == 0 else "permission-variant")
+            root.mkdir()
+            for name in saved_behavior.SOURCE_NAMES+("analysis-report.json","result.json"):
+                shutil.copy2(source/name,root/name)
+            rule=root/"right_pass_governing_rule.txt"
+            rule.write_text("Synthetic governing-rule fixture; no legal finding.\n")
+            survey=root/"right_pass_road_survey.json"
+            survey.write_text(json.dumps({"source_kind":"original_road_survey",
+                "road_id":"synthetic-road","lane_ids":[1] if index == 0 else [1,2],
+                "passing_side":"right","source_provenance":"synthetic diagnostic"})+"\n")
+            premise=root/"right_pass_premise.json"
+            premise.write_text(json.dumps({"source_kind":"reviewed_right_pass_premise",
+                "permission_state":bool(index),"review_scope":"comparison premise only",
+                "legal_conclusion":None,"governing_rule_citation":"synthetic fixture",
+                "governing_rule_sha256":hashlib.sha256(rule.read_bytes()).hexdigest(),
+                "road_survey_sha256":hashlib.sha256(survey.read_bytes()).hexdigest()})+"\n")
+            for path in (rule,survey,premise):
+                receipt["original_source_hashes"][path.name]=hashlib.sha256(path.read_bytes()).hexdigest()
+            receipt["analysis_directory"]=str(root)
+            staged_path=root/"receipt.json";staged_path.write_text(json.dumps(receipt))
+            staged.append(staged_path);roots.append(root)
+        checked=saved_behavior.audit_right_pass_exception(*staged)
+        self.assertTrue(checked["comparison_complete"])
+        self.assertTrue(checked["diagnostic_fixture_only"])
+        survey=roots[1]/"right_pass_road_survey.json"
+        survey.write_text(survey.read_text()+"tamper")
+        with self.assertRaisesRegex(ValueError,"source missing or changed"):
+            saved_behavior.audit_right_pass_exception(*staged)
     def test_exact_controller_targets_and_native_call(self):
         for suffix in controller.CASES:
             expected_notice,right_pass,right_shift,early = controller.CASES[suffix]

@@ -13,6 +13,7 @@ SOURCE_NAMES = ("overtaken_source.jsonl", "video_frames.jsonl", "trace.jsonl",
 PREFIX = "heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__"
 PAIRS = {"right_yield": ("gives_way_holds_speed", "no_right_yield_holds_speed"),
          "speed_hold_until_complete": ("gives_way_holds_speed", "gives_way_increases_speed")}
+RIGHT_PASS_PAIR = ("no_right_yield_holds_speed", "right_pass_permitted_no_right_yield")
 
 def read_rows(path):
     return [json.loads(s) for s in Path(path).read_text().splitlines() if s.strip()]
@@ -48,6 +49,72 @@ def read_case(receipt_path, case_id, module, root_override=None):
         result.get("legal_acceptance_claimed") is not False):
         raise ValueError("Saved measured result differs from original sources")
     return receipt, measured, read_rows(root/SOURCE_NAMES[0]), read_rows(root/SOURCE_NAMES[1]), read_rows(root/SOURCE_NAMES[2])
+
+def read_permission_premise(receipt, root):
+    """Require original cited rule and road survey bytes for a reviewed premise.
+
+    This verifies provenance and comparison isolation only. It cannot decide
+    whether the cited rule actually permits the maneuver.
+    """
+    root = Path(root)
+    name = "right_pass_premise.json"
+    path = root/name
+    hashes = receipt.get("original_source_hashes", {})
+    if not path.is_file() or not path.read_bytes() or hashes.get(name) != hashlib.sha256(path.read_bytes()).hexdigest():
+        raise ValueError("Right-pass comparison lacks original permission premise")
+    premise = json.loads(path.read_text())
+    if (premise.get("source_kind") != "reviewed_right_pass_premise" or
+        type(premise.get("permission_state")) is not bool or
+        premise.get("review_scope") != "comparison premise only" or
+        premise.get("legal_conclusion") is not None):
+        raise ValueError("Right-pass permission premise is incomplete or asserts a legal result")
+    for field, source_name in (("governing_rule_sha256", "right_pass_governing_rule.txt"),
+                               ("road_survey_sha256", "right_pass_road_survey.json")):
+        source_path = root/source_name
+        if (not source_path.is_file() or not source_path.read_bytes() or
+            premise.get(field) != hashlib.sha256(source_path.read_bytes()).hexdigest() or
+            hashes.get(source_name) != premise[field]):
+            raise ValueError("Right-pass premise source missing or changed: "+source_name)
+    survey = json.loads((root/"right_pass_road_survey.json").read_text())
+    if (survey.get("source_kind") != "original_road_survey" or
+        not survey.get("road_id") or not survey.get("lane_ids") or
+        not survey.get("passing_side") or not survey.get("source_provenance")):
+        raise ValueError("Right-pass road survey lacks original geometry or provenance")
+    rule = (root/"right_pass_governing_rule.txt").read_text().strip()
+    if not rule or not premise.get("governing_rule_citation"):
+        raise ValueError("Right-pass governing rule citation missing")
+    return premise, survey
+
+def audit_right_pass_exception(base_receipt, variant_receipt, base_root=None, variant_root=None):
+    """Audit the held saved motion and require a distinct, sourced premise."""
+    module = load_response()
+    a = read_case(base_receipt, PREFIX+RIGHT_PASS_PAIR[0], module, base_root)
+    b = read_case(variant_receipt, PREFIX+RIGHT_PASS_PAIR[1], module, variant_root)
+    ar, am, ab, af, at = a; br, bm, bb, bf, bt = b
+    if len(ab) != len(bb) or af != bf or at != bt:
+        raise ValueError("Right-pass comparison changed held frame map or motion")
+    if any(ar["original_source_hashes"][name] != br["original_source_hashes"][name]
+           for name in SOURCE_NAMES):
+        raise ValueError("Right-pass comparison changed held original source")
+    held_measurements = ("notice_kind", "notice_frame", "pass_complete_frame",
+                         "max_right_shift_m", "max_precompletion_speed_delta_mps",
+                         "hearing_confirmed", "acoustic_propagation_confirmed")
+    if ab != bb or any(am.get(key) != bm.get(key) for key in held_measurements):
+        raise ValueError("Right-pass comparison changed held body or measured response")
+    (first, first_survey) = read_permission_premise(ar, base_root or ar["analysis_directory"])
+    (second, second_survey) = read_permission_premise(br, variant_root or br["analysis_directory"])
+    if first["permission_state"] is not False or second["permission_state"] is not True:
+        raise ValueError("Right-pass comparison lacks opposite sourced premises")
+    if first["governing_rule_sha256"] != second["governing_rule_sha256"]:
+        raise ValueError("Right-pass comparison changed governing rule")
+    if first["road_survey_sha256"] == second["road_survey_sha256"]:
+        raise ValueError("Right-pass comparison has no distinct surveyed premise")
+    return {"comparison":"right_pass_exception", "comparison_complete":True,
+            "held_original_motion":True, "declared_difference":"source-backed road survey premise",
+            "premise_source_hashes":[first["road_survey_sha256"],second["road_survey_sha256"]],
+            "diagnostic_fixture_only":any("synthetic" in str(survey.get("source_provenance", "")).lower()
+                                          for survey in (first_survey, second_survey)),
+            "physical_acceptance_claimed":False,"legal_acceptance_claimed":False}
 
 def audit(base_receipt, variant_receipt, comparison, variant_root=None):
     if comparison not in PAIRS:raise ValueError("Unknown saved comparison")
