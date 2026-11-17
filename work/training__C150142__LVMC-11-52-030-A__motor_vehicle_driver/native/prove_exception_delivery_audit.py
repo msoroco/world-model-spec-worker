@@ -12,7 +12,12 @@ ROOT = Path(__file__).resolve().parents[3]
 WORK = Path(__file__).resolve().parents[1]
 PLAN = json.loads((WORK / 'case-plan.json').read_text())
 CASES = {
-    'tour_bus_at': 'c150142-tour-bus-pinned-saved-at-result-v1',
+    **{
+        f'{service}_{boundary}':
+            f'c150142-selected-{service.replace("_", "-")}-{boundary.replace("_", "-")}-primary-result-v1'
+        for service in ('tour_bus', 'shuttle_bus', 'limo', 'rtc_bus')
+        for boundary in ('below', 'at', 'above', 'no_loading')
+    },
     'mail_adjacent_deposit': 'c150142-mail-adjacent-primary-result-v3',
     'armored_car_signed_business': 'c150142-merged-armored-signed-business-primary-result-v1',
 }
