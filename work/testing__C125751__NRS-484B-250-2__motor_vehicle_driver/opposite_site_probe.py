@@ -151,3 +151,148 @@ def route_pair_from_candidate(candidate, turning_role, left_index=0, straight_in
             "expected_approach_lanes": lanes,
             "geometry": geometry,
             "review_status": "candidate_only"}
+
+
+# Independent saved-source audit for the unselected opposite-turn candidate.
+import hashlib
+import json
+from pathlib import Path
+from shapely.geometry import MultiPoint, Polygon
+from camera_setup import SIZES
+
+OPPOSITE_CASE = "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_left_turn"
+CAMERAS = tuple(name + ".mkv" for name in SIZES)
+
+def _sha(path):
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+def _read(path):
+    return json.loads(Path(path).read_text())
+
+def _rows(path):
+    return [json.loads(line) for line in Path(path).read_text().splitlines() if line.strip()]
+
+def audit_opposite_candidate(attempt, analysis_path):
+    """Independently check a saved candidate's original joins and result bindings.
+
+    This is a software audit of a diagnostic candidate. It does not decode or
+    review pixels, confirm the Native scene, or accept a legal conclusion.
+    """
+    attempt, analysis_path = Path(attempt), Path(analysis_path)
+    config, result, analysis = (_read(path) for path in
+                                (attempt / "config.json", attempt / "result.json", analysis_path))
+    if (config.get("selected_case_id") != OPPOSITE_CASE or
+            result.get("case_id") != OPPOSITE_CASE or
+            analysis.get("case_id") != OPPOSITE_CASE or
+            (config.get("law_id"), config.get("cell_id")) != ("NRS-484B-250-2", "C125751") or
+            config.get("turning_role") not in ("ego", "other")):
+        raise ValueError("Exact opposite-turn candidate identity differs")
+    if (result.get("physical_acceptance_claimed") is not False or
+            analysis.get("physical_acceptance_claimed") is not False or
+            analysis.get("legal_acceptance_claimed") is not False):
+        raise ValueError("Candidate analysis must leave acceptance unresolved")
+    required = {"config.json", "road_geometry.json", "turn_route_context.json",
+                "body_history.jsonl", "crossing_history.jsonl", "signal_context.json",
+                "signal_history.jsonl", "stop_context.json", "stop_history.jsonl",
+                "video_frames.jsonl", "trace.jsonl", "capture/evidence.jsonl", *CAMERAS}
+    hashes = result.get("source_evidence_hashes")
+    if not isinstance(hashes, dict) or set(hashes) != required or analysis.get("source_evidence_hashes") != hashes:
+        raise ValueError("Complete candidate source hash inventory required")
+    for name, expected in hashes.items():
+        source = attempt / name
+        if not source.is_file() or _sha(source) != expected:
+            raise ValueError("Candidate source hash differs: " + name)
+    if (result.get("capture_evidence_sha256") != hashes["capture/evidence.jsonl"] or
+            result.get("trace_reference") != "trace.jsonl" or
+            result.get("video_frame_map_reference") != "video_frames.jsonl" or
+            set(result.get("video_references", [])) != set(CAMERAS)):
+        raise ValueError("Candidate result source references differ")
+    mapping = _rows(attempt / "video_frames.jsonl")
+    if len(mapping) < 2:
+        raise ValueError("Candidate needs original frame sequence")
+    prior_frame, prior_time = -1, float("-inf")
+    for index, row in enumerate(mapping):
+        frame, time = row.get("carla_frame"), row.get("time_s")
+        if (row.get("video_frame") != index or type(frame) is not int or frame <= prior_frame or
+                type(time) not in (int, float) or not math.isfinite(time) or time <= prior_time):
+            raise ValueError("Candidate frame map is not monotone")
+        prior_frame, prior_time = frame, time
+    joins = (("trace.jsonl", "frame", "time_s"),
+             ("capture/evidence.jsonl", "original_frame", "recording_time_s"),
+             ("crossing_history.jsonl", "frame", "time_s"),
+             ("stop_history.jsonl", "frame", "time_s"),
+             ("signal_history.jsonl", "frame", "time_s"))
+    for name, frame_key, time_key in joins:
+        rows = _rows(attempt / name)
+        if len(rows) != len(mapping) or any(
+                row.get(frame_key) != mapped["carla_frame"] or row.get(time_key) != mapped["time_s"]
+                for row, mapped in zip(rows, mapping)):
+            raise ValueError("Candidate original frame/time join differs: " + name)
+    bodies = _rows(attempt / "body_history.jsonl")
+    crossings = _rows(attempt / "crossing_history.jsonl")
+    if len(bodies) != len(mapping) or any(
+            row.get("native_frame") != mapped["carla_frame"] or
+            set(row.get("camera_source_frames", {})) != set(SIZES) or
+            any(value != mapped["carla_frame"] for value in row["camera_source_frames"].values()) or
+            row.get("actor_sources") != {role: crossed.get(role) for role in ("ego", "other")}
+            for row, crossed, mapped in zip(bodies, crossings, mapping)):
+        raise ValueError("Candidate paired-body/four-camera frame join differs")
+    entry = _read(attempt / "channels/entry_context.json").get("entry_context")
+    if not isinstance(entry, dict) or entry != analysis.get("measurements") or entry.get("turning_role") != config["turning_role"]:
+        raise ValueError("Candidate saved entry measurement differs")
+    road = _read(attempt / "road_geometry.json")
+    polygon = Polygon(road.get("intersection_polygon_xy_m", []))
+    if not polygon.is_valid or polygon.area <= 0:
+        raise ValueError("Candidate source crossing polygon invalid")
+    first = {"ego": None, "other": None}
+    for mapped, crossed in zip(mapping, crossings):
+        for role in first:
+            vertices = crossed[role].get("body_vertices_xy_m", [])
+            if not isinstance(vertices, list) or len(vertices) < 4:
+                raise ValueError("Candidate original body vertices missing")
+            if first[role] is None and MultiPoint(vertices).convex_hull.intersects(polygon):
+                first[role] = {"frame": mapped["carla_frame"], "time_s": mapped["time_s"]}
+    if any(value is None for value in first.values()) or first != entry.get("first_body_entry"):
+        raise ValueError("Candidate measured body entry differs from original source")
+    turning = config["turning_role"]
+    other = "other" if turning == "ego" else "ego"
+    if entry.get("turning_minus_other_entry_time_s") != first[turning]["time_s"] - first[other]["time_s"]:
+        raise ValueError("Candidate measured entry delta differs")
+    signal_rows = {row["frame"]: row for row in _rows(attempt / "signal_history.jsonl")}
+    signal_context = _read(attempt / "signal_context.json")
+    for role in first:
+        source = signal_rows[first[role]["frame"]]
+        expected = {"frame": first[role]["frame"], "time_s": first[role]["time_s"],
+                    "native_signal_id": signal_context["native_signal_id" if role == "ego" else "other_native_signal_id"],
+                    "native_state": source["state" if role == "ego" else "other_state"]}
+        if entry.get("signal_at_body_entry", {}).get(role) != expected:
+            raise ValueError("Candidate measured signal at body entry differs")
+    measured = result.get("measured_values", {})
+    if (measured.get("turning_minus_other_entry_time_s") != entry.get("turning_minus_other_entry_time_s") or
+            measured.get("signal_at_body_entry") != entry.get("signal_at_body_entry")):
+        raise ValueError("Candidate result measurement differs")
+    for name, source_name in (("signal_state", "signal_history"), ("stop_state", "stop_history")):
+        rows = _rows(attempt / ("channels/" + name + ".jsonl"))
+        source = _rows(attempt / (source_name + ".jsonl"))
+        if len(rows) != len(mapping) or any(
+                row.get("time_s") != original["time_s"] or row.get("value", {}).get("frame") != original["frame"]
+                for row, original in zip(rows, source)):
+            raise ValueError("Candidate saved channel/source join differs: " + name)
+        for row, original in zip(rows, source):
+            value = row["value"]
+            expected = ({"frame": original["frame"], "ego": original["ego"], "other": original["other"]}
+                        if name == "stop_state" else
+                        {"frame": original["frame"], "native_signal_id": original["native_signal_id"],
+                         "native_state": original["state"],
+                         "other_native_signal_id": original["other_native_signal_id"],
+                         "other_native_state": original["other_state"]})
+            if value != expected:
+                raise ValueError("Candidate saved channel value differs: " + name)
+    return {"format": "worker-c125751-opposite-candidate-independent-audit-v1",
+            "case_id": OPPOSITE_CASE, "frames": len(mapping),
+            "result_sha256": _sha(attempt / "result.json"),
+            "analysis_sha256": _sha(analysis_path),
+            "software_audit_passed": True, "original_pixels_reviewed": False,
+            "physical_acceptance_claimed": False, "legal_conclusion": "unresolved"}
+
+

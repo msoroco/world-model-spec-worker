@@ -19,6 +19,9 @@ spec.loader.exec_module(module)
 runner_spec = importlib.util.spec_from_file_location("opposite_turn_runner", HERE / "opposite_turn_runner.py")
 runner = importlib.util.module_from_spec(runner_spec)
 runner_spec.loader.exec_module(runner)
+audit_spec = importlib.util.spec_from_file_location("opposite_site_probe_audit", HERE / "opposite_site_probe.py")
+candidate_audit = importlib.util.module_from_spec(audit_spec)
+audit_spec.loader.exec_module(candidate_audit)
 
 
 def site():
@@ -677,6 +680,40 @@ class DeviceSourceJoinTests(unittest.TestCase):
                              hashlib.sha256((root / "body_history.jsonl").read_bytes()).hexdigest())
             self.assertEqual(result["capture_evidence_sha256"],
                              hashlib.sha256((root / "capture/evidence.jsonl").read_bytes()).hexdigest())
+            audit = candidate_audit.audit_opposite_candidate(root, root / "analysis.json")
+            self.assertTrue(audit["software_audit_passed"])
+            self.assertFalse(audit["physical_acceptance_claimed"])
+
+    def test_opposite_candidate_independent_audit_rejects_tampering(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp); self._opposite_finalizer_sources(root)
+            runner.finalize_candidate_opposite_turn(root, root / "analysis.json")
+            rows = [json.loads(line) for line in (root / "capture/evidence.jsonl").read_text().splitlines()]
+            rows[1]["original_frame"] += 1
+            (root / "capture/evidence.jsonl").write_text("".join(json.dumps(row) + "\n" for row in rows))
+            with self.assertRaisesRegex(ValueError, "Candidate source hash differs"):
+                candidate_audit.audit_opposite_candidate(root, root / "analysis.json")
+            # A forged result hash cannot bypass the independent original join.
+            result = json.loads((root / "result.json").read_text())
+            analysis = json.loads((root / "analysis.json").read_text())
+            digest = hashlib.sha256((root / "capture/evidence.jsonl").read_bytes()).hexdigest()
+            result["source_evidence_hashes"]["capture/evidence.jsonl"] = digest
+            result["capture_evidence_sha256"] = digest
+            analysis["source_evidence_hashes"]["capture/evidence.jsonl"] = digest
+            (root / "result.json").write_text(json.dumps(result))
+            (root / "analysis.json").write_text(json.dumps(analysis))
+            with self.assertRaisesRegex(ValueError, "Candidate original frame/time join differs"):
+                candidate_audit.audit_opposite_candidate(root, root / "analysis.json")
+
+    def test_opposite_candidate_audit_recomputes_entry_and_channel_values(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp); self._opposite_finalizer_sources(root)
+            runner.finalize_candidate_opposite_turn(root, root / "analysis.json")
+            rows = [json.loads(line) for line in (root / "channels/signal_state.jsonl").read_text().splitlines()]
+            rows[0]["value"]["native_state"] = "forged-state"
+            (root / "channels/signal_state.jsonl").write_text("".join(json.dumps(row) + "\n" for row in rows))
+            with self.assertRaisesRegex(ValueError, "Candidate saved channel value differs"):
+                candidate_audit.audit_opposite_candidate(root, root / "analysis.json")
 
     def test_opposite_candidate_saved_finalizer_rejects_missing_and_misaligned_evidence(self):
         with tempfile.TemporaryDirectory() as temp:
