@@ -37,6 +37,8 @@ def fixture(entry, kind, output):
     suffix=entry['case_id'].split('__')[-1]
     if suffix == 'gap_below_500ft':
         source = ROOT/'.runtime-work/c149237-root-support-primary-saved-v1/v0001/analysis'
+    elif suffix == 'combination_at_500ft':
+        source = ROOT/'.runtime-work/c149237-combination-selected/saved-v2/v0001/analysis'
     else:
         source = ROOT/'.runtime-work'/f'c149237-{suffix}-saved-v16/v0001/analysis'
     with tempfile.TemporaryDirectory(prefix='c149237-physical-') as temporary:
@@ -84,7 +86,8 @@ def fixture(entry, kind, output):
 def lifecycle(entry,output):
     suffix=entry['case_id'].split('__')[-1]
     folder=Path(__file__).resolve().parent
-    saved=read(folder/(suffix+'-saved-processing.json'))
+    saved_path=folder/('combination-at-500ft-saved-processing.json' if suffix=='combination_at_500ft' else suffix+'-saved-processing.json')
+    saved=read(saved_path)
     if (saved.get('passed') is not True or saved.get('recorded_only') is not True or
             saved.get('native_revision',{}).get('construction_sha256')!=entry['construction_sha256']):
         raise ValueError('Current exact saved-processing proof missing')
@@ -111,7 +114,7 @@ def lifecycle(entry,output):
         if events!=expected:
             raise ValueError('Saved processing preceded Native owner release')
         write(output,{'events':events,'diagnostic_fixture':True,
-                      'saved_processing_sha256':sha(folder/(suffix+'-saved-processing.json')),
+                      'saved_processing_sha256':sha(saved_path),
                       'capture_seal_sha256':sha(stage/'capture-seal.json'),
                       'native_exit_sha256':sha(stage/'native-exit.json'),
                       'owner_release_sha256':sha(stage/'owner-release.json')})
