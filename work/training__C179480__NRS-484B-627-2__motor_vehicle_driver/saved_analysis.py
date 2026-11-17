@@ -30,7 +30,7 @@ def video_frames(path):
     return int(process.stdout.strip())
 
 
-def review(attempt, output):
+def review(attempt, output, *, write=True):
     attempt = Path(attempt).resolve()
     output = Path(output).resolve()
     if output.exists() or output.parent != attempt:
@@ -77,9 +77,10 @@ def review(attempt, output):
             'safe operation necessity', 'compliance with law',
             'roadway and camera visibility'],
     }
-    with output.open('x', encoding='utf-8') as stream:
-        json.dump(report, stream, indent=2, allow_nan=False)
-        stream.write('\n')
+    if write:
+        with output.open('x', encoding='utf-8') as stream:
+            json.dump(report, stream, indent=2, allow_nan=False)
+            stream.write('\n')
     return report
 
 

@@ -1,0 +1,103 @@
+import importlib.util
+import json
+from pathlib import Path
+import sys
+import tempfile
+import unittest
+
+from test_saved_analysis import SavedAnalysisTest
+from source_measurement import analyze
+
+
+root = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(root))
+spec = importlib.util.spec_from_file_location('c179480_native_finalize', root/'native_finalize.py')
+module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)
+
+
+class NativeFinalizeTest(unittest.TestCase):
+    def sources(self, folder):
+        SavedAnalysisTest().sources(folder)
+        actor = folder/'native-actors.jsonl'
+        rows = [json.loads(line) for line in actor.read_text().splitlines()]
+        for row in rows:
+            speed = row['ego_speed_mps']
+            row.update(source_kind='original_carla_actor_and_map_readback',
+                       ego_velocity_xyz_mps=[speed, 0., 0.],
+                       ego_body_vertices_xyz_m=[[-2.,-1.,0.],[-2.,1.,0.],
+                                                [2.,1.,0.],[2.,-1.,0.]],
+                       ego_x_m=0., ego_y_m=0., ego_yaw_deg=0.,
+                       ego_body_lateral_min_m=-1., ego_body_lateral_max_m=1.,
+                       driving_lane_width_m=3.7, driving_road_id=7,
+                       driving_lane_id=-1, following_velocity_xyz_mps=[
+                           row['following_speed_mps'],0.,0.],
+                       following_x_m=-10., following_y_m=0.,
+                       following_on_driving_lane=True)
+        for index, row in enumerate(rows):
+            row['video_frame'] = index
+        actor.write_text(''.join(json.dumps(row)+'\n' for row in rows))
+        map_file = folder/'native-map-readback.json'
+        map_file.write_text(json.dumps(dict(format='c179480-original-map-readback-v1',
+                                            map_name='test-road', case='reference',
+                                            road_id=7, lane_id=-1))+'\n')
+        receipt_file = folder/'source-measurements.json'
+        receipt = analyze(actor,folder/'video_frames.jsonl')
+        receipt.update(format='c179480-source-measurements-v1',case='reference',
+                       actor_source_sha256=module.sha256(actor),
+                       frame_map_sha256=module.sha256(folder/'video_frames.jsonl'),
+                       map_readback_sha256=module.sha256(map_file))
+        receipt_file.write_text(json.dumps(receipt)+'\n')
+        (folder/'config.json').write_text(json.dumps({
+            'case_id': module.ASSIGNMENT+'__reference',
+            'case_suffix': 'reference', 'law_id': 'NRS-484B-627-2',
+            'rate_hz': 20, 'duration_s': 0.15,
+            'recording_description': {'channels': [
+                {'name': name, 'unit': 'structured'} for name in module.CHANNELS],
+                'context_inputs': []}})+'\n')
+
+    def test_native_shaped_result_retains_unverified_status(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = Path(tmp)
+            self.sources(folder)
+            original = (folder/'native-actors.jsonl').read_bytes()
+            report = module.finalize(folder, folder/'analysis-report.json')
+            result = json.loads((folder/'result.json').read_text())
+            self.assertEqual(report['source_frames'], 3)
+            self.assertEqual(len(report['derived_channels']['channels']), 9)
+            self.assertFalse(result['maneuver_completed'])
+            self.assertFalse(result['setup_confirmed'])
+            self.assertFalse(result['legal_verdict_claimed'])
+            self.assertTrue(result['target_checks'][0]['matched'])
+            self.assertEqual((folder/'native-actors.jsonl').read_bytes(),original)
+            self.assertEqual(len((folder/'trace.jsonl').read_text().splitlines()),3)
+            with self.assertRaisesRegex(ValueError,'Retain prior finalization'):
+                module.finalize(folder,folder/'second-report.json')
+
+    def test_stale_map_case_rejected_before_derived_output(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = Path(tmp)
+            self.sources(folder)
+            path = folder/'native-map-readback.json'
+            map_data = json.loads(path.read_text())
+            map_data['case'] = 'contrast'
+            path.write_text(json.dumps(map_data)+'\n')
+            with self.assertRaisesRegex(ValueError,'another case'):
+                module.finalize(folder,folder/'analysis-report.json')
+            self.assertFalse((folder/'result.json').exists())
+
+    def test_actor_video_identity_rejected_before_derived_output(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = Path(tmp)
+            self.sources(folder)
+            actor = folder/'native-actors.jsonl'
+            rows = [json.loads(line) for line in actor.read_text().splitlines()]
+            rows[1]['video_frame'] = 9
+            actor.write_text(''.join(json.dumps(row)+'\n' for row in rows))
+            with self.assertRaisesRegex(ValueError,'video-frame identity'):
+                module.finalize(folder,folder/'analysis-report.json')
+            self.assertFalse((folder/'result.json').exists())
+
+
+if __name__ == '__main__':
+    unittest.main()
