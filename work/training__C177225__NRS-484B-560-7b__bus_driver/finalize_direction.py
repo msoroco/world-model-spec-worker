@@ -1,6 +1,8 @@
 """Source-reading saved observation for the directed rail officer comparison."""
+import argparse
 import hashlib
 import json
+import math
 from pathlib import Path
 import subprocess
 
@@ -91,3 +93,129 @@ def process_saved(root, *, source_kind='original_native'):
 
 def signal_case_id(suffix):
     return 'training__C177225__NRS-484B-560-7b__bus_driver__' + suffix
+
+
+def _required(root, name):
+    path = root / name
+    if not path.is_file():
+        raise ValueError('Missing required source: ' + name)
+    return path
+
+
+def _joined_sources(root, mapping, bus, officer):
+    trace = _rows(_required(root, 'trace.jsonl'))
+    evidence = _rows(_required(root, 'capture/evidence.jsonl'))
+    if len(trace) != len(mapping) or len(evidence) != len(mapping):
+        raise ValueError('Saved trace/capture frame counts differ')
+    for index, (mapped, point, packet, bus_row, signal_row) in enumerate(
+            zip(mapping, trace, evidence, bus, officer)):
+        frame = mapped.get('native_frame')
+        time = mapped.get('time_s')
+        if (mapped.get('video_frame') != index or type(frame) is not int or
+                type(time) not in (int, float) or not math.isfinite(time) or
+                point.get('frame') != frame or
+                packet.get('original_frame') != frame or
+                bus_row.get('native_frame') != frame or
+                signal_row.get('native_frame') != frame or
+                abs(point.get('time_s', -1) - time) > 1e-6 or
+                abs(packet.get('recording_time_s', -1) - time) > 1e-6):
+            raise ValueError('Saved trace/capture/actor frame join differs')
+    return trace, evidence
+
+
+def _derived_channels(root, description, bus, officer, mapping):
+    expected = {'kin.velocity', 'drv.stopped', 'dev.human_direction',
+                'native_actor_state', 'camera_frame_join'}
+    channels = description.get('channels')
+    if not isinstance(channels, list) or {c.get('name') for c in channels} != expected:
+        raise ValueError('Exact recording channels differ')
+    folder = root / 'channels'
+    folder.mkdir(exist_ok=True)
+    evidence = []
+    for channel in channels:
+        name = channel['name']
+        relative = 'channels/' + name + '.jsonl'
+        path = root / relative
+        if path.exists():
+            raise ValueError('Retain prior derived channel: ' + relative)
+        with path.open('x') as stream:
+            for b, s, m in zip(bus, officer, mapping):
+                speed = sum(v * v for v in b['velocity_native_xyz_mps']) ** .5
+                value = {'kin.velocity': speed, 'drv.stopped': speed <= .05,
+                         'dev.human_direction': s, 'native_actor_state': b,
+                         'camera_frame_join': m}[name]
+                stream.write(json.dumps({'time_s': m['time_s'], 'value': value},
+                                        allow_nan=False) + '\n')
+        evidence.append({'name': name, 'unit': channel['unit'], 'reference': relative})
+    return evidence
+
+
+def finalize_attempt(root, output):
+    """Finalize saved acquisition only; never infer legal or physical acceptance."""
+    root = Path(root).resolve()
+    output = Path(output).resolve()
+    if output.exists() or (root / 'result.json').exists():
+        raise ValueError('Retain prior finalization; use a fresh attempt')
+    config = json.loads(_required(root, 'config.json').read_text())
+    observation = process_saved(root, source_kind='original_native')
+    mapping = _rows(_required(root, 'video_frames.jsonl'))
+    bus = _rows(_required(root, 'bus_native_rows.jsonl'))
+    officer = _rows(_required(root, 'officer_signal_rows.jsonl'))
+    trace, _ = _joined_sources(root, mapping, bus, officer)
+    description = config['recording_description']
+    channel_evidence = _derived_channels(root, description, bus, officer, mapping)
+    measured = observation['observed_complete_stop_before_line']
+    requested = config['case_suffix'] == 'reference'
+    target = {'target': 'bus_obeys_officer_direction', 'requested': requested,
+              'measured': measured,
+              'method': 'saved original bus velocity/station and directed officer frame join',
+              'tolerance': 0, 'matched': measured == requested,
+              'physical_cause_confirmed': False,
+              'cause_evidence': ['bus_native_rows.jsonl',
+                                 'officer_signal_rows.jsonl', 'video_frames.jsonl']}
+    result = {'case_id': config['case_id'],
+              'measured_values': {'officer_direction': observation},
+              'target_checks': [target], 'setup_confirmed': True,
+              'behavior_attempted': bool(observation['officer_direction_witnessed_frames']),
+              'maneuver_completed': observation['observed_crossing_entry'],
+              'termination_reason': 'full saved capture duration retained',
+              'physical_failure_flags': ['railway_identity_and_signal_visibility_unverified'],
+              'trace_reference': 'trace.jsonl',
+              'video_references': [name + '.mkv' for name in VIEWS],
+              'video_frame_map_reference': 'video_frames.jsonl',
+              'recording_description': description,
+              'recording_evidence': channel_evidence,
+              'realized_observables': {
+                  'minimum_recorded_speed_mps': {
+                      'value': observation['minimum_recorded_speed_mps'],
+                      'unit': 'm/s', 'method': 'raw Native velocity vector norm',
+                      'time_window': 'full saved capture', 'statistic': 'minimum',
+                      'reference': 'bus_native_rows.jsonl'}},
+              'provenance_kind': 'native', 'accepted': False,
+              'legal_verdict_claimed': False}
+    from worker_exchange.native_output import validate_result
+    validate_result(result)
+    report = {'format': 'c177225-saved-analysis-v1',
+              'case_id': config['case_id'],
+              'measurements': {'directed_officer_stop': {
+                  'value': {'stop_before_line': measured,
+                            'crossing_entry': observation['observed_crossing_entry'],
+                            'governing_frames': len(observation['officer_direction_witnessed_frames'])},
+                  'method': 'measure_directed_officer_stop',
+                  'sources': {name: _sha(_required(root, name)) for name in
+                              ('bus_native_rows.jsonl', 'officer_signal_rows.jsonl',
+                               'video_frames.jsonl')}}},
+              'trace_frames': len(trace), 'scope': 'saved Native source diagnosis only'}
+    output.write_text(json.dumps(report, indent=2, allow_nan=False) + '\n')
+    with (root / 'result.json').open('x') as stream:
+        json.dump(result, stream, indent=2, allow_nan=False)
+        stream.write('\n')
+    return report
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--attempt', type=Path, required=True)
+    parser.add_argument('--output', type=Path, required=True)
+    args = parser.parse_args()
+    print(json.dumps(finalize_attempt(args.attempt, args.output)))
