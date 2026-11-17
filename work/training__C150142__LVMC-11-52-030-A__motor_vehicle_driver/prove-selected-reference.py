@@ -43,7 +43,11 @@ def main():
                                             'armored_car_signed_business',
                                             'armored_car_signed_no_business',
                                             'armored_car_unsigned_business',
-                                            'armored_car_unsigned_no_business'),
+                                            'armored_car_unsigned_no_business',
+                                            'emergency_vehicle_signed_business',
+                                            'emergency_vehicle_signed_no_business',
+                                            'emergency_vehicle_unsigned_business',
+                                            'emergency_vehicle_unsigned_no_business'),
                         default='reference')
     parser.add_argument('--candidates', nargs='+',
                         choices=('primary', 'fallback1', 'fallback2', 'fallback3'),
