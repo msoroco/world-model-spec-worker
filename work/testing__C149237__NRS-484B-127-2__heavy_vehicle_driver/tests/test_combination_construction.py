@@ -1,7 +1,10 @@
 """Synthetic CPU checks for the unselected combination construction draft."""
 
 import importlib.util
+import copy
+import json
 from pathlib import Path
+import tempfile
 import unittest
 
 
@@ -9,6 +12,9 @@ SOURCE = Path(__file__).resolve().parents[1] / "combination_construction.py"
 SPEC = importlib.util.spec_from_file_location("combination_construction", SOURCE)
 combination = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(combination)
+MEASURE_SPEC = importlib.util.spec_from_file_location("truck_measurements", SOURCE.with_name("truck_measurements.py"))
+measurements = importlib.util.module_from_spec(MEASURE_SPEC)
+MEASURE_SPEC.loader.exec_module(measurements)
 
 
 class Point:
@@ -60,6 +66,8 @@ class World:
         x = transform["x"] + (attach_to.x if attach_to else 0)
         y = transform["y"] + (attach_to.y if attach_to else 0)
         actor = Actor(x, y, transform["width"], transform["length"], attach_to)
+        actor.id = len(self.actors) + 1
+        actor.type_id = blueprint
         self.actors.append(actor)
         return actor
 
@@ -124,6 +132,81 @@ class CombinationConstructionTests(unittest.TestCase):
                 lane_forward_xy=[1, 0]):
                 pass
         self.assertTrue(all(actor.destroyed for actor in world.actors))
+
+    def test_selected_gap_uses_combined_body_extents_and_rejects_drift(self):
+        blueprints, transforms = inputs()
+        transforms["lead"]["tractor"]["x"] = 268.4
+        world = World()
+        with combination.spawn_combination_pair(
+            world, blueprints, transforms, "Rigid", road_id=4, lane_id=-1,
+            lane_forward_xy=[1, 0], expected_body_gap_m=152.4,
+            gap_tolerance_m=0.01) as pair:
+            self.assertAlmostEqual(pair["initial_longitudinal_body_gap_m"], 152.4)
+            self.assertEqual(pair["expected_body_gap_m"], 152.4)
+        self.assertTrue(all(actor.destroyed for actor in world.actors))
+        drifted = World()
+        transforms["lead"]["tractor"]["x"] = 270
+        with self.assertRaisesRegex(ValueError, "differs from selected target"):
+            with combination.spawn_combination_pair(
+                drifted, blueprints, transforms, "Rigid", road_id=4, lane_id=-1,
+                lane_forward_xy=[1, 0], expected_body_gap_m=152.4,
+                gap_tolerance_m=0.01):
+                pass
+        self.assertTrue(all(actor.destroyed for actor in drifted.actors))
+
+    def test_trailer_outside_selected_lane_is_rejected(self):
+        world = World()
+        blueprints, transforms = inputs()
+        transforms["lead"]["trailer"]["y"] = 2
+        with self.assertRaisesRegex(ValueError, "outside selected lane"):
+            with combination.spawn_combination_pair(
+                world, blueprints, transforms, "Rigid", road_id=4, lane_id=-1,
+                lane_forward_xy=[1, 0], expected_body_gap_m=184):
+                pass
+        self.assertTrue(all(actor.destroyed for actor in world.actors))
+
+    def test_original_component_row_retains_both_bodies_and_rejects_lane_forgery(self):
+        world = World()
+        blueprints, transforms = inputs()
+        with combination.spawn_combination_pair(
+            world, blueprints, transforms, "Rigid", road_id=4, lane_id=-1,
+            lane_forward_xy=[1, 0], expected_body_gap_m=184) as pair:
+            waypoint = type("Waypoint", (), {"road_id": 4, "lane_id": -1})()
+            lanes = {role: {part: waypoint for part in ("tractor", "trailer")}
+                     for role in ("ego", "lead")}
+            row = combination.combination_source_row(
+                pair["actors"], lanes, [1, 0], 4, -1, 81, 4.05)
+            self.assertEqual((row["frame"], row["time_s"]), (81, 4.05))
+            self.assertEqual(len(row["ego"]["body_vertices_xy_m"]), 8)
+            self.assertEqual(row["ego"]["overall_width_m"], 2.2)
+            self.assertEqual(row["lead"]["components"]["trailer"]["actor_id"], 4)
+            self.assertFalse(row["lead"]["legal_vehicle_class_verified"])
+            audit = combination.audit_combination_source_row(row, [1, 0], 4, -1)
+            self.assertEqual(audit["longitudinal_body_gap_m"], 184)
+            forged = copy.deepcopy(row)
+            forged["ego"]["overall_width_m"] = 3.0
+            with self.assertRaisesRegex(ValueError, "width differs"):
+                combination.audit_combination_source_row(forged, [1, 0], 4, -1)
+            forged = copy.deepcopy(row)
+            forged["lead"]["components"].pop("trailer")
+            with self.assertRaisesRegex(ValueError, "Missing saved combination component"):
+                combination.audit_combination_source_row(forged, [1, 0], 4, -1)
+            with tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                (root / "truck_history.jsonl").write_text(json.dumps(row) + "\n")
+                (root / "video_frames.jsonl").write_text(json.dumps({
+                    "video_frame": 0, "carla_frame": 81, "time_s": 4.05}) + "\n")
+                (root / "road_context.json").write_text(json.dumps({
+                    "native_map_id": "diagnostic", "road_id": 4, "lane_id": -1,
+                    "same_direction_lane_count": 1, "lane_forward_xy": [1, 0],
+                    "lane_count_source": "fake Native lane"}))
+                report = measurements.analyze(root)
+                self.assertEqual(report["samples"][0]["longitudinal_body_gap_m"], 184)
+                self.assertTrue(report["samples"][0]["ego"]["is_truck_or_combination"])
+            lanes["lead"]["trailer"] = type("Waypoint", (), {"road_id": 4, "lane_id": -2})()
+            with self.assertRaisesRegex(ValueError, "lane mismatch"):
+                combination.combination_source_row(
+                    pair["actors"], lanes, [1, 0], 4, -1, 82, 4.1)
 
 
 if __name__ == "__main__":

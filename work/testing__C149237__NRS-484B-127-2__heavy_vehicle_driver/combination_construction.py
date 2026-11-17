@@ -56,10 +56,96 @@ def combination_envelope(tractor, trailer, lane_forward_xy, *, max_hitch_gap_m=5
             "classification": "unverified_native_components"}
 
 
+def combination_source_row(groups, waypoints, lane_forward_xy, road_id, lane_id,
+                           frame, time_s):
+    """Retain each original component body and its combined projected width.
+
+    Called after a Native tick. The row has the same ego/lead shape as the
+    single-truck history, while retaining component identities for source audit.
+    A positive geometry observation does not settle legal vehicle class.
+    """
+    tangent = _unit_tangent(lane_forward_xy)
+    if type(frame) is not int or frame < 0 or not math.isfinite(time_s):
+        raise ValueError("Valid original combination frame and time required")
+    row = {"frame": frame, "time_s": float(time_s)}
+    for role in ("ego", "lead"):
+        actors = groups.get(role, {})
+        lanes = waypoints.get(role, {})
+        if set(actors) != {"tractor", "trailer"} or set(lanes) != {"tractor", "trailer"}:
+            raise ValueError("Missing original combination component: " + role)
+        vertices = []
+        components = {}
+        for part in ("tractor", "trailer"):
+            actor, lane = actors[part], lanes[part]
+            if lane is None or (lane.road_id, lane.lane_id) != (road_id, lane_id):
+                raise ValueError("Original combination component lane mismatch: " + role)
+            body = actor.bounding_box.get_world_vertices(actor.get_transform())
+            if len(body) < 4:
+                raise ValueError("Missing original combination body: " + role)
+            points = []
+            for vertex in body:
+                point = [float(vertex.x), float(vertex.y)]
+                if not all(map(math.isfinite, point)):
+                    raise ValueError("Nonfinite original combination body")
+                points.append(point)
+            vertices.extend(points)
+            components[part] = {"actor_id": actor.id, "blueprint_id": actor.type_id,
+                                "road_id": lane.road_id, "lane_id": lane.lane_id,
+                                "body_vertices_xy_m": points}
+        envelope = combination_envelope(actors["tractor"], actors["trailer"], tangent)
+        row[role] = {"road_id": road_id, "lane_id": lane_id,
+                     "overall_width_m": envelope["overall_width_m"],
+                     "overall_width_source": "original Native tractor and trailer body vertices",
+                     "body_vertices_xy_m": vertices, "components": components,
+                     "is_truck_or_combination": True,
+                     "legal_vehicle_class_verified": False,
+                     "native_attachment_verified": False}
+    return row
+
+
+def audit_combination_source_row(row, lane_forward_xy, road_id, lane_id):
+    """Independently recompute combination width and gap from retained bodies."""
+    tx, ty = _unit_tangent(lane_forward_xy)
+    spans = {}
+    for role in ("ego", "lead"):
+        group = row.get(role, {})
+        parts = group.get("components", {})
+        if set(parts) != {"tractor", "trailer"}:
+            raise ValueError("Missing saved combination component: " + role)
+        merged = []
+        for part in ("tractor", "trailer"):
+            component = parts[part]
+            if (component.get("road_id"), component.get("lane_id")) != (road_id, lane_id):
+                raise ValueError("Saved combination component lane mismatch: " + role)
+            points = component.get("body_vertices_xy_m")
+            if not isinstance(points, list) or len(points) < 4:
+                raise ValueError("Missing saved combination body: " + role)
+            for point in points:
+                if not isinstance(point, list) or len(point) != 2 or not all(
+                    isinstance(v, (int, float)) and math.isfinite(v) for v in point
+                ):
+                    raise ValueError("Invalid saved combination vertex")
+            merged.extend(points)
+        if group.get("body_vertices_xy_m") != merged:
+            raise ValueError("Combined body differs from saved components: " + role)
+        along = [x * tx + y * ty for x, y in merged]
+        lateral = [-x * ty + y * tx for x, y in merged]
+        width = max(lateral) - min(lateral)
+        if not math.isclose(group.get("overall_width_m", float("nan")), width,
+                            rel_tol=0, abs_tol=1e-6):
+            raise ValueError("Combined width differs from saved components: " + role)
+        spans[role] = {"rear_m": min(along), "front_m": max(along),
+                       "overall_width_m": width}
+    gap = spans["lead"]["rear_m"] - spans["ego"]["front_m"]
+    return {"longitudinal_body_gap_m": gap, "participants": spans,
+            "legal_vehicle_class_verified": False}
+
+
 @contextmanager
 def spawn_combination_pair(world, blueprints, transforms, attachment_type,
                            *, road_id, lane_id, lane_forward_xy,
-                           min_width_m=MIN_WIDTH_M):
+                           min_width_m=MIN_WIDTH_M, expected_body_gap_m=None,
+                           gap_tolerance_m=0.5):
     """Spawn two tractor/trailer groups and check the original body gap.
 
     ``blueprints`` and ``transforms`` each map ego/lead to tractor/trailer.
@@ -69,6 +155,11 @@ def spawn_combination_pair(world, blueprints, transforms, attachment_type,
     tangent = _unit_tangent(lane_forward_xy)
     if not math.isfinite(min_width_m) or min_width_m <= 0:
         raise ValueError("Valid width boundary required")
+    if expected_body_gap_m is not None:
+        if not math.isfinite(expected_body_gap_m) or expected_body_gap_m < 0:
+            raise ValueError("Valid expected body gap required")
+        if not math.isfinite(gap_tolerance_m) or gap_tolerance_m < 0:
+            raise ValueError("Valid body gap tolerance required")
     if not blueprints or not transforms or attachment_type is None:
         raise ValueError("Reviewed combination components and attachment required")
     owned, groups = [], {}
@@ -100,8 +191,11 @@ def spawn_combination_pair(world, blueprints, transforms, attachment_type,
         gap = envelopes["lead"]["rear_m"] - envelopes["ego"]["front_m"]
         if gap < 0:
             raise ValueError("Combination bodies overlap or order is reversed")
+        if expected_body_gap_m is not None and abs(gap - expected_body_gap_m) > gap_tolerance_m:
+            raise ValueError("Native combination body gap differs from selected target")
         yield {"actors": groups, "envelopes": envelopes,
                "initial_longitudinal_body_gap_m": gap,
+               "expected_body_gap_m": expected_body_gap_m,
                "native_attachment_verified": False,
                "legal_vehicle_class_verified": False,
                "physical_motion": "unverified"}
