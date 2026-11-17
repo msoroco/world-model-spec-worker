@@ -5715,3 +5715,15 @@ Implemented `native/comparison_audit.py` with exact comparison ID/case membershi
 Next: bind the checker to independently extracted source facts from selected original Native results after the law/evidence selection review and canonical manifest/proof rebinding; implement the independent delivery acceptance audit and its negative CPU proofs. Status remains partial.
 
 Update045 gate: `.venv-cpu/bin/python worker_check.py --assignment training__C150142__LVMC-11-52-030-A__motor_vehicle_driver --complete` exited 0 (`update045-scoped-complete.log`); the same command with `--require-delivery-ready` exited 1 (`update045-scoped-strict.log`) at `Preparation acceptance failed: partial/missing packages remain`, consistent with the truthful partial status. Current `.venv-cpu/bin/python runtime.py preflight` passed.
+
+
+### C150142 Update046
+
+
+## Update046: proposed original-Native delivery audit for reference/contrast
+
+Implemented `native/delivery_audit.py` for the red-curb reference and contrast pair. It independently checks case/candidate/result/capture identity, original Native provenance, contiguous 20 Hz actor/frame/trace joins, retained ego body/velocity, Native red-paint readback, observed stationary red occupancy for reference versus observed stationary non-red occupancy for contrast, source-hashed four-view composition, original review source hashes and pixel-box claims, complete primary-video decode and converted trace times. On successful original evidence it writes `worker-delivery-audit` with source decode receipt bindings; no legal verdict. The full path rejects synthetic `result.provenance_kind`. This is an operations installation proposal under work/, not an accepted original recording.
+
+`native/prove_delivery_audit.py` exercised source checkers against both current 240-frame merged-manifest diagnostic saved attempts. It rejected bad frame/time joins, mixed provenance, wrong paint/case, stale composition/review hashes, missing/reused/flat pixel boxes, and synthetic full delivery. Command `.venv-cpu/bin/python work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/native/prove_delivery_audit.py > work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/update046-delivery-audit.log` passed; log SHA256 `3258c8cfa09b1cdcc5abe3b8f83953f02be733509e32c5d8a2068417ea509785`. `.venv-cpu/bin/python runtime.py preflight` passed (`update046-preflight.log`). The other 28 exact cases still need independent delivery audit implementation/proofs, and none has original Native evidence or selected canonical bindings.
+
+Update046 scoped gate: `worker_check.py --assignment training__C150142__LVMC-11-52-030-A__motor_vehicle_driver --complete` exited 0 (`update046-scoped-complete.log`); adding `--require-delivery-ready` exited 1 (`update046-scoped-strict.log`) with `Preparation acceptance failed: partial/missing packages remain`. This is expected for the truthful partial result, not a missing dependency or external blocker.
