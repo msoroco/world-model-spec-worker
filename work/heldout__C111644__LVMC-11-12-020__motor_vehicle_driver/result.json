@@ -27,7 +27,7 @@
       "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/provisional-manifest.json --case heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__course_2m__marker_depart --output .runtime-work/c111644-course-2m-compat-20261116-v3 --library runtime/library --validator .runtime-work/c111305-validator/.lake/build/bin/adapterCheck",
       "exit_code": 0,
       "log": "course-2m-marker-depart-compatibility.json",
-      "sha256": "b4e73617282cf611a9e41980c43922cdcfecdff3eb79593fd1920c43e7805194"
+      "sha256": "a9e94aa2309a2128c0e2171996c9bddcde0f40ebec43465a633f89167793948d"
     },
     {
       "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/provisional-manifest.json --case heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__course_2m__marker_depart --attempt .runtime-work/c111644-course-2m-saved-attempt-20261116-v2 --output .runtime-work/c111644-course-2m-saved-output-20261116-v2 --library runtime/library --validator .runtime-work/c111305-validator/.lake/build/bin/adapterCheck",
@@ -39,13 +39,13 @@
       "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/comparison_delivery_audit.py --comparison course_deviation_2m_4m --attempt .runtime-work/c111644-course-2m-saved-attempt-20261116-v2 --attempt .runtime-work/c111644-marker-depart-sourcefix-attempt-20261116 --output .runtime-work/c111644-course-2m-comparison-positive.json",
       "exit_code": 0,
       "log": "comparison-delivery-audits.json",
-      "sha256": "76744e74ddb1330502f08075eddea9b5fbda7b409b6b30fd8e4f1bb379da30c2"
+      "sha256": "3bc4861c65bbc6d562e87b49b3586fc7c68edc14a9f24f02887277fb1cb62e83"
     }
   ],
   "remaining_gpu_checks": [
     "Actual motion, geometry, camera visibility and capture quality after CPU preparation"
   ],
-  "reason": "Canonical 2/4/6 m course and 0/0.75/1.5 m placement sweeps now pass semantic coverage. Ready-only validation found stale top-level supported_case_ids; updated config/construction requires exact marker-follow primary reproof, manifest and queue hash rebinding, then ready-only scoped check. Other seven partial assignments remain worker-owned CPU work.",
+  "reason": "Ten exact cases, three distinct fallbacks each, existing offline/compatibility/saved and independent audit receipts, canonical 2/4/6 m course and 0/0.75/1.5 m placement sweep plans, semantic delivery, and ready-only static package check all pass. A deeper source-output check found that the current saved finalizer does not emit realized_course_deviation_m or realized_indication_placement_offset_m; existing realized_observables are sample counts for other channels. Implement source-bound scalar sweep summaries and recording evidence, enforce them with per-case sweep_measurements, then rerun affected finalizer, exact compatibility, saved processing, fallback and comparison proofs and the scoped/full gates before returning ready. Seven other assignments remain partial. This is worker-owned CPU implementation, not an external blocker.",
   "preserved_source_artifacts": [
     {
       "format": "base64-zlib-tar-v1",

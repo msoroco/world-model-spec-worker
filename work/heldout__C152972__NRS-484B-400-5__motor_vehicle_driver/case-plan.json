@@ -11,7 +11,7 @@
       "gap_ids": [
         "uncovered-full-text"
       ],
-      "construction_status": "original_footprint_measurement_cpu_tested_exact_construction_pending",
+      "construction_status": "original_footprint_route_targets_and_four_camera_source_finalizer_cpu_tested_native_bundle_pending",
       "physical_risk": {
         "risk": "Native body path may not keep left-curb proximity independently on source and destination roads",
         "trigger_source": "original map curb lines and ground body footprints",
@@ -26,7 +26,7 @@
       "gap_ids": [
         "uncovered-full-text"
       ],
-      "construction_status": "original_footprint_measurement_cpu_tested_exact_construction_pending",
+      "construction_status": "original_footprint_route_targets_and_four_camera_source_finalizer_cpu_tested_native_bundle_pending",
       "physical_risk": {
         "risk": "Native body path may not keep left-curb proximity independently on source and destination roads",
         "trigger_source": "original map curb lines and ground body footprints",
@@ -41,7 +41,7 @@
       "gap_ids": [
         "uncovered-full-text"
       ],
-      "construction_status": "original_footprint_measurement_cpu_tested_exact_construction_pending",
+      "construction_status": "original_footprint_route_targets_and_four_camera_source_finalizer_cpu_tested_native_bundle_pending",
       "physical_risk": {
         "risk": "Native body path may not keep left-curb proximity independently on source and destination roads",
         "trigger_source": "original map curb lines and ground body footprints",
@@ -83,31 +83,45 @@
   "observations": [
     {
       "term": "drv.turning",
-      "note": "the left turn"
+      "note": "the left turn",
+      "name": "original_turn_phase",
+      "mandatory": true
     },
     {
       "term": "st.one_way_roadway",
-      "note": "both highways are one-way"
+      "note": "both highways are one-way",
+      "name": "original_one_way_context",
+      "mandatory": true
     },
     {
       "term": "st.road_edge",
-      "note": "the left-hand curb or edge of each"
+      "note": "the left-hand curb or edge of each",
+      "name": "original_left_curb_geometry",
+      "mandatory": true
     },
     {
       "term": "rel.occupies",
-      "note": "the position on approach and on exit"
+      "note": "the position on approach and on exit",
+      "name": "approach_left_curb_nearest_m",
+      "mandatory": true
     },
     {
       "term": "kin.position",
-      "note": "the lateral offset from the left edge"
+      "note": "the lateral offset from the left edge",
+      "name": "approach_left_curb_nearest_m",
+      "mandatory": true
     },
     {
       "term": "st.intersection",
-      "note": "the intersection"
+      "note": "the intersection",
+      "name": "original_turn_phase",
+      "mandatory": true
     },
     {
       "term": "st.lane_enters",
-      "note": "the approach lane enters the intersection turned at"
+      "note": "the approach lane enters the intersection turned at",
+      "name": "original_one_way_context",
+      "mandatory": true
     }
   ],
   "sources": [
@@ -122,7 +136,7 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Both original-footprint curb measurements and independent comparison audit are CPU-tested. Native construction, capture, exact compatibility, saved processing and delivery audit remain CPU work. Practicability remains an independent legal/source question."
+    "Original-footprint curb measurements, independent comparison audit, separate source-bound approach/departure route targets, and a four-camera original-source join/finalizer are CPU-tested. Native runner/capture, full Native result and measurement-contract integration, fallbacks, exact compatibility, saved processing and delivery audits remain CPU work. Practicability remains an independent legal/source question."
   ],
   "evidence_review": {
     "reviewer": "worker-partition-03",
@@ -143,19 +157,143 @@
   "full_text_branch_inventory": [
     {
       "branch": "Both intersecting highways one-way and intended left turn at intersection.",
-      "status": "planning_pending_exact_cases"
+      "status": "selected_exact_cases_with_original_geometry_and_route_targets_cpu_tested_native_package_pending"
     },
     {
       "branch": "Compare approach body position close to left curb or edge while holding departure.",
-      "status": "planning_pending_exact_cases"
+      "status": "selected_exact_cases_with_original_geometry_and_route_targets_cpu_tested_native_package_pending"
     },
     {
       "branch": "Compare left-turn path body position close to left curb or edge while holding approach.",
-      "status": "planning_pending_exact_cases"
+      "status": "selected_exact_cases_with_original_geometry_and_route_targets_cpu_tested_native_package_pending"
     },
     {
       "branch": "No numeric legal cutoff for \u201cas close as practicable.\u201d",
-      "status": "planning_pending_exact_cases"
+      "status": "selected_exact_cases_with_original_geometry_and_route_targets_cpu_tested_native_package_pending"
     }
-  ]
+  ],
+  "selected_branch": "One-way-to-one-way left turn with curb control.",
+  "requirement_dispositions": [
+    {
+      "requirement": "NRS-484B-400-5 approach as close as practicable to source left-hand curb or edge",
+      "source": {
+        "path": "inputs/heldout__C152972__NRS-484B-400-5__motor_vehicle_driver/assignment.json",
+        "sha256": "6e66e978eb55e541282615b1acb3ef81f5c27f0f345e49b79a4173f6126679a6"
+      },
+      "status": "selected_required",
+      "evidence_or_gap": "No accepted recording; near/near versus far-approach/near-departure exact cases independently vary source curb body distance; legal practicability unresolved.",
+      "case_ids": [
+        "heldout__C152972__NRS-484B-400-5__motor_vehicle_driver__approach_near_depart_near",
+        "heldout__C152972__NRS-484B-400-5__motor_vehicle_driver__approach_far_depart_near"
+      ]
+    },
+    {
+      "requirement": "NRS-484B-400-5 left turn as close as practicable to destination left-hand curb or edge",
+      "source": {
+        "path": "inputs/heldout__C152972__NRS-484B-400-5__motor_vehicle_driver/assignment.json",
+        "sha256": "6e66e978eb55e541282615b1acb3ef81f5c27f0f345e49b79a4173f6126679a6"
+      },
+      "status": "selected_required",
+      "evidence_or_gap": "No accepted recording; near/near versus near-approach/far-departure exact cases independently vary destination curb body distance; legal practicability unresolved.",
+      "case_ids": [
+        "heldout__C152972__NRS-484B-400-5__motor_vehicle_driver__approach_near_depart_near",
+        "heldout__C152972__NRS-484B-400-5__motor_vehicle_driver__approach_near_depart_far"
+      ]
+    }
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 8,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "subject": "subject vehicle, one-way source/destination road edges, complete intersection",
+        "interval": "entire 8 s left-turn attempt",
+        "view": "overview"
+      },
+      {
+        "subject": "original approach body footprint and source left curb",
+        "interval": "approach through turn entry",
+        "view": "approach"
+      },
+      {
+        "subject": "destination left curb and original turn/departure body footprint",
+        "interval": "turn entry through exit",
+        "view": "reference_corner"
+      },
+      {
+        "subject": "subject driver reference and forward left-turn path",
+        "interval": "entire 8 s left-turn attempt",
+        "view": "driver_reference"
+      }
+    ]
+  },
+  "source_observation_mapping": {
+    "drv.turning": {
+      "evidence": "Planned SHA-bound original map curb, body footprint, phase and four-camera join; realization and legal practicability remain unverified",
+      "channels": [
+        "original_turn_phase"
+      ],
+      "source_refs": [
+        "inputs/heldout__C152972__NRS-484B-400-5__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.one_way_roadway": {
+      "evidence": "Planned SHA-bound original map curb, body footprint, phase and four-camera join; realization and legal practicability remain unverified",
+      "channels": [
+        "original_one_way_context"
+      ],
+      "source_refs": [
+        "inputs/heldout__C152972__NRS-484B-400-5__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.road_edge": {
+      "evidence": "Planned SHA-bound original map curb, body footprint, phase and four-camera join; realization and legal practicability remain unverified",
+      "channels": [
+        "original_left_curb_geometry"
+      ],
+      "source_refs": [
+        "inputs/heldout__C152972__NRS-484B-400-5__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Planned SHA-bound original map curb, body footprint, phase and four-camera join; realization and legal practicability remain unverified",
+      "channels": [
+        "approach_left_curb_nearest_m",
+        "departure_left_curb_nearest_m"
+      ],
+      "source_refs": [
+        "inputs/heldout__C152972__NRS-484B-400-5__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "kin.position": {
+      "evidence": "Planned SHA-bound original map curb, body footprint, phase and four-camera join; realization and legal practicability remain unverified",
+      "channels": [
+        "approach_left_curb_nearest_m",
+        "departure_left_curb_nearest_m"
+      ],
+      "source_refs": [
+        "inputs/heldout__C152972__NRS-484B-400-5__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.intersection": {
+      "evidence": "Planned SHA-bound original map curb, body footprint, phase and four-camera join; realization and legal practicability remain unverified",
+      "channels": [
+        "original_turn_phase"
+      ],
+      "source_refs": [
+        "inputs/heldout__C152972__NRS-484B-400-5__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.lane_enters": {
+      "evidence": "Planned SHA-bound original map curb, body footprint, phase and four-camera join; realization and legal practicability remain unverified",
+      "channels": [
+        "original_one_way_context",
+        "original_turn_phase"
+      ],
+      "source_refs": [
+        "inputs/heldout__C152972__NRS-484B-400-5__motor_vehicle_driver/assignment.json"
+      ]
+    }
+  }
 }
