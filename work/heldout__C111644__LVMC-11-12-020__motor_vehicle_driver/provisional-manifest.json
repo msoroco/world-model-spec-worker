@@ -1676,6 +1676,118 @@
         "negative_log": "placement-075m-marker-follow-delivery.log",
         "negative_log_sha256": "f55cca4906854d479ed962544ad5274067103917033ec5df2badb01ecd5e3b7f"
       }
+    },
+    {
+      "case_id": "heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__placement_15m__marker_follow",
+      "kind": "delivery",
+      "construction": "placement-15m-marker-follow-construction.json",
+      "construction_sha256": "dedca4b2b6be258bddb6a0c3bfba49f0ad70de61da6e9e4844537eda6626c0f8",
+      "measurement_procedure": {
+        "entrypoint": "turn_marking.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native shifted marker spawn/readback and four original camera visibility require physical verification"
+      },
+      "measurement_contract": "placement-15m-marker-follow-measurement-contract.json",
+      "fixture_recipe": "work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/placement-15m-marker-follow-recipe.json",
+      "acquisition": {
+        "original_course_deviation_m": {
+          "entrypoint": "turn_marking.py",
+          "method": "source-joined original body/trace/frame and four source-camera derivation",
+          "evidence": "analyze_original_sources verifies SHA-256-bound originals before emitting original_course_deviation_m"
+        },
+        "original_turn_path_length_m": {
+          "entrypoint": "turn_marking.py",
+          "method": "source-joined original body/trace/frame and four source-camera derivation",
+          "evidence": "analyze_original_sources verifies SHA-256-bound originals before emitting original_turn_path_length_m"
+        },
+        "intersection_occupancy": {
+          "entrypoint": "turn_marking.py",
+          "method": "source-joined original body/trace/frame and four source-camera derivation",
+          "evidence": "analyze_original_sources verifies SHA-256-bound originals before emitting intersection_occupancy"
+        },
+        "turn_course_source_context": {
+          "entrypoint": "turn_marking.py",
+          "method": "source-joined original body/trace/frame and four source-camera derivation",
+          "evidence": "analyze_original_sources verifies SHA-256-bound originals before emitting turn_course_source_context"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "indication_source_env_var": "TURN_INDICATION_SOURCE",
+        "indication_sha256_env_var": "TURN_INDICATION_SHA256"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "placement-15m-marker-follow-fallback1-construction.json",
+          "construction_sha256": "33359fa9ad769070c01f2572cd2c1f89fcdd03c64d2b96991b1f186a8ef70503",
+          "changed_knobs": [
+            "Native subject spawn vertical offset 0.50 m -> 0.65 m"
+          ],
+          "trigger": {
+            "source": "Native subject spawn/readback and original body source",
+            "metric": "subject actor creation and initial ground-body clearance",
+            "failure_condition": "Primary subject spawn fails or overlaps the mapped road surface"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "placement-15m-marker-follow-fallback2-construction.json",
+          "construction_sha256": "fe23452dcfad4ab3f44ea238b8f2207f14b024b483bb47ca883eefb8ea32ebd3",
+          "changed_knobs": [
+            "Native route waypoint arrival radius 2.0 m -> 2.8 m"
+          ],
+          "trigger": {
+            "source": "original 20 Hz subject body and target route plan",
+            "metric": "progress to final source-route waypoint",
+            "failure_condition": "Primary turn controller stalls before the indicated exit waypoint"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "placement-15m-marker-follow-fallback3-construction.json",
+          "construction_sha256": "d5ff7b02062c354d40faed54f5b84048f3fc2acff814a24981420807c48bc071",
+          "changed_knobs": [
+            "original camera synchronization wait 10 s -> 15 s"
+          ],
+          "trigger": {
+            "source": "four original camera frame streams and callback frame identities",
+            "metric": "synchronized source frame arrival latency",
+            "failure_condition": "Primary 10 s source-frame wait expires despite all camera callbacks arriving intact"
+          }
+        }
+      ],
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/provisional-manifest.json --case heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__placement_15m__marker_follow --output .runtime-work/c111644-placement-15m-primary-offline-v3-20261116 --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "log": "placement-15m-marker-follow-offline.log",
+        "log_sha256": "f85c30d048a7c344544705df72a41965477c992ef71270898999fe24d8dce22d",
+        "construction_sha256": "dedca4b2b6be258bddb6a0c3bfba49f0ad70de61da6e9e4844537eda6626c0f8"
+      },
+      "compatibility": {
+        "receipt": "placement-15m-marker-follow-compatibility.json",
+        "sha256": "2a3a80f2227054deee585c33ec132306d9ffb33cdcf1b37f0fff1b654f90ba8f",
+        "log": "marker-follow-analysis.log",
+        "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "negative_log": "placement-15m-marker-follow-negative.log",
+        "negative_log_sha256": "1eff1018dc3e7e3e2ba0061affe9c7d4313bfbe7b71cbb7c039265147c54af75"
+      },
+      "negative": {
+        "log": "placement-15m-marker-follow-negative.log",
+        "log_sha256": "1eff1018dc3e7e3e2ba0061affe9c7d4313bfbe7b71cbb7c039265147c54af75"
+      },
+      "saved_processing": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/provisional-manifest.json --case heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__placement_15m__marker_follow --attempt .runtime-work/c111644-placement-15m-primary-offline-v3-20261116 --output .runtime-work/c111644-placement-15m-primary-saved-v5-20261116 --library runtime/library --validator .runtime-work/c111305-validator/.lake/build/bin/adapterCheck",
+        "exit_code": 0,
+        "log": "placement-15m-marker-follow-saved-processing.json",
+        "log_sha256": "070a15889e54a62926ba2551d239fcd629df1de687573d6e8db19a91cbe205b5",
+        "receipt": "placement-15m-marker-follow-saved-processing.json",
+        "receipt_sha256": "070a15889e54a62926ba2551d239fcd629df1de687573d6e8db19a91cbe205b5"
+      }
     }
   ]
 }
