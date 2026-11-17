@@ -9,20 +9,20 @@
       "command": ".venv-cpu/bin/python -m unittest discover -s work/heldout__C179789__NRS-484B-207-2__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "a3c20cbd4bf10c4eaaa383a0906e44ba6c611499e39e28ba759f7a11973e7147"
+      "sha256": "9b199b121ec7ec5205b6fbeaa688f31704ca4be6051851c6c649c9caee7c3436"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C179789__NRS-484B-207-2__motor_vehicle_driver/execution-manifest.json --case heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__gives_way_holds_speed --output .runtime-work/c179789-audible-offline-20261117d --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C179789__NRS-484B-207-2__motor_vehicle_driver/execution-manifest.json --case heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__gives_way_holds_speed --output .runtime-work/c179789-audible-offline-20261117e --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
       "exit_code": 0,
       "log": "primary-offline.log",
-      "sha256": "da32e2434ab5fd9a282d28c008edfc8159025ef6632ab9a2b35c047b6c4df7bc",
-      "exact_log_sha256": "efbb8956ab708762706b73115389ded4c72525d106e5fe1f433e3224e440abfc"
+      "sha256": "d6346c529edd10ceb08fab25d9dd103184ee6bde5701bc54854d7ccd2bb32d79",
+      "exact_log_sha256": "f41f027eb8de778295ce32988da832be6619310d72b84bd0c842ca544e1496d2"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C179789__NRS-484B-207-2__motor_vehicle_driver/execution-manifest.json --case heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__observed_gives_way_holds_speed --output .runtime-work/c179789-observed-offline-20261117d --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C179789__NRS-484B-207-2__motor_vehicle_driver/execution-manifest.json --case heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__observed_gives_way_holds_speed --output .runtime-work/c179789-observed-offline-20261117e --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
       "exit_code": 0,
       "log": "primary-offline.log",
-      "sha256": "da32e2434ab5fd9a282d28c008edfc8159025ef6632ab9a2b35c047b6c4df7bc",
+      "sha256": "d6346c529edd10ceb08fab25d9dd103184ee6bde5701bc54854d7ccd2bb32d79",
       "exact_log_sha256": "cfef1f5b80e1a9d170c891dfa640d34de72aef8260a01aa35e5372c31253b436"
     },
     {
@@ -42,12 +42,30 @@
       "exit_code": 0,
       "log": "observed-primary-delivery-audit.json",
       "sha256": "e12c4c28468f071fa477ce82c34c43a1ce56928d62500540b6b97dc912be376a"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C179789__NRS-484B-207-2__motor_vehicle_driver/execution-manifest.json --case heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__gives_way_holds_speed --output .runtime-work/c179789-audible-compatibility-20261117b --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "audible-primary-compatibility.json",
+      "sha256": "228766cc317729f0015034c9c8c20fe00b7ad5dfe02b3b31ba1de1a34e303eb9"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C179789__NRS-484B-207-2__motor_vehicle_driver/audible-provisional-manifest.json --case heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__gives_way_holds_speed --attempt .runtime-work/c179789-audible-saved-attempt-20261117b --output .runtime-work/c179789-audible-saved-output-20261117b --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "audible-primary-saved-processing.json",
+      "sha256": "9a7964430ae3b2b714084fcb8db257e84e8f74750101d39d7401c34763de635c"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/heldout__C179789__NRS-484B-207-2__motor_vehicle_driver/overtaken_comparison_audit.py --audible-receipt work/heldout__C179789__NRS-484B-207-2__motor_vehicle_driver/audible-primary-saved-processing.json --observed-receipt work/heldout__C179789__NRS-484B-207-2__motor_vehicle_driver/observed-primary-saved-processing.json",
+      "exit_code": 0,
+      "log": "saved-notice-comparison-audit.json",
+      "sha256": "b20080f647476950b88bf38c4de41e9e8c5e5c26cd75be4def87ad2c4f4579d0"
     }
   ],
   "remaining_gpu_checks": [
     "Actual motion, geometry, camera visibility and capture quality after CPU preparation"
   ],
-  "reason": "CPU preparation remains partial. The observed_gives_way_holds_speed primary passes current exact offline, positive/missing-source compatibility, synthetic saved processing and independent saved-source delivery audit with missing-source and changed-measurement rejection. Nine original frames and four decoded source cameras were checked; physical, human-perception and legal acceptance remain unverified. The audible primary passes current exact offline and a nine-frame synthetic materialized finalizer run, producing a canonical source-joined Native result; hearing and acoustic propagation remain unverified. Its exact compatibility and process-saved proof remain. Three other primaries, three distinct fallbacks per selected case, canonical proposals and independent comparison/physical audits remain worker-owned CPU work.",
+  "reason": "CPU preparation remains partial. The audible and observed primary constructions pass exact offline tests, source-bound positive/missing-source compatibility and pinned synthetic process-saved checks. The observed saved path passes independent delivery audit. An independent saved notice-modality comparison holds original frame map, trace, actor body, road and response fixed while differing in signal command versus simulated visibility; missing signal and changed held body are rejected. These are diagnostic software proofs; acoustic propagation, human hearing, physical outcome and legal acceptance remain unverified. Three other primary cases, three distinct fallbacks per selected case, complete canonical proposals and independent physical audits remain worker-owned CPU work.",
   "preserved_source_artifacts": [
     {
       "format": "base64-zlib-tar-v1",

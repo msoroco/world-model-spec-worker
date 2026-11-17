@@ -4,6 +4,92 @@
   "actor": "motor_vehicle_driver",
   "cases": [
     {
+      "case_id": "heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__gives_way_holds_speed",
+      "target_law_id": "NRS-484B-207-2",
+      "target_type": "boundary_probe",
+      "rationale": "Exact audible-command branch with source-joined generated signal, body right shift and precompletion speed; acoustic propagation, human hearing, right-pass permission and physical outcome remain unresolved.",
+      "variable_assignments": {
+        "ego_right_shift_target_m": {
+          "kind": "controller",
+          "value": 1.0
+        },
+        "overtaker_speed_target_mps": {
+          "kind": "controller",
+          "value": 8.0
+        },
+        "actual_observation": {
+          "kind": "world_setup",
+          "value": null
+        },
+        "horn_command_requested": {
+          "kind": "controller",
+          "value": true
+        },
+        "full_body_pass_completion": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "ego_precompletion_speed_target_mps": {
+          "kind": "controller",
+          "value": 4.0
+        },
+        "ego_postcompletion_speed_target_mps": {
+          "kind": "controller",
+          "value": 4.0
+        },
+        "right_pass_survey_basis": {
+          "kind": "world_setup",
+          "value": null
+        },
+        "right_pass_permission": {
+          "kind": "world_setup",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "give way to the right",
+        "upon observing the overtaking vehicle",
+        "hearing a signal",
+        "completely passed by the overtaking vehicle",
+        "overtaking and passing on the right is permitted"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "subject_right_offset_m",
+            "unit": "m",
+            "method": "original actor pose against Native road tangent",
+            "sampling_rate_hz": 20,
+            "time_window": "notice through pass completion",
+            "reference_frame": "road tangent",
+            "uncertainty": "Native pose and waypoint precision"
+          },
+          {
+            "name": "subject_speed_mps",
+            "unit": "m/s",
+            "method": "original actor velocity",
+            "sampling_rate_hz": 20,
+            "time_window": "entire capture",
+            "reference_frame": "world",
+            "uncertainty": "Native actor velocity precision"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Scripted notice is a construction stimulus; audible/visual notice and right-pass permission are unverified by this prototype. No legal outcome is inferred."
+        ]
+      },
+      "paired_probe_id": "C179789_gives_way_holds_speed",
+      "deliberate_differences": [
+        "horn_command_requested"
+      ],
+      "probe": {
+        "primary_variable": "horn_command_requested",
+        "comparison_or_standard": "Matched source-bound notice-modality case in case-plan.json; hearing remains unverified",
+        "target_value_or_branch": true
+      }
+    },
+    {
       "case_id": "heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__observed_gives_way_holds_speed",
       "target_law_id": "NRS-484B-207-2",
       "target_type": "boundary_probe",
