@@ -3,6 +3,7 @@ import copy
 import unittest
 
 import business_activity
+from measure_exceptions import measure
 
 
 class FakeActor:
@@ -95,6 +96,11 @@ class BusinessActivityProof(unittest.TestCase):
         self.assertEqual(event['source_kind'], 'synthetic_native_sample')
         self.assertIn('necessity unverified', event['source'])
         self.assertGreater(event['end_time_s'] - event['start_time_s'], 1)
+        from prove_measure_exceptions import context, frames
+        observed = measure(frames(240), context('armored_car', sign=False), [event])
+        self.assertEqual(observed['recorded_activity_events'][0]['name'],
+                         'business_activity')
+        self.assertIsNone(observed['necessary_business_established'])
         with self.assertRaisesRegex(ValueError, 'approach'):
             business_activity.derive(*rows(visit=False), 20)
         altered = copy.deepcopy(worker)
