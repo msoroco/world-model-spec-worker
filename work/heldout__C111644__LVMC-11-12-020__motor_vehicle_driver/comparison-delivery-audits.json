@@ -2,11 +2,11 @@
   "format": "worker-turn-comparison-audit-matrix",
   "diagnostic_fixture": true,
   "script": "comparison_delivery_audit.py",
-  "script_sha256": "199417f288e4bf957045bcf55ac13a8387d725942a8b6755467cbbdfacb4d859",
+  "script_sha256": "a24a0b0f34e8d2ef28f854f188b4a563600a05b84c91b66a8cc976b0a0348d2b",
   "positive_log": "audit-cpu-combined.log",
-  "positive_log_sha256": "8b940d87011f1262d68104cf85c19a9196a8c1c9ec71ce7ce91418e0c188080e",
+  "positive_log_sha256": "eb5806ab6437e91a4b158a5b3756223a47d2fa040889396d7c455f91f8e91704",
   "negative_log": "audit-cpu-combined.log",
-  "negative_log_sha256": "8b940d87011f1262d68104cf85c19a9196a8c1c9ec71ce7ce91418e0c188080e",
+  "negative_log_sha256": "eb5806ab6437e91a4b158a5b3756223a47d2fa040889396d7c455f91f8e91704",
   "comparisons": [
     {
       "comparison_id": "marker_route_response",
@@ -105,6 +105,23 @@
       "proof_log": "placement-075m-marker-follow-comparison.log",
       "proof_log_sha256": "034bb96bdfe48c2e2333e15b457c1c6856be64cb0ff51d30f597ff30311e5dd4",
       "additional_negative_expected_error": "Placement comparison changed more than marker x position"
+    },
+    {
+      "comparison_id": "marker_placement_0m_075m_15m",
+      "case_ids": [
+        "heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__marker_follow",
+        "heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__placement_075m__marker_follow",
+        "heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__placement_15m__marker_follow"
+      ],
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/comparison_delivery_audit.py --comparison marker_placement_0m_075m_15m --attempt .runtime-work/c111644-marker-follow-saved-audit-v2-20261116 --attempt .runtime-work/c111644-placement-075m-offline-reproof-20261116 --attempt .runtime-work/c111644-placement-15m-primary-offline-v3-20261116 --output .runtime-work/c111644-placement-sweep-comparison-positive-20261116.json",
+      "exit_code": 0,
+      "result_sha256": "7c8b83f72800af6590306c3357b1f0bd5c21cd38433fe3d686d5150038ec9992",
+      "negative_command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/comparison_delivery_audit.py --comparison marker_placement_0m_075m_15m --attempt .runtime-work/c111644-marker-follow-saved-audit-v2-20261116 --attempt .runtime-work/c111644-placement-075m-offline-reproof-20261116 --attempt .runtime-work/c111644-placement-15m-delivery-negative-20261116",
+      "negative_exit_code": 1,
+      "negative_expected_error": "Missing or changed original placement source: turn_body_original.jsonl",
+      "additional_negative_expected_error": "Placement sweep changed more than marker x position",
+      "proof_log": "placement-15m-marker-follow-comparison.log",
+      "proof_log_sha256": "a737e3540151e7e4f5b1e70363a6ed14603693668d076114c52a99782d0247ca"
     }
   ],
   "physical_acceptance_claimed": false,

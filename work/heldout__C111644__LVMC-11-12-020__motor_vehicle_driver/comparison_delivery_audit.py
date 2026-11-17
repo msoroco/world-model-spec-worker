@@ -157,6 +157,52 @@ def audit_marker_placement(attempts):
             "physical_acceptance_claimed": False, "legal_acceptance_claimed": False}
 
 
+def audit_marker_placement_sweep(attempts):
+    if len(attempts) != 3:
+        raise ValueError("Placement sweep requires three attempts")
+    audit_marker_placement(attempts[:2])
+    base, middle, last = map(Path, attempts)
+    configs = [json.loads((path / "config.json").read_text()) for path in (base, middle, last)]
+    if not configs[2]["selected_case_id"].endswith("__placement_15m__marker_follow"):
+        raise ValueError("Placement sweep selected another final case")
+    receipts = [json.loads((path / "turn_source_receipt.json").read_text()) for path in (base, middle, last)]
+    for path, config, receipt in zip((base, middle, last), configs, receipts):
+        if receipt["case_id"] != config["selected_case_id"]:
+            raise ValueError("Placement source selected another case")
+        for name in ("turn_indication_original.json", "turn_route_plan.json", "turn_body_original.jsonl"):
+            source = path / name
+            if not source.is_file() or hashlib.sha256(source.read_bytes()).hexdigest() != receipt["source_sha256"].get(name):
+                raise ValueError("Missing or changed original placement source: " + name)
+    original = json.loads((base / "turn_indication_original.json").read_text())
+    derived = json.loads((last / "turn_indication_original.json").read_text())
+    route = json.loads((base / "turn_route_plan.json").read_text())
+    shifted_route = json.loads((last / "turn_route_plan.json").read_text())
+    for key in ("law_id", "cell_id", "actor", "rate_hz", "duration_s", "cameras"):
+        if configs[0][key] != configs[2][key]:
+            raise ValueError("Placement sweep changed fixed condition: " + key)
+    if route != shifted_route or receipts[0]["source_sha256"]["turn_route_plan.json"] != receipts[2]["source_sha256"]["turn_route_plan.json"]:
+        raise ValueError("Placement sweep changed fixed route")
+    if receipts[0]["source_sha256"]["turn_body_original.jsonl"] != receipts[2]["source_sha256"]["turn_body_original.jsonl"]:
+        raise ValueError("Placement sweep changed original body source")
+    parent_sha = receipts[0]["source_sha256"]["turn_indication_original.json"]
+    if (configs[2].get("indication_placement_setpoint_m") != 1.5 or
+            derived.get("parent_source_sha256") != parent_sha or
+            derived.get("placement_shift_m") != 1.5):
+        raise ValueError("Placement sweep lacks source-bound 1.5 m shift")
+    expected = dict(original)
+    expected["parent_source_sha256"] = parent_sha
+    expected["placement_shift_m"] = 1.5
+    expected["indications"] = [dict(item, x=item["x"] + 1.5) for item in original["indications"]]
+    if derived != expected:
+        raise ValueError("Placement sweep changed more than marker x position")
+    return {"comparison_id": "marker_placement_0m_075m_15m",
+            "case_ids": [config["selected_case_id"] for config in configs],
+            "source_bound_placement_shifts_m": [0.0, 0.75, 1.5],
+            "planned_adjacent_separations_m": [0.75, 0.75],
+            "actual_marker_readback_verified": False,
+            "physical_acceptance_claimed": False, "legal_acceptance_claimed": False}
+
+
 def audit(comparison, attempts):
     if comparison in ROUTE_FORMS:
         if len(attempts) != 2:
@@ -187,6 +233,9 @@ def audit(comparison, attempts):
         case_ids = findings["case_ids"]
     elif comparison == "marker_placement_0m_075m":
         findings = audit_marker_placement(attempts)
+        case_ids = findings["case_ids"]
+    elif comparison == "marker_placement_0m_075m_15m":
+        findings = audit_marker_placement_sweep(attempts)
         case_ids = findings["case_ids"]
     else:
         raise ValueError("Unknown declared comparison")
