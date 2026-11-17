@@ -3,7 +3,7 @@
   "input_sha256": "77d784bf5bcc3cb6dcbff251676557136ead407afc80850b4e5cd49fb4afb682",
   "status": "partial",
   "applied_update": 16,
-  "reason": "Update050: all 30 exact selected cases and 120 canonical offline candidate passes remain. Three short cases have 12 canonical candidate compatibility/saved proofs. Three mail, four armored, and four emergency exception cases have 44 four-candidate synthetic pilot compatibility/saved proofs with bounded returned fixtures and exact measurement contracts. The 32 armored/emergency saved sources passed independent source recomputation. These 11 pilot cases need canonical binding and reproof; the other 16 exception cases need selected fixtures/contracts and candidate proofs. Long 30-minute cases need a CPU path beyond the frozen 2000-frame fixture cap. Original delivery/comparison acceptance bindings and local integration remain worker-owned CPU work. No original Native, CARLA motion, physical or legal acceptance is claimed. Scoped strict remains partial. The latest terminal full strict gate rejected frozen runtime/pipeline/runs/scenario_pipeline/inputs/shared/manifest.json as unapproved; a repeat whole-tree scan was interrupted after several minutes without output. See HANDOFF.md for exact receipts and resume commands.",
+  "reason": "Update051 interim: 30 selected cases and 120 canonical offline passes remain. Twelve short candidates have canonical compatibility/saved proofs; another 12 mail candidates passed on a staged manifest with 11 short exception bindings. All 16 long measurement contracts validate. Selected tour_bus_below primary plus three fallbacks passed full-frame source finalizer negatives; a first selected saved attempt failed conversion on missing capture/native/frames.jsonl, corrected in a fresh v2 attempt whose pinned process-saved run is still in progress. Remaining 8 staged short cases, 16 long compatibility/saved candidate matrices, canonical rebindings/reproof, delivery/comparison acceptance and local integration are worker-owned CPU work. No original Native, physical or legal acceptance. Scoped strict remains partial; latest terminal full strict rejects frozen runtime/pipeline/runs/scenario_pipeline/inputs/shared/manifest.json. See HANDOFF.md.",
   "readiness_kind": null,
   "cases_planned": 30,
   "cases_selected": 30,
@@ -2627,6 +2627,84 @@
       "exit_code": 0,
       "log": "update050-scoped-complete.log",
       "sha256": "e55b56a1b6aa74208e8b4209fa371167a36f74f7436a9928d64b7eaf3f129a5a"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "update051-preflight.log",
+      "sha256": "b7b9f26f1b080580456cd1732925bad8874d439f3685dfbe31a165218eae388c"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s tests",
+      "exit_code": 0,
+      "log": "update051-root-tests.log",
+      "sha256": "9056f58a9c71d8df0d594db482b59986ce022e0ce608b9aaee500e202aa98163"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --updates",
+      "exit_code": 0,
+      "log": "update051-updates.log",
+      "sha256": "90b50c122eca4a1903b9ce4f899146581f5fae9e6011d0317bfce22e3ab3b3b9"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/build-selected-long-contracts.py",
+      "exit_code": 0,
+      "log": "update051-long-contracts.log",
+      "sha256": "183882e01b267ebfa3c38f9a85a4c9f34f18e4b88677e54e87f3383d92c0523f"
+    },
+    {
+      "command": "pinned worker_exchange.measurement_contract.validate on all 16 long selected bundles",
+      "exit_code": 0,
+      "log": "update051-long-contract-validation.log",
+      "sha256": "54bed5ae4a00a5bdb63dc5bfcc74653b18a6153a308e31dcc0164f3ec73e34c1"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/prove-tour-bus-saved-source.py --candidate primary --case tour_bus_below",
+      "exit_code": 0,
+      "log": "update051-tour-bus-below-source.log",
+      "sha256": "e32b83ead836fe625f3cc8d7652534a510c7a3bb8269afe3cfa71ed712b4f6c4"
+    },
+    {
+      "command": "prove-tour-bus-saved-source.py --case tour_bus_below --candidate fallback1, fallback2, fallback3",
+      "exit_code": 0,
+      "log": "update051-tour-bus-below-fallback-source.log",
+      "sha256": "9f2f1f684c88a49461fef80a6841f5fde5af43e7c9776ef091e9b190eae2080c"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/prepare-tour-bus-saved.py --case tour_bus_below --candidate primary --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --reuse-media-from .runtime-work/c150142-tour-bus-pinned-saved-below-v6 --attempt .runtime-work/c150142-selected-tour-bus-below-primary-native-v2",
+      "exit_code": 0,
+      "log": "update051-tour-bus-below-prepare-v2.log",
+      "sha256": "2a21e4f1326ee3dc30e5f82686fcb250b187427ce799580dc7dabb964715de00"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/reuse-tour-bus-composition.py .runtime-work/c150142-selected-tour-bus-below-primary-result-v1/v0001/analysis .runtime-work/c150142-selected-tour-bus-below-primary-native-v2",
+      "exit_code": 0,
+      "log": "update051-tour-bus-below-reuse-composition-v2.log",
+      "sha256": "79955f920dfd77da9f443ca0123959140c83ec6ae7809005ad6ae4df6f858476"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/bind-selected-short-exceptions.py --output work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest-short-exceptions-next.json",
+      "exit_code": 0,
+      "log": "update051-short-bind.log",
+      "sha256": "a370f67d5698a850038b74b1cd1fb9be8c1c1dbaa030977934b13d47edd57937"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/prove-selected-reference.py --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest-short-exceptions-next.json --slug mail_adjacent_deposit --tag canonicalnext-v1",
+      "exit_code": 0,
+      "log": "update051-mail-adjacent-canonicalnext.log",
+      "sha256": "8e72115d9a64ed774ef6b6aeed0daf8a7435915eda940ba9f792bc2f8a79ab92"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/prove-selected-reference.py --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest-short-exceptions-next.json --slug mail_no_box_deposit --tag canonicalnext-v1",
+      "exit_code": 0,
+      "log": "update051-mail-no-box-canonicalnext.log",
+      "sha256": "6f0fcd6913ea8cc23c4ddad0278351deb56767d24a358e0b832fb910ba2a152f"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/prove-selected-reference.py --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest-short-exceptions-next.json --slug mail_adjacent_no_deposit --tag canonicalnext-v1",
+      "exit_code": 0,
+      "log": "update051-mail-no-deposit-canonicalnext.log",
+      "sha256": "7d186eec41e4beec77a8312a4411c1255b35a7cc0cd20feec2203c0634562d5e"
     }
   ]
 }
