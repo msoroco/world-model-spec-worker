@@ -66,22 +66,25 @@ class OnewayTurnTests(unittest.TestCase):
   source.unlink()
   with self.assertRaisesRegex(ValueError,"missing or changed original source"):audit([p,q],"approach_curb_position")
  def test_source_bound_independent_route_targets(self):
-  self.g.update(source_left_curb_inward_unit=[1,0],destination_left_curb_inward_unit=[0,-1],source_road_width_m=4,destination_road_width_m=4)
+  self.g.update(source_left_curb=[[0,0],[10,0]],destination_left_curb=[[0,0],[0,10]],source_left_curb_inward_unit=[0,-1],destination_left_curb_inward_unit=[1,0],source_road_width_m=4,destination_road_width_m=4)
   p=self.write("map.json",self.g)
   near=construct_route_targets(p,.5,.5)
   approach_far=construct_route_targets(p,1.5,.5)
   departure_far=construct_route_targets(p,.5,1.5)
   self.assertEqual(near["departure"],approach_far["departure"])
   self.assertEqual(near["approach"],departure_far["approach"])
-  self.assertEqual(approach_far["approach"]["waypoints_xy_m"][0][0],1.5)
-  self.assertEqual(departure_far["departure"]["waypoints_xy_m"][0][1],-1.5)
+  self.assertEqual(approach_far["approach"]["waypoints_xy_m"][0][1],-1.5)
+  self.assertEqual(departure_far["departure"]["waypoints_xy_m"][0][0],1.5)
   self.assertFalse(near["actual_native_motion_verified"])
   self.assertIsNone(near["legal_conclusion"])
-  self.g["destination_left_curb_inward_unit"]=[1,0]
-  with self.assertRaisesRegex(ValueError,"normal"):construct_route_targets(self.write("bad-map.json",self.g),.5,.5)
   self.g["destination_left_curb_inward_unit"]=[0,-1]
+  with self.assertRaisesRegex(ValueError,"normal"):construct_route_targets(self.write("bad-map.json",self.g),.5,.5)
+  self.g["destination_left_curb_inward_unit"]=[1,0]
   with self.assertRaisesRegex(ValueError,"width"):construct_route_targets(self.write("good-map.json",self.g),.5,5)
  def test_four_camera_original_join_and_tamper_rejection(self):
+  self.g.update(source_left_curb=[[-10,0],[0,0]],destination_left_curb=[[0,0],[0,10]],source_left_curb_inward_unit=[0,-1],destination_left_curb_inward_unit=[1,0],source_road_width_m=4,destination_road_width_m=4,source_travel_unit=[1,0],destination_travel_unit=[0,1])
+  self.b["frames"][0]["ground_corners"]=[[-2,-.5],[-1,-.5],[-1,-1],[-2,-1]]
+  self.b["frames"][1]["ground_corners"]=[[.5,1],[1,1],[1,2],[.5,2]]
   self.b["frames"][0]["time_s"]=0.0
   self.b["frames"][1]["time_s"]=.05
   self.write("oneway_geometry_original.json",self.g)
@@ -91,15 +94,20 @@ class OnewayTurnTests(unittest.TestCase):
   for camera in ("overview","approach","reference_corner","driver_reference"):
    self.p.joinpath(camera+".mkv").write_bytes(b"diagnostic-only-video-source")
    self.p.joinpath(camera+"-frames.jsonl").write_text("".join(json.dumps({"native_frame":i,"time_s":i*.05})+"\n" for i in range(2)))
-  receipt=seal_curb_sources(self.p,"near-near",require_decodable_media=False)
+  case_id="heldout__C152972__NRS-484B-400-5__motor_vehicle_driver__approach_near_depart_near"
+  receipt=seal_curb_sources(self.p,case_id,require_decodable_media=False)
   self.assertFalse(receipt["four_camera_decode_checked"])
   channels=[{"name":name,"unit":"m" if name.endswith("_m") else "categorical"} for name in ("approach_left_curb_nearest_m","departure_left_curb_nearest_m","original_turn_phase","original_one_way_context","original_left_curb_geometry")]
-  self.write("config.json",{"selected_case_id":"near-near","curb_offsets_m":{"approach":.5,"departure":.5},"case":{"recording_description":{"channels":channels}}})
+  self.write("config.json",{"selected_case_id":case_id,"curb_offsets_m":{"approach":.5,"departure":.5},"case":{"recording_description":{"channels":channels}}})
   result=finalize_and_write(self.p,self.p/"curb-analysis.json")
   report=json.loads((self.p/"curb-analysis.json").read_text())
   self.assertEqual(report["measurement"]["approach_left_curb_nearest_m"],.5)
   self.assertEqual(report["measurement"]["departure_left_curb_nearest_m"],.5)
+  self.assertEqual(len(report["measurements"]["approach_left_curb_nearest_m"]["value"]),2)
   self.assertEqual(len(report["recording_evidence"]),5)
+  from worker_exchange.measurement_contract import verify_report
+  contract=json.loads((H/"first-primary-measurement-contract.json").read_text())
+  self.assertEqual(len(verify_report(contract,report,self.p)),2)
   self.assertFalse(report["physical_acceptance_claimed"])
   self.assertEqual(json.loads((self.p/"result.json").read_text()),result)
   self.assertFalse(result["maneuver_completed"])
@@ -139,14 +147,14 @@ class OnewayTurnTests(unittest.TestCase):
   self.assertEqual(len((self.p/"video_frames.jsonl").read_text().splitlines()),2)
   with self.assertRaisesRegex(ValueError,"capture closed"):capture.capture(11,.05,cameras)
  def test_native_route_and_four_camera_creation(self):
-  self.g.update(source_left_curb_inward_unit=[1,0],destination_left_curb_inward_unit=[0,-1],source_road_width_m=4,destination_road_width_m=4,source_travel_unit=[0,1],destination_travel_unit=[1,0])
+  self.g.update(source_left_curb=[[0,0],[10,0]],destination_left_curb=[[0,0],[0,10]],source_left_curb_inward_unit=[0,-1],destination_left_curb_inward_unit=[1,0],source_road_width_m=4,destination_road_width_m=4,source_travel_unit=[1,0],destination_travel_unit=[0,1])
   route_path=self.write("native-map.json",self.g)
   a=native_route_plan(route_path,"approach_near_depart_near")
   b=native_route_plan(route_path,"approach_far_depart_near")
   c=native_route_plan(route_path,"approach_near_depart_far")
   self.assertEqual(a["departure"],b["departure"])
   self.assertEqual(a["approach"],c["approach"])
-  self.assertEqual(a["source_heading_deg"],90)
+  self.assertEqual(a["source_heading_deg"],0)
   config={"case_branch":"approach_near_depart_near","selected_case_id":"heldout__C152972__NRS-484B-400-5__motor_vehicle_driver__approach_near_depart_near","law_id":"NRS-484B-400-5","cell_id":"C152972","frames":160,"duration_s":8,"source_geometry_sha256":a["geometry_sha256"],"curb_offsets_m":{"approach":.5,"departure":.5},"vehicle_blueprint_id":"vehicle.test"}
   self.assertEqual(check_native_config(config,route_path)["branch"],config["case_branch"])
   config["source_geometry_sha256"]="bad"
@@ -181,8 +189,10 @@ class OnewayTurnTests(unittest.TestCase):
   with self.assertRaisesRegex(ValueError,"already attached"):spawn_native_cameras(world,carla,scene,sinks)
   world.map_name="different-map"
   with self.assertRaisesRegex(ValueError,"map differs"):spawn_native_scene(world,carla,route_path,"approach_near_depart_near","vehicle.test")
-  self.g["destination_travel_unit"]=[-1,0]
+  self.g["destination_travel_unit"]=[0,-1]
   with self.assertRaisesRegex(ValueError,"heading disagrees"):native_route_plan(self.write("reverse.json",self.g),"approach_near_depart_near")
+  self.g.update(destination_left_curb=[[0,0],[10,0]],destination_left_curb_inward_unit=[0,-1],destination_travel_unit=[1,0])
+  with self.assertRaisesRegex(ValueError,"not a left turn"):native_route_plan(self.write("straight.json",self.g),"approach_near_depart_near")
   class FakeSink:
    def __init__(self,root,name):self.frames=[];self.closed=False
    def write(self,image):self.frames.append(image.frame)
@@ -193,8 +203,10 @@ class OnewayTurnTests(unittest.TestCase):
   self.assertEqual(join.capture_frame(100,0),{"video_frame":0,"native_frame":100,"time_s":0})
   for name in scene["camera_actors"]:
    self.assertEqual(json.loads((self.p/(name+"-frames.jsonl")).read_text()),{"video_frame":0,"native_frame":100,"time_s":0})
+  join.verify_frames([100])
   scene["camera_actors"]["overview"].sink(SimpleNamespace(frame=100))
   with self.assertRaisesRegex(ValueError,"callback failed"):join.capture_frame(101,.05,timeout_s=.01)
+  with self.assertRaisesRegex(ValueError,"verification failed"):join.verify_frames([100])
   join.close()
   self.assertTrue(all(sink.closed for sink in join.sinks.values()))
  def test_route_controller_reads_native_pose_and_steers_both_sides(self):

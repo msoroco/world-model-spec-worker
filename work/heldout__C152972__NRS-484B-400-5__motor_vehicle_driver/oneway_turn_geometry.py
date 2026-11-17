@@ -117,6 +117,14 @@ def native_route_plan(geometry_path, branch):
                 or (direction[0]*curb[1]+direction[1]*curb[2])/curb[3]<.999):
             raise ValueError("one-way travel heading disagrees with map curb: "+name)
         headings[name]=degrees(atan2(direction[1],direction[0]))
+    source_direction=g["source_travel_unit"]
+    destination_direction=g["destination_travel_unit"]
+    cross=(source_direction[0]*destination_direction[1]
+           -source_direction[1]*destination_direction[0])
+    dot=(source_direction[0]*destination_direction[0]
+         +source_direction[1]*destination_direction[1])
+    if cross<.7 or abs(dot)>.5:
+        raise ValueError("source-to-destination route is not a left turn")
     route["branch"]=branch
     route["source_heading_deg"]=headings["source"]
     route["destination_heading_deg"]=headings["destination"]
@@ -269,13 +277,27 @@ class NativeCameraFrameJoin:
         for stream in self.files.values():stream.write(json.dumps(row,allow_nan=False)+"\n")
         self.last_frame=frame;self.last_time=time_s;self.index+=1
         return row
+    def verify_frames(self,frames):
+        expected=set(frames)
+        if not expected or len(expected)!=len(frames) or self.errors:
+            raise ValueError("original curb camera frame verification failed")
+        for name,observed in self.frames.items():
+            if observed!=expected:raise ValueError("original curb camera frame set differs: "+name)
+        if self.index!=len(frames):raise ValueError("original curb camera frame map count differs")
     def close(self):
         if self.closed:return
         self.closed=True
-        for stream in self.files.values():stream.close()
+        errors=[]
+        for stream in self.files.values():
+            try:stream.close()
+            except BaseException as error:errors.append(str(error))
         for name,sensor in getattr(self,"scene",{}).get("camera_actors",{}).items():
-            sensor.stop()
-        for sink in self.sinks.values():sink.close()
+            try:sensor.stop()
+            except BaseException as error:errors.append(str(error))
+        for sink in self.sinks.values():
+            try:sink.close()
+            except BaseException as error:errors.append(str(error))
+        if errors:raise ValueError("original curb camera close failed: "+"; ".join(errors))
 
 class OriginalCurbBodyCapture:
     """Retain actual bottom body corners and road phase at each joined tick."""
@@ -408,6 +430,7 @@ def run_native(attempt, geometry_path, host="127.0.0.1", port=2000):
             time_s=snapshot.timestamp.elapsed_seconds-start
             body.capture(frame,time_s,cameras)
             frames.append(frame)
+        cameras.verify_frames(frames)
         failed=False
     finally:
         for action in ((lambda:body.close()) if body is not None else None,
@@ -461,6 +484,10 @@ def finalize_original_sources(attempt):
             raise ValueError("Original curb source SHA-256 mismatch: "+name)
     geometry_path=root/"oneway_geometry_original.json"
     body_path=root/"body_ground_original.json"
+    case_id=receipt.get("case_id")
+    if not isinstance(case_id,str) or "__" not in case_id:
+        raise ValueError("exact one-way turn case identity missing")
+    native_route_plan(geometry_path,case_id.split("__")[-1])
     observed=measure(geometry_path,body_path)
     geometry=_load(geometry_path)
     body=_load(body_path)["frames"]
@@ -507,7 +534,11 @@ def finalize_original_sources(attempt):
         if output.exists():raise ValueError("derived curb stream already exists: "+name)
         output.write_text("".join(json.dumps(row,allow_nan=False)+"\n" for row in rows))
     return {"case_id":receipt.get("case_id"),"source_sha256":hashes,
-            "measurement":observed,"recording_evidence":
+            "measurement":observed,
+            "measurements":{name:{"method":"finalize_original_sources",
+                                  "value":rows,"sources":hashes}
+                            for name,rows in streams.items()},
+            "recording_evidence":
             [{"name":name,"reference":name+".jsonl","sha256":hashlib.sha256((root/(name+".jsonl")).read_bytes()).hexdigest()}
              for name in names],
             "actual_native_capture":False,"physical_acceptance_claimed":False,"legal_acceptance_claimed":False}
@@ -585,14 +616,16 @@ def main():
     ap=argparse.ArgumentParser()
     ap.add_argument("--geometry");ap.add_argument("--body");ap.add_argument("--attempt")
     ap.add_argument("--output");ap.add_argument("--run-native",action="store_true")
+    ap.add_argument("--output-dir")
     ap.add_argument("--check",action="store_true")
     ap.add_argument("--host",default="127.0.0.1");ap.add_argument("--port",type=int,default=2000)
     a=ap.parse_args()
-    if a.run_native or a.check:
-        if not a.attempt or not a.geometry or a.body or a.output:
-            ap.error("Native capture/check needs --attempt and --geometry only")
-        if a.check:check_native_config(_load(Path(a.attempt)/"config.json"),a.geometry)
-        else:run_native(a.attempt,a.geometry,a.host,a.port)
+    if a.run_native or a.check or a.output_dir:
+        if a.body or a.output:ap.error("Native capture/check cannot mix body/output")
+        root=Path(a.attempt or a.output_dir or ".")
+        geometry=Path(a.geometry) if a.geometry else root/"source_geometry.json"
+        if a.check:check_native_config(_load(root/"config.json"),geometry)
+        else:run_native(root,geometry,a.host,a.port)
     elif a.attempt:
         if a.geometry or a.body:ap.error("--attempt cannot be mixed with geometry/body")
         if not a.output:ap.error("--output required for finalization")
