@@ -108,6 +108,7 @@ def audit_red_pixel_sources(frame_map_path, command_path, front_video_path,
         rear_candidate = rear_count >= min_red_pixels
         rows.append({'frame': mapped['frame'], 'video_frame': mapped['video_frame'],
                      'time_s': mapped['time_s'],
+                     'red_signal_commanded': operating,
                      'red_phase_commanded': phase,
                      'front_red_pixel_count': front_count,
                      'rear_red_pixel_count': rear_count,
@@ -227,11 +228,37 @@ def finalize_first_case(attempt):
             (r['frame'],r['time_s']) for r in mapping]:
         raise ValueError('Original school-bus motion/frame map differs')
     speeds = []
+    gaps = []
     for row in motion:
         speed = row.get('subject_speed_mps')
         if type(speed) not in (int,float) or not math.isfinite(speed) or speed < 0:
             raise ValueError('Original school-bus subject speed invalid')
         speeds.append(float(speed))
+        gaps.append(_gap(row.get('subject_corners'), row.get('bus_corners'),
+                         row.get('travel_tangent_xy')))
+    signal = source['red_pixels']['frames']
+    if [(r['frame'],r['time_s']) for r in signal] != [
+            (r['frame'],r['time_s']) for r in motion]:
+        raise ValueError('Original school-bus signal/motion join differs')
+    active = [i for i,row in enumerate(signal) if row['red_signal_commanded']]
+    if (not active or active[0] == 0 or active[-1] == len(signal)-1 or
+        active != list(range(active[0], active[-1]+1))):
+        raise ValueError('Original school-bus red interval incomplete')
+    onset, cessation = active[0], active[-1]+1
+    stop = next((i for i in active if speeds[i] <= STOP_TOLERANCE_MPS), None)
+    held = stop is not None and all(speeds[i] <= STOP_TOLERANCE_MPS
+                                    for i in range(stop, cessation))
+    first_pass = next((i for i,gap in enumerate(gaps) if gap > 0), None)
+    response = {'red_onset_frame':signal[onset]['frame'],
+                'red_cessation_frame':signal[cessation]['frame'],
+                'first_stop_frame':signal[stop]['frame'] if stop is not None else None,
+                'held_stop_until_cessation_candidate':held,
+                'first_full_body_pass_frame':signal[first_pass]['frame'] if first_pass is not None else None,
+                'passed_during_red_candidate':first_pass is not None and first_pass < cessation,
+                'source_sha256':{'motion':source['source_sha256']['motion_original.jsonl'],
+                                 'command':source['source_sha256']['signal_command_original.jsonl'],
+                                 'frame_map':source['source_sha256']['video_frames.jsonl']},
+                'physical_acceptance_claimed':False,'legal_conclusion':None}
     channel = attempt / 'subject_speed_mps.jsonl'
     content = ''.join(json.dumps({'frame':row['frame'], 'time_s':row['time_s'],
                                   'value':speed}, allow_nan=False)+'\n'
@@ -241,14 +268,15 @@ def finalize_first_case(attempt):
             raise ValueError('Preexisting derived subject speed differs from original')
     else:
         channel.write_text(content)
-    minimum = min(speeds)
+    minimum = min(speeds[i] for i in active)
     result = {'case_id':FIRST_CASE_ID,
               'measured_values':{'minimum_subject_speed_mps':minimum,
+                                 'stop_response_candidate':response,
                                  'red_pixel_candidates':source['red_pixels'],
                                  'pupil_motion_candidate':source['pupil_motion']},
               'target_checks':[{'target':'subject stopped during school-bus red interval',
                                 'requested':0.0,'measured':minimum,
-                                'method':'minimum original subject velocity',
+                                'method':'minimum original subject velocity during commanded red interval',
                                 'tolerance':STOP_TOLERANCE_MPS,'matched':False,
                                 'physical_cause_confirmed':False,
                                 'cause_evidence':'motion_original.jsonl and video_frames.jsonl'}],
@@ -273,7 +301,9 @@ def finalize_first_case(attempt):
               'physical_acceptance_claimed':False,'legal_acceptance_claimed':False}
     report = {'format':'worker-analysis-report','case_id':FIRST_CASE_ID,
               'measurements':{'first_case_sources':{'method':'audit_first_case_attempt',
-                  'value':source,'sources':source['source_sha256']}},
+                  'value':source,'sources':source['source_sha256']},
+                  'stop_response_candidate':{'method':'original motion/body gap joined to red command interval',
+                  'value':response,'sources':response['source_sha256']}},
               'limitations':['Equipment, lamp identity, pupil purpose and roadway remain unverified'],
               'physical_acceptance_claimed':False,'legal_acceptance_claimed':False}
     return report, result
@@ -461,7 +491,9 @@ def main():
                         help='Write saved analysis and Native result from retained originals')
     parser.add_argument('--output', required=True)
     args = parser.parse_args()
-    if args.finalize:
+    saved_invocation = args.attempt and not any((args.front_roi, args.rear_roi,
+                                                 args.pupil_purpose))
+    if args.finalize or saved_invocation:
         if not args.attempt or any((args.context, args.signal, args.motion,
                                    args.frame_map, args.command, args.front_video,
                                    args.rear_video, args.front_roi, args.rear_roi,
@@ -501,7 +533,7 @@ def main():
     output = Path(args.output)
     if output.exists():
         raise ValueError('Retain prior school-bus analysis report')
-    if args.finalize:
+    if args.finalize or saved_invocation:
         from worker_exchange.native_output import write_result
         write_result(args.attempt, native_result)
     output.write_text(json.dumps(result, indent=2)+'\n')

@@ -231,7 +231,7 @@ class SourceResponse(unittest.TestCase):
         env['PYTHONPATH']=str(Path(__file__).resolve().parents[3]/'runtime'/'scenario_pipeline')
         saved=self.root/'saved-analysis.json'
         subprocess.run([sys.executable,str(script),'--attempt',str(attempt),
-                        '--finalize','--output',str(saved)],env=env,check=True)
+                        '--output',str(saved)],env=env,check=True)
         native=json.loads((attempt/'result.json').read_text())
         self.assertEqual(native['case_id'],CASE_ID)
         self.assertEqual(native['video_references'],[
@@ -239,6 +239,12 @@ class SourceResponse(unittest.TestCase):
         self.assertFalse(native['setup_confirmed'])
         self.assertFalse(native['physical_acceptance_claimed'])
         self.assertEqual(native['realized_observables']['subject_speed_mps']['value'],0.0)
+        response=native['measured_values']['stop_response_candidate']
+        self.assertEqual((response['red_onset_frame'],response['red_cessation_frame']),
+                         (101,104))
+        self.assertTrue(response['held_stop_until_cessation_candidate'])
+        self.assertFalse(response['passed_during_red_candidate'])
+        self.assertEqual(response['first_full_body_pass_frame'],105)
         self.assertEqual(json.loads(saved.read_text())['case_id'],CASE_ID)
         (attempt/'road.xodr').write_text('<OpenDRIVE><road/></OpenDRIVE>\n')
         with self.assertRaisesRegex(ValueError,'source hash differs: road.xodr'):
@@ -560,5 +566,19 @@ class SourceResponse(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'spawn failed'):
             spawn_pupil_service(Failed(),Carla,bus,{
                 'purpose':'receiving','walker_blueprint_id':'walker.pedestrian.0001'})
+
+    def test_returned_first_case_config_and_scene_preflight(self):
+        package=Path(__file__).resolve().parents[1]
+        plan=json.loads((package/'case-plan.json').read_text())
+        config=json.loads((package/'config.json').read_text())
+        self.assertTrue(check_plan(plan,config['selected_case_id']))
+        self.assertIs(check_scene(config),config)
+        self.assertEqual([camera['name'] for camera in config['cameras']],list(CAMERAS))
+        self.assertEqual([camera['width'] for camera in config['cameras']],
+                         [CAMERAS[name][3][0] for name in CAMERAS])
+        self.assertEqual(config['source_observation_terms'],
+                         [row['term'] for row in plan['observations']])
+        self.assertEqual(config['school_bus_lamp_review']['roi_status'].split()[0],
+                         'unreviewed')
 
 if __name__=='__main__':unittest.main()
