@@ -112,6 +112,10 @@ def main():
                 result['status'] = 'partial'
                 result['readiness_kind'] = 'implementation_checkpoint'
                 result['reason'] = ((result.get('reason') or '') + ' Runtime refresh requires new exact-case and saved proofs.').strip()
+            elif result.get('status') == 'blocked':
+                result['status'] = 'partial'
+                result['readiness_kind'] = 'implementation_checkpoint'
+                result['reason'] = ((result.get('reason') or '') + ' Reassess this blocker against the refreshed CPU runtime; mark blocked again only for a verified external dependency.').strip()
             write(result_path, result)
     frozen = batch['frozen_files']
     prefix = batch['runtime']['root'] + '/'
