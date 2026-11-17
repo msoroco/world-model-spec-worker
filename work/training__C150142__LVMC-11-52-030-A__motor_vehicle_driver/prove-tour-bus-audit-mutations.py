@@ -91,6 +91,6 @@ if __name__ == '__main__':
     ]
     print(json.dumps({'format': 'c150142-' +
                       (service.replace('_bus', '') + '-' if service != 'tour_bus' else '') +
-                      boundary + '-fallback-audit-mutations-v1',
+                      boundary + f'-fallback-audit-mutations-v{manifest_version}',
                       'passed': True, 'manifest_version': manifest_version,
                       'results': results}, sort_keys=True))

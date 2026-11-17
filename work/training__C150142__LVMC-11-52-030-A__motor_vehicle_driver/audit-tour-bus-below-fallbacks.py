@@ -166,10 +166,11 @@ def audit(suffix='below', service='tour_bus', manifest_version=1):
             configs['fallback2']['camera_policy'] != base['camera_policy'],
             'Fallback mitigations do not match physical-risk triggers')
     return {'format': ('c150142-' + service.replace('_', '-') + '-' +
-                       slug + '-fallback-audit-v1'),
+                       slug + f'-fallback-audit-v{manifest_version}'),
             'source_kind': 'synthetic_native_sample',
             'original_native_observed': False, 'passed': True,
-            'case_id': case, 'records': records,
+            'case_id': case, 'manifest_version': manifest_version,
+            'manifest_sha256': sha(manifest_path), 'records': records,
             'distinct_triggers': sorted(triggers)}
 
 
