@@ -5,6 +5,7 @@ legal adequacy, and a synthetic compatibility fixture cannot satisfy it.
 """
 import json
 import math
+import hashlib
 from pathlib import Path
 
 
@@ -81,6 +82,8 @@ def audit(rows, context, *, min_frames=100, max_frame_gap=1):
             'distance_range_m': [min(distances), max(distances)],
             'obstruction_actor_id': prop['actor_id'],
             'observed_transition_frames': transitions,
+            'observed_transition_distances_m': [distances[i] for i in range(1, len(rows))
+                                                if prop_hits[i] != prop_hits[i-1]],
             'physical_acceptance_claimed': False, 'legal_acceptance_claimed': False}
 
 
@@ -112,11 +115,62 @@ def audit_files(ray_path, context_path, video_path=None):
     return result
 
 
+def compare_original_captures(captures):
+    """Compare original y12/y15/y18 sources; report geometry, not legal adequacy."""
+    if set(captures) != {12, 15, 18}:
+        raise ValueError('Exact three-view comparison sources required')
+    rows = []
+    fixed = None
+    for center in (12, 15, 18):
+        root = Path(captures[center])
+        ray_path = root / 'visibility_rays.jsonl'
+        context_path = root / 'road_context.json'
+        video_path = root / 'video_frames.jsonl'
+        context = json.loads(context_path.read_text())
+        prop = context.get('view_occluder', {})
+        actual = prop.get('native_location_m')
+        if not _point(actual) or abs(actual[1] - center) > .25:
+            raise ValueError('Original roadside center differs from selected view case')
+        site = tuple(context.get(key) for key in (
+            'native_map_id', 'intersection_id', 'approach_road_id',
+            'approach_lane_id', 'through_highway_id'))
+        if any(value is None for value in site):
+            raise ValueError('Original fixed road context missing')
+        if fixed is None:
+            fixed = site
+        elif site != fixed:
+            raise ValueError('View comparison fixed road context changed')
+        report = audit_files(ray_path, context_path, video_path)
+        rows.append({'center_y_m': center,
+                     'source_sha256': {name: hashlib.sha256((root / name).read_bytes()).hexdigest()
+                                       for name in ('visibility_rays.jsonl', 'road_context.json', 'video_frames.jsonl')},
+                     'audit': report})
+    transitions = [row['audit']['observed_transition_distances_m'][-1] for row in rows]
+    if len({round(value, 1) for value in transitions}) != 3:
+        raise ValueError('Original view transition did not vary across roadside locations')
+    return {'source_kind': 'original_native', 'comparison_id':
+            'same_approach_view_occluder_y12_y15_y18',
+            'cases': rows, 'last_transition_distance_m': transitions,
+            'physical_acceptance_claimed': False, 'legal_acceptance_claimed': False}
+
+
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('rays')
-    parser.add_argument('road_context')
+    parser.add_argument('rays', nargs='?')
+    parser.add_argument('road_context', nargs='?')
     parser.add_argument('video_frames', nargs='?')
+    parser.add_argument('--compare-y12')
+    parser.add_argument('--compare-y15')
+    parser.add_argument('--compare-y18')
     args = parser.parse_args()
-    print(json.dumps(audit_files(args.rays, args.road_context, args.video_frames), indent=2))
+    if any((args.compare_y12, args.compare_y15, args.compare_y18)):
+        if not all((args.compare_y12, args.compare_y15, args.compare_y18)) or args.rays:
+            parser.error('Three original view capture directories are required')
+        result = compare_original_captures({12: args.compare_y12, 15: args.compare_y15,
+                                            18: args.compare_y18})
+    else:
+        if not args.rays or not args.road_context:
+            parser.error('Rays and original road context are required')
+        result = audit_files(args.rays, args.road_context, args.video_frames)
+    print(json.dumps(result, indent=2))

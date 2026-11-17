@@ -67,6 +67,13 @@ def validate():
     rows = manifest['cases']
     assert [row['occluder_center_y_m'] for row in rows] == [12., 15., 18.]
     assert [row['case_id'] for row in compat_manifest['cases']] == [row['case_id'] for row in rows]
+    plan = json.loads((ROOT / 'case-plan.json').read_text())
+    comparisons = [row for row in plan['comparisons']
+                   if row['comparison_id'] == 'same_approach_view_occluder_y12_y15_y18']
+    assert len(comparisons) == 1
+    assert comparisons[0]['case_ids'] == [row['case_id'] for row in rows]
+    assert len(comparisons[0]['deliberate_differences']) == 1
+    assert len(comparisons[0]['fixed_conditions']) == 3
     axis = manifest['view_axis']
     assert axis['world_setup_parameter'] == 'roadside_occluder_center_y_m'
     assert axis['sampled_center_y_m'] == [12., 15., 18.]

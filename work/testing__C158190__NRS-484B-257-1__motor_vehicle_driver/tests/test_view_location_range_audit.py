@@ -7,21 +7,24 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from view_location_range_audit import audit, audit_files
+from view_location_range_audit import audit, audit_files, compare_original_captures
 
 
-def sources():
-    context = {'view_occluder': {'actor_id': 912,
+def sources(center=12):
+    context = {'native_map_id': 'authored_view_map', 'intersection_id': 158191,
+               'approach_road_id': 158190, 'approach_lane_id': -1,
+               'through_highway_id': 158195,
+               'view_occluder': {'actor_id': 900 + center,
                'source_kind': 'original_native',
                'blueprint': 'static.prop.streetbarrier',
-               'native_location_m': [-4., 12., 0.],
-               'body_bounds_m': {'x': [-4.5, -3.5], 'y': [11.5, 12.5], 'z': [0., 2.]}}}
+               'native_location_m': [-4., float(center), 0.],
+               'body_bounds_m': {'x': [-4.5, -3.5], 'y': [center-.5, center+.5], 'z': [0., 2.]}}}
     rows = []
     for i in range(600):
         ego_x = -60. + 52. * i / 599
         fraction = (-4. - ego_x) / (1.8 - ego_x)
         crossing_y = 1.8 + fraction * 18.2
-        blocked = 0 <= fraction <= 1 and 11.5 <= crossing_y <= 12.5
+        blocked = 0 <= fraction <= 1 and center-.5 <= crossing_y <= center+.5
         rows.append({'frame': 100 + i, 'method': 'native_collision_ray_to_authored_through_lane_point',
                      'ego_distance_to_junction_m': 52. - 52. * i / 599,
                      'observer_m': [ego_x, 1.8, 1.75],
@@ -33,6 +36,30 @@ def sources():
 
 
 class ViewRangeAuditTests(unittest.TestCase):
+    def test_original_three_view_comparison_reports_distinct_transitions(self):
+        with tempfile.TemporaryDirectory() as directory:
+            captures = {}
+            for center in (12, 15, 18):
+                root = Path(directory) / str(center)
+                root.mkdir()
+                rays, context = sources(center)
+                for i, ray in enumerate(rays):
+                    ray['time_s'] = i * .05
+                video = [{'video_frame': i, 'carla_frame': 100+i, 'time_s': i*.05}
+                         for i in range(600)]
+                (root / 'visibility_rays.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in rays))
+                (root / 'road_context.json').write_text(json.dumps(context))
+                (root / 'video_frames.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in video))
+                captures[center] = root
+            result = compare_original_captures(captures)
+            self.assertEqual(len(result['cases']), 3)
+            self.assertEqual(len(set(round(x, 1) for x in result['last_transition_distance_m'])), 3)
+            self.assertFalse(result['physical_acceptance_claimed'])
+            context['native_map_id'] = 'changed_map'
+            (captures[18] / 'road_context.json').write_text(json.dumps(context))
+            with self.assertRaisesRegex(ValueError, 'fixed road context changed'):
+                compare_original_captures(captures)
+
     def test_draft_native_controller_accepts_exact_view_cases(self):
         root = Path(__file__).resolve().parents[1]
         for center in (12, 15, 18):

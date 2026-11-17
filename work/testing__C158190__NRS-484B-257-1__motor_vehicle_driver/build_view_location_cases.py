@@ -311,6 +311,22 @@ def bind_semantics():
                 if channel['name'] == 'through_highway_sight_clear':
                     channel['method'] = 'original collision ray to approaching through-highway lane point, joined to source cameras'
             proposals['cases'].append(row)
+    comparison_id = 'same_approach_view_occluder_y12_y15_y18'
+    comparison = {
+        'comparison_id': comparison_id,
+        'case_ids': [case['case_id'] for case in draft['cases']],
+        'deliberate_differences': [
+            'authored roadside occluder center y=12, 15, 18 m; original body geometry and sight rays must confirm the realized contrast'],
+        'fixed_conditions': [
+            'same Native road map, governed yield sign, approach lane and through-lane ray target',
+            'same ego and through-actor spawn, controller and 20 Hz 30-second capture',
+            'same four named source cameras and original frame/time joins']}
+    existing = [row for row in plan['comparisons'] if row['comparison_id'] == comparison_id]
+    if existing:
+        if existing != [comparison]:
+            raise ValueError('View-location comparison declaration drifted')
+    else:
+        plan['comparisons'].append(comparison)
     plan_path.write_text(json.dumps(plan, indent=2) + '\n')
     proposals_path.write_text(json.dumps(proposals, indent=2) + '\n')
     print(json.dumps({'semantic_view_cases': len(draft['cases'])}))
