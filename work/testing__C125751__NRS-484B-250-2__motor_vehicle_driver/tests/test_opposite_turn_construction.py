@@ -39,6 +39,39 @@ def stop_references():
             for role, x in (("ego", -5), ("other", 5))}
 
 
+def write_opposite_site_packet(root, candidate, diagnostic_only=False):
+    content = {
+        "polygon": {"crossing_polygon_xy_m": candidate.get("crossing_polygon_xy_m"),
+                    "crossing_polygon_source": candidate.get("crossing_polygon_source")},
+        "approaches": {"routes": candidate.get("routes"),
+                       "approach_headings_deg": candidate.get("approach_headings_deg"),
+                       "expected_approach_lanes": candidate.get("expected_approach_lanes"),
+                       "approach_geometry_source": candidate.get("approach_geometry_source")},
+        "governance": {"governed_signal_ids": candidate.get("governed_signal_ids"),
+                       "expected_approach_lanes": candidate.get("expected_approach_lanes"),
+                       "device_inventory_source": candidate.get("device_inventory_source")},
+        "stops": {"selected_stop_references": candidate.get("selected_stop_references")},
+        "cameras": {"cameras": candidate.get("cameras")},
+    }
+    references = {}
+    for kind, values in content.items():
+        name = "opposite-" + kind + "-source.json"
+        source = {"format": "worker-c125751-opposite-site-source-v1",
+                  "source_kind": kind, "native_map_name": candidate.get("native_map_name"),
+                  "native_junction_id": candidate.get("native_junction_id"),
+                  "content": values, "review_basis": "synthetic fake-Native CPU test source",
+                  "diagnostic_only": diagnostic_only}
+        (root / name).write_text(json.dumps(source) + "\n")
+        references[kind] = {"path": name,
+                            "sha256": hashlib.sha256((root / name).read_bytes()).hexdigest()}
+    packet = {"format": "worker-c125751-opposite-site-review-v1",
+              "review_status": "candidate_reviewed", "site": candidate,
+              "source_documents": references}
+    (root / "opposite-site-review.json").write_text(json.dumps(packet) + "\n")
+    return {"path": "opposite-site-review.json",
+            "sha256": hashlib.sha256((root / "opposite-site-review.json").read_bytes()).hexdigest()}
+
+
 class Actor:
     def __init__(self, lane, yaw):
         self.lane, self.yaw, self.destroyed = lane, yaw, False
@@ -309,10 +342,11 @@ class OppositeTurnConstructionTest(unittest.TestCase):
                 self.evidence.close()
 
         with tempfile.TemporaryDirectory() as temp:
+            site_review = write_opposite_site_packet(Path(temp), value)
             (Path(temp) / "config.json").write_text(json.dumps({
                 "selected_case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_left_turn",
                 "law_id": "NRS-484B-250-2", "cell_id": "C125751",
-                "turning_role": "ego", "site": value}))
+                "turning_role": "ego", "site": value, "site_review": site_review}))
             site_digest = hashlib.sha256(json.dumps(value, sort_keys=True,
                                                     allow_nan=False).encode()).hexdigest()
             (Path(temp) / "construction.json").write_text(json.dumps({
@@ -475,6 +509,48 @@ class OppositeTurnConstructionTest(unittest.TestCase):
                                                construction["target_speeds_mps"], 3, client=object())
             self.assertEqual({path.name for path in root.iterdir()},
                              {"config.json", "construction.json"})
+
+    def test_opposite_site_packet_binds_source_content_and_rejects_diagnostic_native(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp); candidate = site()
+            candidate.update(native_map_name="SyntheticTown", native_junction_id=77,
+                             cameras={name: [0, 0, 10, 0, 0, 0] for name in
+                                      ("overview", "approach", "reference_corner", "driver_reference")},
+                             crossing_polygon_source="synthetic polygon",
+                             approach_headings_deg={"ego": 0, "other": 180},
+                             approach_geometry_source="synthetic routes",
+                             governed_signal_ids={"ego": 101, "other": 102},
+                             device_inventory_source="synthetic signals",
+                             selected_stop_references=stop_references())
+            review = write_opposite_site_packet(root, candidate, diagnostic_only=True)
+            config = {"selected_case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_left_turn",
+                      "law_id": "NRS-484B-250-2", "cell_id": "C125751",
+                      "turning_role": "ego", "site": candidate, "site_review": review}
+            (root / "config.json").write_text(json.dumps(config))
+            (root / "construction.json").write_text(json.dumps({
+                "selected_case_id": config["selected_case_id"],
+                "site_sha256": hashlib.sha256(json.dumps(candidate, sort_keys=True).encode()).hexdigest(),
+                "turning_role": "ego", "release_frames": {"ego": 1, "other": 2},
+                "target_speeds_mps": {"ego": 5., "other": 5.}, "frames": 3}))
+            with self.assertRaisesRegex(ValueError, "Diagnostic opposite-turn site"):
+                runner.capture_candidate_media(root, None, None, candidate, "ego", None, None,
+                                               {"ego": 1, "other": 2},
+                                               {"ego": 5., "other": 5.}, 3, client=object())
+            source = root / "opposite-polygon-source.json"
+            document = json.loads(source.read_text())
+            document["content"]["crossing_polygon_xy_m"] = [[0, 0], [1, 0], [0, 1]]
+            source.write_text(json.dumps(document) + "\n")
+            with self.assertRaisesRegex(ValueError, "source document missing or changed"):
+                runner.capture_candidate_media(root, None, None, candidate, "ego", None, None,
+                                               {"ego": 1, "other": 2},
+                                               {"ego": 5., "other": 5.}, 3, client=object())
+            packet = json.loads((root / "opposite-site-review.json").read_text())
+            packet["source_documents"]["polygon"]["sha256"] = hashlib.sha256(source.read_bytes()).hexdigest()
+            (root / "opposite-site-review.json").write_text(json.dumps(packet) + "\n")
+            config["site_review"]["sha256"] = hashlib.sha256(
+                (root / "opposite-site-review.json").read_bytes()).hexdigest()
+            with self.assertRaisesRegex(ValueError, "source identity/content invalid"):
+                candidate_audit.verify_opposite_site_packet(config, root)
 
 
 class DeviceSourceJoinTests(unittest.TestCase):
@@ -677,9 +753,31 @@ class DeviceSourceJoinTests(unittest.TestCase):
     def _opposite_finalizer_sources(self, root):
         self._opposite_entry_sources(root)
         case = "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_left_turn"
+        road = json.loads((root / "road_geometry.json").read_text())
+        route = json.loads((root / "turn_route_context.json").read_text())
+        candidate = {"native_map_name": "TownSynthetic", "native_junction_id": 7,
+                     "crossing_polygon_xy_m": road["intersection_polygon_xy_m"],
+                     "crossing_polygon_source": "synthetic candidate polygon",
+                     "routes": route["routes"],
+                     "approach_headings_deg": {"ego": 0, "other": 180},
+                     "expected_approach_lanes": {"ego": [1, -1], "other": [2, -1]},
+                     "approach_geometry_source": "synthetic candidate routes",
+                     "governed_signal_ids": {"ego": 17, "other": 18},
+                     "device_inventory_source": "synthetic candidate inventory",
+                     "selected_stop_references": stop_references(),
+                     "cameras": {name: [0, 0, 10, 0, 0, 0] for name in
+                                 ("overview", "approach", "reference_corner", "driver_reference")}}
+        review = write_opposite_site_packet(root, candidate, diagnostic_only=True)
+        road["site_review_sha256"] = review["sha256"]
+        (root / "road_geometry.json").write_text(json.dumps(road))
+        for name in ("turn_route_context.json", "stop_context.json", "signal_context.json"):
+            context = json.loads((root / name).read_text())
+            context["site_review_sha256"] = review["sha256"]
+            (root / name).write_text(json.dumps(context))
         (root / "config.json").write_text(json.dumps({
             "selected_case_id": case, "law_id": "NRS-484B-250-2",
             "cell_id": "C125751", "turning_role": "ego",
+            "site": candidate, "site_review": review,
             "duration_s": .1, "rate_hz": 20,
             "recording_description": {"channels": [
                 {"name": "signal_state", "unit": "structured record"},
@@ -759,6 +857,16 @@ class DeviceSourceJoinTests(unittest.TestCase):
             rows[1]["frame"] += 1
             (root / "trace.jsonl").write_text("".join(json.dumps(row) + "\n" for row in rows))
             with self.assertRaisesRegex(ValueError, "Original trace/evidence frame join failed"):
+                runner.finalize_candidate_opposite_turn(root, root / "analysis.json")
+            self._opposite_finalizer_sources(root)
+            (root / "opposite-stops-source.json").unlink()
+            with self.assertRaisesRegex(ValueError, "Opposite-turn source document missing or changed"):
+                runner.finalize_candidate_opposite_turn(root, root / "analysis.json")
+            self._opposite_finalizer_sources(root)
+            context = json.loads((root / "signal_context.json").read_text())
+            context["site_review_sha256"] = "forged"
+            (root / "signal_context.json").write_text(json.dumps(context))
+            with self.assertRaisesRegex(ValueError, "Saved opposite-turn context differs"):
                 runner.finalize_candidate_opposite_turn(root, root / "analysis.json")
             self._opposite_finalizer_sources(root)
             rows = [json.loads(line) for line in

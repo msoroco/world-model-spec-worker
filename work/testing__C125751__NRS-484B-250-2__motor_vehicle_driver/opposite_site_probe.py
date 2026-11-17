@@ -172,6 +172,68 @@ def _read(path):
 def _rows(path):
     return [json.loads(line) for line in Path(path).read_text().splitlines() if line.strip()]
 
+
+def verify_opposite_site_packet(config, base_dir):
+    """Bind an opposite-turn site to reviewed source documents, without a physical verdict."""
+    reference = config.get("site_review")
+    if not isinstance(reference, dict) or set(reference) != {"path", "sha256"}:
+        raise ValueError("Hashed opposite-turn site review packet required")
+    packet_path = Path(reference["path"])
+    if not packet_path.is_absolute():
+        packet_path = Path(base_dir) / packet_path
+    if not packet_path.resolve().is_relative_to(Path(base_dir).resolve()):
+        raise ValueError("Retained opposite-turn site packet required inside attempt")
+    if not packet_path.is_file() or _sha(packet_path) != reference["sha256"]:
+        raise ValueError("Opposite-turn site review packet missing or changed")
+    packet = _read(packet_path)
+    site = config.get("site")
+    if (packet.get("format") != "worker-c125751-opposite-site-review-v1" or
+            packet.get("review_status") != "candidate_reviewed" or
+            packet.get("site") != site or not isinstance(site, dict)):
+        raise ValueError("Opposite-turn reviewed site identity differs")
+    content = {
+        "polygon": {"crossing_polygon_xy_m": site.get("crossing_polygon_xy_m"),
+                    "crossing_polygon_source": site.get("crossing_polygon_source")},
+        "approaches": {"routes": site.get("routes"),
+                       "approach_headings_deg": site.get("approach_headings_deg"),
+                       "expected_approach_lanes": site.get("expected_approach_lanes"),
+                       "approach_geometry_source": site.get("approach_geometry_source")},
+        "governance": {"governed_signal_ids": site.get("governed_signal_ids"),
+                       "expected_approach_lanes": site.get("expected_approach_lanes"),
+                       "device_inventory_source": site.get("device_inventory_source")},
+        "stops": {"selected_stop_references": site.get("selected_stop_references")},
+        "cameras": {"cameras": site.get("cameras")},
+    }
+    docs = packet.get("source_documents")
+    if not isinstance(docs, dict) or set(docs) != set(content):
+        raise ValueError("Complete opposite-turn source document inventory required")
+    diagnostic_only = False
+    for kind, expected in content.items():
+        ref = docs[kind]
+        if not isinstance(ref, dict) or set(ref) != {"path", "sha256"}:
+            raise ValueError("Hashed opposite-turn source document required: " + kind)
+        path = Path(ref["path"])
+        if not path.is_absolute():
+            path = packet_path.parent / path
+        if not path.resolve().is_relative_to(Path(base_dir).resolve()):
+            raise ValueError("Retained opposite-turn source document required: " + kind)
+        if not path.is_file() or _sha(path) != ref["sha256"]:
+            raise ValueError("Opposite-turn source document missing or changed: " + kind)
+        document = _read(path)
+        if (document.get("format") != "worker-c125751-opposite-site-source-v1" or
+                document.get("source_kind") != kind or
+                document.get("native_map_name") != site.get("native_map_name") or
+                document.get("native_junction_id") != site.get("native_junction_id") or
+                document.get("content") != expected or
+                not isinstance(document.get("review_basis"), str) or
+                not document["review_basis"].strip() or
+                type(document.get("diagnostic_only")) is not bool):
+            raise ValueError("Opposite-turn source identity/content invalid: " + kind)
+        diagnostic_only = diagnostic_only or document["diagnostic_only"]
+    return {"packet_path": str(packet_path), "packet_sha256": reference["sha256"],
+            "diagnostic_only": diagnostic_only, "physical_site_verified": False,
+            "official_device_status_verified": False}
+
 def audit_opposite_candidate(attempt, analysis_path):
     """Independently check a saved candidate's original joins and result bindings.
 
@@ -191,10 +253,20 @@ def audit_opposite_candidate(attempt, analysis_path):
             analysis.get("physical_acceptance_claimed") is not False or
             analysis.get("legal_acceptance_claimed") is not False):
         raise ValueError("Candidate analysis must leave acceptance unresolved")
+    reviewed = verify_opposite_site_packet(config, attempt)
+    packet_path = Path(reviewed["packet_path"]).resolve()
+    if not packet_path.is_relative_to(attempt.resolve()):
+        raise ValueError("Retained candidate site packet required inside attempt")
+    packet_name = packet_path.relative_to(attempt.resolve()).as_posix()
+    for name in ("road_geometry.json", "turn_route_context.json",
+                 "stop_context.json", "signal_context.json"):
+        if _read(attempt / name).get("site_review_sha256") != reviewed["packet_sha256"]:
+            raise ValueError("Candidate context/site review binding differs: " + name)
     required = {"config.json", "road_geometry.json", "turn_route_context.json",
                 "body_history.jsonl", "crossing_history.jsonl", "signal_context.json",
                 "signal_history.jsonl", "stop_context.json", "stop_history.jsonl",
-                "video_frames.jsonl", "trace.jsonl", "capture/evidence.jsonl", *CAMERAS}
+                "video_frames.jsonl", "trace.jsonl", "capture/evidence.jsonl",
+                packet_name, *CAMERAS}
     hashes = result.get("source_evidence_hashes")
     if not isinstance(hashes, dict) or set(hashes) != required or analysis.get("source_evidence_hashes") != hashes:
         raise ValueError("Complete candidate source hash inventory required")

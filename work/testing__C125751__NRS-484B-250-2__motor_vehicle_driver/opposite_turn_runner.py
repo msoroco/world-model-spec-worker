@@ -144,6 +144,10 @@ def capture_candidate_media(output_dir, world, carla, site, turning_role,
         case_id = config.get("selected_case_id")
         _validate_candidate_construction(root, config, site, turning_role,
                                          release_frames, target_speeds_mps, frames)
+        from opposite_site_probe import verify_opposite_site_packet
+        reviewed = verify_opposite_site_packet(config, root)
+        if reviewed["diagnostic_only"]:
+            raise ValueError("Diagnostic opposite-turn site cannot enter Native capture")
         generated = {"capture", "road_geometry.json", "turn_route_context.json",
                      "stop_context.json", "signal_context.json", "body_history.jsonl",
                      "crossing_history.jsonl", "stop_history.jsonl", "signal_history.jsonl",
@@ -210,15 +214,18 @@ def capture_candidate_media(output_dir, world, carla, site, turning_role,
         "ego_approach_heading_deg": headings["ego"],
         "other_approach_heading_deg": headings["other"],
         "approach_geometry_source": site["approach_geometry_source"],
-        "review_status": "candidate_only"}, allow_nan=False) + "\n")
+        "review_status": "candidate_only",
+        "site_review_sha256": reviewed["packet_sha256"] if client is not None else None}, allow_nan=False) + "\n")
     (root / "turn_route_context.json").write_text(json.dumps({
         "intersection_id": junction_id, "routes": site["routes"],
         "approach_geometry_source": site["approach_geometry_source"],
+        "site_review_sha256": reviewed["packet_sha256"] if client is not None else None,
         "turn_intention_source": "Native route candidate; original trajectory requires review",
         "review_status": "candidate_only"}, allow_nan=False) + "\n")
     (root / "stop_context.json").write_text(json.dumps({
         "intersection_id": junction_id,
         "selected_references": references,
+        "site_review_sha256": reviewed["packet_sha256"] if client is not None else None,
         "review_status": "candidate_only"}, allow_nan=False) + "\n")
     if governed_lights is not None:
         (root / "signal_context.json").write_text(json.dumps({
@@ -231,6 +238,7 @@ def capture_candidate_media(output_dir, world, carla, site, turning_role,
             "other_governed_road_id": lanes["other"][0],
             "other_governed_lane_id": lanes["other"][1],
             "device_inventory_source": site["device_inventory_source"],
+            "site_review_sha256": reviewed["packet_sha256"] if client is not None else None,
             "review_status": "candidate_only"}, allow_nan=False) + "\n")
     from worker_exchange.native_output import FrameMap
     with ExitStack() as stack:
@@ -533,6 +541,18 @@ def finalize_candidate_opposite_turn(attempt, output):
             config.get("turning_role") not in ("ego", "other") or
             not isinstance(config.get("recording_description"), dict)):
         raise ValueError("Exact C125751 opposing-turn candidate config required")
+    from opposite_site_probe import verify_opposite_site_packet
+    reviewed = verify_opposite_site_packet(config, attempt)
+    packet_path = Path(reviewed["packet_path"]).resolve()
+    if not packet_path.is_relative_to(attempt.resolve()):
+        raise ValueError("Retained opposite-turn site packet required inside attempt")
+    packet_name = packet_path.relative_to(attempt.resolve()).as_posix()
+    for name in ("road_geometry.json", "turn_route_context.json",
+                 "stop_context.json", "signal_context.json"):
+        context = json.loads((attempt / name).read_text())
+        if context.get("site_review_sha256") != reviewed["packet_sha256"]:
+            raise ValueError("Saved opposite-turn context differs from reviewed site packet: " + name)
+    required = (*required, packet_name)
     entry = analyze_candidate_opposite_entry(attempt)
     if entry["turning_role"] != config["turning_role"]:
         raise ValueError("Saved turning role differs from exact config")
