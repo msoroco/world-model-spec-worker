@@ -36,8 +36,13 @@ def main():
     parser.add_argument('--manifest', type=Path, default=DEFAULT_MANIFEST)
     parser.add_argument('--tag', default='v3')
     parser.add_argument('--slug', choices=('reference', 'contrast',
-                                            'ordinary_red_signed'),
+                                            'ordinary_red_signed',
+                                            'mail_adjacent_deposit',
+                                            'mail_no_box_deposit'),
                         default='reference')
+    parser.add_argument('--candidates', nargs='+',
+                        choices=('primary', 'fallback1', 'fallback2', 'fallback3'),
+                        default=('primary', 'fallback1', 'fallback2', 'fallback3'))
     args = parser.parse_args()
     if not args.tag.replace('-', '').isalnum():
         raise ValueError('Tag must be a simple output label')
@@ -46,7 +51,13 @@ def main():
     manifest = json.loads(manifest_path.read_text())
     entry = next(e for e in manifest['cases'] if e['case_id'] == case_id)
     records = []
-    for candidate in ('primary', 'fallback1', 'fallback2', 'fallback3'):
+    for candidate in args.candidates:
+        chosen = entry if candidate == 'primary' else next(
+            c for c in entry['candidates'] if c['id'] == candidate)
+        construction = json.loads((ROOT / chosen['construction']).read_text())
+        config = json.loads(next(f['content'] for f in construction['files']
+                                 if f['path'] == 'config.json'))
+        expected_frames = config.get('capture_frames', config.get('frames'))
         prefix = REPO / '.runtime-work' / ('c150142-selected-' + args.slug + '-' + candidate + '-' + args.tag)
         compat_dir = Path(str(prefix) + '-compat')
         compat_log = Path(str(prefix) + '-compat.full.log')
@@ -68,14 +79,12 @@ def main():
                      '--attempt', attempt, '--output', result_dir,
                      '--library', REPO / 'runtime/pipeline/library',
                      '--validator', VALIDATOR], saved_log)
-        chosen = entry if candidate == 'primary' else next(
-            c for c in entry['candidates'] if c['id'] == candidate)
         if (compat['passed'] is not True or saved['passed'] is not True or
                 compat['case_id'] != saved['case_id'] or
                 compat['candidate_id'] != saved['candidate_id'] or
                 compat['construction_sha256'] != chosen['construction_sha256'] or
-                saved['timestamp_joins']['frames'] != 240 or
-                saved['final_video_checks']['frames'] != 240 or
+                saved['timestamp_joins']['frames'] != expected_frames or
+                saved['final_video_checks']['frames'] != expected_frames or
                 saved['physical_acceptance_claimed'] or
                 saved['legal_acceptance_claimed']):
             raise ValueError('Selected short-case compatibility/saved proof mismatch')

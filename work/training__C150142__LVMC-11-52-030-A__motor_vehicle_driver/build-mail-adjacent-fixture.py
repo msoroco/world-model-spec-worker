@@ -1,5 +1,6 @@
 """Freeze a bounded, textual mail-deposit diagnostic from the prior CPU sample."""
 import hashlib
+import argparse
 import json
 import pickle
 import sys
@@ -7,9 +8,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
-SOURCE = REPO / '.runtime-work/c150142-mail-adjacent-primary-native-v3'
-SLUG = 'mail_adjacent_deposit'
-CASE = ROOT.name + '__' + SLUG
+SOURCES = {
+    'mail_adjacent_deposit': '.runtime-work/c150142-mail-adjacent-primary-native-v3',
+    'mail_no_box_deposit': '.runtime-work/c150142-mail-no-box-primary-native-v3',
+}
 sys.path.insert(0, str(REPO / 'runtime/pipeline/scenario_pipeline'))
 
 
@@ -18,8 +20,15 @@ def sha(path):
 
 
 def main():
-    config = json.loads((SOURCE / 'config.json').read_text())
-    if config['case_id'] != CASE or config['capture_frames'] != 361:
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--slug', choices=tuple(SOURCES),
+                        default='mail_adjacent_deposit')
+    args = parser.parse_args()
+    slug = args.slug
+    source_root = REPO / SOURCES[slug]
+    case_id = ROOT.name + '__' + slug
+    config = json.loads((source_root / 'config.json').read_text())
+    if config['case_id'] != case_id or config['capture_frames'] != 361:
         raise ValueError('Prior CPU diagnostic identity or frame count changed')
     files = {}
     for name in ('road.xodr', 'statutory-context.json',
@@ -28,17 +37,17 @@ def main():
                  'native-mail-parcel-inventory.jsonl', 'acquisition-provenance.json',
                  'capture/evidence.jsonl', 'capture/native/frames.jsonl',
                  'capture/recorder_info.txt', 'capture/manifest.json'):
-        source = SOURCE / name
+        source = source_root / name
         if not source.is_file():
             raise ValueError('Missing retained diagnostic source: ' + name)
         files[name] = source.read_text()
     graphs = []
-    for source in sorted((SOURCE / 'capture/native/graphs/base').glob('*.pkl')):
+    for source in sorted((source_root / 'capture/native/graphs/base').glob('*.pkl')):
         with source.open('rb') as stream:
             graph = pickle.load(stream)
         if graph.nodes or graph.edges:
             raise ValueError('Unexpected diagnostic graph geometry')
-        graphs.append({'path': source.relative_to(SOURCE).as_posix(),
+        graphs.append({'path': source.relative_to(source_root).as_posix(),
                        'attributes': graph.graph, 'nodes': [], 'edges': []})
     if len(graphs) != 361:
         raise ValueError('Diagnostic graph sequence incomplete')
@@ -49,7 +58,7 @@ def main():
                   ('approach', 1280, 720, 'blue'),
                   ('reference_corner', 1280, 720, 'green'),
                   ('driver_reference', 1280, 720, 'white'))]
-    target_dir = ROOT / 'selected-diagnostics' / SLUG
+    target_dir = ROOT / 'selected-diagnostics' / slug
     target_dir.mkdir(parents=True, exist_ok=True)
     spec_path = target_dir / 'primary.json'
     spec_path.write_text(json.dumps({'files': files, 'graphs': graphs,
@@ -64,7 +73,7 @@ def main():
               'generator': {'source': relative, 'sha256': sha(spec_path)}}
     recipe_path = target_dir / 'primary-recipe.json'
     recipe_path.write_text(json.dumps(recipe, indent=2) + '\n')
-    print(json.dumps({'case_id': CASE, 'graph_count': len(graphs),
+    print(json.dumps({'case_id': case_id, 'graph_count': len(graphs),
                       'source_bytes': spec_path.stat().st_size,
                       'recipe': recipe_path.relative_to(REPO).as_posix(),
                       'recipe_sha256': sha(recipe_path),

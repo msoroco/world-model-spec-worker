@@ -5741,3 +5741,8 @@ Extended `native/delivery_audit.py` to include all 28 case-plan exception cases.
 The saved diagnostic analyses do not contain Native capture reports; the production runners author those reports, and saved processing copies present acquisition files. No original Native audit has passed. Next: selected-case proof rebinding and exact original-review/decode audit command tests for every case.
 
 Update047 scoped gate: `worker_check.py --assignment training__C150142__LVMC-11-52-030-A__motor_vehicle_driver --complete` exited 0 (`update047-scoped-complete.log`); adding `--require-delivery-ready` exited 1 (`update047-scoped-strict.log`) with `Preparation acceptance failed: partial/missing packages remain`. The status remains partial while selected-case CPU delivery proofs are unfinished.
+
+
+### C150142 Update048
+
+Selected all 30 C150142 exact CPU cases from the frozen conditional red-curb witness and full statute; 120 rebound candidates passed offline and their logs are bound in the partial canonical manifest. Reference, contrast and ordinary signed red curb passed four candidates each through canonical compatibility and saved processing. Mail-adjacent deposit gained a source-bound 361-frame recipe/contract and passed primary plus three fallbacks under a pilot manifest. All evidence is synthetic CPU diagnostics; no original Native, physical or legal acceptance. Other exception contracts/fixtures, long-case compatibility, selected delivery/comparison bindings and local integration remain worker-owned. Scoped complete passes; strict remains partial. Full gate: `full gate still running`. See `work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/HANDOFF.md` for exact receipts and resume steps.
