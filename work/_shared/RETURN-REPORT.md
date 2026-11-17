@@ -5866,3 +5866,9 @@ Update058 final C150142 scoped complete check passed after 27-case audit change 
 Update058 C179480: added surveyed-road stop target construction with lane-blocking reference, shoulder-clear contrast and identical through-traffic path; three geometry/selection tests pass (`update058-stop-construction-tests.log`). Necessity, lawful compliance and actual impediment remain original-source measurements. Package partial; Native runner and proofs are worker-owned CPU next work.
 
 Update058 C179480 scoped complete static gate passed; delivery readiness remains partial.
+
+Update059 C179480: implemented a CARLA-facing measured-pose stop controller and four 20 Hz source-camera installation with cleanup. Six CPU tests and pinned preflight pass. The module is a construction component; map-surveyed runner, exception cases, source finalizer, candidate proofs and audits remain CPU work. Status partial.
+
+Update059 C179480 law review: case plan now contains four unselected cases and three comparisons, including safe-operation and legal-compliance exceptions. Scoped complete passes after change; scoped strict rejects truthful partial status. Governing control and Native source facts must be constructed and proved before selection.
+
+Update059 C179480 checkpoint: four planned law branches, three comparisons and explicit no-accepted-recording evidence review; distinct source observation mappings, surveyed-road targets, CARLA-facing controller/four cameras and frame-joined raw-motion analyzer. Nine CPU tests, preflight and final scoped static gate pass. Scoped strict rejects partial; full strict 60-second rerun timed out with no output. Current completed batch failure supplied by user names unapproved frozen `runtime/pipeline/runs/scenario_pipeline/inputs/shared/manifest.json`, untouched. Native runner, exception sources, candidate proofs and independent audits remain worker-owned CPU work; no physical acceptance claimed.

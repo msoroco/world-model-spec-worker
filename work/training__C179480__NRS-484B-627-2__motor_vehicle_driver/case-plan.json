@@ -17,7 +17,9 @@
       "evidence_or_gap": "Exact statute: A person shall not bring a vehicle to a complete stop upon a roadway so as to impede or block the normal and reasonable movement of traffic unless the stop is necessary for safe operation or in compliance with law.; no measured Native evidence or source-hashed equivalence receipt yet.",
       "case_ids": [
         "training__C179480__NRS-484B-627-2__motor_vehicle_driver__reference",
-        "training__C179480__NRS-484B-627-2__motor_vehicle_driver__contrast"
+        "training__C179480__NRS-484B-627-2__motor_vehicle_driver__contrast",
+        "training__C179480__NRS-484B-627-2__motor_vehicle_driver__safe_operation_stop",
+        "training__C179480__NRS-484B-627-2__motor_vehicle_driver__law_required_stop"
       ]
     },
     {
@@ -27,7 +29,9 @@
       "evidence_or_gap": "Exact statute: Paved roadway destination stop; no measured Native evidence or source-hashed equivalence receipt yet.",
       "case_ids": [
         "training__C179480__NRS-484B-627-2__motor_vehicle_driver__reference",
-        "training__C179480__NRS-484B-627-2__motor_vehicle_driver__contrast"
+        "training__C179480__NRS-484B-627-2__motor_vehicle_driver__contrast",
+        "training__C179480__NRS-484B-627-2__motor_vehicle_driver__safe_operation_stop",
+        "training__C179480__NRS-484B-627-2__motor_vehicle_driver__law_required_stop"
       ]
     }
   ],
@@ -45,6 +49,12 @@
       "fixed_context": "Hold cell geometry, actors, traffic controls, weather, and all noncompared controller settings constant; verify activation and exceptions before use.",
       "source_topic_ids": [
         "text-0"
+      ],
+      "gap_ids": [
+        "gap-roadway-stop",
+        "gap-traffic-effect",
+        "gap-exceptions",
+        "gap-cell-scope"
       ]
     },
     {
@@ -60,6 +70,54 @@
       "fixed_context": "Hold cell geometry, actors, traffic controls, weather, and all noncompared controller settings constant; verify activation and exceptions before use.",
       "source_topic_ids": [
         "text-0"
+      ],
+      "gap_ids": [
+        "gap-roadway-stop",
+        "gap-traffic-effect",
+        "gap-exceptions",
+        "gap-cell-scope"
+      ]
+    },
+    {
+      "target_law_id": "NRS-484B-627-2",
+      "planning_status": "unverified_definition",
+      "target_type": "attempt",
+      "comparison_variable": "roadway_stop_blocks_traffic",
+      "comparison_unit": "bool",
+      "fixed_context": "Hold cell geometry, actors, traffic controls, weather, and all noncompared controller settings constant; verify activation and exceptions before use.",
+      "source_topic_ids": [
+        "text-0"
+      ],
+      "case_id": "training__C179480__NRS-484B-627-2__motor_vehicle_driver__safe_operation_stop",
+      "requested_setting": "necessary_for_safe_operation",
+      "case_description": "A complete roadway stop that may impede through traffic while a source-visible other-vehicle hazard makes stopping necessary for safe operation; necessity and impediment require original-source review.",
+      "recorded_value": null,
+      "gap_ids": [
+        "gap-roadway-stop",
+        "gap-traffic-effect",
+        "gap-exceptions",
+        "gap-cell-scope"
+      ]
+    },
+    {
+      "target_law_id": "NRS-484B-627-2",
+      "planning_status": "unverified_definition",
+      "target_type": "attempt",
+      "comparison_variable": "roadway_stop_blocks_traffic",
+      "comparison_unit": "bool",
+      "fixed_context": "Hold cell geometry, actors, traffic controls, weather, and all noncompared controller settings constant; verify activation and exceptions before use.",
+      "source_topic_ids": [
+        "text-0"
+      ],
+      "case_id": "training__C179480__NRS-484B-627-2__motor_vehicle_driver__law_required_stop",
+      "requested_setting": "in_compliance_with_law",
+      "case_description": "A complete roadway stop that may impede through traffic in response to a source-visible governing legal stop requirement; governing control and compliance require independent source review and compatible cell geometry.",
+      "recorded_value": null,
+      "gap_ids": [
+        "gap-roadway-stop",
+        "gap-traffic-effect",
+        "gap-exceptions",
+        "gap-cell-scope"
       ]
     }
   ],
@@ -83,6 +141,44 @@
         "camera and capture profile"
       ],
       "status": "planned_unverified"
+    },
+    {
+      "comparison_id": "training__C179480__NRS-484B-627-2__motor_vehicle_driver__safe_operation_exception",
+      "case_ids": [
+        "training__C179480__NRS-484B-627-2__motor_vehicle_driver__reference",
+        "training__C179480__NRS-484B-627-2__motor_vehicle_driver__safe_operation_stop"
+      ],
+      "deliberate_differences": [
+        "safe_operation_necessity",
+        "other_vehicle_hazard_present"
+      ],
+      "fixed_conditions": [
+        "cell",
+        "actor",
+        "roadway geometry",
+        "camera and capture profile",
+        "roadway stop target"
+      ],
+      "status": "planned_unverified"
+    },
+    {
+      "comparison_id": "training__C179480__NRS-484B-627-2__motor_vehicle_driver__legal_compliance_exception",
+      "case_ids": [
+        "training__C179480__NRS-484B-627-2__motor_vehicle_driver__reference",
+        "training__C179480__NRS-484B-627-2__motor_vehicle_driver__law_required_stop"
+      ],
+      "deliberate_differences": [
+        "governing_stop_requirement",
+        "compliance_with_law"
+      ],
+      "fixed_conditions": [
+        "cell",
+        "actor",
+        "roadway geometry",
+        "camera and capture profile",
+        "roadway stop target"
+      ],
+      "status": "planned_unverified"
     }
   ],
   "observations": [
@@ -103,79 +199,147 @@
       "unit": "bool",
       "mandatory": true,
       "purpose": "stopped vehicle blocks versus does not block other traffic; necessity separately"
+    },
+    {
+      "name": "ego_stop_history",
+      "unit": "m/s",
+      "mandatory": true,
+      "purpose": "Synchronized raw ego pose and velocity establish an actual complete stop."
+    },
+    {
+      "name": "roadway_surface_grounding",
+      "unit": "m",
+      "mandatory": true,
+      "purpose": "Map lane topology and original wheel/footprint positions distinguish roadway from shoulder."
+    },
+    {
+      "name": "ego_lane_footprint",
+      "unit": "m",
+      "mandatory": true,
+      "purpose": "Original ego bounding box and surveyed travel-lane polygon establish lane overlap."
+    },
+    {
+      "name": "following_actor_gap_history",
+      "unit": "m",
+      "mandatory": true,
+      "purpose": "Original following-vehicle pose and lane history establish whether a queue formed; a queue is not required."
+    },
+    {
+      "name": "following_actor_deceleration",
+      "unit": "m/s\u00b2",
+      "mandatory": true,
+      "purpose": "Original following-vehicle velocity series measures deceleration without treating a numerical cutoff as law."
+    },
+    {
+      "name": "following_actor_stop_history",
+      "unit": "m/s",
+      "mandatory": true,
+      "purpose": "Original following-vehicle velocity and cause context distinguish forced halt from planned stop."
+    },
+    {
+      "name": "governing_control_readback",
+      "unit": "state",
+      "mandatory": true,
+      "purpose": "Original signal/device state and approach association establish any legal stop requirement."
+    },
+    {
+      "name": "ego_velocity_history",
+      "unit": "m/s",
+      "mandatory": true,
+      "purpose": "Original CARLA ego velocity vector is retained frame by frame."
+    },
+    {
+      "name": "safe_operation_necessity",
+      "unit": "source review",
+      "mandatory": true,
+      "purpose": "Original hazard, conflict and stopping-reason evidence; no expected-label substitution."
+    },
+    {
+      "name": "compliance_with_law",
+      "unit": "source review",
+      "mandatory": true,
+      "purpose": "Governing legal control and observed response; no expected-label substitution."
     }
   ],
   "source_observation_mapping": {
     "drv.stopped": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Synchronized raw ego pose and velocity establish an actual complete stop. Not verified until original source review.",
       "channels": [
-        "roadway_stop_blocks_traffic"
+        "ego_stop_history"
       ],
       "source_refs": [
-        "inputs/training__C179480__NRS-484B-627-2__motor_vehicle_driver/assignment.json"
+        "inputs/training__C179480__NRS-484B-627-2__motor_vehicle_driver/assignment.json",
+        "inputs/training__C179480__NRS-484B-627-2__motor_vehicle_driver/witnesses.json"
       ]
     },
     "st.roadway": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Map lane topology and original wheel/footprint positions distinguish roadway from shoulder. Not verified until original source review.",
       "channels": [
-        "roadway_stop_blocks_traffic"
+        "roadway_surface_grounding"
       ],
       "source_refs": [
-        "inputs/training__C179480__NRS-484B-627-2__motor_vehicle_driver/assignment.json"
+        "inputs/training__C179480__NRS-484B-627-2__motor_vehicle_driver/assignment.json",
+        "inputs/training__C179480__NRS-484B-627-2__motor_vehicle_driver/witnesses.json"
       ]
     },
     "rel.occupies": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Original ego bounding box and surveyed travel-lane polygon establish lane overlap. Not verified until original source review.",
       "channels": [
-        "roadway_stop_blocks_traffic"
+        "ego_lane_footprint"
       ],
       "source_refs": [
-        "inputs/training__C179480__NRS-484B-627-2__motor_vehicle_driver/assignment.json"
+        "inputs/training__C179480__NRS-484B-627-2__motor_vehicle_driver/assignment.json",
+        "inputs/training__C179480__NRS-484B-627-2__motor_vehicle_driver/witnesses.json"
       ]
     },
     "drv.queue_behind": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Original following-vehicle pose and lane history establish whether a queue formed; a queue is not required. Not verified until original source review.",
       "channels": [
-        "roadway_stop_blocks_traffic"
+        "following_actor_gap_history"
       ],
       "source_refs": [
-        "inputs/training__C179480__NRS-484B-627-2__motor_vehicle_driver/assignment.json"
+        "inputs/training__C179480__NRS-484B-627-2__motor_vehicle_driver/assignment.json",
+        "inputs/training__C179480__NRS-484B-627-2__motor_vehicle_driver/witnesses.json"
       ]
     },
     "drv.hard_deceleration": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Original following-vehicle velocity series measures deceleration without treating a numerical cutoff as law. Not verified until original source review.",
       "channels": [
-        "roadway_stop_blocks_traffic"
+        "following_actor_deceleration"
       ],
       "source_refs": [
-        "inputs/training__C179480__NRS-484B-627-2__motor_vehicle_driver/assignment.json"
+        "inputs/training__C179480__NRS-484B-627-2__motor_vehicle_driver/assignment.json",
+        "inputs/training__C179480__NRS-484B-627-2__motor_vehicle_driver/witnesses.json"
       ]
     },
     "drv.forced_halt": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Original following-vehicle velocity and cause context distinguish forced halt from planned stop. Not verified until original source review.",
       "channels": [
-        "roadway_stop_blocks_traffic"
+        "following_actor_stop_history"
       ],
       "source_refs": [
-        "inputs/training__C179480__NRS-484B-627-2__motor_vehicle_driver/assignment.json"
+        "inputs/training__C179480__NRS-484B-627-2__motor_vehicle_driver/assignment.json",
+        "inputs/training__C179480__NRS-484B-627-2__motor_vehicle_driver/witnesses.json"
       ]
     },
     "dev.traffic_signal": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Original signal/device state and approach association establish any legal stop requirement. Not verified until original source review.",
       "channels": [
-        "roadway_stop_blocks_traffic"
+        "governing_control_readback"
       ],
       "source_refs": [
-        "inputs/training__C179480__NRS-484B-627-2__motor_vehicle_driver/assignment.json"
+        "inputs/training__C179480__NRS-484B-627-2__motor_vehicle_driver/assignment.json",
+        "inputs/training__C179480__NRS-484B-627-2__motor_vehicle_driver/witnesses.json"
       ]
     },
     "kin.velocity": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Original CARLA ego velocity vector is retained frame by frame. Not verified until original source review.",
       "channels": [
-        "roadway_stop_blocks_traffic"
+        "ego_velocity_history"
       ],
       "source_refs": [
-        "inputs/training__C179480__NRS-484B-627-2__motor_vehicle_driver/assignment.json"
+        "inputs/training__C179480__NRS-484B-627-2__motor_vehicle_driver/assignment.json",
+        "inputs/training__C179480__NRS-484B-627-2__motor_vehicle_driver/witnesses.json"
       ]
     }
   },
@@ -210,5 +374,36 @@
   ],
   "selection_targets": [
     "full-train"
-  ]
+  ],
+  "evidence_review": {
+    "reviewer": "CPU preparation worker",
+    "method": "Read frozen assignment law, conditional witness and full-train membership; no accepted recording inventory or membership row was supplied. Keep all Native physical facts unproven.",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "gap-roadway-stop",
+        "requirement": "text-0",
+        "source": "inputs/training__C179480__NRS-484B-627-2__motor_vehicle_driver/assignment.json",
+        "why_existing_insufficient": "Need original ego trajectory and roadway-versus-shoulder grounding to establish a complete roadway stop."
+      },
+      {
+        "id": "gap-traffic-effect",
+        "requirement": "text-0",
+        "source": "inputs/training__C179480__NRS-484B-627-2__motor_vehicle_driver/assignment.json",
+        "why_existing_insufficient": "Need original other-vehicle motion and relative path to establish actual impediment or block of normal and reasonable traffic."
+      },
+      {
+        "id": "gap-exceptions",
+        "requirement": "text-0",
+        "source": "inputs/training__C179480__NRS-484B-627-2__motor_vehicle_driver/assignment.json",
+        "why_existing_insufficient": "Need original hazard, governing control and stopping-reason sources to distinguish safe-operation necessity and compliance with law."
+      },
+      {
+        "id": "gap-cell-scope",
+        "requirement": "reviewed-scope-0",
+        "source": "inputs/training__C179480__NRS-484B-627-2__motor_vehicle_driver/witnesses.json",
+        "why_existing_insufficient": "Conditional paved-road witness supplies no accepted Native recording or demonstrated cell equivalence."
+      }
+    ]
+  }
 }
