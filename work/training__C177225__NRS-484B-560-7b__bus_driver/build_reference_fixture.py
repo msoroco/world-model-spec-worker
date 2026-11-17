@@ -39,23 +39,26 @@ def lines(rows):
     return ''.join(encode(row) for row in rows)
 
 
-def body(station):
-    return [[station + x, -1.75 + y, z]
+def body(station, direction=1):
+    return [[station + x, -1.75 * direction + y, z]
             for x in (-6.0, 6.0) for y in (-1.2, 1.2) for z in (0.0, 2.5)]
 
 
-def build(suffix='reference'):
+def build(suffix='reference', direction=1):
     global CASE_ID, SOURCES, SPEC, RECIPE
     if suffix not in ('reference', 'contrast'):
         raise ValueError('Unknown exact comparison suffix')
+    if direction not in (-1, 1):
+        raise ValueError('Unknown approach direction')
     CASE_ID = ASSIGNMENT + '__' + suffix
-    SOURCES = ROOT / 'fixtures' / ('sources' if suffix == 'reference'
-                                  else 'contrast-sources')
-    SPEC = ROOT / 'fixtures' / (suffix + '-diagnostic-spec.json')
-    RECIPE = ROOT / 'fixtures' / (suffix + '-recipe.json')
+    label = suffix if direction == 1 else suffix + '-fallback1'
+    SOURCES = ROOT / 'fixtures' / ('sources' if suffix == 'reference' and direction == 1
+                                  else label + '-sources')
+    SPEC = ROOT / 'fixtures' / (label + '-diagnostic-spec.json')
+    RECIPE = ROOT / 'fixtures' / (label + '-recipe.json')
     SOURCES.mkdir(parents=True, exist_ok=True)
     save('road.xodr', open_drive())
-    signal = {'officer_id': '206', 'bus_id': '205', 'direction': 1,
+    signal = {'officer_id': '206', 'bus_id': '205', 'direction': direction,
               'issued_frame': 0, 'first_governing_frame': 1,
               'last_governing_frame': FRAMES, 'crossing_id':
               'c177225_authored_rail_crossing', 'authorized': True,
@@ -71,10 +74,12 @@ def build(suffix='reference'):
     for index in range(FRAMES):
         frame = index + 1
         time = frame / RATE_HZ
-        station = -70.0 + (min(index * .25, 56.25) if suffix == 'reference'
-                           else index * .25)
+        station = direction * (-70.0 + (min(index * .25, 56.25) if suffix == 'reference'
+                                            else index * .25))
         speed = 5.0 if suffix == 'contrast' or index < 225 else 0.0
-        position = [station, -1.75, 0.0]
+        position = [station, -1.75 * direction, 0.0]
+        velocity = [speed * direction, 0.0, 0.0]
+        heading = 0.0 if direction == 1 else 180.0
         observed = {'frame': frame, 'time_s': time,
                     'participants': [],
                     'rgb_sensors': [{'actor_id': 300 + i,
@@ -83,34 +88,34 @@ def build(suffix='reference'):
                     'world_settings': {'no_rendering_mode': False},
                     'map_context': {'declared_public_way_road_ids': []}}
         trace.append({'frame': frame, 'time_s': time,
-                      'position': {'x': station, 'y': -1.75, 'z': 0.0},
-                      'position_m': position, 'heading_deg': 0.0,
+                      'position': {'x': station, 'y': -1.75 * direction, 'z': 0.0},
+                      'position_m': position, 'heading_deg': heading,
                       'speed_mps': speed, 'speed_mph': speed / .44704,
-                      'velocity_mps': [speed, 0.0, 0.0],
+                      'velocity_mps': velocity,
                       'control': {'throttle': 0.18 if speed else 0.0,
                                   'brake': 0.0 if speed else 1.0,
                                   'hand_brake': False}})
         evidence.append({'original_frame': frame, 'replay_frame': frame,
                          'actor_id': 205, 'recording_time_s': time,
                          'replay_simulation_time_s': time,
-                         'ego': {'position_m': position, 'heading_deg': 0.0,
+                         'ego': {'position_m': position, 'heading_deg': heading,
                                  'speed_mps': speed,
                                  'speed_provenance': 'synthetic_native_sample',
-                                 'body_vertices_m': body(station)},
+                                 'body_vertices_m': body(station, direction)},
                          'world': {'weather': {'sun_altitude_angle': 45.0,
                                                'precipitation': 0.0,
                                                'wetness': 0.0}},
                          'original_observations': observed})
         bus_rows.append({'native_frame': frame, 'actor_id': '205',
-                         'station_m': station, 'lane_y_native_m': -1.75,
-                         'heading_native_deg': 0.0,
-                         'velocity_native_xyz_mps': [speed, 0.0, 0.0],
-                         'approach_direction': 1,
+                         'station_m': station, 'lane_y_native_m': -1.75 * direction,
+                         'heading_native_deg': heading,
+                         'velocity_native_xyz_mps': velocity,
+                         'approach_direction': direction,
                          'source_kind': 'synthetic_native_sample'})
         officer_rows.append({'native_frame': frame, 'actor_id': '206',
                              'recipient_actor_id': '205',
                              'crossing_id': signal['crossing_id'],
-                             'direction': 1, 'authorized': True,
+                             'direction': direction, 'authorized': True,
                              'hand_signal': 'STOP', 'governing': True,
                              'pose_control_applied': True,
                              'pose_bone_readback': 'crl_arm__R'})
@@ -164,5 +169,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--case-suffix', choices=('reference', 'contrast'),
                         default='reference')
+    parser.add_argument('--direction', type=int, choices=(-1, 1), default=1)
     args = parser.parse_args()
-    print(json.dumps(build(args.case_suffix)))
+    print(json.dumps(build(args.case_suffix, args.direction)))

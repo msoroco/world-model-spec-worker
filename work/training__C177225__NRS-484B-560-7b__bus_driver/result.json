@@ -8,7 +8,7 @@
   "comparison_audits_passed": 0,
   "input_sha256": "0f98bdbc67694d46078a43e334e663045d482fbe71132a40d74f69a9acd5b8d4",
   "readiness_kind": null,
-  "reason": "Update062 constructed both exact C177225 reference and contrast primaries with fixed road/officer/camera/duration context and a single requested bus-response difference. Each primary passes pinned offline, 600-frame source-hashed positive/negative compatibility (Native validation, four-view media, converter, Lean decoder, render/final decode), and pinned saved processing with original inputs preserved, 600 timestamp joins and no missing evidence. A source-bound independent comparison diagnostic observes stop versus crossing in synthetic_native_sample data. The overview camera was corrected to the 1920x1080 pinned profile; Native capture sealing and truthful synthetic provenance were added. Twenty-five CPU tests and pinned preflight pass. These are software diagnostics only: the generic iron-plank rail prop and officer visibility/authority require physical review, and no CARLA run or legal/physical acceptance occurred. Three distinct tested physical-risk fallbacks per case, independent delivery audit, full semantic proposals/handoff and final-manifest proof rebinding remain worker-owned CPU preparation. Keep partial until scoped strict passes. Latest user-supplied full strict names an unapproved frozen runtime manifest, untouched. Update063: opposite-approach fallback1 constructed and pinned offline passed for both selected cases; compatibility and saved proofs pending.",
+  "reason": "Update062 constructed both exact C177225 reference and contrast primaries with fixed road/officer/camera/duration context and a single requested bus-response difference. Each primary passes pinned offline, 600-frame source-hashed positive/negative compatibility (Native validation, four-view media, converter, Lean decoder, render/final decode), and pinned saved processing with original inputs preserved, 600 timestamp joins and no missing evidence. A source-bound independent comparison diagnostic observes stop versus crossing in synthetic_native_sample data. The overview camera was corrected to the 1920x1080 pinned profile; Native capture sealing and truthful synthetic provenance were added. Twenty-five CPU tests and pinned preflight pass. These are software diagnostics only: the generic iron-plank rail prop and officer visibility/authority require physical review, and no CARLA run or legal/physical acceptance occurred. Three distinct tested physical-risk fallbacks per case, independent delivery audit, full semantic proposals/handoff and final-manifest proof rebinding remain worker-owned CPU preparation. Keep partial until scoped strict passes. Latest user-supplied full strict names an unapproved frozen runtime manifest, untouched. Update063: opposite-approach fallback1 constructed and pinned offline passed for both selected cases; compatibility and saved proofs pending. Update064: fallback1 both sides pass pinned direction-consistent synthetic compatibility and saved processing; remaining two fallback plans per case, physical/lifecycle preparation, and delivery audit remain.",
   "recordings_accepted": 0,
   "status": "partial",
   "tests": [
@@ -221,6 +221,54 @@
       "exit_code": 0,
       "log": "update063-scoped-complete.log",
       "sha256": "0ca52ef3c3be8f5f7299bd93bb16f2381bcafbd101433b8d4b3745d8dd83674d"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/training__C177225__NRS-484B-560-7b__bus_driver/reference-fallback1-proof-manifest.json --case training__C177225__NRS-484B-560-7b__bus_driver__reference --candidate fallback1 --output .runtime-work/update064-c177225-reference-fallback1-compatibility --library runtime/pipeline/library --validator .runtime-work/c10316-current-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "update064-reference-fallback1-compatibility.log",
+      "sha256": "295412e79b8bfac519b2454e27af8e5c724d16717fa9ddaa98ad64bcd742a5a2"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C177225__NRS-484B-560-7b__bus_driver/reference-fallback1-proof-manifest.json --case training__C177225__NRS-484B-560-7b__bus_driver__reference --attempt .runtime-work/update064-c177225-reference-fallback1-compatibility --output .runtime-work/update064-c177225-reference-fallback1-saved --library runtime/pipeline/library --validator .runtime-work/c10316-current-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "update064-reference-fallback1-saved.log",
+      "sha256": "d79abe9f39aaf936faf925a3e90aba228ec9d6c2552968e961e71e4e31c36b49"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/training__C177225__NRS-484B-560-7b__bus_driver/contrast-fallback1-proof-manifest.json --case training__C177225__NRS-484B-560-7b__bus_driver__contrast --candidate fallback1 --output .runtime-work/update064-c177225-contrast-fallback1-compatibility --library runtime/pipeline/library --validator .runtime-work/c10316-current-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "update064-contrast-fallback1-compatibility.log",
+      "sha256": "5e5975e3ec01df47974d7e4b346195f9042a64b7a0d7273bf8b37ecf150b0d33"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C177225__NRS-484B-560-7b__bus_driver/contrast-fallback1-proof-manifest.json --case training__C177225__NRS-484B-560-7b__bus_driver__contrast --attempt .runtime-work/update064-c177225-contrast-fallback1-compatibility --output .runtime-work/update064-c177225-contrast-fallback1-saved --library runtime/pipeline/library --validator .runtime-work/c10316-current-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "update064-contrast-fallback1-saved.log",
+      "sha256": "7a24a6ee24d1b7825d171f7fc2d5660f1a35af2ea98c5ead537017601c7b7ac7"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "update064-preflight.log",
+      "sha256": "f9082abfc236633fd6b92a7b7b9593ecc7384278f334fea928fb3eb16e1d0c9a"
+    },
+    {
+      "command": "PYTHONPATH=runtime/pipeline/scenario_pipeline .venv-cpu/bin/python -m unittest discover -s work/training__C177225__NRS-484B-560-7b__bus_driver -p 'test_*.py' -v",
+      "exit_code": 0,
+      "log": "update064-construction-tests.log",
+      "sha256": "ffa08d3796adfe21e1f00625a2ebbdcc8b24d0e7aa7da96333dc60a7a8693b7c"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment training__C177225__NRS-484B-560-7b__bus_driver --complete",
+      "exit_code": 0,
+      "log": "update064-scoped-complete.log",
+      "sha256": "0ca52ef3c3be8f5f7299bd93bb16f2381bcafbd101433b8d4b3745d8dd83674d"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment training__C177225__NRS-484B-560-7b__bus_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "update064-scoped-strict.log",
+      "sha256": "f105b68de8bd7bbb3e9bdfade14e75a9b56640cac7ca657a4ce02c3efba457fe"
     }
   ]
 }
