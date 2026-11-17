@@ -7,7 +7,7 @@
       "case_id": "heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver__east_cautious_proxy",
       "kind": "delivery",
       "construction": "construction.json",
-      "construction_sha256": "4a3f9f7ff239bc17e45fd67408f0e03f7fd0a48879bec96a4717da2676b07e86",
+      "construction_sha256": "a7eeea5fb8b33ac578e86b9f3a8dd61a0665ffb056747282b8df266c0bd30c29",
       "measurement_procedure": {
         "entrypoint": "flashing_yellow_heavy.py"
       },
@@ -15,7 +15,68 @@
         "status": "physical",
         "reason": "Native yellow head appearance, governed route, heavy body and crossing geometry need source-backed physical review"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/east_cautious_proxy/fallback1-construction.json",
+          "construction_sha256": "c3728ba6175d7e520c17fc6631afb285751a586aa3eb58bfe8ad92047030204d",
+          "trigger": {
+            "source": "Native governed-lane waypoint selection",
+            "metric": "unique route availability at 70 m before governed head",
+            "failure_condition": "Primary route has no unique 70 m predecessor; 60 m preserves the same governed lane and direction."
+          },
+          "changed_knobs": [
+            "approach_before_m: 70.0 to 60.0"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver/execution-manifest.json --case heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver__east_cautious_proxy --candidate fallback1 --output .runtime-work/c24753-fallback1-offline-current --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "exit_code": 0,
+            "log": "east_cautious_proxy-fallback1-offline.log",
+            "log_sha256": "3ad0f748f0e9705d8d099f695d8c774888d84925942002af40ed1739ff6975f5",
+            "construction_sha256": "c3728ba6175d7e520c17fc6631afb285751a586aa3eb58bfe8ad92047030204d"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/east_cautious_proxy/fallback2-construction.json",
+          "construction_sha256": "25780501e891dc0cccd7c11de265b227bf6118b2c47546f0edd533650bac9ec2",
+          "trigger": {
+            "source": "Native spawn API and collision readback",
+            "metric": "try_spawn_actor success for heavy and crossing actors at ground level",
+            "failure_condition": "Primary ground-level spawn collides with map geometry; raise both starts 0.35 m."
+          },
+          "changed_knobs": [
+            "spawn_z_offset_m: 0.0 to 0.35"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver/execution-manifest.json --case heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver__east_cautious_proxy --candidate fallback2 --output .runtime-work/c24753-fallback2-offline-current --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "exit_code": 0,
+            "log": "east_cautious_proxy-fallback2-offline.log",
+            "log_sha256": "e3ca240dad17848e41eec71fa8e1089d0dfbc87eba9f052e912f136b65258dbf",
+            "construction_sha256": "25780501e891dc0cccd7c11de265b227bf6118b2c47546f0edd533650bac9ec2"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/east_cautious_proxy/fallback3-construction.json",
+          "construction_sha256": "6627633f23c1fbd5c39bd7387495e1848fd3fcaeaefa654d57aa8294c7665f06",
+          "trigger": {
+            "source": "Original participant velocity samples",
+            "metric": "speed oscillation around the 3 m/s target",
+            "failure_condition": "Primary gain causes repeated speed overshoot or control oscillation; reduce proportional gain."
+          },
+          "changed_knobs": [
+            "speed_kp: 0.22 to 0.18"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver/execution-manifest.json --case heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver__east_cautious_proxy --candidate fallback3 --output .runtime-work/c24753-fallback3-offline-current --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "exit_code": 0,
+            "log": "east_cautious_proxy-fallback3-offline.log",
+            "log_sha256": "89d20be510523f9c035b3d98db46eba2d1672cf747ee5ef103218adc392838bd",
+            "construction_sha256": "6627633f23c1fbd5c39bd7387495e1848fd3fcaeaefa654d57aa8294c7665f06"
+          }
+        }
+      ],
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
@@ -23,11 +84,34 @@
       },
       "measurement_contract": "first-measurement-contract.json",
       "fixture_recipe": "work/heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver/diagnostic-recipe.json",
+      "acquisition": {
+        "native_yellow_on": {
+          "entrypoint": "flashing_yellow_heavy.py",
+          "method": "Post-tick governed Native light state readback joined to original frame map",
+          "evidence": "signal_state.jsonl and video_frames.jsonl"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "flashing_yellow_heavy.py",
+          "method": "Post-tick heavy actor velocity magnitude joined to original frame map",
+          "evidence": "participant_state.jsonl and video_frames.jsonl"
+        },
+        "ego_center_xy": {
+          "entrypoint": "flashing_yellow_heavy.py",
+          "method": "Post-tick heavy actor center joined to original frame map",
+          "evidence": "participant_state.jsonl and video_frames.jsonl"
+        },
+        "crossing_center_xy": {
+          "entrypoint": "flashing_yellow_heavy.py",
+          "method": "Post-tick crossing actor center joined to original frame map",
+          "evidence": "participant_state.jsonl and video_frames.jsonl"
+        }
+      },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver/execution-manifest.json --case heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver__east_cautious_proxy --candidate primary --output .runtime-work/c24753-east-cautious-primary-finalizer-offline-20261117 --python \"$PWD/.venv-cpu/bin/python\"",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver/execution-manifest.json --case heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver__east_cautious_proxy --candidate primary --output .runtime-work/c24753-primary-offline-current --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
         "exit_code": 0,
         "log": "east_cautious_proxy-primary-offline.log",
-        "construction_sha256": "4a3f9f7ff239bc17e45fd67408f0e03f7fd0a48879bec96a4717da2676b07e86"
+        "log_sha256": "6089f2a0589aeadbd067794cfca1a96cac6249f53f57a1cbe851099a62af4e74",
+        "construction_sha256": "a7eeea5fb8b33ac578e86b9f3a8dd61a0665ffb056747282b8df266c0bd30c29"
       }
     }
   ]

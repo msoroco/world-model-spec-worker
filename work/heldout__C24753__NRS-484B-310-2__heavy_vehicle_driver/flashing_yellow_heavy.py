@@ -156,12 +156,23 @@ def _crossing_route(world_map, junction_id):
 
 
 def construct_native(world, case, official_control_source, heavy_blueprint_id,
-                     crossing_blueprint_id, *, before_m=70.0):
+                     crossing_blueprint_id, *, before_m=70.0, spawn_z_offset_m=0.0,
+                     carla_module=None):
     """Spawn the actual map-linked actors; the caller owns and destroys returned actors."""
     if case.direction not in ('east','west') or case.target_mps <= 0:
         raise ValueError('invalid heavy-vehicle case')
     if not str(heavy_blueprint_id or '').startswith('vehicle.') or not str(crossing_blueprint_id or '').startswith('vehicle.'):
         raise ValueError('explicit vehicle blueprints required')
+    if not 0 <= spawn_z_offset_m <= .5:
+        raise ValueError('Native spawn height outside engineering bounds')
+    def raised(transform):
+        if not spawn_z_offset_m:
+            return transform
+        if carla_module is None:
+            raise ValueError('CARLA transform factory required for raised spawn')
+        point=transform.location
+        return carla_module.Transform(carla_module.Location(
+            x=point.x,y=point.y,z=point.z+spawn_z_offset_m),transform.rotation)
     controls = discover_native_control(world, official_control_source)
     selected = controls[case.direction]
     start,end = _native_route(selected['waypoint'],before_m,70.0)
@@ -173,13 +184,13 @@ def construct_native(world, case, official_control_source, heavy_blueprint_id,
     crossing_blueprint = library.find(crossing_blueprint_id) if crossing_route else None
     owned=[]
     try:
-        ego=world.try_spawn_actor(heavy,start)
+        ego=world.try_spawn_actor(heavy,raised(start))
         if ego is None:
             raise ValueError('heavy Native actor spawn failed')
         owned.append(ego)
         cross=None
         if crossing_route:
-            cross=world.try_spawn_actor(crossing_blueprint,crossing_route['start'])
+            cross=world.try_spawn_actor(crossing_blueprint,raised(crossing_route['start']))
             if cross is None:
                 raise ValueError('crossing Native actor spawn failed')
             owned.append(cross)
@@ -531,7 +542,8 @@ def run_native_case(output, config, *, host='127.0.0.1', port=2000):
         world.apply_settings(settings)
         scene=construct_native(world,CASES[branch],config['official_control_source'],
             config['heavy_blueprint_id'],config['crossing_blueprint_id'],
-            before_m=config.get('approach_before_m',70.0))
+            before_m=config.get('approach_before_m',70.0),
+            spawn_z_offset_m=config.get('spawn_z_offset_m',0.0),carla_module=carla)
         sinks={name:FFV1SourceSink(output,name) for name in SOURCE_CAMERAS}
         cameras=NativeSourceCameras(world,carla,scene['ego'],sinks)
         pipeline=PipelineCapture(client,scene['ego'],output,case_id,
@@ -590,6 +602,8 @@ def check_native_config(config):
             raise ValueError('explicit Native vehicle blueprint missing: '+field)
     if not 40<=config.get('approach_before_m',70.)<=90:
         raise ValueError('Native governed route distance outside engineering bounds')
+    if not 0<=config.get('spawn_z_offset_m',0.)<=.5:
+        raise ValueError('Native spawn height outside engineering bounds')
     if not 0<config.get('speed_kp',.22)<=.5:
         raise ValueError('Native speed controller gain outside engineering bounds')
     return True

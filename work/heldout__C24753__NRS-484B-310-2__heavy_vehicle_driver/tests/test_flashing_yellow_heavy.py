@@ -75,6 +75,9 @@ class FlashHeavyTests(unittest.TestCase):
    m.check_native_config(dict(cfg,actor='motor_vehicle_driver'))
   with self.assertRaisesRegex(ValueError,'blueprint missing'):
    m.check_native_config(dict(cfg,heavy_blueprint_id=''))
+  self.assertTrue(m.check_native_config(dict(cfg,spawn_z_offset_m=.35)))
+  with self.assertRaisesRegex(ValueError,'spawn height'):
+   m.check_native_config(dict(cfg,spawn_z_offset_m=.6))
   class Actor:
    id=11;is_alive=True
    def __init__(self):self.command=None
@@ -160,7 +163,7 @@ class FlashHeavyTests(unittest.TestCase):
  def test_native_governed_routes_heavy_spawn_crossing_and_signal_readback(self):
   class Waypoint:
    def __init__(self,x,y,yaw,road=1):
-    self.transform=Box(location=Box(x=x,y=y),rotation=Box(yaw=yaw))
+    self.transform=Box(location=Box(x=x,y=y,z=0.0),rotation=Box(yaw=yaw))
     self.road_id=road;self.lane_id=1
    def get_junction(self):return Box(id=7)
    def previous(self,d):return self.shift(-d)
@@ -199,6 +202,15 @@ class FlashHeavyTests(unittest.TestCase):
    self.assertEqual(scene['selected']['direction'],case.direction)
    self.assertEqual(scene['ego'].type_id,'vehicle.carlamotors.firetruck')
    self.assertEqual(scene['crossing'] is not None,case.crossing_vehicle)
+  carla=Box(Location=lambda **kw:Box(**kw),Transform=lambda location,rotation:Box(location=location,rotation=rotation))
+  raised=m.construct_native(world,m.CASES['east_cautious_proxy'],'source-identified-official-control',
+                            'vehicle.carlamotors.firetruck','vehicle.tesla.model3',
+                            spawn_z_offset_m=.35,carla_module=carla)
+  self.assertAlmostEqual(raised['ego'].transform.location.z,.35)
+  self.assertAlmostEqual(raised['crossing'].transform.location.z,.35)
+  with self.assertRaisesRegex(ValueError,'transform factory'):
+   m.construct_native(world,m.CASES['east_cautious_proxy'],'source-identified-official-control',
+                      'vehicle.carlamotors.firetruck','vehicle.tesla.model3',spawn_z_offset_m=.35)
   with m.NativeYellowController(world.lights[0],Box(Yellow='Yellow',Off='Off')) as control:
    self.assertTrue(control.set_at(0)['yellow_lens_on'])
    self.assertFalse(control.set_at(.3)['yellow_lens_on'])
