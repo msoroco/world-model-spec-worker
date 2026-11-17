@@ -16,6 +16,44 @@ def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def build_timing_sweep_point(output, release_frame=48):
+    """Materialize an exact CPU timing variant without changing selected fallbacks.
+
+    The returned manifest is a diagnostic offline input. It is not an expanded
+    canonical judgment case or evidence of realized Native motion.
+    """
+    output = Path(output)
+    output.mkdir(parents=True, exist_ok=False)
+    primary = json.loads((HERE / 'construction.json').read_text())
+    config = json.loads((HERE / 'config.json').read_text())
+    if type(release_frame) is not int or not 0 <= release_frame < config['frames']:
+        raise ValueError('Release frame outside planned capture')
+    config['other_release_frame'] = release_frame
+    site = (HERE / 'site.json').read_text()
+    (output / 'site.json').write_text(site)
+    emit(output / 'config.json', config)
+    construction = copy.deepcopy(primary)
+    construction['sweep_point'] = {
+        'sweep_id': 'c125745-1', 'axis': 'other_release_frame',
+        'commanded_value': release_frame, 'unit': 'Native frame',
+        'scope': 'CPU offline construction only; physical timing unverified',
+    }
+    for item in construction['files']:
+        if item['path'] == 'config.json':
+            item['content'] = (output / 'config.json').read_text()
+            item.pop('source', None)
+    emit(output / 'construction.json', construction)
+    manifest = {
+        'format': 'worker-execution-manifest',
+        'assignment_id': config['assignment_id'],
+        'cases': [{'case_id': config['selected_case_id'],
+                   'construction': 'construction.json',
+                   'construction_sha256': sha(output / 'construction.json')}],
+    }
+    emit(output / 'execution-manifest.json', manifest)
+    return manifest
+
+
 def build():
     primary = json.loads((HERE / 'construction.json').read_text())
     base_config = json.loads((HERE / 'config.json').read_text())

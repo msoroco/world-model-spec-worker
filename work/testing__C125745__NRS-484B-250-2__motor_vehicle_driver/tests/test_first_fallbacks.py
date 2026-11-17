@@ -1,13 +1,37 @@
 import hashlib
 import json
+import sys
+import tempfile
 import unittest
 from pathlib import Path
 
 
 HERE = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(HERE))
+from build_first_fallbacks import build_timing_sweep_point
 
 
 class FirstFallbackTests(unittest.TestCase):
+    def test_48_frame_timing_sweep_point_preserves_exact_primary(self):
+        primary = json.loads((HERE / 'construction.json').read_text())
+        with tempfile.TemporaryDirectory() as temporary:
+            output = Path(temporary) / 'sweep48'
+            manifest = build_timing_sweep_point(output)
+            construction = json.loads((output / 'construction.json').read_text())
+            config = json.loads((output / 'config.json').read_text())
+            baseline = json.loads((HERE / 'config.json').read_text())
+            self.assertEqual(config.pop('other_release_frame'), 48)
+            baseline.pop('other_release_frame')
+            self.assertEqual(config, baseline)
+            self.assertEqual(construction['sweep_point']['sweep_id'], 'c125745-1')
+            self.assertEqual(construction['case_id'], primary['case_id'])
+            self.assertEqual({item['path'] for item in construction['files']},
+                             {item['path'] for item in primary['files']})
+            self.assertEqual(json.loads(next(item['content'] for item in construction['files']
+                                             if item['path'] == 'config.json'))['other_release_frame'], 48)
+            self.assertEqual(manifest['cases'][0]['construction_sha256'],
+                             hashlib.sha256((output / 'construction.json').read_bytes()).hexdigest())
+
     def test_three_distinct_exact_constructions(self):
         manifest = json.loads((HERE / 'execution-manifest.json').read_text())
         case = manifest['cases'][0]
