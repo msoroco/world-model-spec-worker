@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import hashlib
+import importlib.util
 import json
 from pathlib import Path
 
@@ -12,6 +13,10 @@ def audit(result_paths, comparison):
     if len(result_paths) != 2:
         raise ValueError("Exactly two retained result paths are required")
     first, second = (json.loads(Path(path).read_text()) for path in result_paths)
+    source = Path(__file__).with_name("overtaken_response.py")
+    spec = importlib.util.spec_from_file_location("overtaken_response_for_audit", source)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
     for result in (first, second):
         hashes = result.get("source_sha256")
         if not isinstance(hashes, dict) or not all(hashes.get(key) for key in ("context", "events", "motion")):
@@ -22,6 +27,9 @@ def audit(result_paths, comparison):
         for key in ("context", "events", "motion"):
             if hashlib.sha256(Path(paths[key]).read_bytes()).hexdigest() != hashes[key]:
                 raise ValueError("Comparison original source changed: "+key)
+        rebuilt = module.measure(paths["context"], paths["events"], paths["motion"])
+        if rebuilt != result:
+            raise ValueError("Comparison measurement differs from original sources")
         if result.get("legal_conclusion") is not None:
             raise ValueError("Diagnostic comparison cannot assert a legal conclusion")
     fixed = ("subject_id", "overtaker_id", "notice_frame", "pass_complete_frame",

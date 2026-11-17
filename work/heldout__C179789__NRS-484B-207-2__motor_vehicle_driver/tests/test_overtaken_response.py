@@ -15,6 +15,7 @@ def load(name):
 
 measure = load("overtaken_response").measure
 audit = load("overtaken_comparison_audit").audit
+controller = load("overtaken_controller")
 
 class OvertakenTests(unittest.TestCase):
     def setUp(self):
@@ -32,6 +33,10 @@ class OvertakenTests(unittest.TestCase):
         p = self.root / name; p.write_text(json.dumps(obj)); return p
     def measure(self):
         return measure(self.write("context.json",self.context),self.write("events.json",self.events),self.write("motion.json",self.motion))
+    def measure_variant(self, name):
+        return measure(self.write(name+"-context.json",self.context),
+                       self.write(name+"-events.json",self.events),
+                       self.write(name+"-motion.json",self.motion))
     def test_measures_both_clauses_without_legal_label(self):
         r=self.measure();self.assertEqual(r["max_right_shift_m"],1)
         self.assertEqual(r["max_precompletion_speed_delta_mps"],0)
@@ -48,26 +53,68 @@ class OvertakenTests(unittest.TestCase):
         self.motion["frames"][1]["overtaker_id"]="other"
         with self.assertRaisesRegex(ValueError,"identities differ"):self.measure()
     def test_comparisons_check_held_conditions(self):
-        first=self.measure();second=dict(first);second["max_right_shift_m"]=2
+        first=self.measure_variant("first")
+        self.motion["frames"][3]["right_offset_m"]=2
+        second=self.measure_variant("second")
         p=self.write("first-result.json",first);q=self.write("second-result.json",second)
         self.assertTrue(audit([p,q],"right_shift")["comparison_complete"])
-        second["max_precompletion_speed_delta_mps"]=1;self.write("second-result.json",second)
+        self.motion["frames"][2]["speed_mps"]=6
+        second=self.measure_variant("changed-speed");self.write("second-result.json",second)
         with self.assertRaisesRegex(ValueError,"held motion"):audit([p,q],"right_shift")
-        second=dict(first);second["right_pass_permitted_premise"]=True;self.write("second-result.json",second)
+        self.motion["frames"][2]["speed_mps"]=5
+        self.motion["frames"][3]["right_offset_m"]=1
+        self.context["right_pass_permitted"]=True
+        second=self.measure_variant("exception");self.write("second-result.json",second)
         self.assertTrue(audit([p,q],"right_pass_exception")["comparison_complete"])
     def test_comparison_rejects_changed_original_source(self):
-        first=self.measure();p=self.write("first-result.json",first);q=self.write("second-result.json",dict(first,max_right_shift_m=2))
+        first=self.measure_variant("first")
+        self.motion["frames"][3]["right_offset_m"]=2
+        second=self.measure_variant("second")
+        p=self.write("first-result.json",first);q=self.write("second-result.json",second)
         self.write("motion.json",{"frames":[]})
+        self.write("first-motion.json",{"frames":[]})
         with self.assertRaisesRegex(ValueError,"original source changed"):
             audit([p,q],"right_shift")
     def test_speed_and_notice_comparisons(self):
-        first=self.measure();p=self.write("first-result.json",first)
-        q=self.write("second-result.json",dict(first,max_precompletion_speed_delta_mps=1))
+        first=self.measure_variant("first");p=self.write("first-result.json",first)
+        self.motion["frames"][2]["speed_mps"]=6
+        second=self.measure_variant("speed");q=self.write("second-result.json",second)
         self.assertTrue(audit([p,q],"speed_hold_until_complete")["comparison_complete"])
-        self.write("second-result.json",dict(first,notice_kind="observed_vehicle",notice_source="original-visibility-stream"))
+        self.motion["frames"][2]["speed_mps"]=5
+        self.events["notice_kind"]="observed_vehicle"
+        self.events["notice_source"]="original-visibility-stream"
+        second=self.measure_variant("observed");self.write("second-result.json",second)
         self.assertTrue(audit([p,q],"notice_modality")["comparison_complete"])
-        self.write("second-result.json",dict(first,notice_kind="observed_vehicle",max_right_shift_m=2))
+        self.motion["frames"][3]["right_offset_m"]=2
+        second=self.measure_variant("observed-changed-motion");self.write("second-result.json",second)
         with self.assertRaisesRegex(ValueError,"held motion"):
             audit([p,q],"notice_modality")
+    def test_comparison_rejects_fabricated_measurement(self):
+        first=self.measure_variant("first")
+        self.motion["frames"][3]["right_offset_m"]=2
+        second=self.measure_variant("second")
+        second["max_right_shift_m"]=4
+        p=self.write("first-result.json",first);q=self.write("second-result.json",second)
+        with self.assertRaisesRegex(ValueError,"measurement differs"):
+            audit([p,q],"right_shift")
+    def test_exact_controller_targets_and_native_call(self):
+        for suffix in controller.CASES:
+            expected_notice,right_pass,right_shift,early = controller.CASES[suffix]
+            before=controller.target(suffix,notice_kind=None,notice_source=None,pass_complete=False)
+            self.assertEqual(before["target_right_offset_m"],0)
+            self.assertEqual(before["target_speed_mps"],5)
+            active=controller.target(suffix,notice_kind=expected_notice,notice_source="original-event",pass_complete=False)
+            self.assertEqual(active["target_right_offset_m"],right_shift if not right_pass else 0)
+            self.assertEqual(active["target_speed_mps"],6 if early else 5)
+            self.assertEqual(controller.target(suffix,notice_kind=expected_notice,notice_source="original-event",pass_complete=True)["target_speed_mps"],6)
+            class FakeVehicle:
+                control=None
+                def apply_control(self,control): self.control=control
+            car=FakeVehicle()
+            command=controller.apply(car,dict,active,right_offset_m=0,speed_mps=4)
+            self.assertEqual(car.control,command)
+            self.assertGreater(command["throttle"],0)
+        with self.assertRaisesRegex(ValueError,"Notice mode"):
+            controller.target("observed_gives_way_holds_speed",notice_kind="audible_signal",notice_source="original-event",pass_complete=False)
 
 if __name__ == "__main__": unittest.main()
