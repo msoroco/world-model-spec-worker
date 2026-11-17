@@ -1,5 +1,7 @@
 import importlib.util
 import json
+import math
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -7,6 +9,10 @@ from types import SimpleNamespace as NS
 
 
 ROOT=Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(ROOT))
+from native_pair import step_pair
+from test_median_route_control import scene
+from test_native_pair import Actor
 spec=importlib.util.spec_from_file_location("simultaneous_entries",ROOT/"simultaneous_entries.py")
 measure=importlib.util.module_from_spec(spec)
 spec.loader.exec_module(measure)
@@ -89,6 +95,52 @@ class EntryTests(unittest.TestCase):
                                  result["first_body_entry"]["other"]["frame"],
                                  round(result["absolute_entry_time_difference_s"],2)))
             self.assertEqual(observed,[(102,101,.05),(102,102,0),(102,103,.05)])
+
+    def test_exact_release_setpoints_feed_original_shaped_entry_measurement(self):
+        # A simple kinetic CPU surrogate checks the control-to-source wiring.
+        # It is deliberately not a claim about CARLA vehicle dynamics.
+        carla=NS(VehicleControl=lambda:NS())
+        observed=[]
+        for release_frame in (32,40,48):
+            ego,other=Actor(8,0,speed=.05),Actor(15,-15,speed=0)
+            progress={'ego':1,'other':1};stopped=False;rows=[]
+            for i in range(135):
+                progress,stopped,commands=step_pair(
+                    carla,ego,other,scene(),progress,stopped,i>=80,
+                    i>=release_frame)
+                for role,actor in (('ego',ego),('other',other)):
+                    command=commands[role]
+                    speed=math.hypot(actor.velocity.x,actor.velocity.y)
+                    speed=max(0,min(5,speed+1.5*command['throttle']
+                                    -2*command['brake']))
+                    if role=='ego':
+                        actor.velocity.x=speed
+                        actor.pose.location.x+=speed*.05
+                    else:
+                        actor.velocity.y=speed
+                        actor.pose.location.y+=speed*.05
+                rows.append({'frame':1000+i,'time_s':i*.05,
+                             'governing_stop_sign_id':17,
+                             'ego':vehicle(ego.pose.location.x,0,1),
+                             'other':vehicle(15,other.pose.location.y,2)})
+            with tempfile.TemporaryDirectory() as tmp:
+                root=Path(tmp);self.fixture(root)
+                context=json.loads((root/'junction_context.json').read_text())
+                context['intersection_polygon_xy_m']=scene()['crossing_polygon_xy_m']
+                (root/'junction_context.json').write_text(json.dumps(context))
+                frames=[{'video_frame':i,'carla_frame':row['frame'],
+                         'time_s':row['time_s']} for i,row in enumerate(rows)]
+                (root/'crossing_history.jsonl').write_text(
+                    ''.join(json.dumps(row)+'\n' for row in rows))
+                (root/'video_frames.jsonl').write_text(
+                    ''.join(json.dumps(row)+'\n' for row in frames))
+                result=measure.analyze(root)
+                self.assertEqual(result['legal_conclusion'],'unresolved')
+                observed.append((release_frame,
+                                 result['first_body_entry']['ego']['frame'],
+                                 result['first_body_entry']['other']['frame']))
+        self.assertEqual(observed,[(32,1087,1079),(40,1087,1087),
+                                   (48,1087,1095)])
 
     def test_wrong_sign_and_stale_frame_rejected(self):
         with tempfile.TemporaryDirectory() as tmp:
