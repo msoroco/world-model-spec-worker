@@ -111,7 +111,7 @@ def main():
             if result.get('status') == 'ready':
                 result['status'] = 'partial'
                 result['readiness_kind'] = 'implementation_checkpoint'
-                result['reason'] = (result.get('reason', '') + ' Runtime refresh requires new exact-case and saved proofs.').strip()
+                result['reason'] = ((result.get('reason') or '') + ' Runtime refresh requires new exact-case and saved proofs.').strip()
             write(result_path, result)
     frozen = batch['frozen_files']
     prefix = batch['runtime']['root'] + '/'
