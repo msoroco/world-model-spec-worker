@@ -80,13 +80,20 @@ def assess(root, *, audible):
         provenance = json.loads(marker.read_text()) if marker.is_file() else {}
         receipt_path = root / 'native-capture-receipt.json'
         receipt = json.loads(receipt_path.read_text()) if receipt_path.is_file() else {}
+        exit_path = root / 'native-process-exit.json'
+        exit_proof = json.loads(exit_path.read_text()) if exit_path.is_file() else {}
         lifecycle = ['capture_finished', 'encoders_closed', 'restoration_verified',
                      'native_exit', 'owner_released']
         native = (provenance.get('diagnostic_fixture') is not True and
                   receipt.get('actual_native_capture') is True and
-                  receipt.get('native_process_exit_attested') is True and
                   receipt.get('source_sha256') == sources and
-                  receipt.get('events') == lifecycle)
+                  receipt.get('events') == lifecycle and
+                  exit_proof.get('event') == 'native_process_exit_observed' and
+                  exit_proof.get('native_exit_code') == 0 and
+                  exit_proof.get('owner_lock_released') is True and
+                  exit_proof.get('case_id') == receipt.get('case_id') and
+                  exit_proof.get('native_capture_receipt_sha256') ==
+                  (hashlib.sha256(receipt_path.read_bytes()).hexdigest() if receipt_path.is_file() else None))
         status = geometry_status if native else 'unverified'
         return {'physical_checks': {'maneuver': {'status': status, 'method': method,
                 'sources': sources, 'notice_frame': notice,

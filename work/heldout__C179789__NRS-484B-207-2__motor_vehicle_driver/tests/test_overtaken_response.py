@@ -252,6 +252,16 @@ class OvertakenTests(unittest.TestCase):
         self.assertTrue(receipt["actual_native_capture"])
         self.assertEqual(receipt["events"],events)
         self.assertEqual(set(receipt["source_sha256"]),set(names))
+        (self.root/".native-owner-lock").write_text("held\n")
+        with self.assertRaisesRegex(ValueError,"owner lock"):
+            native.observe_native_process_exit(self.root,native.PREFIX+"gives_way_holds_speed",0)
+        (self.root/".native-owner-lock").unlink()
+        with self.assertRaisesRegex(ValueError,"successfully"):
+            native.observe_native_process_exit(self.root,native.PREFIX+"gives_way_holds_speed",1)
+        exit_path=native.observe_native_process_exit(self.root,native.PREFIX+"gives_way_holds_speed",0)
+        self.assertEqual(json.loads(exit_path.read_text())["native_exit_code"],0)
+        with self.assertRaises(FileExistsError):
+            native.observe_native_process_exit(self.root,native.PREFIX+"gives_way_holds_speed",0)
         with self.assertRaises(FileExistsError):
             native.write_native_capture_receipt(self.root,native.PREFIX+"gives_way_holds_speed",
                                                 events,observed=False)
@@ -305,7 +315,11 @@ class OvertakenTests(unittest.TestCase):
             ["capture_finished","encoders_closed","restoration_verified","native_exit","owner_released"],
             observed=True)
         self.assertEqual(pass_gap.assess(self.root,audible=False)["physical_checks"]["maneuver"]["status"],"unverified")
+        native.observe_native_process_exit(self.root,finalizer.CASE_ID,0)
+        # Temporary Native-shaped records exercise the classifier, not physical acceptance.
+        self.assertEqual(pass_gap.assess(self.root,audible=False)["physical_checks"]["maneuver"]["status"],"met")
         self.write("fixture-provenance.json",{"diagnostic_fixture":True,"actual_native_capture":False})
+        self.assertEqual(pass_gap.assess(self.root,audible=False)["physical_checks"]["maneuver"]["status"],"unverified")
         bodies[3]["overtaker_corners"]=corners(2)
         bodies[3]["body_pass_complete"]=False;sources()
         incomplete=pass_gap.assess(self.root,audible=False)

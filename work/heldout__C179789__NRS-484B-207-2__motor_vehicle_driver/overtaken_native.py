@@ -10,6 +10,8 @@ import argparse
 import hashlib
 import json
 import math
+import subprocess
+import sys
 from pathlib import Path
 
 from overtaken_controller import CASES, apply as apply_subject, target as subject_target
@@ -42,6 +44,48 @@ def write_native_capture_receipt(output, case_id, events, *, observed):
                   indent=2, allow_nan=False)
         stream.write("\n")
     return path
+
+
+def observe_native_process_exit(output, case_id, returncode):
+    """Called by the launcher only after its Native child has terminated."""
+    output = Path(output)
+    if returncode != 0:
+        raise ValueError("Native child did not exit successfully")
+    if (output / ".native-owner-lock").exists():
+        raise ValueError("Native owner lock remains held")
+    receipt_path = output / "native-capture-receipt.json"
+    if not receipt_path.is_file():
+        raise ValueError("Native child capture receipt missing")
+    receipt = json.loads(receipt_path.read_text())
+    if receipt.get("case_id") != case_id or receipt.get("actual_native_capture") is not True or receipt.get("events") != [
+        "capture_finished", "encoders_closed", "restoration_verified", "native_exit", "owner_released"
+    ]:
+        raise ValueError("Native child capture receipt differs")
+    for name, digest in receipt.get("source_sha256", {}).items():
+        source = output / name
+        if not source.is_file() or hashlib.sha256(source.read_bytes()).hexdigest() != digest:
+            raise ValueError("Native child source changed: " + name)
+    if not receipt.get("source_sha256"):
+        raise ValueError("Native child source inventory missing")
+    path = output / "native-process-exit.json"
+    with path.open("x") as stream:
+        json.dump({"case_id": case_id, "event": "native_process_exit_observed",
+                   "native_exit_code": returncode, "owner_lock_released": True,
+                   "native_capture_receipt_sha256": hashlib.sha256(receipt_path.read_bytes()).hexdigest()},
+                  stream, indent=2, allow_nan=False)
+        stream.write("\n")
+    return path
+
+
+def launch(plan_path, case_id, output, host, port):
+    """Parent observes process exit before it attests the child's capture."""
+    output = Path(output)
+    output.mkdir(parents=True, exist_ok=True)
+    command = [sys.executable, str(Path(__file__).resolve()), "--plan", str(Path(plan_path).resolve()),
+               "--case-id", case_id, "--run", "--output-dir", str(output.resolve()),
+               "--host", host, "--port", str(port)]
+    completed = subprocess.run(command, check=False)
+    return observe_native_process_exit(output, case_id, completed.returncode)
 
 
 def check_plan(plan, case_id):
@@ -300,6 +344,7 @@ def main():
     parser.add_argument("--config", default="config.json")
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--run", action="store_true")
+    parser.add_argument("--launch", action="store_true")
     parser.add_argument("--output-dir")
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=2000)
@@ -309,6 +354,11 @@ def main():
     config = json.loads(config_path.read_text()) if config_path.exists() else {}
     case_id = args.case_id or config.get("selected_case_id")
     check_plan(plan, case_id)
+    if args.launch:
+        if not args.output_dir:
+            raise ValueError("Native output directory required")
+        launch(args.plan, case_id, args.output_dir, args.host, args.port)
+        return
     if args.run or not args.check:
         if not args.output_dir:
             raise ValueError("Native output directory required")
