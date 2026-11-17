@@ -231,6 +231,12 @@ def run(config, source_path, source_sha256, output, host='127.0.0.1', port=2000)
         if ego is None:
             raise ValueError('Native turn subject spawn failed')
         (output / 'turn_indication_original.json').write_bytes(Path(source_path).read_bytes())
+        (output / 'turn_indication_readback_original.json').write_text(json.dumps({
+            'source_sha256': source_sha256,
+            'physical_xy_m': placement['physical_xy_m'],
+            'reference_xy_m': source['indicated_course_xy_m'][1],
+            'reference_kind': 'unchanged_sourced_indicated_course_point_1',
+        }, indent=2) + '\n')
         (output / 'turn_route_plan.json').write_text(json.dumps(route, indent=2) + '\n')
         cameras = OriginalCameras(world, carla, ego, output)
         pipeline = PipelineCapture(client, ego, output, config['selected_case_id'],
@@ -290,7 +296,8 @@ def run(config, source_path, source_sha256, output, host='127.0.0.1', port=2000)
         _rows(output / (name + '-frames.jsonl'), [
             {'video_frame': index, 'native_frame': row['frame'],
              'time_s': row['time_s']} for index, row in enumerate(cameras.rows[name])])
-    originals = ['turn_indication_original.json', 'turn_route_plan.json',
+    originals = ['turn_indication_original.json',
+                 'turn_indication_readback_original.json', 'turn_route_plan.json',
                  'turn_body_original.jsonl', 'trace.jsonl', 'video_frames.jsonl']
     originals += [name + '.mkv' for name in CAMERAS]
     originals += [name + '-frames.jsonl' for name in CAMERAS]
