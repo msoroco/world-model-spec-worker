@@ -45,6 +45,21 @@ class SourceObservationTest(unittest.TestCase):
         bus[3]['velocity_native_xyz_mps'] = [2, 0, 0]
         self.assertFalse(self.derive(bus=bus)['observed_complete_stop_before_line'])
 
+    def test_opposite_approach_uses_bus_front_and_near_rail(self):
+        signal = OfficerStop('officer-1', 'bus-1', -1, 0, 1, 5,
+                             'crossing-1', True)
+        bus = copy.deepcopy(self.bus)
+        officer = copy.deepcopy(self.officer)
+        for row in bus:
+            row['station_m'] *= -1
+        for row in officer:
+            row['direction'] = -1
+        result = derive_observation(self.layout, signal, bus, officer,
+                                    self.video,
+                                    source_kind='synthetic_native_sample')
+        self.assertEqual([3], result['stopped_before_line_frames'])
+        self.assertEqual([4, 5], result['crossed_near_rail_frames'])
+
     def test_missing_or_mismatched_raw_signal_rejected(self):
         with self.assertRaisesRegex(ValueError, 'not synchronized'):
             self.derive(officer=self.officer[:-1])

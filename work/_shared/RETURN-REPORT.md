@@ -5807,3 +5807,5 @@ C177225 scoped static complete check passed (`work/training__C177225__NRS-484B-5
 ### Update058 C177225 CPU construction
 
 C177225 now has `native_scene.py` with CARLA bus/officer/two-rail-asset/four-camera spawn calls and `measure_direction.py` with synchronized raw-source direction and bus-motion observations. Twelve focused CPU tests and runtime preflight passed (`work/training__C177225__NRS-484B-560-7b__bus_driver/update058-construction-and-measurement-tests.log`, `update058-preflight.log`). Result remains partial: installed rail asset and Native map readback, runnable capture/finalizer, exact primary/three fallbacks, pinned offline/compatibility/saved proofs, and independent delivery/comparison audits remain worker-owned CPU work. No original Native or physical/legal acceptance.
+
+Update058 C177225 final: 13 construction/measurement CPU tests pass, including both approach directions. Scoped static complete passes; scoped strict rejects partial/missing packages. Handoff and result retain the unfinished Native package and proof steps; status remains partial.
