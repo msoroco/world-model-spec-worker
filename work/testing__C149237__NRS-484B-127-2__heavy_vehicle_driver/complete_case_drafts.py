@@ -3,6 +3,7 @@ import hashlib
 import json
 from copy import deepcopy
 from pathlib import Path
+import argparse
 
 ROOT = Path(__file__).resolve().parent
 PATH = ROOT / 'proposals/cases.json'
@@ -86,5 +87,192 @@ def main():
     INDEX.write_text(json.dumps(index, indent=2) + '\n')
 
 
+def build_combination_draft():
+    """Materialize an unselected exact 500-foot combination CPU construction."""
+    source = json.loads((ROOT / 'gap-constructions/gap_at_500ft.json').read_text())
+    draft = deepcopy(source)
+    case_id = PREFIX + 'combination_at_500ft'
+    draft['case_id'] = case_id
+    files = {row['path']: row for row in draft['files']}
+
+    def change(name, old, new):
+        row = files[name]
+        if row['content'].count(old) != 1:
+            raise ValueError('Combination draft source anchor changed: ' + name)
+        row['content'] = row['content'].replace(old, new)
+        row.pop('source', None)
+
+    config = json.loads(files['config.json']['content'])
+    config['selected_case_id'] = case_id
+    config['supported_case_ids'].append(case_id)
+    config['combination_trailer_blueprint_id'] = 'vehicle.ford.crown'
+    config['required_atoms'].append('ru.trailer_or_combination')
+    for channel in config['recording_description']['channels']:
+        if channel['name'] in ('ego_overall_width', 'lead_overall_width'):
+            channel['method'] = 'original Native tractor and attached-vehicle body envelope'
+    files['config.json']['content'] = json.dumps(config, indent=2) + '\n'
+    files['config.json'].pop('source', None)
+    draft['recording_description'] = deepcopy(config['recording_description'])
+    files['combination_construction.py'] = {
+        'path': 'combination_construction.py',
+        'content': (ROOT / 'combination_construction.py').read_text()}
+    draft['files'].append(files['combination_construction.py'])
+
+    change('runner.py', 'from truck_capture_sources import record_sample',
+           'from truck_capture_sources import record_sample, record_combination_sample')
+    change('runner.py', 'from truck_construction import spawn_exact_gap_pair',
+           'from truck_construction import spawn_exact_gap_pair\n'
+           'from combination_construction import spawn_combination_pair')
+    change('runner.py', "suffix not in GAP_TARGETS_M and suffix not in WIDTH_CASES and suffix not in ('two_same_direction_lanes','overtaking')",
+           "suffix not in GAP_TARGETS_M and suffix not in WIDTH_CASES and suffix not in ('two_same_direction_lanes','overtaking','combination_at_500ft')")
+    change('runner.py', 'if selected_case in GAP_TARGETS_M:\n            pair_context=spawn_exact_gap_pair',
+           "if selected_case == 'combination_at_500ft':\n"
+           "            trailer_bp = bp.find(config['combination_trailer_blueprint_id'])\n"
+           "            if trailer_bp is None or trailer_bp.id != 'vehicle.ford.crown':\n"
+           "                raise ValueError('Reviewed towed-vehicle blueprint missing')\n"
+           "            truck_bps = {'ego': {'tractor': ego_bp, 'trailer': trailer_bp},\n"
+           "                         'lead': {'tractor': lead_bp, 'trailer': trailer_bp}}\n"
+           "            poses = {role: {'tractor': transform_at(x, -1.9, 0.),\n"
+           "                            'trailer': carla.Transform(carla.Location(x=-10., y=0., z=0.),\n"
+           "                                                       carla.Rotation())}\n"
+           "                     for role, x in (('ego', 100.), ('lead', 300.))}\n"
+           "            def position_lead(actors, delta, tangent):\n"
+           "                pose = actors['tractor'].get_transform()\n"
+           "                pose.location.x += delta * tangent[0]\n"
+           "                pose.location.y += delta * tangent[1]\n"
+           "                actors['tractor'].set_transform(pose)\n"
+           "            pair_context=spawn_combination_pair(\n"
+           "                world, truck_bps, poses, carla.AttachmentType.Rigid,\n"
+           "                road_id=149237, lane_id=-1, lane_forward_xy=[1., 0.],\n"
+           "                expected_body_gap_m=152.4, gap_tolerance_m=.5,\n"
+           "                position_lead=position_lead)\n"
+           "        elif selected_case in GAP_TARGETS_M:\n            pair_context=spawn_exact_gap_pair")
+    change('runner.py', "ego, lead = pair['ego'], pair['lead']\n            context =",
+           "if selected_case == 'combination_at_500ft':\n"
+           "                ego, lead = pair['actors']['ego']['tractor'], pair['actors']['lead']['tractor']\n"
+           "                site = validate_site()\n"
+           "            else:\n"
+           "                ego, lead = pair['ego'], pair['lead']\n"
+           "                site = pair['site']\n"
+           "            context =")
+    for key in ('road_id', 'lane_id', 'same_direction_lane_count', 'road_sha256'):
+        files['runner.py']['content'] = files['runner.py']['content'].replace("pair['site']['" + key + "']", "site['" + key + "']")
+    change('runner.py', "'overall_width_limit': 'single vehicles; Native bounding boxes, no trailer claim'",
+           "'overall_width_limit': ('attached vehicle body envelopes; legal class unverified'\n"
+           "                                                if selected_case == 'combination_at_500ft' else\n"
+           "                                                'single vehicles; Native bounding boxes, no trailer claim')")
+    change('runner.py', "context = {'native_map_id': mapping.name,",
+           "context = {'source_kind': 'original_native', 'native_map_id': mapping.name,")
+    change('runner.py', 'record_sample(frame_map, history, snap, ego, lead, ego_wp, lead_wp)',
+           "if selected_case == 'combination_at_500ft':\n"
+           "                                record_combination_sample(frame_map, history, snap, pair['actors'],\n"
+           "                                                          mapping, site['road_id'], site['lane_id'])\n"
+           "                            else:\n"
+           "                                record_sample(frame_map, history, snap, ego, lead, ego_wp, lead_wp)")
+    change('truck_capture_sources.py', 'import math\n',
+           'import math\nfrom combination_construction import combination_source_row, audit_combination_source_row\n')
+    files['truck_capture_sources.py']['content'] += '''\n\ndef record_combination_sample(frame_map, history_stream, snapshot, groups, mapping, road_id, lane_id):
+    waypoints = {role: {part: mapping.get_waypoint(actor.get_location(), project_to_road=False)
+                        for part, actor in actors.items()} for role, actors in groups.items()}
+    row = combination_source_row(groups, waypoints, [1., 0.], road_id, lane_id,
+                                 snapshot.frame, snapshot.timestamp.elapsed_seconds)
+    audit_combination_source_row(row, [1., 0.], road_id, lane_id)
+    mapping_row = frame_map.append(row['frame'], row['time_s'])
+    history_stream.write(json.dumps(row, allow_nan=False) + '\\n')
+    return {'video_frame': mapping_row['video_frame'], 'frame': row['frame']}
+'''
+    change('finalizer.py', 'from truck_measurements import analyze',
+           'from truck_measurements import analyze\n'
+           'from combination_construction import audit_combination_source_row')
+    change('finalizer.py', 'report = analyze(attempt)',
+           "rows = [json.loads(line) for line in (attempt/'truck_history.jsonl').read_text().splitlines() if line.strip()]\n"
+           "    context = json.loads((attempt/'road_context.json').read_text())\n"
+           "    if context.get('source_kind') == 'original_native' and len(rows) != 900:\n"
+           "        raise ValueError('Incomplete original combination frame history')\n"
+           "    for row in rows:\n"
+           "        audit_combination_source_row(row, context['lane_forward_xy'],\n"
+           "                                     context['road_id'], context['lane_id'])\n"
+           "    report = analyze(attempt)")
+    change('tests/test_bundle.py', "{'two_same_direction_lanes','overtaking'}",
+           "{'two_same_direction_lanes','overtaking','combination_at_500ft'}")
+    files['tests/test_bundle.py']['content'] = files['tests/test_bundle.py']['content'].replace(
+        "\nif __name__ == '__main__':", '''\n    def test_combination_source_is_packaged(self):
+        config = json.loads(Path(runner.__file__).with_name('config.json').read_text())
+        self.assertEqual(config['combination_trailer_blueprint_id'], 'vehicle.ford.crown')
+        self.assertIn('ru.trailer_or_combination', config['required_atoms'])
+        source = Path(runner.__file__).with_name('combination_construction.py').read_text()
+        self.assertIn('position_lead(groups["lead"]', source)
+        self.assertIn('capture_combination_history', source)
+        finalizer = Path(runner.__file__).with_name('finalizer.py').read_text()
+        self.assertIn('audit_combination_source_row(row', finalizer)
+
+if __name__ == '__main__':''')
+    draft_dir = ROOT.parents[1] / '.runtime-work/c149237-combination-draft'
+    draft_dir.mkdir(parents=True, exist_ok=True)
+    construction = draft_dir / 'construction.json'
+    construction.write_text(json.dumps(draft, indent=2) + '\n')
+    diagnostic = json.loads((ROOT / 'diagnostic-gap_at_500ft.json').read_text())
+    history = []
+    for line in diagnostic['files']['truck_history.jsonl'].splitlines():
+        row = json.loads(line)
+        for role, trailer_id in (('ego', 305), ('lead', 306)):
+            part = row[role]
+            tractor = deepcopy(part['body_vertices_xy_m'])
+            if role == 'lead':
+                tractor = [[x + 10., y] for x, y in tractor]
+            rear = min(x for x, y in tractor)
+            ys = sorted({y for x, y in tractor})
+            trailer = [[x, y] for x in (rear - 10., rear - 2.) for y in ys]
+            part['body_vertices_xy_m'] = tractor + trailer
+            part['overall_width_source'] = 'synthetic component diagnostic; not Native geometry'
+            part['legal_vehicle_class_verified'] = False
+            part['native_attachment_verified'] = False
+            part['components'] = {
+                'tractor': {'actor_id': part['actor_id'], 'blueprint_id': part['blueprint_id'],
+                            'road_id': part['road_id'], 'lane_id': part['lane_id'],
+                            'body_vertices_xy_m': tractor},
+                'trailer': {'actor_id': trailer_id, 'blueprint_id': 'vehicle.ford.crown',
+                            'road_id': part['road_id'], 'lane_id': part['lane_id'],
+                            'body_vertices_xy_m': trailer}}
+        history.append(json.dumps(row, allow_nan=False))
+    diagnostic['files']['truck_history.jsonl'] = '\n'.join(history) + '\n'
+    context = json.loads(diagnostic['files']['road_context.json'])
+    context['source_kind'] = 'synthetic_diagnostic'
+    context['overall_width_limit'] = 'synthetic component envelope; legal class unverified'
+    diagnostic['files']['road_context.json'] = json.dumps(context) + '\n'
+    capture = json.loads(diagnostic['files']['capture/manifest.json'])
+    capture['case_id'] = case_id
+    diagnostic['files']['capture/manifest.json'] = json.dumps(capture) + '\n'
+    diagnostic_path = draft_dir / 'diagnostic.json'
+    diagnostic_path.write_text(json.dumps(diagnostic, indent=2) + '\n')
+    recipe = json.loads((ROOT / 'fixture-recipe-gap_at_500ft.json').read_text())
+    recipe['generator'] = {
+        'source': str(diagnostic_path.relative_to(ROOT.parents[1])),
+        'sha256': hashlib.sha256(diagnostic_path.read_bytes()).hexdigest()}
+    recipe_path = draft_dir / 'diagnostic-recipe.json'
+    recipe_path.write_text(json.dumps(recipe, indent=2) + '\n')
+    base = json.loads((ROOT / 'execution-manifest.json').read_text())
+    template = next(row for row in base['cases'] if row['case_id'].endswith('__gap_at_500ft'))
+    entry = deepcopy(template)
+    for key in ('candidates', 'offline', 'compatibility', 'negative', 'post_capture',
+                'physical_preparation', 'delivery_acceptance', 'native_handoff'):
+        entry.pop(key, None)
+    entry.update(case_id=case_id, construction='construction.json',
+                 construction_sha256=hashlib.sha256(construction.read_bytes()).hexdigest(),
+                 fixture_recipe=str(recipe_path.relative_to(ROOT.parents[1])),
+                 kind='diagnostic_unselected',
+                 candidate_risk={'status': 'physical',
+                                 'reason': 'Attached vehicle motion, body gap and cameras unverified'})
+    manifest = {'format': 'worker-execution-manifest', 'assignment_id': ROOT.name,
+                'runtime_manifest_sha256': base['runtime_manifest_sha256'],
+                'cases': [entry]}
+    (draft_dir / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
+    print(json.dumps({'case_id': case_id, 'construction_sha256': manifest['cases'][0]['construction_sha256'],
+                      'returned': False, 'selected': False}))
+
+
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--combination-draft', action='store_true')
+    args = parser.parse_args()
+    build_combination_draft() if args.combination_draft else main()

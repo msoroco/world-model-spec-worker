@@ -141,11 +141,60 @@ def audit_combination_source_row(row, lane_forward_xy, road_id, lane_id):
             "legal_vehicle_class_verified": False}
 
 
+def capture_combination_history(world, groups, control_step, *, road_id, lane_id,
+                                lane_forward_xy, frames=600, rate_hz=20,
+                                min_width_m=MIN_WIDTH_M, require_motion=True):
+    """Tick and retain original component bodies for a prospective exact case.
+
+    ``control_step`` applies the caller's reviewed tractor controls before each
+    tick. The trailer is attached by ``spawn_combination_pair``. This function
+    records Native readback; it never treats requested controls as observed motion.
+    """
+    tangent = _unit_tangent(lane_forward_xy)
+    if type(frames) is not int or frames < 2 or type(rate_hz) is not int or rate_hz <= 0:
+        raise ValueError("Valid finite-frame capture schedule required")
+    if not callable(control_step) or not math.isfinite(min_width_m) or min_width_m <= 0:
+        raise ValueError("Control callback and width boundary required")
+    rows = []
+    for index in range(frames):
+        control_step(index, groups)
+        frame = world.tick()
+        if type(frame) is not int or (rows and frame != rows[-1]["frame"] + 1):
+            raise ValueError("Original combination frames are not contiguous")
+        waypoints = {}
+        for role in ("ego", "lead"):
+            waypoints[role] = {}
+            for part in ("tractor", "trailer"):
+                actor = groups[role][part]
+                waypoints[role][part] = world.get_map().get_waypoint(
+                    actor.get_location(), project_to_road=False)
+        row = combination_source_row(groups, waypoints, tangent, road_id, lane_id,
+                                     frame, index / rate_hz)
+        measured = audit_combination_source_row(row, tangent, road_id, lane_id)
+        if measured["longitudinal_body_gap_m"] < 0:
+            raise ValueError("Original combination bodies overlap")
+        if any(measured["participants"][role]["overall_width_m"] < min_width_m
+               for role in ("ego", "lead")):
+            raise ValueError("Original combination below 80-inch width")
+        rows.append(row)
+    if require_motion:
+        tx, ty = tangent
+        for role in ("ego", "lead"):
+            for part in ("tractor", "trailer"):
+                def center_along(row):
+                    vertices = row[role]["components"][part]["body_vertices_xy_m"]
+                    return sum(x * tx + y * ty for x, y in vertices) / len(vertices)
+                if center_along(rows[-1]) <= center_along(rows[0]):
+                    raise ValueError("Original combination component motion absent: "
+                                     + role + "/" + part)
+    return rows
+
+
 @contextmanager
 def spawn_combination_pair(world, blueprints, transforms, attachment_type,
                            *, road_id, lane_id, lane_forward_xy,
                            min_width_m=MIN_WIDTH_M, expected_body_gap_m=None,
-                           gap_tolerance_m=0.5):
+                           gap_tolerance_m=0.5, position_lead=None):
     """Spawn two tractor/trailer groups and check the original body gap.
 
     ``blueprints`` and ``transforms`` each map ego/lead to tractor/trailer.
@@ -160,6 +209,8 @@ def spawn_combination_pair(world, blueprints, transforms, attachment_type,
             raise ValueError("Valid expected body gap required")
         if not math.isfinite(gap_tolerance_m) or gap_tolerance_m < 0:
             raise ValueError("Valid body gap tolerance required")
+    if position_lead is not None and (expected_body_gap_m is None or not callable(position_lead)):
+        raise ValueError("Lead placement requires a target gap and callback")
     if not blueprints or not transforms or attachment_type is None:
         raise ValueError("Reviewed combination components and attachment required")
     owned, groups = [], {}
@@ -178,6 +229,16 @@ def spawn_combination_pair(world, blueprints, transforms, attachment_type,
             owned.append(trailer)
             groups[role] = {"tractor": tractor, "trailer": trailer}
         world.tick()
+        if position_lead is not None:
+            initial_ego = combination_envelope(groups["ego"]["tractor"],
+                                               groups["ego"]["trailer"], tangent)
+            initial_lead = combination_envelope(groups["lead"]["tractor"],
+                                                groups["lead"]["trailer"], tangent)
+            initial_gap = initial_lead["rear_m"] - initial_ego["front_m"]
+            if initial_gap < 0:
+                raise ValueError("Combination staging bodies overlap")
+            position_lead(groups["lead"], expected_body_gap_m - initial_gap, tangent)
+            world.tick()
         envelopes = {}
         for role, actors in groups.items():
             for actor in actors.values():

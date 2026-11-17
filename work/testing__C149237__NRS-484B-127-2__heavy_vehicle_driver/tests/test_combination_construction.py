@@ -89,6 +89,71 @@ def inputs(width=2.2, hitch_x=-10):
 
 
 class CombinationConstructionTests(unittest.TestCase):
+    def test_original_frame_capture_reads_moving_attached_components(self):
+        class MovingWorld(World):
+            frame = 100
+
+            def tick(self):
+                self.frame += 1
+                for actor in self.actors:
+                    actor.x += 1
+                return self.frame
+
+        world = MovingWorld()
+        blueprints, transforms = inputs()
+        with combination.spawn_combination_pair(
+            world, blueprints, transforms, "Rigid", road_id=4, lane_id=-1,
+            lane_forward_xy=[1, 0]) as pair:
+            commands = []
+            rows = combination.capture_combination_history(
+                world, pair["actors"], lambda index, actors: commands.append(index),
+                road_id=4, lane_id=-1, lane_forward_xy=[1, 0], frames=3)
+            self.assertEqual(commands, [0, 1, 2])
+            self.assertEqual([row["frame"] for row in rows], [102, 103, 104])
+            self.assertEqual([row["time_s"] for row in rows], [0, .05, .1])
+            self.assertEqual(rows[-1]["ego"]["components"]["trailer"]["actor_id"], 2)
+            self.assertEqual(len(rows[-1]["lead"]["components"]["tractor"]["body_vertices_xy_m"]), 4)
+        self.assertTrue(all(actor.destroyed for actor in world.actors))
+
+    def test_original_frame_capture_rejects_unobserved_motion(self):
+        class StaticWorld(World):
+            frame = 100
+
+            def tick(self):
+                self.frame += 1
+                return self.frame
+
+        world = StaticWorld()
+        blueprints, transforms = inputs()
+        with combination.spawn_combination_pair(
+            world, blueprints, transforms, "Rigid", road_id=4, lane_id=-1,
+            lane_forward_xy=[1, 0]) as pair:
+            with self.assertRaisesRegex(ValueError, "motion absent"):
+                combination.capture_combination_history(
+                    world, pair["actors"], lambda index, actors: None,
+                    road_id=4, lane_id=-1, lane_forward_xy=[1, 0], frames=3)
+
+    def test_original_frame_capture_rejects_stationary_trailer(self):
+        class DetachedWorld(World):
+            frame = 100
+
+            def tick(self):
+                self.frame += 1
+                for actor in self.actors:
+                    if actor.parent is None:
+                        actor.x += .1
+                return self.frame
+
+        world = DetachedWorld()
+        blueprints, transforms = inputs()
+        with combination.spawn_combination_pair(
+            world, blueprints, transforms, "Rigid", road_id=4, lane_id=-1,
+            lane_forward_xy=[1, 0]) as pair:
+            with self.assertRaisesRegex(ValueError, "motion absent: ego/trailer"):
+                combination.capture_combination_history(
+                    world, pair["actors"], lambda index, actors: None,
+                    road_id=4, lane_id=-1, lane_forward_xy=[1, 0], frames=3)
+
     def test_pair_measures_combined_body_gap_and_releases_all_actors(self):
         world = World()
         blueprints, transforms = inputs()
@@ -151,6 +216,35 @@ class CombinationConstructionTests(unittest.TestCase):
                 drifted, blueprints, transforms, "Rigid", road_id=4, lane_id=-1,
                 lane_forward_xy=[1, 0], expected_body_gap_m=152.4,
                 gap_tolerance_m=0.01):
+                pass
+        self.assertTrue(all(actor.destroyed for actor in drifted.actors))
+
+    def test_measured_lead_placement_hits_500_foot_body_gap(self):
+        world = World()
+        blueprints, transforms = inputs()
+        placements = []
+
+        def place_lead(actors, delta, tangent):
+            placements.append((delta, tangent))
+            actors["tractor"].x += delta
+            actors["trailer"].x += delta
+
+        with combination.spawn_combination_pair(
+            world, blueprints, transforms, "Rigid", road_id=4, lane_id=-1,
+            lane_forward_xy=[1, 0], expected_body_gap_m=152.4,
+            gap_tolerance_m=.01, position_lead=place_lead) as pair:
+            self.assertAlmostEqual(pair["initial_longitudinal_body_gap_m"], 152.4)
+            self.assertAlmostEqual(placements[0][0], -31.6)
+            self.assertEqual(placements[0][1], (1., 0.))
+        self.assertTrue(all(actor.destroyed for actor in world.actors))
+
+        drifted = World()
+        with self.assertRaisesRegex(ValueError, "differs from selected target"):
+            with combination.spawn_combination_pair(
+                drifted, blueprints, transforms, "Rigid", road_id=4, lane_id=-1,
+                lane_forward_xy=[1, 0], expected_body_gap_m=152.4,
+                gap_tolerance_m=.01,
+                position_lead=lambda actors, delta, tangent: None):
                 pass
         self.assertTrue(all(actor.destroyed for actor in drifted.actors))
 
