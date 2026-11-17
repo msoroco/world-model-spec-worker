@@ -33,7 +33,7 @@ def audit(suffix='below', service='tour_bus', manifest_version=1):
     if service not in ('tour_bus', 'shuttle_bus', 'rtc_bus', 'limo'):
         raise ValueError('Unsupported pinned signed-bus audit')
     if manifest_version not in (1, 2) or (manifest_version == 2 and
-            (service != 'limo' or suffix != 'below')):
+            service != 'limo'):
         raise ValueError('Unsupported corrected manifest version')
     frames, duration, boundary = BOUNDARIES[suffix]
     update = {'below': '032', 'at': '033', 'above': '034',
@@ -143,7 +143,8 @@ def audit(suffix='below', service='tour_bus', manifest_version=1):
                 'tour_bus': f'update034-no-loading-{candidate}-inventory-negative.json',
                 'shuttle_bus': f'update037-shuttle-no-loading-{candidate}-inventory-negative.json',
                 'rtc_bus': f'update037-rtc-no-loading-{candidate}-inventory-negative.json',
-                'limo': f'update038-limo-no-loading-{candidate}-inventory-negative.json',
+                'limo': (f'update038-limo-no-loading-{candidate}-inventory-negative' +
+                         ('-v2' if manifest_version == 2 else '') + '.json'),
             }[service]
             inventory = read(ROOT / inventory_name)
             require(inventory['rejected'] is True and

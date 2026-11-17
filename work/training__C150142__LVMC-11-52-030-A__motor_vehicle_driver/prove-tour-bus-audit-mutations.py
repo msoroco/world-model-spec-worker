@@ -42,8 +42,8 @@ if __name__ == '__main__':
     boundary = args.case
     service = args.service
     manifest_version = args.manifest_version
-    if manifest_version == 2 and (service != 'limo' or boundary != 'below'):
-        raise ValueError('Only limo_below has a corrected v2 draft')
+    if manifest_version == 2 and service != 'limo':
+        raise ValueError('Only limousine cases have a corrected v2 draft')
     update = {'below': '032', 'at': '033', 'above': '034',
               'no_loading': '034'}[boundary]
     slug = boundary.replace('_', '-')
@@ -92,4 +92,5 @@ if __name__ == '__main__':
     print(json.dumps({'format': 'c150142-' +
                       (service.replace('_bus', '') + '-' if service != 'tour_bus' else '') +
                       boundary + '-fallback-audit-mutations-v1',
-                      'passed': True, 'results': results}, sort_keys=True))
+                      'passed': True, 'manifest_version': manifest_version,
+                      'results': results}, sort_keys=True))
