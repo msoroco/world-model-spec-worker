@@ -9,6 +9,7 @@ import argparse
 import importlib.util
 import json
 import os
+import pickle
 import shutil
 import subprocess
 import sys
@@ -242,7 +243,7 @@ def opposite_recording_description():
         "limitations": ["Synthetic opposite-turn site; no physical/legal acceptance"]}
 
 
-def opposite_measurement_contract():
+def opposite_measurement_contract(disposition_offset=0):
     """Draft case-specific witness contract for the unselected left-turn branch."""
     source = ("NRS 484B.250(2), including its subsection-4 exception; "
               f"inputs/{ASSIGNMENT}/assignment.json")
@@ -269,7 +270,7 @@ def opposite_measurement_contract():
                      "status": "selected_required", "case_ids": [ASSIGNMENT + "__opposite_left_turn"]}
                     for wording, *_ in requirements]
     contract = {"format": "worker-measurement-contract", "requirements": [
-        {"disposition_index": index, "requirement": wording, "source": source,
+        {"disposition_index": disposition_offset + index, "requirement": wording, "source": source,
          "output_key": key, "method": method, "value_type": "object",
          "kind": kind, "inputs": inputs}
         for index, (wording, key, method, kind, inputs) in enumerate(requirements)],
@@ -974,6 +975,83 @@ def prove_opposite_positive_compatibility(manifest_path, sweep_attempt, output_r
     return proof
 
 
+def prove_opposite_generated_fixture(manifest_path, sweep_attempt, output_root):
+    """Rebuild the source packet from text, graph records and color video specs.
+
+    This remains a synthetic compatibility fixture. It does not convert the
+    diagnostic site into a selected Native construction.
+    """
+    repo = HERE.parent.parent
+    os.environ["SCENARIO_PIPELINE_OUTPUT_ROOT"] = str(
+        repo / ".runtime-work/scenario-pipeline-artifacts")
+    from worker_exchange.fixture_generator import generate, inspect
+    from worker_exchange.package_compatibility import _process_fixture
+    from worker_exchange.measurement_contract import verify_report
+    manifest_path = Path(manifest_path).resolve()
+    sweep_attempt = Path(sweep_attempt).resolve()
+    output_root = Path(output_root).resolve()
+    if output_root.exists() or ".runtime-work" not in output_root.parts:
+        raise ValueError("Choose a fresh ignored .runtime-work output directory")
+    output_root.mkdir(parents=True)
+    excluded = {"config.json", "result.json", "analysis-report.json",
+                "raw.mkv", "channels", "receipts", "four-view-receipt.json"}
+    spec = {"files": {}, "graphs": [], "videos": []}
+    for path in sorted(sweep_attempt.rglob("*")):
+        if not path.is_file():
+            continue
+        relative = path.relative_to(sweep_attempt).as_posix()
+        if (path.parts[len(sweep_attempt.parts)] in excluded or
+                path.name.endswith("-decode.json") or
+                path.name.startswith("opposite-") or
+                path.name == "raw-decode.json"):
+            continue
+        if path.suffix == ".pkl":
+            graph = pickle.loads(path.read_bytes())
+            if graph.number_of_nodes() or graph.number_of_edges():
+                raise ValueError("Diagnostic graph now needs explicit node/edge inventory")
+            spec["graphs"].append({"path": relative,
+                                   "attributes": graph.graph,
+                                   "nodes": [], "edges": []})
+        elif path.suffix == ".mkv":
+            spec["videos"].append({"path": relative, "frames": 5,
+                                   "width": 1920 if path.name == "overview.mkv" else 1280,
+                                   "height": 1080 if path.name == "overview.mkv" else 720,
+                                   "fps": 20, "color": "black"})
+        else:
+            spec["files"][relative] = path.read_text()
+    inspect(spec)
+    _dump(output_root / "diagnostic-fixture-spec.json", spec)
+    fixture = output_root / "fixture"
+    fixture.mkdir()
+    generated = generate(spec, fixture)
+    case = ASSIGNMENT + "__opposite_left_turn"
+    _, contract = opposite_measurement_contract()
+    receipts = []
+    for candidate in ("primary", "fallback1", "fallback2", "fallback3"):
+        attempt = output_root / candidate
+        receipt = _process_fixture(manifest_path, case, fixture, attempt,
+            repo / "runtime/library",
+            repo / ".runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            candidate)
+        verified = verify_report(contract,
+            json.loads((attempt / "analysis-report.json").read_text()), fixture)
+        receipts.append({"candidate": candidate,
+                         "construction_sha256": receipt["construction_sha256"],
+                         "compatibility_passed": receipt["passed"],
+                         "measurement_keys": sorted(verified),
+                         "converted_report_sha256": _sha(attempt / "converted/adapter_report.json")})
+    proof = {"format": "worker-c125751-generated-opposite-fixture-probe",
+             "builder_sha256": _sha(HERE / "build_diagnostic_constructions.py"),
+             "manifest_sha256": _sha(manifest_path),
+             "spec_sha256": _sha(output_root / "diagnostic-fixture-spec.json"),
+             "generated_source_count": len(generated),
+             "receipts": receipts,
+             "returned_fixture_recipe_proven": False,
+             "physical_acceptance_claimed": False}
+    _dump(output_root / "proof.json", proof)
+    return proof
+
+
 def prove_fixture_release_join(ego_root, other_root, output_root):
     """Show static diagnostic crossing tracks cannot prove release response."""
     output = Path(output_root)
@@ -1060,9 +1138,12 @@ if __name__ == "__main__":
     parser.add_argument("--opposite-offline-bundle")
     parser.add_argument("--prove-opposite-entry-sweep")
     parser.add_argument("--prove-opposite-positive-compatibility", nargs=3)
+    parser.add_argument("--prove-opposite-generated-fixture", nargs=3)
     args = parser.parse_args()
     if args.opposite_offline_bundle:
         output = {"manifest": str(build_opposite_offline_bundle(args.opposite_offline_bundle))}
+    elif args.prove_opposite_generated_fixture:
+        output = prove_opposite_generated_fixture(*args.prove_opposite_generated_fixture)
     elif args.prove_opposite_positive_compatibility:
         output = prove_opposite_positive_compatibility(*args.prove_opposite_positive_compatibility)
     elif args.prove_opposite_entry_sweep:
