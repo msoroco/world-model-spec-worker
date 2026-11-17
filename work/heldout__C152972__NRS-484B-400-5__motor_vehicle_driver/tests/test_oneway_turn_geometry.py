@@ -269,6 +269,9 @@ class OnewayTurnTests(unittest.TestCase):
   self.write("body_ground_original.json",{"subject_id":"ego","frames":body})
   rows("trace.jsonl",trace);rows("video_frames.jsonl",mapping)
   complete=assess_original_turn_motion(self.p)
+  def original_snapshot():
+   return {name:self.p.joinpath(name).read_text() for name in ("config.json","oneway_geometry_original.json","body_ground_original.json","trace.jsonl","video_frames.jsonl") if self.p.joinpath(name).is_file()}
+  complete_sources=original_snapshot()
   self.assertEqual(complete["physical_checks"]["maneuver"]["status"],"met")
   self.assertTrue(complete["maneuver_completed"])
   self.assertEqual(complete["provenance_kind"],"native")
@@ -277,6 +280,7 @@ class OnewayTurnTests(unittest.TestCase):
   stalled=[dict(row,heading_deg=0) for row in trace]
   rows("trace.jsonl",stalled)
   incomplete=assess_original_turn_motion(self.p)
+  incomplete_sources=original_snapshot()
   self.assertEqual(incomplete["physical_checks"]["maneuver"]["status"],"not_met")
   self.assertFalse(incomplete["maneuver_completed"])
   rows("trace.jsonl",trace)
@@ -290,6 +294,7 @@ class OnewayTurnTests(unittest.TestCase):
   self.write("body_ground_original.json",{"subject_id":"ego","frames":body})
   self.p.joinpath("trace.jsonl").unlink()
   missing=assess_original_turn_motion(self.p)
+  missing_sources=original_snapshot()
   self.assertEqual(missing["physical_checks"]["maneuver"]["status"],"unverified")
   self.assertIn("trace.jsonl",missing["physical_checks"]["maneuver"]["missing_evidence"])
   if os.environ.get("C152972_PHYSICAL_PROOF_OUTPUT"):
@@ -300,4 +305,28 @@ class OnewayTurnTests(unittest.TestCase):
                   diagnostic_fixture=True,physical_acceptance_claimed=False,
                   legal_acceptance_claimed=False)
     destination.joinpath(kind+".json").write_text(json.dumps(result,indent=2)+"\n")
+   destination.joinpath("source-snapshots.json").write_text(json.dumps({"diagnostic_fixture":True,"sources":{"complete_motion":complete_sources,"incomplete_motion":incomplete_sources,"missing_evidence":missing_sources}},indent=2)+"\n")
+ def test_diagnostic_native_closure_order(self):
+  from worker_exchange.native_output import seal_capture
+  from worker_exchange.saved_processing import record_native_exit,acknowledge_owner_release,_closure
+  self.p.joinpath("construction.json").write_text("{}\n")
+  self.p.joinpath("runner.py").write_text("# diagnostic runner\n")
+  self.p.joinpath("trace.jsonl").write_text('{"frame":1}\n')
+  self.p.joinpath("video_frames.jsonl").write_text('{"carla_frame":1}\n')
+  self.write("acquisition-provenance.json",{"provenance_kind":"native","diagnostic_fixture":True})
+  with self.assertRaisesRegex(ValueError,"restoration"):
+   seal_capture(self.p,frames=1,restoration={"restored":False},errors=[],encoder_exit_codes={"overview":0})
+  with self.assertRaisesRegex(ValueError,"encoders"):
+   seal_capture(self.p,frames=1,restoration={"restored":True},errors=[],encoder_exit_codes={"overview":1})
+  seal=seal_capture(self.p,frames=1,restoration={"restored":True},errors=[],encoder_exit_codes={"overview":0})
+  self.assertEqual(seal["events"],["capture_finished","encoders_closed","restoration_verified"])
+  with self.assertRaisesRegex(ValueError,"not exited"):
+   acknowledge_owner_release(self.p,self.p/"owner-release.json",True)
+  exit_receipt=record_native_exit(self.p)
+  self.assertEqual(exit_receipt["event"],"native_exit")
+  with self.assertRaisesRegex(ValueError,"attest"):
+   acknowledge_owner_release(self.p,self.p/"owner-release.json",False)
+  owner=acknowledge_owner_release(self.p,self.p/"owner-release.json",True)
+  self.assertEqual(owner["event"],"owner_released")
+  _closure(self.p,self.p/"owner-release.json","native",False)
 if __name__=="__main__":unittest.main()
