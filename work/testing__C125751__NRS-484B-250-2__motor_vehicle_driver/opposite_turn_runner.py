@@ -273,6 +273,10 @@ def analyze_device_sources(root):
     if any(any(type(value) is not int for value in pair) for pair in governed.values()):
         raise ValueError("Sourced governed approach lanes required")
     stop_context = json.loads(paths["stop_context.json"].read_text())
+    road_context = json.loads((root / "road_geometry.json").read_text())
+    polygon = Polygon(road_context.get("intersection_polygon_xy_m", []))
+    if not polygon.is_valid or polygon.area <= 0:
+        raise ValueError("Sourced crossing polygon required to verify original stop observations")
     references = stop_context.get("selected_references")
     if (stop_context.get("intersection_id") != base["intersection_id"] or
             stop_context.get("review_status") != "candidate_only" or
@@ -318,6 +322,20 @@ def analyze_device_sources(root):
                     sample.get("native_road_id") != actor.get("native_road_id") or
                     sample.get("native_lane_id") != actor.get("native_lane_id")):
                 raise ValueError("Original stop observation differs from body source: " + role)
+            velocity = actor.get("velocity_xyz_mps")
+            if (not isinstance(velocity, list) or len(velocity) != 3 or
+                    any(type(value) not in (int, float) or not math.isfinite(value)
+                        for value in velocity) or
+                    type(actor.get("speed_mps")) not in (int, float) or
+                    not math.isclose(actor["speed_mps"], math.hypot(*velocity),
+                                     rel_tol=1e-9, abs_tol=1e-9)):
+                raise ValueError("Original body speed differs from velocity source: " + role)
+            expected_stop = _stop_state(actor, polygon)
+            if (not math.isclose(sample["speed_mps"], expected_stop["speed_mps"],
+                                 rel_tol=1e-9, abs_tol=1e-9) or
+                    sample.get("front_xy_m") != expected_stop["front_xy_m"] or
+                    sample["body_inside_crossing"] != expected_stop["body_inside_crossing"]):
+                raise ValueError("Original stop observation differs from body geometry: " + role)
             if index == 0 and (actor["native_road_id"], actor["native_lane_id"]) != governed[role]:
                 raise ValueError("Original approach differs from governed signal lane: " + role)
         observations.append({"frame": native_frame, "time_s": native_time,

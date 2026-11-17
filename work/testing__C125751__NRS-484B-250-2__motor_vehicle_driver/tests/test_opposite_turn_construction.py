@@ -9,6 +9,7 @@ from contextlib import contextmanager
 from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import patch
+from shapely.geometry import Polygon
 
 
 HERE = Path(__file__).resolve().parents[1]
@@ -393,7 +394,8 @@ class DeviceSourceJoinTests(unittest.TestCase):
                 "other": [[0, -10], [0, -4], [0, 0], [0, 10]]}}))
         (root / "road_geometry.json").write_text(json.dumps({
             "intersection_id": 7, "ego_approach_heading_deg": 0,
-            "other_approach_heading_deg": 90}))
+            "other_approach_heading_deg": 90,
+            "intersection_polygon_xy_m": [[-2, -2], [2, -2], [2, 2], [-2, 2]]}))
         (root / "signal_context.json").write_text(json.dumps({
             "intersection_id": 7, "native_map_id": "TownSynthetic",
             "native_signal_id": 17, "other_native_signal_id": 18,
@@ -405,19 +407,22 @@ class DeviceSourceJoinTests(unittest.TestCase):
             "intersection_id": 7, "selected_references": stop_references(),
             "review_status": "candidate_only"}))
         rows = [{"frame": 100+i, "time_s": i*.05,
-                 "ego": {"heading_deg": 0, "native_road_id": 1, "native_lane_id": -1},
-                 "other": {"heading_deg": 90, "native_road_id": 2, "native_lane_id": -1}}
+                 "ego": {"heading_deg": 0, "native_road_id": 1, "native_lane_id": -1,
+                         "velocity_xyz_mps": [float(i), 0., 0.], "speed_mps": float(i),
+                         "body_vertices_xy_m": [[-10+i, -1], [-10+i, 1],
+                                                [-6+i, -1], [-6+i, 1]]},
+                 "other": {"heading_deg": 90, "native_road_id": 2, "native_lane_id": -1,
+                           "velocity_xyz_mps": [float(i), 0., 0.], "speed_mps": float(i),
+                           "body_vertices_xy_m": [[6-i, -1], [6-i, 1],
+                                                  [10-i, -1], [10-i, 1]]}}
                 for i in range(2)]
         signals = [{"frame": 100+i, "time_s": i*.05, "native_signal_id": 17,
                     "other_native_signal_id": 18, "state": "Off", "other_state": "Off"}
                    for i in range(2)]
-        stops = [{"frame": 100+i, "time_s": i*.05,
-                  "ego": {"speed_mps": float(i), "body_inside_crossing": False,
-                          "native_road_id": 1, "native_lane_id": -1,
-                          "front_xy_m": [-6+i, 0]},
-                  "other": {"speed_mps": float(i), "body_inside_crossing": False,
-                            "native_road_id": 2, "native_lane_id": -1,
-                            "front_xy_m": [6-i, 0]}} for i in range(2)]
+        polygon = Polygon([[-2, -2], [2, -2], [2, 2], [-2, 2]])
+        stops = [{"frame": row["frame"], "time_s": row["time_s"],
+                  "ego": runner._stop_state(row["ego"], polygon),
+                  "other": runner._stop_state(row["other"], polygon)} for row in rows]
         frames = [{"carla_frame": 100+i, "time_s": i*.05, "video_frame": i}
                   for i in range(2)]
         for name, values in (("crossing_history.jsonl", rows),
@@ -468,6 +473,30 @@ class DeviceSourceJoinTests(unittest.TestCase):
             (root / "result.json").write_text(json.dumps({"source_evidence_hashes": hashes}))
             (root / "signal_history.jsonl").write_text((root / "signal_history.jsonl").read_text()+" ")
             with self.assertRaisesRegex(ValueError, "differs from saved result"):
+                runner.analyze_device_sources(root)
+
+    def test_device_join_recomputes_stop_observations_from_original_bodies(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            for changed, error in (("speed_mps", "body geometry"),
+                                   ("front_xy_m", "body geometry"),
+                                   ("body_inside_crossing", "body geometry")):
+                self._sources(root)
+                rows = [json.loads(line) for line in (root / "stop_history.jsonl").read_text().splitlines()]
+                if changed == "speed_mps":
+                    rows[1]["ego"][changed] += 1.
+                elif changed == "front_xy_m":
+                    rows[1]["ego"][changed][0] += 1.
+                else:
+                    rows[1]["ego"][changed] = True
+                (root / "stop_history.jsonl").write_text("".join(json.dumps(row)+"\n" for row in rows))
+                with self.assertRaisesRegex(ValueError, error):
+                    runner.analyze_device_sources(root)
+            self._sources(root)
+            rows = [json.loads(line) for line in (root / "crossing_history.jsonl").read_text().splitlines()]
+            rows[1]["ego"]["speed_mps"] = 7.
+            (root / "crossing_history.jsonl").write_text("".join(json.dumps(row)+"\n" for row in rows))
+            with self.assertRaisesRegex(ValueError, "speed differs from velocity"):
                 runner.analyze_device_sources(root)
 
 
