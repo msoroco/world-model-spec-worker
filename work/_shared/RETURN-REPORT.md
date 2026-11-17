@@ -5763,3 +5763,5 @@ Four emergency exception cases now have bounded source fixtures and exact text-6
 ### C150142 Update051 interim
 
 All 16 long measurement contracts validate; selected tour_bus_below four-candidate source finalizers pass and corrected full saved processing is running. Three mail cases have 12 four-candidate staged-manifest compatibility/saved passes. Status remains partial; see assignment HANDOFF.md. No frozen or Git edit.
+
+C150142 Update051 verified addendum: selected tour_bus_below primary passes full pinned 36,120-frame saved processing with four source decodes and final decode. All four armored exception cases have 16 staged-manifest candidate compatibility/saved passes, in addition to 12 staged mail candidates. rtc_bus_below four-candidate source finalizer passes; its primary full saved run is pending. Status remains partial; see HANDOFF.md.

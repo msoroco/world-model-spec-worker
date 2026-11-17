@@ -41,16 +41,11 @@ def prove(case, candidate):
             raise AssertionError('Shuttle finalizer failed: ' + actual.stderr[-1200:])
         config = json.loads((stage / 'config.json').read_text())
         report = json.loads((stage / 'analysis-report.json').read_text())
-        contract = json.loads((ROOT / 'selected-primary' / case /
-                               'selected-measurement-contracts' /
+        contract = json.loads((ROOT / 'selected-measurement-contracts' /
                                (case + '.json')).read_text())
         plan = json.loads((ROOT / 'case-plan.json').read_text())
-        dispositions = [dict(row) for row in plan['requirement_dispositions']]
-        requirement = 'text-5' if case.startswith('rtc_bus_') else 'text-4'
-        for row in dispositions:
-            row['status'] = ('selected_required' if row['requirement'] == requirement
-                             else 'exception_pending')
-        validate(contract, dispositions, (stage / 'finalize_selected.py').read_text(),
+        validate(contract, plan['requirement_dispositions'],
+                 (stage / 'finalize_selected.py').read_text(),
                  case_id)
         verify_report(contract, report, stage)
         observed = report['measurements']['signed_curb_observation']['value']
@@ -76,7 +71,7 @@ def prove(case, candidate):
                 'boundary': observed['duration_relative_to_30_minutes'],
                 'activity_events': len(observed['recorded_activity_events']),
                 'missing_passenger_source_rejected': True,
-                'draft_text4_contract_passed': True,
+                'selected_contract_passed': True,
                 'media_decoded': False, 'original_native_observed': False}
 
 
