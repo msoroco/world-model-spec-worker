@@ -5803,3 +5803,7 @@ Update057 full strict rerun timed out at 120 seconds with an empty log (`update0
 Update057 next assignment C177225: added and CPU-tested `work/training__C177225__NRS-484B-560-7b__bus_driver/officer_direction.py`, a bidirectional authorized-officer directed-stop construction target with bus/crossing/time binding and controlled obey/continue requests. Four focused tests pass (`update057-officer-direction-tests.log`). It remains partial: integration into a real Native runner, selected primary/fallback candidates, source-bound four-camera proofs and independent audits are still CPU work. No original Native/physical/legal acceptance.
 
 C177225 scoped static complete check passed (`work/training__C177225__NRS-484B-560-7b__bus_driver/update057-scoped-complete.log`); status remains partial.
+
+### Update058 C177225 CPU construction
+
+C177225 now has `native_scene.py` with CARLA bus/officer/two-rail-asset/four-camera spawn calls and `measure_direction.py` with synchronized raw-source direction and bus-motion observations. Twelve focused CPU tests and runtime preflight passed (`work/training__C177225__NRS-484B-560-7b__bus_driver/update058-construction-and-measurement-tests.log`, `update058-preflight.log`). Result remains partial: installed rail asset and Native map readback, runnable capture/finalizer, exact primary/three fallbacks, pinned offline/compatibility/saved proofs, and independent delivery/comparison audits remain worker-owned CPU work. No original Native or physical/legal acceptance.
