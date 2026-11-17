@@ -9,7 +9,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
-MANIFEST = ROOT / 'execution-manifest-draft-all.json'
+DEFAULT_MANIFEST = ROOT / 'execution-manifest-draft-all.json'
 PYTHON = sys.executable
 
 
@@ -20,10 +20,12 @@ def sha(path):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--tag', default='v1')
+    parser.add_argument('--manifest', type=Path, default=DEFAULT_MANIFEST)
     args = parser.parse_args()
     if not args.tag.replace('-', '').isalnum():
         raise ValueError('Tag must be a simple output label')
-    manifest = json.loads(MANIFEST.read_text())
+    manifest_path = args.manifest.resolve()
+    manifest = json.loads(manifest_path.read_text())
     records = []
     for entry in manifest['cases']:
         case_id = entry['case_id']
@@ -33,7 +35,7 @@ def main():
                 'c150142-merged-' + slug + '-' + candidate + '-offline-' + args.tag)
             if not output.exists():
                 command = [PYTHON, str(REPO / 'runtime.py'), 'offline',
-                           '--manifest', str(MANIFEST), '--case', case_id,
+                           '--manifest', str(manifest_path), '--case', case_id,
                            '--candidate', candidate, '--output', str(output),
                            '--python', PYTHON]
                 process = subprocess.run(command, cwd=REPO,
@@ -49,12 +51,12 @@ def main():
                 item for item in entry['candidates'] if item['id'] == candidate)
             if selection['case_id'] != case_id or \
                selection['candidate_id'] != candidate or \
-               selection['manifest_sha256'] != sha(MANIFEST) or \
+               selection['manifest_sha256'] != sha(manifest_path) or \
                selection['construction_sha256'] != selected['construction_sha256'] or \
                not (output / 'offline.log').is_file():
                 raise ValueError('Integrated candidate binding differs: ' + slug + '/' + candidate)
             records.append({'case_id': case_id, 'candidate': candidate,
-                            'manifest_sha256': sha(MANIFEST),
+                            'manifest_sha256': sha(manifest_path),
                             'construction_sha256': selected['construction_sha256'],
                             'offline_log_sha256': sha(output / 'offline.log'),
                             'offline_passed': True, 'native_executed': False})
