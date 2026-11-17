@@ -30,12 +30,24 @@ def _write_new(path, value):
         stream.write('\n')
 
 
-def check(case_suffix, direction):
+def check(case_suffix, direction, config=None):
     validate_authored_road()
     if case_suffix not in CASE_SUFFIXES or direction not in (-1, 1):
         raise ValueError('Exact comparison case and approach direction required')
     layout = Crossing()
     layout.validate()
+    if config is not None:
+        if (config.get('case_id') != ASSIGNMENT + '__' + case_suffix or
+                config.get('selected_case_id') != config.get('case_id') or
+                config.get('case_suffix') != case_suffix or
+                config.get('direction') != direction or
+                config.get('law_id') != 'NRS-484B-560-7b' or
+                config.get('cell_id') != 'C177225' or
+                config.get('actor') != 'bus_driver' or
+                config.get('rate_hz') != RATE_HZ or
+                config.get('duration_s') != FRAMES / RATE_HZ or
+                config.get('rail_asset_blueprint', '').startswith('static.prop.') is not True):
+            raise ValueError('Materialized exact-case configuration differs')
     if layout.approach_station(direction) < -100 or layout.approach_station(direction) > 100:
         raise ValueError('Bus starts outside authored road')
     return {'case_id': ASSIGNMENT + '__' + case_suffix,
@@ -84,16 +96,22 @@ def _bus_row(bus, frame, direction):
             'source_kind': 'original_native_actor_api'}
 
 
-def run(client, carla, output, *, case_suffix, direction, rail_asset_blueprint):
+def run(client, carla, output, *, case_suffix, direction, rail_asset_blueprint=None):
     """Capture one fresh attempt. An exception leaves an explicit failure report."""
     from pipeline_capture import PipelineCapture
     from worker_exchange.native_output import FrameMap
     from worker_exchange.world_restore import restore, snapshot
 
-    spec = check(case_suffix, direction)
     output = Path(output).resolve()
-    if not output.is_dir() or any(output.iterdir()):
-        raise ValueError('A fresh empty attempt directory is required')
+    if not output.is_dir() or not (output / 'config.json').is_file():
+        raise ValueError('A materialized exact-case attempt directory is required')
+    config = json.loads((output / 'config.json').read_text())
+    spec = check(case_suffix, direction, config)
+    rail_asset_blueprint = rail_asset_blueprint or config['rail_asset_blueprint']
+    if rail_asset_blueprint != config['rail_asset_blueprint']:
+        raise ValueError('Runtime rail blueprint override differs from construction')
+    if (output / 'attempt_report.json').exists() or (output / 'video_frames.jsonl').exists():
+        raise ValueError('Retain prior attempt; materialize a fresh directory')
     assets = SceneAssets(rail_asset_blueprint=rail_asset_blueprint)
     assets.validate()
     saved = snapshot(client)
@@ -143,14 +161,6 @@ def run(client, carla, output, *, case_suffix, direction, rail_asset_blueprint):
                              first_governing_frame=first_next_frame + 1,
                              last_governing_frame=first_next_frame + FRAMES - 1,
                              crossing_id=signal.crossing_id, authorized=True)
-        _write_new(output / 'config.json', {
-            **spec, 'law_id': 'NRS-484B-560-7b', 'cell_id': 'C177225',
-            'case_suffix': case_suffix, 'duration_s': FRAMES / RATE_HZ,
-            'authored_test_context': {'core_assumptions': [
-                'Named police-officer role and authorization are authored scenario assumptions.',
-                'Observed pose and source video require independent saved review.']},
-            'rail_asset_blueprint_requested': rail_asset_blueprint,
-            'legal_verdict': None})
         specs = {item['name']: item['size'] for item in camera_plan(direction)}
         recorder = CameraRecorder(output, scene['cameras'], specs)
         frame_map = FrameMap(output / 'video_frames.jsonl')
@@ -242,21 +252,26 @@ def run(client, carla, output, *, case_suffix, direction, rail_asset_blueprint):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--check', action='store_true')
-    parser.add_argument('--case-suffix', choices=CASE_SUFFIXES, default='reference')
-    parser.add_argument('--direction', type=int, choices=(-1, 1), default=1)
+    parser.add_argument('--case-suffix', choices=CASE_SUFFIXES)
+    parser.add_argument('--direction', type=int, choices=(-1, 1))
     parser.add_argument('--output-dir', type=Path)
     parser.add_argument('--rail-asset-blueprint')
     parser.add_argument('--host', default='localhost')
     parser.add_argument('--port', type=int, default=2000)
     args = parser.parse_args()
+    bundle = Path.cwd() if args.check else args.output_dir
+    config_path = None if bundle is None else bundle / 'config.json'
+    config = json.loads(config_path.read_text()) if config_path is not None and config_path.is_file() else None
+    suffix = args.case_suffix or (config or {}).get('case_suffix', 'reference')
+    direction = args.direction or (config or {}).get('direction', 1)
     if args.check:
-        print(json.dumps(check(args.case_suffix, args.direction)))
+        print(json.dumps(check(suffix, direction, config)))
     else:
-        if args.output_dir is None or args.rail_asset_blueprint is None:
-            parser.error('--output-dir and --rail-asset-blueprint are required')
+        if args.output_dir is None:
+            parser.error('--output-dir is required')
         import carla
         client = carla.Client(args.host, args.port)
         client.set_timeout(180)
-        run(client, carla, args.output_dir, case_suffix=args.case_suffix,
-            direction=args.direction,
+        run(client, carla, args.output_dir, case_suffix=suffix,
+            direction=direction,
             rail_asset_blueprint=args.rail_asset_blueprint)
