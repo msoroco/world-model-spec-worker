@@ -11,7 +11,7 @@
       "gap_ids": [
         "uncovered-full-text"
       ],
-      "construction_status": "first_primary_diagnostic_geometry_offline_pending_actual_map_and_full_delivery",
+      "construction_status": "three_distinct_fallbacks_constructed_exact_offline_compatibility_reproof_pending_returned_manifest",
       "physical_risk": {
         "risk": "Native body path may not keep left-curb proximity independently on source and destination roads",
         "trigger_source": "original map curb lines and ground body footprints",
@@ -30,7 +30,52 @@
           "{analysis_report}"
         ]
       },
-      "fixture_recipe": "work/heldout__C152972__NRS-484B-400-5__motor_vehicle_driver/first-primary-recipe.json"
+      "fixture_recipe": "work/heldout__C152972__NRS-484B-400-5__motor_vehicle_driver/first-primary-recipe.json",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "first-fallback1-construction.json",
+          "construction_sha256": "d6ff5f34bbd7b68918c51a6b41c9d0ed6855fd859c1181b0c04bb9ba6ba9f02d",
+          "trigger": {
+            "source": "original vehicle-spawn collision or insufficient ground clearance",
+            "metric": "Native spawn result",
+            "failure_condition": "vehicle fails to spawn or original body contacts the curb"
+          },
+          "changed_knobs": [
+            "z=.5 -> z=.65"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "first-fallback2-construction.json",
+          "construction_sha256": "e6a5ea0d18b253456ca58be8e7ea13b3ef1e95cebd7dbfddd7b313c9e23b34be",
+          "trigger": {
+            "source": "route waypoint progress stalls near curb corner",
+            "metric": "original body waypoint-distance trace",
+            "failure_condition": "vehicle does not reach the next source route waypoint"
+          },
+          "changed_knobs": [
+            "distance<.75 -> distance<.95"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "first-fallback3-construction.json",
+          "construction_sha256": "94b626db4d4526b959fd18c9fc2f2c0f3a1aa32052c1d7c48f014e0d87d8daf9",
+          "trigger": {
+            "source": "one original camera callback misses the 10 s synchronization window",
+            "metric": "original four-camera callback timing",
+            "failure_condition": "camera frame absent by the default synchronization deadline"
+          },
+          "changed_knobs": [
+            "timeout_s=10 -> timeout_s=15"
+          ]
+        }
+      ],
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original Native spawn, route waypoint and camera callback risks can prevent the exact near/near curb attempt from completing"
+      }
     },
     {
       "case_id": "heldout__C152972__NRS-484B-400-5__motor_vehicle_driver__approach_far_depart_near",
@@ -39,7 +84,7 @@
       "gap_ids": [
         "uncovered-full-text"
       ],
-      "construction_status": "second_primary_diagnostic_sources_and_contract_authored_pending_proof",
+      "construction_status": "three_distinct_fallbacks_constructed_exact_proof_pending",
       "physical_risk": {
         "risk": "Native body path may not keep left-curb proximity independently on source and destination roads",
         "trigger_source": "original map curb lines and ground body footprints",
@@ -58,7 +103,52 @@
           "{analysis_report}"
         ]
       },
-      "fixture_recipe": "work/heldout__C152972__NRS-484B-400-5__motor_vehicle_driver/second-primary-recipe.json"
+      "fixture_recipe": "work/heldout__C152972__NRS-484B-400-5__motor_vehicle_driver/second-primary-recipe.json",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "second-fallback1-construction.json",
+          "construction_sha256": "584c15c81d27ea9cf3a7909b289a71d8572483f29e0edcd48517ea957a53541f",
+          "trigger": {
+            "source": "Native vehicle-spawn collision at one-way approach",
+            "metric": "Native vehicle spawn result",
+            "failure_condition": "vehicle fails to spawn or original body contacts left curb"
+          },
+          "changed_knobs": [
+            "z=.5 -> z=.65"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "second-fallback2-construction.json",
+          "construction_sha256": "5f07776418c114811418c0139903d1082d65cc8b7e2756ed66cf99cb06b13f6d",
+          "trigger": {
+            "source": "curb-corner waypoint progress stalls",
+            "metric": "original body waypoint-distance trace",
+            "failure_condition": "vehicle fails to reach next source route waypoint"
+          },
+          "changed_knobs": [
+            "distance<.75 -> distance<.95"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "second-fallback3-construction.json",
+          "construction_sha256": "dc349c8e486bcbf2f0073afddf9113008fc1cbacdea75afeddaf573fbccb048e",
+          "trigger": {
+            "source": "original camera callback timing exceeds default",
+            "metric": "original four-camera callback timing",
+            "failure_condition": "source camera frame absent by synchronization deadline"
+          },
+          "changed_knobs": [
+            "timeout_s=10 -> timeout_s=15"
+          ]
+        }
+      ],
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original Native spawn, route waypoint and camera callback risks can prevent the selected one-way curb attempt from completing"
+      }
     },
     {
       "case_id": "heldout__C152972__NRS-484B-400-5__motor_vehicle_driver__approach_near_depart_far",
@@ -67,7 +157,7 @@
       "gap_ids": [
         "uncovered-full-text"
       ],
-      "construction_status": "third_primary_diagnostic_sources_and_contract_authored_pending_proof",
+      "construction_status": "three_distinct_fallbacks_constructed_exact_proof_pending",
       "physical_risk": {
         "risk": "Native body path may not keep left-curb proximity independently on source and destination roads",
         "trigger_source": "original map curb lines and ground body footprints",
@@ -86,7 +176,52 @@
           "{analysis_report}"
         ]
       },
-      "fixture_recipe": "work/heldout__C152972__NRS-484B-400-5__motor_vehicle_driver/third-primary-recipe.json"
+      "fixture_recipe": "work/heldout__C152972__NRS-484B-400-5__motor_vehicle_driver/third-primary-recipe.json",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "third-fallback1-construction.json",
+          "construction_sha256": "2aeb653aceb9d74254f23fe51846ee50a871f29fb0237cf4801a28f77633cffd",
+          "trigger": {
+            "source": "Native vehicle-spawn collision at one-way approach",
+            "metric": "Native vehicle spawn result",
+            "failure_condition": "vehicle fails to spawn or original body contacts left curb"
+          },
+          "changed_knobs": [
+            "z=.5 -> z=.65"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "third-fallback2-construction.json",
+          "construction_sha256": "5fc3ad20cfdd0002c212eac0163fa0456aea898102da16f03e5b2989cfc602a1",
+          "trigger": {
+            "source": "curb-corner waypoint progress stalls",
+            "metric": "original body waypoint-distance trace",
+            "failure_condition": "vehicle fails to reach next source route waypoint"
+          },
+          "changed_knobs": [
+            "distance<.75 -> distance<.95"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "third-fallback3-construction.json",
+          "construction_sha256": "c58fecde37de299776e76559c849b09226e48524f0504c98621e60b337b33b54",
+          "trigger": {
+            "source": "original camera callback timing exceeds default",
+            "metric": "original four-camera callback timing",
+            "failure_condition": "source camera frame absent by synchronization deadline"
+          },
+          "changed_knobs": [
+            "timeout_s=10 -> timeout_s=15"
+          ]
+        }
+      ],
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original Native spawn, route waypoint and camera callback risks can prevent the selected one-way curb attempt from completing"
+      }
     }
   ],
   "comparisons": [
@@ -207,7 +342,7 @@
       "status": "selected_exact_cases_with_original_geometry_and_route_targets_cpu_tested_native_package_pending"
     },
     {
-      "branch": "No numeric legal cutoff for \u201cas close as practicable.\u201d",
+      "branch": "No numeric legal cutoff for “as close as practicable.”",
       "status": "selected_exact_cases_with_original_geometry_and_route_targets_cpu_tested_native_package_pending"
     }
   ],
