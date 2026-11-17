@@ -1,0 +1,60 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__gives_way_increases_speed",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Give way to the right upon observing the overtaking vehicle or hearing a signal.",
+      "source": "inputs/heldout__C179789__NRS-484B-207-2__motor_vehicle_driver/assignment.json",
+      "output_key": "right_shift_m",
+      "method": "measure_right_shift",
+      "value_type": "number",
+      "kind": "measured",
+      "inputs": [
+        "overtaken_source.jsonl",
+        "video_frames.jsonl",
+        "trace.jsonl",
+        "signal_command_original.jsonl",
+        "signal_audio_envelope_original.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Do not increase speed until completely passed by the overtaking vehicle.",
+      "source": "inputs/heldout__C179789__NRS-484B-207-2__motor_vehicle_driver/assignment.json",
+      "output_key": "speed_delta_mps",
+      "method": "measure_speed_delta",
+      "value_type": "number",
+      "kind": "measured",
+      "inputs": [
+        "overtaken_source.jsonl",
+        "video_frames.jsonl",
+        "trace.jsonl",
+        "signal_command_original.jsonl",
+        "signal_audio_envelope_original.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Establish overtaken and overtaking actor identities and full-body pass completion from original physical sources.",
+      "source": "inputs/heldout__C179789__NRS-484B-207-2__motor_vehicle_driver/assignment.json",
+      "output_key": "pass_complete_frame",
+      "method": "measure_pass_completion",
+      "value_type": "number",
+      "kind": "measured",
+      "inputs": [
+        "overtaken_source.jsonl",
+        "video_frames.jsonl",
+        "trace.jsonl",
+        "signal_command_original.jsonl",
+        "signal_audio_envelope_original.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "overtaken_source.jsonl"
+    ],
+    "error_contains": "Missing required source: overtaken_source.jsonl"
+  }
+}
