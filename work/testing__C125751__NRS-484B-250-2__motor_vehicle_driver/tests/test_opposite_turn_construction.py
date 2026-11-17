@@ -236,14 +236,19 @@ class OppositeTurnConstructionTest(unittest.TestCase):
                      crossing_polygon_source="synthetic fake-Native test polygon",
                      native_junction_id=77,
                      approach_headings_deg={"ego": 0, "other": 180},
-                     approach_geometry_source="synthetic fake-Native test route")
+                     approach_geometry_source="synthetic fake-Native test route",
+                     governed_signal_ids={"ego": 101, "other": 102},
+                     device_inventory_source="synthetic fake-Native signal inventory")
+        lights = {"ego": SimpleNamespace(id=101, get_state=lambda: "Green"),
+                  "other": SimpleNamespace(id=102, get_state=lambda: "Red")}
         with tempfile.TemporaryDirectory() as temp:
             with patch.object(runner, "source_cameras", cameras), patch.object(runner, "FFV1Writer", Writer):
                 receipt = runner.capture_candidate_media(
                     Path(temp), world, carla, value, "ego",
                     {"ego": "car", "other": "car"},
                     {"ego": "pose1", "other": "pose2"},
-                    {"ego": 1, "other": 2}, {"ego": 5., "other": 5.}, 3)
+                    {"ego": 1, "other": 2}, {"ego": 5., "other": 5.}, 3,
+                    governed_lights=lights)
             source = [json.loads(line) for line in
                       (Path(temp) / "body_history.jsonl").read_text().splitlines()]
             frames = [json.loads(line) for line in
@@ -252,6 +257,8 @@ class OppositeTurnConstructionTest(unittest.TestCase):
                          (Path(temp) / "crossing_history.jsonl").read_text().splitlines()]
             stops = [json.loads(line) for line in
                      (Path(temp) / "stop_history.jsonl").read_text().splitlines()]
+            signals = [json.loads(line) for line in
+                       (Path(temp) / "signal_history.jsonl").read_text().splitlines()]
             measured = turn_context.analyze(temp)
             self.assertEqual(json.loads((Path(temp) / "road_geometry.json").read_text())
                              ["review_status"], "candidate_only")
@@ -266,6 +273,14 @@ class OppositeTurnConstructionTest(unittest.TestCase):
         self.assertEqual([row["frame"] for row in stops], [2, 3, 4])
         self.assertFalse(stops[0]["ego"]["body_inside_crossing"])
         self.assertFalse(stops[0]["other"]["body_inside_crossing"])
+        self.assertEqual([(row["frame"], row["state"], row["other_state"])
+                          for row in signals], [(2, "Green", "Red"),
+                                                (3, "Green", "Red"),
+                                                (4, "Green", "Red")])
+        self.assertEqual([row["time_s"] for row in signals],
+                         [row["time_s"] for row in frames])
+        self.assertEqual(json.loads((Path(temp) / "signal_context.json").read_text())
+                         ["review_status"], "candidate_only")
         self.assertTrue(measured["original_heading_complete"])
         self.assertEqual(measured["first_original_headings"]["other"]["native_lane_id"], 1)
         self.assertEqual(set(written), {name + ".mkv" for name in value["cameras"]})
@@ -289,6 +304,24 @@ class OppositeTurnConstructionTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "Native candidate junction and approach source"):
                 runner.capture_candidate_media(Path(temp), None, None, value, "ego",
                                                None, None, None, None, 3)
+            self.assertEqual(list(Path(temp).iterdir()), [])
+
+    def test_candidate_media_rejects_unmatched_governed_signals(self):
+        value = dict(site(), cameras={name: [0, 0, 10, 0, 0, 0] for name in
+                                      ("overview", "approach", "reference_corner", "driver_reference")},
+                     crossing_polygon_xy_m=[[-3, -3], [3, -3], [3, 3], [-3, 3]],
+                     crossing_polygon_source="synthetic test polygon",
+                     native_junction_id=77,
+                     approach_headings_deg={"ego": 0, "other": 180},
+                     approach_geometry_source="synthetic test route",
+                     governed_signal_ids={"ego": 101, "other": 102},
+                     device_inventory_source="synthetic test inventory")
+        wrong = {"ego": SimpleNamespace(id=101), "other": SimpleNamespace(id=103)}
+        with tempfile.TemporaryDirectory() as temp:
+            with self.assertRaisesRegex(ValueError, "Two sourced governed Native signal actors"):
+                runner.capture_candidate_media(Path(temp), None, None, value, "ego",
+                                               None, None, None, None, 3,
+                                               governed_lights=wrong)
             self.assertEqual(list(Path(temp).iterdir()), [])
 
 

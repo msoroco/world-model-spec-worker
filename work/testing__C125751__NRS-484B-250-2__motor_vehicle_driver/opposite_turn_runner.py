@@ -13,7 +13,7 @@ from shapely.geometry import Polygon
 
 from camera_setup import SIZES, source_cameras
 from camera_encoder import FFV1Writer
-from capture_sources import _actor, _stop_state
+from capture_sources import _actor, _native_state, _stop_state
 from opposite_turn_construction import (construct_opposite_turn_pair,
                                         command_opposite_turn_pair)
 
@@ -89,7 +89,7 @@ def _joined_image(queue, frame):
 
 def capture_candidate_media(output_dir, world, carla, site, turning_role,
                             blueprints, transforms, release_frames,
-                            target_speeds_mps, frames):
+                            target_speeds_mps, frames, governed_lights=None):
     """Write four FFV1 sources, frame map and paired original actor records.
 
     This is a candidate capture path; the exact selected manifest, source site
@@ -113,6 +113,16 @@ def capture_candidate_media(output_dir, world, carla, site, turning_role,
                 for value in headings.values()) or
             not site.get("approach_geometry_source")):
         raise ValueError("Native candidate junction and approach source required")
+    if governed_lights is not None:
+        signal_ids = site.get("governed_signal_ids")
+        if (not isinstance(governed_lights, dict) or set(governed_lights) != {"ego", "other"} or
+                not isinstance(signal_ids, dict) or set(signal_ids) != {"ego", "other"} or
+                any(type(signal_ids[role]) is not int or signal_ids[role] <= 0 or
+                    getattr(governed_lights[role], "id", None) != signal_ids[role]
+                    for role in ("ego", "other")) or
+                signal_ids["ego"] == signal_ids["other"] or
+                not site.get("device_inventory_source")):
+            raise ValueError("Two sourced governed Native signal actors required")
     poses = {name: _camera_pose(carla, camera_values[name]) for name in SIZES}
     (root / "road_geometry.json").write_text(json.dumps({
         "intersection_id": junction_id,
@@ -127,11 +137,20 @@ def capture_candidate_media(output_dir, world, carla, site, turning_role,
         "approach_geometry_source": site["approach_geometry_source"],
         "turn_intention_source": "Native route candidate; original trajectory requires review",
         "review_status": "candidate_only"}, allow_nan=False) + "\n")
+    if governed_lights is not None:
+        (root / "signal_context.json").write_text(json.dumps({
+            "intersection_id": junction_id,
+            "native_signal_id": signal_ids["ego"],
+            "other_native_signal_id": signal_ids["other"],
+            "device_inventory_source": site["device_inventory_source"],
+            "review_status": "candidate_only"}, allow_nan=False) + "\n")
     from worker_exchange.native_output import FrameMap
     with ExitStack() as stack:
         body_stream = stack.enter_context((root / "body_history.jsonl").open("x", buffering=1))
         crossing_stream = stack.enter_context((root / "crossing_history.jsonl").open("x", buffering=1))
         stop_stream = stack.enter_context((root / "stop_history.jsonl").open("x", buffering=1))
+        signal_stream = (stack.enter_context((root / "signal_history.jsonl").open("x", buffering=1))
+                         if governed_lights is not None else None)
         frame_map = stack.enter_context(FrameMap(root / "video_frames.jsonl"))
         frame_times = {}
 
@@ -172,6 +191,13 @@ def capture_candidate_media(output_dir, world, carla, site, turning_role,
                     "ego": _stop_state(bodies["ego"], polygon),
                     "other": _stop_state(bodies["other"], polygon)}
             stop_stream.write(json.dumps(stop, allow_nan=False) + "\n")
+            if signal_stream is not None:
+                signal = {"frame": crossing["frame"], "time_s": crossing["time_s"],
+                          "native_signal_id": signal_ids["ego"],
+                          "state": _native_state(governed_lights["ego"]),
+                          "other_native_signal_id": signal_ids["other"],
+                          "other_state": _native_state(governed_lights["other"])}
+                signal_stream.write(json.dumps(signal, allow_nan=False) + "\n")
 
         receipt = run_candidate_opposite_turn(
             world, carla, site, turning_role, blueprints, transforms,
