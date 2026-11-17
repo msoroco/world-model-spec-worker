@@ -1,6 +1,7 @@
 """Audit declared turn-course comparisons from retained original sources."""
 
 import argparse
+import hashlib
 import json
 from pathlib import Path
 
@@ -13,6 +14,53 @@ ROUTE_FORMS = {
     "button_route_response": "button",
     "other_indication_route_response": "other_indication",
 }
+
+
+def audit_course_deviation(attempts):
+    if len(attempts) != 2:
+        raise ValueError("Course comparison requires exactly two attempts")
+    sources = []
+    for attempt in map(Path, attempts):
+        config = json.loads((attempt / "config.json").read_text())
+        receipt = json.loads((attempt / "turn_source_receipt.json").read_text())
+        if config["selected_case_id"] != receipt["case_id"]:
+            raise ValueError("Course comparison source selected another case")
+        hashes = receipt["source_sha256"]
+        for name in ("turn_indication_original.json", "turn_route_plan.json",
+                     "turn_body_original.jsonl"):
+            source = attempt / name
+            if not source.is_file() or hashlib.sha256(source.read_bytes()).hexdigest() != hashes.get(name):
+                raise ValueError("Missing or changed original course source: " + name)
+        indication = json.loads((attempt / "turn_indication_original.json").read_text())
+        route = json.loads((attempt / "turn_route_plan.json").read_text())
+        sources.append((config, hashes, indication, route))
+    left, right = sources
+    left_config, left_hashes, left_indication, left_route = left
+    right_config, right_hashes, right_indication, right_route = right
+    if not (left_config["selected_case_id"].endswith("__course_2m__marker_depart")
+            and right_config["selected_case_id"].endswith("__marker_depart")):
+        raise ValueError("Course comparison selected another route pair")
+    for key in ("law_id", "cell_id", "actor", "rate_hz", "duration_s", "cameras"):
+        if left_config[key] != right_config[key]:
+            raise ValueError("Course comparison changed fixed condition: " + key)
+    if left_indication != right_indication or left_hashes["turn_indication_original.json"] != right_hashes["turn_indication_original.json"]:
+        raise ValueError("Course comparison changed original indication")
+    if not (left_route["indication_form"] == right_route["indication_form"] == "marker"
+            and left_route["route_variant"] == right_route["route_variant"] == "depart"
+            and left_route["course_xy_m"] == right_route["course_xy_m"]
+            and left_route["target_route_xy_m"][:-1] == right_route["target_route_xy_m"][:-1]
+            and left_route["departure_m"] == left_config["course_deviation_setpoint_m"] == 2.0
+            and right_route["departure_m"] == 4.0):
+        raise ValueError("Course comparison changed fixed route or planned setpoint")
+    a, b = left_route["target_route_xy_m"][-1], right_route["target_route_xy_m"][-1]
+    if abs(b[0] - a[0] - 2.0) > 1e-6 or abs(b[1] - a[1]) > 1e-6:
+        raise ValueError("Course comparison target separation differs")
+    return {"comparison_id": "course_deviation_2m_4m",
+            "case_ids": [left_config["selected_case_id"], right_config["selected_case_id"]],
+            "same_original_indication": True, "planned_target_separation_m": 2.0,
+            "original_body_sources_equal": left_hashes["turn_body_original.jsonl"] == right_hashes["turn_body_original.jsonl"],
+            "actual_motion_separation_verified": False,
+            "physical_acceptance_claimed": False, "legal_acceptance_claimed": False}
 
 
 def audit(comparison, attempts):
@@ -36,6 +84,9 @@ def audit(comparison, attempts):
         findings = audit_forms(attempts)
         if findings["comparison_id"] != comparison or not findings["fixed_conditions_verified"]:
             raise ValueError("Form comparison lacks fixed-condition proof")
+        case_ids = findings["case_ids"]
+    elif comparison == "course_deviation_2m_4m":
+        findings = audit_course_deviation(attempts)
         case_ids = findings["case_ids"]
     else:
         raise ValueError("Unknown declared comparison")

@@ -93,6 +93,21 @@
         "trigger_metric": "in-intersection authorization readback and original course deviation",
         "failure_condition": "indication absent or route observation fails to isolate requested response"
       }
+    },
+    {
+      "case_id": "heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__course_2m__marker_depart",
+      "target_law_id": "LVMC-11-12-020",
+      "branch": "marker_depart",
+      "gap_ids": [
+        "uncovered-full-text"
+      ],
+      "construction_status": "source_bound_2m_controller_and_saved_cpu_proved",
+      "physical_risk": {
+        "risk": "Native marker placement or 2 m route response may differ physically from source-constrained plan",
+        "trigger_source": "original marker indication, Native route plan and subject body trajectory",
+        "trigger_metric": "in-intersection readback and original whole-turn course deviation",
+        "failure_condition": "marker absent, route departure not distinguishable, or four-camera source arrival incomplete"
+      }
     }
   ],
   "comparisons": [
@@ -151,12 +166,25 @@
       "deliberate_differences": [
         "authorized marker, button or other in-intersection indication form"
       ]
+    },
+    {
+      "comparison_id": "course_deviation_2m_4m",
+      "case_ids": [
+        "heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__course_2m__marker_depart",
+        "heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__marker_depart"
+      ],
+      "fixed_conditions": [
+        "same sourced marker, turn direction, C111644 intersection, subject and four-camera duration plan"
+      ],
+      "deliberate_differences": [
+        "2 m versus 4 m source-constrained controller route target; original motion and legal disobedience assessed independently"
+      ]
     }
   ],
   "observations": [
     {
       "term": "dev.regulatory_sign",
-      "note": "code turn_course_marker — authorized markers or buttons within the intersection"
+      "note": "code turn_course_marker \u2014 authorized markers or buttons within the intersection"
     },
     {
       "term": "st.lane_marking",
