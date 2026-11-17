@@ -8,7 +8,7 @@
   "comparison_audits_passed": 0,
   "input_sha256": "0f98bdbc67694d46078a43e334e663045d482fbe71132a40d74f69a9acd5b8d4",
   "readiness_kind": null,
-  "reason": "Update068: completed source-bound CPU physical-outcome and lifecycle checkers for the C177225 bus/officer pair. Both 600-frame synthetic primaries produce unverified physical outcomes; source-mutated incomplete-motion diagnostics return not_met and missing-officer diagnostics return unverified for both exact cases. Unit tests reject synthetic success as Native completion, missing/mismatched rows, absent seal, stale originals, stale Native exit, missing owner release, and early saved processing. Both exact cases now have passing diagnostic delivery-acceptance commands and failing synthetic-to-Native negatives bound in execution-manifest.json; pinned delivery_handoff.validate_case and local helper-hash check pass. Canonical semantic stages, preflight, 33 assignment tests, draft-negative-physical validation and scoped static complete pass. Status remains partial: direct execution_manifest.validate still fails Missing physical preparation proof for reference because no original Native complete-motion fixture or operator lifecycle receipt exists; no complete-motion or acceptance is claimed. The 20-second full-batch strict rerun timed out without output, so the last completed user-supplied full gate still names unapproved frozen runtime/pipeline/runs/scenario_pipeline/inputs/shared/manifest.json. Other worker-owned CPU gaps remain: final proposal-dependent compatibility/comparison proof rebinding, full-batch ordered queue/integration, and remaining assignments. Do not edit frozen inputs/runtime/batch or run Git.",
+  "reason": "Update068 final: C177225 reference and contrast primaries plus all three fallbacks per case passed refreshed pinned 600-frame positive/negative compatibility and saved processing after the canonical case proposal change. The independent comparison was rerun on those final primaries and passed as synthetic-only. Current primary and four-candidate receipt validators, five-stage semantic delivery, delivery acceptance contract, physical negative draft, 33 assignment tests, preflight and scoped static complete pass. Root case inventory, per-view camera coverage/composition, Native handoff variables and saved-only post-capture commands are recorded. The assignment remains partial: direct execution_manifest.validate fails Missing physical preparation proof for reference. A complete-motion fixture with realized original Native observations and an actual operator owner-release lifecycle is absent; synthetic diagnostic samples cannot fill it. Scoped strict rejects partial status. Batch-wide strict remains unproven; this turn’s 20-second run timed out empty, and the latest completed user-supplied full gate rejected frozen runtime/pipeline/runs/scenario_pipeline/inputs/shared/manifest.json. Other assignments and shared queue/integration remain incomplete. No frozen edit or Git action.",
   "recordings_accepted": 0,
   "status": "partial",
   "tests": [
@@ -466,6 +466,138 @@
       "command": ".venv-cpu/bin/python worker_check.py --assignment training__C177225__NRS-484B-560-7b__bus_driver --complete",
       "exit_code": 0,
       "log": "update068-scoped-complete.log",
+      "sha256": "0ca52ef3c3be8f5f7299bd93bb16f2381bcafbd101433b8d4b3745d8dd83674d"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/training__C177225__NRS-484B-560-7b__bus_driver/execution-manifest.json --case training__C177225__NRS-484B-560-7b__bus_driver__reference --output .runtime-work/update068-c177225-reference-compatibility --library runtime/pipeline/library --validator .runtime-work/c10316-current-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "update068-reference-compatibility.log",
+      "sha256": "73438c3da4865ba5a705d43eaddd1d52b4fc0097187391d8e53587b45eade825"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C177225__NRS-484B-560-7b__bus_driver/execution-manifest.json --case training__C177225__NRS-484B-560-7b__bus_driver__reference --attempt .runtime-work/update068-c177225-reference-compatibility --output .runtime-work/update068-c177225-reference-saved --library runtime/pipeline/library --validator .runtime-work/c10316-current-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "update068-reference-saved.log",
+      "sha256": "f6cf3e414ecf16a709695f4719554a31949c428956c905b5ba6570f3b15764c0"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/training__C177225__NRS-484B-560-7b__bus_driver/reference-fallback1-proof-manifest.json --case training__C177225__NRS-484B-560-7b__bus_driver__reference --candidate fallback1 --output .runtime-work/update068r-c177225-reference-fallback1-compatibility --library runtime/pipeline/library --validator .runtime-work/c10316-current-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "update068r-reference-fallback1-compatibility.log",
+      "sha256": "9b9e0f98f9569c30513457adb76ff56d75b7e3996e179c6c9d467f8a111a8b52"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C177225__NRS-484B-560-7b__bus_driver/reference-fallback1-proof-manifest.json --case training__C177225__NRS-484B-560-7b__bus_driver__reference --attempt .runtime-work/update068r-c177225-reference-fallback1-compatibility --output .runtime-work/update068r-c177225-reference-fallback1-saved --library runtime/pipeline/library --validator .runtime-work/c10316-current-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "update068r-reference-fallback1-saved.log",
+      "sha256": "70b315a4beffaa465d5d3f2c526935ea292f263b00b68663cdf84ca157af0e1e"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/training__C177225__NRS-484B-560-7b__bus_driver/execution-manifest.json --case training__C177225__NRS-484B-560-7b__bus_driver__reference --candidate fallback2 --output .runtime-work/update068r-c177225-reference-fallback2-compatibility --library runtime/pipeline/library --validator .runtime-work/c10316-current-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "update068r-reference-fallback2-compatibility.log",
+      "sha256": "6f67aeb3c8b4a4a9667ffb00b04e38bfd8ac880888157e9e6bf40099260be9f1"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C177225__NRS-484B-560-7b__bus_driver/execution-manifest.json --case training__C177225__NRS-484B-560-7b__bus_driver__reference --attempt .runtime-work/update068r-c177225-reference-fallback2-compatibility --output .runtime-work/update068r-c177225-reference-fallback2-saved --library runtime/pipeline/library --validator .runtime-work/c10316-current-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "update068r-reference-fallback2-saved.log",
+      "sha256": "16fdb43d5f7b1f1405f2aa037edeedb9f513e8b6b30d732dcb98b9f2508cd858"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/training__C177225__NRS-484B-560-7b__bus_driver/execution-manifest.json --case training__C177225__NRS-484B-560-7b__bus_driver__reference --candidate fallback3 --output .runtime-work/update068r-c177225-reference-fallback3-compatibility --library runtime/pipeline/library --validator .runtime-work/c10316-current-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "update068r-reference-fallback3-compatibility.log",
+      "sha256": "eeb1eb86ddea930b69f0691516a81d2aea693e62a4de47b678ec134570153f99"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C177225__NRS-484B-560-7b__bus_driver/execution-manifest.json --case training__C177225__NRS-484B-560-7b__bus_driver__reference --attempt .runtime-work/update068r-c177225-reference-fallback3-compatibility --output .runtime-work/update068r-c177225-reference-fallback3-saved --library runtime/pipeline/library --validator .runtime-work/c10316-current-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "update068r-reference-fallback3-saved.log",
+      "sha256": "bcaacba5b348c54b4bfdea7e57388eee254a4794abc7e6d618166463e99e573d"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/training__C177225__NRS-484B-560-7b__bus_driver/execution-manifest.json --case training__C177225__NRS-484B-560-7b__bus_driver__contrast --output .runtime-work/update068-c177225-contrast-compatibility --library runtime/pipeline/library --validator .runtime-work/c10316-current-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "update068-contrast-compatibility.log",
+      "sha256": "125c2e85f967caf4f0b1dc7c31b1c3ef5b8edc0bf633329349db7e5b0e5ec8d9"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C177225__NRS-484B-560-7b__bus_driver/execution-manifest.json --case training__C177225__NRS-484B-560-7b__bus_driver__contrast --attempt .runtime-work/update068-c177225-contrast-compatibility --output .runtime-work/update068-c177225-contrast-saved --library runtime/pipeline/library --validator .runtime-work/c10316-current-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "update068-contrast-saved.log",
+      "sha256": "6b1e427f329ebe1a504aa62a4cb9b2b5f137e88d862b26fe5a4c4444fa40db38"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/training__C177225__NRS-484B-560-7b__bus_driver/contrast-fallback1-proof-manifest.json --case training__C177225__NRS-484B-560-7b__bus_driver__contrast --candidate fallback1 --output .runtime-work/update068r-c177225-contrast-fallback1-compatibility --library runtime/pipeline/library --validator .runtime-work/c10316-current-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "update068r-contrast-fallback1-compatibility.log",
+      "sha256": "e86167bc48a4f8fedaa6f3e19cc6624f24395be98596e8cf2dca19936244d073"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C177225__NRS-484B-560-7b__bus_driver/contrast-fallback1-proof-manifest.json --case training__C177225__NRS-484B-560-7b__bus_driver__contrast --attempt .runtime-work/update068r-c177225-contrast-fallback1-compatibility --output .runtime-work/update068r-c177225-contrast-fallback1-saved --library runtime/pipeline/library --validator .runtime-work/c10316-current-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "update068r-contrast-fallback1-saved.log",
+      "sha256": "1e29cc491bbaa47b8c9309d986ffa48316ad211a1755dd5a55a711153d0cd5f7"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/training__C177225__NRS-484B-560-7b__bus_driver/execution-manifest.json --case training__C177225__NRS-484B-560-7b__bus_driver__contrast --candidate fallback2 --output .runtime-work/update068r-c177225-contrast-fallback2-compatibility --library runtime/pipeline/library --validator .runtime-work/c10316-current-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "update068r-contrast-fallback2-compatibility.log",
+      "sha256": "abe5c6a9c4812b2a1dfdf537e1f1f14e9d1b8660a5f5121c0fa398949622d8e3"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C177225__NRS-484B-560-7b__bus_driver/execution-manifest.json --case training__C177225__NRS-484B-560-7b__bus_driver__contrast --attempt .runtime-work/update068r-c177225-contrast-fallback2-compatibility --output .runtime-work/update068r-c177225-contrast-fallback2-saved --library runtime/pipeline/library --validator .runtime-work/c10316-current-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "update068r-contrast-fallback2-saved.log",
+      "sha256": "93338cfe918be0b23420a098da5014abcf95f0dc92dbd7d6152f4c3090a7be71"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/training__C177225__NRS-484B-560-7b__bus_driver/execution-manifest.json --case training__C177225__NRS-484B-560-7b__bus_driver__contrast --candidate fallback3 --output .runtime-work/update068r-c177225-contrast-fallback3-compatibility --library runtime/pipeline/library --validator .runtime-work/c10316-current-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "update068r-contrast-fallback3-compatibility.log",
+      "sha256": "918b96408ce8bc124e74e413315f99680c51b3f43d564aa21d9c018070a774f4"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C177225__NRS-484B-560-7b__bus_driver/execution-manifest.json --case training__C177225__NRS-484B-560-7b__bus_driver__contrast --attempt .runtime-work/update068r-c177225-contrast-fallback3-compatibility --output .runtime-work/update068r-c177225-contrast-fallback3-saved --library runtime/pipeline/library --validator .runtime-work/c10316-current-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "update068r-contrast-fallback3-saved.log",
+      "sha256": "ddb2668cf417962174f2f522f927459a6af1436aa7d7997abbaf0a9e16b23020"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C177225__NRS-484B-560-7b__bus_driver/prove_comparison.py --reference .runtime-work/update068-c177225-reference-compatibility --contrast .runtime-work/update068-c177225-contrast-compatibility --output work/training__C177225__NRS-484B-560-7b__bus_driver/update068r-comparison-proof.json",
+      "exit_code": 0,
+      "log": "update068r-comparison-proof.log",
+      "sha256": "d04c91f4a91adb51e34f4e345f22e8767dfefcfb7bba155235028d3009619826"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C177225__NRS-484B-560-7b__bus_driver/validate_semantic_delivery.py",
+      "exit_code": 0,
+      "log": "update068r-semantic-validation.log",
+      "sha256": "edae1371dfe0d6e0f8c64cf8bd7786d8581ee83997e48e8c8d2fff158b1ab818"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C177225__NRS-484B-560-7b__bus_driver/validate_delivery_contract.py",
+      "exit_code": 0,
+      "log": "update068r-delivery-contract-validation.log",
+      "sha256": "125f20ebfe0e03794c904e7326bc45911503cc316e61907b3c6f1ef7cc983c68"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C177225__NRS-484B-560-7b__bus_driver/validate_physical_draft.py",
+      "exit_code": 0,
+      "log": "update068r-physical-draft-validation.log",
+      "sha256": "6e54b77fa84aa01428d2ada2a80eb0419d52db8b307c7d47a53c5ceca9e9061f"
+    },
+    {
+      "command": "PYTHONPATH=runtime/pipeline/scenario_pipeline .venv-cpu/bin/python -m unittest discover -s work/training__C177225__NRS-484B-560-7b__bus_driver -p 'test_*.py' -v",
+      "exit_code": 0,
+      "log": "update068r-tests.log",
+      "sha256": "953c27a60132e385f03da36dbfe9085e326643afbfd1809ffe5dc984467e5a56"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment training__C177225__NRS-484B-560-7b__bus_driver --complete",
+      "exit_code": 0,
+      "log": "update068r-scoped-complete.log",
       "sha256": "0ca52ef3c3be8f5f7299bd93bb16f2381bcafbd101433b8d4b3745d8dd83674d"
     }
   ]
