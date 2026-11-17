@@ -85,20 +85,20 @@ class OnewayTurnTests(unittest.TestCase):
   self.g.update(source_left_curb=[[-10,0],[0,0]],destination_left_curb=[[0,0],[0,10]],source_left_curb_inward_unit=[0,-1],destination_left_curb_inward_unit=[1,0],source_road_width_m=4,destination_road_width_m=4,source_travel_unit=[1,0],destination_travel_unit=[0,1])
   self.b["frames"][0]["ground_corners"]=[[-2,-.5],[-1,-.5],[-1,-1],[-2,-1]]
   self.b["frames"][1]["ground_corners"]=[[.5,1],[1,1],[1,2],[.5,2]]
-  self.b["frames"][0]["time_s"]=0.0
-  self.b["frames"][1]["time_s"]=.05
+  self.b["frames"][0]["time_s"]=.05
+  self.b["frames"][1]["time_s"]=.10
   self.write("oneway_geometry_original.json",self.g)
   self.write("body_ground_original.json",self.b)
   for name in ("trace.jsonl","video_frames.jsonl"):
-   self.p.joinpath(name).write_text("".join(json.dumps({"frame":i,"native_frame":i,"video_frame":i,"time_s":i*.05})+"\n" for i in range(2)))
+   self.p.joinpath(name).write_text("".join(json.dumps({"frame":i,"native_frame":i,"video_frame":i,"time_s":.05+i*.05})+"\n" for i in range(2)))
   for camera in ("overview","approach","reference_corner","driver_reference"):
    self.p.joinpath(camera+".mkv").write_bytes(b"diagnostic-only-video-source")
-   self.p.joinpath(camera+"-frames.jsonl").write_text("".join(json.dumps({"native_frame":i,"time_s":i*.05})+"\n" for i in range(2)))
+   self.p.joinpath(camera+"-frames.jsonl").write_text("".join(json.dumps({"native_frame":i,"time_s":.05+i*.05})+"\n" for i in range(2)))
   case_id="heldout__C152972__NRS-484B-400-5__motor_vehicle_driver__approach_near_depart_near"
   receipt=seal_curb_sources(self.p,case_id,require_decodable_media=False)
   self.assertFalse(receipt["four_camera_decode_checked"])
   channels=[{"name":name,"unit":"m" if name.endswith("_m") else "categorical"} for name in ("approach_left_curb_nearest_m","departure_left_curb_nearest_m","original_turn_phase","original_one_way_context","original_left_curb_geometry")]
-  self.write("config.json",{"selected_case_id":case_id,"curb_offsets_m":{"approach":.5,"departure":.5},"case":{"recording_description":{"channels":channels}}})
+  self.write("config.json",{"selected_case_id":case_id,"source_geometry_sha256":receipt["source_sha256"]["oneway_geometry_original.json"],"curb_offsets_m":{"approach":.5,"departure":.5},"case":{"recording_description":{"channels":channels}}})
   result=finalize_and_write(self.p,self.p/"curb-analysis.json")
   report=json.loads((self.p/"curb-analysis.json").read_text())
   self.assertEqual(report["measurement"]["approach_left_curb_nearest_m"],.5)

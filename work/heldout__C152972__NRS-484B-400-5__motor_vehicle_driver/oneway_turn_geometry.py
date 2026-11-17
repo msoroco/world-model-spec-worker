@@ -503,10 +503,13 @@ def finalize_original_sources(attempt):
     names=("approach_left_curb_nearest_m","departure_left_curb_nearest_m",
            "original_turn_phase","original_one_way_context","original_left_curb_geometry")
     streams={name:[] for name in names}
+    first_time=body[0].get("time_s")
+    if type(first_time) not in (int,float) or not isfinite(first_time):
+        raise ValueError("original curb start time missing")
     for index,row in enumerate(body):
         frame,time_s=row.get("frame"),row.get("time_s")
         if (type(frame) is not int or type(time_s) not in (int,float) or not isfinite(time_s)
-                or abs(time_s-index*.05)>.005
+                or abs(time_s-first_time-index*.05)>.005
                 or trace[index].get("frame")!=frame
                 or mapping[index].get("native_frame")!=frame
                 or mapping[index].get("video_frame")!=index
@@ -550,6 +553,9 @@ def native_result(attempt, report):
     description=config.get("case",{}).get("recording_description")
     if not isinstance(description,dict) or report["case_id"]!=config.get("selected_case_id"):
         raise ValueError("exact curb case identity or recording description missing")
+    expected_geometry=config.get("source_geometry_sha256")
+    if expected_geometry is not None and expected_geometry!=report["source_sha256"]["oneway_geometry_original.json"]:
+        raise ValueError("finalized original curb geometry differs from selected config")
     names={"approach_left_curb_nearest_m","departure_left_curb_nearest_m",
            "original_turn_phase","original_one_way_context","original_left_curb_geometry"}
     channels=description.get("channels")
