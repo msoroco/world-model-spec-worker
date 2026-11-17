@@ -330,6 +330,66 @@ def audit_opposite_candidate(attempt, analysis_path):
     other = "other" if turning == "ego" else "ego"
     if entry.get("turning_minus_other_entry_time_s") != first[turning]["time_s"] - first[other]["time_s"]:
         raise ValueError("Candidate measured entry delta differs")
+    stop_context = _read(attempt / "stop_context.json")
+    if stop_context.get("intersection_id") != road.get("intersection_id"):
+        raise ValueError("Candidate stop/crossing identity differs")
+    references = stop_context.get("selected_references")
+    if not isinstance(references, dict) or set(references) != set(first):
+        raise ValueError("Candidate selected stop references missing")
+    def distance_to_reference(point, segment):
+        if (not isinstance(point, list) or len(point) != 2 or
+                not isinstance(segment, list) or len(segment) != 2 or
+                any(not isinstance(end, list) or len(end) != 2 for end in segment)):
+            raise ValueError("Candidate stop reference geometry invalid")
+        a, b = segment
+        numbers = (*point, *a, *b)
+        if any(type(value) not in (int, float) or not math.isfinite(value) for value in numbers):
+            raise ValueError("Candidate stop reference geometry invalid")
+        dx, dy = b[0] - a[0], b[1] - a[1]
+        length_squared = dx * dx + dy * dy
+        if length_squared <= 0:
+            raise ValueError("Candidate stop reference geometry invalid")
+        fraction = min(1, max(0, ((point[0] - a[0]) * dx + (point[1] - a[1]) * dy) / length_squared))
+        return math.hypot(point[0] - a[0] - fraction * dx, point[1] - a[1] - fraction * dy)
+    stop_rows = _rows(attempt / "stop_history.jsonl")
+    first_zero = {role: None for role in first}
+    ego_at_entry = None
+    other_inside_at_ego_entry = None
+    for row in stop_rows:
+        for role in first:
+            state = row.get(role)
+            if not isinstance(state, dict) or type(state.get("body_inside_crossing")) is not bool:
+                raise ValueError("Candidate original stop state incomplete")
+            speed = state.get("speed_mps")
+            if type(speed) not in (int, float) or not math.isfinite(speed) or speed < 0:
+                raise ValueError("Candidate original stop speed invalid")
+            if row["frame"] < first[role]["frame"] and speed == 0 and first_zero[role] is None:
+                first_zero[role] = {"frame": row["frame"], "time_s": row["time_s"],
+                    "front_distance_to_reference_m": distance_to_reference(
+                        state.get("front_xy_m"), references[role].get("segment_xy_m"))}
+        if row["frame"] == first["ego"]["frame"]:
+            ego_at_entry = {"frame": row["frame"], "time_s": row["time_s"],
+                "front_distance_to_reference_m": distance_to_reference(
+                    row["ego"].get("front_xy_m"), references["ego"].get("segment_xy_m"))}
+            other_inside_at_ego_entry = row["other"]["body_inside_crossing"]
+    stop_order = entry.get("stop_order")
+    selected_references = {role: {key: references[role][key] for key in
+        ("kind", "geometry_source", "reference_review_source")} for role in first}
+    stop_source_hashes = {name: hashes[name] for name in
+        ("stop_context.json", "stop_history.jsonl", "video_frames.jsonl")}
+    if (not isinstance(stop_order, dict) or
+            stop_order.get("format") != "worker-original-stop-order-measurements" or
+            stop_order.get("sources") != stop_source_hashes or
+            stop_order.get("selected_references") != selected_references or
+            stop_order.get("first_recorded_zero_speed_before_entry") != first_zero or
+            stop_order.get("ego_at_entry") != ego_at_entry or
+            stop_order.get("other_body_inside_at_ego_entry") != other_inside_at_ego_entry or
+            stop_order.get("other_first_body_entry_before_ego") !=
+                (first["other"]["frame"] < first["ego"]["frame"]) or
+            stop_order.get("intersection_id") != road.get("intersection_id") or
+            stop_order.get("statutory_stop_judgment") != "unresolved" or
+            stop_order.get("statutory_yield_judgment") != "unresolved"):
+        raise ValueError("Candidate measured stop order differs from original source")
     signal_rows = {row["frame"]: row for row in _rows(attempt / "signal_history.jsonl")}
     signal_context = _read(attempt / "signal_context.json")
     for role in first:

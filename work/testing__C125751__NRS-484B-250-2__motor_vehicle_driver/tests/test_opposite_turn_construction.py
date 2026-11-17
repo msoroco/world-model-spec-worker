@@ -988,6 +988,21 @@ class DeviceSourceJoinTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "Candidate saved channel value differs"):
                 candidate_audit.audit_opposite_candidate(root, root / "analysis.json")
 
+    def test_opposite_candidate_audit_recomputes_stop_order_without_finalizer(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp); self._opposite_finalizer_sources(root)
+            runner.finalize_candidate_opposite_turn(root, root / "analysis.json")
+            channel = root / "channels/entry_context.json"
+            analysis_path = root / "analysis.json"
+            saved = json.loads(channel.read_text())
+            analysis = json.loads(analysis_path.read_text())
+            saved["entry_context"]["stop_order"]["ego_at_entry"]["front_distance_to_reference_m"] += 1
+            analysis["measurements"] = saved["entry_context"]
+            channel.write_text(json.dumps(saved))
+            analysis_path.write_text(json.dumps(analysis))
+            with self.assertRaisesRegex(ValueError, "Candidate measured stop order differs"):
+                candidate_audit.audit_opposite_candidate(root, analysis_path)
+
     def test_opposite_candidate_saved_finalizer_rejects_missing_and_misaligned_evidence(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp); self._opposite_finalizer_sources(root)
