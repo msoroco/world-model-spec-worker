@@ -9,3 +9,5 @@ Source snapshot SHA-256: `d8558406a9fe69874a5d73c97f192d47b163eee88f697b751a86bc
 Out-of-scope work folders to remove after process/reference audit: `heldout__C293604__NRS-484B-250-3__motor_vehicle_driver` and `heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver`. Do not count them among the 51 assignments.
 
 Held-out judgment-range audit cannot establish a comparison because the scope names no training counterpart. No artificial range input is attached.
+
+Reference audit found that assigned packages mention those two IDs in case plans, diagnostic files, and the `lane_finalizer.py` cross-cell reference. Do not delete the folders mechanically while those links remain. The resumed worker must replace or remove the out-of-scope dependencies using the assigned 51-package scope, then delete the two extra folders and update `_shared` coverage/report files before the strict return gate.

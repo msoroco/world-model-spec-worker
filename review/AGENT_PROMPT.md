@@ -4,7 +4,7 @@ Continue exactly the 51 assigned packages in batch.json. Keep the submitted cons
 
 Use `.runtime-work/` for generated assets. The launcher quarantines only the obsolete untracked runtime manifest. Do not write into `runtime/runs/` or `runtime/pipeline/runs/`. Work autonomously through all CPU-solvable packages and record precise remaining gaps. No CARLA, NERSC, SQLite or physical acceptance. The separate timer publishes checkpoints.
 
-Return exactly 51 assigned packages. The two out-of-scope folders named in review/CUTOVER.md are not assignments and must not enter the return. The held-out scope has no explicit training counterpart for the judgment-range audit; do not invent a training range.
+Return exactly 51 assigned packages. The two out-of-scope folders named in review/CUTOVER.md are not assignments and must not enter the return. Some assigned files refer to them; repair those references before deleting the extra folders and refreshing shared coverage reports. The held-out scope has no explicit training counterpart for the judgment-range audit; do not invent a training range.
 
 # Held-out CPU delivery preparation
 
