@@ -196,3 +196,7 @@ Result-only historical log reconciliation, 2026-11-16: 1 exact UTF-8 logs were S
 ## 2026-11-16 proof-log compaction
 
 Forty-two candidate missing-source negative logs were consolidated losslessly into `fallback-negative-combined.log` (SHA-256 `668aee3da0c6fd9fbcf079ad898f6d6ed2fd32c7ecfc67fe4dc45144325f3198`). The transcript includes each complete original file, hash and byte count. Candidate receipts, manifest hashes and the 42 corresponding `result.json.tests` receipt hashes were rebound. The scoped `worker_check.py --complete --require-delivery-ready` passed; status stays ready.
+
+## 2026-11-16 lossless return-slot consolidation
+
+The 42 fallback saved-proof JSON receipts named `*-fallback{1,2,3}-saved-proof.json`, referenced only by historical `result.json.tests` entries, are preserved byte-for-byte with original paths, SHA-256 and base64 in `work/_shared/historical-receipts-bundle-20261116.json`. Their test-list entries were removed to free returned-file slots for the incomplete C111644 exact construction; all active manifest, semantic, audit and primary-saved receipt references remain unchanged. Restore by decoding the named bundle entries to their paths. An ignored local copy is under `.runtime-work/c228508-fallback-saved-proof-prune-20261116/`. The scoped strict gate must be rerun after this consolidation.

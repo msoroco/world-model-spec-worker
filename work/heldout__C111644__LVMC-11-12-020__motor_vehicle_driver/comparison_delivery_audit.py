@@ -63,6 +63,57 @@ def audit_course_deviation(attempts):
             "physical_acceptance_claimed": False, "legal_acceptance_claimed": False}
 
 
+def audit_course_sweep(attempts):
+    """Check all three authored targets against the same original indication.
+
+    This verifies the requested controller grid and retained sources. Equal
+    synthetic body traces do not establish distinct physical trajectories.
+    """
+    if len(attempts) != 3:
+        raise ValueError("Course sweep requires exactly three attempts")
+    rows = []
+    for attempt, suffix, expected in zip(map(Path, attempts),
+                                         ("__course_2m__marker_depart", "__marker_depart",
+                                          "__course_6m__marker_depart"), (2.0, 4.0, 6.0)):
+        config = json.loads((attempt / "config.json").read_text())
+        receipt = json.loads((attempt / "turn_source_receipt.json").read_text())
+        if not config["selected_case_id"].endswith(suffix) or receipt["case_id"] != config["selected_case_id"]:
+            raise ValueError("Course sweep selected another case or order")
+        hashes = receipt["source_sha256"]
+        for name in ("turn_indication_original.json", "turn_route_plan.json", "turn_body_original.jsonl"):
+            source = attempt / name
+            if not source.is_file() or hashlib.sha256(source.read_bytes()).hexdigest() != hashes.get(name):
+                raise ValueError("Missing or changed original course source: " + name)
+        indication = json.loads((attempt / "turn_indication_original.json").read_text())
+        route = json.loads((attempt / "turn_route_plan.json").read_text())
+        if route["departure_m"] != expected or ("course_deviation_setpoint_m" in config and
+                config["course_deviation_setpoint_m"] != expected):
+            raise ValueError("Course sweep changed an authored setpoint")
+        rows.append((config, hashes, indication, route))
+    fixed = ("law_id", "cell_id", "actor", "rate_hz", "duration_s", "cameras")
+    for key in fixed:
+        if len({json.dumps(row[0][key], sort_keys=True) for row in rows}) != 1:
+            raise ValueError("Course sweep changed fixed condition: " + key)
+    if len({json.dumps(row[2], sort_keys=True) for row in rows}) != 1 or len({row[1]["turn_indication_original.json"] for row in rows}) != 1:
+        raise ValueError("Course sweep changed original indication")
+    routes = [row[3] for row in rows]
+    if (any(route["indication_form"] != "marker" or route["route_variant"] != "depart" for route in routes)
+            or len({json.dumps(route["course_xy_m"]) for route in routes}) != 1
+            or len({json.dumps(route["target_route_xy_m"][:-1]) for route in routes}) != 1):
+        raise ValueError("Course sweep changed fixed route")
+    endpoints = [route["target_route_xy_m"][-1] for route in routes]
+    if any(abs(endpoints[i + 1][0] - endpoints[i][0] - 2.0) > 1e-6 or
+           abs(endpoints[i + 1][1] - endpoints[i][1]) > 1e-6 for i in (0, 1)):
+        raise ValueError("Course sweep target separation differs")
+    return {"comparison_id": "course_deviation_2m_4m_6m",
+            "case_ids": [row[0]["selected_case_id"] for row in rows],
+            "same_original_indication": True, "setpoints_m": [2.0, 4.0, 6.0],
+            "planned_target_separations_m": [2.0, 2.0],
+            "original_body_sources_equal": len({row[1]["turn_body_original.jsonl"] for row in rows}) == 1,
+            "actual_motion_separation_verified": False,
+            "physical_acceptance_claimed": False, "legal_acceptance_claimed": False}
+
+
 def audit(comparison, attempts):
     if comparison in ROUTE_FORMS:
         if len(attempts) != 2:
@@ -87,6 +138,9 @@ def audit(comparison, attempts):
         case_ids = findings["case_ids"]
     elif comparison == "course_deviation_2m_4m":
         findings = audit_course_deviation(attempts)
+        case_ids = findings["case_ids"]
+    elif comparison == "course_deviation_2m_4m_6m":
+        findings = audit_course_sweep(attempts)
         case_ids = findings["case_ids"]
     else:
         raise ValueError("Unknown declared comparison")

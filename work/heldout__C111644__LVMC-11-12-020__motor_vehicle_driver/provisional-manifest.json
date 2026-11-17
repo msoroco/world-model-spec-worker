@@ -1347,6 +1347,148 @@
         "port_env_var": "CARLA_PORT",
         "indication_source_env_var": "TURN_INDICATION_SOURCE",
         "indication_sha256_env_var": "TURN_INDICATION_SHA256"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "changed_knobs": [
+            "Native subject spawn vertical offset 0.50 m -> 0.65 m"
+          ],
+          "trigger": {
+            "source": "Native subject spawn/readback and original body source",
+            "metric": "subject actor creation and initial ground-body clearance",
+            "failure_condition": "Primary subject spawn fails or overlaps the mapped road surface"
+          },
+          "construction": "course-6m-marker-depart-fallback1-construction.json",
+          "construction_sha256": "ae66585dadc5e203957b0f4f0a7863ae94ffb04731774bc0ce2547c7295b714b",
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/provisional-manifest.json --case heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__course_6m__marker_depart --candidate fallback1 --output .runtime-work/c111644-course-6m-fallback1-offline-20261116 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "course-6m-marker-depart-fallback1-offline.log",
+            "log_sha256": "a061b4b434834d4c0a1d1e6943a3fc580fc9672e85b26e0975db93c2824b54c5",
+            "construction_sha256": "ae66585dadc5e203957b0f4f0a7863ae94ffb04731774bc0ce2547c7295b714b"
+          },
+          "compatibility": {
+            "receipt": "course-6m-marker-depart-fallback1-compatibility.json",
+            "sha256": "85ea4f1a7a80c82c490ecc40e58f1cd23304b191381b8033e5cb1d31226e58a1",
+            "log": "marker-follow-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "course-6m-marker-depart-fallback1-negative.log",
+            "negative_log_sha256": "787e41d741981c409c89b2f8bcf5259aec7cf2fb7b31030eb482a28ae55f8f09"
+          }
+        },
+        {
+          "id": "fallback2",
+          "changed_knobs": [
+            "Native route waypoint arrival radius 2.0 m -> 2.8 m"
+          ],
+          "trigger": {
+            "source": "original 20 Hz subject body and target route plan",
+            "metric": "progress to final source-route waypoint",
+            "failure_condition": "Primary turn controller stalls before the indicated exit waypoint"
+          },
+          "construction": "course-6m-marker-depart-fallback2-construction.json",
+          "construction_sha256": "ec32760245bf3b7fa3dc6f593dba3a0fdc19137e90396c725b54a4160a4119e8",
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/provisional-manifest.json --case heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__course_6m__marker_depart --candidate fallback2 --output .runtime-work/c111644-course-6m-fallback2-offline-20261116 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "course-6m-marker-depart-fallback2-offline.log",
+            "log_sha256": "a061b4b434834d4c0a1d1e6943a3fc580fc9672e85b26e0975db93c2824b54c5",
+            "construction_sha256": "ec32760245bf3b7fa3dc6f593dba3a0fdc19137e90396c725b54a4160a4119e8"
+          },
+          "compatibility": {
+            "receipt": "course-6m-marker-depart-fallback2-compatibility.json",
+            "sha256": "3e27ba513ca9b1c99adb940c4dc8a19a9847f5e2b649c32495f66cf6ae88d509",
+            "log": "marker-follow-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "course-6m-marker-depart-fallback2-negative.log",
+            "negative_log_sha256": "b42ed9c0399d689a346bd8b365ce34f8c0609dc2ce063ef37b6650271d577605"
+          }
+        },
+        {
+          "id": "fallback3",
+          "changed_knobs": [
+            "original camera synchronization wait 10 s -> 15 s"
+          ],
+          "trigger": {
+            "source": "four original camera frame streams and callback frame identities",
+            "metric": "synchronized source frame arrival latency",
+            "failure_condition": "Primary 10 s source-frame wait expires despite all camera callbacks arriving intact"
+          },
+          "construction": "course-6m-marker-depart-fallback3-construction.json",
+          "construction_sha256": "ae2a416b70396b202f4070bfbeec8f4632bfd27f3fa585d1f259a1929a351ebc",
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/provisional-manifest.json --case heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__course_6m__marker_depart --candidate fallback3 --output .runtime-work/c111644-course-6m-fallback3-offline-20261116 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "course-6m-marker-depart-fallback3-offline.log",
+            "log_sha256": "a061b4b434834d4c0a1d1e6943a3fc580fc9672e85b26e0975db93c2824b54c5",
+            "construction_sha256": "ae2a416b70396b202f4070bfbeec8f4632bfd27f3fa585d1f259a1929a351ebc"
+          },
+          "compatibility": {
+            "receipt": "course-6m-marker-depart-fallback3-compatibility.json",
+            "sha256": "5b55d520b23c851fdec2dab44e007733185e575ec96b40dfbe919a87e8ba7865",
+            "log": "marker-follow-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "course-6m-marker-depart-fallback3-negative.log",
+            "negative_log_sha256": "4254946a94198e7c1f5a84d1e159ba63766c6e26efd5200823621a9309cdd190"
+          }
+        }
+      ],
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/provisional-manifest.json --case heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__course_6m__marker_depart --output .runtime-work/c111644-course-6m-offline-20261116-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "log": "course-6m-marker-depart-offline.log",
+        "log_sha256": "86ffda79c330aaf10ac146864b544e4379cc4a2a18cd5ce6c83d1a5cbf4650d3",
+        "construction_sha256": "4564b95f723d63209d40964f1da2d0aa34d445a476fa7b9d455bcbf23b8f82c2"
+      },
+      "compatibility": {
+        "receipt": "course-6m-marker-depart-compatibility.json",
+        "sha256": "55efd13910a56cf30f4a1e46646a16089a650193b66308fc5f95e525d1146f05",
+        "log": "marker-follow-analysis.log",
+        "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "negative_log": "course-6m-marker-depart-negative.log",
+        "negative_log_sha256": "ab69ad2df9c0b92b431606c1e39d57fdfb827deead04d38e605a7fac4fa68a28"
+      },
+      "negative": {
+        "log": "course-6m-marker-depart-negative.log",
+        "log_sha256": "ab69ad2df9c0b92b431606c1e39d57fdfb827deead04d38e605a7fac4fa68a28"
+      },
+      "saved_processing": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/provisional-manifest.json --case heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__course_6m__marker_depart --attempt .runtime-work/c111644-course-6m-offline-20261116-v2 --output .runtime-work/c111644-course-6m-saved-output-20261116-v3 --library runtime/library --validator .runtime-work/c111305-validator/.lake/build/bin/adapterCheck",
+        "exit_code": 0,
+        "log": "course-6m-marker-depart-saved-processing.json",
+        "log_sha256": "b4a6a305cf5a590af5adf583022e7f430b9fb88999b79fd18af7b9c473572d98",
+        "receipt": "course-6m-marker-depart-saved-processing.json",
+        "receipt_sha256": "b4a6a305cf5a590af5adf583022e7f430b9fb88999b79fd18af7b9c473572d98"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__course_6m__marker_depart",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "af6817deca96dd34e3a71df28c25cef62a070dbbe6105e0162e5694e47b95f2d",
+        "command": ".venv-cpu/bin/python work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/delivery_audit.py --case heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__course_6m__marker_depart --attempt .runtime-work/c111644-course-6m-offline-20261116-v2 --processed .runtime-work/c111644-course-6m-saved-output-20261116-v3 --manifest work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/provisional-manifest.json --output work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/course-6m-marker-depart-delivery-audit.json",
+        "test_exit_code": 0,
+        "test_log": "course-6m-marker-depart-delivery.log",
+        "test_log_sha256": "2662bb3e25484ed7639c54a00cceb1333c3829dc06506b9d4cdc9601daeb592a",
+        "negative_command": ".venv-cpu/bin/python work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/delivery_audit.py --case heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__course_6m__marker_depart --attempt .runtime-work/c111644-course-6m-delivery-negative-20261116 --processed .runtime-work/c111644-course-6m-saved-output-20261116-v3 --manifest work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/provisional-manifest.json --output .runtime-work/c111644-course-6m-delivery-negative-result.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: turn_body_original.jsonl",
+        "negative_log": "course-6m-marker-depart-delivery.log",
+        "negative_log_sha256": "2662bb3e25484ed7639c54a00cceb1333c3829dc06506b9d4cdc9601daeb592a"
+      },
+      "physical_preparation": {
+        "receipt": "course-6m-marker-depart-physical-preparation.json",
+        "sha256": "e645b30fde094be78d4c8660f504e77c7aa660fc84fa38558f64b2451fdd4dfe"
       }
     }
   ]
