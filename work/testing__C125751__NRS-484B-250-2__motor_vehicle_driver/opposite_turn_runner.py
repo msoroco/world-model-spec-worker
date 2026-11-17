@@ -215,3 +215,89 @@ def capture_candidate_media(output_dir, world, carla, site, turning_role,
             release_frames, target_speeds_mps, frames,
             lambda frame: None, write_source, camera_factory=camera_factory)
     return receipt
+
+
+DEVICE_SOURCES = ("signal_context.json", "signal_history.jsonl", "stop_history.jsonl")
+
+def analyze_device_sources(root):
+    """Join captured stop and governed-light observations to original frames.
+
+    A candidate signal inventory names actors and lanes; official device status
+    and statutory governance remain independent review judgments.
+    """
+    import hashlib
+    import turn_context
+    root = Path(root)
+    base = turn_context.analyze(root)
+    paths = {name: root / name for name in DEVICE_SOURCES}
+    for name, path in paths.items():
+        if not path.is_file():
+            raise ValueError("Missing opposite-turn device source: " + name)
+    hashes = {name: hashlib.sha256(path.read_bytes()).hexdigest() for name, path in paths.items()}
+    result_path = root / "result.json"
+    if result_path.is_file():
+        recorded = json.loads(result_path.read_text()).get("source_evidence_hashes", {})
+        for name in DEVICE_SOURCES:
+            if recorded.get(name) != hashes[name]:
+                raise ValueError("Opposite-turn device source differs from saved result: " + name)
+    context = json.loads(paths["signal_context.json"].read_text())
+    if (context.get("intersection_id") != base["intersection_id"] or
+            not context.get("native_map_id") or
+            not context.get("device_inventory_source") or
+            context.get("review_status") != "candidate_only"):
+        raise ValueError("Sourced candidate signal context required")
+    ids = [context.get("native_signal_id"), context.get("other_native_signal_id")]
+    if any(type(value) is not int or value <= 0 for value in ids) or ids[0] == ids[1]:
+        raise ValueError("Distinct governed Native signal identities required")
+    governed = {"ego": (context.get("governed_road_id"), context.get("governed_lane_id")),
+                "other": (context.get("other_governed_road_id"), context.get("other_governed_lane_id"))}
+    if any(any(type(value) is not int for value in pair) for pair in governed.values()):
+        raise ValueError("Sourced governed approach lanes required")
+    frames = [json.loads(line) for line in (root / "video_frames.jsonl").read_text().splitlines() if line.strip()]
+    crossing = [json.loads(line) for line in (root / "crossing_history.jsonl").read_text().splitlines() if line.strip()]
+    signals = [json.loads(line) for line in paths["signal_history.jsonl"].read_text().splitlines() if line.strip()]
+    stops = [json.loads(line) for line in paths["stop_history.jsonl"].read_text().splitlines() if line.strip()]
+    if not (len(frames) >= 2 and len(frames) == len(crossing) == len(signals) == len(stops)):
+        raise ValueError("Complete original signal, stop, crossing and camera histories required")
+    allowed = {"Red", "Yellow", "Green", "Off", "Unknown"}
+    observations = []
+    for index, (frame, body, signal, stop) in enumerate(zip(frames, crossing, signals, stops)):
+        native_frame = frame.get("carla_frame")
+        native_time = frame.get("time_s")
+        if (frame.get("video_frame") != index or
+                any(row.get("frame") != native_frame or row.get("time_s") != native_time
+                    for row in (body, signal, stop))):
+            raise ValueError("Opposite-turn device original-frame join failed")
+        if (signal.get("native_signal_id") != ids[0] or
+                signal.get("other_native_signal_id") != ids[1] or
+                signal.get("state") not in allowed or signal.get("other_state") not in allowed):
+            raise ValueError("Original governed signal identity/state differs from context")
+        for role in ("ego", "other"):
+            sample = stop.get(role)
+            actor = body.get(role)
+            if (not isinstance(sample, dict) or not isinstance(actor, dict) or
+                    type(sample.get("speed_mps")) not in (int, float) or
+                    not math.isfinite(sample["speed_mps"]) or sample["speed_mps"] < 0 or
+                    type(sample.get("body_inside_crossing")) is not bool or
+                    sample.get("native_road_id") != actor.get("native_road_id") or
+                    sample.get("native_lane_id") != actor.get("native_lane_id")):
+                raise ValueError("Original stop observation differs from body source: " + role)
+            if index == 0 and (actor["native_road_id"], actor["native_lane_id"]) != governed[role]:
+                raise ValueError("Original approach differs from governed signal lane: " + role)
+        observations.append({"frame": native_frame, "time_s": native_time,
+                             "ego_signal_state": signal["state"],
+                             "other_signal_state": signal["other_state"],
+                             "ego_speed_mps": stop["ego"]["speed_mps"],
+                             "other_speed_mps": stop["other"]["speed_mps"],
+                             "ego_body_inside_crossing": stop["ego"]["body_inside_crossing"],
+                             "other_body_inside_crossing": stop["other"]["body_inside_crossing" ]})
+    return {"format": "worker-c125751-opposite-device-sources-v1",
+            "intersection_id": base["intersection_id"],
+            "native_map_id": context["native_map_id"],
+            "source_hashes": {**base["source_hashes"], **hashes},
+            "native_signal_ids": {"ego": ids[0], "other": ids[1]},
+            "observations": observations,
+            "official_device_judgment": "unresolved",
+            "governance_judgment": "unresolved",
+            "physical_acceptance_claimed": False}
+

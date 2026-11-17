@@ -1,4 +1,5 @@
 import importlib.util
+import hashlib
 import json
 import tempfile
 import unittest
@@ -261,6 +262,7 @@ class OppositeTurnConstructionTest(unittest.TestCase):
             signals = [json.loads(line) for line in
                        (Path(temp) / "signal_history.jsonl").read_text().splitlines()]
             measured = turn_context.analyze(temp)
+            measured_device = runner.analyze_device_sources(temp)
             self.assertEqual(json.loads((Path(temp) / "road_geometry.json").read_text())
                              ["review_status"], "candidate_only")
             signal_context = json.loads((Path(temp) / "signal_context.json").read_text())
@@ -284,6 +286,9 @@ class OppositeTurnConstructionTest(unittest.TestCase):
         self.assertEqual([row["time_s"] for row in signals],
                          [row["time_s"] for row in frames])
         self.assertTrue(measured["original_heading_complete"])
+        self.assertEqual([row["frame"] for row in measured_device["observations"]], [2, 3, 4])
+        self.assertEqual(measured_device["native_signal_ids"], {"ego": 101, "other": 102})
+        self.assertEqual(measured_device["official_device_judgment"], "unresolved")
         self.assertEqual(measured["first_original_headings"]["other"]["native_lane_id"], 1)
         self.assertEqual(set(written), {name + ".mkv" for name in value["cameras"]})
         self.assertTrue(all(len(images) == 3 for images in written.values()))
@@ -326,6 +331,70 @@ class OppositeTurnConstructionTest(unittest.TestCase):
                                                None, None, None, None, 3,
                                                governed_lights=wrong)
             self.assertEqual(list(Path(temp).iterdir()), [])
+
+
+class DeviceSourceJoinTests(unittest.TestCase):
+    def _sources(self, root):
+        (root / "turn_route_context.json").write_text(json.dumps({
+            "intersection_id": 7, "routes": {
+                "ego": [[-10, 0], [-4, 0], [0, 0], [10, 0]],
+                "other": [[0, -10], [0, -4], [0, 0], [0, 10]]}}))
+        (root / "road_geometry.json").write_text(json.dumps({
+            "intersection_id": 7, "ego_approach_heading_deg": 0,
+            "other_approach_heading_deg": 90}))
+        (root / "signal_context.json").write_text(json.dumps({
+            "intersection_id": 7, "native_map_id": "TownSynthetic",
+            "native_signal_id": 17, "other_native_signal_id": 18,
+            "governed_road_id": 1, "governed_lane_id": -1,
+            "other_governed_road_id": 2, "other_governed_lane_id": -1,
+            "device_inventory_source": "synthetic candidate inventory",
+            "review_status": "candidate_only"}))
+        rows = [{"frame": 100+i, "time_s": i*.05,
+                 "ego": {"heading_deg": 0, "native_road_id": 1, "native_lane_id": -1},
+                 "other": {"heading_deg": 90, "native_road_id": 2, "native_lane_id": -1}}
+                for i in range(2)]
+        signals = [{"frame": 100+i, "time_s": i*.05, "native_signal_id": 17,
+                    "other_native_signal_id": 18, "state": "Off", "other_state": "Off"}
+                   for i in range(2)]
+        stops = [{"frame": 100+i, "time_s": i*.05,
+                  "ego": {"speed_mps": float(i), "body_inside_crossing": False,
+                          "native_road_id": 1, "native_lane_id": -1},
+                  "other": {"speed_mps": float(i), "body_inside_crossing": False,
+                            "native_road_id": 2, "native_lane_id": -1}} for i in range(2)]
+        frames = [{"carla_frame": 100+i, "time_s": i*.05, "video_frame": i}
+                  for i in range(2)]
+        for name, values in (("crossing_history.jsonl", rows),
+                             ("signal_history.jsonl", signals),
+                             ("stop_history.jsonl", stops),
+                             ("video_frames.jsonl", frames)):
+            (root / name).write_text("".join(json.dumps(x)+"\n" for x in values))
+
+    def test_device_join_rejects_missing_tampered_and_changed_sources(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp); self._sources(root)
+            self.assertEqual(len(runner.analyze_device_sources(root)["observations"]), 2)
+            (root / "stop_history.jsonl").unlink()
+            with self.assertRaisesRegex(ValueError, "Missing opposite-turn device source"):
+                runner.analyze_device_sources(root)
+            self._sources(root)
+            signals = [json.loads(x) for x in (root / "signal_history.jsonl").read_text().splitlines()]
+            signals[1]["native_signal_id"] = 99
+            (root / "signal_history.jsonl").write_text("".join(json.dumps(x)+"\n" for x in signals))
+            with self.assertRaisesRegex(ValueError, "signal identity/state"):
+                runner.analyze_device_sources(root)
+            self._sources(root)
+            context = json.loads((root / "signal_context.json").read_text())
+            context["other_governed_lane_id"] = 8
+            (root / "signal_context.json").write_text(json.dumps(context))
+            with self.assertRaisesRegex(ValueError, "differs from governed signal lane"):
+                runner.analyze_device_sources(root)
+            self._sources(root)
+            hashes = {name: hashlib.sha256((root / name).read_bytes()).hexdigest()
+                      for name in (*turn_context.SOURCES, *runner.DEVICE_SOURCES)}
+            (root / "result.json").write_text(json.dumps({"source_evidence_hashes": hashes}))
+            (root / "signal_history.jsonl").write_text((root / "signal_history.jsonl").read_text()+" ")
+            with self.assertRaisesRegex(ValueError, "differs from saved result"):
+                runner.analyze_device_sources(root)
 
 
 if __name__ == "__main__":
