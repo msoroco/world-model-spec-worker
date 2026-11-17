@@ -134,7 +134,9 @@ def audit_motion_comparison(baseline_paths, variant_paths, kind):
     if kind == 'premature_restart':
         if (other['first_stop_frame'] != base['first_stop_frame'] or
             other['premature_restart_frame'] is None or
-            other['premature_restart_frame'] >= base['red_cessation_frame']):
+            other['premature_restart_frame'] >= base['red_cessation_frame'] or
+            other['first_full_body_pass_frame'] is None or
+            other['first_full_body_pass_frame'] < base['red_cessation_frame']):
             raise ValueError('School-bus comparison lacks isolated early restart')
     else:
         if (other['first_full_body_pass_frame'] is None or

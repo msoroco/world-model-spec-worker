@@ -5,7 +5,8 @@ from pathlib import Path
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from school_bus_response import measure, audit_motion_comparison
-from school_bus_controller import BRANCHES, target, apply
+from school_bus_controller import BRANCHES, target, apply, motion_readback, spawn_meeting_scene
+from school_bus_camera import CAMERAS, LosslessSourceSink, SchoolBusCameraCapture
 
 
 def corners(x):
@@ -119,6 +120,8 @@ class SourceResponse(unittest.TestCase):
         variant[2].write_text(json.dumps(restart)+'\n')
         self.assertEqual(audit_motion_comparison(baseline,variant,'pass_during_red')
                          ['variant']['first_full_body_pass_frame'],103)
+        with self.assertRaisesRegex(ValueError,'lacks isolated early restart'):
+            audit_motion_comparison(baseline,variant,'premature_restart')
         changed=json.loads(variant[1].read_text())
         changed[3]['red_phase_on']=False
         variant[1].write_text(json.dumps(changed)+'\n')
@@ -127,5 +130,157 @@ class SourceResponse(unittest.TestCase):
         variant[1].unlink()
         with self.assertRaisesRegex(ValueError,'Missing original'):
             audit_motion_comparison(baseline,variant,'pass_during_red')
+
+    def test_native_actor_motion_readback_and_opposite_tangent(self):
+        class Vertex:
+            def __init__(self,x,y,z):self.x=x;self.y=y;self.z=z
+        class Bounds:
+            def __init__(self,x):self.x=x
+            def get_world_vertices(self,transform):
+                return [Vertex(self.x+dx,dy,z) for z in (0,2)
+                        for dx,dy in ((-1,-.5),(1,-.5),(1,.5),(-1,.5))]
+        class Actor:
+            def __init__(self,ident,x,speed=0):
+                self.id=ident;self.bounding_box=Bounds(x);self.speed=speed
+            def get_transform(self):return object()
+            def get_velocity(self):return Vertex(self.speed,0,0)
+        subject,bus=Actor('car',-5,2),Actor('bus',0)
+        row=motion_readback(subject,bus,[1,0],100,0.0)
+        self.assertEqual((row['subject_id'],row['bus_id'],row['subject_speed_mps']),('car','bus',2))
+        self.assertEqual(len(row['subject_corners']),4)
+        self.assertEqual(len(row['bus_corners']),4)
+        self.assertLess(max(p[0] for p in row['subject_corners']),min(p[0] for p in row['bus_corners']))
+        reverse=motion_readback(subject,bus,[-1,0],101,.05)
+        self.assertEqual(reverse['travel_tangent_xy'],[-1.0,0.0])
+        with self.assertRaisesRegex(ValueError,'tangent'):
+            motion_readback(subject,bus,[0,0],102,.1)
+        subject.bounding_box.get_world_vertices=lambda transform: []
+        with self.assertRaisesRegex(ValueError,'body vertices'):
+            motion_readback(subject,bus,[1,0],102,.1)
+
+    def test_four_camera_creation_source_encoding_and_frame_join(self):
+        class Blueprint:
+            def __init__(self):self.attrs={}
+            def set_attribute(self,key,value):self.attrs[key]=value
+        class Library:
+            def find(self,key):
+                self.assert_key=key
+                return Blueprint()
+        class Sensor:
+            def __init__(self):self.callback=None;self.stopped=False;self.destroyed=False
+            def listen(self,callback):self.callback=callback
+            def stop(self):self.stopped=True
+            def destroy(self):self.destroyed=True
+        class World:
+            def __init__(self):self.spawned=[]
+            def get_blueprint_library(self):return Library()
+            def spawn_actor(self,blueprint,transform,attach_to):
+                sensor=Sensor();self.spawned.append((blueprint,transform,attach_to,sensor));return sensor
+        class Carla:
+            @staticmethod
+            def Location(*values):return values
+            @staticmethod
+            def Rotation(*values):return values
+            @staticmethod
+            def Transform(location,rotation):return (location,rotation)
+        class Sink:
+            def __init__(self):self.frames=[]
+            def write(self,image):self.frames.append(image.frame)
+        class Image:
+            def __init__(self,frame,size):self.frame=frame;self.width,self.height=size
+        subject,bus=object(),object()
+        world=World();sinks={name:Sink() for name in CAMERAS}
+        cameras=SchoolBusCameraCapture(world,Carla,subject,bus,sinks)
+        self.assertEqual(len(world.spawned),4)
+        self.assertEqual({name for name in CAMERAS},{'overview','approach','reference_corner','driver_reference'})
+        for name,(_,_,parent,sensor) in zip(CAMERAS,world.spawned):
+            self.assertIs(parent,subject if name=='approach' else bus)
+            self.assertEqual(world.spawned[list(CAMERAS).index(name)][0].attrs['sensor_tick'],'0.05')
+            sensor.callback(Image(101,CAMERAS[name][3]))
+        cameras.wait_for_frame(101,timeout_s=.01)
+        self.assertEqual(cameras.verify([101]),{name:1 for name in CAMERAS})
+        with self.assertRaisesRegex(ValueError,'Missing or extra original'):
+            cameras.verify([101,102])
+        world.spawned[0][3].callback(Image(101,CAMERAS['overview'][3]))
+        with self.assertRaisesRegex(ValueError,'callback failed'):
+            cameras.wait_for_frame(101,timeout_s=.01)
+        cameras.close()
+        self.assertTrue(all(row[3].stopped and row[3].destroyed for row in world.spawned))
+
+        class Pipe:
+            def __init__(self):self.writes=[];self.closed=False
+            def write(self,data):self.writes.append(len(data))
+            def close(self):self.closed=True
+        class Process:
+            def __init__(self):self.stdin=Pipe()
+            def wait(self):return 0
+        calls=[]
+        def popen(command,stdin):
+            calls.append((command,stdin));return Process()
+        source=LosslessSourceSink(self.root,'overview',popen=popen)
+        class Data:
+            def __init__(self,n):self.n=n
+            def __len__(self):return self.n
+        class RawImage:pass
+        image=RawImage();image.raw_data=Data(source.frame_bytes)
+        source.write(image)
+        image.raw_data=Data(source.frame_bytes-1)
+        with self.assertRaisesRegex(ValueError,'byte count'):
+            source.write(image)
+        source.close()
+        self.assertEqual(calls[0][0][0],'ffmpeg')
+        self.assertTrue(source.process.stdin.closed)
+
+    def test_meeting_actor_construction_opposite_road_and_cleanup(self):
+        class Vector:
+            def __init__(self,x):self.x=x;self.y=0
+        class Transform:
+            def __init__(self,location):self.location=location
+            def get_forward_vector(self):return Vector(self.location.heading)
+        class Location:
+            def __init__(self,heading,road=7):self.heading=heading;self.road=road
+        class Waypoint:
+            def __init__(self,location):
+                self.road_id=location.road;self.is_junction=False
+                self.transform=Transform(location)
+        class Mapping:
+            def get_waypoint(self,location):return Waypoint(location)
+        class Library:
+            def find(self,name):return name
+        class Actor:
+            def __init__(self):self.control=None;self.destroyed=False
+            def apply_control(self,control):self.control=control
+            def destroy(self):self.destroyed=True
+        class World:
+            def __init__(self):self.actors=[];self.fail_second=False
+            def get_map(self):return Mapping()
+            def get_blueprint_library(self):return Library()
+            def try_spawn_actor(self,blueprint,transform):
+                if self.fail_second and len(self.actors)==1:return None
+                actor=Actor();self.actors.append((blueprint,transform,actor));return actor
+        class Carla:
+            @staticmethod
+            def VehicleControl(**keys):return keys
+        scene={'bus_blueprint_id':'vehicle.school_bus','subject_blueprint_id':'vehicle.car',
+               'bus_transform':Transform(Location(1)),
+               'subject_transform':Transform(Location(-1))}
+        world=World()
+        built=spawn_meeting_scene(world,Carla,scene)
+        self.assertEqual([item[0] for item in world.actors],
+                         ['vehicle.school_bus','vehicle.car'])
+        self.assertEqual(built['heading_dot'],-1)
+        self.assertTrue(world.actors[0][2].control['hand_brake'])
+        self.assertFalse(built['bus_equipment_verified'])
+        scene['subject_transform']=Transform(Location(1))
+        with self.assertRaisesRegex(ValueError,'opposite travel'):
+            spawn_meeting_scene(World(),Carla,scene)
+        scene['subject_transform']=Transform(Location(-1,8))
+        with self.assertRaisesRegex(ValueError,'one nonjunction road'):
+            spawn_meeting_scene(World(),Carla,scene)
+        scene['subject_transform']=Transform(Location(-1))
+        failed=World();failed.fail_second=True
+        with self.assertRaisesRegex(ValueError,'subject spawn failed'):
+            spawn_meeting_scene(failed,Carla,scene)
+        self.assertTrue(failed.actors[0][2].destroyed)
 
 if __name__=='__main__':unittest.main()
