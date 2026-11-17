@@ -14,6 +14,7 @@ from worker_exchange.runtime_cli import materialize
 MANIFESTS = {
     'shuttle_bus': ROOT / 'execution-manifest-diagnostic-shuttle_bus_below-draft.json',
     'rtc_bus': ROOT / 'execution-manifest-diagnostic-rtc_bus_below-draft.json',
+    'limo': ROOT / 'execution-manifest-diagnostic-limo_below-draft.json',
 }
 SPEC = importlib.util.spec_from_file_location('bus_source_helpers',
                                             ROOT / 'prove-tour-bus-saved-source.py')

@@ -18,7 +18,7 @@ from worker_exchange.measurement_contract import validate, verify_report
 
 def prove(case, candidate):
     if case not in tuple(service + '_' + boundary
-                         for service in ('shuttle_bus', 'rtc_bus')
+                         for service in ('shuttle_bus', 'rtc_bus', 'limo')
                          for boundary in ('below', 'at', 'above', 'no_loading')):
         raise ValueError('Unsupported signed-bus case')
     if candidate not in ('primary', 'fallback1', 'fallback2', 'fallback3'):

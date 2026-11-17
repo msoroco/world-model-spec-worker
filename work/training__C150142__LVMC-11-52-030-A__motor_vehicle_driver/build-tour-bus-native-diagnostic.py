@@ -32,7 +32,7 @@ def build(attempt):
         raise ValueError('Synthetic diagnostic belongs under .runtime-work')
     config = json.loads((attempt / 'config.json').read_text())
     if config['case_id'] not in tuple(ROOT.name + '__' + service + '_' + boundary
-                                     for service in ('tour_bus', 'shuttle_bus', 'rtc_bus')
+                                     for service in ('tour_bus', 'shuttle_bus', 'rtc_bus', 'limo')
                                      for boundary in ('below', 'at', 'above',
                                                       'no_loading')):
         raise ValueError('This diagnostic requires a signed bus case')
@@ -125,7 +125,7 @@ def build(attempt):
         raise ValueError('Native diagnostic frame count differs')
     (capture / 'recorder_info.txt').write_text(
         'Synthetic CPU diagnostic; CARLA recorder did not run.\n'
-        'Create 1: vehicle.mitsubishi.fusorosa\n' +
+        'Create 1: ' + config['native_blueprint'] + '\n' +
         ('' if no_loading else 'Create 2: walker.pedestrian.0001\n'))
     (capture / 'manifest.json').write_text(json.dumps({
         'extraction_confirmed': True, 'frames': count,

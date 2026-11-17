@@ -59,7 +59,7 @@ def source_rows(target, walker_moves=True, inject_walker_actor=False):
                         if walker_moves else -10)
             actor = {'frame': i, 'native_frame': i, 'time_s': t,
                      'source_kind': 'synthetic_native_sample',
-                     'actor_id': 1, 'blueprint': 'vehicle.mitsubishi.fusorosa',
+                     'actor_id': 1, 'blueprint': config['native_blueprint'],
                      'ego_center_native_xy_m': [x, y],
                      'ego_body_native_xy_m': [[x - 1, y - .5], [x + 1, y - .5],
                                               [x + 1, y + .5], [x - 1, y + .5]],
