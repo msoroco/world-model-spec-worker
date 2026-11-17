@@ -11,6 +11,10 @@ from delivery_audit import (audit, lines, read, validate_exception_measurement,
 ROOT = Path(__file__).resolve().parents[3]
 WORK = Path(__file__).resolve().parents[1]
 PLAN = json.loads((WORK / 'case-plan.json').read_text())
+MANIFEST_PATH = WORK / 'execution-manifest.json'
+MANIFEST = json.loads(MANIFEST_PATH.read_text())
+MANIFEST_SHA256 = hashlib.sha256(MANIFEST_PATH.read_bytes()).hexdigest()
+SELECTED = {item['case_id']: item for item in MANIFEST['cases']}
 CASES = {
     **{
         f'{service}_{boundary}':
@@ -18,9 +22,17 @@ CASES = {
         for service in ('tour_bus', 'shuttle_bus', 'limo', 'rtc_bus')
         for boundary in ('below', 'at', 'above', 'no_loading')
     },
-    'mail_adjacent_deposit': 'c150142-mail-adjacent-primary-result-v3',
-    'armored_car_signed_business': 'c150142-merged-armored-signed-business-primary-result-v1',
+    **{
+        item['case_id'].split('__')[-1]:
+            'c150142-selected-' + item['case_id'].split('__')[-1] +
+            '-primary-canonicalnext-v1-result'
+        for item in MANIFEST['cases']
+        if item['case_id'].split('__')[-1].startswith(
+            ('mail_', 'armored_car_', 'emergency_vehicle_'))
+    },
 }
+CASES['tour_bus_below'] = 'c150142-selected-tour-bus-below-primary-result-v3'
+CASES['rtc_bus_below'] = 'c150142-selected-rtc-bus-below-primary-result-v2'
 
 
 def reject(call, message):
@@ -57,6 +69,11 @@ def main():
             folder.mkdir()
             stage(source, folder)
             case = WORK.name + '__' + slug
+            selection = read(source / 'candidate-selection.json')
+            assert selection['case_id'] == case
+            assert selection['candidate_id'] == 'primary'
+            assert selection['manifest_sha256'] == MANIFEST_SHA256
+            assert selection['construction_sha256'] == SELECTED[case]['construction_sha256']
             checked = validate_exception_measurement(
                 folder, PLAN, case, 'synthetic_native_sample')
             joined = validate_rows(lines(source / 'native-raw-actors.jsonl'),
