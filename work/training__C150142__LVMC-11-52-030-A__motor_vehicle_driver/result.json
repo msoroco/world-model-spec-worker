@@ -3,7 +3,7 @@
   "input_sha256": "77d784bf5bcc3cb6dcbff251676557136ead407afc80850b4e5cd49fb4afb682",
   "status": "partial",
   "applied_update": 16,
-  "reason": "Update051 current canonical SHA eb39c0ce2b75b52b32e8ccf11959a61487fc5d95e657d02adf3248317d5bc4a9: all 30 selected cases and 120 current-manifest offline candidates pass. All 14 short cases have 56 current-manifest positive/negative compatibility and saved-processing candidate passes, independently audited. All 16 long measurement contracts and 64 selected long primary/fallback source-finalizer positives/missing-source negatives pass. Selected tour_bus_below and rtc_bus_below primaries passed full 36,120-frame saved processing under the prior manifest and are historical after the short-case manifest edit; current tour reproof is underway. Sixteen long cases still need full fixture compatibility and current-manifest candidate saved matrices; canonical receipt binding, original delivery/comparison acceptance, and local integration remain worker-owned CPU work. No original Native, physical or legal acceptance. Scoped strict remains partial; latest terminal full strict rejects frozen runtime/pipeline/runs/scenario_pipeline/inputs/shared/manifest.json. See HANDOFF.md.",
+  "reason": "Update051 current canonical SHA eb39c0ce2b75b52b32e8ccf11959a61487fc5d95e657d02adf3248317d5bc4a9: 30 selected cases and all 120 offline candidates pass. All 14 short cases have 56 current-manifest positive/negative compatibility and saved-processing candidate passes, independently audited. All 16 long measurement contracts and 64 selected long primary/fallback source-finalizer positives/missing-source negatives pass. Selected tour_bus_below and rtc_bus_below primaries each pass current-manifest pinned full 36,120-frame saved processing with four source and final decodes. The other long cases and all remaining long fallbacks need current-manifest full saved proof; pinned fixture_generator.inspect rejects a 36,120-frame diagnostic video at its 2,000-frame cap, so full long compatibility integration remains worker-owned CPU work. Canonical receipt binding, original delivery/comparison acceptance and local integration remain unfinished. No original Native, physical or legal acceptance. Scoped strict remains partial; a fresh full strict scan was interrupted after more than seven minutes without output (exit 130), and the latest terminal full strict result names frozen runtime/pipeline/runs/scenario_pipeline/inputs/shared/manifest.json as unapproved. See HANDOFF.md.",
   "readiness_kind": null,
   "cases_planned": 30,
   "cases_selected": 30,
@@ -2848,6 +2848,72 @@
       "command": ".venv-cpu/bin/python worker_check.py --assignment training__C150142__LVMC-11-52-030-A__motor_vehicle_driver --complete",
       "exit_code": 0,
       "log": "update051-scoped-complete-long.log",
+      "sha256": "e55b56a1b6aa74208e8b4209fa371167a36f74f7436a9928d64b7eaf3f129a5a"
+    },
+    {
+      "command": "pinned worker_exchange.fixture_generator.inspect rejects 36120-frame textual video spec",
+      "exit_code": 0,
+      "log": "update051-long-fixture-cap-repro.log",
+      "sha256": "54b65eb656c1648e4d0c50fff590d1f6920d59afe2a2102effd9d1ab20c89ee5"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/prepare-tour-bus-saved.py --case tour_bus_below --candidate primary --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --reuse-media-from .runtime-work/c150142-tour-bus-pinned-saved-below-v6 --attempt .runtime-work/c150142-selected-tour-bus-below-primary-native-v3",
+      "exit_code": 0,
+      "log": "update051-tour-bus-below-prepare-v3.log",
+      "sha256": "8296e089f13abc017a7206b5d67984243c578e7c183149eb3b146f757701d214"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/reuse-tour-bus-composition.py .runtime-work/c150142-selected-tour-bus-below-primary-result-v1/v0001/analysis .runtime-work/c150142-selected-tour-bus-below-primary-native-v3",
+      "exit_code": 0,
+      "log": "update051-tour-bus-below-reuse-composition-v3.log",
+      "sha256": "5712e6dc0bf35e1a019fec040204841b377ad2c308b557988e7f3bddb67d4ed6"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_below --attempt .runtime-work/c150142-selected-tour-bus-below-primary-native-v3 --output .runtime-work/c150142-selected-tour-bus-below-primary-result-v3 --library runtime/pipeline/library --validator .runtime-work/c10316-current-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "update051-tour-bus-below-selected-primary-saved-v3.log",
+      "sha256": "b8e7c7fefeec051d1c18a6b74391606758eef04e603f3df9377856b986fd1c1a"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/summarize-selected-long-saved.py --case tour_bus_below --candidate primary --frames 36120 --result-root .runtime-work/c150142-selected-tour-bus-below-primary-result-v3 --log work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/update051-tour-bus-below-selected-primary-saved-v3.log --composition-receipt work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/update051-tour-bus-below-reuse-composition-v3.log",
+      "exit_code": 0,
+      "log": "update051-tour-bus-below-summary-command-v3.log",
+      "sha256": "baca642b6f989fac4dc58df945f038ed5e7189689034e3330262b1c902eece29"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/prepare-shuttle-saved.py --case rtc_bus_below --candidate primary --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --media-from .runtime-work/c150142-tour-bus-pinned-saved-below-v6 --attempt .runtime-work/c150142-selected-rtc-bus-below-primary-native-v2",
+      "exit_code": 0,
+      "log": "update051-rtc-bus-below-prepare-v2.log",
+      "sha256": "fb81ccdc18511dc5dd1ee5dff449f67d4142608ce671efc3c1a7460dc0c14582"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/reuse-tour-bus-composition.py .runtime-work/c150142-selected-tour-bus-below-primary-result-v1/v0001/analysis .runtime-work/c150142-selected-rtc-bus-below-primary-native-v2",
+      "exit_code": 0,
+      "log": "update051-rtc-bus-below-reuse-composition-v2.log",
+      "sha256": "dd65368215861fcde83dadcde05b9a484aae4afdc499ef8607511468a6aaa75f"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__rtc_bus_below --attempt .runtime-work/c150142-selected-rtc-bus-below-primary-native-v2 --output .runtime-work/c150142-selected-rtc-bus-below-primary-result-v2 --library runtime/pipeline/library --validator .runtime-work/c10316-current-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "update051-rtc-bus-below-selected-primary-saved-v2.log",
+      "sha256": "8329ed9e05418264eed8e6be17610cf40aa2f1e8d1e0c4e330b9c96b60f6b8cc"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/summarize-selected-long-saved.py --case rtc_bus_below --candidate primary --frames 36120 --result-root .runtime-work/c150142-selected-rtc-bus-below-primary-result-v2 --log work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/update051-rtc-bus-below-selected-primary-saved-v2.log --composition-receipt work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/update051-rtc-bus-below-reuse-composition-v2.log",
+      "exit_code": 0,
+      "log": "update051-rtc-bus-below-summary-command-v2.log",
+      "sha256": "98f71b27d2d6af8b0686d3929a37c0cebe9346a085843941d178b2391209062e"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment training__C150142__LVMC-11-52-030-A__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "update051-scoped-complete-canonical.log",
+      "sha256": "e55b56a1b6aa74208e8b4209fa371167a36f74f7436a9928d64b7eaf3f129a5a"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment training__C150142__LVMC-11-52-030-A__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "update051-scoped-complete-final.log",
       "sha256": "e55b56a1b6aa74208e8b4209fa371167a36f74f7436a9928d64b7eaf3f129a5a"
     }
   ]
