@@ -238,6 +238,7 @@ class OppositeTurnConstructionTest(unittest.TestCase):
                      approach_headings_deg={"ego": 0, "other": 180},
                      approach_geometry_source="synthetic fake-Native test route",
                      governed_signal_ids={"ego": 101, "other": 102},
+                     native_map_name="SyntheticTown",
                      device_inventory_source="synthetic fake-Native signal inventory")
         lights = {"ego": SimpleNamespace(id=101, get_state=lambda: "Green"),
                   "other": SimpleNamespace(id=102, get_state=lambda: "Red")}
@@ -262,6 +263,9 @@ class OppositeTurnConstructionTest(unittest.TestCase):
             measured = turn_context.analyze(temp)
             self.assertEqual(json.loads((Path(temp) / "road_geometry.json").read_text())
                              ["review_status"], "candidate_only")
+            signal_context = json.loads((Path(temp) / "signal_context.json").read_text())
+            self.assertEqual(signal_context["review_status"], "candidate_only")
+            self.assertEqual(signal_context["governed_lane_id"], -1)
         self.assertEqual(receipt["frames_recorded"], 3)
         self.assertEqual([item["native_frame"] for item in source], [2, 3, 4])
         self.assertEqual(len(frames), 3)
@@ -279,8 +283,6 @@ class OppositeTurnConstructionTest(unittest.TestCase):
                                                 (4, "Green", "Red")])
         self.assertEqual([row["time_s"] for row in signals],
                          [row["time_s"] for row in frames])
-        self.assertEqual(json.loads((Path(temp) / "signal_context.json").read_text())
-                         ["review_status"], "candidate_only")
         self.assertTrue(measured["original_heading_complete"])
         self.assertEqual(measured["first_original_headings"]["other"]["native_lane_id"], 1)
         self.assertEqual(set(written), {name + ".mkv" for name in value["cameras"]})
@@ -315,6 +317,7 @@ class OppositeTurnConstructionTest(unittest.TestCase):
                      approach_headings_deg={"ego": 0, "other": 180},
                      approach_geometry_source="synthetic test route",
                      governed_signal_ids={"ego": 101, "other": 102},
+                     native_map_name="SyntheticTown",
                      device_inventory_source="synthetic test inventory")
         wrong = {"ego": SimpleNamespace(id=101), "other": SimpleNamespace(id=103)}
         with tempfile.TemporaryDirectory() as temp:

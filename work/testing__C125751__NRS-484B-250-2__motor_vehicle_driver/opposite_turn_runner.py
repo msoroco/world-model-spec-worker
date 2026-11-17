@@ -115,13 +115,19 @@ def capture_candidate_media(output_dir, world, carla, site, turning_role,
         raise ValueError("Native candidate junction and approach source required")
     if governed_lights is not None:
         signal_ids = site.get("governed_signal_ids")
+        lanes = site.get("expected_approach_lanes")
         if (not isinstance(governed_lights, dict) or set(governed_lights) != {"ego", "other"} or
                 not isinstance(signal_ids, dict) or set(signal_ids) != {"ego", "other"} or
                 any(type(signal_ids[role]) is not int or signal_ids[role] <= 0 or
                     getattr(governed_lights[role], "id", None) != signal_ids[role]
                     for role in ("ego", "other")) or
                 signal_ids["ego"] == signal_ids["other"] or
-                not site.get("device_inventory_source")):
+                not site.get("device_inventory_source") or
+                not site.get("native_map_name") or
+                not isinstance(lanes, dict) or set(lanes) != {"ego", "other"} or
+                any(not isinstance(lanes[role], list) or len(lanes[role]) != 2 or
+                    any(type(value) is not int for value in lanes[role])
+                    for role in ("ego", "other"))):
             raise ValueError("Two sourced governed Native signal actors required")
     poses = {name: _camera_pose(carla, camera_values[name]) for name in SIZES}
     (root / "road_geometry.json").write_text(json.dumps({
@@ -142,6 +148,11 @@ def capture_candidate_media(output_dir, world, carla, site, turning_role,
             "intersection_id": junction_id,
             "native_signal_id": signal_ids["ego"],
             "other_native_signal_id": signal_ids["other"],
+            "native_map_id": site["native_map_name"],
+            "governed_road_id": lanes["ego"][0],
+            "governed_lane_id": lanes["ego"][1],
+            "other_governed_road_id": lanes["other"][0],
+            "other_governed_lane_id": lanes["other"][1],
             "device_inventory_source": site["device_inventory_source"],
             "review_status": "candidate_only"}, allow_nan=False) + "\n")
     from worker_exchange.native_output import FrameMap
