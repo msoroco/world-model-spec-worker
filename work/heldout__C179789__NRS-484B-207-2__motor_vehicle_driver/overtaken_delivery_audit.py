@@ -38,13 +38,29 @@ def rows(path):
 def decode(path, count):
     probe = subprocess.run(
         ["ffprobe", "-v", "error", "-count_frames", "-select_streams", "v:0",
-         "-show_entries", "stream=nb_read_frames", "-of", "default=nokey=1:noprint_wrappers=1", str(path)],
+         "-show_entries", "stream=width,height,nb_read_frames", "-of", "json", str(path)],
         capture_output=True, text=True, check=True)
-    if int(probe.stdout.strip()) != count:
+    streams = json.loads(probe.stdout).get("streams", [])
+    if len(streams) != 1 or int(streams[0]["nb_read_frames"]) != count:
         raise ValueError("Original camera frame count differs: " + path.name)
-    subprocess.run(["ffmpeg", "-v", "error", "-i", str(path), "-f", "null", "-"],
-                   stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, check=True)
-    return {"sha256": digest(path), "decoded_frames": count}
+    width, height = int(streams[0]["width"]), int(streams[0]["height"])
+    if width <= 0 or height <= 0:
+        raise ValueError("Original camera dimensions invalid: " + path.name)
+    process = subprocess.Popen(["ffmpeg", "-v", "error", "-i", str(path),
+                                "-pix_fmt", "rgb24", "-f", "rawvideo", "-"],
+                               stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    pixels = hashlib.sha256()
+    byte_count = 0
+    assert process.stdout is not None
+    while chunk := process.stdout.read(1024 * 1024):
+        pixels.update(chunk)
+        byte_count += len(chunk)
+    error = process.stderr.read() if process.stderr else b""
+    if process.wait() != 0 or byte_count != width * height * 3 * count:
+        raise ValueError("Original camera RGB decode differs: " + path.name + " " + error.decode(errors="replace"))
+    return {"sha256": digest(path), "decoded_frames": count,
+            "dimensions": [width, height], "rgb24_bytes": byte_count,
+            "rgb_sequence_sha256": pixels.hexdigest()}
 
 
 def audit(attempt, saved_receipt, analysis_override=None):
