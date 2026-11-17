@@ -35,6 +35,12 @@ def check_scene(scene):
     if not isinstance(scene, dict) or not all(isinstance(scene.get(key), str) and scene[key]
                                              for key in ('bus_blueprint_id','subject_blueprint_id')):
         raise ValueError('School-bus scene blueprint IDs missing')
+    service = scene.get('pupil_service')
+    if (not isinstance(service, dict) or
+        service.get('purpose') not in ('receiving', 'discharging') or
+        not isinstance(service.get('walker_blueprint_id'), str) or
+        not service['walker_blueprint_id'].startswith('walker.pedestrian.')):
+        raise ValueError('School-bus pupil-service actor/purpose missing')
     if scene.get('auto_meeting_route') is True:
         if 'bus' in scene or 'subject' in scene:
             raise ValueError('School-bus scene mixes automatic and fixed poses')
@@ -63,6 +69,45 @@ def _sha(path):
     return digest.hexdigest()
 
 
+def spawn_pupil_service(world, carla, bus, service):
+    """Place a walker beside the stopped bus and return its controlled travel axis."""
+    transform = bus.get_transform()
+    location = transform.location
+    right = transform.get_right_vector()
+    if not all(math.isfinite(value) for value in (
+            location.x, location.y, location.z, right.x, right.y)):
+        raise ValueError('School-bus pupil spawn geometry nonfinite')
+    distance = 4.0 if service['purpose'] == 'receiving' else 1.8
+    pupil_location = carla.Location(location.x + right.x * distance,
+                                    location.y + right.y * distance,
+                                    location.z + 0.3)
+    pupil_transform = carla.Transform(pupil_location, transform.rotation)
+    blueprint = world.get_blueprint_library().find(service['walker_blueprint_id'])
+    pupil = world.try_spawn_actor(blueprint, pupil_transform)
+    if pupil is None:
+        raise ValueError('School-bus pupil actor spawn failed')
+    direction = -1.0 if service['purpose'] == 'receiving' else 1.0
+    return pupil, carla.Vector3D(right.x * direction, right.y * direction, 0.0)
+
+
+def pupil_readback(pupil, bus, frame, time_s, purpose):
+    point = pupil.get_location()
+    bus_point = bus.get_location()
+    velocity = pupil.get_velocity()
+    values = (point.x, point.y, point.z, bus_point.x, bus_point.y, bus_point.z,
+              velocity.x, velocity.y, velocity.z)
+    if any(not math.isfinite(value) for value in values):
+        raise ValueError('Original pupil-service readback nonfinite')
+    return {'frame': frame, 'time_s': time_s, 'pupil_id': str(pupil.id),
+            'bus_id': str(bus.id), 'requested_purpose': purpose,
+            'pupil_xyz': [point.x, point.y, point.z],
+            'bus_xyz': [bus_point.x, bus_point.y, bus_point.z],
+            'pupil_speed_mps': math.sqrt(velocity.x**2 + velocity.y**2 + velocity.z**2),
+            'pupil_distance_to_bus_m': math.sqrt(sum((a-b)**2 for a,b in zip(
+                (point.x,point.y,point.z),(bus_point.x,bus_point.y,bus_point.z)))),
+            'pupil_service_verified': False}
+
+
 def close_all(actions):
     """Attempt every owner cleanup even if an earlier close fails."""
     errors = []
@@ -86,7 +131,7 @@ def run(plan, scene, output, *, host='127.0.0.1', port=2000):
 
     output = Path(output)
     output.mkdir(parents=True, exist_ok=True)
-    for name in ('motion_original.jsonl','signal_command_original.jsonl',
+    for name in ('motion_original.jsonl','pupil_original.jsonl','signal_command_original.jsonl',
                  'video_frames.jsonl','native-acquisition-inventory.json'):
         if (output / name).exists():
             raise ValueError('Retain prior school-bus Native source: ' + name)
@@ -95,7 +140,7 @@ def run(plan, scene, output, *, host='127.0.0.1', port=2000):
     world = client.get_world()
     original_settings = world.get_settings()
     actors = []
-    camera = pipeline = frame_map = motion_file = signal_file = None
+    camera = pipeline = frame_map = motion_file = signal_file = pupil_file = None
     sinks = {}
     captured = []
     completed = False
@@ -120,6 +165,9 @@ def run(plan, scene, output, *, host='127.0.0.1', port=2000):
             'subject_transform': subject_transform})
         bus, subject = construction['bus'], construction['subject']
         actors.extend((bus, subject))
+        pupil, pupil_direction = spawn_pupil_service(world, carla, bus,
+                                                     scene['pupil_service'])
+        actors.append(pupil)
         for name in CAMERAS:
             sinks[name] = LosslessSourceSink(output, name)
         camera = SchoolBusCameraCapture(world, carla, subject, bus, sinks)
@@ -127,6 +175,7 @@ def run(plan, scene, output, *, host='127.0.0.1', port=2000):
                                    required_observations=[row['term'] for row in plan.get('observations',[])])
         frame_map = FrameMap(output / 'video_frames.jsonl')
         motion_file = (output / 'motion_original.jsonl').open('x')
+        pupil_file = (output / 'pupil_original.jsonl').open('x')
         signal_file = (output / 'signal_command_original.jsonl').open('x')
         start = None
         for index in range(FRAMES):
@@ -139,6 +188,9 @@ def run(plan, scene, output, *, host='127.0.0.1', port=2000):
             command = target('meeting_stop', red_signal_operating=operating,
                              stop_observed=speed <= .05)
             apply(subject, carla.VehicleControl, command, speed_mps=speed)
+            pupil.apply_control(carla.WalkerControl(
+                direction=pupil_direction,
+                speed=1.2 if 20 <= index < 100 else 0.0))
             frame = world.tick()
             camera.wait_for_frame(frame)
             snapshot = world.get_snapshot()
@@ -160,6 +212,9 @@ def run(plan, scene, output, *, host='127.0.0.1', port=2000):
             if not math.isfinite(row['bus_speed_mps']):
                 raise ValueError('Native school-bus stop readback nonfinite')
             motion_file.write(json.dumps(row,allow_nan=False)+'\n')
+            pupil_file.write(json.dumps(pupil_readback(
+                pupil, bus, frame, time_s, scene['pupil_service']['purpose']),
+                allow_nan=False)+'\n')
             signal_file.write(json.dumps({
                 'frame':frame,'time_s':time_s,'bus_id':str(bus.id),
                 'red_signal_commanded':operating,'red_phase_commanded':phase,
@@ -180,6 +235,7 @@ def run(plan, scene, output, *, host='127.0.0.1', port=2000):
         close_all([(name, action) for name, action in (
             ('signal_source', signal_file.close if signal_file else None),
             ('motion_source', motion_file.close if motion_file else None),
+            ('pupil_source', pupil_file.close if pupil_file else None),
             ('frame_map', frame_map.close if frame_map else None),
             ('pipeline', (lambda: pipeline.close(confirmed=completed)) if pipeline else None),
             ('cameras', camera.close if camera else None),
@@ -188,7 +244,7 @@ def run(plan, scene, output, *, host='127.0.0.1', port=2000):
             ('world_settings_restore', restore),
         ) if action is not None])
     sources = {}
-    for name in ('motion_original.jsonl','signal_command_original.jsonl','video_frames.jsonl',
+    for name in ('motion_original.jsonl','pupil_original.jsonl','signal_command_original.jsonl','video_frames.jsonl',
                  'trace.jsonl','road.xodr',*(name+'.mkv' for name in CAMERAS)):
         path = output / name
         if not path.is_file() or not path.stat().st_size:
