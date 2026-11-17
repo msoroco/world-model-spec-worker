@@ -156,6 +156,17 @@ class OvertakenTests(unittest.TestCase):
         survey.write_text(survey.read_text()+"tamper")
         with self.assertRaisesRegex(ValueError,"source missing or changed"):
             saved_behavior.audit_right_pass_exception(*staged)
+
+    def test_five_saved_diagnostics_do_not_claim_native_completion(self):
+        root=HERE.parents[1]/'.runtime-work/c179789-semantic-reconcile-v6/provisional-compat'
+        for name in ('audible','observed','no-right','speed-increase','right-pass'):
+            with self.subTest(name=name):
+                result=pass_gap.assess(root/name,audible=name!='observed')
+                maneuver=result['physical_checks']['maneuver']
+                self.assertEqual(maneuver['diagnostic_geometry_status'],'met')
+                self.assertEqual(maneuver['status'],'unverified')
+                self.assertEqual(result['provenance_kind'],'diagnostic_fixture')
+                self.assertFalse(result['maneuver_completed'])
     def test_exact_controller_targets_and_native_call(self):
         for suffix in controller.CASES:
             expected_notice,right_pass,right_shift,early = controller.CASES[suffix]
@@ -258,6 +269,24 @@ class OvertakenTests(unittest.TestCase):
         self.assertEqual((observed["notice_frame"],observed["pass_complete_frame"]),(101,103))
         self.assertEqual(observed["max_precompletion_speed_delta_mps"],0)
         self.assertIsNone(observed["legal_conclusion"])
+        self.write("fixture-provenance.json",{"diagnostic_fixture":True,"actual_native_capture":False})
+        physical=pass_gap.assess(self.root,audible=False)
+        self.assertEqual(physical["physical_checks"]["maneuver"]["diagnostic_geometry_status"],"met")
+        self.assertEqual(physical["physical_checks"]["maneuver"]["status"],"unverified")
+        self.assertFalse(physical["maneuver_completed"])
+        self.write("fixture-provenance.json",{"diagnostic_fixture":False,"actual_native_capture":True})
+        self.assertEqual(pass_gap.assess(self.root,audible=False)["physical_checks"]["maneuver"]["status"],"unverified")
+        self.write("fixture-provenance.json",{"diagnostic_fixture":True,"actual_native_capture":False})
+        bodies[3]["overtaker_corners"]=corners(2)
+        bodies[3]["body_pass_complete"]=False;sources()
+        incomplete=pass_gap.assess(self.root,audible=False)
+        self.assertEqual(incomplete["physical_checks"]["maneuver"]["diagnostic_geometry_status"],"not_met")
+        bodies[3]["overtaker_corners"]=corners(4)
+        bodies[3]["body_pass_complete"]=True;sources()
+        missing_trace=paths[2].with_suffix(".withheld")
+        paths[2].rename(missing_trace)
+        self.assertIn("trace.jsonl",pass_gap.assess(self.root,audible=False)["physical_checks"]["maneuver"]["missing_evidence"])
+        missing_trace.rename(paths[2])
         self.write("config.json",{"selected_case_id":finalizer.CASE_ID,
             "law_id":"NRS-484B-207-2","cell_id":"C179789","actor":"motor_vehicle_driver",
             "case":{"recording_description":{"channels":[],"context_inputs":[],"limitations":[]}}})
