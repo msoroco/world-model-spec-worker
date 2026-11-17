@@ -5754,3 +5754,8 @@ C150142 Update048 addendum: `mail_no_box_deposit` and `mail_adjacent_no_deposit`
 ### C150142 Update049
 
 Four selected armored exception cases now have bounded four-camera CPU fixtures and exact text-6 measurement contracts. All 16 primary/fallback pilot compatibility and saved-processing paths passed, with independent synthetic source recomputation. Seven exception pilot cases (three mail, four armored) await canonical binding/reproof; 20 other exception cases and long-case fixture support remain worker-owned. Canonical fully proven candidate count remains 12; status is partial. No original Native or physical/legal acceptance is claimed. See `work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/HANDOFF.md` for receipts.
+
+
+### C150142 Update050
+
+Four emergency exception cases now have bounded source fixtures and exact text-6 contracts. All 16 primary/fallback pilot compatibility and saved-processing paths passed, with independent synthetic source recomputation. Eleven exception pilots await canonical binding/reproof; 16 other exception cases and long-case fixture support remain CPU work. Status remains partial; no original Native or physical/legal acceptance. See `work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/HANDOFF.md` for receipts.
