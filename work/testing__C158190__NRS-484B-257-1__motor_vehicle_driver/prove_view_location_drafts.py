@@ -16,7 +16,9 @@ def canonical_sources(row, files):
     center = row['occluder_center_y_m']
     normalized = {}
     for name, content in files.items():
-        text = content.replace(case_suffix, '__VIEW_CASE__')
+        # The shared controller enumerates all three exact view case IDs.
+        # Its bytes must match across the comparison, including that list.
+        text = content if name == 'yield_controller.py' else content.replace(case_suffix, '__VIEW_CASE__')
         if name == 'runner.py':
             anchor = f'view_occluder(world, center_y={center:.1f})'
             assert text.count(anchor) == 1

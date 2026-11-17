@@ -1,5 +1,7 @@
 import copy
+import json
 import sys
+import types
 import unittest
 from pathlib import Path
 
@@ -30,6 +32,27 @@ def sources():
 
 
 class ViewRangeAuditTests(unittest.TestCase):
+    def test_draft_native_controller_accepts_exact_view_cases(self):
+        root = Path(__file__).resolve().parents[1]
+        for center in (12, 15, 18):
+            with self.subTest(center=center):
+                construction = json.loads((root / f'cases/view_location_y{center}/construction.json').read_text())
+                source = next(item['content'] for item in construction['files']
+                              if item['path'] == 'yield_controller.py')
+                name = f'c158190_view_stage_{center}'
+                module = types.ModuleType(name)
+                sys.modules[name] = module
+                try:
+                    exec(compile(source, name, 'exec'), module.__dict__)
+                    case = root.name + f'__yield_nearest_view_occluder_y{center}'
+                    stage = module.Stage(case)
+                    self.assertEqual(stage.target(30., within_intersection=False,
+                                                  through_vehicle_clear=False), 6.)
+                    self.assertEqual(stage.target(10., within_intersection=False,
+                                                  through_vehicle_clear=False), 2.)
+                finally:
+                    del sys.modules[name]
+
     def test_original_continuous_range_and_obstruction_transition(self):
         rows, context = sources()
         result = audit(rows, context)

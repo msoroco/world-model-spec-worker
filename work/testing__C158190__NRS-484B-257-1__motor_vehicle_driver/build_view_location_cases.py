@@ -140,6 +140,15 @@ def build():
         tests['content'] = tests['content'].replace('if point.x < 0:', 'if point.x < 0:').replace('values = (158195, -1, 158191)', 'values = (158194, -1, 0)')
         tests['content'] = tests['content'].replace("dict(zip(('road_id', 'lane_id', 'junction_id'), values))", "dict(zip(('road_id', 'lane_id', 'junction_id'), values), is_junction=False)")
         tests['content'] = tests['content'].replace("self.assertEqual(ray['distance_to_intersection_m'], 12.)", "self.assertEqual(ray['distance_to_intersection_m'], 12.)\n        self.assertEqual(ray['ego_distance_to_junction_m'], 12.)")
+        controller = files['yield_controller.py']
+        old_allowed = f"allowed = ('{suffix}',"
+        if controller['content'].count(old_allowed) != 1:
+            raise ValueError('View controller staging anchor changed')
+        controller['content'] = controller['content'].replace(
+            old_allowed,
+            "allowed = ('yield_nearest_view_occluder_y12',\n"
+            "                   'yield_nearest_view_occluder_y15',\n"
+            "                   'yield_nearest_view_occluder_y18',\n")
         runner = files['runner.py']
         runner['content'] = runner['content'].replace('from yield_site import validate_authored_site', 'from yield_site import validate_authored_site\nfrom view_location_world_setup import view_occluder')
         runner['content'] = runner['content'].replace("with stage_case(world, config['selected_case_id']) as staging:", f"with stage_case(world, config['selected_case_id']) as staging, view_occluder(world, center_y={center_y:.1f}) as obstruction:")
