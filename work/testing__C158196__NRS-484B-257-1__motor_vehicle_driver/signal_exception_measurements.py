@@ -8,6 +8,7 @@ import hashlib
 import json
 import math
 import argparse
+import subprocess
 from pathlib import Path
 
 from shapely.geometry import MultiPoint, Polygon
@@ -40,6 +41,9 @@ def analyze(root:Path)->dict:
         if ctx.get(key) is None:raise ValueError("Missing sourced signal context: "+key)
     polygon=Polygon(ctx.get("intersection_polygon_xy_m",[]))
     if not polygon.is_valid or polygon.area<=0:raise ValueError("Invalid intersection polygon")
+    route=ctx.get("ego_route_lanes")
+    if (not isinstance(route,list) or not route or route[0]!=[ctx["ego_road_id"],ctx["ego_lane_id"]]):
+        raise ValueError("Missing sourced ego approach route")
     rows,frames=_rows(root/"signal_history.jsonl"),_rows(root/"video_frames.jsonl")
     if len(rows)<3 or len(rows)!=len(frames):raise ValueError("Incomplete signal/ego history")
     previous=(-1,-math.inf);samples=[];first_entry=None
@@ -56,8 +60,9 @@ def analyze(root:Path)->dict:
             raise ValueError("Four original camera frame joins required")
         if row.get("native_signal_id")!=ctx["native_signal_id"]:
             raise ValueError("Native governing light identity mismatch")
-        if row.get("ego_road_id")!=ctx["ego_road_id"] or row.get("ego_lane_id")!=ctx["ego_lane_id"]:
-            raise ValueError("Ego outside signal-governed approach")
+        observed_lane=[row.get("ego_road_id"),row.get("ego_lane_id")]
+        if observed_lane not in route or (i==0 and observed_lane!=route[0]):
+            raise ValueError("Ego outside sourced signal route")
         state=row.get("signal_state")
         if state not in ("Red","Yellow","Green","Off"):
             raise ValueError("Signal state missing")
@@ -92,6 +97,46 @@ def measure_entry_signal_state(report):
     return report["first_ego_entry"]["signal_state"]
 
 
+def validate_source_camera_review(attempt, frames, case_id):
+    """Bind a separately recorded visual review to all four retained originals."""
+    path = attempt/"signal_head_review.json"
+    if not path.is_file():
+        raise ValueError("Missing required source: signal_head_review.json")
+    review = json.loads(path.read_text())
+    if (review.get("method") != "original_source_camera_frame_review" or
+            review.get("case_id") != case_id or
+            not isinstance(review.get("reviewer"), str) or not review["reviewer"].strip()):
+        raise ValueError("Missing identified original-camera review")
+    if review.get("reviewed_carla_frames") != [row["carla_frame"] for row in frames]:
+        raise ValueError("Original-camera review frame coverage differs")
+    sources = review.get("camera_sha256")
+    if not isinstance(sources, dict) or set(sources) != set(CAMERAS):
+        raise ValueError("Four original-camera review hashes required")
+    for name in CAMERAS:
+        if sources[name] != hashlib.sha256((attempt/(name+".mkv")).read_bytes()).hexdigest():
+            raise ValueError("Original-camera review source hash differs: " + name)
+        probe = subprocess.run(["ffprobe", "-v", "error", "-count_frames",
+                                "-select_streams", "v:0", "-show_entries",
+                                "stream=codec_name,nb_read_frames", "-of", "json",
+                                str(attempt/(name+".mkv"))], capture_output=True, text=True)
+        if probe.returncode:
+            raise ValueError("Original-camera source media unreadable: " + name)
+        streams = json.loads(probe.stdout).get("streams", [])
+        if (len(streams) != 1 or streams[0].get("codec_name") != "ffv1" or
+                streams[0].get("nb_read_frames") != str(len(frames))):
+            raise ValueError("Original-camera decoded frame count or codec differs: " + name)
+    observations = review.get("observations")
+    if not isinstance(observations, dict) or any(
+            type(observations.get(key)) is not bool for key in
+            ("signed_entrance_visible", "signal_head_visible", "head_at_ego_approach")):
+        raise ValueError("Missing explicit original-camera visual observations")
+    if case_id.endswith("__signal_controls_ego") and not all(
+            observations[key] for key in ("signed_entrance_visible",
+                                           "signal_head_visible", "head_at_ego_approach")):
+        raise ValueError("Primary signal-case visual observations unconfirmed")
+    return review
+
+
 def finalize(attempt, output):
     """Derive primary signal-exception observations from retained originals."""
     attempt, output = Path(attempt), Path(output)
@@ -114,6 +159,7 @@ def finalize(attempt, output):
         raise ValueError("Wrong law or cell identity")
     report = analyze(attempt)
     frames = _rows(attempt/"video_frames.jsonl")
+    review = validate_source_camera_review(attempt, frames, case_id)
     trace = _rows(attempt/"trace.jsonl")
     interaction = _rows(attempt/"interaction_history.jsonl")
     evidence = _rows(attempt/"capture/evidence.jsonl")
@@ -152,7 +198,7 @@ def finalize(attempt, output):
     observed = measure_operative_signal_at_entry(report)
     requested = expected[case_id[len(prefix):]]
     source_hashes = {name:hashlib.sha256((attempt/name).read_bytes()).hexdigest()
-                     for name in required}
+                     for name in (*required,"signal_head_review.json")}
     result = {"case_id":case_id,
               "measured_values":{"operative_signal_controls_ego_at_entry_observed":observed,
                                  "entry_signal_state":measure_entry_signal_state(report),
@@ -166,8 +212,8 @@ def finalize(attempt, output):
                                                   "interaction_history.jsonl","video_frames.jsonl"]}],
               "setup_confirmed":False,"behavior_attempted":False,
               "maneuver_completed":False,
-              "termination_reason":"Saved source analysis; physical source review pending",
-              "physical_failure_flags":["official control, head visibility and legal exception remain unresolved"],
+              "termination_reason":"Saved source analysis; physical and official control acceptance pending",
+              "physical_failure_flags":["Official control, realized camera quality and legal exception remain unresolved"],
               "trace_reference":"trace.jsonl",
               "video_references":[name+".mkv" for name in CAMERAS],
               "video_frame_map_reference":"video_frames.jsonl",
@@ -196,7 +242,8 @@ def finalize(attempt, output):
                         "method":"measure_entry_signal_state",
                         "sources":{name:source_hashes[name] for name in
                                    ("signal_context.json","signal_history.jsonl","video_frames.jsonl")}}},
-                "source_report":report,"physical_checks":result["physical_checks"],
+                "source_report":report,"source_camera_review":review,
+                "physical_checks":result["physical_checks"],
                 "realized_observables":result["realized_observables"],
                 "legal_conclusion":"unresolved","analysis_complete":True}
     output.write_text(json.dumps(analysis,indent=2,allow_nan=False)+"\n")

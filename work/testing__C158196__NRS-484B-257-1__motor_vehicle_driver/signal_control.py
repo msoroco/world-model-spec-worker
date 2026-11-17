@@ -212,9 +212,16 @@ class SignalSourceWriter:
         self.context = dict(context)
         required = ("native_map_id", "intersection_id", "ego_road_id", "ego_lane_id",
                     "native_signal_id", "affected_lane_source", "signal_head_video_source",
-                    "signed_entrance_source", "junction_source", "intersection_polygon_xy_m")
+                    "signed_entrance_source", "junction_source", "intersection_polygon_xy_m",
+                    "ego_route_lanes")
         if any(self.context.get(key) is None for key in required):
             raise ValueError("Incomplete original signal context")
+        route = self.context["ego_route_lanes"]
+        if (not isinstance(route,list) or not route or route[0] !=
+                [self.context["ego_road_id"],self.context["ego_lane_id"]] or
+                any(not isinstance(pair,list) or len(pair)!=2 or
+                    any(type(v) is not int for v in pair) for pair in route)):
+            raise ValueError("Sourced ego approach and route lanes required")
         self.paths = [self.root / name for name in
                       ("signal_context.json", "signal_history.jsonl", "video_frames.jsonl",
                        "interaction_history.jsonl", "control_context.json")]
@@ -254,11 +261,13 @@ class SignalSourceWriter:
             raise ValueError("Original map or signal identity changed")
         transform = ego.get_transform()
         waypoint = native_map.get_waypoint(transform.location, project_to_road=False)
-        if waypoint is None or [waypoint.road_id, waypoint.lane_id] != [
-                self.context["ego_road_id"], self.context["ego_lane_id"]]:
-            raise ValueError("Ego left sourced signal approach")
+        if waypoint is None or [waypoint.road_id, waypoint.lane_id] not in self.context["ego_route_lanes"]:
+            raise ValueError("Ego left sourced signal route")
+        if self.count==0 and [waypoint.road_id,waypoint.lane_id] != [
+                self.context["ego_road_id"],self.context["ego_lane_id"]]:
+            raise ValueError("Ego did not start on sourced signal approach")
         governed = {(wp.road_id, wp.lane_id) for wp in light.get_affected_lane_waypoints()}
-        controls = (waypoint.road_id, waypoint.lane_id) in governed
+        controls = (self.context["ego_road_id"],self.context["ego_lane_id"]) in governed
         if controls is not expected_controls_ego:
             raise ValueError("Native signal governance changed during capture")
         state = str(light.get_state()).split(".")[-1]
@@ -279,10 +288,12 @@ class SignalSourceWriter:
             through_transform = through.get_transform()
             through_waypoint = native_map.get_waypoint(through_transform.location,
                                                        project_to_road=False)
-            if (through_waypoint is None or
-                    [through_waypoint.road_id, through_waypoint.lane_id] !=
-                    [self.context["through_road_id"], self.context["through_lane_id"]]):
-                raise ValueError("Through actor left sourced highway lane")
+            through_route = self.context.get("through_route_lanes")
+            if (not isinstance(through_route,list) or not through_route or
+                    through_route[0] != [self.context["through_road_id"],self.context["through_lane_id"]] or
+                    through_waypoint is None or
+                    [through_waypoint.road_id, through_waypoint.lane_id] not in through_route):
+                raise ValueError("Through actor left sourced highway route")
             def vertices3(actor, actor_transform):
                 points = actor.bounding_box.get_world_vertices(actor_transform)
                 if len(points) < 4:

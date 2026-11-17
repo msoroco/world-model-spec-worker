@@ -1,4 +1,5 @@
 import importlib.util
+import hashlib
 import json
 import subprocess
 import shutil
@@ -27,6 +28,7 @@ class SignalTests(unittest.TestCase):
     def fixture(self,root,controls=True,state="Green"):
         ctx={"native_map_id":"TownX","intersection_id":44,"ego_road_id":7,
              "ego_lane_id":-1,"native_signal_id":25,
+             "ego_route_lanes":[[7,-1],[8,-1]],
              "affected_lane_source":"native-affected-waypoints",
              "signal_head_video_source":"front-original",
              "signed_entrance_source":"native-sign-and-camera",
@@ -36,7 +38,7 @@ class SignalTests(unittest.TestCase):
         rows=[]
         for i,x in enumerate((0,0,12)):
             rows.append({"frame":100+i,"time_s":1+i*.05,"native_signal_id":25,
-                         "ego_road_id":7,"ego_lane_id":-1,"signal_state":state,
+                         "ego_road_id":8 if i==2 else 7,"ego_lane_id":-1,"signal_state":state,
                          "signal_controls_ego":controls,"ego_speed_mps":2,
                          "ego_body_vertices_xy_m":body(x)})
         frames=[{"video_frame":i,"carla_frame":r["frame"],"time_s":r["time_s"],
@@ -139,6 +141,7 @@ class SignalTests(unittest.TestCase):
             ctx={"native_map_id":"TownX","intersection_id":44,"ego_road_id":7,
                  "ego_lane_id":-1,"through_road_id":9,"through_lane_id":-1,
                  "native_signal_id":25,
+                 "ego_route_lanes":[[7,-1],[8,-1]],
                  "affected_lane_source":"Native affected waypoints",
                  "signal_head_video_source":"approach.mkv",
                  "signed_entrance_source":"reference_corner.mkv",
@@ -216,6 +219,7 @@ class SignalTests(unittest.TestCase):
             ctx={"native_map_id":"TownX","intersection_id":44,"ego_road_id":7,
                  "ego_lane_id":-1,"through_road_id":9,"through_lane_id":-1,
                  "native_signal_id":25,
+                 "ego_route_lanes":[[7,-1],[8,-1]],"through_route_lanes":[[9,-1]],
                  "affected_lane_source":"Native affected waypoints",
                  "signal_head_video_source":"approach.mkv",
                  "signed_entrance_source":"reference_corner.mkv",
@@ -242,7 +246,8 @@ class SignalTests(unittest.TestCase):
                 frame=clock["frame"],timestamp=NS(elapsed_seconds=clock["frame"]*.05)),
                 get_map=lambda:NS(name="TownX",get_waypoint=lambda location,project_to_road:
                                   NS(road_id=location.road_id,lane_id=-1)))
-            ego=NS(get_transform=lambda:NS(location=NS(x=clock["x"],road_id=7)),
+            ego=NS(get_transform=lambda:NS(location=NS(x=clock["x"],
+                                           road_id=8 if clock["x"]>=10 else 7)),
                    get_velocity=lambda:NS(x=2.0,y=0.0,z=0.0),
                    bounding_box=NS(get_world_vertices=lambda transform:[NS(x=clock["x"]+dx,y=y,z=0.0)
                    for dx,y in ((-1,-1),(-1,1),(1,1),(1,-1))]))
@@ -282,7 +287,37 @@ class SignalTests(unittest.TestCase):
             self.assertEqual(len((root/"interaction_history.jsonl").read_text().splitlines()),3)
             self.assertTrue(measure.analyze(root)["operative_signal_controls_ego_at_entry_observed"])
             self.assertTrue(all((root/(name+".mkv")).is_file() for name in control.CAMERAS))
+            review={"method":"original_source_camera_frame_review",
+                    "case_id":json.loads((root/"config.json").read_text())["selected_case_id"],
+                    "reviewer":"diagnostic-fixture-reviewer",
+                    "reviewed_carla_frames":[100,101,102],
+                    "camera_sha256":{name:hashlib.sha256((root/(name+".mkv")).read_bytes()).hexdigest()
+                                     for name in control.CAMERAS},
+                    "observations":{"signed_entrance_visible":True,
+                                    "signal_head_visible":True,"head_at_ego_approach":True}}
+            (root/"signal_head_review.json").write_text(json.dumps(review))
+            with tempfile.TemporaryDirectory() as stale:
+                negative=Path(stale)
+                for source in root.iterdir():
+                    if source.is_file():shutil.copy2(source,negative/source.name)
+                    elif source.name=="capture":shutil.copytree(source,negative/source.name)
+                (negative/"signal_head_review.json").unlink()
+                with self.assertRaisesRegex(ValueError,"Missing required source: signal_head_review.json"):
+                    measure.finalize(negative,negative/"analysis-report.json")
+                review["camera_sha256"]["approach"]="0"*64
+                (negative/"signal_head_review.json").write_text(json.dumps(review))
+                with self.assertRaisesRegex(ValueError,"Original-camera review source hash differs"):
+                    measure.finalize(negative,negative/"analysis-report.json")
+                review["camera_sha256"]["approach"]=hashlib.sha256((root/"approach.mkv").read_bytes()).hexdigest()
+                subprocess.run(["ffmpeg","-v","error","-i",str(root/"overview.mkv"),
+                                "-frames:v","2","-c:v","ffv1",str(negative/"short.mkv")],check=True)
+                (negative/"short.mkv").replace(negative/"overview.mkv")
+                review["camera_sha256"]["overview"]=hashlib.sha256((negative/"overview.mkv").read_bytes()).hexdigest()
+                (negative/"signal_head_review.json").write_text(json.dumps(review))
+                with self.assertRaisesRegex(ValueError,"decoded frame count or codec differs"):
+                    measure.finalize(negative,negative/"analysis-report.json")
             analysis=measure.finalize(root,root/"analysis-report.json")
+            self.assertEqual(analysis["source_camera_review"]["reviewer"],"diagnostic-fixture-reviewer")
             self.assertTrue(analysis["measurements"]["operative_signal_at_entry"]["value"])
             self.assertEqual(len((root/"channels/operative_signal_control.jsonl").read_text().splitlines()),3)
             self.assertFalse(json.loads((root/"result.json").read_text())["physical_acceptance_claimed"])
