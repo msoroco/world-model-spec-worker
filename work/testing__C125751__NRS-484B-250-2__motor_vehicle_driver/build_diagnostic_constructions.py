@@ -267,7 +267,9 @@ def opposite_measurement_contract(disposition_offset=0):
          "stop_order", "measure_opposite_stop", "measured",
          ["stop_context.json", "stop_history.jsonl", "video_frames.jsonl"])]
     dispositions = [{"requirement": wording, "source": source,
-                     "status": "selected_required", "case_ids": [ASSIGNMENT + "__opposite_left_turn"]}
+                     "status": "selected_required", "case_ids": [ASSIGNMENT + "__opposite_left_turn"],
+                     "evidence_or_gap": "Source-hashed diagnostic measurement is implemented; "
+                                        "reviewed Native source and legal judgment remain pending."}
                     for wording, *_ in requirements]
     contract = {"format": "worker-measurement-contract", "requirements": [
         {"disposition_index": disposition_offset + index, "requirement": wording, "source": source,

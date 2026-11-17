@@ -310,8 +310,33 @@ def audit_opposite_candidate(attempt, analysis_path):
             for row, crossed, mapped in zip(bodies, crossings, mapping)):
         raise ValueError("Candidate paired-body/four-camera frame join differs")
     entry = _read(attempt / "channels/entry_context.json").get("entry_context")
-    if not isinstance(entry, dict) or entry != analysis.get("measurements") or entry.get("turning_role") != config["turning_role"]:
+    raw_measurements = analysis.get("raw_opposite_measurements", analysis.get("measurements"))
+    if not isinstance(entry, dict) or entry != raw_measurements or entry.get("turning_role") != config["turning_role"]:
         raise ValueError("Candidate saved entry measurement differs")
+    if "raw_opposite_measurements" in analysis:
+        expected_measurements = {
+            "body_entry_timing": ("measure_opposite_entry", {
+                "first_body_entry": entry["first_body_entry"],
+                "turning_minus_other_entry_time_s": entry["turning_minus_other_entry_time_s"]},
+                ("body_history.jsonl", "crossing_history.jsonl", "road_geometry.json",
+                 "video_frames.jsonl")),
+            "opposite_turn_context": ("measure_opposite_route",
+                entry["construction_geometry"],
+                ("turn_route_context.json", "road_geometry.json",
+                 "crossing_history.jsonl", "video_frames.jsonl")),
+            "signal_at_entry": ("measure_opposite_signal",
+                entry["signal_at_body_entry"],
+                ("signal_context.json", "signal_history.jsonl", "video_frames.jsonl")),
+            "stop_order": ("measure_opposite_stop", entry["stop_order"],
+                ("stop_context.json", "stop_history.jsonl", "video_frames.jsonl"))}
+        measured = analysis.get("measurements")
+        if not isinstance(measured, dict) or set(measured) != set(expected_measurements):
+            raise ValueError("Candidate case measurement inventory differs")
+        for key, (method, value, sources) in expected_measurements.items():
+            expected = {"method": method, "value": value,
+                        "sources": {name: _sha(attempt / name) for name in sources}}
+            if measured[key] != expected:
+                raise ValueError("Candidate case measurement differs: " + key)
     road = _read(attempt / "road_geometry.json")
     polygon = Polygon(road.get("intersection_polygon_xy_m", []))
     if not polygon.is_valid or polygon.area <= 0:

@@ -984,6 +984,36 @@ class DeviceSourceJoinTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "Candidate original frame/time join differs"):
                 candidate_audit.audit_opposite_candidate(root, root / "analysis.json")
 
+    def test_opposite_candidate_audit_checks_formal_case_measurements(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp); self._opposite_finalizer_sources(root)
+            runner.finalize_candidate_opposite_turn(root, root / "analysis.json")
+            path = root / "analysis.json"
+            report = json.loads(path.read_text())
+            raw = report.pop("measurements")
+            report["raw_opposite_measurements"] = raw
+            definitions = {
+                "body_entry_timing": ("measure_opposite_entry", {
+                    "first_body_entry": raw["first_body_entry"],
+                    "turning_minus_other_entry_time_s": raw["turning_minus_other_entry_time_s"]},
+                    ("body_history.jsonl", "crossing_history.jsonl", "road_geometry.json", "video_frames.jsonl")),
+                "opposite_turn_context": ("measure_opposite_route", raw["construction_geometry"],
+                    ("turn_route_context.json", "road_geometry.json", "crossing_history.jsonl", "video_frames.jsonl")),
+                "signal_at_entry": ("measure_opposite_signal", raw["signal_at_body_entry"],
+                    ("signal_context.json", "signal_history.jsonl", "video_frames.jsonl")),
+                "stop_order": ("measure_opposite_stop", raw["stop_order"],
+                    ("stop_context.json", "stop_history.jsonl", "video_frames.jsonl"))}
+            report["measurements"] = {key: {"method": method, "value": value,
+                "sources": {name: hashlib.sha256((root / name).read_bytes()).hexdigest()
+                            for name in sources}}
+                for key, (method, value, sources) in definitions.items()}
+            path.write_text(json.dumps(report))
+            self.assertTrue(candidate_audit.audit_opposite_candidate(root, path)["software_audit_passed"])
+            report["measurements"]["stop_order"]["value"] = {"forged": True}
+            path.write_text(json.dumps(report))
+            with self.assertRaisesRegex(ValueError, "Candidate case measurement differs: stop_order"):
+                candidate_audit.audit_opposite_candidate(root, path)
+
     def test_opposite_candidate_audit_recomputes_entry_and_channel_values(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp); self._opposite_finalizer_sources(root)
