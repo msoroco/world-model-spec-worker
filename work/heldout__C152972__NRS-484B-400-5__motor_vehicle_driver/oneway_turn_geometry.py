@@ -621,6 +621,74 @@ def native_result(attempt, report):
     from worker_exchange.native_output import validate_result
     return validate_result(result)
 
+def assess_original_turn_motion(attempt):
+    """Classify a recorded left turn from joined original body, trace and map rows.
+
+    This is an engineering event check for CPU preparation, not a finding that
+    either statutory curb-position clause was practicable or satisfied.
+    """
+    root=Path(attempt)
+    names=("config.json","oneway_geometry_original.json","body_ground_original.json",
+           "trace.jsonl","video_frames.jsonl")
+    sources={name:hashlib.sha256((root/name).read_bytes()).hexdigest()
+             for name in names if (root/name).is_file()}
+    base={"status":"unverified","method":"original map/body/trace/frame join and left-turn event",
+          "sources":sources,"legal_verdict_claimed":False,
+          "physical_causation_claimed":False}
+    missing=[name for name in names if name not in sources]
+    if missing:return {"physical_checks":{"maneuver":dict(base,missing_evidence=missing)},
+                       "maneuver_completed":False,"realized_observables":{},
+                       "provenance_kind":"diagnostic"}
+    try:
+        config=_load(root/"config.json")
+        geometry=root/"oneway_geometry_original.json"
+        route=check_native_config(config,geometry)
+        body=_load(root/"body_ground_original.json")["frames"]
+        trace=[json.loads(s) for s in (root/"trace.jsonl").read_text().splitlines() if s.strip()]
+        frame_map=[json.loads(s) for s in (root/"video_frames.jsonl").read_text().splitlines() if s.strip()]
+        count=config["frames"]
+        if len(body)!=count or len(trace)!=count or len(frame_map)!=count:
+            raise ValueError("planned original frame count differs")
+        frames=[row["frame"] for row in body]
+        if frames!=sorted(set(frames)) or any(
+            (body[i]["frame"]!=trace[i].get("frame") or
+             body[i]["frame"]!=frame_map[i].get("carla_frame") or
+             frame_map[i].get("video_frame")!=i or
+             abs(body[i]["time_s"]-trace[i].get("time_s",float("inf")))>.005 or
+             abs(body[i]["time_s"]-frame_map[i].get("time_s",float("inf")))>.005)
+            for i in range(count)):
+            raise ValueError("original body/trace/frame identity differs")
+        phases=[row["phase"] for row in body]
+        order={"approach":0,"turning":1,"leaving_intersection":2}
+        if any(p not in order for p in phases) or phases!=sorted(phases,key=order.get):
+            raise ValueError("original turn phase order differs")
+        if set(phases)!=set(order):raise ValueError("complete three-phase original turn missing")
+        measure(geometry,root/"body_ground_original.json")
+        heading=[row["heading_deg"] for row in trace]
+        if any(type(v) not in (int,float) or not isfinite(v) for v in heading):
+            raise ValueError("original heading missing")
+        change=sum((b-a+180)%360-180 for a,b in zip(heading,heading[1:]))
+        path=sum(hypot(b["position_m"][0]-a["position_m"][0],
+                       b["position_m"][1]-a["position_m"][1]) for a,b in zip(trace,trace[1:]))
+        if not isfinite(path):raise ValueError("original path is not finite")
+        met=change>=70 and abs((heading[-1]-heading[0]+180)%360-180-90)<=20 and path>=5
+        details={"frame_count":count,"phase_counts":{p:phases.count(p) for p in order},
+                 "observed_heading_change_deg":change,"sampled_path_m":path,
+                 "engineering_turn_tolerance_deg":20,"engineering_minimum_path_m":5,
+                 "not_a_legal_threshold":True,"route_branch":route["branch"]}
+        check=dict(base,status="met" if met else "not_met",details=details,
+                   intervals=[{"first_frame":frames[0],"last_frame":frames[-1]}],
+                   missing_evidence=[])
+        return {"physical_checks":{"maneuver":check},"maneuver_completed":met,
+                "realized_observables":{"sampled_path_m":path,
+                                        "observed_heading_change_deg":change} if met else {},
+                "provenance_kind":"native" if met else "diagnostic"}
+    except (ValueError,KeyError,TypeError,IndexError,ZeroDivisionError) as error:
+        return {"physical_checks":{"maneuver":dict(base,status="unverified",
+                                                   missing_evidence=[str(error)])},
+                "maneuver_completed":False,"realized_observables":{},
+                "provenance_kind":"diagnostic"}
+
 def finalize_and_write(attempt, output):
     """Run source conversion and write one Native result for a fresh attempt."""
     root=Path(attempt)

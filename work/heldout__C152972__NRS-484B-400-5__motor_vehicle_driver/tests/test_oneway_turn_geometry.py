@@ -1,5 +1,5 @@
 from __future__ import annotations
-import hashlib,importlib.util,json,tempfile,unittest
+import hashlib,importlib.util,json,os,tempfile,unittest
 from types import SimpleNamespace
 from pathlib import Path
 H=Path(__file__).resolve().parents[1]
@@ -15,6 +15,7 @@ spawn_native_cameras=load("oneway_turn_geometry").spawn_native_cameras
 apply_route_control=load("oneway_turn_geometry").apply_route_control
 native_result=load("oneway_turn_geometry").native_result
 finalize_and_write=load("oneway_turn_geometry").finalize_and_write
+assess_original_turn_motion=load("oneway_turn_geometry").assess_original_turn_motion
 NativeCameraFrameJoin=load("oneway_turn_geometry").NativeCameraFrameJoin
 OriginalCurbBodyCapture=load("oneway_turn_geometry").OriginalCurbBodyCapture
 seal_curb_sources=load("oneway_turn_geometry").seal_curb_sources
@@ -249,4 +250,54 @@ class OnewayTurnTests(unittest.TestCase):
   self.assertFalse(straight["reached"])
   self.assertEqual(opposite["waypoint_index"],1)
   with self.assertRaisesRegex(ValueError,"waypoint missing"):apply_route_control(scene,carla,3)
+ def test_original_turn_physical_outcome_classes(self):
+  self.g.update(source_left_curb=[[0,0],[10,0]],destination_left_curb=[[10,0],[10,10]],source_left_curb_inward_unit=[0,-1],destination_left_curb_inward_unit=[1,0],source_road_width_m=4,destination_road_width_m=4,source_travel_unit=[1,0],destination_travel_unit=[0,1],source_road_id=11,destination_road_id=22)
+  geometry=self.write("oneway_geometry_original.json",self.g)
+  config={"case_branch":"approach_near_depart_near","selected_case_id":"heldout__C152972__NRS-484B-400-5__motor_vehicle_driver__approach_near_depart_near","law_id":"NRS-484B-400-5","cell_id":"C152972","frames":160,"duration_s":8,"source_geometry_sha256":hashlib.sha256(geometry.read_bytes()).hexdigest(),"curb_offsets_m":{"approach":.5,"departure":.5},"vehicle_blueprint_id":"vehicle.test"}
+  self.write("config.json",config)
+  body=[];trace=[];mapping=[]
+  for i in range(160):
+   phase="approach" if i<50 else "turning" if i<110 else "leaving_intersection"
+   if i<50:x,y=i*.1,-.5
+   elif i<110:x,y=5+(i-50)*5/60,-.5+(i-50)/60
+   else:x,y=10.5,.5+(i-110)*.1
+   corners=[[x-.2,y-.2],[x+.2,y-.2],[x+.2,y+.2],[x-.2,y+.2]]
+   body.append({"frame":1000+i,"time_s":i*.05,"subject_id":"ego","road_id":11 if i<50 else 22,"phase":phase,"ground_corners":corners})
+   trace.append({"frame":1000+i,"time_s":i*.05,"position_m":[x,y,0],"heading_deg":0 if i<50 else 90 if i>=110 else (i-50)*1.5})
+   mapping.append({"video_frame":i,"carla_frame":1000+i,"native_frame":1000+i,"time_s":i*.05})
+  def rows(name,items):self.p.joinpath(name).write_text("".join(json.dumps(row)+"\n" for row in items))
+  self.write("body_ground_original.json",{"subject_id":"ego","frames":body})
+  rows("trace.jsonl",trace);rows("video_frames.jsonl",mapping)
+  complete=assess_original_turn_motion(self.p)
+  self.assertEqual(complete["physical_checks"]["maneuver"]["status"],"met")
+  self.assertTrue(complete["maneuver_completed"])
+  self.assertEqual(complete["provenance_kind"],"native")
+  self.assertGreater(complete["realized_observables"]["sampled_path_m"],5)
+  self.assertEqual(complete["physical_checks"]["maneuver"]["sources"]["trace.jsonl"],hashlib.sha256(self.p.joinpath("trace.jsonl").read_bytes()).hexdigest())
+  stalled=[dict(row,heading_deg=0) for row in trace]
+  rows("trace.jsonl",stalled)
+  incomplete=assess_original_turn_motion(self.p)
+  self.assertEqual(incomplete["physical_checks"]["maneuver"]["status"],"not_met")
+  self.assertFalse(incomplete["maneuver_completed"])
+  rows("trace.jsonl",trace)
+  bad_map=list(mapping);bad_map[10]=dict(bad_map[10],carla_frame=999999)
+  rows("video_frames.jsonl",bad_map)
+  self.assertEqual(assess_original_turn_motion(self.p)["physical_checks"]["maneuver"]["status"],"unverified")
+  rows("video_frames.jsonl",mapping)
+  bad_body=[dict(row) for row in body];bad_body[110]=dict(bad_body[110],phase="approach")
+  self.write("body_ground_original.json",{"subject_id":"ego","frames":bad_body})
+  self.assertEqual(assess_original_turn_motion(self.p)["physical_checks"]["maneuver"]["status"],"unverified")
+  self.write("body_ground_original.json",{"subject_id":"ego","frames":body})
+  self.p.joinpath("trace.jsonl").unlink()
+  missing=assess_original_turn_motion(self.p)
+  self.assertEqual(missing["physical_checks"]["maneuver"]["status"],"unverified")
+  self.assertIn("trace.jsonl",missing["physical_checks"]["maneuver"]["missing_evidence"])
+  if os.environ.get("C152972_PHYSICAL_PROOF_OUTPUT"):
+   destination=Path(os.environ["C152972_PHYSICAL_PROOF_OUTPUT"])
+   destination.mkdir(parents=True,exist_ok=True)
+   for kind,result in (("complete_motion",complete),("incomplete_motion",incomplete),("missing_evidence",missing)):
+    result.update(case_id=config["selected_case_id"],fixture_kind=kind,
+                  diagnostic_fixture=True,physical_acceptance_claimed=False,
+                  legal_acceptance_claimed=False)
+    destination.joinpath(kind+".json").write_text(json.dumps(result,indent=2)+"\n")
 if __name__=="__main__":unittest.main()
