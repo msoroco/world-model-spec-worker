@@ -4,9 +4,128 @@ import argparse
 import hashlib
 import json
 import math
+import subprocess
 from pathlib import Path
 
 STOP_TOLERANCE_MPS = 0.05  # measurement noise tolerance, not a statutory time limit
+
+
+def _sha_file(path):
+    digest = hashlib.sha256()
+    with Path(path).open('rb') as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b''):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _jsonl(path):
+    path = Path(path)
+    if not path.is_file() or not path.stat().st_size:
+        raise ValueError('Missing original school-bus source: ' + str(path))
+    return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
+
+
+def _roi(roi, width, height):
+    if (not isinstance(roi, list) or len(roi) != 4 or
+        any(type(v) is not int for v in roi)):
+        raise ValueError('Lamp ROI must be four integer pixel coordinates')
+    x0, y0, x1, y1 = roi
+    if not (0 <= x0 < x1 <= width and 0 <= y0 < y1 <= height):
+        raise ValueError('Lamp ROI outside original camera')
+    return roi
+
+
+def _red_count(rgb, width, roi):
+    x0, y0, x1, y1 = roi
+    count = 0
+    for y in range(y0, y1):
+        for x in range(x0, x1):
+            offset = 3 * (y * width + x)
+            red, green, blue = rgb[offset:offset + 3]
+            count += red >= 160 and red >= 2 * green and red >= 2 * blue
+    return count
+
+
+def _video_red_counts(path, roi, expected_frames):
+    path = Path(path)
+    if not path.is_file() or not path.stat().st_size:
+        raise ValueError('Missing original school-bus camera: ' + str(path))
+    probe = subprocess.run(['ffprobe', '-v', 'error', '-select_streams', 'v:0',
+                            '-show_entries', 'stream=width,height', '-of', 'json', str(path)],
+                           capture_output=True, text=True, check=True)
+    streams = json.loads(probe.stdout).get('streams', [])
+    if len(streams) != 1:
+        raise ValueError('Original school-bus camera video stream missing')
+    width, height = (streams[0].get('width'), streams[0].get('height'))
+    if type(width) is not int or type(height) is not int or width < 1 or height < 1:
+        raise ValueError('Original school-bus camera dimensions invalid')
+    _roi(roi, width, height)
+    frame_bytes = width * height * 3
+    decoder = subprocess.Popen(['ffmpeg', '-nostdin', '-loglevel', 'error', '-i', str(path),
+                                '-f', 'rawvideo', '-pix_fmt', 'rgb24', 'pipe:1'],
+                               stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+    counts = []
+    try:
+        for _ in range(expected_frames + 1):
+            frame = decoder.stdout.read(frame_bytes)
+            if not frame:
+                break
+            if len(frame) != frame_bytes:
+                raise ValueError('Original school-bus camera frame truncated')
+            counts.append(_red_count(frame, width, roi))
+        if len(counts) != expected_frames:
+            raise ValueError('Original school-bus camera frame count differs from frame map')
+    finally:
+        decoder.stdout.close()
+        if decoder.poll() is None:
+            decoder.kill()
+        decoder.wait()
+    if decoder.returncode not in (0, -9):
+        raise ValueError('Original school-bus camera decode failed')
+    return counts
+
+
+def audit_red_pixel_sources(frame_map_path, command_path, front_video_path,
+                            rear_video_path, front_roi, rear_roi, min_red_pixels=8):
+    """Compare source pixels with commands; ROI provenance still needs physical review."""
+    frame_map = _rows(_jsonl(frame_map_path), 'frame map')
+    commands = _rows(_jsonl(command_path), 'signal command')
+    if [(r['frame'], r['time_s']) for r in frame_map] != [
+            (r['frame'], r['time_s']) for r in commands]:
+        raise ValueError('Original signal commands and frame map differ')
+    if type(min_red_pixels) is not int or min_red_pixels < 1:
+        raise ValueError('Red pixel threshold invalid')
+    front = _video_red_counts(front_video_path, front_roi, len(frame_map))
+    rear = _video_red_counts(rear_video_path, rear_roi, len(frame_map))
+    rows = []
+    for mapped, command, front_count, rear_count in zip(frame_map, commands, front, rear):
+        operating = command.get('red_signal_commanded')
+        phase = command.get('red_phase_commanded')
+        if type(operating) is not bool or type(phase) is not bool or phase and not operating:
+            raise ValueError('Original school-bus signal command invalid')
+        front_candidate = front_count >= min_red_pixels
+        rear_candidate = rear_count >= min_red_pixels
+        rows.append({'frame': mapped['frame'], 'time_s': mapped['time_s'],
+                     'red_phase_commanded': phase,
+                     'front_red_pixel_count': front_count,
+                     'rear_red_pixel_count': rear_count,
+                     'front_red_candidate': front_candidate,
+                     'rear_red_candidate': rear_candidate})
+        if front_candidate != phase or rear_candidate != phase:
+            raise ValueError('Original front/rear red pixels disagree with signal command')
+    if not (sum(r['red_phase_commanded'] for r in rows) >= 2 and
+            sum(not r['red_phase_commanded'] for r in rows) >= 2):
+        raise ValueError('Original red on/off pixel contrast interval incomplete')
+    sources = {'frame_map': frame_map_path, 'command': command_path,
+               'front_video': front_video_path, 'rear_video': rear_video_path}
+    return {'format': 'worker-school-bus-red-pixel-candidates',
+            'source_sha256': {name: _sha_file(path)
+                              for name, path in sources.items()},
+            'front_roi': front_roi, 'rear_roi': rear_roi,
+            'min_red_pixels': min_red_pixels, 'frames': rows,
+            'roi_lamp_identity_reviewed': False,
+            'front_rear_red_visibility_verified': False,
+            'physical_acceptance_claimed': False, 'legal_conclusion': None}
 
 
 def _read(path):
@@ -153,12 +272,31 @@ def audit_motion_comparison(baseline_paths, variant_paths, kind):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--context', required=True)
-    parser.add_argument('--signal', required=True)
-    parser.add_argument('--motion', required=True)
+    parser.add_argument('--context')
+    parser.add_argument('--signal')
+    parser.add_argument('--motion')
+    parser.add_argument('--frame-map')
+    parser.add_argument('--command')
+    parser.add_argument('--front-video')
+    parser.add_argument('--rear-video')
+    parser.add_argument('--front-roi', help='JSON [x0,y0,x1,y1] in original pixels')
+    parser.add_argument('--rear-roi', help='JSON [x0,y0,x1,y1] in original pixels')
     parser.add_argument('--output', required=True)
     args = parser.parse_args()
-    Path(args.output).write_text(json.dumps(measure(args.context, args.signal, args.motion), indent=2)+'\n')
+    if args.frame_map:
+        required = (args.command, args.front_video, args.rear_video,
+                    args.front_roi, args.rear_roi)
+        if not all(required) or any((args.context, args.signal, args.motion)):
+            parser.error('Pixel audit requires original frame map, command, both videos and ROIs')
+        result = audit_red_pixel_sources(
+            args.frame_map, args.command, args.front_video, args.rear_video,
+            json.loads(args.front_roi), json.loads(args.rear_roi))
+    else:
+        if not all((args.context, args.signal, args.motion)) or any((
+                args.command, args.front_video, args.rear_video, args.front_roi, args.rear_roi)):
+            parser.error('Motion measurement requires context, signal and motion originals')
+        result = measure(args.context, args.signal, args.motion)
+    Path(args.output).write_text(json.dumps(result, indent=2)+'\n')
 
 
 if __name__ == '__main__':

@@ -5,7 +5,7 @@ from pathlib import Path
 import sys
 import subprocess
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from school_bus_response import measure, audit_motion_comparison
+from school_bus_response import measure, audit_motion_comparison, audit_red_pixel_sources
 from school_bus_controller import BRANCHES, target, apply, motion_readback, spawn_meeting_scene, select_meeting_waypoints
 from school_bus_camera import CAMERAS, LosslessSourceSink, SchoolBusCameraCapture
 from school_bus_native import CASE_ID, check_plan, check_scene, close_all
@@ -80,6 +80,51 @@ class SourceResponse(unittest.TestCase):
         self.motion[2]['time_s']=.1
         self.motion[2]['subject_corners']=[[0,0]]
         with self.assertRaisesRegex(ValueError,'body corners'):self.result()
+
+    def test_original_front_rear_pixel_audit_decodes_and_rejects_missing_or_dark_source(self):
+        width,height=8,4
+        frame_map=self.root/'video_frames.jsonl'
+        commands=self.root/'signal_command_original.jsonl'
+        phases=(False,True,False,True,False,False)
+        frame_map.write_text(''.join(json.dumps({'frame':100+i,'time_s':i*.05})+'\n'
+                                     for i in range(len(phases))))
+        commands.write_text(''.join(json.dumps({'frame':100+i,'time_s':i*.05,
+                                                'red_signal_commanded':i in (1,2,3),
+                                                'red_phase_commanded':phase})+'\n'
+                                    for i,phase in enumerate(phases)))
+        def video(path,lit):
+            frames=[]
+            for phase in phases:
+                frame=bytearray(width*height*3)
+                if phase and lit:
+                    for y in (1,2):
+                        for x in (1,2,3,4):
+                            frame[3*(y*width+x)]=255
+                frames.append(frame)
+            subprocess.run(['ffmpeg','-nostdin','-loglevel','error','-y','-f','rawvideo',
+                            '-pix_fmt','rgb24','-s',f'{width}x{height}','-r','20',
+                            '-i','pipe:0','-an','-c:v','ffv1',str(path)],
+                           input=b''.join(frames),check=True)
+        front=self.root/'reference_corner.mkv';rear=self.root/'driver_reference.mkv'
+        video(front,True);video(rear,True)
+        proof=audit_red_pixel_sources(frame_map,commands,front,rear,[1,1,5,3],[1,1,5,3])
+        self.assertEqual(len(proof['frames']),6)
+        self.assertEqual(proof['frames'][1]['front_red_pixel_count'],8)
+        self.assertFalse(proof['front_rear_red_visibility_verified'])
+        self.assertFalse(proof['roi_lamp_identity_reviewed'])
+        output=self.root/'pixel-audit.json'
+        script=Path(__file__).resolve().parents[1]/'school_bus_response.py'
+        subprocess.run([sys.executable,str(script),'--frame-map',str(frame_map),
+                        '--command',str(commands),'--front-video',str(front),
+                        '--rear-video',str(rear),'--front-roi','[1,1,5,3]',
+                        '--rear-roi','[1,1,5,3]','--output',str(output)],check=True)
+        self.assertEqual(json.loads(output.read_text())['source_sha256'],proof['source_sha256'])
+        video(rear,False)
+        with self.assertRaisesRegex(ValueError,'disagree'):
+            audit_red_pixel_sources(frame_map,commands,front,rear,[1,1,5,3],[1,1,5,3])
+        rear.unlink()
+        with self.assertRaisesRegex(ValueError,'Missing original school-bus camera'):
+            audit_red_pixel_sources(frame_map,commands,front,rear,[1,1,5,3],[1,1,5,3])
 
     def test_all_selected_controller_branches_and_actual_apply_call(self):
         self.assertEqual(len(BRANCHES),8)
