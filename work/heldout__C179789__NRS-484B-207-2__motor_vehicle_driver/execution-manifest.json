@@ -239,7 +239,92 @@
         "status": "physical",
         "reason": "Original collision rays may show no line of sight before passing; realized camera visibility and human observation remain unverified."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-observed_gives_way_holds_speed.json",
+          "construction_sha256": "61dd41d7df32d51e42782ab08efe40ea1c66068f05f5f663d73b94d70135efea",
+          "trigger": {
+            "source": "Native connected lane-chain readback",
+            "metric": "unique same-road same-lane left/right continuation at 2.5 m sampling",
+            "failure_condition": "primary 2.5 m sampling cannot follow the same-direction two-lane path through the response interval"
+          },
+          "changed_knobs": [
+            "route_step_m: 2.5 -> 2.0"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C179789__NRS-484B-207-2__motor_vehicle_driver/execution-manifest.json --case heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__observed_gives_way_holds_speed --candidate fallback1 --output .runtime-work/c179789-observed-fallback1-offline-20261117 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "observed-fallback1-offline.log",
+            "log_sha256": "a36435e8b0acbdb4ba4a34ca6401451332e28c6854e3ee41093717379b597bdc",
+            "construction_sha256": "61dd41d7df32d51e42782ab08efe40ea1c66068f05f5f663d73b94d70135efea"
+          },
+          "compatibility": {
+            "receipt": "observed-fallback1-compatibility.json",
+            "sha256": "fa56e3d240a9267b80ed9844708106eae10d6f95591cc32c95aa8faaa3df7d9d",
+            "log": "audible-primary-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "observed-fallback1-negative.log",
+            "negative_log_sha256": "6af543e0f9000af32e4b685fad993e788c59b82fde805dbe15de9f088521f1f2"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-fallback2-observed_gives_way_holds_speed.json",
+          "construction_sha256": "3add91952f1ac069c5be9a1ebc038dcf49f9efc07bffe4923b4808692b45c3e8",
+          "trigger": {
+            "source": "Native subject/overtaker body poses and original visibility relation",
+            "metric": "number of visible precompletion motion frames",
+            "failure_condition": "primary overtaker completes pass before the original visibility interval supports a precompletion body response"
+          },
+          "changed_knobs": [
+            "overtaker_target_speed_mps: 8.0 -> 7.5"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C179789__NRS-484B-207-2__motor_vehicle_driver/execution-manifest.json --case heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__observed_gives_way_holds_speed --candidate fallback2 --output .runtime-work/c179789-observed-fallback2-offline-20261117 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "observed-fallback2-offline.log",
+            "log_sha256": "a36435e8b0acbdb4ba4a34ca6401451332e28c6854e3ee41093717379b597bdc",
+            "construction_sha256": "3add91952f1ac069c5be9a1ebc038dcf49f9efc07bffe4923b4808692b45c3e8"
+          },
+          "compatibility": {
+            "receipt": "observed-fallback2-compatibility.json",
+            "sha256": "5ab976cd41a161318693923ec08456d44bb08ca98e914a48f0aef479cee0659d",
+            "log": "audible-primary-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "observed-fallback2-negative.log",
+            "negative_log_sha256": "77212a113b09250ccce9e5bd9b70594664a567a81c30b16082d51f84a5c8d3c3"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-fallback3-observed_gives_way_holds_speed.json",
+          "construction_sha256": "450172a2dc402fbd110bdb449dc87907aea239a6ca87be991da66220bc99cd82",
+          "trigger": {
+            "source": "original driver_reference pixels joined to frame map",
+            "metric": "fraction of original frames showing overtaker before first subject response",
+            "failure_condition": "primary driver_reference mount loses the overtaker or lane edge before first measured response"
+          },
+          "changed_knobs": [
+            "driver_reference_mount_xyz_m: [0.6,-0.35,1.6] -> [0.2,-0.35,1.8]"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C179789__NRS-484B-207-2__motor_vehicle_driver/execution-manifest.json --case heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__observed_gives_way_holds_speed --candidate fallback3 --output .runtime-work/c179789-observed-fallback3-offline-20261117 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "observed-fallback3-offline.log",
+            "log_sha256": "a36435e8b0acbdb4ba4a34ca6401451332e28c6854e3ee41093717379b597bdc",
+            "construction_sha256": "450172a2dc402fbd110bdb449dc87907aea239a6ca87be991da66220bc99cd82"
+          },
+          "compatibility": {
+            "receipt": "observed-fallback3-compatibility.json",
+            "sha256": "471bfdde32b407f4f8e606f125392a1050c3bba27f8d166cabe47d1def5b1f38",
+            "log": "audible-primary-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "observed-fallback3-negative.log",
+            "negative_log_sha256": "2f458e5b65f894b714bba630d4649960d845b22c8073f9c4b3f8f0cb0bb67e0d"
+          }
+        }
+      ],
       "measurement_procedure": {
         "entrypoint": "overtaken_finalizer.py"
       },
@@ -383,7 +468,92 @@
         "status": "physical",
         "reason": "The no-right target may drift laterally under real vehicle dynamics or lack frame-overlapping acoustic/visual notice; simulated diagnostic proves only the software path."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-no_right_yield_holds_speed.json",
+          "construction_sha256": "5ffd75541f0ff7063d29fffc82dcccfe3394af9753cb4fc8ba9ed1d0d8a68d91",
+          "trigger": {
+            "source": "Native connected lane-chain readback",
+            "metric": "unique same-road same-lane left/right continuation at 2.5 m sampling",
+            "failure_condition": "primary 2.5 m lane sampling loses a connected same-direction passing path before response comparison"
+          },
+          "changed_knobs": [
+            "route_step_m: 2.5 -> 2.0"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C179789__NRS-484B-207-2__motor_vehicle_driver/execution-manifest.json --case heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__no_right_yield_holds_speed --candidate fallback1 --output .runtime-work/c179789-no-right-fallback1-offline-20261117 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "no-right-fallback1-offline.log",
+            "log_sha256": "f633ad8e738512bb7562a43fab273ab65cdc5a224925052dd0e38b5bd4931a80",
+            "construction_sha256": "5ffd75541f0ff7063d29fffc82dcccfe3394af9753cb4fc8ba9ed1d0d8a68d91"
+          },
+          "compatibility": {
+            "receipt": "no-right-fallback1-compatibility.json",
+            "sha256": "6c217a15d5c72630dafeaf3875eacaf2ab393e242ea980951203fd25a82eaa1e",
+            "log": "audible-primary-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "no-right-fallback1-negative.log",
+            "negative_log_sha256": "fd3bb29eeb2b54899ae3ac68b9efbec8f510f679624fb5f78c06440f0674a343"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-fallback2-no_right_yield_holds_speed.json",
+          "construction_sha256": "ba745bfaea1768c58e6143c92ac16deec835ef5b9b541e645b3880fcc865b86f",
+          "trigger": {
+            "source": "Native body poses and original signal command",
+            "metric": "post-signal precompletion motion frames",
+            "failure_condition": "primary overtaker completes pass before a post-signal precompletion no-yield response frame is available"
+          },
+          "changed_knobs": [
+            "overtaker_target_speed_mps: 8.0 -> 7.5"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C179789__NRS-484B-207-2__motor_vehicle_driver/execution-manifest.json --case heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__no_right_yield_holds_speed --candidate fallback2 --output .runtime-work/c179789-no-right-fallback2-offline-20261117 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "no-right-fallback2-offline.log",
+            "log_sha256": "2c077bdba128ca0fb47263d37406350dc3338d6181c13e75167d8d96ba953550",
+            "construction_sha256": "ba745bfaea1768c58e6143c92ac16deec835ef5b9b541e645b3880fcc865b86f"
+          },
+          "compatibility": {
+            "receipt": "no-right-fallback2-compatibility.json",
+            "sha256": "114ec207ecd88175db91e94a0cbfd288642886be33fa971e93cd63cf6992a776",
+            "log": "audible-primary-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "no-right-fallback2-negative.log",
+            "negative_log_sha256": "42fda9d5eb891f839210b2a04586bd415f763a7a9b772aa8aa236971a3d8fd26"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-fallback3-no_right_yield_holds_speed.json",
+          "construction_sha256": "7c5d708b11ce1640c29994560685bc414b7890ac97b51999594245463c7219f5",
+          "trigger": {
+            "source": "original overview pixels joined to frame map",
+            "metric": "fraction of frames showing subject, overtaker and lane boundary",
+            "failure_condition": "primary overview mount obscures the passing actor or near-side lane boundary during no-yield interval"
+          },
+          "changed_knobs": [
+            "overview_mount_height_m: 8 -> 10"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C179789__NRS-484B-207-2__motor_vehicle_driver/execution-manifest.json --case heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__no_right_yield_holds_speed --candidate fallback3 --output .runtime-work/c179789-no-right-fallback3-offline-20261117 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "no-right-fallback3-offline.log",
+            "log_sha256": "2c077bdba128ca0fb47263d37406350dc3338d6181c13e75167d8d96ba953550",
+            "construction_sha256": "7c5d708b11ce1640c29994560685bc414b7890ac97b51999594245463c7219f5"
+          },
+          "compatibility": {
+            "receipt": "no-right-fallback3-compatibility.json",
+            "sha256": "a78521fdb5d0113cbdb6365d4996a67fb87b3ca534faf0e27a2934290fd3b3c1",
+            "log": "audible-primary-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "no-right-fallback3-negative.log",
+            "negative_log_sha256": "4877a848ca7171c2beff93a7f1d63ef798609ebf51fd61009e20ae4116a9a093"
+          }
+        }
+      ],
       "measurement_procedure": {
         "entrypoint": "overtaken_finalizer.py"
       },
@@ -526,7 +696,92 @@
         "status": "physical",
         "reason": "The scripted acceleration may perturb the body-pass timing or lane geometry in a real run, and signal audibility is unverified."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-gives_way_increases_speed.json",
+          "construction_sha256": "1193dae32d71c52d4fdd9d749d45004a21f3720d7a5271918b16497f31ce212c",
+          "trigger": {
+            "source": "Native connected lane-chain readback",
+            "metric": "unique same-road same-lane continuation at 2.5 m sampling",
+            "failure_condition": "primary 2.5 m lane sampling loses a connected passing path before the measured response"
+          },
+          "changed_knobs": [
+            "route_step_m: 2.5 -> 2.0"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C179789__NRS-484B-207-2__motor_vehicle_driver/execution-manifest.json --case heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__gives_way_increases_speed --candidate fallback1 --output .runtime-work/c179789-speed-fallback1-offline-20261117 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "speed-fallback1-offline.log",
+            "log_sha256": "f633ad8e738512bb7562a43fab273ab65cdc5a224925052dd0e38b5bd4931a80",
+            "construction_sha256": "1193dae32d71c52d4fdd9d749d45004a21f3720d7a5271918b16497f31ce212c"
+          },
+          "compatibility": {
+            "receipt": "speed-fallback1-compatibility.json",
+            "sha256": "783612894c32a78e8357cc0c09ff47de2c28ea99fa7fce4f98f0e3db7cde0c6b",
+            "log": "audible-primary-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "speed-fallback1-negative.log",
+            "negative_log_sha256": "16296a28ec5e6ed997f226dabb8c00b2533eef99de80f29168265b1fdbd00c52"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-fallback2-gives_way_increases_speed.json",
+          "construction_sha256": "c0a23a8d16bc3f45eed3174476330334894e47e2c6f72f7e451292189b671269",
+          "trigger": {
+            "source": "Native subject/overtaker body poses and original signal command",
+            "metric": "post-signal precompletion motion frames",
+            "failure_condition": "primary overtaker completes pass before a post-signal precompletion response frame is available"
+          },
+          "changed_knobs": [
+            "overtaker_target_speed_mps: 8.0 -> 7.5"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C179789__NRS-484B-207-2__motor_vehicle_driver/execution-manifest.json --case heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__gives_way_increases_speed --candidate fallback2 --output .runtime-work/c179789-speed-fallback2-offline-20261117 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "speed-fallback2-offline.log",
+            "log_sha256": "7dedc2ca5940d13ea02ce978640ec2e6f344797d42dd2a00ab2dfe1776c33623",
+            "construction_sha256": "c0a23a8d16bc3f45eed3174476330334894e47e2c6f72f7e451292189b671269"
+          },
+          "compatibility": {
+            "receipt": "speed-fallback2-compatibility.json",
+            "sha256": "8dc72a22ce25073210754ab2b4eb4701ece2b765fe95edd1136208853d0f478a",
+            "log": "audible-primary-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "speed-fallback2-negative.log",
+            "negative_log_sha256": "9dcec27a95ad5ffd12113ada4f209470d3e48724b3b124eea0675b38062ecc1b"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-fallback3-gives_way_increases_speed.json",
+          "construction_sha256": "5e1da40bf896569302ab9208d3a8b83832eecee49e351d906524007061438c97",
+          "trigger": {
+            "source": "original overview pixels joined to frame map",
+            "metric": "fraction of frames showing subject, overtaker and lane boundary",
+            "failure_condition": "primary overview mount obscures a passing actor or lane boundary during the response interval"
+          },
+          "changed_knobs": [
+            "overview_mount_height_m: 8 -> 10"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C179789__NRS-484B-207-2__motor_vehicle_driver/execution-manifest.json --case heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__gives_way_increases_speed --candidate fallback3 --output .runtime-work/c179789-speed-fallback3-offline-20261117 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "speed-fallback3-offline.log",
+            "log_sha256": "a36435e8b0acbdb4ba4a34ca6401451332e28c6854e3ee41093717379b597bdc",
+            "construction_sha256": "5e1da40bf896569302ab9208d3a8b83832eecee49e351d906524007061438c97"
+          },
+          "compatibility": {
+            "receipt": "speed-fallback3-compatibility.json",
+            "sha256": "b5de1ba07b08b02ca1753c6d1e9b89abe25725d52401bb1b2e1edbc170c12469",
+            "log": "audible-primary-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "speed-fallback3-negative.log",
+            "negative_log_sha256": "708a7193da5a73e96990aa611204379b0cdc3c66d4aa6f00e288fc187bde72d2"
+          }
+        }
+      ],
       "measurement_procedure": {
         "entrypoint": "overtaken_finalizer.py"
       },
@@ -669,7 +924,92 @@
         "status": "physical",
         "reason": "Right-pass permission is a hypothesized setup premise with no legal or source-backed determination; lateral no-yield motion and acoustic notice remain unverified."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-right_pass_permitted_no_right_yield.json",
+          "construction_sha256": "4da77772454cbe12deddf37e96d600d32616b1b558d8455780246c38ca4bc9ce",
+          "trigger": {
+            "source": "Native connected lane-chain readback",
+            "metric": "unique same-road same-lane continuation at 2.5 m sampling",
+            "failure_condition": "primary 2.5 m lane sampling loses a connected passing path before the measured response"
+          },
+          "changed_knobs": [
+            "route_step_m: 2.5 -> 2.0"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C179789__NRS-484B-207-2__motor_vehicle_driver/execution-manifest.json --case heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__right_pass_permitted_no_right_yield --candidate fallback1 --output .runtime-work/c179789-right-pass-fallback1-offline-20261117 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "right-pass-fallback1-offline.log",
+            "log_sha256": "65e028d9927eea93eda6259d5cea618c53e56cb2cd899853ffdf58495fe731d1",
+            "construction_sha256": "4da77772454cbe12deddf37e96d600d32616b1b558d8455780246c38ca4bc9ce"
+          },
+          "compatibility": {
+            "receipt": "right-pass-fallback1-compatibility.json",
+            "sha256": "fa23f827642f9847c72e2de430e78c66c9701c7b52db3b9b6f297187770ba014",
+            "log": "audible-primary-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "right-pass-fallback1-negative.log",
+            "negative_log_sha256": "1ba39c73550c69a3159ad4ef5f34563b5bc6997000105fd6d691ebac33babe12"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-fallback2-right_pass_permitted_no_right_yield.json",
+          "construction_sha256": "5e5121c08af7c557df9474cbeeedbb0701996683a47e9587828612701ec6b389",
+          "trigger": {
+            "source": "Native subject/overtaker body poses and original signal command",
+            "metric": "post-signal precompletion motion frames",
+            "failure_condition": "primary overtaker completes pass before a post-signal precompletion response frame is available"
+          },
+          "changed_knobs": [
+            "overtaker_target_speed_mps: 8.0 -> 7.5"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C179789__NRS-484B-207-2__motor_vehicle_driver/execution-manifest.json --case heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__right_pass_permitted_no_right_yield --candidate fallback2 --output .runtime-work/c179789-right-pass-fallback2-offline-20261117 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "right-pass-fallback2-offline.log",
+            "log_sha256": "b287d0d1d60d3c3d4629e9139a735eefeb89b6d695d48d00e70404daa6a8692a",
+            "construction_sha256": "5e5121c08af7c557df9474cbeeedbb0701996683a47e9587828612701ec6b389"
+          },
+          "compatibility": {
+            "receipt": "right-pass-fallback2-compatibility.json",
+            "sha256": "6809abf52eb5f5e51f270b1f910d367675be1ff91e5a6ed02186d59b959076b6",
+            "log": "audible-primary-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "right-pass-fallback2-negative.log",
+            "negative_log_sha256": "ddd56bb70bccf4695e29879534cd783c0dc4b0e445dd5017fb4ac95198c4ecbf"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-fallback3-right_pass_permitted_no_right_yield.json",
+          "construction_sha256": "1415fc09f50685a86889c19819e28e52d6a703597e0df274875809c3232d0765",
+          "trigger": {
+            "source": "original overview pixels joined to frame map",
+            "metric": "fraction of frames showing subject, overtaker and lane boundary",
+            "failure_condition": "primary overview mount obscures a passing actor or lane boundary during the response interval"
+          },
+          "changed_knobs": [
+            "overview_mount_height_m: 8 -> 10"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C179789__NRS-484B-207-2__motor_vehicle_driver/execution-manifest.json --case heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__right_pass_permitted_no_right_yield --candidate fallback3 --output .runtime-work/c179789-right-pass-fallback3-offline-20261117 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "right-pass-fallback3-offline.log",
+            "log_sha256": "35183794784a293116669bf0e27fedb2cb6efff4c5a4ac0ad88b97a0e1136ef0",
+            "construction_sha256": "1415fc09f50685a86889c19819e28e52d6a703597e0df274875809c3232d0765"
+          },
+          "compatibility": {
+            "receipt": "right-pass-fallback3-compatibility.json",
+            "sha256": "493833cf1d4f00d71306692e4e0e2532b08479d4a44f27dba77952804621e8f2",
+            "log": "audible-primary-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "right-pass-fallback3-negative.log",
+            "negative_log_sha256": "94252000ac739a4a55796147accbe1a275113ca072697751c14c17c8015a7fe4"
+          }
+        }
+      ],
       "measurement_procedure": {
         "entrypoint": "overtaken_finalizer.py"
       },
