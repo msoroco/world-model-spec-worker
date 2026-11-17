@@ -267,8 +267,10 @@ class NativeSampleCollector:
         crossing_source=None
         if crossing is not None:
             cross_pose=crossing.get_transform().location
+            cross_velocity=crossing.get_velocity()
             crossing_source={'actor_id':int(crossing.id),
-                             'center_xy':[float(cross_pose.x),float(cross_pose.y)]}
+                             'center_xy':[float(cross_pose.x),float(cross_pose.y)],
+                             'speed_mps':hypot(float(cross_velocity.x),float(cross_velocity.y))}
         selected=self.scene['selected']
         row={'frame':frame,'time_s':time_s,
              'source_cameras':list(SOURCE_CAMERAS),
@@ -403,3 +405,205 @@ class NativeSourceCameras:
             self.closed=True
             for sensor in self.sensors.values():
                 sensor.stop();sensor.destroy()
+
+
+def capture_native_ticks(output, world, scene, case, cameras, traffic_light_state,
+                         drive, *, frames=160, pipeline=None):
+    """Capture one exact case from post-tick Native sources and four camera streams.
+
+    ``drive`` commands the two vehicles before each tick.  This function retains
+    original readbacks; a later saved-only finalizer must decide what they show.
+    It never calls a legal evaluator or substitutes a synthetic camera frame.
+    """
+    import json
+    from pathlib import Path
+    if case.name not in CASES or CASES[case.name] != case or frames != 160:
+        raise ValueError('one exact 160-frame heavy-vehicle case required')
+    output = Path(output)
+    if not output.is_dir():
+        raise ValueError('fresh capture output directory required')
+    names = ('signal_context.json', 'signal_state.jsonl',
+             'participant_state.jsonl', 'video_frames.jsonl')
+    if any((output/name).exists() for name in names):
+        raise ValueError('retained original source exists; choose fresh output')
+    collector = NativeSampleCollector(scene, case, scene['official_control_source'], cameras)
+    selected = scene['selected']
+    context = {'official_control_source':scene['official_control_source'],
+               'official_device_status':'premise_unverified',
+               'selected_direction':case.direction,
+               'opendrive_id':selected['opendrive_id'],
+               'junction_id':selected['junction_id'],
+               'light_actor_id':int(selected['light'].id),
+               'heavy_blueprint_id':scene['heavy_blueprint_id'],
+               'lens_pixel_visibility':'requires_original_source_review',
+               'legal_caution_judgment':None}
+    (output/names[0]).write_text(json.dumps(context,sort_keys=True)+'\n')
+    completed=[]
+    with (output/names[1]).open('x') as signal, \
+         (output/names[2]).open('x') as participants, \
+         (output/names[3]).open('x') as frame_map, \
+         NativeYellowController(selected['light'],traffic_light_state) as flash:
+        for index in range(frames):
+            commanded=flash.set_at(index*.05)
+            drive(scene,case,index)
+            frame=world.tick()
+            snapshot=world.get_snapshot()
+            if int(snapshot.frame)!=int(frame):
+                raise ValueError('Native world snapshot differs from tick')
+            row,mapping=collector.capture(snapshot,commanded)
+            if pipeline is not None:
+                original=pipeline.capture(frame,row['time_s'])
+                if (original.get('frame'),original.get('time_s')) != (frame,row['time_s']):
+                    raise ValueError('pipeline original frame/time differs')
+            signal_row={'frame':frame,'time_s':row['time_s'],
+                        'light_actor_id':row['signal_source']['light_actor_id'],
+                        'opendrive_id':row['signal_source']['opendrive_id'],
+                        'native_light_state':row['signal_source']['native_state'],
+                        'yellow_commanded':row['yellow_lens_on'],
+                        'lens_pixel_visible':None}
+            party_row={'frame':frame,'time_s':row['time_s'],
+                       'ego':{'actor_id':row['ego_source']['actor_id'],
+                              'blueprint_id':row['ego_source']['blueprint_id'],
+                              'vehicle_class':'heavy_vehicle',
+                              'center_xy':row['ego_center_xy'],
+                              'speed_mps':row['ego_speed_mps']},
+                       'crossing':row['crossing_source']}
+            for stream,value in ((signal,signal_row),(participants,party_row),
+                                 (frame_map,mapping)):
+                stream.write(json.dumps(value,allow_nan=False)+'\n')
+            completed.append(frame)
+    cameras.verify_frames(completed)
+    return {'case':case.name,'frames':len(completed),
+            'source_cameras':list(SOURCE_CAMERAS),
+            'official_device_status':'premise_unverified',
+            'physical_acceptance_claimed':False}
+
+
+def steer_through_lane(world_map, actor, target_mps, carla_module, desired_yaw,
+                       *, speed_kp=.22):
+    """Command motion on a mapped through lane, including a crossing actor."""
+    from math import atan2
+    if actor is None or not actor.is_alive or target_mps <= 0:
+        raise ValueError('controlled Native participant missing')
+    pose=actor.get_transform()
+    waypoint=world_map.get_waypoint(pose.location)
+    if waypoint is None:
+        raise ValueError('controlled Native participant left mapped road')
+    options=[]
+    for successor in waypoint.next(6.0):
+        heading=radians(float(successor.transform.rotation.yaw)-float(desired_yaw))
+        alignment=cos(heading)
+        if alignment>=.75:
+            options.append((alignment,successor))
+    if not options:
+        raise ValueError('no heading-aligned through-lane successor')
+    options.sort(key=lambda pair:pair[0],reverse=True)
+    target=options[0][1].transform.location
+    heading=atan2(float(target.y)-float(pose.location.y),
+                  float(target.x)-float(pose.location.x))
+    yaw=radians(float(pose.rotation.yaw))
+    steering_error=atan2(sin(heading-yaw),cos(heading-yaw))
+    velocity=actor.get_velocity()
+    speed=hypot(float(velocity.x),float(velocity.y))
+    error=target_mps-speed
+    actor.apply_control(carla_module.VehicleControl(
+        throttle=min(.6,max(0.,speed_kp*error)),
+        brake=min(.8,max(0.,-.3*error)),
+        steer=min(.45,max(-.45,steering_error/.6))))
+
+
+def run_native_case(output, config, *, host='127.0.0.1', port=2000):
+    """Execute the first exact heavy case using a separately supplied CARLA host."""
+    import json
+    from pathlib import Path
+    check_native_config(config)
+    import carla
+    from pipeline_capture import PipelineCapture
+    from worker_exchange.native_output import seal_capture
+    case_id=config['selected_case_id'];branch=config['case_branch']
+    output=Path(output)
+    client=carla.Client(host,int(port));client.set_timeout(30.)
+    world=client.get_world();original=world.get_settings()
+    scene=None;cameras=None;pipeline=None;sinks={};errors=[];completed=None
+    try:
+        settings=world.get_settings()
+        settings.synchronous_mode=True;settings.fixed_delta_seconds=.05
+        world.apply_settings(settings)
+        scene=construct_native(world,CASES[branch],config['official_control_source'],
+            config['heavy_blueprint_id'],config['crossing_blueprint_id'],
+            before_m=config.get('approach_before_m',70.0))
+        sinks={name:FFV1SourceSink(output,name) for name in SOURCE_CAMERAS}
+        cameras=NativeSourceCameras(world,carla,scene['ego'],sinks)
+        pipeline=PipelineCapture(client,scene['ego'],output,case_id,
+                                 required_observations=config.get('required_atoms',[]))
+        ego_yaw=scene['selected']['waypoint'].transform.rotation.yaw
+        crossing_yaw=scene['crossing_route']['start'].rotation.yaw
+        def drive(current,selected,index):
+            steer_through_lane(world.get_map(),current['ego'],selected.target_mps,
+                               carla,ego_yaw,speed_kp=config.get('speed_kp',.22))
+            steer_through_lane(world.get_map(),current['crossing'],5.0,
+                               carla,crossing_yaw,speed_kp=config.get('speed_kp',.22))
+        completed=capture_native_ticks(output,world,scene,CASES[branch],cameras,
+                                       carla.TrafficLightState,drive,pipeline=pipeline)
+    except BaseException as error:
+        errors.append(str(error))
+        raise
+    finally:
+        if pipeline is not None:pipeline.close(confirmed=not errors)
+        if cameras is not None:cameras.close()
+        for sink in sinks.values():sink.close()
+        if scene is not None:
+            for actor in reversed(scene['owned']):actor.destroy()
+        world.apply_settings(original)
+        restored=(world.get_settings().synchronous_mode==original.synchronous_mode and
+                  world.get_settings().fixed_delta_seconds==original.fixed_delta_seconds)
+        if not restored:raise ValueError('Native world settings restoration failed')
+    if completed is None:raise ValueError('Native case did not finish')
+    (output/'acquisition-provenance.json').write_text(json.dumps({
+        'provenance_kind':'native','diagnostic_fixture':False,
+        'original_frames':completed['frames']})+'\n')
+    seal_capture(output,frames=completed['frames'],restoration={'restored':restored},
+                 errors=[],encoder_exit_codes={name:0 for name in SOURCE_CAMERAS},
+                 context={'native_map_name':world.get_map().name,
+                          'junction_id':scene['selected']['junction_id'],
+                          'opendrive_id':scene['selected']['opendrive_id'],
+                          'light_actor_id':int(scene['selected']['light'].id)})
+    return completed
+
+
+def check_native_config(config):
+    branch=config.get('case_branch')
+    if (branch!='east_cautious_proxy' or
+        config.get('selected_case_id')!='heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver__'+branch or
+        (config.get('law_id'),config.get('cell_id'),config.get('actor')) !=
+        ('NRS-484B-310-2','C24753','heavy_vehicle_driver') or
+        config.get('rate_hz')!=20 or config.get('frames')!=160 or
+        config.get('duration_s')!=8 or
+        set(config.get('camera_names',[]))!=set(SOURCE_CAMERAS) or
+        len(config.get('camera_names',[]))!=4 or
+        config.get('target_speed_mps')!=CASES[branch].target_mps):
+        raise ValueError('first exact C24753 construction/config mismatch')
+    if not config.get('official_control_source'):
+        raise ValueError('official control source premise missing')
+    for field in ('heavy_blueprint_id','crossing_blueprint_id'):
+        if not str(config.get(field,'')).startswith('vehicle.'):
+            raise ValueError('explicit Native vehicle blueprint missing: '+field)
+    if not 40<=config.get('approach_before_m',70.)<=90:
+        raise ValueError('Native governed route distance outside engineering bounds')
+    if not 0<config.get('speed_kp',.22)<=.5:
+        raise ValueError('Native speed controller gain outside engineering bounds')
+    return True
+
+
+if __name__=='__main__':
+    import argparse,json
+    from pathlib import Path
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--check',action='store_true')
+    parser.add_argument('--output-dir',default='.')
+    parser.add_argument('--host',default='127.0.0.1')
+    parser.add_argument('--port',type=int,default=2000)
+    args=parser.parse_args()
+    config=json.loads((Path(args.output_dir)/'config.json').read_text())
+    if args.check:check_native_config(config)
+    else:run_native_case(args.output_dir,config,host=args.host,port=args.port)

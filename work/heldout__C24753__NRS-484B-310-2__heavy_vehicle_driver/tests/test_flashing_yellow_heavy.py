@@ -12,6 +12,75 @@ class Fake:
  def official_control_device(self,**x):self.calls.append(('official_device',x));return x
  def vehicle(self,**x):self.calls.append(('vehicle',x));return x
 class FlashHeavyTests(unittest.TestCase):
+ def test_first_case_native_config_and_lane_controller(self):
+  cfg={'law_id':'NRS-484B-310-2','cell_id':'C24753','actor':'heavy_vehicle_driver',
+       'case_branch':'east_cautious_proxy',
+       'selected_case_id':'heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver__east_cautious_proxy',
+       'rate_hz':20,'frames':160,'duration_s':8,
+       'camera_names':list(m.SOURCE_CAMERAS),'target_speed_mps':3.0,
+       'official_control_source':'identified-source-premise',
+       'heavy_blueprint_id':'vehicle.carlamotors.firetruck',
+       'crossing_blueprint_id':'vehicle.tesla.model3'}
+  self.assertTrue(m.check_native_config(cfg))
+  with self.assertRaisesRegex(ValueError,'config mismatch'):
+   m.check_native_config(dict(cfg,actor='motor_vehicle_driver'))
+  with self.assertRaisesRegex(ValueError,'blueprint missing'):
+   m.check_native_config(dict(cfg,heavy_blueprint_id=''))
+  class Actor:
+   id=11;is_alive=True
+   def __init__(self):self.command=None
+   def get_transform(self):return Box(location=Box(x=0.0,y=0.0),rotation=Box(yaw=0.0))
+   def get_velocity(self):return Box(x=1.0,y=0.0)
+   def apply_control(self,command):self.command=command
+  actor=Actor()
+  successor=Box(transform=Box(location=Box(x=6.0,y=0.0),rotation=Box(yaw=0.0)))
+  road=Box(get_waypoint=lambda location:Box(next=lambda distance:[successor]))
+  carla=Box(VehicleControl=lambda **kwargs:kwargs)
+  m.steer_through_lane(road,actor,3.0,carla,0.0)
+  self.assertGreater(actor.command['throttle'],0)
+  self.assertEqual(actor.command['steer'],0.0)
+  with self.assertRaisesRegex(ValueError,'through-lane successor'):
+   m.steer_through_lane(Box(get_waypoint=lambda location:Box(next=lambda distance:[])),
+                        actor,3.0,carla,0.0)
+ def test_exact_native_tick_capture_retains_joined_original_sources(self):
+  import json
+  class Light:
+   id=10
+   state='Red'
+   def get_state(self):return self.state
+   def set_state(self,state):self.state=state
+  class Actor:
+   id=20
+   def get_transform(self):return Box(location=Box(x=1.0,y=2.0))
+   def get_velocity(self):return Box(x=3.0,y=0.0,z=0.0)
+  class World:
+   def __init__(self):self.frame=99
+   def tick(self):self.frame+=1;return self.frame
+   def get_snapshot(self):return Box(frame=self.frame,timestamp=Box(elapsed_seconds=10+(self.frame-100)*.05))
+  light=Light();world=World();waits=[];drives=[]
+  camera=Box(sensors={name:object() for name in m.SOURCE_CAMERAS},
+             wait_for_frame=lambda frame:waits.append(frame),
+             verify_frames=lambda frames:{name:len(frames) for name in m.SOURCE_CAMERAS})
+  scene={'selected':{'direction':'east','light':light,'opendrive_id':'road-1','junction_id':7},
+         'ego':Actor(),'crossing':None,'heavy_blueprint_id':'vehicle.carlamotors.firetruck',
+         'official_control_source':'identified-device-premise'}
+  case=m.CASES['east_no_crossing']
+  with TemporaryDirectory() as tmp:
+   result=m.capture_native_ticks(tmp,world,scene,case,camera,Box(Yellow='Yellow',Off='Off'),
+       lambda scene,case,index:drives.append(index))
+   self.assertEqual(result['frames'],160)
+   self.assertFalse(result['physical_acceptance_claimed'])
+   self.assertEqual(light.state,'Red')
+   self.assertEqual(waits,list(range(100,260)))
+   self.assertEqual(drives,list(range(160)))
+   rows=[json.loads(line) for line in (Path(tmp)/'participant_state.jsonl').read_text().splitlines()]
+   self.assertEqual(rows[0]['ego']['vehicle_class'],'heavy_vehicle')
+   self.assertIsNone(rows[0]['crossing'])
+   frame_rows=[json.loads(line) for line in (Path(tmp)/'video_frames.jsonl').read_text().splitlines()]
+   self.assertEqual(frame_rows[-1]['video_frame'],159)
+   self.assertEqual(frame_rows[-1]['carla_frame'],259)
+   with self.assertRaisesRegex(ValueError,'retained original source'):
+    m.capture_native_ticks(tmp,world,scene,case,camera,Box(Yellow='Yellow',Off='Off'),lambda *args:None)
  def test_both_directions_construct_heavy_subject_and_real_signal_requests(self):
   for c in m.CASES.values():
    f=Fake();scene=m.construct(f,c)
