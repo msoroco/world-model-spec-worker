@@ -64,6 +64,7 @@ def view_occluder(world, center_y, *, location_factory=None, rotation_factory=No
                 and limits['z'][0] <= ray_z <= limits['z'][1]):
             raise ValueError('Native roadside obstruction cannot intersect authored eye ray')
         yield {'actor_id': actor.id, 'blueprint': BLUEPRINT,
+               'source_kind': 'original_native',
                'native_location_m': [float(actual.x), float(actual.y), float(actual.z)],
                'body_bounds_m': {axis: list(pair) for axis, pair in limits.items()},
                'projected_eye_ray_height_m': ray_z,

@@ -9,6 +9,7 @@ from view_location_range_audit import audit
 
 def sources():
     context = {'view_occluder': {'actor_id': 912,
+               'source_kind': 'original_native',
                'blueprint': 'static.prop.streetbarrier',
                'native_location_m': [-4., 12., 0.],
                'body_bounds_m': {'x': [-4.5, -3.5], 'y': [11.5, 12.5], 'z': [0., 2.]}}}
@@ -40,7 +41,11 @@ class ViewRangeAuditTests(unittest.TestCase):
         context['view_occluder']['source_kind'] = 'synthetic_diagnostic'
         with self.assertRaisesRegex(ValueError, 'Original Native road context'):
             audit(rows, context)
-        context.pop('view_occluder')
+        context['view_occluder'].pop('source_kind')
+        with self.assertRaisesRegex(ValueError, 'Original Native road context'):
+            audit(rows, context)
+        _, context = sources()
+        context['view_occluder']['actor_id'] = None
         with self.assertRaisesRegex(ValueError, 'Original obstruction identity'):
             audit(rows, context)
         rows, context = sources()

@@ -18,7 +18,7 @@ def _point(value):
 
 def audit(rows, context, *, min_frames=600, max_frame_gap=1):
     prop = context.get('view_occluder', {})
-    if prop.get('source_kind') == 'synthetic_diagnostic':
+    if prop.get('source_kind') != 'original_native':
         raise ValueError('Original Native road context required')
     if prop.get('blueprint') != 'static.prop.streetbarrier' or type(prop.get('actor_id')) is not int:
         raise ValueError('Original obstruction identity missing')

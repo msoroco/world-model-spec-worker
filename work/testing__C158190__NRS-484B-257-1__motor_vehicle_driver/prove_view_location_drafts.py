@@ -100,6 +100,7 @@ def validate():
         assert 'world.try_spawn_actor(blueprint, pose)' in files['view_location_world_setup.py']
         assert 'actor.bounding_box.get_world_vertices(actor.get_transform())' in files['view_location_world_setup.py']
         assert 'Native roadside obstruction cannot intersect authored eye ray' in files['view_location_world_setup.py']
+        assert "'source_kind': 'original_native'" in files['view_location_world_setup.py']
         assert 'test_short_body_rejected_and_destroyed' in files['tests/test_view_location_world_setup.py']
         assert 'world.cast_ray(eye, target)' in files['yield_capture_sources.py']
         log = ROOT / f'cases/view_location_y{center}/offline.log'
