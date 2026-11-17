@@ -6,6 +6,7 @@ blueprints. Angular bounds are construction checks, not statutory definitions.
 
 from contextlib import contextmanager
 import math
+from shapely.geometry import Point, Polygon
 
 from route_control import steering_command
 from yield_controller import apply_speed_control
@@ -24,7 +25,7 @@ def _angle(a, b):
     return (b - a + 180) % 360 - 180
 
 
-def check_routes(routes, turning_role):
+def check_routes(routes, turning_role, crossing_polygon_xy_m=None):
     """Require two opposing entry vectors and one geometrically left exit."""
     if turning_role not in ("ego", "other") or not isinstance(routes, dict) or set(routes) != {"ego", "other"}:
         raise ValueError("Both sourced routes and a turning role required")
@@ -44,6 +45,16 @@ def check_routes(routes, turning_role):
         raise ValueError("Sourced approaches are not geometrically opposite")
     if not 45 <= measured[turning_role]["deflection_deg"] <= 135:
         raise ValueError("Turning route lacks a geometric left turn")
+    if crossing_polygon_xy_m is not None:
+        polygon = Polygon(crossing_polygon_xy_m)
+        if not polygon.is_valid or polygon.area <= 0:
+            raise ValueError("Valid sourced crossing polygon required")
+        for role in ("ego", "other"):
+            points = routes[role]
+            if (not polygon.contains(Point(points[2])) or
+                    polygon.covers(Point(points[0])) or
+                    polygon.covers(Point(points[-1]))):
+                raise ValueError("Route does not enter and leave sourced crossing: " + role)
     return {"approach_separation_deg": opposing, "routes": measured,
             "opposite_direction_legal_judgment": "unverified",
             "left_turn_intention_legal_judgment": "unverified"}
@@ -52,7 +63,10 @@ def check_routes(routes, turning_role):
 @contextmanager
 def construct_opposite_turn_pair(world, blueprints, transforms, site, turning_role):
     """Spawn both vehicles and verify their original Native approach lanes."""
-    geometry = check_routes(site.get("routes"), turning_role)
+    if site.get("crossing_polygon_xy_m") is None:
+        raise ValueError("Sourced crossing polygon required for opposite-turn construction")
+    geometry = check_routes(site.get("routes"), turning_role,
+                            site.get("crossing_polygon_xy_m"))
     lanes = site.get("expected_approach_lanes")
     if not isinstance(lanes, dict) or set(lanes) != {"ego", "other"} or lanes["ego"] == lanes["other"]:
         raise ValueError("Two distinct sourced Native approach lanes required")
@@ -87,7 +101,10 @@ def command_opposite_turn_pair(carla, actors, site, progress, frame_index,
     Release frames are engineering capture inputs. They do not encode which
     driver has statutory priority or whether the exception applies.
     """
-    geometry = check_routes(site.get("routes"), turning_role)
+    if site.get("crossing_polygon_xy_m") is None:
+        raise ValueError("Sourced crossing polygon required for opposite-turn control")
+    geometry = check_routes(site.get("routes"), turning_role,
+                            site.get("crossing_polygon_xy_m"))
     roles = ("ego", "other")
     if set(actors) != set(roles) or set(progress) != set(roles):
         raise ValueError("Both live Native actors and route indices required")

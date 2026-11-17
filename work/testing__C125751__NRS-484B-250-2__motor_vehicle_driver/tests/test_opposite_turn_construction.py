@@ -23,6 +23,7 @@ runner_spec.loader.exec_module(runner)
 def site():
     return {"routes": {"ego": [[-10, 0], [-5, 0], [0, 0], [0, 5]],
                        "other": [[10, 0], [5, 0], [0, 0], [-5, 0]]},
+            "crossing_polygon_xy_m": [[-3, -3], [3, -3], [3, 3], [-3, 3]],
             "expected_approach_lanes": {"ego": [11, -1], "other": [11, 1]}}
 
 
@@ -115,6 +116,18 @@ class OppositeTurnConstructionTest(unittest.TestCase):
                 pass
         self.assertTrue(all(actor.destroyed for actor in actors))
 
+    def test_rejects_routes_outside_sourced_crossing_before_spawn(self):
+        changed = site()
+        changed["crossing_polygon_xy_m"] = [[20, 20], [26, 20], [26, 26], [20, 26]]
+        actors = [Actor([11, -1], 0), Actor([11, 1], 180)]
+        with self.assertRaisesRegex(ValueError, "Route does not enter and leave sourced crossing"):
+            with module.construct_opposite_turn_pair(World(actors),
+                                                     {"ego": "car", "other": "car"},
+                                                     {"ego": "pose1", "other": "pose2"},
+                                                     changed, "ego"):
+                pass
+        self.assertFalse(any(hasattr(actor, "control") for actor in actors))
+
     def test_route_commands_hold_then_release_both_roles(self):
         actors = {"ego": Actor([11, -1], 0), "other": Actor([11, 1], 180)}
         carla = SimpleNamespace(VehicleControl=lambda: SimpleNamespace())
@@ -142,6 +155,18 @@ class OppositeTurnConstructionTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'route target index'):
             module.command_opposite_turn_pair(
                 carla, actors, site(), {"ego": 1, "other": 0}, 8,
+                {"ego": 8, "other": 10}, {"ego": 5., "other": 5.}, "ego")
+        self.assertFalse(hasattr(actors["ego"], "control"))
+        self.assertFalse(hasattr(actors["other"], "control"))
+
+    def test_bad_crossing_applies_no_partial_command(self):
+        actors = {"ego": Actor([11, -1], 0), "other": Actor([11, 1], 180)}
+        changed = site()
+        changed["crossing_polygon_xy_m"] = [[20, 20], [26, 20], [26, 26], [20, 26]]
+        carla = SimpleNamespace(VehicleControl=lambda: SimpleNamespace())
+        with self.assertRaisesRegex(ValueError, "Route does not enter and leave sourced crossing"):
+            module.command_opposite_turn_pair(
+                carla, actors, changed, {"ego": 1, "other": 1}, 8,
                 {"ego": 8, "other": 10}, {"ego": 5., "other": 5.}, "ego")
         self.assertFalse(hasattr(actors["ego"], "control"))
         self.assertFalse(hasattr(actors["other"], "control"))
