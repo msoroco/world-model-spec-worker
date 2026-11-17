@@ -237,10 +237,17 @@ def run(client, carla, output, *, case_suffix, direction, rail_asset_blueprint=N
             'physical_acceptance_claimed': False, 'legal_verdict': None})
     if error:
         raise RuntimeError('C177225 original Native attempt failed: ' + error['message'])
-    from finalize_direction import process_saved
+    from finalize_direction import finalize_attempt, process_saved
     try:
         _write_new(output / 'saved_direction_observation.json',
                    process_saved(output, source_kind='original_native'))
+    except BaseException as exc:
+        _write_new(output / 'saved_processing_failure.json',
+                   {'type': type(exc).__name__, 'message': str(exc),
+                    'delivery_ready': False})
+        raise
+    try:
+        finalize_attempt(output, output / 'analysis-report.json')
     except BaseException as exc:
         _write_new(output / 'saved_processing_failure.json',
                    {'type': type(exc).__name__, 'message': str(exc),

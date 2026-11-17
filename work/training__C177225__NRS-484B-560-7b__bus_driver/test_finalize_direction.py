@@ -4,7 +4,7 @@ import subprocess
 import tempfile
 import unittest
 
-from finalize_direction import process_saved, signal_case_id
+from finalize_direction import finalize_attempt, process_saved, signal_case_id
 from native_scene import VIEWS
 
 
@@ -21,9 +21,20 @@ class SavedDirectionTest(unittest.TestCase):
         scratch.mkdir(exist_ok=True)
         with tempfile.TemporaryDirectory(prefix='c177225-saved-', dir=scratch) as tmp:
             root = Path(tmp)
+            recording = {'channels': [{'name': name, 'unit': unit,
+                'sampling_rate_hz': 20, 'method': 'saved Native source',
+                'time_window': 'entire capture', 'reference_frame': 'Native',
+                'uncertainty': '50 ms'} for name, unit in (
+                    ('kin.velocity', 'm/s'), ('drv.stopped', 'boolean'),
+                    ('dev.human_direction', 'structured'),
+                    ('native_actor_state', 'structured'),
+                    ('camera_frame_join', 'structured'))], 'context_inputs': [],
+                    'limitations': ['synthetic Native sample; no physical review']}
             _write_json(root / 'config.json', {
                 'case_id': signal_case_id('reference'), 'case_suffix': 'reference',
-                'direction': 1, 'rate_hz': 20, 'frames': 2})
+                'direction': 1, 'rate_hz': 20, 'frames': 2,
+                'actor': 'bus_driver',
+                'recording_description': recording})
             _write_json(root / 'officer_signal_definition.json', {
                 'officer_id': 'officer-1', 'bus_id': 'bus-1', 'direction': 1,
                 'issued_frame': 0, 'first_governing_frame': 1,
@@ -48,6 +59,17 @@ class SavedDirectionTest(unittest.TestCase):
                                  ('officer_signal_rows.jsonl', signals),
                                  ('video_frames.jsonl', maps)):
                 (root / name).write_text(''.join(json.dumps(row) + '\n' for row in values))
+            (root / 'capture').mkdir()
+            _write_json(root / 'capture' / 'manifest.json',
+                        {'extraction_confirmed': True, 'frames': 2})
+            (root / 'trace.jsonl').write_text(''.join(json.dumps({
+                'frame': m['native_frame'], 'time_s': m['time_s'],
+                'position': {'x': b['station_m'], 'y': 0, 'z': 0},
+                'heading_deg': 0, 'speed_mps': 0}) + '\n'
+                for m, b in zip(maps, rows)))
+            (root / 'capture' / 'evidence.jsonl').write_text(''.join(
+                json.dumps({'original_frame': m['native_frame'],
+                            'recording_time_s': m['time_s']}) + '\n' for m in maps))
             for name in VIEWS:
                 subprocess.run(['ffmpeg', '-nostdin', '-hide_banner', '-loglevel', 'error',
                                 '-f', 'lavfi', '-i', 'color=c=blue:s=1280x720:r=20',
@@ -59,8 +81,33 @@ class SavedDirectionTest(unittest.TestCase):
             self.assertEqual(set(VIEWS), set(observed['saved_camera_sources']))
             self.assertFalse(observed['physical_visibility_reviewed'])
             self.assertIsNone(observed['legal_verdict'])
-            with self.assertRaisesRegex(ValueError, 'confirmed original'):
-                process_saved(root, source_kind='original_native')
+            observed_original = process_saved(root, source_kind='original_native')
+            self.assertEqual('original_native', observed_original['source_kind'])
+            (root / 'capture' / 'evidence.jsonl').unlink()
+            with self.assertRaisesRegex(ValueError, 'Missing required source: capture/evidence.jsonl'):
+                finalize_attempt(root, root / 'analysis-report.json')
+            (root / 'capture' / 'evidence.jsonl').write_text(''.join(
+                json.dumps({'original_frame': m['native_frame'],
+                            'recording_time_s': m['time_s']}) + '\n' for m in maps))
+            signal_definition = (root / 'officer_signal_definition.json').read_text()
+            (root / 'officer_signal_definition.json').unlink()
+            with self.assertRaisesRegex(ValueError,
+                    'Missing required source: officer_signal_definition.json'):
+                finalize_attempt(root, root / 'analysis-report.json')
+            (root / 'officer_signal_definition.json').write_text(signal_definition)
+            report = finalize_attempt(root, root / 'analysis-report.json')
+            result = json.loads((root / 'result.json').read_text())
+            self.assertEqual(2, report['trace_frames'])
+            self.assertEqual(5, len(result['recording_evidence']))
+            self.assertFalse(result['target_checks'][0]['physical_cause_confirmed'])
+            from batch_pipeline.validation import recording_evidence
+            recording_evidence(result, recording, lambda relative: root / relative)
+            from worker_exchange.measurement_contract import verify_report
+            contract = json.loads((Path(__file__).parent /
+                'constructions/reference-measurement-contract.json').read_text())
+            self.assertEqual(3, len(verify_report(contract, report, root)))
+            with self.assertRaisesRegex(ValueError, 'Retain prior finalization'):
+                finalize_attempt(root, root / 'analysis-report-2.json')
             (root / 'approach.mkv').unlink()
             with self.assertRaisesRegex(ValueError, 'Missing saved source camera'):
                 process_saved(root, source_kind='synthetic_native_sample')

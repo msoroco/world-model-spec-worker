@@ -1,0 +1,52 @@
+{
+  "case_id": "training__C177225__NRS-484B-560-7b__bus_driver__reference",
+  "format": "worker-measurement-contract",
+  "negative": {
+    "error_contains": "Missing required source: officer_signal_definition.json",
+    "remove": [
+      "officer_signal_definition.json"
+    ]
+  },
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "inputs": [
+        "config.json",
+        "bus_native_rows.jsonl"
+      ],
+      "kind": "measured",
+      "method": "measure_vehicle_scope",
+      "output_key": "vehicle_scope",
+      "requirement": "text-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "value_type": "object"
+    },
+    {
+      "disposition_index": 1,
+      "inputs": [
+        "bus_native_rows.jsonl",
+        "officer_signal_rows.jsonl",
+        "video_frames.jsonl"
+      ],
+      "kind": "measured",
+      "method": "measure_directed_officer_stop",
+      "output_key": "directed_officer_stop",
+      "requirement": "text-1",
+      "source": "inputs/coverage/branch-sources.json",
+      "value_type": "object"
+    },
+    {
+      "disposition_index": 2,
+      "inputs": [
+        "officer_signal_definition.json",
+        "officer_signal_rows.jsonl"
+      ],
+      "kind": "measured",
+      "method": "measure_authorized_direction",
+      "output_key": "authorized_direction",
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "value_type": "object"
+    }
+  ]
+}

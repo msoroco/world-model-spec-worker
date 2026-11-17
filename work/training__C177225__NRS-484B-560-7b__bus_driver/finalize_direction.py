@@ -51,8 +51,8 @@ def process_saved(root, *, source_kind='original_native'):
     root = Path(root)
     config_path = root / 'config.json'
     signal_path = root / 'officer_signal_definition.json'
-    if not config_path.is_file() or not signal_path.is_file():
-        raise ValueError('Missing saved exact-case configuration or signal')
+    for name in ('config.json', 'officer_signal_definition.json'):
+        _required(root, name)
     config = json.loads(config_path.read_text())
     signal = OfficerStop(**json.loads(signal_path.read_text()))
     if config.get('case_suffix') not in ('reference', 'contrast') or (
@@ -150,6 +150,38 @@ def _derived_channels(root, description, bus, officer, mapping):
     return evidence
 
 
+def measure_directed_officer_stop(root, observation):
+    return {'value': {
+                'stop_before_line': observation['observed_complete_stop_before_line'],
+                'crossing_entry': observation['observed_crossing_entry'],
+                'governing_frames': len(observation['officer_direction_witnessed_frames'])},
+            'method': 'measure_directed_officer_stop',
+            'sources': {name: _sha(_required(root, name)) for name in
+                        ('bus_native_rows.jsonl', 'officer_signal_rows.jsonl',
+                         'video_frames.jsonl')}}
+
+
+def measure_vehicle_scope(root, config, bus):
+    return {'value': {'actor': config['actor'],
+                      'bus_actor_ids': sorted({row['actor_id'] for row in bus}),
+                      'bus_blueprint_requested': 'vehicle.mitsubishi.fusorosa'},
+            'method': 'measure_vehicle_scope',
+            'sources': {name: _sha(_required(root, name)) for name in
+                        ('config.json', 'bus_native_rows.jsonl')}}
+
+
+def measure_authorized_direction(root, signal, officer):
+    return {'value': {'authorized_role_authored': signal.authorized,
+                      'verified_police_credential': False,
+                      'officer_actor_id': signal.officer_id,
+                      'recipient_bus_actor_id': signal.bus_id,
+                      'crossing_id': signal.crossing_id,
+                      'observed_pose_rows': len(officer)},
+            'method': 'measure_authorized_direction',
+            'sources': {name: _sha(_required(root, name)) for name in
+                        ('officer_signal_definition.json', 'officer_signal_rows.jsonl')}}
+
+
 def finalize_attempt(root, output):
     """Finalize saved acquisition only; never infer legal or physical acceptance."""
     root = Path(root).resolve()
@@ -161,6 +193,7 @@ def finalize_attempt(root, output):
     mapping = _rows(_required(root, 'video_frames.jsonl'))
     bus = _rows(_required(root, 'bus_native_rows.jsonl'))
     officer = _rows(_required(root, 'officer_signal_rows.jsonl'))
+    signal = OfficerStop(**json.loads(_required(root, 'officer_signal_definition.json').read_text()))
     trace, _ = _joined_sources(root, mapping, bus, officer)
     description = config['recording_description']
     channel_evidence = _derived_channels(root, description, bus, officer, mapping)
@@ -174,7 +207,9 @@ def finalize_attempt(root, output):
               'cause_evidence': ['bus_native_rows.jsonl',
                                  'officer_signal_rows.jsonl', 'video_frames.jsonl']}
     result = {'case_id': config['case_id'],
-              'measured_values': {'officer_direction': observation},
+              'measured_values': {'officer_direction': {
+                  key: value for key, value in observation.items()
+                  if key != 'legal_verdict'}},
               'target_checks': [target], 'setup_confirmed': True,
               'behavior_attempted': bool(observation['officer_direction_witnessed_frames']),
               'maneuver_completed': observation['observed_crossing_entry'],
@@ -197,14 +232,10 @@ def finalize_attempt(root, output):
     validate_result(result)
     report = {'format': 'c177225-saved-analysis-v1',
               'case_id': config['case_id'],
-              'measurements': {'directed_officer_stop': {
-                  'value': {'stop_before_line': measured,
-                            'crossing_entry': observation['observed_crossing_entry'],
-                            'governing_frames': len(observation['officer_direction_witnessed_frames'])},
-                  'method': 'measure_directed_officer_stop',
-                  'sources': {name: _sha(_required(root, name)) for name in
-                              ('bus_native_rows.jsonl', 'officer_signal_rows.jsonl',
-                               'video_frames.jsonl')}}},
+              'measurements': {
+                  'vehicle_scope': measure_vehicle_scope(root, config, bus),
+                  'directed_officer_stop': measure_directed_officer_stop(root, observation),
+                  'authorized_direction': measure_authorized_direction(root, signal, officer)},
               'trace_frames': len(trace), 'scope': 'saved Native source diagnosis only'}
     output.write_text(json.dumps(report, indent=2, allow_nan=False) + '\n')
     with (root / 'result.json').open('x') as stream:
