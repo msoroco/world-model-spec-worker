@@ -2,11 +2,11 @@
   "format": "worker-turn-comparison-audit-matrix",
   "diagnostic_fixture": true,
   "script": "comparison_delivery_audit.py",
-  "script_sha256": "d90a815eb84bbdd4b91aad57b91fdb8dc76ecb32f8febfa833de0e175d4ff465",
+  "script_sha256": "199417f288e4bf957045bcf55ac13a8387d725942a8b6755467cbbdfacb4d859",
   "positive_log": "audit-cpu-combined.log",
-  "positive_log_sha256": "2d3c9ef8ac5061695ccb1cb58644e24c5b946aad805df4ae1bb92edaa57e5352",
+  "positive_log_sha256": "8b940d87011f1262d68104cf85c19a9196a8c1c9ec71ce7ce91418e0c188080e",
   "negative_log": "audit-cpu-combined.log",
-  "negative_log_sha256": "2d3c9ef8ac5061695ccb1cb58644e24c5b946aad805df4ae1bb92edaa57e5352",
+  "negative_log_sha256": "8b940d87011f1262d68104cf85c19a9196a8c1c9ec71ce7ce91418e0c188080e",
   "comparisons": [
     {
       "comparison_id": "marker_route_response",
@@ -89,6 +89,22 @@
       "negative_expected_error": "Missing or changed original course source: turn_body_original.jsonl",
       "proof_log": "course-6m-marker-depart-comparison.log",
       "proof_log_sha256": "59a752c6808df4cc7f027bde7bbfde0923bef6e23329368e0c4cd2d39a38d541"
+    },
+    {
+      "comparison_id": "marker_placement_0m_075m",
+      "case_ids": [
+        "heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__marker_follow",
+        "heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__placement_075m__marker_follow"
+      ],
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/comparison_delivery_audit.py --comparison marker_placement_0m_075m --attempt .runtime-work/c111644-marker-follow-saved-audit-v2-20261116 --attempt .runtime-work/c111644-placement-075m-offline-reproof-20261116 --output .runtime-work/c111644-placement-075m-comparison-positive.json",
+      "exit_code": 0,
+      "result_sha256": "8236b27f4807082f1b7be1912297054bc4597b336b9bd2dc55033c206b808da1",
+      "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/comparison_delivery_audit.py --comparison marker_placement_0m_075m --attempt .runtime-work/c111644-marker-follow-saved-audit-v2-20261116 --attempt .runtime-work/c111644-placement-075m-delivery-negative-reproof-20261116",
+      "negative_exit_code": 1,
+      "negative_expected_error": "Missing or changed original placement source: turn_body_original.jsonl",
+      "proof_log": "placement-075m-marker-follow-comparison.log",
+      "proof_log_sha256": "034bb96bdfe48c2e2333e15b457c1c6856be64cb0ff51d30f597ff30311e5dd4",
+      "additional_negative_expected_error": "Placement comparison changed more than marker x position"
     }
   ],
   "physical_acceptance_claimed": false,

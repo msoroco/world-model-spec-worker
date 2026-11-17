@@ -1490,6 +1490,192 @@
         "receipt": "course-6m-marker-depart-physical-preparation.json",
         "sha256": "e645b30fde094be78d4c8660f504e77c7aa660fc84fa38558f64b2451fdd4dfe"
       }
+    },
+    {
+      "case_id": "heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__placement_075m__marker_follow",
+      "kind": "delivery",
+      "construction": "placement-075m-marker-follow-construction.json",
+      "construction_sha256": "3e401a605b527c6f73e8b6fc9596d54fc362a3b698777b080f4ad5e8a3b8ff62",
+      "measurement_procedure": {
+        "entrypoint": "turn_marking.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native shifted marker spawn/readback and four original camera visibility require physical verification"
+      },
+      "measurement_contract": "placement-075m-marker-follow-measurement-contract.json",
+      "fixture_recipe": "work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/placement-075m-marker-follow-recipe.json",
+      "acquisition": {
+        "original_course_deviation_m": {
+          "entrypoint": "turn_marking.py",
+          "method": "source-joined original body/trace/frame and four source-camera derivation",
+          "evidence": "analyze_original_sources verifies SHA-256-bound originals before emitting original_course_deviation_m"
+        },
+        "original_turn_path_length_m": {
+          "entrypoint": "turn_marking.py",
+          "method": "source-joined original body/trace/frame and four source-camera derivation",
+          "evidence": "analyze_original_sources verifies SHA-256-bound originals before emitting original_turn_path_length_m"
+        },
+        "intersection_occupancy": {
+          "entrypoint": "turn_marking.py",
+          "method": "source-joined original body/trace/frame and four source-camera derivation",
+          "evidence": "analyze_original_sources verifies SHA-256-bound originals before emitting intersection_occupancy"
+        },
+        "turn_course_source_context": {
+          "entrypoint": "turn_marking.py",
+          "method": "source-joined original body/trace/frame and four source-camera derivation",
+          "evidence": "analyze_original_sources verifies SHA-256-bound originals before emitting turn_course_source_context"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "indication_source_env_var": "TURN_INDICATION_SOURCE",
+        "indication_sha256_env_var": "TURN_INDICATION_SHA256"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "placement-075m-marker-follow-fallback1-construction.json",
+          "construction_sha256": "3d018b1df106f59e1d283eedf789c316d9ccc3cccf5c7fd9ad715ec1660a92a1",
+          "changed_knobs": [
+            "Native subject spawn vertical offset 0.50 m -> 0.65 m"
+          ],
+          "trigger": {
+            "source": "Native subject spawn/readback and original body source",
+            "metric": "subject actor creation and initial ground-body clearance",
+            "failure_condition": "Primary subject spawn fails or overlaps the mapped road surface"
+          },
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/provisional-manifest.json --case heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__placement_075m__marker_follow --candidate fallback1 --output .runtime-work/c111644-placement-075m-fallback1-offline-reproof-20261116 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "placement-075m-marker-follow-fallback1-offline.log",
+            "log_sha256": "8fde91211b8bdd8940a58596ea45a745b37d36c991d4450212e1646ea432370f",
+            "construction_sha256": "3d018b1df106f59e1d283eedf789c316d9ccc3cccf5c7fd9ad715ec1660a92a1"
+          },
+          "compatibility": {
+            "receipt": "placement-075m-marker-follow-fallback1-compatibility.json",
+            "sha256": "6db32a9b8921152dee918845a27d8e8428c8bc09a62b021c4b28b655c093aef2",
+            "log": "marker-follow-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "placement-075m-marker-follow-fallback1-negative.log",
+            "negative_log_sha256": "03604c5c49f5aba4b94eb8049b61f5ec58e2e2619b169bf5e16b0a848829959a"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "placement-075m-marker-follow-fallback2-construction.json",
+          "construction_sha256": "c0a1ba5f1953f836a1a0584cf77899bdaeea81b3b1c8c0ecd05e99193c6db413",
+          "changed_knobs": [
+            "Native route waypoint arrival radius 2.0 m -> 2.8 m"
+          ],
+          "trigger": {
+            "source": "original 20 Hz subject body and target route plan",
+            "metric": "progress to final source-route waypoint",
+            "failure_condition": "Primary turn controller stalls before the indicated exit waypoint"
+          },
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/provisional-manifest.json --case heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__placement_075m__marker_follow --candidate fallback2 --output .runtime-work/c111644-placement-075m-fallback2-offline-reproof-20261116 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "placement-075m-marker-follow-fallback2-offline.log",
+            "log_sha256": "8fde91211b8bdd8940a58596ea45a745b37d36c991d4450212e1646ea432370f",
+            "construction_sha256": "c0a1ba5f1953f836a1a0584cf77899bdaeea81b3b1c8c0ecd05e99193c6db413"
+          },
+          "compatibility": {
+            "receipt": "placement-075m-marker-follow-fallback2-compatibility.json",
+            "sha256": "b2112e4cb020bb7bb0b2cf577a5962e50b85a6433e8913661560598701e47deb",
+            "log": "marker-follow-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "placement-075m-marker-follow-fallback2-negative.log",
+            "negative_log_sha256": "8e0fe73b475c1b62631cd245a76a0ec4e2a3033ae870f53269bd2eb9269e0acb"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "placement-075m-marker-follow-fallback3-construction.json",
+          "construction_sha256": "98e3810c6379058b0579ba1be72e167e43ffa331119e62dbf203de88d981e8a4",
+          "changed_knobs": [
+            "original camera synchronization wait 10 s -> 15 s"
+          ],
+          "trigger": {
+            "source": "four original camera frame streams and callback frame identities",
+            "metric": "synchronized source frame arrival latency",
+            "failure_condition": "Primary 10 s source-frame wait expires despite all camera callbacks arriving intact"
+          },
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/provisional-manifest.json --case heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__placement_075m__marker_follow --candidate fallback3 --output .runtime-work/c111644-placement-075m-fallback3-offline-reproof-20261116 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "placement-075m-marker-follow-fallback3-offline.log",
+            "log_sha256": "8fde91211b8bdd8940a58596ea45a745b37d36c991d4450212e1646ea432370f",
+            "construction_sha256": "98e3810c6379058b0579ba1be72e167e43ffa331119e62dbf203de88d981e8a4"
+          },
+          "compatibility": {
+            "receipt": "placement-075m-marker-follow-fallback3-compatibility.json",
+            "sha256": "1b17bf4a9ff7c7fc48cc54ed92e9df9b1a4c25ca7132c3eb3dfc3f83a5fecaad",
+            "log": "marker-follow-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "placement-075m-marker-follow-fallback3-negative.log",
+            "negative_log_sha256": "bb728d5540d77dcdb8606656cb228400a6d5ad54b03b1bfd5ed0b6dcb8b22b1f"
+          }
+        }
+      ],
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/provisional-manifest.json --case heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__placement_075m__marker_follow --output .runtime-work/c111644-placement-075m-offline-reproof-20261116 --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "log": "placement-075m-marker-follow-offline.log",
+        "log_sha256": "270ec2d054aab15b799a63d8edf7d906c4215bb7bb2fafd86825e0aa9adcd911",
+        "construction_sha256": "3e401a605b527c6f73e8b6fc9596d54fc362a3b698777b080f4ad5e8a3b8ff62"
+      },
+      "compatibility": {
+        "receipt": "placement-075m-marker-follow-compatibility.json",
+        "sha256": "d3f100d5d6bbfd0060a1018416502299af872fbbbccc42d600974319eef38e64",
+        "log": "marker-follow-analysis.log",
+        "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "negative_log": "placement-075m-marker-follow-negative.log",
+        "negative_log_sha256": "0c4b6bfd66ae5cbeaece02327d8d0ce2cb7245453334c33de18561f2c627caed"
+      },
+      "negative": {
+        "log": "placement-075m-marker-follow-negative.log",
+        "log_sha256": "0c4b6bfd66ae5cbeaece02327d8d0ce2cb7245453334c33de18561f2c627caed"
+      },
+      "saved_processing": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/provisional-manifest.json --case heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__placement_075m__marker_follow --attempt .runtime-work/c111644-placement-075m-offline-reproof-20261116 --output .runtime-work/c111644-placement-075m-saved-reproof-20261116-v3 --library runtime/library --validator .runtime-work/c111305-validator/.lake/build/bin/adapterCheck",
+        "exit_code": 0,
+        "log": "placement-075m-marker-follow-saved-processing.json",
+        "log_sha256": "e5cd7e1d7d651155196f8aaa2a8028986edc83c22a5c40ed4dd1a4b486f84317",
+        "receipt": "placement-075m-marker-follow-saved-processing.json",
+        "receipt_sha256": "e5cd7e1d7d651155196f8aaa2a8028986edc83c22a5c40ed4dd1a4b486f84317"
+      },
+      "physical_preparation": {
+        "receipt": "placement-075m-marker-follow-physical-preparation.json",
+        "sha256": "9333eff6d57c7ccb274cd1f428b338f140f8fa0e795bd46a7c87d24d4b5b7253"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__placement_075m__marker_follow",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "af6817deca96dd34e3a71df28c25cef62a070dbbe6105e0162e5694e47b95f2d",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/delivery_audit.py --case heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__placement_075m__marker_follow --attempt .runtime-work/c111644-placement-075m-offline-reproof-20261116 --processed .runtime-work/c111644-placement-075m-saved-reproof-20261116-v3 --manifest work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/provisional-manifest.json --output .runtime-work/c111644-placement-075m-delivery-positive-reproof.json",
+        "test_exit_code": 0,
+        "test_log": "placement-075m-marker-follow-delivery.log",
+        "test_log_sha256": "f55cca4906854d479ed962544ad5274067103917033ec5df2badb01ecd5e3b7f",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/delivery_audit.py --case heldout__C111644__LVMC-11-12-020__motor_vehicle_driver__placement_075m__marker_follow --attempt .runtime-work/c111644-placement-075m-delivery-negative-reproof-20261116 --processed .runtime-work/c111644-placement-075m-saved-reproof-20261116-v3 --manifest work/heldout__C111644__LVMC-11-12-020__motor_vehicle_driver/provisional-manifest.json --output .runtime-work/c111644-placement-075m-delivery-negative-reproof.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: turn_body_original.jsonl",
+        "negative_log": "placement-075m-marker-follow-delivery.log",
+        "negative_log_sha256": "f55cca4906854d479ed962544ad5274067103917033ec5df2badb01ecd5e3b7f"
+      }
     }
   ]
 }

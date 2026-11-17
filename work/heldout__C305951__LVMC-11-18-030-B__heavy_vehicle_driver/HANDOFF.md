@@ -313,3 +313,7 @@ The root `runner.py` and `config.json` now enumerate all ten assignment-qualifie
 The full-batch strict gate remains a separate test. Other partial assignments retain worker-owned CPU tasks; the shared all-assignment queue and local integration proof are pending until their exact manifests are finished. Actual physical realization remains in `remaining_gpu_checks`.
 
 The post-completion full-batch strict gate exited 1 at `preparation.py:276` because nine other packages remain partial. Its shared log SHA-256 is `8a5196a775b4e25dcc5ad430d9aa36835506a570dd5afd41ee669c3da366a69e`. This does not revoke C305951's passing assignment-scoped strict gate.
+
+Historical receipt compaction 2026-11-16: 0 result-history-only returned files are preserved byte-for-byte with SHA-256 and original paths in `work/_shared/historical-receipts-bundle-20261116.json`. Scoped strict gate was rerun after compaction.
+
+Historical unused returned comparison/source receipts (0 files) are byte-exact in `work/_shared/historical-receipts-bundle-20261116.json`; scoped strict gate rerun follows.

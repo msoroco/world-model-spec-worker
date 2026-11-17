@@ -114,6 +114,49 @@ def audit_course_sweep(attempts):
             "physical_acceptance_claimed": False, "legal_acceptance_claimed": False}
 
 
+def audit_marker_placement(attempts):
+    if len(attempts) != 2:
+        raise ValueError("Placement comparison requires two attempts")
+    rows = []
+    for attempt in map(Path, attempts):
+        config = json.loads((attempt / "config.json").read_text())
+        receipt = json.loads((attempt / "turn_source_receipt.json").read_text())
+        if receipt["case_id"] != config["selected_case_id"]:
+            raise ValueError("Placement source selected another case")
+        for name in ("turn_indication_original.json", "turn_route_plan.json", "turn_body_original.jsonl"):
+            source = attempt / name
+            if not source.is_file() or hashlib.sha256(source.read_bytes()).hexdigest() != receipt["source_sha256"].get(name):
+                raise ValueError("Missing or changed original placement source: " + name)
+        rows.append((config, receipt["source_sha256"],
+                     json.loads((attempt / "turn_indication_original.json").read_text()),
+                     json.loads((attempt / "turn_route_plan.json").read_text())))
+    (base, base_hash, original, route), (shift, shift_hash, derived, shifted_route) = rows
+    if (not base["selected_case_id"].endswith("__marker_follow") or
+            not shift["selected_case_id"].endswith("__placement_075m__marker_follow")):
+        raise ValueError("Placement comparison selected another case or order")
+    for key in ("law_id", "cell_id", "actor", "rate_hz", "duration_s", "cameras"):
+        if base[key] != shift[key]:
+            raise ValueError("Placement comparison changed fixed condition: " + key)
+    if route != shifted_route or base_hash["turn_route_plan.json"] != shift_hash["turn_route_plan.json"]:
+        raise ValueError("Placement comparison changed fixed route")
+    if (base_hash["turn_body_original.jsonl"] != shift_hash["turn_body_original.jsonl"] or
+            shift.get("indication_placement_setpoint_m") != 0.75 or
+            derived.get("parent_source_sha256") != base_hash["turn_indication_original.json"] or
+            derived.get("placement_shift_m") != 0.75):
+        raise ValueError("Placement comparison lacks source-bound 0.75 m shift")
+    expected = dict(original)
+    expected["parent_source_sha256"] = base_hash["turn_indication_original.json"]
+    expected["placement_shift_m"] = 0.75
+    expected["indications"] = [dict(item, x=item["x"] + 0.75) for item in original["indications"]]
+    if derived != expected:
+        raise ValueError("Placement comparison changed more than marker x position")
+    return {"comparison_id": "marker_placement_0m_075m",
+            "case_ids": [base["selected_case_id"], shift["selected_case_id"]],
+            "source_bound_placement_shift_m": 0.75,
+            "actual_marker_readback_verified": False,
+            "physical_acceptance_claimed": False, "legal_acceptance_claimed": False}
+
+
 def audit(comparison, attempts):
     if comparison in ROUTE_FORMS:
         if len(attempts) != 2:
@@ -141,6 +184,9 @@ def audit(comparison, attempts):
         case_ids = findings["case_ids"]
     elif comparison == "course_deviation_2m_4m_6m":
         findings = audit_course_sweep(attempts)
+        case_ids = findings["case_ids"]
+    elif comparison == "marker_placement_0m_075m":
+        findings = audit_marker_placement(attempts)
         case_ids = findings["case_ids"]
     else:
         raise ValueError("Unknown declared comparison")
