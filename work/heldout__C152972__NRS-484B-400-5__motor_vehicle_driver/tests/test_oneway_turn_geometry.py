@@ -81,6 +81,24 @@ class OnewayTurnTests(unittest.TestCase):
   with self.assertRaisesRegex(ValueError,"normal"):construct_route_targets(self.write("bad-map.json",self.g),.5,.5)
   self.g["destination_left_curb_inward_unit"]=[1,0]
   with self.assertRaisesRegex(ValueError,"width"):construct_route_targets(self.write("good-map.json",self.g),.5,5)
+ def test_canonical_sweep_routes_match_frozen_semantic_points(self):
+  self.g.update(source_left_curb=[[0,0],[10,0]],destination_left_curb=[[10,0],[10,10]],source_left_curb_inward_unit=[0,-1],destination_left_curb_inward_unit=[1,0],source_road_width_m=4,destination_road_width_m=4,source_travel_unit=[1,0],destination_travel_unit=[0,1])
+  geometry=self.write("sweep-map.json",self.g)
+  cases=json.loads((H/"proposals/cases.json").read_text())["cases"]
+  sweep_cases=[c for c in cases if c.get("sweep_id")]
+  self.assertEqual(len(sweep_cases),6)
+  for case in sweep_cases:
+   ident=case["case_id"]
+   expected={"approach":case["variable_assignments"]["approach_left_curb_setpoint_m"]["value"],"departure":case["variable_assignments"]["departure_left_curb_setpoint_m"]["value"]}
+   config={"case_branch":ident,"selected_case_id":ident,"law_id":"NRS-484B-400-5","cell_id":"C152972","frames":160,"duration_s":8,"source_geometry_sha256":hashlib.sha256(geometry.read_bytes()).hexdigest(),"curb_offsets_m":expected,"vehicle_blueprint_id":"vehicle.tesla.model3"}
+   route=check_native_config(config,geometry)
+   self.assertEqual(route["approach"]["left_curb_offset_setpoint_m"],expected["approach"])
+   self.assertEqual(route["departure"]["left_curb_offset_setpoint_m"],expected["departure"])
+   self.assertFalse(route["actual_native_motion_verified"])
+   config["curb_offsets_m"]={"approach":expected["departure"],"departure":expected["approach"]+0.1}
+   with self.assertRaisesRegex(ValueError,"offsets differ"):check_native_config(config,geometry)
+   config["curb_offsets_m"]=expected;config["selected_case_id"]=ident+"-tampered"
+   with self.assertRaisesRegex(ValueError,"case and route branch differ"):check_native_config(config,geometry)
  def test_four_camera_original_join_and_tamper_rejection(self):
   self.g.update(source_left_curb=[[-10,0],[0,0]],destination_left_curb=[[0,0],[0,10]],source_left_curb_inward_unit=[0,-1],destination_left_curb_inward_unit=[1,0],source_road_width_m=4,destination_road_width_m=4,source_travel_unit=[1,0],destination_travel_unit=[0,1])
   self.b["frames"][0]["ground_corners"]=[[-2,-.5],[-1,-.5],[-1,-1],[-2,-1]]

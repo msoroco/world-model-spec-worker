@@ -100,10 +100,16 @@ def construct_route_targets(geometry_path, approach_offset_m, departure_offset_m
             "actual_native_motion_verified":False,"legal_conclusion":None}
 
 def native_route_plan(geometry_path, branch):
-    """Build a map-bound engineering route for one of the three selected cases."""
+    """Build a map-bound route for a frozen diagnostic or semantic sweep point."""
     offsets={"approach_near_depart_near":(.5,.5),
              "approach_far_depart_near":(1.5,.5),
-             "approach_near_depart_far":(.5,1.5)}
+             "approach_near_depart_far":(.5,1.5),
+             "C152972-approach-curb-coverage-0000":(.5,.5),
+             "C152972-approach-curb-coverage-0001":(1.5,.5),
+             "C152972-approach-curb-coverage-0002":(1.,.5),
+             "C152972-departure-curb-coverage-0000":(.5,.5),
+             "C152972-departure-curb-coverage-0001":(.5,1.5),
+             "C152972-departure-curb-coverage-0002":(.5,1.)}
     if branch not in offsets:raise ValueError("unknown selected one-way turn branch")
     g=_load(geometry_path)
     route=construct_route_targets(geometry_path,*offsets[branch])
@@ -383,7 +389,8 @@ def check_native_config(config, geometry_path):
     branch=config.get("case_branch")
     route=native_route_plan(geometry_path,branch)
     case_id=config.get("selected_case_id")
-    if not isinstance(case_id,str) or not case_id.endswith("__"+branch):
+    if not isinstance(case_id,str) or not (case_id.endswith("__"+branch)
+                                          or case_id==branch and branch.startswith("C152972-")):
         raise ValueError("selected curb case and route branch differ")
     if config.get("law_id")!="NRS-484B-400-5" or config.get("cell_id")!="C152972":
         raise ValueError("frozen one-way turn law/cell differs")
