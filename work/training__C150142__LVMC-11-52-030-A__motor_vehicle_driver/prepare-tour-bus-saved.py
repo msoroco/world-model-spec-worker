@@ -21,7 +21,8 @@ MANIFEST = ROOT / 'execution-manifest-diagnostic-tour_bus_below-draft.json'
 PILOT = REPO / '.runtime-work/c150142-long-media-pilot/overview-36120-lossless.mkv'
 
 
-def prepare(attempt, *, case='tour_bus_below', candidate='primary', reuse_media_from=None):
+def prepare(attempt, *, case='tour_bus_below', candidate='primary',
+            reuse_media_from=None, manifest_override=None):
     attempt = Path(attempt).resolve()
     if REPO / '.runtime-work' not in attempt.parents:
         raise ValueError('Diagnostic acquisition belongs under .runtime-work')
@@ -31,7 +32,10 @@ def prepare(attempt, *, case='tour_bus_below', candidate='primary', reuse_media_
                     'tour_bus_no_loading'):
         raise ValueError('Unsupported source-bound tour-bus case')
     case_id = ROOT.name + '__' + case
-    materialize(MANIFEST, case_id, attempt, candidate)
+    manifest = Path(manifest_override).resolve() if manifest_override else MANIFEST
+    if manifest.parents[2] != REPO:
+        raise ValueError('Manifest must belong to the worker repository')
+    materialize(manifest, case_id, attempt, candidate)
     module = importlib.util.spec_from_file_location(
         'tour_bus_source_proof', ROOT / 'prove-tour-bus-saved-source.py')
     source = importlib.util.module_from_spec(module)
@@ -79,6 +83,8 @@ if __name__ == '__main__':
     parser.add_argument('--case', default='tour_bus_below')
     parser.add_argument('--candidate', default='primary')
     parser.add_argument('--reuse-media-from')
+    parser.add_argument('--manifest')
     args = parser.parse_args()
     print(json.dumps(prepare(args.attempt, case=args.case, candidate=args.candidate,
-                             reuse_media_from=args.reuse_media_from), sort_keys=True))
+                             reuse_media_from=args.reuse_media_from,
+                             manifest_override=args.manifest), sort_keys=True))
