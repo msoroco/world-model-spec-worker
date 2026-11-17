@@ -93,7 +93,8 @@ def target_control(layout, signal, *, bus_id, crossing_id, direction,
     if not isfinite(stop_margin_m) or stop_margin_m <= 0:
         raise ValueError('Stop margin must be positive')
     line = layout.stop_station(direction)
-    remaining_m = direction * (line - station_m) - stop_margin_m
+    front_station_m = station_m + direction * layout.bus_length_m / 2
+    remaining_m = direction * (line - front_station_m) - stop_margin_m
     governing = signal.first_governing_frame <= frame <= signal.last_governing_frame
     if frame < signal.issued_frame or not governing:
         return {'throttle': 0.25, 'brake': 0.0, 'requested': 'approach',

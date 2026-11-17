@@ -29,6 +29,10 @@ class DirectedStopConstructionTest(unittest.TestCase):
                                         self.layout.bus_length_m)
                 self.assertEqual('stop_before_rail',
                                  self.control(direction, stop - direction * 3)['requested'])
+                center_at_front_margin = stop - direction * (
+                    self.layout.bus_length_m / 2 + 0.75)
+                self.assertAlmostEqual(0, self.control(
+                    direction, center_at_front_margin, speed=0)['distance_to_stop_m'])
 
     def test_only_requested_behavior_differs_after_same_signal(self):
         for direction in (-1, 1):
