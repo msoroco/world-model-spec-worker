@@ -1,4 +1,4 @@
-"""Independent CPU audit of the observed primary's saved source and result.
+"""Independent CPU audit of a selected primary's saved source and result.
 
 Synthetic diagnostics prove the saved software path, never human perception,
 physical camera quality, right-pass permission, or legal compliance.
@@ -12,7 +12,10 @@ import math
 import subprocess
 from pathlib import Path
 
-CASE_ID = "heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__observed_gives_way_holds_speed"
+CASE_PREFIX = "heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__"
+CASE_SUFFIXES = {"gives_way_holds_speed", "observed_gives_way_holds_speed",
+                 "no_right_yield_holds_speed", "gives_way_increases_speed",
+                 "right_pass_permitted_no_right_yield"}
 CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 SOURCES = ("overtaken_source.jsonl", "video_frames.jsonl", "trace.jsonl")
 
@@ -47,12 +50,17 @@ def decode(path, count):
 def audit(attempt, saved_receipt, analysis_override=None):
     attempt = Path(attempt)
     saved = json.loads(Path(saved_receipt).read_text())
-    if (saved.get("case_id") != CASE_ID or saved.get("passed") is not True or
+    case_id = saved.get("case_id")
+    if (not isinstance(case_id, str) or not case_id.startswith(CASE_PREFIX) or
+            case_id[len(CASE_PREFIX):] not in CASE_SUFFIXES or
+            saved.get("passed") is not True or
             saved.get("originals_preserved") is not True or saved.get("missing_evidence") is not False):
         raise ValueError("Saved processing identity or source status differs")
+    audible = case_id != CASE_PREFIX + "observed_gives_way_holds_speed"
     stage = Path(analysis_override or saved["analysis_directory"])
     original_hashes = saved["original_source_hashes"]
-    for name in SOURCES + tuple(camera + ".mkv" for camera in CAMERAS):
+    signal_sources = ("signal_command_original.jsonl", "signal_audio_envelope_original.jsonl") if audible else ()
+    for name in SOURCES + signal_sources + tuple(camera + ".mkv" for camera in CAMERAS):
         if original_hashes.get(name) != digest(required(attempt, name)):
             raise ValueError("Original attempt source hash differs: " + name)
         if original_hashes[name] != digest(required(stage, name)):
@@ -60,6 +68,9 @@ def audit(attempt, saved_receipt, analysis_override=None):
     body, mapping, trace = (rows(required(stage, name)) for name in SOURCES)
     if not body or len(body) != len(mapping) or len(body) != len(trace):
         raise ValueError("Saved delivery frame count differs")
+    commands, envelopes = (rows(required(stage, name)) for name in signal_sources) if audible else (None, None)
+    if audible and (len(commands) != len(body) or len(envelopes) != len(body)):
+        raise ValueError("Saved generated signal/frame count differs")
     notice = completion = None
     samples = []
     first_ids = body[0].get("subject_id"), body[0].get("overtaker_id")
@@ -92,7 +103,20 @@ def audit(attempt, saved_receipt, analysis_override=None):
                 raise ValueError("Saved delivery original visibility rays differ")
         elif b.get("notice_observed") is not None:
             raise ValueError("Saved delivery visibility notice lacks rays")
-        if b.get("notice_observed") is True and notice is None:
+        if audible:
+            command, envelope = commands[index], envelopes[index]
+            common = (frame, b["time_s"], str(first_ids[1]))
+            if ((command.get("frame"), command.get("time_s"), command.get("overtaker_actor_id")) != common or
+                    (envelope.get("frame"), envelope.get("time_s"), envelope.get("overtaker_actor_id")) != common or
+                    command.get("source_kind") != "scenario_signal_command" or
+                    envelope.get("source_kind") != "generated_signal_envelope" or
+                    type(command.get("horn_command_requested")) is not bool or
+                    b.get("notice_stimulus") != command["horn_command_requested"] or
+                    envelope.get("generated_rms") != (0.6 if command["horn_command_requested"] else 0.0) or
+                    envelope.get("acoustic_propagation_confirmed") is not None or
+                    envelope.get("subjective_hearing_confirmed") is not None):
+                raise ValueError("Saved generated signal/frame join differs")
+        if (command["horn_command_requested"] if audible else b.get("notice_observed") is True) and notice is None:
             notice = index
         if notice is not None and index > notice and complete and completion is None:
             completion = index
@@ -105,11 +129,11 @@ def audit(attempt, saved_receipt, analysis_override=None):
                 "pass_complete_frame": samples[completion][0]}
     report = json.loads(required(stage, "analysis-report.json").read_text())
     result = json.loads(required(stage, "result.json").read_text())
-    if (report.get("case_id") != CASE_ID or result.get("case_id") != CASE_ID or
+    if (report.get("case_id") != case_id or result.get("case_id") != case_id or
             result.get("physical_acceptance_claimed") is not False or
             result.get("legal_acceptance_claimed") is not False):
         raise ValueError("Saved delivery analysis identity or acceptance differs")
-    source_hashes = {name: original_hashes[name] for name in SOURCES}
+    source_hashes = {name: original_hashes[name] for name in SOURCES + signal_sources}
     for name, value in expected.items():
         item = report.get("measurements", {}).get(name, {})
         if item.get("value") != value or item.get("sources") != source_hashes:
@@ -144,8 +168,11 @@ def audit(attempt, saved_receipt, analysis_override=None):
     fixture_marker = stage / "fixture-provenance.json"
     fixture_only = (json.loads(fixture_marker.read_text()).get("diagnostic_fixture") is True
                     if fixture_marker.is_file() else False)
-    return {"format":"worker-overtaken-delivery-audit", "case_id":CASE_ID,
-            "source_sha256":source_hashes, "frames":len(body), "measurements":expected,
+    return {"format":"worker-overtaken-delivery-audit", "case_id":case_id,
+            "source_sha256":source_hashes, "signal_source_sha256":
+            {name: original_hashes[name] for name in signal_sources},
+            "notice_source_kind":"generated_signal_command" if audible else "original_visibility_rays",
+            "frames":len(body), "measurements":expected,
             "four_camera_decode":cameras, "originals_preserved":True,
             "fixture_only":fixture_only,
             "physical_acceptance_claimed":False, "legal_acceptance_claimed":False}
