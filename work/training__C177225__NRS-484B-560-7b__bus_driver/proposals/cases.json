@@ -1,6 +1,89 @@
 {
+  "format": "worker-case-proposals",
+  "cell_id": "C177225",
   "actor": "bus_driver",
+  "status": "draft",
   "cases": [
+    {
+      "case_id": "training__C177225__NRS-484B-560-7b__bus_driver__baseline",
+      "fixed_context": "Hold cell geometry, actors, traffic controls, weather, and all noncompared controller settings constant; verify activation and exceptions before use.",
+      "rationale": "Shared setup reference; no additional selected delivery recording",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "Saved original Native actor and officer frame join",
+            "name": "kin.velocity",
+            "reference_frame": "original Native frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; physical pixels require review",
+            "unit": "m/s"
+          },
+          {
+            "method": "Saved original Native actor and officer frame join",
+            "name": "drv.stopped",
+            "reference_frame": "original Native frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; physical pixels require review",
+            "unit": "boolean"
+          },
+          {
+            "method": "Saved original Native actor and officer frame join",
+            "name": "dev.human_direction",
+            "reference_frame": "original Native frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; physical pixels require review",
+            "unit": "structured"
+          },
+          {
+            "method": "Saved original Native actor and officer frame join",
+            "name": "native_actor_state",
+            "reference_frame": "original Native frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; physical pixels require review",
+            "unit": "structured"
+          },
+          {
+            "method": "Saved original Native actor and officer frame join",
+            "name": "camera_frame_join",
+            "reference_frame": "original Native frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; physical pixels require review",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "CPU source diagnosis does not establish physical acceptance"
+        ]
+      },
+      "target_law_id": "NRS-484B-560-7b",
+      "target_type": "baseline",
+      "unresolved_judgment_calls": [
+        "Officer status, direction comprehension, and physical crossing require original review"
+      ],
+      "variable_assignments": {
+        "rail_crossing_context": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "authored railroad crossing with generic rail proxy"
+        },
+        "officer_stop_direction": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "officer directs bus to stop before crossing"
+        },
+        "bus_obeys_officer_direction": {
+          "kind": "controller",
+          "unit": "bool",
+          "value": true
+        }
+      }
+    },
     {
       "case_id": "training__C177225__NRS-484B-560-7b__bus_driver__reference",
       "fixed_context": "Hold cell geometry, actors, traffic controls, weather, and all noncompared controller settings constant; verify activation and exceptions before use.",
@@ -59,16 +142,35 @@
         ]
       },
       "target_law_id": "NRS-484B-560-7b",
-      "target_type": "attempt",
+      "target_type": "compliant_attempt",
       "unresolved_judgment_calls": [
         "Officer status, direction comprehension, and physical crossing require original review"
       ],
       "variable_assignments": {
+        "rail_crossing_context": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "authored railroad crossing with generic rail proxy"
+        },
+        "officer_stop_direction": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "officer directs bus to stop before crossing"
+        },
         "bus_obeys_officer_direction": {
           "kind": "controller",
           "unit": "bool",
           "value": true
         }
+      },
+      "paired_probe_id": "training__C177225__NRS-484B-560-7b__bus_driver__officer_stop_pair",
+      "deliberate_differences": [
+        "bus_obeys_officer_direction"
+      ],
+      "probe": {
+        "primary_variable": "bus_obeys_officer_direction",
+        "comparison_or_standard": "paired authored stop-direction response under fixed railroad crossing and officer context",
+        "target_value_or_branch": true
       }
     },
     {
@@ -129,21 +231,37 @@
         ]
       },
       "target_law_id": "NRS-484B-560-7b",
-      "target_type": "attempt",
+      "target_type": "violating_attempt",
       "unresolved_judgment_calls": [
         "Officer status, direction comprehension, and physical crossing require original review"
       ],
       "variable_assignments": {
+        "rail_crossing_context": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "authored railroad crossing with generic rail proxy"
+        },
+        "officer_stop_direction": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "officer directs bus to stop before crossing"
+        },
         "bus_obeys_officer_direction": {
           "kind": "controller",
           "unit": "bool",
           "value": false
         }
+      },
+      "paired_probe_id": "training__C177225__NRS-484B-560-7b__bus_driver__officer_stop_pair",
+      "deliberate_differences": [
+        "bus_obeys_officer_direction"
+      ],
+      "probe": {
+        "primary_variable": "bus_obeys_officer_direction",
+        "comparison_or_standard": "paired authored stop-direction response under fixed railroad crossing and officer context",
+        "target_value_or_branch": false
       }
     }
   ],
-  "cell_id": "C177225",
-  "format": "worker-case-proposals",
-  "status": "draft",
   "sweep_specs": []
 }
