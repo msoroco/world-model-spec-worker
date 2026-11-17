@@ -30,7 +30,7 @@ def read(path):
 def audit(suffix='below', service='tour_bus'):
     if suffix not in BOUNDARIES:
         raise ValueError('Unsupported pinned tour-bus boundary')
-    if service not in ('tour_bus', 'shuttle_bus', 'rtc_bus'):
+    if service not in ('tour_bus', 'shuttle_bus', 'rtc_bus', 'limo'):
         raise ValueError('Unsupported pinned signed-bus audit')
     frames, duration, boundary = BOUNDARIES[suffix]
     update = {'below': '032', 'at': '033', 'above': '034',
@@ -39,7 +39,8 @@ def audit(suffix='below', service='tour_bus'):
     case = ROOT.name + '__' + service + '_' + suffix
     prefix = ({'tour_bus': 'c150142-tour-bus-pinned-saved-',
                'shuttle_bus': 'c150142-shuttle-',
-               'rtc_bus': 'c150142-rtc-'}[service] + slug + '-')
+               'rtc_bus': 'c150142-rtc-',
+               'limo': 'c150142-limo-'}[service] + slug + '-')
     fixed = {'capture_frames': frames, 'requested_approach_frames': 120,
              'requested_stationary_duration_s': duration,
              'requested_boundary': boundary, 'rate_hz': 20}
@@ -47,6 +48,7 @@ def audit(suffix='below', service='tour_bus'):
         'tour_bus': 'execution-manifest-diagnostic-tour_bus_below-draft.json',
         'shuttle_bus': 'execution-manifest-diagnostic-shuttle_bus_below-draft.json',
         'rtc_bus': 'execution-manifest-diagnostic-rtc_bus_below-draft.json',
+        'limo': 'execution-manifest-diagnostic-limo_below-draft.json',
     }[service])
     entry = next(e for e in manifest['cases'] if e['case_id'] == case)
     fallback_entries = {c['id']: c for c in entry['candidates']}
@@ -64,7 +66,10 @@ def audit(suffix='below', service='tour_bus'):
                  else 'primary-result-v1')
                 if candidate == 'primary' else candidate + '-result-v1')
         version = REPO / '.runtime-work' / (prefix + stem) / 'v0001'
-        if service == 'rtc_bus':
+        if service == 'limo':
+            summary_name = f'update038-limo-{slug}-{candidate}-pinned-saved-v1.json'
+            negative_name = f'update038-limo-{slug}-{candidate}-negative.json'
+        elif service == 'rtc_bus':
             summary_name = f'update037-rtc-{slug}-{candidate}-pinned-saved-v1.json'
             negative_name = f'update037-rtc-{slug}-{candidate}-negative.json'
         elif service == 'shuttle_bus':
@@ -129,6 +134,7 @@ def audit(suffix='below', service='tour_bus'):
                 'tour_bus': f'update034-no-loading-{candidate}-inventory-negative.json',
                 'shuttle_bus': f'update037-shuttle-no-loading-{candidate}-inventory-negative.json',
                 'rtc_bus': f'update037-rtc-no-loading-{candidate}-inventory-negative.json',
+                'limo': f'update038-limo-no-loading-{candidate}-inventory-negative.json',
             }[service]
             inventory = read(ROOT / inventory_name)
             require(inventory['rejected'] is True and
@@ -160,7 +166,7 @@ def audit(suffix='below', service='tour_bus'):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--case', choices=sorted(BOUNDARIES), default='below')
-    parser.add_argument('--service', choices=('tour_bus', 'shuttle_bus', 'rtc_bus'),
+    parser.add_argument('--service', choices=('tour_bus', 'shuttle_bus', 'rtc_bus', 'limo'),
                         default='tour_bus')
     args = parser.parse_args()
     print(json.dumps(audit(args.case, args.service), sort_keys=True))

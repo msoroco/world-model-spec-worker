@@ -34,7 +34,7 @@ def exercise(name, path_suffix, mutate, expected, boundary, service='tour_bus'):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--case', choices=('below', 'at', 'above', 'no_loading'), default='below')
-    parser.add_argument('--service', choices=('tour_bus', 'shuttle_bus', 'rtc_bus'),
+    parser.add_argument('--service', choices=('tour_bus', 'shuttle_bus', 'rtc_bus', 'limo'),
                         default='tour_bus')
     args = parser.parse_args()
     boundary = args.case
@@ -45,7 +45,9 @@ if __name__ == '__main__':
     def duplicate_trigger(value):
         entry = next(e for e in value['cases'] if e['case_id'].endswith(service + '_' + boundary))
         entry['candidates'][1]['trigger'] = entry['candidates'][0]['trigger']
-    summary_path = (f'update037-rtc-{slug}-fallback1-pinned-saved-v1.json'
+    summary_path = (f'update038-limo-{slug}-fallback1-pinned-saved-v1.json'
+                    if service == 'limo' else
+                    f'update037-rtc-{slug}-fallback1-pinned-saved-v1.json'
                     if service == 'rtc_bus' else
                     (f'update035-shuttle-below-fallback1-pinned-saved-v1.json'
                      if boundary == 'below' else
@@ -54,12 +56,14 @@ if __name__ == '__main__':
                     f'update{update}-{slug}-fallback1-pinned-saved-v1.json')
     config_path = ({'tour_bus': f'{slug}-',
                     'shuttle_bus': f'shuttle-{slug}-',
-                    'rtc_bus': f'rtc-{slug}-'}[service] +
+                    'rtc_bus': f'rtc-{slug}-',
+                    'limo': f'limo-{slug}-'}[service] +
                    'fallback2-result-v1/v0001/analysis/config.json')
     manifest_path = {
         'tour_bus': 'execution-manifest-diagnostic-tour_bus_below-draft.json',
         'shuttle_bus': 'execution-manifest-diagnostic-shuttle_bus_below-draft.json',
         'rtc_bus': 'execution-manifest-diagnostic-rtc_bus_below-draft.json',
+        'limo': 'execution-manifest-diagnostic-limo_below-draft.json',
     }[service]
     results = [
         exercise('changed_processing_sha',

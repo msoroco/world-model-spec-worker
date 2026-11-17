@@ -29,7 +29,7 @@ def prove(version, candidate, removed=MISSING):
     if removed not in (MISSING, INVENTORY) or (removed == INVENTORY and
             not processing['case_id'].endswith(tuple(
                 '__' + service + '_no_loading'
-                for service in ('tour_bus', 'shuttle_bus', 'rtc_bus')))):
+                for service in ('tour_bus', 'shuttle_bus', 'rtc_bus', 'limo')))):
         raise ValueError('Unsupported case-source removal')
     stage = version / 'analysis'
     selected = json.loads((stage / 'candidate-selection.json').read_text())

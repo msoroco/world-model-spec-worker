@@ -13,7 +13,7 @@ from worker_exchange.measurement_contract import verify_report
 
 def prove(case, stage):
     if case not in tuple(service + '_' + boundary
-                         for service in ('tour_bus', 'shuttle_bus', 'rtc_bus')
+                         for service in ('tour_bus', 'shuttle_bus', 'rtc_bus', 'limo')
                          for boundary in ('below', 'at', 'above', 'no_loading')):
         raise ValueError('Unsupported signed-bus case')
     stage = Path(stage).resolve()
