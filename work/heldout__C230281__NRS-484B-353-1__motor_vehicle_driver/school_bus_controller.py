@@ -70,10 +70,11 @@ def motion_readback(subject, bus, travel_tangent_xy, frame, time_s):
 
 
 def spawn_meeting_scene(world, carla_module, scene):
-    """Create the bus and oncoming subject on one original undivided road.
+    """Create bus and oncoming subject with the same map road ID.
 
     Bus qualification, legally required equipment, pupil purpose, and actual
-    front/rear lamp visibility remain separate source/audit requirements.
+    front/rear lamp visibility and undivided-road status remain source/audit
+    requirements.
     """
     if (not isinstance(scene, dict) or not scene.get('bus_blueprint_id') or
         not scene.get('subject_blueprint_id') or not scene.get('bus_transform') or
@@ -93,6 +94,11 @@ def spawn_meeting_scene(world, carla_module, scene):
     dot = a.x*b.x + a.y*b.y
     if not math.isfinite(dot) or dot > -.8:
         raise ValueError('Meeting scene requires opposite travel directions')
+    dx = bus_transform.location.x - subject_transform.location.x
+    dy = bus_transform.location.y - subject_transform.location.y
+    forward_distance = dx*b.x + dy*b.y
+    if not math.isfinite(forward_distance) or not 12 <= forward_distance <= 80:
+        raise ValueError('Meeting scene bus must be ahead of subject on the approach')
     blueprints = world.get_blueprint_library()
     bus_bp = blueprints.find(scene['bus_blueprint_id'])
     subject_bp = blueprints.find(scene['subject_blueprint_id'])
@@ -108,9 +114,42 @@ def spawn_meeting_scene(world, carla_module, scene):
         return {'bus': bus, 'subject': subject, 'bus_waypoint': bus_waypoint,
                 'subject_waypoint': subject_waypoint,
                 'road_id': bus_waypoint.road_id, 'heading_dot': dot,
+                'initial_forward_separation_m': forward_distance,
                 'bus_equipment_verified': False,
                 'pupil_purpose_verified': False,
-                'red_visibility_verified': False}
+                'red_visibility_verified': False,
+                'undivided_road_verified': False}
     except BaseException:
         bus.destroy()
         raise
+
+
+def select_meeting_waypoints(mapping):
+    """Choose a deterministic two-way, nonjunction approach from map geometry."""
+    waypoints = list(mapping.generate_waypoints(4.0))
+    by_road = {}
+    for waypoint in waypoints:
+        if not waypoint.is_junction:
+            by_road.setdefault(waypoint.road_id, []).append(waypoint)
+    candidates = []
+    for road_id, rows in by_road.items():
+        for subject in rows:
+            sl = subject.transform.location
+            sf = subject.transform.get_forward_vector()
+            for bus in rows:
+                if bus.lane_id == subject.lane_id:
+                    continue
+                bl = bus.transform.location
+                bf = bus.transform.get_forward_vector()
+                dot = sf.x*bf.x + sf.y*bf.y
+                ahead = (bl.x-sl.x)*sf.x + (bl.y-sl.y)*sf.y
+                lateral = abs((bl.x-sl.x)*sf.y - (bl.y-sl.y)*sf.x)
+                if dot <= -.8 and 18 <= ahead <= 28 and lateral <= 12:
+                    score = (abs(ahead-23), lateral, road_id,
+                             subject.lane_id, bus.lane_id, subject.s, bus.s)
+                    candidates.append((score, subject, bus))
+    if not candidates:
+        raise ValueError('No two-way school-bus meeting route in map geometry')
+    _, subject, bus = min(candidates, key=lambda row: row[0])
+    return {'subject_waypoint': subject, 'bus_waypoint': bus,
+            'road_id': subject.road_id}

@@ -3,10 +3,12 @@ import tempfile
 import unittest
 from pathlib import Path
 import sys
+import subprocess
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from school_bus_response import measure, audit_motion_comparison
-from school_bus_controller import BRANCHES, target, apply, motion_readback, spawn_meeting_scene
+from school_bus_controller import BRANCHES, target, apply, motion_readback, spawn_meeting_scene, select_meeting_waypoints
 from school_bus_camera import CAMERAS, LosslessSourceSink, SchoolBusCameraCapture
+from school_bus_native import CASE_ID, check_plan, check_scene, close_all
 
 
 def corners(x):
@@ -238,7 +240,8 @@ class SourceResponse(unittest.TestCase):
             def __init__(self,location):self.location=location
             def get_forward_vector(self):return Vector(self.location.heading)
         class Location:
-            def __init__(self,heading,road=7):self.heading=heading;self.road=road
+            def __init__(self,heading,road=7,x=0):
+                self.heading=heading;self.road=road;self.x=x;self.y=0
         class Waypoint:
             def __init__(self,location):
                 self.road_id=location.road;self.is_junction=False
@@ -262,8 +265,8 @@ class SourceResponse(unittest.TestCase):
             @staticmethod
             def VehicleControl(**keys):return keys
         scene={'bus_blueprint_id':'vehicle.school_bus','subject_blueprint_id':'vehicle.car',
-               'bus_transform':Transform(Location(1)),
-               'subject_transform':Transform(Location(-1))}
+               'bus_transform':Transform(Location(-1,x=20)),
+               'subject_transform':Transform(Location(1))}
         world=World()
         built=spawn_meeting_scene(world,Carla,scene)
         self.assertEqual([item[0] for item in world.actors],
@@ -271,16 +274,82 @@ class SourceResponse(unittest.TestCase):
         self.assertEqual(built['heading_dot'],-1)
         self.assertTrue(world.actors[0][2].control['hand_brake'])
         self.assertFalse(built['bus_equipment_verified'])
-        scene['subject_transform']=Transform(Location(1))
+        self.assertFalse(built['undivided_road_verified'])
+        self.assertEqual(built['initial_forward_separation_m'],20)
+        scene['subject_transform']=Transform(Location(-1))
         with self.assertRaisesRegex(ValueError,'opposite travel'):
             spawn_meeting_scene(World(),Carla,scene)
-        scene['subject_transform']=Transform(Location(-1,8))
+        scene['subject_transform']=Transform(Location(1,8))
         with self.assertRaisesRegex(ValueError,'one nonjunction road'):
             spawn_meeting_scene(World(),Carla,scene)
-        scene['subject_transform']=Transform(Location(-1))
+        scene['subject_transform']=Transform(Location(1,x=19))
+        with self.assertRaisesRegex(ValueError,'ahead of subject'):
+            spawn_meeting_scene(World(),Carla,scene)
+        scene['subject_transform']=Transform(Location(1))
         failed=World();failed.fail_second=True
         with self.assertRaisesRegex(ValueError,'subject spawn failed'):
             spawn_meeting_scene(failed,Carla,scene)
         self.assertTrue(failed.actors[0][2].destroyed)
+
+    def test_first_exact_native_check_is_carla_lazy(self):
+        package=Path(__file__).resolve().parents[1]
+        plan=json.loads((package/'case-plan.json').read_text())
+        self.assertTrue(check_plan(plan,CASE_ID))
+        scene={'bus_blueprint_id':'vehicle.school_bus',
+               'subject_blueprint_id':'vehicle.car',
+               'bus':{'location':[20,0,0],'rotation':[0,180,0]},
+               'subject':{'location':[0,0,0],'rotation':[0,0,0]}}
+        self.assertIs(check_scene(scene),scene)
+        with self.assertRaisesRegex(ValueError,'pose missing'):
+            check_scene({**scene,'subject':{'location':[0,0,0]}})
+        source=self.root/'scene.json';source.write_text(json.dumps(scene)+'\n')
+        command=[sys.executable,str(package/'school_bus_native.py'),'--check',
+                 '--plan',str(package/'case-plan.json'),'--scene',str(source),
+                 '--case-id',CASE_ID]
+        result=subprocess.run(command,capture_output=True,text=True)
+        self.assertEqual(result.returncode,0,result.stderr)
+        self.assertFalse((self.root/'capture').exists())
+
+    def test_native_cleanup_runs_restoration_after_encoder_failure(self):
+        calls=[]
+        def bad_encoder():
+            calls.append('encoder')
+            raise ValueError('encoder failed')
+        with self.assertRaisesRegex(RuntimeError,'encoder'):
+            close_all([('encoder',bad_encoder),
+                       ('actor',lambda:calls.append('actor')),
+                       ('world_settings_restore',lambda:calls.append('restore'))])
+        self.assertEqual(calls,['encoder','actor','restore'])
+
+    def test_map_selected_meeting_route_and_auto_scene_contract(self):
+        class Vector:
+            def __init__(self,x):self.x=x;self.y=0
+        class Location:
+            def __init__(self,x,y):self.x=x;self.y=y
+        class Transform:
+            def __init__(self,x,y,heading):self.location=Location(x,y);self.heading=heading
+            def get_forward_vector(self):return Vector(self.heading)
+        class Waypoint:
+            def __init__(self,road,lane,s,x,y,heading):
+                self.road_id=road;self.lane_id=lane;self.s=s;self.is_junction=False
+                self.transform=Transform(x,y,heading)
+        class Mapping:
+            rows=[Waypoint(7,1,0,0,0,1),Waypoint(7,-1,23,23,4,-1),
+                  Waypoint(8,1,0,0,0,1)]
+            def generate_waypoints(self,distance):
+                self.distance=distance;return self.rows
+        mapping=Mapping()
+        found=select_meeting_waypoints(mapping)
+        self.assertEqual((found['road_id'],found['subject_waypoint'].lane_id,
+                          found['bus_waypoint'].lane_id),(7,-1,1))
+        self.assertEqual(mapping.distance,4.0)
+        auto={'bus_blueprint_id':'vehicle.school_bus',
+              'subject_blueprint_id':'vehicle.car','auto_meeting_route':True}
+        self.assertIs(check_scene(auto),auto)
+        with self.assertRaisesRegex(ValueError,'mixes automatic'):
+            check_scene({**auto,'bus':{}})
+        mapping.rows=[Waypoint(7,1,0,0,0,1)]
+        with self.assertRaisesRegex(ValueError,'No two-way'):
+            select_meeting_waypoints(mapping)
 
 if __name__=='__main__':unittest.main()
