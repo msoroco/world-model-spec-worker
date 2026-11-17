@@ -8,7 +8,9 @@ from pathlib import Path
 
 CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 CHANNELS = ('original_course_deviation_m', 'original_turn_path_length_m',
-            'intersection_occupancy', 'turn_course_source_context')
+            'intersection_occupancy', 'turn_course_source_context',
+            'realized_course_deviation_m',
+            'realized_indication_placement_offset_m')
 
 
 def construct(adapter, indication_type, route_variant):
@@ -152,7 +154,8 @@ def analyze_original_sources(attempt):
     root = Path(attempt)
     receipt = json.loads((root / 'turn_source_receipt.json').read_text())
     hashes = receipt.get('source_sha256')
-    required = {'turn_indication_original.json', 'turn_route_plan.json',
+    required = {'turn_indication_original.json',
+                'turn_indication_readback_original.json', 'turn_route_plan.json',
                 'turn_body_original.jsonl', 'trace.jsonl', 'video_frames.jsonl'}
     required |= {name + '.mkv' for name in CAMERAS}
     required |= {name + '-frames.jsonl' for name in CAMERAS}
@@ -165,11 +168,29 @@ def analyze_original_sources(attempt):
         if hashlib.sha256(path.read_bytes()).hexdigest() != digest:
             raise ValueError('Original turn source SHA-256 mismatch: ' + name)
     source = json.loads((root / 'turn_indication_original.json').read_text())
+    readback = json.loads((root / 'turn_indication_readback_original.json').read_text())
     plan = json.loads((root / 'turn_route_plan.json').read_text())
     from indication_native import _inside, load_source
     kind = source.get('indication_form')
     load_source(root / 'turn_indication_original.json',
                 hashes['turn_indication_original.json'], kind)
+    reference = source['indicated_course_xy_m'][1]
+    actual = readback.get('physical_xy_m')
+    if (readback.get('source_sha256') != hashes['turn_indication_original.json']
+            or readback.get('reference_kind') != 'unchanged_sourced_indicated_course_point_1'
+            or readback.get('reference_xy_m') != reference
+            or not isinstance(actual, list)
+            or len(actual) != len(source['indications'])):
+        raise ValueError('Original indication readback or reference differs')
+    for point, item in zip(actual, source['indications']):
+        if (not isinstance(point, list) or len(point) != 2
+                or any(type(value) not in (int, float) or not isfinite(value)
+                       for value in point)
+                or hypot(point[0]-item['x'], point[1]-item['y']) > .05):
+            raise ValueError('Original indication position readback differs')
+    if len(actual) != 1:
+        raise ValueError('Sweep requires one source-identified indication')
+    placement_offset = hypot(actual[0][0]-reference[0], actual[0][1]-reference[1])
     if (plan.get('course_xy_m') != source['indicated_course_xy_m'] or
             plan.get('indication_form') != kind or
             plan.get('intersection_id') != source['intersection_id']):
@@ -240,6 +261,7 @@ def analyze_original_sources(attempt):
                         'path_length_m':total,
                         'inside_intersection':_inside(center,source['intersection_polygon_xy_m'])})
     return {'case_id':receipt['case_id'],'source_sha256':hashes,'samples':samples,
+            'placement_offset_m':placement_offset,
             'indication_form':kind,'intersection_id':source['intersection_id'],
             'authority_claim':source['authority_document'],
             'physical_acceptance_claimed':False,'legal_acceptance_claimed':False}
@@ -300,6 +322,8 @@ def finalize_original_sources(attempt):
     for sample in source['samples']:
         shared = {'frame':sample['frame'],'time_s':sample['time_s']}
         values = {'original_course_deviation_m':sample['deviation_m'],
+                  'realized_course_deviation_m':sample['deviation_m'],
+                  'realized_indication_placement_offset_m':source['placement_offset_m'],
                   'original_turn_path_length_m':sample['path_length_m'],
                   'intersection_occupancy':sample['inside_intersection'],
                   'turn_course_source_context':{
@@ -310,7 +334,8 @@ def finalize_original_sources(attempt):
         for name,value in values.items():
             streams[name].append(dict(shared,value=value))
     for name,entries in streams.items():
-        path = root / (name + '.jsonl')
+        path = root / 'channels' / (name + '.jsonl')
+        path.parent.mkdir(exist_ok=True)
         if path.exists():
             raise ValueError('Derived turn source channel already exists: ' + name)
         path.write_text(''.join(json.dumps(row,allow_nan=False)+'\n' for row in entries))
@@ -334,15 +359,24 @@ def native_result(attempt, report):
     evidence = []
     realized = {}
     for name in CHANNELS:
-        path = root / (name + '.jsonl')
+        path = root / 'channels' / (name + '.jsonl')
         rows = report['measurements'][name]['value']
-        evidence.append({'name':name,'unit':units[name],'reference':path.name,
+        reference='channels/' + path.name
+        evidence.append({'name':name,'unit':units[name],'reference':reference,
                          'sha256':hashlib.sha256(path.read_bytes()).hexdigest()})
-        realized[name] = {'unit':units[name],
-                          'method':'source-hashed original 20 Hz turn join',
-                          'time_window':'all original turn frames',
-                          'statistic':'sample count','reference':path.name,
-                          'value':len(rows),
+        if name == 'realized_course_deviation_m':
+            method = 'Original body-center deviation from unchanged indicated marker course over the complete turn; no legal threshold is asserted.'
+            statistic, value = 'max', max(row['value'] for row in rows)
+        elif name == 'realized_indication_placement_offset_m':
+            method = 'Original marker placement shift from the unchanged sourced in-intersection reference; no legal authority threshold is asserted.'
+            statistic, value = 'max', max(row['value'] for row in rows)
+        else:
+            method = 'source-hashed original 20 Hz turn join'
+            statistic, value = 'sample count', len(rows)
+        realized[name] = {'unit':units[name], 'method':method,
+                          'time_window':'all 160 original turn frames' if name.startswith('realized_') else 'all original turn frames',
+                          'statistic':statistic,'reference':reference,
+                          'value':value,
                           'sample_window_s':[rows[0]['time_s'],rows[-1]['time_s']]}
     deviation = max(row['value'] for row in report['measurements'][
         'original_course_deviation_m']['value'])

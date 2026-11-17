@@ -213,6 +213,11 @@ class NativeIndicationTests(unittest.TestCase):
    root=Path(directory)
    source=self.record('marker')
    (root/'turn_indication_original.json').write_text(json.dumps(source))
+   (root/'turn_indication_readback_original.json').write_text(json.dumps({
+    'source_sha256':hashlib.sha256((root/'turn_indication_original.json').read_bytes()).hexdigest(),
+    'physical_xy_m':[[0.,0.]],
+    'reference_xy_m':source['indicated_course_xy_m'][1],
+    'reference_kind':'unchanged_sourced_indicated_course_point_1'}))
    plan={'course_xy_m':source['indicated_course_xy_m'],'indication_form':'marker',
          'intersection_id':'junction-1','route_variant':'follow'}
    (root/'turn_route_plan.json').write_text(json.dumps(plan))
@@ -233,7 +238,8 @@ class NativeIndicationTests(unittest.TestCase):
     (root/(name+'.mkv')).write_bytes(b'fixture bytes only')
     put(name+'-frames.jsonl',[{'video_frame':i,'native_frame':row['frame'],
                                'time_s':row['time_s']} for i,row in enumerate(body)])
-   names=['turn_indication_original.json','turn_route_plan.json',
+   names=['turn_indication_original.json','turn_indication_readback_original.json',
+          'turn_route_plan.json',
           'turn_body_original.jsonl','trace.jsonl','video_frames.jsonl']
    names += [name+'.mkv' for name in m.CAMERAS]
    names += [name+'-frames.jsonl' for name in m.CAMERAS]
@@ -244,7 +250,13 @@ class NativeIndicationTests(unittest.TestCase):
    report=m.finalize_original_sources(root)
    self.assertEqual(set(report['measurements']),set(m.CHANNELS))
    self.assertEqual(report['measurements']['original_course_deviation_m']['value'][-1]['value'],0.)
+   self.assertEqual(report['measurements']['realized_indication_placement_offset_m']['value'][-1]['value'],0.)
    self.assertFalse(report['physical_acceptance_claimed'])
+   readback=root/'turn_indication_readback_original.json'
+   retained=readback.read_bytes();readback.unlink()
+   with self.assertRaisesRegex(ValueError,'Missing required source'):
+    m.analyze_original_sources(root)
+   readback.write_bytes(retained)
    (root/'overview.mkv').unlink()
    with self.assertRaisesRegex(ValueError,'Missing required source'):
     m.analyze_original_sources(root)
