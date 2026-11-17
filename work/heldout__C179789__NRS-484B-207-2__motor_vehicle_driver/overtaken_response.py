@@ -201,3 +201,60 @@ def measure_observed_saved(source_path, frame_map_path, trace_path):
                             (Path(source_path),Path(frame_map_path),Path(trace_path))},
             "legal_conclusion":None,
             "limitations":["Collision rays establish simulated line of sight, not actual human observation or legal compliance."]}
+
+
+def measure_audible_saved(source_path, frame_map_path, trace_path,
+                          command_path, envelope_path):
+    """Join generated signal records to original motion without inferring hearing."""
+    verified = verify_saved_sources(source_path, frame_map_path, trace_path)
+    frames = verified["frames"]
+    paths = (Path(command_path), Path(envelope_path))
+    signals = []
+    hashes = dict(verified["source_sha256"])
+    for path in paths:
+        if not path.is_file() or not path.read_bytes():
+            raise ValueError("Missing original generated signal source: " + path.name)
+        blob = path.read_bytes()
+        signals.append([json.loads(line) for line in blob.splitlines() if line.strip()])
+        hashes[path.name] = hashlib.sha256(blob).hexdigest()
+    commands, envelope = signals
+    if len(commands) != len(frames) or len(envelope) != len(frames):
+        raise ValueError("Original generated signal/frame lengths differ")
+    notices = []
+    for frame, command, audio in zip(frames, commands, envelope):
+        common = (frame["frame"], frame["time_s"], str(frame["overtaker_id"]))
+        if ((command.get("frame"), command.get("time_s"),
+             command.get("overtaker_actor_id")) != common or
+            (audio.get("frame"), audio.get("time_s"),
+             audio.get("overtaker_actor_id")) != common or
+            command.get("source_kind") != "scenario_signal_command" or
+            audio.get("source_kind") != "generated_signal_envelope" or
+            type(command.get("horn_command_requested")) is not bool or
+            frame["notice_stimulus"] != command["horn_command_requested"] or
+            audio.get("generated_rms") !=
+                (0.6 if command["horn_command_requested"] else 0.0) or
+            audio.get("acoustic_propagation_confirmed") is not None or
+            audio.get("subjective_hearing_confirmed") is not None):
+            raise ValueError("Original generated signal/frame join differs")
+        if command["horn_command_requested"]:
+            notices.append(frame)
+    if not notices:
+        raise ValueError("No original generated signal command")
+    notice = notices[0]
+    completed = [row for row in frames if row["body_pass_complete"] and
+                 row["frame"] > notice["frame"]]
+    if not completed:
+        raise ValueError("No original body pass completion after signal command")
+    complete = completed[0]
+    interval = [row for row in frames if notice["frame"] < row["frame"] < complete["frame"]]
+    if not interval:
+        raise ValueError("No precompletion motion after signal command")
+    return {"notice_kind":"audible_signal_command", "notice_frame":notice["frame"],
+            "pass_complete_frame":complete["frame"],
+            "max_right_shift_m":max(row["right_offset_m"]-notice["right_offset_m"]
+                                    for row in interval),
+            "max_precompletion_speed_delta_mps":max(row["speed_mps"]-notice["speed_mps"]
+                                                     for row in interval),
+            "source_sha256":hashes, "hearing_confirmed":None,
+            "acoustic_propagation_confirmed":None, "legal_conclusion":None,
+            "limitations":["Generated command and envelope establish the scripted signal source, not acoustic propagation or human hearing."]}

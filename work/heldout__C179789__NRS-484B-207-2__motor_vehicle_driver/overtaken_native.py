@@ -89,6 +89,20 @@ def readback(subject, overtaker, waypoint, frame, time_s, *, notice_stimulus,
     }
 
 
+def generated_signal_rows(overtaker_id, frame, time_s, requested):
+    """Retain a commanded signal and its generated envelope, not hearing proof."""
+    if type(frame) is not int or type(requested) is not bool or not math.isfinite(time_s):
+        raise ValueError("Original signal frame or command invalid")
+    common = {"frame": frame, "time_s": time_s,
+              "overtaker_actor_id": str(overtaker_id)}
+    return ({**common, "horn_command_requested": requested,
+             "source_kind": "scenario_signal_command"},
+            {**common, "generated_rms": 0.6 if requested else 0.0,
+             "source_kind": "generated_signal_envelope",
+             "acoustic_propagation_confirmed": None,
+             "subjective_hearing_confirmed": None})
+
+
 def run(plan, case_id, output, host="127.0.0.1", port=2000):
     """Acquire four original streams and frame-joined actor readbacks."""
     suffix = check_plan(plan, case_id)
@@ -109,7 +123,7 @@ def run(plan, case_id, output, host="127.0.0.1", port=2000):
     world = client.get_world()
     original = world.get_settings()
     actors, sinks = [], {}
-    pipeline = frame_map = cameras = source = None
+    pipeline = frame_map = cameras = source = signal_commands = signal_envelope = None
     try:
         settings = world.get_settings()
         settings.synchronous_mode = True
@@ -135,16 +149,19 @@ def run(plan, case_id, output, host="127.0.0.1", port=2000):
                                    required_observations=[row["term"] for row in plan.get("observations", [])])
         frame_map = FrameMap(output / "video_frames.jsonl")
         source = source_path.open("x")
+        observed_case = suffix == "observed_gives_way_holds_speed"
+        if not observed_case:
+            signal_commands = (output / "signal_command_original.jsonl").open("x")
+            signal_envelope = (output / "signal_audio_envelope_original.jsonl").open("x")
         frames = []
         start = None
         for index in range(160):
-            notice_stimulus = index >= 24
+            notice_stimulus = index >= 24 and not observed_case
             transform = subject.get_transform()
             location = transform.location
             waypoint = world.get_map().get_waypoint(location)
             if waypoint is None or waypoint.is_junction:
                 raise ValueError("Native subject road waypoint unavailable")
-            observed_case = suffix == "observed_gives_way_holds_speed"
             previous_visibility = visible_relation(world, subject, overtaker) if observed_case else None
             previous = readback(subject, overtaker, waypoint, index, index*.05,
                                 notice_stimulus=notice_stimulus,
@@ -154,7 +171,7 @@ def run(plan, case_id, output, host="127.0.0.1", port=2000):
             plan_target = subject_target(
                 suffix, notice_kind=notice_kind,
                 notice_source=("original subject-to-overtaker collision rays" if observed_case
-                               else "scripted construction stimulus") if active_notice else None,
+                               else "original generated signal command") if active_notice else None,
                 pass_complete=previous["body_pass_complete"])
             apply_subject(subject, carla.VehicleControl, plan_target,
                           right_offset_m=previous["subject_right_offset_m"],
@@ -185,6 +202,13 @@ def run(plan, case_id, output, host="127.0.0.1", port=2000):
                            if observed_case else None)
             source.write(json.dumps(row, allow_nan=False)+"\n")
             source.flush()
+            if signal_commands is not None:
+                command_row, envelope_row = generated_signal_rows(
+                    overtaker.id, frame, time_s, notice_stimulus)
+                signal_commands.write(json.dumps(command_row, allow_nan=False)+"\n")
+                signal_envelope.write(json.dumps(envelope_row, allow_nan=False)+"\n")
+                signal_commands.flush()
+                signal_envelope.flush()
             frame_map.append(frame, time_s)
             frames.append(frame)
         cameras.verify(frames)
@@ -193,6 +217,10 @@ def run(plan, case_id, output, host="127.0.0.1", port=2000):
             "notice_observed": None, "right_pass_permission_verified": None,
             "delivery_ready": False}, indent=2)+"\n")
     finally:
+        if signal_commands is not None:
+            signal_commands.close()
+        if signal_envelope is not None:
+            signal_envelope.close()
         if source is not None:
             source.close()
         if frame_map is not None:

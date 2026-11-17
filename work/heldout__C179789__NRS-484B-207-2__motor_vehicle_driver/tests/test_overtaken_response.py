@@ -17,6 +17,7 @@ def load(name):
 measure = load("overtaken_response").measure
 verify_saved_sources = load("overtaken_response").verify_saved_sources
 measure_observed_saved = load("overtaken_response").measure_observed_saved
+measure_audible_saved = load("overtaken_response").measure_audible_saved
 audit = load("overtaken_comparison_audit").audit
 controller = load("overtaken_controller")
 sys.path.insert(0, str(HERE))
@@ -157,6 +158,16 @@ class OvertakenTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,"nonfinite"):
             native.readback(subject,passing,Waypoint(),103,0.15,notice_stimulus=True)
 
+    def test_generated_signal_source_keeps_hearing_unverified(self):
+        off, silent=native.generated_signal_rows(2,100,.05,False)
+        on, sounding=native.generated_signal_rows(2,101,.10,True)
+        self.assertEqual((off["horn_command_requested"],on["horn_command_requested"]),(False,True))
+        self.assertEqual((silent["generated_rms"],sounding["generated_rms"]),(0.0,.6))
+        self.assertEqual((on["frame"],sounding["frame"]),(101,101))
+        self.assertIsNone(sounding["subjective_hearing_confirmed"])
+        with self.assertRaisesRegex(ValueError,"signal frame"):
+            native.generated_signal_rows(2,101,float("nan"),True)
+
     def test_saved_source_join_recomputes_motion_and_pass_completion(self):
         def corners(x):return [[x-1,-.5],[x+1,-.5],[x+1,.5],[x-1,.5]]
         bodies=[];mapping=[];trace=[]
@@ -202,6 +213,36 @@ class OvertakenTests(unittest.TestCase):
         self.assertEqual(result["case_id"],finalizer.CASE_ID)
         self.assertFalse(result["physical_acceptance_claimed"])
         self.assertEqual(len(result["recording_evidence"]),2)
+        observed_visibility=bodies[1]["visibility_relation"]
+        bodies[1]["visibility_relation"]=None
+        bodies[1]["notice_observed"]=None
+        sources()
+        command=[];envelope=[]
+        for index,row in enumerate(bodies):
+            c,e=native.generated_signal_rows("overtaker",row["frame"],row["time_s"],index>0)
+            command.append(c);envelope.append(e)
+        cp=self.root/"signal_command_original.jsonl"
+        ep=self.root/"signal_audio_envelope_original.jsonl"
+        cp.write_text("".join(json.dumps(row)+"\n" for row in command))
+        ep.write_text("".join(json.dumps(row)+"\n" for row in envelope))
+        audible=measure_audible_saved(*paths,cp,ep)
+        self.assertEqual((audible["notice_frame"],audible["pass_complete_frame"]),(101,103))
+        self.assertIsNone(audible["hearing_confirmed"])
+        envelope[1]["subjective_hearing_confirmed"]=True
+        ep.write_text("".join(json.dumps(row)+"\n" for row in envelope))
+        with self.assertRaisesRegex(ValueError,"signal/frame join"):
+            measure_audible_saved(*paths,cp,ep)
+        envelope[1]["subjective_hearing_confirmed"]=None
+        ep.write_text("".join(json.dumps(row)+"\n" for row in envelope))
+        self.write("config.json",{"selected_case_id":finalizer.AUDIBLE_CASE_ID,
+            "law_id":"NRS-484B-207-2","cell_id":"C179789","actor":"motor_vehicle_driver",
+            "case":{"recording_description":{"channels":[],"context_inputs":[],"limitations":[]}}})
+        audible_report=finalizer.analyze(self.root)
+        self.assertEqual(audible_report["measurements"]["pass_complete_frame"]["value"],103)
+        self.assertIsNone(audible_report["measurements"]["overtaken_response"]["value"]["hearing_confirmed"])
+        bodies[1]["visibility_relation"]=observed_visibility
+        bodies[1]["notice_observed"]=True
+        sources()
         sys.path.insert(0,str(HERE.parents[1]/"runtime/scenario_pipeline"))
         from worker_exchange.native_output import validate_result
         validate_result(result)
