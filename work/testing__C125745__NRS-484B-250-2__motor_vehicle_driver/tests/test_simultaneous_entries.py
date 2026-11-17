@@ -64,6 +64,32 @@ class EntryTests(unittest.TestCase):
             self.fixture(root,10)
             self.assertFalse(measure.analyze(root)["other_spatially_right_of_ego_approach"])
 
+    def test_original_body_entry_timing_landmarks(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp)
+            self.fixture(root)
+            observed=[]
+            for other_entry_index in (1,2,3):
+                rows=[]
+                for i in range(5):
+                    rows.append({"frame":100+i,"time_s":1+i*.05,
+                                 "governing_stop_sign_id":17,
+                                 "ego":vehicle(12 if i>=2 else 0,0,1),
+                                 "other":vehicle(12 if i>=other_entry_index else 0,
+                                                 0 if i>=other_entry_index else -10,2)})
+                frames=[{"video_frame":i,"carla_frame":row["frame"],
+                         "time_s":row["time_s"]} for i,row in enumerate(rows)]
+                (root/"crossing_history.jsonl").write_text(
+                    "".join(json.dumps(row)+"\n" for row in rows))
+                (root/"video_frames.jsonl").write_text(
+                    "".join(json.dumps(row)+"\n" for row in frames))
+                result=measure.analyze(root)
+                self.assertEqual(result["legal_conclusion"],"unresolved")
+                observed.append((result["first_body_entry"]["ego"]["frame"],
+                                 result["first_body_entry"]["other"]["frame"],
+                                 round(result["absolute_entry_time_difference_s"],2)))
+            self.assertEqual(observed,[(102,101,.05),(102,102,0),(102,103,.05)])
+
     def test_wrong_sign_and_stale_frame_rejected(self):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp);self.fixture(root)
