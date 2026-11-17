@@ -7,6 +7,7 @@ as a construction stimulus, never as proof that the driver heard or saw it.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import math
 from pathlib import Path
@@ -16,6 +17,31 @@ from right_pass_survey import collect as collect_right_pass_survey
 
 
 PREFIX = "heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__"
+
+
+def write_native_capture_receipt(output, case_id, events, *, observed):
+    """Attest only a successful, closed acquisition from retained source bytes."""
+    expected = ["capture_finished", "encoders_closed", "restoration_verified",
+                "native_exit", "owner_released"]
+    if events != expected:
+        raise ValueError("Native capture lifecycle incomplete or out of order")
+    output = Path(output)
+    names = ["overtaken_source.jsonl", "video_frames.jsonl", "trace.jsonl"]
+    if not observed:
+        names += ["signal_command_original.jsonl", "signal_audio_envelope_original.jsonl"]
+    sources = {}
+    for name in names:
+        path = output / name
+        if not path.is_file() or not path.stat().st_size:
+            raise ValueError("Native capture source missing: " + name)
+        sources[name] = hashlib.sha256(path.read_bytes()).hexdigest()
+    path = output / "native-capture-receipt.json"
+    with path.open("x") as stream:
+        json.dump({"case_id": case_id, "actual_native_capture": True,
+                   "source_sha256": sources, "events": events}, stream,
+                  indent=2, allow_nan=False)
+        stream.write("\n")
+    return path
 
 
 def check_plan(plan, case_id):
@@ -135,6 +161,7 @@ def run(plan, case_id, output, host="127.0.0.1", port=2000):
     original = world.get_settings()
     actors, sinks = [], {}
     pipeline = frame_map = cameras = source = signal_commands = signal_envelope = None
+    events = []
     try:
         settings = world.get_settings()
         settings.synchronous_mode = True
@@ -232,6 +259,7 @@ def run(plan, case_id, output, host="127.0.0.1", port=2000):
             frame_map.append(frame, time_s)
             frames.append(frame)
         cameras.verify(frames)
+        events.append("capture_finished")
         (output / "construction-observation.json").write_text(json.dumps({
             "case_id": case_id, "frames": frames,
             "notice_observed": None, "right_pass_permission_verified": None,
@@ -251,6 +279,8 @@ def run(plan, case_id, output, host="127.0.0.1", port=2000):
             cameras.close()
         for sink in sinks.values():
             sink.close()
+        if events == ["capture_finished"]:
+            events.append("encoders_closed")
         for actor in reversed(actors):
             actor.destroy()
         world.apply_settings(original)
@@ -258,6 +288,9 @@ def run(plan, case_id, output, host="127.0.0.1", port=2000):
         if (restored.synchronous_mode != original.synchronous_mode or
                 restored.fixed_delta_seconds != original.fixed_delta_seconds):
             raise ValueError("Native world settings restore failed")
+        if events == ["capture_finished", "encoders_closed"]:
+            events.append("restoration_verified")
+    return events
 
 
 def main():
@@ -279,7 +312,19 @@ def main():
     if args.run or not args.check:
         if not args.output_dir:
             raise ValueError("Native output directory required")
-        run(plan, case_id, args.output_dir, args.host, args.port)
+        output = Path(args.output_dir)
+        output.mkdir(parents=True, exist_ok=True)
+        owner = output / ".native-owner-lock"
+        with owner.open("x") as stream:
+            stream.write(case_id + "\n")
+        try:
+            events = run(plan, case_id, output, args.host, args.port)
+            events.append("native_exit")
+        finally:
+            owner.unlink()
+        events.append("owner_released")
+        write_native_capture_receipt(output, case_id, events,
+                                     observed=case_id.endswith("__observed_gives_way_holds_speed"))
 
 
 if __name__ == "__main__":

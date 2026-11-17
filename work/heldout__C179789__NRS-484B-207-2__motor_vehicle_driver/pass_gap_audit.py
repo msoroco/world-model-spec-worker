@@ -82,9 +82,9 @@ def assess(root, *, audible):
         receipt = json.loads(receipt_path.read_text()) if receipt_path.is_file() else {}
         lifecycle = ['capture_finished', 'encoders_closed', 'restoration_verified',
                      'native_exit', 'owner_released']
-        native = (provenance.get('actual_native_capture') is True and
-                  provenance.get('diagnostic_fixture') is False and
+        native = (provenance.get('diagnostic_fixture') is not True and
                   receipt.get('actual_native_capture') is True and
+                  receipt.get('native_process_exit_attested') is True and
                   receipt.get('source_sha256') == sources and
                   receipt.get('events') == lifecycle)
         status = geometry_status if native else 'unverified'
@@ -93,7 +93,7 @@ def assess(root, *, audible):
                 'first_positive_gap_frame': gap['first_positive_gap_frame'],
                 'completion_frame_after_notice': completion,
                 'diagnostic_geometry_status': geometry_status,
-                'missing_evidence': [] if native else ['source-hashed, ordered actual Native capture receipt']}},
+                'missing_evidence': [] if native else ['source-hashed actual Native capture and independent process-exit receipt']}},
                 'maneuver_completed': status == 'met',
                 'provenance_kind': 'native' if native else 'diagnostic_fixture' if provenance.get('diagnostic_fixture') else 'unverified',
                 'diagnostic_fixture_only': provenance.get('diagnostic_fixture') is True,

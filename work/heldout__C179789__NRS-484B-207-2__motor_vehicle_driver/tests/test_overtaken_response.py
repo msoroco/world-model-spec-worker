@@ -231,6 +231,31 @@ class OvertakenTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,"signal frame"):
             native.generated_signal_rows(2,101,float("nan"),True)
 
+    def test_native_receipt_requires_ordered_closure_and_retained_bytes(self):
+        names=("overtaken_source.jsonl","video_frames.jsonl","trace.jsonl",
+               "signal_command_original.jsonl","signal_audio_envelope_original.jsonl")
+        for name in names:
+            (self.root/name).write_text('{"frame":1}\n')
+        events=["capture_finished","encoders_closed","restoration_verified",
+                "native_exit","owner_released"]
+        with self.assertRaisesRegex(ValueError,"lifecycle"):
+            native.write_native_capture_receipt(self.root,native.PREFIX+"gives_way_holds_speed",
+                                                events[:-1],observed=False)
+        (self.root/names[-1]).unlink()
+        with self.assertRaisesRegex(ValueError,"source missing"):
+            native.write_native_capture_receipt(self.root,native.PREFIX+"gives_way_holds_speed",
+                                                events,observed=False)
+        (self.root/names[-1]).write_text('{"frame":1}\n')
+        path=native.write_native_capture_receipt(self.root,native.PREFIX+"gives_way_holds_speed",
+                                                 events,observed=False)
+        receipt=json.loads(path.read_text())
+        self.assertTrue(receipt["actual_native_capture"])
+        self.assertEqual(receipt["events"],events)
+        self.assertEqual(set(receipt["source_sha256"]),set(names))
+        with self.assertRaises(FileExistsError):
+            native.write_native_capture_receipt(self.root,native.PREFIX+"gives_way_holds_speed",
+                                                events,observed=False)
+
     def test_saved_source_join_recomputes_motion_and_pass_completion(self):
         def corners(x):return [[x-1,-.5],[x+1,-.5],[x+1,.5],[x-1,.5]]
         bodies=[];mapping=[];trace=[]
@@ -275,6 +300,10 @@ class OvertakenTests(unittest.TestCase):
         self.assertEqual(physical["physical_checks"]["maneuver"]["status"],"unverified")
         self.assertFalse(physical["maneuver_completed"])
         self.write("fixture-provenance.json",{"diagnostic_fixture":False,"actual_native_capture":True})
+        self.assertEqual(pass_gap.assess(self.root,audible=False)["physical_checks"]["maneuver"]["status"],"unverified")
+        native.write_native_capture_receipt(self.root,finalizer.CASE_ID,
+            ["capture_finished","encoders_closed","restoration_verified","native_exit","owner_released"],
+            observed=True)
         self.assertEqual(pass_gap.assess(self.root,audible=False)["physical_checks"]["maneuver"]["status"],"unverified")
         self.write("fixture-provenance.json",{"diagnostic_fixture":True,"actual_native_capture":False})
         bodies[3]["overtaker_corners"]=corners(2)
