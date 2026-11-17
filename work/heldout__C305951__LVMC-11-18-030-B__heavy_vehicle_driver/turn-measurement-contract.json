@@ -1,0 +1,33 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver__lawful_turn_preparation_boundary_crossing",
+  "requirements": [
+    {
+      "disposition_index": 2,
+      "requirement": "Exception when preparatory to a lawful turning movement.",
+      "source": "inputs/heldout__C305951__LVMC-11-18-030-B__heavy_vehicle_driver/assignment.json",
+      "output_key": "turn_preparation_context",
+      "method": "analyze",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native_three_lane_survey.json",
+        "video_frames.jsonl",
+        "trace.jsonl",
+        "heavy_lane_sources.jsonl",
+        "overview.mkv",
+        "approach.mkv",
+        "reference_corner.mkv",
+        "driver_reference.mkv",
+        "native_turn_plan.json",
+        "turn_intent_sources.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "turn_intent_sources.jsonl"
+    ],
+    "error_contains": "Missing required source: turn_intent_sources.jsonl"
+  }
+}
