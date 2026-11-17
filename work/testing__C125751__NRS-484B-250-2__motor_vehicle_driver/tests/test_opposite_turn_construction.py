@@ -125,6 +125,85 @@ class World:
 
 
 class OppositeTurnConstructionTest(unittest.TestCase):
+    def test_three_opposite_fallbacks_keep_case_and_change_distinct_controls(self):
+        import copy
+        base_site = dict(site(), cameras={name: [0, 0, 10, 0, 0, 0] for name in
+                                         ("overview", "approach", "reference_corner", "driver_reference")})
+        primary = {"site": base_site, "transforms": {"ego": "pose1", "other": "pose2"},
+                   "release_frames": {"ego": 8, "other": 10},
+                   "target_speeds_mps": {"ego": 5., "other": 5.}, "frames": 100}
+        fallbacks = {}
+        for name, risk in (("fallback1", "spawn_occupied"),
+                           ("fallback2", "entry_timing_missed"),
+                           ("fallback3", "camera_view_blocked")):
+            fallbacks[name] = dict(copy.deepcopy(primary), physical_risk_trigger=risk,
+                                   trigger_measurement={"observed_failure": risk},
+                                   source_review="synthetic fake-Native alternative for CPU proof")
+        fallbacks["fallback1"]["transforms"] = {"ego": "rearward_pose1", "other": "pose2"}
+        fallbacks["fallback2"]["target_speeds_mps"] = {"ego": 4., "other": 5.}
+        fallbacks["fallback3"]["site"]["cameras"]["approach"] = [0, 1, 10, 0, 0, 0]
+        validated = module.validate_opposite_fallbacks(primary, fallbacks, "ego")
+        self.assertEqual(set(validated["fallbacks"]), set(fallbacks))
+        self.assertEqual(validated["case_count_added"], 0)
+        self.assertFalse(validated["physical_or_legal_acceptance_claimed"])
+
+        actors = [Actor([11, -1], 0), Actor([11, 1], 180)]
+        world = World(actors)
+        with module.construct_opposite_turn_pair(world, {"ego": "car", "other": "car"},
+                                                 fallbacks["fallback1"]["transforms"],
+                                                 fallbacks["fallback1"]["site"], "ego"):
+            pass
+        self.assertTrue(all(actor.destroyed for actor in actors))
+        carla = SimpleNamespace(VehicleControl=lambda: SimpleNamespace(),
+                                Location=lambda **values: values,
+                                Rotation=lambda **values: values,
+                                Transform=lambda location, rotation: (location, rotation))
+        pair = {"ego": Actor([11, -1], 0), "other": Actor([11, 1], 180)}
+        decision = module.command_opposite_turn_pair(
+            carla, pair, fallbacks["fallback2"]["site"], {"ego": 1, "other": 1}, 8,
+            fallbacks["fallback2"]["release_frames"],
+            fallbacks["fallback2"]["target_speeds_mps"], "ego")
+        self.assertTrue(decision["decisions"]["ego"]["release_allowed"])
+        self.assertGreater(pair["ego"].control.throttle, 0.)
+        self.assertNotEqual(runner._camera_pose(carla, primary["site"]["cameras"]["approach"]),
+                            runner._camera_pose(carla, fallbacks["fallback3"]["site"]["cameras"]["approach"]))
+
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            chosen = fallbacks["fallback2"]
+            exact_case = "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_left_turn"
+            config = {"selected_case_id": exact_case, "law_id": "NRS-484B-250-2",
+                      "cell_id": "C125751", "turning_role": "ego", "site": chosen["site"],
+                      "candidate_plan": {"primary": primary, "fallbacks": fallbacks}}
+            construction = {"selected_case_id": exact_case,
+                            "site_sha256": hashlib.sha256(json.dumps(chosen["site"], sort_keys=True).encode()).hexdigest(),
+                            "turning_role": "ego", "candidate_variant": "fallback2",
+                            "release_frames": chosen["release_frames"],
+                            "target_speeds_mps": chosen["target_speeds_mps"],
+                            "frames": chosen["frames"]}
+            (root / "construction.json").write_text(json.dumps(construction))
+            runner._validate_candidate_construction(
+                root, config, chosen["site"], "ego", chosen["release_frames"],
+                chosen["target_speeds_mps"], chosen["frames"], chosen["transforms"])
+            with self.assertRaisesRegex(ValueError, "predeclared variant"):
+                runner._validate_candidate_construction(
+                    root, config, chosen["site"], "ego", chosen["release_frames"],
+                    chosen["target_speeds_mps"], chosen["frames"],
+                    {"ego": "unreviewed_pose", "other": "pose2"})
+
+        wrong = copy.deepcopy(fallbacks)
+        wrong["fallback2"]["physical_risk_trigger"] = "spawn_occupied"
+        with self.assertRaisesRegex(ValueError, "physical-risk trigger"):
+            module.validate_opposite_fallbacks(primary, wrong, "ego")
+        wrong = copy.deepcopy(fallbacks)
+        wrong["fallback3"]["site"]["routes"]["ego"][0] = [-9, 0]
+        with self.assertRaisesRegex(ValueError, "Camera fallback"):
+            module.validate_opposite_fallbacks(primary, wrong, "ego")
+        wrong = copy.deepcopy(fallbacks)
+        wrong["fallback1"]["release_frames"]["ego"] = 11
+        with self.assertRaisesRegex(ValueError, "release schedule"):
+            module.validate_opposite_fallbacks(primary, wrong, "ego")
+
     def test_opposing_left_turn_spawns_and_releases(self):
         actors = [Actor([11, -1], 0), Actor([11, 1], 180)]
         world = World(actors)

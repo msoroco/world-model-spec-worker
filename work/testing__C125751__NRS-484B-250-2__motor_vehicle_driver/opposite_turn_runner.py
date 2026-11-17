@@ -89,7 +89,8 @@ def _joined_image(queue, frame):
 
 
 def _validate_candidate_construction(root, config, site, turning_role,
-                                     release_frames, target_speeds_mps, frames):
+                                     release_frames, target_speeds_mps, frames,
+                                     transforms=None):
     """Bind a preseeded exact attempt to the supplied construction inputs."""
     case = "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_left_turn"
     if (config.get("selected_case_id") != case or
@@ -113,11 +114,26 @@ def _validate_candidate_construction(root, config, site, turning_role,
         raise ValueError("Exact C125751 candidate construction differs from attempted controls")
     if (type(frames) is not int or not 2 <= frames <= 1100 or
             not isinstance(release_frames, dict) or set(release_frames) != {"ego", "other"} or
-            any(type(value) is not int or not 0 <= value < frames for value in release_frames.values()) or
+            any(type(value) is not int or not 1 <= value < frames for value in release_frames.values()) or
             not isinstance(target_speeds_mps, dict) or set(target_speeds_mps) != {"ego", "other"} or
             any(type(value) not in (int, float) or not math.isfinite(value) or value <= 0
                 for value in target_speeds_mps.values())):
         raise ValueError("Bounded paired candidate control schedule required")
+    variant = construction.get("candidate_variant", "primary")
+    if variant != "primary" or "candidate_plan" in config:
+        from opposite_turn_construction import validate_opposite_fallbacks
+        plan = config.get("candidate_plan")
+        if not isinstance(plan, dict) or set(plan) != {"primary", "fallbacks"}:
+            raise ValueError("Complete predeclared opposite-turn candidate plan required")
+        validated = validate_opposite_fallbacks(plan["primary"], plan["fallbacks"], turning_role)
+        if variant not in {"primary", *validated["fallbacks"]}:
+            raise ValueError("Declared opposite-turn candidate variant required")
+        chosen = validated["primary"] if variant == "primary" else validated["fallbacks"][variant]
+        attempted = {"site": site, "transforms": transforms,
+                     "release_frames": release_frames,
+                     "target_speeds_mps": target_speeds_mps, "frames": frames}
+        if attempted != {key: chosen[key] for key in attempted}:
+            raise ValueError("Opposite-turn candidate differs from predeclared variant")
 
 
 def capture_candidate_media(output_dir, world, carla, site, turning_role,
@@ -143,7 +159,8 @@ def capture_candidate_media(output_dir, world, carla, site, turning_role,
         config = json.loads((root / "config.json").read_text())
         case_id = config.get("selected_case_id")
         _validate_candidate_construction(root, config, site, turning_role,
-                                         release_frames, target_speeds_mps, frames)
+                                         release_frames, target_speeds_mps, frames,
+                                         transforms)
         from opposite_site_probe import verify_opposite_site_packet
         reviewed = verify_opposite_site_packet(config, root)
         if reviewed["diagnostic_only"]:
