@@ -65,6 +65,230 @@ def build():
     return manifest
 
 
+OPPOSITE_ENTRYPOINT = '''"""Portable opposite-turn candidate entrypoint; diagnostic sites cannot capture."""
+import argparse
+import json
+from pathlib import Path
+
+from opposite_site_probe import verify_opposite_site_packet
+from opposite_turn_construction import validate_opposite_fallbacks
+from opposite_turn_runner import (_camera_pose, _validate_candidate_construction,
+                                  capture_candidate_media, finalize_candidate_opposite_turn)
+
+
+def check(root):
+    config = json.loads((root / "config.json").read_text())
+    proposal = json.loads((root / "construction.json").read_text())
+    metadata = proposal["candidate_construction"]
+    plan = config["candidate_plan"]
+    validated = validate_opposite_fallbacks(plan["primary"], plan["fallbacks"],
+                                            config["turning_role"])
+    variant = metadata["candidate_variant"]
+    chosen = validated["primary"] if variant == "primary" else validated["fallbacks"][variant]
+    _validate_candidate_construction(root, config, chosen["site"],
+        config["turning_role"], chosen["release_frames"],
+        chosen["target_speeds_mps"], chosen["frames"], chosen["transforms"],
+        chosen["lookahead_m"])
+    review = verify_opposite_site_packet(config, root)
+    return config, chosen, review
+
+
+def capture(root, host, port):
+    config, chosen, review = check(root)
+    if review["diagnostic_only"]:
+        raise ValueError("Diagnostic opposite-turn site cannot enter Native capture")
+    import carla  # Native dependency is deliberately lazy.
+    client = carla.Client(host, port)
+    client.set_timeout(30.0)
+    world = client.get_world()
+    if not world.get_settings().synchronous_mode:
+        raise ValueError("Dedicated Native server must already be synchronous")
+    if world.get_map().name != chosen["site"]["native_map_name"]:
+        raise ValueError("Native world differs from reviewed opposite-turn map")
+    library = world.get_blueprint_library()
+    blueprints = {role: library.find(config["blueprint_ids"][role])
+                  for role in ("ego", "other")}
+    transforms = {role: _camera_pose(carla, chosen["transforms"][role])
+                  for role in ("ego", "other")}
+    light_ids = chosen["site"]["governed_signal_ids"]
+    actors = {actor.id: actor for actor in world.get_actors()}
+    lights = {role: actors[light_ids[role]] for role in ("ego", "other")}
+    receipt = capture_candidate_media(root, world, carla, chosen["site"],
+        config["turning_role"], blueprints, transforms, chosen["release_frames"],
+        chosen["target_speeds_mps"], chosen["frames"], governed_lights=lights,
+        client=client, lookahead_m=chosen["lookahead_m"])
+    finalize_candidate_opposite_turn(root, root / "analysis-report.json")
+    return receipt
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--check", action="store_true")
+    parser.add_argument("--output-dir", type=Path)
+    parser.add_argument("--host", default="127.0.0.1")
+    parser.add_argument("--port", type=int, default=2000)
+    args = parser.parse_args()
+    root = Path(__file__).resolve().parent
+    if args.check:
+        check(root)
+    elif args.output_dir:
+        if args.output_dir.resolve() != root:
+            raise ValueError("Capture output must be the materialized exact bundle")
+        capture(root, args.host, args.port)
+    else:
+        parser.error("Select --check or --output-dir")
+'''
+
+
+OPPOSITE_BUNDLE_TEST = '''import json
+import tempfile
+import unittest
+from pathlib import Path
+from runner import check, capture
+
+
+class MaterializedOppositeBundleTest(unittest.TestCase):
+    def test_exact_candidate_binding_and_diagnostic_native_rejection(self):
+        root = Path(__file__).resolve().parents[1]
+        config, chosen, review = check(root)
+        self.assertTrue(review["diagnostic_only"])
+        self.assertEqual(config["selected_case_id"],
+            "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_left_turn")
+        self.assertEqual(set(config["candidate_plan"]["fallbacks"]),
+                         {"fallback1", "fallback2", "fallback3"})
+        with self.assertRaisesRegex(ValueError, "Diagnostic opposite-turn site"):
+            capture(root, "127.0.0.1", 2000)
+
+    def test_changed_inline_control_is_rejected(self):
+        root = Path(__file__).resolve().parents[1]
+        path = root / "construction.json"
+        original = path.read_text()
+        try:
+            value = json.loads(original)
+            value["candidate_construction"]["frames"] += 1
+            path.write_text(json.dumps(value))
+            with self.assertRaisesRegex(ValueError, "construction differs"):
+                check(root)
+        finally:
+            path.write_text(original)
+'''
+
+
+def build_opposite_offline_bundle(output_root):
+    """Generate four exact-ID, diagnostic-only bundles for pinned offline tests.
+
+    The review packet is synthetic and the Native entrypoint rejects capture.
+    Generated files stay under ignored .runtime-work, preserving returned-file cap.
+    """
+    output_root = Path(output_root).resolve()
+    if output_root.exists() or ".runtime-work" not in output_root.parts:
+        raise ValueError("Choose a fresh ignored .runtime-work output directory")
+    spec = importlib.util.spec_from_file_location(
+        "c125751_opposite_fixture", HERE / "tests/test_opposite_turn_construction.py")
+    fixture = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(fixture)
+    from opposite_turn_construction import TRIGGER_SOURCES, validate_opposite_fallbacks
+    site = dict(fixture.site(), native_map_name="TownSynthetic",
+        native_junction_id=7, crossing_polygon_source="synthetic opposite polygon",
+        approach_headings_deg={"ego": 0, "other": 180},
+        approach_geometry_source="synthetic opposite routes",
+        governed_signal_ids={"ego": 17, "other": 18},
+        device_inventory_source="synthetic signal inventory",
+        selected_stop_references=fixture.stop_references(),
+        cameras={name: [0, 0, 10, 0, 0, 0] for name in
+                 ("overview", "approach", "reference_corner", "driver_reference")})
+    primary = {"site": site,
+        "transforms": {"ego": [-10, 0, 0, 0, 0, 0],
+                       "other": [10, 0, 0, 180, 0, 0]},
+        "release_frames": {"ego": 8, "other": 10},
+        "target_speeds_mps": {"ego": 5.0, "other": 5.0},
+        "frames": 100, "lookahead_m": 5.0}
+    fallbacks = {}
+    for name, risk in (("fallback1", "spawn_occupied"),
+                       ("fallback2", "entry_timing_missed"),
+                       ("fallback3", "turn_path_missed")):
+        fallbacks[name] = dict(copy.deepcopy(primary), physical_risk_trigger=risk,
+            trigger_measurement={"source": TRIGGER_SOURCES[name][0],
+                                 "metric": TRIGGER_SOURCES[name][1],
+                                 "failure_condition": "Original source records the named engineering failure"},
+            source_review="synthetic CPU diagnostic alternative; Native review pending")
+    fallbacks["fallback1"]["transforms"]["ego"] = [-12, 0, 0, 0, 0, 0]
+    fallbacks["fallback2"]["target_speeds_mps"]["ego"] = 4.0
+    fallbacks["fallback3"]["lookahead_m"] = 3.0
+    validate_opposite_fallbacks(primary, fallbacks, "ego")
+    output_root.mkdir(parents=True)
+    case = ASSIGNMENT + "__opposite_left_turn"
+    config = {"selected_case_id": case, "law_id": "NRS-484B-250-2",
+              "cell_id": "C125751", "actor": "motor_vehicle_driver",
+              "turning_role": "ego", "site": site,
+              "candidate_plan": {"primary": primary, "fallbacks": fallbacks},
+              "blueprint_ids": {"ego": "vehicle.tesla.model3",
+                                "other": "vehicle.audi.a2"},
+              "recording_description": {"channels": [
+                  {"name": name, "unit": "structured record", "method": method,
+                   "time_window": "entire capture", "reference_frame": "original Native frame",
+                   "uncertainty": "synthetic diagnostic only", "sampling_rate_hz": 20}
+                  for name, method in (("signal_state", "original Native signal state by frame"),
+                                       ("stop_state", "original speed/body occupancy by frame"))],
+                  "context_inputs": [{"name": "entry_context", "unit": "structured record",
+                                      "method": "saved original-source join"}],
+                  "limitations": ["Synthetic opposite-turn site; no physical/legal acceptance"]}}
+    with tempfile.TemporaryDirectory() as temporary:
+        packet_root = Path(temporary)
+        config["site_review"] = fixture.write_opposite_site_packet(
+            packet_root, site, diagnostic_only=True)
+        site_files = [{"path": path.name, "content": path.read_text()}
+                      for path in sorted(packet_root.iterdir())]
+    code_files = sorted(path for path in HERE.glob("*.py") if path.name not in
+        {"runner.py", "build_diagnostic_constructions.py", "saved_source_proof.py"})
+    code_files += [HERE / "tests/test_opposite_turn_construction.py",
+                   HERE / "tests/test_opposite_site_probe.py"]
+    code_entries = [{"path": str(path.relative_to(HERE)), "content": path.read_text()}
+                    for path in code_files]
+    base_files = site_files + code_entries + [
+        {"path": "runner.py", "content": OPPOSITE_ENTRYPOINT},
+        {"path": "tests/test_opposite_bundle.py", "content": OPPOSITE_BUNDLE_TEST},
+        {"path": "config.json", "content": json.dumps(config, indent=2) + "\n"}]
+    manifest = {"format": "worker-execution-manifest", "assignment_id": ASSIGNMENT,
+                "runtime_manifest_sha256": json.loads(
+                    (HERE / "candidate-proof-manifest-v2.json").read_text())["runtime_manifest_sha256"],
+                "cases": []}
+    for variant in ("primary", "fallback1", "fallback2", "fallback3"):
+        chosen = primary if variant == "primary" else fallbacks[variant]
+        metadata = {"selected_case_id": case,
+            "site_sha256": hashlib.sha256(json.dumps(site, sort_keys=True,
+                                                  allow_nan=False).encode()).hexdigest(),
+            "turning_role": "ego", "candidate_variant": variant,
+            "release_frames": chosen["release_frames"],
+            "target_speeds_mps": chosen["target_speeds_mps"],
+            "frames": chosen["frames"], "lookahead_m": chosen["lookahead_m"]}
+        proposal = {"case_id": case, "law_id": "NRS-484B-250-2",
+                    "cell_id": "C125751", "actor": "motor_vehicle_driver",
+                    "entrypoint": "runner.py", "recording_description": config["recording_description"],
+                    "candidate_construction": metadata, "files": base_files,
+                    "status": "synthetic_diagnostic_only"}
+        path = output_root / (variant + "-construction.json")
+        _dump(path, proposal)
+        entry = {"id": variant, "construction": path.name,
+                 "construction_sha256": _sha(path)}
+        if variant == "primary":
+            manifest["cases"].append({"case_id": case, "kind": "delivery",
+                **{key: entry[key] for key in ("construction", "construction_sha256")},
+                "candidate_risk": {"status": "physical",
+                    "reason": "Sourced spawn, entry timing and turn path may fail in Native capture"},
+                "candidates": []})
+        else:
+            entry["trigger"] = fallbacks[variant]["trigger_measurement"]
+            entry["changed_knobs"] = [{
+                "fallback1": "paired reviewed spawn transforms",
+                "fallback2": "ego target speed",
+                "fallback3": "route-controller lookahead"}[variant]]
+            manifest["cases"][0]["candidates"].append(entry)
+    manifest_path = output_root / "manifest.json"
+    _dump(manifest_path, manifest)
+    return manifest_path
+
+
 def build_release_sweep(output_root, vary_role="ego"):
     """Stage four Off-signal controller variants without adding case identities.
 
@@ -458,8 +682,11 @@ if __name__ == "__main__":
     parser.add_argument("--prove-controller-command-sweep", nargs=3)
     parser.add_argument("--prove-measured-yield-sweep")
     parser.add_argument("--audit-release-attempt")
+    parser.add_argument("--opposite-offline-bundle")
     args = parser.parse_args()
-    if args.audit_release_attempt:
+    if args.opposite_offline_bundle:
+        output = {"manifest": str(build_opposite_offline_bundle(args.opposite_offline_bundle))}
+    elif args.audit_release_attempt:
         output = audit_release_attempt(args.audit_release_attempt)
     elif args.prove_fixture_release_join:
         output = prove_fixture_release_join(*args.prove_fixture_release_join)

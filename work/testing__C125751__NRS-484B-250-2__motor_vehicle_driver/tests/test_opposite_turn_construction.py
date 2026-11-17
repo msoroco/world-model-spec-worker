@@ -204,6 +204,12 @@ class OppositeTurnConstructionTest(unittest.TestCase):
             runner._validate_candidate_construction(
                 root, config, chosen["site"], "ego", chosen["release_frames"],
                 chosen["target_speeds_mps"], chosen["frames"], chosen["transforms"])
+            (root / "construction.json").write_text(json.dumps({
+                "case_id": exact_case, "candidate_construction": construction}))
+            runner._validate_candidate_construction(
+                root, config, chosen["site"], "ego", chosen["release_frames"],
+                chosen["target_speeds_mps"], chosen["frames"], chosen["transforms"])
+            (root / "construction.json").write_text(json.dumps(construction))
             with self.assertRaisesRegex(ValueError, "predeclared variant"):
                 runner._validate_candidate_construction(
                     root, config, chosen["site"], "ego", chosen["release_frames"],

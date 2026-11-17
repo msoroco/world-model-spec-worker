@@ -105,6 +105,10 @@ def _validate_candidate_construction(root, config, site, turning_role,
     except (TypeError, ValueError) as error:
         raise ValueError("Serializable finite candidate site required") from error
     construction = json.loads((root / "construction.json").read_text())
+    # The pinned offline/capture launcher writes the full inline proposal at
+    # construction.json. Preserve the same binding for direct candidate tests.
+    if construction.get("case_id") == case and "candidate_construction" in construction:
+        construction = construction["candidate_construction"]
     if (construction.get("selected_case_id") != case or
             construction.get("site_sha256") != site_digest or
             construction.get("turning_role") != turning_role or
