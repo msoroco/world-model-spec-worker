@@ -125,6 +125,28 @@ class World:
 
 
 class OppositeTurnConstructionTest(unittest.TestCase):
+    def test_native_signal_governance_requires_original_lane_readback(self):
+        candidate = {"governed_signal_ids": {"ego": 101, "other": 102},
+                     "expected_approach_lanes": {"ego": [11, -1], "other": [22, -1]}}
+        lights = {
+            "ego": SimpleNamespace(id=101, get_affected_lane_waypoints=lambda: [
+                SimpleNamespace(road_id=11, lane_id=-1)]),
+            "other": SimpleNamespace(id=102, get_affected_lane_waypoints=lambda: [
+                SimpleNamespace(road_id=22, lane_id=-1)]),
+        }
+        self.assertEqual(runner.verify_native_signal_governance(candidate, lights),
+                         {"ego": 101, "other": 102})
+        with self.assertRaisesRegex(ValueError, "Two distinct sourced governed"):
+            runner.verify_native_signal_governance(candidate, None)
+        wrong = dict(lights)
+        wrong["other"] = SimpleNamespace(id=102, get_affected_lane_waypoints=lambda: [
+            SimpleNamespace(road_id=23, lane_id=-1)])
+        with self.assertRaisesRegex(ValueError, "does not govern sourced approach lane"):
+            runner.verify_native_signal_governance(candidate, wrong)
+        wrong["other"] = SimpleNamespace(id=102)
+        with self.assertRaisesRegex(ValueError, "lane readback unavailable"):
+            runner.verify_native_signal_governance(candidate, wrong)
+
     def test_three_opposite_fallbacks_keep_case_and_change_distinct_controls(self):
         import copy
         base_site = dict(site(), cameras={name: [0, 0, 10, 0, 0, 0] for name in
@@ -435,8 +457,10 @@ class OppositeTurnConstructionTest(unittest.TestCase):
                      native_map_name="SyntheticTown",
                      device_inventory_source="synthetic fake-Native signal inventory",
                      selected_stop_references=stop_references())
-        lights = {"ego": SimpleNamespace(id=101, get_state=lambda: "Green"),
-                  "other": SimpleNamespace(id=102, get_state=lambda: "Red")}
+        lights = {"ego": SimpleNamespace(id=101, get_state=lambda: "Green",
+                                         get_affected_lane_waypoints=lambda: [SimpleNamespace(road_id=11, lane_id=-1)]),
+                  "other": SimpleNamespace(id=102, get_state=lambda: "Red",
+                                           get_affected_lane_waypoints=lambda: [SimpleNamespace(road_id=11, lane_id=1)])}
         client = object()
 
         class OriginalCapture:

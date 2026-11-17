@@ -88,6 +88,33 @@ def _joined_image(queue, frame):
     raise ValueError("Camera frame join exhausted")
 
 
+def verify_native_signal_governance(site, governed_lights):
+    """Read back the two exact signal actors and their governed approach lanes."""
+    signal_ids = site.get("governed_signal_ids")
+    lanes = site.get("expected_approach_lanes")
+    if (not isinstance(governed_lights, dict) or set(governed_lights) != {"ego", "other"} or
+            not isinstance(signal_ids, dict) or set(signal_ids) != {"ego", "other"} or
+            not isinstance(lanes, dict) or set(lanes) != {"ego", "other"} or
+            signal_ids["ego"] == signal_ids["other"]):
+        raise ValueError("Two distinct sourced governed Native signal actors required")
+    for role in ("ego", "other"):
+        light = governed_lights[role]
+        if type(signal_ids[role]) is not int or signal_ids[role] <= 0 or light.id != signal_ids[role]:
+            raise ValueError("Native signal actor ID differs from reviewed site: " + role)
+        expected = lanes[role]
+        if (not isinstance(expected, list) or len(expected) != 2 or
+                any(type(value) is not int for value in expected)):
+            raise ValueError("Sourced approach lane required: " + role)
+        try:
+            governed = {(int(waypoint.road_id), int(waypoint.lane_id))
+                        for waypoint in light.get_affected_lane_waypoints()}
+        except (AttributeError, TypeError, ValueError) as error:
+            raise ValueError("Native signal lane readback unavailable: " + role) from error
+        if tuple(expected) not in governed:
+            raise ValueError("Native signal does not govern sourced approach lane: " + role)
+    return {role: signal_ids[role] for role in ("ego", "other")}
+
+
 def _validate_candidate_construction(root, config, site, turning_role,
                                      release_frames, target_speeds_mps, frames,
                                      transforms=None, lookahead_m=5.0):
@@ -173,6 +200,7 @@ def capture_candidate_media(output_dir, world, carla, site, turning_role,
         reviewed = verify_opposite_site_packet(config, root)
         if reviewed["diagnostic_only"]:
             raise ValueError("Diagnostic opposite-turn site cannot enter Native capture")
+        verify_native_signal_governance(site, governed_lights)
         generated = {"capture", "road_geometry.json", "turn_route_context.json",
                      "stop_context.json", "signal_context.json", "body_history.jsonl",
                      "crossing_history.jsonl", "stop_history.jsonl", "signal_history.jsonl",
