@@ -1,5 +1,6 @@
 """Exercise every exact candidate through the integrated draft manifest."""
 import hashlib
+import argparse
 import json
 import os
 from pathlib import Path
@@ -17,6 +18,11 @@ def sha(path):
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--tag', default='v1')
+    args = parser.parse_args()
+    if not args.tag.replace('-', '').isalnum():
+        raise ValueError('Tag must be a simple output label')
     manifest = json.loads(MANIFEST.read_text())
     records = []
     for entry in manifest['cases']:
@@ -24,7 +30,7 @@ def main():
         slug = case_id.removeprefix(ROOT.name + '__')
         for candidate in ('primary', 'fallback1', 'fallback2', 'fallback3'):
             output = REPO / '.runtime-work' / (
-                'c150142-merged-' + slug + '-' + candidate + '-offline-v1')
+                'c150142-merged-' + slug + '-' + candidate + '-offline-' + args.tag)
             if not output.exists():
                 command = [PYTHON, str(REPO / 'runtime.py'), 'offline',
                            '--manifest', str(MANIFEST), '--case', case_id,
@@ -53,7 +59,7 @@ def main():
                             'offline_log_sha256': sha(output / 'offline.log'),
                             'offline_passed': True, 'native_executed': False})
         print(slug, 'four offline candidates pass', flush=True)
-    target = ROOT / 'update044-merged-offline-matrix.json'
+    target = ROOT / ('merged-offline-matrix-' + args.tag + '.json')
     target.write_text(json.dumps({'kind': 'integrated_draft_offline',
                                   'case_count': len(manifest['cases']),
                                   'candidate_count': len(records),
