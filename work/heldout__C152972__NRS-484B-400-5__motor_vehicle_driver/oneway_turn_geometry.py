@@ -587,6 +587,17 @@ def native_result(attempt, report):
                         "method":"source-hashed original body/map/frame join",
                         "time_window":"selected original turn interval",
                         "reference":path.name}
+    for axis in config.get("case",{}).get("sweep_measurements",[]):
+        name=axis["observable"]
+        if name not in realized or not name.endswith("_m") or axis["measurement"]["statistic"]!="min":
+            raise ValueError("unsupported original curb sweep measurement")
+        stream=root/realized[name]["reference"]
+        phase="approach" if name.startswith("approach_") else "leaving_intersection"
+        times=[row["time_s"] for line in stream.read_text().splitlines() if line.strip()
+               for row in [json.loads(line)] if row["phase"]==phase]
+        if not times:raise ValueError("sweep phase has no original samples")
+        realized[name].update(axis["measurement"])
+        realized[name]["sample_window_s"]=[min(times),max(times)]
     observed=report["measurement"]
     result={"case_id":report["case_id"],
             "measured_values":{"approach_left_curb_nearest_m":observed["approach_left_curb_nearest_m"],
