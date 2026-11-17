@@ -43,6 +43,11 @@
           "kind": "world_setup",
           "value": 17,
           "unit": "Native actor id"
+        },
+        "ego_hold_after_clear_frames": {
+          "kind": "controller",
+          "value": 0,
+          "unit": "frame"
         }
       },
       "unresolved_judgment_calls": [],
@@ -78,7 +83,7 @@
       "variable_assignments": {
         "other_release_frame": {
           "kind": "controller",
-          "value": 20,
+          "value": 40,
           "unit": "frame"
         },
         "body_entry_time_delta_s": {
@@ -110,6 +115,11 @@
           "kind": "world_setup",
           "value": 17,
           "unit": "Native actor id"
+        },
+        "ego_hold_after_clear_frames": {
+          "kind": "controller",
+          "value": 0,
+          "unit": "frame"
         }
       },
       "unresolved_judgment_calls": [
@@ -157,7 +167,7 @@
       "variable_assignments": {
         "other_release_frame": {
           "kind": "controller",
-          "value": 20,
+          "value": 40,
           "unit": "frame"
         },
         "body_entry_time_delta_s": {
@@ -189,6 +199,11 @@
           "kind": "world_setup",
           "value": 17,
           "unit": "Native actor id"
+        },
+        "ego_hold_after_clear_frames": {
+          "kind": "controller",
+          "value": 0,
+          "unit": "frame"
         }
       },
       "unresolved_judgment_calls": [
@@ -238,7 +253,7 @@
       "variable_assignments": {
         "other_release_frame": {
           "kind": "controller",
-          "value": 20,
+          "value": 40,
           "unit": "frame"
         },
         "body_entry_time_delta_s": {
@@ -270,6 +285,11 @@
           "kind": "world_setup",
           "value": 17,
           "unit": "Native actor id"
+        },
+        "ego_hold_after_clear_frames": {
+          "kind": "controller",
+          "value": 8,
+          "unit": "frame"
         }
       },
       "unresolved_judgment_calls": [
@@ -303,10 +323,10 @@
       },
       "paired_probe_id": "c125745-entry-time",
       "deliberate_differences": [
-        "other_release_frame"
+        "ego_hold_after_clear_frames"
       ],
       "probe": {
-        "primary_variable": "other_release_frame",
+        "primary_variable": "ego_hold_after_clear_frames",
         "comparison_or_standard": "original complete-body entry timing and source-grounded approach; no legal cutoff",
         "target_value_or_branch": "stop_ego_left_separated"
       }
@@ -319,7 +339,7 @@
       "variable_assignments": {
         "other_release_frame": {
           "kind": "controller",
-          "value": 20,
+          "value": 40,
           "unit": "frame"
         },
         "body_entry_time_delta_s": {
@@ -351,6 +371,11 @@
           "kind": "world_setup",
           "value": 17,
           "unit": "Native actor id"
+        },
+        "ego_hold_after_clear_frames": {
+          "kind": "controller",
+          "value": 0,
+          "unit": "frame"
         }
       },
       "unresolved_judgment_calls": [
@@ -407,13 +432,47 @@
       ],
       "status": "incomplete",
       "mode": "one_dimensional",
-      "axes": [],
-      "landmarks": [],
-      "rationale": "C125745 stop-sign synthetic diagnostics do not resolve this legal judgment; physical source and independent review inputs are required.",
+      "axes": [
+        {
+          "variable": "other_release_frame",
+          "observable": "other_first_body_entry_frame",
+          "unit": "frame",
+          "min": 32,
+          "max": 48,
+          "spacing": 8,
+          "measurement": {
+            "method": "first complete other-body intersection entry in crossing_history.jsonl joined to video_frames.jsonl",
+            "time_window": "entire 20 Hz capture",
+            "statistic": "first"
+          },
+          "range_rationale": "Frames 32 and 40 are exact first-case fallback1 and primary controller settings; frame 48 extends the same validated 20 Hz command mechanism for timing coverage. No legal cutoff is inferred.",
+          "spacing_rationale": "Eight frames are 0.4 seconds at the fixed 20 Hz control rate and separate commanded releases while retaining an intermediate setting.",
+          "feasibility_evidence": "tests/test_native_pair.py test_selected_release_frames_control_other_independently; runner.py applies frame>=other_release_frame; original-frame body entry is measured by simultaneous_entries.py"
+        }
+      ],
+      "landmarks": [
+        {
+          "name": "exact_fallback1_command_release",
+          "value": 32,
+          "unit": "frame",
+          "source": "fallback1-construction.json config.json",
+          "verification_evidence": "tests/test_native_pair.py test_selected_release_frames_control_other_independently",
+          "purpose": "coverage_landmark"
+        },
+        {
+          "name": "exact_primary_command_release",
+          "value": 40,
+          "unit": "frame",
+          "source": "construction.json config.json",
+          "verification_evidence": "tests/test_native_pair.py test_selected_release_frames_control_other_independently",
+          "purpose": "coverage_landmark"
+        }
+      ],
+      "rationale": "Fixed 20 Hz controller release sweep measures original complete-body entry frames and elapsed entry difference without a legal approximate-time threshold. Commanded setpoints are not claimed to realize a physical timing range in the synthetic fixture.",
       "variable_assignments": {
         "other_release_frame": {
           "kind": "controller",
-          "value": 20,
+          "value": 40,
           "unit": "frame"
         },
         "body_entry_time_delta_s": {
@@ -445,6 +504,11 @@
           "kind": "world_setup",
           "value": "all_Off",
           "unit": "categorical"
+        },
+        "ego_hold_after_clear_frames": {
+          "kind": "controller",
+          "value": 0,
+          "unit": "frame"
         }
       },
       "recording_description": {
@@ -471,7 +535,7 @@
         ]
       },
       "missing_inputs": [
-        "Source-reviewed crossing, actual Native motion and original camera evidence for approximately the same time"
+        "Three exact sweep-point delivery constructions and their source-bound compatibility, recorded-only saved-processing and independent-audit proofs are not yet authored; actual Native body-entry range remains unverified."
       ]
     },
     {
@@ -491,7 +555,7 @@
       "variable_assignments": {
         "other_release_frame": {
           "kind": "controller",
-          "value": 20,
+          "value": 40,
           "unit": "frame"
         },
         "body_entry_time_delta_s": {
@@ -523,6 +587,11 @@
           "kind": "world_setup",
           "value": "all_Off",
           "unit": "categorical"
+        },
+        "ego_hold_after_clear_frames": {
+          "kind": "controller",
+          "value": 0,
+          "unit": "frame"
         }
       },
       "recording_description": {
@@ -569,7 +638,7 @@
       "variable_assignments": {
         "other_release_frame": {
           "kind": "controller",
-          "value": 20,
+          "value": 40,
           "unit": "frame"
         },
         "body_entry_time_delta_s": {
@@ -601,6 +670,11 @@
           "kind": "world_setup",
           "value": "all_Off",
           "unit": "categorical"
+        },
+        "ego_hold_after_clear_frames": {
+          "kind": "controller",
+          "value": 0,
+          "unit": "frame"
         }
       },
       "recording_description": {
@@ -647,7 +721,7 @@
       "variable_assignments": {
         "other_release_frame": {
           "kind": "controller",
-          "value": 20,
+          "value": 40,
           "unit": "frame"
         },
         "body_entry_time_delta_s": {
@@ -679,6 +753,11 @@
           "kind": "world_setup",
           "value": "all_Off",
           "unit": "categorical"
+        },
+        "ego_hold_after_clear_frames": {
+          "kind": "controller",
+          "value": 0,
+          "unit": "frame"
         }
       },
       "recording_description": {

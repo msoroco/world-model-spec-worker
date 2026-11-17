@@ -118,4 +118,28 @@ class NativePairTests(unittest.TestCase):
             ego_traces.append([c['ego'] for c in trace])
         self.assertEqual(ego_traces[0],ego_traces[1])
 
+    def test_canonical_cases_bind_exact_release_and_clear_hold_controls(self):
+        proposal=json.loads((ROOT/'proposals/cases.json').read_text())
+        bindings=json.loads((ROOT/'proposals/bindings.json').read_text())
+        self.assertIn('ego_hold_after_clear_frames',
+                      {item['name'] for item in bindings['variable_parameters']})
+        constructions=('construction.json','second-construction.json',
+                       'third-construction.json','fourth-construction.json')
+        cases={item['case_id']:item for item in proposal['cases']}
+        for name in constructions:
+            construction=json.loads((ROOT/name).read_text())
+            config=json.loads(next(item['content'] for item in construction['files']
+                                   if item['path']=='config.json'))
+            case=cases[construction['case_id']]
+            values=case['variable_assignments']
+            self.assertEqual(values['other_release_frame']['value'],
+                             config['other_release_frame'])
+            self.assertEqual(values['ego_hold_after_clear_frames']['value'],
+                             config.get('ego_hold_after_clear_frames',0))
+        separated=cases[next(key for key in cases if key.endswith('__stop_ego_left_separated'))]
+        self.assertEqual(separated['deliberate_differences'],
+                         ['ego_hold_after_clear_frames'])
+        self.assertEqual(separated['probe']['primary_variable'],
+                         'ego_hold_after_clear_frames')
+
 if __name__=='__main__':unittest.main()
