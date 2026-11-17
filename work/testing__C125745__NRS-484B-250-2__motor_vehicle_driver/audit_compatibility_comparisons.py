@@ -6,6 +6,7 @@ Native recordings with all planned frames and original camera pixels.
 import hashlib
 import json
 from pathlib import Path
+from shapely.geometry import Polygon
 
 HERE = Path(__file__).resolve().parent
 EXPECTED = {
@@ -25,6 +26,77 @@ def read(path):
 
 def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def audit_surrogate_grid(points, axis):
+    """Independently remeasure CPU command/body source grids; no physical claim."""
+    expected = {'other_release_frame': (32, 40, 48),
+                'ego_hold_after_clear_frames': (0, 8, 16)}
+    require(axis in expected and set(points) == set(expected[axis]),
+            'Exact surrogate grid points required')
+    measurements = []
+    fixed_context = None
+    fixed_commands = None
+    for value in expected[axis]:
+        diagnostic = Path(points[value])
+        recipe = read(diagnostic.with_name(diagnostic.stem + '-recipe.json'))
+        require(recipe['generator']['sha256'] == sha(diagnostic),
+                'Surrogate diagnostic hash differs from recipe')
+        spec = read(diagnostic)
+        files = spec['files']
+        required = ('junction_context.json', 'crossing_history.jsonl',
+                    'video_frames.jsonl', 'controller_history.jsonl', 'trace.jsonl')
+        require(all(name in files for name in required), 'Missing original surrogate source')
+        context = json.loads(files['junction_context.json'])
+        identity = tuple(context[key] for key in
+                         ('native_map_id', 'intersection_id', 'native_stop_sign_id'))
+        if fixed_context is None:
+            fixed_context = identity
+        require(identity == fixed_context, 'Fixed source crossing or sign changed')
+        rows = [[json.loads(line) for line in files[name].splitlines()]
+                for name in required[1:]]
+        crossing, mapping, controls, trace = rows
+        require(len(crossing) == len(mapping) == len(controls) == len(trace) == 135,
+                'Incomplete 135-frame source join')
+        polygon = Polygon(context['intersection_polygon_xy_m'])
+        first = {}
+        for i, (body, frame_map, command, pose) in enumerate(zip(*rows)):
+            frame = body['frame']
+            require(frame_map['video_frame'] == i and frame_map['carla_frame'] == frame
+                    and command['frame'] == frame and pose['frame'] == frame,
+                    'Original frame join changed')
+            require(abs(body['time_s']-frame_map['time_s']) < 1e-9 and
+                    abs(body['time_s']-command['time_s']) < 1e-9,
+                    'Original timestamps changed')
+            for role in ('ego', 'other'):
+                vertices = body[role]['body_vertices_xy_m']
+                if role not in first and Polygon(vertices).intersects(polygon):
+                    first[role] = frame
+        require(set(first) == {'ego', 'other'}, 'Both original body entries required')
+        role = 'other' if axis == 'other_release_frame' else 'ego'
+        onset = next((i for i, command in enumerate(controls)
+                      if command['commands'][role]['throttle'] > 0), None)
+        require(onset == (value if role == 'other' else 80 + value),
+                'Control onset does not match sweep point')
+        constant_role = 'ego' if role == 'other' else 'other'
+        commands = [row['commands'][constant_role] for row in controls]
+        if fixed_commands is None:
+            fixed_commands = commands
+        require(commands == fixed_commands, 'Fixed actor commands changed across sweep')
+        measurements.append({'setpoint_frames': value, 'first_body_entry_frames': first,
+                             'diagnostic_sha256': sha(diagnostic)})
+    moving = 'other' if axis == 'other_release_frame' else 'ego'
+    fixed = 'ego' if moving == 'other' else 'other'
+    require([m['first_body_entry_frames'][moving] for m in measurements] ==
+            sorted(m['first_body_entry_frames'][moving] for m in measurements)
+            and len({m['first_body_entry_frames'][moving] for m in measurements}) == 3,
+            'Commanded sweep did not move measured entry')
+    require(len({m['first_body_entry_frames'][fixed] for m in measurements}) == 1,
+            'Fixed actor entry changed across sweep')
+    return {'format': 'worker-c125745-surrogate-grid-audit', 'axis': axis,
+            'points': measurements, 'source_integrity_passed': True,
+            'physical_acceptance_claimed': False, 'legal_acceptance_claimed': False,
+            'delivery_ready': False}
 
 
 def audit():

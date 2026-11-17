@@ -14,6 +14,7 @@ from finalizer import finalize
 from runner import ASSIGNMENT
 from audit_delivery import audit as audit_delivery
 from audit_comparisons import audit_pair,audit as audit_comparisons
+from audit_compatibility_comparisons import audit_surrogate_grid
 
 
 def _write_rows(path,rows):
@@ -59,6 +60,34 @@ def build_attempt(root,variant='left',map_name=None):
 
 
 class AuditTests(unittest.TestCase):
+    def test_independent_surrogate_grid_audit_and_tamper_rejection(self):
+        from build_primary_diagnostic import build
+        with tempfile.TemporaryDirectory() as tmp:
+            for axis,values in [('other_release_frame',(32,40,48)),
+                                ('ego_hold_after_clear_frames',(0,8,16))]:
+                points={}
+                for value in values:
+                    folder=Path(tmp)/'work'/(axis+str(value))
+                    folder.mkdir(parents=True)
+                    config_name='third-config.json' if axis=='ego_hold_after_clear_frames' else 'config.json'
+                    for name in (config_name,'site.json'):
+                        (folder/name).write_bytes((ROOT/name).read_bytes())
+                    build(folder,surrogate=True,
+                          config_name=config_name,
+                          diagnostic_name='third-diagnostic.json' if axis=='ego_hold_after_clear_frames' else 'diagnostic.json',
+                          recipe_name='third-diagnostic-recipe.json' if axis=='ego_hold_after_clear_frames' else 'diagnostic-recipe.json',
+                          other_release_frame=value if axis=='other_release_frame' else 40,
+                          ego_hold_after_clear_frames=value if axis=='ego_hold_after_clear_frames' else 0)
+                    points[value]=folder/('third-diagnostic.json' if axis=='ego_hold_after_clear_frames' else 'diagnostic.json')
+                report=audit_surrogate_grid(points,axis)
+                self.assertTrue(report['source_integrity_passed'])
+                self.assertFalse(report['delivery_ready'])
+                self.assertEqual(len(report['points']),3)
+                target=points[values[-1]]
+                target.write_text(target.read_text()+' ')
+                with self.assertRaisesRegex(ValueError,'hash differs'):
+                    audit_surrogate_grid(points,axis)
+
     def test_independent_source_audit_rehashes_and_rejects_stale_media(self):
         with tempfile.TemporaryDirectory() as tmp:
             root=build_attempt(Path(tmp)/'left')
