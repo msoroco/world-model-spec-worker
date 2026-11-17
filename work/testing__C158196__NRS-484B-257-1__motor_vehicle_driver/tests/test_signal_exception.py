@@ -1,5 +1,7 @@
 import importlib.util
 import json
+import subprocess
+import shutil
 import tempfile
 import unittest
 from pathlib import Path
@@ -135,7 +137,8 @@ class SignalTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp)
             ctx={"native_map_id":"TownX","intersection_id":44,"ego_road_id":7,
-                 "ego_lane_id":-1,"native_signal_id":25,
+                 "ego_lane_id":-1,"through_road_id":9,"through_lane_id":-1,
+                 "native_signal_id":25,
                  "affected_lane_source":"Native affected waypoints",
                  "signal_head_video_source":"approach.mkv",
                  "signed_entrance_source":"reference_corner.mkv",
@@ -177,6 +180,133 @@ class SignalTests(unittest.TestCase):
             (root/"video_frames.jsonl").write_text("".join(json.dumps(r)+"\n" for r in frames))
             with self.assertRaisesRegex(ValueError,"Four original camera frame joins"):
                 measure.analyze(root)
+
+    def test_four_original_camera_streams_encode_losslessly(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp)
+            sizes={name:(2,2) for name in control.CAMERAS}
+            with control.FourCameraEncoder(root,sizes) as encoder:
+                for frame in range(3):
+                    packets={name:NS(width=2,height=2,raw_data=bytes([frame,0,0,255])*4)
+                             for name in control.CAMERAS}
+                    encoder.add_packets(packets)
+                self.assertEqual(encoder.count,3)
+            for name in control.CAMERAS:
+                proc=subprocess.run(["ffprobe","-v","error","-count_frames","-select_streams","v:0",
+                    "-show_entries","stream=codec_name,nb_read_frames","-of","json",
+                    str(root/(name+".mkv"))],capture_output=True,text=True,check=True)
+                stream=json.loads(proc.stdout)["streams"][0]
+                self.assertEqual(stream["codec_name"],"ffv1")
+                self.assertEqual(stream["nb_read_frames"],"3")
+                decoded=subprocess.run(["ffmpeg","-v","error","-i",str(root/(name+".mkv")),
+                    "-f","rawvideo","-pix_fmt","bgra","pipe:1"],capture_output=True,check=True)
+                self.assertEqual(decoded.stdout,b"".join(bytes([frame,0,0,255])*4
+                                                     for frame in range(3)))
+            with self.assertRaisesRegex(ValueError,"already exists"):
+                with control.FourCameraEncoder(root,sizes):pass
+
+    def test_native_capture_owns_four_sensors_and_saved_sources(self):
+        class Sensor:
+            def __init__(self,name):self.name,self.stopped,self.destroyed=name,False,False
+            def listen(self,callback):self.callback=callback
+            def stop(self):self.stopped=True
+            def destroy(self):self.destroyed=True
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp)
+            ctx={"native_map_id":"TownX","intersection_id":44,"ego_road_id":7,
+                 "ego_lane_id":-1,"through_road_id":9,"through_lane_id":-1,
+                 "native_signal_id":25,
+                 "affected_lane_source":"Native affected waypoints",
+                 "signal_head_video_source":"approach.mkv",
+                 "signed_entrance_source":"reference_corner.mkv",
+                 "junction_source":"Native polygon",
+                 "intersection_polygon_xy_m":[[10,-5],[20,-5],[20,5],[10,5]]}
+            (root/"config.json").write_text(json.dumps({
+                "selected_case_id":"testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_controls_ego",
+                "law_id":"NRS-484B-257-1","cell_id":"C158196",
+                "recording_description":{"channels":[]}}))
+            clock={"frame":99,"x":0.0,"stale":False}
+            sensors={}
+            def spawn(name,transform,**options):
+                sensor=Sensor(name);sensors[name]=sensor;return sensor
+            def tick():
+                clock["frame"]+=1
+                clock["x"]=12.0 if clock["frame"]>=102 else 0.0
+                for name,sensor in sensors.items():
+                    fid=clock["frame"]-1 if clock["stale"] and name=="approach" else clock["frame"]
+                    sensor.callback(NS(frame=fid,timestamp=clock["frame"]*.05,
+                                       raw_data=bytes([clock["frame"]%255,0,0,255]),
+                                       width=1,height=1))
+                return clock["frame"]
+            world=NS(spawn_actor=spawn,tick=tick,get_snapshot=lambda:NS(
+                frame=clock["frame"],timestamp=NS(elapsed_seconds=clock["frame"]*.05)),
+                get_map=lambda:NS(name="TownX",get_waypoint=lambda location,project_to_road:
+                                  NS(road_id=location.road_id,lane_id=-1)))
+            ego=NS(get_transform=lambda:NS(location=NS(x=clock["x"],road_id=7)),
+                   get_velocity=lambda:NS(x=2.0,y=0.0,z=0.0),
+                   bounding_box=NS(get_world_vertices=lambda transform:[NS(x=clock["x"]+dx,y=y,z=0.0)
+                   for dx,y in ((-1,-1),(-1,1),(1,1),(1,-1))]))
+            through=NS(get_transform=lambda:NS(location=NS(x=15.0,road_id=9)),
+                       bounding_box=NS(get_world_vertices=lambda transform:[
+                           NS(x=15.0+dx,y=y,z=0.0)
+                           for dx,y in ((-1,-1),(-1,1),(1,1),(1,-1))]))
+            light=NS(id=25,get_state=lambda:"Green",get_affected_lane_waypoints=lambda:[
+                NS(road_id=7,lane_id=-1)])
+            captures=[]
+            class FakePipelineCapture:
+                def __init__(self,client,ego,output,case_id,required_observations):
+                    self.root=Path(output);self.rows=[];self.closed=None
+                    self.asserted_case=case_id
+                    (self.root/"road.xodr").write_text("<OpenDRIVE/>")
+                    (self.root/"capture").mkdir()
+                    captures.append(self)
+                def capture(self,frame,time_s):
+                    self.rows.append({"frame":frame,"time_s":time_s,
+                        "position":{"x":clock["x"],"y":0.0,"z":0.0},
+                        "heading_deg":0.0,"speed_mps":2.0})
+                    (self.root/"trace.jsonl").write_text("".join(json.dumps(row)+"\n"
+                                                    for row in self.rows))
+                    with (self.root/"capture/evidence.jsonl").open("a") as stream:
+                        stream.write(json.dumps({"original_frame":frame})+"\n")
+                def close(self,confirmed):self.closed=confirmed
+            mounts={name:{"transform":name,"attach_to":None if name=="overview" else "ego"}
+                    for name in control.CAMERAS}
+            with control.NativeSignalCapture(world,root,{"ego":ego,"through":through},light,
+                    ctx,True,{name:name for name in control.CAMERAS},mounts,
+                    object(),"selected-signal-case",[],sizes={name:(1,1) for name in control.CAMERAS},
+                    capture_factory=FakePipelineCapture) as session:
+                for _ in range(3):session.capture_tick()
+            self.assertTrue(all(sensor.stopped and sensor.destroyed for sensor in sensors.values()))
+            self.assertEqual(captures[-1].closed,True)
+            self.assertEqual(len((root/"trace.jsonl").read_text().splitlines()),3)
+            self.assertEqual(len((root/"interaction_history.jsonl").read_text().splitlines()),3)
+            self.assertTrue(measure.analyze(root)["operative_signal_controls_ego_at_entry_observed"])
+            self.assertTrue(all((root/(name+".mkv")).is_file() for name in control.CAMERAS))
+            analysis=measure.finalize(root,root/"analysis-report.json")
+            self.assertTrue(analysis["measurements"]["operative_signal_at_entry"]["value"])
+            self.assertEqual(len((root/"channels/operative_signal_control.jsonl").read_text().splitlines()),3)
+            self.assertFalse(json.loads((root/"result.json").read_text())["physical_acceptance_claimed"])
+            with tempfile.TemporaryDirectory() as missing:
+                negative=Path(missing)
+                for source in root.iterdir():
+                    if source.is_file() and source.name not in ("result.json","analysis-report.json",
+                                                                 "signal_history.jsonl"):
+                        shutil.copy2(source,negative/source.name)
+                    elif source.name=="capture":
+                        shutil.copytree(source,negative/source.name)
+                with self.assertRaisesRegex(ValueError,"Missing required source: signal_history.jsonl"):
+                    measure.finalize(negative,negative/"analysis-report.json")
+        with tempfile.TemporaryDirectory() as tmp:
+            clock.update(frame=99,x=0.0,stale=True)
+            sensors.clear()
+            with self.assertRaisesRegex(ValueError,"Stale or future"):
+                with control.NativeSignalCapture(world,tmp,{"ego":ego,"through":through},light,
+                        ctx,True,{name:name for name in control.CAMERAS},mounts,
+                        object(),"selected-signal-case",[],sizes={name:(1,1) for name in control.CAMERAS},
+                        capture_factory=FakePipelineCapture) as session:
+                    session.capture_tick()
+            self.assertTrue(all(sensor.stopped and sensor.destroyed for sensor in sensors.values()))
+            self.assertEqual(captures[-1].closed,False)
 
 
 if __name__=="__main__":unittest.main()

@@ -9,9 +9,187 @@ from contextlib import contextmanager
 import json
 import math
 from pathlib import Path
+import subprocess
+from queue import Empty, Queue
 
 
 CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
+CAMERA_SIZES = {"overview": (1920, 1080), "approach": (1280, 720),
+                "reference_corner": (1280, 720), "driver_reference": (1280, 720)}
+
+
+class FourCameraEncoder:
+    """Retain four original BGRA sensor streams in lossless FFV1 containers."""
+
+    def __init__(self, root, sizes=None, fps=20):
+        self.root = Path(root)
+        self.sizes = dict(CAMERA_SIZES if sizes is None else sizes)
+        if set(self.sizes) != set(CAMERAS) or type(fps) is not int or fps <= 0:
+            raise ValueError("Four named camera dimensions and integer rate required")
+        if any(not isinstance(size, (tuple, list)) or len(size) != 2 or
+               any(type(v) is not int or v <= 0 for v in size)
+               for size in self.sizes.values()):
+            raise ValueError("Invalid camera dimensions")
+        self.fps = fps
+        self.processes = {}
+        self.count = 0
+
+    def __enter__(self):
+        self.root.mkdir(parents=True, exist_ok=True)
+        if any((self.root / (name + ".mkv")).exists() for name in CAMERAS):
+            raise ValueError("Original camera video already exists")
+        try:
+            for name in CAMERAS:
+                width, height = self.sizes[name]
+                command = ["ffmpeg", "-hide_banner", "-loglevel", "error", "-y",
+                           "-f", "rawvideo", "-pixel_format", "bgra", "-video_size",
+                           f"{width}x{height}", "-framerate", str(self.fps),
+                           "-i", "pipe:0", "-an", "-c:v", "ffv1", "-level", "3",
+                           "-pix_fmt", "bgr0", str(self.root / (name + ".mkv"))]
+                self.processes[name] = subprocess.Popen(command, stdin=subprocess.PIPE,
+                                                        stdout=subprocess.DEVNULL,
+                                                        stderr=subprocess.PIPE)
+        except Exception:
+            self._finish(abort=True)
+            raise
+        return self
+
+    def validate_packets(self, packets):
+        if set(packets) != set(CAMERAS):
+            raise ValueError("Four original camera packets required")
+        for name in CAMERAS:
+            packet = packets[name]
+            width, height = self.sizes[name]
+            if (packet.width, packet.height) != (width, height) or len(packet.raw_data) != width * height * 4:
+                raise ValueError("Camera pixels differ from capture profile: " + name)
+
+    def add_packets(self, packets):
+        self.validate_packets(packets)
+        for name in CAMERAS:
+            self.processes[name].stdin.write(packets[name].raw_data)
+        self.count += 1
+
+    def _finish(self, abort=False):
+        failures = []
+        processes, self.processes = self.processes, {}
+        for name, process in processes.items():
+            if abort:
+                if process.poll() is None:
+                    process.kill()
+            process.stdin.close()
+            stderr = process.stderr.read().decode("utf-8", errors="replace")
+            process.stderr.close()
+            code = process.wait()
+            if not abort and (code != 0 or not (self.root / (name + ".mkv")).is_file()):
+                failures.append(name + ": " + stderr[-400:])
+        if failures:
+            raise ValueError("Four-camera FFV1 encoding failed: " + "; ".join(failures))
+
+    def __exit__(self, kind, value, trace):
+        self._finish(abort=kind is not None)
+        return False
+
+
+class NativeSignalCapture:
+    """Own four Native RGB sensors and capture the selected case per world tick.
+
+    The caller supplies exact camera blueprints/mounts and drives the vehicles
+    before each tick. An exception invalidates the attempt; raw source rows and
+    videos are never silently repaired or reused as a successful capture.
+    """
+
+    def __init__(self, world, root, actors, light, context, expected_controls_ego,
+                 camera_blueprints, camera_mounts, client, case_id, required_atoms,
+                 sizes=None, sensor_timeout_s=10, capture_factory=None):
+        self.world, self.root, self.actors, self.light = world, Path(root), actors, light
+        self.context, self.expected_controls_ego = context, expected_controls_ego
+        self.camera_blueprints, self.camera_mounts = camera_blueprints, camera_mounts
+        self.client, self.case_id, self.required_atoms = client, case_id, required_atoms
+        self.capture_factory = capture_factory
+        if not client or not isinstance(case_id, str) or not case_id or not isinstance(required_atoms, (list, tuple)):
+            raise ValueError("Original PipelineCapture identity and Core atoms required")
+        self.sizes = sizes
+        self.sensor_timeout_s = _finite(sensor_timeout_s, "sensor timeout")
+        if (not isinstance(actors, dict) or set(actors) != {"ego", "through"} or
+                set(camera_blueprints) != set(CAMERAS) or set(camera_mounts) != set(CAMERAS)):
+            raise ValueError("Exact actor pair and four camera mounts required")
+        self.sensors = {}
+        self.queues = {}
+        self.encoder = None
+        self.writer = None
+        self.pipeline_capture = None
+
+    def __enter__(self):
+        try:
+            for name in CAMERAS:
+                mount = self.camera_mounts[name]
+                if not isinstance(mount, dict) or set(mount) != {"transform", "attach_to"}:
+                    raise ValueError("Camera mount needs exact transform and attachment: " + name)
+                role = mount["attach_to"]
+                if role not in (None, "ego", "through"):
+                    raise ValueError("Unknown camera attachment: " + name)
+                options = {} if role is None else {"attach_to": self.actors[role]}
+                sensor = self.world.spawn_actor(self.camera_blueprints[name],
+                                                mount["transform"], **options)
+                if sensor is None:
+                    raise ValueError("Native camera spawn failed: " + name)
+                self.sensors[name] = sensor
+                queue = Queue()
+                self.queues[name] = queue
+                sensor.listen(queue.put)
+            self.encoder = FourCameraEncoder(self.root, self.sizes)
+            self.encoder.__enter__()
+            if self.capture_factory is None:
+                from pipeline_capture import PipelineCapture
+                self.capture_factory = PipelineCapture
+            self.pipeline_capture = self.capture_factory(
+                self.client, self.actors["ego"], self.root, self.case_id,
+                required_observations=self.required_atoms)
+            self.writer = SignalSourceWriter(self.root, self.context)
+            return self
+        except Exception:
+            self._close(True)
+            raise
+
+    def capture_tick(self):
+        frame = self.world.tick()
+        if type(frame) is not int:
+            raise ValueError("Native tick did not return a frame identity")
+        packets = {}
+        for name in CAMERAS:
+            try:
+                packet = self.queues[name].get(timeout=self.sensor_timeout_s)
+            except Empty as exc:
+                raise ValueError("Missing original camera frame: " + name) from exc
+            if packet.frame != frame:
+                raise ValueError("Stale or future original camera frame: " + name)
+            packets[name] = packet
+        self.encoder.validate_packets(packets)
+        observation = self.writer.add_tick(self.world, self.actors["ego"], self.light,
+                                           packets, self.expected_controls_ego,
+                                           through=self.actors["through"])
+        self.encoder.add_packets(packets)
+        self.pipeline_capture.capture(frame, observation[0]["time_s"])
+        return observation
+
+    def _close(self, abort):
+        try:
+            if self.pipeline_capture is not None:
+                self.pipeline_capture.close(confirmed=not abort)
+        finally:
+            try:
+                for sensor in reversed(list(self.sensors.values())):
+                    try:
+                        sensor.stop()
+                    finally:
+                        sensor.destroy()
+            finally:
+                if self.encoder is not None and self.encoder.processes:
+                    self.encoder._finish(abort=abort)
+
+    def __exit__(self, kind, value, trace):
+        self._close(abort=kind is not None)
+        return False
 
 
 def _finite(value, label):
@@ -38,14 +216,21 @@ class SignalSourceWriter:
         if any(self.context.get(key) is None for key in required):
             raise ValueError("Incomplete original signal context")
         self.paths = [self.root / name for name in
-                      ("signal_context.json", "signal_history.jsonl", "video_frames.jsonl")]
+                      ("signal_context.json", "signal_history.jsonl", "video_frames.jsonl",
+                       "interaction_history.jsonl", "control_context.json")]
         if any(path.exists() for path in self.paths):
             raise ValueError("Original signal source already exists")
         self.paths[0].write_text(json.dumps(self.context, sort_keys=True, allow_nan=False) + "\n")
+        self.paths[4].write_text(json.dumps({
+            "intersection_xy_m": self.context["intersection_polygon_xy_m"],
+            "native_map_id": self.context["native_map_id"],
+            "intersection_id": self.context["intersection_id"]},
+            sort_keys=True, allow_nan=False) + "\n")
         self.count = 0
         self.previous = None
 
-    def add_tick(self, world, ego, light, camera_packets, expected_controls_ego):
+    def add_tick(self, world, ego, light, camera_packets, expected_controls_ego,
+                 through=None):
         if type(expected_controls_ego) is not bool:
             raise ValueError("Expected Native lane governance is required")
         if not isinstance(camera_packets, dict) or set(camera_packets) != set(CAMERAS):
@@ -87,18 +272,44 @@ class SignalSourceWriter:
         velocity = ego.get_velocity()
         speed = math.sqrt(sum(_finite(getattr(velocity, axis), "ego velocity")**2
                               for axis in ("x", "y", "z")))
+        interaction = None
+        if through is not None:
+            if any(self.context.get(key) is None for key in ("through_road_id", "through_lane_id")):
+                raise ValueError("Missing sourced through-highway lane")
+            through_transform = through.get_transform()
+            through_waypoint = native_map.get_waypoint(through_transform.location,
+                                                       project_to_road=False)
+            if (through_waypoint is None or
+                    [through_waypoint.road_id, through_waypoint.lane_id] !=
+                    [self.context["through_road_id"], self.context["through_lane_id"]]):
+                raise ValueError("Through actor left sourced highway lane")
+            def vertices3(actor, actor_transform):
+                points = actor.bounding_box.get_world_vertices(actor_transform)
+                if len(points) < 4:
+                    raise ValueError("Incomplete original actor body")
+                return [[_finite(p.x, "body x"), _finite(p.y, "body y"),
+                         _finite(p.z, "body z")] for p in points]
+            interaction = {"frame": frame, "time_s": time_s,
+                           "ego": {"body_vertices_m": vertices3(ego, transform),
+                                   "road_id": waypoint.road_id, "lane_id": waypoint.lane_id},
+                           "through": {"body_vertices_m": vertices3(through, through_transform),
+                                       "road_id": through_waypoint.road_id,
+                                       "lane_id": through_waypoint.lane_id}}
         if world.get_snapshot().frame != frame:
             raise ValueError("World advanced during source observation")
         row = {"frame": frame, "time_s": time_s, "native_signal_id": light.id,
                "ego_road_id": waypoint.road_id, "ego_lane_id": waypoint.lane_id,
                "signal_state": state, "signal_controls_ego": controls,
                "ego_speed_mps": speed, "ego_body_vertices_xy_m": body}
-        frame_row = {"video_frame": self.count, "carla_frame": frame,
+        frame_row = {"video_frame": self.count, "carla_frame": frame, "native_frame": frame,
                      "time_s": time_s,
                      "camera_frames": {name: camera_packets[name].frame for name in CAMERAS}}
         for path, value in zip(self.paths[1:], (row, frame_row)):
             with path.open("a") as handle:
                 handle.write(json.dumps(value, sort_keys=True, allow_nan=False) + "\n")
+        if interaction is not None:
+            with self.paths[3].open("a") as handle:
+                handle.write(json.dumps(interaction, sort_keys=True, allow_nan=False) + "\n")
         self.previous = (frame, time_s)
         self.count += 1
         return row, frame_row
