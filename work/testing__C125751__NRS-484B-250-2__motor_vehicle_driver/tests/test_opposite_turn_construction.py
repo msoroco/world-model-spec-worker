@@ -8,6 +8,9 @@ HERE = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location("opposite_turn_construction", HERE / "opposite_turn_construction.py")
 module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(module)
+runner_spec = importlib.util.spec_from_file_location("opposite_turn_runner", HERE / "opposite_turn_runner.py")
+runner = importlib.util.module_from_spec(runner_spec)
+runner_spec.loader.exec_module(runner)
 
 
 def site():
@@ -51,6 +54,7 @@ class World:
 
     def tick(self):
         self.ticks += 1
+        return self.ticks
 
     def get_map(self):
         return self
@@ -132,6 +136,36 @@ class OppositeTurnConstructionTest(unittest.TestCase):
         self.assertAlmostEqual(result["geometry"]["routes"]["other"]["deflection_deg"], 90.)
         self.assertGreater(actors["other"].control.throttle, 0.)
         self.assertLess(actors["other"].control.steer, 0.)
+
+    def test_candidate_runner_records_original_frames_and_four_camera_joins(self):
+        actors = [Actor([11, -1], 0), Actor([11, 1], 180)]
+        world = World(actors)
+        records = []
+        carla = SimpleNamespace(VehicleControl=lambda: SimpleNamespace())
+        receipt = runner.run_candidate_opposite_turn(
+            world, carla, site(), "ego", {"ego": "car", "other": "car"},
+            {"ego": "pose1", "other": "pose2"},
+            {"ego": 1, "other": 2}, {"ego": 5., "other": 5.}, 3,
+            lambda frame: {name: frame for name in
+                           ("overview", "approach", "reference_corner", "driver_reference")},
+            records.append)
+        self.assertEqual([record["native_frame"] for record in records], [2, 3, 4])
+        self.assertEqual(receipt["frames_recorded"], 3)
+        self.assertEqual(records[0]["actor_sources"]["ego"]["xy_yaw"], [-10., 0., 0.])
+        self.assertFalse(records[0]["physical_or_legal_acceptance_claimed"])
+        self.assertTrue(all(actor.destroyed for actor in actors))
+
+    def test_candidate_runner_rejects_camera_mismatch_and_cleans_up(self):
+        actors = [Actor([11, -1], 0), Actor([11, 1], 180)]
+        carla = SimpleNamespace(VehicleControl=lambda: SimpleNamespace())
+        with self.assertRaisesRegex(ValueError, "All four camera sources"):
+            runner.run_candidate_opposite_turn(
+                World(actors), carla, site(), "ego",
+                {"ego": "car", "other": "car"},
+                {"ego": "pose1", "other": "pose2"},
+                {"ego": 1, "other": 2}, {"ego": 5., "other": 5.}, 1,
+                lambda frame: {"overview": frame}, lambda record: None)
+        self.assertTrue(all(actor.destroyed for actor in actors))
 
 
 if __name__ == "__main__":
