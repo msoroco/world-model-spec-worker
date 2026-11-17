@@ -2,6 +2,7 @@
 from __future__ import annotations
 import hashlib
 import json
+import shutil
 from pathlib import Path
 from overtaken_response import verify_saved_sources
 
@@ -110,3 +111,69 @@ def assess(root, *, audible):
                 'sources': sources, 'missing_evidence': [str(error)]}},
                 'maneuver_completed': False, 'provenance_kind': 'unverified',
                 'diagnostic_fixture_only': False, 'physical_acceptance_claimed': False}
+
+
+def diagnostic_outcomes(source_root, output_root, *, audible):
+    """Exercise all outcome branches from retained sources without claiming Native capture."""
+    source_root, output_root = Path(source_root), Path(output_root)
+    if output_root.exists():
+        raise ValueError('Diagnostic output already exists')
+    names = ['overtaken_source.jsonl', 'video_frames.jsonl', 'trace.jsonl']
+    if audible:
+        names += ['signal_command_original.jsonl', 'signal_audio_envelope_original.jsonl']
+    if any(not (source_root / name).is_file() for name in names):
+        raise ValueError('Original diagnostic source missing')
+    original_marker = source_root / 'fixture-provenance.json'
+    if not original_marker.is_file() or json.loads(original_marker.read_text()).get('diagnostic_fixture') is not True:
+        raise ValueError('Only explicitly diagnostic sources may seed diagnostic outcomes')
+    original_hashes = {name: hashlib.sha256((source_root / name).read_bytes()).hexdigest() for name in names}
+    original = assess(source_root, audible=audible)
+    if original['physical_checks']['maneuver'].get('diagnostic_geometry_status') != 'met':
+        raise ValueError('Original diagnostic geometry does not complete after notice')
+    output_root.mkdir(parents=True)
+    reports = {}
+    for kind in ('complete_motion', 'incomplete_motion', 'missing_evidence'):
+        target = output_root / kind
+        target.mkdir()
+        for name in names:
+            if kind == 'missing_evidence' and name == 'trace.jsonl':
+                continue
+            shutil.copyfile(source_root / name, target / name)
+        shutil.copyfile(original_marker, target / original_marker.name)
+        if kind == 'incomplete_motion':
+            completion = original['physical_checks']['maneuver']['completion_frame_after_notice']
+            bodies = [json.loads(row) for row in (target / names[0]).read_text().splitlines() if row.strip()]
+            keep = sum(row['frame'] < completion for row in bodies)
+            if keep < 2 or keep >= len(bodies):
+                raise ValueError('Cannot construct a precompletion diagnostic interval')
+            for name in names:
+                rows = [json.loads(row) for row in (target / name).read_text().splitlines() if row.strip()]
+                rows = rows[:keep]
+                if name == 'video_frames.jsonl':
+                    for index, row in enumerate(rows):
+                        row['video_frame'] = index
+                (target / name).write_text(''.join(json.dumps(row, sort_keys=True) + '\n' for row in rows))
+        result = assess(target, audible=audible)
+        measured = result['physical_checks']['maneuver']
+        expected = {'complete_motion': 'met', 'incomplete_motion': 'not_met'}.get(kind)
+        if measured['status'] != 'unverified' or result['maneuver_completed']:
+            raise ValueError('Diagnostic fixture was promoted to Native completion')
+        if expected and measured.get('diagnostic_geometry_status') != expected:
+            raise ValueError('Diagnostic fixture did not exercise requested geometry branch')
+        if kind == 'missing_evidence' and 'trace.jsonl' not in measured.get('missing_evidence', []):
+            raise ValueError('Missing-source fixture was accepted')
+        reports[kind] = {'source_sha256': measured['sources'], 'result': result}
+    return {'format': 'worker-overtaken-physical-diagnostic-outcomes',
+            'source_root_sha256': original_hashes, 'fixtures': reports,
+            'diagnostic_fixture_only': True, 'physical_acceptance_claimed': False}
+
+
+if __name__ == '__main__':
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--source', required=True)
+    parser.add_argument('--output', required=True)
+    parser.add_argument('--audible', action='store_true')
+    args = parser.parse_args()
+    report = diagnostic_outcomes(args.source, args.output, audible=args.audible)
+    (Path(args.output) / 'diagnostic-outcomes.json').write_text(json.dumps(report, indent=2) + '\n')

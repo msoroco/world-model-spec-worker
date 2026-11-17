@@ -253,10 +253,23 @@ class SourceResponse(unittest.TestCase):
         dispositions=json.loads((package/'case-plan.json').read_text())['requirement_dispositions']
         self.assertEqual(len(validate(contract,dispositions,script.read_text(),case_id=CASE_ID)),2)
         self.assertEqual(len(verify_report(contract,json.loads(saved.read_text()),attempt)),2)
-        from delivery_audit import audit as independent_audit
+        from delivery_audit import audit as independent_audit, _join_timeline
         accepted=independent_audit(attempt,saved,package/'measurement-contract.json')
         self.assertTrue(accepted['software_source_join_passed'])
         self.assertFalse(accepted['physical_acceptance_claimed'])
+        self.assertEqual(accepted['frame_count'],6)
+        self.assertEqual(set(accepted['source_decode']),{
+            'overview.mkv','approach.mkv','reference_corner.mkv','driver_reference.mkv'})
+        self.assertTrue(all(row['frames']==6 and row['dimensions']==[8,4]
+                            for row in accepted['source_decode'].values()))
+        frame_map=(attempt/'video_frames.jsonl')
+        original_map=frame_map.read_bytes()
+        altered=[json.loads(line) for line in original_map.splitlines()]
+        altered[2]['native_frame']+=1
+        frame_map.write_text(''.join(json.dumps(row)+'\n' for row in altered))
+        with self.assertRaisesRegex(ValueError,'canonical frame map differs'):
+            _join_timeline(attempt,inventory)
+        frame_map.write_bytes(original_map)
         pupil=(attempt/'pupil_original.jsonl').read_bytes()
         (attempt/'pupil_original.jsonl').unlink()
         with self.assertRaisesRegex(ValueError,'Missing required source: pupil_original.jsonl'):
