@@ -4969,5 +4969,330 @@
       "log_sha256": "c04e9fc8c63fcbc12a9b7120a06fa7125e2ca56ca59a697754e4d52aa2733750",
       "source_tamper": "oneway_geometry_original.json was changed after curb_source_receipt.json was recorded; ignored diagnostic copy only"
     }
+  },
+  "candidate_proof_materialization_trial_20261117": {
+    "status": "direct pinned candidate validation passed for first exact case primary and fallback1; proof files temporarily materialized and verified byte-for-byte, then removed to restore the 10,200-file return ceiling",
+    "index": {
+      "format": "worker-candidate-proof-materialization-v1",
+      "assignment_id": "heldout__C152972__NRS-484B-400-5__motor_vehicle_driver",
+      "case_plan_sha256": "3e71b4b19eb6a37b8a19f22a2490a47c0cf54e77673b0096f6dc1fb0f48b2d47",
+      "selected_case": "heldout__C152972__NRS-484B-400-5__motor_vehicle_driver__approach_near_depart_near",
+      "materialized": [
+        {
+          "candidate_id": "primary",
+          "construction": "first-primary-construction.json",
+          "construction_sha256": "731ceb54f291692e26903622f6018dbfe5ca8f536227b59b791c122e8469bb6a",
+          "offline": {
+            "log": "exact-offline-shared.log",
+            "log_sha256": "6f283ee6225d2cef4c0127d95456a6f954c45141c92b97dd89016cb1c630e8f4",
+            "exit_code": 0
+          },
+          "compatibility": {
+            "receipt": "first-primary-compatibility.json",
+            "sha256": "5ddf9cf7de465fba2d9c8e9c5ddab45833226495ae99df0dfae726968a62ca5e",
+            "log": "compatibility-analysis-empty.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "first-primary-negative.log",
+            "negative_log_sha256": "4b31be0fd54c073a204e6a3e46b973281613351d86cab0c9c6a8c89b814ea0b9"
+          }
+        },
+        {
+          "candidate_id": "fallback1",
+          "construction": "first-fallback1-construction.json",
+          "construction_sha256": "d6ff5f34bbd7b68918c51a6b41c9d0ed6855fd859c1181b0c04bb9ba6ba9f02d",
+          "offline": {
+            "log": "exact-offline-shared.log",
+            "log_sha256": "6f283ee6225d2cef4c0127d95456a6f954c45141c92b97dd89016cb1c630e8f4",
+            "exit_code": 0
+          },
+          "compatibility": {
+            "receipt": "first-fallback1-compatibility.json",
+            "sha256": "57942087f1a1d57fb5306b364bfafd27ddcfe86d80beb68140b77bb461b63154",
+            "log": "compatibility-analysis-empty.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "first-fallback1-negative.log",
+            "negative_log_sha256": "179f3224f07027fbbc3f4114667a56319a74eb0d083e545e44744acad881dcd4"
+          }
+        }
+      ],
+      "remaining_candidates": [
+        "fallback2",
+        "fallback3",
+        "primary",
+        "fallback1",
+        "fallback2",
+        "fallback3",
+        "primary",
+        "fallback1",
+        "fallback2",
+        "fallback3"
+      ],
+      "note": "Current exact receipts retained byte-for-byte; no readiness claim"
+    },
+    "validator_result": {
+      "case_id": "heldout__C152972__NRS-484B-400-5__motor_vehicle_driver__approach_near_depart_near",
+      "fallbacks": [
+        "fallback1"
+      ]
+    },
+    "returned_separate_proof_files": false,
+    "remaining_action": "Create returned exact proof files and bind all three fallbacks per case without exceeding file budget"
+  },
+  "semantic_stage_draft_20261117": {
+    "validation": "pinned stage validator passed relevance_batch, relevance, template, two judgment_observables and bindings",
+    "relevance": {
+      "cell_id": "C152972",
+      "actor": "motor_vehicle_driver",
+      "status": "draft",
+      "relevant_laws": [
+        {
+          "law_id": "NRS-484B-400-5",
+          "quote": "If the driver of a vehicle intends to turn at an intersection and: The turn is a left turn where both intersecting highways are one-way, both the approach for the left turn and the left turn must be made as close as practicable to the left-hand curb or edge of the highway.",
+          "applies_to": [
+            "motor_vehicle_driver"
+          ],
+          "relevance_type": "specific_match",
+          "confidence": "high",
+          "notes": "Frozen one-way-to-one-way left-turn curb cell; practicability remains an unresolved judgment from original source geometry and motion."
+        }
+      ],
+      "borderline_excluded": []
+    },
+    "template": {
+      "template_id": "NRS-484B-400-5@motor_vehicle_driver",
+      "law_id": "NRS-484B-400-5",
+      "actor": "motor_vehicle_driver",
+      "status": "draft",
+      "quote": "If the driver of a vehicle intends to turn at an intersection and: The turn is a left turn where both intersecting highways are one-way, both the approach for the left turn and the left turn must be made as close as practicable to the left-hand curb or edge of the highway.",
+      "structure": {
+        "law_id": "NRS-484B-400-5",
+        "activation": {
+          "condition": "Vehicle intends a left turn at an intersection where both intersecting highways are one-way.",
+          "numeric_conditions": []
+        },
+        "obligation": {
+          "type": "required_method",
+          "description": "Both approach and left turn must be made as close as practicable to the left-hand curb or edge of the highway.",
+          "numeric_conditions": []
+        },
+        "exceptions": [],
+        "timing": {
+          "description": "Measure approach separately from the left turn and leaving-intersection interval.",
+          "numeric_conditions": []
+        },
+        "judgment_calls_needed": [
+          {
+            "phrase": "as close as practicable to the left-hand curb or edge on approach",
+            "note": "Retain source one-way directionality and original approach body-to-left-curb geometry; no legal numeric cutoff."
+          },
+          {
+            "phrase": "as close as practicable to the left-hand curb or edge through the turn",
+            "note": "Retain original leaving-intersection body-to-destination-left-curb geometry; no legal numeric cutoff."
+          }
+        ]
+      },
+      "parameter_refs": [
+        {
+          "name": "approach_left_curb_setpoint_m",
+          "kind": "controller",
+          "range_or_domain": "Finite engineering target values 0.5 and 1.5 m, not a legal cutoff"
+        },
+        {
+          "name": "departure_left_curb_setpoint_m",
+          "kind": "controller",
+          "range_or_domain": "Finite engineering target values 0.5 and 1.5 m, not a legal cutoff"
+        },
+        {
+          "name": "approach_left_curb_nearest_m",
+          "kind": "subject_behavior",
+          "range_or_domain": "Original source-joined body-corner minimum distance in meters"
+        },
+        {
+          "name": "departure_left_curb_nearest_m",
+          "kind": "subject_behavior",
+          "range_or_domain": "Original source-joined body-corner minimum distance in meters"
+        }
+      ]
+    },
+    "judgment_observables": [
+      {
+        "template_id": "NRS-484B-400-5@motor_vehicle_driver",
+        "phrase": "as close as practicable to the left-hand curb or edge on approach",
+        "note": "Retain source one-way directionality and original approach body-to-left-curb geometry; no legal numeric cutoff.",
+        "status": "draft",
+        "observable_requirements": {
+          "observables": [
+            {
+              "name": "approach_left_curb_nearest_m",
+              "unit": "m",
+              "description": "Original source-joined nearest body corner to left curb over the applicable turn phase."
+            }
+          ],
+          "context_inputs": [],
+          "sweep_dimensions": [
+            {
+              "name": "approach_left_curb_nearest_m",
+              "unit": "m",
+              "description": "Realized curb distance, sampled physically without a legal threshold."
+            }
+          ],
+          "landmarks": [],
+          "recording_needs": [
+            {
+              "name": "approach_left_curb_nearest_m",
+              "unit": "m",
+              "description": "Source-retained per-frame body-to-left-curb stream."
+            },
+            {
+              "name": "original_one_way_context",
+              "unit": "structured",
+              "description": "Original one-way/curb geometry context."
+            }
+          ],
+          "limitations": [
+            "Diagnostic CPU geometry does not establish actual CARLA motion or legal practicability."
+          ]
+        }
+      },
+      {
+        "template_id": "NRS-484B-400-5@motor_vehicle_driver",
+        "phrase": "as close as practicable to the left-hand curb or edge through the turn",
+        "note": "Retain original leaving-intersection body-to-destination-left-curb geometry; no legal numeric cutoff.",
+        "status": "draft",
+        "observable_requirements": {
+          "observables": [
+            {
+              "name": "departure_left_curb_nearest_m",
+              "unit": "m",
+              "description": "Original source-joined nearest body corner to left curb over the applicable turn phase."
+            }
+          ],
+          "context_inputs": [],
+          "sweep_dimensions": [
+            {
+              "name": "departure_left_curb_nearest_m",
+              "unit": "m",
+              "description": "Realized curb distance, sampled physically without a legal threshold."
+            }
+          ],
+          "landmarks": [],
+          "recording_needs": [
+            {
+              "name": "departure_left_curb_nearest_m",
+              "unit": "m",
+              "description": "Source-retained per-frame body-to-left-curb stream."
+            },
+            {
+              "name": "original_left_curb_geometry",
+              "unit": "structured",
+              "description": "Original one-way/curb geometry context."
+            }
+          ],
+          "limitations": [
+            "Diagnostic CPU geometry does not establish actual CARLA motion or legal practicability."
+          ]
+        }
+      }
+    ],
+    "returned_stage_files": false,
+    "remaining": "Case assignments need the two stream observable parameters; baseline, complete expanded canonical sweep cases, source-hashed stage files and semantic index remain worker-owned CPU work",
+    "bindings": {
+      "cell_id": "C152972",
+      "actor": "motor_vehicle_driver",
+      "status": "draft",
+      "established_contexts": [
+        "Frozen one-way source and destination left-turn curb cell; physical motion and practicability remain open."
+      ],
+      "law_refs": [
+        {
+          "template_id": "NRS-484B-400-5@motor_vehicle_driver",
+          "binding_kind": "direct"
+        }
+      ],
+      "context_refs": [],
+      "fixed_parameters": [
+        {
+          "name": "cell_layout",
+          "value": "one_way_to_one_way_intersection",
+          "rationale": "Frozen catalog cell"
+        },
+        {
+          "name": "cell_maneuver",
+          "value": "left_turn",
+          "rationale": "Frozen catalog cell"
+        },
+        {
+          "name": "cell_control",
+          "value": "curb",
+          "rationale": "Frozen catalog cell"
+        }
+      ],
+      "variable_parameters": [
+        {
+          "name": "one_way_source_destination",
+          "kind": "world_setup",
+          "range_or_domain": "Both source and destination highways one-way",
+          "used_by_laws": [
+            "NRS-484B-400-5"
+          ]
+        },
+        {
+          "name": "turn_direction",
+          "kind": "controller",
+          "range_or_domain": "Left turn only",
+          "used_by_laws": [
+            "NRS-484B-400-5"
+          ]
+        },
+        {
+          "name": "approach_left_curb_setpoint_m",
+          "kind": "controller",
+          "range_or_domain": "Finite approach engineering targets 0.5 and 1.5 m",
+          "used_by_laws": [
+            "NRS-484B-400-5"
+          ]
+        },
+        {
+          "name": "departure_left_curb_setpoint_m",
+          "kind": "controller",
+          "range_or_domain": "Finite departure engineering targets 0.5 and 1.5 m",
+          "used_by_laws": [
+            "NRS-484B-400-5"
+          ]
+        },
+        {
+          "name": "realized_approach_left_curb_m",
+          "kind": "subject_behavior",
+          "range_or_domain": "Original source-joined approach curb distance, no legal threshold",
+          "used_by_laws": [
+            "NRS-484B-400-5"
+          ]
+        },
+        {
+          "name": "realized_departure_left_curb_m",
+          "kind": "subject_behavior",
+          "range_or_domain": "Original source-joined departure curb distance, no legal threshold",
+          "used_by_laws": [
+            "NRS-484B-400-5"
+          ]
+        },
+        {
+          "name": "approach_left_curb_nearest_m",
+          "kind": "subject_behavior",
+          "range_or_domain": "Original source-joined approach stream measured per frame",
+          "used_by_laws": [
+            "NRS-484B-400-5"
+          ]
+        },
+        {
+          "name": "departure_left_curb_nearest_m",
+          "kind": "subject_behavior",
+          "range_or_domain": "Original source-joined departure stream measured per frame",
+          "used_by_laws": [
+            "NRS-484B-400-5"
+          ]
+        }
+      ]
+    }
   }
 }
