@@ -23,7 +23,7 @@ SPEC.loader.exec_module(SOURCE)
 VIEWS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
 
-def prepare(case, candidate, attempt, media_from):
+def prepare(case, candidate, attempt, media_from, manifest_override=None):
     service = case.rsplit('_', 1)[0] if not case.endswith('no_loading') else case[:-len('_no_loading')]
     if service not in MANIFESTS or case not in tuple(
             name + '_' + boundary for name in MANIFESTS
@@ -38,7 +38,10 @@ def prepare(case, candidate, attempt, media_from):
         raise ValueError('Diagnostic acquisition and media belong under .runtime-work')
     if attempt.exists():
         raise ValueError('Use a fresh acquisition directory')
-    materialize(MANIFESTS[service], ROOT.name + '__' + case, attempt, candidate)
+    manifest = Path(manifest_override).resolve() if manifest_override else MANIFESTS[service]
+    if manifest_override and (service != 'limo' or manifest != ROOT / 'execution-manifest-diagnostic-limo_below-draft-v2.json'):
+        raise ValueError('Only the corrected limousine draft manifest is supported')
+    materialize(manifest, ROOT.name + '__' + case, attempt, candidate)
     SOURCE.source_rows(attempt)
     expected = json.loads((attempt / 'config.json').read_text())['capture_frames']
     actual = json.loads((media_from / 'config.json').read_text())['capture_frames']
@@ -61,6 +64,7 @@ if __name__ == '__main__':
     parser.add_argument('--candidate', default='primary')
     parser.add_argument('--attempt', required=True)
     parser.add_argument('--media-from', required=True)
+    parser.add_argument('--manifest')
     args = parser.parse_args()
     print(json.dumps(prepare(args.case, args.candidate, args.attempt,
-                             args.media_from), sort_keys=True))
+                             args.media_from, args.manifest), sort_keys=True))
