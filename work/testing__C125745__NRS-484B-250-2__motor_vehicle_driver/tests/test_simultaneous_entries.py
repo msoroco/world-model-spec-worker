@@ -26,11 +26,11 @@ def vehicle(x,y,road):
             "body_vertices_xy_m":[[x+dx,y+dy] for dx,dy in ((-1,-1),(-1,1),(1,1),(1,-1))]}
 
 
-def kinetic_rows(release_frame, ego_hold_after_clear_frames=0):
+def kinetic_rows(release_frame, ego_hold_after_clear_frames=0, with_controls=False):
     """CPU-only command-to-body surrogate; frame 80 is measured conflict clear."""
     carla=NS(VehicleControl=lambda:NS())
     ego,other=Actor(8,0,speed=.05),Actor(15,-15,speed=0)
-    progress={'ego':1,'other':1};stopped=False;rows=[]
+    progress={'ego':1,'other':1};stopped=False;rows=[];control_rows=[]
     for i in range(135):
         progress,stopped,commands=step_pair(
             carla,ego,other,scene(),progress,stopped,
@@ -50,10 +50,34 @@ def kinetic_rows(release_frame, ego_hold_after_clear_frames=0):
                      'governing_stop_sign_id':17,
                      'ego':vehicle(ego.pose.location.x,0,1),
                      'other':vehicle(15,other.pose.location.y,2)})
-    return rows
+        control_rows.append({'frame':1000+i,'time_s':i*.05,
+                             'ego_stopped_once':stopped,
+                             'other_conflict_clear':i>=80+ego_hold_after_clear_frames,
+                             'commands':commands})
+    return (rows,control_rows) if with_controls else rows
 
 
 class EntryTests(unittest.TestCase):
+    def test_surrogate_diagnostic_binds_commands_and_original_body_frames(self):
+        from build_primary_diagnostic import build
+        with tempfile.TemporaryDirectory() as tmp:
+            folder=Path(tmp)/'work'/'case';folder.mkdir(parents=True)
+            for name in ('config.json','site.json'):
+                (folder/name).write_bytes((ROOT/name).read_bytes())
+            report=build(folder,surrogate=True,other_release_frame=48)
+            self.assertEqual(report['original_frames'],135)
+            data=json.loads((folder/'diagnostic.json').read_text())
+            files=data['files']
+            for name in ('crossing_history.jsonl','video_frames.jsonl',
+                         'controller_history.jsonl','trace.jsonl','junction_context.json'):
+                (folder/name).write_text(files[name])
+            controls=[json.loads(line) for line in files['controller_history.jsonl'].splitlines()]
+            self.assertEqual([i for i,row in enumerate(controls)
+                              if row['commands']['other']['throttle']>0][0],48)
+            self.assertEqual(measure.analyze(folder)['first_body_entry']['other']['frame'],1095)
+            self.assertEqual(len(data['graphs']),270)
+            self.assertEqual(len(data['videos']),4)
+
     def test_native_stop_sign_governs_approach(self):
         class Actors(list):
             def filter(self,pattern):return self
