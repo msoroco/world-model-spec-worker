@@ -11,6 +11,7 @@ BASE = "heldout__C152972__NRS-484B-400-5__motor_vehicle_driver__"
 PAIRS = {
     "approach_left_curb_position": (BASE + "approach_near_depart_near", BASE + "approach_far_depart_near", "approach", "leaving_intersection"),
     "turn_departure_curb_position": (BASE + "approach_near_depart_near", BASE + "approach_near_depart_far", "leaving_intersection", "approach"),
+    "turn_departure_left_curb_position": (BASE + "approach_near_depart_near", BASE + "approach_near_depart_far", "leaving_intersection", "approach"),
 }
 
 
