@@ -599,6 +599,103 @@ def prove_measured_yield_sweep(output_path):
     return proof
 
 
+def prove_opposite_entry_sweep(output_root):
+    """Run paired original-frame entry offsets through finalizer and independent audit.
+
+    These are authored diagnostic body tracks. They test the saved-source join
+    and sensitivity to entry order, never Native motion or a legal time cutoff.
+    """
+    output_root = Path(output_root).resolve()
+    if output_root.exists() or ".runtime-work" not in output_root.parts:
+        raise ValueError("Choose a fresh ignored .runtime-work output directory")
+    spec = importlib.util.spec_from_file_location(
+        "c125751_opposite_source_fixture", HERE / "tests/test_opposite_turn_construction.py")
+    fixture = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(fixture)
+    from shapely.geometry import Polygon
+    from opposite_turn_runner import analyze_candidate_opposite_entry, finalize_candidate_opposite_turn, _stop_state
+    from opposite_site_probe import audit_opposite_candidate
+
+    output_root.mkdir(parents=True)
+    receipts = []
+    for ego_index, other_index in ((1, 3), (1, 2), (1, 1), (2, 1), (3, 1)):
+        root = output_root / f"ego-{ego_index}-other-{other_index}"
+        root.mkdir()
+        fixture.DeviceSourceJoinTests()._opposite_finalizer_sources(root)
+        original = [json.loads(line) for line in
+                    (root / "crossing_history.jsonl").read_text().splitlines()]
+        polygon = Polygon(json.loads((root / "road_geometry.json").read_text())[
+            "intersection_polygon_xy_m"])
+        crossing, signals, stops, mapping, bodies, trace, evidence = ([] for _ in range(7))
+        for index in range(5):
+            frame, time_s = 100 + index, index * .05
+            row = {"frame": frame, "time_s": time_s}
+            for role, entry_index in (("ego", ego_index), ("other", other_index)):
+                row[role] = copy.deepcopy(original[1 if index >= entry_index else 0][role])
+            crossing.append(row)
+            signals.append({"frame": frame, "time_s": time_s,
+                "native_signal_id": 17, "other_native_signal_id": 18,
+                "state": "Off", "other_state": "Off"})
+            stops.append({"frame": frame, "time_s": time_s,
+                **{role: _stop_state(row[role], polygon) for role in ("ego", "other")}})
+            mapping.append({"carla_frame": frame, "time_s": time_s,
+                            "video_frame": index})
+            bodies.append({"native_frame": frame, "frame_index": index,
+                "turning_role": "ego", "actor_sources": {
+                    role: row[role] for role in ("ego", "other")},
+                "camera_source_frames": {name: frame for name in
+                    ("overview", "approach", "reference_corner", "driver_reference")}})
+            trace.append({"frame": frame, "time_s": time_s,
+                          "position_m": [float(index), 0., 0.]})
+            evidence.append({"original_frame": frame, "recording_time_s": time_s})
+        for name, values in (("crossing_history.jsonl", crossing),
+                             ("signal_history.jsonl", signals),
+                             ("stop_history.jsonl", stops),
+                             ("video_frames.jsonl", mapping),
+                             ("body_history.jsonl", bodies),
+                             ("trace.jsonl", trace),
+                             ("capture/evidence.jsonl", evidence)):
+            (root / name).write_text("".join(json.dumps(value) + "\n" for value in values))
+        config_path = root / "config.json"
+        config = json.loads(config_path.read_text())
+        config["duration_s"] = .25
+        _dump(config_path, config)
+        before = analyze_candidate_opposite_entry(root)
+        analysis_path = root / "analysis-report.json"
+        measured = finalize_candidate_opposite_turn(root, analysis_path)
+        audited = audit_opposite_candidate(root, analysis_path)
+        expected = round((ego_index - other_index) * .05, 9)
+        if (round(measured["turning_minus_other_entry_time_s"], 9) != expected or
+                measured["first_body_entry"] != before["first_body_entry"] or
+                not audited["software_audit_passed"]):
+            raise ValueError("Opposite original-frame entry sweep disagrees with independent audit")
+        body_path = root / "body_history.jsonl"
+        saved_body = body_path.read_bytes()
+        body_path.write_bytes(saved_body + b" ")
+        try:
+            audit_opposite_candidate(root, analysis_path)
+        except ValueError:
+            pass
+        else:
+            raise ValueError("Independent audit accepted changed original body source")
+        finally:
+            body_path.write_bytes(saved_body)
+        receipts.append({"ego_entry_index": ego_index,
+                         "other_entry_index": other_index,
+                         "turning_minus_other_entry_time_s": expected,
+                         "body_history_sha256": _sha(body_path),
+                         "analysis_sha256": _sha(analysis_path),
+                         "independent_audit_passed": True,
+                         "changed_body_source_rejected": True})
+    proof = {"format": "worker-c125751-opposite-entry-saved-diagnostic-sweep",
+             "builder_sha256": _sha(HERE / "build_diagnostic_constructions.py"),
+             "receipts": receipts, "native_motion_proven": False,
+             "decodable_video_proven": False, "legal_time_cutoff_asserted": False,
+             "physical_acceptance_claimed": False}
+    _dump(output_root / "proof.json", proof)
+    return proof
+
+
 def prove_fixture_release_join(ego_root, other_root, output_root):
     """Show static diagnostic crossing tracks cannot prove release response."""
     output = Path(output_root)
@@ -683,9 +780,12 @@ if __name__ == "__main__":
     parser.add_argument("--prove-measured-yield-sweep")
     parser.add_argument("--audit-release-attempt")
     parser.add_argument("--opposite-offline-bundle")
+    parser.add_argument("--prove-opposite-entry-sweep")
     args = parser.parse_args()
     if args.opposite_offline_bundle:
         output = {"manifest": str(build_opposite_offline_bundle(args.opposite_offline_bundle))}
+    elif args.prove_opposite_entry_sweep:
+        output = prove_opposite_entry_sweep(args.prove_opposite_entry_sweep)
     elif args.audit_release_attempt:
         output = audit_release_attempt(args.audit_release_attempt)
     elif args.prove_fixture_release_join:
