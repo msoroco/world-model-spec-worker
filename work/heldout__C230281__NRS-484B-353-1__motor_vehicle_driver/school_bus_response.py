@@ -89,7 +89,7 @@ def _video_red_counts(path, roi, expected_frames):
 def audit_red_pixel_sources(frame_map_path, command_path, front_video_path,
                             rear_video_path, front_roi, rear_roi, min_red_pixels=8):
     """Compare source pixels with commands; ROI provenance still needs physical review."""
-    frame_map = _rows(_jsonl(frame_map_path), 'frame map')
+    frame_map = _frame_map(frame_map_path)
     commands = _rows(_jsonl(command_path), 'signal command')
     if [(r['frame'], r['time_s']) for r in frame_map] != [
             (r['frame'], r['time_s']) for r in commands]:
@@ -106,7 +106,8 @@ def audit_red_pixel_sources(frame_map_path, command_path, front_video_path,
             raise ValueError('Original school-bus signal command invalid')
         front_candidate = front_count >= min_red_pixels
         rear_candidate = rear_count >= min_red_pixels
-        rows.append({'frame': mapped['frame'], 'time_s': mapped['time_s'],
+        rows.append({'frame': mapped['frame'], 'video_frame': mapped['video_frame'],
+                     'time_s': mapped['time_s'],
                      'red_phase_commanded': phase,
                      'front_red_pixel_count': front_count,
                      'rear_red_pixel_count': rear_count,
@@ -184,7 +185,7 @@ def audit_first_case_attempt(attempt, front_roi, rear_roi, purpose):
         path = attempt / name
         if not path.is_file() or not path.stat().st_size or _sha_file(path) != declared[name]:
             raise ValueError('Original school-bus source hash differs: ' + name)
-    frame_map = _rows(_jsonl(attempt / 'video_frames.jsonl'), 'frame map')
+    frame_map = _frame_map(attempt / 'video_frames.jsonl')
     if inventory.get('frames') != [r['frame'] for r in frame_map]:
         raise ValueError('Original school-bus inventory frames differ')
     pixel = audit_red_pixel_sources(
@@ -201,6 +202,81 @@ def audit_first_case_attempt(attempt, front_roi, rear_roi, purpose):
             'pupil_service_verified': False,
             'front_rear_red_visibility_verified': False,
             'physical_acceptance_claimed': False, 'legal_conclusion': None}
+
+
+def finalize_first_case(attempt):
+    """Build a saved-only Native result from original sources and authored ROIs."""
+    attempt = Path(attempt)
+    config, _ = _read(attempt / 'config.json')
+    if (config.get('selected_case_id') != FIRST_CASE_ID or
+        (config.get('law_id'), config.get('cell_id'), config.get('actor')) !=
+        ('NRS-484B-353-1', 'C230281', 'motor_vehicle_driver')):
+        raise ValueError('Wrong exact school-bus finalizer identity')
+    review = config.get('school_bus_lamp_review')
+    if not isinstance(review, dict) or not all(
+            key in review for key in ('front_roi', 'rear_roi', 'pupil_purpose')):
+        raise ValueError('Missing required source: school_bus_lamp_review in config.json')
+    description = config.get('case', {}).get('recording_description')
+    if not isinstance(description, dict):
+        raise ValueError('Missing required source: selected recording_description')
+    source = audit_first_case_attempt(attempt, review['front_roi'],
+                                      review['rear_roi'], review['pupil_purpose'])
+    motion = _rows(_jsonl(attempt / 'motion_original.jsonl'), 'motion')
+    mapping = _frame_map(attempt / 'video_frames.jsonl')
+    if [(r['frame'],r['time_s']) for r in motion] != [
+            (r['frame'],r['time_s']) for r in mapping]:
+        raise ValueError('Original school-bus motion/frame map differs')
+    speeds = []
+    for row in motion:
+        speed = row.get('subject_speed_mps')
+        if type(speed) not in (int,float) or not math.isfinite(speed) or speed < 0:
+            raise ValueError('Original school-bus subject speed invalid')
+        speeds.append(float(speed))
+    channel = attempt / 'subject_speed_mps.jsonl'
+    content = ''.join(json.dumps({'frame':row['frame'], 'time_s':row['time_s'],
+                                  'value':speed}, allow_nan=False)+'\n'
+                      for row,speed in zip(motion,speeds))
+    if channel.exists():
+        if channel.read_text() != content:
+            raise ValueError('Preexisting derived subject speed differs from original')
+    else:
+        channel.write_text(content)
+    minimum = min(speeds)
+    result = {'case_id':FIRST_CASE_ID,
+              'measured_values':{'minimum_subject_speed_mps':minimum,
+                                 'red_pixel_candidates':source['red_pixels'],
+                                 'pupil_motion_candidate':source['pupil_motion']},
+              'target_checks':[{'target':'subject stopped during school-bus red interval',
+                                'requested':0.0,'measured':minimum,
+                                'method':'minimum original subject velocity',
+                                'tolerance':STOP_TOLERANCE_MPS,'matched':False,
+                                'physical_cause_confirmed':False,
+                                'cause_evidence':'motion_original.jsonl and video_frames.jsonl'}],
+              'setup_confirmed':False,'behavior_attempted':True,
+              'maneuver_completed':False,
+              'termination_reason':'Original candidate measurements retained; bus equipment and physical visibility unverified',
+              'physical_failure_flags':{'school_bus_equipment_unverified':True,
+                                        'front_rear_red_visibility_unverified':True,
+                                        'pupil_service_purpose_unverified':True},
+              'trace_reference':'trace.jsonl',
+              'video_references':['overview.mkv','approach.mkv',
+                                  'reference_corner.mkv','driver_reference.mkv'],
+              'video_frame_map_reference':'video_frames.jsonl',
+              'recording_description':description,
+              'recording_evidence':[{'name':'subject_speed_mps','unit':'m/s',
+                                     'reference':channel.name,'sha256':_sha_file(channel)}],
+              'realized_observables':{'subject_speed_mps':{
+                  'value':minimum,'unit':'m/s','method':'original actor velocity',
+                  'time_window':'retained first-case interval','statistic':'minimum',
+                  'reference':channel.name,
+                  'sample_window_s':[mapping[0]['time_s'],mapping[-1]['time_s']]}},
+              'physical_acceptance_claimed':False,'legal_acceptance_claimed':False}
+    report = {'format':'worker-analysis-report','case_id':FIRST_CASE_ID,
+              'measurements':{'first_case_sources':{'method':'audit_first_case_attempt',
+                  'value':source,'sources':source['source_sha256']}},
+              'limitations':['Equipment, lamp identity, pupil purpose and roadway remain unverified'],
+              'physical_acceptance_claimed':False,'legal_acceptance_claimed':False}
+    return report, result
 
 
 def _read(path):
@@ -220,6 +296,28 @@ def _rows(value, name):
         times != sorted(set(times))):
         raise ValueError('Original ' + name + ' frame/time order invalid')
     return value
+
+
+def _frame_map(path):
+    """Read the canonical FrameMap writer's video/carla/native identity join."""
+    rows = _jsonl(path)
+    if len(rows) < 4:
+        raise ValueError('Original frame map interval incomplete')
+    frames = []
+    times = []
+    for index, row in enumerate(rows):
+        frame = row.get('carla_frame')
+        if (type(row.get('video_frame')) is not int or row['video_frame'] != index or
+            type(frame) is not int or frame < 0 or row.get('native_frame') != frame or
+            type(row.get('time_s')) not in (int, float) or
+            not math.isfinite(row['time_s'])):
+            raise ValueError('Original canonical frame map identity invalid')
+        frames.append(frame)
+        times.append(row['time_s'])
+    if frames != sorted(set(frames)) or times != sorted(set(times)):
+        raise ValueError('Original canonical frame map order invalid')
+    return [{'frame': row['carla_frame'], 'time_s': row['time_s'],
+             'video_frame': row['video_frame']} for row in rows]
 
 
 def _gap(subject, bus, tangent):
@@ -359,9 +457,18 @@ def main():
     parser.add_argument('--pupil-original')
     parser.add_argument('--pupil-purpose', choices=('receiving', 'discharging'))
     parser.add_argument('--attempt', help='Retained first-case Native source directory')
+    parser.add_argument('--finalize', action='store_true',
+                        help='Write saved analysis and Native result from retained originals')
     parser.add_argument('--output', required=True)
     args = parser.parse_args()
-    if args.attempt:
+    if args.finalize:
+        if not args.attempt or any((args.context, args.signal, args.motion,
+                                   args.frame_map, args.command, args.front_video,
+                                   args.rear_video, args.front_roi, args.rear_roi,
+                                   args.pupil_original, args.pupil_purpose)):
+            parser.error('Saved finalization requires only --attempt and --output')
+        result, native_result = finalize_first_case(args.attempt)
+    elif args.attempt:
         if (not all((args.front_roi, args.rear_roi, args.pupil_purpose)) or any((
                 args.context, args.signal, args.motion, args.frame_map,
                 args.command, args.front_video, args.rear_video, args.pupil_original))):
@@ -391,7 +498,13 @@ def main():
                 args.rear_roi, args.pupil_purpose)):
             parser.error('Motion measurement requires context, signal and motion originals')
         result = measure(args.context, args.signal, args.motion)
-    Path(args.output).write_text(json.dumps(result, indent=2)+'\n')
+    output = Path(args.output)
+    if output.exists():
+        raise ValueError('Retain prior school-bus analysis report')
+    if args.finalize:
+        from worker_exchange.native_output import write_result
+        write_result(args.attempt, native_result)
+    output.write_text(json.dumps(result, indent=2)+'\n')
 
 
 if __name__ == '__main__':

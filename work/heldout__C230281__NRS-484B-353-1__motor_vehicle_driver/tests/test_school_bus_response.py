@@ -5,8 +5,9 @@ import unittest
 from pathlib import Path
 import sys
 import subprocess
+import os
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from school_bus_response import measure, audit_motion_comparison, audit_red_pixel_sources, audit_pupil_service_source, audit_first_case_attempt
+from school_bus_response import measure, audit_motion_comparison, audit_red_pixel_sources, audit_pupil_service_source, audit_first_case_attempt, finalize_first_case
 from school_bus_controller import BRANCHES, target, apply, motion_readback, spawn_meeting_scene, select_meeting_waypoints
 from school_bus_camera import CAMERAS, LosslessSourceSink, SchoolBusCameraCapture
 from school_bus_native import CASE_ID, check_plan, check_scene, close_all, spawn_pupil_service, pupil_readback
@@ -87,7 +88,8 @@ class SourceResponse(unittest.TestCase):
         frame_map=self.root/'video_frames.jsonl'
         commands=self.root/'signal_command_original.jsonl'
         phases=(False,True,False,True,False,False)
-        frame_map.write_text(''.join(json.dumps({'frame':100+i,'time_s':i*.05})+'\n'
+        frame_map.write_text(''.join(json.dumps({'video_frame':i,'carla_frame':100+i,
+                                                'native_frame':100+i,'time_s':i*.05})+'\n'
                                      for i in range(len(phases))))
         commands.write_text(''.join(json.dumps({'frame':100+i,'time_s':i*.05,
                                                 'red_signal_commanded':i in (1,2,3),
@@ -111,6 +113,7 @@ class SourceResponse(unittest.TestCase):
         proof=audit_red_pixel_sources(frame_map,commands,front,rear,[1,1,5,3],[1,1,5,3])
         self.assertEqual(len(proof['frames']),6)
         self.assertEqual(proof['frames'][1]['front_red_pixel_count'],8)
+        self.assertEqual(proof['frames'][1]['video_frame'],1)
         self.assertFalse(proof['front_rear_red_visibility_verified'])
         self.assertFalse(proof['roi_lamp_identity_reviewed'])
         output=self.root/'pixel-audit.json'
@@ -125,6 +128,11 @@ class SourceResponse(unittest.TestCase):
             audit_red_pixel_sources(frame_map,commands,front,rear,[1,1,5,3],[1,1,5,3])
         rear.unlink()
         with self.assertRaisesRegex(ValueError,'Missing original school-bus camera'):
+            audit_red_pixel_sources(frame_map,commands,front,rear,[1,1,5,3],[1,1,5,3])
+        records=[json.loads(line) for line in frame_map.read_text().splitlines()]
+        records[2]['native_frame']=999
+        frame_map.write_text(''.join(json.dumps(row)+'\n' for row in records))
+        with self.assertRaisesRegex(ValueError,'canonical frame map identity'):
             audit_red_pixel_sources(frame_map,commands,front,rear,[1,1,5,3],[1,1,5,3])
 
     def test_original_pupil_service_motion_and_missing_movement_rejection(self):
@@ -168,7 +176,9 @@ class SourceResponse(unittest.TestCase):
         frames=tuple(100+i for i in range(6))
         def rows(name,items):
             (attempt/name).write_text(''.join(json.dumps(item)+'\n' for item in items))
-        rows('video_frames.jsonl',[{'frame':f,'time_s':i*.05} for i,f in enumerate(frames)])
+        rows('video_frames.jsonl',[{'video_frame':i,'carla_frame':f,
+                                   'native_frame':f,'time_s':i*.05}
+                                  for i,f in enumerate(frames)])
         rows('signal_command_original.jsonl',[{
             'frame':f,'time_s':i*.05,'red_signal_commanded':i in (1,2,3),
             'red_phase_commanded':phases[i]} for i,f in enumerate(frames)])
@@ -210,9 +220,31 @@ class SourceResponse(unittest.TestCase):
                         '--pupil-purpose','receiving','--output',str(output)],check=True)
         self.assertEqual(json.loads(output.read_text())['inventory_sha256'],
                          proof['inventory_sha256'])
+        (attempt/'config.json').write_text(json.dumps({
+            'selected_case_id':CASE_ID,'law_id':'NRS-484B-353-1',
+            'cell_id':'C230281','actor':'motor_vehicle_driver',
+            'case':{'recording_description':{'summary':'diagnostic first case'}},
+            'school_bus_lamp_review':{'front_roi':[1,1,5,3],
+                                      'rear_roi':[1,1,5,3],
+                                      'pupil_purpose':'receiving'}})+'\n')
+        env=os.environ.copy()
+        env['PYTHONPATH']=str(Path(__file__).resolve().parents[3]/'runtime'/'scenario_pipeline')
+        saved=self.root/'saved-analysis.json'
+        subprocess.run([sys.executable,str(script),'--attempt',str(attempt),
+                        '--finalize','--output',str(saved)],env=env,check=True)
+        native=json.loads((attempt/'result.json').read_text())
+        self.assertEqual(native['case_id'],CASE_ID)
+        self.assertEqual(native['video_references'],[
+            'overview.mkv','approach.mkv','reference_corner.mkv','driver_reference.mkv'])
+        self.assertFalse(native['setup_confirmed'])
+        self.assertFalse(native['physical_acceptance_claimed'])
+        self.assertEqual(native['realized_observables']['subject_speed_mps']['value'],0.0)
+        self.assertEqual(json.loads(saved.read_text())['case_id'],CASE_ID)
         (attempt/'road.xodr').write_text('<OpenDRIVE><road/></OpenDRIVE>\n')
         with self.assertRaisesRegex(ValueError,'source hash differs: road.xodr'):
             audit_first_case_attempt(attempt,[1,1,5,3],[1,1,5,3],'receiving')
+        with self.assertRaisesRegex(ValueError,'source hash differs: road.xodr'):
+            finalize_first_case(attempt)
 
     def test_all_selected_controller_branches_and_actual_apply_call(self):
         self.assertEqual(len(BRANCHES),8)
