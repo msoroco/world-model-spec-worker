@@ -36,7 +36,8 @@ def check_plan(plan, case_id):
     return suffix
 
 
-def readback(subject, overtaker, waypoint, frame, time_s, *, notice_stimulus):
+def readback(subject, overtaker, waypoint, frame, time_s, *, notice_stimulus,
+             visibility_relation=None):
     """Get finite original actor state; pass completion uses body corners."""
     from math import atan2
 
@@ -63,17 +64,27 @@ def readback(subject, overtaker, waypoint, frame, time_s, *, notice_stimulus):
     velocity = subject.get_velocity()
     speed = math.sqrt(velocity.x**2 + velocity.y**2 + velocity.z**2)
     offset = (sx-wx)*ty - (sy-wy)*tx
-    values = [speed, offset, float(frame), float(time_s),
+    values = [speed, offset, float(sx), float(sy), float(wx), float(wy), float(frame), float(time_s),
               *[q for pair in subject_corners+overtaker_corners for q in pair]]
     if not all(math.isfinite(v) for v in values):
         raise ValueError("Native actor readback nonfinite")
+    if visibility_relation is not None and (
+        visibility_relation.get("a") != subject.id or
+        visibility_relation.get("b") != overtaker.id or
+        type(visibility_relation.get("visible")) is not bool
+    ):
+        raise ValueError("Original visibility relation identities differ")
     return {
         "frame": frame, "time_s": time_s, "subject_id": str(subject.id),
         "overtaker_id": str(overtaker.id), "subject_corners": subject_corners,
         "overtaker_corners": overtaker_corners, "road_tangent_xy": [tx, ty],
+        "road_waypoint_xy": [float(wx), float(wy)],
+        "subject_pose_xy": [float(sx), float(sy)],
         "subject_speed_mps": speed, "subject_right_offset_m": offset,
         "body_pass_complete": min(overtaker_long) > max(subject_long),
-        "notice_stimulus": notice_stimulus, "notice_observed": None,
+        "notice_stimulus": notice_stimulus,
+        "notice_observed": None if visibility_relation is None else visibility_relation["visible"],
+        "visibility_relation": visibility_relation,
         "right_pass_permission_verified": None,
     }
 
@@ -83,6 +94,7 @@ def run(plan, case_id, output, host="127.0.0.1", port=2000):
     suffix = check_plan(plan, case_id)
     import carla
     from pipeline_capture import PipelineCapture
+    from original_observations import visible_relation
     from worker_exchange.native_output import FrameMap
     from overtake_camera import CAMERAS, LosslessSourceSink, OvertakeCameraCapture
     from overtake_route import select_overtake_route, steer_speed_control
@@ -132,12 +144,17 @@ def run(plan, case_id, output, host="127.0.0.1", port=2000):
             waypoint = world.get_map().get_waypoint(location)
             if waypoint is None or waypoint.is_junction:
                 raise ValueError("Native subject road waypoint unavailable")
+            observed_case = suffix == "observed_gives_way_holds_speed"
+            previous_visibility = visible_relation(world, subject, overtaker) if observed_case else None
             previous = readback(subject, overtaker, waypoint, index, index*.05,
-                                notice_stimulus=notice_stimulus)
-            notice_kind = CASES[suffix][0] if notice_stimulus else None
+                                notice_stimulus=notice_stimulus,
+                                visibility_relation=previous_visibility)
+            active_notice = previous["notice_observed"] if observed_case else notice_stimulus
+            notice_kind = CASES[suffix][0] if active_notice else None
             plan_target = subject_target(
                 suffix, notice_kind=notice_kind,
-                notice_source="scripted construction stimulus" if notice_stimulus else None,
+                notice_source=("original subject-to-overtaker collision rays" if observed_case
+                               else "scripted construction stimulus") if active_notice else None,
                 pass_complete=previous["body_pass_complete"])
             apply_subject(subject, carla.VehicleControl, plan_target,
                           right_offset_m=previous["subject_right_offset_m"],
@@ -163,7 +180,9 @@ def run(plan, case_id, output, host="127.0.0.1", port=2000):
             if trace.get("frame") != frame or trace.get("time_s") != time_s:
                 raise ValueError("Native trace/frame mismatch")
             row = readback(subject, overtaker, waypoint, frame, time_s,
-                           notice_stimulus=notice_stimulus)
+                           notice_stimulus=notice_stimulus,
+                           visibility_relation=visible_relation(world, subject, overtaker)
+                           if observed_case else None)
             source.write(json.dumps(row, allow_nan=False)+"\n")
             source.flush()
             frame_map.append(frame, time_s)

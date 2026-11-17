@@ -15,10 +15,13 @@ def load(name):
     return m
 
 measure = load("overtaken_response").measure
+verify_saved_sources = load("overtaken_response").verify_saved_sources
+measure_observed_saved = load("overtaken_response").measure_observed_saved
 audit = load("overtaken_comparison_audit").audit
 controller = load("overtaken_controller")
 sys.path.insert(0, str(HERE))
 native = load("overtaken_native")
+finalizer = load("overtaken_finalizer")
 
 class OvertakenTests(unittest.TestCase):
     def setUp(self):
@@ -153,5 +156,70 @@ class OvertakenTests(unittest.TestCase):
         passing.bounding_box=Box(float("nan"))
         with self.assertRaisesRegex(ValueError,"nonfinite"):
             native.readback(subject,passing,Waypoint(),103,0.15,notice_stimulus=True)
+
+    def test_saved_source_join_recomputes_motion_and_pass_completion(self):
+        def corners(x):return [[x-1,-.5],[x+1,-.5],[x+1,.5],[x-1,.5]]
+        bodies=[];mapping=[];trace=[]
+        for index,other_x in enumerate((-4,0,2,4)):
+            frame=100+index;time_s=index*.05
+            bodies.append({"frame":frame,"time_s":time_s,"subject_id":"subject",
+                "overtaker_id":"overtaker","subject_corners":corners(0),
+                "overtaker_corners":corners(other_x),"road_tangent_xy":[1,0],
+                "road_waypoint_xy":[0,0],"subject_pose_xy":[0,0],
+                "subject_speed_mps":5,"subject_right_offset_m":0,
+                "body_pass_complete":index==3,"notice_stimulus":index>0,
+                "notice_observed":None,"right_pass_permission_verified":None})
+            mapping.append({"video_frame":index,"carla_frame":frame,"time_s":time_s})
+            trace.append({"frame":frame,"time_s":time_s,"speed_mps":5})
+        def sources():
+            paths=[]
+            for name,rows in (("overtaken_source.jsonl",bodies),
+                              ("video_frames.jsonl",mapping),("trace.jsonl",trace)):
+                path=self.root/name;path.write_text("".join(json.dumps(row)+"\n" for row in rows));paths.append(path)
+            return paths
+        paths=sources()
+        report=verify_saved_sources(*paths)
+        self.assertEqual([row["body_pass_complete"] for row in report["frames"]],[False,False,False,True])
+        self.assertIsNone(report["frames"][1]["notice_observed"])
+        with self.assertRaisesRegex(ValueError,"visibility notice"):
+            measure_observed_saved(*paths)
+        bodies[1]["visibility_relation"]={"a":"subject","b":"overtaker",
+            "visible":True,"rays":[{"clear":True,"blockers":[]}]}
+        bodies[1]["notice_observed"]=True;sources()
+        self.assertTrue(verify_saved_sources(*paths)["frames"][1]["notice_observed"])
+        observed=measure_observed_saved(*paths)
+        self.assertEqual((observed["notice_frame"],observed["pass_complete_frame"]),(101,103))
+        self.assertEqual(observed["max_precompletion_speed_delta_mps"],0)
+        self.assertIsNone(observed["legal_conclusion"])
+        self.write("config.json",{"selected_case_id":finalizer.CASE_ID,
+            "law_id":"NRS-484B-207-2","cell_id":"C179789","actor":"motor_vehicle_driver",
+            "case":{"recording_description":{"channels":[],"context_inputs":[],"limitations":[]}}})
+        report=finalizer.analyze(self.root)
+        result=finalizer.build_result(self.root,report)
+        self.assertEqual(result["case_id"],finalizer.CASE_ID)
+        self.assertFalse(result["physical_acceptance_claimed"])
+        self.assertEqual(len(result["recording_evidence"]),2)
+        sys.path.insert(0,str(HERE.parents[1]/"runtime/scenario_pipeline"))
+        from worker_exchange.native_output import validate_result
+        validate_result(result)
+        bodies[1]["visibility_relation"]["visible"]=False;sources()
+        with self.assertRaisesRegex(ValueError,"visibility rays"):
+            verify_saved_sources(*paths)
+        bodies[1]["visibility_relation"]=None;bodies[1]["notice_observed"]=None
+        bodies[1]["body_pass_complete"]=True;sources()
+        with self.assertRaisesRegex(ValueError,"pass-completion"):
+            verify_saved_sources(*paths)
+        bodies[1]["body_pass_complete"]=False
+        bodies[1]["subject_right_offset_m"]=1;sources()
+        with self.assertRaisesRegex(ValueError,"right-offset"):
+            verify_saved_sources(*paths)
+        bodies[1]["subject_right_offset_m"]=0
+        trace[1]["speed_mps"]=6;sources()
+        with self.assertRaisesRegex(ValueError,"speed/trace"):
+            verify_saved_sources(*paths)
+        trace[1]["speed_mps"]=5
+        mapping[1]["carla_frame"]=999;sources()
+        with self.assertRaisesRegex(ValueError,"frame-map join"):
+            verify_saved_sources(*paths)
 
 if __name__ == "__main__": unittest.main()
