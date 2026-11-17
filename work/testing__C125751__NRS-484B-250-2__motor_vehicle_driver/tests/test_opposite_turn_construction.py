@@ -106,6 +106,7 @@ class World:
         self.actors = actors
         self.index = 0
         self.ticks = 0
+        self.name = "SyntheticTown"
 
     def try_spawn_actor(self, blueprint, transform):
         actor = self.actors[self.index]
@@ -120,11 +121,32 @@ class World:
         return self
 
     def get_waypoint(self, actor, project_to_road):
+        if isinstance(actor, dict):
+            return SimpleNamespace(road_id=11, lane_id=-1 if actor["x"] < 0 else 1,
+                                   is_junction=False)
         return SimpleNamespace(road_id=actor.lane[0], lane_id=actor.lane[1],
                                is_junction=False)
 
 
 class OppositeTurnConstructionTest(unittest.TestCase):
+    def test_native_route_starts_match_reviewed_map_and_lanes(self):
+        candidate = dict(site(), native_map_name="reviewed_map")
+        native_map = SimpleNamespace(name="reviewed_map")
+        native_map.get_waypoint = lambda point, project_to_road: SimpleNamespace(
+            road_id=11, lane_id=-1 if point.x < 0 else 1, is_junction=False)
+        world = SimpleNamespace(get_map=lambda: native_map)
+        carla = SimpleNamespace(Location=lambda **values: SimpleNamespace(**values))
+        self.assertEqual(runner.verify_native_approach_routes(world, carla, candidate),
+                         candidate["expected_approach_lanes"])
+        native_map.name = "different_map"
+        with self.assertRaisesRegex(ValueError, "Native map differs"):
+            runner.verify_native_approach_routes(world, carla, candidate)
+        native_map.name = "reviewed_map"
+        native_map.get_waypoint = lambda point, project_to_road: SimpleNamespace(
+            road_id=11, lane_id=-1, is_junction=False)
+        with self.assertRaisesRegex(ValueError, "route start differs"):
+            runner.verify_native_approach_routes(world, carla, candidate)
+
     def test_native_signal_governance_requires_original_lane_readback(self):
         candidate = {"governed_signal_ids": {"ego": 101, "other": 102},
                      "expected_approach_lanes": {"ego": [11, -1], "other": [22, -1]}}

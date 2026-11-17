@@ -115,6 +115,34 @@ def verify_native_signal_governance(site, governed_lights):
     return {role: signal_ids[role] for role in ("ego", "other")}
 
 
+def verify_native_approach_routes(world, carla, site):
+    """Read back the reviewed map and both route starts before Native capture."""
+    native_map = world.get_map()
+    if not isinstance(site.get("native_map_name"), str) or native_map.name != site["native_map_name"]:
+        raise ValueError("Native map differs from reviewed opposite-turn site")
+    routes = site.get("routes")
+    lanes = site.get("expected_approach_lanes")
+    if not isinstance(routes, dict) or set(routes) != {"ego", "other"} or not isinstance(lanes, dict) or set(lanes) != {"ego", "other"}:
+        raise ValueError("Two sourced opposite-turn approaches required")
+    found = {}
+    for role in ("ego", "other"):
+        route, lane = routes[role], lanes[role]
+        if (not isinstance(route, list) or len(route) < 2 or
+                not isinstance(route[0], list) or len(route[0]) != 2 or
+                any(type(value) not in (int, float) or not math.isfinite(value) for value in route[0]) or
+                not isinstance(lane, list) or len(lane) != 2 or
+                any(type(value) is not int for value in lane)):
+            raise ValueError("Sourced opposite-turn route start and lane required: " + role)
+        waypoint = native_map.get_waypoint(
+            carla.Location(x=route[0][0], y=route[0][1], z=0.0), project_to_road=False)
+        if waypoint is None or [int(waypoint.road_id), int(waypoint.lane_id)] != lane or waypoint.is_junction:
+            raise ValueError("Native route start differs from reviewed approach lane: " + role)
+        found[role] = lane
+    if found["ego"] == found["other"]:
+        raise ValueError("Distinct opposite-turn approach lanes required")
+    return found
+
+
 def _validate_candidate_construction(root, config, site, turning_role,
                                      release_frames, target_speeds_mps, frames,
                                      transforms=None, lookahead_m=5.0):
@@ -200,6 +228,7 @@ def capture_candidate_media(output_dir, world, carla, site, turning_role,
         reviewed = verify_opposite_site_packet(config, root)
         if reviewed["diagnostic_only"]:
             raise ValueError("Diagnostic opposite-turn site cannot enter Native capture")
+        verify_native_approach_routes(world, carla, site)
         verify_native_signal_governance(site, governed_lights)
         generated = {"capture", "road_geometry.json", "turn_route_context.json",
                      "stop_context.json", "signal_context.json", "body_history.jsonl",
