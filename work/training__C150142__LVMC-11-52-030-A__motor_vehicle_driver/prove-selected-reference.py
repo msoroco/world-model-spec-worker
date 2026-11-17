@@ -40,7 +40,10 @@ def main():
                                             'mail_adjacent_deposit',
                                             'mail_no_box_deposit',
                                             'mail_adjacent_no_deposit',
-                                            'armored_car_signed_business'),
+                                            'armored_car_signed_business',
+                                            'armored_car_signed_no_business',
+                                            'armored_car_unsigned_business',
+                                            'armored_car_unsigned_no_business'),
                         default='reference')
     parser.add_argument('--candidates', nargs='+',
                         choices=('primary', 'fallback1', 'fallback2', 'fallback3'),

@@ -45,9 +45,13 @@ def main():
     entry['measurement_contract'] = output.relative_to(ROOT).as_posix()
     entry['fixture_recipe'] = ('work/' + ROOT.name + '/selected-diagnostics/' +
                                slug + '/primary-recipe.json')
-    manifest['status'] = 'selected_' + slug + '_cpu_pilot'
+    manifest['status'] = ('selected_armored_signed_business_cpu_pilot'
+                          if slug == 'armored_car_signed_business' else
+                          'selected_' + slug + '_cpu_pilot')
     manifest['delivery_ready'] = False
-    pilot = ROOT / ('execution-manifest-' + slug.replace('_', '-') + '-pilot.json')
+    pilot = ROOT / ('execution-manifest-armored-signed-business-pilot.json'
+                    if slug == 'armored_car_signed_business' else
+                    'execution-manifest-' + slug.replace('_', '-') + '-pilot.json')
     pilot.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + '\n')
     print(json.dumps({'case_id': case_id, 'contract_sha256': sha(output),
                       'pilot_manifest_sha256': sha(pilot),

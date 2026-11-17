@@ -1,0 +1,2676 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver",
+  "status": "selected_armored_car_signed_no_business_cpu_pilot",
+  "runtime_manifest_sha256": "ae635d487ae988b67925bacd5ba13210f31224fc6a1ae131d1836a5557ba8714",
+  "cases": [
+    {
+      "case_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__reference",
+      "kind": "delivery",
+      "construction": "selected-primary/reference/construction.json",
+      "construction_sha256": "2deb34fc8adbb97a87b97857bc61964ef8313277eecced32fb27e4b60a9c4a1f",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Paint, parked body and four views unverified in Native"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-fallbacks/reference/fallback1/construction.json",
+          "construction_sha256": "46591403c4e6ba4bb520f959ea2110cc1e80e2fa659ff5e93748cdacde598a38",
+          "trigger": {
+            "source": "Native actor centers and red-paint extent",
+            "metric": "longitudinal parking overshoot in m",
+            "failure_condition": "Observed ego body passes the intended parking target before stopping"
+          },
+          "changed_knobs": [
+            "requested_approach_frames",
+            "controller approach speed"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__reference --candidate fallback1 --output .runtime-work/c150142-merged-reference-fallback1-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "46591403c4e6ba4bb520f959ea2110cc1e80e2fa659ff5e93748cdacde598a38",
+            "log": "selected-offline/reference/fallback1.log",
+            "log_sha256": "64d3dee525d881de4622e6caf0067f09d149388d09b2960de6b2dba3dd5c7585"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-fallbacks/reference/fallback2/construction.json",
+          "construction_sha256": "351ccf98bc92646c543bfcbe97b12d5c55d36cd1e227383eed54879ba2e2516d",
+          "trigger": {
+            "source": "decoded overview source-camera pixels",
+            "metric": "visible red paint and complete ego body in overview",
+            "failure_condition": "Paint or ego body is obscured in source overview frames"
+          },
+          "changed_knobs": [
+            "overview camera elevation"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__reference --candidate fallback2 --output .runtime-work/c150142-merged-reference-fallback2-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "351ccf98bc92646c543bfcbe97b12d5c55d36cd1e227383eed54879ba2e2516d",
+            "log": "selected-offline/reference/fallback2.log",
+            "log_sha256": "10d7624e6365307444e4679593a64c4012d79258c6db25f60c72705bbd887d4c"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-fallbacks/reference/fallback3/construction.json",
+          "construction_sha256": "45529b7edc7b64d158e7589d6867380760f7ece554ca148d9b7ac9f560331cee",
+          "trigger": {
+            "source": "Native stationary body center and four-view frame join",
+            "metric": "stationary observed red-curb interval in frames",
+            "failure_condition": "Observed stopped interval is too short for manual parking review"
+          },
+          "changed_knobs": [
+            "requested_approach_frames",
+            "controller approach speed"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__reference --candidate fallback3 --output .runtime-work/c150142-merged-reference-fallback3-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "45529b7edc7b64d158e7589d6867380760f7ece554ca148d9b7ac9f560331cee",
+            "log": "selected-offline/reference/fallback3.log",
+            "log_sha256": "34076f48998ced92a713b66ce7ebd9d06f89915046b4131f751be23797bc2f06"
+          }
+        }
+      ],
+      "measurement_contract": "selected-primary/reference/selected-measurement-contracts/reference.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize_selected.py",
+        "output_schema": "c150142-red-curb-saved-analysis-v1"
+      },
+      "fixture_recipe": "work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/selected-diagnostics/reference/primary-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__reference --candidate primary --output .runtime-work/c150142-merged-reference-primary-offline-canonical-v3",
+        "exit_code": 0,
+        "construction_sha256": "2deb34fc8adbb97a87b97857bc61964ef8313277eecced32fb27e4b60a9c4a1f",
+        "log": "selected-offline/reference/primary.log",
+        "log_sha256": "ec9af59823f087bd8f30c1aa288e3d9c7d2f597f4febe3ff8f2ecf42f4b046e2"
+      }
+    },
+    {
+      "case_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__contrast",
+      "kind": "delivery",
+      "construction": "selected-primary/contrast/construction.json",
+      "construction_sha256": "240b67b2852b145fe94d6fb0207499f596b7426a41b0cd8040066986658e17a8",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Paint, parked body and four views unverified in Native"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-fallbacks/contrast/fallback1/construction.json",
+          "construction_sha256": "2f9927ecdc4cd804243cf8c7859a99c710f33563a64890891840529043444900",
+          "trigger": {
+            "source": "Native actor centers and red-paint extent",
+            "metric": "longitudinal parking overshoot in m",
+            "failure_condition": "Observed ego body passes the intended parking target before stopping"
+          },
+          "changed_knobs": [
+            "requested_approach_frames",
+            "controller approach speed"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__contrast --candidate fallback1 --output .runtime-work/c150142-merged-contrast-fallback1-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "2f9927ecdc4cd804243cf8c7859a99c710f33563a64890891840529043444900",
+            "log": "selected-offline/contrast/fallback1.log",
+            "log_sha256": "63273eaec4388de15eac3fa318fcc26161dfbad8de8314a9ce492108a9f3f9ec"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-fallbacks/contrast/fallback2/construction.json",
+          "construction_sha256": "315adc0e0ffc0d9e59da6ccd29328de7d7f41c9d56ca42eee96aee664c6baeff",
+          "trigger": {
+            "source": "decoded overview source-camera pixels",
+            "metric": "visible red paint and complete ego body in overview",
+            "failure_condition": "Paint or ego body is obscured in source overview frames"
+          },
+          "changed_knobs": [
+            "overview camera elevation"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__contrast --candidate fallback2 --output .runtime-work/c150142-merged-contrast-fallback2-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "315adc0e0ffc0d9e59da6ccd29328de7d7f41c9d56ca42eee96aee664c6baeff",
+            "log": "selected-offline/contrast/fallback2.log",
+            "log_sha256": "39879489d882526fcbc14bc97dd8c5db28dd6d7b780d5d218fe54811e98400a2"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-fallbacks/contrast/fallback3/construction.json",
+          "construction_sha256": "045990e40bc7970cf7db10e5d27b6e0a075e8330157c4a114de9fdac317019e2",
+          "trigger": {
+            "source": "Native stationary body center and four-view frame join",
+            "metric": "stationary observed red-curb interval in frames",
+            "failure_condition": "Observed stopped interval is too short for manual parking review"
+          },
+          "changed_knobs": [
+            "requested_approach_frames",
+            "controller approach speed"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__contrast --candidate fallback3 --output .runtime-work/c150142-merged-contrast-fallback3-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "045990e40bc7970cf7db10e5d27b6e0a075e8330157c4a114de9fdac317019e2",
+            "log": "selected-offline/contrast/fallback3.log",
+            "log_sha256": "4a2e211f2bb184a6a5e03fdc59952ca3903c1d6eebaf2118bf6a0e8976fe12c2"
+          }
+        }
+      ],
+      "measurement_contract": "selected-primary/contrast/selected-measurement-contracts/contrast.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize_selected.py",
+        "output_schema": "c150142-red-curb-saved-analysis-v1"
+      },
+      "fixture_recipe": "work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/selected-diagnostics/contrast/primary-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__contrast --candidate primary --output .runtime-work/c150142-merged-contrast-primary-offline-canonical-v3",
+        "exit_code": 0,
+        "construction_sha256": "240b67b2852b145fe94d6fb0207499f596b7426a41b0cd8040066986658e17a8",
+        "log": "selected-offline/contrast/primary.log",
+        "log_sha256": "7f6bd3b3821db28529edc81aa326045832dc7a3238a7d47d55b60370ae9c4fcc"
+      }
+    },
+    {
+      "case_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__ordinary_red_signed",
+      "kind": "delivery",
+      "construction": "selected-primary/ordinary_red_signed/construction.json",
+      "construction_sha256": "5fed2c25b8c41d5e43ff006fbf56a363e2b172b2f52358b0ec1c8c7ca357e7c2",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native sign rendering, red paint, parked body and four views unverified"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-fallbacks/ordinary_red_signed/fallback1/construction.json",
+          "construction_sha256": "9ecb17c722f3f780d1a96e5f08f141b20fe6090fb197a96d7065decc9d881419",
+          "trigger": {
+            "source": "Native body centers and signed red-curb extent",
+            "metric": "longitudinal parking overshoot in m",
+            "failure_condition": "Observed ego passes the signed curb target before stopping"
+          },
+          "changed_knobs": [
+            "requested_approach_frames",
+            "controller approach speed"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__ordinary_red_signed --candidate fallback1 --output .runtime-work/c150142-merged-ordinary_red_signed-fallback1-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "9ecb17c722f3f780d1a96e5f08f141b20fe6090fb197a96d7065decc9d881419",
+            "log": "selected-offline/ordinary_red_signed/fallback1.log",
+            "log_sha256": "6e17e8210d2b066832e12acab2a82f74d4a7c3696c6a9c0dd62dcf63cb03a4e8"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-fallbacks/ordinary_red_signed/fallback2/construction.json",
+          "construction_sha256": "c73acd49cdb48eca31b741e3fd422184ce5856909237968d97487de005499e85",
+          "trigger": {
+            "source": "decoded overview pixels and Native signal readback",
+            "metric": "visible sign, red paint and complete ego body",
+            "failure_condition": "Sign or body is obscured in the source overview"
+          },
+          "changed_knobs": [
+            "overview camera elevation"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__ordinary_red_signed --candidate fallback2 --output .runtime-work/c150142-merged-ordinary_red_signed-fallback2-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "c73acd49cdb48eca31b741e3fd422184ce5856909237968d97487de005499e85",
+            "log": "selected-offline/ordinary_red_signed/fallback2.log",
+            "log_sha256": "8e459247c10d13d37bc1c7be6d1257380ecfdf3904f47bd2a87c36669368354e"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-fallbacks/ordinary_red_signed/fallback3/construction.json",
+          "construction_sha256": "419e11db8165c5d7a8146d7f8c97a7322e29eb884ce16d2c939ff46d5e7920aa",
+          "trigger": {
+            "source": "Native stationary body interval and four-view frame join",
+            "metric": "signed red-curb stationary interval in frames",
+            "failure_condition": "Stopped interval is too short for manual signed-curb review"
+          },
+          "changed_knobs": [
+            "requested_approach_frames",
+            "controller approach speed"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__ordinary_red_signed --candidate fallback3 --output .runtime-work/c150142-merged-ordinary_red_signed-fallback3-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "419e11db8165c5d7a8146d7f8c97a7322e29eb884ce16d2c939ff46d5e7920aa",
+            "log": "selected-offline/ordinary_red_signed/fallback3.log",
+            "log_sha256": "e630debcddf49107bddb44fd9b0bbb16d5cb83fd9e048871bf98e6b53723b9fb"
+          }
+        }
+      ],
+      "measurement_contract": "selected-primary/ordinary_red_signed/selected-measurement-contracts/ordinary_red_signed.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize_selected.py",
+        "output_schema": "c150142-red-curb-saved-analysis-v1"
+      },
+      "fixture_recipe": "work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/selected-diagnostics/ordinary_red_signed/primary-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__ordinary_red_signed --candidate primary --output .runtime-work/c150142-merged-ordinary_red_signed-primary-offline-canonical-v3",
+        "exit_code": 0,
+        "construction_sha256": "5fed2c25b8c41d5e43ff006fbf56a363e2b172b2f52358b0ec1c8c7ca357e7c2",
+        "log": "selected-offline/ordinary_red_signed/primary.log",
+        "log_sha256": "14ceb6fbe08f44984593dead1b678bcfff27cba7f36be5bf86546ed9e4312fbd"
+      }
+    },
+    {
+      "case_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_below",
+      "kind": "delivery",
+      "construction": "selected-primary/tour_bus_below/construction.json",
+      "construction_sha256": "4b847ea3e82659e816839b49282d5fc7fb6e59c90fffccb358c2203d5fa64e40",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Long capture may miss passenger proximity or stop timing in Native"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-fallbacks/tour_bus_below/fallback1/construction.json",
+          "construction_sha256": "7b2c94bc5e602aba732683d90ff76b413a4b5e5baea18da8358bb3637b1d4c81",
+          "trigger": {
+            "source": "retained Native bus body and red paint extent",
+            "metric": "longitudinal stop overshoot in meters",
+            "failure_condition": "Observed bus body overshoots the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_below --candidate fallback1 --output .runtime-work/c150142-merged-tour_bus_below-fallback1-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "7b2c94bc5e602aba732683d90ff76b413a4b5e5baea18da8358bb3637b1d4c81",
+            "log": "selected-offline/tour_bus_below/fallback1.log",
+            "log_sha256": "8b79ce13b82d515775972ed7735cd1ba6e00f88e71dd9263cb8036a2f85659e9"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-fallbacks/tour_bus_below/fallback2/construction.json",
+          "construction_sha256": "6a60eef52759bcd2040320c59a61a319ce118370fa05088fb1cb33f8f714a5b8",
+          "trigger": {
+            "source": "decoded overview and retained Native signal readback",
+            "metric": "visible signed curb and complete bus body",
+            "failure_condition": "Overview obscures sign, red paint or complete bus body"
+          },
+          "changed_knobs": [
+            "camera_policy",
+            "overview camera elevation"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_below --candidate fallback2 --output .runtime-work/c150142-merged-tour_bus_below-fallback2-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "6a60eef52759bcd2040320c59a61a319ce118370fa05088fb1cb33f8f714a5b8",
+            "log": "selected-offline/tour_bus_below/fallback2.log",
+            "log_sha256": "76464af100da381c57a292cb6ac675fc2b4cee4444f2ab815b61745bbded4603"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-fallbacks/tour_bus_below/fallback3/construction.json",
+          "construction_sha256": "2e87751dd9fa682c0cbe4ab5005b4c63ac1754643f6f703fb0e9cbc3e47c3d6a",
+          "trigger": {
+            "source": "retained Native bus body and red paint extent",
+            "metric": "longitudinal stop undershoot in meters",
+            "failure_condition": "Observed bus body stops short of the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_below --candidate fallback3 --output .runtime-work/c150142-merged-tour_bus_below-fallback3-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "2e87751dd9fa682c0cbe4ab5005b4c63ac1754643f6f703fb0e9cbc3e47c3d6a",
+            "log": "selected-offline/tour_bus_below/fallback3.log",
+            "log_sha256": "6895e064bc8e117c8bc4cb32077de58353c83c8d23f22f59e6c102f404c2575d"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_below --candidate primary --output .runtime-work/c150142-merged-tour_bus_below-primary-offline-canonical-v3",
+        "exit_code": 0,
+        "construction_sha256": "4b847ea3e82659e816839b49282d5fc7fb6e59c90fffccb358c2203d5fa64e40",
+        "log": "selected-offline/tour_bus_below/primary.log",
+        "log_sha256": "e24540942945696268d917840e4891d019beaa018d699135c1cd04792a13f510"
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize_selected.py",
+        "output_schema": "c150142-red-curb-saved-analysis-v1"
+      }
+    },
+    {
+      "case_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_at",
+      "kind": "delivery",
+      "construction": "selected-primary/tour_bus_at/construction.json",
+      "construction_sha256": "35ad858ff65c1c0747b4e32f100cb1588c9c616d9049679993c876dced20f8b6",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native stop timing, passenger approach, signed curb and four views unverified"
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize_selected.py",
+        "output_schema": "c150142-red-curb-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-fallbacks/tour_bus_at/fallback1/construction.json",
+          "construction_sha256": "b97caa1e2b5442ceb4c305246d424d9fd31b6e1474a21488e66b26c468fad339",
+          "trigger": {
+            "source": "retained Native bus body and red paint extent",
+            "metric": "longitudinal stop overshoot in meters",
+            "failure_condition": "Observed bus body overshoots the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_at --candidate fallback1 --output .runtime-work/c150142-merged-tour_bus_at-fallback1-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "b97caa1e2b5442ceb4c305246d424d9fd31b6e1474a21488e66b26c468fad339",
+            "log": "selected-offline/tour_bus_at/fallback1.log",
+            "log_sha256": "60a32ffd8bdf1cd2982194f2fc3428b2925637f6fa9747522010b11cd2e7f9b5"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-fallbacks/tour_bus_at/fallback2/construction.json",
+          "construction_sha256": "41b341adfa8f0439dfd641e471d6d057af5163115a34ce07193f5a131aed1420",
+          "trigger": {
+            "source": "decoded overview and retained Native signal readback",
+            "metric": "visible signed curb and complete bus body",
+            "failure_condition": "Overview obscures sign, red paint or complete bus body"
+          },
+          "changed_knobs": [
+            "camera_policy",
+            "overview camera elevation"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_at --candidate fallback2 --output .runtime-work/c150142-merged-tour_bus_at-fallback2-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "41b341adfa8f0439dfd641e471d6d057af5163115a34ce07193f5a131aed1420",
+            "log": "selected-offline/tour_bus_at/fallback2.log",
+            "log_sha256": "aa840d489a447236b35ba2e61bd195da0fe4fa2819c706fce5943c99d3d37e49"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-fallbacks/tour_bus_at/fallback3/construction.json",
+          "construction_sha256": "c16600dfa07bc80fa09bdcba1dac272a9b41193394ef2b780ae1e4d6cdc9332f",
+          "trigger": {
+            "source": "retained Native bus body and red paint extent",
+            "metric": "longitudinal stop undershoot in meters",
+            "failure_condition": "Observed bus body stops short of the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_at --candidate fallback3 --output .runtime-work/c150142-merged-tour_bus_at-fallback3-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "c16600dfa07bc80fa09bdcba1dac272a9b41193394ef2b780ae1e4d6cdc9332f",
+            "log": "selected-offline/tour_bus_at/fallback3.log",
+            "log_sha256": "93984b99db7fd4edd57bee862fec429da6f38b1c4ced338057433b4eec877c55"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_at --candidate primary --output .runtime-work/c150142-merged-tour_bus_at-primary-offline-canonical-v3",
+        "exit_code": 0,
+        "construction_sha256": "35ad858ff65c1c0747b4e32f100cb1588c9c616d9049679993c876dced20f8b6",
+        "log": "selected-offline/tour_bus_at/primary.log",
+        "log_sha256": "66c36f6deed8511793a4813b110d3b39fe5f384d55337ac6c382bd64a2c61992"
+      }
+    },
+    {
+      "case_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_above",
+      "kind": "delivery",
+      "construction": "selected-primary/tour_bus_above/construction.json",
+      "construction_sha256": "68ba971fe11ce142b5223e4d2fc2a77ce5bf1437802c9f46e1a5e0b299a86282",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native stop timing, passenger approach, signed curb and four views unverified"
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize_selected.py",
+        "output_schema": "c150142-red-curb-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-fallbacks/tour_bus_above/fallback1/construction.json",
+          "construction_sha256": "527c5e155898134184166ba8a8bb1c1156c340d4d95c063ea0a4c70a63402450",
+          "trigger": {
+            "source": "retained Native bus body and red paint extent",
+            "metric": "longitudinal stop overshoot in meters",
+            "failure_condition": "Observed bus body overshoots the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_above --candidate fallback1 --output .runtime-work/c150142-merged-tour_bus_above-fallback1-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "527c5e155898134184166ba8a8bb1c1156c340d4d95c063ea0a4c70a63402450",
+            "log": "selected-offline/tour_bus_above/fallback1.log",
+            "log_sha256": "c7c820cc4821e996b6762e8482de9ab0b1136b1848ea6d536665c9d996652cef"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-fallbacks/tour_bus_above/fallback2/construction.json",
+          "construction_sha256": "dfab157ce7f7340f876619d29f01e3ee18d50fbd59d7e7268a8ad03d88c5512e",
+          "trigger": {
+            "source": "decoded overview and retained Native signal readback",
+            "metric": "visible signed curb and complete bus body",
+            "failure_condition": "Overview obscures sign, red paint or complete bus body"
+          },
+          "changed_knobs": [
+            "camera_policy",
+            "overview camera elevation"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_above --candidate fallback2 --output .runtime-work/c150142-merged-tour_bus_above-fallback2-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "dfab157ce7f7340f876619d29f01e3ee18d50fbd59d7e7268a8ad03d88c5512e",
+            "log": "selected-offline/tour_bus_above/fallback2.log",
+            "log_sha256": "8b2a19c3e778870e0dccd1180b8ccb087cf14c79ad7b641c3589941ca4b3619b"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-fallbacks/tour_bus_above/fallback3/construction.json",
+          "construction_sha256": "0ab515c89c693c4c05c8189f70d50fe8b940c9a04bfeb6a703d89748ed7bd818",
+          "trigger": {
+            "source": "retained Native bus body and red paint extent",
+            "metric": "longitudinal stop undershoot in meters",
+            "failure_condition": "Observed bus body stops short of the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_above --candidate fallback3 --output .runtime-work/c150142-merged-tour_bus_above-fallback3-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "0ab515c89c693c4c05c8189f70d50fe8b940c9a04bfeb6a703d89748ed7bd818",
+            "log": "selected-offline/tour_bus_above/fallback3.log",
+            "log_sha256": "b0c7f5e301b58b953fe9157b94691a59b073d8598d4218ae8b5c223415101616"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_above --candidate primary --output .runtime-work/c150142-merged-tour_bus_above-primary-offline-canonical-v3",
+        "exit_code": 0,
+        "construction_sha256": "68ba971fe11ce142b5223e4d2fc2a77ce5bf1437802c9f46e1a5e0b299a86282",
+        "log": "selected-offline/tour_bus_above/primary.log",
+        "log_sha256": "3953d7b20af3b98631dd10a22b8284695d50fa69ec0d58b7decd8507f637a723"
+      }
+    },
+    {
+      "case_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_no_loading",
+      "kind": "delivery",
+      "construction": "selected-primary/tour_bus_no_loading/construction.json",
+      "construction_sha256": "3ca93f8d34c0417d9860399a80427275792e5d46662ab785425fae42a51cbb09",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native bus stop, absent walker inventory, signed curb and four views unverified"
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize_selected.py",
+        "output_schema": "c150142-red-curb-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-fallbacks/tour_bus_no_loading/fallback1/construction.json",
+          "construction_sha256": "7c4c61903a2a167aae3eae751c116c4df714feb41e625459ce990dd764dad66a",
+          "trigger": {
+            "source": "retained Native bus body and red paint extent",
+            "metric": "longitudinal stop overshoot in meters",
+            "failure_condition": "Observed bus body overshoots the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_no_loading --candidate fallback1 --output .runtime-work/c150142-merged-tour_bus_no_loading-fallback1-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "7c4c61903a2a167aae3eae751c116c4df714feb41e625459ce990dd764dad66a",
+            "log": "selected-offline/tour_bus_no_loading/fallback1.log",
+            "log_sha256": "8b3ba3dcdd9456a51e93b82e11fc9e9e0377fe1a966ea8b4e04346d92a260da9"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-fallbacks/tour_bus_no_loading/fallback2/construction.json",
+          "construction_sha256": "380523d22378e45d9c5f36fe803438edd0b4d5eaee3e5cf1d4dd57801f318b9c",
+          "trigger": {
+            "source": "decoded overview and retained Native signal readback",
+            "metric": "visible signed curb and complete bus body",
+            "failure_condition": "Overview obscures sign, red paint or complete bus body"
+          },
+          "changed_knobs": [
+            "camera_policy",
+            "overview camera elevation"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_no_loading --candidate fallback2 --output .runtime-work/c150142-merged-tour_bus_no_loading-fallback2-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "380523d22378e45d9c5f36fe803438edd0b4d5eaee3e5cf1d4dd57801f318b9c",
+            "log": "selected-offline/tour_bus_no_loading/fallback2.log",
+            "log_sha256": "1d08c7212fc85680c8b594fa48a863c89e2ea5e0a00f225c332d53f32aec2cb7"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-fallbacks/tour_bus_no_loading/fallback3/construction.json",
+          "construction_sha256": "58d8eefd74d0d430e3fdbcfc7aebde45e7e734ed62d22023bc1e1643e14079c8",
+          "trigger": {
+            "source": "retained Native bus body and red paint extent",
+            "metric": "longitudinal stop undershoot in meters",
+            "failure_condition": "Observed bus body stops short of the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_no_loading --candidate fallback3 --output .runtime-work/c150142-merged-tour_bus_no_loading-fallback3-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "58d8eefd74d0d430e3fdbcfc7aebde45e7e734ed62d22023bc1e1643e14079c8",
+            "log": "selected-offline/tour_bus_no_loading/fallback3.log",
+            "log_sha256": "2ebad91039d20e4f0dececed1adb86b2a4555c1dea24d46ba1b65d0558bf92ea"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_no_loading --candidate primary --output .runtime-work/c150142-merged-tour_bus_no_loading-primary-offline-canonical-v3",
+        "exit_code": 0,
+        "construction_sha256": "3ca93f8d34c0417d9860399a80427275792e5d46662ab785425fae42a51cbb09",
+        "log": "selected-offline/tour_bus_no_loading/primary.log",
+        "log_sha256": "50f4ae6820d4e771f65fb100cb6e36070812421b760782a40bffec0a553741cf"
+      }
+    },
+    {
+      "case_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__shuttle_bus_below",
+      "kind": "delivery",
+      "construction": "selected-primary/shuttle_bus_below/construction.json",
+      "construction_sha256": "9197e30006c95a6cb8aeef5314778675dd2af576959432c3a13dbf7a1e85a4d9",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Long shuttle-service capture may miss passenger proximity, signed curb visibility or stop timing in Native; service identity remains unverified"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-fallbacks/shuttle_bus_below/fallback1/construction.json",
+          "construction_sha256": "4f598dc0e5ac5d09a91618eec12a591680ee63518062898a8f743709f77e262e",
+          "trigger": {
+            "source": "retained Native bus body and red paint extent",
+            "metric": "longitudinal stop overshoot in meters",
+            "failure_condition": "Observed shuttle-service bus body overshoots the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__shuttle_bus_below --candidate fallback1 --output .runtime-work/c150142-merged-shuttle_bus_below-fallback1-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "4f598dc0e5ac5d09a91618eec12a591680ee63518062898a8f743709f77e262e",
+            "log": "selected-offline/shuttle_bus_below/fallback1.log",
+            "log_sha256": "d3a4092e5afe223bd1d809e6d19a4297e5ef857af87bc00c59f3021705a0c595"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-fallbacks/shuttle_bus_below/fallback2/construction.json",
+          "construction_sha256": "688e690540b482ca7ec86e006d4f2c63a991d8a173fd8bfcc37962c65dab49a0",
+          "trigger": {
+            "source": "decoded overview and retained Native signal readback",
+            "metric": "visible signed curb and complete bus body",
+            "failure_condition": "Overview obscures sign, red paint or complete shuttle-service bus body"
+          },
+          "changed_knobs": [
+            "camera_policy",
+            "overview camera elevation"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__shuttle_bus_below --candidate fallback2 --output .runtime-work/c150142-merged-shuttle_bus_below-fallback2-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "688e690540b482ca7ec86e006d4f2c63a991d8a173fd8bfcc37962c65dab49a0",
+            "log": "selected-offline/shuttle_bus_below/fallback2.log",
+            "log_sha256": "dce47d87b2bd58c6384faf45dca730c91892ab7ddd63da9aab36e11e61da7990"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-fallbacks/shuttle_bus_below/fallback3/construction.json",
+          "construction_sha256": "7929a14906f413789c770eeb21e6d80f05df5e71427795e6eb575a211d4ea55c",
+          "trigger": {
+            "source": "retained Native bus body and red paint extent",
+            "metric": "longitudinal stop undershoot in meters",
+            "failure_condition": "Observed shuttle-service bus body stops short of the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__shuttle_bus_below --candidate fallback3 --output .runtime-work/c150142-merged-shuttle_bus_below-fallback3-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "7929a14906f413789c770eeb21e6d80f05df5e71427795e6eb575a211d4ea55c",
+            "log": "selected-offline/shuttle_bus_below/fallback3.log",
+            "log_sha256": "66d55e22d9913619bbee4fd99cad835a3c79968b411098717dd31f6a4d4632a0"
+          }
+        }
+      ],
+      "measurement_procedure": {
+        "entrypoint": "finalize_selected.py",
+        "output_schema": "c150142-red-curb-saved-analysis-v1"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__shuttle_bus_below --candidate primary --output .runtime-work/c150142-merged-shuttle_bus_below-primary-offline-canonical-v3",
+        "exit_code": 0,
+        "construction_sha256": "9197e30006c95a6cb8aeef5314778675dd2af576959432c3a13dbf7a1e85a4d9",
+        "log": "selected-offline/shuttle_bus_below/primary.log",
+        "log_sha256": "371261aba94501bf23b41b990c12a619dab91ba33ba9a829866bbbeaf39d0930"
+      }
+    },
+    {
+      "case_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__shuttle_bus_at",
+      "kind": "delivery",
+      "construction": "selected-primary/shuttle_bus_at/construction.json",
+      "construction_sha256": "dede5fca06c94a04685e89d772efd286f59a027d51eb88bc27945e1718f92790",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Long shuttle-service capture may miss passenger proximity, signed curb visibility or stop timing in Native; service identity remains unverified"
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize_selected.py",
+        "output_schema": "c150142-red-curb-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-fallbacks/shuttle_bus_at/fallback1/construction.json",
+          "construction_sha256": "0255278fe13bd5b3d7c4727f74d72e3788222a0c77a29c3a7490f76f1e40f60a",
+          "trigger": {
+            "source": "retained Native bus body and red paint extent",
+            "metric": "longitudinal stop overshoot in meters",
+            "failure_condition": "Observed shuttle-service bus body overshoots the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__shuttle_bus_at --candidate fallback1 --output .runtime-work/c150142-merged-shuttle_bus_at-fallback1-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "0255278fe13bd5b3d7c4727f74d72e3788222a0c77a29c3a7490f76f1e40f60a",
+            "log": "selected-offline/shuttle_bus_at/fallback1.log",
+            "log_sha256": "df3f237b74f7abd81fb0511864485a23338be3a51bee4b3d7623514e5f7bcbc2"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-fallbacks/shuttle_bus_at/fallback2/construction.json",
+          "construction_sha256": "a703a9e5e5506ed1154ee6c7376e5429d26503a7a3dfc6224b45fff64ac4cbfc",
+          "trigger": {
+            "source": "decoded overview and retained Native signal readback",
+            "metric": "visible signed curb and complete bus body",
+            "failure_condition": "Overview obscures sign, red paint or complete shuttle-service bus body"
+          },
+          "changed_knobs": [
+            "camera_policy",
+            "overview camera elevation"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__shuttle_bus_at --candidate fallback2 --output .runtime-work/c150142-merged-shuttle_bus_at-fallback2-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "a703a9e5e5506ed1154ee6c7376e5429d26503a7a3dfc6224b45fff64ac4cbfc",
+            "log": "selected-offline/shuttle_bus_at/fallback2.log",
+            "log_sha256": "89219cf86787fc35d8068a285802fb336be2be988f51f218b2840f2b3d15b447"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-fallbacks/shuttle_bus_at/fallback3/construction.json",
+          "construction_sha256": "412d547e2263dc2d07b1f3f6bcca3e983b676584c3b1eeabbcc4dfb713150fe9",
+          "trigger": {
+            "source": "retained Native bus body and red paint extent",
+            "metric": "longitudinal stop undershoot in meters",
+            "failure_condition": "Observed shuttle-service bus body stops short of the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__shuttle_bus_at --candidate fallback3 --output .runtime-work/c150142-merged-shuttle_bus_at-fallback3-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "412d547e2263dc2d07b1f3f6bcca3e983b676584c3b1eeabbcc4dfb713150fe9",
+            "log": "selected-offline/shuttle_bus_at/fallback3.log",
+            "log_sha256": "fc21390028c1c67d07f627b8f8c18cb6d74749a2414e846d250746ec077186f0"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__shuttle_bus_at --candidate primary --output .runtime-work/c150142-merged-shuttle_bus_at-primary-offline-canonical-v3",
+        "exit_code": 0,
+        "construction_sha256": "dede5fca06c94a04685e89d772efd286f59a027d51eb88bc27945e1718f92790",
+        "log": "selected-offline/shuttle_bus_at/primary.log",
+        "log_sha256": "12e6d2d8e313fa4c658cbf9992ae1cf094816aeb7c98f5d3ec53e67d085612e3"
+      }
+    },
+    {
+      "case_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__shuttle_bus_above",
+      "kind": "delivery",
+      "construction": "selected-primary/shuttle_bus_above/construction.json",
+      "construction_sha256": "7f46f4de613328927bcf4d23b343892b310b23232a2870f8d8627b86c32d10a6",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Long shuttle-service capture may miss passenger proximity, signed curb visibility or stop timing in Native; service identity remains unverified"
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize_selected.py",
+        "output_schema": "c150142-red-curb-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-fallbacks/shuttle_bus_above/fallback1/construction.json",
+          "construction_sha256": "e1c8080780407e37714142ee833ce4bf96e7d92aad1bdf787551532cf334c8b3",
+          "trigger": {
+            "source": "retained Native bus body and red paint extent",
+            "metric": "longitudinal stop overshoot in meters",
+            "failure_condition": "Observed shuttle-service bus body overshoots the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__shuttle_bus_above --candidate fallback1 --output .runtime-work/c150142-merged-shuttle_bus_above-fallback1-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "e1c8080780407e37714142ee833ce4bf96e7d92aad1bdf787551532cf334c8b3",
+            "log": "selected-offline/shuttle_bus_above/fallback1.log",
+            "log_sha256": "47761677c9260bc972c9f12582204d1b8fb06c0c9af618c43b1fa24e80ed22da"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-fallbacks/shuttle_bus_above/fallback2/construction.json",
+          "construction_sha256": "3073991bd40523ec938cba18fef20269e8b1a08bc54a1b6ce0cbda9c5f527a79",
+          "trigger": {
+            "source": "decoded overview and retained Native signal readback",
+            "metric": "visible signed curb and complete bus body",
+            "failure_condition": "Overview obscures sign, red paint or complete shuttle-service bus body"
+          },
+          "changed_knobs": [
+            "camera_policy",
+            "overview camera elevation"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__shuttle_bus_above --candidate fallback2 --output .runtime-work/c150142-merged-shuttle_bus_above-fallback2-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "3073991bd40523ec938cba18fef20269e8b1a08bc54a1b6ce0cbda9c5f527a79",
+            "log": "selected-offline/shuttle_bus_above/fallback2.log",
+            "log_sha256": "235df1765e4eb3f70a4622fc37c76533ac5c8fb3016d785fc2fc0ebefd51a0c5"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-fallbacks/shuttle_bus_above/fallback3/construction.json",
+          "construction_sha256": "970284cf2bf7fd60a3823c0a0fda6f700aaaf7a2579ea4dff367862b224dbf38",
+          "trigger": {
+            "source": "retained Native bus body and red paint extent",
+            "metric": "longitudinal stop undershoot in meters",
+            "failure_condition": "Observed shuttle-service bus body stops short of the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__shuttle_bus_above --candidate fallback3 --output .runtime-work/c150142-merged-shuttle_bus_above-fallback3-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "970284cf2bf7fd60a3823c0a0fda6f700aaaf7a2579ea4dff367862b224dbf38",
+            "log": "selected-offline/shuttle_bus_above/fallback3.log",
+            "log_sha256": "e389119920216b12ef8b398a5c1055b37b0f4e876f8fe7cb161e34dfc530e4fd"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__shuttle_bus_above --candidate primary --output .runtime-work/c150142-merged-shuttle_bus_above-primary-offline-canonical-v3",
+        "exit_code": 0,
+        "construction_sha256": "7f46f4de613328927bcf4d23b343892b310b23232a2870f8d8627b86c32d10a6",
+        "log": "selected-offline/shuttle_bus_above/primary.log",
+        "log_sha256": "482e5623ba0e69ad29e8d11fe0bf6d43c8edc38a18efe7794853a5819e6ee060"
+      }
+    },
+    {
+      "case_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__shuttle_bus_no_loading",
+      "kind": "delivery",
+      "construction": "selected-primary/shuttle_bus_no_loading/construction.json",
+      "construction_sha256": "cf63e3a192798e56426c14ded4e69136d7151c252e355c3e216d4492c86eff03",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Long shuttle-service capture may miss passenger proximity, signed curb visibility or stop timing in Native; service identity remains unverified"
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize_selected.py",
+        "output_schema": "c150142-red-curb-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-fallbacks/shuttle_bus_no_loading/fallback1/construction.json",
+          "construction_sha256": "a984ee410589e35e14516feb6bd0b6f67efa8b933afcc6b99e95f83d4a3a5f90",
+          "trigger": {
+            "source": "retained Native bus body and red paint extent",
+            "metric": "longitudinal stop overshoot in meters",
+            "failure_condition": "Observed shuttle-service bus body overshoots the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__shuttle_bus_no_loading --candidate fallback1 --output .runtime-work/c150142-merged-shuttle_bus_no_loading-fallback1-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "a984ee410589e35e14516feb6bd0b6f67efa8b933afcc6b99e95f83d4a3a5f90",
+            "log": "selected-offline/shuttle_bus_no_loading/fallback1.log",
+            "log_sha256": "527f2ffdd9d6265201585558347fc6158cc60d4b8db28038e2c9391da50b0cf8"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-fallbacks/shuttle_bus_no_loading/fallback2/construction.json",
+          "construction_sha256": "a4f90ccc81b16776c6ab6ce87f0f5574c23cd17e66af200312290d1f971a70dc",
+          "trigger": {
+            "source": "decoded overview and retained Native signal readback",
+            "metric": "visible signed curb and complete bus body",
+            "failure_condition": "Overview obscures sign, red paint or complete shuttle-service bus body"
+          },
+          "changed_knobs": [
+            "camera_policy",
+            "overview camera elevation"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__shuttle_bus_no_loading --candidate fallback2 --output .runtime-work/c150142-merged-shuttle_bus_no_loading-fallback2-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "a4f90ccc81b16776c6ab6ce87f0f5574c23cd17e66af200312290d1f971a70dc",
+            "log": "selected-offline/shuttle_bus_no_loading/fallback2.log",
+            "log_sha256": "3c3513e9f678e89984a4318c397ac677f3c909f361ba09f9c6fe6b3c505de07a"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-fallbacks/shuttle_bus_no_loading/fallback3/construction.json",
+          "construction_sha256": "7c6af428611991a5b9ae37ffd6af0dcfbd42c0311c94e05ea6aad79b9e6cf907",
+          "trigger": {
+            "source": "retained Native bus body and red paint extent",
+            "metric": "longitudinal stop undershoot in meters",
+            "failure_condition": "Observed shuttle-service bus body stops short of the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__shuttle_bus_no_loading --candidate fallback3 --output .runtime-work/c150142-merged-shuttle_bus_no_loading-fallback3-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "7c6af428611991a5b9ae37ffd6af0dcfbd42c0311c94e05ea6aad79b9e6cf907",
+            "log": "selected-offline/shuttle_bus_no_loading/fallback3.log",
+            "log_sha256": "f983b4d1885493b94675bb8b3f14e676e78179b0e3399aac24c995b1c77fa7b9"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__shuttle_bus_no_loading --candidate primary --output .runtime-work/c150142-merged-shuttle_bus_no_loading-primary-offline-canonical-v3",
+        "exit_code": 0,
+        "construction_sha256": "cf63e3a192798e56426c14ded4e69136d7151c252e355c3e216d4492c86eff03",
+        "log": "selected-offline/shuttle_bus_no_loading/primary.log",
+        "log_sha256": "ddb49db700a46f7d119721a2a118d00de16120c17045b3b1159b31fd122fc0c0"
+      }
+    },
+    {
+      "case_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__limo_below",
+      "kind": "delivery",
+      "construction": "selected-primary/limo_below/construction.json",
+      "construction_sha256": "3a7f38035b3e7f56b153a8562b8d4df835cfc305f35f0a256a64943599fc3d7f",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Long provisional limo-service capture may miss passenger activity, sign visibility or stop timing. A sedan does not establish qualifying limousine service or a limousine body."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-fallbacks/limo_below/fallback1/construction.json",
+          "construction_sha256": "dcbecfacbfc712c87d28fbc424a7f086f93151aa2850258b3153d48f5827beeb",
+          "trigger": {
+            "source": "retained Native provisional limo-service sedan body and red paint extent",
+            "metric": "longitudinal stop overshoot in meters",
+            "failure_condition": "Observed provisional limo-service sedan body overshoots the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__limo_below --candidate fallback1 --output .runtime-work/c150142-merged-limo_below-fallback1-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "dcbecfacbfc712c87d28fbc424a7f086f93151aa2850258b3153d48f5827beeb",
+            "log": "selected-offline/limo_below/fallback1.log",
+            "log_sha256": "f8b961e6c747b84f8a8e6e7494eb44aaf0a463835c3fc466c63277fb7fb4b020"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-fallbacks/limo_below/fallback2/construction.json",
+          "construction_sha256": "ef16735d14baef2cc61de43efc20105e78699ca183a6e16fe0b1c2be57f1a917",
+          "trigger": {
+            "source": "decoded overview and retained Native signal readback",
+            "metric": "visible signed curb and complete provisional limo-service sedan body",
+            "failure_condition": "Overview obscures sign, red paint or complete provisional limo-service sedan body"
+          },
+          "changed_knobs": [
+            "camera_policy",
+            "overview camera elevation"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__limo_below --candidate fallback2 --output .runtime-work/c150142-merged-limo_below-fallback2-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "ef16735d14baef2cc61de43efc20105e78699ca183a6e16fe0b1c2be57f1a917",
+            "log": "selected-offline/limo_below/fallback2.log",
+            "log_sha256": "b719eeffe542886f0edca87369f07ab89c6da5a682d0afbe53b098d903a5ddd0"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-fallbacks/limo_below/fallback3/construction.json",
+          "construction_sha256": "fa8b0012cf1b348fe41fb1dfed09aa3fbc70fa45324678f407491bc2c45117b5",
+          "trigger": {
+            "source": "retained Native provisional limo-service sedan body and red paint extent",
+            "metric": "longitudinal stop undershoot in meters",
+            "failure_condition": "Observed provisional limo-service sedan body stops short of the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__limo_below --candidate fallback3 --output .runtime-work/c150142-merged-limo_below-fallback3-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "fa8b0012cf1b348fe41fb1dfed09aa3fbc70fa45324678f407491bc2c45117b5",
+            "log": "selected-offline/limo_below/fallback3.log",
+            "log_sha256": "f885399a4be89d8e5cd6559e3c71c4adb32bee1d75d84077042b693bc0a0fada"
+          }
+        }
+      ],
+      "measurement_procedure": {
+        "entrypoint": "finalize_selected.py",
+        "output_schema": "c150142-red-curb-saved-analysis-v1"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__limo_below --candidate primary --output .runtime-work/c150142-merged-limo_below-primary-offline-canonical-v3",
+        "exit_code": 0,
+        "construction_sha256": "3a7f38035b3e7f56b153a8562b8d4df835cfc305f35f0a256a64943599fc3d7f",
+        "log": "selected-offline/limo_below/primary.log",
+        "log_sha256": "712eee9bb9ff2fc64ba25fa7ccfa1dc8e7271432ffcef35de8c37a45d9f9b20b"
+      }
+    },
+    {
+      "case_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__limo_at",
+      "kind": "delivery",
+      "construction": "selected-primary/limo_at/construction.json",
+      "construction_sha256": "24cf87136b45781e266956d499720faf49f86b1403a2e928eeaa67fed63610c7",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Long provisional limo-service capture may miss passenger activity, sign visibility or stop timing. A sedan does not establish qualifying limousine service or a limousine body."
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize_selected.py",
+        "output_schema": "c150142-red-curb-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-fallbacks/limo_at/fallback1/construction.json",
+          "construction_sha256": "ebb0976cfa7887d2fcd27da550b3e82fdf9a6e7410d9c475bd5e59a9d33dfa4b",
+          "trigger": {
+            "source": "retained Native provisional limo-service sedan body and red paint extent",
+            "metric": "longitudinal stop overshoot in meters",
+            "failure_condition": "Observed provisional limo-service sedan body overshoots the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__limo_at --candidate fallback1 --output .runtime-work/c150142-merged-limo_at-fallback1-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "ebb0976cfa7887d2fcd27da550b3e82fdf9a6e7410d9c475bd5e59a9d33dfa4b",
+            "log": "selected-offline/limo_at/fallback1.log",
+            "log_sha256": "a30f6168b9a221f6a0566909d64cff22c1caebc8c7e0a63562d8547c1d733c1c"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-fallbacks/limo_at/fallback2/construction.json",
+          "construction_sha256": "0fecb35760f6ff8f57c332e2bafd3548075686564732047943ff4539bc6ed48a",
+          "trigger": {
+            "source": "decoded overview and retained Native signal readback",
+            "metric": "visible signed curb and complete provisional limo-service sedan body",
+            "failure_condition": "Overview obscures sign, red paint or complete provisional limo-service sedan body"
+          },
+          "changed_knobs": [
+            "camera_policy",
+            "overview camera elevation"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__limo_at --candidate fallback2 --output .runtime-work/c150142-merged-limo_at-fallback2-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "0fecb35760f6ff8f57c332e2bafd3548075686564732047943ff4539bc6ed48a",
+            "log": "selected-offline/limo_at/fallback2.log",
+            "log_sha256": "8fcedac2c829db589fd12a1050da62a513550072d59f338c581e1f729ea6ca09"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-fallbacks/limo_at/fallback3/construction.json",
+          "construction_sha256": "8591de0afa1fbd3af7a420014128b8c2f26ddc5c484041dfffc2be7dbbaef3fa",
+          "trigger": {
+            "source": "retained Native provisional limo-service sedan body and red paint extent",
+            "metric": "longitudinal stop undershoot in meters",
+            "failure_condition": "Observed provisional limo-service sedan body stops short of the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__limo_at --candidate fallback3 --output .runtime-work/c150142-merged-limo_at-fallback3-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "8591de0afa1fbd3af7a420014128b8c2f26ddc5c484041dfffc2be7dbbaef3fa",
+            "log": "selected-offline/limo_at/fallback3.log",
+            "log_sha256": "04133cafb2f9037df85f8dbf08249d5c9362b824c81cf681632f49b500935036"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__limo_at --candidate primary --output .runtime-work/c150142-merged-limo_at-primary-offline-canonical-v3",
+        "exit_code": 0,
+        "construction_sha256": "24cf87136b45781e266956d499720faf49f86b1403a2e928eeaa67fed63610c7",
+        "log": "selected-offline/limo_at/primary.log",
+        "log_sha256": "a14b25f3654ecf823b80ddcc351f27fc86593ad5f66605fdc190fccbdf542ef4"
+      }
+    },
+    {
+      "case_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__limo_above",
+      "kind": "delivery",
+      "construction": "selected-primary/limo_above/construction.json",
+      "construction_sha256": "977000712ac457e425b57188048a6caf29eaf2f32ce0d33b1ee83468b8d6dbc1",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Long provisional limo-service capture may miss passenger activity, sign visibility or stop timing. A sedan does not establish qualifying limousine service or a limousine body."
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize_selected.py",
+        "output_schema": "c150142-red-curb-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-fallbacks/limo_above/fallback1/construction.json",
+          "construction_sha256": "277032cfaae28089e1197b6f95a47d76e60bdd0e5e5e8205153c7c4d1e025403",
+          "trigger": {
+            "source": "retained Native provisional limo-service sedan body and red paint extent",
+            "metric": "longitudinal stop overshoot in meters",
+            "failure_condition": "Observed provisional limo-service sedan body overshoots the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__limo_above --candidate fallback1 --output .runtime-work/c150142-merged-limo_above-fallback1-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "277032cfaae28089e1197b6f95a47d76e60bdd0e5e5e8205153c7c4d1e025403",
+            "log": "selected-offline/limo_above/fallback1.log",
+            "log_sha256": "5f7c5298a8667993bc58116d1b30ad798d215dec1c045f3f0333df520e01be3f"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-fallbacks/limo_above/fallback2/construction.json",
+          "construction_sha256": "33f35e1a08de6a2a4af68759289532cbbd8cb0f513ca5e01cded8a9125e156be",
+          "trigger": {
+            "source": "decoded overview and retained Native signal readback",
+            "metric": "visible signed curb and complete provisional limo-service sedan body",
+            "failure_condition": "Overview obscures sign, red paint or complete provisional limo-service sedan body"
+          },
+          "changed_knobs": [
+            "camera_policy",
+            "overview camera elevation"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__limo_above --candidate fallback2 --output .runtime-work/c150142-merged-limo_above-fallback2-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "33f35e1a08de6a2a4af68759289532cbbd8cb0f513ca5e01cded8a9125e156be",
+            "log": "selected-offline/limo_above/fallback2.log",
+            "log_sha256": "9e83714b03c00185f60ebe7fd2f7e718c96c00e0dcef65a9b0a2f3d8730391bd"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-fallbacks/limo_above/fallback3/construction.json",
+          "construction_sha256": "f578de75614c26b56510ddac496c320cede645d75ee8adbc482611eedb397b22",
+          "trigger": {
+            "source": "retained Native provisional limo-service sedan body and red paint extent",
+            "metric": "longitudinal stop undershoot in meters",
+            "failure_condition": "Observed provisional limo-service sedan body stops short of the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__limo_above --candidate fallback3 --output .runtime-work/c150142-merged-limo_above-fallback3-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "f578de75614c26b56510ddac496c320cede645d75ee8adbc482611eedb397b22",
+            "log": "selected-offline/limo_above/fallback3.log",
+            "log_sha256": "34f1a5261bfa202f72238383a9fb6881d7178a97ffb0542a2386047d1d9ca374"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__limo_above --candidate primary --output .runtime-work/c150142-merged-limo_above-primary-offline-canonical-v3",
+        "exit_code": 0,
+        "construction_sha256": "977000712ac457e425b57188048a6caf29eaf2f32ce0d33b1ee83468b8d6dbc1",
+        "log": "selected-offline/limo_above/primary.log",
+        "log_sha256": "2f83671b68c5449a4182544f86dee82fd39f95a710b84e4fc19d13653cbfdd27"
+      }
+    },
+    {
+      "case_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__limo_no_loading",
+      "kind": "delivery",
+      "construction": "selected-primary/limo_no_loading/construction.json",
+      "construction_sha256": "54fa932c9129bf72e6b760128905b8535e0e1fd0c2203c0f84a006bfa75922df",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Long provisional limo-service capture may miss passenger activity, sign visibility or stop timing. A sedan does not establish qualifying limousine service or a limousine body."
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize_selected.py",
+        "output_schema": "c150142-red-curb-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-fallbacks/limo_no_loading/fallback1/construction.json",
+          "construction_sha256": "3d2b4932e75b83f86a3f045b5d69fd3c32f2af66d0371c1286a342c281e13c65",
+          "trigger": {
+            "source": "retained Native provisional limo-service sedan body and red paint extent",
+            "metric": "longitudinal stop overshoot in meters",
+            "failure_condition": "Observed provisional limo-service sedan body overshoots the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__limo_no_loading --candidate fallback1 --output .runtime-work/c150142-merged-limo_no_loading-fallback1-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "3d2b4932e75b83f86a3f045b5d69fd3c32f2af66d0371c1286a342c281e13c65",
+            "log": "selected-offline/limo_no_loading/fallback1.log",
+            "log_sha256": "4571e65efdf345857bd1d893d4b7610858cd0ade1b3823bf68c0c12001d93296"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-fallbacks/limo_no_loading/fallback2/construction.json",
+          "construction_sha256": "b4a1e4e67bce6d2a6ffbd063f6d1f697737da740255fa4213c53695c0b9ac4af",
+          "trigger": {
+            "source": "decoded overview and retained Native signal readback",
+            "metric": "visible signed curb and complete provisional limo-service sedan body",
+            "failure_condition": "Overview obscures sign, red paint or complete provisional limo-service sedan body"
+          },
+          "changed_knobs": [
+            "camera_policy",
+            "overview camera elevation"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__limo_no_loading --candidate fallback2 --output .runtime-work/c150142-merged-limo_no_loading-fallback2-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "b4a1e4e67bce6d2a6ffbd063f6d1f697737da740255fa4213c53695c0b9ac4af",
+            "log": "selected-offline/limo_no_loading/fallback2.log",
+            "log_sha256": "c3b69ec3f81a13288dc88e1ea23a8f8984d22aa5a201420da7f2968ca0f399a8"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-fallbacks/limo_no_loading/fallback3/construction.json",
+          "construction_sha256": "b93a542a1d81311e56f58d52a82cbda6b87997d52adf376f71b5fbca8656a219",
+          "trigger": {
+            "source": "retained Native provisional limo-service sedan body and red paint extent",
+            "metric": "longitudinal stop undershoot in meters",
+            "failure_condition": "Observed provisional limo-service sedan body stops short of the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__limo_no_loading --candidate fallback3 --output .runtime-work/c150142-merged-limo_no_loading-fallback3-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "b93a542a1d81311e56f58d52a82cbda6b87997d52adf376f71b5fbca8656a219",
+            "log": "selected-offline/limo_no_loading/fallback3.log",
+            "log_sha256": "cad5986bca29cdb57e16885cb0d5f4c657b90f6ed24e99b504e5687e8b355827"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__limo_no_loading --candidate primary --output .runtime-work/c150142-merged-limo_no_loading-primary-offline-canonical-v3",
+        "exit_code": 0,
+        "construction_sha256": "54fa932c9129bf72e6b760128905b8535e0e1fd0c2203c0f84a006bfa75922df",
+        "log": "selected-offline/limo_no_loading/primary.log",
+        "log_sha256": "c6e5ad0156264182fac495cf43d6faf0f4af98ac550a84d34f54e9d955a312ff"
+      }
+    },
+    {
+      "case_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__rtc_bus_below",
+      "kind": "delivery",
+      "construction": "selected-primary/rtc_bus_below/construction.json",
+      "construction_sha256": "043a10d621541703f2132e01cc32264ab66185d4ba18dbfdc3e2ea157710fd62",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Long RTC bus capture may miss passenger proximity, RTC sign visibility or stop timing in Native; service identity remains unverified"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-fallbacks/rtc_bus_below/fallback1/construction.json",
+          "construction_sha256": "7fe73ffd9649585fc35f6f94cde3f3341690478b3ece558171baa9d1e8154fd9",
+          "trigger": {
+            "source": "retained Native bus body and red paint extent",
+            "metric": "longitudinal stop overshoot in meters",
+            "failure_condition": "Observed shuttle-service bus body overshoots the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__rtc_bus_below --candidate fallback1 --output .runtime-work/c150142-merged-rtc_bus_below-fallback1-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "7fe73ffd9649585fc35f6f94cde3f3341690478b3ece558171baa9d1e8154fd9",
+            "log": "selected-offline/rtc_bus_below/fallback1.log",
+            "log_sha256": "2bc20615884070ea214e067f9dd5e5bc101694f53431ee7dfef337347e533c0a"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-fallbacks/rtc_bus_below/fallback2/construction.json",
+          "construction_sha256": "7c3d4198388feb3ac1c27b09b51ea20fa0617f9ddab9ec0a91dcded2e75e4ebe",
+          "trigger": {
+            "source": "decoded overview and retained Native signal readback",
+            "metric": "visible signed curb and complete bus body",
+            "failure_condition": "Overview obscures sign, red paint or complete shuttle-service bus body"
+          },
+          "changed_knobs": [
+            "camera_policy",
+            "overview camera elevation"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__rtc_bus_below --candidate fallback2 --output .runtime-work/c150142-merged-rtc_bus_below-fallback2-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "7c3d4198388feb3ac1c27b09b51ea20fa0617f9ddab9ec0a91dcded2e75e4ebe",
+            "log": "selected-offline/rtc_bus_below/fallback2.log",
+            "log_sha256": "7d3e1f024e1e744dd02fbdcbc53fdd30a831e9133edcaa2dc9efa6ee87416840"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-fallbacks/rtc_bus_below/fallback3/construction.json",
+          "construction_sha256": "0692ce183327bbc907045a34628dd7f8aab991876ce749a519b9f7523130bca9",
+          "trigger": {
+            "source": "retained Native bus body and red paint extent",
+            "metric": "longitudinal stop undershoot in meters",
+            "failure_condition": "Observed shuttle-service bus body stops short of the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__rtc_bus_below --candidate fallback3 --output .runtime-work/c150142-merged-rtc_bus_below-fallback3-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "0692ce183327bbc907045a34628dd7f8aab991876ce749a519b9f7523130bca9",
+            "log": "selected-offline/rtc_bus_below/fallback3.log",
+            "log_sha256": "a43a4da8d35552d0e2176021c89b9a29fb49c719f14693f011f6570df33b6299"
+          }
+        }
+      ],
+      "measurement_procedure": {
+        "entrypoint": "finalize_selected.py",
+        "output_schema": "c150142-red-curb-saved-analysis-v1"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__rtc_bus_below --candidate primary --output .runtime-work/c150142-merged-rtc_bus_below-primary-offline-canonical-v3",
+        "exit_code": 0,
+        "construction_sha256": "043a10d621541703f2132e01cc32264ab66185d4ba18dbfdc3e2ea157710fd62",
+        "log": "selected-offline/rtc_bus_below/primary.log",
+        "log_sha256": "01a6ba6dd09081e5d3e443cbfcc393eee77690bba3ac4080382b7f713bd3a4d7"
+      }
+    },
+    {
+      "case_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__rtc_bus_at",
+      "kind": "delivery",
+      "construction": "selected-primary/rtc_bus_at/construction.json",
+      "construction_sha256": "842ec83df7900e7db2a6cab8752292d09802b5b783df032024a0c472877aab77",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Long RTC bus capture may miss passenger proximity, RTC sign visibility or stop timing in Native; service identity remains unverified"
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize_selected.py",
+        "output_schema": "c150142-red-curb-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-fallbacks/rtc_bus_at/fallback1/construction.json",
+          "construction_sha256": "e5883b9410906f8f7e4a3ce2d93cfba2062cf2b3b835acc645ec742bef4cf749",
+          "trigger": {
+            "source": "retained Native bus body and red paint extent",
+            "metric": "longitudinal stop overshoot in meters",
+            "failure_condition": "Observed shuttle-service bus body overshoots the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__rtc_bus_at --candidate fallback1 --output .runtime-work/c150142-merged-rtc_bus_at-fallback1-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "e5883b9410906f8f7e4a3ce2d93cfba2062cf2b3b835acc645ec742bef4cf749",
+            "log": "selected-offline/rtc_bus_at/fallback1.log",
+            "log_sha256": "821325dc1a35fc91f90e04da882c8fb20989420046013e55d8f6db5461d99b3e"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-fallbacks/rtc_bus_at/fallback2/construction.json",
+          "construction_sha256": "2c11fcf015ebf11ab1952dd08affec715bb4594f76d19520c14342f1659d1827",
+          "trigger": {
+            "source": "decoded overview and retained Native signal readback",
+            "metric": "visible signed curb and complete bus body",
+            "failure_condition": "Overview obscures sign, red paint or complete shuttle-service bus body"
+          },
+          "changed_knobs": [
+            "camera_policy",
+            "overview camera elevation"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__rtc_bus_at --candidate fallback2 --output .runtime-work/c150142-merged-rtc_bus_at-fallback2-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "2c11fcf015ebf11ab1952dd08affec715bb4594f76d19520c14342f1659d1827",
+            "log": "selected-offline/rtc_bus_at/fallback2.log",
+            "log_sha256": "573555b8e340362ce5ff2d5c1cadb0069d50b015cf9fc7464e1aab02165236b8"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-fallbacks/rtc_bus_at/fallback3/construction.json",
+          "construction_sha256": "633941190885c162d9ac5eb8ecd00717a24fc053c8844bf9cd21db09a29e4aa3",
+          "trigger": {
+            "source": "retained Native bus body and red paint extent",
+            "metric": "longitudinal stop undershoot in meters",
+            "failure_condition": "Observed shuttle-service bus body stops short of the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__rtc_bus_at --candidate fallback3 --output .runtime-work/c150142-merged-rtc_bus_at-fallback3-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "633941190885c162d9ac5eb8ecd00717a24fc053c8844bf9cd21db09a29e4aa3",
+            "log": "selected-offline/rtc_bus_at/fallback3.log",
+            "log_sha256": "99a88d19107273f4885f65dd325215f2ddb83be7b2bbcef94ef58a0aea75299c"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__rtc_bus_at --candidate primary --output .runtime-work/c150142-merged-rtc_bus_at-primary-offline-canonical-v3",
+        "exit_code": 0,
+        "construction_sha256": "842ec83df7900e7db2a6cab8752292d09802b5b783df032024a0c472877aab77",
+        "log": "selected-offline/rtc_bus_at/primary.log",
+        "log_sha256": "cbde68db251e2007c76df01a359015a604dd0ba31471e0c413331716bfe0c686"
+      }
+    },
+    {
+      "case_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__rtc_bus_above",
+      "kind": "delivery",
+      "construction": "selected-primary/rtc_bus_above/construction.json",
+      "construction_sha256": "63ab18edb99d32fa6a4c19459db37e9d8b9685428eba682865b8f1c149ace0be",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Long RTC bus capture may miss passenger proximity, RTC sign visibility or stop timing in Native; service identity remains unverified"
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize_selected.py",
+        "output_schema": "c150142-red-curb-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-fallbacks/rtc_bus_above/fallback1/construction.json",
+          "construction_sha256": "d05a06d9eed27067d6c31f6e46871640d9af9476b4e0e9e54c0a05ffd77dbb0e",
+          "trigger": {
+            "source": "retained Native bus body and red paint extent",
+            "metric": "longitudinal stop overshoot in meters",
+            "failure_condition": "Observed shuttle-service bus body overshoots the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__rtc_bus_above --candidate fallback1 --output .runtime-work/c150142-merged-rtc_bus_above-fallback1-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "d05a06d9eed27067d6c31f6e46871640d9af9476b4e0e9e54c0a05ffd77dbb0e",
+            "log": "selected-offline/rtc_bus_above/fallback1.log",
+            "log_sha256": "c0e7cdd00e2a50c82c81f755d7ba46139bbd7df2d4e17d296b00445050abe28d"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-fallbacks/rtc_bus_above/fallback2/construction.json",
+          "construction_sha256": "cb996a53c7f1b8e153647cbea2fca1e0bda27a6cfe785c6ad97fdede15b47d10",
+          "trigger": {
+            "source": "decoded overview and retained Native signal readback",
+            "metric": "visible signed curb and complete bus body",
+            "failure_condition": "Overview obscures sign, red paint or complete shuttle-service bus body"
+          },
+          "changed_knobs": [
+            "camera_policy",
+            "overview camera elevation"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__rtc_bus_above --candidate fallback2 --output .runtime-work/c150142-merged-rtc_bus_above-fallback2-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "cb996a53c7f1b8e153647cbea2fca1e0bda27a6cfe785c6ad97fdede15b47d10",
+            "log": "selected-offline/rtc_bus_above/fallback2.log",
+            "log_sha256": "08e50918a7ca8c80f73712df9dd2661106c18ded8d02a3fed039793319fb5e15"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-fallbacks/rtc_bus_above/fallback3/construction.json",
+          "construction_sha256": "6579146e7c14f91df8a53029d2716bd609a3e4d51b4c82ffcb807f2e3a97d111",
+          "trigger": {
+            "source": "retained Native bus body and red paint extent",
+            "metric": "longitudinal stop undershoot in meters",
+            "failure_condition": "Observed shuttle-service bus body stops short of the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__rtc_bus_above --candidate fallback3 --output .runtime-work/c150142-merged-rtc_bus_above-fallback3-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "6579146e7c14f91df8a53029d2716bd609a3e4d51b4c82ffcb807f2e3a97d111",
+            "log": "selected-offline/rtc_bus_above/fallback3.log",
+            "log_sha256": "b14ed3600984dcbab1cd9a2679f9f9cb62b6d5aa30137b19a4dd134e3ff482dc"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__rtc_bus_above --candidate primary --output .runtime-work/c150142-merged-rtc_bus_above-primary-offline-canonical-v3",
+        "exit_code": 0,
+        "construction_sha256": "63ab18edb99d32fa6a4c19459db37e9d8b9685428eba682865b8f1c149ace0be",
+        "log": "selected-offline/rtc_bus_above/primary.log",
+        "log_sha256": "73d1f7d39a412c1d336c867d36958c9001da4ddf6e687d2ed0ec45e9dde4c8bc"
+      }
+    },
+    {
+      "case_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__rtc_bus_no_loading",
+      "kind": "delivery",
+      "construction": "selected-primary/rtc_bus_no_loading/construction.json",
+      "construction_sha256": "3961c81f15667209a3c926183b686324237c71f2c7dac6eb943058a39f2621ed",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Long RTC bus capture may miss passenger proximity, RTC sign visibility or stop timing in Native; service identity remains unverified"
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize_selected.py",
+        "output_schema": "c150142-red-curb-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-fallbacks/rtc_bus_no_loading/fallback1/construction.json",
+          "construction_sha256": "c1383219379e8612a3f71269e8762514765d17e97ba7a0ddc96560500f19edbb",
+          "trigger": {
+            "source": "retained Native bus body and red paint extent",
+            "metric": "longitudinal stop overshoot in meters",
+            "failure_condition": "Observed shuttle-service bus body overshoots the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__rtc_bus_no_loading --candidate fallback1 --output .runtime-work/c150142-merged-rtc_bus_no_loading-fallback1-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "c1383219379e8612a3f71269e8762514765d17e97ba7a0ddc96560500f19edbb",
+            "log": "selected-offline/rtc_bus_no_loading/fallback1.log",
+            "log_sha256": "9bda7dbfab63d14a047e533684099ab828a2deea9983189742a5638f9bb3a9f6"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-fallbacks/rtc_bus_no_loading/fallback2/construction.json",
+          "construction_sha256": "07347b50ab4377881acec1fd0651177784b378cf6d326769ecad5fc7ca34e052",
+          "trigger": {
+            "source": "decoded overview and retained Native signal readback",
+            "metric": "visible signed curb and complete bus body",
+            "failure_condition": "Overview obscures sign, red paint or complete shuttle-service bus body"
+          },
+          "changed_knobs": [
+            "camera_policy",
+            "overview camera elevation"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__rtc_bus_no_loading --candidate fallback2 --output .runtime-work/c150142-merged-rtc_bus_no_loading-fallback2-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "07347b50ab4377881acec1fd0651177784b378cf6d326769ecad5fc7ca34e052",
+            "log": "selected-offline/rtc_bus_no_loading/fallback2.log",
+            "log_sha256": "4393eb4b441ad24c11c349bbbf3f9b5779da087ddf4502d392850304f63e303f"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-fallbacks/rtc_bus_no_loading/fallback3/construction.json",
+          "construction_sha256": "3dd24f71223129f145b14d27aed3b352b5db3ca66245771d10e983ef5c0b201a",
+          "trigger": {
+            "source": "retained Native bus body and red paint extent",
+            "metric": "longitudinal stop undershoot in meters",
+            "failure_condition": "Observed shuttle-service bus body stops short of the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__rtc_bus_no_loading --candidate fallback3 --output .runtime-work/c150142-merged-rtc_bus_no_loading-fallback3-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "3dd24f71223129f145b14d27aed3b352b5db3ca66245771d10e983ef5c0b201a",
+            "log": "selected-offline/rtc_bus_no_loading/fallback3.log",
+            "log_sha256": "2db2ed5beb1d5f449ea33cd5d30151d626fec5784740053e33645bfe97c40523"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__rtc_bus_no_loading --candidate primary --output .runtime-work/c150142-merged-rtc_bus_no_loading-primary-offline-canonical-v3",
+        "exit_code": 0,
+        "construction_sha256": "3961c81f15667209a3c926183b686324237c71f2c7dac6eb943058a39f2621ed",
+        "log": "selected-offline/rtc_bus_no_loading/primary.log",
+        "log_sha256": "8c39c5c1031ea4f727b17e119a7957b91621cde82144fbc00945f9bfd56e136b"
+      }
+    },
+    {
+      "case_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__armored_car_unsigned_no_business",
+      "kind": "delivery",
+      "construction": "selected-primary/armored_car_unsigned_no_business/construction.json",
+      "construction_sha256": "d7225d67751f9b61b434809794bc3aab6294c437db5df2d3ebd32519046f9d7f",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native firetruck stop may overshoot red paint; overview may hide body or an unexpected worker, and actor inventory may show a pedestrian; attached-panel proxy appearance and actual armored identity unverified"
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize_selected.py",
+        "output_schema": "c150142-red-curb-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-fallbacks/armored_car_unsigned_no_business/fallback1/construction.json",
+          "construction_sha256": "46fd5a6c130a76310c5c6410308c57d2d3840c94df2ece0e0ceabfc54205dbdd",
+          "trigger": {
+            "source": "retained Native firetruck body and red paint extent",
+            "metric": "longitudinal stop overshoot in meters",
+            "failure_condition": "Observed firetruck body overshoots the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__armored_car_unsigned_no_business --candidate fallback1 --output .runtime-work/c150142-merged-armored_car_unsigned_no_business-fallback1-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "46fd5a6c130a76310c5c6410308c57d2d3840c94df2ece0e0ceabfc54205dbdd",
+            "log": "selected-offline/armored_car_unsigned_no_business/fallback1.log",
+            "log_sha256": "a1c8bcd3ed12882b83694a4bcd931e791f2236f0c7cbbd30288537e1f18d9a24"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-fallbacks/armored_car_unsigned_no_business/fallback2/construction.json",
+          "construction_sha256": "f10e50d3c9546a277bcbbcdb9bd715963ca0fd1d6e5fd858a01b93521081eb7a",
+          "trigger": {
+            "source": "decoded overview and retained Native signal readback",
+            "metric": "visible red curb and complete firetruck body",
+            "failure_condition": "Overview obscures red paint or complete firetruck body"
+          },
+          "changed_knobs": [
+            "camera_policy",
+            "overview camera elevation"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__armored_car_unsigned_no_business --candidate fallback2 --output .runtime-work/c150142-merged-armored_car_unsigned_no_business-fallback2-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "f10e50d3c9546a277bcbbcdb9bd715963ca0fd1d6e5fd858a01b93521081eb7a",
+            "log": "selected-offline/armored_car_unsigned_no_business/fallback2.log",
+            "log_sha256": "9d1ef3bd5edcd0befbbf70fd1bd22caf853ad8b03eb94ebc7d2906d30c866cf4"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-fallbacks/armored_car_unsigned_no_business/fallback3/construction.json",
+          "construction_sha256": "b10f3d2fe290b186dd6f84048c6849d279c99f0efb19bdf05b0098de8ddb01dd",
+          "trigger": {
+            "source": "retained Native firetruck body and red paint extent",
+            "metric": "longitudinal stop undershoot in meters",
+            "failure_condition": "Observed firetruck body stops short of the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__armored_car_unsigned_no_business --candidate fallback3 --output .runtime-work/c150142-merged-armored_car_unsigned_no_business-fallback3-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "b10f3d2fe290b186dd6f84048c6849d279c99f0efb19bdf05b0098de8ddb01dd",
+            "log": "selected-offline/armored_car_unsigned_no_business/fallback3.log",
+            "log_sha256": "9cf8638631090c99586bb6f48b61b1b9f9ed3205a6e4385de0d9a01f236a099e"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__armored_car_unsigned_no_business --candidate primary --output .runtime-work/c150142-merged-armored_car_unsigned_no_business-primary-offline-canonical-v3",
+        "exit_code": 0,
+        "construction_sha256": "d7225d67751f9b61b434809794bc3aab6294c437db5df2d3ebd32519046f9d7f",
+        "log": "selected-offline/armored_car_unsigned_no_business/primary.log",
+        "log_sha256": "1ed8598bf4b83bf8bfc438222e2ce918f942987219f56a4c782690af803c22c5"
+      }
+    },
+    {
+      "case_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__armored_car_unsigned_business",
+      "kind": "delivery",
+      "construction": "selected-primary/armored_car_unsigned_business/construction.json",
+      "construction_sha256": "111ddb4495aadae36695ec41ebc682bd5727bd8c8751e9c5337ad38ebd7b8ff5",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native firetruck stop may overshoot red paint; overview may hide body or service-worker approach, and the worker may fail to dwell or depart; attached-panel proxy appearance and actual armored identity unverified"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-fallbacks/armored_car_unsigned_business/fallback1/construction.json",
+          "construction_sha256": "23621416d60aa43aa478b9621e46367a3d12b642e2946cdf330f5aeddb046e12",
+          "trigger": {
+            "source": "retained Native firetruck body and red paint extent",
+            "metric": "longitudinal stop overshoot in meters",
+            "failure_condition": "Observed firetruck body overshoots the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__armored_car_unsigned_business --candidate fallback1 --output .runtime-work/c150142-merged-armored_car_unsigned_business-fallback1-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "23621416d60aa43aa478b9621e46367a3d12b642e2946cdf330f5aeddb046e12",
+            "log": "selected-offline/armored_car_unsigned_business/fallback1.log",
+            "log_sha256": "90c871d9e7de1bfd589b874919067f236f55e7bd25e0bfa74a3728c58d7ab213"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-fallbacks/armored_car_unsigned_business/fallback2/construction.json",
+          "construction_sha256": "a82419a178911e35b888c037758f96fa203ea6346d704b29e851be9d900e19dc",
+          "trigger": {
+            "source": "decoded overview and retained Native signal readback",
+            "metric": "visible red curb and complete firetruck body",
+            "failure_condition": "Overview obscures red paint or complete firetruck body"
+          },
+          "changed_knobs": [
+            "camera_policy",
+            "overview camera elevation"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__armored_car_unsigned_business --candidate fallback2 --output .runtime-work/c150142-merged-armored_car_unsigned_business-fallback2-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "a82419a178911e35b888c037758f96fa203ea6346d704b29e851be9d900e19dc",
+            "log": "selected-offline/armored_car_unsigned_business/fallback2.log",
+            "log_sha256": "98817cc55954eddc93eb9a101583593e4bbe171154a83d2e4183ebf6005e50e7"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-fallbacks/armored_car_unsigned_business/fallback3/construction.json",
+          "construction_sha256": "4422e68af285d4f31930b08fc5fc260a66bcb0ea180d362ced98405f55d26289",
+          "trigger": {
+            "source": "retained Native firetruck body and red paint extent",
+            "metric": "longitudinal stop undershoot in meters",
+            "failure_condition": "Observed firetruck body stops short of the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__armored_car_unsigned_business --candidate fallback3 --output .runtime-work/c150142-merged-armored_car_unsigned_business-fallback3-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "4422e68af285d4f31930b08fc5fc260a66bcb0ea180d362ced98405f55d26289",
+            "log": "selected-offline/armored_car_unsigned_business/fallback3.log",
+            "log_sha256": "1fe3b66b6ec674f3d8ff96fadcf60a567e7440796ddfbbd496cb86588ab6ed61"
+          }
+        }
+      ],
+      "measurement_procedure": {
+        "entrypoint": "finalize_selected.py",
+        "output_schema": "c150142-red-curb-saved-analysis-v1"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__armored_car_unsigned_business --candidate primary --output .runtime-work/c150142-merged-armored_car_unsigned_business-primary-offline-canonical-v3",
+        "exit_code": 0,
+        "construction_sha256": "111ddb4495aadae36695ec41ebc682bd5727bd8c8751e9c5337ad38ebd7b8ff5",
+        "log": "selected-offline/armored_car_unsigned_business/primary.log",
+        "log_sha256": "9bdd8bbdf535b516d76a64a81851c8b8655e9778768e912a45cb69791a98f526"
+      }
+    },
+    {
+      "case_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__armored_car_signed_no_business",
+      "kind": "delivery",
+      "construction": "selected-primary/armored_car_signed_no_business/construction.json",
+      "construction_sha256": "07acca8fa8bf0d026b78784f115c88a43a786a44e36e62ddc669fa7120d8de87",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native firetruck stop may overshoot red paint; overview may hide body or an unexpected worker, and actor inventory may show a pedestrian; authored sign text and physical visibility are unreviewed; attached-panel proxy appearance and actual armored identity unverified"
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize_selected.py",
+        "output_schema": "c150142-red-curb-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-fallbacks/armored_car_signed_no_business/fallback1/construction.json",
+          "construction_sha256": "14d12e2b1ac66543daa77900727f1a4225f539b3579ba6d6fb9b4d0f77d77da8",
+          "trigger": {
+            "source": "retained Native firetruck body and red paint extent",
+            "metric": "longitudinal stop overshoot in meters",
+            "failure_condition": "Observed firetruck body overshoots the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__armored_car_signed_no_business --candidate fallback1 --output .runtime-work/c150142-merged-armored_car_signed_no_business-fallback1-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "14d12e2b1ac66543daa77900727f1a4225f539b3579ba6d6fb9b4d0f77d77da8",
+            "log": "selected-offline/armored_car_signed_no_business/fallback1.log",
+            "log_sha256": "1ee70c1ea13c3c812b99b2e9c03e851255c44c869e14a609f2930cdc0be9d610"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-fallbacks/armored_car_signed_no_business/fallback2/construction.json",
+          "construction_sha256": "302234582d8e26bd5906badbb3e47d359e731e2ce5cb6c38f2bef58060a2df24",
+          "trigger": {
+            "source": "decoded overview and retained Native signal readback",
+            "metric": "visible red curb and complete firetruck body",
+            "failure_condition": "Overview obscures red paint or complete firetruck body"
+          },
+          "changed_knobs": [
+            "camera_policy",
+            "overview camera elevation"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__armored_car_signed_no_business --candidate fallback2 --output .runtime-work/c150142-merged-armored_car_signed_no_business-fallback2-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "302234582d8e26bd5906badbb3e47d359e731e2ce5cb6c38f2bef58060a2df24",
+            "log": "selected-offline/armored_car_signed_no_business/fallback2.log",
+            "log_sha256": "4195559ff9d58d2a0931989cd1d778cb6dfcc887365c8ee691f9bbad7868f609"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-fallbacks/armored_car_signed_no_business/fallback3/construction.json",
+          "construction_sha256": "d12bc65afb8bb446bbf268c9e1ff6a42fd52765d700e389aa88c96c1790323a8",
+          "trigger": {
+            "source": "retained Native firetruck body and red paint extent",
+            "metric": "longitudinal stop undershoot in meters",
+            "failure_condition": "Observed firetruck body stops short of the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__armored_car_signed_no_business --candidate fallback3 --output .runtime-work/c150142-merged-armored_car_signed_no_business-fallback3-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "d12bc65afb8bb446bbf268c9e1ff6a42fd52765d700e389aa88c96c1790323a8",
+            "log": "selected-offline/armored_car_signed_no_business/fallback3.log",
+            "log_sha256": "36035ff645d31feea463f5dbd1294ae788eb61b868bd44e40a855da6b68dec05"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__armored_car_signed_no_business --candidate primary --output .runtime-work/c150142-merged-armored_car_signed_no_business-primary-offline-canonical-v3",
+        "exit_code": 0,
+        "construction_sha256": "07acca8fa8bf0d026b78784f115c88a43a786a44e36e62ddc669fa7120d8de87",
+        "log": "selected-offline/armored_car_signed_no_business/primary.log",
+        "log_sha256": "6f4efe2d188b0dfdc2814d1ce17f91f46f8d41cebb590f0c675bc7eed0f10853"
+      },
+      "measurement_contract": "selected-measurement-contracts/armored_car_signed_no_business.json",
+      "fixture_recipe": "work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/selected-diagnostics/armored_car_signed_no_business/primary-recipe.json"
+    },
+    {
+      "case_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__armored_car_signed_business",
+      "kind": "delivery",
+      "construction": "selected-primary/armored_car_signed_business/construction.json",
+      "construction_sha256": "317fd87b1fe859917dbb1c3db5135dd7b80c89c9958258b81d1a171d768fa2f1",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native firetruck stop may overshoot red paint; overview may hide body or service-worker approach, and the worker may fail to dwell or depart; authored sign text and physical visibility are unreviewed; attached-panel proxy appearance and actual armored identity unverified"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-fallbacks/armored_car_signed_business/fallback1/construction.json",
+          "construction_sha256": "2512fea8833e5dbaa2c14512f1092160878630b39a76f6c1ffa981ddce2e9b02",
+          "trigger": {
+            "source": "retained Native firetruck body and red paint extent",
+            "metric": "longitudinal stop overshoot in meters",
+            "failure_condition": "Observed firetruck body overshoots the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__armored_car_signed_business --candidate fallback1 --output .runtime-work/c150142-merged-armored_car_signed_business-fallback1-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "2512fea8833e5dbaa2c14512f1092160878630b39a76f6c1ffa981ddce2e9b02",
+            "log": "selected-offline/armored_car_signed_business/fallback1.log",
+            "log_sha256": "eb854332cb554e45bc92efb4398d0a8334a532d5e93e8c7defbb237091c03077"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-fallbacks/armored_car_signed_business/fallback2/construction.json",
+          "construction_sha256": "2f9b76dee2774a7ad647ab07f33c5e936e1b38ac2379fb210c7e98cb116eacac",
+          "trigger": {
+            "source": "decoded overview and retained Native signal readback",
+            "metric": "visible red curb and complete firetruck body",
+            "failure_condition": "Overview obscures red paint or complete firetruck body"
+          },
+          "changed_knobs": [
+            "camera_policy",
+            "overview camera elevation"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__armored_car_signed_business --candidate fallback2 --output .runtime-work/c150142-merged-armored_car_signed_business-fallback2-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "2f9b76dee2774a7ad647ab07f33c5e936e1b38ac2379fb210c7e98cb116eacac",
+            "log": "selected-offline/armored_car_signed_business/fallback2.log",
+            "log_sha256": "ffc36b118bac765201ba0708840e0c412b3ead842fa855a9d97ac1f9432be38e"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-fallbacks/armored_car_signed_business/fallback3/construction.json",
+          "construction_sha256": "997467a79ab87b86eec159b164f0c1a00b8d0d4bf34cdab51677c2c4f6426f2b",
+          "trigger": {
+            "source": "retained Native firetruck body and red paint extent",
+            "metric": "longitudinal stop undershoot in meters",
+            "failure_condition": "Observed firetruck body stops short of the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__armored_car_signed_business --candidate fallback3 --output .runtime-work/c150142-merged-armored_car_signed_business-fallback3-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "997467a79ab87b86eec159b164f0c1a00b8d0d4bf34cdab51677c2c4f6426f2b",
+            "log": "selected-offline/armored_car_signed_business/fallback3.log",
+            "log_sha256": "5c0f421e9437069005b7352e88ec2710e809edc716500f8ff80af1c3a3b7603d"
+          }
+        }
+      ],
+      "measurement_procedure": {
+        "entrypoint": "finalize_selected.py",
+        "output_schema": "c150142-red-curb-saved-analysis-v1"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__armored_car_signed_business --candidate primary --output .runtime-work/c150142-merged-armored_car_signed_business-primary-offline-canonical-v3",
+        "exit_code": 0,
+        "construction_sha256": "317fd87b1fe859917dbb1c3db5135dd7b80c89c9958258b81d1a171d768fa2f1",
+        "log": "selected-offline/armored_car_signed_business/primary.log",
+        "log_sha256": "495250fce0a39ba039eeb68fb31ceb1d1e858e9ae0cf30c09fe01dda914207ce"
+      }
+    },
+    {
+      "case_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__emergency_vehicle_unsigned_no_business",
+      "kind": "delivery",
+      "construction": "selected-primary/emergency_vehicle_unsigned_no_business/construction.json",
+      "construction_sha256": "2688baaab49371ab0dfefa9c7c95e46f34415e31de871af787dbb71c9bbd5493",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native firetruck stop may overshoot red paint; overview may hide body or an unexpected worker, and actor inventory may show a pedestrian"
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize_selected.py",
+        "output_schema": "c150142-red-curb-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-fallbacks/emergency_vehicle_unsigned_no_business/fallback1/construction.json",
+          "construction_sha256": "05104e0532facde0b3c0b71843f00ec1e7d6cdba4ff906614252749e0e02094e",
+          "trigger": {
+            "source": "retained Native firetruck body and red paint extent",
+            "metric": "longitudinal stop overshoot in meters",
+            "failure_condition": "Observed firetruck body overshoots the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__emergency_vehicle_unsigned_no_business --candidate fallback1 --output .runtime-work/c150142-merged-emergency_vehicle_unsigned_no_business-fallback1-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "05104e0532facde0b3c0b71843f00ec1e7d6cdba4ff906614252749e0e02094e",
+            "log": "selected-offline/emergency_vehicle_unsigned_no_business/fallback1.log",
+            "log_sha256": "4de5c4267d3f410f0caf2465c6bad7e7e0a3ff614fa9632929cf58a3a3b6d657"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-fallbacks/emergency_vehicle_unsigned_no_business/fallback2/construction.json",
+          "construction_sha256": "03066569ee3a82ab7f15eb5634072b1b7737110726772b12009e6ad7971e5844",
+          "trigger": {
+            "source": "decoded overview and retained Native signal readback",
+            "metric": "visible red curb and complete firetruck body",
+            "failure_condition": "Overview obscures red paint or complete firetruck body"
+          },
+          "changed_knobs": [
+            "camera_policy",
+            "overview camera elevation"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__emergency_vehicle_unsigned_no_business --candidate fallback2 --output .runtime-work/c150142-merged-emergency_vehicle_unsigned_no_business-fallback2-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "03066569ee3a82ab7f15eb5634072b1b7737110726772b12009e6ad7971e5844",
+            "log": "selected-offline/emergency_vehicle_unsigned_no_business/fallback2.log",
+            "log_sha256": "76aece943b5627e06d891e0998909bb48397ba0aad259e5499e898883bab9d81"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-fallbacks/emergency_vehicle_unsigned_no_business/fallback3/construction.json",
+          "construction_sha256": "3c9d977abc6b5a6ee2a232e1ea3f8e4a2b6d705038faf8ded14c2cf0e9a98cb0",
+          "trigger": {
+            "source": "retained Native firetruck body and red paint extent",
+            "metric": "longitudinal stop undershoot in meters",
+            "failure_condition": "Observed firetruck body stops short of the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__emergency_vehicle_unsigned_no_business --candidate fallback3 --output .runtime-work/c150142-merged-emergency_vehicle_unsigned_no_business-fallback3-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "3c9d977abc6b5a6ee2a232e1ea3f8e4a2b6d705038faf8ded14c2cf0e9a98cb0",
+            "log": "selected-offline/emergency_vehicle_unsigned_no_business/fallback3.log",
+            "log_sha256": "2c3c7c118331f51055568dd070c6dd99bc1588249afea788577fdc1c3c6ce7cc"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__emergency_vehicle_unsigned_no_business --candidate primary --output .runtime-work/c150142-merged-emergency_vehicle_unsigned_no_business-primary-offline-canonical-v3",
+        "exit_code": 0,
+        "construction_sha256": "2688baaab49371ab0dfefa9c7c95e46f34415e31de871af787dbb71c9bbd5493",
+        "log": "selected-offline/emergency_vehicle_unsigned_no_business/primary.log",
+        "log_sha256": "dc944b175322def93047b9dfe2548e46c912c6dc84d57a5871db0249cf9e9764"
+      }
+    },
+    {
+      "case_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__emergency_vehicle_unsigned_business",
+      "kind": "delivery",
+      "construction": "selected-primary/emergency_vehicle_unsigned_business/construction.json",
+      "construction_sha256": "27afb8714d47a0324991c71871e8e751eaf75c9ac7c15cbab583c546280899e4",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native firetruck stop may overshoot red paint; overview may hide body or service-worker approach, and the worker may fail to dwell or depart"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-fallbacks/emergency_vehicle_unsigned_business/fallback1/construction.json",
+          "construction_sha256": "affb8e8e1192418f67f717ad509f98837f3fc1a7df11dba2fc14f5e3b41a95f2",
+          "trigger": {
+            "source": "retained Native firetruck body and red paint extent",
+            "metric": "longitudinal stop overshoot in meters",
+            "failure_condition": "Observed firetruck body overshoots the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__emergency_vehicle_unsigned_business --candidate fallback1 --output .runtime-work/c150142-merged-emergency_vehicle_unsigned_business-fallback1-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "affb8e8e1192418f67f717ad509f98837f3fc1a7df11dba2fc14f5e3b41a95f2",
+            "log": "selected-offline/emergency_vehicle_unsigned_business/fallback1.log",
+            "log_sha256": "53de03ec9d21a7547ef27d8af42da80566fa271ef61fb0d1c44d3dab2fddc3d5"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-fallbacks/emergency_vehicle_unsigned_business/fallback2/construction.json",
+          "construction_sha256": "2f06030bde4aeb2ef7ad0a780616430767056f384300812b8334df00851d1e0f",
+          "trigger": {
+            "source": "decoded overview and retained Native signal readback",
+            "metric": "visible red curb and complete firetruck body",
+            "failure_condition": "Overview obscures red paint or complete firetruck body"
+          },
+          "changed_knobs": [
+            "camera_policy",
+            "overview camera elevation"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__emergency_vehicle_unsigned_business --candidate fallback2 --output .runtime-work/c150142-merged-emergency_vehicle_unsigned_business-fallback2-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "2f06030bde4aeb2ef7ad0a780616430767056f384300812b8334df00851d1e0f",
+            "log": "selected-offline/emergency_vehicle_unsigned_business/fallback2.log",
+            "log_sha256": "32e09a3985c6ad132bf25acc2609e629ede68eff5fd8ad1ab9bacd9b62894e33"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-fallbacks/emergency_vehicle_unsigned_business/fallback3/construction.json",
+          "construction_sha256": "6e2a54054820f252145bbdddc8cf234bbd3794dc01f7158164672ef4dc42f995",
+          "trigger": {
+            "source": "retained Native firetruck body and red paint extent",
+            "metric": "longitudinal stop undershoot in meters",
+            "failure_condition": "Observed firetruck body stops short of the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__emergency_vehicle_unsigned_business --candidate fallback3 --output .runtime-work/c150142-merged-emergency_vehicle_unsigned_business-fallback3-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "6e2a54054820f252145bbdddc8cf234bbd3794dc01f7158164672ef4dc42f995",
+            "log": "selected-offline/emergency_vehicle_unsigned_business/fallback3.log",
+            "log_sha256": "031dff2b0c63970d9d14c0c63b3e3f063977347dc9b22eec9feb087885d931e6"
+          }
+        }
+      ],
+      "measurement_procedure": {
+        "entrypoint": "finalize_selected.py",
+        "output_schema": "c150142-red-curb-saved-analysis-v1"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__emergency_vehicle_unsigned_business --candidate primary --output .runtime-work/c150142-merged-emergency_vehicle_unsigned_business-primary-offline-canonical-v3",
+        "exit_code": 0,
+        "construction_sha256": "27afb8714d47a0324991c71871e8e751eaf75c9ac7c15cbab583c546280899e4",
+        "log": "selected-offline/emergency_vehicle_unsigned_business/primary.log",
+        "log_sha256": "1f79843f4229dd21230c547ddcbb983f8b29499ce4e8463a732510853b8814fe"
+      }
+    },
+    {
+      "case_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__emergency_vehicle_signed_no_business",
+      "kind": "delivery",
+      "construction": "selected-primary/emergency_vehicle_signed_no_business/construction.json",
+      "construction_sha256": "b84449176095e378ef4be874524d153fb7c58c8de9bcd1feb03f1259d14ea134",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native firetruck stop may overshoot red paint; overview may hide body or an unexpected worker, and actor inventory may show a pedestrian; authored sign text and physical visibility are unreviewed"
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize_selected.py",
+        "output_schema": "c150142-red-curb-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-fallbacks/emergency_vehicle_signed_no_business/fallback1/construction.json",
+          "construction_sha256": "e114e53987c8f0d7788c9ea94386e05db874f359360b620051827b8641066b0d",
+          "trigger": {
+            "source": "retained Native firetruck body and red paint extent",
+            "metric": "longitudinal stop overshoot in meters",
+            "failure_condition": "Observed firetruck body overshoots the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__emergency_vehicle_signed_no_business --candidate fallback1 --output .runtime-work/c150142-merged-emergency_vehicle_signed_no_business-fallback1-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "e114e53987c8f0d7788c9ea94386e05db874f359360b620051827b8641066b0d",
+            "log": "selected-offline/emergency_vehicle_signed_no_business/fallback1.log",
+            "log_sha256": "2104cbb7a5420fe307e14d26a1a340d377bd79c8edb1b9ca069a37f215d4d6a1"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-fallbacks/emergency_vehicle_signed_no_business/fallback2/construction.json",
+          "construction_sha256": "cac29526ec054a451c034bf3673b3c593617c867776c17c7e9beb0a7cabf4a2f",
+          "trigger": {
+            "source": "decoded overview and retained Native signal readback",
+            "metric": "visible red curb and complete firetruck body",
+            "failure_condition": "Overview obscures red paint or complete firetruck body"
+          },
+          "changed_knobs": [
+            "camera_policy",
+            "overview camera elevation"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__emergency_vehicle_signed_no_business --candidate fallback2 --output .runtime-work/c150142-merged-emergency_vehicle_signed_no_business-fallback2-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "cac29526ec054a451c034bf3673b3c593617c867776c17c7e9beb0a7cabf4a2f",
+            "log": "selected-offline/emergency_vehicle_signed_no_business/fallback2.log",
+            "log_sha256": "8c983ce88e5ef10fc442c915fc1da0a3ed098bdbdb6a624c5d45b9a737b412fe"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-fallbacks/emergency_vehicle_signed_no_business/fallback3/construction.json",
+          "construction_sha256": "25ba23284b323987a0899e07a07f05ba523e6c22e8b58de2c9542c4098110c8d",
+          "trigger": {
+            "source": "retained Native firetruck body and red paint extent",
+            "metric": "longitudinal stop undershoot in meters",
+            "failure_condition": "Observed firetruck body stops short of the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__emergency_vehicle_signed_no_business --candidate fallback3 --output .runtime-work/c150142-merged-emergency_vehicle_signed_no_business-fallback3-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "25ba23284b323987a0899e07a07f05ba523e6c22e8b58de2c9542c4098110c8d",
+            "log": "selected-offline/emergency_vehicle_signed_no_business/fallback3.log",
+            "log_sha256": "741483b6ad23cfb685c4be914167e183c9578513ca4c7a88edf973886566ef4e"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__emergency_vehicle_signed_no_business --candidate primary --output .runtime-work/c150142-merged-emergency_vehicle_signed_no_business-primary-offline-canonical-v3",
+        "exit_code": 0,
+        "construction_sha256": "b84449176095e378ef4be874524d153fb7c58c8de9bcd1feb03f1259d14ea134",
+        "log": "selected-offline/emergency_vehicle_signed_no_business/primary.log",
+        "log_sha256": "b33a97836a0822d4fb7a9876d25f6454398ff6c30587857162724ced22c29146"
+      }
+    },
+    {
+      "case_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__emergency_vehicle_signed_business",
+      "kind": "delivery",
+      "construction": "selected-primary/emergency_vehicle_signed_business/construction.json",
+      "construction_sha256": "5b049472c8256c8e90914b58434ac2386cac711aece7248934bc65c228404279",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native firetruck stop may overshoot red paint; overview may hide body or service-worker approach, and the worker may fail to dwell or depart; authored sign text and physical visibility are unreviewed"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-fallbacks/emergency_vehicle_signed_business/fallback1/construction.json",
+          "construction_sha256": "66e1ec6375810a328290decf51e62c902de8236c29bbd3b8b678e90b8a0e8be5",
+          "trigger": {
+            "source": "retained Native firetruck body and red paint extent",
+            "metric": "longitudinal stop overshoot in meters",
+            "failure_condition": "Observed firetruck body overshoots the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__emergency_vehicle_signed_business --candidate fallback1 --output .runtime-work/c150142-merged-emergency_vehicle_signed_business-fallback1-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "66e1ec6375810a328290decf51e62c902de8236c29bbd3b8b678e90b8a0e8be5",
+            "log": "selected-offline/emergency_vehicle_signed_business/fallback1.log",
+            "log_sha256": "030242b654af865fb50ac3fe9e4088695b047a3995d0080e36fa74ee2368de4b"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-fallbacks/emergency_vehicle_signed_business/fallback2/construction.json",
+          "construction_sha256": "56224ae7821e53951174b48049cc08f67b2b70d0ea257792fa1eba6c38eeee47",
+          "trigger": {
+            "source": "decoded overview and retained Native signal readback",
+            "metric": "visible red curb and complete firetruck body",
+            "failure_condition": "Overview obscures red paint or complete firetruck body"
+          },
+          "changed_knobs": [
+            "camera_policy",
+            "overview camera elevation"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__emergency_vehicle_signed_business --candidate fallback2 --output .runtime-work/c150142-merged-emergency_vehicle_signed_business-fallback2-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "56224ae7821e53951174b48049cc08f67b2b70d0ea257792fa1eba6c38eeee47",
+            "log": "selected-offline/emergency_vehicle_signed_business/fallback2.log",
+            "log_sha256": "1787716382c87f7d4a24331a07e2abb36874a655cba6f788d31ac1209c884598"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-fallbacks/emergency_vehicle_signed_business/fallback3/construction.json",
+          "construction_sha256": "898e1fdce8d07dd126a052a8ec8243ba8283960dde38b48f48eb973b21f5770c",
+          "trigger": {
+            "source": "retained Native firetruck body and red paint extent",
+            "metric": "longitudinal stop undershoot in meters",
+            "failure_condition": "Observed firetruck body stops short of the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__emergency_vehicle_signed_business --candidate fallback3 --output .runtime-work/c150142-merged-emergency_vehicle_signed_business-fallback3-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "898e1fdce8d07dd126a052a8ec8243ba8283960dde38b48f48eb973b21f5770c",
+            "log": "selected-offline/emergency_vehicle_signed_business/fallback3.log",
+            "log_sha256": "441b94c19bf7ad4f06483f8bfab6a5920b98744195bc90cb9e78d960a8691d63"
+          }
+        }
+      ],
+      "measurement_procedure": {
+        "entrypoint": "finalize_selected.py",
+        "output_schema": "c150142-red-curb-saved-analysis-v1"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__emergency_vehicle_signed_business --candidate primary --output .runtime-work/c150142-merged-emergency_vehicle_signed_business-primary-offline-canonical-v3",
+        "exit_code": 0,
+        "construction_sha256": "5b049472c8256c8e90914b58434ac2386cac711aece7248934bc65c228404279",
+        "log": "selected-offline/emergency_vehicle_signed_business/primary.log",
+        "log_sha256": "7172af0ea73d9100c82605727d8c96ba2c442b6dc9d89c999c634f74149ee9e2"
+      }
+    },
+    {
+      "case_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__mail_adjacent_deposit",
+      "kind": "delivery",
+      "construction": "selected-primary/mail_adjacent_deposit/construction.json",
+      "construction_sha256": "784e808cf3297ddec2784b9fdd27304421081357ceb69d009a7bf4f09cc4b99e",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Ordinary vehicle may overshoot red paint; the worker, attached parcel or authored mail box may be hidden by camera angle; physical deposit unverified"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-fallbacks/mail_adjacent_deposit/fallback1/construction.json",
+          "construction_sha256": "5ee7e17a7408a7120ec92ca49ec199212dbeea971b7dca64ebbf662276a176d2",
+          "trigger": {
+            "source": "retained Native ordinary vehicle body and red paint extent",
+            "metric": "longitudinal stop overshoot in meters",
+            "failure_condition": "Observed ordinary vehicle body overshoots the painted red curb and mail box target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__mail_adjacent_deposit --candidate fallback1 --output .runtime-work/c150142-merged-mail_adjacent_deposit-fallback1-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "5ee7e17a7408a7120ec92ca49ec199212dbeea971b7dca64ebbf662276a176d2",
+            "log": "selected-offline/mail_adjacent_deposit/fallback1.log",
+            "log_sha256": "0afb460bff9cd7f7a3981b604296dfa59786987769bc21a47e39a07eb6803c23"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-fallbacks/mail_adjacent_deposit/fallback2/construction.json",
+          "construction_sha256": "a086f0685535fd9ebf3734260adb011d7e74a25777dcd696dd6ab22445cf005a",
+          "trigger": {
+            "source": "decoded overview and retained Native signal readback",
+            "metric": "visible red curb and mail box and complete ordinary vehicle body",
+            "failure_condition": "Overview obscures red paint or complete ordinary vehicle body"
+          },
+          "changed_knobs": [
+            "camera_policy",
+            "overview camera elevation"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__mail_adjacent_deposit --candidate fallback2 --output .runtime-work/c150142-merged-mail_adjacent_deposit-fallback2-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "a086f0685535fd9ebf3734260adb011d7e74a25777dcd696dd6ab22445cf005a",
+            "log": "selected-offline/mail_adjacent_deposit/fallback2.log",
+            "log_sha256": "f06d855a02745efbd0e5faa0b67c2abd5064c91eeaa216e016185759c4e538e4"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-fallbacks/mail_adjacent_deposit/fallback3/construction.json",
+          "construction_sha256": "cbbb0a9b6a8d628a2ecbc499b0235d4044b5c2a9227605c670c8e161306c3266",
+          "trigger": {
+            "source": "retained Native ordinary vehicle body and red paint extent",
+            "metric": "longitudinal stop undershoot in meters",
+            "failure_condition": "Observed ordinary vehicle body stops short of the painted red curb and mail box target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__mail_adjacent_deposit --candidate fallback3 --output .runtime-work/c150142-merged-mail_adjacent_deposit-fallback3-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "cbbb0a9b6a8d628a2ecbc499b0235d4044b5c2a9227605c670c8e161306c3266",
+            "log": "selected-offline/mail_adjacent_deposit/fallback3.log",
+            "log_sha256": "9a6eff23f72c6a277f48c16114ff4fbd332f22feb20c748d3636ecd1bdb46174"
+          }
+        }
+      ],
+      "measurement_procedure": {
+        "entrypoint": "finalize_selected.py",
+        "output_schema": "c150142-red-curb-saved-analysis-v1"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__mail_adjacent_deposit --candidate primary --output .runtime-work/c150142-merged-mail_adjacent_deposit-primary-offline-canonical-v3",
+        "exit_code": 0,
+        "construction_sha256": "784e808cf3297ddec2784b9fdd27304421081357ceb69d009a7bf4f09cc4b99e",
+        "log": "selected-offline/mail_adjacent_deposit/primary.log",
+        "log_sha256": "20f2da1d679c868bc37af59214137ab4fc76a42eea95e50eda6eb796263654e9"
+      }
+    },
+    {
+      "case_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__mail_no_box_deposit",
+      "kind": "delivery",
+      "construction": "selected-primary/mail_no_box_deposit/construction.json",
+      "construction_sha256": "18ca339ad9e85a0353ddff5e699a7758f0ec5f245d97e2ea4783bf67226005e4",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Ordinary vehicle may overshoot red paint; worker or attached parcel may be hidden; the deliberately absent adjacent mail box must remain absent"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-fallbacks/mail_no_box_deposit/fallback1/construction.json",
+          "construction_sha256": "960ea3f8b84270d420b325e06f7862ed62ab1ba935e74cf55b5c02f682d5962e",
+          "trigger": {
+            "source": "retained Native ordinary vehicle body and red paint extent",
+            "metric": "longitudinal stop overshoot in meters",
+            "failure_condition": "Observed ordinary vehicle body overshoots the painted red curb and mail drop location target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__mail_no_box_deposit --candidate fallback1 --output .runtime-work/c150142-merged-mail_no_box_deposit-fallback1-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "960ea3f8b84270d420b325e06f7862ed62ab1ba935e74cf55b5c02f682d5962e",
+            "log": "selected-offline/mail_no_box_deposit/fallback1.log",
+            "log_sha256": "f5e866767adf32a6b9fa079654500c194cc0b112ffb8f07033a42bce73bba6b4"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-fallbacks/mail_no_box_deposit/fallback2/construction.json",
+          "construction_sha256": "fb560a3089f92756f57b34179c45e5515ca872af8ca04ef74d9c900dae138b55",
+          "trigger": {
+            "source": "decoded overview and retained Native signal readback",
+            "metric": "visible red curb and mail drop location and complete ordinary vehicle body",
+            "failure_condition": "Overview obscures red paint or complete ordinary vehicle body"
+          },
+          "changed_knobs": [
+            "camera_policy",
+            "overview camera elevation"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__mail_no_box_deposit --candidate fallback2 --output .runtime-work/c150142-merged-mail_no_box_deposit-fallback2-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "fb560a3089f92756f57b34179c45e5515ca872af8ca04ef74d9c900dae138b55",
+            "log": "selected-offline/mail_no_box_deposit/fallback2.log",
+            "log_sha256": "1756a756e21faf91bb96985f4aa2dd3fe12d72da279d4530d918b6a411a601ab"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-fallbacks/mail_no_box_deposit/fallback3/construction.json",
+          "construction_sha256": "97cef79fc5b54eb4f37ce861b78a081b4edb45645dd79385dbaa10f8fe2d764c",
+          "trigger": {
+            "source": "retained Native ordinary vehicle body and red paint extent",
+            "metric": "longitudinal stop undershoot in meters",
+            "failure_condition": "Observed ordinary vehicle body stops short of the painted red curb and mail drop location target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__mail_no_box_deposit --candidate fallback3 --output .runtime-work/c150142-merged-mail_no_box_deposit-fallback3-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "97cef79fc5b54eb4f37ce861b78a081b4edb45645dd79385dbaa10f8fe2d764c",
+            "log": "selected-offline/mail_no_box_deposit/fallback3.log",
+            "log_sha256": "cfb0cf867a82db62abe66c58d2c309fcf1346c07cc9760fc185bcd0955329111"
+          }
+        }
+      ],
+      "measurement_procedure": {
+        "entrypoint": "finalize_selected.py",
+        "output_schema": "c150142-red-curb-saved-analysis-v1"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__mail_no_box_deposit --candidate primary --output .runtime-work/c150142-merged-mail_no_box_deposit-primary-offline-canonical-v3",
+        "exit_code": 0,
+        "construction_sha256": "18ca339ad9e85a0353ddff5e699a7758f0ec5f245d97e2ea4783bf67226005e4",
+        "log": "selected-offline/mail_no_box_deposit/primary.log",
+        "log_sha256": "51e7d59e3b971b293640b18f8da4b827e6f6f5a34de276d43a5953e0b5821b85"
+      }
+    },
+    {
+      "case_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__mail_adjacent_no_deposit",
+      "kind": "delivery",
+      "construction": "selected-primary/mail_adjacent_no_deposit/construction.json",
+      "construction_sha256": "5420f9755116e7fbbc7b56a1b0feee7e00af2c3814bd3398f3c883d7a301f4ec",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Ordinary vehicle may overshoot red paint; overview may hide its body or authored U.S. mail box; unexpected walker or parcel would invalidate no-deposit probe"
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize_selected.py",
+        "output_schema": "c150142-red-curb-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-fallbacks/mail_adjacent_no_deposit/fallback1/construction.json",
+          "construction_sha256": "3f0ddc69c719bde47114366fae6fdd66740003f1313910b6dd49bd377eb573f2",
+          "trigger": {
+            "source": "retained Native ordinary vehicle body and red paint extent",
+            "metric": "longitudinal stop overshoot in meters",
+            "failure_condition": "Observed ordinary vehicle body overshoots the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__mail_adjacent_no_deposit --candidate fallback1 --output .runtime-work/c150142-merged-mail_adjacent_no_deposit-fallback1-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "3f0ddc69c719bde47114366fae6fdd66740003f1313910b6dd49bd377eb573f2",
+            "log": "selected-offline/mail_adjacent_no_deposit/fallback1.log",
+            "log_sha256": "94a3417d86c3ffd090508fffb6d26d11e5f44afa7684152f2f9cb01239cee6b6"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-fallbacks/mail_adjacent_no_deposit/fallback2/construction.json",
+          "construction_sha256": "6e704dcb0673db569351cd72b1db94443754405d2fdd015384461352e6ad3f1c",
+          "trigger": {
+            "source": "decoded overview and retained Native signal readback",
+            "metric": "visible red curb and complete ordinary vehicle body",
+            "failure_condition": "Overview obscures red paint or complete ordinary vehicle body"
+          },
+          "changed_knobs": [
+            "camera_policy",
+            "overview camera elevation"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__mail_adjacent_no_deposit --candidate fallback2 --output .runtime-work/c150142-merged-mail_adjacent_no_deposit-fallback2-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "6e704dcb0673db569351cd72b1db94443754405d2fdd015384461352e6ad3f1c",
+            "log": "selected-offline/mail_adjacent_no_deposit/fallback2.log",
+            "log_sha256": "13761f6a7fb7ad53fa6a458f06d591498a43ae736e8e5f64931b263fe1c81455"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-fallbacks/mail_adjacent_no_deposit/fallback3/construction.json",
+          "construction_sha256": "008a6bbfb060328febe2f76d2990e71a20d65a31bb5efe8cc578d95381026bac",
+          "trigger": {
+            "source": "retained Native ordinary vehicle body and red paint extent",
+            "metric": "longitudinal stop undershoot in meters",
+            "failure_condition": "Observed ordinary vehicle body stops short of the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__mail_adjacent_no_deposit --candidate fallback3 --output .runtime-work/c150142-merged-mail_adjacent_no_deposit-fallback3-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "008a6bbfb060328febe2f76d2990e71a20d65a31bb5efe8cc578d95381026bac",
+            "log": "selected-offline/mail_adjacent_no_deposit/fallback3.log",
+            "log_sha256": "36c8859299788eb42f5766f40b89ea981597e8e7d9e9a3e4490df848e37a462d"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__mail_adjacent_no_deposit --candidate primary --output .runtime-work/c150142-merged-mail_adjacent_no_deposit-primary-offline-canonical-v3",
+        "exit_code": 0,
+        "construction_sha256": "5420f9755116e7fbbc7b56a1b0feee7e00af2c3814bd3398f3c883d7a301f4ec",
+        "log": "selected-offline/mail_adjacent_no_deposit/primary.log",
+        "log_sha256": "890413b9cf1e1f398fad6634f0cb94789bcd7350a552d85b9a7477806765a1f9"
+      }
+    }
+  ],
+  "source_manifests": [
+    {
+      "path": "execution-manifest-diagnostic-armored_car_signed_business-draft.json",
+      "sha256": "64339e0ae23e4bba8d229398975e2d5a7a02249645e80150c3f2c0df2cb314bb"
+    },
+    {
+      "path": "execution-manifest-diagnostic-armored_car_signed_no_business-draft.json",
+      "sha256": "66c246e509405f333251fedd4810d249e78f20ed4f7221c9e9a9f0a7b2d0bf65"
+    },
+    {
+      "path": "execution-manifest-diagnostic-armored_car_unsigned_business-draft.json",
+      "sha256": "1d852935ae8f5fe30841540529254d8a7c6f25dccfd70fa1a53813b37b3a52ab"
+    },
+    {
+      "path": "execution-manifest-diagnostic-armored_car_unsigned_no_business-draft.json",
+      "sha256": "98e15de611f3744f355c9c06217142eed85fc4a45b231cdcb0af56c4690f01cf"
+    },
+    {
+      "path": "execution-manifest-diagnostic-contrast.json",
+      "sha256": "9c3e99bae745c179e6e8606b6f0dc29935563e0b1b3d10d131c5f5ee56d85ccf"
+    },
+    {
+      "path": "execution-manifest-diagnostic-emergency-business-draft.json",
+      "sha256": "32b25c5275dea4f04b5d04cb5c9a404aa21a1d83be1510ac3f404e17f1cb2dc2"
+    },
+    {
+      "path": "execution-manifest-diagnostic-emergency-no-business-draft.json",
+      "sha256": "f8616659040747dfc2cc6a72f64b31a5d606bae175f0a41b2f2fc9f80b1b3b96"
+    },
+    {
+      "path": "execution-manifest-diagnostic-emergency-signed-business-draft.json",
+      "sha256": "4b1eee2562618aa7247e723d1d49ab4f2e1f1f0b35a91efcd5d0990440b238b3"
+    },
+    {
+      "path": "execution-manifest-diagnostic-emergency-signed-no-business-draft.json",
+      "sha256": "07469e14e23b2ddb8553ff85fd9d0e8c6549c5061bc48b0b0909def4163165c3"
+    },
+    {
+      "path": "execution-manifest-diagnostic-limo_below-draft-v2.json",
+      "sha256": "cddf614c6972752f268c78d44f53b86e1eedba2edca732533d1c9a01e78c6aba"
+    },
+    {
+      "path": "execution-manifest-diagnostic-mail-adjacent-deposit-draft.json",
+      "sha256": "e65e82e6f52e55fd9661f3b48e91dcfd90feda31ee5894809fa424004ce47be2"
+    },
+    {
+      "path": "execution-manifest-diagnostic-mail-adjacent-no-deposit-draft.json",
+      "sha256": "da12f4d03579f63d728eb2b8781b8f3bdbcfc38a47673f1f38da1fa21a628b82"
+    },
+    {
+      "path": "execution-manifest-diagnostic-mail-no-box-deposit-draft.json",
+      "sha256": "e7d1e882f0131bbc1fb809b72e835b9608849e89a782a35820b8353396b16c8b"
+    },
+    {
+      "path": "execution-manifest-diagnostic-ordinary_red_signed.json",
+      "sha256": "7e3f564bf8e1afa28602fba07b5f057a4bef3671ba281328cc274efb0b5c772b"
+    },
+    {
+      "path": "execution-manifest-diagnostic-reference.json",
+      "sha256": "413aa029263164a0e0f8834130c9c4dc9891212e205df4d2160eb8a30f3900af"
+    },
+    {
+      "path": "execution-manifest-diagnostic-rtc_bus_below-draft.json",
+      "sha256": "f17b7c6073af205f5d04f774f9be3118cc91eaa86678839b54f645700e655190"
+    },
+    {
+      "path": "execution-manifest-diagnostic-shuttle_bus_below-draft.json",
+      "sha256": "504246d8c01be4ceb6755d86d515e321b5d148f5ff02f4c0bac5a678d98b9004"
+    },
+    {
+      "path": "execution-manifest-diagnostic-tour_bus_below-draft.json",
+      "sha256": "feeee31c12830c62aab07adf210ce50181645b6c734c30dd74d60741650b5a88"
+    }
+  ],
+  "original_native_observed": false,
+  "delivery_ready": false,
+  "selected_branch": "Parking beside a red-painted curb, subject to the complete subsection.",
+  "case_plan_sha256": "0c7225228bfd7a2daa2fa1a8ddbc725a7e149b6c44b6f4e6e99d76e7cb3489ea",
+  "selection_source_sha256": {
+    "assignment": "77d784bf5bcc3cb6dcbff251676557136ead407afc80850b4e5cd49fb4afb682",
+    "witnesses": "9b079839398f3b3d6922105f774db0acc7c48ee08ed20874b545709c5ddf2e5d"
+  },
+  "selection_kind": "conditional_witness_full_subsection_cpu_plan"
+}
