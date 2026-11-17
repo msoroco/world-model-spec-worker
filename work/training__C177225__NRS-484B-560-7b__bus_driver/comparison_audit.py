@@ -31,9 +31,9 @@ def audit_pair(reference, contrast, reference_config, contrast_config,
         if reference_signal.get(key) != contrast_signal.get(key):
             raise ValueError('Fixed officer direction changed: ' + key)
     for name, observation in (('reference', reference), ('contrast', contrast)):
-        if observation.get('native_frames') != reference_config['frames'] or (
+        if (observation.get('native_frames') != reference_config['frames'] or
                 set(observation.get('saved_camera_sources', {})) !=
-                {'overview', 'approach', 'reference_corner', 'driver_reference'}) or
+                {'overview', 'approach', 'reference_corner', 'driver_reference'} or
                 len(observation.get('saved_source_sha256', {})) < 5 or
                 not observation.get('officer_direction_witnessed_frames')):
             raise ValueError('Missing complete saved source binding in ' + name)

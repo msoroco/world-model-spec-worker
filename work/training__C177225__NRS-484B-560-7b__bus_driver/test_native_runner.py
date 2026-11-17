@@ -16,6 +16,18 @@ class NativeRunnerCheckTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'Exact comparison'):
             check('third_case', 1)
 
+    def test_materialized_config_is_consumed_and_scope_checked(self):
+        config = {'case_id': 'training__C177225__NRS-484B-560-7b__bus_driver__reference',
+                  'selected_case_id': 'training__C177225__NRS-484B-560-7b__bus_driver__reference',
+                  'case_suffix': 'reference', 'direction': 1,
+                  'law_id': 'NRS-484B-560-7b', 'cell_id': 'C177225',
+                  'actor': 'bus_driver', 'rate_hz': 20, 'duration_s': 30,
+                  'rail_asset_blueprint': 'static.prop.ironplank'}
+        self.assertEqual(600, check('reference', 1, config)['frames'])
+        config['selected_case_id'] = 'other'
+        with self.assertRaisesRegex(ValueError, 'Materialized'):
+            check('reference', 1, config)
+
     def test_native_lane_readback_rejects_wrong_direction(self):
         class Map:
             def __init__(self, wrong=False):
