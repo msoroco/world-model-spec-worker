@@ -33,7 +33,28 @@
         "reason": "Generic rail proxy and officer visibility require original Native review",
         "status": "physical"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "changed_knobs": [
+            "direction=+1 to -1: Native opposite lane, bus heading, rail approach and camera poses"
+          ],
+          "construction": "constructions/reference-fallback1.json",
+          "construction_sha256": "658fb7ef7b14253c20bb96ac5b54837e18c8c3c72b695b593a248590e21b694f",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C177225__NRS-484B-560-7b__bus_driver/execution-manifest.json --case training__C177225__NRS-484B-560-7b__bus_driver__reference --candidate fallback1 --output .runtime-work/update063-c177225-reference-fallback1-offline",
+            "construction_sha256": "658fb7ef7b14253c20bb96ac5b54837e18c8c3c72b695b593a248590e21b694f",
+            "exit_code": 0,
+            "log": "update063-reference-fallback1-offline.log",
+            "log_sha256": "7316d3ea78c145d23f938b28c34cec25637ad3e932f50da9d38bc4c129a55fe5"
+          },
+          "trigger": {
+            "failure_condition": "No unoccluded governing gesture in either primary view",
+            "metric": "governing-frame officer gesture visibility at the bus approach",
+            "source": "overview/driver-view original Native video and officer signal rows"
+          }
+        }
+      ],
       "case_id": "training__C177225__NRS-484B-560-7b__bus_driver__reference",
       "compatibility": {
         "log": "update062-reference-compatibility-analysis.log",
@@ -68,12 +89,65 @@
       }
     },
     {
+      "acquisition": {
+        "camera_frame_join": {
+          "entrypoint": "finalize_direction.py",
+          "evidence": "video_frames.jsonl",
+          "method": "_derived_channels"
+        },
+        "dev.human_direction": {
+          "entrypoint": "finalize_direction.py",
+          "evidence": "officer_signal_rows.jsonl",
+          "method": "_derived_channels"
+        },
+        "drv.stopped": {
+          "entrypoint": "finalize_direction.py",
+          "evidence": "bus_native_rows.jsonl",
+          "method": "_derived_channels"
+        },
+        "kin.velocity": {
+          "entrypoint": "finalize_direction.py",
+          "evidence": "bus_native_rows.jsonl",
+          "method": "_derived_channels"
+        },
+        "native_actor_state": {
+          "entrypoint": "finalize_direction.py",
+          "evidence": "bus_native_rows.jsonl",
+          "method": "_derived_channels"
+        }
+      },
       "candidate_risk": {
         "reason": "Generic rail proxy, officer visibility and continued bus motion need original Native review",
         "status": "physical"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "changed_knobs": [
+            "direction=+1 to -1: Native opposite lane, bus heading, rail approach and camera poses"
+          ],
+          "construction": "constructions/contrast-fallback1.json",
+          "construction_sha256": "c378b0ee915318920dcae8498edd0c6f4c4e17bca8a44bdf1d548fc72b993f7a",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C177225__NRS-484B-560-7b__bus_driver/execution-manifest.json --case training__C177225__NRS-484B-560-7b__bus_driver__contrast --candidate fallback1 --output .runtime-work/update063-c177225-contrast-fallback1-offline",
+            "construction_sha256": "c378b0ee915318920dcae8498edd0c6f4c4e17bca8a44bdf1d548fc72b993f7a",
+            "exit_code": 0,
+            "log": "update063-contrast-fallback1-offline.log",
+            "log_sha256": "6b389af5223016e70f0774347bfda31786579d30cfba9280523294323bffc1d2"
+          },
+          "trigger": {
+            "failure_condition": "No unoccluded governing gesture in either primary view",
+            "metric": "governing-frame officer gesture visibility at the bus approach",
+            "source": "overview/driver-view original Native video and officer signal rows"
+          }
+        }
+      ],
       "case_id": "training__C177225__NRS-484B-560-7b__bus_driver__contrast",
+      "compatibility": {
+        "log": "update062-contrast-compatibility-analysis.log",
+        "receipt": "update062-contrast-compatibility-receipt.json",
+        "sha256": "94aeac6b6fe64d90352ff0e2450068bc3a0a6af71e2676cdea02f1d5bb3f29c1"
+      },
       "construction": "constructions/contrast-primary.json",
       "construction_sha256": "2ea31751e928046281603e242399127f4ad55313a24f5cd4e02ffc433a88a33b",
       "fixture_recipe": "work/training__C177225__NRS-484B-560-7b__bus_driver/fixtures/contrast-recipe.json",
@@ -82,9 +156,32 @@
       "measurement_procedure": {
         "entrypoint": "finalize_direction.py",
         "output_schema": "c177225-saved-analysis-v1"
+      },
+      "negative": {
+        "log": "update062-contrast-negative-analysis.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C177225__NRS-484B-560-7b__bus_driver/execution-manifest.json --case training__C177225__NRS-484B-560-7b__bus_driver__contrast --output .runtime-work/update062-c177225-contrast-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+        "construction_sha256": "2ea31751e928046281603e242399127f4ad55313a24f5cd4e02ffc433a88a33b",
+        "exit_code": 0,
+        "log": "update062-contrast-offline-inner.log",
+        "log_sha256": "efcbbed7e8f87dce2611a798c88c1725c92f1418ec786b8da88f1e263fa4a7c4",
+        "simulation_started": false
+      },
+      "saved_processing": {
+        "log": "update062-contrast-saved-analysis.log",
+        "receipt": "update062-contrast-saved-receipt.json",
+        "scope": "600-frame synthetic diagnostic; no physical acceptance",
+        "sha256": "64f970f5e0578f93c47534bc85bd9136f5441ead8e4222c9a4b7382e6957979a"
       }
     }
   ],
+  "comparison_diagnostic": {
+    "physical_acceptance_claimed": false,
+    "receipt": "update062-comparison-proof.json",
+    "sha256": "cdb78999483f8f90e61e1c3283a8ba9ad531db3cb54b9e876c7014c14bfda412",
+    "source_kind": "synthetic_native_sample"
+  },
   "format": "worker-execution-manifest",
   "runtime_manifest_sha256": "ae635d487ae988b67925bacd5ba13210f31224fc6a1ae131d1836a5557ba8714",
   "status": "selected_cpu_preparation_incomplete"
