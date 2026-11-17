@@ -116,6 +116,40 @@ def lifecycle(case, manifest, attempt, owner):
             "actual_native_capture": False, "physical_acceptance_claimed": False}
 
 
+def lifecycle_model(case, manifest, attempt):
+    """Test a prospective closure sequence against retained diagnostic sources."""
+    entry = entry_for(case, manifest)
+    attempt = Path(attempt)
+    source_names = ("turn_body_original.jsonl", "trace.jsonl", "video_frames.jsonl",
+                    "overview.mkv", "approach.mkv", "reference_corner.mkv",
+                    "driver_reference.mkv")
+    require(all((attempt / name).is_file() for name in source_names),
+            "Lifecycle model lacks complete original diagnostic sources")
+    saved = read(HERE / entry["saved_processing"]["receipt"])
+    require(saved.get("passed") is True and saved.get("recorded_only") is True
+            and saved.get("originals_preserved") is True,
+            "Lifecycle model lacks passing saved-only diagnostic proof")
+    ordered = ("capture_finished", "encoders_closed", "restoration_verified",
+               "native_exit", "owner_released", "saved_processing_started")
+
+    def check(events):
+        require(tuple(events) == ordered, "Saved processing precedes Native closure")
+
+    check(ordered)
+    rejected = False
+    try:
+        check((ordered[0], ordered[1], ordered[2], ordered[5], ordered[3], ordered[4]))
+    except ValueError:
+        rejected = True
+    require(rejected, "Premature saved processing was not rejected")
+    return {"case_id": case, "diagnostic_fixture": True,
+            "order_model_only": True, "events": list(ordered),
+            "rejected_premature_saved_processing": True,
+            "original_source_sha256": {name: sha(attempt / name) for name in source_names},
+            "saved_receipt_sha256": sha(HERE / entry["saved_processing"]["receipt"]),
+            "actual_native_capture": False, "physical_acceptance_claimed": False}
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--case", required=True)
@@ -127,6 +161,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
     if args.kind == "lifecycle":
         result = lifecycle(args.case, args.manifest, args.attempt, args.owner)
+    elif args.kind == "lifecycle_model":
+        result = lifecycle_model(args.case, args.manifest, args.attempt)
     else:
         result = physical(args.case, args.kind, args.manifest)
     if args.output:
