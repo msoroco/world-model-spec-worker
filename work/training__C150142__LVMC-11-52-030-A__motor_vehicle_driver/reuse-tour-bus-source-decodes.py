@@ -26,7 +26,7 @@ def sha(path):
     return h.hexdigest()
 
 
-def reuse(prior, output, frames, timeout_s=900):
+def reuse(prior, output, frames, timeout_s=1800):
     prior, output = Path(prior).resolve(), Path(output).resolve()
     private = REPO / '.runtime-work'
     if private not in prior.parents or private not in output.parents:
