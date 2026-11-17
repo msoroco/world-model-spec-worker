@@ -123,5 +123,48 @@ def build():
             'diagnostic_sha256': recipe['generator']['sha256']}
 
 
+def build_turn_sweep_point(output, turn):
+    """Build one opposite-approach route probe for CPU offline construction.
+
+    These probes share the same crossing, sign, spawns, cameras and release frame.
+    They do not establish that a Native actor realized a turn or a legal exception.
+    """
+    if turn not in ('left', 'straight', 'right'):
+        raise ValueError('Turn probe must be left, straight or right')
+    output = Path(output)
+    output.mkdir(parents=True, exist_ok=False)
+    site = json.loads((HERE / 'fourth-site.json').read_text())
+    routes = {'left': [[30, 0], [15, 0], [15, -15]],
+              'straight': [[30, 0], [15, 0], [-15, 0]],
+              'right': [[30, 0], [15, 0], [15, 15]]}
+    site['approaches']['other']['route_xy_m'] = routes[turn]
+    site['other_left_turn_intended'] = turn == 'left'
+    site_path = output / 'site.json'
+    emit(site_path, site)
+    config = json.loads((HERE / 'fourth-config.json').read_text())
+    config['site_packet'] = {'path': 'site.json', 'sha256': sha(site_path)}
+    config_path = output / 'config.json'
+    emit(config_path, config)
+    construction = json.loads((HERE / 'fourth-construction.json').read_text())
+    construction['sweep_point'] = {
+        'sweep_id': 'c125745-4', 'axis': 'commanded_turn_path',
+        'commanded_value': turn, 'unit': 'route waypoints',
+        'scope': 'CPU offline construction; realized turn and legal judgment unresolved'}
+    for item in construction['files']:
+        if item['path'] == 'site.json':
+            item['content'] = site_path.read_text()
+            item.pop('source', None)
+        elif item['path'] == 'config.json':
+            item['content'] = config_path.read_text()
+            item.pop('source', None)
+    construction_path = output / 'construction.json'
+    emit(construction_path, construction)
+    manifest = {'format': 'worker-execution-manifest', 'assignment_id': HERE.name,
+                'cases': [{'case_id': CASE, 'construction': 'construction.json',
+                           'construction_sha256': sha(construction_path)}]}
+    emit(output / 'execution-manifest.json', manifest)
+    return manifest
+
+
 if __name__ == '__main__':
     print(json.dumps(build(), sort_keys=True))
