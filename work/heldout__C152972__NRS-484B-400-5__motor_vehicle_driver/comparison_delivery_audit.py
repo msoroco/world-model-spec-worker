@@ -9,7 +9,7 @@ from delivery_audit import audit as audit_delivery, read, require, digest
 
 BASE = "heldout__C152972__NRS-484B-400-5__motor_vehicle_driver__"
 PAIRS = {
-    "approach_curb_position": (BASE + "approach_near_depart_near", BASE + "approach_far_depart_near", "approach", "leaving_intersection"),
+    "approach_left_curb_position": (BASE + "approach_near_depart_near", BASE + "approach_far_depart_near", "approach", "leaving_intersection"),
     "turn_departure_curb_position": (BASE + "approach_near_depart_near", BASE + "approach_near_depart_far", "leaving_intersection", "approach"),
 }
 
