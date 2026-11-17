@@ -1,3 +1,4 @@
+import json
 import sys
 import unittest
 from pathlib import Path
@@ -83,5 +84,38 @@ class NativePairTests(unittest.TestCase):
         self.assertGreater(commands['other']['throttle'],0)
         self.assertEqual(len(ego.commands),2)
         self.assertEqual(len(other.commands),2)
+
+    def test_selected_release_frames_control_other_independently(self):
+        # These values are the exact first-case primary and fallback1 settings.
+        primary=json.loads((ROOT/'construction.json').read_text())
+        fallback=json.loads((ROOT/'fallback1-construction.json').read_text())
+        release_frames=[]
+        for construction in (primary,fallback):
+            configs=[item for item in construction['files'] if item['path'].endswith('config.json')]
+            self.assertEqual(len(configs),1)
+            release_frames.append(json.loads(configs[0]['content'])['other_release_frame'])
+        self.assertEqual(release_frames,[40,32])
+
+        carla=NS(VehicleControl=lambda:NS())
+        ego_traces=[]
+        for release_frame in release_frames:
+            ego,other=Actor(8,0,speed=.05),Actor(15,-15,speed=0)
+            progress={'ego':1,'other':1}
+            stopped=False
+            trace=[]
+            for frame in range(50):
+                progress,stopped,commands=step_pair(
+                    carla,ego,other,scene(),progress,stopped,False,
+                    frame>=release_frame)
+                trace.append(commands)
+            self.assertEqual(len(ego.commands),50)
+            self.assertEqual(len(other.commands),50)
+            self.assertEqual([i for i,c in enumerate(trace)
+                              if c['other']['throttle']>0],
+                             list(range(release_frame,50)))
+            self.assertTrue(all(c['other']['brake']==1 for c in trace[:release_frame]))
+            self.assertTrue(all(c['other']['brake']==0 for c in trace[release_frame:]))
+            ego_traces.append([c['ego'] for c in trace])
+        self.assertEqual(ego_traces[0],ego_traces[1])
 
 if __name__=='__main__':unittest.main()
