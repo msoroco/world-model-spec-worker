@@ -111,17 +111,30 @@ class OvertakenTests(unittest.TestCase):
     def test_saved_right_pass_requires_distinct_sourced_premise(self):
         receipts = [HERE/"no-right-primary-saved-processing.json",
                     HERE/"right-pass-primary-saved-processing.json"]
-        with self.assertRaisesRegex(ValueError,"lacks original permission premise"):
+        with self.assertRaisesRegex(ValueError,"Saved receipt identity or status differs|lacks original permission premise"):
             saved_behavior.audit_right_pass_exception(*receipts)
         staged = []
         roots = []
+        diagnostic_source = Path(".runtime-work/c179789-no-right-saved-output-20261117fixed/v0001/processing.json")
+        if not diagnostic_source.is_file():
+            self.skipTest("Retained diagnostic saved source unavailable")
+        base_receipt = json.loads(diagnostic_source.read_text())
+        base_source = Path(base_receipt["analysis_directory"])
         for index, receipt_path in enumerate(receipts):
-            receipt = json.loads(receipt_path.read_text())
-            source = Path(receipt["analysis_directory"])
+            # Both branches share one synthetic original motion source; only the
+            # separately authored diagnostic road premise differs.
+            receipt = json.loads(json.dumps(base_receipt))
+            receipt["case_id"] = saved_behavior.PREFIX + saved_behavior.RIGHT_PASS_PAIR[index]
+            source = base_source
             root = self.root/("permission-base" if index == 0 else "permission-variant")
             root.mkdir()
             for name in saved_behavior.SOURCE_NAMES+("analysis-report.json","result.json"):
                 shutil.copy2(source/name,root/name)
+            for name in ("analysis-report.json","result.json"):
+                path=root/name
+                value=json.loads(path.read_text())
+                value["case_id"]=receipt["case_id"]
+                path.write_text(json.dumps(value)+"\n")
             rule=root/"right_pass_governing_rule.txt"
             rule.write_text("Synthetic governing-rule fixture; no legal finding.\n")
             survey=root/"right_pass_road_survey.json"
@@ -258,7 +271,11 @@ class OvertakenTests(unittest.TestCase):
         result=finalizer.build_result(self.root,report)
         self.assertEqual(result["case_id"],finalizer.CASE_ID)
         self.assertFalse(result["physical_acceptance_claimed"])
-        self.assertEqual(len(result["recording_evidence"]),2)
+        self.assertEqual(len(result["recording_evidence"]),6)
+        gap_rows=[json.loads(line) for line in (self.root/"full_body_pass_gap_m.jsonl").read_text().splitlines()]
+        self.assertEqual([row["value"] for row in gap_rows],[-6,-2,0,2])
+        permission=json.loads((self.root/"right_pass_permission_context.json").read_text())
+        self.assertIsNone(permission["right_pass_permission_context"]["permission_state"])
         observed_visibility=bodies[1]["visibility_relation"]
         bodies[1]["visibility_relation"]=None
         bodies[1]["notice_observed"]=None

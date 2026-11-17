@@ -12,6 +12,7 @@ import json
 from pathlib import Path
 
 from overtaken_response import measure_audible_saved, measure_observed_saved, verify_saved_sources
+from recording_sources import emit as emit_semantic_recording_sources
 
 
 CASE_ID = "heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__observed_gives_way_holds_speed"
@@ -90,6 +91,7 @@ def build_result(attempt, report):
         evidence.append({"name":"subject_"+key,"unit":unit,"reference":name,
                          "sha256":hashlib.sha256(path.read_bytes()).hexdigest()})
     audible = case_id == AUDIBLE_CASE_ID
+    evidence.extend(emit_semantic_recording_sources(root, rows, audible=audible))
     return {"case_id":case_id,
             "measured_values":{"overtaken_response":observed},
             "target_checks":[
