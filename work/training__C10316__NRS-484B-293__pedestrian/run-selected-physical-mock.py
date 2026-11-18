@@ -85,7 +85,7 @@ def main():
                     "sources": ["native_samples.jsonl", "video_frames.jsonl", "crosswalk-context.json"]}},
                   "maneuver_completed": status == "met",
                   "realized_observables": measured if status == "met" else {},
-                  "provenance_kind": "native", "diagnostic_fixture": False,
+                  "provenance_kind": "synthetic_fixture", "diagnostic_fixture": True,
                   "cpu_fixture_mock": True, "mock_native_branch_only": True,
                   "mock_input_provenance": "synthetic_native_sample",
                   "original_native_motion_verified": False,

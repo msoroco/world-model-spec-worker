@@ -27,7 +27,7 @@ def main():
         raise ValueError("Two selected crosswalk cases required")
     for entry in manifest["cases"]:
         suffix = entry["case_id"].removeprefix(HERE.name + "__")
-        folder = HERE / "update024-selected-physical" / suffix
+        folder = HERE / "update042-selected-physical" / suffix
         fixtures = []
         lifecycle = None
         for kind in ("complete_motion", "incomplete_motion", "missing_evidence", "lifecycle"):
