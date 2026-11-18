@@ -181,6 +181,305 @@
         "test_log_sha256": "90bc4d2ea5d13b6583f2fbaaab9c2fe083d75751796851f0aef0aa3baff85373",
         "test_exit_code": 0
       }
+    },
+    {
+      "case_id": "heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver__east_faster_proxy",
+      "kind": "delivery",
+      "construction": "cases/east_faster_proxy/construction.json",
+      "construction_sha256": "6d866036d12369b64ab2b497a2099780950b0c1367f4b03293db57a35b76f3f3",
+      "measurement_procedure": {
+        "entrypoint": "flashing_yellow_heavy.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Heavy approach at 7 m/s may fail governed-lane control or signal visibility; measured source review and three fallbacks remain required."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/east_faster_proxy/fallback1-construction.json",
+          "construction_sha256": "0d24c03fdc563e32100862007e0bdcbc603271c7a7bb54f212a6c546cf07a243",
+          "trigger": {
+            "source": "Native governed-lane waypoint selection",
+            "metric": "unique route availability at 70 m before governed head",
+            "failure_condition": "Primary 70 m predecessor is ambiguous; 60 m preserves the same governed lane and faster approach."
+          },
+          "changed_knobs": [
+            "approach_before_m: 70.0 to 60.0"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver/execution-manifest.json --case heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver__east_faster_proxy --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c24753-east-faster-fallback1-offline-v1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "east_faster_proxy-fallback1-offline.log",
+            "log_sha256": "2eccf01669ba542b138f9843154893fb76b8b3300180bdc83412ca63c8b7cf7a",
+            "construction_sha256": "0d24c03fdc563e32100862007e0bdcbc603271c7a7bb54f212a6c546cf07a243"
+          },
+          "compatibility": {
+            "receipt": "east_faster_proxy-fallback1-compatibility.json",
+            "sha256": "777c36dcbc677b2e2ec70b0137ef0ec249ab9b50a0d099960cf97bbe8242273c",
+            "log": "east_faster_proxy-fallback1-analysis.log",
+            "negative_log": "east_faster_proxy-fallback1-negative.log"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver/execution-manifest.json --case heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver__east_faster_proxy --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c24753-east-faster-fallback1-attempt-v1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c24753-east-faster-fallback1-saved-v1 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c24753-east-faster-fallback1-saved-v1/v0001/feedback.json",
+            "test_log": "east_faster_proxy-fallback1-saved.log",
+            "test_log_sha256": "99b52ec6e4faf04bdbaad65f4b9ad34624645cbf1a8f44d5e885e9dd50fda1ad",
+            "test_exit_code": 0
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/east_faster_proxy/fallback2-construction.json",
+          "construction_sha256": "02f9c05f28d661eb29981981214eadb4e0019bfc3de77fb44dcdbcb078469776",
+          "trigger": {
+            "source": "Native try_spawn_actor result",
+            "metric": "heavy and crossing actor spawn success at ground level",
+            "failure_condition": "Ground spawn collides with map geometry; raise both actor starts 0.35 m without changing their routes."
+          },
+          "changed_knobs": [
+            "spawn_z_offset_m: 0.0 to 0.35"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver/execution-manifest.json --case heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver__east_faster_proxy --candidate fallback2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c24753-east-faster-fallback2-offline-v1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "east_faster_proxy-fallback2-offline.log",
+            "log_sha256": "821622a1657a462989f307a08ad1e9acb01f3c0a8a1e9dd25235749434287eef",
+            "construction_sha256": "02f9c05f28d661eb29981981214eadb4e0019bfc3de77fb44dcdbcb078469776"
+          },
+          "compatibility": {
+            "receipt": "east_faster_proxy-fallback2-compatibility.json",
+            "sha256": "4fe2ac02d4362ad666181b663c4ba3b8aa166ec9fda42bddc9f23e28d3284524",
+            "log": "east_faster_proxy-fallback2-analysis.log",
+            "negative_log": "east_faster_proxy-fallback2-negative.log"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver/execution-manifest.json --case heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver__east_faster_proxy --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c24753-east-faster-fallback2-attempt-v1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c24753-east-faster-fallback2-saved-v1 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c24753-east-faster-fallback2-saved-v1/v0001/feedback.json",
+            "test_log": "east_faster_proxy-fallback2-saved.log",
+            "test_log_sha256": "b9a96df42a1f20b30cd60b1240a44aa71f7200b02bfc42fa34c18b9243a572f3",
+            "test_exit_code": 0
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/east_faster_proxy/fallback3-construction.json",
+          "construction_sha256": "91fc4c34adca8755845e401f433e4a1bce36127e788771c9550f569836fd358a",
+          "trigger": {
+            "source": "Original heavy participant velocity samples",
+            "metric": "repeated overshoot around 7 m/s target",
+            "failure_condition": "Primary gain causes repeated speed oscillation at the faster target; lower the gain."
+          },
+          "changed_knobs": [
+            "speed_kp: 0.22 to 0.18"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver/execution-manifest.json --case heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver__east_faster_proxy --candidate fallback3 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c24753-east-faster-fallback3-offline-v1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "east_faster_proxy-fallback3-offline.log",
+            "log_sha256": "20e07802421d380284341c5906e1ab9394d069f23cb771e63e1f58d5f690447b",
+            "construction_sha256": "91fc4c34adca8755845e401f433e4a1bce36127e788771c9550f569836fd358a"
+          },
+          "compatibility": {
+            "receipt": "east_faster_proxy-fallback3-compatibility.json",
+            "sha256": "a6574b777c321238e6333abd2ecddf62fcda79ace7fd2da5bd2cbe8d67e57363",
+            "log": "east_faster_proxy-fallback3-analysis.log",
+            "negative_log": "east_faster_proxy-fallback3-negative.log"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver/execution-manifest.json --case heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver__east_faster_proxy --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c24753-east-faster-fallback3-attempt-v1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c24753-east-faster-fallback3-saved-v1 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c24753-east-faster-fallback3-saved-v1/v0001/feedback.json",
+            "test_log": "east_faster_proxy-fallback3-saved.log",
+            "test_log_sha256": "02f96085171872b3140e3752ab3d77bcce6342f11609a3cc4a614ebfb724d83f",
+            "test_exit_code": 0
+          }
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "measurement_contract": "cases/east_faster_proxy/measurement-contract.json",
+      "fixture_recipe": "work/heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver/cases/east_faster_proxy/diagnostic-recipe.json",
+      "acquisition": {
+        "native_yellow_on": {
+          "entrypoint": "flashing_yellow_heavy.py",
+          "method": "Post-tick governed Native light state readback joined to original frame map",
+          "evidence": "signal_state.jsonl and video_frames.jsonl"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "flashing_yellow_heavy.py",
+          "method": "Post-tick heavy actor velocity magnitude joined to original frame map",
+          "evidence": "participant_state.jsonl and video_frames.jsonl"
+        },
+        "ego_center_xy": {
+          "entrypoint": "flashing_yellow_heavy.py",
+          "method": "Post-tick heavy actor center joined to original frame map",
+          "evidence": "participant_state.jsonl and video_frames.jsonl"
+        },
+        "crossing_center_xy": {
+          "entrypoint": "flashing_yellow_heavy.py",
+          "method": "Post-tick crossing actor center joined to original frame map",
+          "evidence": "participant_state.jsonl and video_frames.jsonl"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver/execution-manifest.json --case heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver__east_faster_proxy --candidate primary --output .runtime-work/c24753-east-faster-primary-offline-v1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "exit_code": 0,
+        "log": "east_faster_proxy-primary-offline.log",
+        "log_sha256": "99cae4b66707f0fffe968daf5eac66505e8f109c0b59751eac0e1473890ac573",
+        "construction_sha256": "6d866036d12369b64ab2b497a2099780950b0c1367f4b03293db57a35b76f3f3"
+      },
+      "compatibility": {
+        "receipt": "east_faster_proxy-primary-compatibility.json",
+        "sha256": "3cddb29a4f9dd43f0b789999db5684dd9b446674a3640c0257e1a5cd93df6aee",
+        "log": "east_faster_proxy-primary-analysis.log",
+        "negative_log": "east_faster_proxy-primary-negative.log"
+      },
+      "negative": {
+        "log": "east_faster_proxy-primary-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver/execution-manifest.json --case heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver__east_faster_proxy --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c24753-east-faster-attempt-v1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c24753-east-faster-saved-v1 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c24753-east-faster-saved-v1/v0001/feedback.json",
+        "test_log": "east_faster_proxy-primary-saved.log",
+        "test_log_sha256": "08e8bbbb8591cf6fb840c96e4400a8dc24b0b3d127fdf51e3ac72128db9e10e8",
+        "test_exit_code": 0
+      }
+    },
+    {
+      "case_id": "heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver__east_no_crossing",
+      "kind": "delivery",
+      "construction": "cases/east_no_crossing/construction.json",
+      "construction_sha256": "61197267823b48c5c8136d987283fb89c5b8f753f7cef8099de09a4dafa816ca",
+      "measurement_procedure": {
+        "entrypoint": "flashing_yellow_heavy.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "A genuinely empty crossing lane and heavy governed flashing-yellow approach require original source review; three fallbacks remain required."
+      },
+      "candidates": [],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "measurement_contract": "cases/east_no_crossing/measurement-contract.json",
+      "fixture_recipe": "work/heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver/cases/east_no_crossing/diagnostic-recipe.json",
+      "acquisition": {
+        "native_yellow_on": {
+          "entrypoint": "flashing_yellow_heavy.py",
+          "method": "Post-tick governed Native light state readback joined to original frame map",
+          "evidence": "signal_state.jsonl and video_frames.jsonl"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "flashing_yellow_heavy.py",
+          "method": "Post-tick heavy actor velocity magnitude joined to original frame map",
+          "evidence": "participant_state.jsonl and video_frames.jsonl"
+        },
+        "ego_center_xy": {
+          "entrypoint": "flashing_yellow_heavy.py",
+          "method": "Post-tick heavy actor center joined to original frame map",
+          "evidence": "participant_state.jsonl and video_frames.jsonl"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver/execution-manifest.json --case heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver__east_no_crossing --candidate primary --output .runtime-work/c24753-no-cross-primary-offline-v1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "exit_code": 0,
+        "log": "east_no_crossing-primary-offline.log",
+        "log_sha256": "688760764b7edc064cdfd2726ea16f78a947a5bcf492a652fe4d531c2c72bca7",
+        "construction_sha256": "61197267823b48c5c8136d987283fb89c5b8f753f7cef8099de09a4dafa816ca"
+      },
+      "compatibility": {
+        "receipt": "east_no_crossing-primary-compatibility.json",
+        "sha256": "e965f76a49ba4db65c5cf825ef8b25b106e85a99c9ace85fbc177fd84fb72ae8",
+        "log": "east_no_crossing-primary-analysis.log",
+        "negative_log": "east_no_crossing-primary-negative.log"
+      },
+      "negative": {
+        "log": "east_no_crossing-primary-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver/execution-manifest.json --case heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver__east_no_crossing --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c24753-no-cross-attempt-v1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c24753-no-cross-saved-v1 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c24753-no-cross-saved-v1/v0001/feedback.json",
+        "test_log": "east_no_crossing-primary-saved.log",
+        "test_log_sha256": "fab6452c1e0fed6399d9797a2d97ae21d60ddad3bb677b104469f9c89adb6577",
+        "test_exit_code": 0
+      }
+    },
+    {
+      "case_id": "heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver__west_cautious_proxy",
+      "kind": "delivery",
+      "construction": "cases/west_cautious_proxy/construction.json",
+      "construction_sha256": "fa86976102faeb6ad4740d3929889452904994b4cf784f8b05260797fac52869",
+      "measurement_procedure": {
+        "entrypoint": "flashing_yellow_heavy.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "West governed head and heavy approach may fail route availability or source visibility; three fallbacks remain required."
+      },
+      "candidates": [],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "measurement_contract": "cases/west_cautious_proxy/measurement-contract.json",
+      "fixture_recipe": "work/heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver/cases/west_cautious_proxy/diagnostic-recipe.json",
+      "acquisition": {
+        "native_yellow_on": {
+          "entrypoint": "flashing_yellow_heavy.py",
+          "method": "Post-tick governed Native light state readback joined to original frame map",
+          "evidence": "signal_state.jsonl and video_frames.jsonl"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "flashing_yellow_heavy.py",
+          "method": "Post-tick heavy actor velocity magnitude joined to original frame map",
+          "evidence": "participant_state.jsonl and video_frames.jsonl"
+        },
+        "ego_center_xy": {
+          "entrypoint": "flashing_yellow_heavy.py",
+          "method": "Post-tick heavy actor center joined to original frame map",
+          "evidence": "participant_state.jsonl and video_frames.jsonl"
+        },
+        "crossing_center_xy": {
+          "entrypoint": "flashing_yellow_heavy.py",
+          "method": "Post-tick crossing actor center joined to original frame map",
+          "evidence": "participant_state.jsonl and video_frames.jsonl"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver/execution-manifest.json --case heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver__west_cautious_proxy --candidate primary --output .runtime-work/c24753-west-primary-offline-v1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "west_cautious_proxy-primary-offline.log",
+        "log_sha256": "f62d487c30d8947223af19adba3e10d4f570e27429a76ecddac933619c3c38ee",
+        "construction_sha256": "fa86976102faeb6ad4740d3929889452904994b4cf784f8b05260797fac52869"
+      },
+      "compatibility": {
+        "receipt": "west_cautious_proxy-primary-compatibility.json",
+        "sha256": "ffbe151f14d1224405f3c9329c1c2e321f8988177e4df746939ae32a8cfdbc88",
+        "log": "west_cautious_proxy-primary-analysis.log",
+        "negative_log": "west_cautious_proxy-primary-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver/execution-manifest.json --case heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver__west_cautious_proxy --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c24753-west-attempt-v1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c24753-west-saved-v1 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c24753-west-saved-v1/v0001/feedback.json",
+        "test_log": "west_cautious_proxy-primary-saved.log",
+        "test_log_sha256": "519d2825651bd222a81aea17c589e19b07341076b17bec9dd2f752344a5de8aa",
+        "test_exit_code": 0
+      },
+      "negative": {
+        "log": "west_cautious_proxy-primary-negative.log"
+      }
     }
   ]
 }
