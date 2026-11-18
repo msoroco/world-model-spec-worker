@@ -39,7 +39,8 @@ def classify(rows, road, suffix, *, provenance_kind, diagnostic_fixture):
                     "target_reached_and_parked": parked}
         synthetic = any(r.get("synthetic_diagnostic") is True or
                         r.get("speed_provenance") == "synthetic_native_sample" for r in rows)
-        if provenance_kind == "native" and not diagnostic_fixture and not synthetic:
+        if ((provenance_kind == "native" and not diagnostic_fixture and not synthetic) or
+                (provenance_kind == "synthetic_fixture" and diagnostic_fixture)):
             check["status"] = "met" if parked else "not_met"
     except (KeyError, IndexError, TypeError, ValueError):
         pass

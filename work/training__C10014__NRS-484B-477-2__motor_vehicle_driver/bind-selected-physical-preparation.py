@@ -27,7 +27,7 @@ def main():
         raise ValueError("Two selected alley cases required")
     for entry in manifest["cases"]:
         suffix = entry["case_id"].removeprefix(HERE.name + "__")
-        folder = HERE / "update032-selected-physical-preparation" / suffix
+        folder = HERE / "update040-selected-physical-preparation" / suffix
         fixtures = []
         lifecycle = None
         for kind in ("complete_motion", "incomplete_motion", "missing_evidence", "lifecycle"):

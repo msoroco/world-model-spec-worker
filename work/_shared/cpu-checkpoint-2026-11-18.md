@@ -1,0 +1,19 @@
+# CPU preparation checkpoint — 2026-11-18
+
+The 253 assignments in `batch.json` remain present and all 253 `result.json` markers remain `partial` with `applied_update: 16`. No assignment is currently certified ready. Existing plans, constructions, and historical receipts were retained. The pinned runtime preflight passes. This checkpoint makes no claim of Native capture, physical completion, accepted recordings, or completed statutory comparisons.
+
+## C10014 repair and current gate
+
+For `training__C10014__NRS-484B-477-2__motor_vehicle_driver`, the physical CPU fixture previously stripped the `synthetic_native_sample` source marker and presented the fixture result as Native. The current physical preparation validator correctly rejected that result. The motion classifier and fixture runner now label the six diagnostic outcomes `provenance_kind: synthetic_fixture` and `diagnostic_fixture: true`, while still rejecting an attempt to treat the original synthetic rows as Native. New physical preparation receipts are under `update040-selected-physical-preparation/`; the older receipts were retained. Both selected cases pass `physical_preparation.validate`, including six outcome fixtures and two lifecycle fixtures. The runner uses retained update039 diagnostic sources. `execution-manifest.json` now has SHA-256 `0f3b30a5ba32cf70f3248db2dbf96182f00b7a9ca8ce1eca0c5a54e729c1d386`.
+
+`.venv-cpu/bin/python worker_check.py --assignment training__C10014__NRS-484B-477-2__motor_vehicle_driver --complete` exits 0. The scoped strict gate exits 1 because this result remains `partial`.
+
+Direct pinned-runtime validation with `.venv-cpu/bin/python work/training__C10014__NRS-484B-477-2__motor_vehicle_driver/verify-update039.py` exits 1 at `ValueError: Diagnostic graphs require the live adapter JSON format`. The reference and contrast diagnostic specifications each still request 480 `.pkl` graphs, while the current runtime requires `.adapter.json`. Repair their source specifications, bind the updated generator hashes in both recipes, regenerate exact offline, positive/negative compatibility, and saved-processing receipts for both cases and all candidates, then rerun direct validation and the scoped strict gate. Do not promote old hashes; update039's manifest-bound proof summary names the former manifest SHA-256 `570435ca5ce6c5d4d7a84f0c502e3b5cee8a2309f7efe95015c60ce8b627bba4`.
+
+The assignment test suite currently reports 35 passing tests and one error: `test_queue_intent.QueueIntentTest.test_current_selected_rows_and_legacy_format` rejects a queue row whose stale `status` is `ready`, although `dispatchable` is `false` and the assignment result is `partial`. Reconcile the shared queue and test with current readiness semantics; do not release a GPU job from this checkpoint.
+
+## Batch work still required
+
+Rebind each assignment's selected manifest and current runtime proofs, including all named source cameras and saved-only processing. Finish the required fallback and comparison audits, canonical ordered GPU queue, local integration proof, and independent branch review. Run every scoped strict gate, then `.venv-cpu/bin/python worker_check.py --complete --require-delivery-ready`. Keep unfinished worker-owned work `partial`; reserve `blocked` for an external dependency. The GPU operator must later collect original Native motion, source pixels, and independent physical/legal acceptance.
+
+The full strict gate was invoked on this checkpoint but produced no output during a prolonged scan and was interrupted with exit 130. Its last retained completed run, `work/_shared/update124-full-strict.log`, failed on the unapproved output `runtime/pipeline/runs/scenario_pipeline/inputs/shared/manifest.json`. That historical failure is a possible remaining batch obstacle, not a fresh gate result. The current 253 partial markers alone prevent a truthful full ready claim.

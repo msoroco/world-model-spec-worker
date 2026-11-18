@@ -35,7 +35,7 @@ def main():
                 raise AssertionError("Invalid owner release sequence accepted")
         result.update(cpu_fixture_mock=True, original_owner_release_verified=False)
     else:
-        source = ROOT / ".runtime-work" / f"c10014-update034-{args.case}-primary-compat"
+        source = ROOT / ".runtime-work" / f"c10014-update039-{args.case}-primary-compat"
         raw = source / "native_samples.jsonl"
         road = source / "road_geometry.json"
         rows = [json.loads(x) for x in raw.read_text().splitlines()]
@@ -53,7 +53,7 @@ def main():
         elif args.kind == "missing_evidence":
             selected.pop()
         result = classify(selected, geometry, args.case,
-                          provenance_kind="native", diagnostic_fixture=False)
+                          provenance_kind="synthetic_fixture", diagnostic_fixture=True)
         expected = {"complete_motion": "met", "incomplete_motion": "not_met",
                     "missing_evidence": "unverified"}[args.kind]
         if result["physical_checks"]["maneuver"]["status"] != expected:
