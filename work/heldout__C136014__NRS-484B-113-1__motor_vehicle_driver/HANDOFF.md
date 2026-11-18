@@ -43,3 +43,5 @@ gate still passes; no compatibility receipt or negative log was removed.
 ### 2026-11-15 proof-preserving return compaction
 
 Removed 70 byte-identical case logs and rebound their exact references in `execution-manifest.json` to retained identical bytes. The assignment-scoped `--complete --require-delivery-ready` gate passed before and after compaction. Result remains ready; no source proof was weakened.
+
+2026-11-18 onset-sweep construction inspection: the three returned Native runners schedule braking after 40, 120 and 80 iterations respectively and each requests 160 frames. Their current CPU diagnostic generators retain only nine joined evidence, graph, trace, body and video frames, with braking measured at index 1 in all three. The fixture cannot prove the frozen distinct onset setpoints. Extend each source-joined synthetic diagnostic and media to cover at least the latest 120-frame onset within the returned 2 MiB per-file limit, then rerun all affected exact compatibility, saved processing, physical/lifecycle and independent sweep comparisons. Keep partial until that source-bound evidence and the scoped strict gate pass.

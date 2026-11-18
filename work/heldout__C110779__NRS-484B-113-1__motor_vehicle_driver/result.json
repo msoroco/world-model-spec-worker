@@ -1,44 +1,198 @@
 {
   "assignment_id": "heldout__C110779__NRS-484B-113-1__motor_vehicle_driver",
   "input_sha256": "cea1a7b04dc28362442d4962618eb853bcf512afc0cb0496bfe7d17b194c20f1",
-  "status": "partial",
+  "status": "ready",
   "applied_update": 0,
   "tests": [
     {
-      "name": "traffic_response_audit",
-      "command": ".venv-cpu/bin/python work/heldout__C110779__NRS-484B-113-1__motor_vehicle_driver/audit_traffic_response.py",
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/heldout__C110779__NRS-484B-113-1__motor_vehicle_driver/tests -v",
       "exit_code": 0,
-      "log": "traffic-response-comparison-proof.json",
-      "sha256": "407ccc79aee723411cdd64a9580de29d0742226acdc7d0784e05376ff74c94a9"
-    },
-    {
-      "name": "contact_comparison_audit",
-      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/heldout__C110779__NRS-484B-113-1__motor_vehicle_driver/audit_contact_observation.py",
-      "exit_code": 0,
-      "log": "contact-comparison.log",
-      "sha256": "58f0de2cd7d2a8659389dd650abbfc8292d2638c98289cce458c051b651721d3"
-    },
-    {
-      "name": "returned_two_case_candidate_sweep",
-      "command": ".venv-cpu/bin/python runtime.py offline/compatibility and process-saved via returned execution-manifest.json for no_reverse_control and backing_pedestrian, primary plus fallback1/2/3",
-      "exit_code": 0,
-      "log": "backing-clear-fallback1-compatibility.json",
-      "sha256": "2e6fb849ca4bb219dc4748c676bb750cbd4a951c9452ef155ce0b379f51276a6",
-      "checks": 24,
-      "preserved_field": "historical_returned_two_cases"
-    },
-    {
-      "name": "new_case_pair_audits",
-      "command": ".venv-cpu/bin/python work/heldout__C110779__NRS-484B-113-1__motor_vehicle_driver/audit_new_case_pairs.py",
-      "exit_code": 0,
-      "log": "new-case-pair-audit.log",
-      "sha256": "be5c188b56329dd89e2f32be7f4ef0866ef4c52f7c604a5173abeb1d0c4e8143"
+      "log": "cpu-tests.log",
+      "sha256": "313f5f9d28d281eda637b60b0176bb7b717c3326aa53f25f4c5dcfed55922868",
+      "passed": 17
     }
   ],
   "remaining_gpu_checks": [
-    "Actual motion, geometry, camera visibility and duration remain unverified after CPU preparation."
+    "Native reverse motion, actor geometry and actual four-camera visibility on all six exact cases",
+    "Independent reasonable-safety and other-traffic-interference review against retained original sources"
   ],
-  "reason": "Runtime refresh requires new exact-case and saved proofs.",
-  "readiness_kind": "implementation_checkpoint",
-  "first_gpu_delivery_command": "python scenario_pipeline/pipeline.py execute-delivery --assignment heldout__C110779__NRS-484B-113-1__motor_vehicle_driver --case heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__backing_clear_vehicle --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --job \"$JOB_ID\" --db \"$DB\" --run \"$RUN\""
+  "readiness_kind": "delivery_prepared",
+  "first_gpu_delivery_command": "python scenario_pipeline/pipeline.py execute-delivery --assignment heldout__C110779__NRS-484B-113-1__motor_vehicle_driver --case heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__backing_clear_vehicle --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --job \"$JOB_ID\" --db \"$DB\" --run \"$RUN\"",
+  "saved_processing_cpu_proof": {
+    "format": "worker-current-saved-processing-proof",
+    "scope": "synthetic source-only CPU diagnostic",
+    "cases": 6,
+    "candidates": 24,
+    "proofs": [
+      {
+        "case_id": "heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__backing_clear_vehicle",
+        "candidate_id": "primary",
+        "processing_sha256": "6b3565cb74f08cd16b537bbce48dc4cb8483a29eda6e29a05bf3b86dda9c40b1",
+        "missing_evidence": false,
+        "originals_preserved": true
+      },
+      {
+        "case_id": "heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__backing_clear_vehicle",
+        "candidate_id": "fallback1",
+        "processing_sha256": "87996760a3ae30b5d736c9fe99d8db5d934a7553e42c61d486e702ac1c957a24",
+        "missing_evidence": false,
+        "originals_preserved": true
+      },
+      {
+        "case_id": "heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__backing_clear_vehicle",
+        "candidate_id": "fallback2",
+        "processing_sha256": "5b57a195777f61117aeee9ceea34be9590cd53c4837d3865d408ef3249a86e07",
+        "missing_evidence": false,
+        "originals_preserved": true
+      },
+      {
+        "case_id": "heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__backing_clear_vehicle",
+        "candidate_id": "fallback3",
+        "processing_sha256": "14fc85c2e18f901bf1a9c58fc69c0ef57048a410b9261d68c1323cb39db91a00",
+        "missing_evidence": false,
+        "originals_preserved": true
+      },
+      {
+        "case_id": "heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__backing_near_vehicle",
+        "candidate_id": "primary",
+        "processing_sha256": "0fbceecfc0cd05244ba3248a5c6ba736eac3b8b3c7705dee174821a7483c43ad",
+        "missing_evidence": false,
+        "originals_preserved": true
+      },
+      {
+        "case_id": "heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__backing_near_vehicle",
+        "candidate_id": "fallback1",
+        "processing_sha256": "3678de7422ad8e682573ea8f5503a8dea29743ffa2c6c930fb3c7ee4a664e514",
+        "missing_evidence": false,
+        "originals_preserved": true
+      },
+      {
+        "case_id": "heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__backing_near_vehicle",
+        "candidate_id": "fallback2",
+        "processing_sha256": "ef07e1dce001684f548f8a0fc59b6dbf5cea41668ed7c6c5979758c29f449bf7",
+        "missing_evidence": false,
+        "originals_preserved": true
+      },
+      {
+        "case_id": "heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__backing_near_vehicle",
+        "candidate_id": "fallback3",
+        "processing_sha256": "17d8d716b88647af920db14c4996968d44d771ef33777669b7c1b75fd858cf21",
+        "missing_evidence": false,
+        "originals_preserved": true
+      },
+      {
+        "case_id": "heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__backing_vehicle_brakes",
+        "candidate_id": "primary",
+        "processing_sha256": "65bb9ffd7bf9225712972e8f5a85bcfb57dca0c3199e52d0146665008c688d73",
+        "missing_evidence": false,
+        "originals_preserved": true
+      },
+      {
+        "case_id": "heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__backing_vehicle_brakes",
+        "candidate_id": "fallback1",
+        "processing_sha256": "75b9c1831bf2348a5c4cce0f53b8a63d59d628012397c18fd7e4c17c34732556",
+        "missing_evidence": false,
+        "originals_preserved": true
+      },
+      {
+        "case_id": "heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__backing_vehicle_brakes",
+        "candidate_id": "fallback2",
+        "processing_sha256": "5ec0f5f2a7379fe92176ce9b4f10713cbe9a11bce2e2fb78f697f9ab08d67381",
+        "missing_evidence": false,
+        "originals_preserved": true
+      },
+      {
+        "case_id": "heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__backing_vehicle_brakes",
+        "candidate_id": "fallback3",
+        "processing_sha256": "3ae8de8bdaf058fe3fcc83c4c2c0a97da4e077adbb54ef2ccbcb1d3ac06c3010",
+        "missing_evidence": false,
+        "originals_preserved": true
+      },
+      {
+        "case_id": "heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__backing_vehicle_contact",
+        "candidate_id": "primary",
+        "processing_sha256": "cb6d9cd4f5fdaa7180c5cd11e23b0aecda02ac81654d01532453f770b9d47339",
+        "missing_evidence": false,
+        "originals_preserved": true
+      },
+      {
+        "case_id": "heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__backing_vehicle_contact",
+        "candidate_id": "fallback1",
+        "processing_sha256": "e78d4c281dac78189cc33ea376f38d8eb65c9ea39975698c412b71802c0fbed2",
+        "missing_evidence": false,
+        "originals_preserved": true
+      },
+      {
+        "case_id": "heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__backing_vehicle_contact",
+        "candidate_id": "fallback2",
+        "processing_sha256": "0c0744be3db8d3c7dc040c3aafdfdd0ac32728e619f68e8025b9246adf895738",
+        "missing_evidence": false,
+        "originals_preserved": true
+      },
+      {
+        "case_id": "heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__backing_vehicle_contact",
+        "candidate_id": "fallback3",
+        "processing_sha256": "509f9078f459c7309445b9918c0f40ce34b9740178b5cca9abc13fb81d4ba02d",
+        "missing_evidence": false,
+        "originals_preserved": true
+      },
+      {
+        "case_id": "heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__no_reverse_control",
+        "candidate_id": "primary",
+        "processing_sha256": "8c9da56e49288ba5a8b8f3815030d8053c8023f8bacb23cf33886087ea37a22a",
+        "missing_evidence": false,
+        "originals_preserved": true
+      },
+      {
+        "case_id": "heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__no_reverse_control",
+        "candidate_id": "fallback1",
+        "processing_sha256": "4828869c4012d693ce2ac919727a4a192f44402480ea122a05f462c123f22a91",
+        "missing_evidence": false,
+        "originals_preserved": true
+      },
+      {
+        "case_id": "heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__no_reverse_control",
+        "candidate_id": "fallback2",
+        "processing_sha256": "4a1d2352664931bc5156740134a6205d22975368d543248811453846310051b6",
+        "missing_evidence": false,
+        "originals_preserved": true
+      },
+      {
+        "case_id": "heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__no_reverse_control",
+        "candidate_id": "fallback3",
+        "processing_sha256": "786c20c3630e97509e5d29c9ccfdd347b0091f42cc9566bc8bc2dac4a4f45ea0",
+        "missing_evidence": false,
+        "originals_preserved": true
+      },
+      {
+        "case_id": "heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__backing_pedestrian",
+        "candidate_id": "primary",
+        "processing_sha256": "3925e494702fbb56d72217c4b42747805afab1b920af79dd5a6268ceb01c7b0d",
+        "missing_evidence": false,
+        "originals_preserved": true
+      },
+      {
+        "case_id": "heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__backing_pedestrian",
+        "candidate_id": "fallback1",
+        "processing_sha256": "8e3ab66408ba1d49e024bd1d9ecc4050546301f1468787fb80652182ad458153",
+        "missing_evidence": false,
+        "originals_preserved": true
+      },
+      {
+        "case_id": "heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__backing_pedestrian",
+        "candidate_id": "fallback2",
+        "processing_sha256": "79b6bdaaf22669c29ac6e5740e660cd97abeee4018abc63b3ed83c072bad684f",
+        "missing_evidence": false,
+        "originals_preserved": true
+      },
+      {
+        "case_id": "heldout__C110779__NRS-484B-113-1__motor_vehicle_driver__backing_pedestrian",
+        "candidate_id": "fallback3",
+        "processing_sha256": "b1e934c524dd4074cff5197089fd2a5746422118462b6645e58704a78cc5c9e4",
+        "missing_evidence": false,
+        "originals_preserved": true
+      }
+    ],
+    "physical_acceptance_claimed": false
+  }
 }
