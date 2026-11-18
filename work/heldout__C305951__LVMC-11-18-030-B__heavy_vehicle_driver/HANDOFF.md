@@ -317,3 +317,7 @@ The post-completion full-batch strict gate exited 1 at `preparation.py:276` beca
 Historical receipt compaction 2026-11-16: 0 result-history-only returned files are preserved byte-for-byte with SHA-256 and original paths in `work/_shared/historical-receipts-bundle-20261116.json`. Scoped strict gate was rerun after compaction.
 
 Historical unused returned comparison/source receipts (0 files) are byte-exact in `work/_shared/historical-receipts-bundle-20261116.json`; scoped strict gate rerun follows.
+
+## 2026-11-18 JSON adapter migration checkpoint
+
+Ten diagnostic specs now use `.adapter.json` graphs with frame `adapter_graph` pointers. All 40 `runtime.py offline` paths passed. Twelve of 40 exact `runtime.py compatibility` paths passed (within_marked_lane, passing_boundary_crossing, lawful_turn_preparation_boundary_crossing, each primary plus three fallbacks). Four unexcused_boundary_crossing paths fail `Participant graph/telemetry geometry mismatch: position`; 24 heavy_passing_plan/heavy_turn_plan sweep paths fail `Realized sweep measurement differs from frozen definition`. Current ignored `.runtime-work/c305951-adapter-compat-final/` retains attempts and logs. Full manifest rebinding and saved processing remain pending; status is partial.

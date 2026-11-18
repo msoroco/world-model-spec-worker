@@ -165,7 +165,7 @@ def run(case_id, kind, *, negative_review=False, lateral_offset_m=None,
                           "sources": {"trace.jsonl": sha256((attempt / "trace.jsonl").read_bytes()).hexdigest()},
                           "missing_evidence": ["heavy_lane_sources.jsonl"]}},
                       "maneuver_completed": False, "realized_observables": {},
-                      "provenance_kind": "native", "diagnostic_fixture": True,
+                      "provenance_kind": "synthetic_fixture", "diagnostic_fixture": True,
                       "actual_native_capture": False, "physical_acceptance_claimed": False,
                       "legal_exception_decided": False}
         else:
@@ -192,7 +192,8 @@ def run(case_id, kind, *, negative_review=False, lateral_offset_m=None,
                 raise ValueError("Physical fixture yielded another branch: " +
                                  result["physical_checks"]["maneuver"]["status"])
             result.update(fixture_kind=kind, diagnostic_fixture=True,
-                          actual_native_capture=False, physical_acceptance_claimed=False,
+                          provenance_kind="synthetic_fixture", actual_native_capture=False,
+                          physical_acceptance_claimed=False,
                           provenance_note="Native-shaped synthetic source protocol; pixel review is fixture input only")
             if lateral_offset_m is not None:
                 result["lateral_control_setpoint_m"] = lateral_offset_m

@@ -135,7 +135,7 @@ def diagnostic_at_setpoint(source: dict, setpoint_m: float) -> dict:
                 camera["position_m"][1] += dy
         frame = capture["original_frame"]
         for kind in ("abstract", "base"):
-            graph_path = f"capture/native/graphs/{kind}/{frame:08d}.pkl"
+            graph_path = f"capture/native/graphs/{kind}/{frame:08d}.adapter.json"
             if graph_path not in graphs:
                 raise ValueError("Missing graph observation packet")
             graphs[graph_path]["attributes"]["observed_evidence"] = deepcopy(observed)

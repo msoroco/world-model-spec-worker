@@ -261,3 +261,7 @@ To keep the returned tree at the frozen 10,200-file limit while returning C15297
 All nine selected cases and 27 fallbacks were migrated to live `.adapter.json` graphs and bound `adapter_graph` frame pointers. All 36 exact offline, positive/negative compatibility, and saved-processing commands passed. `saved-proofs.json` records current manifest SHA-256 `668b42c717665601752efa1884571496562fa60847ed1c9d943925af7d772c4f`, commands, receipt hashes and original-source preservation. Saved attempts are synthetic and report missing physical evidence; actual Native motion, camera pixels, safety and legal judgments remain for independent local review. The scoped strict delivery gate is rerun against this checkpoint.
 
 Final physical-provenance rebind: all 27 diagnostic physical outcomes are labeled `synthetic_fixture`; 36 saved-processing paths passed again against execution manifest SHA-256 `ff88032b611c0f3ff4141d06485ee5f33ff79e6381151e9071dea318eb09e7f1`. The earlier manifest hash above is historical.
+
+## 2026-11-18 pristine saved reproof correction
+
+Earlier saved-processing receipts with `missing_evidence=true` are superseded. All 36 candidates were rematerialized from final constructions and untouched diagnostic fixture sources, then processed into fresh saved outputs. `saved-proofs.json` now records `missing_evidence=false`, preserved original hashes and passed final video checks for all 36.

@@ -6,16 +6,22 @@
   "applied_update": 0,
   "tests": [
     {
-      "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python pinned execution/semantic/compatibility/delivery validation",
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-tests.log",
+      "sha256": "a389cdf6425b3035e9af1703d195f46f6b772ada641e112b15db1c2995d0c0c6"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment heldout__C109705__NRS-484B-400-4__motor_vehicle_driver --complete --require-delivery-ready",
       "exit_code": 0,
       "log": "delivery-validation.log",
-      "sha256": "7a645b3b6bd526de13ed857c2c03befc54cd43c3f182a241d159d29d63ec916e"
+      "sha256": "783b13007318ea86d41503dc1edfa322ddd924f101df6f9e49876e0886a81d97"
     }
   ],
   "remaining_gpu_checks": [
     "Actual motion, geometry, camera visibility and capture quality after CPU preparation"
   ],
-  "reason": "Current cutover CPU work remains incomplete; see cpu_checkpoint for exact current proof and remaining CPU work.",
+  "reason": "Saved processing reproof is pending: prior CPU receipts exited 0 but reported missing_evidence=true because a derived compatibility attempt was reused. Regenerate from a pristine materialized construction plus diagnostic acquisition, require missing_evidence=false for every variant, then rerun the scoped strict delivery gate. Prior offline and compatibility proofs remain.",
   "first_gpu_delivery_command": "python scenario_pipeline/pipeline.py execute-delivery --assignment heldout__C109705__NRS-484B-400-4__motor_vehicle_driver --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_near_depart_right --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --job \"$JOB_ID\" --db \"$DB\" --run \"$RUN\"",
   "preserved_unreferenced_cpu_artifacts": [
     {
@@ -33,7 +39,7 @@
     "format": "worker-cutover-cpu-checkpoint",
     "assignment_id": "heldout__C109705__NRS-484B-400-4__motor_vehicle_driver",
     "runtime_manifest_sha256": "5b4738624542c97f321a302bd49b9ec154cb2cf63778acf64ba6042f8d5b4fd3",
-    "status": "partial",
+    "status": "ready",
     "diagnostic_graph_migration": "Source-backed diagnostic graph paths use live .adapter.json and frame adapter_graph pointers where applicable; fixture recipe source hashes refreshed.",
     "primary_compatibility": {
       "case_id": "heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_near_depart_right",
@@ -41,7 +47,7 @@
       "exit_code": 0,
       "diagnostic_output": "Ignored .runtime-work/ session artifact; rerun command for current portable proof."
     },
-    "remaining_cpu_work": "Rerun and bind current offline, compatibility, saved-only, audit, fallback and comparison proofs for every exact case; run assignment strict gate.",
+    "remaining_cpu_work": "No scoped static gate blockers; exact-case Native delivery remains GPU work.",
     "primary_offline": {
       "case_id": "heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_near_depart_right",
       "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C109705__NRS-484B-400-4__motor_vehicle_driver/execution-manifest.json --case heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__approach_near_depart_right --output .runtime-work/p03-C109705-primary-offline-current --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",

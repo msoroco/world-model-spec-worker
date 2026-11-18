@@ -95,3 +95,15 @@ These positive proofs use source-shaped CPU fixtures. Actual Native motion, pixe
 The following historical, inactive JSON receipts were preserved byte-for-byte in `work/_shared/historical-receipts-bundle-20261116.json` with original relative paths and SHA-256 values, then removed from the returned tree to free file slots: `first-primary-compatibility.json`, `speed-before-comparison.json`. The current source/manifest files have no references to these names. An ignored local backup is at `.runtime-work/historical-receipts-dedup-20261116/`. Restore by base64-decoding the bundle entries to their `path`. The active scoped strict gate was rerun after compaction.
 
 Result-only historical log reconciliation, 2026-11-16: 2 exact UTF-8 logs were SHA-256-preserved in `work/_shared/prune-history-bundle-all.json.preserved_source_files` and removed from this package; matching obsolete `result.json.tests` claims were removed. Current manifest-bound proofs remain direct. Re-run the scoped strict gate before relying on ready status.
+
+## 2026-11-18 JSON adapter migration blocker
+
+Six diagnostic specs now use live `.adapter.json` graphs and explicit `adapter_graph` frame pointers. Exact `runtime.py compatibility --manifest work/heldout__C230259__NRS-484B-207-2__motor_vehicle_driver/execution-manifest.json --case heldout__C230259__NRS-484B-207-2__motor_vehicle_driver__observed_gives_way_holds_speed --candidate primary --output .runtime-work/c230259-adapter-compat/observed_gives_way_holds_speed-primary --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck` exits 1 with `Participant graph/telemetry speed mismatch`: the synthetic ego is 10.111874208078342 m/s while the retained participant/base graph ego is about 0.055294461414037994 m/s; later lateral positions diverge too. This is a synthetic packet-generation mismatch, not physical Native evidence. Rebuild all graph and participant kinematics from one trajectory before reproof. Package remains partial.
+
+## 2026-11-18 completed source-consistent CPU reproof
+
+The earlier JSON adapter mismatch above is resolved in synthetic diagnostic packets: each frame’s original participant and base graph ego kinematics now derive from the authored synthetic ego trajectory. Six selected cases and 18 fallbacks pass all 24 exact offline, positive/negative compatibility and saved-processing paths. The 18 diagnostic physical outcome packets identify `synthetic_fixture`. `saved-proofs.json` binds final execution manifest SHA-256 `72cb4bf739193d7c48735712fbcb36b153b19d985893003c4c42df445d88ee0d`, commands, receipt hashes and original-source preservation. Native motion, pixels and legal judgments remain for local review.
+
+## 2026-11-18 pristine saved reproof correction
+
+Earlier saved-processing receipts with `missing_evidence=true` are superseded. All 24 candidates were rematerialized from the final construction and untouched diagnostic fixture source, then processed into fresh saved output directories. `saved-proofs.json` now records `missing_evidence=false`, preserved original hashes and passed final video checks for all 24.

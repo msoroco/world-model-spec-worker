@@ -47,3 +47,7 @@ Result-only historical log reconciliation, 2026-11-16: 1 exact UTF-8 logs were S
 ## 2026-11-16 lossless proof-log curation
 
 Twenty-eight distinct fallback offline logs were consolidated into `fallback-offline-combined.log` (SHA-256 `b3644e4177b1b6620765fe8c5ca7e7fa839f29fe0b08342f69731956a86ceadc`), with full original bytes and per-file hashes identified in the transcript. Manifest/test references were rebound. The scoped strict worker check passed; this assignment remains ready.
+
+## 2026-11-18 CPU proof renewal
+
+The current 10-case, 40-candidate offline and positive/negative compatibility sweep completed with zero command failures. All 40 saved-only processing outputs reported `missing_evidence=false`; their processing hashes and exact local logs are recorded in `saved-proofs.json`. The 30 exact-case synthetic physical outcomes and lifecycle protocol were rerun and rebound to `physical-source-protocol.log`. The assignment-scoped `worker_check.py --complete --require-delivery-ready` gate exits 0. `result.json` is ready as CPU delivery preparation only; actual Native motion, footage, and physical/legal acceptance remain for local execution.

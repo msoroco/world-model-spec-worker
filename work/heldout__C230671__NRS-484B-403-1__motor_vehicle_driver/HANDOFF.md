@@ -85,3 +85,11 @@ The scoped `.venv-cpu/bin/python worker_check.py --assignment heldout__C230671__
 Twenty-two byte-identical offline test logs were consolidated with execution-manifest and result paths repointed to identical retained bytes. The assignment-scoped strict ready gate passed afterward; ready status is unchanged.
 
 2026-11-16 return-cap consolidation: 15 historical standalone logs with no current source/index references were retained byte-exact with per-file SHA-256 in `work/_shared/prune-history-bundle-all.json.preserved_source_files`; their obsolete test-log references were removed from `result.json`. Current source-backed proof files remain direct. The assignment scoped strict gate still exits 0.
+
+## 2026-11-18 current CPU adapter reproof
+
+Seven selected cases and 21 fallbacks were migrated to live `.adapter.json` graphs and bound frame `adapter_graph` pointers. All 28 exact offline, positive/negative compatibility, and saved-processing paths passed. `saved-proofs.json` records final execution manifest SHA-256 `5fe48d45a88d17735fa26e70df6123c7f529e1756fcd35d6792dc5f2c57b5263`, exact commands, receipt hashes and original-source preservation. The 21 diagnostic physical outcome packets now identify `synthetic_fixture`. Native motion, pixels, safe-turn facts and legal judgments remain for local review.
+
+## 2026-11-18 pristine saved reproof correction
+
+Earlier saved-processing receipts with `missing_evidence=true` are superseded. All 28 candidates were rematerialized from final constructions and untouched diagnostic fixture sources, then processed into fresh saved outputs. `saved-proofs.json` now records `missing_evidence=false`, preserved original hashes and passed final video checks for all 28.
