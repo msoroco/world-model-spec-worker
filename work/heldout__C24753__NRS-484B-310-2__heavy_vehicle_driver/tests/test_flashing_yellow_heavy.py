@@ -12,6 +12,42 @@ class Fake:
  def official_control_device(self,**x):self.calls.append(('official_device',x));return x
  def vehicle(self,**x):self.calls.append(('vehicle',x));return x
 class FlashHeavyTests(unittest.TestCase):
+ def test_no_crossing_saved_branch_requires_absence_and_west_context(self):
+  import json
+  with TemporaryDirectory() as tmp:
+   root=Path(tmp);branch='east_no_crossing'
+   cfg={'law_id':'NRS-484B-310-2','cell_id':'C24753','actor':'heavy_vehicle_driver',
+    'case_branch':branch,'selected_case_id':'heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver__'+branch,
+    'rate_hz':20,'frames':160,'duration_s':8,'camera_names':list(m.SOURCE_CAMERAS),
+    'target_speed_mps':3.0,'official_control_source':'identified-device-premise',
+    'heavy_blueprint_id':'vehicle.carlamotors.firetruck','crossing_blueprint_id':'vehicle.tesla.model3'}
+   (root/'config.json').write_text(json.dumps(cfg))
+   context={'official_control_source':'identified-device-premise','selected_direction':'east',
+    'opendrive_id':'road-1','heavy_blueprint_id':cfg['heavy_blueprint_id'],'light_actor_id':10}
+   (root/'signal_context.json').write_text(json.dumps(context))
+   sources={name:[] for name in ('signal_state.jsonl','participant_state.jsonl','video_frames.jsonl','trace.jsonl')}
+   for i in range(20):
+    frame=100+i;time_s=i*.05;on=m.lamp_on(time_s)
+    sources['signal_state.jsonl'].append({'frame':frame,'time_s':time_s,'light_actor_id':10,
+     'opendrive_id':'road-1','native_light_state':'Yellow' if on else 'Off','yellow_commanded':on})
+    sources['participant_state.jsonl'].append({'frame':frame,'time_s':time_s,
+     'ego':{'actor_id':20,'blueprint_id':cfg['heavy_blueprint_id'],'vehicle_class':'heavy_vehicle',
+            'center_xy':[float(i),0.0],'speed_mps':3.0},'crossing':None})
+    sources['video_frames.jsonl'].append({'video_frame':i,'carla_frame':frame,'time_s':time_s})
+    sources['trace.jsonl'].append({'frame':frame,'time_s':time_s})
+   for name,rows in sources.items():
+    (root/name).write_text(''.join(json.dumps(row)+'\n' for row in rows))
+   report=m.analyze_saved(root,write_channels=False)
+   self.assertFalse(report['measurements']['flashing_yellow_heavy']['value']['crossing_present'])
+   sources['participant_state.jsonl'][2]['crossing']={'actor_id':21,'center_xy':[0,0],'speed_mps':5.0}
+   (root/'participant_state.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in sources['participant_state.jsonl']))
+   with self.assertRaisesRegex(ValueError,'actor source missing'):
+    m.analyze_saved(root,write_channels=False)
+   sources['participant_state.jsonl'][2]['crossing']=None
+   (root/'participant_state.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in sources['participant_state.jsonl']))
+   context['selected_direction']='west';(root/'signal_context.json').write_text(json.dumps(context))
+   with self.assertRaisesRegex(ValueError,'governed context missing'):
+    m.analyze_saved(root,write_channels=False)
  def test_saved_heavy_finalizer_joins_sources_and_rejects_missing_or_changed(self):
   import json
   with TemporaryDirectory() as tmp:
@@ -76,6 +112,13 @@ class FlashHeavyTests(unittest.TestCase):
   with self.assertRaisesRegex(ValueError,'blueprint missing'):
    m.check_native_config(dict(cfg,heavy_blueprint_id=''))
   self.assertTrue(m.check_native_config(dict(cfg,spawn_z_offset_m=.35)))
+  for branch in ('east_faster_proxy','east_no_crossing','west_cautious_proxy'):
+   alternate=dict(cfg,case_branch=branch,
+     selected_case_id='heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver__'+branch,
+     target_speed_mps=m.CASES[branch].target_mps)
+   self.assertTrue(m.check_native_config(alternate))
+   with self.assertRaisesRegex(ValueError,'config mismatch'):
+    m.check_native_config(dict(alternate,target_speed_mps=3.5))
   with self.assertRaisesRegex(ValueError,'spawn height'):
    m.check_native_config(dict(cfg,spawn_z_offset_m=.6))
   class Actor:

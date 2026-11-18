@@ -549,12 +549,14 @@ def run_native_case(output, config, *, host='127.0.0.1', port=2000):
         pipeline=PipelineCapture(client,scene['ego'],output,case_id,
                                  required_observations=config.get('required_atoms',[]))
         ego_yaw=scene['selected']['waypoint'].transform.rotation.yaw
-        crossing_yaw=scene['crossing_route']['start'].rotation.yaw
+        crossing_yaw=(scene['crossing_route']['start'].rotation.yaw
+                      if scene['crossing_route'] else None)
         def drive(current,selected,index):
             steer_through_lane(world.get_map(),current['ego'],selected.target_mps,
                                carla,ego_yaw,speed_kp=config.get('speed_kp',.22))
-            steer_through_lane(world.get_map(),current['crossing'],5.0,
-                               carla,crossing_yaw,speed_kp=config.get('speed_kp',.22))
+            if current['crossing'] is not None:
+                steer_through_lane(world.get_map(),current['crossing'],5.0,
+                                   carla,crossing_yaw,speed_kp=config.get('speed_kp',.22))
         completed=capture_native_ticks(output,world,scene,CASES[branch],cameras,
                                        carla.TrafficLightState,drive,pipeline=pipeline)
     except BaseException as error:
@@ -585,7 +587,7 @@ def run_native_case(output, config, *, host='127.0.0.1', port=2000):
 
 def check_native_config(config):
     branch=config.get('case_branch')
-    if (branch!='east_cautious_proxy' or
+    if (branch not in CASES or
         config.get('selected_case_id')!='heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver__'+branch or
         (config.get('law_id'),config.get('cell_id'),config.get('actor')) !=
         ('NRS-484B-310-2','C24753','heavy_vehicle_driver') or
@@ -594,7 +596,7 @@ def check_native_config(config):
         set(config.get('camera_names',[]))!=set(SOURCE_CAMERAS) or
         len(config.get('camera_names',[]))!=4 or
         config.get('target_speed_mps')!=CASES[branch].target_mps):
-        raise ValueError('first exact C24753 construction/config mismatch')
+        raise ValueError('exact C24753 construction/config mismatch')
     if not config.get('official_control_source'):
         raise ValueError('official control source premise missing')
     for field in ('heavy_blueprint_id','crossing_blueprint_id'):
@@ -626,7 +628,7 @@ def analyze_saved(attempt, *, write_channels=True):
     check_native_config(config)
     context=json.loads(paths['signal_context.json'].read_text())
     if (not context.get('official_control_source') or
-        context.get('selected_direction')!='east' or
+        context.get('selected_direction')!=CASES[config['case_branch']].direction or
         not context.get('opendrive_id') or
         context.get('heavy_blueprint_id')!=config['heavy_blueprint_id']):
         raise ValueError('Original official control or heavy governed context missing')
@@ -658,16 +660,21 @@ def analyze_saved(attempt, *, write_channels=True):
             (native_state=='Yellow')!=light['yellow_commanded']):
             raise ValueError('Original heavy signal readback differs')
         ego=party.get('ego');crossing=party.get('crossing')
-        if (not isinstance(ego,dict) or not isinstance(crossing,dict) or
+        crossing_expected=CASES[config['case_branch']].crossing_vehicle
+        if (not isinstance(ego,dict) or
+            (crossing_expected and not isinstance(crossing,dict)) or
+            (not crossing_expected and crossing is not None) or
             ego.get('vehicle_class')!='heavy_vehicle' or
             ego.get('blueprint_id')!=config['heavy_blueprint_id'] or
             type(ego.get('actor_id')) is not int or
-            type(crossing.get('actor_id')) is not int):
+            (crossing_expected and type(crossing.get('actor_id')) is not int)):
             raise ValueError('Original heavy/crossing actor source missing')
-        if ego_id is None:ego_id=ego['actor_id'];crossing_id=crossing['actor_id']
-        if ego['actor_id']!=ego_id or crossing['actor_id']!=crossing_id:
+        if ego_id is None:
+            ego_id=ego['actor_id']
+            crossing_id=crossing['actor_id'] if crossing_expected else None
+        if ego['actor_id']!=ego_id or (crossing_expected and crossing['actor_id']!=crossing_id):
             raise ValueError('Original heavy/crossing actor identity changed')
-        for actor in (ego,crossing):
+        for actor in (ego,crossing) if crossing_expected else (ego,):
             xy=actor.get('center_xy');speed=actor.get('speed_mps')
             if (not isinstance(xy,list) or len(xy)!=2 or
                 any(type(value) not in (int,float) or not math.isfinite(value) for value in xy) or
@@ -677,11 +684,13 @@ def analyze_saved(attempt, *, write_channels=True):
                              'native_yellow_on':native_state=='Yellow',
                              'ego_speed_mps':ego['speed_mps'],
                              'ego_center_xy':ego['center_xy'],
-                             'crossing_center_xy':crossing['center_xy']})
+                             'crossing_center_xy':crossing['center_xy'] if crossing_expected else None})
     states={row['native_yellow_on'] for row in observations}
     if states!={True,False}:
         raise ValueError('Original intermittent Yellow/Off transition missing')
-    keys=('native_yellow_on','ego_speed_mps','ego_center_xy','crossing_center_xy')
+    keys=('native_yellow_on','ego_speed_mps','ego_center_xy')
+    if CASES[config['case_branch']].crossing_vehicle:
+        keys+=('crossing_center_xy',)
     if write_channels:
         for key in keys:
             target=root/(key+'.jsonl')
@@ -696,7 +705,7 @@ def analyze_saved(attempt, *, write_channels=True):
                          'native_transitions':sum(a['native_yellow_on']!=b['native_yellow_on']
                                                   for a,b in zip(observations,observations[1:])),
                          'ego_speed_samples_mps':[row['ego_speed_mps'] for row in observations],
-                         'crossing_present':True,
+                         'crossing_present':CASES[config['case_branch']].crossing_vehicle,
                          'lens_pixel_visibility':'unverified',
                          'official_device_status':'premise_unverified',
                          'legal_caution_judgment':'unresolved'}}},
