@@ -26,9 +26,9 @@ def audit(case_id, *, negative=False):
     require(sha(HERE / entry["construction"]) == expected,
             "Delivery construction differs from selected manifest")
     suffix = case_id.removeprefix(HERE.name + "__")
-    attempt = ROOT / ".runtime-work" / f"c10316-update041-{suffix}-primary-compat"
+    attempt = ROOT / ".runtime-work" / f"c10316-update042b-{suffix}-primary-compat"
     saved = json.loads((ROOT / ".runtime-work" /
-                        f"c10316-update041-{suffix}-primary-saved/v0001/processing.json").read_text())
+                        f"c10316-update042b-{suffix}-primary-saved/v0001/processing.json").read_text())
     compat = json.loads((HERE / entry["compatibility"]["receipt"]).read_text())
     physical = json.loads((HERE / entry["physical_preparation"]["receipt"]).read_text())
     require(compat["passed"] is True and compat["case_id"] == case_id and

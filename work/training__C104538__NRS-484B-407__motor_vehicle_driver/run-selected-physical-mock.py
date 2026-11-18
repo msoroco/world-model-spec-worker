@@ -71,7 +71,7 @@ def run(suffix, kind):
         'status': status, 'method': '480-frame source-joined body/trace reversal classifier on diagnostic fixture',
         'sources': list(names)}}, 'maneuver_completed': status == 'met',
         'realized_observables': measured if status == 'met' else {},
-        'provenance_kind': 'native', 'diagnostic_fixture': False,
+        'provenance_kind': 'synthetic_fixture', 'diagnostic_fixture': True,
         'mock_native_branch_only': True, 'mock_input_provenance': 'synthetic_native_sample',
         'original_production_audit_rejected': True,
         'source_sha256': {name:sha(source/name) for name in names}}

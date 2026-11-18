@@ -43,7 +43,7 @@ def run(manifest: Path, case: str, candidate: str, recipe: Path,
     if entry is None or entry["kind"] != "delivery":
         raise ValueError("Select a C104538 delivery case")
     suffix = case.rsplit("__", 1)[-1]
-    if recipe != HERE / f"update015-{suffix}-{candidate}-recipe.json":
+    if recipe != HERE / f"update043-{suffix}-{candidate}-recipe.json":
         raise ValueError("Candidate-specific recipe differs")
     if ROOT / ".runtime-work" not in output.parents or output.exists():
         raise ValueError("Output must be new under ignored .runtime-work")
@@ -62,7 +62,7 @@ def run(manifest: Path, case: str, candidate: str, recipe: Path,
         if context.get("case_id") != case or context.get("candidate_id") != candidate:
             raise ValueError("Candidate fixture Native context differs")
         receipt = _process_fixture(manifest, case, fixture, output,
-                                   library, validator, candidate)
+                                   library, validator, candidate, source)
         measurements = verify_report(contract, read(output / "analysis-report.json"), fixture)
         negative = Path(temp) / "negative"
         materialize_case(manifest, case, negative, fixture, candidate)

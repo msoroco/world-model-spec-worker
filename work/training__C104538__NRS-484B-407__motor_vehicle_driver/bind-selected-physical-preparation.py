@@ -22,7 +22,7 @@ def main():
     assert len(manifest['cases'])==3
     for entry in manifest['cases']:
         suffix=entry['case_id'].removeprefix(HERE.name+'__')
-        folder=HERE/'update025-selected-physical'/suffix
+        folder=HERE/'update043-selected-physical'/suffix
         fixtures=[];lifecycle=None
         for kind in ('complete_motion','incomplete_motion','missing_evidence','lifecycle'):
             out=folder/(kind+'.json');log=folder/(kind+'.log')
