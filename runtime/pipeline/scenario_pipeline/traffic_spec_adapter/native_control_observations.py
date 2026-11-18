@@ -13,6 +13,32 @@ from pathlib import Path
 ATOMS = {'dev.traffic_signal', 'st.lane_enters'}
 
 
+
+def complete_lane_assignment(actor):
+    """Resolve the documented CARLA TrafficLight lane-specific source contract.
+
+    The original producer records the unfiltered get_affected_lane_waypoints
+    response. A successful nonempty TrafficLight response is its complete lane
+    assignment; no negative statement about junction authority is required.
+    Group membership, stop waypoints and other device roles do not establish
+    that contract. An empty response also occurs for an unmatched OpenDRIVE
+    signal ID (CARLA 0.9.15 TrafficLight.cpp), so it is not verified absence.
+    Known partial observations remain in original evidence when scope is unknown.
+    """
+    lanes = actor.get('affected_lanes')
+    if lanes is None:
+        return None
+    if not isinstance(lanes, list) or any(
+            not isinstance(lane, (list, tuple)) or len(lane) != 3
+            or any(type(value) is not int for value in lane) for lane in lanes):
+        raise ValueError('Malformed original device affected-lane observation')
+    if 'affected_lanes' in actor.get('observation_errors', {}):
+        raise ValueError('Conflicting original device affected-lane observation')
+    if actor.get('blueprint') != 'traffic.traffic_light' or not lanes:
+        return None
+    return [tuple(lane) for lane in lanes]
+
+
 def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
@@ -100,8 +126,63 @@ def project(scene, atom, record):
     elif atom=='st.lane_enters':
         lanes = {str(r['id']):r for r in scene['structures'] if r['kind']=='lane'}
         expected = record['incoming_core_entries']
-        if not expected or any(k not in lanes or lanes[k].get('lane',{}).get('enters_intersection')!=v for k,v in expected.items()):
+        applicability=record.get('entry_applicability')
+        if applicability is not None:
+            if set(applicability)!=set(lanes) or any(lanes[k].get('lane',{}).get('enters_intersection')!=v for k,v in applicability.items()):
+                raise ValueError('Delivered lane entry applicability differs from native source scope')
+        if (not expected and applicability is None) or any(k not in lanes or lanes[k].get('lane',{}).get('enters_intersection')!=v for k,v in expected.items()):
             raise ValueError('Core incoming-lane topology differs from original native evidence')
     else:
         raise ValueError('Unsupported native control observation')
     return record
+
+
+def read_lane_sections(original,telemetry,lane_ids,regions,native_facts):
+    """Validate native section readbacks and derive entry applicability, not devices."""
+    original=Path(original);packet=native_facts.get('native_lane_topology')
+    if packet is None or packet.get('complete')is not True:return {}
+    if packet.get('schema')!='native-lane-section-readback-v1' or packet.get('api')!='Map.get_waypoint_xodr' or packet.get('errors') or packet.get('map_sha256')!=sha(original/'road.xodr'):
+        raise ValueError('Invalid source-bound native lane readback')
+    xml=ET.parse(original/'road.xodr').getroot();expected={};roads={}
+    for road in xml.findall('road'):
+        rid=int(road.get('id'));roads[rid]=road;sections=road.findall('./lanes/laneSection')
+        for index,section in enumerate(sections):
+            start=float(section.get('s'));end=float(sections[index+1].get('s'))if index+1<len(sections)else float(road.get('length'))
+            for lane in section.findall('./left/lane')+section.findall('./right/lane'):
+                if lane.get('type')=='driving':expected[(rid,index,int(lane.get('id')))]=(start,end,int(road.get('junction','-1')))
+    seen=set()
+    for record in packet.get('lanes',[]):
+        identity=record.get('identity',[])
+        if len(identity)!=3 or any(type(v)is not int for v in identity):raise ValueError('Invalid native lane identity')
+        key=tuple(identity)
+        if key not in expected or key in seen:raise ValueError('Duplicate or extraneous native lane readback')
+        seen.add(key);start,end,junction=expected[key];margin=min(1e-4,(end-start)/4)
+        stations=sorted({start+margin,(start+end)/2,end-margin});samples=record.get('samples',[])
+        if record.get('station_interval_m')!=[start,end] or [v.get('s_m')for v in samples]!=stations:raise ValueError('Incomplete native lane station coverage')
+        for sample in samples:
+            if sample.get('native_identity')!=identity or sample.get('is_junction')is not (junction>=0) or sample.get('junction_id')!=(junction if junction>=0 else None):raise ValueError('Native junction readback contradicts map')
+    if seen!=set(expected):raise ValueError('Native lane readback does not cover source driving sections')
+    incoming=set()
+    for junction in xml.findall('junction'):
+        for connection in junction.findall('connection'):
+            rid=int(connection.get('incomingRoad'))
+            if rid not in roads:raise ValueError('Missing source incoming road')
+            for link in connection.findall('laneLink'):
+                lid=int(link.get('from'));section=len(roads[rid].findall('./lanes/laneSection'))-1 if lid<0 else 0
+                key=(rid,section,lid)
+                if key in expected:incoming.add(key)
+    by_id={r['id']:r for r in regions};applicability={}
+    for key in expected:
+        ident=lane_ids.get(key)
+        if ident is None:return {}  # Unrepresented source lane; no completeness receipt.
+        value=by_id[ident].get('lane',{}).get('enters_intersection')
+        if key in incoming and value is None:return {}  # Scalar Core join remains unresolved.
+        if key not in incoming and value is not None:raise ValueError('Nonincoming source lane has a Core entry assertion')
+        applicability[str(ident)]=value
+    if set(applicability)!={str(r['id'])for r in regions if r['kind']=='lane'}:return {}
+    facts=original/'capture/native_map_facts.json'
+    common={'status':'observed_entry_topology','map_sha256':packet['map_sha256'],
+        'source':'native_lane_section_readback','source_sha256':sha(facts),
+        'incoming_core_entries':{k:v for k,v in applicability.items()if v is not None},
+        'entry_applicability':applicability,'scope':'every source driving-lane section; explicit incoming connection list'}
+    return {'st.lane_enters':[dict(common,frame=row['frame'])for row in telemetry]}

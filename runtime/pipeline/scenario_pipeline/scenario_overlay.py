@@ -16,11 +16,11 @@ def write_overlay(path,attempt,mapping,width,height,top=0,fps=20):
  scene=first_scene(attempt/'traffic_spec/trace.json');lane=[s for s in scene['structures'] if s['kind']=='lane'];cell=record['case_id'].split('-')[0]
  events=[]
  def add(a,b,text,layer=1):events.append('Dialogue: %d,%s,%s,Default,,0,0,0,,%s'%(layer,stamp(a),stamp(b),text))
- label=record['expected_label'] or ('not assigned (judgment sweep)' if record['judgment_sweep'] else 'missing evidence - diagnostic')
+ label=record['expected_label'] or 'outcome unavailable'
  title='Expected label: '+label+' | '+record['target_law_id']
- if record.get('inconclusive_reasons'):
-  names={'unresolved_judgment':'judgment standard unresolved','missing_observations':'required observations missing','uncertain_activation':'activation uncertain','unsupported_reference_check':'reference check unavailable'}
-  title+=' | '+', '.join(names.get(r,r) for r in record['inconclusive_reasons'])
+ if record.get('processing_reasons'):
+  names={'missing_observations':'required observations missing','uncertain_applicability':'applicability uncertain','unsupported_evaluation':'reference check unavailable','unresolved_source':'classification source unresolved'}
+  title+=' | '+', '.join(names.get(r,r) for r in record['processing_reasons'])
  if record.get('intention_matched') is False and not record['judgment_sweep']:title+=' | intended outcome not achieved'
  add(0,len(mapping)/fps,r'{\an7\pos(8,%d)\fs14\bord2}'%(84 if top>=145 else top+4)+title)
  context=record['scene_assumptions']

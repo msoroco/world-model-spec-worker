@@ -55,3 +55,41 @@ def apply(original,regions,polygons,lane_ids,devices):
         native_governs=device['governs'];device['governs']=[ident]
         mapping.append({'device_key':list(device_key),'governed_region':ident,'native_trigger_lane_region':native_governs,'native_lane':list(key),'station_interval_m':interval,'speed_mps':speed,'scope':'authored_synthetic_spatial_applicability','source_config':str(config_path),'source_map':str(Path(original)/'road.xodr'),'provenance':zone.get('provenance'),'method':'Recorded explicit authored bounds sampled on original native driving-lane geometry; original graph association retained in supplementary evidence. This is not a legal governance inference.'})
     return mapping
+
+
+def retained_authored_portion_fields(evidence,regions,highways):
+    config_path=evidence.path("config.json")
+    if config_path is None:return {}
+    config=json.loads(config_path.read_text())
+    if config.get("unsigned_context") or config.get("posting",{}).get("authority_status")!="authored_synthetic_fact":return {}
+    zone=config.get("zone",{})
+    if zone.get("end_sign") is not None or zone.get("end_boundary_kind")!="road_end" or not config["posting"].get("single_native_sign_road_end"):return {}
+    if not isinstance(zone.get("provenance"),str)or not zone["provenance"]:raise ValueError("Authored road-end portion lacks explicit provenance")
+    identity_path=evidence.path("actual_scene_identity.json");map_path=evidence.path("road.xodr");capture_path=evidence.path("capture/manifest.json")
+    if None in (identity_path,map_path,capture_path):raise ValueError("Authored road-end portion source identity unavailable")
+    identity=json.loads(identity_path.read_text());capture=json.loads(capture_path.read_text())
+    if config.get("case_id")!=capture.get("case_id")or identity.get("Native_map_sha256")!=evidence.used["road.xodr"]:raise ValueError("Authored road-end portion source binding conflict")
+    observed=identity.get("synthetic_context",{}).get("scene_assumptions",{}).get("governed_portion",{})
+    keys=("road_id","section_id","lane_id","station_interval_m")
+    if any(zone.get(k)!=observed.get(k)for k in keys):raise ValueError("Authored road-end portion differs from original scene declaration")
+    if type(identity.get("sign_actor_id")) is not int or identity.get("landmark_id")!=config.get("sign",{}).get("landmark_id"):raise ValueError("Authored road-end portion sign identity conflict")
+    road,section,lane=(zone[k]for k in keys[:3]);interval=zone["station_interval_m"]
+    if any(type(x)is not int for x in (road,section,lane)):raise ValueError("Authored portion native identity invalid")
+    boundary,polygon,end=lane_portion(map_path,road,section,lane,interval)
+    if interval[1]!=end:raise ValueError("Authored road-end portion does not end at source road end")
+    # Exact whole source-native polygon and explicit retained roadway role;
+    # no nearest, containment, lane-role cast, or governance inference.
+    expected=[[round(v,6)for v in p]for p in boundary]
+    matches=[r for r in regions if r.get("kind")=="roadway"and r.get("boundary")==expected]
+    if len(matches)>1:raise ValueError("Authored road-end portion retained identity ambiguous")
+    if not matches:return {}
+    if road not in highways:raise ValueError("Authored road-end portion has no verified public-way source")
+    from .roadways import roadway_intervals
+    native_road=ET.parse(map_path).getroot().find("./road[@id='%s']"%road)
+    intervals=roadway_intervals(native_road,native_road.findall('./planView/geometry'),*interval)
+    value={"ways":list(highways[road]),"_source_road_ids":[road],"_verified_structure_kinds":["roadway"]}
+    if intervals and intervals[0][0]==interval[0]and intervals[-1][1]==interval[1]and all(a[1]==b[0]for a,b in zip(intervals,intervals[1:])):
+        for key in ('curvature','grade'):
+            values={part[2][key]for part in intervals if key in part[2]}
+            if len(values)==1 and all(key in part[2]for part in intervals):value[key]=values.pop()
+    return {matches[0]["id"]:value}

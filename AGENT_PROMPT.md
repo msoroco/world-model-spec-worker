@@ -1,3 +1,11 @@
+# Resume full-train-delivery after the reviewed runtime cutover
+
+Continue exactly the 253 assigned packages in batch.json. Keep the submitted constructions, plans and source evidence. The cutover replaces the frozen runtime with the current JSON graph/capture and adapter code and demotes stale ready statuses. Old compatibility, physical, saved-processing and comparison receipts are historical diagnostics, not current proof. Rebind each active exact manifest to the new runtime and rerun affected proofs before marking ready. Do not copy old receipt hashes or claim Native observations from CPU fixtures. Generated diagnostic video equality is determined by decoded frames; real capture remains byte-hashed.
+
+Use `.runtime-work/` for generated assets. The launcher quarantines only the obsolete untracked runtime manifest. Do not write into `runtime/runs/` or `runtime/pipeline/runs/`. Work autonomously through all CPU-solvable packages and record precise remaining gaps. No CARLA, NERSC, SQLite or physical acceptance. The separate timer publishes checkpoints.
+
+Process all 253 assigned packages. Mark unfinished worker-owned CPU work partial, and reserve blocked for a genuinely external dependency. Keep real 30-second or longer capture contracts; use short synthetic media only to test CPU software paths, with numeric tests for long-duration timing.
+
 # Full-train CPU delivery continuation
 
 Read UPDATE.md, MIGRATION.md, START_HERE.md, FULL_BRANCH_CONTRACT.md, DELIVERY_CONTRACT.md, batch.json and all eight partitions. Continue the 253 existing full-train assignments. Preserve authored plans, case definitions, constructions, comparison audits, handoffs and prior failure diagnoses; do not restart from blank work. Prior runtime-dependent receipts remain historical and must be regenerated before readiness under the current runtime.

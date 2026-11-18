@@ -15,14 +15,71 @@ def core_fixture_library():
 
 
 class AdapterTests(unittest.TestCase):
+    def test_highway_arc_fold_uses_source_curvature_centre(self):
+        from shapely.geometry import Polygon,Point
+        xml='''<OpenDRIVE><road id="1" length="3.5707963267948966"><planView><geometry s="0" x="0" y="0" hdg="0" length="1"><line/></geometry><geometry s="1" x="1" y="0" hdg="0" length="1.5707963267948966"><arc curvature="1"/></geometry><geometry s="2.5707963267948966" x="2" y="1" hdg="1.5707963267948966" length="1"><line/></geometry></planView><lanes><laneSection s="0"><left><lane id="1" type="driving"><width sOffset="0" a="1.2" b="0" c="0" d="0"/></lane></left><right><lane id="-1" type="driving"><width sOffset="0" a="1.2" b="0" c="0" d="0"/></lane></right></laneSection></lanes></road></OpenDRIVE>'''
+        with tempfile.TemporaryDirectory()as temp:
+            path=Path(temp)/'road.xodr';path.write_text(xml);methods={}
+            regions,_,_=static_map(path,public_way_roads=[1],partial=True,source_regions=methods)
+            seam_xml=xml.replace('x="2" y="1"','x="2.0002" y="1"').replace('<width sOffset="0" a="1.2" b="0" c="0" d="0"/>','<width sOffset="0" a="1.2" b="0" c="0" d="0"/><width sOffset="1" a="1.20000000000001" b="0" c="0" d="0"/>')
+            path.write_text(seam_xml);seam_methods={}
+            seam_regions,_,_=static_map(path,public_way_roads=[1],partial=True,source_regions=seam_methods)
+            seam_highway=next(r for r in seam_regions if r['kind']=='highway')
+            self.assertTrue(Polygon(seam_highway['boundary']).is_valid)
+            seam_method=seam_methods[seam_highway['id']]['highway_geometry_method']
+            self.assertGreater(seam_method['max_source_seam_displacement_m'],.00019)
+            self.assertLessEqual(seam_method['max_source_seam_displacement_m']+seam_method['max_chord_deviation_m'],.001)
+            path.write_text(seam_xml.replace('x="2.0002"','x="2.002"'));large_methods={}
+            static_map(path,public_way_roads=[1],partial=True,source_regions=large_methods)
+            self.assertTrue(next(v for v in large_methods.values()if 'highway_geometry_method'in v)['highway_geometry_method']['unresolved_source_seams'])
+        highway=next(r for r in regions if r['kind']=='highway');shape=Polygon(highway['boundary'])
+        self.assertTrue(shape.is_valid);self.assertFalse(shape.interiors)
+        self.assertTrue(shape.covers(Point(1,1)))
+        self.assertFalse(shape.covers(Point(0,-2)))
+        method=methods[highway['id']]['highway_geometry_method']
+        self.assertGreater(method['fold_intervals'],0)
+        self.assertLessEqual(method['max_chord_deviation_m'],.001)
+
+    def test_retained_centre_line_repairs_source_bound_line_preserving_identity(self):
+        from traffic_spec_adapter.geometry import retained_centre_line_fields
+        xml='''<OpenDRIVE><road id="1" length="10"><planView><geometry s="0" x="0" y="0" hdg="0" length="10"><line/></geometry></planView><lanes><laneSection s="0"><left><lane id="1" type="driving"/></left><right><lane id="-1" type="driving"/></right></laneSection></lanes></road></OpenDRIVE>'''
+        report={'inputs':{'map':{'sha256':'verified-map'}},'native_centre_lines':[
+            {'region_id':42,'road_id':1,'section_id':0,'native_centerline':[[0,0],[10,0]]}]}
+        region={'id':42,'kind':'centre_line','boundary':[[0,0],[5,0],[10,0]],'ways':[7]}
+        with tempfile.TemporaryDirectory() as temp:
+            path=Path(temp)/'road.xodr';path.write_text(xml)
+            fields=retained_centre_line_fields(path,[region],report,'verified-map')
+            self.assertEqual(set(fields),{42})
+            self.assertEqual(region['ways'],[7])
+            from shapely.geometry import Polygon
+            self.assertAlmostEqual(Polygon(fields[42]['boundary']).area,.1)
+            self.assertEqual(fields[42]['_centre_line_source']['geometry_method']['total_width_m'],.01)
+            report['native_centre_lines'][0]['method']='Native opposing driving-lane divider; directed increasing source s; <=2m sampling'
+            region['boundary']=[[0,0],[5,0.0000001],[10,0]]
+            projected=retained_centre_line_fields(path,[region],report,'verified-map')
+            self.assertAlmostEqual(Polygon(projected[42]['boundary']).area,.1)
+            report['native_centre_lines'][0].pop('method')
+            measured=[[0,-.2],[10,-.2],[10,.2],[0,.2]]
+            region['boundary']=measured
+            self.assertEqual(retained_centre_line_fields(path,[region],report,'verified-map')[42]['boundary'],measured)
+            preserved=retained_centre_line_fields(path,[region],report,'verified-map')[42]['_centre_line_source']
+            self.assertEqual(preserved['method'],'retained_valid_area_outline')
+            self.assertNotIn('geometry_method',preserved)
+            with self.assertRaisesRegex(ValueError,'another map'):
+                retained_centre_line_fields(path,[region],report,'wrong-map')
+            region['boundary']=[[0,2],[10,2]]
+            with self.assertRaisesRegex(ValueError,'differs from its source'):
+                retained_centre_line_fields(path,[region],report,'verified-map')
+
     def test_native_centre_line_retains_offset_and_omits_one_way_road(self):
         xml='''<OpenDRIVE><road id="1" length="10"><planView><geometry s="0" x="0" y="0" hdg="0" length="10"><line/></geometry></planView><lanes><laneOffset s="0" a="2" b="0" c="0" d="0"/><laneSection s="0"><left><lane id="1" type="driving"/></left><center><lane id="0"><roadMark type="solid" color="yellow" width="0.12"/></lane></center><right><lane id="-1" type="driving"/></right></laneSection></lanes></road><road id="2" length="10"><planView><geometry s="0" x="0" y="20" hdg="0" length="10"><line/></geometry></planView><lanes><laneSection s="0"><right><lane id="-1" type="driving"/></right></laneSection></lanes></road></OpenDRIVE>'''
         with tempfile.TemporaryDirectory() as temp:
             path=Path(temp)/'road.xodr';path.write_text(xml);lines=native_centre_lines(path)
         self.assertEqual(len(lines),1)
-        self.assertEqual(lines[0]['region']['boundary'][0],[0.,2.])
-        self.assertEqual(lines[0]['region']['boundary'][-1],[10.,2.])
-        self.assertEqual(lines[0]['shape'].area,0.)
+        self.assertEqual(lines[0]['source']['native_centerline'][0],[0.,2.])
+        self.assertEqual(lines[0]['source']['native_centerline'][-1],[10.,2.])
+        self.assertAlmostEqual(lines[0]['shape'].area,.1)
+        self.assertEqual(lines[0]['source']['geometry_method']['total_width_m'],.01)
         self.assertEqual(lines[0]['source']['centre_road_marks'][0]['color'],'yellow')
 
     def test_native_stop_line_does_not_gain_an_invented_width(self):
@@ -38,12 +95,60 @@ class AdapterTests(unittest.TestCase):
         self.assertEqual(len(line['source']['native_centerline']),2)
         self.assertIn('thickness unobserved',line['source']['representation'])
 
+    def test_verified_native_painted_line_uses_35cm_in_both_projection_paths(self):
+        from traffic_spec_adapter.geometry import entrance_geometry_fields
+        xml='<OpenDRIVE><road id="1"><planView><geometry s="0" x="0" y="0" hdg="0" length="20"><line/></geometry></planView><objects><object id="line" name="StopLine" s="5" t="-2" hdg="1.5707963267948966" length="4" width="0"/></objects></road></OpenDRIVE>'
+        proof=[{'road_id':1,'object_id':'line','paint_verified':True,
+                'reference_verified':True,'basis':'Verified recorded paint and exact native object identity',
+                'evidence':{'review.json':'a'*64}}]
+        with tempfile.TemporaryDirectory() as temp:
+            path=Path(temp)/'road.xodr';path.write_text(xml)
+            self.assertNotIn('boundary',painted_map_objects(path)[0]['region'])
+            observed=painted_map_objects(path,proof)[0]
+            self.assertAlmostEqual(observed['shape'].area,1.4)
+            self.assertEqual(observed['shape'].bounds,(4.825,-4.,5.175,0.))
+            self.assertEqual(observed['source']['strip_method']['caps'],'flat')
+            retained={'id':3,'kind':'stop_line','position':[5.,-2.],
+                      'boundary':[[5.,-4.],[5.,0.]]}
+            patch=entrance_geometry_fields(path,[retained],proof)[3]
+            self.assertEqual(patch['boundary'],observed['region']['boundary'])
+            self.assertNotIn('_unobserved_paint_boundary',patch)
+            retained['boundary']=patch['boundary']
+            repeated=entrance_geometry_fields(path,[retained],proof)[3]
+            self.assertNotIn('boundary',repeated)
+            self.assertNotIn('_unobserved_paint_boundary',repeated)
+            # An independently observed 0.3 m outline takes precedence.
+            retained['boundary']=[[4.85,-4.],[5.15,-4.],[5.15,0.],[4.85,0.]]
+            self.assertNotIn('boundary',entrance_geometry_fields(path,[retained],proof)[3])
+            with self.assertRaisesRegex(ValueError,'missing from source map'):
+                painted_map_objects(path,[dict(proof[0],object_id='different')])
+
     def test_positive_native_paint_dimensions_remain_a_polygon(self):
         xml='<OpenDRIVE><road id="1"><planView><geometry s="0" x="0" y="0" hdg="0" length="20"><line/></geometry></planView><objects><object id="line" name="StopLine" s="5" t="-2" length="4" width="0.3"/></objects></road></OpenDRIVE>'
         with tempfile.TemporaryDirectory() as temp:
             path=Path(temp)/'road.xodr';path.write_text(xml);line=painted_map_objects(path)[0]
         self.assertEqual(len(line['region']['boundary']),4)
         self.assertAlmostEqual(line['shape'].area,1.2)
+
+    def test_explicit_native_outline_survives_zero_width_attribute(self):
+        xml='''<OpenDRIVE><road id="1"><planView><geometry s="0" x="0" y="0" hdg="0" length="20"><line/></geometry></planView><objects><object id="line" name="StopLine" s="5" t="-2" width="0"><outline><cornerLocal u="-2" v="-0.2"/><cornerLocal u="2" v="-0.2"/><cornerLocal u="2" v="0.2"/><cornerLocal u="-2" v="0.2"/></outline></object></objects></road></OpenDRIVE>'''
+        with tempfile.TemporaryDirectory() as temp:
+            path=Path(temp)/'road.xodr';path.write_text(xml)
+            line=painted_map_objects(path)[0]
+            self.assertEqual(line['source']['representation'],'polygon')
+            self.assertAlmostEqual(line['shape'].area,1.6)
+            self.assertEqual(len(line['region']['boundary']),4)
+            path.write_text(xml.replace('<cornerLocal u="2" v="0.2"/><cornerLocal u="-2" v="0.2"/>',''))
+            reference=painted_map_objects(path)[0]
+            self.assertEqual(reference['shape'].geom_type,'LineString')
+            self.assertNotIn('boundary',reference['region'])
+            sampled=xml.replace('<cornerLocal u="2" v="-0.2"/>','<cornerLocal u="0" v="-0.199999999999"/><cornerLocal u="2" v="-0.2"/>').replace('<cornerLocal u="2" v="0.2"/><cornerLocal u="-2" v="0.2"/>','')
+            path.write_text(sampled)
+            reference=painted_map_objects(path)[0]
+            self.assertEqual(reference['shape'].geom_type,'LineString')
+            self.assertEqual(len(reference['source']['native_centerline']),3)
+            path.write_text(xml.replace('u="2" v="-0.2"','u="2" v="0.2"').replace('u="2" v="0.2"/><cornerLocal u="-2"','u="2" v="-0.2"/><cornerLocal u="-2"'))
+            with self.assertRaises(ValueError):painted_map_objects(path)
 
     def test_participant_motion_requires_original_live_acquisition(self):
         attrs={'carla_speed':5.,'carla_vel_x':3.,'carla_vel_y':4.,'carla_vel_z':0.}
@@ -218,12 +323,27 @@ class AdapterTests(unittest.TestCase):
         lane['ways']=[88]
         lane.pop('unobserved_kinds',None)
         for piece,_ in segments[ident]:piece['unobserved_kinds']=['crosswalk']
+        # Independently established junction and other target kinds survive the
+        # lane split; an approach never implicitly adds the destination junction.
+        other_kinds=['intersection','roadway','one_way_roadway','shoulder',
+                     'bicycle_lane_or_path','turn_lane','reserved_lane','centre_turn_lane']
+        other_ids=list(range(99,99+len(other_kinds)))
+        scene['structures'].extend({'id':i,'kind':kind}for i,kind in zip(other_ids,other_kinds))
+        scene['devices'][0]['governs'].extend(other_ids)
         first=copy.deepcopy(scene);project_lane_segments(scene,segments)
         projected=[r for r in scene['structures'] if r['id'] in {p['id'] for p in pieces}]
         self.assertTrue(all(r.get('ways')==[88] and 'unobserved_kinds' not in r for r in projected))
-        self.assertEqual(scene['devices'][0]['governs'],[p['id'] for p in pieces])
-        self.assertEqual(scene['occupies'],[[7,pieces[0]['id']]])
-        self.assertEqual(scene['users'],first['users']);self.assertEqual(scene['occupancy_observed'],[7])
+        self.assertEqual(scene['devices'][0]['governs'],[p['id'] for p in pieces]+other_ids)
+        self.assertEqual(scene['occupies'],[])
+        self.assertEqual(scene['users'],first['users']);self.assertEqual(scene['occupancy_observed'],[])
+        # The shared final pass, using exact source footprint, restores supported
+        # partial pairs but cannot certify the other unresolved structures.
+        from traffic_spec_adapter.occupancy import recompute
+        recompute(scene,{7:Polygon([[.6,-2.4],[1.4,-2.4],[1.4,-1.6],[.6,-1.6]])},source_ids={r['id'] for r in scene['structures']})
+        # Full final comparison also includes the overlapping native roadway2;
+        # the retired partition-only computation omitted that supported pair.
+        self.assertEqual(scene['occupies'],[[7,pieces[0]['id']],[7,2]])
+        self.assertEqual(scene['occupancy_observed'],[])
 
     def test_lane_partition_never_guesses_a_scoped_intention_target(self):
         from traffic_spec_adapter.geometry import lane_segments
@@ -260,17 +380,240 @@ class AdapterTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'does not meet'):
             project_lane_segments(scene(),segments,compile_lane_segments(segments,fields))
 
+    def test_retained_sign_governance_cannot_join_by_position(self):
+        from traffic_spec_adapter.adapter import repair_scene
+        for kind in ('stop_sign', 'yield_sign', 'speed_limit_sign', 'regulatory_sign'):
+            with self.subTest(kind=kind):
+                scene = {'structures': [{'id': 5, 'kind': 'lane'}], 'users': [],
+                         'devices': [{'id': 10, 'kind': kind, 'position': [1, 2]}]}
+                packet = {'governance': {(1, 2): [(1, 0, -1)]}}
+                repair_scene(scene, set(), packet, {}, {}, {(1, 0, -1): 5})
+                self.assertNotIn('governs', scene['devices'][0])
+                scene['devices'][0]['governs'] = [5]
+                repair_scene(scene, set(), packet, {}, {}, {(1, 0, -1): 5})
+                self.assertEqual(scene['devices'][0]['governs'], [5])
+
+    def test_native_identity_match_ignores_exact_duplicate_vertices_without_mutation(self):
+        import copy, warnings
+        from traffic_spec_adapter.geometry import match_regions
+        native = [{'id': 1, 'kind': 'lane', 'boundary': [[0,0],[2,0],[2,1],[0,1]]}]
+        retained = [{'id': 7, 'kind': 'lane', 'boundary':
+                     [[0,0],[2,0],[2,0],[2,1],[0,1],[0,1]]}]
+        original = copy.deepcopy(retained)
+        with warnings.catch_warnings():
+            warnings.simplefilter('error', RuntimeWarning)
+            self.assertEqual(match_regions(native, retained), {1:7})
+        self.assertEqual(retained, original)
+        retained.append(dict(retained[0], id=8))
+        self.assertEqual(match_regions(native, retained), {})
+
+    def test_scenario_geometry_checks_review_bytes_before_projection(self):
+        import hashlib
+        from traffic_spec_adapter.scenario_geometry import apply
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            review = root/'review.json'
+            review.write_text('{"face_confirmed":true}')
+            proof = {'review': review.name, 'sha256': hashlib.sha256(review.read_bytes()).hexdigest()}
+            (root/'scenario_geometry.json').write_text(json.dumps({
+                'source': 'original construction', 'physical_verification': proof}))
+            result = apply(root, [], {}, {})
+            self.assertEqual(result['physical_verification_review'], proof)
+            review.write_text('{"face_confirmed":false}')
+            with self.assertRaisesRegex(ValueError, 'hash mismatch'):
+                apply(root, [], {}, {})
+            review.unlink()
+            with self.assertRaisesRegex(ValueError, 'missing'):
+                apply(root, [], {}, {})
+
+    def test_scenario_geometry_review_cannot_escape_original_evidence(self):
+        from traffic_spec_adapter.scenario_geometry import verification_review
+        with tempfile.TemporaryDirectory() as tmp:
+            for name in ('../review.json', '/tmp/review.json'):
+                with self.assertRaisesRegex(ValueError, 'relative review'):
+                    verification_review(Path(tmp), {'review': name, 'sha256': '0'*64})
+            with self.assertRaisesRegex(ValueError, 'relative review'):
+                verification_review(Path(tmp), {'review': 'review.json'})
+
+    def test_saved_geometry_review_requires_closed_source_and_matches_fresh_check(self):
+        import hashlib
+        from traffic_spec_adapter.scenario_geometry import verification_review, retained_review
+        from traffic_spec_adapter.inventory_observations import Evidence
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            original = root/'evidence'
+            original.mkdir()
+            review = original/'review.json'
+            review.write_text('{"face_confirmed":true}')
+            proof = {'review': review.name, 'sha256': hashlib.sha256(review.read_bytes()).hexdigest()}
+            declaration = original/'scenario_geometry.json'
+            declaration.write_text(json.dumps({'source': 'original', 'physical_verification': proof}))
+            hashes = {'evidence/'+p.name: hashlib.sha256(p.read_bytes()).hexdigest()
+                      for p in (review, declaration)}
+            inventory = root/'evidence-checksums.json'
+            inventory.write_text(json.dumps(hashes))
+            self.assertEqual(retained_review(Evidence(root)), verification_review(original, proof))
+            hashes.pop('evidence/review.json')
+            inventory.write_text(json.dumps(hashes))
+            with self.assertRaisesRegex(ValueError, 'not bound'):
+                retained_review(Evidence(root))
+
+    def test_geometry_review_rejects_changed_declared_source(self):
+        import hashlib
+        from traffic_spec_adapter.scenario_geometry import verification_review
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = root/'scene.py'
+            source.write_text('original construction')
+            review = root/'review.json'
+            review.write_text(json.dumps({'sources': {
+                source.name: hashlib.sha256(source.read_bytes()).hexdigest()}}))
+            proof = {'review': review.name, 'sha256': hashlib.sha256(review.read_bytes()).hexdigest()}
+            self.assertEqual(verification_review(root, proof), proof)
+            source.write_text('altered construction')
+            with self.assertRaisesRegex(ValueError, 'hash mismatch: scene.py'):
+                verification_review(root, proof)
+
+    def test_verified_zero_device_inventory_has_fresh_saved_parity(self):
+        from traffic_spec_adapter.inventory_observations import STATIC_DEVICE_KINDS, static_inventory_observations
+        from traffic_spec_adapter.atom_contract import required_coverage, gaps
+        kinds = {kind: {'count': 0, 'basis': 'Verified complete original physical inventory'}
+                 for kind in STATIC_DEVICE_KINDS}
+        receipt = {'map_sha256': 'a'*64, 'kinds': kinds}
+        atoms = {'dev.'+kind for kind in kinds} | {'dev.inoperative'}
+        scene = {'devices': [], 'structures': [], 'users': []}
+        records = static_inventory_observations(scene, receipt, 9, atoms)
+        capability = {'atoms': {atom: 'exact' for atom in atoms}}
+        fresh = required_coverage(atoms, capability, [scene],
+                                  inventory_observations={k:[v] for k,v in records.items()})
+        self.assertTrue(fresh['passed'])
+        self.assertEqual(fresh['atoms']['dev.inoperative']['observation_status_counts'],
+                         {'verified_absent': 1})
+        limits = {}
+        self.assertEqual(gaps(scene, atoms, capability=capability,
+                              static_inventory=receipt, limitations=limits), [])
+        self.assertEqual(limits, {})
+
+    def test_empty_device_list_without_inventory_stays_unknown(self):
+        from traffic_spec_adapter.atom_contract import required_coverage
+        atoms = {'dev.regulatory_sign','dev.speed_limit_sign','dev.yield_sign','dev.lane_control_signal'}
+        result = required_coverage(atoms, {'atoms': {a:'exact' for a in atoms}},
+                                   [{'devices': [], 'structures': [], 'users': []}])
+        self.assertEqual(set(result['missing']), atoms)
+
+    def test_present_regulatory_device_inventory_does_not_supply_conditions(self):
+        from traffic_spec_adapter.inventory_observations import static_inventory_observations
+        from traffic_spec_adapter.atom_contract import required_coverage
+        scene = {'devices': [{'id':1,'kind':'regulatory_sign','code':'one_way'}], 'structures': []}
+        receipt = {'map_sha256':'a'*64, 'kinds': {'regulatory_sign': {
+            'count':1, 'basis':'Complete observed physical sign inventory'}}}
+        atoms = {'dev.regulatory_sign'}
+        record = static_inventory_observations(scene, receipt, 9, atoms)
+        kwargs = {'inventory_observations':{k:[v] for k,v in record.items()}}
+        capability = {'atoms':{'dev.regulatory_sign':'exact'}}
+        self.assertFalse(required_coverage(atoms,capability,[scene],**kwargs)['passed'])
+        self.assertNotIn('conditions',scene['devices'][0])
+        scene['devices'][0]['conditions'] = {}
+        self.assertTrue(required_coverage(atoms,capability,[scene],**kwargs)['passed'])
+
+    def test_zero_inventory_rejects_every_present_device_kind(self):
+        from traffic_spec_adapter.inventory_observations import STATIC_DEVICE_KINDS, static_inventory_observations
+        for kind in STATIC_DEVICE_KINDS:
+            with self.subTest(kind=kind):
+                receipt = {'map_sha256':'a'*64,'kinds':{kind:{'count':0,'basis':'Complete source inventory'}}}
+                with self.assertRaisesRegex(ValueError,'contradicts'):
+                    static_inventory_observations({'devices':[{'id':1,'kind':kind}], 'structures':[]},
+                                                  receipt,9,{'dev.'+kind})
+
+    def test_device_inventory_requires_hashed_non_map_acquisition_source(self):
+        import hashlib
+        from traffic_spec_adapter.inventory_observations import Evidence, retained_static_inventory
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);original=root/'evidence';original.mkdir()
+            road=original/'road.xodr';road.write_text('<OpenDRIVE/>')
+            digest=hashlib.sha256(road.read_bytes()).hexdigest()
+            receipt={'schema':'retained-static-inventory-v1','scope':'entire_recorded_map',
+                     'constant_during_recording':True,'evidence':{'road.xodr':digest},
+                     'map_sha256':digest,'kinds':{'yield_sign':{'count':0,'basis':'Physical source inventory'}}}
+            hashes={'evidence/road.xodr':digest}
+            (root/'evidence-checksums.json').write_text(json.dumps(hashes))
+            with self.assertRaisesRegex(ValueError,'beyond the map'):
+                retained_static_inventory(Evidence(root),receipt)
+            physical=original/'physical-inventory.json'
+            physical.write_text('{"devices":[],"complete":true,"scope":"entire_recorded_map"}')
+            source_hash=hashlib.sha256(physical.read_bytes()).hexdigest()
+            hashes['evidence/physical-inventory.json']=source_hash
+            receipt['evidence'][physical.name]=source_hash
+            (root/'evidence-checksums.json').write_text(json.dumps(hashes))
+            self.assertEqual(retained_static_inventory(Evidence(root),receipt),receipt)
+
+    def test_painted_stop_line_inventory_requires_bound_physical_reference_proof(self):
+        from traffic_spec_adapter.inventory_observations import Evidence,retained_static_inventory
+        from traffic_spec_adapter.adapter import sha
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);original=root/'evidence';original.mkdir()
+            (original/'road.xodr').write_text('<OpenDRIVE/>')
+            (original/'paint-review.json').write_text('{"native_object_id":"line","paint_confirmed":true,"reference_confirmed":true}')
+            sources={name:sha(original/name)for name in ('road.xodr','paint-review.json')}
+            (root/'evidence-checksums.json').write_text(json.dumps({'evidence/'+n:h for n,h in sources.items()}))
+            proof={'road_id':1,'object_id':'line','paint_verified':True,'reference_verified':True,
+                   'basis':'Source-bound physical paint and native reference review',
+                   'evidence':{'paint-review.json':sources['paint-review.json']}}
+            receipt={'schema':'retained-static-inventory-v1','scope':'entire_recorded_map',
+                     'constant_during_recording':True,'map_sha256':sources['road.xodr'],'evidence':sources,
+                     'kinds':{'stop_line':{'count':1,'basis':'Complete source construction'}},
+                     'painted_stop_line_bindings':[proof]}
+            self.assertEqual(retained_static_inventory(Evidence(root),receipt),receipt)
+            for patch in ({'paint_verified':False},{'reference_verified':False},
+                          {'evidence':{'road.xodr':sources['road.xodr']}},
+                          {'evidence':{'paint-review.json':'0'*64}}):
+                receipt['painted_stop_line_bindings']=[dict(proof,**patch)]
+                with self.assertRaisesRegex(ValueError,'Painted stop-line estimate'):
+                    retained_static_inventory(Evidence(root),receipt)
+            receipt['painted_stop_line_bindings']=[proof,proof]
+            with self.assertRaisesRegex(ValueError,'unique native identity'):
+                retained_static_inventory(Evidence(root),receipt)
+
+    def test_verified_native_signal_absence_also_closes_operability_applicability(self):
+        from traffic_spec_adapter.atom_contract import required_coverage
+        capability={'atoms':{'dev.inoperative':'exact'}}
+        inventory={'dev.traffic_signal':[{'status':'verified_absent'}]}
+        self.assertTrue(required_coverage({'dev.inoperative'},capability,[{'devices':[]}],
+                                          inventory_observations=inventory)['passed'])
+        with self.assertRaisesRegex(ValueError,'contradicts'):
+            required_coverage({'dev.inoperative'},capability,
+                              [{'devices':[{'id':1,'kind':'traffic_signal'}]}],
+                              inventory_observations=inventory)
+
+    def test_way_membership_has_same_fresh_saved_observation_policy(self):
+        from traffic_spec_adapter.atom_contract import required_coverage, gaps
+        capability={'atoms':{'st.on_way':'exact'}}
+        scene={'structures':[{'id':1,'kind':'highway'},
+                             {'id':2,'kind':'lane','ways':[1]},
+                             {'id':3,'kind':'one_way_roadway','ways':[1]}]}
+        self.assertTrue(required_coverage({'st.on_way'},capability,[scene])['passed'])
+        self.assertEqual(gaps(scene,{'st.on_way'},capability=capability),[])
+        for kind in ('turn_lane','reserved_lane','centre_turn_lane','shoulder','bicycle_lane_or_path','intersection'):
+            with self.subTest(kind=kind):
+                region={'id':4,'kind':kind};scene['structures'].append(region)
+                self.assertFalse(required_coverage({'st.on_way'},capability,[scene])['passed'])
+                self.assertEqual(gaps(scene,{'st.on_way'},capability=capability),['st.on_way'])
+                region['ways']=[]
+                self.assertTrue(required_coverage({'st.on_way'},capability,[scene])['passed'])
+                self.assertEqual(gaps(scene,{'st.on_way'},capability=capability),[])
+                scene['structures'].pop()
+
     def test_native_speed_actor_value_and_governance(self):
         import networkx as nx
         graph=nx.MultiDiGraph()
         graph.add_node('speed',sem_class='traffic.speed_limit.30',carla_id=10,
-                       landmark_value=30,landmark_unit='km/h')
+                       landmark_value=30,landmark_unit='km/h',observed_governs=[[1,0,-1]])
         graph.add_node('lane',waypoint_road_id=1,waypoint_section_id=0,waypoint_lane_id=-1)
         graph.add_edge('speed','lane',dist_relationship='controlsTrafficOf')
         key,device=device_record('speed',graph.nodes['speed'],graph,{(1,0,-1):5})
         self.assertEqual(key,('actor','10'))
         self.assertAlmostEqual(device['speed_value'],30/3.6)
-        self.assertEqual(device['governs'],[5])
+        self.assertNotIn('governs',device)  # No documented complete speed-sign lane API.
 
     def test_atom_inventory_does_not_include_primitives(self):
         with tempfile.TemporaryDirectory() as d:
@@ -314,6 +657,11 @@ class AdapterTests(unittest.TestCase):
         self.assertNotIn('governs',d)
         g.edges['signal','lane']['dist_relationship']='controlsTrafficOf'
         _,d=device_record('signal',g.nodes['signal'],g,{(1,0,-1):7})
+        self.assertNotIn('governs',d)
+        g.nodes['signal']['observed_governs']=[[1,0,-1]]
+        g.nodes['signal']['original_device_observation']={'actor_id':99,
+            'blueprint':'traffic.traffic_light','affected_lanes':[[1,0,-1]]}
+        _,d=device_record('signal',g.nodes['signal'],g,{(1,0,-1):7})
         self.assertEqual(d['governs'],[7]);self.assertEqual(d['indications'],['circular_red'])
         self.assertEqual(d['position'],[1,-2])
 
@@ -324,18 +672,28 @@ class AdapterTests(unittest.TestCase):
         self.assertNotIn('governs',value)
         merge_device_governance(value,{'governs':[]})
         self.assertEqual(value['governs'],[])
-        merge_device_governance(value,{'governs':[4,2]})
+        with self.assertRaisesRegex(ValueError, 'Conflicting complete'):
+            merge_device_governance(value,{'governs':[4,2]})
+        self.assertEqual(value['governs'],[])
+        value={'governs':[4,2]}
         merge_device_governance(value,{})
-        merge_device_governance(value,{'governs':[2,3]})
-        self.assertEqual(value['governs'],[2,3,4])
+        merge_device_governance(value,{'governs':[2,4]})
+        self.assertEqual(value['governs'],[2,4])
+        with self.assertRaisesRegex(ValueError, 'Conflicting complete'):
+            merge_device_governance(value,{'governs':[2,3]})
+        self.assertEqual(value['governs'],[2,4])
 
-    def test_observed_empty_governance_is_preserved(self):
+    def test_unverified_empty_native_governance_is_unknown(self):
         import networkx as nx
         graph=nx.DiGraph()
         graph.add_node('signal',sem_class='traffic.traffic_light',carla_id=99,
                        light_state='Red',observed_governs=[])
         _,device=device_record('signal',graph.nodes['signal'],graph,{})
-        self.assertEqual(device['governs'],[])
+        self.assertNotIn('governs',device)
+        graph.nodes['signal']['original_device_observation']={'actor_id':99,
+            'blueprint':'traffic.traffic_light','affected_lanes':[]}
+        _,device=device_record('signal',graph.nodes['signal'],graph,{})
+        self.assertNotIn('governs',device)
         del graph.nodes['signal']['observed_governs']
         _,device=device_record('signal',graph.nodes['signal'],graph,{})
         self.assertNotIn('governs',device)
@@ -359,7 +717,7 @@ class ManifestAvailabilityTests(unittest.TestCase):
         atoms=adapter.manifest(library)['atoms']
         self.assertNotIn('sig.hand_signal',atoms)
         self.assertEqual(set(atoms),set(adapter.atom_ids(library))-{'sig.hand_signal'})
-        self.assertEqual(atoms['st.sight_distance'],'estimate:incoming_virtual_observer_to_subject_body')
+        self.assertEqual(atoms['st.sight_distance'],'estimate:vehicle_reference_geometry')
         self.assertEqual(atoms['st.entrance_of'],'estimate:recorded_control_and_map_topology_join')
         with patch.object(adapter,'atom_ids',return_value=adapter.atom_ids(library)+['st.future_atom']):
             with self.assertRaisesRegex(ValueError,'lacks an explicit acquisition decision'):
@@ -428,7 +786,7 @@ class OfflineRepairTests(unittest.TestCase):
     def test_inventory_uncertainty_preserves_positive_objects(self):
         from traffic_spec_adapter.adapter import preserve_inventory_unknown
         scene={'structures':[{'id':1,'kind':'highway'},{'id':2,'kind':'roadway'}]}
-        preserve_inventory_unknown(scene,['highway'])
+        preserve_inventory_unknown(scene,['highway'],verified={1:['highway']})
         self.assertNotIn('unobserved_kinds',scene['structures'][0])
         self.assertIn('highway',scene['structures'][1]['unobserved_kinds'])
 
@@ -576,3 +934,199 @@ class OperabilityProjectionTests(unittest.TestCase):
         project_operability(devices)
         self.assertIs(devices[0]['inoperative'],False)
         self.assertNotIn('inoperative',devices[1]);self.assertNotIn('inoperative',devices[2])
+
+class OriginalMotionConventionTests(unittest.TestCase):
+    def test_planar_speed_does_not_hide_raw_vertical_velocity(self):
+        from traffic_spec_adapter.adapter import measured_kinematics, live_kinematics
+        raw={'velocity_mps':[3.,4.,12.]}
+        self.assertEqual(measured_kinematics(raw), {'velocity':[3.,-4.], 'speed':5.})
+        self.assertEqual(raw['velocity_mps'],[3.,4.,12.])
+        self.assertEqual(live_kinematics({'carla_vel_x':3.,'carla_vel_y':4.,
+            'carla_vel_z':12.,'carla_speed':13.}, 'original_live_run'), measured_kinematics(raw))
+        self.assertEqual(measured_kinematics({'speed_mps':13.}), {})
+
+    def test_horizontal_acceleration_and_explicit_zero(self):
+        from traffic_spec_adapter.adapter import measured_kinematics
+        from traffic_spec_adapter.acceleration import METHOD
+        raw={'acceleration_mps2':[1.,2.,3.], 'forward_vector':[.6,0.,.8],
+             'accel_longitudinal_mps2':3., 'velocity_mps':[-5.,0.,0.]}
+        self.assertAlmostEqual(measured_kinematics(raw)['accel_longitudinal'],1.)
+        self.assertEqual(measured_kinematics({'velocity_mps':[0,0,0],
+            'accel_longitudinal_mps2':0, 'acceleration_method':METHOD})['accel_longitudinal'],0)
+        self.assertEqual(measured_kinematics(dict(raw,forward_vector=[2,0,0]))['accel_longitudinal'],1.)
+        for patch in [{'forward_vector':[0,0,0]},
+                      {'accel_longitudinal_mps2':-3,'acceleration_method':METHOD},
+                      {'velocity_mps':[1,float('nan'),0]}]:
+            with self.subTest(patch=patch):
+                with self.assertRaises(ValueError):measured_kinematics(dict(raw,**patch))
+
+    def test_saved_acceleration_and_speed_share_the_original_projection(self):
+        from traffic_spec_adapter.adapter import measured_kinematics,index_motion,audit_motion
+        raw={'actor_id':7,'velocity_mps':[3,4,12], 'acceleration_mps2':[2,3,4],
+             'forward_vector':[1,0,0], 'accel_longitudinal_mps2':2}
+        packet={}; index_motion(packet,raw,'original_frame')
+        scene={'users':[{'track':7,'kin':{'velocity':[3,-4],'speed':13}}]}
+        changes,_=audit_motion(scene,packet)
+        self.assertTrue(changes)
+        self.assertEqual(scene['users'][0]['kin'], measured_kinematics(raw))
+        scene['users'][0]['kin']['velocity']=[4,-3]
+        with self.assertRaises(ValueError):audit_motion(scene,packet)
+
+class CommonProjectionTests(unittest.TestCase):
+    def test_observed_signals_are_exported_without_law_dependencies(self):
+        scene={'subject':1,'users':[{'track':1}], 'structures':[], 'devices':[]}
+        repair_scene(scene,set(),{'ego_lamps':{'turn_indicator':'off','brake_lamp':False}}, {}, {})
+        self.assertEqual(scene['users'][0]['sig'], {'turn_indicator':'off','brake_lamp':False})
+
+    def test_pedestrian_equipment_and_complete_lane_markings(self):
+        from traffic_spec_adapter.atom_contract import observed
+        scene={'users':[{'track':1,'classes':['pedestrian']}], 'structures':[]}
+        self.assertTrue(observed(scene,'sig.headlamp','exact'))
+        self.assertTrue(observed(scene,'kin.steer_angle','exact'))
+        self.assertFalse(observed(scene,'kin.velocity','exact'))
+        scene['structures']=[{'id':1,'kind':'lane','lane':{'marking_left':['none','white']}}]
+        self.assertFalse(observed(scene,'st.lane_marking','exact'))
+        scene['structures'][0]['lane']['marking_right']=['none','white']
+        self.assertTrue(observed(scene,'st.lane_marking','exact'))
+
+class RuntimeRequirementTests(unittest.TestCase):
+    def test_unknown_requirement_names_fail_with_producer_location(self):
+        from unittest.mock import patch
+        from traffic_spec_adapter.atom_contract import validate_required_atoms
+        with patch('traffic_spec_adapter.adapter.atom_ids',return_value=['kin.speed']):
+            validate_required_atoms(['kin.speed'],'fixture','valid-report')
+            for atom in ('ru.animal','drv.wrong_way'):
+                with self.assertRaisesRegex(ValueError,'producer-report'):
+                    validate_required_atoms([atom],'fixture','producer-report')
+
+class BoundClassificationTests(unittest.TestCase):
+    known={'motor_vehicle','motorcycle','moped','bicycle','pedestrian','child','bus','truck','taxicab'}
+    def test_native_car_clears_only_source_resolved_masks(self):
+        from traffic_spec_adapter.classifications import classify,project_user
+        evidence={'blueprint':'vehicle.fixture','blueprint_attributes':{'base_type':'car'}}
+        positive,unknown=classify(evidence['blueprint'],evidence['blueprint_attributes'],self.known)
+        self.assertEqual(positive,['motor_vehicle']);self.assertEqual(unknown,['taxicab'])
+        user={'track':1,'classes':None,'unobserved_classes':sorted(self.known)}
+        result=project_user(user,self.known,evidence)
+        self.assertEqual(result['classes'],positive);self.assertEqual(result['unobserved_classes'],unknown)
+        self.assertIsNone(user['classes'])
+    def test_unknown_vehicle_and_name_substrings_do_not_establish_categories(self):
+        from traffic_spec_adapter.classifications import classify
+        positive,unknown=classify('vehicle.contains_motorcycle_or_bicycle',{},self.known)
+        self.assertEqual(positive,[])
+        self.assertIn('motor_vehicle',unknown);self.assertIn('bicycle',unknown)
+        self.assertNotIn('pedestrian',unknown);self.assertNotIn('child',unknown)
+    def test_separate_two_wheeler_and_bus_classes(self):
+        from traffic_spec_adapter.classifications import classify
+        self.assertEqual(classify('vehicle.fixture',{'base_type':'bicycle'},self.known)[0],['bicycle'])
+        positive,unknown=classify('vehicle.fixture',{'base_type':'motorcycle'},self.known)
+        self.assertEqual(positive,['motorcycle']);self.assertIn('moped',unknown)
+        self.assertEqual(classify('vehicle.fixture',{'base_type':'bus'},self.known)[0],['bus','motor_vehicle'])
+    def test_walker_age_and_service_role_need_their_own_evidence(self):
+        from traffic_spec_adapter.classifications import classify
+        positive,unknown=classify('walker.pedestrian.0001',{},self.known)
+        self.assertEqual(positive,['pedestrian']);self.assertIn('child',unknown);self.assertNotIn('taxicab',unknown)
+        positive,unknown=classify('walker.pedestrian.0001',{'age':'child'},self.known)
+        self.assertIn('child',positive);self.assertNotIn('child',unknown)
+    def test_conflicting_original_identity_is_rejected(self):
+        from traffic_spec_adapter.adapter import index_motion
+        packet={};index_motion(packet,{'actor_id':1,'blueprint':'vehicle.a'},'first')
+        with self.assertRaises(ValueError):index_motion(packet,{'actor_id':1,'blueprint':'vehicle.b'},'second')
+
+class EstimatedStripTests(unittest.TestCase):
+    def test_distinct_widths_flat_caps_and_normalization(self):
+        from traffic_spec_adapter.geometry import strip_polygon,normalized_polygon
+        from shapely.geometry import Polygon
+        for width in (.01,.35):
+            boundary,method=strip_polygon([[0,0],[5,0],[10,0]],width)
+            self.assertAlmostEqual(Polygon(boundary).area,10*width)
+            self.assertEqual(Polygon(boundary).bounds,(0,-width/2,10,width/2))
+            self.assertEqual(method['half_width_m'],width/2)
+        self.assertEqual(normalized_polygon([[0,0],[1,0],[1,1],[0,0]]),[[0,0],[1,0],[1,1]])
+    def test_crossings_and_invalid_polygons_are_not_hull_repaired(self):
+        from traffic_spec_adapter.geometry import strip_polygon,normalized_polygon
+        with self.assertRaises(ValueError):strip_polygon([[0,0],[1,1],[0,1],[1,0]],.01)
+        with self.assertRaises(ValueError):normalized_polygon([[0,0],[1,1],[0,1],[1,0]])
+
+    def test_zero_native_width_does_not_erase_retained_area_outline(self):
+        from traffic_spec_adapter.geometry import entrance_geometry_fields
+        xml='<OpenDRIVE><road id="1"><planView><geometry s="0" x="0" y="0" hdg="0" length="20"><line/></geometry></planView><objects><object id="line" name="StopLine" s="5" t="-2" length="4" width="0"/></objects></road></OpenDRIVE>'
+        with tempfile.TemporaryDirectory() as temp:
+            path=Path(temp)/'road.xodr';path.write_text(xml)
+            region={'id':1,'kind':'stop_line','position':[5,-2],
+                    'boundary':[[3,-2.15],[7,-2.15],[7,-1.85],[3,-1.85]]}
+            fields=entrance_geometry_fields(path,[region])
+            self.assertNotIn('_unobserved_paint_boundary',fields[1])
+            region['boundary']=[[3,-2],[7,-2]]
+            self.assertTrue(entrance_geometry_fields(path,[region])[1]['_unobserved_paint_boundary'])
+
+class AnalyticCentrelineSamplingTests(unittest.TestCase):
+    def test_curved_divider_samples_to_declared_geometric_error(self):
+        xml='<OpenDRIVE><road id="1" length="1"><planView><geometry s="0" x="0" y="0" hdg="0" length="1"><arc curvature="0.5"/></geometry></planView><lanes><laneSection s="0"><left><lane id="1" type="driving"/></left><right><lane id="-1" type="driving"/></right></laneSection></lanes></road></OpenDRIVE>'
+        with tempfile.TemporaryDirectory() as temp:
+            path=Path(temp)/'road.xodr';path.write_text(xml)
+            value=native_centre_lines(path)[0]
+        method=value['source']['geometry_method']
+        self.assertGreater(len(value['source']['native_centerline']),2)
+        self.assertLessEqual(method['max_reference_deviation_m'],method['reference_deviation_budget_m'])
+        self.assertTrue(value['shape'].is_valid)
+        self.assertEqual(method['total_width_m'],.01)
+
+class JunctionIdentityTests(unittest.TestCase):
+    def test_source_component_canonicalization_preserves_referenced_id(self):
+        from traffic_spec_adapter.geometry import canonical_junctions
+        from traffic_spec_adapter.roadways import apply_replacements
+        boundary=[[0,0],[2,0],[2,2],[0,2]]
+        regions=[{'id':19,'kind':'intersection','boundary':boundary},
+                 {'id':26,'kind':'intersection','boundary':boundary[2:]+boundary[:2]}]
+        native=[dict(regions[0],id=100)];sources={100:{'junction_id':10,'component':0}}
+        bindings=[{'region':i,'junction_id':10,'component':0,'map_sha256':'map'} for i in (19,26)]
+        replacements=canonical_junctions(regions,native,sources,bindings,'map',preferred={26})
+        self.assertEqual(replacements,{19:26})
+        scene={'structures':regions,'users':[],'devices':[{'id':1,'governs':[19,26]}],
+               'occupies':[[7,19],[7,26]],'intents':[{'vehicle':7,'target':19}]}
+        result=apply_replacements(scene,replacements,[19])
+        self.assertEqual(result['occupies'],[[7,26]])
+        self.assertEqual(result['devices'][0]['governs'],[26])
+        self.assertEqual(result['intents'][0]['target'],26)
+        self.assertEqual(canonical_junctions(regions,native,sources,[],'map'),{})
+    def test_equal_xy_distinct_components_are_not_merged_and_cycles_fail(self):
+        from traffic_spec_adapter.geometry import canonical_junctions
+        from traffic_spec_adapter.compatibility import remap_regions
+        regions=[{'id':i,'kind':'intersection','boundary':[[0,0],[2,0],[2,2],[0,2]]} for i in (1,2)]
+        sources={1:{'junction_id':10,'component':0},2:{'junction_id':11,'component':0}}
+        bindings=[{'region':i,'junction_id':9+i,'component':0,'map_sha256':'map'} for i in (1,2)]
+        self.assertEqual(canonical_junctions(regions,regions,sources,bindings,'map'),{})
+        for replacements in ({1:2,2:1},{1:99}):
+            with self.assertRaises(ValueError):remap_regions({'structures':regions},replacements)
+
+class CoverageScopeTests(unittest.TestCase):
+    def test_zero_inventory_subject_scope_and_unsupported_are_distinct(self):
+        from collections import Counter
+        from traffic_spec_adapter.atom_contract import gaps
+        scene={'subject':1,'users':[{'track':1,'kin':{'path_length':0}}, {'track':2,'kin':{}}],
+               'structures':[],'devices':[]}
+        capability={'atoms':{'kin.path_length':'subject','st.bicycle_lane_or_path':'exact',
+                    'dev.lane_control_signal':'exact','dev.human_direction':'absent','dev.stop_sign':'exact'}}
+        inventory={'kinds':{'bicycle_lane_or_path':{'count':0},'lane_control_signal':{'count':0}}}
+        limits=Counter()
+        self.assertEqual(gaps(scene,set(capability['atoms']),capability=capability,
+                              static_inventory=inventory,limitations=limits),[])
+        self.assertEqual(limits,{'dev.human_direction:unsupported_by_source':1,'dev.stop_sign:unknown_inventory':1})
+        self.assertIn('st.bicycle_lane_or_path',gaps(scene,{'st.bicycle_lane_or_path'},capability=capability))
+        scene['structures']=[{'id':1,'kind':'bicycle_lane_or_path'}]
+        with self.assertRaises(ValueError):gaps(scene,{'st.bicycle_lane_or_path'},static_inventory=inventory)
+
+class LaneEntryApplicabilityTests(unittest.TestCase):
+    def test_nonapproach_requires_proof_and_unknown_is_a_processing_limit(self):
+        from collections import Counter
+        from traffic_spec_adapter.atom_contract import gaps
+        scene={'structures':[{'id':1,'kind':'lane','lane':{}},
+                             {'id':2,'kind':'lane','lane':{'enters_intersection':10}}]}
+        limits=Counter()
+        self.assertEqual(gaps(scene,{'st.lane_enters'},lane_entry_applicability={1:False,2:True},limitations=limits),[])
+        self.assertFalse(limits)
+        self.assertEqual(gaps(scene,{'st.lane_enters'},lane_entry_applicability={},limitations=limits),[])
+        self.assertEqual(limits,{'st.lane_enters:unknown_applicability':1})
+        scene['structures'][1]['lane'].clear()
+        self.assertEqual(gaps(scene,{'st.lane_enters'},lane_entry_applicability={1:False,2:True}),['st.lane_enters'])

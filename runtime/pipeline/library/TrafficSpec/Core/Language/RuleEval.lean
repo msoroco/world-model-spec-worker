@@ -5,7 +5,8 @@
   `verdicts` combines the binder classes, the applicability and the obligation per instant
   (Kleene, `verdictAt`). `check` finds from the syntax every defect the evaluator would otherwise
   report as `malformed` or `unboundVariable`; its doc comment lists them. `checkReading`
-  names the parameters the reading lacks, over the rule and the rules it composes.
+  names the parameters and aggregates the reading lacks, over the rule and the rules it composes,
+  with their concept calls expanded; `Concept.checkReading` the aggregates a concept's body names.
 
   `Concept.check` holds a concept to the same standard on every admissible instantiation of
   its formals, with its calls expanded. `Concept.callDefects` holds every concept call to the
@@ -111,6 +112,12 @@ private def kindErrors (where_ : String) (a : Arg) (what : String) (known : Stri
 private def constParamErrors (where_ name : String) (ps : List Term) : List String :=
   ps.filter (!Term.isConstant ·) |>.map fun _ => s!"{where_}: `{name}` parameter is not a constant term"
 
+/-- A heading change's step bound: a literal or a reading parameter, a literal strictly positive. -/
+private def stepErrors (where_ : String) : Term → List String
+  | .lit q _ => if Q.lt Q.zero q then [] else [s!"{where_}: heading_since step bound is not strictly positive"]
+  | .param _ => []
+  | _ => [s!"{where_}: heading_since step bound is not a literal or a reading parameter"]
+
 mutual
   partial def checkTerm (scope : Scope) (where_ : String) : Term → List String
     | .lit _ _ | .param _ => []
@@ -131,6 +138,9 @@ mutual
       (if scope.binds subj .track then [] else [s!"{where_}: subject `{subj}` is not a bound track"]) ++
       checkFormula scope where_ φ
     | .sinceRise φ => checkFormula scope where_ φ
+    | .headingSince subj g ψ =>
+      (if scope.binds subj .track then [] else [s!"{where_}: subject `{subj}` is not a bound track"]) ++
+      stepErrors where_ g ++ checkTerm scope where_ g ++ checkFormula scope where_ ψ
     | .aggregate _ v φ t => checkFormula ((v, .track) :: scope) where_ φ ++ checkTerm ((v, .track) :: scope) where_ t
     | .add a b | .sub a b | .mul a b | .div a b => checkTerm scope where_ a ++ checkTerm scope where_ b
     | .neg a | .abs a => checkTerm scope where_ a
@@ -193,6 +203,7 @@ mutual
   partial def futureTerm (reads : String → Bool) (fut : Bool) : Term → List String
     | .quantity _ _ ps => ps.flatMap (futureTerm reads fut)
     | .distanceWhile _ φ | .sinceRise φ => futureReads reads fut φ
+    | .headingSince _ g ψ => futureTerm reads fut g ++ futureReads reads fut ψ
     | .aggregate _ _ φ t => futureReads reads fut φ ++ futureTerm reads fut t
     | .add a b | .sub a b | .mul a b | .div a b => futureTerm reads fut a ++ futureTerm reads fut b
     | .neg a | .abs a => futureTerm reads fut a
@@ -220,9 +231,9 @@ end
 
 -- The distance travelled since the trace began (`kin_path_length`), whose zero is the start of the
 -- recording, read where it can decide a search into the past: inside an operand of `since`, of
--- `atLast` or of `count`, inside the formula of `sinceRise` or of `rises`, directly or through a
--- composed rule that reads it. Everywhere else it is ordinary arithmetic; path windows and
--- `distanceWhile` measure differences and are never this.
+-- `atLast` or of `count`, inside the formula of `sinceRise`, the onset of `headingSince` or the
+-- formula of `rises`, directly or through a composed rule that reads it. Everywhere else it is
+-- ordinary arithmetic; path windows and `distanceWhile` measure differences and are never this.
 mutual
   partial def pathTerm (reads : String → Bool) (back : Bool) : Term → List String
     | .measure "kin_path_length" _ =>
@@ -230,6 +241,7 @@ mutual
     | .quantity _ _ ps => ps.flatMap (pathTerm reads back)
     | .distanceWhile _ φ => pathReads reads back φ
     | .sinceRise φ => pathReads reads true φ
+    | .headingSince _ g ψ => pathTerm reads back g ++ pathReads reads true ψ
     | .aggregate _ _ φ t => pathReads reads back φ ++ pathTerm reads back t
     | .add a b | .sub a b | .mul a b | .div a b => pathTerm reads back a ++ pathTerm reads back b
     | .neg a | .abs a => pathTerm reads back a
@@ -266,8 +278,9 @@ def readsPath (rules : List Rule) (r : Rule) : Bool :=
     read (such a position takes a variable, never a spelling or a number; a literal position
     takes no variable); a spelling no enumeration decodes; a quantifier kind that is not a
     spelling; a parameter of an atom or a call, or a window's length, that is not a constant
-    term (a literal, a reading parameter, or arithmetic over them); a declared intention read
-    ahead of the judged observation; the distance travelled since the trace began read inside a
+    term (a literal, a reading parameter, or arithmetic over them); a heading change's step bound
+    that is not a literal or a reading parameter, or a literal one not strictly positive; a
+    declared intention read ahead of the judged observation; the distance travelled since the trace began read inside a
     search into the past; a composed rule not in the set, or a map that names a variable not
     bound to a track, misses one of its binders or names one it does not have. `regions` names
     variables the caller binds to regions: the region formals of a concept's instance, which
@@ -292,15 +305,22 @@ def check (rules : List Rule) (r : Rule) (regions : List String := []) : List St
       (map.filter (fun (inner, _) => !r'.binderNames.contains inner) |>.map fun (inner, _) => s!"{r.id}: composition of `{id}` maps `{inner}`, not one of its binders") ++
       (r'.binderNames.filter (fun b => !map.any (·.1 == b)) |>.map fun b => s!"{r.id}: composition of `{id}` leaves its binder `{b}` unmapped"))
 
-/-- Parameters that the rule, or a rule it composes, names and the reading lacks. -/
-def checkReading (rules : List Rule) (r : Rule) (ρ : Reading) : List String :=
+/-- The aggregate ids `who` names that the reading does not declare, or whose declaration lists
+    an id that is no road-user class. -/
+def aggregateDefects (who : String) (ids : List String) (ρ : Reading) : List String :=
+  ids.eraseDups.flatMap fun w =>
+    match ρ.aggregate w with
+    | none => [s!"{who}: aggregate `{w}` is not declared by the reading"]
+    | some a => (a.included ++ a.unresolved).filter (fun id => !id.startsWith "ru." || (RoadUserClass.ofString (id.drop 3).toString).isNone)
+        |>.map fun id => s!"{who}: aggregate `{w}` lists `{id}`, which is not a road-user class"
+
+/-- Parameters and aggregates that the rule, or a rule it composes, names and the reading lacks,
+    each rule read with its calls of the concepts `cs` expanded. -/
+def checkReading (rules : List Rule) (r : Rule) (ρ : Reading) (cs : List Concept := []) : List String :=
   (Rule.closure rules r).flatMap fun x =>
-    (x.params.filter (!ρ.has ·) |>.map fun p => s!"{x.id}: parameter `{p}` is not in the reading")
-    ++ (x.formulas.flatMap Formula.aggregateIds).eraseDups.flatMap fun w =>
-      match ρ.aggregate w with
-      | none => [s!"{x.id}: aggregate `{w}` is not declared by the reading"]
-      | some a => (a.included ++ a.unresolved).filter (fun id => !id.startsWith "ru." || (RoadUserClass.ofString (id.drop 3).toString).isNone)
-          |>.map fun id => s!"{x.id}: aggregate `{w}` lists `{id}`, which is not a road-user class"
+    let xx := Concept.expandRule cs x
+    (xx.params.filter (!ρ.has ·) |>.map fun p => s!"{x.id}: parameter `{p}` is not in the reading")
+    ++ aggregateDefects x.id (xx.formulas.flatMap Formula.aggregateIds) ρ
 
 end Rule
 
@@ -335,6 +355,7 @@ mutual
     | .quantity n args ps => callArgs cs scope where_ n args ++ ps.flatMap (termCallDefects cs scope where_)
     | .measure _ _ | .lit _ _ | .param _ => []
     | .distanceWhile _ φ | .sinceRise φ => callDefects cs scope where_ φ
+    | .headingSince _ g ψ => termCallDefects cs scope where_ g ++ callDefects cs scope where_ ψ
     | .aggregate _ v φ t => callDefects cs ((v, .track) :: scope) where_ φ ++ termCallDefects cs ((v, .track) :: scope) where_ t
     | .add a b | .sub a b | .mul a b | .div a b => termCallDefects cs scope where_ a ++ termCallDefects cs scope where_ b
     | .neg a | .abs a => termCallDefects cs scope where_ a
@@ -415,6 +436,11 @@ def check (cs : List Concept) (c : Concept) : List String :=
       callDefects cs scope c.id φ ++ Rule.checkFormula scope c.id φx ++
         (Rule.pathReads (fun _ => false) false φx).map fun e => s!"{c.id}: {e}"
   structural ++ byInstance.eraseDups
+
+/-- The aggregates a concept's body names, its calls expanded, that the reading does not declare
+    or declares with an id that is no road-user class. -/
+def checkReading (cs : List Concept) (c : Concept) (ρ : Reading) : List String :=
+  Rule.aggregateDefects c.id (aggregateIds cs c) ρ
 
 end Concept
 

@@ -14,6 +14,7 @@ import TrafficSpec.Core.Vocab.Atoms
 import TrafficSpec.Core.Vocab.RegionTable
 import TrafficSpec.Core.Vocab.Params
 import TrafficSpec.Core.Foundations.Temporal
+import TrafficSpec.Core.Foundations.Accumulate
 
 namespace TrafficSpec
 namespace Primitives
@@ -295,6 +296,13 @@ def prim_region_offset_along (c : Ctx) (x : TrackId) (r l : RegionId) : Array QR
 def distanceWhile (c : Ctx) (x : TrackId) (holds : Array R) : Array QR :=
   Temporal.distanceWhileAll (pathPos c x) holds
 
+/-- Signed heading change (degrees, left positive) of road user x since ψ last became true
+    (`Term.headingSince`), integrated from the yaw rate as `prim_heading_change` integrates it, with
+    `maxStep` bounding every interval from the one ending at the start. -/
+def headingSince (c : Ctx) (x : TrackId) (maxStep : Q) (ψ : Array R) : Array QR :=
+  Accumulate.sinceRiseIntegralAll c.times (c.scenes.map (kin_yaw_rate · x)) maxStep "heading_since"
+    (.absentAtom "kin_yaw_rate") ψ
+
 -- ---------------------------------------------------------------------------------------------
 -- Tables and dispatch by name
 -- ---------------------------------------------------------------------------------------------
@@ -362,6 +370,9 @@ theorem size_prim_heading_change (c : Ctx) (x : TrackId) (w : Q) : (prim_heading
 theorem size_distanceWhile (c : Ctx) (x : TrackId) (holds : Array R) :
     (distanceWhile c x holds).size = holds.size := by
   simp [distanceWhile, Temporal.size_distanceWhileAll]
+theorem size_headingSince (c : Ctx) (x : TrackId) (g : Q) (ψ : Array R) :
+    (headingSince c x g ψ).size = ψ.size := by
+  simp [headingSince, Accumulate.size_sinceRiseIntegralAll]
 
 /-- A Boolean primitive that returns an array returns one value per observation. -/
 theorem size_evalB (name : String) (c : Ctx) (args : List DArg) (ps : List Q) (a : Array R)
@@ -379,6 +390,62 @@ theorem size_evalQ (name : String) (c : Ctx) (args : List DArg) (ps : List Q) (a
     | (cases h; simp [prim_heading_change, yawChange, prim_closest_approach_time, prim_closest_approach_distance,
                       prim_region_lateral_offset, prim_region_offset_along, size_eachQ, Ctx.n])
     | cases h
+
+-- ---------------------------------------------------------------------------------------------
+-- One integral, one interval convention, one unit
+-- ---------------------------------------------------------------------------------------------
+private theorem sums_get (c : Ctx) (x : TrackId) (g : Q) :
+    ∀ k, k < c.n → ((List.range c.n).foldl (fun (acc : Array Q) i =>
+      acc.push (match kin_yaw_rate c.scenes[i]! x with
+        | some ω => Q.add (if i = 0 then Q.zero else acc[i - 1]!) (Q.mul ω (if i = 0 then Q.zero else Q.sub c.times[i]! c.times[i - 1]!))
+        | none => if i = 0 then Q.zero else acc[i - 1]!)) #[])[k]! =
+      (Accumulate.runAt c.times (c.scenes.map (kin_yaw_rate · x)) g k).sum := by
+  refine (Accumulate.build_get _ (fun k => (Accumulate.runAt c.times (c.scenes.map (kin_yaw_rate · x)) g k).sum) c.n ?_
+    c.n (Nat.le_refl _)).2
+  intro acc i hi _ hm
+  have hr : (c.scenes.map (kin_yaw_rate · x))[i]! = kin_yaw_rate c.scenes[i]! x := by
+    rw [getElem!_pos _ _ (by simpa [Ctx.n] using hi), Array.getElem_map, getElem!_pos _ _ (by simpa [Ctx.n] using hi)]
+  cases i with
+  | zero => simp only [Accumulate.runAt, Accumulate.runStep, Accumulate.dt, hr, if_true, Accumulate.Run.init]; rfl
+  | succ k =>
+    simp only [Accumulate.runAt, Accumulate.runStep, Accumulate.dt, hr, Nat.add_one_ne_zero, if_false,
+      Nat.add_sub_cancel, hm k (by omega)]; rfl
+
+/-- T11: where the window of `prim_heading_change` starts exactly at the start of `headingSince` and
+    both are decided, they are the same rational. -/
+theorem headingSince_agrees_prim_heading_change (c : Ctx) (x : TrackId) (g w : Q) (ψ : Array R)
+    (i j : Nat) (hψ : ψ.size = c.n) (hi : i < c.n) (win : Time.Back)
+    (hwin : (Time.backWindows (timePos c) w)[i]! = some win) (hj0 : win.j0 = j)
+    (hanc : (Temporal.runStartAll "heading_since" ψ)[i]! = .ok (some j)) (a b : Q)
+    (ha : (headingSince c x g ψ)[i]! = .ok a) (hb : (prim_heading_change c x w)[i]! = .ok b) :
+    a = b := by
+  have hψi : i < ψ.size := hψ ▸ hi
+  obtain ⟨hg, -⟩ := Accumulate.decided_anchored i hψi a ha
+  have hst : Accumulate.startAt "heading_since" ψ i = .ok (some j) :=
+    (Accumulate.runStartAll_get _ ψ i hψi).symm.trans hanc
+  have hj : j ≤ i := ((Accumulate.startAt_some_iff i j).mp hst).1
+  unfold headingSince at ha
+  rw [Accumulate.get_pos hg i hψi, hst] at ha
+  simp only at ha
+  split at ha
+  · cases ha
+  split at ha
+  · cases ha
+  cases ha
+  have hs : (yawChange c x w).size = c.n := by simp [yawChange]
+  simp only [prim_heading_change] at hb
+  rw [getElem!_pos _ _ (by simpa [hs] using hi), Array.getElem_map] at hb
+  simp only [yawChange, Array.getElem_map, Array.getElem_range, hwin, hj0] at hb
+  rw [sums_get c x g i hi, sums_get c x g j (by omega)] at hb
+  cases hc : win.covered <;> cases hd : win.adequate <;> simp only [hc, hd] at hb <;> try simp at hb
+  split at hb
+  · simp at hb
+  · rename_i Δ heq
+    simp only [Except.ok.injEq] at hb
+    subst hb
+    split at heq
+    · cases heq
+    · cases heq; rfl
 
 end Primitives
 end TrafficSpec

@@ -39,6 +39,7 @@ mutual
     | .quantity c as ps => Json.mkObj [("quantity", c), ("args", args as), ("params", Json.arr (ps.map Term.toJson).toArray)]
     | .distanceWhile s φ => Json.mkObj [("distance_while", s), ("holds", Formula.toJson φ)]
     | .sinceRise φ => Json.mkObj [("since_rise", Formula.toJson φ)]
+    | .headingSince s g ψ => Json.mkObj [("heading_since", s), ("max_step", g.toJson), ("onset", Formula.toJson ψ)]
     | .aggregate op v φ t => Json.mkObj [("aggregate", op.toString), ("var", v), ("where", Formula.toJson φ), ("of", t.toJson)]
     | .add a b => Json.mkObj [("add", Json.arr #[a.toJson, b.toJson])]
     | .sub a b => Json.mkObj [("sub", Json.arr #[a.toJson, b.toJson])]

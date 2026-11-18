@@ -40,14 +40,14 @@ def attach_verified_resources(request):
     capture=context.get('capture_requirements',{})
     declared=[capture.get('helper_path')]
     declared.extend(p for p in context.get('resource_paths',[])
-                    if Path(p).name in ('original_observations.py','scene_graph_collector.py'))
+                    if Path(p).name in ('original_observations.py','scene_graph_collector.py','native_graph_json.py'))
     # Supply the direct project capture dependencies, not just their importer.
     # These fixed paths stay beneath declared, frozen resource roots. No model
     # request can name an arbitrary file or recursively traverse the repository.
     helper=capture.get('helper_path')
     if helper and Path(helper).name=='pipeline_capture.py':
         declared.extend(str(Path(helper).with_name(name)) for name in
-                        ('scene_graph_collector.py','original_observations.py'))
+                        ('scene_graph_collector.py','original_observations.py','native_graph_json.py'))
     for root_value in context.get('resource_paths',[]):
         root=Path(root_value).resolve(strict=True)
         if root.name=='carla_scene_graphs':

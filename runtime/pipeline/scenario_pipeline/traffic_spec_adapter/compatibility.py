@@ -60,10 +60,15 @@ def remap_regions(scene, replacements):
     """Relink every region-ID field; never rewrite track or device IDs."""
     import copy
     result = copy.deepcopy(scene)
+    present={r['id'] for r in scene.get('structures',[])}
     def mapped(value):
+        seen=set()
         while value in replacements:
-            value = replacements[value]
+            if value in seen:raise ValueError('Cyclic region replacement')
+            seen.add(value);value=replacements[value]
+        if seen and value not in present:raise ValueError('Region replacement has no surviving target')
         return value
+    for value in replacements:mapped(value)
     result['structures'] = [r for r in result.get('structures', []) if r['id'] not in replacements]
     for region in result['structures']:
         for key in ('ways', 'entrance_of'):
@@ -81,9 +86,19 @@ def remap_regions(scene, replacements):
     if 'occupies' in result:
         result['occupies'] = [list(pair) for pair in dict.fromkeys(
             (track, mapped(region)) for track, region in result['occupies'])]
-    for intent in result.get('intents', []):
-        intent['target'] = mapped(intent['target'])
+    if 'intents' in result:
+        from context_catalogue import remap_intention_targets
+        result['intents']=remap_intention_targets(result['intents'],replacements)
+        pairs=[(record.get('vehicle'),record['target']) for record in result['intents']]
+        if len(pairs)!=len(set(pairs)):
+            raise ValueError('Conflicting remapped intention declarations')
     for user in result.get('users', []):
         if user.get('sight_along_way') is not None:
-            user['sight_along_way'] = [[mapped(r), distance] for r, distance in user['sight_along_way']]
+            distances={}
+            for region,distance in user['sight_along_way']:
+                target=mapped(region)
+                if target in distances and distances[target]!=distance:
+                    raise ValueError('Conflicting remapped sight-along-way measurements')
+                distances[target]=distance
+            user['sight_along_way'] = [[region,distance] for region,distance in distances.items()]
     return result

@@ -13,6 +13,7 @@ if [[ ! "$interval" =~ ^[0-9]+$ ]] || (( 10#$interval < 1 )); then echo 'invalid
 model="${WORKER_CODEX_MODEL:-gpt-6-sol}"
 effort="${WORKER_CODEX_REASONING:-medium}"
 mkdir -p .runtime-work
+python3.11 scripts/quarantine-stale-generated.py
 mkdir -p .runtime-work/tmp
 # Keep Codex's sandbox scratch under this checkout on hosts with private /tmp
 # namespaces; it is ignored and never enters the worker return.

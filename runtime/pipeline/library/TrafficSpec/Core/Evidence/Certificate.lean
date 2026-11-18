@@ -94,6 +94,7 @@ namespace DimCheck
     the variables the term itself binds. -/
 partial def inTerm : Term → List Formula × List String
   | .distanceWhile _ φ | .sinceRise φ => ([φ], [])
+  | .headingSince _ g ψ => let (fs, vs) := inTerm g; (ψ :: fs, vs)
   | .aggregate _ v φ t => let (fs, vs) := inTerm t; (φ :: fs, v :: vs)
   | .cond φ a b => let (fa, va) := inTerm a; let (fb, vb) := inTerm b; (φ :: fa ++ fb, va ++ vb)
   | .add a b | .sub a b | .mul a b | .div a b => let (fa, va) := inTerm a; let (fb, vb) := inTerm b; (fa ++ fb, va ++ vb)
@@ -121,6 +122,10 @@ mutual
         | [] => .ok d
     | .distanceWhile _ _ => .ok Dim.length
     | .sinceRise _ => .ok Dim.time
+    | .headingSince _ g _ => do
+      let d ← termDim env g
+      if d == Dim.time then .ok (Dim.ofUnit .degree)
+      else .error (.mismatch s!"a heading change's step bound is {d.render}, not a time")
     | .aggregate op _ _ t => if op == .count then .ok Dim.one else termDim env t
     | .add a b | .sub a b => do
       let x ← termDim env a; let y ← termDim env b

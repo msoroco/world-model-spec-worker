@@ -155,7 +155,8 @@ namespace Scenario
 /-- The operators that look back from the observation they judge, by the tag their truncation at the
     start of a trace carries: only these leave a history-boundary witness unknown. -/
 def pastOps : List String :=
-  ["since", "since_rise", "rises", "once", "holdsFor", "atLast", "count", "distance_while", "prim_heading_change"]
+  ["since", "since_rise", "rises", "once", "holdsFor", "atLast", "count", "distance_while", "prim_heading_change",
+   "heading_since"]
 
 /-- The witness holds when the rule's episode verdict on its grounding has the expected tag, and
     the verdict is reached for the reason the witness is about: a `notApplicable` witness needs an

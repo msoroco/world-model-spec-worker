@@ -18,8 +18,8 @@ scene is a reasonableness. §8 says how a rule gives such a standard a concrete 
 
 ## The termination rule
 
-This file is the whole termination rule. It has six clauses; the harness and the review phase
-enforce them, and nothing else adds to or bypasses them.
+This file is the whole termination rule. It has six clauses; every session and every check of the
+pipeline works within them, and nothing else adds to or bypasses them.
 
 1. **Closed set.** A rule reads the world only through the atoms of §1–§7, the primitives of
    §10, and the concepts the pipeline has accepted (§9). An element a clause needs that none of
@@ -54,9 +54,9 @@ its mappings as *grounding claims* (`elements`: clause element → atoms, with a
 cites the contracts) and its *operationalization claims* (§8). The harness validates them before
 any rule is written: every atom named exists here; the same element maps to the same atoms in
 every node of the run, so a contradiction is rejected; and the run's mapping index, which the
-harness derives from the accepted nodes, is what the review phase and its calibration read. No
-agent writes a shared file, and nothing about a corpus is decided before the run that formalizes
-it.
+harness derives from the accepted nodes, is what the validator checks each later mapping against
+and what the planner is shown. No agent writes a shared file, and nothing about a corpus is decided
+before the run that formalizes it.
 
 This file says nothing about which law refers to which atom and nothing about how any data
 source produces one. Which atoms a source can observe is declared at run time by that source's
@@ -68,7 +68,7 @@ or a simulator reports its own controls and its own line of sight and nobody els
 **Scope column.** `general` marks an element of the ordinary road vocabulary. `local` marks an
 element that exists because the target jurisdiction's own vehicle taxonomy or device catalogue
 names it; its contract still describes what is physically observed, and a source that has no such
-thing declares it `absent`. The flag is information for the manifest author and the reviewer, not
+thing declares it `absent`. The flag is information for the manifest author and the planner, not
 a permission: local atoms are atoms.
 
 Identifier scheme: `family.name`. Families: `ru` road user, `kin` kinematics, `st` road
@@ -169,7 +169,7 @@ A kind whose contract ends in **Refines:** names the kind it refines: every regi
 | `st.curvature` | horizontal curvature of the roadway at a point, as a magnitude (1/m, never negative): a bend to either hand has the same value | general |
 | `st.grade` | longitudinal slope of the roadway at a point **Not a stand-in for:** the place of a crest (`st.crest`) — the slope where a road user is says nothing of a crest ahead of it | general |
 | `st.crest` | the place on a roadway's longitudinal profile where the slope changes from rising to falling in the direction of travel, carried as a region with a reference point and a boundary, so the ground distance from a road user to it is read through `st.region_geometry` **Not a stand-in for:** the slope at a point (`st.grade`), the view a crest restricts (`st.sight_distance`), or a horizontal bend (`st.curvature`) | general |
-| `st.sight_distance` | a declared operational estimate, in metres along incoming road routes, of visibility toward a vehicle at the observed point; it may use virtual observers at a declared height and the current subject vehicle’s measured bounding-box body samples. For that convention it is the minimum sampled clear-side distance over all inventoried approaching lanes/directions, attached only to lane/roadway regions occupied by the subject in that scene. It is subject-relative and may vary with time. Sampling, body/height convention, uncertainty brackets and search censoring must be retained with the source; a censored value is a lower bound, not an exact maximum visible distance. Missing approach coverage remains unknown. **Not a stand-in for:** actual driver perception or recognizability, a universal static road property, actual road-user-to-road-user visibility (`rel.visible`), or air clarity (`env.visibility`) | general |
+| `st.sight_distance` | the distance along the road over which visibility is available at the evaluated road location, using the source’s declared vehicle-reference geometry. The source may use the ego vehicle’s geometry to estimate the driver/reference and target-body geometry; approaching vehicles need not actually be present. Visibility is treated as reciprocal under this convention. The source retains the reference geometry, evaluated directions, sampling, uncertainty and search limits; incomplete coverage remains unknown. **Not a stand-in for:** separation between actual vehicles, visibility between particular road users (`rel.visible`), actual perception, or air clarity (`env.visibility`). | general |
 | `st.sight_along_way` | the distance along a way, in each direction from the point of that way nearest a road user, within which another vehicle on that way could be seen from the road user's eye at the observation, at the height convention the source declares; the smaller of the two directions; m **Not a stand-in for:** the sight distance of the place the road user is at (`st.sight_distance`), or whether an actual road user is seen (`rel.visible`) | general |
 | `st.railway_crossing` | level crossing of a railway with the roadway, and its nearest rail | general |
 | `st.controlled_access` | a highway with access only at designated points, and its entrance and exit lanes | general |
@@ -257,8 +257,8 @@ declares it absent, and every specification that reads it then reports unknown.
 | `rel.oncoming` | headings opposed and closing: the cosine of the angle between the headings is below the negative of its tolerance, which is the cosine of the largest angle off exactly opposed allowed, a ratio between -1 and 1 **Not a stand-in for:** the direction a road user approaches from — that is read through the carrier it approaches through, any carrier `st.lane_enters` admits (a lane or a kind refining it, or a roadway, one-way roadway, shoulder or bicycle lane or path recorded as a directed approach segment), whose entrance end is the intersection, and through that carrier's direction (`st.lane_direction`) at the same instant; where that evidence is unobserved, the direction is unknown, never a reason a duty does not arise. A turn can make the current headings cease to satisfy this relation while the vehicle's approach direction remains unchanged. | general |
 | `rel.same_direction` | headings aligned: the cosine of the angle between the headings is above its tolerance, which is the cosine of the largest angle allowed, a ratio between -1 and 1 | general |
 | `rel.bearing` | direction of b from a in a's frame (for "on the right of", "immediately to the rear") | general |
-| `rel.contact` | the bodies of two road users, or a road user and a structure, touch or overlap (a collision) **Not a stand-in for:** a near miss — that is `drv.time_to_conflict` | general |
-| `rel.visible` | b is visible from a: an unobstructed line of sight from a's reference point to b's body, as the source tests it (a ray cast, an occlusion test, an annotator's judgement) **Not a stand-in for:** a distance, the sight distance of a place (`st.sight_distance`) — the regional estimate under its declared observer/body convention is that atom, the clarity of the air (`env.visibility`), or a lamp being lit — a visible vehicle may show no lamp and a lit lamp may be hidden | general |
+| `rel.contact` | the bodies of two road users, or a road user and a structure, touch or overlap (a collision) **Not a stand-in for:** a near miss; bodies that do not touch or overlap are not in contact. | general |
+| `rel.visible` | b is visible from a: an unobstructed line of sight from a's reference point to b's body, as the source tests it (a ray cast, an occlusion test, an annotator's judgement) **Not a stand-in for:** a distance, the sight distance of a place (`st.sight_distance`) — what could be seen from or at a place, whether or not any road user is there, is that atom, the clarity of the air (`env.visibility`), or a lamp being lit — a visible vehicle may show no lamp and a lit lamp may be hidden | general |
 
 Computed from kinematics; listed because traffic language names them directly and a source may
 supply them measured rather than derived. `rel.visible` is the exception: it depends on what
@@ -277,9 +277,10 @@ with parameters the reading sets, and records an *operationalization claim*: the
 words, the concepts, the parameters, and the engineering convention their values come from (a
 headway convention, a gap-acceptance convention, a stopping-distance model, a sight-distance
 model). The
-harness rejects a node that maps a standard to nothing; the review phase checks that the claim
-bounds the standard rather than replacing an observable the clause states outright. The same
-claim is what a label uses, so specification and label quantify the standard exactly once.
+harness rejects a node that maps a standard to nothing. The claim bounds the standard; it never
+replaces an observable the clause states outright. The claim records the specification's
+operationalization; it does not determine a recording's label. Labels involving judgement calls are
+confirmed independently under operator-reviewed, frozen parameters before they drive repair.
 
 **Two kinds of rule follow.** Where the standard qualifies an otherwise concrete duty (a yield
 that is owed when the other vehicle is "so close as to be a hazard"), the operationalization is a
@@ -434,12 +435,18 @@ A primitive is a geometric computation over atoms with no legal word in it, defi
 with its parameters exposed. A concept or a rule calls it by id; the set is closed, and a need
 for another is a gap for the operator, never a definition written during a run.
 
+`heading_since` (`Term.headingSince`) is a construct of the formula language, not an atom an
+adapter supplies and not a primitive: the signed heading change of a road user since a formula
+last became true, integrated from `kin.yaw_rate` with a step bound. It recognises no manoeuvre;
+the formula that marks the onset does. `prim.heading_change`, over a fixed window behind each
+observation, is not a stand-in for it.
+
 | id | contract | parameters | result unit | parameter units |
 |---|---|---|---|---|
 | `prim.heading_change` | the signed heading change (degrees, left positive) of a road user over the window behind the observation, integrated from `kin.yaw_rate`; unknown where the window is truncated, sampled too sparsely, or a yaw rate is missing | the window length (time) | deg | s |
-| `prim.closest_approach_within` | under constant velocities, the centres of two road users approach each other at some time between the observation and the horizon | the horizon (time) | boolean | s |
-| `prim.closest_approach_time` | the time from the observation at which the two centres are closest, under constant velocities; undefined when they do not approach within the horizon | the horizon (time) | s | s |
-| `prim.closest_approach_distance` | the centre distance at that closest approach; undefined when they do not approach within the horizon | the horizon (time) | m | s |
+| `prim.closest_approach_within` | under constant velocities, the centres of two road users approach each other at some time between the observation and the horizon **Not a stand-in for:** contact between bodies, the clearance between bodies, or the danger of a crash — it is computed from the centres under constant velocities, and alone establishes none of them | the horizon (time) | boolean | s |
+| `prim.closest_approach_time` | the time from the observation at which the two centres are closest, under constant velocities; undefined when they do not approach within the horizon **Not a stand-in for:** contact between bodies, the clearance between bodies, or the danger of a crash — it is computed from the centres under constant velocities, and alone establishes none of them | the horizon (time) | s | s |
+| `prim.closest_approach_distance` | the centre distance at that closest approach; undefined when they do not approach within the horizon **Not a stand-in for:** contact between bodies, the clearance between bodies, or the danger of a crash — it is computed from the centres under constant velocities, and alone establishes none of them | the horizon (time) | m | s |
 | `prim.conditions_hold` | the structured conditions of a device (`dev.zone_sign`, `dev.regulatory_sign`) hold at the observation for a road user: `env.civil_time` falls in one of its time windows on one of its days (a calendar class is an assumption), and any occupancy or class condition is met | — | boolean | — |
 | `prim.region_lateral_offset` | the signed lateral offset (m, left positive) of a structure region from a road user: the component, perpendicular to the road user's heading, of the vector from its reference point to the point of the region's boundary nearest that reference point; zero where the reference point lies inside the region; where several boundary points are equally nearest, their common component, and undefined where their components differ; unknown where the position, the heading or the boundary is absent | — | m | — |
 | `prim.region_offset_along` | the signed distance (m) from a road user's reference point (`kin.position`) to a structure region (`st.region_geometry`), measured along a carrier's designated direction (`st.lane_direction`) on the straight line through the reference point parallel to that direction. The region is a closed set: a vertex the line only touches and an edge it runs along are points of it the line meets. Zero where the reference point lies in the region or on its boundary; where every point of the region on that line lies ahead, the distance to the nearest of them (positive); where every one lies behind, minus the distance to the nearest (negative); where the line does not meet the region, the value comes from the region's projection on the direction, the interval [lo, hi] of the signed distances of its points along it: lo where lo > 0 (all of the region ahead), hi where hi < 0 (all behind) — a projection gap, not a distance along the line, so the value may jump where the line starts or stops meeting the region, while its sign gives the side in both cases; undefined where the line meets the region both ahead and behind (the reference point lies in an opening of the region), where it misses the region and [lo, hi] spans or touches zero, and where the boundary is not a simple polygon (empty, fewer than three vertices, zero area, or crossing or touching itself); unknown where the position, the direction (a zero vector included) or the boundary is absent; independent of the boundary's start vertex and orientation. The direction is read normalised as `st.lane_direction` is, with Core's micrometre-rounded square root, and the distance is counted in lengths of that normalised vector (between 1 and 1 + 2·10⁻⁶ m), so it carries that rounding. It is a geometric quantity only: it does not establish that the road user is on the carrier, that the region marks the carrier's entrance, that the whole body has crossed the region, or that a crossing happened between observations; a caller states those with its own relations, footprint occupancy and temporal formulas; a distance to the region is read from `st.region_geometry`, never from this value | — | m | — |

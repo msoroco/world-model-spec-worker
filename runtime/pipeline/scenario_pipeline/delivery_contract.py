@@ -61,6 +61,8 @@ def inspect_case(cell, case):
     if case.get('dependency_repair_reason') or case.get('expected_label_status') not in ('accepted','judgment_sweep','evidence_accepted'):
         raise ValueError('Current case still requires repair or label resolution')
     attempt=Path(case['execution']);record=load(attempt/'expected_label.json')
+    if record.get('format')!='production-verdict-v2':
+        raise ValueError('Saved outcome requires source-backed v2 classification before publication')
     definition=load(case['definition_file']);trace_path=attempt/'traffic_spec/trace.json'
     if record['trace_sha256']!=sha(trace_path) or record['definition_sha256']!=sha(Path(case['definition_file'])):
         raise ValueError('Expected label is bound to stale evidence or targets')
@@ -76,7 +78,8 @@ def inspect_case(cell, case):
     if not scope.get('passed') or any(scope.get(k)!=v for k,v in identity.items()) or scope['frames']!=len(source):
         raise ValueError('Full-trace capture/decoder receipt is missing or stale')
     adapter=load(attempt/'traffic_spec/adapter_report.json')
-    if adapter.get('required_measurements_complete') is False:
+    from traffic_spec_adapter.atom_contract import common_profile_complete
+    if not common_profile_complete(adapter):
         raise ValueError('Required captured observations are incomplete')
     if not adapter.get('decoder_validation',{}).get('passed') or adapter['frames']!=len(source):
         raise ValueError('Current full trace has no successful Lean decoder receipt')
@@ -84,24 +87,26 @@ def inspect_case(cell, case):
     if first_scene(trace_path).get('assumptions',[])!=assumptions(context):
         raise ValueError('Declared label assumptions disagree with delivered Core context')
     review=deepcopy(load(attempt/'measured_review.json'))
-    if record['target_law_id']=='NRS-484B-600-1c' and record.get('format')!='production-verdict-v1':
+    method=record.get('evaluation_method')
+    if record['target_law_id']=='NRS-484B-600-1c' and method=='recorded_rule_reference':
         from control_evidence import posted_sign_evidence
         speed=review['speed_evaluation']
         speed['physical_control_evidence']=posted_sign_evidence(attempt,source,scope,speed['limit']['m/s'])
-    if record.get('format')=='production-verdict-v1':
-        from production_verdicts import expectation as measured_expectation,validate
-        recomputed=validate(measured_expectation(definition,attempt,review,context))
-        if recomputed['evidence_status']!='accepted' or recomputed['expected_label']!=record['expected_label'] or record['expected_label']!=case['expected_label']:
-            raise ValueError('Production evidence/verdict is missing, unintended, or stale')
-        for key in ('inconclusive_reasons','reference_check','evaluation_status'):
-            if recomputed.get(key)!=record.get(key):raise ValueError('Stale production verdict provenance: '+key)
+    from production_verdicts import validate,presentation,validate_presentation
+    if method=='production_reference':
+        from production_verdicts import expectation as measured_expectation
+    elif method=='recorded_rule_reference':
+        measured_expectation=expectation
     else:
-        recomputed=expectation(definition,attempt,review,context)
-        if recomputed['judgment_sweep']:
-            if record['expected_label'] is not None or case['expected_label'] is not None:
-                raise ValueError('Actual judgment sweep must remain unlabeled')
-        elif not recomputed['intention_matched'] or recomputed['missing_evidence'] or recomputed['expected_label']!=record['expected_label'] or record['expected_label']!=case['expected_label']:
-            raise ValueError('Deterministic recorded outcome is missing, unintended, or stale; repair the cause')
+        raise ValueError('No registered source evaluator for this authoritative label')
+    recomputed=validate(measured_expectation(definition,attempt,review,context,
+                        definition_path=Path(case['definition_file'])))
+    if recomputed['evidence_status']!='accepted' or recomputed['expected_label']!=record['expected_label'] or record['expected_label']!=case['expected_label']:
+        raise ValueError('Recorded evidence/verdict is missing, unintended, or stale')
+    validate_presentation(recomputed,presentation(record))
+    if case.get('label_record') is not None:validate_presentation(record,case['label_record'])
+    if recomputed.get('reference_check')!=record.get('reference_check'):
+        raise ValueError('Stale recorded reference method')
     window=[source[0]['time_s'],source[-1]['time_s']]
     if record['full_recording_window_s']!=window:
         raise ValueError('Label window does not cover the entire delivered trace')
@@ -132,6 +137,7 @@ def inspect_case(cell, case):
     return {'cell_id':cell['cell_id'],'actor':cell.get('actor','motor_vehicle_driver'),'case_id':case['case_id'],'law_id':record['target_law_id'],
             'attempt_id':attempt.name,'provenance':provenance,
             'expected_label':record['expected_label'],'judgment_sweep':record['judgment_sweep'],
+            'label_record':presentation(record),
             'video_source':video,'video_sha256':digest,'trace_source':trace_path,
             'trace_sha256':record['trace_sha256'],'frames':len(source),'trace_window_s':window,
             'frame_rate':receipt['ffprobe']['streams'][0].get('avg_frame_rate','20/1'),

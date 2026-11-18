@@ -95,6 +95,17 @@ mutual
     | quantity (concept : String) (args : List Arg) (params : List Term)   -- a Q-valued derived concept
     | distanceWhile (subject : String) (φ : Formula)         -- path length over which φ has held continuously
     | sinceRise (φ : Formula)                                -- time elapsed since φ last became true
+    /-- The signed heading change (degrees, left positive) of `subject`, integrated from its yaw
+        rate, since ψ last became true: from the latest observation at which ψ rose definitely (false
+        at the observation before, true there), counted from zero at that observation. ψ turning false
+        does not end it, nor does a stop; only the next definite rise of ψ starts it again. Unknown
+        where no such rise is observed with ψ known at every observation since (an onset before the
+        recording, or one an unknown value of ψ could hide), where an interval between consecutive
+        observations from the one before the rise onwards is longer than `maxStep`, or where a yaw
+        rate since the rise is missing. `maxStep` is a literal or a reading parameter, a time,
+        strictly positive: the sampling standard of the integration, not a window and not a bound on
+        how far back the onset may lie. -/
+    | headingSince (subject : String) (maxStep : Term) (ψ : Formula)   -- the heading change of subject since ψ last became true
     | aggregate (op : AggOp) (var : String) (φ : Formula) (t : Term)   -- op of t over the road users var of the scene satisfying φ
     | add (a b : Term)
     | sub (a b : Term)
@@ -167,6 +178,7 @@ mutual
     | .quantity c _ ps => c :: (ps.flatMap termAtoms)
     | .distanceWhile _ φ => measureAtom .path :: atoms φ
     | .sinceRise φ => measureAtom .time :: atoms φ
+    | .headingSince _ g ψ => "kin_yaw_rate" :: measureAtom .time :: (termAtoms g ++ atoms ψ)
     | .aggregate _ _ φ t => atoms φ ++ termAtoms t
     | .add a b | .sub a b | .mul a b | .div a b => termAtoms a ++ termAtoms b
     | .neg a | .abs a => termAtoms a
@@ -195,6 +207,7 @@ mutual
     | .quantity _ _ ps => ps.flatMap termParams
     | .distanceWhile _ φ => params φ
     | .sinceRise φ => params φ
+    | .headingSince _ g ψ => termParams g ++ params ψ
     | .aggregate _ _ φ t => params φ ++ termParams t
     | .add a b | .sub a b | .mul a b | .div a b => termParams a ++ termParams b
     | .neg a | .abs a => termParams a
@@ -220,6 +233,7 @@ mutual
   partial def termCompositions : Term → List (String × List (String × String))
     | .quantity _ _ ps => ps.flatMap termCompositions
     | .distanceWhile _ φ | .sinceRise φ => compositions φ
+    | .headingSince _ g ψ => termCompositions g ++ compositions ψ
     | .aggregate _ _ φ t => compositions φ ++ termCompositions t
     | .add a b | .sub a b | .mul a b | .div a b => termCompositions a ++ termCompositions b
     | .neg a | .abs a => termCompositions a
@@ -251,6 +265,7 @@ mutual
     | .quantity _ _ ps => ps.flatMap termLiterals
     | .distanceWhile _ φ => literals φ
     | .sinceRise φ => literals φ
+    | .headingSince _ g ψ => termLiterals g ++ literals ψ
     | .aggregate _ _ φ t => literals φ ++ termLiterals t
     | .add a b | .sub a b | .mul a b | .div a b => termLiterals a ++ termLiterals b
     | .neg a | .abs a => termLiterals a
@@ -340,6 +355,7 @@ mutual
   partial def termDeclared : Term → List (Sum AsmId IntId)
     | .quantity _ _ ps => ps.flatMap termDeclared
     | .distanceWhile _ φ | .sinceRise φ => declared φ
+    | .headingSince _ g ψ => termDeclared g ++ declared ψ
     | .aggregate _ _ φ t => declared φ ++ termDeclared t
     | .add a b | .sub a b | .mul a b | .div a b => termDeclared a ++ termDeclared b
     | .neg a | .abs a => termDeclared a
@@ -366,18 +382,32 @@ def assumptions (φ : Formula) : List AsmId := (declared φ).filterMap fun | .in
 /-- The declared intentions a formula reads. -/
 def intentions (φ : Formula) : List IntId := (declared φ).filterMap fun | .inr i => some i | .inl _ => none
 
-/-- The aggregate ids a formula names (`ru_aggregate x "<definition id>::<term>"`), for the reading check. -/
-partial def aggregateIds : Formula → List String
-  | .atom "ru_aggregate" [_, .lit w] _ => [w]
-  | .not φ | .always φ | .eventually φ | .rises φ => aggregateIds φ
-  | .and φ ψ | .or φ ψ | .implies φ ψ | .until φ ψ | .since φ ψ | .definedWhen φ ψ => aggregateIds φ ++ aggregateIds ψ
-  | .holdsFor _ _ _ φ | .within _ _ _ φ => aggregateIds φ
-  | .untilWithin _ _ _ φ ψ => aggregateIds φ ++ aggregateIds ψ
-  | .atLast _ _ _ ψ φ => aggregateIds ψ ++ aggregateIds φ
-  | .count e s _ _ => aggregateIds e ++ aggregateIds s
-  | .existsRegion _ _ φ | .forallRegion _ _ φ | .existsDevice _ _ φ | .forallDevice _ _ φ
-  | .existsUser _ φ | .forallUser _ φ => aggregateIds φ
-  | _ => []
+-- The aggregate ids a formula names (`ru_aggregate x "<definition id>::<term>"`), at any depth of
+-- formulas and terms, for the reading check.
+mutual
+  partial def termAggregateIds : Term → List String
+    | .quantity _ _ ps => ps.flatMap termAggregateIds
+    | .distanceWhile _ φ | .sinceRise φ => aggregateIds φ
+    | .headingSince _ g ψ => termAggregateIds g ++ aggregateIds ψ
+    | .aggregate _ _ φ t => aggregateIds φ ++ termAggregateIds t
+    | .add a b | .sub a b | .mul a b | .div a b => termAggregateIds a ++ termAggregateIds b
+    | .neg a | .abs a => termAggregateIds a
+    | .cond φ a b => aggregateIds φ ++ termAggregateIds a ++ termAggregateIds b
+    | _ => []
+  partial def aggregateIds : Formula → List String
+    | .atom "ru_aggregate" [_, .lit w] ps => w :: ps.flatMap termAggregateIds
+    | .atom _ _ ps | .derived _ _ ps => ps.flatMap termAggregateIds
+    | .cmp l _ r => termAggregateIds l ++ termAggregateIds r
+    | .not φ | .always φ | .eventually φ | .rises φ => aggregateIds φ
+    | .and φ ψ | .or φ ψ | .implies φ ψ | .until φ ψ | .since φ ψ | .definedWhen φ ψ => aggregateIds φ ++ aggregateIds ψ
+    | .holdsFor _ d _ φ | .within _ d _ φ => termAggregateIds d ++ aggregateIds φ
+    | .untilWithin _ d _ φ ψ => termAggregateIds d ++ aggregateIds φ ++ aggregateIds ψ
+    | .atLast _ d _ ψ φ => termAggregateIds d ++ aggregateIds ψ ++ aggregateIds φ
+    | .count e s _ _ => aggregateIds e ++ aggregateIds s
+    | .existsRegion _ _ φ | .forallRegion _ _ φ | .existsDevice _ _ φ | .forallDevice _ _ φ
+    | .existsUser _ φ | .forallUser _ φ => aggregateIds φ
+    | _ => []
+end
 
 /-- The first `cond` of a term reachable through arithmetic (not inside an aggregate or a window,
     whose body ranges over its own variable or instants), with the term rebuilt on each branch. -/

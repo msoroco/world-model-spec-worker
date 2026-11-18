@@ -28,8 +28,12 @@ LEGACY_DISTRICTS = frozenset({'asm.business_district', 'asm.residential_district
 def declared_assumptions(context):
     """Frozen synthetic legal context is a premise, not a land-use measurement."""
     result = {}
-    if combined_district(context):
-        result['asm.way_within_business_or_residential_district'] = True
+    district = combined_district(context)
+    if district is not None:
+        result['asm.way_within_business_or_residential_district'] = district
+    outside = outside_business_district(context)
+    if outside is not None:
+        result['asm.way_outside_business_district'] = outside
     seen = set()
     for key, value in context.get('core_assumptions', []):
         if key in seen:
@@ -43,28 +47,72 @@ def declared_assumptions(context):
     return [[key, value] for key, value in result.items()]
 
 
+
+def validate_capture_context(context):
+    """Require defined other-area semantics in new authored captures only."""
+    values = declared_assumptions(context)
+    parent = context.get('scene_assumptions')
+    parent = parent if isinstance(parent, dict) else {}
+    categories = (context.get('district'), parent.get('district'))
+    other_area = any(value == 'other_area' or
+                     isinstance(value, dict) and value.get('classification') == 'other_area'
+                     for value in categories)
+    if other_area and combined_district(context) is not False:
+        explicit = dict(values).get('asm.way_within_business_or_residential_district') is False
+        provenance = context.get('provenance')
+        if not (explicit and context.get('scope') == 'whole_episode'
+                and isinstance(provenance, str) and provenance.strip()):
+            raise ValueError('New other_area authoring requires an explicit neither-business-nor-residential definition with whole_episode scope and provenance, or an explicit false combined premise with that scope and provenance')
+    return values
+
+
 def repair_assumptions(values, context=None):
     """Drop legacy shortcuts, preserving unrelated legal declarations and unknowns."""
     result = [[k, v] for k, v in values if k not in PHYSICAL_SHORTCUTS | LEGACY_DISTRICTS]
     removed = [k for k, _ in values if k in PHYSICAL_SHORTCUTS | LEGACY_DISTRICTS]
-    if context and combined_district(context):
+    district = combined_district(context) if context else None
+    if district is not None:
         key = 'asm.way_within_business_or_residential_district'
         old = dict(result)
-        if key in old and old[key] is not True:
+        if key in old and old[key] is not district:
             raise ValueError('Existing district premise contradicts frozen context')
         if key not in old:
-            result.append([key, True])
+            result.append([key, district])
     return result, removed
 
 
 def combined_district(context):
-    if context.get('district') == 'business_or_residential':
-        return True
+    top_level_union = context.get('district') == 'business_or_residential'
     parent = context.get('scene_assumptions')
     district = parent.get('district', {}) if isinstance(parent, dict) else {}
-    return (isinstance(district, dict) and district.get('external_authored_assumption') is True
-            and district.get('classification') in ('business_district', 'residence_district',
-                                                  'residential_district', 'business_or_residential'))
+    if not isinstance(district, dict) or district.get('external_authored_assumption') is not True:
+        return True if top_level_union else None
+    if district.get('classification') in ('business_district', 'residence_district',
+                                         'residential_district', 'business_or_residential'):
+        if district.get('neither_business_nor_residential') is True:
+            raise ValueError('Conflicting district classification')
+        return True
+    if (district.get('classification') == 'other_area'
+            and district.get('neither_business_nor_residential') is True
+            and district.get('scope') == 'whole_episode'
+            and isinstance(district.get('provenance'), str) and district['provenance'].strip()):
+        if top_level_union:
+            raise ValueError('Conflicting district classification')
+        return False
+    return True if top_level_union else None
+
+
+def outside_business_district(context):
+    """Read an explicit authored boolean; missing context never means false."""
+    parent = context.get('scene_assumptions')
+    parent = parent if isinstance(parent, dict) else {}
+    values = [source['outside_business_district'] for source in (context, parent)
+              if 'outside_business_district' in source]
+    if any(type(value) is not bool for value in values):
+        raise ValueError('Outside-business declaration requires an explicit boolean')
+    if values and any(value != values[0] for value in values):
+        raise ValueError('Conflicting outside-business declarations')
+    return values[0] if values else None
 
 
 def canonical_intents(records, equivalences=None):
@@ -83,6 +131,21 @@ def canonical_intents(records, equivalences=None):
                 raise ValueError('Conflicting intention after canonical mapping')
             values[target] = value
         record['values'] = list(map(list, values.items()))
+    return result
+
+
+def remap_intention_targets(records, replacements):
+    """Remap identity only; deduplicate equivalent declarations with scopes intact."""
+    import copy,json
+    result=[];seen=set()
+    for original in records:
+        record=copy.deepcopy(original);target=record['target'];visited=set()
+        while target in replacements:
+            if target in visited:raise ValueError('Cyclic intention target remap')
+            visited.add(target);target=replacements[target]
+        record['target']=target
+        key=json.dumps(dict(record,values=sorted(record.get('values',[]))),sort_keys=True)
+        if key not in seen:result.append(record);seen.add(key)
     return result
 
 
@@ -118,7 +181,7 @@ class RetainedContext:
     Controller flags, blinking lamps, case names and completed motion are not
     intention declarations. Sources are read through Evidence's hash checks.
     """
-    def __init__(self, evidence, first, recovery=None):
+    def __init__(self, evidence, first, recovery=None, *, original_scene=None, region_replacements=None):
         import copy
         import json
         from traffic_spec_adapter.roadways import boundary_key
@@ -153,16 +216,41 @@ class RetainedContext:
                 else:
                     self.context[key] = copy.deepcopy(value)
         self.premises = {}
+        seen_premises = set()
+        duplicate_premises = set()
         for key, value in self.context.get('core_assumptions', []):
+            if key in seen_premises:
+                duplicate_premises.add(key)
+                self.issues.append('Duplicate authored premise; not projected: '+key)
+            seen_premises.add(key)
             if key in LEGAL_PREMISES and type(value) is bool:
                 self.premises[key] = value
-        if combined_district(self.context):
+        try:
+            district = combined_district(self.context)
             key = 'asm.way_within_business_or_residential_district'
-            if self.premises.get(key) is False:
-                self.issues.append('Conflicting district classification; not projected')
-                self.premises.pop(key)
-            else:
-                self.premises[key] = True
+            if district is not None:
+                if key in self.premises and self.premises[key] is not district:
+                    self.issues.append('Conflicting district classification; not projected')
+                    self.premises.pop(key)
+                else:
+                    self.premises[key] = district
+        except ValueError as exc:
+            self.premises.pop('asm.way_within_business_or_residential_district', None)
+            self.issues.append(str(exc))
+        try:
+            outside = outside_business_district(self.context)
+            key = 'asm.way_outside_business_district'
+            if outside is not None:
+                if key in self.premises and self.premises[key] != outside:
+                    self.premises.pop(key)
+                    self.issues.append('Conflicting outside-business premise; not projected')
+                else:
+                    self.premises[key] = outside
+        except ValueError as exc:
+            self.premises.pop('asm.way_outside_business_district', None)
+            self.issues.append(str(exc))
+        for key in duplicate_premises:
+            self.premises.pop(key, None)
         binding = evidence.path('intent-role-bindings.json')
         roles = copy.deepcopy(self.context.get('intent_bindings', {}))
         roles.setdefault('vehicles', {}); roles.setdefault('regions', {})
@@ -195,10 +283,19 @@ class RetainedContext:
                 continue
             self.declarations.append(item)
         if recovery:
-            self.declarations.extend(validate_recovery(evidence,first,recovery))
+            self.declarations.extend(validate_recovery(evidence,original_scene if original_scene is not None else first,recovery))
             self.retired=set(recovery.get('retire_intention_ids',[]))
             self.scope_limits=copy.deepcopy(recovery.get('scope_limits',[]))
             self.sources.append('Evidence-bound supplementary controller-plan receipt')
+        if region_replacements:
+            self.declarations=remap_intention_targets(self.declarations,region_replacements)
+            self.scope_limits=remap_intention_targets(self.scope_limits,region_replacements)
+            for key,target in self.context.get('intent_bindings',{}).get('regions',{}).items():
+                visited=set()
+                while target in region_replacements:
+                    if target in visited:raise ValueError('Cyclic context region remap')
+                    visited.add(target);target=region_replacements[target]
+                self.context['intent_bindings']['regions'][key]=target
         self.context['intent_declarations'] = self.declarations
         if any(isinstance(d['scope'], dict) and 'original_frames' in d['scope'] for d in self.declarations+self.scope_limits):
             for row in evidence.rows('video_frames.jsonl'):

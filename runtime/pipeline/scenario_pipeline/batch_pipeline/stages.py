@@ -464,6 +464,10 @@ def validate(stage, result, inputs):
                 from intentions import validate_context
                 configuration=json.loads(f['content'])
                 validate_context(configuration.get('authored_test_context',{}), resolve_bindings=False)
+                from context_catalogue import validate_capture_context
+                validate_capture_context(configuration.get('authored_test_context',{}))
+                if isinstance(configuration.get('scene_assumptions'),dict):
+                    validate_capture_context(configuration['scene_assumptions'])
             if p.suffix == '.py':
                 compile(f['content'],str(p),'exec')
         from .construction_reuse import validate_contract

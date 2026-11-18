@@ -22,7 +22,10 @@ def validate(repo,folder,entry):
         check=result.get('physical_checks',{}).get('maneuver',{})
         if check.get('status')!=expected or not check.get('method') or not check.get('sources'):raise ValueError('Physical completion lacks measured evidence')
         if result.get('maneuver_completed')!=(expected=='met'):raise ValueError('Completion boolean differs from evidence status')
-        if expected=='met' and (not result.get('realized_observables') or result.get('provenance_kind')!='native'):raise ValueError('Complete fixture lacks realized Native observations')
+        if expected=='met' and not result.get('realized_observables'):
+            raise ValueError('Complete fixture lacks measured diagnostic observations')
+        if result.get('provenance_kind')!='synthetic_fixture' or result.get('diagnostic_fixture') is not True:
+            raise ValueError('CPU physical proof must identify its synthetic fixture; Native claims require actual capture')
     life=proof.get('lifecycle',{})
     if life.get('events')!=['capture_finished','encoders_closed','restoration_verified','native_exit','owner_released','saved_processing_started'] or life.get('exit_code')!=0:raise ValueError('Saved processing precedes Native ownership closure')
     if not life.get('log') or not life.get('log_sha256'):

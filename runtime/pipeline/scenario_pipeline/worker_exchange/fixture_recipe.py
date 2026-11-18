@@ -7,6 +7,28 @@ from .fixture_generator import FORBIDDEN, inspect as inspect_generated, generate
 OUTPUTS = FORBIDDEN
 
 
+def fixture_fingerprint(folder, specification=None):
+    """Hash source bytes and decoded diagnostic pixels, never encoder bytes.
+
+    Generated videos are CPU fixtures. Native acquisition and every explicit
+    source retain their ordinary byte hashes in the returned inventory.
+    """
+    files = tree(folder)
+    if specification:
+        from .media import audit
+        for video in specification['videos']:
+            relative = video['path']
+            decoded = audit(within(folder, relative), video['frames'])
+            files[relative] = digest({
+                'kind': 'generated-diagnostic-video',
+                'frames': decoded['frames'],
+                'dimensions': decoded['dimensions'],
+                'fps': video['fps'],
+                'rgb_sequence_sha256': decoded['rgb_sequence_sha256'],
+            })
+    return files
+
+
 def inspect(repo, recipe_path):
     repo = Path(repo).resolve()
     recipe_path = Path(recipe_path).resolve()
@@ -61,10 +83,14 @@ def materialize(repo, recipe_path, output):
         shutil.copyfile(source, target)
         if sha(target) != expected[relative] or sha(source) != expected[relative]:
             raise ValueError('Fixture source changed during materialization')
+    specification = None
     if recipe.get('generator') is not None:
         spec = within(repo, recipe['generator']['source'])
-        generate(read(spec), output)
+        specification = read(spec)
+        generate(specification, output)
         if sha(spec) != recipe['generator']['sha256']:
             raise ValueError('Diagnostic specification changed during generation')
-    return {'recipe_sha256': sha(recipe_path), 'fixture_sha256': digest(tree(output)),
+    inventory = fixture_fingerprint(output, specification)
+    return {'recipe_sha256': sha(recipe_path), 'fixture_sha256': digest(inventory),
+            'fixture_manifest': inventory,
             'output': str(output)}
