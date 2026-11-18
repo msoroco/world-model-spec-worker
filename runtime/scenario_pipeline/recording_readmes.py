@@ -63,18 +63,36 @@ def setting(name, assignment):
     return title + ': ' + compact(value) + (' ' + unit if unit else '')
 
 
+def outcome_presentation(record):
+    authority = record.get('authoritative_label')
+    if authority is None:
+        return None
+    from production_verdicts import presentation, validate_presentation
+    projected = presentation(authority)
+    saved = record['saved']
+    if saved.get('label_record') is not None:
+        validate_presentation(authority, saved['label_record'])
+    for source in (saved,record['metadata']):
+        if source.get('label_record') is not None:validate_presentation(authority,source['label_record'])
+        for key in ('expected_label', 'judgment_sweep'):
+            if key in source and source[key] != authority[key]:
+                raise ValueError('README label disagrees with authoritative record: '+key)
+    return projected
+
+
 def final_label(record):
+    projected = outcome_presentation(record)
+    if projected is not None:
+        return projected['expected_label'] or 'Outcome unavailable'
     saved = record['saved']
     label = saved.get('expected_label', record['metadata'].get('expected_label'))
     if label is None:
-        return 'Unresolved (no label assigned)' if record['judgments'] or saved.get('judgment_sweep') else 'Not assigned in saved metadata'
+        return 'Outcome unavailable (source classification pending)'
     labels = {'compliant': 'compliant', 'non_compliant': 'violation', 'violation': 'violation',
               'not_applicable': 'not applicable', 'not applicable': 'not applicable'}
-    if label == 'inconclusive':
-        if not record['judgments']:
-            raise ValueError('An objective inconclusive label needs evidence review before publication')
-        return 'Unresolved (judgment call)'
-    return labels.get(label, words(label))
+    if label not in labels:
+        raise ValueError('Saved outcome needs source-backed v2 classification before publication')
+    return labels[label]
 
 
 def differences(case):
@@ -159,6 +177,11 @@ class RecordingReadmes:
     def load_record(self, rid, member):
         metadata = read(self.root/'recordings'/rid/'metadata.json')
         saved = metadata.get('acceptance') or metadata.get('published_record') or {}
+        label_path=self.root/'recordings'/rid/'evidence/expected_label.json'
+        authority=read(label_path) if label_path.is_file() else None
+        if authority is not None and authority.get('format')!='production-verdict-v2':authority=None
+        if saved.get('label_record') is not None and authority is None:
+            raise ValueError('Authoritative label file is missing for README: '+rid)
         identity = saved.get('provenance', {}).get('completion_binding', {})
         run = metadata.get('campaign', member.get('campaign'))
         case = {'case_id': metadata.get('case_id', member['case_id']),
@@ -199,7 +222,7 @@ class RecordingReadmes:
         assignments.update(saved.get('variable_assignments', {}))
         case = dict(case, variable_assignments=assignments)
         return {'rid': rid, 'member': member, 'metadata': metadata, 'saved': saved,
-                'case': case, 'law': law or self.law(member['law_id']),
+                'case': case, 'law': law or self.law(member['law_id']),'authoritative_label':authority,
                 'judgments': sorted(set(judgments)), 'source': source or 'Saved recording metadata',
                 'group': group_id(case, saved), 'reuse': None}
 
@@ -299,10 +322,8 @@ class RecordingReadmes:
                 lines += ['Older metadata has no explicit comparison ID; this viewing group uses the shared case-name stem and does not assert configuration equivalence.', '']
             if names:
                 lines += ['Compare: '+', '.join(NAMES.get(n, (words(n), ''))[0] for n in names)+'.', '']
-            judgments = sorted({j for r in rows for j in r['judgments']})
-            judge = '; '.join('“'+words(j)+'”' for j in judgments) or 'No unresolved judgment listed for this comparison'
-            lines += ['| Case | Video / metadata | Test setting or branch | Compared against | Judgment call | Recorded label |',
-                      '| --- | --- | --- | --- | --- | --- |']
+            lines += ['| Case | Video / metadata | Test setting or branch | Compared against | Legal judgment | Sweep member | Processing reasons | Recorded label |',
+                      '| --- | --- | --- | --- | --- | --- | --- | --- |']
             for i, record in enumerate(rows, 1):
                 rid = record['rid']
                 rel = os.path.relpath(self.root/'recordings'/rid, dest)
@@ -312,7 +333,15 @@ class RecordingReadmes:
                 description = describe(record, names, rows)
                 if record['reuse']:
                     description += ' (explicitly reused original; [reuse receipt]('+os.path.relpath(record['reuse'], dest)+'))'
-                lines += ['| '+str(i)+' | '+video+' | '+cell(description)+' | '+(('Case ' if len(peer_ids)==1 else 'Cases ')+peers+' in this table' if len(rows)>1 else peers)+' | '+cell(judge)+' | '+final_label(record)+' |']
+                projected=outcome_presentation(record)
+                judge='Source classification pending';sweep='Unknown';processing='Source classification pending'
+                if projected is not None:
+                    legal=projected['legal_judgment']
+                    judge='; '.join(ref['phrase'] for ref in legal['references']) or words(legal['classification'])
+                    member=projected['sweep_membership']['is_member']
+                    sweep='Unknown' if member is None else 'Yes' if member else 'No'
+                    processing=', '.join(projected['processing_reasons']) or 'None'
+                lines += ['| '+str(i)+' | '+video+' | '+cell(description)+' | '+(('Case ' if len(peer_ids)==1 else 'Cases ')+peers+' in this table' if len(rows)>1 else peers)+' | '+cell(judge)+' | '+sweep+' | '+cell(processing)+' | '+final_label(record)+' |']
             lines += ['', 'Case identities: '+ '; '.join(str(i)+': `'+r['case']['case_id']+'`' for i, r in enumerate(rows, 1))+'.', '']
         return lines
 

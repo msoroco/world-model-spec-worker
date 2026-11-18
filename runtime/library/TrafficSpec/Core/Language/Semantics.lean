@@ -403,6 +403,13 @@ def constOf (t : Term) (arr : Array QR) : Except UnknownReason Q := do
   if !Term.isConstant t then throw (.malformed "parameter is not a constant term")
   arr[0]?.getD (.error .outOfRange)
 
+/-- The value of a heading change's step bound: a literal or a reading parameter, read as `constOf`
+    reads a constant; any other term is malformed. -/
+def stepOf (t : Term) (arr : Array QR) : Except UnknownReason Q :=
+  match t with
+  | .lit _ _ | .param _ => arr[0]?.getD (.error .outOfRange)
+  | _ => .error (.malformed "heading_since step bound is not a literal or a reading parameter")
+
 /-- The subject variable of a window: needed for path windows, irrelevant for time windows. -/
 def subjectFor (β : Binding) (m : Measure) (v : String) : Except UnknownReason TrackId :=
   match m with
@@ -515,6 +522,12 @@ mutual
       | none => constE c.n (.unboundVariable subj)
       | some x => Primitives.distanceWhile c.d x (evalAll c φ)
     | .sinceRise φ => sinceRiseAll c.d.times (evalAll c φ)
+    | .headingSince subj g ψ =>
+      match c.β.track subj with
+      | none => constE c.n (.unboundVariable subj)
+      | some x => liftQ c.n do
+          let gv ← stepOf g (evalTAll c g)
+          pure (Primitives.headingSince c.d x gv (evalAll c ψ))
     | .aggregate op v φ t =>
       let members := (usersOf c).map fun u =>
         let c' := c.bindVar v (.track u)
@@ -706,6 +719,13 @@ mutual
         · exact size_constE _ _
         · rw [Primitives.size_distanceWhile]; exact size_evalAll c φ
     | .sinceRise φ => by rw [evalTAll, Temporal.size_sinceRiseAll]; exact size_evalAll c φ
+    | .headingSince _ g ψ => by
+        rw [evalTAll]; split
+        · exact size_constE _ _
+        · apply size_liftQ; intro a h
+          cases hg : stepOf g (evalTAll c g) <;> simp only [hg, bind, Except.bind, pure, Except.pure] at h <;>
+            try contradiction
+          cases h; rw [Primitives.size_headingSince]; exact size_evalAll c ψ
     | .aggregate _ _ _ _ => by rw [evalTAll]; simp
     | .add a b => by rw [evalTAll, size_qzip, size_evalTAll c a, size_evalTAll c b, Nat.min_self]
     | .sub a b => by rw [evalTAll, size_qzip, size_evalTAll c a, size_evalTAll c b, Nat.min_self]
@@ -855,6 +875,11 @@ theorem evalAll_rule (id : String) (map : List (String × String)) (h : (c.compo
 theorem evalAll_ruleApplies (id : String) (map : List (String × String)) (h : (c.compose id map c.β true).size = c.n) :
     evalAll c (.ruleApplies id map) = c.compose id map c.β true := by rw [evalAll]; simp [h]
 
+/-- The heading-change term is the accumulation operator over its onset's values. -/
+theorem evalTAll_headingSince (s : String) (g : Term) (x : TrackId) (gv : Q)
+    (hx : c.β.track s = some x) (hg : stepOf g (evalTAll c g) = .ok gv) :
+    evalTAll c (.headingSince s g ψ) = Primitives.headingSince c.d x gv (evalAll c ψ) := by
+  rw [evalTAll]; simp only [hx, hg, liftQ, bind, Except.bind, pure, Except.pure]
 /-- Unknown is absorbing for `not`, pointwise. -/
 theorem eval_not_u (i : Nat) (h : (eval c i φ).v = .u) (hi : i < (evalAll c φ).size) : (eval c i (.not φ)).v = .u := by
   unfold eval at *

@@ -260,6 +260,9 @@ class DeliveryHandoffTests(unittest.TestCase):
                          'Local campaign integration is outside portable worker runtime')
     def test_local_acceptance_references_one_recording_in_both_sets(self):
         from worker_exchange.local_delivery import accept
+        review_archive_context=tempfile.TemporaryDirectory()
+        self.addCleanup(review_archive_context.cleanup)
+        review_archive=pathlib.Path(review_archive_context.name)/'generation'
         root=self.repo/'artifacts';(root/'state').mkdir(parents=True)
         db=root/'state/delivery.sqlite';db.touch()
         write(self.repo/'batch.json',{'assignments':{self.aid:{}}})
@@ -276,6 +279,8 @@ class DeliveryHandoffTests(unittest.TestCase):
               'case_id':self.case_ids[0],'status':'recording','phases':{}})
         write(attempt/'result.json',{'completion':{'binding':{}}})
         write(attempt/'traffic_spec/trace.json',{'scenes':[{'t':50}]})
+        write(attempt/'traffic_spec/manifest.json',{'fixture':'source-bound capability'})
+        write(root/'inputs/shared/manifest.json',{'fixture':'source-bound capability'})
         (attempt/'raw.mkv').write_bytes(b'fixture-video')
         (attempt/'video_frames.jsonl').write_text(json.dumps({'video_frame':0,'time_s':0.05})+'\n')
         auditor=root/'state/operations/worker_exchange/batch/audit/delivery_audit.py'
@@ -322,16 +327,50 @@ class DeliveryHandoffTests(unittest.TestCase):
             audit['passed']=False
             write(attempt/'audit.json',audit)
             with self.assertRaisesRegex(ValueError,'audit incomplete'):
-                accept(root,self.repo,'batch',db,'run',self.aid,self.case_ids[0],7,1,attempt/'audit.json')
+                accept(root,self.repo,'batch',db,'run',self.aid,self.case_ids[0],7,1,attempt/'audit.json',review_archive=review_archive)
             for sid in ('demo-test','full-test'):
                 self.assertEqual(read(root/'sets'/sid/'selection.json')['members'],[])
             audit['passed']=True
             write(attempt/'audit.json',audit)
-            result=accept(root,self.repo,'batch',db,'run',self.aid,self.case_ids[0],7,1,attempt/'audit.json')
+            with self.assertRaisesRegex(ValueError,'Source-bound outcome record missing'):
+                accept(root,self.repo,'batch',db,'run',self.aid,self.case_ids[0],7,1,attempt/'audit.json',review_archive=review_archive)
+            for sid in ('demo-test','full-test'):
+                self.assertEqual(read(root/'sets'/sid/'selection.json')['members'],[])
+            # The imported outcome must already carry source-bound authority;
+            # delivery approval does not supply a classification.
+            from production_verdicts import authoritative_record
+            case={'case_id':self.case_ids[0],'target_law_id':'LAW-1',
+                  'target_type':'boundary_probe','unresolved_judgment_calls':[]}
+            definition=attempt/'accepted_case_definition.json'
+            write(definition,case)
+            authority=authoritative_record(case,{'case_id':case['case_id'],
+                'target_law_id':'LAW-1','expected_label':None,
+                'processing_reasons':['unsupported_evaluation']},
+                recording_identity={'recording_id':rid},
+                source_hashes={'definition_sha256':sha(definition),
+                               'trace_sha256':audit['trace_sha256']})
+            authority_path=attempt/'expected_label.json'
+            write(authority_path,authority)
+            authority_bytes=authority_path.read_bytes()
+            corrupted=json.loads(authority_bytes)
+            corrupted['source_hashes']['trace_sha256']='f'*64
+            write(authority_path,corrupted)
+            with self.assertRaises(ValueError):
+                accept(root,self.repo,'batch',db,'run',self.aid,self.case_ids[0],7,1,attempt/'audit.json',review_archive=review_archive)
+            for sid in ('demo-test','full-test'):
+                self.assertEqual(read(root/'sets'/sid/'selection.json')['members'],[])
+            authority_path.write_bytes(authority_bytes)
+            result=accept(root,self.repo,'batch',db,'run',self.aid,self.case_ids[0],7,1,attempt/'audit.json',review_archive=review_archive)
+            self.assertEqual(authority_path.read_bytes(),authority_bytes)
+            from production_verdicts import presentation
+            accepted=read(attempt.parent/'metadata.json')
+            self.assertEqual(accepted['label_record'],presentation(authority))
+            self.assertEqual(accepted['acceptance']['label_record'],presentation(authority))
+            self.assertIsNone(accepted['expected_label'])
             decode_video.assert_not_called()
             auditor.write_text('AUDITOR_VERSION = 2\n')
             with self.assertRaisesRegex(ValueError,'auditor revision changed'):
-                accept(root,self.repo,'batch',db,'run',self.aid,self.case_ids[0],7,1,attempt/'audit.json')
+                accept(root,self.repo,'batch',db,'run',self.aid,self.case_ids[0],7,1,attempt/'audit.json',review_archive=review_archive)
         self.assertEqual(result['recording_id'],rid)
         self.assertEqual(read(attempt/'delivery-primary-bound-audit.json')['video_sha256'],sha(attempt/'raw.mkv'))
         for sid in ('demo-test','full-test'):

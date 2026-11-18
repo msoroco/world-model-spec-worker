@@ -108,6 +108,7 @@ mutual
     | .quantity c args ps => .quantity c (args.map σ.arg) (ps.map (substT σ))
     | .distanceWhile s φ => .distanceWhile (σ.name s) (substF σ φ)
     | .sinceRise φ => .sinceRise (substF σ φ)
+    | .headingSince s g ψ => .headingSince (σ.name s) (substT σ g) (substF σ ψ)
     | .aggregate op v φ t => let (σ', w) := σ.bind v; .aggregate op w (substF σ' φ) (substT σ' t)
     | .add a b => .add (substT σ a) (substT σ b)
     | .sub a b => .sub (substT σ a) (substT σ b)
@@ -191,6 +192,7 @@ mutual
       | _, _ => pure (.quantity n args ps')
     | .distanceWhile s φ => do pure (.distanceWhile s (← expandF cs fuel φ))
     | .sinceRise φ => do pure (.sinceRise (← expandF cs fuel φ))
+    | .headingSince s g ψ => do pure (.headingSince s (← expandT cs fuel g) (← expandF cs fuel ψ))
     | .aggregate op v φ t => do pure (.aggregate op v (← expandF cs fuel φ) (← expandT cs fuel t))
     | .add a b => do pure (.add (← expandT cs fuel a) (← expandT cs fuel b))
     | .sub a b => do pure (.sub (← expandT cs fuel a) (← expandT cs fuel b))
@@ -249,6 +251,21 @@ def expandRule (cs : List Concept) (r : Rule) : Rule :=
   { r with binders := r.binders.map fun b => { b with cls := expand cs b.cls }
            applicability := expand cs r.applicability
            obligation := expand cs r.obligation }
+
+/-- The aggregate ids a rule names, its concept calls expanded to any depth: the ids the concepts'
+    bodies name, with the actuals of each call substituted. -/
+def ruleAggregateIds (cs : List Concept) (r : Rule) : List String :=
+  ((expandRule cs r).formulas.flatMap Formula.aggregateIds).eraseDups
+
+/-- The aggregate ids a concept's body names, its calls expanded, over every sample instantiation
+    of its literal formals. -/
+def aggregateIds (cs : List Concept) (c : Concept) : List String :=
+  let ps : List Term := c.params.map fun p => Term.param p.name
+  ((samples c).flatMap fun args =>
+    match instantiate c args ps "aggregates" with
+    | some (.formula φ) => Formula.aggregateIds (expand cs φ)
+    | some (.quantity t) => Formula.termAggregateIds (expandTerm cs t)
+    | none => Formula.aggregateIds (expand cs c.bodyFormula)).eraseDups
 
 -- ---------------------------------------------------------------------------------------------
 -- Reference cycles

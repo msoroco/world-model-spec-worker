@@ -1,5 +1,4 @@
 """Deterministic diagnostic assets from text; never acquired physical evidence."""
-import pickle
 import subprocess
 from pathlib import Path
 from .common import within, sha
@@ -21,6 +20,8 @@ def inspect(spec):
     for graph in spec['graphs']:
         if set(graph) != {'path', 'attributes', 'nodes', 'edges'}:
             raise ValueError('Diagnostic graph needs path, attributes, nodes and edges')
+        if not graph['path'].endswith('.adapter.json'):
+            raise ValueError('Diagnostic graphs require the live adapter JSON format')
         paths.append(graph['path'])
     for video in spec['videos']:
         if set(video) != {'path', 'frames', 'width', 'height', 'fps', 'color'}:
@@ -40,7 +41,7 @@ def inspect(spec):
 
 
 def _graph(item):
-    """Reconstruct diagnostic data without pickling version-specific NX internals."""
+    """Reconstruct typed diagnostic data for the shared JSON projection."""
     import networkx as nx
     def attributes(value):
         if isinstance(value, dict):
@@ -60,15 +61,6 @@ def _graph(item):
     return graph
 
 
-class _GraphInput:
-    def __init__(self, item):
-        self.item = item
-
-    def __reduce__(self):
-        from importlib import import_module
-        return import_module('worker_exchange.fixture_generator')._graph, (self.item,)
-
-
 def generate(spec, output):
     """Write inventoried text, simple graphs and lossless color frames; no scripts."""
     output = Path(output)
@@ -81,7 +73,8 @@ def generate(spec, output):
         target.write_text(value, encoding='utf-8')
     for item in spec['graphs']:
         target = within(output, item['path']); target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_bytes(pickle.dumps(_GraphInput(item), protocol=4))
+        from traffic_spec_adapter.adapter import write_adapter_graph
+        write_adapter_graph(_graph(item),target)
     for item in spec['videos']:
         target = within(output, item['path']); target.parent.mkdir(parents=True, exist_ok=True)
         if target.suffix != '.mkv':

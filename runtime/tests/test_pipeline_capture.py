@@ -39,19 +39,25 @@ class CaptureTests(unittest.TestCase):
             obs_spec=importlib.util.spec_from_file_location('original_observations',observation_path);observations=importlib.util.module_from_spec(obs_spec);obs_spec.loader.exec_module(observations)
             path=Path(__file__).resolve().parents[1]/'python/pipeline_capture.py'
             spec=importlib.util.spec_from_file_location('capture_under_test',path);module=importlib.util.module_from_spec(spec)
-            with patch.dict('sys.modules',{'scene_graph_collector':collector_module,'carla_sgg':sgg_module,'carla_sgg.sgg':native,'original_observations':observations}):
+            law_evidence=types.ModuleType('carla_sgg.law_evidence');law_evidence.__file__=str(generator);law_evidence.actor_visibility=lambda *a,**k:None
+            with patch.dict('sys.modules',{'carla_sgg.law_evidence':law_evidence,'scene_graph_collector':collector_module,'carla_sgg':sgg_module,'carla_sgg.sgg':native,'original_observations':observations}):
                 spec.loader.exec_module(module)
                 capture=module.PipelineCapture(client,ego,root/'attempt','case')
-                self.assertFalse(capture.visibility)
+                self.assertTrue(capture.visibility)
                 with self.assertRaisesRegex(RuntimeError,'current original frame'):
                     capture.capture(41,0.)
                 row=capture.capture(42,0.)
                 self.assertEqual(row['speed_mps'],5.)
+                from traffic_spec_adapter.acceleration import METHOD
+                self.assertEqual(row['acceleration_method'],METHOD)
+                self.assertEqual(row['acceleration_projection']['value_mps2'],0.)
                 self.assertEqual(row['position_m'],[1,2,3])
                 capture.close();capture.close()
             self.assertEqual(calls,[('start',True),('stop',)])
             manifest=json.loads((root/'attempt/capture/manifest.json').read_text())
             self.assertTrue(manifest['extraction_confirmed'])
+            self.assertEqual(manifest['acceleration_method'],METHOD)
+            self.assertIn('acceleration.py',manifest['source_components'])
             event=json.loads((root/'attempt/capture/evidence.jsonl').read_text())
             self.assertEqual(event['original_frame'],event['replay_frame'])
             self.assertEqual(event['original_observations']['participants'][0]['speed_mps'],5.)
@@ -77,8 +83,7 @@ class CaptureTests(unittest.TestCase):
         self.assertEqual(module.device_state(light)['stop_waypoints'][0]['position_m'],[11.5,1,0])
         self.assertEqual(len(module.device_state(sign)['trigger_vertices_m']),8)
         del sign.trigger_volume
-        with self.assertRaisesRegex(RuntimeError,'no trigger volume'):
-            module.device_state(sign)
+        self.assertIn('trigger_volume',module.device_state(sign)['observation_errors'])
 
     def test_visibility_requirements_override_optional_false_flag(self):
         import os
@@ -90,6 +95,76 @@ class CaptureTests(unittest.TestCase):
         with patch.dict(os.environ,{'SCENARIO_REQUIRED_CAPTURE_ATOMS':'["st.sight_distance"]'}):
             self.assertTrue(module.visibility_required())
         with patch.dict(os.environ,{'SCENARIO_REQUIRED_CAPTURE_ATOMS':'[]'}):
-            self.assertFalse(module.visibility_required())
+            self.assertTrue(module.visibility_required())
             self.assertTrue(module.visibility_required(['st.sight_distance']))
-            self.assertFalse(module.visibility_required(['kin.speed']))
+            self.assertTrue(module.visibility_required(['kin.speed']))
+
+class WheelReadbackTests(unittest.TestCase):
+    def test_pair_readbacks_and_failure_are_preserved_without_fallback(self):
+        path = Path(__file__).resolve().parents[1]/'python/original_observations.py'
+        spec = importlib.util.spec_from_file_location('wheel_capture_test', path)
+        module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
+        carla = types.ModuleType('carla')
+        carla.VehicleWheelLocation = types.SimpleNamespace(FL_Wheel='left', FR_Wheel='right', Front_Wheel='front')
+        actor = types.SimpleNamespace(type_id='vehicle.test', attributes={'number_of_wheels':'4'})
+        vector = lambda x,y,z: types.SimpleNamespace(x=x,y=y,z=z)
+        transform = types.SimpleNamespace(location=vector(0,0,0),rotation=types.SimpleNamespace(yaw=0),get_forward_vector=lambda:vector(1,0,0))
+        actor.id=1; actor.get_transform=lambda:transform
+        actor.get_velocity=lambda:vector(0,0,0); actor.get_acceleration=lambda:vector(0,0,0)
+        actor.bounding_box=types.SimpleNamespace(get_world_vertices=lambda t:[])
+        native=types.ModuleType('carla_sgg.sgg');native.copy_carla_vehicle_lights=lambda d,a:None
+        actor.get_wheel_steer_angle=lambda wheel:{'left':-25.,'right':-20.}[wheel]
+        with patch.dict('sys.modules', {'carla':carla,'carla_sgg.sgg':native}):
+            value=module.actor_state(actor)
+            self.assertEqual(value['wheel_steer_angles_deg'], {'front_left':-25.,'front_right':-20.})
+            actor.get_wheel_steer_angle=lambda wheel: float('nan') if wheel=='right' else -25.
+            value=module.actor_state(actor)
+            self.assertEqual(value['wheel_steer_angles_deg'], {'front_left':-25.})
+            self.assertIn('front_right',value['wheel_angle_errors'])
+            self.assertNotIn('wheel_steer_angle_deg',value)
+
+
+class NativeControlInventoryTests(unittest.TestCase):
+    def module(self):
+        path=Path(__file__).resolve().parents[1]/'python/original_observations.py'
+        spec=importlib.util.spec_from_file_location('native_inventory_test',path)
+        module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+        return module
+
+    def test_partial_environment_geometry_failure_retains_identity_and_no_absence_claim(self):
+        module=self.module();vector=lambda x,y,z:types.SimpleNamespace(x=x,y=y,z=z)
+        rotation=types.SimpleNamespace(pitch=0,yaw=0,roll=0)
+        box=types.SimpleNamespace(location=vector(0,0,0),extent=vector(1,1,1),rotation=rotation,
+                                  get_local_vertices=lambda:[vector(0,0,0),vector(1,1,1)])
+        transform=types.SimpleNamespace(location=vector(0,0,0),rotation=rotation)
+        good=types.SimpleNamespace(id=1,name='native-sign',transform=transform,bounding_box=box)
+        bad=types.SimpleNamespace(id=2,name='native-unreadable',transform=transform)
+        world=types.SimpleNamespace(get_environment_objects=lambda label:[good,bad]if label=='signs'else[],
+                                    get_map=lambda:types.SimpleNamespace(get_all_landmarks=lambda:[]))
+        carla=types.ModuleType('carla');carla.CityObjectLabel=types.SimpleNamespace(TrafficSigns='signs',TrafficLight='lights')
+        with patch.dict('sys.modules',{'carla':carla}):result=module.map_control_inventory(world)
+        signs=result['environment_queries']['TrafficSigns']
+        self.assertTrue(signs['query_complete'])
+        self.assertEqual([entry['native_id']for entry in signs['objects']],[1,2])
+        self.assertIn('geometry',signs['objects'][1]['observation_errors'])
+        self.assertFalse(result['physical_absence_verified'])
+        self.assertIsNone(signs['objects'][0]['enabled'])
+        self.assertEqual(result['environment_queries']['TrafficLight']['objects'],[])
+        self.assertFalse(result['physical_absence_verified'])
+
+    def test_state_failure_keeps_actor_and_each_head_and_removes_stale_native_state(self):
+        import networkx as nx
+        module=self.module();vector=lambda x,y,z:types.SimpleNamespace(x=x,y=y,z=z)
+        def failed():raise RuntimeError('native state read failed')
+        actor=types.SimpleNamespace(id=5,type_id='traffic.traffic_light',
+            get_transform=lambda:types.SimpleNamespace(location=vector(0,0,0)),get_state=failed,
+            get_light_boxes=lambda:[],get_stop_waypoints=lambda:[])
+        record=module.device_state(actor)
+        self.assertEqual(record['actor_id'],5)
+        self.assertNotIn('state',record)
+        self.assertIn('state',record['observation_errors'])
+        self.assertEqual(record['light_boxes'],[])
+        graph=nx.DiGraph();graph.add_node('head',sem_class='traffic.traffic_light',carla_id=5,light_state='Green')
+        module.merge_graph(graph,{'participants':[],'devices':[record]})
+        self.assertNotIn('light_state',graph.nodes['head'])
+        self.assertEqual(graph.nodes['head']['original_device_observation'],record)

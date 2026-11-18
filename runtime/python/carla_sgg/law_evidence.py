@@ -167,7 +167,7 @@ def actor_visibility(world, actor, distance_m=152.4, max_distance_m=230.,
         entry = {'direction_sign': sign, 'lane_id': lane.lane_id}
         eye = observer(distance_m)
         if eye is None:
-            entry['unknown_reason'] = 'probe route missing or ambiguous'
+            entry['probe_unknown_reason'] = 'probe route missing or ambiguous'
         else:
             entry['body_rays_at_probe'] = [ray_evidence(world, actor, eye, p) for p in points]
             entry['any_sample_clear_at_probe'] = any(r['clear'] for r in entry['body_rays_at_probe'])

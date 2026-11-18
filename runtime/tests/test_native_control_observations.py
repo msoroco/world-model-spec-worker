@@ -40,3 +40,28 @@ class NativeControlTests(unittest.TestCase):
     def test_contradicting_signal_cannot_be_hidden_by_absence_receipt(self):
         obs=self.read();self.scene['devices']=[{'kind':'traffic_signal'}]
         with self.assertRaises(ValueError):project(self.scene,'dev.traffic_signal',obs['dev.traffic_signal'][0])
+
+
+class CompleteLaneAssignmentTests(unittest.TestCase):
+    def test_documented_lane_scope_needs_no_negative_junction_statement(self):
+        from traffic_spec_adapter.native_control_observations import complete_lane_assignment
+        row={'blueprint':'traffic.traffic_light','affected_lanes':[[1,0,-1],[2,0,1]]}
+        self.assertEqual(complete_lane_assignment(row),[(1,0,-1),(2,0,1)])
+        row.update(group_traffic_lights=[4,5],junction_id=10)
+        self.assertEqual(complete_lane_assignment(row),[(1,0,-1),(2,0,1)])
+
+    def test_unknown_role_and_unresolved_empty_remain_unknown(self):
+        from traffic_spec_adapter.native_control_observations import complete_lane_assignment
+        for row in ({'blueprint':'traffic.stop','affected_lanes':[[1,0,-1]]},
+                    {'blueprint':'traffic.traffic_light','affected_lanes':[]},
+                    {'blueprint':'traffic.traffic_light','stop_waypoints':[[1,0,-1]]}):
+            before=json.dumps(row,sort_keys=True)
+            self.assertIsNone(complete_lane_assignment(row))
+            self.assertEqual(json.dumps(row,sort_keys=True),before)
+
+    def test_actual_inconsistency_is_rejected(self):
+        from traffic_spec_adapter.native_control_observations import complete_lane_assignment
+        for row in ({'blueprint':'traffic.traffic_light','affected_lanes':[[1,0,False]]},
+                    {'blueprint':'traffic.traffic_light','affected_lanes':[[1,0,-1]],
+                     'observation_errors':{'affected_lanes':'failed'}}):
+            with self.assertRaises(ValueError):complete_lane_assignment(row)

@@ -33,4 +33,5 @@ def required_capture_atoms(bindings, templates, case):
     channels = case.get('recording_description', {}).get('channels', [])
     if any(c.get('name') in ('st.sight_distance', 'sight_distance') for c in channels):
         atoms.add('st.sight_distance')
-    return sorted(atoms)
+    from traffic_spec_adapter.atom_contract import COMMON_CAPTURE_ATOMS
+    return sorted(atoms | COMMON_CAPTURE_ATOMS)

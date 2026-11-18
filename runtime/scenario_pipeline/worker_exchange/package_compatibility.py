@@ -21,7 +21,7 @@ def check_source_packets(config, paths):
     missing={PACKET_FILES[p] for p in packets}-set(paths)
     if missing:raise ValueError('Diagnostic fixture missing declared source packet: '+','.join(sorted(missing)))
 
-def _process_fixture(manifest,case,fixture,output,library,validator,candidate='primary'):
+def _process_fixture(manifest,case,fixture,output,library,validator,candidate='primary',source=None):
     manifest=Path(manifest).resolve();output=Path(output).resolve();library=Path(library).resolve();validator=Path(validator).resolve()
     entries=[c for c in read(manifest)['cases'] if c['case_id']==case]
     if len(entries)!=1:raise ValueError('Select exact case')
@@ -30,7 +30,8 @@ def _process_fixture(manifest,case,fixture,output,library,validator,candidate='p
     _, selected, _ = select(manifest, case, candidate)
     analysis_path=procedure.get('entrypoint')
     if not analysis_path:raise ValueError('Executable finalization entrypoint required')
-    fixture=Path(fixture).resolve();fixture_hash=digest(tree(fixture))
+    fixture=Path(fixture).resolve()
+    if source is None:raise ValueError('Materialized fixture fingerprint required')
     proposal=materialize(manifest,case,output,candidate)
     for p in fixture.iterdir():
         if p.name in ('result.json','analysis-report.json','compatibility.json'):raise ValueError('Fixture cannot supply outputs')
@@ -60,7 +61,7 @@ def _process_fixture(manifest,case,fixture,output,library,validator,candidate='p
     process(output,output/'converted',library,validator,diagnostic_fixture=True)
     video=render(output,output/'converted',request['case'])
     audit(video['video'],count,receipt=output/'final-decode.json')
-    receipt={'format':'worker-package-compatibility','case_id':case,'candidate_id':candidate,'construction_sha256':selected['construction_sha256'],'runtime_manifest_sha256':read(manifest)['runtime_manifest_sha256'],'fixture_sha256':fixture_hash,'passed':True,'checks':sorted(CHECKS),'scope':'diagnostic software compatibility only','analysis_sha256':sha(analysis),'fixture_manifest':tree(fixture),'log_sha256':sha(output/'compatibility-analysis.log')}
+    receipt={'format':'worker-package-compatibility','case_id':case,'candidate_id':candidate,'construction_sha256':selected['construction_sha256'],'runtime_manifest_sha256':read(manifest)['runtime_manifest_sha256'],'fixture_sha256':source['fixture_sha256'],'passed':True,'checks':sorted(CHECKS),'scope':'diagnostic software compatibility only','analysis_sha256':sha(analysis),'fixture_manifest':source['fixture_manifest'],'log_sha256':sha(output/'compatibility-analysis.log')}
     return receipt
 
 
@@ -84,7 +85,7 @@ def run(manifest,case,output,library,validator,candidate='primary'):
     output.parent.mkdir(parents=True,exist_ok=True)
     with tempfile.TemporaryDirectory(dir=output.parent,prefix='fixture-') as temporary:
         fixture=Path(temporary)/'positive';source=materialize(repo,recipe_path,fixture)
-        receipt=_process_fixture(manifest,case,fixture,output,library,validator,candidate)
+        receipt=_process_fixture(manifest,case,fixture,output,library,validator,candidate,source)
         measurements=verify_report(contract,read(output/'analysis-report.json'),fixture)
         negative=Path(temporary)/'negative'
         proposal=materialize_case(manifest,case,negative,fixture,candidate)

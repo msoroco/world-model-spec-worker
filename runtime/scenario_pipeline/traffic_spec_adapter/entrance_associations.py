@@ -150,6 +150,28 @@ def _state(regions, polygons, lane_ids, painted, devices):
     return associations, receipts
 
 
+def complete_control_inventory(observed):
+    """A complete actor query is distinct from complete physical-device coverage."""
+    receipt=observed.get('control_actor_inventory')
+    if 'control_actor_inventory'not in observed:
+        # Original sealed v3/v4 acquisition declaration, not a derived absence flag.
+        return observed.get('control_inventory')==CONTROL_SCOPE
+    devices=observed.get('devices')
+    if not isinstance(receipt,dict)or not isinstance(devices,list)or any(not isinstance(device,dict)for device in devices):return False
+    ids=[device.get('actor_id')for device in devices]
+    declared=receipt.get('actor_ids')
+    return (type(observed.get('frame'))is int and type(receipt.get('frame'))is int
+        and isinstance(observed.get('time_s'),(int,float))and not isinstance(observed.get('time_s'),bool)
+        and math.isfinite(observed['time_s'])and isinstance(receipt.get('time_s'),(int,float))
+        and not isinstance(receipt.get('time_s'),bool)and math.isfinite(receipt['time_s'])
+        and receipt.get('method')=='World.get_actors'and receipt.get('prefix')=='traffic.'
+        and receipt.get('complete')is True and receipt.get('frame')==observed.get('frame')
+        and receipt.get('time_s')==observed.get('time_s')
+        and isinstance(declared,list)and all(type(aid)is int and aid>=0 for aid in ids+declared)
+        and len(set(ids))==len(ids)and sorted(ids)==sorted(declared)
+        and all(isinstance(device.get('blueprint'),str)and device['blueprint'].startswith('traffic.')for device in devices))
+
+
 def project(regions, polygons, lane_ids, painted, evidence):
     """Return per-frame known associations and hash-addressed state receipts."""
     if not evidence:
@@ -157,8 +179,10 @@ def project(regions, polygons, lane_ids, painted, evidence):
     states, frames = {}, []
     for event in evidence:
         observed = event.get('original_observations', {})
-        if observed.get('frame') != event.get('original_frame') or observed.get('control_inventory') != CONTROL_SCOPE:
+        if observed.get('frame') != event.get('original_frame') or not complete_control_inventory(observed):
             raise ValueError('Incomplete same-frame entrance-control inventory')
+        if 'control_actor_inventory'in observed and (not isinstance(event.get('recording_time_s'),(int,float)) or isinstance(event.get('recording_time_s'),bool)or not math.isfinite(event['recording_time_s'])or abs(observed['time_s']-event['recording_time_s'])>1e-6):
+            raise ValueError('Entrance-control inventory time does not join original frame')
         devices = [d for d in observed.get('devices', []) if
                    d.get('blueprint', '').startswith(('traffic.traffic_light', 'traffic.stop'))]
         geometry = [{key: d[key] for key in ('actor_id', 'blueprint', 'position_m',
@@ -237,7 +261,7 @@ def retained_associations(evidence, scene, lane_ids):
     crosswalks=[p for p in selected if p['region']['kind']=='crosswalk']
     static,_=_state(scene['structures'],polygons,lane_ids,crosswalks,[])
     result['static']=static
-    if events and all(e.get('original_observations',{}).get('control_inventory')==CONTROL_SCOPE for e in events):
+    if events and all(complete_control_inventory(e.get('original_observations',{})) for e in events):
         projection=project(scene['structures'],polygons,lane_ids,selected,events)
         for event,frame in zip(events,projection['frames']):
             result[round(event['recording_time_s']*1000)]=frame['associations']

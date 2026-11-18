@@ -613,6 +613,8 @@ class SGG:
                                                              actor_bbox, actor_name, sem_class, filtered_nodes=subgraph_driving_nodes)
                         traffic_light_nodes.append(actor_name)
                         sub_graph.nodes[actor_name]['carla_id'] = actor.id
+                        sub_graph.nodes[actor_name]['carla_light_box_index'] = index
+                        sub_graph.nodes[actor_name]['signal_group_source'] = 'TrafficLight.get_light_boxes'
                         sub_graph.nodes[actor_name]['carla_type_id'] = actor.type_id
                         sub_graph.nodes[actor_name]['carla_parent_id'] = actor.parent.id if actor.parent is not None else None
                         sub_graph.nodes[actor_name]['carla_semantic_tags'] = str(actor.semantic_tags)

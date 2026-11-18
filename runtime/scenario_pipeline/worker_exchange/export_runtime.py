@@ -95,7 +95,7 @@ def export(project,destination,fixture_attempt=None,capability_root=None):
     (destination/'scenario_pipeline/data').mkdir()
     shutil.copyfile(source/'data/canonical_parameter_aliases.json',destination/'scenario_pipeline/data/canonical_parameter_aliases.json')
     target=destination/'python';target.mkdir()
-    for name in ('pipeline_capture.py','scene_graph_collector.py','original_observations.py'):shutil.copyfile(project/'scripts'/name,target/name)
+    for name in ('pipeline_capture.py','scene_graph_collector.py','original_observations.py','native_graph_json.py'):shutil.copyfile(project/'scripts'/name,target/name)
     shutil.copytree(project/'third_party/carla_scene_graphs/carla_sgg',target/'carla_sgg',ignore=shutil.ignore_patterns('__pycache__','*.pyc'))
     library=project/'repo_prep/nevada_sydney/pipeline/traffic-spec-agent/library'
     core=library/'TrafficSpec/Core';active=library/'splits/ACTIVE'
@@ -120,12 +120,14 @@ def export(project,destination,fixture_attempt=None,capability_root=None):
     if fixture_attempt:fixture(fixture_attempt,destination/'fixtures/retained-speed')
     tests=destination/'tests';tests.mkdir()
     for name in ('test_traffic_spec_adapter.py','test_original_participant_projection.py','test_native_control_observations.py',
-                 'test_native_road_profile.py','test_control_portions.py','test_webm_export.py','test_lane_signal_measurement.py','test_full_footprint.py','test_optical_measurements.py','test_environment_relocation.py','test_runtime_handoff.py','test_visibility.py','test_native_output.py','test_world_restore.py','test_package_compatibility.py','test_worker_identity_preflight.py','test_worker_candidates.py','test_worker_delivery_handoff.py'):
+                 'test_native_road_profile.py','test_control_portions.py','test_webm_export.py','test_lane_signal_measurement.py','test_full_footprint.py','test_optical_measurements.py','test_environment_relocation.py','test_runtime_handoff.py','test_visibility.py','test_native_output.py','test_world_restore.py','test_package_compatibility.py','test_native_graph_json.py','test_worker_identity_preflight.py','test_worker_candidates.py','test_worker_delivery_handoff.py'):
         shutil.copyfile(source/'tests'/name,tests/name)
     capture_test=source/'tests/test_pipeline_capture.py'
     text=capture_test.read_text().replace("parents[2]/'scripts/","parents[1]/'python/")
     (tests/capture_test.name).write_text(text)
     write(tests/'source-locator-adaptation.json',{'test':capture_test.name,'original_sha256':sha(capture_test),'change':'Only fixture helper location scripts/ -> exported python/; assertions unchanged'})
+    graph_test=source/'tests/test_native_graph_json.py'
+    (tests/graph_test.name).write_text(graph_test.read_text().replace("parents[2] / 'scripts/native_graph_json.py'", "parents[1] / 'python/native_graph_json.py'"))
     if capability_root:
         from .capability_catalogue import export as export_capabilities
         export_capabilities(project,capability_root,destination/'capabilities')

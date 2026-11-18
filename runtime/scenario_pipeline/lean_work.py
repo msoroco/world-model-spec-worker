@@ -51,7 +51,9 @@ def case_folder(member):
 
 
 def render(root, index, sets=SETS):
-    from recording_readmes import cell, final_label
+    from recording_readmes import cell, final_label,outcome_presentation
+    from recording_store import verified_label
+    authorities={}
     work = root/'work'
     ms = members(root)
     top = ['# Review outputs', '', 'Demo recording folders link to their matching full-set folders. Edits through either path are shared.', '',
@@ -72,8 +74,8 @@ def render(root, index, sets=SETS):
                     '**'+e['law_id']+(' — '+law.get('title') if law.get('title') else '')+'**', '',
                     '> '+law.get('text', 'Source text unavailable').replace('\n', '\n> '), '',
                     '## Recording comparisons', '',
-                    'Settings below are requested or authored, not measured outcomes. Judgment calls remain unresolved unless the saved metadata supplies an expected label. '
-                    'Videos, traces and metadata are editable review copies; demo links share the corresponding full-set recording directories.', '']
+                    'Settings below are requested or authored, not measured outcomes. Outcome, legal judgment, processing reasons and sweep membership come from the same source-bound classification record. '
+                    'Canonical-linked cases share the recording’s video, trace, manifest and metadata; demo links share the corresponding full-set recording directories.', '']
             if model.get('viewing_note'):
                 pos=page.index('## Recording comparisons');page[pos:pos]=['## How to watch', '', model['viewing_note'], '']
             show_ids=model.get('show_internal_ids',True)
@@ -86,20 +88,30 @@ def render(root, index, sets=SETS):
                 if show_ids:page += ['Comparison: `'+comparison['id']+'`.', '']
                 if comparison.get('description'):
                     page += [comparison['description'], '']
-                page += ['| Case | Video / data | Test setting | Compared against | Judgment call | Recorded label |',
-                         '| --- | --- | --- | --- | --- | --- |']
+                page += ['| Case | Video / data | Test setting | Compared against | Legal judgment | Sweep member | Processing reasons | Recorded label |',
+                         '| --- | --- | --- | --- | --- | --- | --- | --- |']
                 for i, r in enumerate(rr, 1):
                     cf = case_folder(by_rid[r['recording_id']])
                     meta = read(base/cf/'metadata.json')
-                    record = {'saved': {'expected_label': meta.get('expected_label'),
-                                        'judgment_sweep': meta.get('judgment_sweep')},
-                              'metadata': meta, 'judgments':r['judgments']}
+                    rid=r['recording_id']
+                    if rid not in authorities:
+                        canonical=read(root/'recordings'/rid/'metadata.json')
+                        authorities[rid]=verified_label(root/'recordings'/rid,canonical)
+                    authority=authorities[rid]
+                    record={'saved':{},'metadata':meta,'authoritative_label':authority}
+                    projected=outcome_presentation(record)
+                    from production_verdicts import validate_presentation
+                    validate_presentation(authority,meta.get('label_record',{}))
                     peers = ', '.join(str(j) for j in range(1,len(rr)+1) if j!=i) or 'No accepted counterpart'
-                    judgment=r.get('judgment_resolution') or '; '.join(r['judgments']) or 'None listed'
+                    legal=projected['legal_judgment']
+                    judgment='; '.join(ref['phrase']for ref in legal['references']) or legal['classification']
+                    member=projected['sweep_membership']['is_member']
+                    sweep='Unknown' if member is None else 'Yes' if member else 'No'
+                    processing=', '.join(projected['processing_reasons']) or 'None'
                     assets='[video]('+cf+'/video.webm) · [trace]('+cf+'/trace.json) · [metadata]('+cf+'/metadata.json)'
                     if meta.get('manifest_sha256'):
                         assets+=' · [manifest]('+cf+'/manifest.json)'
-                    page.append('| '+str(i)+' | '+assets+' | '+cell(r['description']+((' (same reference video)' if not show_ids else ' (reused reference)') if r['reuse'] else ''))+' | '+peers+' | '+cell(judgment)+' | '+final_label(record)+' |')
+                    page.append('| '+str(i)+' | '+assets+' | '+cell(r['description']+((' (same reference video)' if not show_ids else ' (reused reference)') if r['reuse'] else ''))+' | '+peers+' | '+cell(judgment)+' | '+sweep+' | '+cell(processing)+' | '+final_label(record)+' |')
                 if show_ids:page += ['', 'Case IDs: '+'; '.join(str(i)+': `'+r['case_id']+'`' for i,r in enumerate(rr,1))+'.', '']
                 else:page += ['']
             remaining=model.get('remaining_requirements_note','Accepted videos are retained even when additional requirements remain unfinished. Set scope and coverage dispositions remain authoritative; this migration does not mark an assignment complete.')
@@ -110,6 +122,65 @@ def render(root, index, sets=SETS):
             lines.append('| '+e['cell_id']+' | ['+e['law_id']+']('+e['folder']+'/README.md) | '+str(count)+' |')
         text(work/s/'README.md', '\n'.join(lines)+'\n')
     text(work/'README.md', '\n'.join(top)+'\n')
+
+
+def verify_case(root, directory, member, checked_files=None, *, set_id=None):
+    """Verify one legacy review or an explicitly migrated canonical link view."""
+    root, d = Path(root), Path(directory)
+    checked_files = {} if checked_files is None else checked_files
+    meta = read(d/'metadata.json')
+    if meta.get('delivery_layout') == 'canonical-recording-links-v1':
+        canonical = root/'recordings'/member['recording_id']
+        if canonical.is_symlink() or not canonical.is_dir():
+            raise ValueError('Canonical recording directory differs: '+str(canonical))
+        expected = {'video.webm','trace.json','manifest.json','metadata.json'}
+        if {p.name for p in d.iterdir()} != expected:
+            raise ValueError('Unexpected canonical-linked review files: '+str(d))
+        for name in expected:
+            link = d/name
+            target = canonical/name
+            if (not link.is_symlink() or os.path.isabs(os.readlink(link))
+                    or os.readlink(link) != os.path.relpath(target, d.resolve())
+                    or not link.is_file() or link.resolve() != target.resolve()):
+                raise ValueError('Canonical review link differs: '+str(link))
+        if (meta.get('status') != 'accepted'
+                or any(meta.get(key) != member[key] for key in ('recording_id','case_id','law_id'))):
+            raise ValueError('Canonical review metadata identity differs: '+str(d))
+        for name, key in (('trace.json','trace_sha256'),('video.webm','video_sha256'),
+                          ('manifest.json','manifest_sha256')):
+            path = (canonical/name).resolve()
+            if path not in checked_files:
+                checked_files[path] = sha(path)
+            if checked_files[path] != meta.get(key):
+                raise ValueError('Canonical review content hash differs: '+str(d/name))
+        return True
+    m=member; s=set_id
+    meta=read(d/'metadata.json')
+    expected_files={'video.webm','trace.json','metadata.json'}
+    if meta.get('manifest_sha256'):
+        if not re.fullmatch('[0-9a-f]{64}',meta['manifest_sha256']):
+            raise ValueError('Invalid final manifest hash: '+str(d))
+        expected_files.add('manifest.json')
+    if s not in PARENTS and {p.name for p in d.iterdir()} != expected_files:
+        raise ValueError('Unexpected case review files: '+str(d))
+    for name in ('video.webm', 'trace.json', 'metadata.json'):
+        p = d/name
+        if not p.is_file() or p.is_symlink():
+            raise ValueError('Missing or nonregular primary: '+str(p))
+    if 'manifest.json' in expected_files:
+        manifest=d/'manifest.json'
+        if s != 'held-out' and (root/'inputs/shared/manifest.json').is_file():
+            from shared_manifest import verify as verify_manifest
+            verify_manifest(root, d, meta['manifest_sha256'])
+        elif not manifest.is_file() or manifest.is_symlink() or sha(manifest)!=meta['manifest_sha256']:
+            raise ValueError('Final manifest hash differs: '+str(d))
+    if meta.get('schema')!='final-review-recording-v1' or meta.get('recording_id')!=m['recording_id'] or meta.get('case_id')!=m['case_id'] or meta.get('law_id')!=m['law_id']:
+        raise ValueError('Final review metadata identity differs: '+str(d))
+    for name,key in (('trace.json','trace_sha256'),('video.webm','video_sha256')):
+        path=(d/name).resolve()
+        if path not in checked_files:checked_files[path]=sha(path)
+        if checked_files[path]!=meta.get(key):raise ValueError('Final review media hash differs: '+str(d/name))
+    return False
 
 
 def verify(root, work, index):
@@ -132,7 +203,8 @@ def verify(root, work, index):
         raise ValueError('Unexpected work directories: '+str(actual_dirs))
     if {p.name for p in work.iterdir() if p.is_file()} != {'README.md','index.json'}:
         raise ValueError('Unexpected work root files')
-    links = 0; count = 0
+    links = 0; count = 0; canonical_links = 0
+    checked_files={}
     for s, rows in ms.items():
         expected_cells = {folder(m) for m in rows}
         if {p.name for p in (work/s).iterdir() if p.is_dir()} != expected_cells:
@@ -160,27 +232,7 @@ def verify(root, work, index):
                 links += 1
             elif d.is_symlink():
                 raise ValueError('Full-set case must be a real directory')
-            meta=read(d/'metadata.json')
-            expected_files={'video.webm','trace.json','metadata.json'}
-            if meta.get('manifest_sha256'):
-                if not re.fullmatch('[0-9a-f]{64}',meta['manifest_sha256']):
-                    raise ValueError('Invalid final manifest hash: '+str(d))
-                expected_files.add('manifest.json')
-            if s not in PARENTS and {p.name for p in d.iterdir()} != expected_files:
-                raise ValueError('Unexpected case review files: '+str(d))
-            for name in ('video.webm', 'trace.json', 'metadata.json'):
-                p = d/name
-                if not p.is_file() or p.is_symlink():
-                    raise ValueError('Missing or nonregular primary: '+str(p))
-            if 'manifest.json' in expected_files:
-                manifest=d/'manifest.json'
-                if s != 'held-out' and (root/'inputs/shared/manifest.json').is_file():
-                    from shared_manifest import verify as verify_manifest
-                    verify_manifest(root, d, meta['manifest_sha256'])
-                elif not manifest.is_file() or manifest.is_symlink() or sha(manifest)!=meta['manifest_sha256']:
-                    raise ValueError('Final manifest hash differs: '+str(d))
-            if meta.get('schema')!='final-review-recording-v1' or meta.get('recording_id')!=m['recording_id'] or meta.get('case_id')!=m['case_id'] or meta.get('law_id')!=m['law_id']:
-                raise ValueError('Final review metadata identity differs: '+str(d))
+            canonical_links += verify_case(root,d,m,checked_files,set_id=s)
             count += 1
     broken = []
     review_readmes = [work/'README.md']
@@ -192,7 +244,7 @@ def verify(root, work, index):
                 broken.append(str(p.parent/link))
     if broken:
         raise ValueError('Broken review links: '+str(broken[:10]))
-    return {'accepted_memberships':count,'demo_directory_symlinks':links,'distinct_recordings':len({m['recording_id'] for rows in ms.values() for m in rows}),'broken_links':0,'auxiliary_directories_preserved':sorted(expected_dirs-set(SETS))}
+    return {'canonical_linked_memberships':canonical_links,'accepted_memberships':count,'demo_directory_symlinks':links,'distinct_recordings':len({m['recording_id'] for rows in ms.values() for m in rows}),'broken_links':0,'auxiliary_directories_preserved':sorted(expected_dirs-set(SETS))}
 
 
 def refresh(root, sets=SETS):

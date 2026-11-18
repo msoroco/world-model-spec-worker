@@ -197,7 +197,8 @@ def expand_sweeps(result, templates=(), bindings=None):
                 'sweep_id': spec['sweep_id'], 'sweep_spec_version': version, 'sweep_point': point,
                 'selection_rank': rank, 'variable_assignments': assignments,
                 'recording_description': deepcopy(spec['recording_description']),
-                'sweep_measurements': [{'observable': a['observable'], 'unit': a['unit'], 'measurement': deepcopy(a['measurement'])} for a in spec['axes']],
+                'judgment_refs': deepcopy(spec['judgment_refs']),
+                'sweep_measurements': [{'variable': a['variable'], 'observable': a['observable'], 'unit': a['unit'], 'measurement': deepcopy(a['measurement'])} for a in spec['axes']],
                 'unresolved_judgment_calls': sorted({j['phrase'] for t in templates if t['law_id'] == spec['target_law_id'] for j in t['structure']['judgment_calls_needed']} or {j['phrase'] for j in spec['judgment_refs']})})
     from .speed_policy import apply_speed_policy
     apply_speed_policy(result['cases'], templates)

@@ -1,8 +1,8 @@
 /-
   TrafficSpec.Core — the frozen core, in five layers; a file imports only from its own layer and
   the layers above it in this list.
-  Foundations: three-valued logic with reasons, units, time, the temporal operators, the handles
-    that name tracks, regions, devices and assumptions.
+  Foundations: three-valued logic with reasons, units, time, the temporal operators, a rate
+    accumulated since a rise, the handles that name tracks, regions, devices and assumptions.
   Vocab: the ontology enumerations, the world, the atoms, assumptions, parameters, the region
     tables, primitives.
   Language: formulas and their semantics, rules, concepts, the static check, export.
@@ -16,6 +16,7 @@ import TrafficSpec.Core.Foundations.Time
 import TrafficSpec.Core.Foundations.Handles
 import TrafficSpec.Core.Foundations.Unknown
 import TrafficSpec.Core.Foundations.Temporal
+import TrafficSpec.Core.Foundations.Accumulate
 import TrafficSpec.Core.Vocab.Ontology.Ids
 import TrafficSpec.Core.Vocab.Ontology.RoadUser
 import TrafficSpec.Core.Vocab.Ontology.Structure

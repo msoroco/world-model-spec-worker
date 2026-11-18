@@ -81,6 +81,35 @@ class VisibilityTests(unittest.TestCase):
                                         lane_inventory={9: [-2, -1, 1]})
         self.assertEqual(moved['ego_body_samples_m'][0], [25, 8, 0])
 
+    @unittest.skipUnless(sdk_available(),'Run with the installed CARLA SDK interpreter')
+    def test_distant_probe_branch_preserves_measured_near_horizon(self):
+        import carla
+        from types import SimpleNamespace
+        from unittest.mock import patch
+        actor=SimpleNamespace(get_transform=lambda:carla.Transform(),
+            bounding_box=carla.BoundingBox(carla.Location(),carla.Vector3D(2,1,1)))
+        lane=SimpleNamespace(road_id=9,lane_id=-1,s=20,transform=carla.Transform())
+        lane.previous=lambda d: [] if d>=100 else [SimpleNamespace(
+            transform=carla.Transform(carla.Location(x=-d)))]
+        mapping=SimpleNamespace(get_waypoint=lambda *a,**k:lane,
+            get_waypoint_xodr=lambda *a:lane)
+        def ray(world,actor,eye,point):
+            clear=eye.x>-10
+            return {'clear':clear,'blockers':[] if clear else [{'label':'wall'}]}
+        with patch.object(capture,'ray_evidence',side_effect=ray):
+            observed=capture.actor_visibility(SimpleNamespace(),actor,mapping=mapping,
+                lane_inventory={9:[-1]})
+        approach=observed['approaches'][0]
+        self.assertIn('probe_unknown_reason',approach)
+        self.assertNotIn('any_sample_clear_at_probe',approach)
+        self.assertNotIn('unknown_reason',approach)
+        value,reason=sight_distance(observed)
+        self.assertIsNotNone(value)
+        self.assertLess(value,10)
+        # An unfinished horizon remains unknown even when the probe error is separate.
+        approach['any_body_sight_horizon']={'bound':'route_limit','unknown':True,'distance_m':5}
+        self.assertIsNone(sight_distance(observed)[0])
+
     def test_any_clear_not_centre(self):
         def sample(d):
             return [{'clear': d < 100, 'blockers': [] if d < 100 else [{'label': 'wall'}]},
@@ -193,7 +222,10 @@ if __name__ == '__main__': unittest.main()
 
 
 class StaticPropCaptureTests(unittest.TestCase):
-    @unittest.skipUnless(importlib.util.find_spec('carla') and importlib.util.find_spec('carla_sgg'),'Run with CARLA SDK and graph generator on PYTHONPATH')
+    @unittest.skipUnless(importlib.util.find_spec('carla_sgg') and
+                         importlib.util.find_spec('carla') and
+                         hasattr(importlib.import_module('carla'), 'Vector3D'),
+                         'Run with the CARLA SDK and graph generator on PYTHONPATH')
     def test_traffic_prop_geometry_survives_crop_only_when_enabled(self):
         from carla_sgg import sgg
         from types import SimpleNamespace
@@ -238,12 +270,12 @@ class SightDistanceIntegration(unittest.TestCase):
             capture_manifest=read(attempt/'capture/manifest.json')
             capture_manifest['required_observations']=['st.sight_distance']
             write(attempt/'capture/manifest.json',capture_manifest)
-            write(attempt/'result.json',{'video_references':['raw.mkv']})
+            write(attempt/'result.json',{'video_references':[spec['videos'][0]['path']]})
             collection=root/'collection';initial=collection/'inputs/shared/manifest.json'
             write(initial,{'source':'initial-diagnostic-profile','atoms':{'st.sight_distance':'absent'}})
             old_hash=sha(initial)
             with patch('pipeline_paths.OUTPUT_ROOT',collection):
-                output=root/'converted';process(attempt,output,library,os.environ['SIGHT_DISTANCE_VALIDATOR'])
+                output=root/'converted';process(attempt,output,library,os.environ['SIGHT_DISTANCE_VALIDATOR'],diagnostic_fixture=True)
                 trace=read(output/'trace.json')
                 self.assertEqual(len(trace['scenes']),len(events))
                 for scene in trace['scenes']:
@@ -261,4 +293,4 @@ class SightDistanceIntegration(unittest.TestCase):
                 events[0]['visibility']['approaches'].pop()
                 (attempt/'capture/evidence.jsonl').write_text(''.join(json.dumps(e)+'\n' for e in events))
                 with self.assertRaisesRegex(ValueError,'Mandatory observation coverage incomplete'):
-                    process(attempt,root/'missing-lane',library,os.environ['SIGHT_DISTANCE_VALIDATOR'])
+                    process(attempt,root/'missing-lane',library,os.environ['SIGHT_DISTANCE_VALIDATOR'],diagnostic_fixture=True)

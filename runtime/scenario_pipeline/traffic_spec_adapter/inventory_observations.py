@@ -13,8 +13,98 @@ from pathlib import Path
 SCHEMA = 'scene-inventory-observation-v1'
 # Extend only after specifying each family's physical inventory contract.
 SUPPORTED_ATOMS = {'st.crosswalk': ('crosswalk', 'structures')}
+STATIC_DEVICE_KINDS = frozenset({'traffic_signal','stop_sign','yield_sign',
+    'speed_limit_sign','regulatory_sign','lane_control_signal'})
 STATIC_KINDS = frozenset({'highway','crosswalk','stop_line','shoulder','sidewalk',
-    'intersection','median_or_divider','crest','bicycle_lane_or_path','lane_control_signal'})
+    'intersection','median_or_divider','crest','bicycle_lane_or_path','roadway','centre_line','obstruction'}) | STATIC_DEVICE_KINDS
+
+
+def validate_kind_inventory(evidence, receipt, kind, claim):
+    """Strict additional physical contracts; never an empty-query fallback."""
+    import math
+    import xml.etree.ElementTree as ET
+    contract=receipt.get('kind_inventory_contracts',{}).get(kind)
+    if not isinstance(contract,dict):raise ValueError('blocked_missing_inventory_evidence: '+kind)
+    sources=receipt['evidence'];proof=contract.get('evidence',{})
+    if (contract.get('scope')!='entire_recorded_map' or contract.get('map_sha256')!=receipt['map_sha256']
+            or contract.get('constant_during_recording') is not True or not proof
+            or 'capture/manifest.json' not in proof or any(sources.get(n)!=h for n,h in proof.items())):
+        raise ValueError('Incomplete kind inventory map/scope/source contract: '+kind)
+    period=contract.get('time_window_s');rows=evidence.rows('trace.jsonl')
+    if (not isinstance(period,list) or len(period)!=2 or not rows
+            or any(type(v) not in (int,float) or not math.isfinite(v) for v in period)
+            or period[0]>rows[0]['time_s'] or period[1]<rows[-1]['time_s'] or period[0]>period[1]):
+        raise ValueError('Kind inventory period does not cover original recording: '+kind)
+    if any(type(r.get('time_s')) not in (int,float) or not math.isfinite(r['time_s']) for r in rows) or any(a['time_s']>=b['time_s'] for a,b in zip(rows,rows[1:])):raise ValueError('Invalid original inventory period telemetry')
+    instances=contract.get('instances')
+    if (not isinstance(instances,list) or len(instances)!=claim['count']
+            or any(type(i.get('region')) is not int or i['region']<0 or not isinstance(i.get('kind'),str) for i in instances)
+            or len({i['region'] for i in instances})!=len(instances)):
+        raise ValueError('Kind inventory instance count/identity mismatch: '+kind)
+    if contract.get('unresolved')!=[]:raise ValueError('Unresolved source classification in kind inventory: '+kind)
+    if kind in ('roadway','centre_line'):
+        if 'road.xodr' not in proof:raise ValueError('Native kind inventory needs bound full map')
+        roads=ET.parse(evidence.path('road.xodr')).getroot().findall('road')
+        if kind=='roadway':
+            if contract.get('method')!='complete_native_roadway_surfaces_v1':raise ValueError('Unknown roadway inventory method')
+            expected={int(r.get('id')) for r in roads if r.findall("./lanes/laneSection/left/lane[@type='driving']") or r.findall("./lanes/laneSection/right/lane[@type='driving']")}
+            declared=contract.get('native_road_ids',[])
+            if any(type(i)is not int for i in declared) or set(declared)!=expected:raise ValueError('Incomplete native roadway scope')
+            covered=set()
+            for instance in instances:
+                ids=instance.get('native_road_ids',[])
+                if not ids or any(type(i)is not int for i in ids) or not set(ids)<=expected:raise ValueError('Roadway instance lacks native identity')
+                covered.update(ids)
+            if covered!=expected:raise ValueError('Unenumerated native roadway surfaces')
+        else:
+            if contract.get('method')!='complete_opposing_lane_topology_v1':raise ValueError('Unknown centre-line inventory method')
+            from .geometry import native_centre_lines,source_lane_direction
+            for road in roads:
+                for section in road.findall('./lanes/laneSection'):
+                    sides=[section.findall("./"+side+"/lane[@type='driving']") for side in ('left','right')]
+                    for lanes in sides:
+                        values={source_lane_direction(road,lane) for lane in lanes}
+                        if None in values or len(values)>1:raise ValueError('Unresolved opposing-lane directions; no zero centre-line claim')
+            expected={(o['source']['road_id'],o['source']['section_id']) for o in native_centre_lines(evidence.path('road.xodr'))}
+            declared={(i.get('road_id'),i.get('section_id')) for i in instances}
+            if declared!=expected:raise ValueError('Centre-line inventory omits geometric opposing divider')
+    else:
+        if contract.get('method') not in ('complete_physical_objects_v1','audited_closed_world_realization_v1'):raise ValueError('Unknown obstruction inventory method')
+        name=contract.get('physical_inventory_source')
+        if not isinstance(name,str) or name not in proof or name in ('road.xodr','config.json','capture/manifest.json'):raise ValueError('Obstruction requires original complete physical-object evidence')
+        path=evidence.path(name);document=json.loads(path.read_text()) if path else {}
+        if (document.get('schema')!='complete-physical-object-inventory-v1' or document.get('map_sha256')!=receipt['map_sha256']
+                or document.get('scope')!='entire_recorded_map' or document.get('constant_during_recording')is not True
+                or document.get('time_window_s')!=period or document.get('unclassified')!=[]
+                or not all(document.get(k)is True for k in ('includes_environment_meshes','includes_static_objects','includes_spawned_despawned_objects'))):
+            raise ValueError('Incomplete physical-object environment/time coverage')
+        native_frames=[row.get('frame') for row in rows]
+        if any(type(frame)is not int or frame<0 for frame in native_frames) or any(a>=b for a,b in zip(native_frames,native_frames[1:])):
+            raise ValueError('blocked_missing_inventory_evidence: physical inventory needs ordered original native frame identity')
+        execution=document.get('execution',{})
+        if (document.get('original_frame_range')!=[rows[0].get('frame'),rows[-1].get('frame')]
+                or execution.get('capture_manifest_sha256')!=proof.get('capture/manifest.json')
+                or not execution.get('source_hashes')
+                or any(proof.get(n)!=h for n,h in execution['source_hashes'].items())
+                or not {'runner.py','construction.json'}<=set(execution['source_hashes'])):
+            raise ValueError('Physical inventory lacks actual execution/source binding')
+        objects=document.get('objects')
+        if not isinstance(objects,list) or any(type(o.get('obstruction'))is not bool or not isinstance(o.get('id'),(str,int)) for o in objects):raise ValueError('Unclassified physical object')
+        if len({o['id'] for o in objects})!=len(objects):raise ValueError('Duplicate physical object identity')
+        expected={o['id'] for o in objects if o['obstruction']}
+        if {i.get('object_id') for i in instances}!=expected:raise ValueError('Obstruction classification/instance count mismatch')
+        by_id={o['id']:o for o in objects}
+        if any(by_id[i['object_id']].get('region')!=i['region'] for i in instances):raise ValueError('Physical obstruction source/region identity differs')
+
+
+def inventory_kind_facts(receipt):
+    """Positive original-kind facts are distinct from complete zero inventory."""
+    facts={}
+    if receipt:
+        for kind,contract in receipt.get('kind_inventory_contracts',{}).items():
+            if kind not in receipt.get('kinds',{}):continue
+            for instance in contract.get('instances',[]):facts.setdefault(instance['region'],set()).add(instance['kind'])
+    return facts
 
 
 def retained_static_inventory(evidence, receipt=None):
@@ -66,22 +156,56 @@ def retained_static_inventory(evidence, receipt=None):
                     or not roads or any(type(i)is not int for i in roads)or not set(roads)<=public):
                 raise ValueError('Highway binding contradicts native public-road identities')
             seen.add(ident)
+    bindings=receipt.get('junction_bindings',[])
+    if not isinstance(bindings,list):raise ValueError('Junction bindings must be a list')
+    for binding in bindings:
+        if (any(type(binding.get(key)) is not int or binding[key]<0 for key in ('region','junction_id','component'))
+                or binding.get('map_sha256')!=receipt['map_sha256']
+                or not binding.get('evidence')
+                or any(sources.get(name)!=digest for name,digest in binding['evidence'].items())):
+            raise ValueError('Junction identity requires bound original map/component evidence')
+    painted = receipt.get('painted_stop_line_bindings', [])
+    if not isinstance(painted, list):
+        raise ValueError('Painted stop-line bindings must be a list')
+    seen_paint = set()
+    for binding in painted:
+        key = (binding.get('road_id'), binding.get('object_id'))
+        proof = binding.get('evidence', {})
+        if (type(key[0]) is not int or not isinstance(key[1], str) or not key[1]
+                or key in seen_paint or binding.get('paint_verified') is not True
+                or binding.get('reference_verified') is not True
+                or not isinstance(binding.get('basis'), str) or not binding['basis']
+                or not isinstance(proof, dict) or not proof or not (set(proof)-{'road.xodr'})
+                or any(sources.get(name) != digest for name, digest in proof.items())):
+            raise ValueError('Painted stop-line estimate needs unique native identity and bound physical paint/reference evidence')
+        seen_paint.add(key)
     kinds=receipt.get('kinds',{})
     if not kinds or set(kinds)-STATIC_KINDS:raise ValueError('Unsupported static inventory kind')
+    if set(kinds) & STATIC_DEVICE_KINDS and not (set(sources)-{'road.xodr'}):
+        raise ValueError('Device inventory requires original acquisition or construction evidence beyond the map')
     for kind,value in kinds.items():
         if (not isinstance(value,dict) or type(value.get('count')) is not int
                 or value['count']<0 or not isinstance(value.get('basis'),str) or not value['basis']):
             raise ValueError('Static inventory needs an explicit count and evidence basis: '+kind)
+        if kind in ('roadway','centre_line','obstruction'):validate_kind_inventory(evidence,receipt,kind,value)
     return copy.deepcopy(receipt)
 
 
-def project_static_inventory(scene, receipt):
+def project_static_inventory(scene, receipt, *, refinements=None, verified=None):
     """Remove only uncertainty disproved by a complete, source-bound inventory."""
     if receipt is None:return 0
     changes=0
     for kind,claim in receipt['kinds'].items():
-        entities=scene.get('devices' if kind=='lane_control_signal' else 'structures',[])
-        present=[e for e in entities if e.get('kind')==kind]
+        entities=scene.get('devices' if kind in STATIC_DEVICE_KINDS else 'structures',[])
+        if kind in ('roadway','centre_line','obstruction'):
+            if refinements is None:raise ValueError('New kind inventory needs pinned Core refinements')
+            present=[e for e in entities if kind in refinements.get(e.get('kind'),set())]
+            contract=receipt['kind_inventory_contracts'][kind]
+            if {e['id'] for e in present}!={i['region'] for i in contract['instances']}:raise ValueError('Static kind instances contradict source inventory')
+            if kind!='obstruction':
+                for instance in contract['instances']:
+                    if not any(instance['kind'] in refinements.get(f,set()) for f in (verified or {}).get(instance['region'],())):raise ValueError('Inventory instance lacks independent native kind binding')
+        else:present=[e for e in entities if e.get('kind')==kind]
         if len(present)!=claim['count']:
             raise ValueError('Static '+kind+' inventory contradicts projected instances: '+str((claim['count'],len(present))))
         for entity in entities:
@@ -91,6 +215,21 @@ def project_static_inventory(scene, receipt):
             if 'unobserved_kinds' in entity and not entity['unobserved_kinds']:
                 entity.pop('unobserved_kinds');changes+=1
     return changes
+
+
+
+def static_inventory_observations(scene, receipt, frame, atoms, *, refinements=None, verified=None):
+    """Project validated whole-recording counts through the same frame receipts."""
+    project_static_inventory(scene, receipt,refinements=refinements,verified=verified)
+    result = {}
+    for kind, claim in receipt['kinds'].items():
+        atom = ('dev.' if kind in STATIC_DEVICE_KINDS else 'st.') + kind
+        if atom not in atoms:
+            continue
+        result[atom] = {'status': 'observed_present' if claim['count'] else 'verified_absent',
+                        'frame': frame, 'scope': 'entire_recorded_map', 'inventory_complete': True,
+                        'method': 'source-bound static inventory', 'map_sha256': receipt['map_sha256']}
+    return result
 
 
 def complete_generated_lanes(manifest, native_facts, map_hash):
@@ -289,3 +428,15 @@ class Evidence:
             return []
         with path.open() as stream:
             return [json.loads(line) for line in stream if line.strip()]
+
+
+def kind_inventory_coverage(scene, receipt):
+    """Recording coverage is independent of path capability and positive facts."""
+    contracts=(receipt or {}).get('kind_inventory_contracts',{})
+    return {kind:({'status':'complete','scope':'entire_recorded_map',
+                    'time_window_s':contracts[kind]['time_window_s'],
+                    'count':receipt['kinds'][kind]['count'],'method':contracts[kind]['method']}
+                  if kind in contracts and kind in (receipt or {}).get('kinds',{}) else
+                  {'status':'unknown','scope':'entire_recorded_map',
+                   'reason':'blocked_missing_inventory_evidence'})
+            for kind in ('roadway','centre_line','obstruction')}

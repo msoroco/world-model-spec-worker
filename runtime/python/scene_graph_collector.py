@@ -206,13 +206,16 @@ class SceneGraphCollector:
         abstract_path = 'graphs/abstract/%08d.pkl' % frame
         with (self.output / abstract_path).open('xb') as stream:
             pickle.dump(abstract, stream, protocol=pickle.HIGHEST_PROTOCOL)
+        adapter_path = 'graphs/abstract/%08d.adapter.json' % frame
+        from native_graph_json import write as write_adapter_graph
+        write_adapter_graph(base, self.output / adapter_path)
         base_path = None
         if self.save_base:
             base_path = 'graphs/base/%08d.pkl' % frame
             with (self.output / base_path).open('xb') as stream:
                 IgnoreWaypointPickler(stream, protocol=pickle.HIGHEST_PROTOCOL).dump(base)
         record = dict(frame=frame, simulation_time=snapshot.timestamp.elapsed_seconds,
-                      abstract=abstract_path, base=base_path,
+                      abstract=abstract_path, base=base_path, adapter_graph=adapter_path,
                       nodes=abstract.number_of_nodes(), edges=abstract.number_of_edges(),
                       extraction_seconds=extraction_seconds,
                       capture_seconds=time.perf_counter() - started)

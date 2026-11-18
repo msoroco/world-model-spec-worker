@@ -89,6 +89,8 @@ def main():
     p.add_argument('--job',type=int,required=True)
     p.add_argument('--attempt',type=int,required=True)
     p.add_argument('--audit',type=Path,required=True)
+    p.add_argument('--review-archive',type=Path,required=True,
+                   help='External archive for replaced review outputs; outside project and artifacts')
     p = sub.add_parser('benchmark-decode')
     p.add_argument('--video', type=Path, required=True)
     p.add_argument('--frames', type=int, required=True)
@@ -138,7 +140,7 @@ def main():
     elif args.command == 'accept-delivery':
         from .local_delivery import accept
         value=accept(args.root,args.repo,args.batch,args.db,args.run,args.assignment,
-                     args.case,args.job,args.attempt,args.audit)
+                     args.case,args.job,args.attempt,args.audit,review_archive=args.review_archive)
     elif args.command == 'adopt-case':
         from .local import adopt_manifest_case
         value=adopt_manifest_case(args.root,args.repo,args.batch,args.db,args.run,args.assignment,args.case,args.job,args.expected_cache_key)
