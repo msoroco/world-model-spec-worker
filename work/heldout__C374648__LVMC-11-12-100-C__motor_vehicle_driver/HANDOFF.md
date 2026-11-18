@@ -87,3 +87,7 @@ Twenty-three byte-identical empty compatibility analysis logs were consolidated 
 
 
 2026-11-16 CPU file-budget preservation: 2 unreferenced saved receipt copies archived byte-exact in `result.json.preserved_unreferenced_cpu_artifacts`; per-member SHA256 recorded there.
+
+## Current CPU cutover proof (2026-11-18)
+
+All six selected exact cases and their three distinct fallbacks have current-runtime offline and positive/negative compatibility receipts. All 24 variants also passed recorded-only saved processing under `.runtime-work/`; exact hashes and retained logs are bound in `execution-manifest.json` and `cutover-checkpoint.json`. The physical source protocol was reconstructed in `prove_physical_preparation.py`, then rerun for complete, incomplete and missing-evidence motion for each case. These tests use explicitly labeled synthetic fixtures, establish only software preparation, and make no Native, physical, or legal acceptance claim. The assignment-scoped strict gate passed with `delivery_prepared` in `.runtime-work/c374648-strict-current.log`. Local GPU execution and review remain as described in the existing handoff.
