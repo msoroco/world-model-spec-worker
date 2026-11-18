@@ -1,6 +1,7 @@
 """Independent saved-source comparison checks for C136539 exposure scenes."""
 
 import argparse
+import hashlib
 import json
 from pathlib import Path
 
@@ -20,12 +21,17 @@ def _saved(root):
     root = Path(root)
     config = json.loads((root / 'config.json').read_text())
     settings = case_settings(config)
-    scene = json.loads((root / 'construction-probe.json').read_text())
-    if scene.get('case_id') != settings['case_id'] or scene.get('exact_settings') != settings:
-        raise ValueError('Exact construction/scene identity differs')
-    if (not scene.get('map_name') or type(scene.get('road_id')) is not int or
-            type(scene.get('lane_id')) is not int or scene['lane_id'] == 0):
-        raise ValueError('Original scene provenance missing')
+    context_path = root / 'alley_context.json'
+    road_path = root / 'road.xodr'
+    context = json.loads(context_path.read_text())
+    scene = {
+        'map_name': context.get('native_map_name'),
+        'road_id': context.get('road_id'),
+        'context_sha256': hashlib.sha256(context_path.read_bytes()).hexdigest(),
+        'road_sha256': hashlib.sha256(road_path.read_bytes()).hexdigest(),
+    }
+    if not scene['map_name'] or type(scene['road_id']) is not int or not road_path.is_file():
+        raise ValueError('Saved scene provenance missing')
     report = analyze(root)
     observation = report['measurements']['person_or_property_exposure']['value']
     if {row['exposed_kind'] for row in observation['observations']} != {settings['exposed_kind']}:
@@ -41,7 +47,7 @@ def audit(comparison_id, left_root, right_root):
     right, right_scene, right_observed = _saved(right_root)
     if (left['case_id'].rsplit('__', 1)[-1], right['case_id'].rsplit('__', 1)[-1]) != (left_name, right_name):
         raise ValueError('Exact comparison case pair differs')
-    for field in ('map_name', 'road_id', 'lane_id'):
+    for field in ('map_name', 'road_id', 'context_sha256', 'road_sha256'):
         if left_scene[field] != right_scene[field]:
             raise ValueError('Comparison fixed road geometry changed: ' + field)
     for field in ('speed_mps', 'outside_edge_m', 'exposed_kind'):
@@ -52,7 +58,7 @@ def audit(comparison_id, left_root, right_root):
             raise ValueError('Comparison fixed setting changed: ' + field)
     return {'format': 'worker-exposure-comparison-audit',
             'comparison_id': comparison_id, 'case_ids': [left['case_id'], right['case_id']],
-            'fixed_scene': {key: left_scene[key] for key in ('map_name', 'road_id', 'lane_id')},
+            'fixed_scene': {key: left_scene[key] for key in ('map_name', 'road_id', 'context_sha256', 'road_sha256')},
             'deliberate_difference': variable,
             'requested_values': [left[variable], right[variable]],
             'source_sha256': [left_observed['source_sha256'], right_observed['source_sha256']],

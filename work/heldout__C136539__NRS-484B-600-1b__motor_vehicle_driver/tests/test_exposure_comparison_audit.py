@@ -22,9 +22,9 @@ def write_saved(root, suffix):
               'construction_probe_only': True}
     root.mkdir()
     (root / 'config.json').write_text(json.dumps(config))
-    (root / 'construction-probe.json').write_text(json.dumps({
-        'case_id': settings['case_id'], 'exact_settings': settings,
-        'map_name': 'fixture-map', 'road_id': 8, 'lane_id': -1}))
+    (root / 'alley_context.json').write_text(json.dumps({
+        'native_map_name': 'fixture-map', 'road_id': 8}))
+    (root / 'road.xodr').write_text('<OpenDRIVE/>')
     (root / 'video_frames.jsonl').write_text(''.join(json.dumps({
         'video_frame': i, 'carla_frame': i, 'time_s': i * .05}) + '\n' for i in range(2)))
     (root / 'trace.jsonl').write_text(''.join(json.dumps({
@@ -49,9 +49,9 @@ class ComparisonAuditTests(unittest.TestCase):
                 write_saved(left, a); write_saved(right, b)
                 result = audit(ident, left, right)
                 self.assertFalse(result['physical_acceptance_claimed'])
-                scene = json.loads((right / 'construction-probe.json').read_text())
-                scene['lane_id'] = -2
-                (right / 'construction-probe.json').write_text(json.dumps(scene))
+                scene = json.loads((right / 'alley_context.json').read_text())
+                scene['road_id'] = 9
+                (right / 'alley_context.json').write_text(json.dumps(scene))
                 with self.assertRaisesRegex(ValueError, 'fixed road geometry changed'):
                     audit(ident, left, right)
 

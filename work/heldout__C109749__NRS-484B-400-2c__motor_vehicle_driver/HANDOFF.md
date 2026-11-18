@@ -143,3 +143,5 @@ Nine additional unreferenced saved-processing/comparison copies were byte-preser
 ## 2026-11-18 saved processing correction
 
 A prior clean-exit saved test reused a compatibility attempt with derived channels; the selected finalizer rejected those existing channels, so its `processing.json.missing_evidence` was true. Fresh source-only diagnostic attempts were materialized for all 4 primaries and 12 fallbacks. Every saved run now has `passed: true` and `missing_evidence: false`. Primary receipts are bound in `execution-manifest.json`; fallback receipts and hashes are embedded in `result.json`. The scoped strict gate passes. This remains CPU diagnostic proof; physical and legal acceptance require local Native sources and review.
+
+2026-11-18 file-budget preservation: 7 unreferenced historical logs were archived byte-exact with per-file SHA-256 in `work/_shared/historical-receipts-bundle-20261118.json`; the current scoped strict gate was rerun after removal.
