@@ -71,6 +71,7 @@ class FourCameraEncoder:
 
     def _finish(self, abort=False):
         failures = []
+        self.exit_codes = {}
         processes, self.processes = self.processes, {}
         for name, process in processes.items():
             if abort:
@@ -80,6 +81,7 @@ class FourCameraEncoder:
             stderr = process.stderr.read().decode("utf-8", errors="replace")
             process.stderr.close()
             code = process.wait()
+            self.exit_codes[name] = code
             if not abort and (code != 0 or not (self.root / (name + ".mkv")).is_file()):
                 failures.append(name + ": " + stderr[-400:])
         if failures:
@@ -473,4 +475,5 @@ def run_signal_capture(world, client, root, site, blueprints, transforms, states
                     source.write(json.dumps(yield_context, sort_keys=True, allow_nan=False)+"\n")
     return {"case_id": case_id, "source_frames": frames,
             "source_videos": [name+".mkv" for name in CAMERAS],
+            "encoder_exit_codes": dict(capture.encoder.exit_codes),
             "physical_or_legal_acceptance_claimed": False}

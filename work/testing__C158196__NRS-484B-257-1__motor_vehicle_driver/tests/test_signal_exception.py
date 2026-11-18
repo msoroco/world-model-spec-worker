@@ -3,6 +3,7 @@ import hashlib
 import json
 import subprocess
 import shutil
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -19,12 +20,73 @@ def load(name):
 
 measure=load("signal_exception_measurements")
 control=load("signal_control")
+sys.modules["signal_control"]=control
+runner=load("runner")
 
 
 def body(x):return [[x+dx,y] for dx,y in ((-1,-1),(-1,1),(1,1),(1,-1))]
 
 
 class SignalTests(unittest.TestCase):
+    def test_authored_signal_site_requires_junction_controller_and_signed_lane(self):
+        site=runner.validate_authored_site()
+        self.assertEqual((site["ego_road_id"],site["ego_lane_id"]),(158190,-1))
+        self.assertEqual(site["head_signal_id"],"1581961")
+        text=runner.SITE.read_text()
+        with tempfile.TemporaryDirectory() as temp:
+            changed=Path(temp)/"changed.xodr"
+            changed.write_text(text.replace('signalId="1581961"','signalId="1581901"'))
+            with self.assertRaisesRegex(ValueError,"junction controller"):
+                runner.validate_authored_site(changed)
+            changed.write_text(text.replace('dynamic="yes" country="OpenDRIVE"',
+                                            'dynamic="no" country="OpenDRIVE"'))
+            with self.assertRaisesRegex(ValueError,"lane placement"):
+                runner.validate_authored_site(changed)
+
+    def test_primary_runner_config_checks_exact_native_bundle(self):
+        pose={"location":{"x":0.0,"y":0.0,"z":0.3},
+              "rotation":{"yaw":0.0,"pitch":0.0,"roll":0.0}}
+        context={"native_map_id":"OpenDriveMap",
+                 "intersection_id":44,"ego_road_id":7,"ego_lane_id":-1,
+                 "ego_route_lanes":[[7,-1],[8,-1]],
+                 "through_road_id":9,"through_lane_id":-1,
+                 "through_route_lanes":[[9,-1]],"native_signal_id":None,
+                 "affected_lane_source":"Native affected waypoints",
+                 "signal_head_video_source":"approach.mkv",
+                 "signed_entrance_source":"reference_corner.mkv",
+                 "junction_source":"authored diagnostic polygon",
+                 "intersection_polygon_xy_m":[[10,-5],[20,-5],[20,5],[10,5]]}
+        config={"law_id":"NRS-484B-257-1","cell_id":"C158196",
+                "actor":"motor_vehicle_driver","selected_case_id":runner.PRIMARY,
+                "rate_hz":20,"duration_s":30,"required_atoms":[],"source_packets":[],
+                "cameras":[{"name":name,"width":control.CAMERA_SIZES[name][0],
+                            "height":control.CAMERA_SIZES[name][1],"fov_deg":90}
+                           for name in control.CAMERAS],
+                "site":{"native_map_id":"OpenDriveMap",
+                        "xodr_sha256":runner.validate_authored_site()["site_sha256"],
+                        "approach_lanes":{"ego":[158190,-1],"through":[158194,-1]}},
+                "signal_context":dict(context,ego_route_lanes=[[158190,-1],[158192,-1]],
+                                      through_route_lanes=[[158194,-1],[158195,-1]]),
+                "signal_selector":{"affected_lane":[158190,-1]},
+                "target_signal_state":"Green",
+                "actor_transforms":{"ego":pose,"through":pose},
+                "camera_mounts":{name:{"pose":pose,"attach_to":None if name=="overview" else "ego"}
+                                 for name in control.CAMERAS},
+                "actor_blueprints":{"ego":"vehicle.tesla.model3","through":"vehicle.tesla.model3"},
+                "drive":{"ego":{"throttle":0.3,"brake":0.0,"steer":0.0},
+                         "through":{"throttle":0.2,"brake":0.0,"steer":0.0}}}
+        self.assertIs(runner.validate_config(config),config)
+        with self.assertRaisesRegex(ValueError,"Wrong primary exact signal case"):
+            runner.validate_config(dict(config,selected_case_id="wrong"))
+        with self.assertRaisesRegex(ValueError,"source context differ"):
+            runner.validate_config(dict(config,signal_selector={"affected_lane":[158194,-1]}))
+        with self.assertRaisesRegex(ValueError,"camera profile differs"):
+            runner.validate_config(dict(config,cameras=config["cameras"][:-1]))
+        with self.assertRaisesRegex(ValueError,"lacks sourced sign"):
+            runner.validate_config(dict(config,signal_context=dict(config["signal_context"],signed_entrance_source="")))
+        with self.assertRaisesRegex(ValueError,"per-tick Native vehicle control"):
+            runner.validate_config(dict(config,drive={"ego":{},"through":config["drive"]["through"]}))
+
     def fixture(self,root,controls=True,state="Green"):
         ctx={"native_map_id":"TownX","intersection_id":44,"ego_road_id":7,
              "ego_lane_id":-1,"native_signal_id":25,
@@ -546,6 +608,7 @@ class SignalTests(unittest.TestCase):
                     capture_factory=FakePipelineCapture)
             self.assertEqual(driven,[0,1,2])
             self.assertEqual(summary["source_frames"],3)
+            self.assertEqual(summary["encoder_exit_codes"],{name:0 for name in control.CAMERAS})
             self.assertEqual(len((Path(integrated_tmp)/"trace.jsonl").read_text().splitlines()),3)
             self.assertTrue(measure.analyze(Path(integrated_tmp))["operative_signal_controls_ego_at_entry_observed"])
             self.assertTrue(all(sensor.stopped and sensor.destroyed for sensor in sensors.values()))
@@ -585,6 +648,7 @@ class SignalTests(unittest.TestCase):
                 sizes={name:(1,1) for name in control.CAMERAS},
                 capture_factory=FakePipelineCapture,yield_context=baseline_source)
             self.assertEqual(summary["source_frames"],3)
+            self.assertEqual(summary["encoder_exit_codes"],{name:0 for name in control.CAMERAS})
             self.assertEqual(json.loads((Path(baseline_run_tmp)/"yield_context.json").read_text()),
                              baseline_source)
             self.assertFalse(measure.analyze(Path(baseline_run_tmp))[
