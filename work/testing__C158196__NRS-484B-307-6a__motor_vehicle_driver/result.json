@@ -16,10 +16,46 @@
       "exit_code": 0,
       "log": "cpu-tests-policy.log",
       "sha256": "f5dd8efef8aac93cf4c17ba8bdce90fd64229852e1b1e00335e4b627059319df"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/validate_signal_site.py > work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/signal-site-proof.log 2>&1",
+      "exit_code": 0,
+      "log": "signal-site-proof.log",
+      "sha256": "1765cf51befc38cefefddef7e2e76130a4ca63fd20b5b920eaddd37f3491ded8"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/prove_red_entry_sources.py > work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/red-entry-source-proof.log 2>&1",
+      "exit_code": 0,
+      "log": "red-entry-source-proof.log",
+      "sha256": "1bbbfb5f54af00ebe0d3b2e062e21d7bdcdf82d43f2482ecaf30fffd1fbe81e4"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/build_primary_construction.py > work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/primary-build.log 2>&1",
+      "exit_code": 0,
+      "log": "primary-build.log",
+      "sha256": "f66747d1691131be9e49829aecd8fab8cbc2c0578d4f3e2ed2b0f7b969abf00b"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__entry_before_red --output .runtime-work/c158196-yellow-red-primary-offline-v1 > work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/primary-offline.log 2>&1",
+      "exit_code": 0,
+      "log": "primary-offline.log",
+      "sha256": "7fa4ec1cffb1c24fb00883ff0b0520a88f97f953916bcb91b77360b2a1eaf076"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 ../../.venv-cpu/bin/python runner.py --check > runner-check-native-draft.log 2>&1 (cwd work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver)",
+      "exit_code": 0,
+      "log": "runner-check-native-draft.log",
+      "sha256": "bd25c054ff4dd3957a41f6f986cd7c28c8daaa06905a37ed1287c96e0ebcce38"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/tests -v > work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/cpu-tests-native-draft.log 2>&1",
+      "exit_code": 0,
+      "log": "cpu-tests-native-draft.log",
+      "sha256": "4be70baea58a9e8f875e1d9ccc351b7a95ee60ea74c98b829b2e06537b58e6a5"
     }
   ],
   "remaining_gpu_checks": [
     "Actual governed signal/head visibility, native phase timing, vehicle body entry and camera visibility."
   ],
-  "reason": "The yellow-to-red 20 Hz signal and ego approach policy now issues bounded Native-shaped signal and vehicle commands for all four exact planned cases, and six CPU tests pass. This is a construction checkpoint. The governed signal site, integrated capture runner, four source cameras, exact primary/fallback constructions, saved processing, semantic proposals and independent audits remain worker-owned CPU work; actual phase, motion and legal outcome remain unverified."
+  "reason": "The authored yellow/red site, four 900-frame diagnostic source histories, and the first exact entry-before-red Native runner construction now pass CPU checks. The runner selects a unique live governing head, applies 20 Hz signal/approach commands, retains four original camera streams and same-tick body/signal history, and restores the world before sealing. Exact runtime.py offline and eight unit tests pass. Native execution, physical timing/head visibility, complete saved processing, three other selected constructions, fallbacks, semantic proposals and independent audits remain unproved worker-owned work. Diagnostic histories are synthetic and do not claim physical or legal acceptance."
 }
