@@ -5,6 +5,9 @@ from tempfile import TemporaryDirectory
 from pathlib import Path
 s=importlib.util.spec_from_file_location('flash_heavy',Path(__file__).resolve().parents[1]/'flashing_yellow_heavy.py')
 m=importlib.util.module_from_spec(s);sys.modules[s.name]=m;s.loader.exec_module(m)
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
+import delivery_audit as da
+import comparison_audit as ca
 class Fake:
  def __init__(self):self.calls=[]
  def intersection(self,**x):self.calls.append(('intersection',x));return x
@@ -12,6 +15,41 @@ class Fake:
  def official_control_device(self,**x):self.calls.append(('official_device',x));return x
  def vehicle(self,**x):self.calls.append(('vehicle',x));return x
 class FlashHeavyTests(unittest.TestCase):
+ def test_independent_delivery_and_comparison_audits_reject_source_gaps(self):
+  import json
+  package=Path(__file__).resolve().parents[1]
+  branches=['east_cautious_proxy','east_faster_proxy','east_no_crossing','west_cautious_proxy']
+  with TemporaryDirectory() as tmp:
+   roots={};reports={}
+   for branch in branches:
+    root=Path(tmp)/branch;root.mkdir();roots[branch]=root
+    folder=package if branch=='east_cautious_proxy' else package/'cases'/branch
+    config=json.loads((folder/'config.json').read_text())
+    diagnostic=json.loads((folder/'diagnostic-input.json').read_text())
+    (root/'config.json').write_text(json.dumps(config))
+    for name in da.SOURCES:
+     (root/name).write_text(diagnostic['files'][name])
+    for name in da.CAMERAS:(root/(name+'.mkv')).write_bytes(b'synthetic camera bytes')
+    reports[branch]=m.analyze_saved(root,write_channels=False)
+    audited=da.audit_attempt(root,reports[branch],decoder=lambda path,frames,**kw:{'frames':frames})
+    self.assertFalse(audited['physical_acceptance_claimed'])
+   for comparison,(a,b,variable) in ca.PAIRS.items():
+    receipt=ca.audit_pair(comparison,roots[a],roots[b],reports[a],reports[b])
+    self.assertEqual(receipt['declared_difference'],variable)
+   first=roots['east_cautious_proxy'];second=roots['east_faster_proxy']
+   (first/'overview.mkv').unlink()
+   with self.assertRaisesRegex(ValueError,'Missing named original camera'):
+    da.audit_attempt(first,reports['east_cautious_proxy'],decoder=lambda path,frames,**kw:{'frames':frames})
+   changed=json.loads((second/'signal_context.json').read_text())
+   changed['official_control_source']='different official source premise'
+   (second/'signal_context.json').write_text(json.dumps(changed))
+   reports['east_faster_proxy']=m.analyze_saved(second,write_channels=False)
+   with self.assertRaisesRegex(ValueError,'Fixed original context differs'):
+    ca.audit_pair('heavy_approach_speed',first,second,
+                  reports['east_cautious_proxy'],reports['east_faster_proxy'])
+   (first/'signal_state.jsonl').unlink()
+   with self.assertRaisesRegex(ValueError,'Missing audited original source'):
+    da.audit_sources(first,reports['east_cautious_proxy'])
  def test_no_crossing_saved_branch_requires_absence_and_west_context(self):
   import json
   with TemporaryDirectory() as tmp:
