@@ -20,9 +20,10 @@ def classify(samples, survey, suffix, context, *, provenance_kind, diagnostic_fi
     synthetic_rows = any(row.get("synthetic_diagnostic") is True or
                          row.get("speed_provenance") == "synthetic_native_sample"
                          for row in samples if isinstance(row, dict))
-    original = (provenance_kind == "native" and diagnostic_fixture is False and
-                not synthetic_rows)
-    if measured is None or not original:
+    classifiable = (((provenance_kind == "native" and diagnostic_fixture is False) or
+                     (provenance_kind == "synthetic_fixture" and diagnostic_fixture is True)) and
+                    not synthetic_rows)
+    if measured is None or not classifiable:
         status = "unverified"
     elif measured["observed_relation"] == EXPECTED[suffix] and measured["endpoint_parked"]:
         status = "met"

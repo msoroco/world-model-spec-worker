@@ -71,7 +71,7 @@ def main():
             if args.kind == "incomplete_motion":
                 selected[-1]["speed_m_s"] = 1.0
         outcome = classify(selected, survey, suffix, context,
-                           provenance_kind="native", diagnostic_fixture=False)
+                           provenance_kind="synthetic_fixture", diagnostic_fixture=True)
         expected = {"complete_motion": "met", "incomplete_motion": "not_met",
                     "missing_evidence": "unverified"}[args.kind]
         if outcome["physical_checks"]["maneuver"]["status"] != expected:
