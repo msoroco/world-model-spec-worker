@@ -1,0 +1,23 @@
+# Resume full-train-delivery after the reviewed runtime cutover
+
+Continue exactly the 253 assigned packages in batch.json. Keep the submitted constructions, plans and source evidence. The cutover replaces the frozen runtime with the current JSON graph/capture and adapter code and demotes stale ready statuses. Old compatibility, physical, saved-processing and comparison receipts are historical diagnostics, not current proof. Rebind each active exact manifest to the new runtime and rerun affected proofs before marking ready. Do not copy old receipt hashes or claim Native observations from CPU fixtures. Generated diagnostic video equality is determined by decoded frames; real capture remains byte-hashed.
+
+Use `.runtime-work/` for generated assets. The launcher quarantines only the obsolete untracked runtime manifest. Do not write into `runtime/runs/` or `runtime/pipeline/runs/`. Work autonomously through all CPU-solvable packages and record precise remaining gaps. No CARLA, NERSC, SQLite or physical acceptance. The separate timer publishes checkpoints.
+
+Process all 253 assigned packages. Mark unfinished worker-owned CPU work partial, and reserve blocked for a genuinely external dependency. Keep real 30-second or longer capture contracts; use short synthetic media only to test CPU software paths, with numeric tests for long-duration timing.
+
+# Full-train CPU delivery continuation
+
+Read UPDATE.md, MIGRATION.md, START_HERE.md, FULL_BRANCH_CONTRACT.md, DELIVERY_CONTRACT.md, batch.json and all eight partitions. Continue the 253 existing full-train assignments. Preserve authored plans, case definitions, constructions, comparison audits, handoffs and prior failure diagnoses; do not restart from blank work. Prior runtime-dependent receipts remain historical and must be regenerated before readiness under the current runtime.
+
+For CPU fixtures, label invented speed `synthetic_native_sample` only in diagnostic compatibility and synthetic saved-processing checks. Never label invented speed as original CARLA velocity. Real recording conversion and acceptance still require measured Native provenance. The current runtime also strips fixture-provided derived channels and requires all four source-camera videos. Regenerate prior exact-case, saved-processing, fallback and comparison proofs under the current runtime before marking ready.
+
+Work autonomously and use up to eight disjoint assignment owners. Do not ask questions or pause for ordinary implementation errors. Promote each authored draft to exact selected delivery cases only after reviewing the law, frozen witness, existing accepted evidence and source dependencies. For every selected case, provide one primary and three distinct tested fallback constructions, actual controllers and camera setup, measurement contract, saved processing, positive and negative diagnostic proofs, and independent acceptance and comparison audits. Preserve historical accepted evidence and avoid replay plans for already accepted originals.
+
+For each assignment, first make one primary selected case pass offline compatibility and the actual saved-processing path. Derive required observation channels from retained raw sources; a fixture-provided derived `channels/` file cannot substitute for the data saved processing will read. Supply all four named source-camera streams. Keep generated diagnostic media under ignored `.runtime-work/`, then test three fallbacks and every comparison against the final construction and finalizer. Any edit that affects those inputs invalidates prior receipts: rerun and rebind the affected proofs.
+
+Run the assignment-scoped strict gate before marking an assignment ready. Keep incomplete work partial or blocked with exact causes and resume actions, and continue other assignments. A successful launcher exit or passing single-case check is only a checkpoint. Run `.venv-cpu/bin/python worker_check.py --complete --require-delivery-ready` before claiming batch completion. No CARLA, NERSC, SQLite, canonical recording or physical acceptance is part of this CPU return. The separate checkpoint timer commits and pushes work/ every 15 minutes; do not run Git yourself. Do not edit frozen inputs, runtime or batch.json.
+
+## Resume after runtime repair
+
+The numbered law-field migration preserves all 253 assignments and prior work. Each assignment input now has one canonical `law` object with unchanged text. Old input-bound proofs remain historical; rerun affected checks before readiness. The launcher puts generated CPU files under ignored `.runtime-work/`; keep `runtime/` frozen. Finish and strictly check one assignment at a time; do not wait for the whole batch before recording an individually verified ready result.
