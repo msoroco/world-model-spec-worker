@@ -35,8 +35,7 @@ def main():
             log = folder / (kind + ".log")
             cmd = [sys.executable, str(HERE / "run-selected-physical-fixture.py"),
                    "--case", entry["case_id"], "--kind", kind, "--output", str(output),
-                   "--source-root", str(ROOT / ".runtime-work/c110919-update110-final-selected-matrix" /
-                                        sha(path)[:12])]
+                   "--source-root", str(ROOT / ".runtime-work/c110919-update110-final-selected-matrix/280b3a058328")]
             run = subprocess.run(cmd, cwd=ROOT, text=True, stdout=subprocess.PIPE,
                                  stderr=subprocess.STDOUT, check=False)
             log.parent.mkdir(parents=True, exist_ok=True)

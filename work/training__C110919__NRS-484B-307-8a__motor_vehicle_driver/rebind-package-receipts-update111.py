@@ -5,7 +5,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
-RUNS = ROOT / ".runtime-work/c110919-update110-final-selected-matrix" / hashlib.sha256((HERE / "execution-manifest.json").read_bytes()).hexdigest()[:12]
+RUNS = ROOT / ".runtime-work/c110919-update110-final-selected-matrix/280b3a058328"
 SELECTED = HERE / "update110-final-selected-proofs"
 OUT = HERE / "update111-package-compatibility"
 
