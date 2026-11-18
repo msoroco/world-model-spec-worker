@@ -22,9 +22,11 @@ def main():
     parser.add_argument("--kind", required=True,
                         choices=("complete_motion", "incomplete_motion", "missing_evidence", "lifecycle"))
     parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument("--source-root", type=Path)
     args = parser.parse_args()
     manifest = json.loads((HERE / "execution-manifest.json").read_text())
     entry = next(x for x in manifest["cases"] if x["case_id"] == args.case)
+    suffix = args.case.removeprefix(HERE.name + "__")
     if args.kind == "lifecycle":
         result = check_lifecycle(EVENTS, 0)
         for events, code in ((EVENTS[-1:] + EVENTS[:-1], 0), (EVENTS, 1)):
@@ -36,9 +38,12 @@ def main():
                 raise AssertionError("Invalid lifecycle accepted")
         result.update(cpu_fixture_mock=True, original_owner_release_verified=False)
     else:
-        tokens = shlex.split(entry["offline"]["command"])
-        attempt = ROOT / tokens[tokens.index("--output") + 1]
-        source = attempt.parent / "compatibility"
+        if args.source_root is None:
+            tokens = shlex.split(entry["offline"]["command"])
+            attempt = ROOT / tokens[tokens.index("--output") + 1]
+            source = attempt.parent / "compatibility"
+        else:
+            source = args.source_root / suffix / "primary/compatibility"
         raw = source / "native_samples.jsonl"
         road = source / "road_geometry.json"
         rows = [json.loads(x) for x in raw.read_text().splitlines()]
@@ -58,7 +63,7 @@ def main():
             selected[-1]["native_body_xy_m"] = selected[0]["native_body_xy_m"]
         elif args.kind == "missing_evidence":
             selected.pop()
-        result = classify(selected, geometry, provenance_kind="native", diagnostic_fixture=False)
+        result = classify(selected, geometry, provenance_kind="synthetic_fixture", diagnostic_fixture=True)
         expected = {"complete_motion": "met", "incomplete_motion": "not_met",
                     "missing_evidence": "unverified"}[args.kind]
         if result["physical_checks"]["maneuver"]["status"] != expected:

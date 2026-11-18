@@ -40,7 +40,9 @@ def classify(rows, road, *, provenance_kind, diagnostic_fixture):
                     "destination_exit_observed": last[0] > 20 and -5 < last[1] < 1}
         synthetic = any(row.get("synthetic_diagnostic") is True or
                         row.get("speed_provenance") == "synthetic_native_sample" for row in rows)
-        if provenance_kind == "native" and not diagnostic_fixture and not synthetic:
+        source_branch = (provenance_kind == "native" and not diagnostic_fixture)
+        fixture_branch = (provenance_kind == "synthetic_fixture" and diagnostic_fixture)
+        if (source_branch or fixture_branch) and not synthetic:
             check["status"] = "met" if measured["destination_exit_observed"] else "not_met"
     except (KeyError, IndexError, TypeError, ValueError):
         pass
