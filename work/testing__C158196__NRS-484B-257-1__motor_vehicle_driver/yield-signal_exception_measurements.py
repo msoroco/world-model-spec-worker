@@ -340,6 +340,28 @@ def measure_through_sight(row):
     return int(clear)
 
 
+def measure_through_motion(row):
+    """Read source actor motion without inferring yield or collision hazard."""
+    through = row.get("through")
+    if not isinstance(through, dict) or type(through.get("actor_id")) is not int:
+        raise ValueError("Missing original through actor identity")
+    position = through.get("position_m")
+    if not isinstance(position, list) or len(position) != 3:
+        raise ValueError("Missing original through position")
+    position = [_number(v, "through position") for v in position]
+    speed = _number(through.get("speed_mps"), "through speed")
+    if speed < 0:
+        raise ValueError("Negative original through speed")
+    body = MultiPoint([(_number(v[0], "through body x"), _number(v[1], "through body y"))
+                       for v in through["body_vertices_m"]]).convex_hull
+    if not body.buffer(.05).covers(MultiPoint([position[:2]])):
+        raise ValueError("Through position differs from original body")
+    identity = through["actor_id"]
+    return ({"actor_id": identity, "position_m": position,
+             "road_id": through["road_id"], "lane_id": through["lane_id"]},
+            {"actor_id": identity, "speed_mps": speed})
+
+
 def finalize(attempt, output):
     """Derive primary signal-exception observations from retained originals."""
     attempt, output = Path(attempt), Path(output)
@@ -394,6 +416,10 @@ def finalize(attempt, output):
         "signal_state": [sample["signal_state"] for sample in report["samples"]],
         "ego_crossing_body": [row["ego"] for row in interaction],
         "through_highway_sight_clear": [measure_through_sight(row) for row in interaction],
+        "ego_distance_to_junction_m": [MultiPoint([(_number(v[0], "ego body x"), _number(v[1], "ego body y")) for v in row["ego"]["body_vertices_m"]]).convex_hull.distance(Polygon(context["intersection_polygon_xy_m"])) for row in interaction],
+        "through_vehicle_position": [measure_through_motion(row)[0] for row in interaction],
+        "through_vehicle_speed": [measure_through_motion(row)[1] for row in interaction],
+        "ego_approach_speed": [sample["ego_speed_mps"] for sample in report["samples"]],
     }.items():
         with (channels/(name+".jsonl")).open("x") as stream:
             for frame, value in zip(frames, values):
@@ -460,7 +486,11 @@ def finalize(attempt, output):
                                      for name,unit in (("operative_signal_control","count"),
                                                        ("signal_state","text"),
                                                        ("ego_crossing_body","structured record"),
-                                                       ("through_highway_sight_clear","count"))]
+                                                       ("through_highway_sight_clear","count"),
+                                                       ("ego_distance_to_junction_m","m"),
+                                                       ("through_vehicle_position","structured record"),
+                                                       ("through_vehicle_speed","structured record"),
+                                                       ("ego_approach_speed","m/s"))]
                                    + [{"name":name,"unit":"structured record",
                                        "reference":"recording-context.json"}
                                       for name in ("signal_governance_review","yield_site_review")],
