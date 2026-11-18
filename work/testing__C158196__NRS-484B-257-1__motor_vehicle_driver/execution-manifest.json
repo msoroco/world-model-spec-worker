@@ -157,6 +157,73 @@
         "processing_receipt": "primary-process-saved.json",
         "processing_sha256": "30873bd72ea387294a9aedbd702f55ef26944798a61c93f0e3b5fe4ffaf76cf0"
       }
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_off",
+      "kind": "delivery",
+      "construction": "signal-off-construction.json",
+      "construction_sha256": "8a047bbb22bef122039687bacbf1f75aabb2d3d866e00d1cdb05b60f52cb94d0",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Off-state and head governance require Native capture and original-camera source review."
+      },
+      "candidates": [],
+      "measurement_contract": "signal-off-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "signal_exception_measurements.py"
+      },
+      "fixture_recipe": "work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/signal-off-fixture-recipe.json",
+      "acquisition": {
+        "operative_signal_control": {
+          "entrypoint": "signal_exception_measurements.py",
+          "method": "original signal history and affected-lane join",
+          "evidence": [
+            "signal_context.json",
+            "signal_history.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "signal_state": {
+          "entrypoint": "signal_exception_measurements.py",
+          "method": "original Native signal-state series",
+          "evidence": [
+            "signal_history.jsonl"
+          ]
+        },
+        "ego_crossing_body": {
+          "entrypoint": "signal_exception_measurements.py",
+          "method": "original complete-body interaction history",
+          "evidence": [
+            "interaction_history.jsonl",
+            "video_frames.jsonl"
+          ]
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_off --output .runtime-work/c158196-signal-off-v1/offline",
+        "construction_sha256": "8a047bbb22bef122039687bacbf1f75aabb2d3d866e00d1cdb05b60f52cb94d0",
+        "exit_code": 0,
+        "log": "signal-off-offline-command.log",
+        "log_sha256": "eb0272acd5f83ff2d2b4644e761842c97f214151827fe22903f0021d9d2e367d"
+      },
+      "compatibility": {
+        "receipt": "signal-off-compatibility.json",
+        "sha256": "026f45e1a673cf27e81c2226a72967f258dd5cc89e0f1e037b9bd336a7f01dea"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_off --attempt .runtime-work/c158196-signal-off-v1/attempt --output .runtime-work/c158196-signal-off-v1/processed --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "test_log": "signal-off-process-saved.json",
+        "test_log_sha256": "e1051a56417ec1ade007cad0aaf62b9d73fdd913c47019606fb5a9988355276f",
+        "test_exit_code": 0,
+        "processing_receipt": "signal-off-process-saved.json",
+        "processing_sha256": "e1051a56417ec1ade007cad0aaf62b9d73fdd913c47019606fb5a9988355276f"
+      }
     }
   ]
 }
