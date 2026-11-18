@@ -1,0 +1,40 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_visible_not_governing",
+  "requirements": [
+    {
+      "disposition_index": 7,
+      "requirement": "An operative traffic-control signal controls the ego approach at complete-body entry",
+      "source": "NRS 484B.257(1); inputs/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/assignment.json; inputs/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/witnesses.json",
+      "output_key": "operative_signal_at_entry",
+      "method": "measure_operative_signal_at_entry",
+      "value_type": "boolean",
+      "kind": "measured",
+      "inputs": [
+        "signal_context.json",
+        "signal_history.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 8,
+      "requirement": "The controlling signal indication at complete-body entry is retained",
+      "source": "NRS 484B.257(1); inputs/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/assignment.json; inputs/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/witnesses.json",
+      "output_key": "entry_signal_state",
+      "method": "measure_entry_signal_state",
+      "value_type": "text",
+      "kind": "measured",
+      "inputs": [
+        "signal_context.json",
+        "signal_history.jsonl",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "signal_history.jsonl"
+    ],
+    "error_contains": "Missing required source: signal_history.jsonl"
+  }
+}

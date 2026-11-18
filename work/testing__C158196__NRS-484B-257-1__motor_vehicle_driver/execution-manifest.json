@@ -224,6 +224,73 @@
         "processing_receipt": "signal-off-process-saved.json",
         "processing_sha256": "e1051a56417ec1ade007cad0aaf62b9d73fdd913c47019606fb5a9988355276f"
       }
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_visible_not_governing",
+      "kind": "delivery",
+      "construction": "signal-visible-construction.json",
+      "construction_sha256": "49bbafdb524dd75925284be91378e33f4176dace744dfd8636cf8e641d31d9f5",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The separate through-lane head must remain visible without governing the signed ego approach; Native geometry and original-camera review are pending."
+      },
+      "candidates": [],
+      "measurement_contract": "signal-visible-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "signal_exception_measurements.py"
+      },
+      "fixture_recipe": "work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/signal-visible-fixture-recipe.json",
+      "acquisition": {
+        "operative_signal_control": {
+          "entrypoint": "signal_exception_measurements.py",
+          "method": "original signal history and affected-lane join",
+          "evidence": [
+            "signal_context.json",
+            "signal_history.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "signal_state": {
+          "entrypoint": "signal_exception_measurements.py",
+          "method": "original Native signal-state series",
+          "evidence": [
+            "signal_history.jsonl"
+          ]
+        },
+        "ego_crossing_body": {
+          "entrypoint": "signal_exception_measurements.py",
+          "method": "original complete-body interaction history",
+          "evidence": [
+            "interaction_history.jsonl",
+            "video_frames.jsonl"
+          ]
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_visible_not_governing --output .runtime-work/c158196-signal-visible-v2/offline",
+        "construction_sha256": "49bbafdb524dd75925284be91378e33f4176dace744dfd8636cf8e641d31d9f5",
+        "exit_code": 0,
+        "log": "signal-visible-offline-command.log",
+        "log_sha256": "54e0c3f7c10253b492e0f67d6b75d3e8c6826247dbda1371ae032345d6c1c656"
+      },
+      "compatibility": {
+        "receipt": "signal-visible-compatibility.json",
+        "sha256": "b7744b343a4e1711bb36223efc1ef02c1cdaf8ae47dee818ccc5fde45dd08241"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_visible_not_governing --attempt .runtime-work/c158196-signal-visible-v2/attempt --output .runtime-work/c158196-signal-visible-v2/processed --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "test_log": "signal-visible-process-saved.json",
+        "test_log_sha256": "c4b94812c80cc7f27735c5d74c85d22ac91c35199ede31eb7991f1b3751831d8",
+        "test_exit_code": 0,
+        "processing_receipt": "signal-visible-process-saved.json",
+        "processing_sha256": "c4b94812c80cc7f27735c5d74c85d22ac91c35199ede31eb7991f1b3751831d8"
+      }
     }
   ]
 }

@@ -118,6 +118,64 @@
         "physical governance of ego approach",
         "original head visibility"
       ]
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_visible_not_governing",
+      "target_law_id": "NRS-484B-257-1",
+      "target_type": "boundary_probe",
+      "rationale": "Visible through-approach head does not govern signed ego approach in diagnostic source readback; physical and legal status unresolved",
+      "variable_assignments": {
+        "operative_signal_controls_ego_at_entry": {
+          "kind": "subject_behavior",
+          "value": false,
+          "unit": "boolean"
+        },
+        "signal_state_at_entry": {
+          "kind": "world_setup",
+          "value": "Green",
+          "unit": "Native signal state"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "operative_signal_control",
+            "unit": "count",
+            "method": "Original affected-lane and operative-state join per frame",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native map and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "official control and physical head visibility require source review"
+          },
+          {
+            "name": "signal_state",
+            "unit": "text",
+            "method": "Original Native signal-state readback per frame",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native map and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical indication requires original-camera review"
+          },
+          {
+            "name": "ego_crossing_body",
+            "unit": "structured record",
+            "method": "Original ego complete-body vertices per frame",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native map and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical geometry requires Native acquisition"
+          }
+        ],
+        "limitations": [
+          "authored OpenDRIVE and CPU fixtures do not establish official control, proper sign erection, real actor motion or video coverage"
+        ],
+        "context_inputs": []
+      },
+      "unresolved_judgment_calls": [
+        "official traffic-control signal status",
+        "physical governance of ego approach",
+        "original head visibility"
+      ]
     }
   ],
   "sweep_specs": [],
