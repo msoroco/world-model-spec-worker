@@ -31,22 +31,21 @@ def sha(path):
     return h.hexdigest()
 
 
-def expectation(case, attempt, review, context):
+def _measured_expectation(case, attempt, review, context):
     ident=case['case_id'];law=case['target_law_id'];trace=rows(attempt/'trace.jsonl')
-    result=load(attempt/'result.json');scene=first_scene(attempt/'traffic_spec/trace.json')
+    result=load(attempt/'result.json');scene=first_scene(attempt/'traffic_spec/trace.json') if trace else {}
     record={'case_id':ident,'target_law_id':law,'expected_label':None,'intended_outcome':None,
             'label_scope':'full_delivered_trace_where_target_rule_applies',
             'scene_assumptions':context,'evidence':{},'missing_evidence':[],'intention_matched':False,
             'trace_reference':str(attempt/'traffic_spec/trace.json'),
             'trace_sha256':sha(attempt/'traffic_spec/trace.json'),
             'definition_sha256':hashlib.sha256(json.dumps(case,sort_keys=True).encode()).hexdigest(),
-            'full_recording_window_s':[trace[0]['time_s'],trace[-1]['time_s']],
-            'judgment_sweep':case.get('target_type')=='judgment_sweep' or 'appropriate-signal-' in ident}
-    if record['judgment_sweep']:
-        record['label_exception']='Judgment sweep: no assumed appropriateness threshold';return record
-    if not review.get('trace_integrity_confirmed') or not result.get('maneuver_completed'):
+            'full_recording_window_s':[trace[0]['time_s'],trace[-1]['time_s']] if trace else None,
+            'judgment_sweep':case.get('target_type')=='judgment_sweep','processing_reasons':[]}
+    if not trace or not review.get('trace_integrity_confirmed') or not result.get('maneuver_completed'):
         record['missing_evidence'].append('Complete joined capture and maneuver required');return record
-    if law in ('NRS-484B-600-1c','NRS-484B-600-1e'):
+    if case.get('unresolved_judgment_calls'):return record
+    if law=='NRS-484B-600-1c':
         speed=review['speed_evaluation'];record['expected_label']=speed['expected_speed_rule_label'] if speed['expected_speed_rule_label']!='unknown' else None
         record['intended_outcome']=speed['intended_numeric_label'];record['evidence']={'measurement':speed}
         if law=='NRS-484B-600-1c':
@@ -65,7 +64,7 @@ def expectation(case, attempt, review, context):
             record['evidence']['nearby_signal_region_clearance_lower_bound_m']=clearance
             record['evidence']['no_signal_region_overlap']=clearance>0
             if clearance<=0:record['missing_evidence'].append('Traffic-light interference requires further geometry checks')
-    elif '-lanes-' in ident:
+    elif law=='NRS-484B-223-1b':
         cfg=load(attempt/'config.json');n=cfg['lane_count'];record['evidence']={'same_direction_lane_count':n,'lane_directions':[s['lane'].get('direction') for s in scene['structures'] if s['kind']=='lane']}
         record['intended_outcome']='not_applicable' if n<2 else 'compliant'
         if n<2 and result['measured_values'].get('straight_travel_completion_observed'):
@@ -92,7 +91,6 @@ def expectation(case, attempt, review, context):
             clearance={r['time_s']:min((v[0]-line[0][0])*nx+(v[1]-line[0][1])*ny for v in r['value']['vertices_m']) for r in footprints}
         stop=[r for r in held if r['value']['measured_speed_mps']<=eps and clearance.get(r['time_s'],-math.inf)>0]
         crossed=[r for r in moving if clearance.get(r['time_s'],math.inf)<0]
-        record['intended_outcome']='non_compliant' if case.get('target_type')=='violating_attempt' or 'violating' in ident else 'compliant'
         record['evidence']={'stopping_reference':context.get('stopping_reference'),'stationary_resolution_mps':eps,'stationary_resolution_note':'Numerical observation resolution, not a permitted rolling-stop speed','stop_samples':len(stop),'minimum_stop_front_clearance_m':min((clearance[r['time_s']] for r in stop),default=None),'crossing_observed':bool(crossed),'boundary_method':'Signed perpendicular front/body distance to native recorded stop-line endpoints'}
         if context.get('stopping_reference'):
             from shapely.geometry import Polygon
@@ -111,13 +109,12 @@ def expectation(case, attempt, review, context):
     elif law=='NRS-484B-307-6a':
         body=rows(attempt/'footprint_boundary_relationships.jsonl');signals=rows(attempt/'governing_signal_indication.jsonl');bytime={r['time_s']:r['value']['state'] for r in signals}
         entries=[r for i,r in enumerate(body) if i and r['value']['relations']['first_overlap'] and not body[i-1]['value']['relations']['first_overlap']]
-        states=[bytime.get(r['time_s']) for r in entries];record['intended_outcome']='non_compliant' if case.get('target_type')=='violating_attempt' or 'violating' in ident else 'compliant'
+        states=[bytime.get(r['time_s']) for r in entries]
         record['evidence']={'entry_convention':'First recorded front/body overlap of native intersection surface; original time brackets retained','entry_times_s':[r['time_s'] for r in entries],'governing_signal_states':states}
         if not states or any(s is None for s in states):record['missing_evidence'].append('Observed intersection entry with joined governing indication required')
         else:record['expected_label']='non_compliant' if 'Red' in states else 'compliant'
     elif law in ('NRS-484B-400-2a','NRS-484B-400-2b'):
         points=rows(attempt/'ego_trajectory.jsonl');approach=[r['value'] for r in points if -30<=r['value']['position_authored_m']['x']<=-14];exit_points=[r['value'] for r in points if 14<=r['value']['position_authored_m']['y']<=30]
-        record['intended_outcome']='non_compliant' if case.get('target_type')=='violating_attempt' or 'violating' in ident else 'compliant'
         if law.endswith('2a'):
             offsets=[r['signed_approach_centerline_offset_m'] for r in approach];okay=bool(offsets) and all(-3.5<x<0 for x in offsets)
         else:
@@ -126,15 +123,18 @@ def expectation(case, attempt, review, context):
         if offsets:record['expected_label']='compliant' if okay else 'non_compliant'
         else:record['missing_evidence'].append('Missing approach/exit position evidence')
     elif law=='NRS-484B-413-2':
-        threshold=100 if '-100-' in ident else 300
+        from context_catalogue import combined_district
+        district=combined_district(context)
+        threshold=100 if district is True else 300 if district is False else None
         lead=review.get('api_signal_lead')
         if lead and lead.get('value') is not None:distance=lead['value']/.3048;interval=lead.get('sampling_distance_interval_m');interval=[x/.3048 for x in interval] if interval else None
         else:
             distance=result['measured_values'].get('continuous_indicator_distance_before_numerical_onset_ft');interval=result['measured_values'].get('continuous_indicator_distance_bracket_ft')
-        record['intended_outcome']='non_compliant' if ident.endswith('-below') else 'compliant'
         record['evidence']={'minimum_signal_distance_ft':threshold,'measured_api_continuous_distance_ft':distance,'sampling_interval_ft':interval,'district':context.get('district'),'event_definition':review.get('maneuver_onset_bracket_s'),'distance_convention':'Compare the recorded scalar to the minimum under the declared sampled maneuver-event convention; preserve timing/distance brackets separately, including brackets that straddle the threshold', 'signal_source':'Original indicator states and recorded trajectory; rendered flashing evidence separately linked'}
-        if not context.get('district') or distance is None:record['missing_evidence'].append('Declared district and measured continuous signal distance required')
-        else:record['expected_label']='compliant' if distance>=threshold else 'non_compliant'
+        if threshold is None:record['processing_reasons'].append('uncertain_applicability')
+        if not isinstance(distance,(int,float)) or isinstance(distance,bool) or not math.isfinite(distance) or distance<0:
+            record['missing_evidence'].append('Finite measured continuous signal distance required')
+        elif threshold is not None:record['expected_label']='compliant' if distance>=threshold else 'non_compliant'
     elif law in ('NRS-484B-113-2','NRS-484B-220-1','NRS-484B-227-1','NRS-484B-250-1','NRS-484B-250-2','NRS-484B-250-4'):
         from demo_rule_evidence import evaluate
         try:
@@ -146,6 +146,36 @@ def expectation(case, attempt, review, context):
     if record['missing_evidence']:record['expected_label']=None
     record['intention_matched']=record['expected_label']==record['intended_outcome'] if record['expected_label'] else False
     return record
+
+
+REFERENCE_LAWS = frozenset(('NRS-484B-600-1c','NRS-484B-600-1e','NRS-484B-223-1b',
+    'NRS-484A-450-2','NRS-484B-307-6a','NRS-484B-400-2a','NRS-484B-400-2b',
+    'NRS-484B-413-2','NRS-484B-113-2','NRS-484B-220-1','NRS-484B-227-1',
+    'NRS-484B-250-1','NRS-484B-250-2','NRS-484B-250-4'))
+
+
+def expectation(case, attempt, review, context, *, definition_path=None):
+    """Recorded-rule references use the same v2 classifier as production."""
+    from production_verdicts import finalize_expectation,intended_outcome,normalize
+    if case['target_law_id']=='NRS-484B-600-1e':
+        from production_verdicts import expectation as production_expectation
+        return production_expectation(case,attempt,review,context,definition_path=definition_path)
+    attempt=Path(attempt)
+    measured=_measured_expectation(case,attempt,review,context)
+    measured['intended_outcome']=intended_outcome(case)
+    if measured.get('expected_label') is not None:
+        measured['expected_label']=normalize(measured['expected_label'])
+        measured['reference_check']={'id':'recorded-rule-reference-v2',
+            'law_id':case['target_law_id'],'source_sha256':sha(Path(__file__)),
+            'source_hashes':{name:sha(Path(__file__).with_name(name))for name in ('expected_labels.py','demo_rule_evidence.py')},
+            'scope':'Full recording under the retained measured event/geometry and declared assumptions'}
+    elif case['target_law_id'] not in REFERENCE_LAWS and not case.get('unresolved_judgment_calls'):
+        measured['processing_reasons'].append('unsupported_evaluation')
+    outcome=measured.get('expected_label');intended=measured.get('intended_outcome')
+    measured['intention_matched']=outcome==intended if outcome is not None and intended is not None else None
+    if measured['intention_matched'] is False:measured['evidence_status']='needs_repair'
+    return finalize_expectation(case,measured,attempt,definition_path=definition_path,
+                                evaluation_method='recorded_rule_reference')
 
 
 def scene_context(case,attempt):
@@ -191,6 +221,7 @@ def resolve_declared_context(definition, context, attempt):
 
 
 def apply(output, validator=None):
+    from production_verdicts import presentation
     index=load(output/'delivery_index.json');records=[]
     for cell in index['cells']:
         for item in cell['cases']:
@@ -204,23 +235,17 @@ def apply(output, validator=None):
             inject(attempt,context,Path(decoder))
             definition=deepcopy(definition);resolve_declared_context(definition,context,attempt)
             from authored_context import assumptions
-            definition['expected_label_specification']={'core_assumptions':assumptions(context),'scope':'Recorded scenario under explicit synthetic context','scene_assumptions':context,'approved_targets_unchanged':True}
+            definition.setdefault('expected_label_specification',{}).update({'core_assumptions':assumptions(context),'scope':'Recorded scenario under explicit synthetic context','scene_assumptions':context,'approved_targets_unchanged':True})
             definition['source_definition_preserved']=str(source)
             path=attempt/'expected_label_case_definition.json';atomic(path,definition);item['definition_file']=str(path)
-            record=expectation(definition,attempt,load(attempt/'measured_review.json'),context)
-            definition['expected_label_specification']['intended_outcome']=record['intended_outcome']
-            definition['expected_label_specification']['observed_expected_label']=record['expected_label']
-            definition['expected_label_specification']['evidence_reference']=str(attempt/'expected_label.json')
-            definition['source_unresolved_inputs']=definition.pop('missing_inputs',definition.get('source_unresolved_inputs',[]))
-            definition['execution_readiness']='judgment_sweep_recorded' if record['judgment_sweep'] else 'validated_recording' if record['intention_matched'] else 'repair_required'
-            atomic(path,definition);record['definition_sha256']=sha(path)
+            record=expectation(definition,attempt,load(attempt/'measured_review.json'),context,definition_path=path)
             atomic(attempt/'expected_label.json',record);atomic(attempt/'traffic_spec/expected_label_context.json',{'scene_assumptions':context,'expected_label_reference':str(attempt/'expected_label.json'),'trace_sha256':record['trace_sha256']})
-            item['expected_label']=record['expected_label'];item['expected_label_record']=str(attempt/'expected_label.json');item['expected_label_status']='judgment_sweep' if record['judgment_sweep'] else 'accepted' if record['intention_matched'] else 'needs_repair'
+            item['expected_label']=record['expected_label'];item['expected_label_record']=str(attempt/'expected_label.json');item['label_record']=presentation(record);item['expected_label_status']='evidence_accepted' if record['evidence_status']=='accepted' else 'needs_repair'
             records.append(record)
     index.pop('legal_compliance_evaluated',None)
-    index['status']='expected_labels_complete' if all(r['judgment_sweep'] or r['intention_matched'] for r in records) else 'expected_label_repairs_in_progress'
+    index['status']='expected_labels_complete' if all(r['evidence_status']=='accepted' for r in records) else 'expected_label_repairs_in_progress'
     atomic(output/'delivery_index.json',index)
-    audit={'status':'complete' if all(r['judgment_sweep'] or r['intention_matched'] for r in records) else 'repairs_required','counts':dict(Counter(r['expected_label'] or ('judgment_sweep' if r['judgment_sweep'] else 'missing_evidence') for r in records)),'cases':records,'repairs_required':[r['case_id'] for r in records if not r['judgment_sweep'] and not r['intention_matched']]}
+    audit={'status':'complete' if all(r['evidence_status']=='accepted' for r in records) else 'repairs_required','counts':dict(Counter(r['expected_label'] or 'outcome_unavailable' for r in records)),'cases':records,'repairs_required':[r['case_id'] for r in records if r['evidence_status']!='accepted']}
     atomic(output/'expected_label_audit.json',audit);print(json.dumps({k:v for k,v in audit.items() if k!='cases'},indent=2))
 
 if __name__=='__main__':

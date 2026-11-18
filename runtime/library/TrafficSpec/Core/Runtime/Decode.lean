@@ -471,6 +471,9 @@ mutual
     if keyed ks ["distance_while", "holds"] then
       return .distanceWhile (← need path j "distance_while" >>= str (at_ "distance_while")) (← need path j "holds" >>= formula (at_ "holds"))
     if keyed ks ["since_rise"] then return .sinceRise (← need path j "since_rise" >>= formula (at_ "since_rise"))
+    if keyed ks ["heading_since", "max_step", "onset"] then
+      return .headingSince (← need path j "heading_since" >>= str (at_ "heading_since")) (← sub "max_step")
+        (← need path j "onset" >>= formula (at_ "onset"))
     if keyed ks ["aggregate", "var", "where", "of"] then
       return .aggregate (← need path j "aggregate" >>= aggOp (at_ "aggregate")) (← need path j "var" >>= str (at_ "var"))
         (← need path j "where" >>= formula (at_ "where")) (← sub "of")

@@ -23,13 +23,14 @@ def xyz(p):
 
 
 def visibility_required(required_observations=(), requested=False):
-    atoms = set(required_observations) | set(json.loads(os.environ.get('SCENARIO_REQUIRED_CAPTURE_ATOMS', '[]')))
-    return bool(requested or 'st.sight_distance' in atoms)
+    # Every common recording acquires sight; target-law dependencies cannot disable it.
+    return True
 
 
 class PipelineCapture:
     def __init__(self, client, ego, output, case_id, visibility=False, required_observations=(), physical_actor_registry=None):
-        requirements = set(required_observations) | set(json.loads(os.environ.get('SCENARIO_REQUIRED_CAPTURE_ATOMS', '[]')))
+        from traffic_spec_adapter.atom_contract import COMMON_CAPTURE_ATOMS
+        requirements = set(COMMON_CAPTURE_ATOMS) | set(required_observations) | set(json.loads(os.environ.get('SCENARIO_REQUIRED_CAPTURE_ATOMS', '[]')))
         visibility = visibility_required(requirements, visibility)
         self.client, self.ego = client, ego
         self.world = client.get_world()
@@ -48,14 +49,21 @@ class PipelineCapture:
                      'required_observations': sorted(requirements),
                      'extraction_confirmed': False, 'sources': {},
                      'complete_driving_lanes': True,
-                     'observation_contract_version': 3,
+                     'observation_contract_version': 5,
                      'road_user_visibility_observed': 'rel.visible' in requirements,
                      'speed_source': 'original live actor.get_velocity telemetry',
                      'frame_join': 'same original simulation frame; replay_* field names retained for adapter compatibility',
                      'visibility_scope': 'not measured' if not visibility else 'actual subject body rays; not ego-to-other visibility'}
+        from original_observations import client_versions
+        self.meta['native_client_versions'] = client_versions(client)
         from carla_sgg import sgg
         self.meta['generator_source'] = {'path': sgg.__file__, 'sha256': sha(sgg.__file__)}
-        self.meta['source_components'] = {p.name:sha(p) for p in (Path(__file__),Path(__file__).with_name('scene_graph_collector.py'),Path(__file__).with_name('original_observations.py'))}
+        self.meta['source_components'] = {p.name:sha(p) for p in (Path(__file__),Path(__file__).with_name('scene_graph_collector.py'),Path(__file__).with_name('original_observations.py'),Path(__file__).with_name('native_graph_json.py'))}
+        from traffic_spec_adapter import acceleration
+        self.meta['acceleration_method'] = acceleration.METHOD
+        self.meta['source_components']['acceleration.py'] = sha(acceleration.__file__)
+        from carla_sgg import law_evidence
+        self.meta['source_components']['law_evidence.py'] = sha(law_evidence.__file__)
         self.physical_registry=None
         if physical_actor_registry is not None:
             from traffic_spec_adapter.physical_actors import load_registry
@@ -82,6 +90,10 @@ class PipelineCapture:
                 facts={'map':self.map.name,'junctions':list(junctions.values()),
                        'crosswalk_vertices_m':[xyz(p) for p in self.map.get_crosswalks()],
                        'crosswalk_inventory_scope':'native Map.get_crosswalks metadata; additional rendered decals are not excluded'}
+                from original_observations import map_control_inventory
+                facts['native_control_inventory']=map_control_inventory(self.world)
+                from original_observations import map_lane_topology
+                facts['native_lane_topology']=map_lane_topology(self.map,self.output/'road.xodr')
                 path=self.capture_root/'native_map_facts.json'
                 path.write_text(json.dumps(facts,indent=2))
                 self.meta['native_map_facts']={'path':path.name,'sha256':sha(path)}
@@ -120,9 +132,15 @@ class PipelineCapture:
         original_observations = observe(self.world, self.ego, frame, time_s, self.user_visibility,self.physical_registry)
         original_observations['map_context']=self.map_context
         subject_observation = next(a for a in original_observations['participants'] if a['actor_id'] == self.ego.id)
-        row['accel_longitudinal_mps2'] = subject_observation['accel_longitudinal_mps2']
-        if 'wheel_steer_angle_deg' in subject_observation:
-            row['wheel_steer_angle_deg'] = subject_observation['wheel_steer_angle_deg']
+        if 'accel_longitudinal_mps2' in subject_observation:
+            row['accel_longitudinal_mps2'] = subject_observation['accel_longitudinal_mps2']
+        row['acceleration_method'] = subject_observation['acceleration_method']
+        row['acceleration_projection'] = subject_observation['acceleration_projection']
+        row['acceleration_mps2'] = subject_observation['acceleration_mps2']
+        row['forward_vector'] = subject_observation['forward_vector']
+        for key in ('wheel_angle_method', 'wheel_angle_references', 'wheel_steer_angles_deg', 'wheel_angle_errors'):
+            if key in subject_observation:
+                row[key] = subject_observation[key]
         observation_seconds=time.perf_counter()-observation_started
         record = self.collector.capture(frame, c, observed_evidence=original_observations)
         if not record:

@@ -269,6 +269,7 @@ def export(project, root, partition_files, spec_file, destination, batch_id, max
         out.mkdir()
         assignments = {}
         frozen_sources = {}
+        judgment_ranges = {}
         for aid, task in tasks.items():
             cfg = spec['assignments'][aid]
             if not cfg.get('objective') or not cfg.get('dependency_review'):
@@ -374,6 +375,14 @@ def export(project, root, partition_files, spec_file, destination, batch_id, max
                 'recordings': list(recordings.values()),
                 'requested_remaining_requirement': cfg.get('remaining_requirement'),
                 'instruction': 'Review sources and full law; document exact demonstrated facts, unknowns and gaps. Accepted membership alone does not establish full statutory coverage.'})
+            testing_sets=[sid for sid in task.get('set_ids',[]) if sid.endswith('-test')]
+            if testing_sets:
+                from judgment_coverage import audit_set
+                for sid in testing_sets:
+                    if sid not in judgment_ranges:judgment_ranges[sid]=audit_set(root,sid)
+                references={sid:judgment_ranges[sid] for sid in testing_sets}
+                write(out/'inputs'/aid/'judgment_ranges.json',references)
+                task['judgment_range_reference']='inputs/'+aid+'/judgment_ranges.json'
             write(out / 'inputs' / aid / 'assignment.json', task)
             write(out / 'inputs' / aid / 'witnesses.json', witnesses)
             for source in snapshot['guidance']:

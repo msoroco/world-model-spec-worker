@@ -64,7 +64,7 @@ class GeneratedFixtures(unittest.TestCase):
   from worker_exchange.media import audit
   with tempfile.TemporaryDirectory() as directory:
    root=Path(directory);source=root/'work/a/diagnostic.json'
-   spec={'files':{'trace.jsonl':'{"frame":1}\n'},'graphs':[{'path':'capture/native/base.pkl','attributes':{'frame':1},'nodes':[{'id':'ego','attributes':{'sem_class':'vehicle.tesla.model3'}}],'edges':[]}],
+   spec={'files':{'trace.jsonl':'{"frame":1}\n'},'graphs':[{'path':'capture/native/base.adapter.json','attributes':{'frame':1},'nodes':[{'id':'ego','attributes':{'sem_class':'vehicle.tesla.model3'}}],'edges':[]}],
          'videos':[{'path':'raw.mkv','frames':9,'width':32,'height':24,'fps':20,'color':'black'}]}
    write(source,spec)
    recipe=root/'work/a/recipe.json'
@@ -74,8 +74,8 @@ class GeneratedFixtures(unittest.TestCase):
    second=materialize(root,recipe,root/'.runtime-work/two')
    self.assertEqual(first['fixture_sha256'],second['fixture_sha256'])
    self.assertTrue(audit(root/'.runtime-work/one/raw.mkv',9)['passed'])
-   from traffic_spec_adapter.adapter import load_graph
-   self.assertEqual(load_graph(root/'.runtime-work/one/capture/native/base.pkl').graph['frame'],1)
+   from traffic_spec_adapter.adapter import load_adapter_graph
+   self.assertEqual(load_adapter_graph(root/'.runtime-work/one/capture/native/base.adapter.json').graph['frame'],1)
    write(source,dict(spec,files={'result.json':'{}'}))
    with self.assertRaisesRegex(ValueError,'source missing/changed'):materialize(root,recipe,root/'.runtime-work/stale')
 
@@ -84,6 +84,19 @@ class GeneratedFixtures(unittest.TestCase):
   for path in ('../outside','result.json','config.json'):
    with self.subTest(path=path),self.assertRaises(ValueError):
     inspect({'files':{path:'bad'},'graphs':[],'videos':[]})
+
+ def test_generated_video_fingerprint_uses_decoded_frames(self):
+  import subprocess
+  from worker_exchange.fixture_recipe import fixture_fingerprint
+  from worker_exchange.fixture_generator import generate
+  with tempfile.TemporaryDirectory() as directory:
+   root=Path(directory);first=root/'first';second=root/'second'
+   spec={'files':{},'graphs':[],'videos':[{'path':'raw.mkv','frames':3,'width':32,'height':24,'fps':20,'color':'black'}]}
+   generate(spec,first);second.mkdir()
+   subprocess.run(['ffmpeg','-nostdin','-hide_banner','-loglevel','error','-i',str(first/'raw.mkv'),
+                   '-c','copy','-metadata','title=another-host',str(second/'raw.mkv')],check=True)
+   self.assertNotEqual(sha(first/'raw.mkv'),sha(second/'raw.mkv'))
+   self.assertEqual(fixture_fingerprint(first,spec),fixture_fingerprint(second,spec))
 
 class ExactCaseIntegration(unittest.TestCase):
  @unittest.skipUnless(__import__('os').environ.get('SCENARIO_WORKER_FIXTURE_REPO'),

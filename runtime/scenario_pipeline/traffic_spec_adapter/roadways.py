@@ -19,10 +19,22 @@ def roadway_intervals(road, geometries, start, end):
         if b <= a:
             continue
         values = {'curvature': abs(reference(g, (a+b)/2)[3])}
-        active = [e for e in elevations if float(e.attrib['s']) <= a+1e-9]
+        active = [e for e in elevations if float(e.attrib['s']) <= a]
         breaks = [e for e in elevations if a < float(e.attrib['s']) < b]
-        if active and not breaks and all(float(active[-1].attrib.get(k, 0)) == 0 for k in 'cd'):
-            values['grade'] = float(active[-1].attrib.get('b', 0))
+        profile = ([active[-1]] if active else []) + breaks
+        # Record boundaries alone do not make an identical constant slope vary.
+        # No grade is emitted before the first observed elevation record.
+        if active and all(float(e.attrib.get(k, 0)) == 0 for e in profile for k in 'cd'):
+            slopes = {float(e.attrib.get('b', 0)) for e in profile}
+            # Equal derivatives do not establish a continuous surface: a source
+            # elevation jump cannot become a constant whole-region grade.
+            preceding=active[-2:-1] if len(active)>1 and float(active[-1].get('s'))==a else []
+            chain=preceding+profile
+            continuous=all(float(current.get('a',0))==sum(
+                float(previous.get(key,0))*(float(current.get('s'))-float(previous.get('s')))**power
+                for power,key in enumerate('abcd')) for previous,current in zip(chain,chain[1:]))
+            if len(slopes) == 1 and continuous:
+                values['grade'] = slopes.pop()
         if result and result[-1][1] == a and result[-1][2] == values:
             result[-1] = (result[-1][0], b, values)
         else:
@@ -199,6 +211,11 @@ def consolidate(scene, identities=None):
 
 def apply_replacements(scene, replacements, property_merges=()):
     from .compatibility import remap_regions
+    for ident in replacements:
+        seen=set();target=ident
+        while target in replacements:
+            if target in seen:raise ValueError('Cyclic region replacement')
+            seen.add(target);target=replacements[target]
     # Avoid copying the retired 300 structures and their observation masks.
     base = dict(scene)
     base['structures'] = [r for r in scene.get('structures', []) if r['id'] not in replacements]
@@ -215,7 +232,7 @@ def apply_replacements(scene, replacements, property_merges=()):
     return remap_regions(base, replacements)
 
 
-def merge_highways(path, regions, polygons, source_roads, way_groups=()):
+def merge_highways(path, regions, polygons, source_roads, way_groups=(), geometry_methods=None):
     """Group ways by verified continuation or bound divided-road identity.
 
     Turning connectors do not merge two roads. A disconnected or holed surface
@@ -224,7 +241,7 @@ def merge_highways(path, regions, polygons, source_roads, way_groups=()):
     import math
     import xml.etree.ElementTree as ET
     from shapely.ops import unary_union
-    from .geometry import reference
+    from .geometry import reference, normalized_polygon
     roads={int(r.attrib['id']):r for r in ET.parse(path).getroot().findall('road')}
     highway_by_road={}
     for r in regions:
@@ -274,11 +291,22 @@ def merge_highways(path, regions, polygons, source_roads, way_groups=()):
     for members in groups.values():
         ids=sorted({i for road in members for i in highway_by_road[road]})
         if len(ids)<2:continue
-        # Native trigonometry may separate a mathematically shared edge by a
-        # few ulps. Snap at 10 nanometres only after topology proved continuation;
-        # this is finer than the original float32 capture and trace coordinates.
+        # A fixed nanometre grid cannot reconcile independently calculated
+        # native seams. Use one deterministic coordinate grid, bounded by the
+        # larger of serialized precision and one float32 ULP at this location.
+        # This is a disclosed geometry estimate after way identity was proved,
+        # never a search over tolerances or a buffer/hull across disconnected ways.
         from shapely import set_precision
-        shape=unary_union([set_precision(polygons[i],1e-8) for i in ids if i in polygons]) if all(i in polygons for i in ids) else None
+        pieces=[polygons[i]for i in ids if i in polygons]
+        scale=max((abs(v)for p in pieces for v in p.bounds),default=0.)
+        grid=max(1e-6,2.**(math.frexp(scale)[1]-24))
+        method={'method':'topology_bound_coordinate_quantized_union',
+                'coordinate_grid_m':grid,'grid_policy':'max(1e-6 m serialized precision, one float32 ULP at maximum absolute source coordinate)',
+                'coordinate_displacement_bound_m':grid/math.sqrt(2),
+                'serialized_coordinate_precision_m':1e-6,
+                'combined_coordinate_displacement_bound_m':(grid+1e-6)/math.sqrt(2),
+                'maximum_grid_m':.001,'source_roads':sorted(members)}
+        shape=unary_union([set_precision(p,grid)for p in pieces]) if len(pieces)==len(ids) and grid<=.001 else None
         # A verified divided-road design names its two carriageways as one
         # way. Its dividing section lies between measured, coextensive outer
         # edges; this is not a hull applied to arbitrary neighbouring roads.
@@ -302,8 +330,12 @@ def merge_highways(path, regions, polygons, source_roads, way_groups=()):
             if valid:shape=unary_union([shape,envelope])
             else:shape=None
         keep=ids[0]
+        if geometry_methods is not None:geometry_methods[keep]=method
+        boundary=None
         if shape is not None and shape.geom_type=='Polygon' and not shape.interiors:
-            by_id[keep]['boundary']=[list(v) for v in shape.exterior.coords[:-1]]
+            try:boundary=normalized_polygon([[round(v,6)for v in p]for p in shape.exterior.coords])
+            except ValueError:pass
+        if boundary is not None:by_id[keep]['boundary']=boundary
         else:
             issues.append('Highway continuation '+str(sorted(members))+' has no single simple Core boundary; verified way identity is retained; occupancy uses the source surface only where established')
             by_id[keep].pop('boundary',None)

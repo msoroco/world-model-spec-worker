@@ -41,7 +41,124 @@ config.json. The evaluator does not read a requested label as measured evidence.
 '''
 
 
+def reviewed_backing(case, attempt, trace, scope_path):
+    """Join a reviewed native boundary to original bodies and current Core data.
+
+    A prior verdict is never an input. The scope binds immutable source files;
+    current subject identity, time, motion and boundary are checked every frame.
+    """
+    from itertools import zip_longest
+    from shapely.geometry import Polygon
+    from traffic_spec_adapter.geometry import body,normalized_polygon
+    from trace_json import scenes
+    attempt=Path(attempt);scope_path=Path(scope_path)
+    if not trace:raise ValueError('Native backing source trace is empty')
+    scope=json.loads(scope_path.read_text())
+    if scope.get('schema')!='reviewed-backing-observation-scope-v1' or scope.get('case_id')!=case.get('case_id') or scope.get('law_id')!=case.get('target_law_id'):
+        raise ValueError('Native backing scope identity differs from frozen case')
+    roots=list(dict.fromkeys((attempt,scope_path.parent)))
+    used={str(scope_path):hashlib.sha256(scope_path.read_bytes()).hexdigest()}
+    def source(name,expected):
+        relative=Path(name)
+        if relative.is_absolute() or '..' in relative.parts or not expected:
+            raise ValueError('Invalid native backing source reference')
+        matches=[]
+        for root in roots:
+            path=root/relative
+            if path.is_file() and hashlib.sha256(path.read_bytes()).hexdigest()==expected:matches.append(path)
+        if not matches:raise ValueError('Native backing source missing or changed: '+name)
+        path=matches[0];used[str(path)]=expected
+        return path
+    paths={name:source(name,checksum)for name,checksum in scope.get('sources',{}).items()}
+    required={'trace.jsonl','road.xodr','capture/manifest.json','capture/native_map_facts.json',
+              'intersection_boundary_review.json','scenario_geometry.json','report_recovery.json'}
+    if not required<=set(paths):raise ValueError('Native backing scope lacks mandatory source bindings')
+    if json.loads(paths['trace.jsonl'].read_text().splitlines()[0]).get('frame')!=trace[0].get('frame'):
+        raise ValueError('Native backing source starts at a different frame')
+    manifest=json.loads(paths['capture/manifest.json'].read_text())
+    if manifest.get('acquisition')!='original_live_run':raise ValueError('Native backing requires original acquisition')
+    recovery=json.loads(paths['report_recovery.json'].read_text())
+    capture_path=source('capture/evidence.jsonl',recovery.get('source_files',{}).get('capture/evidence.jsonl'))
+    boundary=json.loads(paths['intersection_boundary_review.json'].read_text())
+    if boundary.get('map_sha256')!=scope['sources']['road.xodr'] or boundary.get('rendered_review_confirmed') is not True:
+        raise ValueError('Native backing boundary is not map/render bound')
+    for name,checksum in boundary.get('sources',{}).items():source(name,checksum)
+    geometry=json.loads(paths['scenario_geometry.json'].read_text())
+    verification=geometry.get('physical_verification',{})
+    if not isinstance(verification,dict) or verification.get('review')!='intersection_boundary_review.json' or verification.get('sha256')!=scope['sources']['intersection_boundary_review.json']:
+        raise ValueError('Native backing geometry verification differs')
+    reference=Polygon(normalized_polygon(boundary['boundary_core_m']))
+    rid=scope.get('intersection_region_core_id')
+    if type(rid)is not int:raise ValueError('Native backing intersection identity missing')
+    violating=[];count=0;first_heading=None;first_centre=None;first_actor=None;previous=None;straight=True
+    def rows(path):
+        with path.open() as stream:
+            for line in stream:
+                if line.strip():yield json.loads(line)
+    current=attempt/'traffic_spec/trace.json'
+    used[str(current)]=hashlib.sha256(current.read_bytes()).hexdigest()
+    # The supplied trace must itself be exactly the source-bound raw stream.
+    if list(rows(paths['trace.jsonl']))!=trace:raise ValueError('Native backing raw trace differs from scope')
+    for raw,packet,scene_row in zip_longest(trace,rows(capture_path),scenes(current)):
+        if raw is None or packet is None or scene_row is None:raise ValueError('Incomplete native backing frame membership')
+        scene=scene_row[0];count+=1
+        if any(not isinstance(value,(int,float))or isinstance(value,bool)or not math.isfinite(value) for value in (raw['time_s'],raw['heading_deg'],packet['recording_time_s'],packet['ego']['heading_deg'],*raw['velocity_mps'])):
+            raise ValueError('Nonfinite or invalid original backing telemetry')
+        if previous is not None and (raw['frame']<=previous[0] or raw['time_s']<=previous[1]):
+            raise ValueError('Native backing original frames/times do not increase')
+        previous=(raw['frame'],raw['time_s'])
+        if packet.get('original_frame')!=raw['frame'] or packet.get('replay_frame')!=raw['frame'] or abs(packet['recording_time_s']-raw['time_s'])>1e-6 or scene['t']!=round(raw['time_s']*1000):
+            raise ValueError('Native backing original/Core time join differs')
+        aid=packet['actor_id']
+        if first_actor is None:first_actor=aid
+        if aid!=first_actor:raise ValueError('Native backing original subject changes')
+        if scene.get('subject')!=aid:raise ValueError('Native backing subject identity differs')
+        users=[u for u in scene.get('users',[])if u.get('track')==aid]
+        if len(users)!=1:raise ValueError('Native backing subject missing or duplicated')
+        kin=users[0].get('kin',{})
+        centre,extent,footprint=body(packet['ego']['body_vertices_m'],packet['ego']['heading_deg'])
+        expected_heading=[math.cos(math.radians(raw['heading_deg'])),-math.sin(math.radians(raw['heading_deg']))]
+        native_heading=[math.cos(math.radians(packet['ego']['heading_deg'])),-math.sin(math.radians(packet['ego']['heading_deg']))]
+        if max(abs(a-b)for a,b in zip(native_heading,expected_heading))>1e-6:
+            raise ValueError('Native backing source headings disagree')
+        velocity=raw['velocity_mps'];expected_velocity=[velocity[0],-velocity[1]]
+        for field,expected,tolerance in [('position',centre[:2],1e-4),('extent',extent[:2],1e-4),('heading',expected_heading,1e-6),('velocity',expected_velocity,1e-6)]:
+            values=kin.get(field)
+            if not isinstance(values,list) or len(values)<2 or any(not isinstance(v,(int,float))or isinstance(v,bool)or not math.isfinite(v) for v in values[:2]) or any(abs(a-b)>tolerance for a,b in zip(values[:2],expected)):
+                raise ValueError('Native backing current subject '+field+' differs from original')
+        regions=[r for r in scene.get('structures',[])if r.get('id')==rid]
+        if len(regions)!=1 or regions[0].get('kind')!='intersection':raise ValueError('Native backing target intersection missing or changed')
+        delivered=Polygon(normalized_polygon(regions[0]['boundary']))
+        if delivered.hausdorff_distance(reference)>1e-6:raise ValueError('Native backing current boundary differs from reviewed native source')
+        if first_heading is None:first_heading=expected_heading;first_centre=centre
+        # Measurement consistency bounds, not a legal threshold for a corner.
+        if max(abs(a-b)for a,b in zip(first_heading,expected_heading))>1e-6 or abs((centre[0]-first_centre[0])*first_heading[1]-(centre[1]-first_centre[1])*first_heading[0])>1e-4:straight=False
+        projection=sum(a*b for a,b in zip(expected_velocity,expected_heading))
+        if projection < -1e-6 and footprint.intersection(reference).area>1e-8:violating.append(raw['frame'])
+    absence_complete=False
+    absence_path=paths.get('scene_absence_review.json')
+    if absence_path:
+        absence=json.loads(absence_path.read_text());entry=absence.get('atoms',{}).get('st.crosswalk',{})
+        absence_complete=(entry.get('status')=='verified_absent' and entry.get('scope')=='entire_recorded_scene' and entry.get('unresolved')==[] and absence.get('frames')==[r['frame']for r in trace])
+        if absence_complete:
+            if not entry.get('evidence'):raise ValueError('Native backing absence lacks source proof')
+            for ref in entry['evidence']:source(ref['path'],ref['sha256'])
+    for name,checksum in used.items():
+        if hashlib.sha256(Path(name).read_bytes()).hexdigest()!=checksum:raise ValueError('Native backing evidence changed during evaluation')
+    outcome='violation' if violating else 'compliant' if absence_complete and straight else None
+    return {'expected_label':outcome,
+        'processing_reasons':[] if outcome else ['unsupported_evaluation'],
+        'evidence':{'measurement':'Original horizontal reverse projection and full body overlap of source-verified native intersection; current Core joins checked every frame',
+            'geometry_reference':str(paths['intersection_boundary_review.json']),
+            'samples':count,'violation_frames':violating,'straight_within_observation_resolution':straight,
+            'crosswalk_absence_source_complete':absence_complete,'source_hashes':used,
+            'scope':'Full recording under the retained native boundary and crosswalk-absence interpretation'}}
+
+
 def evaluate(case, attempt, trace, context):
+    if case.get('target_law_id')=='NRS-484B-113-2':
+        for scope in (Path(attempt)/'backing_observation_scope.json',Path(attempt)/'delivery/scene_evidence/backing_observation_scope.json'):
+            if scope.is_file():return reviewed_backing(case,attempt,trace,scope)
     from shapely.geometry import Polygon, MultiPoint
     def polygon(vertices):
         p = Polygon(vertices)

@@ -271,7 +271,7 @@ def execute_exact(root, repo, batch, db, run, assignment_id, case_id, job_id,
 
 
 def accept(root, repo, batch, db, run, assignment_id, case_id, job_id, attempt_number,
-           audit_path):
+           audit_path, *, review_archive=None):
     """Accept one completed canonical attempt after independent saved audit.
 
     This never drives CARLA or edits the frozen worker return. It appends the
@@ -285,6 +285,8 @@ def accept(root, repo, batch, db, run, assignment_id, case_id, job_id, attempt_n
     from .delivery_handoff import CHECKS, validate_case
     from .execution_manifest import validate as validate_manifest
     root, repo, db, audit_path = (Path(value).resolve() for value in (root,repo,db,audit_path))
+    from recording_store import validate_review_archive
+    review_archive=validate_review_archive(root,review_archive,repo=repo)
     if db.parent != root/'state':raise ValueError('Wrong local delivery database location')
     manifest=validate_manifest(repo,assignment_id)
     entry=next((item for item in manifest['cases'] if item['case_id']==case_id),None)
@@ -385,6 +387,14 @@ def accept(root, repo, batch, db, run, assignment_id, case_id, job_id, attempt_n
             'delivery_audit':str(audit_path),'delivery_audit_sha256':file_sha(audit_path),
             'split':role,'case_id':case_id,'cell_id':assignment['cell_id'],
             'actor':assignment['actor']}
+    # Delivery approval does not establish an outcome. Preserve the existing
+    # source-bound authority and carry its exact canonical metadata projection.
+    from recording_store import verified_label
+    from production_verdicts import presentation
+    authority=verified_label(folder,dict(read(folder/'metadata.json'),law_id=assignment['law_id']),
+                             trace_sha256=record['trace_sha256'])
+    record.update(label_record=presentation(authority),expected_label=authority['expected_label'],
+                  judgment_sweep=authority['judgment_sweep'])
     rid=accept_recording(attempt,record)
     verify_recording(folder)
     member={'campaign':run,'cell_id':assignment['cell_id'],'actor':assignment['actor'],
@@ -415,7 +425,7 @@ def accept(root, repo, batch, db, run, assignment_id, case_id, job_id, attempt_n
             _same_file(version/(sid+'-after.json'),after)
             atomic(path,after)
     from .review_materialization import materialize
-    materialize(root,repo,assignment,case_id,rid,targets)
+    materialize(root,repo,assignment,case_id,rid,targets,archive=review_archive)
     from review_workspaces import refresh_workspaces
     refresh_workspaces(root)
     return {'recording_id':rid,'case_id':case_id,'job_id':job_id,'attempt':attempt_number,

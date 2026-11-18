@@ -1,3 +1,11 @@
+# Resume demo-test-delivery after the reviewed runtime cutover
+
+Continue exactly the 43 assigned packages in batch.json. Keep the submitted constructions, plans and source evidence. The cutover replaces the frozen runtime with the current JSON graph/capture and adapter code and demotes stale ready statuses. Old compatibility, physical, saved-processing and comparison receipts are historical diagnostics, not current proof. Rebind each active exact manifest to the new runtime and rerun affected proofs before marking ready. Do not copy old receipt hashes or claim Native observations from CPU fixtures. Generated diagnostic video equality is determined by decoded frames; real capture remains byte-hashed.
+
+Use `.runtime-work/` for generated assets. The launcher quarantines only the obsolete untracked runtime manifest. Do not write into `runtime/runs/` or `runtime/pipeline/runs/`. Work autonomously through all CPU-solvable packages and record precise remaining gaps. No CARLA, NERSC, SQLite or physical acceptance. The separate timer publishes checkpoints.
+
+Read the source-hashed demo-test judgment-range snapshot supplied in each assignment input after cutover. Its 14 historical training mapping gaps remain open; the report is context, not a readiness pass. Keep all 43 assigned cases, and finish exact primary, fallback, saved-only and comparison proofs.
+
 # Demo-test CPU delivery preparation
 
 Read START_HERE.md, FULL_BRANCH_CONTRACT.md, DELIVERY_CONTRACT.md, batch.json and all four partitions. Complete all 43 assigned law/cell/actor packages using the frozen refactored runtime. Delegate up to four disjoint partition owners if available.

@@ -4,6 +4,7 @@ No law registry, generated rule, or source library is modified. The executable
 checks decoding, manifest completeness and same-scene identity references only.
 """
 import json
+import hashlib
 import os
 import shutil
 import subprocess
@@ -87,6 +88,14 @@ def build_validator(library, workspace, lake):
             raise ValueError('The supplied TrafficSpec checkout is read-only')
     from intentions import core_contract
     contract=core_contract(library)
+    def consumer_sources():
+        result={}
+        for base in (library/'TrafficSpec/Core',full_core(library)):
+            for path in base.rglob('*.lean'):
+                result[str(path.relative_to(base))]=hashlib.sha256(path.read_bytes()).hexdigest()
+        result['lean-toolchain']=hashlib.sha256((library/'lean-toolchain').read_bytes()).hexdigest()
+        return result
+    source_snapshot=consumer_sources()
     workspace.mkdir(parents=True,exist_ok=True)
     # Copy only Core .lean source. Overlay the actual full-split files on the
     # common modules; never activate a split in the supplied repository.
@@ -104,7 +113,9 @@ def build_validator(library, workspace, lake):
     with (workspace/'build.log').open('w') as log:
         result=subprocess.run([str(lake),'build','adapterCheck'],cwd=workspace,env=env,stdout=log,stderr=subprocess.STDOUT)
     if result.returncode:raise RuntimeError('Full decoder build failed; see '+str(workspace/'build.log'))
-    if core_contract(library)!=contract:raise RuntimeError('Core contract changed during isolated build')
+    if core_contract(library)!=contract or consumer_sources()!=source_snapshot:
+        raise RuntimeError('Core contract changed during isolated build')
+    contract['consumer_sources_sha256']=source_snapshot
     contract['validator_source_sha256']=__import__('hashlib').sha256(VALIDATOR.encode()).hexdigest()
     contract['validator_sha256']=__import__('hashlib').sha256((workspace/'.lake/build/bin/adapterCheck').read_bytes()).hexdigest()
     (workspace/'intention-contract.json').write_text(json.dumps(contract,indent=2)+'\n')

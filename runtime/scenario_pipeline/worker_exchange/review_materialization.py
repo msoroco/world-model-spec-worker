@@ -1,11 +1,10 @@
-"""Materialize an accepted delivery in the editable review workspaces."""
+"""Materialize canonical links for an accepted delivery in review workspaces."""
 
 import json
 import os
-import shutil
 from pathlib import Path
 
-from recording_store import locked, sha
+from recording_store import locked, publish_review_links, validate_review_archive
 from lean_work import FORMAT, case_folder, folder
 
 
@@ -21,26 +20,15 @@ def _write(path, value):
     temporary.replace(path)
 
 
-def _copy_verified(source, target, expected):
-    if not target.exists():
-        temporary = target.with_name(target.name + '.delivery-tmp')
-        shutil.copy2(source, temporary)
-        if sha(temporary) != expected:
-            temporary.unlink()
-            raise ValueError('Review copy differs from accepted canonical media')
-        temporary.replace(target)
-    if sha(target) != expected:
-        raise ValueError('Existing review output differs from accepted canonical media: ' + str(target))
-
-
-def materialize(root, repo, assignment, case_id, recording_id, targets):
+def materialize(root, repo, assignment, case_id, recording_id, targets, *, archive=None):
     """Add exact accepted outputs, model rows, and index entries before refresh.
 
-    This is idempotent. Existing review files are verified and never overwritten.
+    This is idempotent. Replaced review files are preserved in the explicit external archive.
     The model records unresolved legal judgments; physical comparison receipts
     remain a separate acceptance requirement.
     """
     root, repo = Path(root), Path(repo)
+    archive = validate_review_archive(root, archive, repo=repo)
     if set(targets) != {'demo-test', 'full-test'}:
         raise ValueError('This review materializer requires both testing selections')
     canonical = root / 'recordings' / recording_id
@@ -61,27 +49,9 @@ def materialize(root, repo, assignment, case_id, recording_id, targets):
     full = root / 'work/full-test' / group / case_name
     demo = root / 'work/demo-test' / group / case_name
     with locked(root / 'state/review-materialization.lock'):
-        full.mkdir(parents=True, exist_ok=True)
-        evidence = canonical / 'evidence'
-        _copy_verified(evidence / 'raw.mkv', full / 'video.webm', acceptance['video_sha256'])
-        _copy_verified(evidence / 'traffic_spec/trace.json', full / 'trace.json', acceptance['trace_sha256'])
-        review = {'schema': 'final-review-recording-v1', 'recording_id': recording_id,
-                  'case_id': case_id, 'law_id': assignment['law_id'], 'status': 'accepted',
-                  'frames': acceptance['frames'], 'video_sha256': acceptance['video_sha256'],
-                  'trace_sha256': acceptance['trace_sha256'], 'expected_label': None,
-                  'judgment_sweep': False}
-        from shared_manifest import canonical_path, link as link_manifest, link_sets
-        if canonical_path(root).is_file():
-            link_sets(root)
-            link_manifest(root, full, _read(canonical/'manifest.json'))
-            review['manifest_sha256'] = sha(full/'manifest.json')
-        review_path = full / 'metadata.json'
-        if review_path.exists():
-            current = _read(review_path)
-            if any(current.get(key) != value for key, value in review.items()):
-                raise ValueError('Existing review metadata differs from accepted recording')
-        else:
-            _write(review_path, review)
+        full.parent.mkdir(parents=True, exist_ok=True)
+        linked_member = dict(member, reviews=[str(full.resolve())])
+        publish_review_links(root, linked_member, archive)
         demo.parent.mkdir(parents=True, exist_ok=True)
         relative = os.path.relpath(full, demo.parent)
         if demo.is_symlink():

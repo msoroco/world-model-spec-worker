@@ -39,7 +39,7 @@ class HandoffTests(unittest.TestCase):
   fixtures=[]
   for kind,status in [('complete_motion','met'),('incomplete_motion','not_met'),('missing_evidence','unverified')]:
    log=kind+'.log';result=kind+'.json';(self.folder/log).write_text('synthetic outcome assertion passed')
-   write(self.folder/result,{'physical_checks':{'maneuver':{'status':status,'method':'synthetic motion fixture','sources':['position.json']}},'maneuver_completed':status=='met','realized_observables':{'position':1},'provenance_kind':'native'})
+   write(self.folder/result,{'physical_checks':{'maneuver':{'status':status,'method':'synthetic motion fixture','sources':['position.json']}},'maneuver_completed':status=='met','realized_observables':{'position':1},'provenance_kind':'synthetic_fixture','diagnostic_fixture':True})
    fixtures.append({'kind':kind,'exit_code':0,'command':'synthetic-outcome-test','log':log,'log_sha256':sha(self.folder/log),'result':result,'result_sha256':sha(self.folder/result)})
   lifecycle={'events':['capture_finished','encoders_closed','restoration_verified','native_exit','owner_released','saved_processing_started'],'exit_code':0,'log':'offline.log','log_sha256':sha(self.folder/'offline.log')}
   write(self.folder/'physical-proof.json',{'construction_sha256':entry['construction_sha256'],'fixtures':fixtures,'lifecycle':lifecycle})

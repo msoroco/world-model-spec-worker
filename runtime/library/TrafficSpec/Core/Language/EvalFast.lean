@@ -71,7 +71,7 @@ def encMap : List (String × String) → List Tok
   | (a, b) :: m => .n 1 :: .s a :: .s b :: encMap m
 
 mutual
-  /-- A term as tokens: its constructor's tag (1–14), then its fields in order. -/
+  /-- A term as tokens: its constructor's tag (1–15), then its fields in order. -/
   def Term.enc : Term → List Tok
     | .lit q u => [.n 1, .i q.num, .n q.den, .n u.code]
     | .param p => [.n 2, .s p]
@@ -87,6 +87,7 @@ mutual
     | .neg a => .n 12 :: Term.enc a
     | .abs a => .n 13 :: Term.enc a
     | .cond φ a b => .n 14 :: (Formula.enc φ ++ (Term.enc a ++ Term.enc b))
+    | .headingSince s g φ => .n 15 :: .s s :: (Term.enc g ++ Formula.enc φ)
   def Term.encL : List Term → List Tok
     | [] => [endTok]
     | t :: ts => Term.enc t ++ Term.encL ts
@@ -234,6 +235,13 @@ mutual
         obtain ⟨rfl, ha⟩ := Formula.enc_inj φ φ' _ _ h
         obtain ⟨rfl, hb⟩ := Term.enc_inj x x' _ _ ha
         obtain ⟨rfl, rfl⟩ := Term.enc_inj y y' r₁ r₂ hb
+        exact ⟨rfl, rfl⟩
+    | .headingSince s g φ, b, r₁, r₂, h => by
+      cases b <;> simp [Term.enc] at h
+      case headingSince s' g' φ' =>
+        obtain ⟨rfl, ha⟩ := h
+        obtain ⟨rfl, hb⟩ := Term.enc_inj g g' _ _ ha
+        obtain ⟨rfl, rfl⟩ := Formula.enc_inj φ φ' r₁ r₂ hb
         exact ⟨rfl, rfl⟩
   termination_by a => sizeOf a
 
@@ -455,6 +463,7 @@ mutual
     | .quantity _ args ps => Arg.names args ++ Term.namesL ps
     | .distanceWhile s φ => s :: Formula.names φ
     | .sinceRise φ => Formula.names φ
+    | .headingSince s g φ => s :: (Term.names g ++ Formula.names φ)
     | .aggregate _ v φ t => (Formula.names φ ++ Term.names t).filter (· != v)
     | .add a b | .sub a b | .mul a b | .div a b => Term.names a ++ Term.names b
     | .neg a | .abs a => Term.names a
@@ -483,6 +492,7 @@ mutual
     | .lit _ _ | .param _ | .measure _ _ => false
     | .quantity _ _ ps => Term.composesL ps
     | .distanceWhile _ φ | .sinceRise φ => Formula.composes φ
+    | .headingSince _ g φ => Term.composes g || Formula.composes φ
     | .aggregate _ _ φ t => Formula.composes φ || Term.composes t
     | .add a b | .sub a b | .mul a b | .div a b => Term.composes a || Term.composes b
     | .neg a | .abs a => Term.composes a
@@ -647,6 +657,10 @@ mutual
       simp only [Term.names] at ha; simp only [Term.composes, Bool.or_eq_false_iff] at hc
       rw [evalTAll, evalTAll, evalAll_congr d k φ β₁ β₂ hc.1 ha.left,
         evalTAll_congr d k a β₁ β₂ hc.2.1 ha.right.left, evalTAll_congr d k b β₁ β₂ hc.2.2 ha.right.right] <;> rfl
+    | .headingSince _ g φ, β₁, β₂, hc, ha => by
+      simp only [Term.names] at ha; simp only [Term.composes, Bool.or_eq_false_iff] at hc
+      rw [evalTAll, evalTAll, track_congr ha.head, evalTAll_congr d k g β₁ β₂ hc.1 ha.tail.left,
+        evalAll_congr d k φ β₁ β₂ hc.2 ha.tail.right] <;> rfl
   termination_by t => sizeOf t
 
   theorem constParams_congr (d : Primitives.Ctx) (k : String → List (String × String) → Binding → Bool → Array R) :
@@ -1012,6 +1026,13 @@ mutual
       | none => pure (constE c.n (.unboundVariable subj))
       | some x => return Primitives.distanceWhile c.d x (← fastF c φ)
     | .sinceRise φ => return sinceRiseAll c.d.times (← fastF c φ)
+    | .headingSince subj g ψ =>
+      match c.β.track subj with
+      | none => pure (constE c.n (.unboundVariable subj))
+      | some x =>
+        match stepOf g (evalTAll c g) with
+        | .error w => pure (constE c.n w)
+        | .ok gv => return Primitives.headingSince c.d x gv (← fastF c ψ)
     | .aggregate op v φ t => do
       let members ← (usersOf c).mapM fun u => do
         let c' := c.bindVar v (.track u)

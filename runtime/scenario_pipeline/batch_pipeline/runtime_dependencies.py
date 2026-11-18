@@ -24,7 +24,7 @@ def discover(resources=None):
     paths += [root/name for name in ('pipeline.py','pipeline_paths.py','workspaces.py','review_workspaces.py','law_split.py','recording_store.py','run_selected.py','control_evidence.py',
               'review_recordings.py','expected_labels.py','authored_context.py','intentions.py','trace_json.py','trace_derivations.py','trace_scope_audit.py',
               'speed_overlay.py','scenario_overlay.py','demo_rule_evidence.py','production_verdicts.py','production_metadata.py')]
-    paths += [project/'scripts'/name for name in ('pipeline_capture.py','scene_graph_collector.py','original_observations.py')]
+    paths += [project/'scripts'/name for name in ('pipeline_capture.py','scene_graph_collector.py','original_observations.py','native_graph_json.py')]
     paths += [project/'third_party/carla_scene_graphs/carla_sgg'/name for name in ('sgg.py','sgg_abstractor.py','actors.py','utils.py','law_evidence.py')]
     required = [Path(p) for p in (resources or {}).get('runtime_dependency_paths',[])]
     capture = (resources or {}).get('capture_requirements',{})
