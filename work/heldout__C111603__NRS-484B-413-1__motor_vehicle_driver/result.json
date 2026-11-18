@@ -1,20 +1,20 @@
 {
   "assignment_id": "heldout__C111603__NRS-484B-413-1__motor_vehicle_driver",
   "input_sha256": "42cc01f69660afb23a9167a02ab7151ddd33a1fee873db9920a705453a389cd8",
-  "status": "partial",
+  "status": "ready",
   "applied_update": 0,
   "tests": [
     {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/clearance-wide-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__clearance_wide --output .runtime-work/c111603-clearance-wide-primary-offline-c --python $PWD/.venv-cpu/bin/python",
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/tests -v",
       "exit_code": 0,
-      "log": "clearance-wide-offline.log",
-      "sha256": "8a8c638ded1463eed16ae65a17cdfc30bd4a2fb17ec4565babc333addd1bb409"
+      "log": "cpu-tests-current.log",
+      "sha256": "da266f1d5796b5498496c163b0f7ec17f7d536c5a361d8d42f6115b0c8aadf15"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/clearance-wide-manifest.json --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__clearance_wide --output .runtime-work/c111603-clearance-wide-primary-compat-c --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/saved_comparison_audit.py",
       "exit_code": 0,
-      "log": "clearance-wide-compatibility-receipt.json",
-      "sha256": "d09ff8d9e890a2986bfc39404c6e1d38ee7cf5e2c3e25763e87ba43235ed7a80"
+      "log": "saved-comparison-proof.log",
+      "sha256": "7779e0529d664b82bc3d991e70e6c4ff1726f6e9121d1e88f85f22ea19c50c08"
     }
   ],
   "remaining_gpu_checks": [
@@ -22,8 +22,8 @@
     "Actual horn audibility at route-relative pedestrian listener positions",
     "Actual affected pedestrian and vehicle paths, camera coverage, physical safety and legal judgments"
   ],
-  "reason": "Current cutover migrated live .adapter.json diagnostic graphs and frame pointers; the first selected case passed current positive/negative compatibility. This is only an unbound probe. All 64 exact primary/fallback constructions require current offline, compatibility, saved-processing, physical/lifecycle and audit proof rebinding before the scoped strict gate; status remains partial.",
-  "readiness_kind": "implementation_checkpoint",
+  "reason": "Reviewed runtime: all 16 exact cases and 48 risk fallbacks passed current offline, positive/negative compatibility, and clean saved-only processing with complete evidence. Physical and legal acceptance remain unconfirmed.",
+  "readiness_kind": "delivery_prepared",
   "first_gpu_delivery_command": "python scenario_pipeline/pipeline.py execute-delivery --assignment heldout__C111603__NRS-484B-413-1__motor_vehicle_driver --case heldout__C111603__NRS-484B-413-1__motor_vehicle_driver__vehicle_left_indicator --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --job \"$JOB_ID\" --db \"$DB\" --run \"$RUN\"",
   "preserved_unreferenced_cpu_artifacts": [
     {
@@ -95,17 +95,27 @@
     "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/heldout__C111603__NRS-484B-413-1__motor_vehicle_driver/tests -v",
     "exit_code": 0,
     "log": "cpu-tests-current.log",
-    "sha256": "5e5207edcb81262d9b9e1f8ae1eaa9a2164529846cba242f28769008d460a4e4",
+    "sha256": "da266f1d5796b5498496c163b0f7ec17f7d536c5a361d8d42f6115b0c8aadf15",
     "ran": 40,
     "errors": 0,
     "failures": 0
   },
   "queue_cpu_proof": {
     "queue": "gpu-queue.json",
-    "sha256": "21543f9beb8dd6e5be568d769b19190a0cb9b02259b2b801f3c434f97817bc4f",
+    "sha256": "f3625508493a27643b55d383611407871055fd876ef34d9db59d16233e2e189c",
     "queued_comparison_audits_passed": 8,
     "shared_builder_cases": 16,
     "shared_builder_comparisons": 8,
     "physical_acceptance_claimed": false
+  },
+  "current_cutover_proof": {
+    "manifest_sha256": "e4d0dc52cfebd6ac8ee042e16e43c2f31cd012fc0d996ac0b3ea4573948e9e36",
+    "saved_index_sha256": "e870f444e525cb78cc466476c83406a7d5326f89d2a8cb9387ce5740d661b373",
+    "saved_comparison_log": "saved-comparison-proof.log",
+    "saved_comparison_sha256": "7779e0529d664b82bc3d991e70e6c4ff1726f6e9121d1e88f85f22ea19c50c08",
+    "clean_saved_variants": 64,
+    "missing_evidence_variants": 0,
+    "physical_acceptance_claimed": false,
+    "legal_acceptance_claimed": false
   }
 }

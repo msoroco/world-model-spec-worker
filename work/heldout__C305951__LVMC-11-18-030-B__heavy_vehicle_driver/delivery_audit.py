@@ -188,12 +188,20 @@ def audit(root: Path, case_id: str, *, negative_camera: bool = False,
                 for row, frame in zip(setpoints, frame_map)):
             raise ValueError("Saved lateral setpoint source join differs")
         realized = result["realized_observables"].get("lateral_control_setpoint_m", {})
-        if realized.get("value") != selected or realized.get("reference") != "lateral_control_setpoint_m.jsonl":
+        if realized.get("value") != selected or realized.get("reference") != "lateral_control_setpoint_m.json":
             raise ValueError("Saved lateral setpoint realization differs")
     if set(evidence) != expected_channels:
         raise ValueError("Saved delivery recording channel inventory differs")
     for name, item in evidence.items():
         channel = _file(root, item["reference"])
+        if name == "lateral_control_setpoint_m":
+            context = json.loads(channel.read_text())
+            if (_sha(channel) != item["sha256"] or
+                    context.get(name) != selected or
+                    context.get("source_reference") != "lateral_control_setpoint_source.jsonl" or
+                    context.get("source_sha256") != _sha(_file(root, "lateral_control_setpoint_source.jsonl"))):
+                raise ValueError("Saved delivery setpoint context differs")
+            continue
         if _sha(channel) != item["sha256"] or len(_rows(channel)) != len(body):
             raise ValueError("Saved delivery derived channel differs: " + name)
     decoded = {name: _decode(_file(root, name + ".mkv"), len(body)) for name in CAMERAS}

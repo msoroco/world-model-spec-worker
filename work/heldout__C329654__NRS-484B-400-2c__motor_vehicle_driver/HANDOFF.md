@@ -7,3 +7,7 @@ Uncovered branch plan: Construct simultaneous opposing left turns at an intersec
 Frozen evidence.json lists no accepted recordings for this assignment. The source-backed scope review is in `case-plan.json`; no physical or legal conclusion is asserted.
 
 Next CPU action: define exact cases and controlled comparisons for every branch above, then implement and test construction, source cameras, measurement/finalization, three distinct fallbacks for each selected case, semantic proposals, saved processing and independent audits. Run exact `runtime.py offline` and `runtime.py compatibility` for each construction, then `.venv-cpu/bin/python worker_check.py --assignment heldout__C329654__NRS-484B-400-2c__motor_vehicle_driver --complete --require-delivery-ready`. The current missing work is CPU work, not a GPU blocker.
+
+## 2026-11-18 exact case-design checkpoint
+
+`case-plan.json` now defines five prospective exact cases: simultaneous front passing, crossing behind, staggered turn control, active official-device direction and inactive-device control. Three comparisons isolate crossing order, turn-window overlap and device governance. Four mandatory source observations require bidirectional lane topology, both full-body tracks, official device identity/state and synchronized original cameras. Implement a CARLA-lazy source capture and one exact end-to-end case, then distinct fallbacks and all remaining cases; run offline, positive/missing-source compatibility and clean saved processing. These designs contain no physical or legal result.

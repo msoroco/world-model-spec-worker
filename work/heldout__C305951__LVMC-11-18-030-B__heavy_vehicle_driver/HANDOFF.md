@@ -325,3 +325,7 @@ Ten diagnostic specs now use `.adapter.json` graphs with frame `adapter_graph` p
 ## 2026-11-18 source-backed control sweep reproof
 
 The six heavy passing/turn sweep constructions now carry a captured `lateral_control_setpoint_m` source channel and realized measurement, with the proposal capture descriptions aligned to the seven-channel construction contract. All 40 current exact offline and positive/negative compatibility paths pass. All 40 pristine materialized candidates completed saved processing with `missing_evidence=false`, preserved original hashes and passed final video checks. `saved-proofs.json` binds these receipts to the current execution manifest. Actual motion and legal sufficiency remain for local review.
+
+### Frozen sweep recording contract correction
+
+The prior seven-channel wording is superseded. The frozen sweep specification retains its original six-channel recording description. The captured per-frame `lateral_control_setpoint_source.jsonl` remains source evidence; each current sweep finalizer derives an additional `lateral_control_setpoint_m.json` context with the value and source hash. Exact compatibility and delivery audits verify that context against the source stream. All 24 sweep offline and compatibility paths, all 40 current pristine saved paths, six sweep positive and negative delivery audits, and the scoped strict delivery gate pass.

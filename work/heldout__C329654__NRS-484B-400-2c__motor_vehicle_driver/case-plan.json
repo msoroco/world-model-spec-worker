@@ -3,9 +3,150 @@
   "actor": "motor_vehicle_driver",
   "cell_id": "C329654",
   "law_id": "NRS-484B-400-2c",
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "heldout__C329654__NRS-484B-400-2c__motor_vehicle_driver__opposing_front_pass",
+      "target_law_id": "NRS-484B-400-2c",
+      "gap_ids": [
+        "front-passing"
+      ],
+      "description": "two opposing vehicles begin left turns within the same recorded turn window and pass in front of one another",
+      "construction_status": "planned_cpu_unimplemented",
+      "evidence_limit": "Source-backed simultaneous motion, front passing and device direction remain unmeasured; design asserts no legal outcome."
+    },
+    {
+      "case_id": "heldout__C329654__NRS-484B-400-2c__motor_vehicle_driver__opposing_rear_cross",
+      "target_law_id": "NRS-484B-400-2c",
+      "gap_ids": [
+        "front-passing"
+      ],
+      "description": "same opposing left-turn geometry and start window but crossing order carries one behind the other",
+      "construction_status": "planned_cpu_unimplemented",
+      "evidence_limit": "Source-backed simultaneous motion, front passing and device direction remain unmeasured; design asserts no legal outcome."
+    },
+    {
+      "case_id": "heldout__C329654__NRS-484B-400-2c__motor_vehicle_driver__staggered_left_turns",
+      "target_law_id": "NRS-484B-400-2c",
+      "gap_ids": [
+        "simultaneity"
+      ],
+      "description": "same roads and turn intents with one left turn after the other has cleared the conflict",
+      "construction_status": "planned_cpu_unimplemented",
+      "evidence_limit": "Source-backed simultaneous motion, front passing and device direction remain unmeasured; design asserts no legal outcome."
+    },
+    {
+      "case_id": "heldout__C329654__NRS-484B-400-2c__motor_vehicle_driver__official_device_directs",
+      "target_law_id": "NRS-484B-400-2c",
+      "gap_ids": [
+        "official-device-exception"
+      ],
+      "description": "same simultaneous left-turn geometry with a source-observed official device that directs a different path or order",
+      "construction_status": "planned_cpu_unimplemented",
+      "evidence_limit": "Source-backed simultaneous motion, front passing and device direction remain unmeasured; design asserts no legal outcome."
+    },
+    {
+      "case_id": "heldout__C329654__NRS-484B-400-2c__motor_vehicle_driver__official_device_inactive",
+      "target_law_id": "NRS-484B-400-2c",
+      "gap_ids": [
+        "official-device-exception"
+      ],
+      "description": "same geometry and device placement with original source showing the device inoperative or not directing the turn",
+      "construction_status": "planned_cpu_unimplemented",
+      "evidence_limit": "Source-backed simultaneous motion, front passing and device direction remain unmeasured; design asserts no legal outcome."
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "front_pass_order",
+      "case_ids": [
+        "heldout__C329654__NRS-484B-400-2c__motor_vehicle_driver__opposing_front_pass",
+        "heldout__C329654__NRS-484B-400-2c__motor_vehicle_driver__opposing_rear_cross"
+      ],
+      "fixed_conditions": [
+        "same bidirectional intersection, lanes, two left-turn intents, start window, actors and camera coverage"
+      ],
+      "deliberate_differences": [
+        "controlled crossing path/order measured from both original full-body tracks"
+      ]
+    },
+    {
+      "comparison_id": "simultaneity_window",
+      "case_ids": [
+        "heldout__C329654__NRS-484B-400-2c__motor_vehicle_driver__opposing_front_pass",
+        "heldout__C329654__NRS-484B-400-2c__motor_vehicle_driver__staggered_left_turns"
+      ],
+      "fixed_conditions": [
+        "same intersection, road directions, lanes, turns, actors and camera coverage"
+      ],
+      "deliberate_differences": [
+        "second vehicle turn onset after the first clears versus overlapping turn window"
+      ]
+    },
+    {
+      "comparison_id": "official_device_direction",
+      "case_ids": [
+        "heldout__C329654__NRS-484B-400-2c__motor_vehicle_driver__official_device_directs",
+        "heldout__C329654__NRS-484B-400-2c__motor_vehicle_driver__official_device_inactive"
+      ],
+      "fixed_conditions": [
+        "same bidirectional geometry, two turn intents, device location and source cameras"
+      ],
+      "deliberate_differences": [
+        "original official device state and governance of the two approaches; preserve source observations for both"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "bidirectional_intersection_topology",
+      "mandatory": true,
+      "source": "original OpenDRIVE lane graph and map waypoint sampling",
+      "measurement": "two intersecting two-directional highways, approach lane IDs, centerlines and both turn connectors",
+      "case_ids": [
+        "heldout__C329654__NRS-484B-400-2c__motor_vehicle_driver__opposing_front_pass",
+        "heldout__C329654__NRS-484B-400-2c__motor_vehicle_driver__opposing_rear_cross",
+        "heldout__C329654__NRS-484B-400-2c__motor_vehicle_driver__staggered_left_turns",
+        "heldout__C329654__NRS-484B-400-2c__motor_vehicle_driver__official_device_directs",
+        "heldout__C329654__NRS-484B-400-2c__motor_vehicle_driver__official_device_inactive"
+      ]
+    },
+    {
+      "name": "opposing_left_turn_motion",
+      "mandatory": true,
+      "source": "original synchronized frame and two actor transforms, velocities and body vertices",
+      "measurement": "both turn onset/exit intervals, conflict overlap and signed front-to-front crossing order without an assumed statutory threshold",
+      "case_ids": [
+        "heldout__C329654__NRS-484B-400-2c__motor_vehicle_driver__opposing_front_pass",
+        "heldout__C329654__NRS-484B-400-2c__motor_vehicle_driver__opposing_rear_cross",
+        "heldout__C329654__NRS-484B-400-2c__motor_vehicle_driver__staggered_left_turns",
+        "heldout__C329654__NRS-484B-400-2c__motor_vehicle_driver__official_device_directs",
+        "heldout__C329654__NRS-484B-400-2c__motor_vehicle_driver__official_device_inactive"
+      ]
+    },
+    {
+      "name": "official_device_governance",
+      "mandatory": true,
+      "source": "original traffic-control actor inventory, state, governed approaches and original source cameras",
+      "measurement": "device direction for each approach and interval, including inactive/unknown states kept distinct",
+      "case_ids": [
+        "heldout__C329654__NRS-484B-400-2c__motor_vehicle_driver__official_device_directs",
+        "heldout__C329654__NRS-484B-400-2c__motor_vehicle_driver__official_device_inactive"
+      ]
+    },
+    {
+      "name": "four_camera_source",
+      "mandatory": true,
+      "source": "four synchronized original RGB streams and source hashes",
+      "measurement": "full decode, frame joins and reviewable intersection/device views; pixel visibility and legal judgment remain unresolved",
+      "case_ids": [
+        "heldout__C329654__NRS-484B-400-2c__motor_vehicle_driver__opposing_front_pass",
+        "heldout__C329654__NRS-484B-400-2c__motor_vehicle_driver__opposing_rear_cross",
+        "heldout__C329654__NRS-484B-400-2c__motor_vehicle_driver__staggered_left_turns",
+        "heldout__C329654__NRS-484B-400-2c__motor_vehicle_driver__official_device_directs",
+        "heldout__C329654__NRS-484B-400-2c__motor_vehicle_driver__official_device_inactive"
+      ]
+    }
+  ],
   "sources": [
     {
       "path": "inputs/heldout__C329654__NRS-484B-400-2c__motor_vehicle_driver/assignment.json",

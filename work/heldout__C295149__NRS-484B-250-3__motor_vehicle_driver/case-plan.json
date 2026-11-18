@@ -3,9 +3,185 @@
   "actor": "motor_vehicle_driver",
   "cell_id": "C295149",
   "law_id": "NRS-484B-250-3",
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "heldout__C295149__NRS-484B-250-3__motor_vehicle_driver__uncontrolled_end_yields",
+      "target_law_id": "NRS-484B-250-3",
+      "gap_ids": [
+        "uncovered-branches"
+      ],
+      "description": "ending-highway vehicle and through-highway vehicle enter at approximately the same time; ending approach yields until through vehicle clears",
+      "construction_status": "planned_cpu_unimplemented",
+      "evidence_limit": "Source-backed topology, arrival relation and legal approximately-same-time judgment remain to be established."
+    },
+    {
+      "case_id": "heldout__C295149__NRS-484B-250-3__motor_vehicle_driver__uncontrolled_end_goes_first",
+      "target_law_id": "NRS-484B-250-3",
+      "gap_ids": [
+        "uncovered-branches"
+      ],
+      "description": "same approaches and arrival window; ending-highway vehicle enters the conflict first",
+      "construction_status": "planned_cpu_unimplemented",
+      "evidence_limit": "Source-backed topology, arrival relation and legal approximately-same-time judgment remain to be established."
+    },
+    {
+      "case_id": "heldout__C295149__NRS-484B-250-3__motor_vehicle_driver__uncontrolled_staggered",
+      "target_law_id": "NRS-484B-250-3",
+      "gap_ids": [
+        "uncovered-branches"
+      ],
+      "description": "same approaches with arrival windows separated enough to avoid the simultaneous-entry premise",
+      "construction_status": "planned_cpu_unimplemented",
+      "evidence_limit": "Source-backed topology, arrival relation and legal approximately-same-time judgment remain to be established."
+    },
+    {
+      "case_id": "heldout__C295149__NRS-484B-250-3__motor_vehicle_driver__official_control_active",
+      "target_law_id": "NRS-484B-250-3",
+      "gap_ids": [
+        "uncovered-branches"
+      ],
+      "description": "same ending and through approaches with original official device controlling entry",
+      "construction_status": "planned_cpu_unimplemented",
+      "evidence_limit": "Source-backed topology, arrival relation and legal approximately-same-time judgment remain to be established."
+    },
+    {
+      "case_id": "heldout__C295149__NRS-484B-250-3__motor_vehicle_driver__official_control_inoperative",
+      "target_law_id": "NRS-484B-250-3",
+      "gap_ids": [
+        "uncovered-branches"
+      ],
+      "description": "same device and geometry with original source showing the device inoperative",
+      "construction_status": "planned_cpu_unimplemented",
+      "evidence_limit": "Source-backed topology, arrival relation and legal approximately-same-time judgment remain to be established."
+    },
+    {
+      "case_id": "heldout__C295149__NRS-484B-250-3__motor_vehicle_driver__opposing_left_exception",
+      "target_law_id": "NRS-484B-250-3",
+      "gap_ids": [
+        "uncovered-branches"
+      ],
+      "description": "opposite approaches with one vehicle intending and executing a left turn, instead of the ending-versus-through relation",
+      "construction_status": "planned_cpu_unimplemented",
+      "evidence_limit": "Source-backed topology, arrival relation and legal approximately-same-time judgment remain to be established."
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "ending_yield_order",
+      "case_ids": [
+        "heldout__C295149__NRS-484B-250-3__motor_vehicle_driver__uncontrolled_end_yields",
+        "heldout__C295149__NRS-484B-250-3__motor_vehicle_driver__uncontrolled_end_goes_first"
+      ],
+      "fixed_conditions": [
+        "same ending and through highway topology, two actors, approach lanes, arrival window and no active device"
+      ],
+      "deliberate_differences": [
+        "ending vehicle entry and yielding order relative to through vehicle clearance"
+      ]
+    },
+    {
+      "comparison_id": "arrival_window",
+      "case_ids": [
+        "heldout__C295149__NRS-484B-250-3__motor_vehicle_driver__uncontrolled_end_yields",
+        "heldout__C295149__NRS-484B-250-3__motor_vehicle_driver__uncontrolled_staggered"
+      ],
+      "fixed_conditions": [
+        "same topology, actors, approach lanes and no active device"
+      ],
+      "deliberate_differences": [
+        "measured arrival timing, with legal approximately-same-time conclusion reserved for review"
+      ]
+    },
+    {
+      "comparison_id": "official_control",
+      "case_ids": [
+        "heldout__C295149__NRS-484B-250-3__motor_vehicle_driver__official_control_active",
+        "heldout__C295149__NRS-484B-250-3__motor_vehicle_driver__official_control_inoperative"
+      ],
+      "fixed_conditions": [
+        "same topology, actors, approach lanes, device identity/location and camera coverage"
+      ],
+      "deliberate_differences": [
+        "original official device operating state and directions"
+      ]
+    },
+    {
+      "comparison_id": "opposing_left_exception",
+      "case_ids": [
+        "heldout__C295149__NRS-484B-250-3__motor_vehicle_driver__uncontrolled_end_yields",
+        "heldout__C295149__NRS-484B-250-3__motor_vehicle_driver__opposing_left_exception"
+      ],
+      "fixed_conditions": [
+        "two-vehicle intersection encounter and synchronized capture contract"
+      ],
+      "deliberate_differences": [
+        "ending-versus-through approach identities compared with opposite-direction approach and one left-turn intent; this is an exception probe, not a controlled causal pair"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "ending_through_topology",
+      "mandatory": true,
+      "source": "original OpenDRIVE lane successor graph and waypoint samples",
+      "measurement": "which highway and approach ends at intersection, which continues, lane identities and connected conflict geometry",
+      "case_ids": [
+        "heldout__C295149__NRS-484B-250-3__motor_vehicle_driver__uncontrolled_end_yields",
+        "heldout__C295149__NRS-484B-250-3__motor_vehicle_driver__uncontrolled_end_goes_first",
+        "heldout__C295149__NRS-484B-250-3__motor_vehicle_driver__uncontrolled_staggered",
+        "heldout__C295149__NRS-484B-250-3__motor_vehicle_driver__official_control_active",
+        "heldout__C295149__NRS-484B-250-3__motor_vehicle_driver__official_control_inoperative",
+        "heldout__C295149__NRS-484B-250-3__motor_vehicle_driver__opposing_left_exception"
+      ]
+    },
+    {
+      "name": "approach_arrival_and_clearance",
+      "mandatory": true,
+      "source": "original synchronized two-actor transforms, body vertices, velocities and frame times",
+      "measurement": "entry intervals, arrival separation and through-vehicle clearance; approximately the same time remains legal judgment",
+      "case_ids": [
+        "heldout__C295149__NRS-484B-250-3__motor_vehicle_driver__uncontrolled_end_yields",
+        "heldout__C295149__NRS-484B-250-3__motor_vehicle_driver__uncontrolled_end_goes_first",
+        "heldout__C295149__NRS-484B-250-3__motor_vehicle_driver__uncontrolled_staggered",
+        "heldout__C295149__NRS-484B-250-3__motor_vehicle_driver__official_control_active",
+        "heldout__C295149__NRS-484B-250-3__motor_vehicle_driver__official_control_inoperative",
+        "heldout__C295149__NRS-484B-250-3__motor_vehicle_driver__opposing_left_exception"
+      ]
+    },
+    {
+      "name": "turn_intent_and_motion",
+      "mandatory": true,
+      "source": "original route/controller declaration plus observed steering, heading, lane and body motion",
+      "measurement": "opposite approach and left-turn intent/realization kept separate",
+      "case_ids": [
+        "heldout__C295149__NRS-484B-250-3__motor_vehicle_driver__opposing_left_exception"
+      ]
+    },
+    {
+      "name": "official_control_source",
+      "mandatory": true,
+      "source": "original official device actor inventory, state and governed approaches",
+      "measurement": "active/inoperative device direction and interval with source identity",
+      "case_ids": [
+        "heldout__C295149__NRS-484B-250-3__motor_vehicle_driver__official_control_active",
+        "heldout__C295149__NRS-484B-250-3__motor_vehicle_driver__official_control_inoperative"
+      ]
+    },
+    {
+      "name": "four_camera_source",
+      "mandatory": true,
+      "source": "four synchronized original RGB streams with source hashes",
+      "measurement": "full decode and frame joins for approach, conflict and device review; actual pixel legibility unresolved",
+      "case_ids": [
+        "heldout__C295149__NRS-484B-250-3__motor_vehicle_driver__uncontrolled_end_yields",
+        "heldout__C295149__NRS-484B-250-3__motor_vehicle_driver__uncontrolled_end_goes_first",
+        "heldout__C295149__NRS-484B-250-3__motor_vehicle_driver__uncontrolled_staggered",
+        "heldout__C295149__NRS-484B-250-3__motor_vehicle_driver__official_control_active",
+        "heldout__C295149__NRS-484B-250-3__motor_vehicle_driver__official_control_inoperative",
+        "heldout__C295149__NRS-484B-250-3__motor_vehicle_driver__opposing_left_exception"
+      ]
+    }
+  ],
   "sources": [
     {
       "path": "inputs/heldout__C295149__NRS-484B-250-3__motor_vehicle_driver/assignment.json",
@@ -27,7 +203,7 @@
     "gaps": [
       {
         "id": "uncovered-branches",
-        "requirement": "Construct ending-highway and through-highway simultaneous entry and yielding; separately cover official-control and opposing-left-turn exceptions, with source-backed intersection and approach identities. Preserve \u201capproximately the same time\u201d as a judgment phrase.",
+        "requirement": "Construct ending-highway and through-highway simultaneous entry and yielding; separately cover official-control and opposing-left-turn exceptions, with source-backed intersection and approach identities. Preserve “approximately the same time” as a judgment phrase.",
         "source": {
           "path": "inputs/heldout__C295149__NRS-484B-250-3__motor_vehicle_driver/assignment.json",
           "sha256": "21e5d230618aff2026fb96bd26e3c392775499e8badb6667f7aa9a2c7bb55e1b"

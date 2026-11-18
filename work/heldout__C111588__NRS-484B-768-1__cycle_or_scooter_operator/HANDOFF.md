@@ -162,3 +162,7 @@ For `bicycle_signal_continuous` and `bicycle_no_signal`, each `compatibility.log
 2026-11-16 CPU file-budget preservation: 4 unreferenced saved receipt copies archived byte-exact in `result.json.preserved_unreferenced_cpu_artifacts`; per-member SHA256 recorded there.
 
 2026-11-16 returned-file consolidation: historical standalone logs not referenced by the current package source/index were preserved byte-exact with per-file SHA-256 in `work/_shared/prune-history-bundle-all.json.preserved_source_files`; obsolete test-log entries were removed from `result.json`. Current source-bound proofs remain direct. Rerun the scoped strict gate before relying on ready status.
+
+## 2026-11-18 current-runtime CPU proof
+
+All nine exact rider cases and twenty-seven fallbacks passed fresh current-runtime offline and positive/negative compatibility. All 36 saved-only paths were rebuilt from clean source-only diagnostic attempts and have `processing.json.missing_evidence=false`; complete receipts and hashes are embedded in `result.json`. `prove_physical_preparation.py` reran shared complete, incomplete, and missing source fixtures through the pinned physical checker, plus the ordered lifecycle control. Ten unit tests and the scoped strict gate pass. These are synthetic CPU diagnostic results. Actual Native rider motion, source pixels, roadway setting, and legal judgments remain local execution and independent review.
