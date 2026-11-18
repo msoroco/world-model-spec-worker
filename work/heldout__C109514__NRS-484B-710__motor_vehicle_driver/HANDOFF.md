@@ -98,3 +98,7 @@ Batch return snapshot after this assignment gate: `.venv-cpu/bin/python worker_c
 ## 2026-11-16 proof-log compaction
 
 Thirty-nine distinct candidate offline logs were consolidated losslessly into `fallback-offline-combined.log` (SHA-256 `0baf8f6cc26f698efcd01f66e3541fb7f74235c97655ae4ae00a672f247b4b4b`). The transcript includes each complete original file, hash and byte count; the candidate manifest log hashes were rebound. The scoped `worker_check.py --complete --require-delivery-ready` passed; status stays ready.
+
+## 2026-11-18 CPU proof renewal
+
+The current 13-case, 52-candidate offline and positive/negative compatibility sweep completed with zero command failures. All 52 saved-only processing outputs report `passed=true` and `missing_evidence=false`; their processing hashes and exact local logs are recorded in `saved-proofs.json`. The 39 exact-case synthetic physical outcomes and lifecycle protocol were rerun and rebound to `physical-source-protocol.log`. The assignment-scoped `worker_check.py --complete --require-delivery-ready` gate exits 0. `result.json` is ready for CPU delivery preparation only; actual Native capture, physical footage, and legal acceptance remain for local execution.

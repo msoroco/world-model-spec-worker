@@ -121,3 +121,7 @@ The following historical, inactive JSON receipts were preserved byte-for-byte in
 ## Current JSON adapter CPU proof
 
 All four selected cases and twelve fallbacks now use `.adapter.json` diagnostic graphs with each `adapter_graph` frame-map entry pointing to the retained base graph. CPU physical test packets identify `synthetic_fixture` provenance. All 16 exact offline and positive/missing-source negative compatibility commands pass with hashes bound in `execution-manifest.json`. All 16 saved-only paths pass against manifest SHA-256 `ec112f40cbb29fc2e7f48309c6bf9122a2777d511038e7451dbf4ef087983061`, preserving source hashes and reporting `missing_evidence: true` for synthetic attempts; `adapter-saved-index.json` embeds compact current processing receipt summaries and hashes. The scoped `worker_check.py --complete --require-delivery-ready` gate passes. Actual Native motion, four-camera pixels and legal sufficiency remain for independent local review.
+
+## 2026-11-18 pristine saved reproof correction
+
+Earlier saved-processing receipts with `missing_evidence=true` are superseded. All 16 candidates were rematerialized from current constructions and untouched diagnostic fixture sources, then processed into fresh saved outputs. `saved-proofs.json` records `missing_evidence=false`, preserved original hashes and passed final video checks for all 16.

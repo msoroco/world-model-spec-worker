@@ -321,3 +321,7 @@ Historical unused returned comparison/source receipts (0 files) are byte-exact i
 ## 2026-11-18 JSON adapter migration checkpoint
 
 Ten diagnostic specs now use `.adapter.json` graphs with frame `adapter_graph` pointers. All 40 `runtime.py offline` paths passed. Twelve of 40 exact `runtime.py compatibility` paths passed (within_marked_lane, passing_boundary_crossing, lawful_turn_preparation_boundary_crossing, each primary plus three fallbacks). Four unexcused_boundary_crossing paths fail `Participant graph/telemetry geometry mismatch: position`; 24 heavy_passing_plan/heavy_turn_plan sweep paths fail `Realized sweep measurement differs from frozen definition`. Current ignored `.runtime-work/c305951-adapter-compat-final/` retains attempts and logs. Full manifest rebinding and saved processing remain pending; status is partial.
+
+## 2026-11-18 source-backed control sweep reproof
+
+The six heavy passing/turn sweep constructions now carry a captured `lateral_control_setpoint_m` source channel and realized measurement, with the proposal capture descriptions aligned to the seven-channel construction contract. All 40 current exact offline and positive/negative compatibility paths pass. All 40 pristine materialized candidates completed saved processing with `missing_evidence=false`, preserved original hashes and passed final video checks. `saved-proofs.json` binds these receipts to the current execution manifest. Actual motion and legal sufficiency remain for local review.

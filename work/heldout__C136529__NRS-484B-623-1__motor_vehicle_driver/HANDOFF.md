@@ -27,3 +27,7 @@ The first exact local GPU job is the `slow_with_following_traffic` case through 
 ### 2026-11-15 proof-preserving return compaction
 
 Removed 31 byte-identical returned logs with no non-manifest references and rebound their exact `execution-manifest.json` paths to retained identical bytes. The assignment-scoped strict `--complete --require-delivery-ready` gate passed both before and after. Result stays ready.
+
+## 2026-11-18 current-runtime CPU proof
+
+All six exact delivery cases and eighteen physical-risk fallbacks passed fresh current-runtime offline and positive/negative compatibility. All 24 saved-only paths were rebuilt from clean source-only diagnostic attempts, with `processing.json.missing_evidence=false`; their complete source-bound receipts and hashes are embedded in `result.json`, and primary receipts are aggregated in the existing `saved-processing.log`. `prove_physical_preparation.py` reran complete, incomplete, and missing source fixtures through the pinned physical checker, plus the ordered lifecycle control. Seventeen unit tests and the scoped strict gate pass. CPU delivery preparation does not establish actual Native motion, scene/pixels, or the legal speed judgment; those remain local checks.

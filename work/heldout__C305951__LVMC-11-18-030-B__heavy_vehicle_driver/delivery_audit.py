@@ -174,7 +174,23 @@ def audit(root: Path, case_id: str, *, negative_camera: bool = False,
                         "source_frame_count": len(intent_rows),
                         "lawful_turn_premise": None}
     evidence = {item["name"]: item for item in result["recording_evidence"]}
-    if set(evidence) != set(CHANNELS):
+    sweep_case = "__heavy_passing_plan-" in case_id or "__heavy_turn_plan-" in case_id
+    expected_channels = set(CHANNELS)
+    if sweep_case:
+        expected_channels.add("lateral_control_setpoint_m")
+        setpoints = _rows(_file(root, "lateral_control_setpoint_source.jsonl"))
+        config = json.loads(_file(root, "config.json").read_text())
+        selected = config["engineering"]["lateral_offset_m"]
+        if len(setpoints) != len(frame_map) or any(
+                row.get("frame") != frame["carla_frame"] or
+                row.get("time_s") != frame["time_s"] or
+                row.get("lateral_control_setpoint_m") != selected
+                for row, frame in zip(setpoints, frame_map)):
+            raise ValueError("Saved lateral setpoint source join differs")
+        realized = result["realized_observables"].get("lateral_control_setpoint_m", {})
+        if realized.get("value") != selected or realized.get("reference") != "lateral_control_setpoint_m.jsonl":
+            raise ValueError("Saved lateral setpoint realization differs")
+    if set(evidence) != expected_channels:
         raise ValueError("Saved delivery recording channel inventory differs")
     for name, item in evidence.items():
         channel = _file(root, item["reference"])

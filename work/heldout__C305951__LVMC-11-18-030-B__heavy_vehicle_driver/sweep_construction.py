@@ -66,6 +66,95 @@ def _variant(source: dict, old_case: str, new_case: str, setpoint_m: float) -> d
         raise ValueError("Selected runner knob validation changed")
     runners[0]["content"] = runners[0]["content"].replace(
         positive_only, nonnegative_lateral, 1)
+    runner = runners[0]["content"]
+    anchor = '    frame_map = FrameMap(output / "video_frames.jsonl")\n'
+    if runner.count(anchor) != 1:
+        raise ValueError("Sweep frame-map source changed")
+    runner = runner.replace(anchor, anchor +
+        '        setpoint_source = (output / "lateral_control_setpoint_source.jsonl").open("w")\n')
+    anchor = '            frame_map.append(frame, time_s)\n'
+    if runner.count(anchor) != 1:
+        raise ValueError("Sweep frame source changed")
+    runner = runner.replace(anchor, anchor +
+        '            setpoint_source.write(json.dumps({"frame": frame, "time_s": time_s, '
+        '"lateral_control_setpoint_m": engineering["lateral_offset_m"]}) + "\\n")\n')
+    anchor = '        if frame_map is not None:\n'
+    if runner.count(anchor) != 1:
+        raise ValueError("Sweep source close changed")
+    runner = runner.replace(anchor, '        setpoint_source.close()\n' + anchor)
+    runners[0]["content"] = runner
+    finalizers = [item for item in result["files"] if item["path"] == "heavy_lane_finalizer.py"]
+    if len(finalizers) != 1:
+        raise ValueError("Exact construction needs one finalizer")
+    finalizer = finalizers[0]["content"]
+    anchor = '    video_hashes = {name: _required(root, name)[1] for name in CAMERA_FILES}\n'
+    if finalizer.count(anchor) != 1:
+        raise ValueError("Sweep finalizer source changed")
+    finalizer = finalizer.replace(anchor, anchor +
+        '    setpoint_path, setpoint_sha = _required(root, "lateral_control_setpoint_source.jsonl")\n')
+    anchor = '    surveyed = {(lane["road_id"], lane["lane_id"]) for lane in survey["lanes"]}\n'
+    if finalizer.count(anchor) != 1:
+        raise ValueError("Sweep finalizer frame join changed")
+    finalizer = finalizer.replace(anchor,
+        '    setpoints = _rows(setpoint_path)\n'
+        '    if len(setpoints) != len(frames) or any(\n'
+        '            row.get("frame") != frame.get("carla_frame") or\n'
+        '            row.get("time_s") != frame.get("time_s") or\n'
+        '            row.get("lateral_control_setpoint_m") != config["engineering"]["lateral_offset_m"]\n'
+        '            for row, frame in zip(setpoints, frames)):\n'
+        '        raise ValueError("Captured lateral setpoint source differs from selected frames or control")\n'
+        + anchor)
+    anchor = '    values = {\n'
+    if finalizer.count(anchor) != 1:
+        raise ValueError("Sweep derived values changed")
+    finalizer = finalizer.replace(anchor, anchor +
+        '        "lateral_control_setpoint_m": [row["lateral_control_setpoint_m"] for row in setpoints],\n')
+    anchor = '    return {"case_id": CASE,\n'
+    if finalizer.count(anchor) != 1:
+        raise ValueError("Sweep result source changed")
+    finalizer = finalizer.replace(anchor,
+        '    setpoint = _rows(root / "lateral_control_setpoint_source.jsonl")[0]["lateral_control_setpoint_m"]\n'
+        + anchor)
+    anchor = '            "realized_observables": {"heavy_lane_minimum_clearance_m": {\n'
+    if finalizer.count(anchor) != 1:
+        raise ValueError("Sweep observable summary changed")
+    finalizer = finalizer.replace(anchor,
+        '            "realized_observables": {"lateral_control_setpoint_m": {\n'
+        '                "unit": "m", "method": "authored Native lateral control setpoint, recorded separately from source-measured body clearance",\n'
+        '                "time_window": "selected 160-frame capture", "statistic": "first",\n'
+        '                "reference": "lateral_control_setpoint_m.jsonl", "value": setpoint,\n'
+        '                "sample_window_s": [measurement["frames"][0]["time_s"],\n'
+        '                                    measurement["frames"][-1]["time_s"]]},\n'
+        '                "heavy_lane_minimum_clearance_m": {\n')
+    finalizers[0]["content"] = finalizer
+    tests = [item for item in result["files"] if item["path"] == "tests/test_heavy_lane_source.py"]
+    if tests:
+        if len(tests) != 1:
+            raise ValueError("Exact construction needs one source test")
+        test = tests[0]["content"]
+        anchor = '        for name in finalizer.CAMERA_FILES:\n'
+        if test.count(anchor) != 1:
+            raise ValueError("Sweep saved-source test changed")
+        test = test.replace(anchor,
+            '        setpoint = json.loads((self.root / "config.json").read_text())["engineering"]["lateral_offset_m"]\n'
+            '        (self.root / "lateral_control_setpoint_source.jsonl").write_text("".join(\n'
+            '            json.dumps({"frame": 20 + index, "time_s": index / 20,\n'
+            '                        "lateral_control_setpoint_m": setpoint}) + "\\n"\n'
+            '            for index in range(160)))\n'
+            + anchor)
+        test = test.replace('self.assertEqual(len(result["recording_evidence"]), 6)',
+                            'self.assertEqual(len(result["recording_evidence"]), 7)')
+        tests[0]["content"] = test
+    description = config["case"]["recording_description"]
+    description["channels"].append({
+        "name": "lateral_control_setpoint_m", "unit": "m", "sampling_rate_hz": 20,
+        "method": "Captured lateral control target for each original Native frame.",
+        "time_window": "original 160-frame capture",
+        "reference_frame": "source-surveyed Native three-lane road",
+        "uncertainty": "authored control target is separate from measured physical clearance",
+    })
+    result["recording_description"] = deepcopy(description)
+    configs[0]["content"] = json.dumps(config, indent=2) + "\n"
     validate_identity(result, result["law_id"], result["cell_id"])
     for item in result["files"]:
         if item["path"].endswith(".py"):
@@ -142,6 +231,10 @@ def diagnostic_at_setpoint(source: dict, setpoint_m: float) -> dict:
     files["trace.jsonl"] = "".join(json.dumps(row, allow_nan=False) + "\n" for row in trace)
     files["heavy_lane_sources.jsonl"] = "".join(json.dumps(row, allow_nan=False) + "\n" for row in body)
     files["capture/evidence.jsonl"] = "".join(json.dumps(row, allow_nan=False) + "\n" for row in evidence)
+    files["lateral_control_setpoint_source.jsonl"] = "".join(
+        json.dumps({"frame": row["carla_frame"], "time_s": row["time_s"],
+                    "lateral_control_setpoint_m": setpoint_m}) + "\n"
+        for row in [json.loads(line) for line in files["video_frames.jsonl"].splitlines()])
     capture_manifest = json.loads(files["capture/manifest.json"])
     capture_manifest["sources"]["trace.jsonl"] = sha256(files["trace.jsonl"].encode()).hexdigest()
     files["capture/manifest.json"] = json.dumps(capture_manifest, indent=2) + "\n"

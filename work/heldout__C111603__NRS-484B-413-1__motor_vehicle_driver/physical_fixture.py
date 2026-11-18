@@ -59,7 +59,7 @@ def run(case_id, kind):
         if status != expected:
             raise ValueError('Turn fixture did not yield expected outcome')
         return {'case_id': case_id, 'fixture_kind': kind, 'diagnostic_fixture': True,
-                'actual_native_capture': False, 'provenance_kind': 'native',
+                'actual_native_capture': False, 'provenance_kind': 'synthetic_fixture',
                 'provenance_note': 'Native-shaped synthetic source protocol only',
                 'physical_checks': {'maneuver': {'status': status,
                     'method': 'joined original 20 Hz ego yaw and lateral travel across participant and video frames; engineering fixture criterion only',
