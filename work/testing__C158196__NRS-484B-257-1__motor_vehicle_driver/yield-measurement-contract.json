@@ -1,0 +1,42 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__yield_without_signal_control",
+  "requirements": [
+    {
+      "disposition_index": 2,
+      "requirement": "Proper yield sign, no stop line or crosswalk, and nearest-view stopping reference",
+      "source": "NRS 484B.257(1); inputs/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/assignment.json; inputs/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/witnesses.json",
+      "output_key": "yield_nearest_view_reference",
+      "method": "measure_yield_nearest_view_reference",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "yield_context.json",
+        "interaction_history.jsonl",
+        "video_frames.jsonl",
+        "signal_head_review.json"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "Through-highway vehicle priority, potential immediate hazard, and yielding throughout traversal",
+      "source": "NRS 484B.257(1); inputs/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/assignment.json; inputs/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/witnesses.json",
+      "output_key": "through_priority_context",
+      "method": "measure_through_priority_context",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "yield_context.json",
+        "interaction_history.jsonl",
+        "video_frames.jsonl",
+        "signal_head_review.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "yield_context.json"
+    ],
+    "error_contains": "Missing required source: yield_context.json"
+  }
+}

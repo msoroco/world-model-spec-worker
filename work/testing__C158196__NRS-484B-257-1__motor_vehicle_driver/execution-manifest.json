@@ -165,9 +165,92 @@
       "construction_sha256": "8a047bbb22bef122039687bacbf1f75aabb2d3d866e00d1cdb05b60f52cb94d0",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Off-state and head governance require Native capture and original-camera source review."
+        "reason": "Original Native frames must establish that the Off governing head is visible and the complete ego body enters while the Off state remains operative."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "signal-off-fallback1-construction.json",
+          "construction_sha256": "7138353c182a4ea62c465d042fd5e99c88e08d31cd044d02d8cfdfca1bd16614",
+          "trigger": {
+            "source": "original approach and driver-reference camera frames",
+            "metric": "Off governing head visibility at ego entry",
+            "failure_condition": "The Off governing head is absent or occluded in either original forward view."
+          },
+          "changed_knobs": [
+            "raise and yaw the two ego-mounted head views"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_off --candidate fallback1 --output .runtime-work/c158196-off-fallback-proofs-v1/fallback1-offline",
+            "construction_sha256": "7138353c182a4ea62c465d042fd5e99c88e08d31cd044d02d8cfdfca1bd16614",
+            "exit_code": 0,
+            "log": "signal-off-fallback1-offline-command.log",
+            "log_sha256": "2acca8a998b7f4ad32326edc85fb5ddefa2293efa44d88095c16beacad26aa7d"
+          },
+          "compatibility": {
+            "receipt": "signal-off-fallback1-compatibility.json",
+            "sha256": "3acd5a1f9e5d0f20bb6d62e4639acef0b76c0b2f9423263812893046a79de8ab",
+            "log": "signal-off-fallback1-compatibility-analysis.log",
+            "negative_log": "signal-off-fallback1-negative-analysis.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "signal-off-fallback2-construction.json",
+          "construction_sha256": "ae804ac2b17d3beadd8ee4b043beddcf839e9ac8a8c7bc9cf0966e241b61ad0a",
+          "trigger": {
+            "source": "original Native ego lane/entry history and overview frames",
+            "metric": "ego approach lane continuity and sampled Off-state entry frame",
+            "failure_condition": "Ego leaves the intended lane or enters before a stable affected-lane and Off-state readback."
+          },
+          "changed_knobs": [
+            "move ego spawn within the same authored lane",
+            "reduce commanded approach throttle",
+            "raise overview to retain entrance context"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_off --candidate fallback2 --output .runtime-work/c158196-off-fallback-proofs-v1/fallback2-offline",
+            "construction_sha256": "ae804ac2b17d3beadd8ee4b043beddcf839e9ac8a8c7bc9cf0966e241b61ad0a",
+            "exit_code": 0,
+            "log": "signal-off-fallback2-offline-command.log",
+            "log_sha256": "ba07e37a6c36b2c46feb0ae0a75eb056f61154470baee86fc838f347339b89b4"
+          },
+          "compatibility": {
+            "receipt": "signal-off-fallback2-compatibility.json",
+            "sha256": "45883f03fc98023ad0db8a3a287aec97e64462a8e3bbcb230cb8f063e1fc4124",
+            "log": "signal-off-fallback2-compatibility-analysis.log",
+            "negative_log": "signal-off-fallback2-negative-analysis.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "signal-off-fallback3-construction.json",
+          "construction_sha256": "08b9850e9c37907941fcd53817e0d81c21fe79b37df4823f358fe062a18ba6af",
+          "trigger": {
+            "source": "original Off signal-state history and signed-entrance camera frames",
+            "metric": "Off state stability through first complete ego body entry",
+            "failure_condition": "The Off state changes before the complete ego body enters the intersection."
+          },
+          "changed_knobs": [
+            "shorten ego approach distance",
+            "increase commanded ego throttle",
+            "shift fixed corner view to retain sign and head"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_off --candidate fallback3 --output .runtime-work/c158196-off-fallback-proofs-v1/fallback3-offline",
+            "construction_sha256": "08b9850e9c37907941fcd53817e0d81c21fe79b37df4823f358fe062a18ba6af",
+            "exit_code": 0,
+            "log": "signal-off-fallback3-offline-command.log",
+            "log_sha256": "925ff731fa81668e08b09ac101c08fec143fd7f06ed44a26fb4957fc7ed9d689"
+          },
+          "compatibility": {
+            "receipt": "signal-off-fallback3-compatibility.json",
+            "sha256": "cb3b3c818a53bc3f1419b9d4ceaf814f0789c2406afb924e1ddc8de120cf298d",
+            "log": "signal-off-fallback3-compatibility-analysis.log",
+            "negative_log": "signal-off-fallback3-negative-analysis.log"
+          }
+        }
+      ],
       "measurement_contract": "signal-off-measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "signal_exception_measurements.py"
@@ -290,6 +373,73 @@
         "test_exit_code": 0,
         "processing_receipt": "signal-visible-process-saved.json",
         "processing_sha256": "c4b94812c80cc7f27735c5d74c85d22ac91c35199ede31eb7991f1b3751831d8"
+      }
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__yield_without_signal_control",
+      "kind": "delivery",
+      "construction": "yield-construction.json",
+      "construction_sha256": "e81ee01b273cb8d0303bff4d839088b16b270902882f7958b0faec17ac37044b",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Nearest-view line, sign visibility and through-vehicle motion must be checked in Native original sources."
+      },
+      "candidates": [],
+      "measurement_contract": "yield-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "signal_exception_measurements.py"
+      },
+      "fixture_recipe": "work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/yield-fixture-recipe.json",
+      "acquisition": {
+        "operative_signal_control": {
+          "entrypoint": "signal_exception_measurements.py",
+          "method": "original signal history and affected-lane join",
+          "evidence": [
+            "signal_context.json",
+            "signal_history.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "signal_state": {
+          "entrypoint": "signal_exception_measurements.py",
+          "method": "original Native signal-state series",
+          "evidence": [
+            "signal_history.jsonl"
+          ]
+        },
+        "ego_crossing_body": {
+          "entrypoint": "signal_exception_measurements.py",
+          "method": "original complete-body interaction history",
+          "evidence": [
+            "interaction_history.jsonl",
+            "video_frames.jsonl"
+          ]
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__yield_without_signal_control --output .runtime-work/c158196-yield-v2/offline",
+        "construction_sha256": "e81ee01b273cb8d0303bff4d839088b16b270902882f7958b0faec17ac37044b",
+        "exit_code": 0,
+        "log": "yield-offline-command.log",
+        "log_sha256": "444614e2f4af946a35b036f197789da9430b543a0d9f1babd1f861e8eedde826"
+      },
+      "compatibility": {
+        "receipt": "yield-compatibility.json",
+        "sha256": "1a63508623075a25f233cf0e2fdb08a2d3b53fd8090178f164ccfab0b4c2f757"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__yield_without_signal_control --attempt .runtime-work/c158196-yield-v2/attempt --output .runtime-work/c158196-yield-v2/processed --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "test_log": "yield-process-saved.json",
+        "test_log_sha256": "cf9e27d87bc628f9d4df4a1e9a25eec525153c5f05b32850f1a4beeb4f271b76",
+        "test_exit_code": 0,
+        "processing_receipt": "yield-process-saved.json",
+        "processing_sha256": "cf9e27d87bc628f9d4df4a1e9a25eec525153c5f05b32850f1a4beeb4f271b76"
       }
     }
   ]
