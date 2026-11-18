@@ -7,6 +7,7 @@ import tempfile
 from pathlib import Path
 
 root = Path(__file__).resolve().parents[1]
+(root / '.runtime-work').mkdir(exist_ok=True)
 paths = [
     'runtime/runs/scenario_pipeline/inputs/shared/manifest.json',
     'runtime/pipeline/runs/scenario_pipeline/inputs/shared/manifest.json',
