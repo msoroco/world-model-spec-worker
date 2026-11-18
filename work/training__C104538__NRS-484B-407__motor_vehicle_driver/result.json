@@ -1,10 +1,10 @@
 {
   "assignment_id": "training__C104538__NRS-484B-407__motor_vehicle_driver",
   "input_sha256": "26f622cd1dd36d710429264917a1435323cc941294206ef4ea0d963640e2aab0",
-  "status": "partial",
+  "status": "ready",
   "applied_update": 16,
-  "reason": "Current JSON graph and synthetic physical fixture migration complete; first exact primary and fallback1 compatibility/saved paths pass, but twelve-chain selected proof matrix and scoped strict gate are still pending.",
-  "readiness_kind": "implementation_checkpoint",
+  "reason": "Current JSON-graph runtime: twelve exact selected primary/fallback offline, positive/negative compatibility and saved-processing chains, synthetic physical fixtures, independent sightline audit, delivery audit, assignment tests and direct validators passed.",
+  "readiness_kind": "delivery_prepared",
   "cases_planned": 3,
   "cases_selected": 3,
   "candidate_plans_proven": 12,
@@ -42,8 +42,11 @@
   "joined_synthetic_package_summary_sha256": "304c9a51498ffb34bb1a7b9a39c96a5efe53332836dc26e832d2867e16c74c91",
   "joined_synthetic_package_audit_sha256": "851376b1f3272cb4d49b30e95073f2575ba83873d5b520708de09c0c0ad01944",
   "current_cpu_proof": {
-    "path": "work/training__C104538__NRS-484B-407__motor_vehicle_driver/update041-final-manifest-matrix.json",
-    "sha256": "8a38275ee76f71906f273cc42d1fa136578167939d0ad59a97b705efc2181306"
+    "path": "work/training__C104538__NRS-484B-407__motor_vehicle_driver/update043f-current-source-audit.json",
+    "sha256": "8ef86f928fac332711439bcc6cbad7081161078c74340514e15ef73bcc9b9f53",
+    "selected_cases": 3,
+    "candidate_proofs": 12,
+    "original_native_accepted": false
   },
   "selected_execution_manifest": {
     "path": "work/training__C104538__NRS-484B-407__motor_vehicle_driver/execution-manifest.json",
@@ -467,6 +470,36 @@
       "exit_code": 0,
       "log": "update041-scoped-strict-verified.log",
       "sha256": "837fcc9e63f0dec4e271043d12043b229bcf285ff332f429f5e3d6caac01a143"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C104538__NRS-484B-407__motor_vehicle_driver/run-current-selected-update043f.py",
+      "exit_code": 0,
+      "log": "update043f-selected-proof-run.log",
+      "sha256": "0a2bb858bdc4d6527729de3865003d5d6f7a99ed6bb5e7d87b37c7e21f4e02b6"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C104538__NRS-484B-407__motor_vehicle_driver/audit-current-update043f.py",
+      "exit_code": 0,
+      "log": "update043f-current-source-audit.log",
+      "sha256": "07ed35eb7ea157a2b48f9303620710bbf6f9ddd45c7f429aa79979409a0afca4"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C104538__NRS-484B-407__motor_vehicle_driver/bind-selected-delivery-update043f.py",
+      "exit_code": 0,
+      "log": "update043f-selected-delivery-bind.log",
+      "sha256": "1ad2c3e6954343174d53d046a6bef670e7367f0cdc7c9b0eca28bddcb8fdf411"
+    },
+    {
+      "command": "PYTHONPATH=work/training__C104538__NRS-484B-407__motor_vehicle_driver:runtime/pipeline:runtime/pipeline/scenario_pipeline .venv-cpu/bin/python -m unittest discover -s work/training__C104538__NRS-484B-407__motor_vehicle_driver/tests",
+      "exit_code": 0,
+      "log": "update043f-assignment-tests-final.log",
+      "sha256": "a455dda3bdbe0714b3c7de8f64984c0175e7c1115fe8e55b2db74f7df67b1deb"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment training__C104538__NRS-484B-407__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 0,
+      "log": "update043f-assignment-strict.log",
+      "sha256": "837fcc9e63f0dec4e271043d12043b229bcf285ff332f429f5e3d6caac01a143"
     }
   ],
   "historical_strict_v2_fixture_capability": "work/training__C10014__NRS-484B-477-2__motor_vehicle_driver/v2-fixture-capability-blocker.json",
@@ -550,8 +583,8 @@
     }
   },
   "selected_delivery_cpu_proof": {
-    "path": "work/training__C104538__NRS-484B-407__motor_vehicle_driver/update026-selected-delivery-cpu-proof.json",
-    "sha256": "ad0d1ba8da93a7e52875a0cfcaee366734f3bcb1b9f1a8caabed900b8858f16f",
+    "path": "work/training__C104538__NRS-484B-407__motor_vehicle_driver/update043f-selected-delivery-cpu-proof.json",
+    "sha256": "1537128ef515511b1d3ff37c8267bef7f971f154726e0180e70f468e18ef7760",
     "accepted_recordings": 0
   },
   "selected_queue_fragment": {
@@ -585,12 +618,11 @@
     "Independent local physical, delivery, comparison and legal review"
   ],
   "first_gpu_delivery_command": "PYTHONPATH=runtime/pipeline/scenario_pipeline python3.11 -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C104538__NRS-484B-407__motor_vehicle_driver --case training__C104538__NRS-484B-407__motor_vehicle_driver__below_500_ft --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT",
-  "current_migration_checkpoint": {
-    "primary_compatibility_log": "work/training__C104538__NRS-484B-407__motor_vehicle_driver/update043-below-primary-compat.log",
-    "primary_saved_log": "work/training__C104538__NRS-484B-407__motor_vehicle_driver/update043-below-primary-saved.log",
-    "fallback1_compatibility_log": "work/training__C104538__NRS-484B-407__motor_vehicle_driver/update043e-below-fallback1-compat.log",
-    "fallback1_saved_log": "work/training__C104538__NRS-484B-407__motor_vehicle_driver/update043e-below-fallback1-saved.log",
-    "full_matrix_status": "running",
+  "current_saved_cpu_proof": {
+    "path": "work/training__C104538__NRS-484B-407__motor_vehicle_driver/update043f-current-saved-summary.json",
+    "sha256": "31f540b0c57495523aa7c9020f6ded829ad79b52ebdce7695d158655969aa819",
+    "saved_proofs": 12,
     "original_native_accepted": false
-  }
+  },
+  "execution_manifest_sha256": "52482ed067434a11611850c2156a7e265d102ae906b6e5cdb1f7f0d45b817189"
 }
