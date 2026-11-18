@@ -357,6 +357,7 @@ class SignalTests(unittest.TestCase):
             (root/"config.json").write_text(json.dumps({
                 "selected_case_id":"testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_controls_ego",
                 "law_id":"NRS-484B-257-1","cell_id":"C158196",
+                "site":{"native_map_id":"TownX","approach_lanes":{"ego":[7,-1],"through":[9,-1]}},
                 "recording_description":{"channels":[]}}))
             clock={"frame":99,"x":0.0,"stale":False}
             sensors={}
@@ -433,6 +434,13 @@ class SignalTests(unittest.TestCase):
                 (negative/"signal_head_review.json").unlink()
                 with self.assertRaisesRegex(ValueError,"Missing required source: signal_head_review.json"):
                     measure.finalize(negative,negative/"analysis-report.json")
+                (negative/"signal_head_review.json").write_text(json.dumps(review))
+                exact_config=json.loads((negative/"config.json").read_text())
+                wrong_config=dict(exact_config,site=dict(exact_config["site"],native_map_id="wrong-map"))
+                (negative/"config.json").write_text(json.dumps(wrong_config))
+                with self.assertRaisesRegex(ValueError,"Saved site map differs"):
+                    measure.finalize(negative,negative/"analysis-report.json")
+                (negative/"config.json").write_text(json.dumps(exact_config))
                 review["camera_sha256"]["approach"]="0"*64
                 (negative/"signal_head_review.json").write_text(json.dumps(review))
                 with self.assertRaisesRegex(ValueError,"Original-camera review source hash differs"):
@@ -471,7 +479,9 @@ class SignalTests(unittest.TestCase):
                            get_affected_lane_waypoints=lambda:[NS(road_id=11,lane_id=-1)])
             other_case="testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_visible_not_governing"
             other_config={"selected_case_id":other_case,"law_id":"NRS-484B-257-1",
-                          "cell_id":"C158196","recording_description":{"channels":[]}}
+                          "cell_id":"C158196",
+                          "site":{"native_map_id":"TownX","approach_lanes":{"ego":[7,-1],"through":[9,-1]}},
+                          "recording_description":{"channels":[]}}
             (other_root/"config.json").write_text(json.dumps(other_config))
             with control.NativeSignalCapture(world,other_root,{"ego":ego,"through":through},
                     other_light,other_ctx,False,{name:name for name in control.CAMERAS},mounts,
@@ -559,7 +569,9 @@ class SignalTests(unittest.TestCase):
             sensors.clear()
             off_case="testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_off"
             off_config={"selected_case_id":off_case,"law_id":"NRS-484B-257-1",
-                        "cell_id":"C158196","recording_description":{"channels":[]}}
+                        "cell_id":"C158196",
+                        "site":{"native_map_id":"TownX","approach_lanes":{"ego":[7,-1],"through":[9,-1]}},
+                        "recording_description":{"channels":[]}}
             (off_root/"config.json").write_text(json.dumps(off_config))
             off_light=NS(id=25,get_state=lambda:"Off",get_affected_lane_waypoints=lambda:[
                 NS(road_id=7,lane_id=-1)])

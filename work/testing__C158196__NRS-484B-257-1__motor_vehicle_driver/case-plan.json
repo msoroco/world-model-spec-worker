@@ -3,8 +3,8 @@
   "actor": "motor_vehicle_driver",
   "cell_id": "C158196",
   "law_id": "NRS-484B-257-1",
-  "selected_branch": "Frozen label references yield nearest-view; traffic_light cell supplies express active-signal exception.",
-  "binding_review": "Witness relocates traffic-signal governance from yield_sign C158208 to C158196. Nearest-view yield duty remains in C158208; no claim that a light-only case covers it.",
+  "selected_branch": "Yield sign; neither stop line nor crosswalk; nearest-view location.",
+  "binding_review": "Frozen nearest-view yield witness stays selected; C158196 traffic_light cell also requires a separate operative-signal exception case. The current primary measures that exception; nearest-view and through-highway duties remain open in the yield baseline case.",
   "cases": [
     {
       "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_controls_ego",
@@ -93,7 +93,7 @@
     "The fixed traffic_light cell is for the express exception, not a substitute for yield nearest-view coverage.",
     "Exact runner, cameras, finalizer, fallbacks and full proofs remain worker-owned CPU work."
   ],
-  "planning_status": "partial; exact primary draft inline construction passes frozen runtime.py offline CPU check; canonical saved-processing and delivery manifest remain unfinished",
+  "planning_status": "partial; primary exact offline and source-bound finalizer tests pass; canonical compatibility and saved processing pending",
   "native_signal_pair_construction_proof": {
     "status": "cpu_fake_native_checkpoint",
     "source": "signal_control.py:construct_signal_comparison",
@@ -323,13 +323,178 @@
   },
   "primary_exact_offline_proof": {
     "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_controls_ego",
-    "construction_sha256": "04c246617f900523513ec5fa8092220a563ea459eafefaa19c0c22614fff104b",
-    "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_controls_ego --output .runtime-work/c158196-primary-current-proof-v2/offline-canonical",
-    "exit_code": 0,
-    "command_log": "work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/primary-offline-command.log",
-    "command_log_sha256": "41bb4402a039cb539aef67864ca365cbe9febfac804f7f45b862723fbf76523c",
-    "offline_log": ".runtime-work/c158196-primary-current-proof-v2/offline-canonical/offline.log",
-    "offline_log_sha256": "a5d274366bb8287ba9b2a1c41956303c5b9faffa272dca2a670e9c3e465772da",
-    "scope": "Current inline construction passed exact offline CPU check; no compatibility or saved-processing claim"
+    "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_controls_ego --output .runtime-work/c158196-measurement-contract-v1/offline-v2",
+    "construction_sha256": "d83c49b2bdb7daf39542e1f74dea0ea28d8dd1622b5d0568a2331db91369ba9d",
+    "command_log": "primary-offline-command.log",
+    "command_log_sha256": "c365033841018f676b76d4966b5550063a8e50882e7d83a70929a3c11d3a668e",
+    "materialized_log": ".runtime-work/c158196-measurement-contract-v1/offline-v2/offline.log",
+    "materialized_log_sha256": "2111c38ecc2a712be3d38e9fb91f139a7c3d49eae52e56f17c85b444cca824d1",
+    "simulation_started": false
+  },
+  "requirement_dispositions": [
+    {
+      "requirement": "An operative traffic-control signal controls the ego approach at complete-body entry",
+      "source": "NRS 484B.257(1); inputs/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/assignment.json; inputs/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/witnesses.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_controls_ego"
+      ],
+      "evidence_or_gap": "Native affected-lane/state history and complete ego-body entry are joined; official status and physical governance remain unresolved."
+    },
+    {
+      "requirement": "The controlling signal indication at complete-body entry is retained",
+      "source": "NRS 484B.257(1); inputs/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/assignment.json; inputs/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/witnesses.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_controls_ego"
+      ],
+      "evidence_or_gap": "Original frame signal state is retained with the entry frame; original-camera visibility and physical indication remain unresolved."
+    },
+    {
+      "requirement": "Proper yield sign, no stop line or crosswalk, and nearest-view stopping reference",
+      "source": "NRS 484B.257(1); inputs/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/assignment.json; inputs/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/witnesses.json",
+      "status": "alternative_pending",
+      "case_ids": [
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__yield_without_signal_control"
+      ],
+      "evidence_or_gap": "The baseline source analyzer exists, but an exact authored construction and canonical saved-processing receipt are pending."
+    },
+    {
+      "requirement": "Through-highway vehicle priority, potential immediate hazard, and yielding throughout traversal",
+      "source": "NRS 484B.257(1); inputs/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/assignment.json; inputs/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/witnesses.json",
+      "status": "alternative_pending",
+      "case_ids": [
+        "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__yield_without_signal_control"
+      ],
+      "evidence_or_gap": "Complete-body source joins are drafted; hazard and right-of-way judgments remain unresolved."
+    },
+    {
+      "requirement": "Police officer control exception is separately inventoried",
+      "source": "NRS 484B.257(1); inputs/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/assignment.json; inputs/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/witnesses.json",
+      "status": "exception_pending",
+      "evidence_or_gap": "No selected construction or original control source yet tests officer control."
+    }
+  ],
+  "source_observation_mapping": {
+    "dev.stop_sign": {
+      "evidence": "Authored sign inventory; no physical erection claim.",
+      "channels": [],
+      "source_refs": [
+        "signal-site.xodr"
+      ]
+    },
+    "dev.yield_sign": {
+      "evidence": "Authored yield sign 1581901; physical erection and visibility unresolved.",
+      "channels": [],
+      "source_refs": [
+        "signal-site.xodr"
+      ]
+    },
+    "dev.governs": {
+      "evidence": "Native affected-lane source and original per-frame control readback.",
+      "channels": [],
+      "source_refs": [
+        "signal_context.json",
+        "signal_history.jsonl"
+      ]
+    },
+    "st.lane_enters": {
+      "evidence": "Original road/lane IDs joined to the intersection route.",
+      "channels": [],
+      "source_refs": [
+        "signal_context.json",
+        "signal_history.jsonl"
+      ]
+    },
+    "st.stop_line": {
+      "evidence": "Authored site has no stop-line marking; physical absence unverified.",
+      "channels": [],
+      "source_refs": [
+        "signal-site.xodr"
+      ]
+    },
+    "st.crosswalk": {
+      "evidence": "Authored site has no crosswalk marking; physical absence unverified.",
+      "channels": [],
+      "source_refs": [
+        "signal-site.xodr"
+      ]
+    },
+    "st.sight_distance": {
+      "evidence": "Nearest-view reference geometry and body crossing exist only in the baseline draft.",
+      "channels": [],
+      "source_refs": [
+        "yield_context.json",
+        "interaction_history.jsonl"
+      ]
+    },
+    "rel.visible": {
+      "evidence": "Original-camera review records source hashes; actual Native pixels pending.",
+      "channels": [],
+      "source_refs": [
+        "signal_head_review.json",
+        "overview.mkv",
+        "approach.mkv"
+      ]
+    },
+    "drv.stopped": {
+      "evidence": "Original speed series; stop-sign duty is not in this primary case.",
+      "channels": [],
+      "source_refs": [
+        "signal_history.jsonl"
+      ]
+    },
+    "kin.speed": {
+      "evidence": "Original ego speed samples; yield slowing requires separate baseline proof.",
+      "channels": [],
+      "source_refs": [
+        "signal_history.jsonl"
+      ]
+    },
+    "drv.priority_roadway": {
+      "evidence": "Through-road and approach lane IDs; highway authority unresolved.",
+      "channels": [],
+      "source_refs": [
+        "signal_context.json"
+      ]
+    },
+    "drv.entering_intersection": {
+      "evidence": "Complete body vertices for ego and through vehicle per frame.",
+      "channels": [],
+      "source_refs": [
+        "interaction_history.jsonl"
+      ]
+    },
+    "drv.time_to_conflict": {
+      "evidence": "Original body positions support timing analysis; legal immediate hazard unresolved.",
+      "channels": [],
+      "source_refs": [
+        "interaction_history.jsonl"
+      ]
+    },
+    "drv.yields_to": {
+      "evidence": "Original motion and control history; legal yielding unresolved.",
+      "channels": [],
+      "source_refs": [
+        "interaction_history.jsonl",
+        "trace.jsonl"
+      ]
+    },
+    "dev.human_direction": {
+      "evidence": "Officer-control absence requires source inventory beyond this signal primary.",
+      "channels": [],
+      "source_refs": [
+        "control_context.json"
+      ]
+    },
+    "dev.traffic_signal": {
+      "evidence": "Affected lane, state, and reviewed head identity at entry.",
+      "channels": [],
+      "source_refs": [
+        "signal_context.json",
+        "signal_history.jsonl",
+        "signal_head_review.json"
+      ]
+    }
   }
 }

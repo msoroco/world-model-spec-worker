@@ -97,6 +97,23 @@ def measure_entry_signal_state(report):
     return report["first_ego_entry"]["signal_state"]
 
 
+def validate_saved_site_binding(config, context, control):
+    """Reject a source history from a different configured Native site."""
+    site = config.get("site")
+    if not isinstance(site, dict) or site.get("native_map_id") != context.get("native_map_id"):
+        raise ValueError("Saved site map differs from exact construction")
+    lanes = site.get("approach_lanes", {})
+    if (lanes.get("ego") != [context.get("ego_road_id"), context.get("ego_lane_id")] or
+            lanes.get("through") != [context.get("through_road_id"), context.get("through_lane_id")] or
+            context.get("ego_route_lanes", [None])[0] != lanes.get("ego") or
+            context.get("through_route_lanes", [None])[0] != lanes.get("through")):
+        raise ValueError("Saved approach lanes differ from exact construction")
+    if (control.get("native_map_id") != site["native_map_id"] or
+            control.get("intersection_xy_m") != context.get("intersection_polygon_xy_m") or
+            control.get("intersection_id") != context.get("intersection_id")):
+        raise ValueError("Saved control geometry differs from exact construction")
+
+
 def measure_yield_baseline(attempt, context, interaction, frames, review):
     """Retain the yield reference and through traffic facts without judging hazard."""
     source = attempt/"yield_context.json"
@@ -320,9 +337,7 @@ def finalize(attempt, output):
                 raise ValueError("Missing complete original interaction body: " + role)
     context = json.loads((attempt/"signal_context.json").read_text())
     control = json.loads((attempt/"control_context.json").read_text())
-    if (control.get("intersection_xy_m") != context["intersection_polygon_xy_m"] or
-            control.get("native_map_id") != context["native_map_id"]):
-        raise ValueError("Original control geometry differs from signal context")
+    validate_saved_site_binding(config, context, control)
     yield_baseline = None
     if case_id.endswith("__yield_without_signal_control"):
         yield_baseline = measure_yield_baseline(attempt, context, interaction, frames, review)

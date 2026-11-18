@@ -225,17 +225,36 @@
   "recording_description": {
     "channels": [
       {
-        "name": "signal_control_at_entry",
-        "unit": "Boolean plus Native signal/head/source identity",
-        "method": "original Native affected-lane waypoints, signal state, four camera frame join and complete ego-body polygon at entry",
+        "name": "operative_signal_control",
+        "unit": "count",
+        "method": "Original affected-lane and operative-state join per frame",
         "time_window": "original 20 Hz 30-second capture",
         "reference_frame": "Native map and original camera frames",
         "sampling_rate_hz": 20,
-        "uncertainty": "physical control and head visibility require original source review"
+        "uncertainty": "official control and physical head visibility require source review"
+      },
+      {
+        "name": "signal_state",
+        "unit": "text",
+        "method": "Original Native signal-state readback per frame",
+        "time_window": "original 20 Hz 30-second capture",
+        "reference_frame": "Native map and original camera frames",
+        "sampling_rate_hz": 20,
+        "uncertainty": "physical indication requires original-camera review"
+      },
+      {
+        "name": "ego_crossing_body",
+        "unit": "structured record",
+        "method": "Original ego complete-body vertices per frame",
+        "time_window": "original 20 Hz 30-second capture",
+        "reference_frame": "Native map and original camera frames",
+        "sampling_rate_hz": 20,
+        "uncertainty": "physical geometry requires Native acquisition"
       }
     ],
     "limitations": [
       "authored OpenDRIVE and CPU fixtures do not establish official control, proper sign erection, real actor motion or video coverage"
-    ]
+    ],
+    "context_inputs": []
   }
 }
