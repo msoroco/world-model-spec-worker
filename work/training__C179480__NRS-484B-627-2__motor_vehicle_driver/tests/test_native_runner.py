@@ -119,6 +119,39 @@ class NativeRunnerTest(unittest.TestCase):
             module.placement(self.survey, road, self.carla,
                              'reference', 'fallback4')
 
+    def test_safe_operation_hazard_is_constructed_ahead_on_same_lane(self):
+        road, _, _ = module.validate_survey(self.survey, FakeMap(), self.carla)
+        reference = module.placement(self.survey, road, self.carla, 'reference')
+        safety = module.placement(self.survey, road, self.carla,
+                                  'safe_operation_stop')
+        self.assertEqual(safety['stop_xy'],reference['stop_xy'])
+        self.assertEqual(safety['ego_spawn'].location.x,
+                         reference['ego_spawn'].location.x)
+        self.assertEqual(safety['following_spawn'].location.x,
+                         reference['following_spawn'].location.x)
+        self.assertEqual(safety['hazard_spawn'].location.x,108.)
+        self.assertEqual(safety['hazard_spawn'].location.y,10.)
+
+    def test_safe_operation_runner_spawns_and_cleans_hazard_actor(self):
+        world = FakeWorld()
+        client = types.SimpleNamespace(get_world=lambda: world)
+        survey = dict(self.survey,hazard_blueprint='vehicle.hazard')
+        original = module.acquire_with_world_restore
+        try:
+            def inspect_capture(_world,_carla,_ego,_follower,_library,
+                                _stop_xy,_attempt,**options):
+                self.assertEqual(len(world.actors),3)
+                self.assertIs(options['hazard'],world.actors[2])
+                raise RuntimeError('stop after construction inspection')
+            module.acquire_with_world_restore = inspect_capture
+            with tempfile.TemporaryDirectory() as tmp:
+                with self.assertRaisesRegex(RuntimeError,'construction inspection'):
+                    module.run(client,self.carla,survey,Path(tmp)/'attempt',
+                               'safe_operation_stop')
+            self.assertTrue(all(actor.destroyed for actor in world.actors))
+        finally:
+            module.acquire_with_world_restore = original
+
     def test_live_map_and_shoulder_must_match_survey(self):
         bad = dict(self.survey, map_name='OtherTown')
         with self.assertRaisesRegex(ValueError, 'Live map differs'):

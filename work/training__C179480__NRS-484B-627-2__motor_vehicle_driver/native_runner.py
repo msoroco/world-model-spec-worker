@@ -1,4 +1,4 @@
-"""Survey-driven Native attempt entrypoint for the C179480 primary pair.
+"""Survey-driven Native attempt entrypoint for C179480 roadway-stop scenes.
 
 This program never supplies a map identity or shoulder from an invented fixture.
 An operator must provide a surveyed CARLA lane and the runner checks it against
@@ -12,11 +12,11 @@ from pathlib import Path
 
 from capture_attempt import acquire_with_world_restore
 from candidate_tuning import TUNINGS, tuning
-from source_measurement import analyze
+from source_measurement import analyze, analyze_hazard
 from stop_construction import RoadProfile, target
 
 
-CASES = {'reference': True, 'contrast': False}
+CASES = {'reference': True, 'contrast': False, 'safe_operation_stop': True}
 
 
 def validate_survey(survey, mapping, carla):
@@ -54,7 +54,7 @@ def validate_survey(survey, mapping, carla):
 
 def placement(survey, road, carla, case, candidate='primary'):
     if case not in CASES:
-        raise ValueError('Only selected primary roadway-stop pair is constructed')
+        raise ValueError('Unsupported roadway-stop scene')
     anchor = survey['anchor']
     selected = tuning(candidate)
     yaw = radians(anchor['yaw'])
@@ -71,6 +71,8 @@ def placement(survey, road, carla, case, candidate='primary'):
     return {'ego_spawn': transform(selected.ego_spawn_longitudinal_m, 0.0),
             'following_spawn': transform(selected.follower_spawn_longitudinal_m, 0.0),
             'stop_xy': xy(0.0, lateral),
+            'hazard_spawn': (transform(8.0, 0.0)
+                             if case == 'safe_operation_stop' else None),
             'target_lane_overlap': CASES[case],
             'ego_lateral_stop_m': lateral,
             'candidate_id': candidate,
@@ -81,12 +83,17 @@ def run(client, carla, survey, attempt, case, *, candidate='primary', sink_facto
     world = client.get_world()
     road, lane, shoulder = validate_survey(survey, world.get_map(), carla)
     plan = placement(survey, road, carla, case, candidate)
+    if case == 'safe_operation_stop' and not survey.get('hazard_blueprint'):
+        raise ValueError('Safe-operation scene requires surveyed hazard blueprint')
     library = world.get_blueprint_library()
     actors = []
     try:
-        for blueprint_name, transform in (
+        spawns = [
             (survey['ego_blueprint'], plan['ego_spawn']),
-            (survey['following_blueprint'], plan['following_spawn'])):
+            (survey['following_blueprint'], plan['following_spawn'])]
+        if plan['hazard_spawn'] is not None:
+            spawns.append((survey['hazard_blueprint'],plan['hazard_spawn']))
+        for blueprint_name, transform in spawns:
             blueprint = library.find(blueprint_name)
             actor = world.try_spawn_actor(blueprint, transform)
             if actor is None:
@@ -98,6 +105,8 @@ def run(client, carla, survey, attempt, case, *, candidate='primary', sink_facto
                    'follower_brake_gap_m': plan['tuning'].follower_brake_gap_m}
         if sink_factory is not None:
             options['sink_factory'] = sink_factory
+        if plan['hazard_spawn'] is not None:
+            options['hazard'] = actors[2]
         receipt = acquire_with_world_restore(
             world, carla, actors[0], actors[1], library,
             plan['stop_xy'], attempt, **options)
@@ -113,6 +122,9 @@ def run(client, carla, survey, attempt, case, *, candidate='primary', sink_facto
             'candidate_risk_trigger': plan['tuning'].risk_trigger,
             'ego_lateral_stop_m': plan['ego_lateral_stop_m'],
             'planned_stop_xy_m': plan['stop_xy'],
+            'planned_hazard_xy_m': ([plan['hazard_spawn'].location.x,
+                                     plan['hazard_spawn'].location.y]
+                                    if plan['hazard_spawn'] is not None else None),
             'physical_completion_claimed': False,
         }
         (Path(attempt) / 'native-map-readback.json').write_text(
@@ -120,6 +132,8 @@ def run(client, carla, survey, attempt, case, *, candidate='primary', sink_facto
         actor_path = Path(attempt) / 'native-actors.jsonl'
         frame_path = Path(attempt) / 'video_frames.jsonl'
         measured = analyze(actor_path, frame_path)
+        if case == 'safe_operation_stop':
+            measured['hazard_observation'] = analyze_hazard(actor_path, frame_path)
         measured.update(format='c179480-source-measurements-v1', case=case,
                         actor_source_sha256=hashlib.sha256(actor_path.read_bytes()).hexdigest(),
                         frame_map_sha256=hashlib.sha256(frame_path.read_bytes()).hexdigest(),

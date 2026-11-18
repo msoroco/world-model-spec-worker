@@ -77,3 +77,42 @@ def measure(rows, *, fps=20, stop_tolerance_mps=0.05):
 
 def analyze(path, frame_map_path):
     return measure(load_rows(path, frame_map_path))
+
+
+def analyze_hazard(path, frame_map_path):
+    """Summarize source-visible other-vehicle hazard; do not infer necessity."""
+    rows = load_rows(path, frame_map_path)
+    gaps = []
+    speeds = []
+    on_lane = []
+    for row in rows:
+        state = row.get('hazard_state')
+        if not isinstance(state, dict) or state.get('source_kind') != 'original_carla_actor_and_map_readback':
+            raise ValueError('Missing original safe-operation hazard state')
+        body = state.get('body_vertices_xyz_m')
+        velocity = state.get('velocity_xyz_mps')
+        position = state.get('position_xyz_m')
+        if (not isinstance(body, list) or len(body) < 4
+                or any(not isinstance(vertex, list) or len(vertex) != 3
+                       or any(type(v) not in (int, float) or not isfinite(v)
+                              for v in vertex) for vertex in body)
+                or any(not isinstance(vector, list) or len(vector) != 3
+                       or any(type(v) not in (int, float) or not isfinite(v)
+                              for v in vector) for vector in (velocity, position))
+                or type(state.get('on_driving_lane')) is not bool
+                or type(state.get('road_id')) is not int
+                or type(state.get('lane_id')) is not int):
+            raise ValueError('Incomplete original safe-operation hazard geometry')
+        for key in ('speed_mps', 'ego_center_gap_m'):
+            value = state.get(key)
+            if type(value) not in (int, float) or not isfinite(value) or value < 0:
+                raise ValueError('Invalid original hazard measurement: '+key)
+        gaps.append(state['ego_center_gap_m'])
+        speeds.append(state['speed_mps'])
+        on_lane.append(state['on_driving_lane'])
+    return {'sample_count': len(rows), 'minimum_ego_center_gap_m': min(gaps),
+            'maximum_hazard_speed_mps': max(speeds),
+            'hazard_on_driving_lane_all_frames': all(on_lane),
+            'safe_operation_necessity': 'independent_original_source_review_required',
+            'physical_causation_claimed': False,
+            'legal_verdict_claimed': False}

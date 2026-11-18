@@ -9,7 +9,7 @@ import json
 from pathlib import Path
 import subprocess
 
-from source_measurement import analyze
+from source_measurement import analyze, analyze_hazard
 
 
 CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
@@ -45,6 +45,10 @@ def review(attempt, output, *, write=True):
     measurement_path = attempt / 'source-measurements.json'
     map_readback = json.loads(map_path.read_text())
     receipt = json.loads(measurement_path.read_text())
+    if map_readback.get('case') == 'safe_operation_stop':
+        observed_hazard = analyze_hazard(actor, mapping)
+        if receipt.get('hazard_observation') != observed_hazard:
+            raise ValueError('Saved hazard receipt differs from original sources')
     if (map_readback.get('format') != 'c179480-original-map-readback-v1'
             or receipt.get('format') != 'c179480-source-measurements-v1'
             or receipt.get('actor_source_sha256') != sources['native-actors.jsonl']

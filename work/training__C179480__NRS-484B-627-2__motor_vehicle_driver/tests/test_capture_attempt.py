@@ -51,7 +51,7 @@ class FakeLibrary:
 
 class FakeVehicle:
     def __init__(self, x):
-        self.location = types.SimpleNamespace(x=x, y=0.0)
+        self.location = types.SimpleNamespace(x=x, y=0.0, z=0.0)
         self.velocity = types.SimpleNamespace(x=2.0, y=0.0, z=0.0)
         self.controls = []
 
@@ -173,6 +173,18 @@ class CaptureAttemptTest(unittest.TestCase):
             self.assertTrue(all(control.brake == 1.0 and control.throttle == 0.0
                                 for control in follower.controls))
 
+    def test_hazard_actor_receives_hold_brake_during_capture(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            world = FakeWorld()
+            hazard = FakeVehicle(8)
+            module.acquire_with_world_restore(
+                world,self.carla,FakeVehicle(0),FakeVehicle(-12),
+                FakeLibrary(),(15.,0.),Path(tmp)/'attempt',frames=2,
+                sample=self.sample,sink_factory=MemorySink,hazard=hazard)
+            self.assertEqual(len(hazard.controls),2)
+            self.assertTrue(all(control.brake == 1.0 and control.hand_brake
+                                for control in hazard.controls))
+
     def test_ffv1_sink_encodes_original_bgra_frames(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / 'tiny.mkv'
@@ -215,6 +227,10 @@ class CaptureAttemptTest(unittest.TestCase):
         self.assertEqual(in_lane['ego_velocity_xyz_mps'], [2.0, 0.0, 0.0])
         self.assertEqual(len(in_lane['ego_body_vertices_xyz_m']), 4)
         self.assertTrue(in_lane['following_on_driving_lane'])
+        hazard = Actor(8)
+        hazard_state = module.sample_native(world,carla,ego,follower,hazard)
+        self.assertEqual(hazard_state['hazard_state']['ego_center_gap_m'],8.)
+        self.assertEqual(len(hazard_state['hazard_state']['body_vertices_xyz_m']),4)
         ego.location.y = 3.0
         on_shoulder = module.sample_native(world, carla, ego, follower)
         self.assertFalse(on_shoulder['ego_lane_overlap'])

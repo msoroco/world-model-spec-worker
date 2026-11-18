@@ -88,6 +88,22 @@ class SavedAnalysisTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'receipt differs'):
                 module.review(folder, folder / 'review.json')
 
+    def test_safe_operation_receipt_rejects_missing_original_hazard(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = Path(tmp)
+            self.sources(folder)
+            map_file = folder/'native-map-readback.json'
+            map_file.write_text(json.dumps(dict(
+                format='c179480-original-map-readback-v1',
+                map_name='test-road',case='safe_operation_stop'))+'\n')
+            receipt_file = folder/'source-measurements.json'
+            receipt = json.loads(receipt_file.read_text())
+            receipt['case'] = 'safe_operation_stop'
+            receipt['map_readback_sha256'] = module.sha256(map_file)
+            receipt_file.write_text(json.dumps(receipt)+'\n')
+            with self.assertRaisesRegex(ValueError,'Missing original safe-operation hazard'):
+                module.review(folder,folder/'review.json')
+
 
 if __name__ == '__main__':
     unittest.main()

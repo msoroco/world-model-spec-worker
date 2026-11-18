@@ -74,6 +74,29 @@ class SourceMeasurementTest(unittest.TestCase):
         self.assertTrue(result['complete_stop_observed'])
         self.assertEqual(result['roadway_stop_frames'], [])
 
+    def test_safe_operation_requires_original_hazard_body_and_motion(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = Path(tmp)
+            rows = self.rows()
+            for row in rows:
+                row['hazard_state'] = dict(
+                    source_kind='original_carla_actor_and_map_readback',
+                    body_vertices_xyz_m=[[6.,-1.,0.],[6.,1.,0.],
+                                         [10.,1.,0.],[10.,-1.,0.]],
+                    velocity_xyz_mps=[0.,0.,0.],
+                    position_xyz_m=[8.,0.,0.], speed_mps=0.,
+                    ego_center_gap_m=8., on_driving_lane=True,
+                    road_id=7, lane_id=-1)
+            actor, mapping = self.write_sources(folder, rows)
+            observed = module.analyze_hazard(actor,mapping)
+            self.assertEqual(observed['minimum_ego_center_gap_m'],8.)
+            self.assertEqual(observed['safe_operation_necessity'],
+                             'independent_original_source_review_required')
+            del rows[1]['hazard_state']['body_vertices_xyz_m']
+            actor.write_text(''.join(json.dumps(row)+'\n' for row in rows))
+            with self.assertRaisesRegex(ValueError,'hazard geometry'):
+                module.analyze_hazard(actor,mapping)
+
 
 if __name__ == '__main__':
     unittest.main()

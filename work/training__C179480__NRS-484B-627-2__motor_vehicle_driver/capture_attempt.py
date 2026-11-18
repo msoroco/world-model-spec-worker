@@ -13,7 +13,7 @@ from math import cos, hypot, radians, sin
 from native_controller import StopControl, apply_stop_control, camera_specs, install_cameras
 
 
-def sample_native(world, carla, ego, follower):
+def sample_native(world, carla, ego, follower, hazard=None):
     """Read original actor motion and lane geometry at the current world tick."""
     mapping = world.get_map()
     ego_transform = ego.get_transform()
@@ -44,7 +44,7 @@ def sample_native(world, carla, ego, follower):
         return [velocity.x, velocity.y, velocity.z]
     def speed(velocity):
         return hypot(hypot(velocity.x, velocity.y), velocity.z)
-    return {
+    result = {
         'ego_speed_mps': speed(ego_velocity),
         'ego_velocity_xyz_mps': vector(ego_velocity),
         'ego_body_vertices_xyz_m': [[v.x, v.y, v.z] for v in vertices],
@@ -69,6 +69,29 @@ def sample_native(world, carla, ego, follower):
                                  ego_position.y-follower_position.y),
         'source_kind': 'original_carla_actor_and_map_readback',
     }
+    if hazard is not None:
+        transform = hazard.get_transform()
+        location = transform.location
+        velocity = hazard.get_velocity()
+        vertices = hazard.bounding_box.get_world_vertices(transform)
+        if len(vertices) < 4:
+            raise ValueError('Missing original hazard body footprint')
+        lane = mapping.get_waypoint(location, project_to_road=False,
+                                    lane_type=carla.LaneType.Driving)
+        result['hazard_state'] = {
+            'position_xyz_m': [location.x,location.y,location.z],
+            'yaw_deg': transform.rotation.yaw,
+            'velocity_xyz_mps': vector(velocity),
+            'speed_mps': speed(velocity),
+            'body_vertices_xyz_m': [[v.x,v.y,v.z] for v in vertices],
+            'on_driving_lane': lane is not None,
+            'road_id': lane.road_id if lane else None,
+            'lane_id': lane.lane_id if lane else None,
+            'ego_center_gap_m': hypot(ego_position.x-location.x,
+                                      ego_position.y-location.y),
+            'source_kind': 'original_carla_actor_and_map_readback',
+        }
+    return result
 
 
 class FFV1Sink:
@@ -114,7 +137,8 @@ def _frame_map(path):
 
 def acquire(world, carla, ego, follower, blueprints, stop_xy, attempt,
             *, frames, sample=None, sink_factory=FFV1Sink, timeout_s=10,
-            stop_radius_m=.8, approach_speed_mps=4., follower_brake_gap_m=7.):
+            stop_radius_m=.8, approach_speed_mps=4., follower_brake_gap_m=7.,
+            hazard=None):
     """Drive, tick and retain exact synchronized original actor/video sources.
 
     `sample` must read the current world and return the source fields expected
@@ -139,7 +163,8 @@ def acquire(world, carla, ego, follower, blueprints, stop_xy, attempt,
     controller = StopControl(*stop_xy, stop_radius_m=stop_radius_m,
                              approach_speed_mps=approach_speed_mps)
     if sample is None:
-        sample = lambda world, ego, follower: sample_native(world, carla, ego, follower)
+        sample = lambda world, ego, follower: sample_native(
+            world, carla, ego, follower, hazard)
     try:
         sensors = install_cameras(world, blueprints, carla, ego,
                                   lambda name, image: queues[name].put(image))
@@ -149,6 +174,9 @@ def acquire(world, carla, ego, follower, blueprints, stop_xy, attempt,
         frame_map = _frame_map(attempt / 'video_frames.jsonl')
         rows = (attempt / 'native-actors.jsonl').open('x', encoding='utf-8')
         for index in range(frames):
+            if hazard is not None:
+                hazard.apply_control(carla.VehicleControl(
+                    throttle=0.0, brake=1.0, steer=0.0, hand_brake=True))
             command = apply_stop_control(ego, carla.VehicleControl, controller)
             # A following actor approaches in the same surveyed lane. Its actual
             # response is retained as source data, never assumed from this command.
