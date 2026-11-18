@@ -86,6 +86,39 @@ class NativeRunnerTest(unittest.TestCase):
         self.assertTrue(blocked['target_lane_overlap'])
         self.assertFalse(clear['target_lane_overlap'])
 
+    def test_three_fallbacks_preserve_pair_target_and_isolate_physical_risks(self):
+        road, _, _ = module.validate_survey(self.survey, FakeMap(), self.carla)
+        primary = module.placement(self.survey, road, self.carla, 'reference')
+        observed = []
+        for candidate in ('fallback1', 'fallback2', 'fallback3'):
+            blocked = module.placement(self.survey, road, self.carla,
+                                       'reference', candidate)
+            clear = module.placement(self.survey, road, self.carla,
+                                     'contrast', candidate)
+            self.assertEqual(blocked['stop_xy'], primary['stop_xy'])
+            self.assertEqual(blocked['ego_spawn'].location.x,
+                             clear['ego_spawn'].location.x)
+            self.assertEqual(blocked['following_spawn'].location.x,
+                             clear['following_spawn'].location.x)
+            self.assertEqual(blocked['tuning'], clear['tuning'])
+            self.assertTrue(blocked['target_lane_overlap'])
+            self.assertFalse(clear['target_lane_overlap'])
+            self.assertIsNotNone(blocked['tuning'].risk_trigger)
+            observed.append(blocked['tuning'].risk_trigger['metric'])
+        self.assertEqual(len(set(observed)), 3)
+        self.assertLess(module.placement(self.survey, road, self.carla,
+                        'reference', 'fallback1')['ego_spawn'].location.x,
+                        primary['ego_spawn'].location.x)
+        self.assertLess(module.placement(self.survey, road, self.carla,
+                        'reference', 'fallback2')['tuning'].approach_speed_mps,
+                        primary['tuning'].approach_speed_mps)
+        self.assertLess(module.placement(self.survey, road, self.carla,
+                        'reference', 'fallback3')['following_spawn'].location.x,
+                        primary['following_spawn'].location.x)
+        with self.assertRaisesRegex(ValueError, 'Unknown physical-risk'):
+            module.placement(self.survey, road, self.carla,
+                             'reference', 'fallback4')
+
     def test_live_map_and_shoulder_must_match_survey(self):
         bad = dict(self.survey, map_name='OtherTown')
         with self.assertRaisesRegex(ValueError, 'Live map differs'):
@@ -117,14 +150,17 @@ class NativeRunnerTest(unittest.TestCase):
                     json.dumps(dict(video_frame=1, carla_frame=102, time_s=0.10))+'\n')
                 self.assertEqual(len(world.actors), 2)
                 self.assertEqual(options['frames'], 40)
+                self.assertEqual(options['follower_brake_gap_m'], 12.)
                 return {'source_frames': 40, 'physical_completion_claimed': False}
             module.acquire_with_world_restore = fake_capture
             with tempfile.TemporaryDirectory() as tmp:
                 result = module.run(client, self.carla, self.survey,
-                                    Path(tmp)/'attempt', 'reference')
+                                    Path(tmp)/'attempt', 'reference',
+                                    candidate='fallback3')
                 readback = json.loads((Path(tmp)/'attempt'/result['map_readback']).read_text())
                 measured = json.loads((Path(tmp)/'attempt'/result['measurements']).read_text())
             self.assertEqual(readback['road_id'], 11)
+            self.assertEqual(readback['candidate_id'], 'fallback3')
             self.assertEqual(measured['roadway_stop_frames'], [101, 102])
             self.assertEqual(len(measured['actor_source_sha256']), 64)
             self.assertFalse(readback['physical_completion_claimed'])

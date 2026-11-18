@@ -11,6 +11,7 @@ from math import cos, radians, sin
 from pathlib import Path
 
 from capture_attempt import acquire_with_world_restore
+from candidate_tuning import TUNINGS, tuning
 from source_measurement import analyze
 from stop_construction import RoadProfile, target
 
@@ -51,10 +52,11 @@ def validate_survey(survey, mapping, carla):
     return road, lane, shoulder
 
 
-def placement(survey, road, carla, case):
+def placement(survey, road, carla, case, candidate='primary'):
     if case not in CASES:
         raise ValueError('Only selected primary roadway-stop pair is constructed')
     anchor = survey['anchor']
+    selected = tuning(candidate)
     yaw = radians(anchor['yaw'])
     forward = (cos(yaw), sin(yaw))
     right = (-sin(yaw), cos(yaw))
@@ -66,17 +68,19 @@ def placement(survey, road, carla, case):
         x, y = xy(longitudinal, lateral_offset)
         return carla.Transform(carla.Location(x=x, y=y, z=anchor['z']+0.25),
                                carla.Rotation(yaw=anchor['yaw']))
-    return {'ego_spawn': transform(-25.0, 0.0),
-            'following_spawn': transform(-48.0, 0.0),
+    return {'ego_spawn': transform(selected.ego_spawn_longitudinal_m, 0.0),
+            'following_spawn': transform(selected.follower_spawn_longitudinal_m, 0.0),
             'stop_xy': xy(0.0, lateral),
             'target_lane_overlap': CASES[case],
-            'ego_lateral_stop_m': lateral}
+            'ego_lateral_stop_m': lateral,
+            'candidate_id': candidate,
+            'tuning': selected}
 
 
-def run(client, carla, survey, attempt, case, *, sink_factory=None):
+def run(client, carla, survey, attempt, case, *, candidate='primary', sink_factory=None):
     world = client.get_world()
     road, lane, shoulder = validate_survey(survey, world.get_map(), carla)
-    plan = placement(survey, road, carla, case)
+    plan = placement(survey, road, carla, case, candidate)
     library = world.get_blueprint_library()
     actors = []
     try:
@@ -88,7 +92,10 @@ def run(client, carla, survey, attempt, case, *, sink_factory=None):
             if actor is None:
                 raise ValueError('Surveyed vehicle spawn is occupied: '+blueprint_name)
             actors.append(actor)
-        options = {'frames': survey['frames']}
+        options = {'frames': survey['frames'],
+                   'stop_radius_m': plan['tuning'].stop_radius_m,
+                   'approach_speed_mps': plan['tuning'].approach_speed_mps,
+                   'follower_brake_gap_m': plan['tuning'].follower_brake_gap_m}
         if sink_factory is not None:
             options['sink_factory'] = sink_factory
         receipt = acquire_with_world_restore(
@@ -102,6 +109,8 @@ def run(client, carla, survey, attempt, case, *, sink_factory=None):
             'driving_lane_yaw_deg': lane.transform.rotation.yaw,
             'right_shoulder_width_m': shoulder.lane_width,
             'case': case, 'planned_lane_overlap': plan['target_lane_overlap'],
+            'candidate_id': candidate,
+            'candidate_risk_trigger': plan['tuning'].risk_trigger,
             'ego_lateral_stop_m': plan['ego_lateral_stop_m'],
             'planned_stop_xy_m': plan['stop_xy'],
             'physical_completion_claimed': False,
@@ -130,6 +139,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--survey', required=True)
     parser.add_argument('--case', choices=tuple(CASES), required=True)
+    parser.add_argument('--candidate', choices=tuple(TUNINGS), default='primary')
     parser.add_argument('--attempt', required=True)
     parser.add_argument('--host', default='127.0.0.1')
     parser.add_argument('--port', type=int, default=2000)
@@ -142,7 +152,8 @@ def main():
     survey = json.loads(survey_path.read_text())
     client = carla.Client(args.host, args.port)
     client.set_timeout(20.0)
-    result = run(client, carla, survey, args.attempt, args.case)
+    result = run(client, carla, survey, args.attempt, args.case,
+                 candidate=args.candidate)
     result['survey_sha256'] = hashlib.sha256(survey_path.read_bytes()).hexdigest()
     print(json.dumps(result, sort_keys=True))
 

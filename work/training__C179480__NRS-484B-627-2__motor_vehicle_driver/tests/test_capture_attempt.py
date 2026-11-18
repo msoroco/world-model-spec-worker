@@ -159,6 +159,20 @@ class CaptureAttemptTest(unittest.TestCase):
             self.assertFalse(world.settings.synchronous_mode)
             self.assertTrue(all(sensor.destroyed for sensor in world.sensors))
 
+    def test_follower_gap_fallback_changes_actual_control_request(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            world = FakeWorld()
+            follower = FakeVehicle(-10)
+            module.acquire_with_world_restore(
+                world, self.carla, FakeVehicle(0), follower,
+                FakeLibrary(), (15., 0.), Path(tmp)/'attempt',
+                frames=2, sample=self.sample, sink_factory=MemorySink,
+                follower_brake_gap_m=12., approach_speed_mps=2.5,
+                stop_radius_m=1.25)
+            self.assertEqual(len(follower.controls), 2)
+            self.assertTrue(all(control.brake == 1.0 and control.throttle == 0.0
+                                for control in follower.controls))
+
     def test_ffv1_sink_encodes_original_bgra_frames(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / 'tiny.mkv'

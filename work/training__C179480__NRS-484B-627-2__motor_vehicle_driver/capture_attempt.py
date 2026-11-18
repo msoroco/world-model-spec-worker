@@ -113,7 +113,8 @@ def _frame_map(path):
 
 
 def acquire(world, carla, ego, follower, blueprints, stop_xy, attempt,
-            *, frames, sample=None, sink_factory=FFV1Sink, timeout_s=10):
+            *, frames, sample=None, sink_factory=FFV1Sink, timeout_s=10,
+            stop_radius_m=.8, approach_speed_mps=4., follower_brake_gap_m=7.):
     """Drive, tick and retain exact synchronized original actor/video sources.
 
     `sample` must read the current world and return the source fields expected
@@ -133,7 +134,10 @@ def acquire(world, carla, ego, follower, blueprints, stop_xy, attempt,
     frame_map = None
     rows = None
     prior_frame = -1
-    controller = StopControl(*stop_xy)
+    if min(stop_radius_m, approach_speed_mps, follower_brake_gap_m) <= 0:
+        raise ValueError('Candidate control settings must be positive')
+    controller = StopControl(*stop_xy, stop_radius_m=stop_radius_m,
+                             approach_speed_mps=approach_speed_mps)
     if sample is None:
         sample = lambda world, ego, follower: sample_native(world, carla, ego, follower)
     try:
@@ -152,8 +156,9 @@ def acquire(world, carla, ego, follower, blueprints, stop_xy, attempt,
             other_xy = follower.get_transform().location
             gap = ((ego_xy.x-other_xy.x)**2 + (ego_xy.y-other_xy.y)**2)**0.5
             follower.apply_control(carla.VehicleControl(
-                throttle=0.0 if gap < 7.0 else 0.32,
-                brake=1.0 if gap < 7.0 else 0.0, steer=0.0))
+                throttle=0.0 if gap < follower_brake_gap_m else 0.32,
+                brake=1.0 if gap < follower_brake_gap_m else 0.0,
+                steer=0.0))
             native_frame = world.tick()
             if type(native_frame) is not int or native_frame <= prior_frame:
                 raise ValueError('Native world frame did not advance')
