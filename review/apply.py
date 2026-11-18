@@ -7,6 +7,7 @@ import hashlib
 import json
 import shutil
 import subprocess
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -39,6 +40,8 @@ def main():
     branch = subprocess.check_output(['git', 'branch', '--show-current'], cwd=ROOT, text=True).strip()
     if branch != batch['return_branch'] or batch['batch_id'] != config['batch_id']:
         raise SystemExit('Apply only on the stopped delivery branch for this batch')
+    subprocess.run([sys.executable, str(REVIEW / 'quarantine-stale-generated.py')],
+                   cwd=ROOT, check=True)
     if subprocess.check_output(['git', 'status', '--porcelain'], cwd=ROOT, text=True).strip():
         raise SystemExit('Commit reviewed changes and worker checkpoints before cutover')
     current = ROOT / batch['runtime']['root']
