@@ -315,9 +315,92 @@
       "construction_sha256": "49bbafdb524dd75925284be91378e33f4176dace744dfd8636cf8e641d31d9f5",
       "candidate_risk": {
         "status": "physical",
-        "reason": "The separate through-lane head must remain visible without governing the signed ego approach; Native geometry and original-camera review are pending."
+        "reason": "Original Native frames must establish visible but non-governing head, complete body entry and governing lane/head distinction."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "signal-visible-fallback1-construction.json",
+          "construction_sha256": "d4a475de21c9803993678755301a4d8be0de61aa1c07e5f6488819fae65dd1c9",
+          "trigger": {
+            "source": "original approach and driver-reference camera frames",
+            "metric": "visible but non-governing head visibility at ego entry",
+            "failure_condition": "The visible but non-governing head is absent or occluded in either original forward view."
+          },
+          "changed_knobs": [
+            "raise and yaw the two ego-mounted head views"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_visible_not_governing --candidate fallback1 --output .runtime-work/c158196-remaining-fallback-proofs-v1/signal-visible-fallback1-offline",
+            "construction_sha256": "d4a475de21c9803993678755301a4d8be0de61aa1c07e5f6488819fae65dd1c9",
+            "exit_code": 0,
+            "log": "signal-visible-fallback1-offline-command.log",
+            "log_sha256": "922620a8a7b104bf80677e4bc28ff3571d55cd9b75b324d4ac0cacaa8af7ff46"
+          },
+          "compatibility": {
+            "receipt": "signal-visible-fallback1-compatibility.json",
+            "sha256": "62006f698ce7dc8f3a071dba94be033f13bc261176a2a7ee74ea5408d673976e",
+            "log": "signal-visible-fallback1-compatibility-analysis.log",
+            "negative_log": "signal-visible-fallback1-negative-analysis.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "signal-visible-fallback2-construction.json",
+          "construction_sha256": "c6344b336bce64f9b954e2757e94b27b8b093c05db3bd038ea7e159802c4ce44",
+          "trigger": {
+            "source": "original Native ego lane/entry history and overview frames",
+            "metric": "ego approach lane continuity and sampled entry frame",
+            "failure_condition": "Ego leaves the intended lane or enters before stable affected-lane readback."
+          },
+          "changed_knobs": [
+            "move ego spawn within the same authored lane",
+            "reduce commanded approach throttle",
+            "raise overview to retain entrance context"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_visible_not_governing --candidate fallback2 --output .runtime-work/c158196-remaining-fallback-proofs-v1/signal-visible-fallback2-offline",
+            "construction_sha256": "c6344b336bce64f9b954e2757e94b27b8b093c05db3bd038ea7e159802c4ce44",
+            "exit_code": 0,
+            "log": "signal-visible-fallback2-offline-command.log",
+            "log_sha256": "c41f583f5282caa14fb48d315cb4430f4beb79d9c7034713c8807fe8f2bfd66c"
+          },
+          "compatibility": {
+            "receipt": "signal-visible-fallback2-compatibility.json",
+            "sha256": "555bba6eafdadabca4dfd645f478599c2cdca315062a97bfc94ac5b475320c12",
+            "log": "signal-visible-fallback2-compatibility-analysis.log",
+            "negative_log": "signal-visible-fallback2-negative-analysis.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "signal-visible-fallback3-construction.json",
+          "construction_sha256": "64386fd6415bf62e9c3d17e59bd37ae98a78f01b41ee716becaef1a9d03fcbf1",
+          "trigger": {
+            "source": "original control history and signed-entrance camera frames",
+            "metric": "governing lane/head distinction stability through complete ego entry",
+            "failure_condition": "The governing lane/head distinction changes before the complete ego body enters the intersection."
+          },
+          "changed_knobs": [
+            "shorten ego approach distance",
+            "increase commanded ego throttle",
+            "shift fixed corner view to retain sign and head"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_visible_not_governing --candidate fallback3 --output .runtime-work/c158196-remaining-fallback-proofs-v1/signal-visible-fallback3-offline",
+            "construction_sha256": "64386fd6415bf62e9c3d17e59bd37ae98a78f01b41ee716becaef1a9d03fcbf1",
+            "exit_code": 0,
+            "log": "signal-visible-fallback3-offline-command.log",
+            "log_sha256": "149ed3ecb407cc187786a7d22338a80c36da99de6b36fd57ec54d22c15c54abd"
+          },
+          "compatibility": {
+            "receipt": "signal-visible-fallback3-compatibility.json",
+            "sha256": "ae9d386a8fda98dcc06908868110b42a4368d26d72447ee8164639f519cb8ce3",
+            "log": "signal-visible-fallback3-compatibility-analysis.log",
+            "negative_log": "signal-visible-fallback3-negative-analysis.log"
+          }
+        }
+      ],
       "measurement_contract": "signal-visible-measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "signal_exception_measurements.py"
@@ -382,9 +465,92 @@
       "construction_sha256": "e81ee01b273cb8d0303bff4d839088b16b270902882f7958b0faec17ac37044b",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Nearest-view line, sign visibility and through-vehicle motion must be checked in Native original sources."
+        "reason": "Original Native frames must establish yield sign and crossing, complete body entry and yield control without operative signal."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "yield-fallback1-construction.json",
+          "construction_sha256": "93280748e46654ae9e0a1162125bdbdf62366f869d271643f230adea8fd39d50",
+          "trigger": {
+            "source": "original approach and driver-reference camera frames",
+            "metric": "yield sign and crossing visibility at ego entry",
+            "failure_condition": "The yield sign and crossing is absent or occluded in either original forward view."
+          },
+          "changed_knobs": [
+            "raise and yaw the two ego-mounted head views"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__yield_without_signal_control --candidate fallback1 --output .runtime-work/c158196-remaining-fallback-proofs-v1/yield-fallback1-offline",
+            "construction_sha256": "93280748e46654ae9e0a1162125bdbdf62366f869d271643f230adea8fd39d50",
+            "exit_code": 0,
+            "log": "yield-fallback1-offline-command.log",
+            "log_sha256": "535510fdd69d831bf88c1ef3636808dad240a43751e7f36db3d51c1a6435d687"
+          },
+          "compatibility": {
+            "receipt": "yield-fallback1-compatibility.json",
+            "sha256": "e5c5e9d63f4d20eb9969aedf5ee44eb14582e6e7c2378e86accf0b51bc297520",
+            "log": "yield-fallback1-compatibility-analysis.log",
+            "negative_log": "yield-fallback1-negative-analysis.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "yield-fallback2-construction.json",
+          "construction_sha256": "46b41492725493e29f0614682da0256ea0e94ecb445cbfc1783e5c0117b6a09f",
+          "trigger": {
+            "source": "original Native ego lane/entry history and overview frames",
+            "metric": "ego approach lane continuity and sampled entry frame",
+            "failure_condition": "Ego leaves the intended lane or enters before stable affected-lane readback."
+          },
+          "changed_knobs": [
+            "move ego spawn within the same authored lane",
+            "reduce commanded approach throttle",
+            "raise overview to retain entrance context"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__yield_without_signal_control --candidate fallback2 --output .runtime-work/c158196-remaining-fallback-proofs-v1/yield-fallback2-offline",
+            "construction_sha256": "46b41492725493e29f0614682da0256ea0e94ecb445cbfc1783e5c0117b6a09f",
+            "exit_code": 0,
+            "log": "yield-fallback2-offline-command.log",
+            "log_sha256": "bcca345ce313fc0f179f78a53792c12133c5eba69e77abca9c4efca22dd8e9d6"
+          },
+          "compatibility": {
+            "receipt": "yield-fallback2-compatibility.json",
+            "sha256": "9f374b24d5638d78667434c3406c715416ecacdb773d8a2224a7bea33849219d",
+            "log": "yield-fallback2-compatibility-analysis.log",
+            "negative_log": "yield-fallback2-negative-analysis.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "yield-fallback3-construction.json",
+          "construction_sha256": "700b8844c7c5603ddd8a75b7087f812d99a9cc70d3c0da0f18bd4c8b4faa8454",
+          "trigger": {
+            "source": "original control history and signed-entrance camera frames",
+            "metric": "yield control without operative signal stability through complete ego entry",
+            "failure_condition": "The yield control without operative signal changes before the complete ego body enters the intersection."
+          },
+          "changed_knobs": [
+            "shorten ego approach distance",
+            "increase commanded ego throttle",
+            "shift fixed corner view to retain sign and head"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__yield_without_signal_control --candidate fallback3 --output .runtime-work/c158196-remaining-fallback-proofs-v1/yield-fallback3-offline",
+            "construction_sha256": "700b8844c7c5603ddd8a75b7087f812d99a9cc70d3c0da0f18bd4c8b4faa8454",
+            "exit_code": 0,
+            "log": "yield-fallback3-offline-command.log",
+            "log_sha256": "849f9b9b0cc822b5d8cf7e7c42a62c60f88963be6d146679499776ac233b4129"
+          },
+          "compatibility": {
+            "receipt": "yield-fallback3-compatibility.json",
+            "sha256": "5e6b17258da509894ac1bf868fb0b1c1beada18aed9f49b72861290c7b3c2ce2",
+            "log": "yield-fallback3-compatibility-analysis.log",
+            "negative_log": "yield-fallback3-negative-analysis.log"
+          }
+        }
+      ],
       "measurement_contract": "yield-measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "signal_exception_measurements.py"
