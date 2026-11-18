@@ -359,6 +359,13 @@ class SignalTests(unittest.TestCase):
             self.assertEqual(row["through"]["actor_id"],2)
             self.assertTrue(row["through_sight"]["clear"])
             self.assertEqual(row["through_sight"]["target_m"],[10.0,0.0,1.2])
+            self.assertEqual(measure.measure_through_sight(row),1)
+            row["through_sight"]["clear"]=False
+            with self.assertRaisesRegex(ValueError,"clear flag differs"):
+                measure.measure_through_sight(row)
+            del row["through_sight"]
+            with self.assertRaisesRegex(ValueError,"Missing original through-highway sight ray"):
+                measure.measure_through_sight(row)
 
     def test_four_original_camera_streams_encode_losslessly(self):
         with tempfile.TemporaryDirectory() as tmp:

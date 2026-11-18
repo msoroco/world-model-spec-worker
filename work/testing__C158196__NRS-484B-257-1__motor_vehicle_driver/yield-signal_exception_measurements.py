@@ -310,6 +310,36 @@ def validate_source_camera_review(attempt, frames, case_id):
     return review
 
 
+def measure_through_sight(row):
+    """Validate a same-frame Native collision ray; do not infer human view."""
+    ray = row.get("through_sight")
+    if not isinstance(ray, dict) or ray.get("method") != "native_collision_ray_to_through_actor_center" or ray.get("sampled_only") is not True:
+        raise ValueError("Missing original through-highway sight ray")
+    def point(value, label):
+        if not isinstance(value, list) or len(value) != 3:
+            raise ValueError("Missing " + label)
+        return [_number(v, label) for v in value]
+    observer = point(ray.get("observer_m"), "sight observer")
+    target = point(ray.get("target_m"), "sight target")
+    ego = MultiPoint([(_number(v[0], "ego body x"), _number(v[1], "ego body y"))
+                      for v in row["ego"]["body_vertices_m"]]).convex_hull
+    through = MultiPoint([(_number(v[0], "through body x"), _number(v[1], "through body y"))
+                          for v in row["through"]["body_vertices_m"]]).convex_hull
+    if not ego.buffer(.05).covers(MultiPoint([observer[:2]])) or not through.buffer(.05).covers(MultiPoint([target[:2]])):
+        raise ValueError("Sight ray endpoints differ from original actor bodies")
+    blockers = ray.get("blockers")
+    if not isinstance(blockers, list):
+        raise ValueError("Missing original sight-ray blockers")
+    for item in blockers:
+        if not isinstance(item, dict) or not isinstance(item.get("label"), str) or not item["label"]:
+            raise ValueError("Invalid sight-ray blocker")
+        point(item.get("location_m"), "sight blocker")
+    clear = ray.get("clear")
+    if type(clear) is not bool or clear is not (len(blockers) == 0):
+        raise ValueError("Sight-ray clear flag differs from blockers")
+    return int(clear)
+
+
 def finalize(attempt, output):
     """Derive primary signal-exception observations from retained originals."""
     attempt, output = Path(attempt), Path(output)
@@ -363,6 +393,7 @@ def finalize(attempt, output):
                                          sample["signal_state"] != "Off") for sample in report["samples"]],
         "signal_state": [sample["signal_state"] for sample in report["samples"]],
         "ego_crossing_body": [row["ego"] for row in interaction],
+        "through_highway_sight_clear": [measure_through_sight(row) for row in interaction],
     }.items():
         with (channels/(name+".jsonl")).open("x") as stream:
             for frame, value in zip(frames, values):
@@ -428,7 +459,8 @@ def finalize(attempt, output):
                                       "reference":"channels/"+name+".jsonl"}
                                      for name,unit in (("operative_signal_control","count"),
                                                        ("signal_state","text"),
-                                                       ("ego_crossing_body","structured record"))]
+                                                       ("ego_crossing_body","structured record"),
+                                                       ("through_highway_sight_clear","count"))]
                                    + [{"name":name,"unit":"structured record",
                                        "reference":"recording-context.json"}
                                       for name in ("signal_governance_review","yield_site_review")],
