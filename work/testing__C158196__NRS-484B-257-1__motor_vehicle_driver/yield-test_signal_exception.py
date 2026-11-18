@@ -319,6 +319,53 @@ class SignalTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError,"Four original camera frame joins"):
                 measure.analyze(root)
 
+    def test_source_writer_retains_same_frame_through_sight_and_speed(self):
+        class Point:
+            def __init__(self, x=0, y=0, z=0):
+                self.x, self.y, self.z = x, y, z
+            def distance(self, other):
+                return ((self.x-other.x)**2+(self.y-other.y)**2+(self.z-other.z)**2)**.5
+        class Transform:
+            def __init__(self, x): self.location = Point(x)
+            def transform(self, local):
+                return Point(self.location.x+local.x, local.y, local.z)
+        class Box:
+            def get_world_vertices(self, transform):
+                return [Point(transform.location.x+dx,dy,dz)
+                        for dx in (-1,1) for dy in (-1,1) for dz in (-1,1)]
+            def contains(self, point, transform): return False
+        def actor(identity, x, speed):
+            return NS(id=identity, bounding_box=Box(),
+                      get_transform=lambda:Transform(x),
+                      get_velocity=lambda:Point(speed))
+        with tempfile.TemporaryDirectory() as tmp:
+            ctx={"native_map_id":"TownX","intersection_id":44,"ego_road_id":7,
+                 "ego_lane_id":-1,"through_road_id":9,"through_lane_id":-1,
+                 "native_signal_id":25,"ego_route_lanes":[[7,-1]],
+                 "through_route_lanes":[[9,-1]],
+                 "affected_lane_source":"Native affected waypoints",
+                 "signal_head_video_source":"approach.mkv",
+                 "signed_entrance_source":"reference_corner.mkv",
+                 "junction_source":"Native junction polygon",
+                 "intersection_polygon_xy_m":[[10,-5],[20,-5],[20,5],[10,5]]}
+            writer=control.SignalSourceWriter(tmp,ctx)
+            blocked=[]
+            world=NS(get_snapshot=lambda:NS(frame=100,timestamp=NS(elapsed_seconds=1.0)),
+                     get_map=lambda:NS(name="TownX",get_waypoint=lambda point,project_to_road:
+                         NS(road_id=7 if point.x<5 else 9,lane_id=-1)),
+                     cast_ray=lambda eye,target:blocked)
+            light=NS(id=25,get_state=lambda:"Green",
+                     get_affected_lane_waypoints=lambda:[NS(road_id=7,lane_id=-1)])
+            packets={name:NS(frame=100,timestamp=1.0,raw_data=b"rgba",width=1,height=1)
+                     for name in control.CAMERAS}
+            writer.add_tick(world,actor(1,0,2),light,packets,True,
+                            through=actor(2,10,4))
+            row=json.loads((Path(tmp)/"interaction_history.jsonl").read_text())
+            self.assertEqual(row["through"]["speed_mps"],4.0)
+            self.assertEqual(row["through"]["actor_id"],2)
+            self.assertTrue(row["through_sight"]["clear"])
+            self.assertEqual(row["through_sight"]["target_m"],[10.0,0.0,1.2])
+
     def test_four_original_camera_streams_encode_losslessly(self):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp)
@@ -378,17 +425,31 @@ class SignalTests(unittest.TestCase):
                                        raw_data=bytes([clock["frame"]%255,0,0,255]),
                                        width=1,height=1))
                 return clock["frame"]
+            class SightPoint:
+                def __init__(self,x=0.0,y=0.0,z=0.0,road_id=None):
+                    self.x,self.y,self.z,self.road_id=x,y,z,road_id
+                def distance(self,other):
+                    return ((self.x-other.x)**2+(self.y-other.y)**2+(self.z-other.z)**2)**.5
+            class SightTransform:
+                def __init__(self,x,road_id):
+                    self.location=SightPoint(x,road_id=road_id)
+                def transform(self,local):
+                    return SightPoint(self.location.x+local.x,local.y,local.z)
             world=NS(spawn_actor=spawn,tick=tick,get_snapshot=lambda:NS(
                 frame=clock["frame"],timestamp=NS(elapsed_seconds=clock["frame"]*.05)),
                 get_map=lambda:NS(name="TownX",get_waypoint=lambda location,project_to_road:
-                                  NS(road_id=location.road_id,lane_id=-1)))
-            ego=NS(get_transform=lambda:NS(location=NS(x=clock["x"],
-                                           road_id=8 if clock["x"]>=10 else 7)),
+                                  NS(road_id=location.road_id,lane_id=-1)),
+                cast_ray=lambda eye,target:[])
+            ego=NS(id=1,get_transform=lambda:SightTransform(clock["x"],
+                                           8 if clock["x"]>=10 else 7),
                    get_velocity=lambda:NS(x=2.0,y=0.0,z=0.0),
-                   bounding_box=NS(get_world_vertices=lambda transform:[NS(x=clock["x"]+dx,y=y,z=0.0)
+                   bounding_box=NS(contains=lambda point,transform:False,
+                   get_world_vertices=lambda transform:[NS(x=clock["x"]+dx,y=y,z=0.0)
                    for dx,y in ((-1,-1),(-1,1),(1,1),(1,-1))]))
-            through=NS(get_transform=lambda:NS(location=NS(x=15.0,road_id=9)),
-                       bounding_box=NS(get_world_vertices=lambda transform:[
+            through=NS(id=2,get_transform=lambda:SightTransform(15.0,9),
+                       get_velocity=lambda:NS(x=1.0,y=0.0,z=0.0),
+                       bounding_box=NS(contains=lambda point,transform:False,
+                       get_world_vertices=lambda transform:[
                            NS(x=15.0+dx,y=y,z=0.0)
                            for dx,y in ((-1,-1),(-1,1),(1,1),(1,-1))]))
             light=NS(id=25,get_state=lambda:"Green",get_affected_lane_waypoints=lambda:[

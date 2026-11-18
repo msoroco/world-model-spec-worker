@@ -302,12 +302,39 @@ class SignalSourceWriter:
                     raise ValueError("Incomplete original actor body")
                 return [[_finite(p.x, "body x"), _finite(p.y, "body y"),
                          _finite(p.z, "body z")] for p in points]
+            through_velocity = through.get_velocity()
+            through_speed = math.sqrt(sum(_finite(getattr(through_velocity, axis),
+                                                  "through velocity")**2
+                                          for axis in ("x", "y", "z")))
+            location = type(transform.location)
+            eye = transform.transform(location(x=0.0, y=0.0, z=1.5))
+            target = through_transform.transform(location(x=0.0, y=0.0, z=1.2))
+            def xyz(point):
+                return [_finite(getattr(point, axis), "sight point")
+                        for axis in ("x", "y", "z")]
+            blockers = []
+            for hit in world.cast_ray(eye, target):
+                if (ego.bounding_box.contains(hit.location, transform) or
+                        through.bounding_box.contains(hit.location, through_transform) or
+                        hit.location.distance(eye) < .05 or
+                        hit.location.distance(target) < .02):
+                    continue
+                blockers.append({"label": str(hit.label), "location_m": xyz(hit.location)})
             interaction = {"frame": frame, "time_s": time_s,
                            "ego": {"body_vertices_m": vertices3(ego, transform),
                                    "road_id": waypoint.road_id, "lane_id": waypoint.lane_id},
                            "through": {"body_vertices_m": vertices3(through, through_transform),
+                                       "actor_id": through.id,
+                                       "position_m": xyz(through_transform.location),
+                                       "speed_mps": through_speed,
                                        "road_id": through_waypoint.road_id,
-                                       "lane_id": through_waypoint.lane_id}}
+                                       "lane_id": through_waypoint.lane_id},
+                           "through_sight": {"observer_m": xyz(eye),
+                                             "target_m": xyz(target),
+                                             "method": "native_collision_ray_to_through_actor_center",
+                                             "blockers": blockers,
+                                             "clear": not blockers,
+                                             "sampled_only": True}}
         if world.get_snapshot().frame != frame:
             raise ValueError("World advanced during source observation")
         row = {"frame": frame, "time_s": time_s, "native_signal_id": light.id,
