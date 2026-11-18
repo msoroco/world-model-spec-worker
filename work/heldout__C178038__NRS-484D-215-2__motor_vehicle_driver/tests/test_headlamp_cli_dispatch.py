@@ -13,6 +13,7 @@ class NativeDispatchTests(unittest.TestCase):
     def test_executor_output_dir_dispatches_native_run_without_extra_flag(self):
         with tempfile.TemporaryDirectory() as directory:
             config = json.loads((Path(__file__).resolve().parents[1] / 'probe-config.json').read_text())
+            config['requested_uppermost_distribution'] = True
             source = Path(directory) / 'config.json'
             source.write_text(json.dumps(config))
             with patch.object(probe, 'run') as execute, patch.object(sys, 'argv', [

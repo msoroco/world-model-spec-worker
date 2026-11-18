@@ -70,3 +70,5 @@ Final offline aggregation rebound the execution manifest SHA-256 to `06571c35765
 ## 2026-11-18 pristine saved reproof correction
 
 Earlier saved-processing receipts with `missing_evidence=true` are superseded. All 16 candidates were rematerialized from current constructions and untouched diagnostic fixture sources, then processed into fresh saved outputs. `saved-proofs.json` records `missing_evidence=false`, preserved original hashes and passed final video checks for all 16.
+
+2026-11-18 file-budget preservation: three unreferenced historical adapter logs were archived byte-exact with SHA-256 in `work/_shared/historical-receipts-bundle-20261118.json`; scoped strict verification was rerun after removal.
