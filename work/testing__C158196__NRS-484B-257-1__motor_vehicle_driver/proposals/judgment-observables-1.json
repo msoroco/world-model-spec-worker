@@ -1,0 +1,45 @@
+{
+  "template_id": "NRS-484B-257-1@motor_vehicle_driver",
+  "phrase": "traffic is being controlled by a police officer or a traffic-control signal",
+  "note": "Official signal status, affected ego lane, operative phase and original-camera visibility must be joined at entry; a visible non-governing head or Off head does not alone establish control.",
+  "status": "draft",
+  "observable_requirements": {
+    "observables": [
+      {
+        "name": "operative_signal_controls_ego_at_entry",
+        "unit": "boolean or unknown",
+        "description": "original affected-lane and operative signal-state join at first complete ego body entry"
+      },
+      {
+        "name": "signal_state_at_entry",
+        "unit": "Native state",
+        "description": "original selected-head state through the complete-body entry interval"
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "signal_governance_review",
+        "unit": "structured record",
+        "description": "source-hashed head identity, affected lanes, original four-view camera and sign inventory"
+      }
+    ],
+    "sweep_dimensions": [
+      {
+        "name": "ego_lane_head_governance",
+        "unit": "categorical",
+        "description": "governing, Off, visible non-governing, or no ego-governing signal"
+      }
+    ],
+    "landmarks": [],
+    "recording_needs": [
+      {
+        "name": "signal_governance_review",
+        "unit": "structured record",
+        "description": "original Native phase, lane, body-entry and camera source review with hashes"
+      }
+    ],
+    "limitations": [
+      "CPU diagnostics do not establish official control, operative Native phase or physical head visibility."
+    ]
+  }
+}

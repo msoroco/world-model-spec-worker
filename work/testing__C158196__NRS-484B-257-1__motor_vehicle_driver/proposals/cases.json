@@ -1,16 +1,74 @@
 {
   "cell_id": "C158196",
   "actor": "motor_vehicle_driver",
-  "status": "partial",
+  "status": "draft",
   "cases": [
+    {
+      "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__semantic_reference_only",
+      "target_law_id": "NRS-484B-257-1",
+      "target_type": "baseline",
+      "rationale": "Abstract semantic reference for stage validation; no additional capture or physical observation is proposed.",
+      "variable_assignments": {
+        "operative_signal_controls_ego_at_entry": {
+          "kind": "world_setup",
+          "value": null,
+          "unit": "boolean"
+        },
+        "signal_state_at_entry": {
+          "kind": "world_setup",
+          "value": null,
+          "unit": "Native signal state"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "operative_signal_control",
+            "unit": "count",
+            "method": "Original affected-lane and operative-state join per frame",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native map and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "official control and physical head visibility require source review"
+          },
+          {
+            "name": "signal_state",
+            "unit": "text",
+            "method": "Original Native signal-state readback per frame",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native map and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical indication requires original-camera review"
+          },
+          {
+            "name": "ego_crossing_body",
+            "unit": "structured record",
+            "method": "Original ego complete-body vertices per frame",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native map and original camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical geometry requires Native acquisition"
+          }
+        ],
+        "limitations": [
+          "authored OpenDRIVE and CPU fixtures do not establish official control, proper sign erection, real actor motion or video coverage"
+        ],
+        "context_inputs": []
+      },
+      "unresolved_judgment_calls": [
+        "official traffic-control signal status",
+        "physical governance of ego approach",
+        "original head visibility"
+      ]
+    },
     {
       "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_controls_ego",
       "target_law_id": "NRS-484B-257-1",
       "target_type": "boundary_probe",
-      "rationale": "Diagnostic operative-signal exception at source-bound ego entry; physical and legal status unresolved",
+      "rationale": "Planned diagnostic operative-signal exception at source-bound ego entry; physical and legal status unresolved",
       "variable_assignments": {
         "operative_signal_controls_ego_at_entry": {
-          "kind": "subject_behavior",
+          "kind": "world_setup",
           "value": true,
           "unit": "boolean"
         },
@@ -59,16 +117,25 @@
         "official traffic-control signal status",
         "physical governance of ego approach",
         "original head visibility"
-      ]
+      ],
+      "paired_probe_id": "signal_exception_control",
+      "deliberate_differences": [
+        "planned ego-lane signal governance versus non-governance"
+      ],
+      "probe": {
+        "primary_variable": "operative_signal_controls_ego_at_entry",
+        "comparison_or_standard": "NRS 484B.257(1) exception, subject to original Native and camera review",
+        "target_value_or_branch": "signal_controls_ego"
+      }
     },
     {
       "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_off",
       "target_law_id": "NRS-484B-257-1",
       "target_type": "boundary_probe",
-      "rationale": "Diagnostic off-signal exception at source-bound ego entry; physical and legal status unresolved",
+      "rationale": "Planned diagnostic off-signal exception at source-bound ego entry; physical and legal status unresolved",
       "variable_assignments": {
         "operative_signal_controls_ego_at_entry": {
-          "kind": "subject_behavior",
+          "kind": "world_setup",
           "value": false,
           "unit": "boolean"
         },
@@ -117,7 +184,16 @@
         "official traffic-control signal status",
         "physical governance of ego approach",
         "original head visibility"
-      ]
+      ],
+      "paired_probe_id": "signal_exception_state",
+      "deliberate_differences": [
+        "planned operative phase versus Off"
+      ],
+      "probe": {
+        "primary_variable": "signal_state_at_entry",
+        "comparison_or_standard": "NRS 484B.257(1) exception, subject to original Native and camera review",
+        "target_value_or_branch": "signal_off"
+      }
     },
     {
       "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_visible_not_governing",
@@ -126,7 +202,7 @@
       "rationale": "Visible through-approach head does not govern signed ego approach in diagnostic source readback; physical and legal status unresolved",
       "variable_assignments": {
         "operative_signal_controls_ego_at_entry": {
-          "kind": "subject_behavior",
+          "kind": "world_setup",
           "value": false,
           "unit": "boolean"
         },
@@ -175,16 +251,25 @@
         "official traffic-control signal status",
         "physical governance of ego approach",
         "original head visibility"
-      ]
+      ],
+      "paired_probe_id": "signal_exception_control",
+      "deliberate_differences": [
+        "planned ego-lane signal governance versus non-governance"
+      ],
+      "probe": {
+        "primary_variable": "operative_signal_controls_ego_at_entry",
+        "comparison_or_standard": "NRS 484B.257(1) exception, subject to original Native and camera review",
+        "target_value_or_branch": "signal_visible_not_governing"
+      }
     },
     {
       "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__yield_without_signal_control",
       "target_law_id": "NRS-484B-257-1",
       "target_type": "boundary_probe",
-      "rationale": "Diagnostic signed yield entrance with source-bound nearest-view reference and no ego-governing signal; hazard and right-of-way judgments unresolved",
+      "rationale": "Planned diagnostic signed yield entrance with source-bound nearest-view reference and no ego-governing signal; hazard and right-of-way judgments unresolved",
       "variable_assignments": {
         "operative_signal_controls_ego_at_entry": {
-          "kind": "subject_behavior",
+          "kind": "world_setup",
           "value": false,
           "unit": "boolean"
         },
@@ -233,9 +318,99 @@
         "physical sign propriety and line/crosswalk absence",
         "immediate hazard",
         "right of way and yielding throughout traversal"
+      ],
+      "paired_probe_id": "signal_exception_control",
+      "deliberate_differences": [
+        "planned ego-lane signal governance versus non-governance"
+      ],
+      "probe": {
+        "primary_variable": "operative_signal_controls_ego_at_entry",
+        "comparison_or_standard": "NRS 484B.257(1) exception, subject to original Native and camera review",
+        "target_value_or_branch": "yield_without_signal_control"
+      }
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "c158196-judgment-1",
+      "target_law_id": "NRS-484B-257-1",
+      "judgment_refs": [
+        {
+          "phrase": "traffic is being controlled by a police officer or a traffic-control signal",
+          "note": "Official signal status, affected ego lane, operative phase and original-camera visibility must be joined at entry; a visible non-governing head or Off head does not alone establish control."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "The exact law requires original Native and camera evidence; selected diagnostic cases do not resolve this qualitative judgment.",
+      "missing_inputs": [
+        "Author and prove source-bound case measurements and independent pixel/Native review for traffic is being controlled by a police officer or a traffic-control signal.",
+        "Keep legal interpretation separate from engineering thresholds and CPU fixtures."
+      ]
+    },
+    {
+      "sweep_id": "c158196-judgment-2",
+      "target_law_id": "NRS-484B-257-1",
+      "judgment_refs": [
+        {
+          "phrase": "proper signs",
+          "note": "Sign face, placement and governance require original Native and pixel evidence."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "The exact law requires original Native and camera evidence; selected diagnostic cases do not resolve this qualitative judgment.",
+      "missing_inputs": [
+        "Author and prove source-bound case measurements and independent pixel/Native review for proper signs.",
+        "Keep legal interpretation separate from engineering thresholds and CPU fixtures."
+      ]
+    },
+    {
+      "sweep_id": "c158196-judgment-3",
+      "target_law_id": "NRS-484B-257-1",
+      "judgment_refs": [
+        {
+          "phrase": "point nearest the intersection where the driver has a view of approaching traffic on the through highway",
+          "note": "Sampled collision rays do not establish the nearest legally sufficient human view."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "The exact law requires original Native and camera evidence; selected diagnostic cases do not resolve this qualitative judgment.",
+      "missing_inputs": [
+        "Author and prove source-bound case measurements and independent pixel/Native review for point nearest the intersection where the driver has a view of approaching traffic on the through highway.",
+        "Keep legal interpretation separate from engineering thresholds and CPU fixtures."
+      ]
+    },
+    {
+      "sweep_id": "c158196-judgment-4",
+      "target_law_id": "NRS-484B-257-1",
+      "judgment_refs": [
+        {
+          "phrase": "immediate hazard",
+          "note": "The statute supplies no numerical hazard cutoff."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "The exact law requires original Native and camera evidence; selected diagnostic cases do not resolve this qualitative judgment.",
+      "missing_inputs": [
+        "Author and prove source-bound case measurements and independent pixel/Native review for immediate hazard.",
+        "Keep legal interpretation separate from engineering thresholds and CPU fixtures."
+      ]
+    },
+    {
+      "sweep_id": "c158196-judgment-5",
+      "target_law_id": "NRS-484B-257-1",
+      "judgment_refs": [
+        {
+          "phrase": "yield the right-of-way",
+          "note": "Body and speed histories alone do not decide legal priority."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "The exact law requires original Native and camera evidence; selected diagnostic cases do not resolve this qualitative judgment.",
+      "missing_inputs": [
+        "Author and prove source-bound case measurements and independent pixel/Native review for yield the right-of-way.",
+        "Keep legal interpretation separate from engineering thresholds and CPU fixtures."
       ]
     }
   ],
-  "sweep_specs": [],
   "sweeps_expanded": true
 }

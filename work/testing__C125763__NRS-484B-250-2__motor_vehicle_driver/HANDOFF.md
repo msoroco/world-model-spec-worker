@@ -218,7 +218,7 @@ The exact primary compatibility command passed in `primary-compat-v6.log`:
 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/primary-candidate-manifest.json --case testing__C125763__NRS-484B-250-2__motor_vehicle_driver__yield_ego_left_near_time --output .runtime-work/c125763-yield-left-primary-compat-v6 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck
 ```
 
-Its retained `primary-compatibility-receipt.json`, `primary-analysis.log` and
+Its retained `primary-compatibility-receipt.json`, `promoted-right-fallback3-analysis.log` and
 `primary-negative-analysis.log` bind actual finalization, Native validation,
 the required observations, Lean decoder, four source cameras, final video
 decode, selected measurements and rejection when
