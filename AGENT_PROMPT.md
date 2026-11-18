@@ -4,7 +4,7 @@ Continue exactly the 43 assigned packages in batch.json. Keep the submitted cons
 
 Use `.runtime-work/` for generated assets. The launcher quarantines only the obsolete untracked runtime manifest. Do not write into `runtime/runs/` or `runtime/pipeline/runs/`. Work autonomously through all CPU-solvable packages and record precise remaining gaps. No CARLA, NERSC, SQLite or physical acceptance. The separate timer publishes checkpoints.
 
-Read the source-hashed demo-test judgment-range snapshot supplied in each assignment input after cutover. Its 14 historical training mapping gaps remain open; the report is context, not a readiness pass. Keep all 43 assigned cases, and finish exact primary, fallback, saved-only and comparison proofs.
+Read the frozen shared judgment-range snapshot at `inputs/judgment_ranges/demo-test.json`. Its 14 historical training mapping gaps remain open; the report is context, not a readiness pass. Keep all 43 assigned cases, and finish exact primary, fallback, saved-only and comparison proofs.
 
 # Demo-test CPU delivery preparation
 
