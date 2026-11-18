@@ -428,7 +428,8 @@ def construct_signal_comparison(world, site, blueprints, transforms, states,
 def run_signal_capture(world, client, root, site, blueprints, transforms, states,
                        target_state, signal_id, expected_controls_ego, context,
                        camera_blueprints, camera_mounts, case_id, required_atoms,
-                       drive, frames, sizes=None, capture_factory=None):
+                       drive, frames, sizes=None, capture_factory=None,
+                       yield_context=None):
     """Construct a selected signal case and retain its joined original sources.
 
     ``drive`` applies case-specific actor controls before each Native tick. It
@@ -441,6 +442,20 @@ def run_signal_capture(world, client, root, site, blueprints, transforms, states
             context.get("through_route_lanes", [None])[0] != site.get("approach_lanes", {}).get("through") or
             context.get("native_signal_id") != signal_id):
         raise ValueError("Capture context differs from selected Native construction")
+    is_yield_baseline = case_id.endswith("__yield_without_signal_control")
+    if is_yield_baseline != (yield_context is not None):
+        raise ValueError("Yield baseline requires its exact authored source context")
+    if yield_context is not None:
+        if (yield_context.get("native_map_id") != context["native_map_id"] or
+                yield_context.get("intersection_id") != context["intersection_id"] or
+                yield_context.get("ego_approach_lane") !=
+                [context["ego_road_id"], context["ego_lane_id"]] or
+                yield_context.get("through_highway_lane") !=
+                [context.get("through_road_id"), context.get("through_lane_id")] or
+                yield_context.get("sign_type") != "yield" or
+                yield_context.get("stop_line_present") is not False or
+                yield_context.get("near_crosswalk_present") is not False):
+            raise ValueError("Authored yield source differs from selected signed intersection")
     with construct_signal_comparison(world, site, blueprints, transforms, states,
                                      target_state, signal_id, expected_controls_ego) as built:
         with NativeSignalCapture(world, root, built["actors"], built["signal"], context,
@@ -452,6 +467,10 @@ def run_signal_capture(world, client, root, site, blueprints, transforms, states
                 capture.capture_tick()
             if capture.encoder.count != frames or capture.writer.count != frames:
                 raise ValueError("Native signal source frame count differs from capture plan")
+            if yield_context is not None:
+                path = Path(root)/"yield_context.json"
+                with path.open("x") as source:
+                    source.write(json.dumps(yield_context, sort_keys=True, allow_nan=False)+"\n")
     return {"case_id": case_id, "source_frames": frames,
             "source_videos": [name+".mkv" for name in CAMERAS],
             "physical_or_legal_acceptance_claimed": False}

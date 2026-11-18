@@ -11,7 +11,7 @@ import argparse
 import subprocess
 from pathlib import Path
 
-from shapely.geometry import MultiPoint, Polygon
+from shapely.geometry import LineString, MultiPoint, Polygon
 
 
 REQUIRED=("signal_context.json","signal_history.jsonl","video_frames.jsonl")
@@ -95,6 +95,135 @@ def measure_operative_signal_at_entry(report):
 
 def measure_entry_signal_state(report):
     return report["first_ego_entry"]["signal_state"]
+
+
+def measure_yield_baseline(attempt, context, interaction, frames, review):
+    """Retain the yield reference and through traffic facts without judging hazard."""
+    source = attempt/"yield_context.json"
+    if not source.is_file():
+        raise ValueError("Missing required source: yield_context.json")
+    baseline = json.loads(source.read_text())
+    if review.get("yield_context_sha256") != hashlib.sha256(source.read_bytes()).hexdigest():
+        raise ValueError("Original-camera review yield context hash differs")
+    if (baseline.get("native_map_id") != context["native_map_id"] or
+            baseline.get("intersection_id") != context["intersection_id"] or
+            baseline.get("ego_approach_lane") != [context["ego_road_id"], context["ego_lane_id"]] or
+            baseline.get("through_highway_lane") != [context.get("through_road_id"), context.get("through_lane_id")]):
+        raise ValueError("Yield reference differs from original signed intersection")
+    if (baseline.get("stop_line_present") is not False or
+            baseline.get("near_crosswalk_present") is not False or
+            baseline.get("sign_type") != "yield" or
+            not isinstance(baseline.get("source_description"), str) or
+            not baseline["source_description"].strip()):
+        raise ValueError("Nearest-view yield reference lacks sourced hierarchy")
+    observations = review["observations"]
+    for key in ("yield_sign_visible", "no_stop_line_visible", "no_near_crosswalk_visible",
+                "nearest_view_reference_reviewed"):
+        if observations.get(key) is not True:
+            raise ValueError("Yield hierarchy lacks original-camera review: " + key)
+    if observations.get("officer_control_observed") is not False:
+        raise ValueError("Yield baseline requires reviewed absence of officer control")
+    points = baseline.get("nearest_view_line_xy_m")
+    if (not isinstance(points, list) or len(points) != 2 or
+            any(not isinstance(p, list) or len(p) != 2 for p in points)):
+        raise ValueError("Missing sourced nearest-view line")
+    line = LineString([(_number(p[0], "reference x"), _number(p[1], "reference y"))
+                       for p in points])
+    if line.length <= 0:
+        raise ValueError("Degenerate nearest-view line")
+    polygon = Polygon(context["intersection_polygon_xy_m"])
+    if line.intersects(polygon):
+        raise ValueError("Nearest-view reference lies inside intersection")
+    first_reference = None
+    first_entry = None
+    through_at_entry = None
+    through_route = context.get("through_route_lanes")
+    if (not isinstance(through_route, list) or not through_route or
+            through_route[0] != baseline["through_highway_lane"]):
+        raise ValueError("Missing sourced through-highway route")
+    for frame, bodies in zip(frames, interaction):
+        if ([bodies["ego"].get("road_id"), bodies["ego"].get("lane_id")] not in
+                context["ego_route_lanes"] or
+                [bodies["through"].get("road_id"), bodies["through"].get("lane_id")] not in
+                through_route):
+            raise ValueError("Original body left sourced yield/highway route")
+        ego = MultiPoint([(_number(p[0], "ego body x"), _number(p[1], "ego body y"))
+                          for p in bodies["ego"]["body_vertices_m"]]).convex_hull
+        through = MultiPoint([(_number(p[0], "through body x"), _number(p[1], "through body y"))
+                              for p in bodies["through"]["body_vertices_m"]]).convex_hull
+        if first_reference is None and ego.intersects(line):
+            first_reference = frame["carla_frame"]
+        if first_entry is None and ego.intersects(polygon):
+            first_entry = frame["carla_frame"]
+            through_at_entry = through.intersects(polygon)
+    if first_reference is None or first_entry is None or first_reference >= first_entry:
+        raise ValueError("Original ego body did not cross nearest-view reference before entry")
+    return {"nearest_view_reference_frame": first_reference,
+            "first_ego_entry_frame": first_entry,
+            "through_body_in_intersection_at_entry": through_at_entry,
+            "immediate_hazard_judgment": "unresolved",
+            "right_of_way_judgment": "unresolved",
+            "source_sha256": hashlib.sha256(source.read_bytes()).hexdigest()}
+
+
+def audit_signal_comparison(left, right, comparison_id):
+    """Independently verify fixed source conditions and the declared signal difference."""
+    if comparison_id not in ("signal_exception_control", "signal_exception_state"):
+        raise ValueError("Unknown exact signal comparison")
+    records = []
+    for root in (Path(left), Path(right)):
+        config = json.loads((root/"config.json").read_text())
+        case_id = config.get("selected_case_id")
+        report = analyze(root)
+        frames = _rows(root/"video_frames.jsonl")
+        review = validate_source_camera_review(root, frames, case_id)
+        context = json.loads((root/"signal_context.json").read_text())
+        records.append((case_id, report, review, context))
+    first, second = records
+    prefix = "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__"
+    expected = {
+        "signal_exception_control": ("signal_controls_ego", "signal_visible_not_governing"),
+        "signal_exception_state": ("signal_controls_ego", "signal_off")}
+    if tuple(row[0] for row in records) != tuple(prefix+name for name in expected[comparison_id]):
+        raise ValueError("Comparison selects different exact cases")
+    fixed = ("native_map_id", "intersection_id", "ego_road_id", "ego_lane_id",
+             "ego_route_lanes", "intersection_polygon_xy_m", "signed_entrance_source",
+             "junction_source", "through_road_id", "through_lane_id", "through_route_lanes")
+    if any(first[3].get(key) != second[3].get(key) for key in fixed):
+        raise ValueError("Comparison changed fixed signed intersection or routes")
+    profiles = []
+    for root in (Path(left), Path(right)):
+        streams = []
+        for name in CAMERAS:
+            probe = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0",
+                                    "-show_entries", "stream=width,height,r_frame_rate",
+                                    "-of", "json", str(root/(name+".mkv"))],
+                                   capture_output=True, text=True, check=True)
+            streams.append(json.loads(probe.stdout)["streams"][0])
+        profiles.append(streams)
+    if profiles[0] != profiles[1]:
+        raise ValueError("Comparison changed fixed four-camera capture profile")
+    if not all(row[2]["observations"]["signed_entrance_visible"] for row in records):
+        raise ValueError("Comparison lacks reviewed signed entrance")
+    entry_a, entry_b = first[1]["first_ego_entry"], second[1]["first_ego_entry"]
+    if comparison_id == "signal_exception_control":
+        if (not entry_a["signal_controls_ego"] or entry_b["signal_controls_ego"] or
+                entry_a["signal_state"] != entry_b["signal_state"] or
+                entry_a["signal_state"] == "Off" or
+                first[3]["native_signal_id"] == second[3]["native_signal_id"]):
+            raise ValueError("Comparison lacks isolated governing-head difference")
+    else:
+        if (not entry_a["signal_controls_ego"] or not entry_b["signal_controls_ego"] or
+                entry_a["signal_state"] == "Off" or entry_b["signal_state"] != "Off" or
+                first[3]["native_signal_id"] != second[3]["native_signal_id"] or
+                first[3]["signal_head_video_source"] != second[3]["signal_head_video_source"]):
+            raise ValueError("Comparison lacks isolated operative-state difference")
+    return {"format":"worker-c158196-source-comparison-audit",
+            "comparison_id":comparison_id,"case_ids":[first[0],second[0]],
+            "fixed_conditions_checked":[*fixed,"four_camera_capture_profile"],
+            "declared_difference_observed":True,
+            "source_camera_reviews_checked":True,
+            "physical_acceptance_claimed":False,"legal_conclusion":"unresolved"}
 
 
 def validate_source_camera_review(attempt, frames, case_id):
@@ -194,6 +323,9 @@ def finalize(attempt, output):
     if (control.get("intersection_xy_m") != context["intersection_polygon_xy_m"] or
             control.get("native_map_id") != context["native_map_id"]):
         raise ValueError("Original control geometry differs from signal context")
+    yield_baseline = None
+    if case_id.endswith("__yield_without_signal_control"):
+        yield_baseline = measure_yield_baseline(attempt, context, interaction, frames, review)
     channels = attempt/"channels"
     channels.mkdir()
     for name, values in {
@@ -211,6 +343,8 @@ def finalize(attempt, output):
     requested = expected[case_id[len(prefix):]]
     source_hashes = {name:hashlib.sha256((attempt/name).read_bytes()).hexdigest()
                      for name in (*required,"signal_head_review.json")}
+    if yield_baseline is not None:
+        source_hashes["yield_context.json"] = yield_baseline["source_sha256"]
     result = {"case_id":case_id,
               "measured_values":{"operative_signal_controls_ego_at_entry_observed":observed,
                                  "entry_signal_state":measure_entry_signal_state(report),
@@ -236,6 +370,8 @@ def finalize(attempt, output):
                                                        ("signal_state","text"),
                                                        ("ego_crossing_body","structured record"))],
               "source_evidence_hashes":source_hashes,"realized_observables":{}}
+    if yield_baseline is not None:
+        result["measured_values"]["yield_baseline"] = yield_baseline
     try:
         from worker_exchange.native_output import physical_result, write_result
     except ModuleNotFoundError:
@@ -255,6 +391,7 @@ def finalize(attempt, output):
                         "sources":{name:source_hashes[name] for name in
                                    ("signal_context.json","signal_history.jsonl","video_frames.jsonl")}}},
                 "source_report":report,"source_camera_review":review,
+                "yield_baseline":yield_baseline,
                 "physical_checks":result["physical_checks"],
                 "realized_observables":result["realized_observables"],
                 "legal_conclusion":"unresolved","analysis_complete":True}

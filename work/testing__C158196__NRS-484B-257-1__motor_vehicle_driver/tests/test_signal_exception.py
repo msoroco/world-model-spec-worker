@@ -69,6 +69,73 @@ class SignalTests(unittest.TestCase):
             (root/"signal_history.jsonl").write_text("".join(json.dumps(r)+"\n" for r in rows))
             with self.assertRaisesRegex(ValueError,"light identity"):measure.analyze(root)
 
+    def test_source_comparison_audits_isolate_control_and_state(self):
+        prefix="testing__C158196__NRS-484B-257-1__motor_vehicle_driver__"
+        with tempfile.TemporaryDirectory() as tmp:
+            roots={name:Path(tmp)/name for name in
+                   ("signal_controls_ego","signal_visible_not_governing","signal_off")}
+            for name,root in roots.items():
+                root.mkdir()
+                self.fixture(root,controls=name!="signal_visible_not_governing",
+                             state="Off" if name=="signal_off" else "Green")
+                context=json.loads((root/"signal_context.json").read_text())
+                if name=="signal_visible_not_governing":
+                    context["native_signal_id"]=26
+                    context["signal_head_video_source"]="reference_corner.mkv"
+                    rows=[json.loads(line) for line in (root/"signal_history.jsonl").read_text().splitlines()]
+                    for row in rows:row["native_signal_id"]=26
+                    (root/"signal_history.jsonl").write_text("".join(json.dumps(row)+"\n" for row in rows))
+                (root/"signal_context.json").write_text(json.dumps(context))
+                (root/"config.json").write_text(json.dumps({"selected_case_id":prefix+name}))
+                with control.FourCameraEncoder(root,{camera:(1,1) for camera in control.CAMERAS}) as encoder:
+                    for frame in range(3):
+                        encoder.add_packets({camera:NS(width=1,height=1,raw_data=bytes([frame,0,0,255]))
+                                             for camera in control.CAMERAS})
+                review={"method":"original_source_camera_frame_review",
+                        "case_id":prefix+name,"reviewer":"diagnostic-fixture-reviewer",
+                        "reviewed_carla_frames":[100,101,102],
+                        "camera_sha256":{camera:hashlib.sha256((root/(camera+".mkv")).read_bytes()).hexdigest()
+                                         for camera in control.CAMERAS},
+                        "observations":{"signed_entrance_visible":True,
+                                        "signal_head_visible":True,
+                                        "head_at_ego_approach":name!="signal_visible_not_governing"}}
+                (root/"signal_head_review.json").write_text(json.dumps(review))
+            primary=roots["signal_controls_ego"]
+            other=roots["signal_visible_not_governing"]
+            off=roots["signal_off"]
+            self.assertTrue(measure.audit_signal_comparison(primary,other,
+                "signal_exception_control")["declared_difference_observed"])
+            self.assertTrue(measure.audit_signal_comparison(primary,off,
+                "signal_exception_state")["declared_difference_observed"])
+            context=json.loads((other/"signal_context.json").read_text())
+            context["intersection_id"]=99
+            (other/"signal_context.json").write_text(json.dumps(context))
+            with self.assertRaisesRegex(ValueError,"changed fixed"):
+                measure.audit_signal_comparison(primary,other,"signal_exception_control")
+            context["intersection_id"]=44
+            (other/"signal_context.json").write_text(json.dumps(context))
+            original_overview=(other/"overview.mkv").read_bytes()
+            with tempfile.TemporaryDirectory() as media_tmp:
+                with control.FourCameraEncoder(Path(media_tmp),{"overview":(2,1),
+                        "approach":(1,1),"reference_corner":(1,1),
+                        "driver_reference":(1,1)}) as encoder:
+                    for frame in range(3):
+                        encoder.add_packets({camera:NS(width=2 if camera=="overview" else 1,
+                            height=1,raw_data=bytes([frame,0,0,255])*(2 if camera=="overview" else 1))
+                            for camera in control.CAMERAS})
+                (other/"overview.mkv").write_bytes((Path(media_tmp)/"overview.mkv").read_bytes())
+            review=json.loads((other/"signal_head_review.json").read_text())
+            review["camera_sha256"]["overview"]=hashlib.sha256((other/"overview.mkv").read_bytes()).hexdigest()
+            (other/"signal_head_review.json").write_text(json.dumps(review))
+            with self.assertRaisesRegex(ValueError,"four-camera capture profile"):
+                measure.audit_signal_comparison(primary,other,"signal_exception_control")
+            (other/"overview.mkv").write_bytes(original_overview)
+            rows=[json.loads(line) for line in (off/"signal_history.jsonl").read_text().splitlines()]
+            for row in rows:row["signal_state"]="Green"
+            (off/"signal_history.jsonl").write_text("".join(json.dumps(row)+"\n" for row in rows))
+            with self.assertRaisesRegex(ValueError,"operative-state difference"):
+                measure.audit_signal_comparison(primary,off,"signal_exception_state")
+
     def test_native_governing_light_selection_and_reversible_state(self):
         class Actors(list):
             def filter(self,pattern):return self
@@ -371,6 +438,59 @@ class SignalTests(unittest.TestCase):
             other_result=json.loads((other_root/"result.json").read_text())
             self.assertTrue(other_result["target_checks"][0]["matched"])
             self.assertFalse(other_result["physical_acceptance_claimed"])
+            with tempfile.TemporaryDirectory() as baseline_tmp:
+                baseline_root=Path(baseline_tmp)
+                for source in other_root.iterdir():
+                    if source.is_file() and source.name not in ("result.json","analysis-report.json"):
+                        shutil.copy2(source,baseline_root/source.name)
+                    elif source.name=="capture":
+                        shutil.copytree(source,baseline_root/source.name)
+                baseline_case="testing__C158196__NRS-484B-257-1__motor_vehicle_driver__yield_without_signal_control"
+                baseline_config=dict(other_config,selected_case_id=baseline_case)
+                (baseline_root/"config.json").write_text(json.dumps(baseline_config))
+                baseline_review=dict(other_review,case_id=baseline_case,
+                    observations=dict(other_review["observations"],
+                        yield_sign_visible=True,no_stop_line_visible=True,
+                        no_near_crosswalk_visible=True,nearest_view_reference_reviewed=True,
+                        officer_control_observed=False))
+                (baseline_root/"signal_head_review.json").write_text(json.dumps(baseline_review))
+                baseline_context={"native_map_id":"TownX","intersection_id":44,
+                    "ego_approach_lane":[7,-1],"through_highway_lane":[9,-1],
+                    "sign_type":"yield","stop_line_present":False,
+                    "near_crosswalk_present":False,
+                    "nearest_view_line_xy_m":[[1,-5],[1,5]],
+                    "source_description":"diagnostic source-camera hierarchy and Native map reference"}
+                with self.assertRaisesRegex(ValueError,"Missing required source: yield_context.json"):
+                    measure.finalize(baseline_root,baseline_root/"analysis-report.json")
+                (baseline_root/"yield_context.json").write_text(json.dumps(baseline_context))
+                baseline_review["yield_context_sha256"]=hashlib.sha256(
+                    (baseline_root/"yield_context.json").read_bytes()).hexdigest()
+                true_hash=baseline_review["yield_context_sha256"]
+                baseline_review["yield_context_sha256"]="0"*64
+                (baseline_root/"signal_head_review.json").write_text(json.dumps(baseline_review))
+                with self.assertRaisesRegex(ValueError,"yield context hash differs"):
+                    measure.finalize(baseline_root,baseline_root/"analysis-report.json")
+                baseline_review["yield_context_sha256"]=true_hash
+                baseline_review["observations"]["nearest_view_reference_reviewed"]=False
+                (baseline_root/"signal_head_review.json").write_text(json.dumps(baseline_review))
+                with self.assertRaisesRegex(ValueError,"Yield hierarchy lacks original-camera review"):
+                    measure.finalize(baseline_root,baseline_root/"analysis-report.json")
+                baseline_review["observations"]["nearest_view_reference_reviewed"]=True
+                (baseline_root/"signal_head_review.json").write_text(json.dumps(baseline_review))
+                interaction_path=baseline_root/"interaction_history.jsonl"
+                original_interaction=interaction_path.read_text()
+                changed=[json.loads(line) for line in original_interaction.splitlines()]
+                changed[2]["through"]["road_id"]=99
+                interaction_path.write_text("".join(json.dumps(row)+"\n" for row in changed))
+                with self.assertRaisesRegex(ValueError,"Original body left sourced yield/highway route"):
+                    measure.finalize(baseline_root,baseline_root/"analysis-report.json")
+                interaction_path.write_text(original_interaction)
+                baseline_analysis=measure.finalize(baseline_root,baseline_root/"analysis-report.json")
+                self.assertEqual(baseline_analysis["yield_baseline"]["nearest_view_reference_frame"],100)
+                self.assertEqual(baseline_analysis["yield_baseline"]["first_ego_entry_frame"],102)
+                self.assertTrue(baseline_analysis["yield_baseline"]["through_body_in_intersection_at_entry"])
+                self.assertEqual(baseline_analysis["yield_baseline"]["immediate_hazard_judgment"],"unresolved")
+                self.assertFalse(json.loads((baseline_root/"result.json").read_text())["physical_acceptance_claimed"])
         with tempfile.TemporaryDirectory() as off_tmp:
             off_root=Path(off_tmp)
             clock.update(frame=99,x=0.0,stale=False)
@@ -431,6 +551,47 @@ class SignalTests(unittest.TestCase):
             self.assertTrue(all(sensor.stopped and sensor.destroyed for sensor in sensors.values()))
             self.assertTrue(all(owned.values()))
             self.assertEqual(signal_state["value"],"Green")
+        with tempfile.TemporaryDirectory() as baseline_run_tmp:
+            clock.update(frame=99,x=0.0,stale=False)
+            sensors.clear()
+            owned.update(ego=False,through=False)
+            other_state={"value":"Green"}
+            other_light=NS(id=26,get_state=lambda:other_state["value"],
+                set_state=lambda value:other_state.update(value=value),freeze=lambda value:None,
+                get_affected_lane_waypoints=lambda:[NS(road_id=11,lane_id=-1)])
+            world.get_actors=lambda:NS(filter=lambda pattern:[light,other_light])
+            baseline_ctx=dict(ctx,native_signal_id=26,
+                              signal_head_video_source="reference_corner.mkv")
+            baseline_case="testing__C158196__NRS-484B-257-1__motor_vehicle_driver__yield_without_signal_control"
+            baseline_source={"native_map_id":"TownX","intersection_id":44,
+                "ego_approach_lane":[7,-1],"through_highway_lane":[9,-1],
+                "sign_type":"yield","stop_line_present":False,
+                "near_crosswalk_present":False,
+                "nearest_view_line_xy_m":[[1,-5],[1,5]],
+                "source_description":"authored diagnostic signed intersection"}
+            with self.assertRaisesRegex(ValueError,"Yield baseline requires"):
+                control.run_signal_capture(world,object(),baseline_run_tmp,site,
+                    {"ego":"ego","through":"through"},{"ego":"pose1","through":"pose2"},
+                    states,"Green",26,False,baseline_ctx,
+                    {name:name for name in control.CAMERAS},mounts,
+                    baseline_case,[],lambda index,actors:None,3,
+                    sizes={name:(1,1) for name in control.CAMERAS},
+                    capture_factory=FakePipelineCapture)
+            summary=control.run_signal_capture(world,object(),baseline_run_tmp,site,
+                {"ego":"ego","through":"through"},{"ego":"pose1","through":"pose2"},
+                states,"Green",26,False,baseline_ctx,
+                {name:name for name in control.CAMERAS},mounts,
+                baseline_case,[],lambda index,actors:None,3,
+                sizes={name:(1,1) for name in control.CAMERAS},
+                capture_factory=FakePipelineCapture,yield_context=baseline_source)
+            self.assertEqual(summary["source_frames"],3)
+            self.assertEqual(json.loads((Path(baseline_run_tmp)/"yield_context.json").read_text()),
+                             baseline_source)
+            self.assertFalse(measure.analyze(Path(baseline_run_tmp))[
+                "operative_signal_controls_ego_at_entry_observed"])
+            self.assertTrue(all(owned.values()))
+            self.assertEqual(other_state["value"],"Green")
+        world.get_actors=lambda:NS(filter=lambda pattern:[light])
         with tempfile.TemporaryDirectory() as aborted_tmp:
             clock.update(frame=99,x=0.0,stale=False)
             sensors.clear()
