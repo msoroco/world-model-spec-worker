@@ -423,3 +423,35 @@ def construct_signal_comparison(world, site, blueprints, transforms, states,
     finally:
         for actor in reversed(owned):
             actor.destroy()
+
+
+def run_signal_capture(world, client, root, site, blueprints, transforms, states,
+                       target_state, signal_id, expected_controls_ego, context,
+                       camera_blueprints, camera_mounts, case_id, required_atoms,
+                       drive, frames, sizes=None, capture_factory=None):
+    """Construct a selected signal case and retain its joined original sources.
+
+    ``drive`` applies case-specific actor controls before each Native tick. It
+    cannot supply source observations; NativeSignalCapture reads those back.
+    """
+    if type(frames) is not int or frames < 3 or not callable(drive):
+        raise ValueError("A driven three-frame-or-longer Native capture is required")
+    if (context.get("native_map_id") != site.get("native_map_id") or
+            context.get("ego_route_lanes", [None])[0] != site.get("approach_lanes", {}).get("ego") or
+            context.get("through_route_lanes", [None])[0] != site.get("approach_lanes", {}).get("through") or
+            context.get("native_signal_id") != signal_id):
+        raise ValueError("Capture context differs from selected Native construction")
+    with construct_signal_comparison(world, site, blueprints, transforms, states,
+                                     target_state, signal_id, expected_controls_ego) as built:
+        with NativeSignalCapture(world, root, built["actors"], built["signal"], context,
+                                 expected_controls_ego, camera_blueprints, camera_mounts,
+                                 client, case_id, required_atoms, sizes=sizes,
+                                 capture_factory=capture_factory) as capture:
+            for index in range(frames):
+                drive(index, built["actors"])
+                capture.capture_tick()
+            if capture.encoder.count != frames or capture.writer.count != frames:
+                raise ValueError("Native signal source frame count differs from capture plan")
+    return {"case_id": case_id, "source_frames": frames,
+            "source_videos": [name+".mkv" for name in CAMERAS],
+            "physical_or_legal_acceptance_claimed": False}

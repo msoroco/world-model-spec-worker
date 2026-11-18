@@ -130,10 +130,22 @@ def validate_source_camera_review(attempt, frames, case_id):
             type(observations.get(key)) is not bool for key in
             ("signed_entrance_visible", "signal_head_visible", "head_at_ego_approach")):
         raise ValueError("Missing explicit original-camera visual observations")
-    if case_id.endswith("__signal_controls_ego") and not all(
-            observations[key] for key in ("signed_entrance_visible",
-                                           "signal_head_visible", "head_at_ego_approach")):
-        raise ValueError("Primary signal-case visual observations unconfirmed")
+    suffix = case_id.rsplit("__", 1)[-1]
+    required_visual = {
+        "signal_controls_ego": {"signed_entrance_visible": True,
+                                "signal_head_visible": True,
+                                "head_at_ego_approach": True},
+        "signal_visible_not_governing": {"signed_entrance_visible": True,
+                                         "signal_head_visible": True,
+                                         "head_at_ego_approach": False},
+        "signal_off": {"signed_entrance_visible": True,
+                       "signal_head_visible": True,
+                       "head_at_ego_approach": True},
+        "yield_without_signal_control": {"signed_entrance_visible": True},
+    }
+    if suffix not in required_visual or any(
+            observations[key] is not value for key, value in required_visual[suffix].items()):
+        raise ValueError("Case-specific original-camera visual observations differ")
     return review
 
 

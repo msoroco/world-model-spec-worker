@@ -331,6 +331,122 @@ class SignalTests(unittest.TestCase):
                         shutil.copytree(source,negative/source.name)
                 with self.assertRaisesRegex(ValueError,"Missing required source: signal_history.jsonl"):
                     measure.finalize(negative,negative/"analysis-report.json")
+        with tempfile.TemporaryDirectory() as other_tmp:
+            other_root=Path(other_tmp)
+            clock.update(frame=99,x=0.0,stale=False)
+            sensors.clear()
+            other_ctx=dict(ctx)
+            other_ctx["native_signal_id"]=26
+            other_ctx["signal_head_video_source"]="reference_corner.mkv"
+            other_light=NS(id=26,get_state=lambda:"Green",
+                           get_affected_lane_waypoints=lambda:[NS(road_id=11,lane_id=-1)])
+            other_case="testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_visible_not_governing"
+            other_config={"selected_case_id":other_case,"law_id":"NRS-484B-257-1",
+                          "cell_id":"C158196","recording_description":{"channels":[]}}
+            (other_root/"config.json").write_text(json.dumps(other_config))
+            with control.NativeSignalCapture(world,other_root,{"ego":ego,"through":through},
+                    other_light,other_ctx,False,{name:name for name in control.CAMERAS},mounts,
+                    object(),other_case,[],sizes={name:(1,1) for name in control.CAMERAS},
+                    capture_factory=FakePipelineCapture) as session:
+                for _ in range(3):session.capture_tick()
+            self.assertFalse(measure.analyze(other_root)["operative_signal_controls_ego_at_entry_observed"])
+            other_review={"method":"original_source_camera_frame_review",
+                          "case_id":other_case,"reviewer":"diagnostic-fixture-reviewer",
+                          "reviewed_carla_frames":[100,101,102],
+                          "camera_sha256":{name:hashlib.sha256((other_root/(name+".mkv")).read_bytes()).hexdigest()
+                                           for name in control.CAMERAS},
+                          "observations":{"signed_entrance_visible":True,
+                                          "signal_head_visible":True,
+                                          "head_at_ego_approach":False}}
+            (other_root/"signal_head_review.json").write_text(json.dumps(other_review))
+            frames=[json.loads(line) for line in (other_root/"video_frames.jsonl").read_text().splitlines()]
+            other_review["observations"]["head_at_ego_approach"]=True
+            (other_root/"signal_head_review.json").write_text(json.dumps(other_review))
+            with self.assertRaisesRegex(ValueError,"Case-specific original-camera visual observations differ"):
+                measure.validate_source_camera_review(other_root,frames,other_case)
+            other_review["observations"]["head_at_ego_approach"]=False
+            (other_root/"signal_head_review.json").write_text(json.dumps(other_review))
+            other_analysis=measure.finalize(other_root,other_root/"analysis-report.json")
+            self.assertFalse(other_analysis["measurements"]["operative_signal_at_entry"]["value"])
+            other_result=json.loads((other_root/"result.json").read_text())
+            self.assertTrue(other_result["target_checks"][0]["matched"])
+            self.assertFalse(other_result["physical_acceptance_claimed"])
+        with tempfile.TemporaryDirectory() as off_tmp:
+            off_root=Path(off_tmp)
+            clock.update(frame=99,x=0.0,stale=False)
+            sensors.clear()
+            off_case="testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_off"
+            off_config={"selected_case_id":off_case,"law_id":"NRS-484B-257-1",
+                        "cell_id":"C158196","recording_description":{"channels":[]}}
+            (off_root/"config.json").write_text(json.dumps(off_config))
+            off_light=NS(id=25,get_state=lambda:"Off",get_affected_lane_waypoints=lambda:[
+                NS(road_id=7,lane_id=-1)])
+            with control.NativeSignalCapture(world,off_root,{"ego":ego,"through":through},
+                    off_light,ctx,True,{name:name for name in control.CAMERAS},mounts,
+                    object(),off_case,[],sizes={name:(1,1) for name in control.CAMERAS},
+                    capture_factory=FakePipelineCapture) as session:
+                for _ in range(3):session.capture_tick()
+            off_review={"method":"original_source_camera_frame_review",
+                        "case_id":off_case,"reviewer":"diagnostic-fixture-reviewer",
+                        "reviewed_carla_frames":[100,101,102],
+                        "camera_sha256":{name:hashlib.sha256((off_root/(name+".mkv")).read_bytes()).hexdigest()
+                                         for name in control.CAMERAS},
+                        "observations":{"signed_entrance_visible":True,
+                                        "signal_head_visible":True,
+                                        "head_at_ego_approach":True}}
+            (off_root/"signal_head_review.json").write_text(json.dumps(off_review))
+            off_analysis=measure.finalize(off_root,off_root/"analysis-report.json")
+            self.assertFalse(off_analysis["measurements"]["operative_signal_at_entry"]["value"])
+            self.assertEqual(off_analysis["measurements"]["entry_signal_state"]["value"],"Off")
+            off_result=json.loads((off_root/"result.json").read_text())
+            self.assertTrue(off_result["target_checks"][0]["matched"])
+            self.assertFalse(off_result["physical_acceptance_claimed"])
+        signal_state={"value":"Green"}
+        light.get_state=lambda:signal_state["value"]
+        light.set_state=lambda value:signal_state.update(value=value)
+        light.freeze=lambda value:None
+        owned={"ego":False,"through":False}
+        ego.get_location=lambda:ego.get_transform().location
+        through.get_location=lambda:through.get_transform().location
+        ego.destroy=lambda:owned.update(ego=True)
+        through.destroy=lambda:owned.update(through=True)
+        world.get_actors=lambda:NS(filter=lambda pattern:[light])
+        world.try_spawn_actor=lambda blueprint,transform:{"ego":ego,"through":through}[blueprint]
+        site={"native_map_id":"TownX","approach_lanes":{"ego":[7,-1],"through":[9,-1]}}
+        states=NS(Red="Red",Green="Green",Off="Off")
+        with tempfile.TemporaryDirectory() as integrated_tmp:
+            clock.update(frame=99,x=0.0,stale=False)
+            sensors.clear()
+            driven=[]
+            summary=control.run_signal_capture(world,object(),integrated_tmp,site,
+                    {"ego":"ego","through":"through"},{"ego":"pose1","through":"pose2"},
+                    states,"Red",25,True,ctx,{name:name for name in control.CAMERAS},mounts,
+                    "selected-signal-case",[],lambda index,actors:driven.append(index),3,
+                    sizes={name:(1,1) for name in control.CAMERAS},
+                    capture_factory=FakePipelineCapture)
+            self.assertEqual(driven,[0,1,2])
+            self.assertEqual(summary["source_frames"],3)
+            self.assertEqual(len((Path(integrated_tmp)/"trace.jsonl").read_text().splitlines()),3)
+            self.assertTrue(measure.analyze(Path(integrated_tmp))["operative_signal_controls_ego_at_entry_observed"])
+            self.assertTrue(all(sensor.stopped and sensor.destroyed for sensor in sensors.values()))
+            self.assertTrue(all(owned.values()))
+            self.assertEqual(signal_state["value"],"Green")
+        with tempfile.TemporaryDirectory() as aborted_tmp:
+            clock.update(frame=99,x=0.0,stale=False)
+            sensors.clear()
+            owned.update(ego=False,through=False)
+            def reject_drive(index,actors):
+                raise ValueError("diagnostic drive failure")
+            with self.assertRaisesRegex(ValueError,"diagnostic drive failure"):
+                control.run_signal_capture(world,object(),aborted_tmp,site,
+                    {"ego":"ego","through":"through"},{"ego":"pose1","through":"pose2"},
+                    states,"Red",25,True,ctx,{name:name for name in control.CAMERAS},mounts,
+                    "selected-signal-case",[],reject_drive,3,
+                    sizes={name:(1,1) for name in control.CAMERAS},
+                    capture_factory=FakePipelineCapture)
+            self.assertTrue(all(owned.values()))
+            self.assertTrue(all(sensor.stopped and sensor.destroyed for sensor in sensors.values()))
+            self.assertEqual(signal_state["value"],"Green")
         with tempfile.TemporaryDirectory() as tmp:
             clock.update(frame=99,x=0.0,stale=True)
             sensors.clear()
