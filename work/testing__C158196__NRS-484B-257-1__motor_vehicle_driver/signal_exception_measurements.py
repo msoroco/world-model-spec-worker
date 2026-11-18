@@ -360,10 +360,40 @@ def finalize(attempt, output):
                      for name in (*required,"signal_head_review.json")}
     if yield_baseline is not None:
         source_hashes["yield_context.json"] = yield_baseline["source_sha256"]
+    governance_review = {
+        "native_signal_id": context["native_signal_id"],
+        "ego_route_lanes": context["ego_route_lanes"],
+        "through_route_lanes": context["through_route_lanes"],
+        "entry_signal_state": measure_entry_signal_state(report),
+        "operative_signal_controls_ego_at_entry_observed": observed,
+        "original_camera_observations": review["observations"],
+        "original_camera_sha256": review["camera_sha256"],
+        "source_sha256": {name: source_hashes[name] for name in (
+            "signal_context.json", "control_context.json", "signal_history.jsonl",
+            "interaction_history.jsonl", "video_frames.jsonl", "signal_head_review.json")},
+        "official_control_status": "unresolved",
+    }
+    yield_site_review = {
+        "signed_entrance_source": context["signed_entrance_source"],
+        "ego_route_lanes": context["ego_route_lanes"],
+        "through_route_lanes": context["through_route_lanes"],
+        "original_camera_observations": review["observations"],
+        "yield_baseline": yield_baseline,
+        "source_sha256": {name: source_hashes[name] for name in (
+            "signal_context.json", "interaction_history.jsonl", "video_frames.jsonl",
+            "signal_head_review.json")},
+        "sign_propriety_and_right_of_way": "unresolved",
+    }
+    (attempt/"recording-context.json").write_text(json.dumps({
+        "signal_governance_review": governance_review,
+        "yield_site_review": yield_site_review,
+    }, indent=2, allow_nan=False) + "\n")
     result = {"case_id":case_id,
               "measured_values":{"operative_signal_controls_ego_at_entry_observed":observed,
                                  "entry_signal_state":measure_entry_signal_state(report),
-                                 "first_ego_entry":report["first_ego_entry"]},
+                                 "first_ego_entry":report["first_ego_entry"],
+                                 "signal_governance_review":governance_review,
+                                 "yield_site_review":yield_site_review},
               "target_checks":[{"target":"operative_signal_controls_ego_at_entry_observed",
                                 "requested":requested,"measured":observed,
                                 "method":"original affected-lane and signal-state join at complete body entry",
@@ -383,7 +413,10 @@ def finalize(attempt, output):
                                       "reference":"channels/"+name+".jsonl"}
                                      for name,unit in (("operative_signal_control","count"),
                                                        ("signal_state","text"),
-                                                       ("ego_crossing_body","structured record"))],
+                                                       ("ego_crossing_body","structured record"))]
+                                   + [{"name":name,"unit":"structured record",
+                                       "reference":"recording-context.json"}
+                                      for name in ("signal_governance_review","yield_site_review")],
               "source_evidence_hashes":source_hashes,"realized_observables":{}}
     if yield_baseline is not None:
         result["measured_values"]["yield_baseline"] = yield_baseline
