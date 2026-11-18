@@ -4,6 +4,8 @@ import argparse
 from hashlib import sha256
 import json
 from pathlib import Path
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "runtime" / "scenario_pipeline"))
 
 from turn_geometry import measure
 
@@ -21,7 +23,7 @@ def rows(path):
 
 
 def audit(attempt, report, decoder=None):
-    root = Path(attempt)
+    root = Path(attempt).resolve()
     report = json.loads(Path(report).read_text()) if not isinstance(report, dict) else report
     case = report.get('case_id', '')
     if not case.startswith('heldout__C109705__NRS-484B-400-4__motor_vehicle_driver__'):

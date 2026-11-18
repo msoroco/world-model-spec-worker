@@ -15,7 +15,7 @@
   "remaining_gpu_checks": [
     "Actual motion, geometry, camera visibility and capture quality after CPU preparation"
   ],
-  "reason": "Current cutover CPU work incomplete; see cutover-checkpoint.json for scoped exact proof and remaining CPU work.",
+  "reason": "Current cutover CPU work remains incomplete; see cpu_checkpoint for exact current proof and remaining CPU work.",
   "preserved_source_artifacts": [
     {
       "format": "base64-zlib-tar-v1",
@@ -811,5 +811,19 @@
     "physical_acceptance_claimed": false,
     "legal_acceptance_claimed": false
   },
-  "first_gpu_delivery_command": "python scenario_pipeline/pipeline.py execute-delivery --assignment heldout__C111305__NRS-484B-100__pedestrian --case heldout__C111305__NRS-484B-100__pedestrian__stop_responds --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --job \"$JOB_ID\" --db \"$DB\" --run \"$RUN\""
+  "first_gpu_delivery_command": "python scenario_pipeline/pipeline.py execute-delivery --assignment heldout__C111305__NRS-484B-100__pedestrian --case heldout__C111305__NRS-484B-100__pedestrian__stop_responds --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --job \"$JOB_ID\" --db \"$DB\" --run \"$RUN\"",
+  "cpu_checkpoint": {
+    "format": "worker-cutover-cpu-checkpoint",
+    "assignment_id": "heldout__C111305__NRS-484B-100__pedestrian",
+    "runtime_manifest_sha256": "5b4738624542c97f321a302bd49b9ec154cb2cf63778acf64ba6042f8d5b4fd3",
+    "status": "partial",
+    "diagnostic_graph_migration": "Source-backed diagnostic graph paths use live .adapter.json and frame adapter_graph pointers where applicable; fixture recipe source hashes refreshed.",
+    "primary_compatibility": {
+      "case_id": "heldout__C111305__NRS-484B-100__pedestrian__stop_responds",
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C111305__NRS-484B-100__pedestrian/execution-manifest.json --case heldout__C111305__NRS-484B-100__pedestrian__stop_responds --output .runtime-work/p03-sweep-C111305 --library runtime/library --validator .runtime-work/c125714-validator/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "diagnostic_output": "Ignored .runtime-work/ session artifact; rerun command for current portable proof."
+    },
+    "remaining_cpu_work": "Rerun and bind current offline, compatibility, saved-only, audit, fallback and comparison proofs for every exact case; run assignment strict gate."
+  }
 }

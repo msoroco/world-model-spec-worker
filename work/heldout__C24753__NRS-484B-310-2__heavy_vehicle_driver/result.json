@@ -9,13 +9,13 @@
       "command": ".venv-cpu/bin/python -m unittest discover -s work/heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "8697db86316d2064781a9b7e4f491d9c7a63d5f30a06bdcdce455173c91ccd1b"
+      "sha256": "3072cd56668cd06320bf8289237568a5a7e245072436885bef9a189efa4f3ed2"
     }
   ],
   "remaining_gpu_checks": [
     "Actual motion, geometry, camera visibility and capture quality after CPU preparation"
   ],
-  "reason": "Current cutover CPU work incomplete; see cutover-checkpoint.json for scoped exact proof and remaining CPU work.",
+  "reason": "Current cutover CPU work remains incomplete; see cpu_checkpoint for exact current proof and remaining CPU work.",
   "preserved_source_artifacts": [
     {
       "format": "base64-zlib-tar-v1",
@@ -396,5 +396,25 @@
     "exact_delivery_cases_proved": 4,
     "positive_and_missing_source_negative_proofs_passed": true,
     "physical_acceptance_claimed": false
+  },
+  "cpu_checkpoint": {
+    "format": "worker-cutover-cpu-checkpoint",
+    "assignment_id": "heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver",
+    "runtime_manifest_sha256": "5b4738624542c97f321a302bd49b9ec154cb2cf63778acf64ba6042f8d5b4fd3",
+    "status": "partial",
+    "diagnostic_graph_migration": "Source-backed diagnostic graph paths use live .adapter.json and frame adapter_graph pointers where applicable; fixture recipe source hashes refreshed.",
+    "primary_compatibility": {
+      "case_id": "heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver__east_cautious_proxy",
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver/execution-manifest.json --case heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver__east_cautious_proxy --output .runtime-work/p03-C24753-primary-current2 --library runtime/library --validator .runtime-work/c125714-validator/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "diagnostic_output": "Ignored .runtime-work/ session artifact; rerun command for current portable proof."
+    },
+    "remaining_cpu_work": "Rerun and bind current offline, compatibility, saved-only, audit, fallback and comparison proofs for every exact case; run assignment strict gate.",
+    "diagnosis": "All 16 construction bundles now include the current test source; the package audit test runs in the package and is skipped in isolated offline bundles. Primary offline and positive/missing-source compatibility pass. Exact fallback, saved-only and comparison receipts remain stale.",
+    "primary_offline": {
+      "case_id": "heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver__east_cautious_proxy",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver/execution-manifest.json --case heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver__east_cautious_proxy --output .runtime-work/p03-C24753-primary-offline-current2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+      "exit_code": 0
+    }
   }
 }

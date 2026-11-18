@@ -60,3 +60,9 @@ The package now has four exact cases and twelve source-triggered fallbacks. Exac
 2026-11-16 CPU file-budget preservation: 13 unreferenced standalone saved receipt copies archived byte-exact in `result.json.preserved_unreferenced_cpu_artifacts`; per-member SHA256 recorded there. Scoped validation follows.
 
 Result-only historical log reconciliation, 2026-11-16: 3 exact UTF-8 logs were SHA-256-preserved in `work/_shared/prune-history-bundle-all.json.preserved_source_files` and removed from this package; matching obsolete `result.json.tests` claims were removed. Current manifest-bound proofs remain direct. Re-run the scoped strict gate before relying on ready status.
+
+## Current JSON adapter CPU proof
+
+Four exact cases and twelve fallbacks now use `.adapter.json` diagnostic graphs with each Native frame-map `adapter_graph` pointing to the retained base graph. Physical CPU outcome packets are labelled synthetic. All 16 exact offline and positive/missing-source negative compatibility paths pass and are bound in `execution-manifest.json`. All 16 saved-only paths pass against manifest SHA-256 `1d89d9827dc9e17fbc82f65f505040991c7b69e09352a8ebdfb7b1df1282e852`, preserving originals and reporting missing physical evidence for synthetic attempts; `adapter-saved-index.json` embeds compact receipt summaries and hashes. Native motion, four-camera pixels and legal sufficiency remain for independent local review.
+
+Final offline aggregation rebound the execution manifest SHA-256 to `06571c357654618085d62ccd9888e33c480f0a333fd84f45e5a49efa86d19873`. All 16 saved-only paths were rerun against that exact final manifest; `adapter-saved-index.json` and the scoped strict gate pass. The earlier manifest hash in this handoff is historical.

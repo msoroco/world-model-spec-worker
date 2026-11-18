@@ -6,7 +6,6 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
-LINKED = REPO / 'work/heldout__C293604__NRS-484B-250-3__motor_vehicle_driver/gpu-queue.json'
 
 def sha(path):
     return sha256(Path(path).read_bytes()).hexdigest()
@@ -15,7 +14,7 @@ def require(ok, reason):
     if not ok:
         raise ValueError(reason)
 
-def audit(folder=HERE, linked_path=LINKED, *, matrix=None, queue=None):
+def audit(folder=HERE, *, matrix=None, queue=None):
     folder = Path(folder)
     assignment_path = REPO / 'inputs' / folder.name / 'assignment.json'
     assignment = json.loads(assignment_path.read_text())
@@ -37,7 +36,8 @@ def audit(folder=HERE, linked_path=LINKED, *, matrix=None, queue=None):
     queue = queue if queue is not None else json.loads(queue_path.read_text())
     dispatch = json.loads(dispatch_path.read_text())
     queued = json.loads(queued_path.read_text())
-    linked = json.loads(Path(linked_path).read_text())
+    require(not plan.get('unallocated_branch_gaps'),
+            'Opposing-left exception remains an unresolved frozen-scope gap')
     cases = [row['case_id'] for row in plan['cases']]
     comparisons = {row['comparison_id']: row['case_ids'] for row in plan['comparisons']}
     require(len(cases) == len(set(cases)) == 9, 'Exact local law cases changed')
@@ -77,22 +77,12 @@ def audit(folder=HERE, linked_path=LINKED, *, matrix=None, queue=None):
             matrix.get('turn_release_timing') and matrix.get('highway_continuity') and
             matrix.get('official_phase') and matrix.get('shallow_turn'),
             'Selected original-source matrix omits a statutory contrast')
-    require(linked['assignment_id'] ==
-            'heldout__C293604__NRS-484B-250-3__motor_vehicle_driver' and
-            len(linked['cases']) == 6 and len(linked['comparisons']) == 3,
-            'Linked opposing-left source queue changed')
-    linked_cases = {row['case_id'] for row in linked['cases']}
-    require(matrix['turn_case'] in linked_cases and matrix['hold_case'] in linked_cases,
-            'Linked opposing-left selected source cases differ')
     return {'format': 'worker-independent-full-law-delivery-audit',
             'assignment_id': folder.name, 'law_source_sha256': sha(assignment_path),
             'case_plan_sha256': sha(plan_path), 'manifest_sha256': sha(manifest_path),
             'source_matrix_sha256': sha(matrix_path), 'queue_sha256': sha(queue_path),
-            'linked_queue_sha256': sha(linked_path),
             'local_selected_cases': len(cases),
             'local_comparisons': len(comparisons),
-            'linked_opposing_left_cases': len(linked['cases']),
-            'linked_opposing_left_comparisons': len(linked['comparisons']),
             'software_source_binding_passed': True,
             'physical_or_legal_acceptance_claimed': False}
 

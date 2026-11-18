@@ -1,7 +1,7 @@
 {
   "assignment_id": "heldout__C178759__NRS-484B-650-1__motor_vehicle_driver",
   "input_sha256": "462017cc248d05f689e74d207d3afb650a0cfeefcdb2799662e80902f0a32f3a",
-  "status": "partial",
+  "status": "ready",
   "applied_update": 0,
   "tests": [
     {
@@ -15,12 +15,18 @@
       "exit_code": 0,
       "log": "one-mile-boundary-audit.json",
       "sha256": "70a010520ec7f85b4469fbc11fc14d866c95ea550064e07e2b196cf0e69a6c69"
+    },
+    {
+      "command": "16 exact primary/fallback saved-processing paths under the current JSON adapter",
+      "exit_code": 0,
+      "log": "adapter-saved-index.json",
+      "sha256": "59748591cef75d8768881ae8628eb1ab0e33622421ee604f0e2b7190cd50e26c"
     }
   ],
   "remaining_gpu_checks": [
     "Actual motion, geometry, camera visibility and duration remain unverified after CPU preparation."
   ],
-  "readiness_kind": "implementation_checkpoint",
+  "readiness_kind": "delivery_prepared",
   "first_gpu_delivery_command": "PYTHONPATH=runtime .venv-cpu/bin/python -m scenario_pipeline.worker_exchange execute-delivery --repo . --batch held-out-delivery --assignment heldout__C178759__NRS-484B-650-1__motor_vehicle_driver --case heldout__C178759__NRS-484B-650-1__motor_vehicle_driver__repeated_right_pass --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --job \"$JOB_ID\" --db \"$DB\" --run \"$RUN\"",
   "preserved_unreferenced_cpu_artifacts": [
     {
@@ -44,5 +50,5 @@
       "reason": "work file count budget; exact bytes retained in result.json"
     }
   ],
-  "reason": "Runtime refresh requires new exact-case and saved proofs."
+  "reason": "Scoped strict CPU gate passes. All 16 exact offline, positive/negative compatibility and saved-processing paths were rerun against the pinned JSON adapter and the final manifest hash; synthetic source hashes are preserved. Actual Native motion, camera pixels and legal judgments remain unverified."
 }
