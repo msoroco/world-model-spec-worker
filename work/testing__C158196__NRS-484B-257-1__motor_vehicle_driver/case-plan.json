@@ -46,7 +46,7 @@
       ],
       "diagnostic_audit": {
         "receipt": "signal-comparison-audit.json",
-        "sha256": "e5e3ea04c9357150608eb3dfd5fa405b806f061dd4cbac71a5853a24ad94c380",
+        "sha256": "46b02e6eb1da396a23f5f72f01ac6f5e55b316508a225fa9d978eae8fc30beac",
         "passed": true,
         "physical_acceptance_claimed": false
       }
@@ -65,7 +65,7 @@
       ],
       "diagnostic_audit": {
         "receipt": "signal-comparison-audit.json",
-        "sha256": "e5e3ea04c9357150608eb3dfd5fa405b806f061dd4cbac71a5853a24ad94c380",
+        "sha256": "46b02e6eb1da396a23f5f72f01ac6f5e55b316508a225fa9d978eae8fc30beac",
         "passed": true,
         "physical_acceptance_claimed": false
       }
@@ -236,21 +236,29 @@
     "off_route_through_body_rejected": true
   },
   "signal_comparison_audit_proof": {
-    "status": "standalone_source_fixture_comparison_audit_checkpoint",
-    "comparison_ids": [
-      "signal_exception_control",
-      "signal_exception_state"
+    "status": "independent_source_comparison_cpu_proof",
+    "script": "comparison_audit.py",
+    "script_sha256": "0614f59de47a7405307489290d3b0f862f784b09c1de5c214b2e8d6e11b19750",
+    "receipt": "signal-comparison-audit.json",
+    "receipt_sha256": "46b02e6eb1da396a23f5f72f01ac6f5e55b316508a225fa9d978eae8fc30beac",
+    "positive_receipts": [
+      {
+        "comparison_id": "signal_exception_control",
+        "receipt": "signal-exception-control-comparison.json",
+        "sha256": "37d5c7e008e405f791038ab45166b11fa7743a8d3787e6766f95850ee0e108b9",
+        "passed": true
+      },
+      {
+        "comparison_id": "signal_exception_state",
+        "receipt": "signal-exception-state-comparison.json",
+        "sha256": "431232d177023afb4655a5e969df5bcedbfc453d1395413475cbb7ce1094ec19",
+        "passed": true
+      }
     ],
-    "source": "signal_exception_measurements.py:audit_signal_comparison",
-    "source_sha256": "a895a57433b1d375477be70b26717adf1991c868846f5966121ed2aa11422ba2",
-    "test_source": "tests/test_signal_exception.py",
-    "test_source_sha256": "cbefe0755d3565dc6a4f9bcfd8dd0df0a6e887f7398a4befd133e01d60aacc82",
-    "test_log": "cpu-tests.log",
-    "test_log_sha256": "61098ce8b00b5893fe77435014f03caa220b865bdfc8c07d8e50304be708be5b",
-    "fixed_intersection_routes_and_camera_profile_checked": true,
-    "negative_changed_intersection_profile_and_state_rejected": true,
-    "canonical_comparison_receipt_passed": false,
-    "physical_or_legal_acceptance_claimed": false
+    "negative_log": "signal-comparison-tamper-negative.log",
+    "negative_log_sha256": "35e8018536563db5e774cbcd3ec2a94d149729bb7b8067686bfa60c2a6f0f935",
+    "negative_expected_error": "Sealed comparison source hash differs",
+    "physical_acceptance_claimed": false
   },
   "primary_runner_draft_proof": {
     "status": "draft_native_entrypoint_cpu_checkpoint",
@@ -748,12 +756,91 @@
     "stage_count": 10,
     "semantic_index": "proposals/semantic-index.json",
     "semantic_index_sha256": "dc3886fd139ee649aca231e0be5c12b277e7374d65d2a065c5da7d7ead89c351",
-    "manifest_sha256": "a93ca56d9a0248397de534df0d5a8a3f0a78ad8117792d01fd8e358242133fb6",
+    "manifest_sha256": "6fa25055239bdc63d64b4de8689d7bf6b000d1e52e25baa1567dd05d6f55e5f9",
     "log": "semantic-stage-proof.log",
     "log_sha256": "56a40816350696eb37b5468da14aa32582f2981ebc3606c46e9250658ae42912",
     "exit_code": 0,
     "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/validate_semantic.py",
     "script": "validate_semantic.py",
     "script_sha256": "99edcde1064118a5b85136e4e41776c34955084907f7f529c283435a5bf48b7f"
+  },
+  "delivery_audit_proof": {
+    "status": "four_exact_cases_positive_diagnostic_and_negative_native_cpu_proved",
+    "script": "delivery_audit.py",
+    "script_sha256": "25701cfca5b22d7541e2511dd0a4212649a3533834ffdb29e6d69b888b4d878c",
+    "manifest_sha256": "f5316c7382329f7bc0329793e0d5623a3e31bc825c47a0457ad576f0f3100ad1",
+    "cases": [
+      {
+        "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_controls_ego",
+        "test_log": "signal_controls_ego-delivery-positive.log",
+        "test_log_sha256": "d57cf8ae9b69cff46682d723325bfda8e3bbb80962b2dc7f3535cb8cadb327c9",
+        "negative_log": "signal_controls_ego-delivery-negative.log",
+        "negative_log_sha256": "d1a223d4f43ab1239e0af4bc905026563af773b730eee8e7cbfaa63007b63263",
+        "negative_expected_error": "Native source provenance required"
+      },
+      {
+        "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_off",
+        "test_log": "signal_off-delivery-positive.log",
+        "test_log_sha256": "a7fb905e7ac7e98f41f3af36cf7559cb651933e8fbe8419ad87d2afb8b62f7d6",
+        "negative_log": "signal_off-delivery-negative.log",
+        "negative_log_sha256": "d1a223d4f43ab1239e0af4bc905026563af773b730eee8e7cbfaa63007b63263",
+        "negative_expected_error": "Native source provenance required"
+      },
+      {
+        "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_visible_not_governing",
+        "test_log": "signal_visible_not_governing-delivery-positive.log",
+        "test_log_sha256": "437a869df59bddd4f08e3c207ead8cca23cffb0efa0b6fe947306e044f5aa3ec",
+        "negative_log": "signal_visible_not_governing-delivery-negative.log",
+        "negative_log_sha256": "d1a223d4f43ab1239e0af4bc905026563af773b730eee8e7cbfaa63007b63263",
+        "negative_expected_error": "Native source provenance required"
+      },
+      {
+        "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__yield_without_signal_control",
+        "test_log": "yield_without_signal_control-delivery-positive.log",
+        "test_log_sha256": "51ac49b4dd1daadc63af397d94f561e87302b128e0811f9ad8cbeb886aa09309",
+        "negative_log": "yield_without_signal_control-delivery-negative.log",
+        "negative_log_sha256": "d1a223d4f43ab1239e0af4bc905026563af773b730eee8e7cbfaa63007b63263",
+        "negative_expected_error": "Native source provenance required"
+      }
+    ],
+    "tamper_negative_log": "delivery-tamper-negative.log",
+    "tamper_negative_sha256": "284da972d5630f32b92db0e9be5a8038ad907fa1e9f475b4067e1d6267ffc2e4",
+    "physical_acceptance_claimed": false
+  },
+  "physical_preparation_proof": {
+    "status": "four_exact_cases_cpu_fixture_classifier_and_lifecycle_passed",
+    "manifest_sha256": "6fa25055239bdc63d64b4de8689d7bf6b000d1e52e25baa1567dd05d6f55e5f9",
+    "script": "physical_fixture_proof.py",
+    "script_sha256": "047c74dfb549b92c6d476c7772d44404b30a1e8372df5e4e15032a69340c023c",
+    "orchestrator": "prove_physical_fixtures.py",
+    "orchestrator_sha256": "a613056226f91a02927e099ade5a66a8b3390084ef0024769c07c9a6418ed48f",
+    "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/prove_physical_fixtures.py",
+    "log": "physical-fixture-proof.log",
+    "log_sha256": "11921bdfc3f33fccae1737326dcd31a58a43ae23d8e267ebb7ced9c3f7ca1beb",
+    "exit_code": 0,
+    "cases": [
+      {
+        "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_controls_ego",
+        "receipt": "physical-proofs/signal_controls_ego/receipt.json",
+        "sha256": "dbb63edfc9e25ee1591faf025a577ac8f7965745187e4214ad9742b9074322ac"
+      },
+      {
+        "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_off",
+        "receipt": "physical-proofs/signal_off/receipt.json",
+        "sha256": "f5b16f59f00b24d6399db84100441e18a05c8fa0f2ccdb843c0c42e129dc929d"
+      },
+      {
+        "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_visible_not_governing",
+        "receipt": "physical-proofs/signal_visible_not_governing/receipt.json",
+        "sha256": "d7009c74171ff720a952adf5fdf63752bd2315de6780edb4f392e50939c8b6b9"
+      },
+      {
+        "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__yield_without_signal_control",
+        "receipt": "physical-proofs/yield_without_signal_control/receipt.json",
+        "sha256": "11d9003bcc8f1dfb75b3e8fbc959e41771f58303c94d8c8775710a77ef71deda"
+      }
+    ],
+    "diagnostic_fixture": true,
+    "physical_acceptance_claimed": false
   }
 }
