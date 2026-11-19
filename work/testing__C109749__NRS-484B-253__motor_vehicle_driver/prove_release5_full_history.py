@@ -34,7 +34,7 @@ from prove_far_approach_history import actor, make_sources, source_rows, write_j
 from worker_exchange.media import audit as decode
 
 CASE = ROOT.name + '__approaching_release_5s'
-SOURCE = REPO / '.runtime-work/c109749-district-delivery-current-11-v2/positive/attempt'
+SOURCE = REPO / '.runtime-work/c109749-cutover-delivery-v2-11-positive/attempt'
 OUTPUT = REPO / '.runtime-work/c109749-release5-full-history-v1'
 INDEX = ROOT / 'district-integration-draft-proof.json'
 

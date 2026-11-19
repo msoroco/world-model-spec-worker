@@ -79,8 +79,16 @@ def check_fixed_config(yield_config, no_yield_config):
 
 def compare(yield_recipe, no_yield_recipe):
     yfiles, nfiles = _load(yield_recipe), _load(no_yield_recipe)
-    if yfiles['intersection_geometry.json'] != nfiles['intersection_geometry.json']:
+    ygeometry = json.loads(yfiles['intersection_geometry.json'])
+    ngeometry = json.loads(nfiles['intersection_geometry.json'])
+    provenance = {'geometry_source', 'boundary_limit', 'native_map_id'}
+    if ({key: value for key, value in ygeometry.items() if key not in provenance} !=
+            {key: value for key, value in ngeometry.items() if key not in provenance}):
         raise ValueError('Fixed junction geometry differs')
+    for geometry in (ygeometry, ngeometry):
+        if ('synthetic' not in geometry.get('geometry_source', '').lower()
+                or geometry.get('legal_intersection_status') != 'unverified'):
+            raise ValueError('Diagnostic geometry provenance missing')
     if yfiles['video_frames.jsonl'] != nfiles['video_frames.jsonl']:
         raise ValueError('Fixed original frame map differs')
     yrows = [json.loads(line) for line in yfiles['interaction_history.jsonl'].splitlines() if line]

@@ -11,7 +11,7 @@ from hazard_sweep_policy import HazardSweepPolicy
 
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
-SOURCE = REPO / '.runtime-work/c109749-district-delivery-current-11-v2/positive/attempt'
+SOURCE = REPO / '.runtime-work/c109749-cutover-delivery-v2-11-positive/attempt'
 INDEX = ROOT / 'district-integration-draft-proof.json'
 FRAME = 38074
 
