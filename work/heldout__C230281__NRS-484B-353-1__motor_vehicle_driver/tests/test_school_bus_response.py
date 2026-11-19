@@ -21,6 +21,39 @@ def corners(x):
 
 
 class SourceResponse(unittest.TestCase):
+    def test_returned_restart_diagnostic_has_source_bound_temporal_change(self):
+        package = Path(__file__).resolve().parents[1]
+        spec_path = package/'school-bus-restart-diagnostic.json'
+        recipe = json.loads((package/'school-bus-restart-recipe.json').read_text())
+        self.assertEqual(recipe['generator']['sha256'], hashlib.sha256(spec_path.read_bytes()).hexdigest())
+        spec = json.loads(spec_path.read_text())
+        files = spec['files']
+        inventory = json.loads(files['native-acquisition-inventory.json'])
+        self.assertTrue(inventory['case_id'].endswith('__meeting_restart_before_red_ceases'))
+        for name, expected in inventory['source_sha256'].items():
+            if name in files:
+                self.assertEqual(hashlib.sha256(files[name].encode()).hexdigest(), expected)
+        def rows(name):
+            return [json.loads(line) for line in files[name].splitlines()]
+        motion, signal, trace = (rows(name) for name in
+                                 ('motion_original.jsonl', 'signal_command_original.jsonl', 'trace.jsonl'))
+        self.assertEqual(len(motion), 160)
+        self.assertEqual([r['frame'] for r in motion], inventory['frames'])
+        self.assertEqual([(r['frame'], r['time_s']) for r in motion],
+                         [(r['frame'], r['time_s']) for r in signal])
+        self.assertEqual([(r['frame'], r['time_s']) for r in motion],
+                         [(r['frame'], r['time_s']) for r in trace])
+        self.assertEqual(signal[79]['red_signal_commanded'], True)
+        self.assertEqual(signal[119]['red_signal_commanded'], True)
+        self.assertEqual(signal[120]['red_signal_commanded'], False)
+        self.assertEqual(motion[79]['subject_speed_mps'], 0)
+        self.assertEqual(motion[80]['subject_speed_mps'], 2)
+        self.assertEqual(motion[119]['subject_speed_mps'], 2)
+        self.assertEqual(motion[80]['subject_corners'][0][0],
+                         trace[80]['position_m'][0] - 1)
+        self.assertEqual(spec['graphs'][80]['attributes']['observed_evidence']
+                         ['rgb_sensors'][0]['position_m'], trace[80]['position_m'])
+
     def test_returned_first_case_proof_bundle(self):
         package = Path(__file__).resolve().parents[1]
         proof = json.loads((package/'first-case-proof-bundle.json').read_text())
