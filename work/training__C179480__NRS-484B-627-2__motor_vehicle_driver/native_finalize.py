@@ -170,8 +170,12 @@ def finalize(attempt, output):
     if case == 'law_required_stop' and (
             not control or control['sample_count'] != len(rows)):
         raise ValueError('Law-required original control observation absent')
+    if case == 'law_required_stop':
+        matched = matched and control['source_visible_stop_requirement']
     target = {
-        'target': 'sampled complete stop with requested travel-lane footprint overlap',
+        'target': ('sampled complete roadway stop with associated red control'
+                   if case == 'law_required_stop' else
+                   'sampled complete stop with requested travel-lane footprint overlap'),
         'requested': EXPECTED_OVERLAP[case], 'measured': overlap,
         'method': ('diagnostic synthetic actor/body/lane and synchronized frame map'
                    if source_kind == SYNTHETIC else

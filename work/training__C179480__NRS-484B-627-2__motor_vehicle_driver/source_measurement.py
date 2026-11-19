@@ -121,6 +121,8 @@ def analyze_hazard(path, frame_map_path, *, source_kind='original_carla_actor_an
 def analyze_control(path, frame_map_path, *, expected_control_id=None,
                     source_kind='original_carla_actor_and_map_readback'):
     """Retain observed control/ego association without inferring legal compliance."""
+    if type(expected_control_id) is not int:
+        raise ValueError('Surveyed governing-control actor ID is missing')
     rows = load_rows(path, frame_map_path)
     ids = set()
     associated = []
@@ -137,8 +139,7 @@ def analyze_control(path, frame_map_path, *, expected_control_id=None,
                     type(state['ego_associated_control_id']) is not int)):
             raise ValueError('Missing original governing-control readback')
         ids.add(state['control_actor_id'])
-        if (expected_control_id is not None and
-                state['control_actor_id'] != expected_control_id):
+        if state['control_actor_id'] != expected_control_id:
             raise ValueError('Governing control differs from surveyed actor')
         linked = (state['ego_at_control'] and
                   state['ego_associated_control_id'] == state['control_actor_id'])

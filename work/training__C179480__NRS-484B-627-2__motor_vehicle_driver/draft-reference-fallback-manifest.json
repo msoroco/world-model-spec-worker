@@ -1,0 +1,78 @@
+{
+  "assignment_id": "training__C179480__NRS-484B-627-2__motor_vehicle_driver",
+  "cases": [
+    {
+      "candidate_risk": {
+        "reason": "Surveyed spawn, stop overshoot and follower closing are measured risks",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "ego_spawn_longitudinal_m",
+            "follower_spawn_longitudinal_m"
+          ],
+          "construction": "draft-reference-fallback1-construction.json",
+          "construction_sha256": "5f35e13d962bc16d69dbaa9ab95e6a923fb59c5f41599be42de1c511f00c6e3f",
+          "id": "fallback1",
+          "trigger": {
+            "changed_knobs": [
+              "ego_spawn_longitudinal_m",
+              "follower_spawn_longitudinal_m"
+            ],
+            "failure_condition": "primary spawn is occupied or starts in collision",
+            "metric": "ego or follower spawn clearance",
+            "source": "Native spawn occupancy/actor collision readback"
+          }
+        },
+        {
+          "changed_knobs": [
+            "approach_speed_mps",
+            "stop_radius_m"
+          ],
+          "construction": "draft-reference-fallback2-construction.json",
+          "construction_sha256": "3dd0e31d4a3be19e51c30b8f3013413d7dffa1e70857c5cefb72ad13dc94b5ec",
+          "id": "fallback2",
+          "trigger": {
+            "changed_knobs": [
+              "approach_speed_mps",
+              "stop_radius_m"
+            ],
+            "failure_condition": "primary passes the stop target before a sampled complete stop",
+            "metric": "stop overshoot distance from surveyed target",
+            "source": "original ego stop position and velocity history"
+          }
+        },
+        {
+          "changed_knobs": [
+            "follower_spawn_longitudinal_m",
+            "follower_brake_gap_m"
+          ],
+          "construction": "draft-reference-fallback3-construction.json",
+          "construction_sha256": "5f2cdbcbab313e1cc3a0d5455ced1c1ecc4dacf89e649217f1a66a8fc5f1d315",
+          "id": "fallback3",
+          "trigger": {
+            "changed_knobs": [
+              "follower_spawn_longitudinal_m",
+              "follower_brake_gap_m"
+            ],
+            "failure_condition": "primary follower closes below safe engineering gap or contacts ego",
+            "metric": "following approach gap and contact",
+            "source": "original follower speed, gap and collision history"
+          }
+        }
+      ],
+      "case_id": "training__C179480__NRS-484B-627-2__motor_vehicle_driver__reference",
+      "construction": "construction.json",
+      "construction_sha256": "cbcc910bd3864942c9af83a06a72005efec22a20d262d4cce2bbb320be6f2ba0",
+      "fixture_recipe": "work/training__C179480__NRS-484B-627-2__motor_vehicle_driver/draft-reference-diagnostic-recipe.json",
+      "measurement_contract": "draft-reference-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "native_finalize.py"
+      }
+    }
+  ],
+  "format": "worker-execution-manifest",
+  "runtime_manifest_sha256": "5b4738624542c97f321a302bd49b9ec154cb2cf63778acf64ba6042f8d5b4fd3",
+  "status": "draft_fallback_offline_only"
+}

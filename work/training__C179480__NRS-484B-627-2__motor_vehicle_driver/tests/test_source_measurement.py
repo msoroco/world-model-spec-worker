@@ -60,6 +60,8 @@ class SourceMeasurementTest(unittest.TestCase):
             result = module.analyze_control(source, mapping,
                                             expected_control_id=501)
             self.assertEqual(result['associated_red_frames'], [103])
+            with self.assertRaisesRegex(ValueError, 'actor ID is missing'):
+                module.analyze_control(source, mapping)
             self.assertEqual(result['compliance_with_law'],
                              'independent_original_source_review_required')
             rows[2]['governing_control_state']['ego_associated_control_id'] = 777
