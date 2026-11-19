@@ -60,7 +60,7 @@ def main():
                            'position_m': trace['position_m'], 'heading_deg': 0.0,
                            'speed_mps': speed, 'velocity_mps': [speed, 0.0, 0.0],
                            'body_vertices_m': body3, 'accel_longitudinal_mps2': 0.0}
-            observations = {'frame': frame, 'time_s': when, 'participants': [participant],
+            observations = {'frame': frame, 'time_s': when, 'participants': [],
                             'devices': [], 'relations': [],
                             'participant_inventory': 'C158196 synthetic saved-processing diagnostic',
                             'map_context': {}}
@@ -73,10 +73,7 @@ def main():
                               'speed_provenance': 'synthetic_native_sample'},
                       'world': {'road_projection': {'road_id': row['road_id'],
                                                     'lane_id': row['lane_id'],
-                                                    'section_id': 0, 's_m': float(frame)},
-                                'weather': {'cloudiness': 0, 'fog_density': 0,
-                                            'precipitation': 0, 'precipitation_deposits': 0,
-                                            'sun_altitude_angle': 45, 'wetness': 0}},
+                                                    'section_id': 0, 's_m': float(frame)}},
                       'timing': {}, 'visibility': {}}
             evidence.write(json.dumps(packet, separators=(',', ':'), allow_nan=False) + '\n')
             relative = {}

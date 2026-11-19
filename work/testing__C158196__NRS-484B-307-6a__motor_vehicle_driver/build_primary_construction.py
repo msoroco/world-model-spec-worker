@@ -60,6 +60,7 @@ def main():
                                               'reason': 'Native head may not govern ego lane or remain visible in original forward cameras; timing policy may miss body entry.'},
                            'candidates': [],
                            'measurement_contract': 'measurement-contract.json',
+                           'fixture_recipe': 'work/' + ASSIGNMENT + '/primary-fixture-recipe.json',
                            'measurement_procedure': {'entrypoint': 'yellow_red_finalizer.py'},
                            'native_handoff': {'python_env_var': 'CARLA_PYTHON',
                                               'host_env_var': 'CARLA_HOST',
@@ -72,6 +73,32 @@ def main():
                         ' --output .runtime-work/c158196-yellow-red-primary-offline-v5'),
             'construction_sha256': sha(construction_path), 'exit_code': 0,
             'log': 'primary-offline-v5.log', 'log_sha256': sha(offline_log)}
+    compatibility = HERE / 'primary-compatibility.json'
+    if compatibility.is_file():
+        entry = manifest['cases'][0]
+        entry['compatibility'] = {
+            'receipt': 'primary-compatibility.json', 'sha256': sha(compatibility),
+            'log': 'primary-compatibility-analysis.log',
+            'replay_command': ('.venv-cpu/bin/python runtime.py compatibility --manifest work/' +
+                               ASSIGNMENT + '/execution-manifest.json --case ' + CASE +
+                               ' --output .runtime-work/c158196-yellow-red-compatibility-v2' +
+                               ' --library runtime/library --validator ' +
+                               '.runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck')}
+        entry['negative'] = {'log': 'primary-negative-analysis.log'}
+        entry['acquisition'] = {
+            name: {'entrypoint': 'yellow_red_finalizer.py',
+                   'method': method, 'evidence': evidence}
+            for name, method, evidence in (
+                ('signal_state', 'original same-frame Native signal readback',
+                 ['signal_vehicle_history.jsonl', 'video_frames.jsonl']),
+                ('ego_body_vertices_xy_m', 'original complete body vertices',
+                 ['signal_vehicle_history.jsonl', 'junction_context.json']),
+                ('ego_body_in_intersection', 'saved body-polygon intersection overlap',
+                 ['signal_vehicle_history.jsonl', 'junction_context.json']),
+                ('ego_approach_speed', 'original same-frame ego speed readback',
+                 ['signal_vehicle_history.jsonl', 'video_frames.jsonl']),
+                ('junction_signal_context', 'saved governing head and lane context join',
+                 ['junction_context.json', 'signal_vehicle_history.jsonl']))}
     write(HERE / 'execution-manifest.json', manifest)
     print(json.dumps({'case_id': CASE, 'construction_sha256': sha(construction_path),
                       'manifest_sha256': sha(HERE / 'execution-manifest.json'),
