@@ -8,6 +8,9 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
 sys.path.insert(0, str(HERE))
+sys.path.insert(0, str(REPO / 'runtime/scenario_pipeline'))
+from batch_pipeline.validation import recording_evidence
+from worker_exchange.measurement_contract import validate as validate_contract, verify_report
 from yellow_red_finalizer import finalize
 from yellow_red_policy import CASES
 
@@ -52,6 +55,14 @@ def main():
         attempt = stage(suffix)
         report = finalize(attempt, attempt / 'analysis-report.json')
         result = json.loads((attempt / 'result.json').read_text())
+        recording_evidence(result, json.loads((attempt / 'config.json').read_text())['recording_description'],
+                           lambda ref: attempt / ref)
+        if suffix == 'entry_before_red':
+            contract = json.loads((HERE / 'measurement-contract.json').read_text())
+            dispositions = json.loads((HERE / 'case-plan.json').read_text())['requirement_dispositions']
+            validate_contract(contract, dispositions, (HERE / 'yellow_red_finalizer.py').read_text(),
+                              result['case_id'])
+            verify_report(contract, report, attempt)
         onset = report['source_report']['yellow_to_red_onset']['frame']
         entry = report['source_report']['first_body_entry']
         frame = None if entry is None else entry['frame']

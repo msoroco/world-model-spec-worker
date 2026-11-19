@@ -59,18 +59,19 @@ def main():
                            'candidate_risk': {'status': 'physical',
                                               'reason': 'Native head may not govern ego lane or remain visible in original forward cameras; timing policy may miss body entry.'},
                            'candidates': [],
+                           'measurement_contract': 'measurement-contract.json',
                            'measurement_procedure': {'entrypoint': 'yellow_red_finalizer.py'},
                            'native_handoff': {'python_env_var': 'CARLA_PYTHON',
                                               'host_env_var': 'CARLA_HOST',
                                               'port_env_var': 'CARLA_PORT'}}]}
-    offline_log = HERE / 'primary-offline-v2.log'
+    offline_log = HERE / 'primary-offline-v5.log'
     if offline_log.is_file():
         manifest['cases'][0]['offline'] = {
             'command': ('.venv-cpu/bin/python runtime.py offline --manifest work/' +
                         ASSIGNMENT + '/execution-manifest.json --case ' + CASE +
-                        ' --output .runtime-work/c158196-yellow-red-primary-offline-v2'),
+                        ' --output .runtime-work/c158196-yellow-red-primary-offline-v5'),
             'construction_sha256': sha(construction_path), 'exit_code': 0,
-            'log': 'primary-offline-v2.log', 'log_sha256': sha(offline_log)}
+            'log': 'primary-offline-v5.log', 'log_sha256': sha(offline_log)}
     write(HERE / 'execution-manifest.json', manifest)
     print(json.dumps({'case_id': CASE, 'construction_sha256': sha(construction_path),
                       'manifest_sha256': sha(HERE / 'execution-manifest.json'),

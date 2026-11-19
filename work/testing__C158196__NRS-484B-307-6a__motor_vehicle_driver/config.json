@@ -9,7 +9,9 @@
     "criterion": "intersection_clearance",
     "motion_source": "signal_vehicle_history.jsonl",
     "body_key": "ego_body_vertices_xy_m",
-    "context_sources": ["junction_context.json"],
+    "context_sources": [
+      "junction_context.json"
+    ],
     "exit_axis": 0,
     "exit_sign": 1,
     "minimum_progress_m": 0.25
@@ -217,20 +219,116 @@
   "case": {
     "case_id": "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__entry_before_red",
     "recording_description": {
-      "purpose": "Observe Native Green-to-Yellow-to-Red indication and complete ego-body intersection entry or stop across four original cameras",
-      "source_channels": [
-        "signal_vehicle_history.jsonl",
-        "video_frames.jsonl",
-        "junction_context.json"
+      "channels": [
+        {
+          "name": "signal_state",
+          "unit": "text",
+          "method": "Original same-frame Native governing signal state readback",
+          "uncertainty": "Physical head indication and official governance require original-camera and site review",
+          "time_window": "original 20 Hz 45-second capture",
+          "reference_frame": "Native map and original camera frames",
+          "sampling_rate_hz": 20
+        },
+        {
+          "name": "ego_body_vertices_xy_m",
+          "unit": "structured record",
+          "method": "Original same-frame complete ego body vertices in sourced junction coordinates",
+          "uncertainty": "Body geometry depends on Native actor and map registration",
+          "time_window": "original 20 Hz 45-second capture",
+          "reference_frame": "Native map and original camera frames",
+          "sampling_rate_hz": 20
+        },
+        {
+          "name": "ego_body_in_intersection",
+          "unit": "boolean",
+          "method": "Saved polygon overlap of complete original ego body against sourced junction polygon",
+          "uncertainty": "Geometric overlap does not settle the statutory entry reference point",
+          "time_window": "original 20 Hz 45-second capture",
+          "reference_frame": "Native map and original camera frames",
+          "sampling_rate_hz": 20
+        },
+        {
+          "name": "ego_approach_speed",
+          "unit": "m/s",
+          "method": "Original same-frame ego speed readback from retained Native history",
+          "uncertainty": "Speed alone does not establish yellow stopping feasibility",
+          "time_window": "original 20 Hz 45-second capture",
+          "reference_frame": "Native map and original camera frames",
+          "sampling_rate_hz": 20
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "junction_signal_context",
+          "unit": "structured record",
+          "method": "Saved join of original Native signal identity, affected approach lane, authored junction polygon and four source-camera references",
+          "source_refs": [
+            "junction_context.json",
+            "signal_vehicle_history.jsonl",
+            "video_frames.jsonl"
+          ],
+          "uncertainty": "Official governance and physical head visibility remain unresolved"
+        }
+      ],
+      "limitations": [
+        "CPU construction and synthetic diagnostic sources do not establish Native head visibility, physical timing, yellow stopping feasibility or legal compliance"
       ]
     }
   },
   "recording_description": {
-    "purpose": "Observe Native Green-to-Yellow-to-Red indication and complete ego-body intersection entry or stop across four original cameras",
-    "source_channels": [
-      "signal_vehicle_history.jsonl",
-      "video_frames.jsonl",
-      "junction_context.json"
+    "channels": [
+      {
+        "name": "signal_state",
+        "unit": "text",
+        "method": "Original same-frame Native governing signal state readback",
+        "uncertainty": "Physical head indication and official governance require original-camera and site review",
+        "time_window": "original 20 Hz 45-second capture",
+        "reference_frame": "Native map and original camera frames",
+        "sampling_rate_hz": 20
+      },
+      {
+        "name": "ego_body_vertices_xy_m",
+        "unit": "structured record",
+        "method": "Original same-frame complete ego body vertices in sourced junction coordinates",
+        "uncertainty": "Body geometry depends on Native actor and map registration",
+        "time_window": "original 20 Hz 45-second capture",
+        "reference_frame": "Native map and original camera frames",
+        "sampling_rate_hz": 20
+      },
+      {
+        "name": "ego_body_in_intersection",
+        "unit": "boolean",
+        "method": "Saved polygon overlap of complete original ego body against sourced junction polygon",
+        "uncertainty": "Geometric overlap does not settle the statutory entry reference point",
+        "time_window": "original 20 Hz 45-second capture",
+        "reference_frame": "Native map and original camera frames",
+        "sampling_rate_hz": 20
+      },
+      {
+        "name": "ego_approach_speed",
+        "unit": "m/s",
+        "method": "Original same-frame ego speed readback from retained Native history",
+        "uncertainty": "Speed alone does not establish yellow stopping feasibility",
+        "time_window": "original 20 Hz 45-second capture",
+        "reference_frame": "Native map and original camera frames",
+        "sampling_rate_hz": 20
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "junction_signal_context",
+        "unit": "structured record",
+        "method": "Saved join of original Native signal identity, affected approach lane, authored junction polygon and four source-camera references",
+        "source_refs": [
+          "junction_context.json",
+          "signal_vehicle_history.jsonl",
+          "video_frames.jsonl"
+        ],
+        "uncertainty": "Official governance and physical head visibility remain unresolved"
+      }
+    ],
+    "limitations": [
+      "CPU construction and synthetic diagnostic sources do not establish Native head visibility, physical timing, yellow stopping feasibility or legal compliance"
     ]
   }
 }
