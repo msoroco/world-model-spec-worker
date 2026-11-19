@@ -44,7 +44,8 @@ def audit(case, negative=False):
     if negative:
         reviews['approach'] = 'stale'
     for name in CAMERAS:
-        if (delivery['source_video_sha256'].get(name) != reviews[name] or
+        if (not delivery['source_video_sha256'].get(name) or
+                delivery.get('source_video_fingerprint_sha256', {}).get(name) != reviews[name] or
                 compat['fixture_manifest'][name + '.mkv'] != reviews[name]):
             raise ValueError('Missing original-pixel review: ' + name)
     physical_spec = entry.get('physical_preparation', {})
