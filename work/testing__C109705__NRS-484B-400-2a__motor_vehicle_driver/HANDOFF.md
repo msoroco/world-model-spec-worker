@@ -102,3 +102,7 @@ Three historical fallback analysis logs had bytes identical to `primary-compatib
 ## 2026-11-19 second historical log consolidation
 
 Six more historical fallback analysis logs were byte-identical to their retained `second-analysis.log` or `imaginary-near-analysis.log` copies. Their manifest log paths now reference the retained copies; no analysis-log bytes were lost. The 2a scoped non-ready complete check still passes. This freed returned-file slots for the 2b marked-far diagnostic and current receipts.
+
+## 2026-11-19 final byte-identical historical analysis consolidation
+
+The three `imaginary-far-fallback{1,2,3}-analysis.log` files were byte-identical to retained `imaginary-far-analysis.log` (SHA-256 `f4a97e56b193012012a9b1d217651cb8894bcf4836c4ed25df225aa4b1035635`); their manifest paths now reference that copy. No log bytes were lost. The 2a scoped non-ready complete check passes; status remains partial.
