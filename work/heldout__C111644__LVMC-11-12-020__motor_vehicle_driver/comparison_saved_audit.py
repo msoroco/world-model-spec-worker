@@ -77,10 +77,11 @@ def source_case(entry, audit):
             "source_frame_count": len(body), "missing_body_rejected": True}
 
 
-def audit():
+def audit(source_audits=None, comparison_id=None):
     manifest = read(HERE / "execution-manifest.json")
     plan = read(HERE / "case-plan.json")
-    source = read(HERE / "all-ten-current-source-audits.json")
+    source_path = Path(source_audits or HERE / "all-ten-current-source-audits.json")
+    source = read(source_path)
     entries = {item["case_id"]: item for item in manifest["cases"]}
     source_rows = {item["case_id"]: item for item in source["cases"]}
     require(set(entries) == set(source_rows) and len(entries) == 10,
@@ -90,6 +91,8 @@ def audit():
     results = []
     for comparison in plan["comparisons"]:
         ident = comparison["comparison_id"]
+        if comparison_id and ident != comparison_id:
+            continue
         members = [cases[case] for case in comparison["case_ids"]]
         require(len(members) == len(set(comparison["case_ids"])),
                 "Duplicate comparison member")
@@ -145,10 +148,11 @@ def audit():
                         "missing_original_body_rejected": all(x["missing_body_rejected"]
                                                              for x in members),
                         "result": result, "passed": True})
-    require(len(results) == 8, "All eight selected comparisons required")
+    require(len(results) == (1 if comparison_id else 8),
+            "Selected comparison coverage differs")
     return {"format": "worker-current-saved-turn-comparison-audit",
             "assignment_id": HERE.name, "passed": True,
-            "source_audits_sha256": sha256((HERE / "all-ten-current-source-audits.json").read_bytes()).hexdigest(),
+            "source_audits_sha256": sha256(source_path.read_bytes()).hexdigest(),
             "comparisons": results, "native_motion_claimed": False,
             "physical_acceptance_claimed": False, "legal_acceptance_claimed": False}
 
@@ -156,7 +160,12 @@ def audit():
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--source-audits", type=Path)
+    parser.add_argument("--comparison")
+    parser.add_argument("--assignment")
     args = parser.parse_args()
-    result = audit()
+    if args.assignment and args.assignment != HERE.name:
+        raise ValueError("Comparison selects another assignment")
+    result = audit(args.source_audits, args.comparison)
     args.output.write_text(json.dumps(result, indent=2) + "\n")
-    print("eight_source_bound_saved_comparisons_passed")
+    print(len(result["comparisons"]), "source_bound_saved_comparisons_passed")
