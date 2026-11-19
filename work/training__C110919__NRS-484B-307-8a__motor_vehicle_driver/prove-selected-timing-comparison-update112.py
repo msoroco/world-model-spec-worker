@@ -26,11 +26,11 @@ def require(ok, reason):
 def audit(claims):
     manifest, matrix = read(MANIFEST), read(INDEX)
     entries = [entry for entry in manifest["cases"]
-               if entry["sweep_id"] == "C110919-right-of-way"]
+               if entry.get("sweep_id") == "C110919-right-of-way"]
     require(matrix["manifest_sha256"] == sha(MANIFEST) and
             len(entries) == len(claims) == 5, "Current timing matrix differs")
     receipts = {(item["case_id"], item["candidate_id"]): item for item in matrix["results"]}
-    require(len(receipts) == 40, "Complete selected sweep matrix absent")
+    require(len(receipts) == 80, "Complete selected matrix absent")
     fixed_config = None
     fixed_ego = None
     fixed_road = None
@@ -40,13 +40,16 @@ def audit(claims):
         ident = entry["case_id"]
         require(claim["case_id"] == ident and (ident, "primary") in receipts,
                 "Timing comparison case or primary receipt differs")
-        run = ROOT / ".runtime-work/c110919-update112-final-selected-matrix" / sha(MANIFEST)[:12] / ident / "primary"
+        run = ROOT / ".runtime-work/c110919-update112-final-selected-matrix" / sha(MANIFEST)[:12] / ident.removeprefix(HERE.name + "__") / "primary"
         attempt = run / "compatibility"
         config = read(attempt / "config.json")
         report = read(attempt / "analysis-report.json")
         result = read(attempt / "result.json")
         rows = [json.loads(line) for line in (attempt / "native_samples.jsonl").read_text().splitlines()]
-        receipt = receipts[ident, "primary"]
+        receipt_row = receipts[ident, "primary"]
+        receipt_path = HERE / receipt_row["proof"]
+        require(sha(receipt_path) == receipt_row["sha256"], "Candidate proof changed")
+        receipt = read(receipt_path)
         require(sha(run / "compatibility/compatibility.json") ==
                 receipt["compatibility_receipt_sha256"] and
                 sha(run / "saved/v0001/processing.json") ==
@@ -111,10 +114,10 @@ def main():
     manifest = read(MANIFEST)
     claims = []
     for entry in manifest["cases"]:
-        if entry["sweep_id"] != "C110919-right-of-way":
+        if entry.get("sweep_id") != "C110919-right-of-way":
             continue
         ident = entry["case_id"]
-        run = ROOT / ".runtime-work/c110919-update112-final-selected-matrix" / sha(MANIFEST)[:12] / ident / "primary"
+        run = ROOT / ".runtime-work/c110919-update112-final-selected-matrix" / sha(MANIFEST)[:12] / ident.removeprefix(HERE.name + "__") / "primary"
         timing = read(run / "compatibility/analysis-report.json")["measurements"]["traffic_timing_sweep"]["value"]
         claims.append({"case_id": ident, "authored_launch_frame": entry["authored_traffic_launch_frame"],
                        "observed_traffic_first_frame": timing["observed_traffic_first_frame"],

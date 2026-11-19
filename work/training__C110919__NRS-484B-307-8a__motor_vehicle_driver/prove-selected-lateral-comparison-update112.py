@@ -18,13 +18,13 @@ def require(ok,message):
 def prove(manifest,index):
     require(index['manifest_sha256']==sha(MANIFEST),'Lateral matrix source differs')
     ordered=sorted((e for e in manifest['cases']
-                    if e['sweep_id']=='C110919-extreme-right'),
+            if e.get('sweep_id')=='C110919-extreme-right'),
                    key=lambda e:e['authored_lateral_right_offset_m'])
     require(len(ordered)==5,'Selected lateral case set differs')
     records=[]
     for entry in ordered:
         ident=entry['case_id']
-        run=ROOT/'.runtime-work/c110919-update112-final-selected-matrix'/sha(MANIFEST)[:12]/ident/'primary'
+        run=ROOT/'.runtime-work/c110919-update112-final-selected-matrix'/sha(MANIFEST)[:12]/ident.removeprefix(HERE.name+'__')/'primary'
         source=run/'compatibility/native_samples.jsonl'
         report=read(run/'compatibility/analysis-report.json')
         data=rows(source)
@@ -65,7 +65,7 @@ def main():
     except ValueError as error:negative['wrong_matrix_source']=str(error)
     else:raise AssertionError('Changed source matrix accepted')
     wrong=copy.deepcopy(manifest)
-    next(e for e in wrong['cases'] if e['sweep_id']=='C110919-extreme-right')['authored_lateral_right_offset_m']=9
+    next(e for e in wrong['cases'] if e.get('sweep_id')=='C110919-extreme-right')['authored_lateral_right_offset_m']=9
     try:prove(wrong,index)
     except ValueError as error:negative['changed_authored_control']=str(error)
     else:raise AssertionError('Changed authored control accepted')
