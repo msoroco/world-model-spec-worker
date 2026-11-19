@@ -159,11 +159,11 @@
     "supported_reuses": []
   },
   "observations": [
-    "both intersecting roads have opposite-direction driving lanes, source-verified highway status",
-    "destination marked or imaginary centerline, right-half polygon and junction boundary",
-    "complete-body original-frame entry then exit on outgoing road",
-    "exit body right-half containment and body-centerline clearance",
-    "controlled near/far comparison; no invented lateral legal cutoff"
+    {
+      "name": "destination_exit",
+      "mandatory": true,
+      "description": "both intersecting roads have opposite-direction driving lanes, source-verified highway status; destination marked or imaginary centerline, right-half polygon and junction boundary; complete-body original-frame entry then exit on outgoing road; exit body right-half containment and body-centerline clearance; controlled near/far comparison; no invented lateral legal cutoff"
+    }
   ],
   "sources": [
     {
@@ -320,5 +320,32 @@
       "measurement_or_context": "approach/connector/destination road transitions",
       "limitation": "synthetic CPU diagnostic does not establish actual Native or legal fact"
     }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "complete body, junction, and sourced destination centerline",
+        "interval": "approach through complete destination exit"
+      },
+      {
+        "view": "approach",
+        "subject": "full vehicle and two-directional highway context",
+        "interval": "approach through entry"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "junction and marked or imaginary destination centerline",
+        "interval": "turn through complete exit"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "driver forward route context",
+        "interval": "approach through departure"
+      }
+    ]
   }
 }
