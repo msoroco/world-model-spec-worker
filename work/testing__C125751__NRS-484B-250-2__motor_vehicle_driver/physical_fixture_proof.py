@@ -1,7 +1,7 @@
 """C125751 source-shaped CPU proofs for physical classification and closure.
 
-Native provenance here is a classifier input in a diagnostic fixture. It is not
-evidence of a CARLA run or a physically accepted crossing.
+Synthetic provenance is a classifier input in this diagnostic fixture. It is
+not evidence of a CARLA run or a physically accepted crossing.
 """
 import argparse
 import copy
@@ -36,7 +36,7 @@ def inputs(root, folder, entry):
     write(root / "config.json", config)
     for name in ("trace.jsonl", "video_frames.jsonl", "crossing_history.jsonl"):
         shutil.copy2(source / name, root / name)
-    write(root / "acquisition-provenance.json", {"provenance_kind": "native",
+    write(root / "acquisition-provenance.json", {"provenance_kind": "synthetic_fixture",
         "diagnostic_fixture": True, "scope": "Synthetic CPU physical-classifier fixture only"})
     return construction
 

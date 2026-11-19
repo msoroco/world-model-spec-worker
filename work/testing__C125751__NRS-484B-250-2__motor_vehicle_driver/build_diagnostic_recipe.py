@@ -7,6 +7,7 @@ import hashlib
 import copy
 import argparse
 import json
+import math
 import sys
 import tempfile
 from pathlib import Path
@@ -69,14 +70,17 @@ def converter_envelope(sources, trace, stops, case_id):
         event["original_observations"].update(frame=frame, time_s=time_s)
         for actor, state, actor_id, heading in zip(
                 event["original_observations"]["participants"], (ego, other), (101, 102), (0, 90)):
+            actor_speed = stop["ego" if actor_id == 101 else "other"]["speed_mps"]
             actor.update(actor_id=actor_id, position_m=[*state["position_xy_m"], 0],
                          body_vertices_m=_body3(state["body_vertices_xy_m"]),
-                         heading_deg=heading, speed_mps=stop["ego" if actor_id == 101 else "other"]["speed_mps"])
+                         heading_deg=heading, speed_mps=actor_speed,
+                         velocity_mps=[actor_speed * math.cos(math.radians(heading)),
+                                       actor_speed * math.sin(math.radians(heading)), 0])
         evidence.append(event)
-        base = f"graphs/base/{frame:08d}.pkl"
-        abstract = f"graphs/abstract/{frame:08d}.pkl"
+        base = f"graphs/base/{frame:08d}.adapter.json"
+        abstract = f"graphs/abstract/{frame:08d}.adapter.json"
         frames.append({"frame": frame, "simulation_time": time_s, "base": base,
-                       "abstract": abstract, "nodes": 0, "edges": 0,
+                       "abstract": abstract, "adapter_graph": base, "nodes": 0, "edges": 0,
                        "extraction_seconds": 0, "capture_seconds": 0})
         for graph_path in (base, abstract):
             attributes = {"frame": frame, "simulation_time_s": time_s,
