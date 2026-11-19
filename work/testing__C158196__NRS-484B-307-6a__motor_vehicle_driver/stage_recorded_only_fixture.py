@@ -22,16 +22,20 @@ def sha(path):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--case', choices=('entry_before_red', 'entry_at_red', 'entry_after_red', 'stops_on_yellow'), default='entry_before_red')
+    parser.add_argument('--candidate', choices=('primary', 'fallback1', 'fallback2', 'fallback3'), default='primary')
     args = parser.parse_args()
     case = HERE.name + '__' + args.case
     stem = {'entry_at_red': 'at-red', 'entry_after_red': 'after-red', 'stops_on_yellow': 'yellow-stop'}.get(args.case)
-    root = REPO / ('.runtime-work/c158196-yellow-red-recorded-only' if args.case == 'entry_before_red' else '.runtime-work/c158196-yellow-red-' + stem + '-recorded-only')
+    name = 'c158196-yellow-red' + ('' if stem is None else '-' + stem)
+    if args.candidate != 'primary':
+        name += '-' + args.candidate
+    root = REPO / '.runtime-work' / (name + '-recorded-only')
     attempt = root / 'acquisition'
     source = REPO / ('.runtime-work/c158196-yellow-red-four-camera-validation/attempt' if args.case == 'entry_before_red' else '.runtime-work/c158196-yellow-red-' + stem + '-four-camera/attempt')
     if root.exists():
         shutil.rmtree(root)
     root.mkdir(parents=True)
-    materialize(HERE / 'execution-manifest.json', case, attempt)
+    materialize(HERE / 'execution-manifest.json', case, attempt, args.candidate)
     for name in ('signal_vehicle_history.jsonl', 'video_frames.jsonl', 'junction_context.json',
                  'trace.jsonl', 'acquisition-provenance.json',
                  'overview.mkv', 'approach.mkv', 'reference_corner.mkv', 'driver_reference.mkv'):
@@ -105,6 +109,7 @@ def main():
         'status': 'draft'}, indent=2) + '\n')
     print(json.dumps({'attempt': str(attempt.relative_to(REPO)),
                       'frames': len(frame_rows), 'graphs': 2 * len(frame_rows),
+                      'candidate_id': args.candidate,
                       'provenance_kind': 'synthetic_fixture'}))
 
 

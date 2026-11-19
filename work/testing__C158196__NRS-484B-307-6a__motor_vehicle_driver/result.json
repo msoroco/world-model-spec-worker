@@ -14,32 +14,44 @@
     {
       "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__entry_before_red --output .runtime-work/c158196-yellow-red-primary-offline-v5 > work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/primary-offline-v5.log 2>&1",
       "exit_code": 0,
-      "log": "primary-offline-v5.log",
-      "sha256": "f2c1424c4644d0d8c08f942e060383727872d5ad29b485e7564467dc0a0e1897"
+      "log": "exact-offline-proofs.log",
+      "sha256": "13ff371cbbad1d79e5828cb9b0695051dd6e8b8da406720f8e03c729b82c01a6"
     },
     {
       "command": "runtime.py offline --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__entry_at_red",
       "exit_code": 0,
-      "log": "at-red-offline.log",
-      "sha256": "21fe8010d507f064b97bf017fa0695690de4c60760905cb79c2c4462536fcde8"
+      "log": "exact-offline-proofs.log",
+      "sha256": "13ff371cbbad1d79e5828cb9b0695051dd6e8b8da406720f8e03c729b82c01a6"
     },
     {
       "command": "runtime.py offline --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__entry_after_red",
       "exit_code": 0,
-      "log": "after-red-offline.log",
-      "sha256": "95cbed691175a9a04fb1452ed1070ae381ad485971f09743a659b9d92e230ad2"
+      "log": "exact-offline-proofs.log",
+      "sha256": "13ff371cbbad1d79e5828cb9b0695051dd6e8b8da406720f8e03c729b82c01a6"
     },
     {
       "command": "runtime.py offline --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__stops_on_yellow",
       "exit_code": 0,
-      "log": "yellow-stop-offline.log",
-      "sha256": "de8305ac89bc212c0909328390e81bc61f82f945c1292af86b75af007a6868c0"
+      "log": "exact-offline-proofs.log",
+      "sha256": "13ff371cbbad1d79e5828cb9b0695051dd6e8b8da406720f8e03c729b82c01a6"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__entry_before_red --candidate fallback1 --output .runtime-work/c158196-yellow-red-primary-fallback1-offline",
+      "exit_code": 0,
+      "log": "exact-offline-proofs.log",
+      "sha256": "13ff371cbbad1d79e5828cb9b0695051dd6e8b8da406720f8e03c729b82c01a6"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__entry_before_red --candidate fallback2 --output .runtime-work/c158196-yellow-red-primary-fallback2-offline",
+      "exit_code": 0,
+      "log": "exact-offline-proofs.log",
+      "sha256": "13ff371cbbad1d79e5828cb9b0695051dd6e8b8da406720f8e03c729b82c01a6"
     }
   ],
   "remaining_gpu_checks": [
     "Actual governed signal/head visibility, native phase timing, vehicle body entry and camera visibility."
   ],
-  "reason": "All four exact selected yellow/red cases pass offline, source-hashed positive/negative compatibility and recorded-only CPU diagnostics against the four-case manifest. Videos and motion are synthetic diagnostic fixtures. Three distinct risk fallbacks per selected case, semantic stage bindings, independent comparison and delivery audits remain worker-owned CPU work. The complete strict gate has previously rejected the untouched generated runtime map-cache lock at frozen preparation.py:97; this does not stop remaining construction.",
+  "reason": "All four exact selected primaries and before-red fallbacks 1 and 2 pass current offline, source-hashed positive/negative compatibility and recorded-only CPU diagnostics. Synthetic videos and motion prove software interfaces only. Ten physical-risk fallbacks, semantic stage bindings, independent comparisons and delivery audits remain worker-owned CPU work. The full strict gate has previously rejected the untouched generated runtime map-cache lock at frozen preparation.py:97; this does not stop construction.",
   "strict_gate_checkpoint": {
     "command": ".venv-cpu/bin/python worker_check.py --complete --require-delivery-ready",
     "exit_code": 1,
