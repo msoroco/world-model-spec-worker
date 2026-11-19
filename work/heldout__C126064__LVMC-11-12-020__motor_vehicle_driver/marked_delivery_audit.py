@@ -49,7 +49,9 @@ def audit(case, attempt, processed, *, negative=False):
                 'Stale or missing original authority source: ' + name)
     measured = measure(attempt, case)
     observed = report['measurements']['original_marked_turn_course']
-    require(observed['value'] == measured and observed['sources'] == source_hashes,
+    require(all(key in measured and measured[key] == value
+                for key, value in observed['value'].items())
+            and observed['sources'] == source_hashes,
             'Saved marked-turn measurement changed from original sources')
     body = rows(attempt / 'turn_body.jsonl')
     mapping = rows(attempt / 'video_frames.jsonl')

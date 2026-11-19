@@ -347,3 +347,9 @@ Result-only historical log reconciliation, 2026-11-16: 1 exact UTF-8 logs were S
 ## 2026-11-16 lossless proof-log curation
 
 Thirty-six distinct fallback offline logs were consolidated into `fallback-offline-combined.log` (SHA-256 `c44754767533c4e9dc5a69bebb75dd4a6d3a639d01a9835ea430370cf65315e6`), with full original bytes and per-file hashes identified in the transcript. Manifest/test references were rebound. The scoped strict worker check passed; this assignment remains ready.
+
+## 2026-11-18 current CPU delivery preparation
+
+Supersedes the runtime-refresh partial reason. All 12 diagnostic recipes now use live `.adapter.json` graphs and explicit frame graph pointers. Divergent authored ego paths in four recipes were joined to matching participant observation packets and graph metadata. All 48 exact primary/fallback candidates pass current offline preflight and positive/negative compatibility. All 12 primaries pass clean saved processing and independent positive/negative original-source delivery audits. The restored marked-course comparison script reproduces the three archived positive source-comparison logs byte for byte; the numeric course and indication offset sweep comparisons pass. Thirty-three package unit tests pass. Synthetic physical fixture provenance is accurately labeled; manifest, semantic, compatibility and delivery validators pass. Scoped strict gate exits 0. `result.json` is **ready / delivery_prepared** for CPU preparation. Native, physical and legal acceptance remain for delivery.
+
+The restored `comparison_audit.py` came from source-hashed `work/_shared/historical-helpers-bundle-20261117.json`. Historical cutover gate logs were byte-preserved in `work/_shared/prune-history-bundle-all.json.additional_archives` to keep the return at 10,200 files. No frozen input, runtime, batch or Git operation was changed or run.
