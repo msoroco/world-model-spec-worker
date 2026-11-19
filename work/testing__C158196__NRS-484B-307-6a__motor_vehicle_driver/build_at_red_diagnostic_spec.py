@@ -1,13 +1,11 @@
-"""Bind explicit, source-hashed diagnostic inputs for the at-red exact case."""
+"""Bind explicit, source-hashed diagnostic inputs for exact red-entry cases."""
+import argparse
 import hashlib
 import json
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
-ATTEMPT = REPO / '.runtime-work/c158196-yellow-red-at-red-recorded-only/acquisition'
-SPEC = HERE / 'at-red-diagnostic-sources.json'
-RECIPE = HERE / 'at-red-fixture-recipe.json'
 SOURCE_NAMES = ('signal_vehicle_history.jsonl', 'video_frames.jsonl',
                 'junction_context.json', 'trace.jsonl', 'acquisition-provenance.json',
                 'capture/evidence.jsonl', 'capture/manifest.json',
@@ -23,12 +21,19 @@ def sha(path):
 
 
 def main():
-    files = {name: (ATTEMPT / name).read_text() for name in SOURCE_NAMES}
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--case', choices=('entry_at_red', 'entry_after_red'), default='entry_at_red')
+    args = parser.parse_args()
+    stem = 'at-red' if args.case == 'entry_at_red' else 'after-red'
+    attempt = REPO / ('.runtime-work/c158196-yellow-red-' + stem + '-recorded-only/acquisition')
+    spec = HERE / (stem + '-diagnostic-sources.json')
+    recipe_path = HERE / (stem + '-fixture-recipe.json')
+    files = {name: (attempt / name).read_text() for name in SOURCE_NAMES}
     graphs = []
     for kind in ('abstract', 'base'):
         for frame in range(900):
             name = f'capture/native/graphs/{kind}/{frame:08d}.adapter.json'
-            graph = json.loads((ATTEMPT / name).read_text())
+            graph = json.loads((attempt / name).read_text())
             if graph['format'] != 'native-adapter-graph-v1' or graph['nodes'] or graph['edges']:
                 raise ValueError('Unexpected diagnostic graph: ' + name)
             graphs.append({'path': name, 'attributes': graph['metadata'],
@@ -37,22 +42,22 @@ def main():
                'height': height, 'fps': 20, 'color': color}
               for name, width, height, color in VIDEOS]
     for video in videos:
-        if not (ATTEMPT / video['path']).is_file():
+        if not (attempt / video['path']).is_file():
             raise ValueError('Missing source camera: ' + video['path'])
-    SPEC.write_text(json.dumps({'files': files, 'graphs': graphs, 'videos': videos},
+    spec.write_text(json.dumps({'files': files, 'graphs': graphs, 'videos': videos},
                                separators=(',', ':'), allow_nan=False) + '\n')
-    if SPEC.stat().st_size > 2 * 1024 * 1024:
+    if spec.stat().st_size > 2 * 1024 * 1024:
         raise ValueError('Explicit source specification exceeds per-file return cap')
     recipe = {'format': 'worker-fixture-recipe',
               'sources': [{'path': 'road.xodr',
                            'source': 'work/' + HERE.name + '/yellow-red-site.xodr',
                            'sha256': sha(HERE / 'yellow-red-site.xodr')}],
-              'generator': {'source': 'work/' + HERE.name + '/' + SPEC.name,
-                            'sha256': sha(SPEC)}}
-    RECIPE.write_text(json.dumps(recipe, indent=2) + '\n')
-    print(json.dumps({'case_id': HERE.name + '__entry_at_red',
-                      'spec_bytes': SPEC.stat().st_size, 'spec_sha256': sha(SPEC),
-                      'recipe_sha256': sha(RECIPE), 'graphs': len(graphs)}))
+              'generator': {'source': 'work/' + HERE.name + '/' + spec.name,
+                            'sha256': sha(spec)}}
+    recipe_path.write_text(json.dumps(recipe, indent=2) + '\n')
+    print(json.dumps({'case_id': HERE.name + '__' + args.case,
+                      'spec_bytes': spec.stat().st_size, 'spec_sha256': sha(spec),
+                      'recipe_sha256': sha(recipe_path), 'graphs': len(graphs)}))
 
 
 if __name__ == '__main__':

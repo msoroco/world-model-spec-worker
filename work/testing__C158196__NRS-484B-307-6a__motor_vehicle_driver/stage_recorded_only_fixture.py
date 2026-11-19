@@ -21,12 +21,13 @@ def sha(path):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--case', choices=('entry_before_red', 'entry_at_red'), default='entry_before_red')
+    parser.add_argument('--case', choices=('entry_before_red', 'entry_at_red', 'entry_after_red'), default='entry_before_red')
     args = parser.parse_args()
     case = HERE.name + '__' + args.case
-    root = REPO / ('.runtime-work/c158196-yellow-red-recorded-only' if args.case == 'entry_before_red' else '.runtime-work/c158196-yellow-red-at-red-recorded-only')
+    stem = 'at-red' if args.case == 'entry_at_red' else 'after-red'
+    root = REPO / ('.runtime-work/c158196-yellow-red-recorded-only' if args.case == 'entry_before_red' else '.runtime-work/c158196-yellow-red-' + stem + '-recorded-only')
     attempt = root / 'acquisition'
-    source = REPO / ('.runtime-work/c158196-yellow-red-four-camera-validation/attempt' if args.case == 'entry_before_red' else '.runtime-work/c158196-yellow-red-at-red-four-camera/attempt')
+    source = REPO / ('.runtime-work/c158196-yellow-red-four-camera-validation/attempt' if args.case == 'entry_before_red' else '.runtime-work/c158196-yellow-red-' + stem + '-four-camera/attempt')
     if root.exists():
         shutil.rmtree(root)
     root.mkdir(parents=True)

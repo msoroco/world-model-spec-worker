@@ -31,10 +31,11 @@ def sha(path):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--case', choices=('entry_before_red', 'entry_at_red'), default='entry_before_red')
+    parser.add_argument('--case', choices=('entry_before_red', 'entry_at_red', 'entry_after_red'), default='entry_before_red')
     args = parser.parse_args()
     case = HERE.name + '__' + args.case
-    root = REPO / ('.runtime-work/c158196-yellow-red-four-camera-validation' if args.case == 'entry_before_red' else '.runtime-work/c158196-yellow-red-at-red-four-camera')
+    stem = 'at-red' if args.case == 'entry_at_red' else 'after-red'
+    root = REPO / ('.runtime-work/c158196-yellow-red-four-camera-validation' if args.case == 'entry_before_red' else '.runtime-work/c158196-yellow-red-' + stem + '-four-camera')
     attempt = root / 'attempt'
     source = REPO / '.runtime-work/c158196-yellow-red-source-proof' / args.case
     if root.exists():
@@ -77,14 +78,15 @@ def main():
                               construction, {'recorded_exit_code': 0}, {}, source_audits=audits)
     if not all(item['source_decode']['frames'] == 900 for item in result['video_validation']):
         raise AssertionError('Four complete source decodes required')
-    if analysis['measurements']['entry_minus_red_onset_frames']['value'] != (-10 if args.case == 'entry_before_red' else 0):
+    expected_offset = {'entry_before_red': -10, 'entry_at_red': 0, 'entry_after_red': 10}[args.case]
+    if analysis['measurements']['entry_minus_red_onset_frames']['value'] != expected_offset:
         raise AssertionError('Saved body-entry offset changed')
     if result['provenance_kind'] != 'synthetic_fixture' or result.get('situation_confirmed'):
         raise AssertionError('Diagnostic validation claimed physical situation')
     report = {'format': 'worker-yellow-red-four-camera-diagnostic',
               'case_id': case, 'provenance_kind': 'synthetic_fixture',
               'physical_acceptance_claimed': False,
-              'construction_sha256': sha(HERE / ('construction.json' if args.case == 'entry_before_red' else 'cases/entry_at_red/construction.json')),
+              'construction_sha256': sha(HERE / ('construction.json' if args.case == 'entry_before_red' else 'cases/' + args.case + '/construction.json')),
               'manifest_sha256': sha(manifest),
               'source_sha256': analysis['source_report']['sources'],
               'video_decodes': {name: {'frames': value['frames'],
@@ -94,7 +96,7 @@ def main():
               'recording_evidence_checked': [item['name'] for item in result['recording_evidence']],
               'saved_native_validation': 'passed',
               'limitation': 'Solid-color CPU videos are diagnostic fixtures, not Native signal-head observations.'}
-    output = HERE / ('four-camera-validation-diagnostic.json' if args.case == 'entry_before_red' else 'at-red-four-camera-diagnostic.json')
+    output = HERE / ('four-camera-validation-diagnostic.json' if args.case == 'entry_before_red' else stem + '-four-camera-diagnostic.json')
     output.write_text(json.dumps(report, indent=2, allow_nan=False) + '\n')
     print(json.dumps({'videos': len(audits), 'frames_each': 900,
                       'diagnostic_sha256': sha(output)}))
