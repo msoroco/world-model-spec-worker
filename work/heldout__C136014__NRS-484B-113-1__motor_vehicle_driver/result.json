@@ -1,20 +1,27 @@
 {
   "assignment_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver",
   "input_sha256": "9a0110cabbb9158507be9e0e5f2a17c0fe6bf8885e0e9927f926df129222f3d6",
-  "status": "partial",
-  "readiness_kind": "implementation_checkpoint",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
-  "tests": [],
+  "tests": [
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/heldout__C136014__NRS-484B-113-1__motor_vehicle_driver/tests",
+      "exit_code": 0,
+      "log": "cpu-tests.log",
+      "sha256": "c6352adff70a6982c739a1cd77bbb43d2425eefd2dc2112b92b0ceebf2a6ca31"
+    }
+  ],
   "remaining_gpu_checks": [
     "Actual motion, geometry, camera visibility and capture quality after CPU preparation"
   ],
   "first_gpu_delivery_command": "python scenario_pipeline/pipeline.py execute-delivery --assignment heldout__C136014__NRS-484B-113-1__motor_vehicle_driver --case heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_clear_traffic_steady --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --job \"$JOB_ID\" --db \"$DB\" --run \"$RUN\"",
-  "reason": "Current exact compatibility, physical, and saved-only proofs pass, but the interference-onset diagnostic sweep fails distinct frozen setpoint realization (measured 1/1/1 versus requested 40/120/80). See cpu_checkpoint.",
+  "reason": "Current exact CPU compatibility, saved-only, physical fixture, lifecycle, and source-comparison proofs pass; Native motion, pixels, and legal judgment remain for the delivery operator.",
   "cpu_checkpoint": {
     "format": "worker-cutover-cpu-checkpoint",
     "assignment_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver",
     "runtime_manifest_sha256": "5b4738624542c97f321a302bd49b9ec154cb2cf63778acf64ba6042f8d5b4fd3",
-    "status": "partial",
+    "status": "ready",
     "diagnostic_graph_migration": "Source-backed diagnostic graph paths use live .adapter.json and frame adapter_graph pointers where applicable; fixture recipe source hashes refreshed.",
     "primary_compatibility": {
       "case_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_clear_traffic_steady",
@@ -22,18 +29,18 @@
       "exit_code": 0,
       "diagnostic_output": "Ignored .runtime-work/ session artifact; rerun command for current portable proof."
     },
-    "remaining_cpu_work": "Repair interference-onset diagnostic source with enough joined frames and media to realize distinct frozen 40/120/80-frame requests, then rerun affected exact compatibility, physical, saved-only and comparison proofs and scoped strict ready gate. Current nine-frame fixtures cannot demonstrate this sweep.",
     "diagnosis": "Synthetic graph, trace, participant speed, body geometry and source manifest were reconciled; current primary positive/missing-source compatibility passes. Other exact cases and candidate proofs remain stale.",
     "primary_offline": {
       "case_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_clear_traffic_steady",
       "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C136014__NRS-484B-113-1__motor_vehicle_driver/execution-manifest.json --case heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__reverse_clear_traffic_steady --output .runtime-work/p03-C136014-primary-offline-current --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
       "exit_code": 0
     },
-    "current_manifest_sha256": "5464464b97a67d020c007aa8b52e5e93c3d25c36645eb7db5ddf3975b3f0fbd7",
-    "physical_reproof": "All 27 exact physical fixture commands reran with synthetic_fixture provenance; nine physical receipts rebound; execution_manifest.validate PASS.",
+    "current_manifest_sha256": "8b3cc7b9f117819645e36d8eb2de8b6c6c889f6160c6e88a9d59842b1154248c",
+    "physical_reproof": "All nine affected synthetic complete/incomplete/missing-evidence outcomes and three lifecycle order proofs pass; no Native or legal acceptance claimed.",
     "compatibility": "All 9 primary and 27 fallback exact current-runtime compatibility commands pass; 36 existing receipts/log slots rebound; package_compatibility.check_receipts PASS.",
     "saved_processing": "All 36 selected current-manifest saved-only processing runs pass with missing_evidence=false; acquisition sources preserved.",
-    "comparison": "Both fixed-ego base comparisons pass. Spacing sweep measured [8,16,12] m and passes source audit. Interference onset sweep source audit reports all three nine-frame diagnostics decelerate at index 1, so frozen 40/120/80-frame setpoints are not realized."
+    "comparison": "Independent 160-frame source audit measures 40/120/80; fixed conditions checked and swapped-source negative rejected.",
+    "onset_construction": "Three source-joined 160-frame synthetic diagnostics with four decoded camera streams and onset readbacks 40/120/80; all 12 exact compatibility and positive/missing-source saved runs pass."
   },
   "saved_processing_cpu_proof": {
     "synthetic_fixture_only": true,
@@ -234,108 +241,252 @@
       {
         "case_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__backing_interference_onset_grid-0000",
         "candidate_id": "primary",
-        "processing_sha256": "df4db898014c8ea03d1271f75d7a8fa6f03d47ba93bf2388e25f36adcdcfbd31",
-        "manifest_sha256": "5464464b97a67d020c007aa8b52e5e93c3d25c36645eb7db5ddf3975b3f0fbd7",
-        "analysis": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/p03-c136014-current-saved/backing_interference_onset_grid-0000-primary/v0001/analysis",
-        "missing_evidence": false
+        "processing_sha256": "c4dc7f7cf98a2fc5fe5180ab56170e097478e9807bd88bae5eb21c01f16c71ff",
+        "missing_source_processing_sha256": "a1434c6da6d6de78d5a8b5542fef9ed4c727d7367c24bf4730f9b54fcc174a22",
+        "proof_log": "cases/backing_interference_onset_grid-0000/fallback1-saved-proof.log",
+        "proof_log_sha256": "1c097b0aeeb19794081809030804dc683ab06aed20ab424853554e6e07026fe6",
+        "manifest_sha256_at_processing": "4efd36cc2d841e2e45230cd7ace58e08069037102f1c31685d627df8afd90269",
+        "construction_sha256": "75115aff25428733b199f33e1c43e9e20c0fb680b71c7a82b4f2ec3b99655578",
+        "missing_evidence": false,
+        "missing_source_rejected": true,
+        "synthetic_fixture_only": true
       },
       {
         "case_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__backing_interference_onset_grid-0000",
         "candidate_id": "fallback1",
-        "processing_sha256": "39e87f902eda1060852ee547fca6d2dd34a58c930fb382c915abb9380da8014b",
-        "manifest_sha256": "5464464b97a67d020c007aa8b52e5e93c3d25c36645eb7db5ddf3975b3f0fbd7",
-        "analysis": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/p03-c136014-current-saved/backing_interference_onset_grid-0000-fallback1/v0001/analysis",
-        "missing_evidence": false
+        "processing_sha256": "e0df031d5702d812fa8905ec189953e96c79d1fb9b68cd3ab10cf2553449aad0",
+        "missing_source_processing_sha256": "9a79493b176a2693d2ab2be610944099de9334b4bf6bc700de72cbb069262d05",
+        "proof_log": "cases/backing_interference_onset_grid-0000/fallback1-saved-proof.log",
+        "proof_log_sha256": "1c097b0aeeb19794081809030804dc683ab06aed20ab424853554e6e07026fe6",
+        "manifest_sha256_at_processing": "4efd36cc2d841e2e45230cd7ace58e08069037102f1c31685d627df8afd90269",
+        "construction_sha256": "aa3e975263a56c1b9a98c968ac4cbf1164037eded67cfea92ad6a7089693f68c",
+        "missing_evidence": false,
+        "missing_source_rejected": true,
+        "synthetic_fixture_only": true
       },
       {
         "case_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__backing_interference_onset_grid-0000",
         "candidate_id": "fallback2",
-        "processing_sha256": "9f3ceb56bb063fa1e98b28dae66829a4b728f213fab6243b1f899ee9412b3cc0",
-        "manifest_sha256": "5464464b97a67d020c007aa8b52e5e93c3d25c36645eb7db5ddf3975b3f0fbd7",
-        "analysis": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/p03-c136014-current-saved/backing_interference_onset_grid-0000-fallback2/v0001/analysis",
-        "missing_evidence": false
+        "processing_sha256": "ec994dee09b2be62c23960d5b0bc166d2082710f02f0a46e5c9ba6a7ec540d62",
+        "missing_source_processing_sha256": "da01917df3c468f2a4b4fc768168f34bf3d431ed6e66d053a5fc545fc3724751",
+        "proof_log": "cases/backing_interference_onset_grid-0000/fallback1-saved-proof.log",
+        "proof_log_sha256": "1c097b0aeeb19794081809030804dc683ab06aed20ab424853554e6e07026fe6",
+        "manifest_sha256_at_processing": "4efd36cc2d841e2e45230cd7ace58e08069037102f1c31685d627df8afd90269",
+        "construction_sha256": "df906928ca051f931d4e0a33e02523d01d7db8650ec00a7b1ea311eebf4acb3e",
+        "missing_evidence": false,
+        "missing_source_rejected": true,
+        "synthetic_fixture_only": true
       },
       {
         "case_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__backing_interference_onset_grid-0000",
         "candidate_id": "fallback3",
-        "processing_sha256": "214da656fb118eba34e74376fcba63997d6e4f0be134c6e19ccf4b7c28c33a65",
-        "manifest_sha256": "5464464b97a67d020c007aa8b52e5e93c3d25c36645eb7db5ddf3975b3f0fbd7",
-        "analysis": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/p03-c136014-current-saved/backing_interference_onset_grid-0000-fallback3/v0001/analysis",
-        "missing_evidence": false
+        "processing_sha256": "b11420c3bc493e203a869806e31295a63a5798cf8193f51b500ae343c359958a",
+        "missing_source_processing_sha256": "37ac6d6a154ee8088fbfe1d1ef040c7b5fd09822409859e70de708145c6b04f1",
+        "proof_log": "cases/backing_interference_onset_grid-0000/fallback1-saved-proof.log",
+        "proof_log_sha256": "1c097b0aeeb19794081809030804dc683ab06aed20ab424853554e6e07026fe6",
+        "manifest_sha256_at_processing": "4efd36cc2d841e2e45230cd7ace58e08069037102f1c31685d627df8afd90269",
+        "construction_sha256": "fdbf6ff51dd798f4364664e6367c5295ba4a35dd3463b67e8fa263be14b96915",
+        "missing_evidence": false,
+        "missing_source_rejected": true,
+        "synthetic_fixture_only": true
       },
       {
         "case_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__backing_interference_onset_grid-0001",
         "candidate_id": "primary",
-        "processing_sha256": "b2bbe3a260d8d503e7e7a580009a7fa5de71b216735fc60863f1dc96d9fb74c2",
-        "manifest_sha256": "5464464b97a67d020c007aa8b52e5e93c3d25c36645eb7db5ddf3975b3f0fbd7",
-        "analysis": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/p03-c136014-current-saved/backing_interference_onset_grid-0001-primary/v0001/analysis",
-        "missing_evidence": false
+        "processing_sha256": "a3cef4204d771d64ff2e46e522d595c270a6331d6f4a356398924b4e62163726",
+        "missing_source_processing_sha256": "27b78c918345895505effe41c042e25ba5d0eb13c10c28fbafb8347a48817629",
+        "proof_log": "cases/backing_interference_onset_grid-0001/fallback1-saved-proof.log",
+        "proof_log_sha256": "6144741d73b6d7a0d83e6cf65a6dad014997cbfef4efb259de568a26fad249b7",
+        "manifest_sha256_at_processing": "4efd36cc2d841e2e45230cd7ace58e08069037102f1c31685d627df8afd90269",
+        "construction_sha256": "8d35771c57f78f72b2b204f2d025ac44c137232bd6d5c9d0d255028e4f4980ce",
+        "missing_evidence": false,
+        "missing_source_rejected": true,
+        "synthetic_fixture_only": true
       },
       {
         "case_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__backing_interference_onset_grid-0001",
         "candidate_id": "fallback1",
-        "processing_sha256": "d0596e37000ec936abd114924c0cd79a49605d8ec030d1bdd6c4f0c65c2c624b",
-        "manifest_sha256": "5464464b97a67d020c007aa8b52e5e93c3d25c36645eb7db5ddf3975b3f0fbd7",
-        "analysis": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/p03-c136014-current-saved/backing_interference_onset_grid-0001-fallback1/v0001/analysis",
-        "missing_evidence": false
+        "processing_sha256": "e2581c519c53770cab316b467aedf0ff9739477da39b6e26c45c6fef1e8eb94d",
+        "missing_source_processing_sha256": "abedcd8be34175b9b379a25d1be156155572c15595458d5c128c04ff8142a8fe",
+        "proof_log": "cases/backing_interference_onset_grid-0001/fallback1-saved-proof.log",
+        "proof_log_sha256": "6144741d73b6d7a0d83e6cf65a6dad014997cbfef4efb259de568a26fad249b7",
+        "manifest_sha256_at_processing": "4efd36cc2d841e2e45230cd7ace58e08069037102f1c31685d627df8afd90269",
+        "construction_sha256": "df882fe154c27f6efc45cb39a4d2d7930251b877326a03241f5cf88a107ec3b9",
+        "missing_evidence": false,
+        "missing_source_rejected": true,
+        "synthetic_fixture_only": true
       },
       {
         "case_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__backing_interference_onset_grid-0001",
         "candidate_id": "fallback2",
-        "processing_sha256": "5039232bda97d41fd800eeb7cd859379d45097ef1459c451988fa8e65ee0e2f4",
-        "manifest_sha256": "5464464b97a67d020c007aa8b52e5e93c3d25c36645eb7db5ddf3975b3f0fbd7",
-        "analysis": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/p03-c136014-current-saved/backing_interference_onset_grid-0001-fallback2/v0001/analysis",
-        "missing_evidence": false
+        "processing_sha256": "0c221ec336f7ad5f24489999e12597ce1980a9fb8cfab1de70eec8efcaf81f9f",
+        "missing_source_processing_sha256": "b63b3518a1b0beac870a970ed9ab98ee98cdae1de98f0a10241e6803461ba488",
+        "proof_log": "cases/backing_interference_onset_grid-0001/fallback1-saved-proof.log",
+        "proof_log_sha256": "6144741d73b6d7a0d83e6cf65a6dad014997cbfef4efb259de568a26fad249b7",
+        "manifest_sha256_at_processing": "4efd36cc2d841e2e45230cd7ace58e08069037102f1c31685d627df8afd90269",
+        "construction_sha256": "8c378bdafa7a18206a3147f12a26417160f5e3bcefe71d5136a28d968f20801e",
+        "missing_evidence": false,
+        "missing_source_rejected": true,
+        "synthetic_fixture_only": true
       },
       {
         "case_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__backing_interference_onset_grid-0001",
         "candidate_id": "fallback3",
-        "processing_sha256": "9c4af8554cf9101f74a9c108c749db27e1b95203cbbc344ccfcf0c2dba4d2319",
-        "manifest_sha256": "5464464b97a67d020c007aa8b52e5e93c3d25c36645eb7db5ddf3975b3f0fbd7",
-        "analysis": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/p03-c136014-current-saved/backing_interference_onset_grid-0001-fallback3/v0001/analysis",
-        "missing_evidence": false
+        "processing_sha256": "e7590e6427fd0523cbbee6fab97b8fb72c5ca37d5e17ba622c23887450552458",
+        "missing_source_processing_sha256": "1687af57a320cb558357234b71ab6fca9d0f9cffac659393c816f46a75d6d7e1",
+        "proof_log": "cases/backing_interference_onset_grid-0001/fallback1-saved-proof.log",
+        "proof_log_sha256": "6144741d73b6d7a0d83e6cf65a6dad014997cbfef4efb259de568a26fad249b7",
+        "manifest_sha256_at_processing": "4efd36cc2d841e2e45230cd7ace58e08069037102f1c31685d627df8afd90269",
+        "construction_sha256": "43c3f83753085f3a99a9e2c1f9d90b7ca0e2ca2ff0210e5adcbc90e1ceb21722",
+        "missing_evidence": false,
+        "missing_source_rejected": true,
+        "synthetic_fixture_only": true
       },
       {
         "case_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__backing_interference_onset_grid-0002",
         "candidate_id": "primary",
-        "processing_sha256": "b0fc6399e90fffd37bbd153c5d53ee96518423d8c332c9249cbd2d194a1f818e",
-        "manifest_sha256": "5464464b97a67d020c007aa8b52e5e93c3d25c36645eb7db5ddf3975b3f0fbd7",
-        "analysis": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/p03-c136014-current-saved/backing_interference_onset_grid-0002-primary/v0001/analysis",
-        "missing_evidence": false
+        "processing_sha256": "3d36a7e9287bb7f0d0246509aa7154dc733f51e92bada847a1abd5897ecbcb6f",
+        "missing_source_processing_sha256": "07a42c6165b3706e4c11b1ab3a8a698ec75df9034e251b3d45954b081635aff8",
+        "proof_log": "cases/backing_interference_onset_grid-0002/fallback1-saved-proof.log",
+        "proof_log_sha256": "218213ed2b58000c4932a463e9f1f7b70d14d61d408b560f4919e33c522c74e2",
+        "manifest_sha256_at_processing": "4efd36cc2d841e2e45230cd7ace58e08069037102f1c31685d627df8afd90269",
+        "construction_sha256": "0b7858d413ec8dbe1bf17079555a7c50c4b1e37abf3b712aff690248d966b623",
+        "missing_evidence": false,
+        "missing_source_rejected": true,
+        "synthetic_fixture_only": true
       },
       {
         "case_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__backing_interference_onset_grid-0002",
         "candidate_id": "fallback1",
-        "processing_sha256": "cbaee28ce6f97a2831e7b1fbb682fe786a3e04d089c084b6ce8473d3ce423554",
-        "manifest_sha256": "5464464b97a67d020c007aa8b52e5e93c3d25c36645eb7db5ddf3975b3f0fbd7",
-        "analysis": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/p03-c136014-current-saved/backing_interference_onset_grid-0002-fallback1/v0001/analysis",
-        "missing_evidence": false
+        "processing_sha256": "a6678e401def7865d57b5d61ff82f8d4af5c0e143787037b011b428917e9e443",
+        "missing_source_processing_sha256": "2ec3bb15723f89fc8dec6cc5609a5ab1534d478c4b70504070426653f0690be2",
+        "proof_log": "cases/backing_interference_onset_grid-0002/fallback1-saved-proof.log",
+        "proof_log_sha256": "218213ed2b58000c4932a463e9f1f7b70d14d61d408b560f4919e33c522c74e2",
+        "manifest_sha256_at_processing": "4efd36cc2d841e2e45230cd7ace58e08069037102f1c31685d627df8afd90269",
+        "construction_sha256": "8b92ca0e90fdbdddc34c2bf418b17ab826e23dd5658349566fbc2435ab2e1944",
+        "missing_evidence": false,
+        "missing_source_rejected": true,
+        "synthetic_fixture_only": true
       },
       {
         "case_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__backing_interference_onset_grid-0002",
         "candidate_id": "fallback2",
-        "processing_sha256": "3557ea2052af45ef3a69364d34295f1ef4e8a113dab974cfb4100e5e82c2eb5a",
-        "manifest_sha256": "5464464b97a67d020c007aa8b52e5e93c3d25c36645eb7db5ddf3975b3f0fbd7",
-        "analysis": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/p03-c136014-current-saved/backing_interference_onset_grid-0002-fallback2/v0001/analysis",
-        "missing_evidence": false
+        "processing_sha256": "0acfdbb6e0b5a7451cd43c1b7f4329cf69451146b7ac332057d14abfb0db654a",
+        "missing_source_processing_sha256": "857a5b8687c27ce02b887b5e7a752b54fcd144a773189661e44424e0b55c9476",
+        "proof_log": "cases/backing_interference_onset_grid-0002/fallback1-saved-proof.log",
+        "proof_log_sha256": "218213ed2b58000c4932a463e9f1f7b70d14d61d408b560f4919e33c522c74e2",
+        "manifest_sha256_at_processing": "4efd36cc2d841e2e45230cd7ace58e08069037102f1c31685d627df8afd90269",
+        "construction_sha256": "fa22ba4ee046c67b66eb952246cab565c3eee1485d205fb98a2b5983131feab8",
+        "missing_evidence": false,
+        "missing_source_rejected": true,
+        "synthetic_fixture_only": true
       },
       {
         "case_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__backing_interference_onset_grid-0002",
         "candidate_id": "fallback3",
-        "processing_sha256": "144a36a6fadde6bcba887d637fe2c6b75d1fc9ff15af7af1850a5465d1381cb1",
-        "manifest_sha256": "5464464b97a67d020c007aa8b52e5e93c3d25c36645eb7db5ddf3975b3f0fbd7",
-        "analysis": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/p03-c136014-current-saved/backing_interference_onset_grid-0002-fallback3/v0001/analysis",
-        "missing_evidence": false
+        "processing_sha256": "650a8f645d886ac2d2b847e8aa98688c97a97fe0fc641776e9039506af2e7979",
+        "missing_source_processing_sha256": "5edadefb4a528955c1201715838df970031e859b97348cbcfeb6ca4d1f482f89",
+        "proof_log": "cases/backing_interference_onset_grid-0002/fallback1-saved-proof.log",
+        "proof_log_sha256": "218213ed2b58000c4932a463e9f1f7b70d14d61d408b560f4919e33c522c74e2",
+        "manifest_sha256_at_processing": "4efd36cc2d841e2e45230cd7ace58e08069037102f1c31685d627df8afd90269",
+        "construction_sha256": "9c53d88206590d3de359d457280c42fef6f5eb84eb1d21add30e73a78acf69ed",
+        "missing_evidence": false,
+        "missing_source_rejected": true,
+        "synthetic_fixture_only": true
       }
     ],
     "results_sha256": "8670453a3945b4c13f0610549d89fe9b2645270a7fdcc2cb298f0e75b9028993",
     "source": ".runtime-work/p03-c136014-current-saved/verified-results.json",
-    "all_missing_evidence_false": true
+    "all_missing_evidence_false": true,
+    "onset_positive_and_missing_source_reproofs": 12
   },
   "comparison_cpu_proof": {
     "traffic_clearance": "independent saved source audit PASS",
     "traffic_interference": "independent saved source audit PASS",
     "spacing_sweep": "independent source audit PASS; measured diagnostic spacing [8,16,12] m, all distinct and requested",
-    "interference_onset_sweep": "independent source audit protocol PASS but fixture_setpoints_distinct=false; nine-frame diagnostic shows first deceleration at frame index 1 for all three frozen 40/120/80-frame requests"
+    "interference_onset_sweep": {
+      "status": "passed",
+      "method": "independent retained backing history and four-view full decode",
+      "requested_and_measured_frames": [
+        [
+          40,
+          40
+        ],
+        [
+          120,
+          120
+        ],
+        [
+          80,
+          80
+        ]
+      ],
+      "source_audit": {
+        "format": "worker-onset-sweep-source-audit",
+        "passed": true,
+        "fixture_only": true,
+        "actual_native_capture": false,
+        "fixed_conditions_checked": true,
+        "cases": [
+          {
+            "case_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__backing_interference_onset_grid-0000",
+            "requested_frame": 40,
+            "measured_frame": 40,
+            "source_frames": 160,
+            "four_camera_decodes": {
+              "overview.mkv": 160,
+              "approach.mkv": 160,
+              "reference_corner.mkv": 160,
+              "driver_reference.mkv": 160
+            },
+            "source_sha256": {
+              "backing_history.jsonl": "f748be824878e03fd7893ada9761c91ea02efb7d491898a039a5580c8299a35b",
+              "trace.jsonl": "6af58ba9eabe6189d46d6cc06ff347a454d322b7dabf38af2cbe821825af3877",
+              "video_frames.jsonl": "76398cf096659d30299d82644a4398c29c7ec51e8e6d1a265ea661014ff76ced"
+            }
+          },
+          {
+            "case_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__backing_interference_onset_grid-0001",
+            "requested_frame": 120,
+            "measured_frame": 120,
+            "source_frames": 160,
+            "four_camera_decodes": {
+              "overview.mkv": 160,
+              "approach.mkv": 160,
+              "reference_corner.mkv": 160,
+              "driver_reference.mkv": 160
+            },
+            "source_sha256": {
+              "backing_history.jsonl": "918db58f40503c8da219425957ca1355c6c52e03b2675c9613318a61f6107ccf",
+              "trace.jsonl": "6af58ba9eabe6189d46d6cc06ff347a454d322b7dabf38af2cbe821825af3877",
+              "video_frames.jsonl": "76398cf096659d30299d82644a4398c29c7ec51e8e6d1a265ea661014ff76ced"
+            }
+          },
+          {
+            "case_id": "heldout__C136014__NRS-484B-113-1__motor_vehicle_driver__backing_interference_onset_grid-0002",
+            "requested_frame": 80,
+            "measured_frame": 80,
+            "source_frames": 160,
+            "four_camera_decodes": {
+              "overview.mkv": 160,
+              "approach.mkv": 160,
+              "reference_corner.mkv": 160,
+              "driver_reference.mkv": 160
+            },
+            "source_sha256": {
+              "backing_history.jsonl": "687255985aa1d2bead94235f9396f4aee06d40e04f3a40f09589a97f2f69b524",
+              "trace.jsonl": "6af58ba9eabe6189d46d6cc06ff347a454d322b7dabf38af2cbe821825af3877",
+              "video_frames.jsonl": "76398cf096659d30299d82644a4398c29c7ec51e8e6d1a265ea661014ff76ced"
+            }
+          }
+        ],
+        "physical_acceptance_claimed": false,
+        "legal_acceptance_claimed": false
+      },
+      "swapped_case_negative": "Wrong case or unsupported acceptance claim",
+      "source_audit_code_sha256": "94de20f690ed9f8b2142a1668530a87c706a5c9e0a04ea578322c8656df59c42",
+      "synthetic_fixture_only": true,
+      "actual_native_capture": false
+    }
   }
 }
