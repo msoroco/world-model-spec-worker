@@ -51,3 +51,5 @@ Twenty-eight distinct fallback offline logs were consolidated into `fallback-off
 ## 2026-11-18 CPU proof renewal
 
 The current 10-case, 40-candidate offline and positive/negative compatibility sweep completed with zero command failures. All 40 saved-only processing outputs reported `missing_evidence=false`; their processing hashes and exact local logs are recorded in `saved-proofs.json`. The 30 exact-case synthetic physical outcomes and lifecycle protocol were rerun and rebound to `physical-source-protocol.log`. The assignment-scoped `worker_check.py --complete --require-delivery-ready` gate exits 0. `result.json` is ready as CPU delivery preparation only; actual Native motion, footage, and physical/legal acceptance remain for local execution.
+
+2026-11-19 return-cap preservation: unreferenced historical `validate_semantic.py` is byte-preserved in `work/_shared/c147331-turn-return-cap-archive.json`; current semantic proposals and proofs remain direct. Restore and hash-check before reuse.

@@ -23,7 +23,7 @@ def digest(path):
 
 
 def audit_attempt(attempt, report, *, decoder=None, receipt_dir=None):
-    root = Path(attempt)
+    root = Path(attempt).resolve()
     report = json.loads(Path(report).read_text()) if not isinstance(report, dict) else report
     for name in (*SOURCES, "config.json"):
         if not (root / name).is_file():
@@ -66,12 +66,15 @@ def main():
     parser.add_argument("--attempt", required=True)
     parser.add_argument("--analysis", required=True)
     parser.add_argument("--output", required=True)
+    parser.add_argument("--case")
     args = parser.parse_args()
     output = Path(args.output)
     if output.exists():
         raise ValueError("Retain previous lane audit")
     receipt = audit_attempt(args.attempt, args.analysis,
                             receipt_dir=output.parent / (output.stem + "-decodes"))
+    if args.case and receipt["case_id"] != args.case:
+        raise ValueError("Audited source case differs from selected queue case")
     output.write_text(json.dumps(receipt, indent=2, allow_nan=False) + "\n")
 
 

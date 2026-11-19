@@ -166,3 +166,5 @@ For `bicycle_signal_continuous` and `bicycle_no_signal`, each `compatibility.log
 ## 2026-11-18 current-runtime CPU proof
 
 All nine exact rider cases and twenty-seven fallbacks passed fresh current-runtime offline and positive/negative compatibility. All 36 saved-only paths were rebuilt from clean source-only diagnostic attempts and have `processing.json.missing_evidence=false`; complete receipts and hashes are embedded in `result.json`. `prove_physical_preparation.py` reran shared complete, incomplete, and missing source fixtures through the pinned physical checker, plus the ordered lifecycle control. Ten unit tests and the scoped strict gate pass. These are synthetic CPU diagnostic results. Actual Native rider motion, source pixels, roadway setting, and legal judgments remain local execution and independent review.
+
+2026-11-19 return-cap preservation: historical unreferenced `review_nine_cases.py` is byte-preserved in `work/_shared/c147331-turn-return-cap-archive.json`; restore and hash-check before reuse. Current selected cases and proofs remain direct.

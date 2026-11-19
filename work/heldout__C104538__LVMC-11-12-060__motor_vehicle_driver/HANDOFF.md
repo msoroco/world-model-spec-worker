@@ -71,3 +71,5 @@ All four exact cases and twelve fallback constructions passed current `runtime.p
 ## 2026-11-18 saved processing correction
 
 A prior clean-exit saved test reused a compatibility attempt with derived channels; the selected finalizer rejected those existing channels, so its `processing.json.missing_evidence` was true. Fresh source-only diagnostic attempts were materialized for all 4 primaries and 12 fallbacks. Every saved run now has `passed: true` and `missing_evidence: false`. Primary receipts are bound in `execution-manifest.json`; fallback receipts and hashes are embedded in `result.json`. The scoped strict gate passes. This remains CPU diagnostic proof; physical and legal acceptance require local Native sources and review.
+
+2026-11-19 return-cap preservation: the one-time, unreferenced `add_fallbacks.py` builder is preserved byte-exact in `work/_shared/c147331-turn-return-cap-archive.json`. Current selected constructions and proofs remain direct; restore and hash-check the builder before reuse.
