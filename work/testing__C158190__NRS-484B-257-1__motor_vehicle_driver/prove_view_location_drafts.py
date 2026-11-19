@@ -33,6 +33,12 @@ def require_same_sources(expected, actual):
     if expected != actual:
         raise ValueError('Undeclared embedded source change in view-location comparison')
 
+def require_returned_proof(entry, offline, positive, negative, saved):
+    if entry['offline_log'] != offline or entry['compatibility_receipt'] != positive:
+        raise ValueError('Returned view fallback differs from current replay')
+    if entry['negative_log'] != negative or entry['saved_receipt'] != saved:
+        raise ValueError('Returned view fallback differs from current negative or saved proof')
+
 def compare_diagnostic_sources(baseline, candidate, case_id, center):
     """Permit only the authored case ID and roadside center in original-source fixtures."""
     baseline_sources = {item['path']: item for item in baseline['sources']}
@@ -45,7 +51,7 @@ def compare_diagnostic_sources(baseline, candidate, case_id, center):
     for name in sources.keys() - variable:
         if sources[name] != baseline_sources[name]:
             raise ValueError('Undeclared diagnostic source changed: ' + name)
-    if candidate['generator'] != baseline['generator']:
+    if candidate['generator']['sha256'] != baseline['generator']['sha256']:
         raise ValueError('Diagnostic generator changed')
     context = json.loads((REPO / sources['road_context.json']['source']).read_text())
     original = json.loads((REPO / baseline_sources['road_context.json']['source']).read_text())
@@ -76,8 +82,13 @@ def validate_view_fallbacks(compat_manifest, center):
     candidates = entry.get('candidates', [])
     assert [row['id'] for row in candidates] == list(expected_changes)
     assert len({json.dumps(row['trigger'], sort_keys=True) for row in candidates}) == 3
-    source_manifest = json.loads((ROOT / f'view-location-y{center}-fallback1-source-manifest.json').read_text())
+    source_manifest = json.loads((ROOT / 'view-location-fallback1-source-manifest.json').read_text())
     source_entry = next(row for row in source_manifest['cases'] if row['case_id'] == entry['case_id'])
+    bundle_path = ROOT / f'current-view-y{center}-fallback-proofs.json'
+    bundle = json.loads(bundle_path.read_text())
+    assert bundle['passed'] is True and bundle['case_id'] == entry['case_id']
+    assert bundle['candidate_count'] == 3 and bundle['native_physical_acceptance'] is False
+    assert [row['candidate_id'] for row in bundle['candidates']] == list(expected_changes)
     source_recipe = json.loads((REPO / source_entry['fixture_recipe']).read_text())
     primary_recipe = json.loads((REPO / entry['fixture_recipe']).read_text())
     source_map = {item['path']: item for item in source_recipe['sources']}
@@ -103,7 +114,7 @@ def validate_view_fallbacks(compat_manifest, center):
             assert f'{center:.1f}' not in files['tests/test_view_location_world_setup.py']
             source_candidate = source_entry['candidates'][0]
             assert source_candidate['construction_sha256'] == candidate['construction_sha256']
-            assert source_candidate['source_equivalence']['road_context_sha256'] == source_map['road_context.json']['sha256']
+            assert source_map['road_context.json']['sha256'] != primary_map['road_context.json']['sha256']
             recipe = source_entry['fixture_recipe']
         elif ident == 'fallback2':
             assert "'reference_corner': pose(23, -28, 18, 135, -27)" in files['runner.py']
@@ -111,9 +122,10 @@ def validate_view_fallbacks(compat_manifest, center):
         else:
             assert 'EGO_POINT = opendrive_to_carla(-70.0, -1.8)' in files['yield_construction.py']
             recipe = entry['fixture_recipe']
-        local = REPO / f'.runtime-work/c158190-view-y{center}-{ident}'
+        local = REPO / f'.runtime-work/view-y{center}-{ident}-current'
         offline = local.with_name(local.name + '-offline') / 'offline.log'
         positive_path = local.with_name(local.name + '-compat') / 'compatibility.json'
+        negative_path = local.with_name(local.name + '-compat') / 'negative-analysis.log'
         saved_path = local.with_name(local.name + '-saved') / 'v0001/processing.json'
         assert 'OK' in offline.read_text()
         positive = json.loads(positive_path.read_text())
@@ -127,9 +139,27 @@ def validate_view_fallbacks(compat_manifest, center):
         assert saved['recorded_only'] is True and saved['originals_preserved'] is True
         assert saved['physical_acceptance_claimed'] is False and saved['legal_acceptance_claimed'] is False
         assert saved['native_revision']['construction_sha256'] == candidate['construction_sha256']
+        returned = next(row for row in bundle['candidates'] if row['candidate_id'] == ident)
+        assert returned['construction_sha256'] == candidate['construction_sha256']
+        assert returned['fixture_recipe_sha256'] == sha(REPO / recipe)
+        assert returned['offline_log_sha256'] == sha(offline)
+        assert returned['compatibility_receipt_sha256'] == sha(positive_path)
+        assert returned['negative_log_sha256'] == sha(negative_path)
+        assert returned['saved_receipt_sha256'] == sha(saved_path)
+        require_returned_proof(returned, offline.read_text(), positive,
+                               negative_path.read_text(), saved)
+        changed = dict(returned, negative_log='changed evidence')
+        try:
+            require_returned_proof(changed, offline.read_text(), positive,
+                                   negative_path.read_text(), saved)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError('Changed returned negative proof escaped audit')
         out.append({'id': ident, 'construction_sha256': candidate['construction_sha256'],
                     'offline_log_sha256': sha(offline), 'compatibility_sha256': sha(positive_path),
-                    'saved_processing_sha256': sha(saved_path)})
+                    'saved_processing_sha256': sha(saved_path),
+                    'returned_bundle_sha256': sha(bundle_path)})
     return out
 
 
