@@ -9,7 +9,6 @@ import argparse
 import importlib.util
 import json
 import os
-import pickle
 import shutil
 import subprocess
 import sys
@@ -806,9 +805,9 @@ def prove_opposite_entry_sweep(output_root):
             observation = packet["original_observations"]
             observation.update(frame=frame, time_s=time_s, participants=participants)
             evidence.append(packet)
-            graph_path = f"graphs/base/{frame:08d}.pkl"
+            graph_path = f"graphs/base/{frame:08d}.adapter.json"
             native_frames.append({"frame": frame, "simulation_time": time_s,
-                "base": graph_path, "nodes": 0, "edges": 0,
+                "base": graph_path, "adapter_graph": graph_path, "nodes": 0, "edges": 0,
                 "extraction_seconds": 0, "capture_seconds": 0})
             native_graphs.append({"path": "capture/native/" + graph_path,
                 "attributes": {"frame": frame, "observed_evidence": observation},
@@ -1007,12 +1006,12 @@ def prove_opposite_generated_fixture(manifest_path, sweep_attempt, output_root):
                 path.name.startswith("opposite-") or
                 path.name == "raw-decode.json"):
             continue
-        if path.suffix == ".pkl":
-            graph = pickle.loads(path.read_bytes())
-            if graph.number_of_nodes() or graph.number_of_edges():
+        if path.name.endswith(".adapter.json"):
+            graph = json.loads(path.read_text())
+            if graph.get("nodes") or graph.get("edges"):
                 raise ValueError("Diagnostic graph now needs explicit node/edge inventory")
             spec["graphs"].append({"path": relative,
-                                   "attributes": graph.graph,
+                                   "attributes": graph["metadata"],
                                    "nodes": [], "edges": []})
         elif path.suffix == ".mkv":
             spec["videos"].append({"path": relative, "frames": 5,
