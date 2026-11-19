@@ -4,7 +4,7 @@
   "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline $CARLA_PYTHON -m worker_exchange execute-delivery --repo . --batch batch.json --db $DB --run $RUN --assignment testing__C129731__NRS-484B-407__motor_vehicle_driver --case testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__short_of_500ft --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT",
   "input_sha256": "881fe9b8379dcee9c1113b607615d051d189b29559cbc7e6d65502ce84f8047b",
   "readiness_kind": "implementation_checkpoint",
-  "reason": "Current JSON adapter cutover: 52 of 96 selected primary/fallback paths passed exact offline, positive/negative compatibility and recorded-only saved processing; 44 paths remain. Controlled comparisons and independent audits require current reproof. Native motion, geometry, two-direction visibility and four-camera pixels require physical review. The full strict delivery gate currently fails on an unapproved generated lock under frozen runtime.",
+  "reason": "Current JSON adapter cutover: 56 of 96 selected primary/fallback paths passed exact offline, positive/negative compatibility and recorded-only saved processing; 40 paths remain. Controlled comparisons and independent audits require current reproof. Native motion, geometry, two-direction visibility and four-camera pixels require physical review. The full strict delivery gate currently fails on an unapproved generated lock under frozen runtime.",
   "remaining_gpu_checks": [
     "Actual U-turn motion, realized curve/crest geometry, two-direction visibility and four-camera coverage."
   ],
@@ -1205,22 +1205,22 @@
       "sha256": "fbe14c945d03852e0610ebc89103b011702ad5c2e16793b9a85c0c1e30d843d6"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-short-near-a-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_a --output .runtime-work/c129731-canonical-short-near-a-offline-v1",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_a --output .runtime-work/c129731-cutover-case13-primary-v3-offline",
       "exit_code": 0,
       "log": "canonical-short-near-a-branch-offline.log",
-      "sha256": "c730ad9cb638bf6effdb0236d56635b4cde90c435809a53b5080aa5e8164a32b"
+      "sha256": "aa4c6d9273dfae4da8adfe3cf6be990eb9c173b3bc1daa2601f9b66287c5e07a"
     },
     {
-      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-short-near-a-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_a --output .runtime-work/c129731-canonical-short-near-a-compat-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_a --output .runtime-work/c129731-cutover-case13-primary-v3-compat --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
       "exit_code": 0,
       "log": "canonical-short-near-a-branch-compatibility.json",
-      "sha256": "36f5639219cd9d9fcda4d8359bcddc6c9eed6310fa32e4b77687fdbffc8274a1"
+      "sha256": "b89be7cf4c6264c4bd99b7823ce6954f5e901891a452ff6a719ef9b76d258026"
     },
     {
-      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-short-near-a-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_a --attempt .runtime-work/c129731-canonical-short-near-a-compat-v1 --output .runtime-work/c129731-canonical-short-near-a-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_a --attempt .runtime-work/c129731-cutover-case13-primary-v3-compat --output .runtime-work/c129731-cutover-case13-primary-v3-saved --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
       "exit_code": 0,
       "log": "canonical-short-near-a-branch-processing.json",
-      "sha256": "a29a3448b9ea5be408fdd58e34e6d60a69571afed2e11082b9d87034de1b2f07"
+      "sha256": "034ae58a6de54da26854c305dacc37c5d237b4ac25a9219f58b1233a0af137b5"
     },
     {
       "command": ".venv-cpu/bin/python work/testing__C129731__NRS-484B-407__motor_vehicle_driver/record_promoted_crest_case.py --placement near_summit --direction approach_a --probe short_of_500ft",
@@ -1981,58 +1981,58 @@
       "sha256": "d8a38009f7635438d71ff2023fcdd73ec943a415d6373c635b5424cf84a8248e"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-short-near-a-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_a --candidate fallback1 --output .runtime-work/c129731-canonical-short-near-a-fallback1-offline-v1",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_a --candidate fallback1 --output .runtime-work/c129731-cutover-case13-fallback1-v3-offline",
       "exit_code": 0,
       "log": "canonical-short-near-a-fallback1-offline.log",
-      "sha256": "baa40640b915f5bb7afc6eaee4efa3279aa3f6ee14591ed0061c293552873a0b"
+      "sha256": "fde27f9d5dace98062b2a6f31885fc9c05e0190c71bc0a1807a787335b089978"
     },
     {
-      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-short-near-a-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_a --candidate fallback1 --output .runtime-work/c129731-canonical-short-near-a-fallback1-compat-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_a --candidate fallback1 --output .runtime-work/c129731-cutover-case13-fallback1-v3-compat --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
       "exit_code": 0,
       "log": "canonical-short-near-a-fallback1-compatibility.json",
-      "sha256": "cabd11a74096d322a0a90e4640b117bdee26d924b91226e6a3750a32bb326c16"
+      "sha256": "cbe254a7a8fb8a5b1c8b4eccbbb68b9b24d6dd50e5e90a5c884035eeb44324d2"
     },
     {
-      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-short-near-a-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_a --attempt .runtime-work/c129731-canonical-short-near-a-fallback1-compat-v1 --output .runtime-work/c129731-canonical-short-near-a-fallback1-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_a --attempt .runtime-work/c129731-cutover-case13-fallback1-v3-compat --output .runtime-work/c129731-cutover-case13-fallback1-v3-saved --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
       "exit_code": 0,
       "log": "canonical-short-near-a-fallback1-processing.json",
-      "sha256": "5c8728cae3ea56074293c2aae32ba33ac31f349721365dcf2c2faaeffe6a0bd9"
+      "sha256": "0e68812bc96beca3627a752ecf648b032ada0e0b3a3fd2c11cba71ada8e236d2"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-short-near-a-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_a --candidate fallback2 --output .runtime-work/c129731-canonical-short-near-a-fallback2-offline-v1",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_a --candidate fallback2 --output .runtime-work/c129731-cutover-case13-fallback2-v3-offline",
       "exit_code": 0,
       "log": "canonical-short-near-a-fallback2-offline.log",
-      "sha256": "ceec320cdbbb6544664d0ca83e34267e8394f6aa79afa58a3b5d31393e5f2ecb"
+      "sha256": "b71cc75ee3ace6cebc43a7801f7c4b014e397a06beba70e956744bb945cfe901"
     },
     {
-      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-short-near-a-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_a --candidate fallback2 --output .runtime-work/c129731-canonical-short-near-a-fallback2-compat-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_a --candidate fallback2 --output .runtime-work/c129731-cutover-case13-fallback2-v3-compat --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
       "exit_code": 0,
       "log": "canonical-short-near-a-fallback2-compatibility.json",
-      "sha256": "8f0c9897b5e61cb682c362f3062a41a20c1e72b69e7e998e062e843e915712df"
+      "sha256": "f3fc492d8747f2bff61a44638ffd4ef84af8ba5099b5bc7cc95ccd7e4e67d9aa"
     },
     {
-      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-short-near-a-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_a --attempt .runtime-work/c129731-canonical-short-near-a-fallback2-compat-v1 --output .runtime-work/c129731-canonical-short-near-a-fallback2-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_a --attempt .runtime-work/c129731-cutover-case13-fallback2-v3-compat --output .runtime-work/c129731-cutover-case13-fallback2-v3-saved --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
       "exit_code": 0,
       "log": "canonical-short-near-a-fallback2-processing.json",
-      "sha256": "9c6dac4014995343287103fb7496a58aeca004034a7f3974e063724c51f911b0"
+      "sha256": "e0fd2a4175fc9a729fd9293e9444baff815a269f8508cb1d18137ea8ea256318"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-short-near-a-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_a --candidate fallback3 --output .runtime-work/c129731-canonical-short-near-a-fallback3-offline-v1",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_a --candidate fallback3 --output .runtime-work/c129731-cutover-case13-fallback3-v3-offline",
       "exit_code": 0,
       "log": "canonical-short-near-a-fallback3-offline.log",
-      "sha256": "784768bafdebd580c3b06bed2eb9f7e261e0f7213ec7b7772c7b3c40901ac54d"
+      "sha256": "5933dbc5041e876ed96747e1524ab56ac37ac2ad3e33ff38612f2196a07afc19"
     },
     {
-      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-short-near-a-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_a --candidate fallback3 --output .runtime-work/c129731-canonical-short-near-a-fallback3-compat-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_a --candidate fallback3 --output .runtime-work/c129731-cutover-case13-fallback3-v3-compat --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
       "exit_code": 0,
       "log": "canonical-short-near-a-fallback3-compatibility.json",
-      "sha256": "ff877ecc0ac1e1ac41c1c9f1b472cf10244683c64828723561dbdd10339a6f36"
+      "sha256": "563337d0b60fcde7ac785915999a0778afe468894ef60a13f4304e54f9b52078"
     },
     {
-      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/pipeline-output .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-canonical-short-near-a-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_a --attempt .runtime-work/c129731-canonical-short-near-a-fallback3-compat-v1 --output .runtime-work/c129731-canonical-short-near-a-fallback3-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__crest__short_of_500ft__near_summit__occluded_approach_a --attempt .runtime-work/c129731-cutover-case13-fallback3-v3-compat --output .runtime-work/c129731-cutover-case13-fallback3-v3-saved --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
       "exit_code": 0,
       "log": "canonical-short-near-a-fallback3-processing.json",
-      "sha256": "7521d0525eacad50b54f67366ef22f1987740e040fc2ed61cd384c0b3fb3af9a"
+      "sha256": "96a145d9bb791a9e599a135dca1f9b4aba502c7f0b8537a781bf5e8f097191e5"
     },
     {
       "command": ".venv-cpu/bin/python work/testing__C129731__NRS-484B-407__motor_vehicle_driver/build_promoted_crest_fallbacks.py --name canonical-beyond-approach-b",
