@@ -12,17 +12,20 @@ from pathlib import Path
 from ending_road_camera import CAMERAS, EndingRoadCameraCapture, LosslessSourceSink
 from ending_road_runner import conflict_polygon, control_to_waypoint, extend_exit
 from opposing_left_control import turn_release_step
-from opposing_left_route import select_opposing_left_routes
+from opposing_left_route import (select_opposing_left_routes,
+                                 select_travel_subject_opposing_left_routes)
 from opposing_left_source import context_from_native, OpposingLeftSourceRecorder
 
 
 def check_config(config):
     if config.get('law_id') != 'NRS-484B-250-3' or config.get('actor') != 'motor_vehicle_driver':
         raise ValueError('Opposing-left law or actor differs')
-    if not isinstance(config.get('selected_case_id'), str) or not config['selected_case_id'].endswith('__opposing_left_turn'):
-        raise ValueError('Opposing-left exact case identity differs')
-    if config.get('cell_id') not in ('C293604',):
-        raise ValueError('Opposing-left case requires compatible left-turn cell binding')
+    valid_cases = {
+        ('C293604', 'heldout__C293604__NRS-484B-250-3__motor_vehicle_driver__opposing_left_turn'),
+        ('C111294', 'heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__opposing_left_travel_subject'),
+    }
+    if (config.get('cell_id'), config.get('selected_case_id')) not in valid_cases:
+        raise ValueError('Opposing-left exact case and cell binding differ')
     if config.get('rate_hz') != 20 or config.get('frames', 0) < 80:
         raise ValueError('Opposing-left capture requires at least four seconds at 20 Hz')
     if [c.get('name') for c in config.get('cameras', [])] != list(CAMERAS) or any(
@@ -60,7 +63,9 @@ def run(config, output, host='127.0.0.1', port=2000):
         settings.synchronous_mode = True
         settings.fixed_delta_seconds = .05
         world.apply_settings(settings)
-        routes = select_opposing_left_routes(world.get_map())
+        travel_subject = config['cell_id'] == 'C111294'
+        routes = (select_travel_subject_opposing_left_routes(world.get_map())
+                  if travel_subject else select_opposing_left_routes(world.get_map()))
         turning_path = extend_exit(routes['turning'])
         opposite_path = extend_exit(routes['opposite'])
         routes['turning'], routes['opposite'] = turning_path, opposite_path
@@ -74,14 +79,16 @@ def run(config, output, host='127.0.0.1', port=2000):
             raise ValueError('Opposing-left opposite actor spawn failed')
         actors.append(opposite)
         polygon = conflict_polygon(turning_path, opposite_path)
-        context = context_from_native(routes, turning, opposite)
+        context = context_from_native(routes, turning, opposite,
+                                      subject_role='opposite' if travel_subject else 'turning')
         recorder = OpposingLeftSourceRecorder(output, context, turning, opposite)
-        pipeline = PipelineCapture(client, turning, output, config['selected_case_id'],
+        subject = opposite if travel_subject else turning
+        pipeline = PipelineCapture(client, subject, output, config['selected_case_id'],
                                    required_observations=config.get('required_atoms', []))
         frame_map = FrameMap(output / 'video_frames.jsonl')
         for name in CAMERAS:
             sinks[name] = LosslessSourceSink(output, name)
-        cameras = EndingRoadCameraCapture(world, carla, turning, sinks)
+        cameras = EndingRoadCameraCapture(world, carla, subject, sinks)
         frames, start = [], None
         state = {'opposite_seen_in_zone': False, 'turning_released': False}
         for _ in range(config['frames']):
@@ -110,6 +117,7 @@ def run(config, output, host='127.0.0.1', port=2000):
         (output / 'opposing_left_construction_observation.json').write_text(json.dumps({
             'format': 'worker-opposing-left-construction-observation',
             'case_id': config['selected_case_id'], 'map_name': routes['map_name'],
+            'subject_role': context['subject_role'],
             'frames': frames, 'opposite_seen_in_zone': state['opposite_seen_in_zone'],
             'turning_released': state['turning_released'],
             'physical_completion_claimed': False}, indent=2) + '\n')

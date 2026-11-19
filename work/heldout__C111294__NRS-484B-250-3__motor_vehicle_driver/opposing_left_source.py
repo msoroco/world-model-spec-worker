@@ -44,7 +44,9 @@ def _route_source(path, junction_id):
     return points
 
 
-def context_from_native(selection, turning_actor, opposite_actor):
+def context_from_native(selection, turning_actor, opposite_actor, *, subject_role='turning'):
+    if subject_role not in ('turning', 'opposite'):
+        raise ValueError('Opposing-left subject role differs')
     junction_id = str(selection['junction_id'])
     turning = _route_source(selection['turning'], junction_id)
     opposite = _route_source(selection['opposite'], junction_id)
@@ -58,6 +60,8 @@ def context_from_native(selection, turning_actor, opposite_actor):
             'junction_id': junction_id, 'map_name': selection['map_name'],
             'turning_actor_id': str(turning_actor.id),
             'opposite_actor_id': str(opposite_actor.id),
+            'subject_role': subject_role,
+            'subject_actor_id': str(turning_actor.id if subject_role == 'turning' else opposite_actor.id),
             'turning_route': turning, 'opposite_route': opposite,
             'legal_exception_claimed': False}
 

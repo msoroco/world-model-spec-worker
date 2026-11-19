@@ -30,6 +30,16 @@ class OpposingLeftRunnerTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             check_config(changed)
 
+    def test_local_travel_subject_binding(self):
+        config = self.config()
+        config['cell_id'] = 'C111294'
+        config['selected_case_id'] = ('heldout__C111294__NRS-484B-250-3__motor_vehicle_driver'
+                                      '__opposing_left_travel_subject')
+        check_config(config)
+        self.assertNotIn('carla', sys.modules)
+        with self.assertRaisesRegex(ValueError, 'case and cell binding'):
+            check_config(dict(config, selected_case_id=self.config()['selected_case_id']))
+
 
 if __name__ == '__main__':
     unittest.main()

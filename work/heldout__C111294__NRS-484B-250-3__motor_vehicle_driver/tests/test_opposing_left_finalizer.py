@@ -52,6 +52,37 @@ class OpposingLeftFinalizerTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'frame-map join failed'):
                 analyze(root)
 
+    def test_local_travel_subject_requires_opposite_original_actor(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            self.fixture(root)
+            config_path = root / 'config.json'
+            config = json.loads(config_path.read_text())
+            config['cell_id'] = 'C111294'
+            config['selected_case_id'] = ('heldout__C111294__NRS-484B-250-3__motor_vehicle_driver'
+                                          '__opposing_left_travel_subject')
+            config_path.write_text(json.dumps(config))
+            context_path = root / 'opposing_left_context.json'
+            context = json.loads(context_path.read_text())
+            context['subject_role'] = 'opposite'
+            context['subject_actor_id'] = context['opposite_actor_id']
+            context_path.write_text(json.dumps(context))
+            report = analyze(root)
+            self.assertEqual(report['case_id'], config['selected_case_id'])
+            self.assertIn('observed_opposite_heading_change_rad',
+                          report['measurements']['opposing_left_observation']['value'])
+            result = build_result(root, report)
+            self.assertFalse(result['legal_acceptance_claimed'])
+            context['opposite_route'][-1]['heading_xy'] = [0, 1]
+            context_path.write_text(json.dumps(context))
+            with self.assertRaisesRegex(ValueError, 'route turns'):
+                analyze(root)
+            context['opposite_route'][-1]['heading_xy'] = [-1, 0]
+            context['subject_actor_id'] = context['turning_actor_id']
+            context_path.write_text(json.dumps(context))
+            with self.assertRaisesRegex(ValueError, 'subject role differs'):
+                analyze(root)
+
 
 if __name__ == '__main__':
     unittest.main()

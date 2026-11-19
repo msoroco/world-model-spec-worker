@@ -17,7 +17,8 @@ def _unit(waypoint):
     return direction.x / norm, direction.y / norm
 
 
-def select_opposing_left_routes(world_map, *, max_spawns=300):
+def select_opposing_left_routes(world_map, *, max_spawns=300,
+                                require_opposite_straight=False):
     paths = []
     for transform in world_map.get_spawn_points()[:max_spawns]:
         start = world_map.get_waypoint(transform.location)
@@ -40,8 +41,30 @@ def select_opposing_left_routes(world_map, *, max_spawns=300):
             b = _unit(opposite[0])
             if a[0] * b[0] + a[1] * b[1] > -.8:
                 continue
+            if require_opposite_straight:
+                exit_b = _unit(opposite[-1])
+                if b[0] * exit_b[0] + b[1] * exit_b[1] < .8:
+                    continue
             return {'turning': turning, 'opposite': opposite,
                     'junction_id': junction, 'map_name': world_map.name,
                     'selection_basis': 'connected Native lane successors, opposing entry headings and leftward exit heading',
                     'legal_exception_claimed': False}
     raise ValueError('No connected opposing left-turn routes at one Native junction')
+
+
+def select_travel_subject_opposing_left_routes(world_map, *, max_spawns=300):
+    """Keep the C111294 subject traveling while the opposing actor turns left.
+
+    The selected route is only a Native construction candidate. Its legal
+    opposite-direction and left-turn facts still require original readbacks.
+    """
+    selected = select_opposing_left_routes(world_map, max_spawns=max_spawns,
+                                           require_opposite_straight=True)
+    subject = selected['opposite']
+    entry, exit = _unit(subject[0]), _unit(subject[-1])
+    if entry[0] * exit[0] + entry[1] * exit[1] < .8:
+        raise ValueError('Opposing route does not keep C111294 subject traveling')
+    return {**selected, 'subject': subject, 'other': selected['turning'],
+            'subject_maneuver': 'travel', 'other_maneuver': 'left_turn',
+            'selection_basis': selected['selection_basis'] +
+            '; traveling subject has aligned entry and exit headings'}

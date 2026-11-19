@@ -29,6 +29,20 @@ def analyze(attempt):
     trace_path, trace_sha = _source(root, 'trace.jsonl')
     participant_path, participant_sha = _source(root, 'opposing_left_participants.jsonl')
     context_path, context_sha = _source(root, 'opposing_left_context.json')
+    context = json.loads(context_path.read_text())
+    expected_role = 'opposite' if config['cell_id'] == 'C111294' else 'turning'
+    if context.get('subject_role', 'turning') != expected_role or (
+            context.get('subject_actor_id', context.get('turning_actor_id')) !=
+            context.get(expected_role + '_actor_id')):
+        raise ValueError('Opposing-left original subject role differs from exact cell')
+    if expected_role == 'opposite':
+        route = context.get('opposite_route') or []
+        if len(route) < 2 or not all('heading_xy' in node for node in
+                                     (route[0], route[-1])):
+            raise ValueError('Traveling subject original route heading missing')
+        first, last = route[0]['heading_xy'], route[-1]['heading_xy']
+        if first[0] * last[0] + first[1] * last[1] < .8:
+            raise ValueError('Traveling subject original route turns at junction')
     mapping, trace, participants = (_rows(path) for path in
                                     (map_path, trace_path, participant_path))
     if not mapping or len(mapping) != len(trace) or len(mapping) != len(participants):

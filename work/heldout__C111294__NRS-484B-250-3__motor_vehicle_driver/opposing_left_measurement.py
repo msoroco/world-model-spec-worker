@@ -48,7 +48,7 @@ def measure_opposing_left(root):
     exit_heading = turning_route[-1]['heading_xy']
     if a[0] * b[0] + a[1] * b[1] > -.8 or a[0] * exit_heading[1] - a[1] * exit_heading[0] < .5:
         raise ValueError('Opposing-left route context does not establish opposing leftward plan')
-    turning_centers, opposite_centers, turn_headings = [], [], []
+    turning_centers, opposite_centers, turn_headings, opposite_headings = [], [], [], []
     previous = None
     for row, frame in zip(rows, mapping):
         if (row.get('frame'), row.get('time_s')) != (frame.get('carla_frame'), frame.get('time_s')):
@@ -67,8 +67,10 @@ def measure_opposing_left(root):
         turning_centers.append(_center(row['turning_corners']))
         opposite_centers.append(_center(row['opposite_corners']))
         turn_headings.append(heading)
+        opposite_headings.append(other_heading)
         previous = row['frame'], row['time_s']
     observed_change = _angle_change(turn_headings[0], turn_headings[-1])
+    observed_opposite_change = _angle_change(opposite_headings[0], opposite_headings[-1])
     start_separation = hypot(*(turning_centers[0][i] - opposite_centers[0][i] for i in (0, 1)))
     end_separation = hypot(*(turning_centers[-1][i] - opposite_centers[-1][i] for i in (0, 1)))
     return {'method': 'measure_opposing_left',
@@ -78,6 +80,7 @@ def measure_opposing_left(root):
                       'planned_left_cross': a[0] * exit_heading[1] - a[1] * exit_heading[0],
                       'approach_heading_dot': a[0] * b[0] + a[1] * b[1],
                       'observed_turn_heading_change_rad': observed_change,
+                      'observed_opposite_heading_change_rad': observed_opposite_change,
                       'start_body_center_separation_m': start_separation,
                       'end_body_center_separation_m': end_separation,
                       'turn_physically_completed': None,

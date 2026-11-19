@@ -4,7 +4,8 @@ from pathlib import Path
 from types import SimpleNamespace as NS
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from opposing_left_route import select_opposing_left_routes
+from opposing_left_route import (select_opposing_left_routes,
+                                 select_travel_subject_opposing_left_routes)
 
 
 class Point:
@@ -48,6 +49,21 @@ class OpposingTests(unittest.TestCase):
         world, _, _ = self.map(second_heading=1)
         with self.assertRaisesRegex(ValueError, 'No connected'):
             select_opposing_left_routes(world)
+
+    def test_travel_subject_stays_straight_while_other_turns_left(self):
+        world, turning, straight = self.map()
+        selected = select_travel_subject_opposing_left_routes(world)
+        self.assertIs(selected['subject'][0], straight[0])
+        self.assertIs(selected['other'][0], turning[0])
+        self.assertEqual(selected['subject_maneuver'], 'travel')
+        self.assertEqual(selected['other_maneuver'], 'left_turn')
+        self.assertFalse(selected['legal_exception_claimed'])
+
+    def test_rejects_turning_subject_route(self):
+        world, _, straight = self.map()
+        straight[-1].transform.get_forward_vector = lambda: NS(x=0, y=1)
+        with self.assertRaisesRegex(ValueError, 'No connected'):
+            select_travel_subject_opposing_left_routes(world)
         world, a, _ = self.map()
         a[-1].transform.get_forward_vector = lambda: NS(x=0, y=-1)
         with self.assertRaisesRegex(ValueError, 'No connected'):
