@@ -1,8 +1,8 @@
 """Source-bound physical outcome assessment for the two C177225 bus cases.
 
-A diagnostic can show that the requested maneuver was not measured, but a
-synthetic positive remains unverified. Only sealed original Native sources can
-support a complete-motion result. No result here determines legal compliance.
+A synthetic positive proves the diagnostic measurement branch only. Its
+provenance remains synthetic_fixture; original Native completion requires a
+sealed capture. No result here determines legal compliance.
 """
 import argparse
 import hashlib
@@ -78,9 +78,8 @@ def assess(folder, case_id):
     expected = ('observed_complete_stop_before_line' if case_id.endswith('__reference')
                 else 'observed_crossing_entry')
     observed = bool(observation[expected]) if observation is not None else None
-    status = ('unverified' if observed is None or (observed and kind != 'native')
-              else 'met' if observed else 'not_met')
-    method = ('600-frame original bus velocity/station, officer direction and video-frame join; '
+    status = ('unverified' if observed is None else 'met' if observed else 'not_met')
+    method = ('600-frame bus velocity/station, officer direction and video-frame join; '
               'reference requires measured stop before line, contrast requires measured crossing entry')
     check = {
         'status': status, 'method': method, 'sources': available,
@@ -91,6 +90,7 @@ def assess(folder, case_id):
     return {
         'format': 'c177225-physical-outcome-v1', 'case_id': case_id,
         'provenance_kind': kind, 'diagnostic_fixture': kind != 'native',
+        'original_native_observed': kind == 'native' and status == 'met',
         'physical_checks': {'maneuver': check},
         'maneuver_completed': status == 'met',
         'realized_observables': ({expected: {'value': True, 'source': 'bus_native_rows.jsonl',

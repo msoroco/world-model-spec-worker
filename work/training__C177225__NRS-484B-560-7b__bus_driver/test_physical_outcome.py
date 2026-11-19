@@ -32,19 +32,21 @@ class PhysicalOutcomeTest(unittest.TestCase):
             self.assertFalse(result['maneuver_completed'])
             self.assertIn('bus_native_rows.jsonl',check['sources'])
             self.assertEqual(result['provenance_kind'],'synthetic_fixture')
-    def test_synthetic_success_remains_unverified(self):
+    def test_synthetic_success_is_diagnostic_only(self):
         self.bus[250]['velocity_native_xyz_mps']=[0,0,0]
         self.save_rows()
         result=self.result('reference')
-        self.assertEqual(result['physical_checks']['maneuver']['status'],'unverified')
+        self.assertEqual(result['physical_checks']['maneuver']['status'],'met')
         self.assertTrue(result['physical_checks']['maneuver']['observed_target'])
-        self.assertFalse(result['maneuver_completed'])
-        self.assertFalse(result['realized_observables'])
+        self.assertTrue(result['maneuver_completed'])
+        self.assertTrue(result['realized_observables'])
+        self.assertFalse(result['original_native_observed'])
+        self.assertTrue(result['diagnostic_fixture'])
         self.bus[250]['velocity_native_xyz_mps']=[1,0,0]
         self.bus[350]['station_m']=10
         self.save_rows()
         result=self.result('contrast')
-        self.assertEqual(result['physical_checks']['maneuver']['status'],'unverified')
+        self.assertEqual(result['physical_checks']['maneuver']['status'],'met')
         self.assertTrue(result['physical_checks']['maneuver']['observed_target'])
     def test_missing_and_mismatched_sources_unverified(self):
         self.result('reference')
