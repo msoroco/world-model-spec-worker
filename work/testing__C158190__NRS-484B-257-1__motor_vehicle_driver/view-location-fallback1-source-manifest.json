@@ -12,7 +12,7 @@
         "entrypoint": "finalizer.py"
       },
       "measurement_contract": "measurement-contract.json",
-      "fixture_recipe": "work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/cases/view_location_y12/diagnostic-recipe.json",
+      "fixture_recipe": "work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/cases/view_location_y12/fallbacks/fallback1-sources/diagnostic-recipe.json",
       "candidate_risk": {
         "status": "physical",
         "reason": "Prop mesh, realized ray occlusion and original pixels unverified"
@@ -241,11 +241,7 @@
           },
           "changed_knobs": [
             "roadside streetbarrier center y from 15.0 m to 14.5 m"
-          ],
-          "source_equivalence": {
-            "road_context_sha256": "639b45b80cb215d3744837ee6b5dec182ea7086c448462bfa6d962bcba0c6808",
-            "fixture_recipe_sha256": "3bad08c7ebe9aa74aec928249fdabfa2d2f0a9bb0f9f810c605a8bf2e7655e16"
-          }
+          ]
         },
         {
           "id": "fallback2",
@@ -284,7 +280,7 @@
         "entrypoint": "finalizer.py"
       },
       "measurement_contract": "measurement-contract.json",
-      "fixture_recipe": "work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/cases/view_location_y18/diagnostic-recipe.json",
+      "fixture_recipe": "work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/cases/view_location_y18/fallbacks/fallback1-sources/diagnostic-recipe.json",
       "candidate_risk": {
         "status": "physical",
         "reason": "Prop mesh, realized ray occlusion and original pixels unverified"
@@ -366,7 +362,48 @@
           "evidence": "interaction_history.jsonl and video_frames.jsonl"
         }
       },
-      "occluder_center_y_m": 18.0
+      "occluder_center_y_m": 18.0,
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/view_location_y18/fallbacks/fallback1-construction.json",
+          "construction_sha256": "80ac359cb1dbbd27ed97bcc4755e2d14d358f2436322779e4bde62a37bbfbf16",
+          "trigger": {
+            "source": "visibility_rays.jsonl and road_context.json",
+            "metric": "original Native streetbarrier hits and clear/blocked transition over the approach",
+            "failure_condition": "the y=18 m obstruction produces no attributable clear/blocked transition"
+          },
+          "changed_knobs": [
+            "roadside streetbarrier center y from 18.0 m to 17.5 m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/view_location_y18/fallbacks/fallback2-construction.json",
+          "construction_sha256": "6688be1fba82512294dc152e5ae5f7cb543c5ef2f7a325d1049b9092cd4f8fa4",
+          "trigger": {
+            "source": "reference_corner.mkv and video_frames.jsonl",
+            "metric": "original source frames containing both roadside body and through-highway lane",
+            "failure_condition": "the reference camera fails to frame the body and governed view corridor"
+          },
+          "changed_knobs": [
+            "reference-corner camera from (19,-25,15,135,-24) to (23,-28,18,135,-27)"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/view_location_y18/fallbacks/fallback3-construction.json",
+          "construction_sha256": "2a62e8b876b985cc35ed9b96e5bac1e94cd7d36134e06a78ad2252293e05f4f0",
+          "trigger": {
+            "source": "approach_history.jsonl and video_frames.jsonl",
+            "metric": "original approach frames spanning 50 m to 1 m before junction entry",
+            "failure_condition": "the near-view transition is outside the retained approach frame span"
+          },
+          "changed_knobs": [
+            "ego OpenDRIVE approach spawn x from -60 m to -70 m"
+          ]
+        }
+      ]
     }
   ]
 }
