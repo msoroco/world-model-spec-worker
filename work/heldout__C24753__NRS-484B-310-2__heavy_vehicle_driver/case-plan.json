@@ -108,32 +108,24 @@
   ],
   "observations": [
     {
-      "term": "dev.traffic_signal",
-      "note": "state flashing_yellow"
+      "name": "native_yellow_on",
+      "mandatory": true,
+      "purpose": "original Native governed signal state transition stream; physical lens visibility unverified"
     },
     {
-      "term": "dev.governs",
-      "note": "the head faces the subject"
+      "name": "ego_speed_mps",
+      "mandatory": true,
+      "purpose": "original heavy vehicle speed samples"
     },
     {
-      "term": "st.intersection",
-      "note": "the intersection or other hazardous location"
+      "name": "ego_center_xy",
+      "mandatory": true,
+      "purpose": "original heavy vehicle approach geometry"
     },
     {
-      "term": "kin.speed",
-      "note": "the speed of the passage"
-    },
-    {
-      "term": "drv.time_to_conflict",
-      "note": "the surrogate for caution"
-    },
-    {
-      "term": "drv.approaching",
-      "note": "the approach to the location"
-    },
-    {
-      "term": "kin.accel_longitudinal",
-      "note": "evidence of a late reaction"
+      "name": "crossing_center_xy",
+      "mandatory": true,
+      "purpose": "original crossing context when present"
     }
   ],
   "sources": [
@@ -193,5 +185,109 @@
       ],
       "evidence_or_gap": "Accepted summaries do not establish this heavy approach; original signal/participant sources and pixels require review."
     }
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 8,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "heavy vehicle, governed junction, crossing context, and complete approach",
+        "interval": "0-8 s at 20 Hz"
+      },
+      {
+        "view": "approach",
+        "subject": "governed flashing signal head and heavy vehicle approach",
+        "interval": "0-8 s at 20 Hz"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "official control location, corner geometry, and crossing vehicle when present",
+        "interval": "0-8 s at 20 Hz"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "heavy driver reference sightline toward governed signal and junction",
+        "interval": "0-8 s at 20 Hz"
+      }
+    ]
+  },
+  "source_observation_mapping": {
+    "dev.traffic_signal": {
+      "evidence": "Native Yellow/Off transition stream is recorded; physical lens illumination needs independent camera review.",
+      "channels": [
+        "native_yellow_on"
+      ],
+      "source_refs": [
+        "signal_state.jsonl",
+        "overview.mkv",
+        "approach.mkv"
+      ]
+    },
+    "dev.governs": {
+      "evidence": "Selected direction and original light identity are recorded; physical authority remains unresolved.",
+      "channels": [
+        "native_yellow_on"
+      ],
+      "source_refs": [
+        "signal_context.json",
+        "signal_state.jsonl",
+        "approach.mkv"
+      ]
+    },
+    "st.intersection": {
+      "evidence": "Junction geometry and participant world positions are captured through the approach.",
+      "channels": [
+        "ego_center_xy",
+        "crossing_center_xy"
+      ],
+      "source_refs": [
+        "signal_context.json",
+        "participant_state.jsonl",
+        "overview.mkv"
+      ]
+    },
+    "kin.speed": {
+      "evidence": "Original heavy vehicle speed samples over joined frames.",
+      "channels": [
+        "ego_speed_mps"
+      ],
+      "source_refs": [
+        "participant_state.jsonl"
+      ]
+    },
+    "drv.time_to_conflict": {
+      "evidence": "A geometric proxy can be derived from original positions and speeds; no legal caution cutoff is asserted.",
+      "channels": [
+        "ego_center_xy",
+        "ego_speed_mps",
+        "crossing_center_xy"
+      ],
+      "source_refs": [
+        "participant_state.jsonl"
+      ]
+    },
+    "drv.approaching": {
+      "evidence": "Original center trajectory and speed toward the governed junction.",
+      "channels": [
+        "ego_center_xy",
+        "ego_speed_mps"
+      ],
+      "source_refs": [
+        "participant_state.jsonl",
+        "trace.jsonl"
+      ]
+    },
+    "kin.accel_longitudinal": {
+      "evidence": "Acceleration is derived from original speed samples and frame timing; late-reaction judgment remains unresolved.",
+      "channels": [
+        "ego_speed_mps"
+      ],
+      "source_refs": [
+        "participant_state.jsonl",
+        "trace.jsonl"
+      ]
+    }
+  }
 }
