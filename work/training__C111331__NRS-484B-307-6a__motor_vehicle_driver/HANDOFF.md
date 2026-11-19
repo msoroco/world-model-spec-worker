@@ -1,6 +1,6 @@
 # training__C111331__NRS-484B-307-6a__motor_vehicle_driver
 
-Status: partial. Eight unselected current CPU bundles pass; no delivery recording is selected or claimed.
+Current status: ready/delivery_prepared after update 402; no original Native recording or physical/legal acceptance is claimed. The following earlier checkpoints are retained for provenance.
 
 ## Source review
 
