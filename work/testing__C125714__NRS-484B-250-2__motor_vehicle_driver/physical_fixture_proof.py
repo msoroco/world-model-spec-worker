@@ -43,7 +43,7 @@ def inputs(root, entry):
             raise ValueError('Missing generated source: ' + name)
         (root / name).write_text(files[name])
     write(root / 'acquisition-provenance.json', {
-        'provenance_kind': 'native', 'diagnostic_fixture': True,
+        'provenance_kind': 'synthetic_fixture', 'diagnostic_fixture': True,
         'scope': 'Synthetic CPU physical-classifier fixture only'})
     return construction
 
