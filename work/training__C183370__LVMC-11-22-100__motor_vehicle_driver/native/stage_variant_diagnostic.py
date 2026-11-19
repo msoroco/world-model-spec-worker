@@ -12,18 +12,18 @@ from worker_exchange.fixture_generator import inspect
 from worker_exchange.runtime_cli import materialize
 
 
-def stage(route, compatibility, target):
+def stage(route, compatibility, target, candidate='primary'):
     if route not in ('crossing', 'avoidance'):
         raise ValueError('Unknown barrier route')
     case = PACKAGE.name + '__barrier_' + route
     manifest = PACKAGE / 'draft-barrier-capture-manifest.json'
     source, target = Path(compatibility).resolve(), Path(target).resolve()
     receipt = json.loads((source / 'compatibility.json').read_text())
-    if (receipt.get('passed') is not True or receipt.get('candidate_id') != 'primary'
+    if (receipt.get('passed') is not True or receipt.get('candidate_id') != candidate
             or receipt.get('case_id') != case):
-        raise ValueError('Compatibility proof differs from barrier primary')
+        raise ValueError('Compatibility proof differs from barrier candidate')
     spec = json.loads((PACKAGE / 'variant-diagnostics/barrier' / route / 'primary.json').read_text())
-    materialize(manifest, case, target, 'primary')
+    materialize(manifest, case, target, candidate)
     for relative in inspect(spec):
         original, destination = source / relative, target / relative
         if not original.is_file() or destination.exists():
@@ -36,7 +36,8 @@ def stage(route, compatibility, target):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--route', required=True)
+    parser.add_argument('--candidate', default='primary')
     parser.add_argument('--compatibility', required=True)
     parser.add_argument('--target', required=True)
     args = parser.parse_args()
-    print(stage(args.route, args.compatibility, args.target))
+    print(stage(args.route, args.compatibility, args.target, args.candidate))

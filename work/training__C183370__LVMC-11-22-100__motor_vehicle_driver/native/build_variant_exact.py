@@ -16,6 +16,25 @@ MODULES = ('pathing.py', 'scene_plan.py', 'live_readback.py',
            'variant_capture.py', 'analyze.py', 'variant_analyze.py',
            'variant_finalize.py')
 
+FALLBACKS = {
+    'fallback1': {
+        'trigger': {'source': 'native-actors.jsonl',
+                    'metric': 'sampled body/route tracking near surveyed pavement',
+                    'failure_condition': 'ego overshoots the requested crossing or avoidance route'},
+        'changed_knobs': ['lower requested controller speed from 4 to 3 m/s']},
+    'fallback2': {
+        'trigger': {'source': 'overview.mkv',
+                    'metric': 'visibility of barrier actor and full surveyed pavement region',
+                    'failure_condition': 'overview pixels omit the barrier or a pavement edge'},
+        'changed_knobs': ['raise overview camera from 24 to 28 m and pitch from -55 to -62 degrees']},
+    'fallback3': {
+        'trigger': {'source': 'native-actors.jsonl',
+                    'metric': 'sampled lateral route error on barrier approach',
+                    'failure_condition': 'body footprint leaves the intended route corridor'},
+        'changed_knobs': ['reduce waypoint reach from 1.5 to 1.0 m',
+                          'increase steering response by reducing divisor from 40 to 32 degrees']},
+}
+
 
 def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
@@ -64,14 +83,19 @@ def build(kind, route, candidate='primary'):
 def write():
     cases = []
     for route in ('crossing', 'avoidance'):
-        folder = PACKAGE / 'draft-variant-candidates' / 'barrier' / route / 'primary'
-        folder.mkdir(parents=True, exist_ok=True)
-        path = folder / 'construction.json'
-        path.write_text(json.dumps(build('barrier', route), indent=2, sort_keys=True) + '\n')
+        variants = {}
+        for candidate in KNOBS:
+            folder = PACKAGE / 'draft-variant-candidates' / 'barrier' / route / candidate
+            folder.mkdir(parents=True, exist_ok=True)
+            path = folder / 'construction.json'
+            path.write_text(json.dumps(build('barrier', route, candidate), indent=2, sort_keys=True) + '\n')
+            variants[candidate] = {'construction': str(path.relative_to(PACKAGE)),
+                                   'construction_sha256': sha(path)}
+        candidates = [dict(id=candidate, **variants[candidate], **FALLBACKS[candidate])
+                      for candidate in FALLBACKS]
         cases.append({'case_id': ASSIGNMENT + '__barrier_' + route,
                       'kind': 'delivery',
-                      'construction': str(path.relative_to(PACKAGE)),
-                      'construction_sha256': sha(path),
+                      **variants['primary'],
                       'measurement_contract': 'variant-measurement-contracts/barrier-' + route + '.json',
                       'fixture_recipe': 'work/' + ASSIGNMENT + '/variant-diagnostics/barrier/' + route + '/primary-recipe.json',
                       'measurement_procedure': {
@@ -79,6 +103,7 @@ def write():
                           'output_schema': 'c183370-variant-diagnostic-finalization-v1'},
                       'candidate_risk': {'status': 'physical',
                           'reason': 'Barrier content, surface repair and Native body tracking remain unverified'},
+                      'candidates': candidates,
                       'candidate_offline_status': 'pending',
                       'finalizer_status': 'cpu_unit_tested_not_saved_proven'})
     runtime = PACKAGE.parents[1] / 'runtime/pipeline/SOURCE-MANIFEST.json'
