@@ -84,24 +84,28 @@ def build_result(config, analysis):
     matched = observations['requested_footprint_contact_matched']
     sources = {name: analysis['source_hashes'][name] for name in
                ('native-actors.jsonl','video_frames.jsonl','live-readback.json')}
-    common = {'status':'unverified', 'method':'independent original-source review pending',
+    diagnostic = analysis.get('source_kind') == 'synthetic_diagnostic_capture'
+    source_label = 'synthetic diagnostic' if diagnostic else 'original CARLA'
+    common = {'status':'unverified', 'method':('synthetic diagnostic; no physical review' if diagnostic
+                                             else 'independent original-source review pending'),
               'sources':sources, 'intervals':[],
               'legal_verdict_claimed':False, 'physical_causation_claimed':False}
     checks = {name:dict(common) for name in ('setup','target','maneuver')}
     checks['target']['status'] = 'met' if matched else 'not_met'
-    checks['target']['method'] = 'original eight-vertex body footprint versus surveyed repair polygon'
+    checks['target']['method'] = source_label+' eight-vertex body footprint versus surveyed repair polygon'
     return {
         'case_id':config['case_id'],
         'measured_values':observations,
         'target_checks':[{'target':'sampled contact with surveyed repair polygon',
                           'requested':requested, 'measured':measured,
-                          'method':'original CARLA body vertices and source-joined surveyed polygon',
+                          'method':source_label+' body vertices and source-joined surveyed polygon',
                           'tolerance':'polygon intersection; no legal threshold',
                           'matched':matched, 'physical_cause_confirmed':False,
                           'cause_evidence':list(sources)}],
         'setup_confirmed':False, 'behavior_attempted':True,
         'maneuver_completed':False, 'physical_checks':checks,
-        'termination_reason':'full original source attempt retained',
+        'termination_reason':('synthetic diagnostic fixture processed' if diagnostic
+                              else 'full original source attempt retained'),
         'physical_failure_flags':['warning_act_unreviewed',
                                   'newly_repaired_surface_unverified',
                                   'paving_employee_exception_unreviewed']+
@@ -119,11 +123,12 @@ def build_result(config, analysis):
         'realized_observables':{
             'surveyed_pavement_contact_frames':{
                 'value':len(observations['pavement_footprint_contact_frames']),
-                'unit':'count', 'method':'original body versus surveyed polygon',
+                'unit':'count', 'method':source_label+' body versus surveyed polygon',
                 'time_window':f"{observations['source_elapsed_s']:g} seconds",
                 'statistic':'frame_count',
                 'reference':'channels/pavement_footprint_contact.jsonl'}},
-        'provenance_kind':'native', 'diagnostic_fixture':False,
+        'provenance_kind':('synthetic_fixture' if diagnostic else 'native'),
+        'diagnostic_fixture':diagnostic,
         'accepted':False, 'legal_verdict_claimed':False,
     }
 
@@ -179,7 +184,10 @@ def finalize(attempt, output):
         if not (attempt/name).is_file():
             raise ValueError('Missing required source: '+name)
     marker = json.loads((attempt/'acquisition-provenance.json').read_text())
-    if marker.get('provenance_kind') != 'native' or marker.get('diagnostic_fixture') is not False:
+    diagnostic = (marker.get('provenance_kind') == 'synthetic_fixture' and
+                  marker.get('diagnostic_fixture') is True)
+    if not diagnostic and (marker.get('provenance_kind') != 'native' or
+                           marker.get('diagnostic_fixture') is not False):
         raise ValueError('Original Native provenance required')
     config = json.loads((attempt/'config.json').read_text())
     analysis = analyze(attempt)
@@ -191,22 +199,27 @@ def finalize(attempt, output):
             row['time_s'] != frame['time_s'] or
             row['position_m'] != actor['ego_position_xyz_m'][:2] or
             row['speed_mps'] != actor['ego_speed_mps'] or
-            row.get('speed_provenance') != 'original_carla_velocity'
+            row.get('speed_provenance') != ('synthetic_native_sample' if diagnostic
+                                           else 'original_carla_velocity')
             for row,actor,frame in zip(trace,actors,frames)):
-        raise ValueError('Original trace differs from actor/frame sources')
+        raise ValueError('Trace differs from actor/frame sources or acquisition mode')
     channels = derive_channels(attempt, analysis)
     result = build_result(config, analysis)
     _write_result()(attempt,result)
-    report = {'format':'c183370-native-finalization-v1',
+    report = {'format':('c183370-diagnostic-finalization-v1' if diagnostic
+                         else 'c183370-native-finalization-v1'),
               'case_id':config['case_id'], 'source_hashes':analysis['source_hashes'],
               'derived_channel_sha256':channels,
               'native_result_sha256':sha(attempt/'result.json'),
               'measurements':measurement_records(analysis),
-              'provenance_kind':'native','diagnostic_fixture':False,
+              'provenance_kind':('synthetic_fixture' if diagnostic else 'native'),
+              'diagnostic_fixture':diagnostic,
               'analysis_complete':True,
               'physical_acceptance_claimed':False,
               'legal_acceptance_claimed':False,
-              'limitations':['Human warning act, newly repaired pavement status and paving-employee exception require independent original review.']}
+              'limitations':(['Synthetic fixture only; no original CARLA capture or physical completion claim.']
+                             if diagnostic else
+                             ['Human warning act, newly repaired pavement status and paving-employee exception require independent original review.'])}
     output.write_text(json.dumps(report,indent=2,sort_keys=True)+'\n')
     return report
 

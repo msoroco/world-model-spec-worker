@@ -48,6 +48,15 @@ class SourceAnalysisTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'frame join'):
             analyze_rows(frames,actors,READBACK)
 
+    def test_synthetic_rows_require_explicit_diagnostic_mode(self):
+        frames,actors=source_rows()
+        for actor in actors:
+            actor['source_kind']='synthetic_diagnostic_actor_and_map_readback'
+        with self.assertRaisesRegex(ValueError,'provenance'):
+            analyze_rows(frames,actors,READBACK)
+        result=analyze_rows(frames,actors,READBACK,diagnostic=True)
+        self.assertEqual(result['pavement_footprint_contact_frames'],list(range(300,600)))
+
     def test_decodes_four_short_diagnostic_videos(self):
         names=('overview','approach','reference_corner','driver_reference')
         specs=[(name,16,16,90,(0,0,0),0) for name in names]

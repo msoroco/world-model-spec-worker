@@ -23,7 +23,7 @@ def read_jsonl(path):
     return [json.loads(line) for line in Path(path).read_text().splitlines()]
 
 
-def analyze_rows(frames, actors, readback):
+def analyze_rows(frames, actors, readback, *, diagnostic=False):
     if len(frames) < 600 or len(frames) != len(actors):
         raise ValueError('Original capture needs at least 600 joined frames')
     polygon = Polygon(readback['plan']['repair_polygon_xy_m'])
@@ -46,8 +46,10 @@ def analyze_rows(frames, actors, readback):
                               abs(time-times[-1]-0.05) > 0.001):
             raise ValueError('Original 20 Hz frame/time continuity failed')
         source_frames.append(native_frame); times.append(time)
-        if actor.get('source_kind') != 'original_carla_actor_and_map_readback':
-            raise ValueError('Original Native actor provenance absent')
+        expected_actor_kind = ('synthetic_diagnostic_actor_and_map_readback' if diagnostic
+                               else 'original_carla_actor_and_map_readback')
+        if actor.get('source_kind') != expected_actor_kind:
+            raise ValueError('Actor provenance differs from acquisition mode')
         if actor.get('warning_person_actor_id') != person_id or not actor.get('warning_person_type_id','').startswith('walker.pedestrian.'):
             raise ValueError('Original warning-person identity differs')
         position = actor['warning_person_xyz_m']
@@ -110,14 +112,22 @@ def verify_media(path, expected_frames, *, camera_specs=CAMERAS):
 def analyze(attempt):
     attempt = Path(attempt)
     receipt = json.loads((attempt/'capture-receipt.json').read_text())
-    if receipt.get('source_kind') != 'original_carla_capture':
-        raise ValueError('Original CARLA capture receipt required')
+    marker = json.loads((attempt/'acquisition-provenance.json').read_text())
+    diagnostic = (marker.get('provenance_kind') == 'synthetic_fixture' and
+                  marker.get('diagnostic_fixture') is True)
+    expected_receipt_kind = ('synthetic_diagnostic_capture' if diagnostic
+                             else 'original_carla_capture')
+    if receipt.get('source_kind') != expected_receipt_kind:
+        raise ValueError('Capture receipt provenance differs from acquisition mode')
+    if not diagnostic and (marker.get('provenance_kind') != 'native' or
+                           marker.get('diagnostic_fixture') is not False):
+        raise ValueError('Original Native provenance required')
     readback = json.loads((attempt/'live-readback.json').read_text())
     frames = read_jsonl(attempt/'video_frames.jsonl')
     actors = read_jsonl(attempt/'native-actors.jsonl')
     if receipt['source_frames'] != len(frames):
         raise ValueError('Capture receipt frame count differs')
-    observations = analyze_rows(frames, actors, readback)
+    observations = analyze_rows(frames, actors, readback, diagnostic=diagnostic)
     case = receipt['case']
     if case not in ('reference', 'contrast') or case not in readback['plan']['cases']:
         raise ValueError('Captured case differs from surveyed draft')
@@ -129,8 +139,9 @@ def analyze(attempt):
                      ('capture-receipt.json','live-readback.json','video_frames.jsonl',
                       'native-actors.jsonl','road.xodr','trace.jsonl',
                       'acquisition-provenance.json','config.json')}
-    result = {'format': 'c183370-original-source-analysis-v1',
-              'source_kind': 'original_carla_capture',
+    result = {'format': ('c183370-diagnostic-source-analysis-v1' if diagnostic
+                         else 'c183370-original-source-analysis-v1'),
+              'source_kind': expected_receipt_kind,
               'case': case, 'source_hashes': source_hashes,
               'camera_sources': media, 'observations': observations}
     output = attempt/'source-analysis.json'

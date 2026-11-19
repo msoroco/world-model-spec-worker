@@ -100,6 +100,8 @@ def write():
                       **variants['primary'],
                       'measurement_contract':
                           'selected-measurement-contracts/'+case+'.json',
+                      'fixture_recipe':
+                          'work/'+ASSIGNMENT+'/selected-diagnostics/'+case+'/primary-recipe.json',
                       'measurement_procedure':{
                           'entrypoint':'native/finalize.py',
                           'output_schema':'c183370-native-finalization-v1'},
