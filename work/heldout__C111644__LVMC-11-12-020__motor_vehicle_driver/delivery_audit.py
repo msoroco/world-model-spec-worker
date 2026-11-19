@@ -43,7 +43,15 @@ def audit(case, attempt, processed, manifest):
             and receipt.get("recorded_only") is True
             and receipt.get("originals_preserved") is True,
             "Saved-processing identity or original preservation differs")
-    require(receipt.get("native_revision", {}).get("construction_sha256")
+    # The attempt materializer serializes construction.json again. Its byte
+    # hash can differ from the selected returned file while JSON content is
+    # identical. Bind both byte identities to their actual files.
+    selected = HERE / entry["construction"]
+    require(sha(selected) == entry["construction_sha256"]
+            and read(attempt / "construction.json") == read(selected)
+            and receipt.get("native_revision", {}).get("construction_sha256")
+            == sha(attempt / "construction.json")
+            and receipt.get("analysis_revision", {}).get("construction_sha256")
             == entry["construction_sha256"], "Saved construction changed")
     measured = analyze_original_sources(attempt)
     require(measured["case_id"] == case and len(measured["samples"]) >= 3,
