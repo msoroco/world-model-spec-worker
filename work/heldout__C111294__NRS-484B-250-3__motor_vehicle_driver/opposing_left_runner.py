@@ -28,6 +28,14 @@ def check_config(config):
         raise ValueError('Opposing-left exact case and cell binding differ')
     if config.get('rate_hz') != 20 or config.get('frames', 0) < 80:
         raise ValueError('Opposing-left capture requires at least four seconds at 20 Hz')
+    if type(config.get('route_search_cap', 300)) is not int or not 300 <= config.get('route_search_cap', 300) <= 600:
+        raise ValueError('Opposing-left route search cap differs')
+    for name, lower, upper, default in (
+            ('turning_released_speed_mps', 2.5, 4.0, 4.0),
+            ('opposite_speed_mps', 3.5, 5.0, 5.0)):
+        value = config.get(name, default)
+        if type(value) not in (int, float) or not lower <= value <= upper:
+            raise ValueError('Opposing-left control speed differs: ' + name)
     if [c.get('name') for c in config.get('cameras', [])] != list(CAMERAS) or any(
             [c.get('width'), c.get('height')] != list(CAMERAS[c['name']][2])
             for c in config['cameras']):
@@ -64,8 +72,9 @@ def run(config, output, host='127.0.0.1', port=2000):
         settings.fixed_delta_seconds = .05
         world.apply_settings(settings)
         travel_subject = config['cell_id'] == 'C111294'
-        routes = (select_travel_subject_opposing_left_routes(world.get_map())
-                  if travel_subject else select_opposing_left_routes(world.get_map()))
+        route_args = {'max_spawns': config.get('route_search_cap', 300)}
+        routes = (select_travel_subject_opposing_left_routes(world.get_map(), **route_args)
+                  if travel_subject else select_opposing_left_routes(world.get_map(), **route_args))
         turning_path = extend_exit(routes['turning'])
         opposite_path = extend_exit(routes['opposite'])
         routes['turning'], routes['opposite'] = turning_path, opposite_path
@@ -96,9 +105,10 @@ def run(config, output, host='127.0.0.1', port=2000):
                     opposite_seen_in_zone=state['opposite_seen_in_zone'],
                     turning_released=state['turning_released'])
             turning.apply_control(carla.VehicleControl(**control_to_waypoint(
-                turning, turning_path[-1], state['turning_speed_mps'])))
+                turning, turning_path[-1],
+                config.get('turning_released_speed_mps', 4.0) if state['turning_released'] else 0.0)))
             opposite.apply_control(carla.VehicleControl(**control_to_waypoint(
-                opposite, opposite_path[-1], state['opposite_speed_mps'])))
+                opposite, opposite_path[-1], config.get('opposite_speed_mps', 5.0))))
             frame = world.tick()
             cameras.wait_for_frame(frame)
             snapshot = world.get_snapshot()

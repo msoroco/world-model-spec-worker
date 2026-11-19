@@ -40,8 +40,8 @@ def audit(turn_attempt, hold_attempt):
     holding = measure_opposing_left(hold)['value']
     if (turning['planned_left_cross'] != holding['planned_left_cross'] or
             turning['approach_heading_dot'] != holding['approach_heading_dot'] or
-            turning['observed_turn_heading_change_rad'] ==
-            holding['observed_turn_heading_change_rad']):
+            turning['observed_turn_heading_change_rad'] < 1.0 or
+            abs(holding['observed_turn_heading_change_rad']) > .25):
         raise ValueError('Opposing-left intended versus realized turn contrast missing')
     return {'format': 'worker-opposing-left-comparison-audit',
             'comparison_id': 'opposing_left_intent_vs_making',

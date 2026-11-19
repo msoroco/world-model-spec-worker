@@ -40,6 +40,18 @@ class OpposingLeftRunnerTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'case and cell binding'):
             check_config(dict(config, selected_case_id=self.config()['selected_case_id']))
 
+    def test_bounded_physical_fallback_knobs(self):
+        config = self.config()
+        for knob, value in [('route_search_cap', 600),
+                            ('turning_released_speed_mps', 3.2),
+                            ('opposite_speed_mps', 4.0)]:
+            check_config(dict(config, **{knob: value}))
+        for knob, value in [('route_search_cap', 601),
+                            ('turning_released_speed_mps', 0),
+                            ('opposite_speed_mps', 10)]:
+            with self.assertRaises(ValueError):
+                check_config(dict(config, **{knob: value}))
+
 
 if __name__ == '__main__':
     unittest.main()
