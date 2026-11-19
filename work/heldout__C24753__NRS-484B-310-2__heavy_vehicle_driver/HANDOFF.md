@@ -138,3 +138,9 @@ Remaining CPU work: canonical semantic stage proposals and index; explicit compa
 ## 2026-11-19 lossless stale-proof archiving
 
 Sixteen historical saved logs were preserved byte-exact with SHA verification in `work/_shared/c24753-stale-saved-archive.json` (SHA256 `b31562153a7df058446f0923b35f65107e5821ab5ec9f4409e6fe0d4a936d334`). The scoped nonstrict complete check passes. Current-manifest saved-processing reproof remains worker-owned; status remains partial.
+
+## 2026-11-19 all 12 current fallback offline and compatibility proofs
+
+All four selected exact cases retain three fallback constructions each. Under current execution manifest SHA256 `dda85ca0450427d710fe6f30a1e599ac84f0917545d26174fc8263875f5e0968`, each of the 12 fallbacks passed exact offline and positive/missing-source compatibility. The required runtime candidate validator accepts all four case sets (12 candidates). Superseded bytes and the 11-test passing package log are preserved losslessly with SHA verification in `work/_shared/c24753-stale-saved-archive.json`, SHA256 `e9b48c66e5093e75887fa0ad5829031f6c4cd7eef981039ded1b6bfff9c9568b`. Test log SHA256 `6cb674c9e6a1057bc5c790797f57e92d9075840d9205dbf28213fa1e42e17db4`. The C24753 scoped nonstrict complete check exits 0 after the replacement; scoped strict exits 1 at `preparation.py:276` because status remains partial.
+
+Next worker-owned CPU work: reprove all four current primaries, saved-only positive/missing-source processing for primaries and fallbacks, independent delivery audits and controlled comparisons, then run scoped strict again. No actual Native capture, physical/legal acceptance, frozen input/runtime/batch edit or Git operation was performed.

@@ -9,11 +9,122 @@ import os
 import shutil
 import base64
 import zlib
+import argparse
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from school_bus_response import measure, audit_motion_comparison, audit_red_pixel_sources, audit_pupil_service_source, audit_first_case_attempt, finalize_first_case
 from school_bus_controller import BRANCHES, target, apply, motion_readback, spawn_meeting_scene, select_meeting_waypoints
 from school_bus_camera import CAMERAS, LosslessSourceSink, SchoolBusCameraCapture
 from school_bus_native import CASE_ID, check_plan, check_scene, close_all, spawn_pupil_service, pupil_readback
+
+
+def audit_returned_comparison(plan, left, right, comparison_id, left_bytes=None, right_bytes=None):
+    """Check fixed original sources and measured differences in CPU saved reports.
+
+    The outcome is a diagnostic comparison only. It never asserts physical or legal
+    realization from a generated fixture.
+    """
+    comparison = next((row for row in plan['comparisons']
+                       if row['comparison_id'] == comparison_id), None)
+    if comparison is None or len(comparison['case_ids']) != 2:
+        raise ValueError('Unknown or non-pair comparison')
+    for report, case_id in zip((left, right), comparison['case_ids']):
+        if report.get('case_id') != case_id or report.get('format') != 'worker-analysis-report':
+            raise ValueError('Comparison report has wrong exact case identity')
+        if report.get('physical_acceptance_claimed') or report.get('legal_acceptance_claimed'):
+            raise ValueError('CPU report cannot claim physical or legal acceptance')
+    def values(report):
+        measurements = report['measurements']
+        return measurements['first_case_sources']['value'], measurements['stop_response_candidate']['value']
+    left_source, left_motion = values(left)
+    right_source, right_motion = values(right)
+    fixed_names = ('pupil_original.jsonl', 'signal_command_original.jsonl',
+                   'video_frames.jsonl', 'road.xodr', 'overview.mkv',
+                   'approach.mkv', 'reference_corner.mkv', 'driver_reference.mkv')
+    left_hashes = left_source['source_sha256']
+    right_hashes = right_source['source_sha256']
+    for name in fixed_names:
+        if not left_hashes.get(name) or left_hashes[name] != right_hashes.get(name):
+            raise ValueError('Fixed original source changed: ' + name)
+    if not (left_motion['red_onset_frame'] == right_motion['red_onset_frame']
+            and left_motion['red_cessation_frame'] == right_motion['red_cessation_frame']):
+        raise ValueError('Fixed red interval changed')
+    if not (len(left_source['red_pixels']['frames']) ==
+            len(right_source['red_pixels']['frames']) == 160):
+        raise ValueError('Incomplete synchronized frame comparison')
+    red_onset = left_motion['red_onset_frame']
+    red_end = left_motion['red_cessation_frame']
+    diagnostic_passed = False
+    difference = None
+    if comparison_id in ('meeting_stop_vs_pass', 'overtaking_stop_vs_pass'):
+        diagnostic_passed = (left_motion['held_stop_until_cessation_candidate'] is True
+                             and left_motion['passed_during_red_candidate'] is False
+                             and right_motion['passed_during_red_candidate'] is True
+                             and right_motion['first_full_body_pass_frame'] is not None
+                             and red_onset <= right_motion['first_full_body_pass_frame'] < red_end
+                             and left_motion['source_sha256'] != right_motion['source_sha256'])
+        difference = 'source_measured_stop_versus_red_pass'
+    elif comparison_id == 'premature_restart_during_red':
+        restart = right_motion.get('premature_restart_frame')
+        diagnostic_passed = (left_motion['held_stop_until_cessation_candidate'] is True
+                             and right_motion['held_stop_until_cessation_candidate'] is False
+                             and left_motion['first_stop_frame'] == right_motion['first_stop_frame']
+                             and restart is not None
+                             and right_motion['first_stop_frame'] < restart < red_end
+                             and right_motion['passed_during_red_candidate'] is False
+                             and left_motion['source_sha256'] != right_motion['source_sha256'])
+        difference = 'source_measured_restart_during_red'
+    elif comparison_id == 'meeting_vs_overtaking':
+        difference = 'direction_not_measured_in_retained_cpu_fixture'
+    elif comparison_id == 'divided_other_roadway_exception':
+        base = left['measurements'].get('divided_roadway_baseline_context', {}).get('value', {})
+        variant = right['measurements'].get('divided_roadway_baseline_context', {}).get('value', {})
+        difference = ('requested_context_only' if base.get('requested_other_roadway') is False
+                      and variant.get('requested_other_roadway') is True
+                      and variant.get('physical_roadway_identity_verified') is False
+                      else 'context_difference_unproved')
+    elif comparison_id == 'officer_control_exception':
+        base = left['measurements'].get('officer_control_baseline_context', {}).get('value', {})
+        variant = right['measurements'].get('officer_control_baseline_context', {}).get('value', {})
+        difference = ('requested_context_only' if base.get('requested_officer_control') is False
+                      and variant.get('requested_officer_control') is True
+                      and variant.get('physical_control_verified') is False
+                      else 'context_difference_unproved')
+    elif comparison_id == 'red_cessation_restart':
+        resume = right_motion.get('post_red_resume_frame')
+        difference = ('same_motion_source_no_isolated_difference' if
+                      resume is not None and resume >= red_end and
+                      left_motion['source_sha256'] == right_motion['source_sha256']
+                      else 'post_red_difference_unproved')
+    return {'format': 'worker-school-bus-controlled-cpu-comparison',
+            'comparison_id': comparison_id,
+            'case_ids': comparison['case_ids'],
+            'fixed_source_sha256': {name: left_hashes[name] for name in fixed_names},
+            'red_onset_frame': red_onset, 'red_cessation_frame': red_end,
+            'diagnostic_comparison_passed': diagnostic_passed,
+            'difference': difference,
+            'left_analysis_sha256': hashlib.sha256(left_bytes).hexdigest() if left_bytes else None,
+            'right_analysis_sha256': hashlib.sha256(right_bytes).hexdigest() if right_bytes else None,
+            'physical_acceptance_claimed': False, 'legal_acceptance_claimed': False}
+
+
+def archived_comparison_report(archive, case_id):
+    """Load a positive saved report from the returned, hash-checked proof archive."""
+    label = case_id.split('__')[-1]
+    suffix = ('c230281-final-primary-stop/positive-saved/v0001/analysis/analysis-report.json'
+              if label == 'meeting_stop' else
+              'c230281-final-manifest-remaining-primaries/' + label +
+              '/positive-saved/v0001/analysis/analysis-report.json')
+    matches = [entry for entry in archive['entries'] if entry['name'].endswith(suffix)]
+    if len(matches) != 1:
+        raise ValueError('Missing or duplicate archived source report: ' + label)
+    entry = matches[0]
+    raw = zlib.decompress(base64.b64decode(entry['zlib_base64']))
+    if len(raw) != entry['bytes'] or hashlib.sha256(raw).hexdigest() != entry['sha256']:
+        raise ValueError('Archived source report changed: ' + label)
+    report = json.loads(raw)
+    if report.get('case_id') != case_id:
+        raise ValueError('Archived source report has wrong case: ' + label)
+    return raw
 
 
 def corners(x):
@@ -32,6 +143,48 @@ def returned_json(path):
 
 
 class SourceResponse(unittest.TestCase):
+    def test_controlled_comparison_audit_checks_sources_and_motion(self):
+        plan = {'comparisons': [{'comparison_id': 'meeting_stop_vs_pass',
+                                 'case_ids': ['case__meeting_stop', 'case__meeting_pass_red']}]}
+        source = {'source_sha256': {name: 'a' * 64 for name in (
+            'pupil_original.jsonl', 'signal_command_original.jsonl',
+            'video_frames.jsonl', 'road.xodr', 'overview.mkv', 'approach.mkv',
+            'reference_corner.mkv', 'driver_reference.mkv')},
+                  'red_pixels': {'frames': [{} for _ in range(160)]}}
+        def report(case, motion):
+            return {'format': 'worker-analysis-report', 'case_id': case,
+                    'physical_acceptance_claimed': False, 'legal_acceptance_claimed': False,
+                    'measurements': {'first_case_sources': {'value': json.loads(json.dumps(source))},
+                                     'stop_response_candidate': {'value': motion}}}
+        stop = report('case__meeting_stop', {'red_onset_frame': 20,
+            'red_cessation_frame': 120, 'held_stop_until_cessation_candidate': True,
+            'passed_during_red_candidate': False, 'source_sha256': {'motion': 'a'}})
+        passing = report('case__meeting_pass_red', {'red_onset_frame': 20,
+            'red_cessation_frame': 120, 'held_stop_until_cessation_candidate': False,
+            'passed_during_red_candidate': True, 'first_full_body_pass_frame': 63,
+            'source_sha256': {'motion': 'b'}})
+        receipt = audit_returned_comparison(plan, stop, passing, 'meeting_stop_vs_pass')
+        self.assertTrue(receipt['diagnostic_comparison_passed'])
+        self.assertFalse(receipt['physical_acceptance_claimed'])
+        passing['measurements']['first_case_sources']['value']['source_sha256']['road.xodr'] = 'b' * 64
+        with self.assertRaisesRegex(ValueError, 'Fixed original source changed'):
+            audit_returned_comparison(plan, stop, passing, 'meeting_stop_vs_pass')
+        passing['measurements']['first_case_sources']['value']['source_sha256']['road.xodr'] = 'a' * 64
+        passing['measurements']['stop_response_candidate']['value']['first_full_body_pass_frame'] = 121
+        self.assertFalse(audit_returned_comparison(plan, stop, passing,
+                         'meeting_stop_vs_pass')['diagnostic_comparison_passed'])
+
+    def test_archived_comparison_source_rejects_tampering(self):
+        case = 'assignment__meeting_stop'
+        raw = json.dumps({'case_id': case}).encode()
+        archive = {'entries': [{'name': 'c230281-final-primary-stop/positive-saved/v0001/analysis/analysis-report.json',
+                                'bytes': len(raw), 'sha256': hashlib.sha256(raw).hexdigest(),
+                                'zlib_base64': base64.b64encode(zlib.compress(raw)).decode()}]}
+        self.assertEqual(archived_comparison_report(archive, case), raw)
+        archive['entries'][0]['sha256'] = '0' * 64
+        with self.assertRaisesRegex(ValueError, 'changed'):
+            archived_comparison_report(archive, case)
+
     def test_all_selected_cases_have_returned_exact_fallback_proofs(self):
         package = Path(__file__).resolve().parents[1]
         manifest = json.loads((package / 'execution-manifest.json').read_text())
@@ -1078,4 +1231,39 @@ class SourceResponse(unittest.TestCase):
         self.assertEqual(config['school_bus_lamp_review']['roi_status'].split()[0],
                          'unreviewed')
 
-if __name__=='__main__':unittest.main()
+if __name__ == '__main__':
+    if len(sys.argv) > 1 and sys.argv[1] == 'audit-comparison':
+        parser = argparse.ArgumentParser()
+        parser.add_argument('audit_comparison')
+        parser.add_argument('--plan', required=True)
+        parser.add_argument('--comparison', required=True)
+        parser.add_argument('--left-report')
+        parser.add_argument('--right-report')
+        parser.add_argument('--archive')
+        parser.add_argument('--output', required=True)
+        args = parser.parse_args()
+        plan = json.loads(Path(args.plan).read_text())
+        row = next((item for item in plan['comparisons']
+                    if item['comparison_id'] == args.comparison), None)
+        if row is None:
+            raise ValueError('Unknown comparison ID')
+        if args.archive:
+            archive = json.loads(Path(args.archive).read_text())
+            left_bytes, right_bytes = [archived_comparison_report(archive, case)
+                                       for case in row['case_ids']]
+        elif args.left_report and args.right_report:
+            left_bytes = Path(args.left_report).read_bytes()
+            right_bytes = Path(args.right_report).read_bytes()
+        else:
+            parser.error('Provide --archive or both report paths')
+        receipt = audit_returned_comparison(plan,
+            json.loads(left_bytes), json.loads(right_bytes), args.comparison,
+            left_bytes, right_bytes)
+        Path(args.output).write_text(json.dumps(receipt, indent=2) + '\n')
+        print(json.dumps({'comparison_id': args.comparison,
+                          'diagnostic_comparison_passed': receipt['diagnostic_comparison_passed'],
+                          'difference': receipt['difference']}))
+        if not receipt['diagnostic_comparison_passed']:
+            raise SystemExit(2)
+    else:
+        unittest.main()
