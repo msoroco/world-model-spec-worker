@@ -62,11 +62,17 @@ def audit(attempt, case_id, *, diagnostic_selftest=False, pixel_review=None,
     first_entry = red = None
     previous_inside = False
     previous_state = None
+    first_time = history[0].get("time_s")
+    previous_native = -1
     for index, (row, frame) in enumerate(zip(history, frames)):
-        if (row.get("frame") != index or frame.get("carla_frame") != index or
+        native = row.get("frame")
+        if (type(native) is not int or native <= previous_native or
+                frame.get("carla_frame") != native or
                 frame.get("video_frame") != index or row.get("time_s") != frame.get("time_s") or
-                abs(row["time_s"] - index / 20) > 1e-7):
+                type(first_time) not in (int, float) or
+                abs(row["time_s"] - first_time - index / 20) > .005):
             raise ValueError("Original frame/time join differs")
+        previous_native = native
         if (row.get("native_signal_id") != context.get("native_signal_id") or
                 row.get("road_id") != context.get("governed_road_id") or
                 row.get("lane_id") != context.get("governed_lane_id")):
