@@ -5,6 +5,7 @@ warning act, pavement status, exceptions and actual source-camera evidence.
 """
 import argparse
 import copy
+import hashlib
 import json
 import queue
 import subprocess
@@ -23,6 +24,41 @@ CAMERAS = (
     ('reference_corner', 1280, 720, 90, (4.0, 5.0, 3.0), -15.0),
     ('driver_reference', 1280, 720, 90, (0.2, -0.35, 1.6), -4.0),
 )
+
+
+def prepare_attempt(attempt, repo, case, frames, *, materialized=False):
+    attempt = Path(attempt).resolve()
+    generated = (Path(repo)/'.runtime-work').resolve()
+    if not attempt.is_relative_to(generated):
+        raise ValueError('Native attempt must stay under .runtime-work')
+    if materialized:
+        if not attempt.is_dir():
+            raise ValueError('Selected Native bundle was not materialized')
+        construction = attempt/'construction.json'
+        selection = attempt/'candidate-selection.json'
+        config_path = attempt/'config.json'
+        if not all(path.is_file() for path in (construction,selection,config_path)):
+            raise ValueError('Selected Native bundle files missing')
+        selected = json.loads(selection.read_text())
+        config = json.loads(config_path.read_text())
+        digest = hashlib.sha256(construction.read_bytes()).hexdigest()
+        if (selected.get('case_id') != config.get('case_id') or
+                selected.get('case_id') != recording_config(case,frames)['case_id'] or
+                selected.get('construction_sha256') != digest or
+                config.get('frames') != frames or
+                config.get('recording_description') != recording_config(case,frames)['recording_description']):
+            raise ValueError('Selected Native construction/config differs')
+        for name in ('capture-receipt.json','native-actors.jsonl',
+                     'video_frames.jsonl','trace.jsonl'):
+            if (attempt/name).exists():
+                raise ValueError('Preserve prior Native capture; use a fresh attempt')
+    else:
+        if attempt.exists():
+            raise ValueError('Use a fresh Native attempt under .runtime-work')
+        attempt.mkdir(parents=True)
+        config_path=attempt/'config.json'
+        config_path.write_text(json.dumps(recording_config(case,frames),indent=2)+'\n')
+    return attempt
 
 
 class FFV1Sink:
@@ -114,14 +150,13 @@ def install_cameras(world, library, carla, ego, callbacks):
     return sensors
 
 
-def acquire(survey, case, attempt, client, carla, *, sink_factory=FFV1Sink):
+def acquire(survey, case, attempt, client, carla, *, sink_factory=FFV1Sink,
+            materialized=False):
     if case not in ('reference', 'contrast'):
         raise ValueError('Unknown warning-person draft case')
     repo = repository_root(__file__)
-    generated = (repo/'.runtime-work').resolve()
-    attempt = Path(attempt).resolve()
-    if not attempt.is_relative_to(generated) or attempt.exists():
-        raise ValueError('Use a fresh Native attempt under .runtime-work')
+    attempt = prepare_attempt(attempt, repo, case, survey['frames'],
+                              materialized=materialized)
     world = client.get_world()
     readback = bind(survey, world, carla)
     route = readback['plan']['cases'][case]['route_xy_m']
@@ -137,11 +172,8 @@ def acquire(survey, case, attempt, client, carla, *, sink_factory=FFV1Sink):
     ego = None
     sensors = []
     sinks = {}
-    attempt.mkdir(parents=True)
     (attempt/'live-readback.json').write_text(json.dumps(readback, indent=2)+'\n')
     (attempt/'road.xodr').write_text(world.get_map().to_opendrive())
-    (attempt/'config.json').write_text(json.dumps(
-        recording_config(case, survey['frames']), indent=2)+'\n')
     callbacks = {name: queue.Queue() for name, *_ in CAMERAS}
     controller = RouteControl(route)
     prior_frame = -1

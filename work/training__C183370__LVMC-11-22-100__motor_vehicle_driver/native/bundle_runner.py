@@ -43,7 +43,8 @@ def capture(output,host,port):
     from capture import acquire
     client=carla.Client(host,port)
     client.set_timeout(10.0)
-    return acquire(survey,config['case_suffix'],output,client,carla)
+    return acquire(survey,config['case_suffix'],output,client,carla,
+                   materialized=True)
 
 
 def main():
