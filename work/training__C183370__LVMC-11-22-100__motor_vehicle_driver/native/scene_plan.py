@@ -61,7 +61,7 @@ def validate(survey, live_map_name):
                 'contrast': {'route_xy_m': survey['route_avoid_xy_m'],
                              'requested_pavement_crossing': False}},
             'physical_completion_claimed': False,
-            'warning_act_observed': False}
+            'warning_act_verified': False}
 
 
 def main():

@@ -54,5 +54,5 @@ def bind(survey, world, carla):
             'warning_person_actor_id': person.id,
             'warning_person_type_id': person.type_id,
             'warning_person_xyz_m': [observed.x, observed.y, observed.z],
-            'warning_act_observed': False,
+            'warning_act_verified': False,
             'physical_completion_claimed': False}

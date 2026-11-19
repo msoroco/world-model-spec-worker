@@ -46,7 +46,7 @@ class LiveReadbackTest(unittest.TestCase):
         receipt = bind(x, World(), CARLA)
         self.assertEqual(receipt['pavement_road_id'], 8)
         self.assertEqual(len(receipt['route_waypoints']['contrast']), 5)
-        self.assertFalse(receipt['warning_act_observed'])
+        self.assertFalse(receipt['warning_act_verified'])
 
     def test_rejects_wrong_pavement_road(self):
         x = survey(); x['anchor_z_m'] = 0.0
