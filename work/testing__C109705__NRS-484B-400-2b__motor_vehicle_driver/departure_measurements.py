@@ -160,6 +160,9 @@ def finalize(attempt: Path, output: Path) -> dict:
     channels.mkdir()
     (channels / "destination_exit_context.json").write_text(json.dumps({
         "case_id": case, "measured_values": measured, "source_evidence_hashes": sources,
+        "destination_exit_context": {"road_context": context,
+                                     "road_geometry": geometry,
+                                     "departure_sample": sample},
         "legal_conclusion": "unresolved"}, indent=2, allow_nan=False) + "\n")
     (channels / "destination_exit.jsonl").write_text(json.dumps({
         "time_s": sample["time_s"], "value": sample}, allow_nan=False) + "\n")
