@@ -103,7 +103,7 @@ def view(attempt, case_id, probe, diagnostic):
                 (probe == "beyond_500ft" and not (center > BOUNDARY_M and first.get("any_sample_clear_at_probe") is True))):
             raise ValueError("Original sight bracket differs from declared probe")
         horizons.append(center)
-    config_fixed = {k: v for k, v in config.items() if k not in ("selected_case_id", "site_source")}
+    config_fixed = {k: v for k, v in config.items() if k not in ("selected_case_id", "site_source", "supported_case_ids")}
     site_fixed = {k: v for k, v in site.items() if k not in ("probe", "occluder")}
     return {"case_id": case_id, "probe": probe, "attempt": str(attempt),
             "config_fixed": config_fixed, "site_fixed": site_fixed,

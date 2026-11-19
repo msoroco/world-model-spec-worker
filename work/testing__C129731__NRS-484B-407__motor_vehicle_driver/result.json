@@ -4,7 +4,7 @@
   "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline $CARLA_PYTHON -m worker_exchange execute-delivery --repo . --batch batch.json --db $DB --run $RUN --assignment testing__C129731__NRS-484B-407__motor_vehicle_driver --case testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__short_of_500ft --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT",
   "input_sha256": "881fe9b8379dcee9c1113b607615d051d189b29559cbc7e6d65502ce84f8047b",
   "readiness_kind": "implementation_checkpoint",
-  "reason": "All 24 exact selected cases and 72 fallbacks have current offline, positive/negative compatibility and recorded-only saved-processing CPU proofs. The 24-case manifest, classifier/lifecycle fixtures, diagnostic delivery audits, semantic stages, controlled comparisons and source-bound engineering sweep pass CPU validation. Native delivery must verify actual U-turn motion, geometry, two-direction visibility and four-camera coverage. Runtime refresh requires new exact-case and saved proofs.",
+  "reason": "Current JSON adapter cutover: 24 diagnostic recipes rebuilt; first curve-short primary, fallback1 and fallback2 pass exact current offline, positive/negative compatibility and recorded-only saved processing. Fallback3 offline passes; its compatibility and saved stages, the other 92 candidate paths, controlled comparisons, and current strict gates require reproof. Native motion, geometry, two-direction visibility and four-camera pixels require later physical review.",
   "remaining_gpu_checks": [
     "Actual U-turn motion, realized curve/crest geometry, two-direction visibility and four-camera coverage."
   ],
@@ -14,25 +14,25 @@
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C129731__NRS-484B-407__motor_vehicle_driver/tests",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "f6672da55b25c0f99c952d9942ed811bf491a4b60eab473d50d48c69208cd4f3"
+      "sha256": "544771e2a50e6f8bc7794b48b2f6952ec979cb07b86ae540e30c498d574fd30b"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__short_of_500ft --output .runtime-work/c129731-root-24cases-primary-offline-v1",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__short_of_500ft --output .runtime-work/c129731-cutover-first-primary-offline-v2",
       "exit_code": 0,
       "log": "curve-short-offline-v6.log",
-      "sha256": "05b71d2d4da93707b186db20fda0c87c4b2395cddef715d18b708edaf4eb41c0"
+      "sha256": "2bfad074e685022e60e59c033ac8e26f629ab5f3e448fd68ff489b613fb5f561"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__short_of_500ft --output .runtime-work/c129731-root-24cases-primary-compat-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__short_of_500ft --output .runtime-work/c129731-cutover-first-primary-compat-v2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
       "exit_code": 0,
       "log": "compatibility.json",
-      "sha256": "c02988f39a2fbeb55aca0febb82ad7ffd4d7caf93c7897f192b6a0caadce15ce"
+      "sha256": "e775c5921f78deebfb73b748d673eb18ec87005afe0fc21e13c0b1cddcf99efd"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__short_of_500ft --attempt .runtime-work/c129731-root-24cases-primary-compat-v1 --output .runtime-work/c129731-root-24cases-primary-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__short_of_500ft --attempt .runtime-work/c129731-cutover-first-primary-compat-v2 --output .runtime-work/c129731-cutover-first-primary-saved-v2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
       "exit_code": 0,
       "log": "processing.json",
-      "sha256": "c79ee594f6b4e253e5b9a66937bd82da0a5926fef40687b3e84d0a349c127313"
+      "sha256": "d712b84d6fa381ddb86ce1a2acdcd62a6eeed0bcf742e77fd097ab33ae926d57"
     },
     {
       "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-at-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__at_500ft --output .runtime-work/c129731-rebound-at-offline-v1",
@@ -125,40 +125,40 @@
       "sha256": "46918f4f67cfb545f09d9ce6d1d74b5bf906832ef5e109889168122e872a9ae8"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-curve-short-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__short_of_500ft --candidate fallback1 --output .runtime-work/c129731-root-24cases-fallback1-offline-v1",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__short_of_500ft --candidate fallback1 --output .runtime-work/c129731-cutover-first-fallback1-offline-v2",
       "exit_code": 0,
       "log": "curve-short-fallback1-offline.log",
-      "sha256": "95a7b3e63667c656143ac732a5fcb464db0e7331fc2bd61691ff71c9a5cf8c47"
+      "sha256": "2bfad074e685022e60e59c033ac8e26f629ab5f3e448fd68ff489b613fb5f561"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-curve-short-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__short_of_500ft --candidate fallback1 --output .runtime-work/c129731-root-24cases-fallback1-compat-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__short_of_500ft --candidate fallback1 --output .runtime-work/c129731-cutover-first-fallback1-compat-v2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
       "exit_code": 0,
       "log": "curve-short-fallback1-compatibility.json",
-      "sha256": "4e6f39615b1606a11cdd06810c56a291e8350d2db990fb766927e5d68d0afade"
+      "sha256": "fe8c7963b77ed8e5ed19f4b88085d78fc68249979f1d5825cf60664ce0a4527b"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-curve-short-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__short_of_500ft --attempt .runtime-work/c129731-root-24cases-fallback1-compat-v1 --output .runtime-work/c129731-root-24cases-fallback1-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__short_of_500ft --attempt .runtime-work/c129731-cutover-first-fallback1-compat-v2 --output .runtime-work/c129731-cutover-first-fallback1-saved-v2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
       "exit_code": 0,
       "log": "curve-short-fallback1-processing.json",
-      "sha256": "b77336b3913c2d140fd378cf91ee7ec8132d3033ec11056f78376d7b9bcdcf48"
+      "sha256": "78dc20ef4dd8126ee84cdd09ab7b3536a9477000c3c6f441d54eff57f898ddcf"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-curve-short-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__short_of_500ft --candidate fallback2 --output .runtime-work/c129731-root-24cases-fallback2-offline-v1",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__short_of_500ft --candidate fallback2 --output .runtime-work/c129731-cutover-first-fallback2-offline-v2",
       "exit_code": 0,
       "log": "curve-short-fallback2-offline.log",
-      "sha256": "8e4c65a938907b6356b603493550a56894b7226eb00f341e075b420735a7fe8d"
+      "sha256": "d61ed7a5c997ca2f49bf82062cf4eecbb0b9809217daae201448fffd50d7b41b"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-curve-short-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__short_of_500ft --candidate fallback2 --output .runtime-work/c129731-root-24cases-fallback2-compat-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__short_of_500ft --candidate fallback2 --output .runtime-work/c129731-cutover-first-fallback2-compat-v2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
       "exit_code": 0,
       "log": "curve-short-fallback2-compatibility.json",
-      "sha256": "373f83b2270c474c6b02b201f883024207acbaed7344dfecad783436a3d36a7d"
+      "sha256": "bfbec2e91f5246220c3029c45e915c4b457fac894fe74a3d8eabb571ee3e3b8f"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-curve-short-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__short_of_500ft --attempt .runtime-work/c129731-root-24cases-fallback2-compat-v1 --output .runtime-work/c129731-root-24cases-fallback2-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__short_of_500ft --attempt .runtime-work/c129731-cutover-first-fallback2-compat-v2 --output .runtime-work/c129731-cutover-first-fallback2-saved-v2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
       "exit_code": 0,
       "log": "curve-short-fallback2-processing.json",
-      "sha256": "dc1e0351c61ed555b61ce624c91f9b0f368a5c346c4a40b07b7000b59b94c47c"
+      "sha256": "e6e36a6aa79f44b7da976631ea20c419fe1bed109f79436f5e210a8f3837d3a8"
     },
     {
       "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C129731__NRS-484B-407__motor_vehicle_driver/diagnostic-curve-short-fallback-manifest.json --case testing__C129731__NRS-484B-407__motor_vehicle_driver__curve__short_of_500ft --candidate fallback3 --output .runtime-work/c129731-root-24cases-fallback3-offline-v1",
