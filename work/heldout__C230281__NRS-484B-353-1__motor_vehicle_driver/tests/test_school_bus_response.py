@@ -21,6 +21,46 @@ def corners(x):
 
 
 class SourceResponse(unittest.TestCase):
+    def test_returned_officer_control_proof(self):
+        package = Path(__file__).resolve().parents[1]
+        manifest_path = package/'execution-manifest.json'
+        manifest = json.loads(manifest_path.read_text())
+        case = next(row for row in manifest['cases']
+                    if row['case_id'].endswith('__meeting_officer_controlled_pass'))
+        bundle = json.loads((package/'first-case-proof-bundle.json').read_text())
+        proof = bundle['additional_case_proofs'][case['case_id']]
+        self.assertEqual(proof['construction_sha256'], case['construction_sha256'])
+        self.assertEqual(proof['execution_manifest_sha256'],
+                         hashlib.sha256(manifest_path.read_bytes()).hexdigest())
+        recipe = json.loads((package/'school-bus-officer-control-recipe.json').read_text())
+        self.assertEqual(recipe['generator']['sha256'],
+                         hashlib.sha256((package/'school-bus-officer-control-diagnostic.json').read_bytes()).hexdigest())
+        contract = json.loads((package/'officer-control-measurement-contract.json').read_text())
+        self.assertEqual([row['disposition_index'] for row in contract['requirements']],
+                         [0, 1, 3])
+        self.assertIn('officer_original.jsonl', contract['requirements'][-1]['inputs'])
+        construction = json.loads((package/'officer-control-construction.json').read_text())
+        native = next(row['content'] for row in construction['files']
+                      if row['path'] == 'school_bus_native.py')
+        self.assertIn("(output / 'officer_original.jsonl').open('x')", native)
+        self.assertIn("'physical_direction_verified':False", native)
+        decoded = {}
+        for name, item in proof['artifacts'].items():
+            raw = zlib.decompress(base64.b64decode(item['zlib_base64']))
+            self.assertEqual((len(raw), hashlib.sha256(raw).hexdigest()),
+                             (item['bytes'], item['sha256']))
+            decoded[name] = raw
+        compatibility = json.loads(decoded['compatibility.json'])
+        positive = json.loads(decoded['saved-positive-processing.json'])
+        missing = json.loads(decoded['saved-missing-processing.json'])
+        audit = json.loads(decoded['independent-delivery-audit.json'])
+        self.assertTrue(compatibility['passed'] and positive['passed'] and missing['passed'])
+        self.assertTrue(positive['originals_preserved'] and missing['originals_preserved'])
+        self.assertFalse(positive['missing_evidence'])
+        self.assertTrue(missing['missing_evidence'])
+        self.assertTrue(audit['software_source_join_passed'])
+        self.assertEqual((audit['frame_count'], len(audit['source_decode'])), (160, 4))
+
     def test_returned_divided_roadway_proof(self):
         package = Path(__file__).resolve().parents[1]
         manifest_path = package/'execution-manifest.json'
