@@ -29,7 +29,7 @@ def exercise(entry,folder,kind,output):
         (stage/'config.json').write_text(json.dumps(config)+'\n')
         for name in ('trace.jsonl','video_frames.jsonl','road_context.json','vehicle_history.jsonl'):
             (stage/name).write_text(diagnostic['files'][name])
-        write(stage/'acquisition-provenance.json',{'provenance_kind':'native','diagnostic_fixture':True,
+        write(stage/'acquisition-provenance.json',{'provenance_kind':'synthetic_fixture','diagnostic_fixture':True,
              'scope':'Synthetic Native-shaped CPU classifier fixture; no physical acquisition'})
         if kind=='incomplete_motion':
             rows=[json.loads(s) for s in (stage/'vehicle_history.jsonl').read_text().splitlines()]
@@ -65,7 +65,7 @@ def lifecycle(entry,folder,output,saved_override=None):
         (stage/'runner.py').write_text(runner)
         (stage/'trace.jsonl').write_text('{"frame":1,"time_s":0.05}\n')
         (stage/'video_frames.jsonl').write_text('{"video_frame":0,"carla_frame":1,"time_s":0.05}\n')
-        write(stage/'acquisition-provenance.json',{'provenance_kind':'native','diagnostic_fixture':True,
+        write(stage/'acquisition-provenance.json',{'provenance_kind':'synthetic_fixture','diagnostic_fixture':True,
               'scope':'Synthetic lifecycle CPU fixture only'})
         dummy_owner=io.StringIO('fixture resource')
         dummy_owner.close()
