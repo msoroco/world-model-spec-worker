@@ -15,6 +15,17 @@
   "cases_planned": 2,
   "cases_selected": 0,
   "comparison_audits_passed": 0,
+  "diagnostic_matrix_component": {
+    "candidate_count": 8,
+    "compatibility_passed": 8,
+    "native_capture_claimed": false,
+    "offline_passed": 8,
+    "path": "update105-selected-diagnostic-matrix.json",
+    "physical_acceptance_claimed": false,
+    "provenance_kind": "synthetic_fixture",
+    "saved_processing_passed": 8,
+    "sha256": "9770c488e4e2b80ccacc33e613edcedf39eb28e69c5728988283bdc3432d8e41"
+  },
   "draft_exact_candidate_component": {
     "candidate_count": 8,
     "compatibility_passed": 0,
@@ -40,16 +51,13 @@
   },
   "draft_measured_candidate_component": {
     "candidate_count": 8,
-    "compatibility_passed": 0,
+    "compatibility_passed": 8,
     "manifest": "draft-measured-candidate-manifest.json",
-    "manifest_sha256": "8f546f7655024cdae18babe2248acb9fcbd49329d964349a8fbfeffc123bfdde",
-    "measurement_builder": "native/build_measurements.py",
-    "measurement_builder_sha256": "d6e151386cdd793899c9f74252a41d11275f603ca6a9d2f4ca0e3e6f528e494e",
+    "manifest_sha256": "1bdadff8289f5303d9a4a13b414e603c6599f8931d1c42975c866300801cb9f6",
     "offline_passed": 8,
-    "offline_receipt": "update104-measured-offline-receipt.json",
-    "offline_receipt_sha256": "f8218520ccdf181299feda2b328dc6e14592e76bda893bffc55e6a8358d4baf2",
+    "saved_processing_passed": 8,
     "selected_for_delivery": false,
-    "status": "draft_all_candidates_measured_offline_only"
+    "status": "current_synthetic_cpu_proofs_only"
   },
   "input_sha256": "0969b4f3fbcc41e77f6be98c815f6b89b8e464dd337834688c18c47b29467cd0",
   "live_readback_component": {
@@ -65,11 +73,11 @@
     "path": "native/finalize.py",
     "recording_contract_sha256": "30fbbed2dae659a1eda5ab693d7299af1935da1f14fdc8c1b970f537f37480e6",
     "selected_manifest_bound": false,
-    "sha256": "31ccc924a9dacd5de6b8bd2cfb871c5fc4c69f2a6d34d20ca80d0cb570f747af",
+    "sha256": "a616c6e59e87aa7a3c4490bee9a942a851a77449c6d9ca5e88ebbff0e2954f60",
     "status": "cpu_unit_tested_not_native_executed"
   },
   "readiness_kind": null,
-  "reason": "C183370 has two exact draft cases with primary and three fallback constructions each. Current bundled finalizer now emits two source-hashed selected measurement records per case, and all eight revised bundles pass pinned offline and measurement-contract checks. No diagnostic recipe, positive/negative compatibility, recorded-only saved processing, canonical semantic chain, selected delivery manifest, original CARLA capture or independent source review exists. Warning act, actual newly repaired surface and paving-employee exception remain unverified; remaining CPU proofs and physical/delivery/comparison audits are worker-owned. No legal or physical acceptance claimed.",
+  "reason": "C183370 has two draft exact cases and eight current source-bound candidate bundles. All eight pass pinned offline, positive/negative synthetic compatibility, and fresh recorded-only saved processing; reference contact is 300 of 600 diagnostic frames and contrast contact is zero. These are software proofs only. Canonical semantic stages, selected delivery manifest and physical/delivery/comparison audits remain unfinished. No original CARLA capture, source review, actual warning act, newly repaired status, paving-employee exception, or legal/physical acceptance has been established. The work remains worker-owned and status stays partial.",
   "recordings_accepted": 0,
   "scene_plan_component": {
     "path": "native/scene_plan.py",
@@ -83,7 +91,7 @@
     "legal_acceptance_claimed": false,
     "minimum_source_frames": 600,
     "path": "native/analyze.py",
-    "sha256": "ddb5a2c86acd8cd8fba70a7dabc103044c2c48d00b846bc6831b0f7cbc6a71af",
+    "sha256": "09eac0d15107cb0bc192b0ec94cf9dbeaa601913fad2c4493c725800aef4fb1c",
     "status": "cpu_unit_tested_not_native_executed"
   },
   "source_review_component": {
@@ -328,6 +336,36 @@
       "exit_code": 1,
       "log": "update104-scoped-strict.log",
       "sha256": "f105b68de8bd7bbb3e9bdfade14e75a9b56640cac7ca657a4ce02c3efba457fe"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/native -p test_*.py -v",
+      "exit_code": 0,
+      "log": "update105-tests.log",
+      "sha256": "d5a848b28d45d00978dd219a676d70ca6bc9b0ae16a6207459c3ea3600ca66e1"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "update105-preflight.log",
+      "sha256": "36ac0c1a1bf2164eb669e18a3f92e1471942e912ba1b5594be9364207d69cc16"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment training__C183370__LVMC-11-22-100__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "update105-scoped-static.log",
+      "sha256": "f51190cce71609027471d21ae37b0316aa9f907810e09874e885673db6c9c32c"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment training__C183370__LVMC-11-22-100__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "update105-scoped-strict.log",
+      "sha256": "f105b68de8bd7bbb3e9bdfade14e75a9b56640cac7ca657a4ce02c3efba457fe"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment training__C183370__LVMC-11-22-100__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "update105-final-scoped-static.log",
+      "sha256": "f51190cce71609027471d21ae37b0316aa9f907810e09874e885673db6c9c32c"
     }
   ]
 }
