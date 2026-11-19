@@ -243,3 +243,142 @@ def run_straight_pair(world, carla, plan, blueprints, transforms,
     return {"frames_recorded": frames, "first_native_frame": first_frame,
             "last_native_frame": last_frame,
             "physical_or_legal_acceptance_claimed": False}
+
+
+def analyze_saved_straight(attempt, output):
+    """Rebuild straight comparison measurements from retained original sources."""
+    from shapely.geometry import MultiPoint
+    from worker_exchange.native_output import physical_result, write_result
+
+    attempt, output = Path(attempt), Path(output)
+    if output.exists() or (attempt / "result.json").exists() or (attempt / "channels").exists():
+        raise ValueError("Retain prior straight finalization; choose a fresh attempt")
+    names = ("config.json", "straight-route-source.json",
+             "road_geometry.json", "turn_route_context.json",
+             "body_history.jsonl", "crossing_history.jsonl", "signal_context.json",
+             "signal_history.jsonl", "stop_context.json", "stop_history.jsonl",
+             "video_frames.jsonl", "trace.jsonl", "capture/evidence.jsonl",
+             *(name + ".mkv" for name in SIZES))
+    for name in names:
+        if not (attempt / name).is_file():
+            raise ValueError("Missing required straight source: " + name)
+    config = json.loads((attempt / "config.json").read_text())
+    if (config.get("selected_case_id") != COMPARATOR_CASE or
+            config.get("law_id") != "NRS-484B-250-2" or
+            config.get("cell_id") != "C125751"):
+        raise ValueError("Exact straight comparator config required")
+    source = dict(config["straight_route_source"])
+    source["path"] = str(attempt / source["path"])
+    compare_sites(config["baseline_site"], config["site"], source)
+    road = json.loads((attempt / "road_geometry.json").read_text())
+    route = json.loads((attempt / "turn_route_context.json").read_text())
+    signal_context = json.loads((attempt / "signal_context.json").read_text())
+    stop_context = json.loads((attempt / "stop_context.json").read_text())
+    if (route.get("routes") != config["site"]["routes"] or
+            road.get("intersection_id") != config["site"]["native_junction_id"] or
+            route.get("intersection_id") != road["intersection_id"] or
+            road.get("intersection_polygon_xy_m") != config["site"]["crossing_polygon_xy_m"]):
+        raise ValueError("Saved straight site differs from sourced comparison plan")
+    if (signal_context.get("intersection_id") != road["intersection_id"] or
+            signal_context.get("native_signal_id") != config["site"]["governed_signal_ids"]["ego"] or
+            signal_context.get("other_native_signal_id") != config["site"]["governed_signal_ids"]["other"] or
+            stop_context.get("intersection_id") != road["intersection_id"] or
+            stop_context.get("selected_references") != config["site"]["selected_stop_references"]):
+        raise ValueError("Saved straight signal or stop source differs from fixed site")
+    def rows(name):
+        return [json.loads(line) for line in (attempt / name).read_text().splitlines() if line.strip()]
+    mapping, bodies, crossing, signals, stops, trace, evidence = (
+        rows(name) for name in ("video_frames.jsonl", "body_history.jsonl",
+            "crossing_history.jsonl", "signal_history.jsonl", "stop_history.jsonl",
+            "trace.jsonl", "capture/evidence.jsonl"))
+    if not (len(mapping) >= 2 and len(mapping) == len(bodies) == len(crossing) ==
+            len(signals) == len(stops) == len(trace) == len(evidence)):
+        raise ValueError("Complete original straight sources and camera history required")
+    polygon = Polygon(road["intersection_polygon_xy_m"])
+    if not polygon.is_valid or polygon.area <= 0:
+        raise ValueError("Valid saved crossing polygon required")
+    first = {role: None for role in ROLES}
+    previous = -1
+    for index, (frame, body, crossed, signal, stop, motion, observed) in enumerate(
+            zip(mapping, bodies, crossing, signals, stops, trace, evidence)):
+        native = frame.get("carla_frame")
+        when = frame.get("time_s")
+        if (type(native) is not int or native <= previous or
+                frame.get("video_frame") != index or
+                body.get("native_frame") != native or body.get("frame_index") != index or
+                body.get("maneuver") != "ego_straight_other_straight" or
+                body.get("camera_source_frames") != {name: native for name in SIZES} or
+                body.get("actor_sources") != {role: crossed.get(role) for role in ROLES} or
+                any(row.get("frame") != native or row.get("time_s") != when
+                    for row in (crossed, signal, stop, motion)) or
+                observed.get("original_frame") != native or
+                observed.get("recording_time_s") != when or
+                signal.get("native_signal_id") != signal_context["native_signal_id"] or
+                signal.get("other_native_signal_id") != signal_context["other_native_signal_id"] or
+                any(not isinstance(stop.get(role), dict) or
+                    stop[role].get("native_road_id") != crossed[role].get("native_road_id") or
+                    stop[role].get("native_lane_id") != crossed[role].get("native_lane_id")
+                    for role in ROLES)):
+            raise ValueError("Original straight source/frame join failed")
+        previous = native
+        for role in ROLES:
+            actor = crossed.get(role)
+            vertices = actor.get("body_vertices_xy_m") if isinstance(actor, dict) else None
+            if (not isinstance(vertices, list) or len(vertices) < 4 or
+                    any(not isinstance(point, list) or len(point) != 2 or
+                        any(type(value) not in (int, float) or not math.isfinite(value)
+                            for value in point) for point in vertices)):
+                raise ValueError("Finite original straight body vertices required: " + role)
+            inside = MultiPoint(vertices).convex_hull.intersects(polygon)
+            if index == 0 and inside:
+                raise ValueError("Straight actor starts inside crossing: " + role)
+            if first[role] is None and inside:
+                first[role] = {"frame": native, "time_s": when}
+    if not all(first.values()):
+        raise ValueError("Both original straight body entries required")
+    source_hashes = {name: hashlib.sha256((attempt / name).read_bytes()).hexdigest()
+                     for name in names}
+    channels = attempt / "channels"
+    channels.mkdir()
+    for filename, source_rows in (("signal_state.jsonl", signals), ("stop_state.jsonl", stops)):
+        with (channels / filename).open("x") as stream:
+            for row in source_rows:
+                stream.write(json.dumps({"time_s": row["time_s"], "value": row},
+                                        allow_nan=False) + "\n")
+    measurement = {"first_body_entry": first,
+                   "ego_minus_other_entry_time_s": first["ego"]["time_s"] - first["other"]["time_s"],
+                   "straight_route_source_sha256": source["sha256"],
+                   "physical_or_legal_acceptance_claimed": False}
+    (channels / "entry_context.json").write_text(json.dumps(
+        {"entry_context": measurement}, indent=2, allow_nan=False) + "\n")
+    result = {"case_id": COMPARATOR_CASE,
+              "measured_values": measurement,
+              "target_checks": [{"target": "opposing_straight_body_entries",
+                  "requested": True, "measured": True,
+                  "method": "original paired body/camera/source-route join",
+                  "tolerance": 0, "matched": True,
+                  "physical_cause_confirmed": False,
+                  "cause_evidence": ["body_history.jsonl", "crossing_history.jsonl",
+                                     "video_frames.jsonl", "turn_route_context.json"]}],
+              "setup_confirmed": False, "behavior_attempted": False,
+              "maneuver_completed": False,
+              "termination_reason": "Saved straight comparison sources measured; physical/legal review pending",
+              "physical_failure_flags": ["official device and priority judgments unresolved"],
+              "trace_reference": "trace.jsonl",
+              "video_references": [name + ".mkv" for name in SIZES],
+              "video_frame_map_reference": "video_frames.jsonl",
+              "recording_description": config["recording_description"],
+              "recording_evidence": [{"name": name, "unit": "structured record",
+                  "reference": "channels/" + name + ext} for name, ext in
+                  (("signal_state", ".jsonl"), ("stop_state", ".jsonl"),
+                   ("entry_context", ".json"))],
+              "source_evidence_hashes": source_hashes,
+              "capture_evidence_sha256": source_hashes["capture/evidence.jsonl"],
+              "realized_observables": {}}
+    write_result(attempt, physical_result(attempt, result))
+    output.write_text(json.dumps({"format": "worker-c125751-straight-saved-analysis-v1",
+        "case_id": COMPARATOR_CASE, "measurements": measurement,
+        "source_evidence_hashes": source_hashes,
+        "physical_acceptance_claimed": False, "legal_acceptance_claimed": False},
+        indent=2, allow_nan=False) + "\n")
+    return measurement
