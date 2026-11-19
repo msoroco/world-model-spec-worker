@@ -20,6 +20,17 @@ def corners(x):
     return [[x-1,-.5],[x+1,-.5],[x+1,.5],[x-1,.5]]
 
 
+def returned_json(path):
+    if path.exists():
+        return json.loads(path.read_text())
+    archive = path.parents[1] / '_shared/c147331-turn-return-cap-archive.json'
+    doc = json.loads(archive.read_text())
+    row = next(item for item in doc['entries'] if item['path'] == str(path.relative_to(path.parents[2])))
+    raw = zlib.decompress(base64.b64decode(row['zlib_base64']))
+    assert hashlib.sha256(raw).hexdigest() == row['sha256']
+    return json.loads(raw)
+
+
 class SourceResponse(unittest.TestCase):
     def test_returned_meeting_stop_fallbacks(self):
         package = Path(__file__).resolve().parents[1]
@@ -46,13 +57,35 @@ class SourceResponse(unittest.TestCase):
             self.assertEqual(receipt['case_id'], entry['case_id'])
             self.assertIn('negative_case_source', receipt['checks'])
 
+    def test_returned_restart_fallbacks(self):
+        package = Path(__file__).resolve().parents[1]
+        manifest = json.loads((package / 'execution-manifest.json').read_text())
+        entry = next(row for row in manifest['cases'] if row['case_id'].endswith('__meeting_restart_before_red_ceases'))
+        self.assertEqual({row['id'] for row in entry['candidates']}, {'fallback1', 'fallback2', 'fallback3'})
+        constructions = {entry['construction_sha256']}
+        for fallback in entry['candidates']:
+            self.assertNotIn(fallback['construction_sha256'], constructions)
+            constructions.add(fallback['construction_sha256'])
+            for path_key, sha_key, source in (
+                ('construction', 'construction_sha256', fallback),
+                ('log', 'log_sha256', fallback['offline']),
+                ('receipt', 'sha256', fallback['compatibility']),
+                ('log', 'log_sha256', fallback['compatibility']),
+                ('negative_log', 'negative_log_sha256', fallback['compatibility']),
+            ):
+                self.assertEqual(hashlib.sha256((package / source[path_key]).read_bytes()).hexdigest(), source[sha_key])
+            receipt = json.loads((package / fallback['compatibility']['receipt']).read_text())
+            self.assertTrue(receipt['passed'])
+            self.assertEqual((receipt['case_id'], receipt['candidate_id']), (entry['case_id'], fallback['id']))
+            self.assertIn('negative_case_source', receipt['checks'])
+
     def test_returned_postred_resume_proof(self):
         package = Path(__file__).resolve().parents[1]
         manifest_path = package / 'execution-manifest.json'
         manifest = json.loads(manifest_path.read_text())
         case = next(row for row in manifest['cases']
                     if row['case_id'].endswith('__meeting_resume_after_red_ceases'))
-        bundle = json.loads((package / 'first-case-proof-bundle.json').read_text())
+        bundle = returned_json(package / 'first-case-proof-bundle.json')
         proof = bundle['additional_case_proofs'][case['case_id']]
         self.assertEqual(proof['construction_sha256'], case['construction_sha256'])
         self.assertEqual(proof['execution_manifest_sha256'],
@@ -88,7 +121,7 @@ class SourceResponse(unittest.TestCase):
         manifest = json.loads(manifest_path.read_text())
         case = next(row for row in manifest['cases']
                     if row['case_id'].endswith('__meeting_officer_controlled_pass'))
-        bundle = json.loads((package/'first-case-proof-bundle.json').read_text())
+        bundle = returned_json(package/'first-case-proof-bundle.json')
         proof = bundle['additional_case_proofs'][case['case_id']]
         self.assertEqual(proof['construction_sha256'], case['construction_sha256'])
         self.assertEqual(proof['execution_manifest_sha256'],
@@ -128,7 +161,7 @@ class SourceResponse(unittest.TestCase):
         manifest = json.loads(manifest_path.read_text())
         case = next(row for row in manifest['cases']
                     if row['case_id'].endswith('__meeting_divided_other_roadway_pass'))
-        bundle = json.loads((package/'first-case-proof-bundle.json').read_text())
+        bundle = returned_json(package/'first-case-proof-bundle.json')
         proof = bundle['additional_case_proofs'][case['case_id']]
         self.assertEqual(proof['construction_sha256'], case['construction_sha256'])
         self.assertEqual(proof['execution_manifest_sha256'],
@@ -167,7 +200,7 @@ class SourceResponse(unittest.TestCase):
         manifest = json.loads(manifest_path.read_text())
         case = next(row for row in manifest['cases']
                     if row['case_id'].endswith('__overtaking_pass_red'))
-        bundle = json.loads((package/'first-case-proof-bundle.json').read_text())
+        bundle = returned_json(package/'first-case-proof-bundle.json')
         proof = bundle['additional_case_proofs'][case['case_id']]
         self.assertEqual(proof['construction_sha256'], case['construction_sha256'])
         self.assertEqual(proof['execution_manifest_sha256'],
@@ -197,7 +230,7 @@ class SourceResponse(unittest.TestCase):
         manifest = json.loads((package/'execution-manifest.json').read_text())
         case = next(row for row in manifest['cases']
                     if row['case_id'].endswith('__overtaking_stop'))
-        bundle = json.loads((package/'first-case-proof-bundle.json').read_text())
+        bundle = returned_json(package/'first-case-proof-bundle.json')
         proof = bundle['additional_case_proofs'][case['case_id']]
         self.assertEqual(proof['construction_sha256'], case['construction_sha256'])
         self.assertEqual(proof['execution_manifest_sha256'],
@@ -231,7 +264,7 @@ class SourceResponse(unittest.TestCase):
 
     def test_returned_restart_case_cpu_proof_bundle(self):
         package = Path(__file__).resolve().parents[1]
-        proof = json.loads((package/'restart-case-proof-bundle.json').read_text())
+        proof = returned_json(package/'restart-case-proof-bundle.json')
         self.assertEqual(proof['format'], 'worker-exact-case-cpu-proof-bundle')
         self.assertTrue(proof['case_id'].endswith('__meeting_restart_before_red_ceases'))
         for field, name in (('construction_sha256','restart-construction.json'),
@@ -298,7 +331,7 @@ class SourceResponse(unittest.TestCase):
 
     def test_returned_first_case_proof_bundle(self):
         package = Path(__file__).resolve().parents[1]
-        proof = json.loads((package/'first-case-proof-bundle.json').read_text())
+        proof = returned_json(package/'first-case-proof-bundle.json')
         self.assertEqual(proof['format'], 'worker-first-case-cpu-proof-bundle')
         self.assertEqual(proof['assignment_id'], package.name)
         for field, name in (('construction_sha256','construction.json'),
@@ -329,7 +362,7 @@ class SourceResponse(unittest.TestCase):
         manifest = json.loads((package/'execution-manifest.json').read_text())
         case = next(row for row in manifest['cases']
                     if row['case_id'].endswith('__meeting_pass_red'))
-        bundle = json.loads((package/'first-case-proof-bundle.json').read_text())
+        bundle = returned_json(package/'first-case-proof-bundle.json')
         proof = bundle['additional_case_proofs'][case['case_id']]
         self.assertEqual(proof['execution_manifest_sha256'],
                          hashlib.sha256((package/'execution-manifest.json').read_bytes()).hexdigest())
