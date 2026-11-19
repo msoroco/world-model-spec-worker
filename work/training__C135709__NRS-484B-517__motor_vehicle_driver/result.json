@@ -1,10 +1,10 @@
 {
   "assignment_id": "training__C135709__NRS-484B-517__motor_vehicle_driver",
   "input_sha256": "2bbe8070075891f80354cc60982822ad2479fd22a62beb3bcb301ffc0f4c8450",
-  "status": "partial",
+  "status": "ready",
   "applied_update": 16,
-  "reason": "Runtime refresh requires new exact-case and saved proofs.",
-  "readiness_kind": "implementation_checkpoint",
+  "reason": "Current JSON graph CPU preparation, source-bound candidate matrix and scoped strict delivery gate passed; original Native remains unobserved.",
+  "readiness_kind": "delivery_prepared",
   "cases_planned": 2,
   "cases_selected": 2,
   "candidate_plans_proven": 8,
@@ -155,6 +155,36 @@
       "exit_code": 0,
       "log": "update053-delivery-contrast-positive.log",
       "sha256": "61e5a875509dd1c18843b6c943d0e8fce60e494530bffa355089b71e8e95d1ff"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "update706-preflight.log",
+      "sha256": "c53ef2dc915222fe0e72eb0f5027f50e878da0f5a4f3a048a7a69ba96b7bffc1"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C135709__NRS-484B-517__motor_vehicle_driver/validate-current-manifest.py",
+      "exit_code": 0,
+      "log": "update706-validate-current-manifest.log",
+      "sha256": "0f65afae52320bd0223b52b29334f1c4df029fede02544f66dfeea3b86a12074"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C135709__NRS-484B-517__motor_vehicle_driver/runner.py --check",
+      "exit_code": 0,
+      "log": "update706-root-runner.log",
+      "sha256": "ba0363d264faa98ea5333d5cb6eb94314f234dafaf4713e41e013cf769434aa9"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/training__C135709__NRS-484B-517__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "update706-root-tests.log",
+      "sha256": "64024ab175b66793c92e5a0a0f3e137748877d20b1bd2eb278eb23521c56ce6c"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C135709__NRS-484B-517__motor_vehicle_driver/audit-final-selected-matrix-update706.py",
+      "exit_code": 0,
+      "log": "update706-final-matrix-audit.log",
+      "sha256": "60e8678ccb446d5aca890fec0f9a1c28f1a0198d489d9f085eb7c033b482fb01"
     }
   ],
   "remaining_gpu_checks": [
@@ -162,5 +192,13 @@
     "Supply independent official designation record and human review of signing, subject class, actual use, passenger activity and entitled taxicab approach",
     "Run original-only delivery auditor, full video decode, source-bound pixel review and local legal review"
   ],
-  "first_gpu_delivery_command": "PYTHONPATH=runtime/pipeline/scenario_pipeline python3.11 -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C135709__NRS-484B-517__motor_vehicle_driver --case training__C135709__NRS-484B-517__motor_vehicle_driver__reference --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT"
+  "first_gpu_delivery_command": "PYTHONPATH=runtime/pipeline/scenario_pipeline python3.11 -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C135709__NRS-484B-517__motor_vehicle_driver --case training__C135709__NRS-484B-517__motor_vehicle_driver__reference --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT",
+  "current_json_graph_cpu": {
+    "manifest_sha256": "84e6f10c0f4fbaa7f028ba7ca311c88fb37c241ec8f86c432ec42e894f99b707",
+    "matrix_sha256": "9bf2eda72c7b75b5b7bfef446cacb5963cbf4ab77dba95a8ab51af7ad2eab1ab",
+    "independent_audit_sha256": "f4ccbc8b4f05b7813d8a157738cda284eb446bf304e6f495a4d35a776b9c2ff4",
+    "exact_cases": 2,
+    "candidate_chains_passed": 8,
+    "original_native_accepted": false
+  }
 }
