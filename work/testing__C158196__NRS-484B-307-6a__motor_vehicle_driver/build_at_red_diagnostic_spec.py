@@ -22,9 +22,9 @@ def sha(path):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--case', choices=('entry_at_red', 'entry_after_red'), default='entry_at_red')
+    parser.add_argument('--case', choices=('entry_at_red', 'entry_after_red', 'stops_on_yellow'), default='entry_at_red')
     args = parser.parse_args()
-    stem = 'at-red' if args.case == 'entry_at_red' else 'after-red'
+    stem = {'entry_at_red': 'at-red', 'entry_after_red': 'after-red', 'stops_on_yellow': 'yellow-stop'}[args.case]
     attempt = REPO / ('.runtime-work/c158196-yellow-red-' + stem + '-recorded-only/acquisition')
     spec = HERE / (stem + '-diagnostic-sources.json')
     recipe_path = HERE / (stem + '-fixture-recipe.json')

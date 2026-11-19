@@ -21,10 +21,10 @@ def sha(path):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--case', choices=('entry_before_red', 'entry_at_red', 'entry_after_red'), default='entry_before_red')
+    parser.add_argument('--case', choices=('entry_before_red', 'entry_at_red', 'entry_after_red', 'stops_on_yellow'), default='entry_before_red')
     args = parser.parse_args()
     case = HERE.name + '__' + args.case
-    stem = 'at-red' if args.case == 'entry_at_red' else 'after-red'
+    stem = {'entry_at_red': 'at-red', 'entry_after_red': 'after-red', 'stops_on_yellow': 'yellow-stop'}.get(args.case)
     root = REPO / ('.runtime-work/c158196-yellow-red-recorded-only' if args.case == 'entry_before_red' else '.runtime-work/c158196-yellow-red-' + stem + '-recorded-only')
     attempt = root / 'acquisition'
     source = REPO / ('.runtime-work/c158196-yellow-red-four-camera-validation/attempt' if args.case == 'entry_before_red' else '.runtime-work/c158196-yellow-red-' + stem + '-four-camera/attempt')

@@ -31,10 +31,10 @@ def sha(path):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--case', choices=('entry_before_red', 'entry_at_red', 'entry_after_red'), default='entry_before_red')
+    parser.add_argument('--case', choices=('entry_before_red', 'entry_at_red', 'entry_after_red', 'stops_on_yellow'), default='entry_before_red')
     args = parser.parse_args()
     case = HERE.name + '__' + args.case
-    stem = 'at-red' if args.case == 'entry_at_red' else 'after-red'
+    stem = {'entry_at_red': 'at-red', 'entry_after_red': 'after-red', 'stops_on_yellow': 'yellow-stop'}.get(args.case)
     root = REPO / ('.runtime-work/c158196-yellow-red-four-camera-validation' if args.case == 'entry_before_red' else '.runtime-work/c158196-yellow-red-' + stem + '-four-camera')
     attempt = root / 'attempt'
     source = REPO / '.runtime-work/c158196-yellow-red-source-proof' / args.case
@@ -78,9 +78,13 @@ def main():
                               construction, {'recorded_exit_code': 0}, {}, source_audits=audits)
     if not all(item['source_decode']['frames'] == 900 for item in result['video_validation']):
         raise AssertionError('Four complete source decodes required')
-    expected_offset = {'entry_before_red': -10, 'entry_at_red': 0, 'entry_after_red': 10}[args.case]
-    if analysis['measurements']['entry_minus_red_onset_frames']['value'] != expected_offset:
-        raise AssertionError('Saved body-entry offset changed')
+    if args.case == 'stops_on_yellow':
+        if analysis['source_report']['first_body_entry'] is not None:
+            raise AssertionError('Saved body entered intersection')
+    else:
+        expected_offset = {'entry_before_red': -10, 'entry_at_red': 0, 'entry_after_red': 10}[args.case]
+        if analysis['measurements']['entry_minus_red_onset_frames']['value'] != expected_offset:
+            raise AssertionError('Saved body-entry offset changed')
     if result['provenance_kind'] != 'synthetic_fixture' or result.get('situation_confirmed'):
         raise AssertionError('Diagnostic validation claimed physical situation')
     report = {'format': 'worker-yellow-red-four-camera-diagnostic',
