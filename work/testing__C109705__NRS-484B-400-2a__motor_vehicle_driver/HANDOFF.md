@@ -94,3 +94,11 @@ All 16 primary/fallback constructions were re-proved after the positive-y physic
 ## 2026-11-19 file-cap consolidation
 
 Removed only two byte-identical returned source aliases to free slots: `approach_measurements.py` remains as identical `finalizer.py` (SHA-256 `ccfe018ff29fc92c76b37df671baa2bb3b6c7a611a223dd400a7b79df3ccb22d`), and `native_road_selection.py` remains as identical `runner.py` (SHA-256 `f3f1e66b73ba85531a463e595b0d3fae6d8061f7bb661f7c7c0af8294e156c49`). `tests/test_approach.py` loads the retained copies. Its 11 standalone tests pass (`cpu-tests.log` SHA-256 `7f1e6e9a5a89867a40b477af07db3e621c078297b0ce5aa8c21a739320b03fe8`); the scoped non-ready complete check passes. Status remains partial; no frozen input, runtime or batch file and no Git operation was changed.
+
+## 2026-11-19 additional byte-identical log consolidation
+
+Three historical fallback analysis logs had bytes identical to `primary-compatibility-analysis.log` (SHA-256 `75f185970231c0b1557bc4ce20483c1dbdae895c706a4d3f6cb7f5a78a357c93`). Their manifest `compatibility.log` paths now point to that retained copy; the three redundant files were removed, preserving the exact analysis-log bytes. The 2a scoped non-ready complete check still passes. This freed the three return-file slots for the 2b official positive receipt and positive/negative logs. Status remains partial.
+
+## 2026-11-19 second historical log consolidation
+
+Six more historical fallback analysis logs were byte-identical to their retained `second-analysis.log` or `imaginary-near-analysis.log` copies. Their manifest log paths now reference the retained copies; no analysis-log bytes were lost. The 2a scoped non-ready complete check still passes. This freed returned-file slots for the 2b marked-far diagnostic and current receipts.
