@@ -19,6 +19,9 @@ spec.loader.exec_module(module)
 runner_spec = importlib.util.spec_from_file_location("opposite_turn_runner", HERE / "opposite_turn_runner.py")
 runner = importlib.util.module_from_spec(runner_spec)
 runner_spec.loader.exec_module(runner)
+straight_spec = importlib.util.spec_from_file_location("straight_comparator", HERE / "straight_comparator.py")
+straight = importlib.util.module_from_spec(straight_spec)
+straight_spec.loader.exec_module(straight)
 audit_spec = importlib.util.spec_from_file_location("opposite_site_probe_audit", HERE / "opposite_site_probe.py")
 candidate_audit = importlib.util.module_from_spec(audit_spec)
 audit_spec.loader.exec_module(candidate_audit)
@@ -139,6 +142,53 @@ class World:
 
 
 class OppositeTurnConstructionTest(unittest.TestCase):
+    def test_straight_comparator_keeps_original_site_and_four_camera_join(self):
+        import copy
+        bundle = json.loads((HERE / "opposite-primary-construction.json").read_text())
+        config = next(json.loads(item["content"]) for item in bundle["files"]
+                      if item["path"] == "config.json")
+        source = HERE / "straight-route-source.json"
+        document = json.loads(source.read_text())
+        reference = {"path": str(source),
+                     "sha256": hashlib.sha256(source.read_bytes()).hexdigest()}
+        plan = straight.straight_site(config["site"], document["route_xy_m"], reference)
+        self.assertEqual(plan["straight_deflection_deg"], 0)
+        self.assertEqual(plan["left_deflection_deg"], 90)
+        self.assertEqual(len(straight.compare_sites(config["site"], plan["site"], reference)["fixed_fields"]), 11)
+        for field, change in (("cameras", lambda site: site["cameras"]["overview"].__setitem__(0, 9)),
+                              ("governance", lambda site: site["governed_signal_ids"].__setitem__("ego", 99)),
+                              ("other route", lambda site: site["routes"]["other"].__setitem__(3, [-9, 0]))):
+            altered = copy.deepcopy(plan["site"])
+            change(altered)
+            with self.subTest(field=field), self.assertRaisesRegex(ValueError, "fixed site field"):
+                straight.compare_sites(config["site"], altered, reference)
+        with self.assertRaisesRegex(ValueError, "source missing or changed"):
+            straight.compare_sites(config["site"], plan["site"], dict(reference, sha256="0"*64))
+
+        actors = [Actor([1, -1], 0), Actor([2, -1], 180)]
+        world = World(actors)
+        observed = []
+        receipt = straight.run_straight_pair(
+            world, SimpleNamespace(VehicleControl=lambda: SimpleNamespace()), plan,
+            {"ego": "car", "other": "car"}, {"ego": "pose", "other": "pose"},
+            {"ego": 1, "other": 1}, {"ego": 5.0, "other": 5.0}, 3,
+            lambda frame: {name: frame for name in straight.SIZES}, observed.append)
+        self.assertEqual(receipt["frames_recorded"], 3)
+        self.assertEqual([row["native_frame"] for row in observed], [2, 3, 4])
+        self.assertTrue(all(set(row["camera_source_frames"]) == set(straight.SIZES)
+                            and row["actor_sources"]["ego"]["actor_id"] !=
+                            row["actor_sources"]["other"]["actor_id"] for row in observed))
+        self.assertTrue(all(actor.destroyed for actor in actors))
+
+        actors = [Actor([1, -1], 0), Actor([2, -1], 180)]
+        with self.assertRaisesRegex(ValueError, "All four cameras"):
+            straight.run_straight_pair(
+                World(actors), SimpleNamespace(VehicleControl=lambda: SimpleNamespace()), plan,
+                {"ego": "car", "other": "car"}, {"ego": "pose", "other": "pose"},
+                {"ego": 1, "other": 1}, {"ego": 5.0, "other": 5.0}, 3,
+                lambda frame: {"overview": frame}, observed.append)
+        self.assertTrue(all(actor.destroyed for actor in actors))
+
     def test_native_route_starts_match_reviewed_map_and_lanes(self):
         candidate = dict(site(), native_map_name="reviewed_map", native_junction_id=77)
         native_map = SimpleNamespace(name="reviewed_map")

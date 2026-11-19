@@ -14,6 +14,8 @@ from pathlib import Path
 
 from shapely.geometry import Point, Polygon
 
+from camera_setup import SIZES
+from capture_sources import _actor
 from route_control import steering_command
 from yield_controller import apply_speed_control
 
@@ -195,4 +197,49 @@ def command_straight_pair(carla, actors, plan, progress, frame_index,
             not decision["release_allowed"], decision["steer"])
         progress[role] = decision["next_index"]
     return {"frame_index": frame_index, "decisions": decisions,
+            "physical_or_legal_acceptance_claimed": False}
+
+
+def run_straight_pair(world, carla, plan, blueprints, transforms,
+                      release_frames, target_speeds_mps, frames,
+                      collect_camera_frames, write_source, lookahead_m=5.0):
+    """Capture both original actor sources and four joined cameras each tick.
+
+    The caller owns video encoding, frame-map writing and Core acquisition.
+    It must persist the supplied source record without replacing Native values.
+    """
+    if (type(frames) is not int or not 2 <= frames <= 1100 or
+            not callable(collect_camera_frames) or not callable(write_source)):
+        raise ValueError("Bounded capture and source callbacks required")
+    progress = {"ego": 1, "other": 1}
+    first_frame = last_frame = None
+    with construct_straight_pair(world, blueprints, transforms, plan) as actors:
+        for index in range(frames):
+            decision = command_straight_pair(
+                carla, actors, plan, progress, index, release_frames,
+                target_speeds_mps, lookahead_m)
+            native_frame = world.tick()
+            if (type(native_frame) is not int or
+                    (last_frame is not None and native_frame <= last_frame)):
+                raise ValueError("Increasing original Native frames required")
+            cameras = collect_camera_frames(native_frame)
+            if (not isinstance(cameras, dict) or set(cameras) != set(SIZES) or
+                    any(type(frame) is not int or frame != native_frame
+                        for frame in cameras.values())):
+                raise ValueError("All four cameras must join original Native frame")
+            actors_source = {role: _actor(actor, world.get_map())
+                             for role, actor in actors.items()}
+            if actors_source["ego"]["actor_id"] == actors_source["other"]["actor_id"]:
+                raise ValueError("Distinct original Native actor sources required")
+            write_source({"native_frame": native_frame, "frame_index": index,
+                          "maneuver": "ego_straight_other_straight",
+                          "camera_source_frames": cameras,
+                          "actor_sources": actors_source,
+                          "applied_decisions": decision["decisions"],
+                          "physical_or_legal_acceptance_claimed": False})
+            if first_frame is None:
+                first_frame = native_frame
+            last_frame = native_frame
+    return {"frames_recorded": frames, "first_native_frame": first_frame,
+            "last_native_frame": last_frame,
             "physical_or_legal_acceptance_claimed": False}

@@ -159,3 +159,17 @@ Correction to the preceding checkpoint: `yellow_red_finalizer.py:measure_no_entr
 The worker-owned stationary-end source check is now implemented and bound: `prove_stop_stationary.py` SHA256 `92385aa25647b34778069f50a543d1e8e8a221d95a6cd4376c27240e0191b01f` reads the exact manifest-selected diagnostic source and proves 100 contiguous original frames (800–899) with zero ego speed and unchanged body vertices. Positive `stop-stationary-cpu-proof.json` SHA256 `f2dfd26e4af41561209654328b5fb00ecf7bc228ff0ca7cb5d70c0da45c3e8c0` passes; a changed final speed is rejected in `stop-stationary-negative.log` SHA256 `2730190f12cf26cbde5be824683518b82fee3ebfad73bbe68405009a6067c674`. The binding is in `case-plan.json` SHA256 `8c4c90cf5df8daf0ae2b24038ef3aa739538e084d77a1ff09795ea6c77a3760e`. This supplements the no-entry finalizer and approach-progress physical fixture; it does not prove Native stopping or legal feasibility. Returned `work/` is 8597/8,600 files; C158196 and all other assignments remain partial.
 
 Final strict gate after the stationary-end CPU proof: `.venv-cpu/bin/python worker_check.py --complete --require-delivery-ready` exited 1 with the same first unapproved generated runtime map-cache lock at frozen `preparation.py:97`; ignored log `.runtime-work/c158196-final-physical-strict-gate.log` SHA256 `6a10e65e6cf5c5135693b7da473a44026d7f0efb9d5d92ced963762f06bceb64`. C158196 assignment-scoped complete check exits 0; all 43 results remain partial and the Goal remains active.
+
+Archived unreferenced historical negative-analysis log `yellow-stop-negative-analysis.log` (SHA256 `b3c8207655330cecd37886d5c6763793735244ac3717e08f43f6d53ed664076e`) verbatim to free one returned-file slot for current C125751 construction. It is not a current proof binding.
+
+```text
+Traceback (most recent call last):
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/fixture-5tqve1lm/negative/yellow_red_finalizer.py", line 215, in <module>
+    finalize(args.attempt, args.output)
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/fixture-5tqve1lm/negative/yellow_red_finalizer.py", line 74, in finalize
+    report = analyze(attempt)
+             ^^^^^^^^^^^^^^^^
+  File "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/fixture-5tqve1lm/negative/red_entry_measurements.py", line 52, in analyze
+    raise ValueError("Missing required source: " + name)
+ValueError: Missing required source: signal_vehicle_history.jsonl
+```
