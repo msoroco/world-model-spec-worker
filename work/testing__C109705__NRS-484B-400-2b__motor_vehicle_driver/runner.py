@@ -49,6 +49,17 @@ def prepare_site(world, packet, root, config):
     expected_kind = 'imaginary' if 'imaginary_' in case_id else 'marked'
     if packet.get('centerline_kind') != expected_kind:
         raise ValueError('Selected case centerline kind differs from sourced site')
+    connector = packet.get('connector_road_id')
+    roads = (packet.get('approach_road_id'), connector, packet.get('outgoing_road_id'))
+    if type(connector) is not int or len(set(roads)) != 3:
+        raise ValueError('Distinct sourced connector road identity required')
+    if connector not in {int(w.road_id) for w in world.get_map().generate_waypoints(2.0)}:
+        raise ValueError('Native connector road missing from selected map')
+    direction = packet.get('departure_direction_xy')
+    if (not isinstance(direction, list) or len(direction) != 2 or
+            any(type(v) not in (int, float) or not math.isfinite(v) for v in direction) or
+            math.hypot(*direction) <= 0):
+        raise ValueError('Sourced finite departure direction required')
     return plan(world, packet, root, farther=('farther_' in case_id))
 
 
@@ -57,6 +68,14 @@ def _body(actor):
                 actor.bounding_box.get_world_vertices(actor.get_transform())]
     if len(vertices) < 4 or any(not all(math.isfinite(v) for v in pair) for pair in vertices):
         raise ValueError('Incomplete Native vehicle body')
+    return vertices
+
+
+def _body_3d(actor):
+    vertices = [[float(v.x), float(v.y), float(v.z)] for v in
+                actor.bounding_box.get_world_vertices(actor.get_transform())]
+    if len(vertices) < 4 or any(not all(math.isfinite(n) for n in v) for v in vertices):
+        raise ValueError('Incomplete original full-body vertices')
     return vertices
 
 
@@ -145,6 +164,13 @@ def capture(args, config):
             'destination_right_half_polygon_xy_m': packet['destination_right_half_polygon_xy_m'],
             'junction_polygon_xy_m': packet['junction_polygon_xy_m'],
             'site_source_review': review}, indent=2)+'\n')
+        (output/'road_geometry.json').write_text(json.dumps({
+            'intersection_xy_m': packet['junction_polygon_xy_m'],
+            'approach_road_id': packet['approach_road_id'],
+            'connector_road_id': packet['connector_road_id'],
+            'departure_road_id': packet['outgoing_road_id'],
+            'departure_direction_xy': packet['departure_direction_xy'],
+            'two_way': True, 'site_source_review': review}, indent=2)+'\n')
         transforms = _camera_transforms(carla, packet, route, yaw)
         with source_cameras(world, actor, transforms, config['cameras']) as sensors:
             queues = {name: Queue() for name in CAMERAS}
@@ -155,6 +181,7 @@ def capture(args, config):
                     encoders[name] = stack.enter_context(FFV1Writer(output/(name+'.mkv'), width, height))
                 mapping = stack.enter_context(FrameMap(output/'video_frames.jsonl'))
                 history = stack.enter_context((output/'turn_history.jsonl').open('x', buffering=1))
+                body_history = stack.enter_context((output/'body_history.jsonl').open('x', buffering=1))
                 helper = PipelineCapture(client, actor, output, config['selected_case_id'],
                                          required_observations=config['required_atoms'])
                 try:
@@ -171,7 +198,12 @@ def capture(args, config):
                             encoders[name].write(bytes(_sensor_frame(queues[name], snapshot.frame).raw_data))
                         helper.capture(snapshot.frame, snapshot.timestamp.elapsed_seconds)
                         mapping.append(snapshot.frame, snapshot.timestamp.elapsed_seconds)
-                        history.write(json.dumps(_record(actor, snapshot, world), separators=(',', ':'))+'\n')
+                        record = _record(actor, snapshot, world)
+                        history.write(json.dumps(record, separators=(',', ':'))+'\n')
+                        body_history.write(json.dumps({
+                            'frame': record['frame'], 'time_s': record['time_s'],
+                            'road_id': record['road_id'], 'lane_id': record['lane_id'],
+                            'body_vertices_m': _body_3d(actor)}, separators=(',', ':'))+'\n')
                         frames += 1
                 finally:
                     helper.close(); helper = None

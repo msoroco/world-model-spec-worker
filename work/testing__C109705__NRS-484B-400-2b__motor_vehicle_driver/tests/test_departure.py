@@ -21,6 +21,7 @@ selection = load("native_road_selection")
 site = load("site_review")
 departure_route = load("departure_route")
 turn_control = load("turn_control")
+runner = load("runner")
 
 
 def body(x, y):
@@ -162,20 +163,58 @@ class DepartureTests(unittest.TestCase):
         waypoints.pop()
         with self.assertRaisesRegex(ValueError,"Opposite-direction"): selection.verify_two_directional_roads(world,1,2)
 
+    def test_exact_capture_requires_native_connector(self):
+        packet = json.loads((ROOT / "site_packet.json").read_text())
+        config = json.loads((ROOT / "config.json").read_text())
+        points = [NS(road_id=road, lane_id=lane, lane_type="Driving")
+                  for road in (1, 2, 3) for lane in (-1, 1)]
+        world = NS(get_map=lambda: NS(name="TownX",
+                   generate_waypoints=lambda spacing: points))
+        self.assertEqual(runner.prepare_site(world, packet, ROOT, config)["centerline_kind"], "marked")
+        points[:] = [p for p in points if p.road_id != 3]
+        with self.assertRaisesRegex(ValueError, "Native connector road missing"):
+            runner.prepare_site(world, packet, ROOT, config)
+        packet["connector_road_id"] = 1
+        with self.assertRaisesRegex(ValueError, "Distinct sourced connector"):
+            runner.prepare_site(world, packet, ROOT, config)
+
     def test_saved_destination_finalizer_uses_original_sources(self):
         with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp); self.fixture(root)
-            context = json.loads((root / "road_context.json").read_text())
-            context["site_source_review"] = {"centerline_kind": "marked"}
+            root = Path(tmp)
+            packet = json.loads((ROOT / "site_packet.json").read_text())
+            context = {key: packet[key] for key in (
+                "native_map_id", "intersection_id", "approach_road_id", "outgoing_road_id",
+                "destination_centerline_xy_m", "destination_right_half_polygon_xy_m",
+                "junction_polygon_xy_m")}
+            context.update({"opposing_lane_source": "synthetic Native waypoint inventory",
+                            "destination_centerline_source": "synthetic marked centerline",
+                            "destination_right_half_source": "synthetic right half",
+                            "junction_source": "synthetic junction",
+                            "left_turn_route_source": "synthetic waypoint route",
+                            "both_highways_two_directional": True, "intended_turn": "left",
+                            "site_source_review": {"centerline_kind": "marked"}})
             (root / "road_context.json").write_text(json.dumps(context))
             case = "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__source_verified_near_centerline"
-            config = {"law_id": "NRS-484B-400-2b", "cell_id": "C109705",
-                      "actor": "motor_vehicle_driver", "selected_case_id": case,
-                      "supported_case_ids": [case],
-                      "recording_description": {"channels": [{"name": "destination_exit"}]}}
-            (root / "config.json").write_text(json.dumps(config))
-            (root / "site_packet.json").write_text(json.dumps({"centerline_kind": "marked"}))
-            rows = [json.loads(s) for s in (root / "turn_history.jsonl").read_text().splitlines()]
+            (root / "config.json").write_text((ROOT / "config.json").read_text())
+            (root / "site_packet.json").write_text(json.dumps(packet))
+            rows = [{"frame": 100 + i, "time_s": 1 + i * .05, "road_id": road,
+                     "ego_body_vertices_xy_m": body(x, y)} for i, (x, y, road) in
+                    enumerate([(-8, -2, 1), (-2, -2, 3), (2.5, 8, 2)])]
+            (root / "turn_history.jsonl").write_text("".join(json.dumps(r) + "\n" for r in rows))
+            frames = [{"video_frame": i, "carla_frame": r["frame"], "time_s": r["time_s"]}
+                      for i, r in enumerate(rows)]
+            (root / "video_frames.jsonl").write_text("".join(json.dumps(r) + "\n" for r in frames))
+            (root / "road_geometry.json").write_text(json.dumps({
+                "intersection_xy_m": packet["junction_polygon_xy_m"],
+                "approach_road_id": packet["approach_road_id"],
+                "connector_road_id": packet["connector_road_id"],
+                "departure_road_id": packet["outgoing_road_id"],
+                "departure_direction_xy": packet["departure_direction_xy"],
+                "two_way": True}))
+            (root / "body_history.jsonl").write_text("".join(json.dumps({
+                "frame": r["frame"], "time_s": r["time_s"], "road_id": r["road_id"],
+                "body_vertices_m": [[x, y, 0] for x, y in r["ego_body_vertices_xy_m"]]
+            }) + "\n" for r in rows))
             (root / "trace.jsonl").write_text("".join(json.dumps({"frame": r["frame"],
                 "time_s": r["time_s"]}) + "\n" for r in rows))
             (root / "capture").mkdir()
@@ -187,14 +226,22 @@ class DepartureTests(unittest.TestCase):
             self.assertTrue(report["measurements"]["complete_body_right_of_destination_centerline"])
             self.assertTrue((root / "channels/destination_exit.jsonl").is_file())
             self.assertEqual(json.loads((root / "result.json").read_text())["case_id"], case)
+            self.assertEqual(json.loads((root / "result.json").read_text())["physical_checks"]["maneuver"]["status"], "met")
             with self.assertRaisesRegex(ValueError, "fresh saved analysis"):
                 measure.finalize(root, root / "second-report.json")
             (root / "result.json").unlink()
             for path in (root / "channels").iterdir(): path.unlink()
             (root / "channels").rmdir()
             (root / "analysis-report.json").unlink()
-            self.fixture(root, exit_y=1)
-            (root / "road_context.json").write_text(json.dumps(context))
+            geometry = json.loads((root / "road_geometry.json").read_text())
+            geometry["departure_direction_xy"] = [1, 0]
+            (root / "road_geometry.json").write_text(json.dumps(geometry))
+            with self.assertRaisesRegex(ValueError, "Saved connector road geometry differs"):
+                measure.finalize(root, root / "analysis-report.json")
+            geometry["departure_direction_xy"] = packet["departure_direction_xy"]
+            (root / "road_geometry.json").write_text(json.dumps(geometry))
+            rows[2]["ego_body_vertices_xy_m"] = body(-1, 8)
+            (root / "turn_history.jsonl").write_text("".join(json.dumps(r) + "\n" for r in rows))
             with self.assertRaisesRegex(ValueError, "Complete exit body crosses"):
                 measure.finalize(root, root / "analysis-report.json")
 

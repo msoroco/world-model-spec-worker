@@ -98,8 +98,9 @@ def finalize(attempt: Path, output: Path) -> dict:
     attempt, output = Path(attempt), Path(output)
     if output.exists() or (attempt / "result.json").exists() or (attempt / "channels").exists():
         raise ValueError("Use fresh saved analysis output and retain original evidence")
-    required = ("config.json", "site_packet.json", "road_context.json", "turn_history.jsonl",
-                "video_frames.jsonl", "trace.jsonl", "capture/evidence.jsonl",
+    required = ("config.json", "site_packet.json", "road_context.json", "road_geometry.json",
+                "turn_history.jsonl", "body_history.jsonl", "video_frames.jsonl",
+                "trace.jsonl", "capture/evidence.jsonl",
                 "overview.mkv", "approach.mkv", "reference_corner.mkv", "driver_reference.mkv")
     for name in required:
         if not (attempt / name).is_file():
@@ -120,6 +121,11 @@ def finalize(attempt: Path, output: Path) -> dict:
     context, sample = observations["native_road_context"], observations["exit_sample"]
     if context.get("site_source_review", {}).get("centerline_kind") != expected_kind:
         raise ValueError("Saved road context centerline review differs")
+    if any(context.get(key) != packet.get(key) for key in (
+            "native_map_id", "intersection_id", "approach_road_id", "outgoing_road_id",
+            "destination_centerline_xy_m", "destination_right_half_polygon_xy_m",
+            "junction_polygon_xy_m")):
+        raise ValueError("Saved road context differs from selected source packet")
     if not sample["complete_body_right_of_destination_centerline"]:
         raise ValueError("Complete exit body crosses destination centerline or right-half boundary")
     frames, trace = _rows(attempt / "video_frames.jsonl"), _rows(attempt / "trace.jsonl")
@@ -127,6 +133,22 @@ def finalize(attempt: Path, output: Path) -> dict:
             row.get("frame") != frame.get("carla_frame") or row.get("time_s") != frame.get("time_s")
             for row, frame in zip(trace, frames)):
         raise ValueError("Original trace/frame join differs")
+    body_rows, turn_rows = _rows(attempt / "body_history.jsonl"), _rows(attempt / "turn_history.jsonl")
+    if len(body_rows) != len(frames) or any(
+            row.get("frame") != frame.get("carla_frame") or row.get("time_s") != frame.get("time_s") or
+            row.get("road_id") != turn.get("road_id") or
+            len(row.get("body_vertices_m", [])) < 4 or
+            [v[:2] for v in row["body_vertices_m"]] != turn.get("ego_body_vertices_xy_m")
+            for row, turn, frame in zip(body_rows, turn_rows, frames)):
+        raise ValueError("Original full-body/frame join differs")
+    geometry = json.loads((attempt / "road_geometry.json").read_text())
+    if (geometry.get("departure_road_id") != context["outgoing_road_id"] or
+            geometry.get("approach_road_id") != context["approach_road_id"] or
+            geometry.get("intersection_xy_m") != context["junction_polygon_xy_m"] or
+            geometry.get("connector_road_id") != packet.get("connector_road_id") or
+            geometry.get("departure_direction_xy") != packet.get("departure_direction_xy") or
+            geometry.get("two_way") is not True):
+        raise ValueError("Saved connector road geometry differs from source context")
     sources = {name: hashlib.sha256((attempt / name).read_bytes()).hexdigest() for name in required}
     measured = {"destination_centerline_kind": expected_kind,
                 "exit_frame": sample["frame"], "exit_time_s": sample["time_s"],
