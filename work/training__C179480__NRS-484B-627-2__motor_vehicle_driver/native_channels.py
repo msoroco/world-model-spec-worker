@@ -4,13 +4,20 @@ import json
 from math import isfinite
 from pathlib import Path
 
-from source_measurement import load_rows
+from source_measurement import analyze_hazard, load_rows
 
 
 CHANNELS = ('ego_pose', 'ego_speed', 'ego_stop_history',
             'roadway_surface_grounding', 'ego_lane_footprint',
             'following_actor_gap_history', 'following_actor_deceleration',
             'following_actor_stop_history', 'ego_velocity_history')
+SAFE_CHANNELS = ('hazard_actor_state', 'ego_hazard_gap_history')
+
+
+def channels_for(case):
+    if case not in ('reference', 'contrast', 'safe_operation_stop'):
+        raise ValueError('Unknown source case for channels')
+    return CHANNELS + (SAFE_CHANNELS if case == 'safe_operation_stop' else ())
 
 
 def _vector(value, length):
@@ -29,7 +36,10 @@ def derive(attempt):
             or type(map_readback.get('road_id')) is not int
             or type(map_readback.get('lane_id')) is not int):
         raise ValueError('Missing original roadway map readback')
-    values = {name: [] for name in CHANNELS}
+    channels = channels_for(map_readback.get('case'))
+    if map_readback['case'] == 'safe_operation_stop':
+        analyze_hazard(attempt/'native-actors.jsonl', attempt/'video_frames.jsonl')
+    values = {name: [] for name in channels}
     previous_speed = None
     for row, frame in zip(rows, mapping):
         if (row.get('source_kind') != 'original_carla_actor_and_map_readback'
@@ -79,7 +89,20 @@ def derive(attempt):
                 'velocity_xyz_mps': row['following_velocity_xyz_mps']},
             'ego_velocity_history': row['ego_velocity_xyz_mps'],
         }
-        for name in CHANNELS:
+        if map_readback['case'] == 'safe_operation_stop':
+            hazard = row['hazard_state']
+            if (hazard['road_id'] != map_readback['road_id']
+                    or hazard['lane_id'] != map_readback['lane_id']):
+                raise ValueError('Hazard source differs from original driving lane')
+            sample['hazard_actor_state'] = {
+                'position_xyz_m': hazard['position_xyz_m'],
+                'velocity_xyz_mps': hazard['velocity_xyz_mps'],
+                'body_vertices_xyz_m': hazard['body_vertices_xyz_m'],
+                'speed_mps': hazard['speed_mps'],
+                'on_driving_lane': hazard['on_driving_lane'],
+                'road_id': hazard['road_id'], 'lane_id': hazard['lane_id']}
+            sample['ego_hazard_gap_history'] = hazard['ego_center_gap_m']
+        for name in channels:
             values[name].append({'time_s': time_s, 'value': sample[name]})
     directory = attempt/'channels'
     directory.mkdir(exist_ok=True)
@@ -88,7 +111,7 @@ def derive(attempt):
         with path.open('x') as stream:
             for sample in samples:
                 stream.write(json.dumps(sample, allow_nan=False)+'\n')
-    return {'channels': list(CHANNELS), 'frames': len(rows)}
+    return {'channels': list(channels), 'frames': len(rows)}
 
 
 def main():

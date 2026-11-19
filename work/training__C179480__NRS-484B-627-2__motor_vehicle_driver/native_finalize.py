@@ -8,13 +8,14 @@ import json
 from pathlib import Path
 import sys
 
-from native_channels import CHANNELS, derive
+from native_channels import CHANNELS, channels_for, derive
 from saved_analysis import CAMERAS, review, sha256
 from source_measurement import load_rows
 
 
 ASSIGNMENT = 'training__C179480__NRS-484B-627-2__motor_vehicle_driver'
-EXPECTED_OVERLAP = {'reference': True, 'contrast': False}
+EXPECTED_OVERLAP = {'reference': True, 'contrast': False,
+                    'safe_operation_stop': True}
 
 
 def _native_writer():
@@ -38,7 +39,8 @@ def finalize(attempt, output):
         raise ValueError('Finalizer requires an exact C179480 primary case config')
     names = [entry.get('name') for entry in
              config.get('recording_description', {}).get('channels', [])]
-    if set(names) != set(CHANNELS) or len(names) != len(CHANNELS):
+    expected_channels = channels_for(case)
+    if set(names) != set(expected_channels) or len(names) != len(expected_channels):
         raise ValueError('Recording description differs from source channels')
     if (attempt/'result.json').exists() or (attempt/'trace.jsonl').exists():
         raise ValueError('Retain prior finalization; use a fresh attempt')
@@ -72,6 +74,10 @@ def finalize(attempt, output):
     overlap = bool(measured['roadway_lane_overlap_frames'])
     stopped = measured['complete_stop_observed']
     matched = stopped and overlap == EXPECTED_OVERLAP[case]
+    hazard = report.get('hazard_observation')
+    if case == 'safe_operation_stop' and (
+            not hazard or hazard['sample_count'] != len(rows)):
+        raise ValueError('Safe-operation original hazard observation absent')
     target = {
         'target': 'sampled complete stop with requested travel-lane footprint overlap',
         'requested': EXPECTED_OVERLAP[case], 'measured': overlap,
@@ -104,6 +110,8 @@ def finalize(attempt, output):
         'physical_checks': checks,
         'termination_reason': 'full original attempt retained',
         'physical_failure_flags': ['traffic_impediment_and_exceptions_unreviewed']+
+                                  (['safe_operation_necessity_unreviewed']
+                                   if case == 'safe_operation_stop' else [])+
                                   ([] if matched else ['sampled_stop_target_not_met']),
         'trace_reference': 'trace.jsonl',
         'video_references': [name+'.mkv' for name in CAMERAS],
@@ -121,6 +129,11 @@ def finalize(attempt, output):
         'provenance_kind': 'native',
         'accepted': False, 'legal_verdict_claimed': False,
     }
+    if hazard is not None:
+        result['realized_observables']['source_visible_hazard'] = {
+            'value': hazard, 'unit': 'structured',
+            'method': 'original actor body, lane, velocity and gap rows',
+            'reference': 'native-actors.jsonl'}
     _native_writer()(attempt, result)
     report['derived_channels'] = derived
     report['trace_sha256'] = source_hashes['trace.jsonl']

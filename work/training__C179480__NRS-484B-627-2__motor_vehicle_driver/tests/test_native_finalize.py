@@ -6,7 +6,7 @@ import tempfile
 import unittest
 
 from test_saved_analysis import SavedAnalysisTest
-from source_measurement import analyze
+from source_measurement import analyze, analyze_hazard
 
 
 root = Path(__file__).resolve().parents[1]
@@ -55,6 +55,64 @@ class NativeFinalizeTest(unittest.TestCase):
             'recording_description': {'channels': [
                 {'name': name, 'unit': 'structured'} for name in module.CHANNELS],
                 'context_inputs': []}})+'\n')
+
+    def safe_sources(self, folder):
+        self.sources(folder)
+        actor = folder/'native-actors.jsonl'
+        rows = [json.loads(line) for line in actor.read_text().splitlines()]
+        for row in rows:
+            row['hazard_state'] = dict(
+                source_kind='original_carla_actor_and_map_readback',
+                body_vertices_xyz_m=[[6.,-1.,0.],[6.,1.,0.],
+                                     [10.,1.,0.],[10.,-1.,0.]],
+                velocity_xyz_mps=[0.,0.,0.], position_xyz_m=[8.,0.,0.],
+                speed_mps=0., ego_center_gap_m=8., on_driving_lane=True,
+                road_id=7, lane_id=-1)
+        actor.write_text(''.join(json.dumps(row)+'\n' for row in rows))
+        map_path = folder/'native-map-readback.json'
+        map_data = json.loads(map_path.read_text())
+        map_data['case'] = 'safe_operation_stop'
+        map_path.write_text(json.dumps(map_data)+'\n')
+        receipt_path = folder/'source-measurements.json'
+        receipt = json.loads(receipt_path.read_text())
+        receipt.update(case='safe_operation_stop',
+                       actor_source_sha256=module.sha256(actor),
+                       map_readback_sha256=module.sha256(map_path),
+                       hazard_observation=analyze_hazard(actor,folder/'video_frames.jsonl'))
+        receipt_path.write_text(json.dumps(receipt)+'\n')
+        config_path = folder/'config.json'
+        config = json.loads(config_path.read_text())
+        config['case_id'] = module.ASSIGNMENT+'__safe_operation_stop'
+        config['case_suffix'] = 'safe_operation_stop'
+        config['recording_description']['channels'].extend(
+            {'name': name, 'unit': 'structured'}
+            for name in ('hazard_actor_state','ego_hazard_gap_history'))
+        config_path.write_text(json.dumps(config)+'\n')
+
+    def test_safe_operation_finalizer_retains_hazard_without_necessity_claim(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = Path(tmp)
+            self.safe_sources(folder)
+            report = module.finalize(folder,folder/'analysis-report.json')
+            result = json.loads((folder/'result.json').read_text())
+            self.assertEqual(report['hazard_observation']['minimum_ego_center_gap_m'],8.)
+            self.assertEqual(len(report['derived_channels']['channels']),11)
+            self.assertIn('source_visible_hazard',result['realized_observables'])
+            self.assertIn('safe_operation_necessity_unreviewed',result['physical_failure_flags'])
+            self.assertFalse(result['maneuver_completed'])
+            self.assertFalse(result['legal_verdict_claimed'])
+
+    def test_safe_operation_missing_hazard_rejected_before_derived_output(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = Path(tmp)
+            self.safe_sources(folder)
+            actor = folder/'native-actors.jsonl'
+            rows = [json.loads(line) for line in actor.read_text().splitlines()]
+            del rows[1]['hazard_state']['body_vertices_xyz_m']
+            actor.write_text(''.join(json.dumps(row)+'\n' for row in rows))
+            with self.assertRaisesRegex(ValueError,'hazard geometry'):
+                module.finalize(folder,folder/'analysis-report.json')
+            self.assertFalse((folder/'result.json').exists())
 
     def test_native_shaped_result_retains_unverified_status(self):
         with tempfile.TemporaryDirectory() as tmp:

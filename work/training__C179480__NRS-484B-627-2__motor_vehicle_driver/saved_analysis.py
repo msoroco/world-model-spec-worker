@@ -45,6 +45,7 @@ def review(attempt, output, *, write=True):
     measurement_path = attempt / 'source-measurements.json'
     map_readback = json.loads(map_path.read_text())
     receipt = json.loads(measurement_path.read_text())
+    observed_hazard = None
     if map_readback.get('case') == 'safe_operation_stop':
         observed_hazard = analyze_hazard(actor, mapping)
         if receipt.get('hazard_observation') != observed_hazard:
@@ -81,6 +82,8 @@ def review(attempt, output, *, write=True):
             'safe operation necessity', 'compliance with law',
             'roadway and camera visibility'],
     }
+    if observed_hazard is not None:
+        report['hazard_observation'] = observed_hazard
     if write:
         with output.open('x', encoding='utf-8') as stream:
             json.dump(report, stream, indent=2, allow_nan=False)

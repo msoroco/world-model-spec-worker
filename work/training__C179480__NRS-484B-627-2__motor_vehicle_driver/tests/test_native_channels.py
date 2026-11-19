@@ -40,7 +40,7 @@ class NativeChannelsTest(unittest.TestCase):
                             time_s=i/20))+'\n' for i in range(2)))
         (folder/'native-map-readback.json').write_text(json.dumps(
             dict(format='c179480-original-map-readback-v1', map_name='Town',
-                 road_id=7, lane_id=-1))+'\n')
+                 case='reference', road_id=7, lane_id=-1))+'\n')
         return actor
 
     def test_raw_channels_include_acceleration_and_preserve_sources(self):
@@ -71,7 +71,7 @@ class NativeChannelsTest(unittest.TestCase):
             self.sources(folder)
             map_file = folder/'native-map-readback.json'
             map_file.write_text(json.dumps(dict(format='c179480-original-map-readback-v1',
-                                                map_name='Town', road_id=8,
+                                                map_name='Town', case='reference', road_id=8,
                                                 lane_id=-1))+'\n')
             with self.assertRaisesRegex(ValueError, 'actor/map channel source'):
                 module.derive(folder)
