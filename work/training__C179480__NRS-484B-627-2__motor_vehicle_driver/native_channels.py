@@ -4,7 +4,7 @@ import json
 from math import isfinite
 from pathlib import Path
 
-from source_measurement import analyze_hazard, load_rows
+from source_measurement import analyze_hazard, analyze_control, load_rows
 from source_provenance import classify
 
 
@@ -14,12 +14,15 @@ CHANNELS = ('ego_pose', 'ego_speed', 'ego_stop_history',
             'following_actor_stop_history', 'ego_velocity_history',
             'traffic_effect_evidence')
 SAFE_CHANNELS = ('hazard_actor_state', 'ego_hazard_gap_history')
+LAW_CHANNELS = ('governing_control_readback',)
 
 
 def channels_for(case):
-    if case not in ('reference', 'contrast', 'safe_operation_stop'):
+    if case not in ('reference', 'contrast', 'safe_operation_stop',
+                    'law_required_stop'):
         raise ValueError('Unknown source case for channels')
-    return CHANNELS + (SAFE_CHANNELS if case == 'safe_operation_stop' else ())
+    return (CHANNELS + (SAFE_CHANNELS if case == 'safe_operation_stop' else ())
+            + (LAW_CHANNELS if case == 'law_required_stop' else ()))
 
 
 def _vector(value, length):
@@ -42,6 +45,10 @@ def derive(attempt):
     channels = channels_for(map_readback.get('case'))
     if map_readback['case'] == 'safe_operation_stop':
         analyze_hazard(attempt/'native-actors.jsonl', attempt/'video_frames.jsonl', source_kind=source_kind)
+    if map_readback['case'] == 'law_required_stop':
+        analyze_control(attempt/'native-actors.jsonl', attempt/'video_frames.jsonl',
+                        expected_control_id=map_readback.get('surveyed_governing_traffic_light_id'),
+                        source_kind=source_kind)
     values = {name: [] for name in channels}
     previous_speed = None
     for row, frame in zip(rows, mapping):
@@ -116,6 +123,8 @@ def derive(attempt):
                 'on_driving_lane': hazard['on_driving_lane'],
                 'road_id': hazard['road_id'], 'lane_id': hazard['lane_id']}
             sample['ego_hazard_gap_history'] = hazard['ego_center_gap_m']
+        if map_readback['case'] == 'law_required_stop':
+            sample['governing_control_readback'] = row['governing_control_state']
         for name in channels:
             values[name].append({'time_s': time_s, 'value': sample[name]})
     directory = attempt/'channels'

@@ -22,7 +22,8 @@ def write(path, value):
 
 
 def build(source, case='reference'):
-    if case not in ('reference', 'contrast', 'safe_operation_stop'):
+    if case not in ('reference', 'contrast', 'safe_operation_stop',
+                    'law_required_stop'):
         raise ValueError('Unsupported diagnostic case')
     source = Path(source).resolve()
     if '.runtime-work' not in source.parts:
@@ -141,6 +142,7 @@ if __name__ == '__main__':
     import argparse
     parser=argparse.ArgumentParser()
     parser.add_argument('source',type=Path)
-    parser.add_argument('--case', choices=('reference','contrast','safe_operation_stop'), default='reference')
+    parser.add_argument('--case', choices=('reference','contrast','safe_operation_stop',
+                                           'law_required_stop'), default='reference')
     args=parser.parse_args()
     print(json.dumps(build(args.source,args.case),sort_keys=True))

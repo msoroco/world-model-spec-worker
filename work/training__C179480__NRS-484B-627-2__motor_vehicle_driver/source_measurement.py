@@ -116,3 +116,40 @@ def analyze_hazard(path, frame_map_path, *, source_kind='original_carla_actor_an
             'safe_operation_necessity': 'independent_original_source_review_required',
             'physical_causation_claimed': False,
             'legal_verdict_claimed': False}
+
+
+def analyze_control(path, frame_map_path, *, expected_control_id=None,
+                    source_kind='original_carla_actor_and_map_readback'):
+    """Retain observed control/ego association without inferring legal compliance."""
+    rows = load_rows(path, frame_map_path)
+    ids = set()
+    associated = []
+    red = []
+    for row in rows:
+        state = row.get('governing_control_state')
+        if (not isinstance(state, dict)
+                or state.get('source_kind') != source_kind
+                or type(state.get('control_actor_id')) is not int
+                or state.get('control_type_id') != 'traffic.traffic_light'
+                or type(state.get('control_state')) is not str
+                or type(state.get('ego_at_control')) is not bool
+                or (state.get('ego_associated_control_id') is not None and
+                    type(state['ego_associated_control_id']) is not int)):
+            raise ValueError('Missing original governing-control readback')
+        ids.add(state['control_actor_id'])
+        if (expected_control_id is not None and
+                state['control_actor_id'] != expected_control_id):
+            raise ValueError('Governing control differs from surveyed actor')
+        linked = (state['ego_at_control'] and
+                  state['ego_associated_control_id'] == state['control_actor_id'])
+        if linked:
+            associated.append(row['frame'])
+            if state['control_state'].split('.')[-1].lower() == 'red':
+                red.append(row['frame'])
+    if len(ids) != 1:
+        raise ValueError('Governing control identity changed during capture')
+    return {'sample_count': len(rows), 'control_actor_id': next(iter(ids)),
+            'associated_frames': associated, 'associated_red_frames': red,
+            'source_visible_stop_requirement': bool(red),
+            'compliance_with_law': 'independent_original_source_review_required',
+            'legal_verdict_claimed': False}

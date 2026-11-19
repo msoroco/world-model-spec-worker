@@ -401,6 +401,143 @@
       "target_law_id": "NRS-484B-627-2",
       "target_type": "attempt",
       "variable_assignments": {}
+    },
+    {
+      "case_description": "A complete roadway stop that may impede through traffic in response to a source-visible governing legal stop requirement; governing control and compliance require independent source review and compatible cell geometry.",
+      "case_id": "training__C179480__NRS-484B-627-2__motor_vehicle_driver__law_required_stop",
+      "comparison_unit": "bool",
+      "comparison_variable": "roadway_stop_blocks_traffic",
+      "fixed_context": "Hold cell geometry, actors, traffic controls, weather, and all noncompared controller settings constant; verify activation and exceptions before use.",
+      "gap_ids": [
+        "gap-roadway-stop",
+        "gap-traffic-effect",
+        "gap-exceptions",
+        "gap-cell-scope"
+      ],
+      "planning_status": "unverified_definition",
+      "recorded_value": null,
+      "recording_description": {
+        "channels": [
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "ego_pose",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "ego_speed",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "ego_stop_history",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "roadway_surface_grounding",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "ego_lane_footprint",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "following_actor_gap_history",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "following_actor_deceleration",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "following_actor_stop_history",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "ego_velocity_history",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original actor/map/frame rows",
+            "name": "traffic_effect_evidence",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; original pixels and legal effect require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "native_channels.derive from original traffic-light actor and ego association rows",
+            "name": "governing_control_readback",
+            "reference_frame": "original CARLA frame joined to four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sampling; governing applicability and compliance require independent review",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "Native survey and live map readback",
+            "name": "surveyed_map_lane_shoulder_and_blueprints",
+            "reference_frame": "surveyed CARLA map identity",
+            "uncertainty": "Original map and actor identity require Native execution",
+            "unit": "structured"
+          }
+        ],
+        "limitations": [
+          "normal and reasonable impediment, safe-operation necessity, law compliance and physical acceptance require original-source review"
+        ]
+      },
+      "requested_setting": "in_compliance_with_law",
+      "source_topic_ids": [
+        "text-0"
+      ],
+      "target_law_id": "NRS-484B-627-2",
+      "target_type": "attempt",
+      "variable_assignments": {}
     }
   ]
 }

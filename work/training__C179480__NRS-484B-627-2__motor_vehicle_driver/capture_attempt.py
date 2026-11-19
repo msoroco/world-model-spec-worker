@@ -13,7 +13,7 @@ from math import cos, hypot, radians, sin
 from native_controller import StopControl, apply_stop_control, camera_specs, install_cameras
 
 
-def sample_native(world, carla, ego, follower, hazard=None):
+def sample_native(world, carla, ego, follower, hazard=None, governing_light=None):
     """Read original actor motion and lane geometry at the current world tick."""
     mapping = world.get_map()
     ego_transform = ego.get_transform()
@@ -91,6 +91,16 @@ def sample_native(world, carla, ego, follower, hazard=None):
                                       ego_position.y-location.y),
             'source_kind': 'original_carla_actor_and_map_readback',
         }
+    if governing_light is not None:
+        associated = ego.get_traffic_light()
+        result['governing_control_state'] = {
+            'source_kind': 'original_carla_actor_and_map_readback',
+            'control_actor_id': governing_light.id,
+            'control_type_id': governing_light.type_id,
+            'control_state': str(governing_light.get_state()),
+            'ego_associated_control_id': (associated.id if associated else None),
+            'ego_at_control': bool(ego.is_at_traffic_light()),
+        }
     return result
 
 
@@ -138,7 +148,7 @@ def _frame_map(path):
 def acquire(world, carla, ego, follower, blueprints, stop_xy, attempt,
             *, frames, sample=None, sink_factory=FFV1Sink, timeout_s=10,
             stop_radius_m=.8, approach_speed_mps=4., follower_brake_gap_m=7.,
-            hazard=None):
+            hazard=None, governing_light=None):
     """Drive, tick and retain exact synchronized original actor/video sources.
 
     `sample` must read the current world and return the source fields expected
@@ -168,7 +178,7 @@ def acquire(world, carla, ego, follower, blueprints, stop_xy, attempt,
                              approach_speed_mps=approach_speed_mps)
     if sample is None:
         sample = lambda world, ego, follower: sample_native(
-            world, carla, ego, follower, hazard)
+            world, carla, ego, follower, hazard, governing_light)
     try:
         sensors = install_cameras(world, blueprints, carla, ego,
                                   lambda name, image: queues[name].put(image))

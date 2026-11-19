@@ -10,13 +10,13 @@ import sys
 
 from native_channels import CHANNELS, channels_for, derive
 from saved_analysis import CAMERAS, review, sha256
-from source_measurement import analyze_hazard, load_rows, measure
+from source_measurement import analyze_hazard, analyze_control, load_rows, measure
 from source_provenance import classify, ORIGINAL, SYNTHETIC
 
 
 ASSIGNMENT = 'training__C179480__NRS-484B-627-2__motor_vehicle_driver'
 EXPECTED_OVERLAP = {'reference': True, 'contrast': False,
-                    'safe_operation_stop': True}
+                    'safe_operation_stop': True, 'law_required_stop': True}
 
 
 def _native_writer():
@@ -101,6 +101,11 @@ def finalize(attempt, output):
             receipt['hazard_observation'] = analyze_hazard(
                 attempt/'native-actors.jsonl',attempt/'video_frames.jsonl',
                 source_kind=SYNTHETIC)
+        if case == 'law_required_stop':
+            receipt['governing_control_observation'] = analyze_control(
+                attempt/'native-actors.jsonl',attempt/'video_frames.jsonl',
+                expected_control_id=map_readback.get('surveyed_governing_traffic_light_id'),
+                source_kind=SYNTHETIC)
         with (attempt/'source-measurements.json').open('x') as stream:
             json.dump(receipt,stream,allow_nan=False)
             stream.write('\n')
@@ -158,9 +163,13 @@ def finalize(attempt, output):
     stopped = measured['complete_stop_observed']
     matched = stopped and overlap == EXPECTED_OVERLAP[case]
     hazard = report.get('hazard_observation')
+    control = report.get('governing_control_observation')
     if case == 'safe_operation_stop' and (
             not hazard or hazard['sample_count'] != len(rows)):
         raise ValueError('Safe-operation original hazard observation absent')
+    if case == 'law_required_stop' and (
+            not control or control['sample_count'] != len(rows)):
+        raise ValueError('Law-required original control observation absent')
     target = {
         'target': 'sampled complete stop with requested travel-lane footprint overlap',
         'requested': EXPECTED_OVERLAP[case], 'measured': overlap,
@@ -197,6 +206,8 @@ def finalize(attempt, output):
         'physical_failure_flags': ['traffic_impediment_and_exceptions_unreviewed']+
                                   (['safe_operation_necessity_unreviewed']
                                    if case == 'safe_operation_stop' else [])+
+                                  (['law_compliance_unreviewed']
+                                   if case == 'law_required_stop' else [])+
                                   ([] if matched else ['sampled_stop_target_not_met']),
         'trace_reference': 'trace.jsonl',
         'video_references': [name+'.mkv' for name in CAMERAS],
@@ -231,6 +242,12 @@ def finalize(attempt, output):
             'method': source_label+' actor body, lane, velocity and gap rows',
             'time_window':'full 30-second source trace','statistic':'minimum',
             'reference': 'channels/ego_hazard_gap_history.jsonl'}
+    if control is not None:
+        result['realized_observables']['source_visible_red_control_frames'] = {
+            'value': len(control['associated_red_frames']), 'unit': 'count',
+            'method': source_label+' traffic-light actor and ego association readback',
+            'time_window':'full 30-second source trace','statistic':'frame_count',
+            'reference': 'channels/governing_control_readback.jsonl'}
     _native_writer()(attempt, result)
     report['derived_channels'] = derived
     report['trace_sha256'] = source_hashes['trace.jsonl']

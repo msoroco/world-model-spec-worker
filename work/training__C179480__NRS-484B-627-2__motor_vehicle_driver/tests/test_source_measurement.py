@@ -44,6 +44,33 @@ class SourceMeasurementTest(unittest.TestCase):
         self.assertEqual(result['normal_reasonable_movement_impeded'],
                          'independent_original_source_review_required')
 
+    def test_governing_control_requires_observed_ego_association(self):
+        rows = self.rows()
+        for index, row in enumerate(rows):
+            row['governing_control_state'] = {
+                'source_kind': 'original_carla_actor_and_map_readback',
+                'control_actor_id': 501,
+                'control_type_id': 'traffic.traffic_light',
+                'control_state': 'TrafficLightState.Red',
+                'ego_associated_control_id': 501 if index == 2 else None,
+                'ego_at_control': index == 2,
+            }
+        with tempfile.TemporaryDirectory() as tmp:
+            source, mapping = self.write_sources(Path(tmp), rows)
+            result = module.analyze_control(source, mapping,
+                                            expected_control_id=501)
+            self.assertEqual(result['associated_red_frames'], [103])
+            self.assertEqual(result['compliance_with_law'],
+                             'independent_original_source_review_required')
+            rows[2]['governing_control_state']['ego_associated_control_id'] = 777
+            source, mapping = self.write_sources(Path(tmp), rows)
+            self.assertEqual(module.analyze_control(
+                source, mapping, expected_control_id=501)['associated_red_frames'], [])
+            rows[2]['governing_control_state']['control_actor_id'] = 777
+            source, mapping = self.write_sources(Path(tmp), rows)
+            with self.assertRaisesRegex(ValueError, 'surveyed actor'):
+                module.analyze_control(source, mapping, expected_control_id=501)
+
     def test_missing_frame_or_source_field_is_rejected(self):
         with tempfile.TemporaryDirectory() as tmp:
             rows = self.rows()

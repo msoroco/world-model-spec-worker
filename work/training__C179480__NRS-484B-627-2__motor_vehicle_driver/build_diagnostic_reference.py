@@ -18,7 +18,8 @@ def write(path, value):
 
 
 def build(destination, case='reference'):
-    if case not in ('reference', 'contrast', 'safe_operation_stop'):
+    if case not in ('reference', 'contrast', 'safe_operation_stop',
+                    'law_required_stop'):
         raise ValueError('Unsupported diagnostic case')
     destination = Path(destination).resolve()
     if destination.exists():
@@ -40,7 +41,8 @@ def build(destination, case='reference'):
         'physical_acceptance_claimed': False})
     write(destination/'native-map-readback.json', {
         'format': 'c179480-original-map-readback-v1', 'case': case,
-        'map_name': 'synthetic_diagnostic_road', 'road_id': 7, 'lane_id': -1})
+        'map_name': 'synthetic_diagnostic_road', 'road_id': 7, 'lane_id': -1,
+        'surveyed_governing_traffic_light_id': 501 if case == 'law_required_stop' else None})
     actor_path = destination/'native-actors.jsonl'
     frame_path = destination/'video_frames.jsonl'
     with actor_path.open('x') as actors, frame_path.open('x') as frames:
@@ -72,6 +74,15 @@ def build(destination, case='reference'):
                     'on_driving_lane': True, 'road_id': 7, 'lane_id': -1,
                     'speed_mps': 0., 'ego_center_gap_m': 8.,
                 }
+            if case == 'law_required_stop':
+                row['governing_control_state'] = {
+                    'source_kind': SYNTHETIC,
+                    'control_actor_id': 501,
+                    'control_type_id': 'traffic.traffic_light',
+                    'control_state': 'TrafficLightState.Red',
+                    'ego_associated_control_id': 501 if i >= 220 else None,
+                    'ego_at_control': i >= 220,
+                }
             actors.write(json.dumps(row, allow_nan=False)+'\n')
             frames.write(json.dumps({'video_frame':i,'carla_frame':101+i,
                                      'time_s':i/20}, allow_nan=False)+'\n')
@@ -83,6 +94,10 @@ def build(destination, case='reference'):
     if case == 'safe_operation_stop':
         measured['hazard_observation'] = analyze_hazard(
             actor_path, frame_path, source_kind=SYNTHETIC)
+    if case == 'law_required_stop':
+        from source_measurement import analyze_control
+        measured['governing_control_observation'] = analyze_control(
+            actor_path, frame_path, expected_control_id=501, source_kind=SYNTHETIC)
     write(destination/'source-measurements.json', measured)
     # Small diagnostic pixels exercise decoding; the authored Native profile
     # remains four 1920/1280-wide camera streams in config.json.
@@ -100,6 +115,7 @@ def build(destination, case='reference'):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('destination',type=Path)
-    parser.add_argument('--case', choices=('reference','contrast','safe_operation_stop'), default='reference')
+    parser.add_argument('--case', choices=('reference','contrast','safe_operation_stop',
+                                           'law_required_stop'), default='reference')
     args = parser.parse_args()
     print(json.dumps(build(args.destination,args.case),sort_keys=True))

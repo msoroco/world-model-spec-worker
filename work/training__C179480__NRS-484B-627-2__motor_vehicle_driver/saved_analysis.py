@@ -9,7 +9,7 @@ import json
 from pathlib import Path
 import subprocess
 
-from source_measurement import analyze, analyze_hazard
+from source_measurement import analyze, analyze_hazard, analyze_control
 from source_provenance import classify, ORIGINAL, SYNTHETIC
 
 
@@ -48,10 +48,18 @@ def review(attempt, output, *, write=True):
     map_readback = json.loads(map_path.read_text())
     receipt = json.loads(measurement_path.read_text())
     observed_hazard = None
+    observed_control = None
     if map_readback.get('case') == 'safe_operation_stop':
         observed_hazard = analyze_hazard(actor, mapping, source_kind=source_kind)
         if receipt.get('hazard_observation') != observed_hazard:
             raise ValueError('Saved hazard receipt differs from original sources')
+    if map_readback.get('case') == 'law_required_stop':
+        observed_control = analyze_control(
+            actor, mapping,
+            expected_control_id=map_readback.get('surveyed_governing_traffic_light_id'),
+            source_kind=source_kind)
+        if receipt.get('governing_control_observation') != observed_control:
+            raise ValueError('Saved governing-control receipt differs from original sources')
     if (map_readback.get('format') != 'c179480-original-map-readback-v1'
             or receipt.get('format') != 'c179480-source-measurements-v1'
             or receipt.get('actor_source_sha256') != sources['native-actors.jsonl']
@@ -90,6 +98,8 @@ def review(attempt, output, *, write=True):
     }
     if observed_hazard is not None:
         report['hazard_observation'] = observed_hazard
+    if observed_control is not None:
+        report['governing_control_observation'] = observed_control
     if write:
         with output.open('x', encoding='utf-8') as stream:
             json.dump(report, stream, indent=2, allow_nan=False)

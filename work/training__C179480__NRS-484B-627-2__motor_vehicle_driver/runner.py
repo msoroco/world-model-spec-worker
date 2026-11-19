@@ -11,7 +11,7 @@ from native_controller import camera_specs
 
 HERE = Path(__file__).resolve().parent
 ASSIGNMENT = 'training__C179480__NRS-484B-627-2__motor_vehicle_driver'
-CASES = ('reference', 'contrast', 'safe_operation_stop')
+CASES = ('reference', 'contrast', 'safe_operation_stop', 'law_required_stop')
 
 
 def check():

@@ -16,7 +16,8 @@ from source_measurement import analyze, analyze_hazard
 from stop_construction import RoadProfile, target
 
 
-CASES = {'reference': True, 'contrast': False, 'safe_operation_stop': True}
+CASES = {'reference': True, 'contrast': False,
+         'safe_operation_stop': True, 'law_required_stop': True}
 
 
 def validate_survey(survey, mapping, carla):
@@ -85,6 +86,14 @@ def run(client, carla, survey, attempt, case, *, candidate='primary', sink_facto
     plan = placement(survey, road, carla, case, candidate)
     if case == 'safe_operation_stop' and not survey.get('hazard_blueprint'):
         raise ValueError('Safe-operation scene requires surveyed hazard blueprint')
+    governing_light = None
+    if case == 'law_required_stop':
+        control_id = survey.get('governing_traffic_light_id')
+        if type(control_id) is not int:
+            raise ValueError('Law-required scene needs a surveyed traffic-light actor ID')
+        governing_light = world.get_actors().find(control_id)
+        if (governing_light is None or governing_light.type_id != 'traffic.traffic_light'):
+            raise ValueError('Surveyed governing traffic-light actor is absent')
     library = world.get_blueprint_library()
     actors = []
     try:
@@ -107,6 +116,8 @@ def run(client, carla, survey, attempt, case, *, candidate='primary', sink_facto
             options['sink_factory'] = sink_factory
         if plan['hazard_spawn'] is not None:
             options['hazard'] = actors[2]
+        if governing_light is not None:
+            options['governing_light'] = governing_light
         receipt = acquire_with_world_restore(
             world, carla, actors[0], actors[1], library,
             plan['stop_xy'], attempt, **options)
@@ -125,6 +136,8 @@ def run(client, carla, survey, attempt, case, *, candidate='primary', sink_facto
             'planned_hazard_xy_m': ([plan['hazard_spawn'].location.x,
                                      plan['hazard_spawn'].location.y]
                                     if plan['hazard_spawn'] is not None else None),
+            'surveyed_governing_traffic_light_id': (
+                governing_light.id if governing_light is not None else None),
             'physical_completion_claimed': False,
         }
         (Path(attempt) / 'native-map-readback.json').write_text(
@@ -134,6 +147,10 @@ def run(client, carla, survey, attempt, case, *, candidate='primary', sink_facto
         measured = analyze(actor_path, frame_path)
         if case == 'safe_operation_stop':
             measured['hazard_observation'] = analyze_hazard(actor_path, frame_path)
+        if case == 'law_required_stop':
+            from source_measurement import analyze_control
+            measured['governing_control_observation'] = analyze_control(
+                actor_path, frame_path, expected_control_id=governing_light.id)
         measured.update(format='c179480-source-measurements-v1', case=case,
                         actor_source_sha256=hashlib.sha256(actor_path.read_bytes()).hexdigest(),
                         frame_map_sha256=hashlib.sha256(frame_path.read_bytes()).hexdigest(),
