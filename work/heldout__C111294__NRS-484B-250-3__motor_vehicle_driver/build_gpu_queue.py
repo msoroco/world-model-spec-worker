@@ -24,6 +24,7 @@ SAVED_PROOFS = {
     "official_device_control": "official-device-saved-proof.json",
     "official_device_green_phase": "official-green-saved-proof.json",
     "continuing_highway": "continuing-saved-proof.json",
+    "opposing_left_travel_subject": "opposing-left-saved-proof.json",
     **{f"yield_release_delay-{index:04d}":
        f"yield_release_delay-{index:04d}-saved-proof.json" for index in range(3)},
 }
