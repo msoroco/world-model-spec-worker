@@ -11,7 +11,7 @@ from audit_full_law_delivery import audit
 class FullLawSourceAuditTests(unittest.TestCase):
     def test_current_exact_source_bindings(self):
         report = audit()
-        self.assertEqual(report['local_selected_cases'], 9)
+        self.assertEqual(report['local_selected_cases'], 10)
         self.assertEqual(report['local_comparisons'], 6)
         self.assertFalse(report['physical_or_legal_acceptance_claimed'])
 

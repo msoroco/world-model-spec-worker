@@ -40,7 +40,7 @@ def audit(folder=HERE, *, matrix=None, queue=None):
             'Opposing-left exception remains an unresolved frozen-scope gap')
     cases = [row['case_id'] for row in plan['cases']]
     comparisons = {row['comparison_id']: row['case_ids'] for row in plan['comparisons']}
-    require(len(cases) == len(set(cases)) == 9, 'Exact local law cases changed')
+    require(len(cases) == len(set(cases)) == 10, 'Exact local law cases changed')
     require(set(cases) == {row['case_id'] for row in manifest['cases']} ==
             {row['case_id'] for row in queue['cases']}, 'Local plan/manifest/queue cases differ')
     require(queue['execution_manifest_sha256'] == sha(manifest_path) and
@@ -73,6 +73,9 @@ def audit(folder=HERE, *, matrix=None, queue=None):
             matrix['native_capture_claimed'] is False and
             matrix['legal_judgment_claimed'] is False,
             'Selected original-source matrix identity or claim differs')
+    require(matrix['turn_case'] == folder.name + '__opposing_left_travel_subject' and
+            matrix['hold_case'] == folder.name + '__opposing_left_travel_subject',
+            'opposing-left selected source identity differs')
     require(matrix.get('arrival_timing') and matrix.get('release_timing') and
             matrix.get('turn_release_timing') and matrix.get('highway_continuity') and
             matrix.get('official_phase') and matrix.get('shallow_turn'),

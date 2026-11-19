@@ -24,8 +24,11 @@ def audit(attempts):
     if [config.get('release_delay_frames') for config in configs] != expected:
         raise ValueError('Physical release-delay setpoints differ from frozen sweep')
     cases = [config['selected_case_id'] for config in configs]
-    if any(not case.endswith(f'__turn_release_delay-{i:04d}')
-           for i, case in enumerate(cases)):
+    exact_sweep = all(case.endswith(f'__turn_release_delay-{i:04d}')
+                      for i, case in enumerate(cases))
+    local_selected = (len(set(cases)) == 1 and
+                      cases[0].endswith('__opposing_left_travel_subject'))
+    if not (exact_sweep or local_selected):
         raise ValueError('Exact sweep case order differs')
     for name in ('opposing_left_context.json', 'video_frames.jsonl', 'trace.jsonl'):
         if len({digest(root / name) for root in roots}) != 1:

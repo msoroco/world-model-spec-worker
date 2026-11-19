@@ -42,7 +42,7 @@ class QueueTests(unittest.TestCase):
         manifest = json.loads((HERE / "execution-manifest.json").read_text())
         self.assertEqual([row["case_id"] for row in queue["cases"]],
                          [row["case_id"] for row in plan["cases"]])
-        self.assertEqual([row["order"] for row in queue["cases"]], list(range(1, 10)))
+        self.assertEqual([row["order"] for row in queue["cases"]], list(range(1, 11)))
         self.assertEqual(queue["execution_manifest_sha256"], digest(HERE / "execution-manifest.json"))
         for row, entry in zip(queue["cases"], manifest["cases"]):
             self.assertEqual(set(row["candidate_commands"]),
