@@ -162,4 +162,40 @@ class DepartureTests(unittest.TestCase):
         waypoints.pop()
         with self.assertRaisesRegex(ValueError,"Opposite-direction"): selection.verify_two_directional_roads(world,1,2)
 
+    def test_saved_destination_finalizer_uses_original_sources(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp); self.fixture(root)
+            context = json.loads((root / "road_context.json").read_text())
+            context["site_source_review"] = {"centerline_kind": "marked"}
+            (root / "road_context.json").write_text(json.dumps(context))
+            case = "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__source_verified_near_centerline"
+            config = {"law_id": "NRS-484B-400-2b", "cell_id": "C109705",
+                      "actor": "motor_vehicle_driver", "selected_case_id": case,
+                      "supported_case_ids": [case],
+                      "recording_description": {"channels": [{"name": "destination_exit"}]}}
+            (root / "config.json").write_text(json.dumps(config))
+            (root / "site_packet.json").write_text(json.dumps({"centerline_kind": "marked"}))
+            rows = [json.loads(s) for s in (root / "turn_history.jsonl").read_text().splitlines()]
+            (root / "trace.jsonl").write_text("".join(json.dumps({"frame": r["frame"],
+                "time_s": r["time_s"]}) + "\n" for r in rows))
+            (root / "capture").mkdir()
+            (root / "capture/evidence.jsonl").write_text("{}\n")
+            for name in ("overview", "approach", "reference_corner", "driver_reference"):
+                (root / (name + ".mkv")).write_bytes(b"unit-test-only")
+            report = measure.finalize(root, root / "analysis-report.json")
+            self.assertFalse(report["physical_acceptance_claimed"])
+            self.assertTrue(report["measurements"]["complete_body_right_of_destination_centerline"])
+            self.assertTrue((root / "channels/destination_exit.jsonl").is_file())
+            self.assertEqual(json.loads((root / "result.json").read_text())["case_id"], case)
+            with self.assertRaisesRegex(ValueError, "fresh saved analysis"):
+                measure.finalize(root, root / "second-report.json")
+            (root / "result.json").unlink()
+            for path in (root / "channels").iterdir(): path.unlink()
+            (root / "channels").rmdir()
+            (root / "analysis-report.json").unlink()
+            self.fixture(root, exit_y=1)
+            (root / "road_context.json").write_text(json.dumps(context))
+            with self.assertRaisesRegex(ValueError, "Complete exit body crosses"):
+                measure.finalize(root, root / "analysis-report.json")
+
 if __name__ == "__main__": unittest.main()

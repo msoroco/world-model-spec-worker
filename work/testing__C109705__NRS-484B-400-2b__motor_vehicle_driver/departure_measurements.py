@@ -89,3 +89,97 @@ def analyze(root: Path) -> dict:
     return {"format": "worker-left-turn-destination-exit-observations", "sources": hashes,
             "native_road_context": ctx, "exit_sample": samples[0],
             "legal_conclusion": "unresolved pending source geometry and physical review"}
+
+
+def finalize(attempt: Path, output: Path) -> dict:
+    """Rebuild the destination exit channel from retained original sources only."""
+    from worker_exchange.native_output import physical_result, write_result
+
+    attempt, output = Path(attempt), Path(output)
+    if output.exists() or (attempt / "result.json").exists() or (attempt / "channels").exists():
+        raise ValueError("Use fresh saved analysis output and retain original evidence")
+    required = ("config.json", "site_packet.json", "road_context.json", "turn_history.jsonl",
+                "video_frames.jsonl", "trace.jsonl", "capture/evidence.jsonl",
+                "overview.mkv", "approach.mkv", "reference_corner.mkv", "driver_reference.mkv")
+    for name in required:
+        if not (attempt / name).is_file():
+            raise ValueError("Missing required source: " + name)
+    config = json.loads((attempt / "config.json").read_text())
+    packet = json.loads((attempt / "site_packet.json").read_text())
+    case = config.get("selected_case_id")
+    prefix = "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__source_verified_"
+    if not isinstance(case, str) or not case.startswith(prefix) or case not in config.get("supported_case_ids", []):
+        raise ValueError("Exact saved C109705(2b) case identity differs")
+    if (config.get("law_id"), config.get("cell_id"), config.get("actor")) != (
+            "NRS-484B-400-2b", "C109705", "motor_vehicle_driver"):
+        raise ValueError("Exact saved law, cell or actor differs")
+    expected_kind = "imaginary" if "imaginary_" in case else "marked"
+    if packet.get("centerline_kind") != expected_kind:
+        raise ValueError("Selected case destination centerline kind differs")
+    observations = analyze(attempt)
+    context, sample = observations["native_road_context"], observations["exit_sample"]
+    if context.get("site_source_review", {}).get("centerline_kind") != expected_kind:
+        raise ValueError("Saved road context centerline review differs")
+    if not sample["complete_body_right_of_destination_centerline"]:
+        raise ValueError("Complete exit body crosses destination centerline or right-half boundary")
+    frames, trace = _rows(attempt / "video_frames.jsonl"), _rows(attempt / "trace.jsonl")
+    if len(trace) != len(frames) or any(
+            row.get("frame") != frame.get("carla_frame") or row.get("time_s") != frame.get("time_s")
+            for row, frame in zip(trace, frames)):
+        raise ValueError("Original trace/frame join differs")
+    sources = {name: hashlib.sha256((attempt / name).read_bytes()).hexdigest() for name in required}
+    measured = {"destination_centerline_kind": expected_kind,
+                "exit_frame": sample["frame"], "exit_time_s": sample["time_s"],
+                "complete_body_right_of_destination_centerline": True,
+                "body_centroid_distance_to_centerline_m": sample["body_centroid_distance_to_centerline_m"],
+                "minimum_vertex_distance_to_centerline_m": sample["minimum_vertex_distance_to_centerline_m"],
+                "legal_conclusion": "unresolved"}
+    channels = attempt / "channels"
+    channels.mkdir()
+    (channels / "destination_exit_context.json").write_text(json.dumps({
+        "case_id": case, "measured_values": measured, "source_evidence_hashes": sources,
+        "legal_conclusion": "unresolved"}, indent=2, allow_nan=False) + "\n")
+    (channels / "destination_exit.jsonl").write_text(json.dumps({
+        "time_s": sample["time_s"], "value": sample}, allow_nan=False) + "\n")
+    description = config.get("recording_description")
+    if not isinstance(description, dict):
+        raise ValueError("Saved recording description missing")
+    result = {"case_id": case, "measured_values": measured,
+              "target_checks": [{"target": "complete_body_right_of_destination_centerline",
+                                 "requested": True, "measured": True,
+                                 "method": "original frame joined full-body polygon against sourced destination line and right half",
+                                 "tolerance": 0, "matched": True,
+                                 "physical_cause_confirmed": False,
+                                 "cause_evidence": ["road_context.json", "turn_history.jsonl", "video_frames.jsonl"]}],
+              "setup_confirmed": False, "behavior_attempted": False, "maneuver_completed": False,
+              "termination_reason": "Saved original-source analysis; physical and legal review pending",
+              "physical_failure_flags": ["actual Native motion and camera visibility not independently accepted"],
+              "trace_reference": "trace.jsonl",
+              "video_references": [name + ".mkv" for name in
+                                   ("overview", "approach", "reference_corner", "driver_reference")],
+              "video_frame_map_reference": "video_frames.jsonl",
+              "recording_description": description,
+              "recording_evidence": [{"name": "destination_exit_context", "unit": "structured record",
+                                      "reference": "channels/destination_exit_context.json"},
+                                     {"name": "destination_exit", "unit": "structured record",
+                                      "reference": "channels/destination_exit.jsonl"}],
+              "source_evidence_hashes": sources,
+              "capture_evidence_sha256": sources["capture/evidence.jsonl"],
+              "realized_observables": {}}
+    result = physical_result(attempt, result)
+    write_result(attempt, result)
+    report = {"format": "worker-c109705-destination-saved-analysis", "case_id": case,
+              "measurements": measured, "sources": sources,
+              "physical_acceptance_claimed": False, "legal_acceptance_claimed": False}
+    output.write_text(json.dumps(report, indent=2, allow_nan=False) + "\n")
+    return report
+
+
+if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--attempt", type=Path, required=True)
+    parser.add_argument("--output", type=Path, required=True)
+    args = parser.parse_args()
+    print(json.dumps({"case_id": finalize(args.attempt, args.output)["case_id"],
+                      "physical_acceptance_claimed": False}))
