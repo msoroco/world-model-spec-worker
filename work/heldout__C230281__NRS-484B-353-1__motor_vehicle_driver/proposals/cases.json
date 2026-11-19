@@ -1,13 +1,13 @@
 {
   "cell_id": "C230281",
   "actor": "motor_vehicle_driver",
-  "status": "draft_four_cases",
+  "status": "draft",
   "cases": [
     {
-      "case_id": "heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__meeting_stop",
-      "target_law_id": "NRS-484B-353-1",
-      "target_type": "boundary_probe",
-      "rationale": "First exact meeting-stop construction: stopped bus with requested pupil service and commanded red signal; source candidates remain physically unverified.",
+      "case_id": "heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__semantic_baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared semantic reference for eight selected school-bus variants; not an additional recording or legal result.",
       "variable_assignments": {
         "approach_direction": {
           "kind": "world_setup",
@@ -22,7 +22,7 @@
           "value": "commanded_flashing_red"
         },
         "subject_response": {
-          "kind": "subject_behavior",
+          "kind": "controller",
           "value": "requested_stop_until_signal_ceases"
         },
         "divided_other_roadway": {
@@ -197,6 +197,208 @@
       }
     },
     {
+      "case_id": "heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__meeting_stop",
+      "target_law_id": "NRS-484B-353-1",
+      "target_type": "boundary_probe",
+      "rationale": "First exact meeting-stop construction: stopped bus with requested pupil service and commanded red signal; source candidates remain physically unverified.",
+      "variable_assignments": {
+        "approach_direction": {
+          "kind": "world_setup",
+          "value": "meeting"
+        },
+        "bus_stop_context": {
+          "kind": "world_setup",
+          "value": "requested_receiving_pupil"
+        },
+        "red_signal": {
+          "kind": "controller",
+          "value": "commanded_flashing_red"
+        },
+        "subject_response": {
+          "kind": "controller",
+          "value": "requested_stop_until_signal_ceases"
+        },
+        "divided_other_roadway": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "traffic_officer_control": {
+          "kind": "world_setup",
+          "value": false
+        }
+      },
+      "unresolved_judgment_calls": [
+        "immediate stop",
+        "required school-bus signs and signals",
+        "visible from front and rear",
+        "stopped to receive or discharge a pupil"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "subject_speed_mps",
+            "unit": "m/s",
+            "method": "original actor velocity and canonical frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "full eight-second capture",
+            "reference_frame": "world",
+            "uncertainty": "Native velocity readback"
+          },
+          {
+            "name": "school_bus_red_pixel_candidates",
+            "unit": "structured",
+            "method": "original front/rear FFV1 pixels joined to original signal commands",
+            "sampling_rate_hz": 20,
+            "time_window": "red onset through cessation",
+            "reference_frame": "front/rear camera pixel coordinates",
+            "uncertainty": "ROI lamp identity and legal visibility require review"
+          },
+          {
+            "name": "pupil_service_motion_candidate",
+            "unit": "m",
+            "method": "original walker/bus positions and velocity",
+            "sampling_rate_hz": 20,
+            "time_window": "bus stop interval",
+            "reference_frame": "bus actor",
+            "uncertainty": "walker purpose and identity require review"
+          },
+          {
+            "name": "ru.school_bus",
+            "unit": "structured",
+            "method": "retained original actor, road, signal and camera sources; interpretation pending",
+            "sampling_rate_hz": 20,
+            "time_window": "full eight-second capture",
+            "reference_frame": "Native world and four synchronized cameras",
+            "uncertainty": "physical and semantic review pending"
+          },
+          {
+            "name": "dev.school_bus_signal",
+            "unit": "structured",
+            "method": "retained original actor, road, signal and camera sources; interpretation pending",
+            "sampling_rate_hz": 20,
+            "time_window": "full eight-second capture",
+            "reference_frame": "Native world and four synchronized cameras",
+            "uncertainty": "physical and semantic review pending"
+          },
+          {
+            "name": "drv.stopped",
+            "unit": "structured",
+            "method": "retained original actor, road, signal and camera sources; interpretation pending",
+            "sampling_rate_hz": 20,
+            "time_window": "full eight-second capture",
+            "reference_frame": "Native world and four synchronized cameras",
+            "uncertainty": "physical and semantic review pending"
+          },
+          {
+            "name": "ru.child",
+            "unit": "structured",
+            "method": "retained original actor, road, signal and camera sources; interpretation pending",
+            "sampling_rate_hz": 20,
+            "time_window": "full eight-second capture",
+            "reference_frame": "Native world and four synchronized cameras",
+            "uncertainty": "physical and semantic review pending"
+          },
+          {
+            "name": "drv.meeting",
+            "unit": "structured",
+            "method": "retained original actor, road, signal and camera sources; interpretation pending",
+            "sampling_rate_hz": 20,
+            "time_window": "full eight-second capture",
+            "reference_frame": "Native world and four synchronized cameras",
+            "uncertainty": "physical and semantic review pending"
+          },
+          {
+            "name": "drv.overtaking",
+            "unit": "structured",
+            "method": "retained original actor, road, signal and camera sources; interpretation pending",
+            "sampling_rate_hz": 20,
+            "time_window": "full eight-second capture",
+            "reference_frame": "Native world and four synchronized cameras",
+            "uncertainty": "physical and semantic review pending"
+          },
+          {
+            "name": "rel.same_direction",
+            "unit": "structured",
+            "method": "retained original actor, road, signal and camera sources; interpretation pending",
+            "sampling_rate_hz": 20,
+            "time_window": "full eight-second capture",
+            "reference_frame": "Native world and four synchronized cameras",
+            "uncertainty": "physical and semantic review pending"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "method": "retained original actor, road, signal and camera sources; interpretation pending",
+            "sampling_rate_hz": 20,
+            "time_window": "full eight-second capture",
+            "reference_frame": "Native world and four synchronized cameras",
+            "uncertainty": "physical and semantic review pending"
+          },
+          {
+            "name": "st.median_or_divider",
+            "unit": "structured",
+            "method": "retained original actor, road, signal and camera sources; interpretation pending",
+            "sampling_rate_hz": 20,
+            "time_window": "full eight-second capture",
+            "reference_frame": "Native world and four synchronized cameras",
+            "uncertainty": "physical and semantic review pending"
+          },
+          {
+            "name": "st.roadway",
+            "unit": "structured",
+            "method": "retained original actor, road, signal and camera sources; interpretation pending",
+            "sampling_rate_hz": 20,
+            "time_window": "full eight-second capture",
+            "reference_frame": "Native world and four synchronized cameras",
+            "uncertainty": "physical and semantic review pending"
+          },
+          {
+            "name": "dev.human_direction",
+            "unit": "structured",
+            "method": "retained original actor, road, signal and camera sources; interpretation pending",
+            "sampling_rate_hz": 20,
+            "time_window": "full eight-second capture",
+            "reference_frame": "Native world and four synchronized cameras",
+            "uncertainty": "physical and semantic review pending"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "bus_subject_identity",
+            "unit": "structured",
+            "method": "original motion actor IDs; physical identity pending"
+          },
+          {
+            "name": "opposing_road_lane_identity",
+            "unit": "structured",
+            "method": "original road source hash; lane relationship pending"
+          },
+          {
+            "name": "pupil_purpose",
+            "unit": "structured",
+            "method": "original pupil actor and requested purpose; actual purpose pending"
+          },
+          {
+            "name": "signal_and_camera_sources",
+            "unit": "structured",
+            "method": "original signal and four source-camera hashes; actual pixels pending"
+          }
+        ],
+        "limitations": [
+          "bus equipment, lamp identity, pupil purpose, undivided roadway and actual visibility remain unverified"
+        ]
+      },
+      "paired_probe_id": "meeting_stop_vs_pass",
+      "deliberate_differences": [
+        "subject_response"
+      ],
+      "probe": {
+        "primary_variable": "subject_response",
+        "comparison_or_standard": "meeting_stop_vs_pass",
+        "target_value_or_branch": "requested_stop_until_signal_ceases"
+      }
+    },
+    {
       "case_id": "heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__meeting_restart_before_red_ceases",
       "target_law_id": "NRS-484B-353-1",
       "target_type": "boundary_probe",
@@ -215,7 +417,7 @@
           "value": "commanded_flashing_red"
         },
         "subject_response": {
-          "kind": "subject_behavior",
+          "kind": "controller",
           "value": "requested_stop_then_restart_during_red"
         },
         "divided_other_roadway": {
@@ -387,6 +589,15 @@
         "limitations": [
           "bus equipment, lamp identity, pupil purpose, undivided roadway and actual visibility remain unverified"
         ]
+      },
+      "paired_probe_id": "premature_restart_during_red",
+      "deliberate_differences": [
+        "subject_response"
+      ],
+      "probe": {
+        "primary_variable": "subject_response",
+        "comparison_or_standard": "premature_restart_during_red",
+        "target_value_or_branch": "requested_stop_then_restart_during_red"
       }
     },
     {
@@ -408,7 +619,7 @@
           "value": "commanded_flashing_red"
         },
         "subject_response": {
-          "kind": "subject_behavior",
+          "kind": "controller",
           "value": "requested_pass_during_commanded_red"
         },
         "divided_other_roadway": {
@@ -580,6 +791,15 @@
         "limitations": [
           "bus equipment, lamp identity, pupil purpose, undivided roadway and actual visibility remain unverified"
         ]
+      },
+      "paired_probe_id": "meeting_stop_vs_pass",
+      "deliberate_differences": [
+        "subject_response"
+      ],
+      "probe": {
+        "primary_variable": "subject_response",
+        "comparison_or_standard": "meeting_stop_vs_pass",
+        "target_value_or_branch": "requested_pass_during_commanded_red"
       }
     },
     {
@@ -601,7 +821,7 @@
           "value": "commanded_flashing_red"
         },
         "subject_response": {
-          "kind": "subject_behavior",
+          "kind": "controller",
           "value": "requested_stop_during_commanded_red"
         },
         "divided_other_roadway": {
@@ -755,7 +975,7 @@
             "method": "original motion actor IDs; physical identity pending"
           },
           {
-            "name": "opposing_road_lane_identity",
+            "name": "same_direction_adjacent_lane_identity",
             "unit": "structured",
             "method": "original road source hash; lane relationship pending"
           },
@@ -773,6 +993,15 @@
         "limitations": [
           "bus equipment, lamp identity, pupil purpose, undivided roadway and actual visibility remain unverified"
         ]
+      },
+      "paired_probe_id": "overtaking_stop_vs_pass",
+      "deliberate_differences": [
+        "subject_response"
+      ],
+      "probe": {
+        "primary_variable": "subject_response",
+        "comparison_or_standard": "overtaking_stop_vs_pass",
+        "target_value_or_branch": "requested_stop_during_commanded_red"
       }
     },
     {
@@ -794,7 +1023,7 @@
           "value": "commanded_flashing_red"
         },
         "subject_response": {
-          "kind": "subject_behavior",
+          "kind": "controller",
           "value": "requested_pass_during_commanded_red"
         },
         "divided_other_roadway": {
@@ -950,7 +1179,7 @@
           {
             "name": "same_direction_adjacent_lane_identity",
             "unit": "structured",
-            "method": "original road source hash; same-direction lane relationship pending"
+            "method": "original road source hash; lane relationship pending"
           },
           {
             "name": "pupil_purpose",
@@ -966,6 +1195,15 @@
         "limitations": [
           "bus equipment, lamp identity, pupil purpose, undivided roadway and actual visibility remain unverified"
         ]
+      },
+      "paired_probe_id": "overtaking_stop_vs_pass",
+      "deliberate_differences": [
+        "subject_response"
+      ],
+      "probe": {
+        "primary_variable": "subject_response",
+        "comparison_or_standard": "overtaking_stop_vs_pass",
+        "target_value_or_branch": "requested_pass_during_commanded_red"
       }
     },
     {
@@ -987,7 +1225,7 @@
           "value": "commanded_flashing_red"
         },
         "subject_response": {
-          "kind": "subject_behavior",
+          "kind": "controller",
           "value": "requested_pass_during_commanded_red"
         },
         "divided_other_roadway": {
@@ -1157,9 +1395,17 @@
           }
         ],
         "limitations": [
-          "bus equipment, lamp identity, pupil purpose, undivided roadway and actual visibility remain unverified",
-          "distinct Native road IDs and lateral gap do not prove a physical divided-highway exception"
+          "bus equipment, lamp identity, pupil purpose, undivided roadway and actual visibility remain unverified"
         ]
+      },
+      "paired_probe_id": "divided_other_roadway_exception",
+      "deliberate_differences": [
+        "divided_other_roadway"
+      ],
+      "probe": {
+        "primary_variable": "divided_other_roadway",
+        "comparison_or_standard": "divided_other_roadway_exception",
+        "target_value_or_branch": "True"
       }
     },
     {
@@ -1181,7 +1427,7 @@
           "value": "commanded_flashing_red"
         },
         "subject_response": {
-          "kind": "subject_behavior",
+          "kind": "controller",
           "value": "requested_pass_during_commanded_red"
         },
         "divided_other_roadway": {
@@ -1351,9 +1597,17 @@
           }
         ],
         "limitations": [
-          "bus equipment, lamp identity, pupil purpose, undivided roadway and actual visibility remain unverified",
-          "authored officer pass direction and actor readback do not prove actual physical traffic control"
+          "bus equipment, lamp identity, pupil purpose, undivided roadway and actual visibility remain unverified"
         ]
+      },
+      "paired_probe_id": "officer_control_exception",
+      "deliberate_differences": [
+        "traffic_officer_control"
+      ],
+      "probe": {
+        "primary_variable": "traffic_officer_control",
+        "comparison_or_standard": "officer_control_exception",
+        "target_value_or_branch": "True"
       }
     },
     {
@@ -1375,7 +1629,7 @@
           "value": "commanded_flashing_red"
         },
         "subject_response": {
-          "kind": "subject_behavior",
+          "kind": "controller",
           "value": "requested_stop_hold_until_red_ceases_then_resume"
         },
         "divided_other_roadway": {
@@ -1547,9 +1801,79 @@
         "limitations": [
           "bus equipment, lamp identity, pupil purpose, undivided roadway and actual visibility remain unverified"
         ]
+      },
+      "paired_probe_id": "red_cessation_restart",
+      "deliberate_differences": [
+        "subject_response"
+      ],
+      "probe": {
+        "primary_variable": "subject_response",
+        "comparison_or_standard": "red_cessation_restart",
+        "target_value_or_branch": "requested_stop_hold_until_red_ceases_then_resume"
       }
     }
   ],
-  "sweep_specs": [],
+  "sweep_specs": [
+    {
+      "sweep_id": "c230281-judgment-1",
+      "target_law_id": "NRS-484B-353-1",
+      "judgment_refs": [
+        {
+          "phrase": "immediate stop",
+          "note": "The statute gives no numerical reaction interval; preserve onset and stopped-body motion without a legal cutoff."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Preserve exact source evidence for an unresolved statutory judgment.",
+      "missing_inputs": [
+        "No sourced numeric judgment range or legal cutoff is supplied; exact planned cases are finite engineering comparisons."
+      ]
+    },
+    {
+      "sweep_id": "c230281-judgment-2",
+      "target_law_id": "NRS-484B-353-1",
+      "judgment_refs": [
+        {
+          "phrase": "required school-bus signs and signals",
+          "note": "Requested bus blueprint and signal commands do not prove legally required equipment."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Preserve exact source evidence for an unresolved statutory judgment.",
+      "missing_inputs": [
+        "No sourced numeric judgment range or legal cutoff is supplied; exact planned cases are finite engineering comparisons."
+      ]
+    },
+    {
+      "sweep_id": "c230281-judgment-3",
+      "target_law_id": "NRS-484B-353-1",
+      "judgment_refs": [
+        {
+          "phrase": "visible from front and rear",
+          "note": "Commanded red lights do not prove physical front and rear pixel visibility."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Preserve exact source evidence for an unresolved statutory judgment.",
+      "missing_inputs": [
+        "No sourced numeric judgment range or legal cutoff is supplied; exact planned cases are finite engineering comparisons."
+      ]
+    },
+    {
+      "sweep_id": "c230281-judgment-4",
+      "target_law_id": "NRS-484B-353-1",
+      "judgment_refs": [
+        {
+          "phrase": "stopped to receive or discharge a pupil",
+          "note": "A walker near a stopped bus does not establish pupil identity or purpose."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Preserve exact source evidence for an unresolved statutory judgment.",
+      "missing_inputs": [
+        "No sourced numeric judgment range or legal cutoff is supplied; exact planned cases are finite engineering comparisons."
+      ]
+    }
+  ],
   "sweeps_expanded": true
 }

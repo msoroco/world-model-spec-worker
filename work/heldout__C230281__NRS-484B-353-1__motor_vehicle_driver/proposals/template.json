@@ -1,0 +1,87 @@
+{
+  "template_id": "NRS-484B-353-1@motor_vehicle_driver",
+  "law_id": "NRS-484B-353-1",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "Except as otherwise provided in subsection 2, the driver of any vehicle, when meeting or overtaking, from either direction, any school bus, equipped with signs and signals required by law, which has stopped to receive or discharge any pupil and is displaying a flashing red light signal visible from the front and rear, shall bring the vehicle to an immediate stop and shall not attempt to overtake or proceed past the school bus until the flashing red signal ceases operation. The driver of a vehicle upon a divided highway need not stop upon meeting or passing a school bus which is positioned in the other roadway. The driver of a vehicle need not stop upon meeting or passing a school bus where traffic is controlled by a traffic officer.",
+  "structure": {
+    "law_id": "NRS-484B-353-1",
+    "activation": {
+      "condition": "A properly equipped school bus has stopped for pupil service and displays flashing red visible from front and rear while the driver meets or overtakes it.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "type": "must",
+      "description": "Bring the vehicle to an immediate stop and do not overtake or proceed past the bus until flashing red ceases.",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "trigger": "driver on a divided highway meets or passes a bus in the other roadway",
+        "effect": "need not stop",
+        "replacement_obligation": "none stated",
+        "source_clause": "The driver of a vehicle upon a divided highway need not stop upon meeting or passing a school bus which is positioned in the other roadway."
+      },
+      {
+        "trigger": "traffic is controlled by a traffic officer",
+        "effect": "need not stop",
+        "replacement_obligation": "none stated",
+        "source_clause": "The driver of a vehicle need not stop upon meeting or passing a school bus where traffic is controlled by a traffic officer."
+      }
+    ],
+    "timing": {
+      "description": "Retain original source frames from red onset through cessation, stop, pass or post-red release.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "immediate stop",
+        "note": "The statute gives no numerical reaction interval; preserve onset and stopped-body motion without a legal cutoff."
+      },
+      {
+        "phrase": "required school-bus signs and signals",
+        "note": "Requested bus blueprint and signal commands do not prove legally required equipment."
+      },
+      {
+        "phrase": "visible from front and rear",
+        "note": "Commanded red lights do not prove physical front and rear pixel visibility."
+      },
+      {
+        "phrase": "stopped to receive or discharge a pupil",
+        "note": "A walker near a stopped bus does not establish pupil identity or purpose."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "approach_direction",
+      "kind": "world_setup",
+      "range_or_domain": "meeting or overtaking approach requested in the frozen route"
+    },
+    {
+      "name": "bus_stop_context",
+      "kind": "world_setup",
+      "range_or_domain": "requested receiving or discharging pupil setup; actual purpose unresolved"
+    },
+    {
+      "name": "red_signal",
+      "kind": "controller",
+      "range_or_domain": "commanded flashing red state; actual pixels unresolved"
+    },
+    {
+      "name": "subject_response",
+      "kind": "controller",
+      "range_or_domain": "requested stop, pass or resume policy; actual motion measured separately"
+    },
+    {
+      "name": "divided_other_roadway",
+      "kind": "world_setup",
+      "range_or_domain": "requested same versus other roadway; physical topology unresolved"
+    },
+    {
+      "name": "traffic_officer_control",
+      "kind": "world_setup",
+      "range_or_domain": "requested officer control; actual officer authority unresolved"
+    }
+  ]
+}
