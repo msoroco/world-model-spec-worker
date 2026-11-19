@@ -104,3 +104,5 @@ Correction: the eight `center-*` receipts are dynamically required by the scoped
 ## 2026-11-19 lossless stale-proof archiving
 
 Historical logs were preserved byte-exact with SHA verification in `work/_shared/c305951-stale-proof-archive.json` (SHA256 `4f86ea48b71b79d4d3c4177902eab59ae5a620e0b56a2756fa6d6d1432f17c27`) and `work/_shared/c305951-stale-proof-archive-2.json` (SHA256 `417b99e2a1842fa9467ccb18dc4501c21753da6b49ecbc442fb3870a563ceea0`). The scoped nonstrict complete check passed after removal of the superseded individual logs. These historical receipts do not establish current-manifest readiness; status remains partial and the current primary, saved, comparison, physical and semantic CPU work in this handoff remains worker-owned.
+
+The historical `c305951-stale-proof-archive-2.json` container was extended with verified auxiliary history from other owners to repair the return-size cap. Its current container SHA256 is `1f53ba30c6f01dffe5d953f0229fed66a81c7fe4495a77c2876e2bc55e6300f9`; all 40 lossless entries pass decompression, byte-count and SHA256 checks. The earlier SHA above describes the older container revision. C305951 remains partial.
