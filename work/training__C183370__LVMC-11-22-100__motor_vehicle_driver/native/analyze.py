@@ -34,9 +34,12 @@ def analyze_rows(frames, actors, readback):
     source_frames = []
     times = []
     for index, (frame, actor) in enumerate(zip(frames, actors)):
-        if frame['index'] != index or actor['video_frame'] != index or actor['frame'] != frame['frame']:
+        if (frame['video_frame'] != index or actor['video_frame'] != index or
+                actor['frame'] != frame['carla_frame'] or
+                frame['native_frame'] != frame['carla_frame'] or
+                actor.get('time_s') != frame['time_s']):
             raise ValueError('Original actor/video frame join differs')
-        native_frame, time = frame['frame'], frame['time_s']
+        native_frame, time = frame['carla_frame'], frame['time_s']
         if type(native_frame) is not int or type(time) not in (int, float) or not isfinite(time):
             raise ValueError('Original frame/time identity invalid')
         if source_frames and (native_frame <= source_frames[-1] or
@@ -124,7 +127,8 @@ def analyze(attempt):
     media = verify_media(attempt, len(frames))
     source_hashes = {name: sha(attempt/name) for name in
                      ('capture-receipt.json','live-readback.json','video_frames.jsonl',
-                      'native-actors.jsonl','road.xodr')}
+                      'native-actors.jsonl','road.xodr','trace.jsonl',
+                      'acquisition-provenance.json','config.json')}
     result = {'format': 'c183370-original-source-analysis-v1',
               'source_kind': 'original_carla_capture',
               'case': case, 'source_hashes': source_hashes,

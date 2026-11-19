@@ -13,6 +13,7 @@ from math import atan2, degrees, hypot
 from pathlib import Path
 
 from live_readback import bind
+from recording_contract import config as recording_config
 from route_control import RouteControl
 
 CAMERAS = (
@@ -138,6 +139,8 @@ def acquire(survey, case, attempt, client, carla, *, sink_factory=FFV1Sink):
     attempt.mkdir(parents=True)
     (attempt/'live-readback.json').write_text(json.dumps(readback, indent=2)+'\n')
     (attempt/'road.xodr').write_text(world.get_map().to_opendrive())
+    (attempt/'config.json').write_text(json.dumps(
+        recording_config(case, survey['frames']), indent=2)+'\n')
     callbacks = {name: queue.Queue() for name, *_ in CAMERAS}
     controller = RouteControl(route)
     prior_frame = -1
@@ -153,7 +156,8 @@ def acquire(survey, case, attempt, client, carla, *, sink_factory=FFV1Sink):
         for name, width, height, *_ in CAMERAS:
             sinks[name] = sink_factory(attempt/(name+'.mkv'), width, height)
         with (attempt/'native-actors.jsonl').open('x') as actors, \
-             (attempt/'video_frames.jsonl').open('x') as frames:
+             (attempt/'video_frames.jsonl').open('x') as frames, \
+             (attempt/'trace.jsonl').open('x') as trace:
             for index in range(survey['frames']):
                 pose = ego.get_transform()
                 velocity = ego.get_velocity()
@@ -176,11 +180,25 @@ def acquire(survey, case, attempt, client, carla, *, sink_factory=FFV1Sink):
                 if timestamp <= prior_time:
                     raise ValueError('Original CARLA time did not advance')
                 prior_time = timestamp
-                frames.write(json.dumps({'index': index, 'frame': frame,
+                frames.write(json.dumps({'video_frame': index,
+                                         'carla_frame': frame,
+                                         'native_frame': frame,
                                          'time_s': timestamp})+'\n')
                 observed = sample(world, carla, ego, person, command)
                 actors.write(json.dumps(dict(observed, frame=frame,
-                                             video_frame=index), allow_nan=False)+'\n')
+                                             video_frame=index,
+                                             time_s=timestamp), allow_nan=False)+'\n')
+                trace.write(json.dumps({
+                    'frame': frame, 'time_s': timestamp,
+                    'position_m': observed['ego_position_xyz_m'][:2],
+                    'position': dict(zip(('x','y','z'),observed['ego_position_xyz_m'])),
+                    'heading_deg': observed['ego_yaw_deg'],
+                    'speed_mps': observed['ego_speed_mps'],
+                    'speed_mph': observed['ego_speed_mps']/.44704,
+                    'velocity_mps': observed['ego_velocity_xyz_mps'],
+                    'speed_provenance': 'original_carla_velocity',
+                    'control': command,
+                }, allow_nan=False)+'\n')
     finally:
         active_error = sys.exc_info()[0] is not None
         errors = []
@@ -214,10 +232,16 @@ def acquire(survey, case, attempt, client, carla, *, sink_factory=FFV1Sink):
     receipt = {'source_frames': survey['frames'], 'capture_rate_hz': 20,
                'case': case, 'four_cameras': [name+'.mkv' for name, *_ in CAMERAS],
                'frame_map': 'video_frames.jsonl', 'actor_rows': 'native-actors.jsonl',
-               'map': 'road.xodr', 'source_kind': 'original_carla_capture',
+               'map': 'road.xodr', 'trace': 'trace.jsonl',
+               'source_kind': 'original_carla_capture',
                'physical_completion_claimed': False,
                'warning_act_verified': False}
     (attempt/'capture-receipt.json').write_text(json.dumps(receipt, indent=2)+'\n')
+    (attempt/'acquisition-provenance.json').write_text(json.dumps({
+        'provenance_kind': 'native', 'diagnostic_fixture': False,
+        'source': 'live_carla_synchronous_20hz',
+        'physical_acceptance_claimed': False,
+    }, indent=2)+'\n')
     return receipt
 
 

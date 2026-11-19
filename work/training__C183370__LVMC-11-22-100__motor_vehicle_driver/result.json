@@ -8,7 +8,7 @@
     "controller_sha256": "4516ee8dd402ec26e75e34fbb945279b8803b97671d231460ef88aaf59aecfdd",
     "minimum_source_frames": 600,
     "path": "native/capture.py",
-    "sha256": "89bc4b5c6411487e3d0fc54204c63b4d91e245b4677db483e12bcb3cc86187e9",
+    "sha256": "901f39dd0b1f17b02f5c3ed0ccb811a20d2e6841b4ef8d9be643e13ee8bfdaf1",
     "status": "cpu_unit_tested_not_carla_executed"
   },
   "carla_executed": false,
@@ -24,8 +24,16 @@
     "sha256": "e09839042e37eb66bb32bd756f0868ed6d6c87f473275889c0ae10baea1006b3",
     "status": "cpu_mock_tested_live_preflight"
   },
+  "native_finalizer_component": {
+    "derived_channels": 4,
+    "path": "native/finalize.py",
+    "recording_contract_sha256": "30fbbed2dae659a1eda5ab693d7299af1935da1f14fdc8c1b970f537f37480e6",
+    "selected_manifest_bound": false,
+    "sha256": "7bc3757a27f9a6115f0c882368fbb063c7ecf52bb481684997d62368af45bef0",
+    "status": "cpu_unit_tested_not_native_executed"
+  },
   "readiness_kind": null,
-  "reason": "C183370 now has source-surveyed scene validation, live CARLA preflight, a deterministic route controller, four-camera 600-frame acquisition, and a source-only analyzer for 20 Hz frame/video joins, ego body contact with the planned repair polygon and warning-person presence. CPU tests and pinned preflight pass, but no CARLA capture or final Native result exists. Person warning, newly repaired surface and employee exception remain unverified; exact selected semantic/execution cases, primary plus three fallback proofs per case, independent acceptance/comparison audits and scoped strict remain worker-owned. No legal/physical acceptance or selected case is claimed.",
+  "reason": "C183370 has a source-surveyed scene, live CARLA preflight, route controller, four-camera 600-frame capture, source-only analyzer and draft Native result finalizer. The finalizer derives four channels from original actor/frame sources and passes the pinned Native result schema in CPU tests. No CARLA capture or exact selected execution chain has run. Human warning, actual newly repaired surface and paving-employee exception remain unverified; semantic/execution selection, primary and three fallback current-runtime proofs for both cases, independent physical/delivery/comparison audits and scoped strict remain worker-owned. No legal or physical acceptance claimed.",
   "recordings_accepted": 0,
   "scene_plan_component": {
     "path": "native/scene_plan.py",
@@ -39,7 +47,7 @@
     "legal_acceptance_claimed": false,
     "minimum_source_frames": 600,
     "path": "native/analyze.py",
-    "sha256": "800e5c5141a4aa16ea7a7e4a1bebf9e3d0a82a342355668d2968df045765ed71",
+    "sha256": "9326e19d08cbd9fad9fed3d03685042edf292b792cc7f869b4df4c30d1ed05c1",
     "status": "cpu_unit_tested_not_native_executed"
   },
   "status": "partial",
@@ -138,6 +146,30 @@
       "command": ".venv-cpu/bin/python worker_check.py --assignment training__C183370__LVMC-11-22-100__motor_vehicle_driver --complete --require-delivery-ready",
       "exit_code": 1,
       "log": "update099-scoped-strict.log",
+      "sha256": "f105b68de8bd7bbb3e9bdfade14e75a9b56640cac7ca657a4ce02c3efba457fe"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/native -p test_*.py",
+      "exit_code": 0,
+      "log": "update100-tests.log",
+      "sha256": "9176be8aabb6ee8e0d15324193f63b660ac967e102f3ae99b42203726f0ee794"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "update100-preflight.log",
+      "sha256": "35d915c9ee8c70565a4ae2cff67ba47788283fbe64c04855bef565c09d28e9e8"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment training__C183370__LVMC-11-22-100__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "update100-scoped-static.log",
+      "sha256": "f51190cce71609027471d21ae37b0316aa9f907810e09874e885673db6c9c32c"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment training__C183370__LVMC-11-22-100__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "update100-scoped-strict.log",
       "sha256": "f105b68de8bd7bbb3e9bdfade14e75a9b56640cac7ca657a4ce02c3efba457fe"
     }
   ]

@@ -14,8 +14,10 @@ def source_rows(count=600):
         x = -5 if index < 300 else 0
         vertices = [[x+dx,dy,z] for z in (0, 1)
                     for dx,dy in ((-.5,-.5),(.5,-.5),(.5,.5),(-.5,.5))]
-        frames.append({'index':index,'frame':100+index,'time_s':index*.05})
+        frames.append({'video_frame':index,'carla_frame':100+index,
+                       'native_frame':100+index,'time_s':index*.05})
         actors.append({'video_frame':index,'frame':100+index,
+            'time_s':index*.05,
             'source_kind':'original_carla_actor_and_map_readback',
             'warning_person_actor_id':12,
             'warning_person_type_id':'walker.pedestrian.0001',
