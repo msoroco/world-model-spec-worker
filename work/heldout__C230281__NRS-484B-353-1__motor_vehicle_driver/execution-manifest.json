@@ -356,7 +356,92 @@
         "status": "physical",
         "reason": "Native same-direction adjacent-lane relation, bus lamps and pupil purpose require source review; fallback constructions pending."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-overtaking-stop-fallback1.json",
+          "construction_sha256": "5923bfa565849b5484c5aed3d1102b7168d651bb80a40cd506ddd46dcdf5f627",
+          "trigger": {
+            "source": "Native map waypoint inventory",
+            "metric": "same-direction nonjunction route pair available at 4 m sampling",
+            "failure_condition": "No valid same-road overtaking nonjunction pair at 4 m sampling"
+          },
+          "changed_knobs": [
+            "waypoint_sample_step_m"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C230281__NRS-484B-353-1__motor_vehicle_driver/execution-manifest.json --case heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__overtaking_stop --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-overtaking-stop-fallback-returned/fallback1-offline",
+            "exit_code": 0,
+            "log": "overtaking-stop-fallback1-offline.log",
+            "log_sha256": "66be7f7a1ac1435fb9426cb5bc15771d8bd1741d99fa6f55a3b71d9f52d763ee",
+            "construction_sha256": "5923bfa565849b5484c5aed3d1102b7168d651bb80a40cd506ddd46dcdf5f627"
+          },
+          "compatibility": {
+            "receipt": "overtaking-stop-fallback1-compatibility.json",
+            "sha256": "04f7471ca8301e711838f310364e29a4bb8a00d888adf49fe44cb95c18343dfe",
+            "log": "meeting_stop-fallback1-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "overtaking-stop-fallback1-negative.log",
+            "negative_log_sha256": "b9bfe4316796fa8beeb0c5f04e85500027644dcc32802adac7cd6e3a52eb5a5e"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-overtaking-stop-fallback2.json",
+          "construction_sha256": "fd14687b246d18dc9e9f6f62fe97f373d3e7dbbcf0f97ab5f99996868284b1f0",
+          "trigger": {
+            "source": "Native subject motion and signal streams",
+            "metric": "first stop frame and subject speed after red onset",
+            "failure_condition": "Subject fails to stop before the planned overtaking stop at baseline brake gain"
+          },
+          "changed_knobs": [
+            "brake_gain"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C230281__NRS-484B-353-1__motor_vehicle_driver/execution-manifest.json --case heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__overtaking_stop --candidate fallback2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-overtaking-stop-fallback-returned/fallback2-offline",
+            "exit_code": 0,
+            "log": "overtaking-stop-fallback2-offline.log",
+            "log_sha256": "e449ac4fe3488a797c01af842331109fe3a5878bc18ac99e057b2471a4f8ffb4",
+            "construction_sha256": "fd14687b246d18dc9e9f6f62fe97f373d3e7dbbcf0f97ab5f99996868284b1f0"
+          },
+          "compatibility": {
+            "receipt": "overtaking-stop-fallback2-compatibility.json",
+            "sha256": "d196c11c4a2177ebf26744907511c8411e9200da741e60da901107afd2b6f056",
+            "log": "meeting_stop-fallback1-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "overtaking-stop-fallback2-negative.log",
+            "negative_log_sha256": "ed1ab9f1b4edfe14ba52c0917f5a5b98e2b47e6a64e264e04d017f8bfd462f15"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-overtaking-stop-fallback3.json",
+          "construction_sha256": "7f152ebe42cf7265bcabdfb827b576788c3b88db262f81af5e6b9fcc3648465d",
+          "trigger": {
+            "source": "Original reference_corner camera frames",
+            "metric": "front/rear lamp pixel visibility during red operation",
+            "failure_condition": "Baseline reference_corner lamp region remains unresolved in original pixels"
+          },
+          "changed_knobs": [
+            "reference_corner_fov_deg"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C230281__NRS-484B-353-1__motor_vehicle_driver/execution-manifest.json --case heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__overtaking_stop --candidate fallback3 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-overtaking-stop-fallback-returned/fallback3-offline",
+            "exit_code": 0,
+            "log": "overtaking-stop-fallback3-offline.log",
+            "log_sha256": "3574f17d1c6d1535be92c23a244ce1372d66fb525a41848b2131501dfb82a8cf",
+            "construction_sha256": "7f152ebe42cf7265bcabdfb827b576788c3b88db262f81af5e6b9fcc3648465d"
+          },
+          "compatibility": {
+            "receipt": "overtaking-stop-fallback3-compatibility.json",
+            "sha256": "32a8acae7f3e92ff341dfd2144e53044dd8232d150b65f67bcaee4f7a36a72a5",
+            "log": "meeting_stop-fallback1-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "overtaking-stop-fallback3-negative.log",
+            "negative_log_sha256": "a05833ebb194553fa60d15a8d9af7db1743eb03f8544fc751f9ed079c4c1f43a"
+          }
+        }
+      ],
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
@@ -384,7 +469,92 @@
         "status": "physical",
         "reason": "Same-direction adjacent-lane bus pass during commanded red requires source review, actual lamp pixels and tested fallback constructions."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-overtaking-pass-fallback1.json",
+          "construction_sha256": "61ea317bbebecc7913035c14d9b8a560eb57422e861335b87f2668dc7a1735d3",
+          "trigger": {
+            "source": "Native map waypoint inventory",
+            "metric": "same-direction nonjunction route pair available at 4 m sampling",
+            "failure_condition": "No valid same-road overtaking nonjunction pair at 4 m sampling"
+          },
+          "changed_knobs": [
+            "waypoint_sample_step_m"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C230281__NRS-484B-353-1__motor_vehicle_driver/execution-manifest.json --case heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__overtaking_pass_red --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-overtaking-pass-fallback-returned/fallback1-offline",
+            "exit_code": 0,
+            "log": "overtaking-pass-fallback1-offline.log",
+            "log_sha256": "2e92c969dd526289f85c4af442f5810bac5e246d0d7a1f0f5a642d3f716d4594",
+            "construction_sha256": "61ea317bbebecc7913035c14d9b8a560eb57422e861335b87f2668dc7a1735d3"
+          },
+          "compatibility": {
+            "receipt": "overtaking-pass-fallback1-compatibility.json",
+            "sha256": "21403d2728d7b3970add3fd75866664aa0bf9f6ac09ad06282a318cf1c888266",
+            "log": "meeting_stop-fallback1-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "overtaking-pass-fallback1-negative.log",
+            "negative_log_sha256": "51f2f29fccf9a7e09c5a863b163c038649130460a32eb4c887f799c0f66fa63f"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-overtaking-pass-fallback2.json",
+          "construction_sha256": "46e789da4bbda9ef58a13f6af4c13dbfe3163fc887cea61418cd6f74664ad1bb",
+          "trigger": {
+            "source": "Native subject motion and signal streams",
+            "metric": "subject speed and full-body pass frame during commanded red operation",
+            "failure_condition": "Subject accelerates too slowly to complete the planned red-window pass at baseline throttle gain"
+          },
+          "changed_knobs": [
+            "throttle_gain"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C230281__NRS-484B-353-1__motor_vehicle_driver/execution-manifest.json --case heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__overtaking_pass_red --candidate fallback2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-overtaking-pass-fallback-returned/fallback2-offline",
+            "exit_code": 0,
+            "log": "overtaking-pass-fallback2-offline.log",
+            "log_sha256": "bf6ed488cca2f2b913693741ab1aed55484dbae87d601740c6e86080ae23cae9",
+            "construction_sha256": "46e789da4bbda9ef58a13f6af4c13dbfe3163fc887cea61418cd6f74664ad1bb"
+          },
+          "compatibility": {
+            "receipt": "overtaking-pass-fallback2-compatibility.json",
+            "sha256": "799f2ea0daf32b0c0c6ee23750e773ea3db248e646b1f3ed2c5c84caae893795",
+            "log": "meeting_stop-fallback1-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "overtaking-pass-fallback2-negative.log",
+            "negative_log_sha256": "5941b69ff64b38a5c40baa740013a6c321365358643669befb228975f942cc61"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-overtaking-pass-fallback3.json",
+          "construction_sha256": "383cb0f5244ec35728a789c40014ab58b89ce218f8780ee8f8370dbd9b5187ef",
+          "trigger": {
+            "source": "Original reference_corner camera frames",
+            "metric": "front/rear lamp pixel visibility during red operation",
+            "failure_condition": "Baseline reference_corner lamp region remains unresolved in original pixels"
+          },
+          "changed_knobs": [
+            "reference_corner_fov_deg"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C230281__NRS-484B-353-1__motor_vehicle_driver/execution-manifest.json --case heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__overtaking_pass_red --candidate fallback3 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-overtaking-pass-fallback-returned/fallback3-offline",
+            "exit_code": 0,
+            "log": "overtaking-pass-fallback3-offline.log",
+            "log_sha256": "401bf157054701b3264029e4a715e6ccb5541c53e89635d292b8db7280fdcb92",
+            "construction_sha256": "383cb0f5244ec35728a789c40014ab58b89ce218f8780ee8f8370dbd9b5187ef"
+          },
+          "compatibility": {
+            "receipt": "overtaking-pass-fallback3-compatibility.json",
+            "sha256": "90b1abb5a703f4a5e0c526f565174e5c52dd52bc09ef1e9992a110721bf02a41",
+            "log": "meeting_stop-fallback1-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "overtaking-pass-fallback3-negative.log",
+            "negative_log_sha256": "6db5ff69d5ac57107577232563ff67665fe3c3ae968565e4aaf601f93df54bd4"
+          }
+        }
+      ],
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
@@ -412,7 +582,92 @@
         "status": "physical",
         "reason": "Different-road-ID opposing route is only an engineering request; actual divider and same-highway roadway identity, red pixels and pupil purpose require source review and tested fallback constructions."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-divided-pass-fallback1.json",
+          "construction_sha256": "dbfa2204627b4b77a9c6ee9eb78053b91dc6f635890cccc3a571ea0db0a1dee1",
+          "trigger": {
+            "source": "Native map waypoint inventory",
+            "metric": "opposing nonjunction route pair available at 4 m sampling",
+            "failure_condition": "No valid same-road opposing nonjunction pair at 4 m sampling"
+          },
+          "changed_knobs": [
+            "waypoint_sample_step_m"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C230281__NRS-484B-353-1__motor_vehicle_driver/execution-manifest.json --case heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__meeting_divided_other_roadway_pass --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-divided-pass-fallback-returned/fallback1-offline",
+            "exit_code": 0,
+            "log": "divided-pass-fallback1-offline.log",
+            "log_sha256": "112ee8e837ab3a7683de60d1ffe34b9c9e7a065af3ffb140393fcba61c2c2901",
+            "construction_sha256": "dbfa2204627b4b77a9c6ee9eb78053b91dc6f635890cccc3a571ea0db0a1dee1"
+          },
+          "compatibility": {
+            "receipt": "divided-pass-fallback1-compatibility.json",
+            "sha256": "6976b0c17a4d7039a3e30c0751c5736c5c6554e5b044ad664ead946e39144b5c",
+            "log": "meeting_stop-fallback1-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "divided-pass-fallback1-negative.log",
+            "negative_log_sha256": "af403cf0a4ddadca744ccb219f4d95c6096c91b413b3d1dfe78fb1246c5518ea"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-divided-pass-fallback2.json",
+          "construction_sha256": "92d837a2eafc555ab5cf8f02e8046b5550364bef4d2a84c97c812944e4e61f84",
+          "trigger": {
+            "source": "Native subject motion and signal streams",
+            "metric": "subject speed and full-body pass frame during commanded red operation",
+            "failure_condition": "Subject accelerates too slowly to complete the planned red-window pass at baseline throttle gain"
+          },
+          "changed_knobs": [
+            "throttle_gain"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C230281__NRS-484B-353-1__motor_vehicle_driver/execution-manifest.json --case heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__meeting_divided_other_roadway_pass --candidate fallback2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-divided-pass-fallback-returned/fallback2-offline",
+            "exit_code": 0,
+            "log": "divided-pass-fallback2-offline.log",
+            "log_sha256": "eb8786f2ccf8bce6448fbf0387207e3f6900df03fa370563e77d06635f503a37",
+            "construction_sha256": "92d837a2eafc555ab5cf8f02e8046b5550364bef4d2a84c97c812944e4e61f84"
+          },
+          "compatibility": {
+            "receipt": "divided-pass-fallback2-compatibility.json",
+            "sha256": "5a0513a209b1fd67c9c50069442926311d0ba315b4ad39a986e3d56288280638",
+            "log": "meeting_stop-fallback1-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "divided-pass-fallback2-negative.log",
+            "negative_log_sha256": "71886e8da3236e6f6d0505d754a925ee9924423a374efee81637ad563c0214f5"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-divided-pass-fallback3.json",
+          "construction_sha256": "07bbdf2d122ab8e10b1e5171fccbc9860a7d5aefe2d14ed04b2466696f63f0de",
+          "trigger": {
+            "source": "Original reference_corner camera frames",
+            "metric": "front/rear lamp pixel visibility during red operation",
+            "failure_condition": "Baseline reference_corner lamp region remains unresolved in original pixels"
+          },
+          "changed_knobs": [
+            "reference_corner_fov_deg"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C230281__NRS-484B-353-1__motor_vehicle_driver/execution-manifest.json --case heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__meeting_divided_other_roadway_pass --candidate fallback3 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-divided-pass-fallback-returned/fallback3-offline",
+            "exit_code": 0,
+            "log": "divided-pass-fallback3-offline.log",
+            "log_sha256": "c40e49ed2211a9c7874a68d5202cfd9447566964a4d370cd23c18a818f23f473",
+            "construction_sha256": "07bbdf2d122ab8e10b1e5171fccbc9860a7d5aefe2d14ed04b2466696f63f0de"
+          },
+          "compatibility": {
+            "receipt": "divided-pass-fallback3-compatibility.json",
+            "sha256": "33f2f4f472811bb46c7eefe7e94fd8e09844c1dc65c69243f8ea4cdcbfc1f527",
+            "log": "meeting_stop-fallback1-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "divided-pass-fallback3-negative.log",
+            "negative_log_sha256": "488ef3c37bfdb18008d4292a0e9849cb57357b655bea8a20b756b662b699d5ef"
+          }
+        }
+      ],
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
@@ -440,7 +695,77 @@
         "status": "physical",
         "reason": "Requested officer actor and pass direction are source-recorded, while actual traffic-officer identity, gesture/control, lamp pixels and pupil purpose need physical review and tested fallback constructions."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-officer-pass-fallback1.json",
+          "construction_sha256": "7b61ae01872f2e3debafa1fd1358dd6d3043b323ca304f58e6e704e4422d13fc",
+          "trigger": {
+            "source": "Native map waypoint inventory",
+            "metric": "opposing nonjunction route pair available at 4 m sampling",
+            "failure_condition": "No valid same-road opposing nonjunction pair at 4 m sampling"
+          },
+          "changed_knobs": [
+            "waypoint_sample_step_m"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C230281__NRS-484B-353-1__motor_vehicle_driver/execution-manifest.json --case heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__meeting_officer_controlled_pass --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-officer-pass-fallback-returned/fallback1-offline",
+            "exit_code": 0,
+            "log": "officer-pass-fallback1-offline.log",
+            "log_sha256": "0552fc15485b5a09239a95abb78aa8a0a308ab0f418c326a703aaf48c5a50f80",
+            "construction_sha256": "7b61ae01872f2e3debafa1fd1358dd6d3043b323ca304f58e6e704e4422d13fc"
+          },
+          "compatibility": {
+            "receipt": "officer-pass-fallback1-compatibility.json",
+            "sha256": "dc46c4010e78f63f5927785800f56be2defc03e579c7536af7bdcbf827c3175f",
+            "log": "meeting_stop-fallback1-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "officer-pass-fallback1-negative.log",
+            "negative_log_sha256": "c23d6674588018591407088d8022be4a0be9b0b5be1bd88019fe9ec15eaaee27"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-officer-pass-fallback2.json",
+          "construction_sha256": "662038bebd8971399adfbaeede2a8e7c452eea46693b6baf9b0c9829fd6d0aa9",
+          "trigger": {
+            "source": "Native subject motion and signal streams",
+            "metric": "subject speed and full-body pass frame during commanded red operation",
+            "failure_condition": "Subject accelerates too slowly to complete the planned red-window pass at baseline throttle gain"
+          },
+          "changed_knobs": [
+            "throttle_gain"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C230281__NRS-484B-353-1__motor_vehicle_driver/execution-manifest.json --case heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__meeting_officer_controlled_pass --candidate fallback2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-officer-pass-fallback-returned/fallback2-offline",
+            "exit_code": 0,
+            "log": "officer-pass-fallback2-offline.log",
+            "log_sha256": "0feb66477af879046c65f12acdafb0c0b87916948c92e90953987ff3e54b7197",
+            "construction_sha256": "662038bebd8971399adfbaeede2a8e7c452eea46693b6baf9b0c9829fd6d0aa9"
+          },
+          "compatibility": {
+            "receipt": "officer-pass-fallback2-compatibility.json",
+            "sha256": "6c4c41d30c151b0e7f83c701bc805c11fa67089bf1ef400133149a9dcab66736",
+            "log": "meeting_stop-fallback1-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "officer-pass-fallback2-negative.log",
+            "negative_log_sha256": "63c9f6d7ee14e0b63078445aa934a89fcd79d45ef399c4b2d2849d22ec729c9f"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-officer-pass-fallback3.json",
+          "construction_sha256": "52942b1b33341f652724cb65e3cc379ec99295f6d5c4edaecddb17cd376d916a",
+          "trigger": {
+            "source": "Original reference_corner camera frames",
+            "metric": "front/rear lamp pixel visibility during red operation",
+            "failure_condition": "Baseline reference_corner lamp region remains unresolved in original pixels"
+          },
+          "changed_knobs": [
+            "reference_corner_fov_deg"
+          ]
+        }
+      ],
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
