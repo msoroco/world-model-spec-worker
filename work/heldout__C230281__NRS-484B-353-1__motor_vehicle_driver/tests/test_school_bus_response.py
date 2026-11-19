@@ -116,6 +116,43 @@ class SourceResponse(unittest.TestCase):
         self.assertFalse(proof['checks']['actual_native_capture'])
         self.assertFalse(proof['checks']['physical_acceptance_claimed'])
 
+    def test_returned_pass_during_red_proof(self):
+        package = Path(__file__).resolve().parents[1]
+        manifest = json.loads((package/'execution-manifest.json').read_text())
+        case = next(row for row in manifest['cases']
+                    if row['case_id'].endswith('__meeting_pass_red'))
+        bundle = json.loads((package/'first-case-proof-bundle.json').read_text())
+        proof = bundle['additional_case_proofs'][case['case_id']]
+        self.assertEqual(proof['execution_manifest_sha256'],
+                         hashlib.sha256((package/'execution-manifest.json').read_bytes()).hexdigest())
+        self.assertEqual(proof['construction_sha256'], case['construction_sha256'])
+        self.assertEqual(proof['measurement_contract_sha256'],
+                         hashlib.sha256((package/case['measurement_contract']).read_bytes()).hexdigest())
+        decoded = {}
+        for name, item in proof['artifacts'].items():
+            raw = zlib.decompress(base64.b64decode(item['zlib_base64']))
+            self.assertEqual((len(raw), hashlib.sha256(raw).hexdigest()),
+                             (item['bytes'], item['sha256']))
+            decoded[name] = raw
+        compatibility = json.loads(decoded['compatibility.json'])
+        positive = json.loads(decoded['saved-positive-processing.json'])
+        missing = json.loads(decoded['saved-missing-processing.json'])
+        audit = json.loads(decoded['independent-delivery-audit.json'])
+        response = json.loads(decoded['saved-positive-analysis-report.json'])['measurements']['stop_response_candidate']['value']
+        self.assertTrue(compatibility['passed'] and positive['passed'] and missing['passed'])
+        self.assertFalse(positive['missing_evidence'])
+        self.assertTrue(missing['missing_evidence'])
+        self.assertTrue(positive['originals_preserved'] and missing['originals_preserved'])
+        self.assertEqual(audit['frame_count'], 160)
+        self.assertEqual(len(audit['source_decode']), 4)
+        self.assertTrue(audit['software_source_join_passed'])
+        self.assertIsNone(response['first_stop_frame'])
+        self.assertTrue(response['passed_during_red_candidate'])
+        self.assertLess(response['red_onset_frame'], response['first_full_body_pass_frame'])
+        self.assertLess(response['first_full_body_pass_frame'], response['red_cessation_frame'])
+        self.assertFalse(response['physical_acceptance_claimed'])
+        self.assertIsNone(response['legal_conclusion'])
+
     def setUp(self):
         self.tmp=tempfile.TemporaryDirectory();self.addCleanup(self.tmp.cleanup)
         self.root=Path(self.tmp.name)
