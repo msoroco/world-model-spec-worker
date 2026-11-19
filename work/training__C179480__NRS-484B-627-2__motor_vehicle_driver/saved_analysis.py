@@ -10,6 +10,7 @@ from pathlib import Path
 import subprocess
 
 from source_measurement import analyze, analyze_hazard
+from source_provenance import classify, ORIGINAL, SYNTHETIC
 
 
 CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
@@ -33,6 +34,7 @@ def video_frames(path):
 def review(attempt, output, *, write=True):
     attempt = Path(attempt).resolve()
     output = Path(output).resolve()
+    source_kind = classify(attempt)
     if output.exists() or output.parent != attempt:
         raise ValueError('Saved review needs a new output inside the original attempt')
     actor = attempt / 'native-actors.jsonl'
@@ -47,7 +49,7 @@ def review(attempt, output, *, write=True):
     receipt = json.loads(measurement_path.read_text())
     observed_hazard = None
     if map_readback.get('case') == 'safe_operation_stop':
-        observed_hazard = analyze_hazard(actor, mapping)
+        observed_hazard = analyze_hazard(actor, mapping, source_kind=source_kind)
         if receipt.get('hazard_observation') != observed_hazard:
             raise ValueError('Saved hazard receipt differs from original sources')
     if (map_readback.get('format') != 'c179480-original-map-readback-v1'
@@ -59,6 +61,8 @@ def review(attempt, output, *, write=True):
         raise ValueError('Saved map/measurement receipt differs from original sources')
     sources['native-map-readback.json'] = sha256(map_path)
     sources['source-measurements.json'] = sha256(measurement_path)
+    if source_kind == SYNTHETIC:
+        sources['acquisition-provenance.json'] = sha256(attempt/'acquisition-provenance.json')
     counts = {}
     for name in CAMERAS:
         relative = name + '.mkv'
@@ -77,6 +81,8 @@ def review(attempt, output, *, write=True):
         'measured_values': measured,
         'physical_completion_claimed': False,
         'legal_verdict_claimed': False,
+        'provenance_kind': 'synthetic_fixture' if source_kind == SYNTHETIC else 'native',
+        'diagnostic_fixture': source_kind == SYNTHETIC,
         'independent_review_required': [
             'normal and reasonable traffic impediment or blockage',
             'safe operation necessity', 'compliance with law',

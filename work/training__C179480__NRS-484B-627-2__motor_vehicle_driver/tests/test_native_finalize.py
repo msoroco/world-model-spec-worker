@@ -135,6 +135,46 @@ class NativeFinalizeTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError,'Retain prior finalization'):
                 module.finalize(folder,folder/'second-report.json')
 
+    def test_explicit_synthetic_fixture_never_claims_original_velocity(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = Path(tmp)
+            self.sources(folder)
+            provenance = {'provenance_kind': 'synthetic_fixture',
+                          'diagnostic_fixture': True,
+                          'speed_source': 'synthetic_native_sample',
+                          'physical_acceptance_claimed': False}
+            (folder/'acquisition-provenance.json').write_text(json.dumps(provenance)+'\n')
+            actor = folder/'native-actors.jsonl'
+            rows = [json.loads(line) for line in actor.read_text().splitlines()]
+            for row in rows:
+                row['source_kind'] = 'synthetic_native_sample'
+            actor.write_text(''.join(json.dumps(row)+'\n' for row in rows))
+            receipt_path = folder/'source-measurements.json'
+            receipt = json.loads(receipt_path.read_text())
+            receipt['actor_source_sha256'] = module.sha256(actor)
+            receipt_path.write_text(json.dumps(receipt)+'\n')
+            report = module.finalize(folder,folder/'analysis-report.json')
+            result = json.loads((folder/'result.json').read_text())
+            trace = [json.loads(line) for line in (folder/'trace.jsonl').read_text().splitlines()]
+            self.assertEqual(report['provenance_kind'],'synthetic_fixture')
+            self.assertEqual(result['provenance_kind'],'synthetic_fixture')
+            self.assertFalse(result['accepted'])
+            self.assertFalse(result['maneuver_completed'])
+            self.assertEqual({row['speed_provenance'] for row in trace},
+                             {'synthetic_native_sample'})
+
+    def test_synthetic_rows_without_explicit_provenance_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = Path(tmp)
+            self.sources(folder)
+            actor = folder/'native-actors.jsonl'
+            rows = [json.loads(line) for line in actor.read_text().splitlines()]
+            rows[0]['source_kind'] = 'synthetic_native_sample'
+            actor.write_text(''.join(json.dumps(row)+'\n' for row in rows))
+            with self.assertRaisesRegex(ValueError, 'source'):
+                module.finalize(folder,folder/'analysis-report.json')
+            self.assertFalse((folder/'result.json').exists())
+
     def test_stale_map_case_rejected_before_derived_output(self):
         with tempfile.TemporaryDirectory() as tmp:
             folder = Path(tmp)

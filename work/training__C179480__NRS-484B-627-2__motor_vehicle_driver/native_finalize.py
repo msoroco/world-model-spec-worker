@@ -11,6 +11,7 @@ import sys
 from native_channels import CHANNELS, channels_for, derive
 from saved_analysis import CAMERAS, review, sha256
 from source_measurement import load_rows
+from source_provenance import classify, ORIGINAL, SYNTHETIC
 
 
 ASSIGNMENT = 'training__C179480__NRS-484B-627-2__motor_vehicle_driver'
@@ -30,6 +31,7 @@ def _native_writer():
 def finalize(attempt, output):
     attempt = Path(attempt).resolve()
     output = Path(output).resolve()
+    source_kind = classify(attempt)
     config = json.loads((attempt/'config.json').read_text())
     case = config.get('case_suffix')
     if (case not in EXPECTED_OVERLAP
@@ -67,7 +69,7 @@ def finalize(attempt, output):
             trace = {'frame': actor['frame'], 'time_s': frame['time_s'],
                      'position_m': [actor['ego_x_m'], actor['ego_y_m']],
                      'speed_mps': actor['ego_speed_mps'],
-                     'speed_provenance': 'original_carla_velocity',
+                     'speed_provenance': 'synthetic_native_sample' if source_kind == SYNTHETIC else 'original_carla_velocity',
                      'source_actor_sha256': report['source_sha256']['native-actors.jsonl']}
             stream.write(json.dumps(trace, allow_nan=False)+'\n')
     measured = report['measured_values']
@@ -81,7 +83,9 @@ def finalize(attempt, output):
     target = {
         'target': 'sampled complete stop with requested travel-lane footprint overlap',
         'requested': EXPECTED_OVERLAP[case], 'measured': overlap,
-        'method': 'original actor velocity/body/lane and synchronized frame map',
+        'method': ('diagnostic synthetic actor/body/lane and synchronized frame map'
+                   if source_kind == SYNTHETIC else
+                   'original actor velocity/body/lane and synchronized frame map'),
         'tolerance': '0.05 m/s engineering stop tolerance; no legal threshold',
         'matched': matched, 'physical_cause_confirmed': False,
         'cause_evidence': ['native-actors.jsonl','video_frames.jsonl',
@@ -137,7 +141,8 @@ def finalize(attempt, output):
                 'unit': 'structured',
                 'method': 'source-joined original ego/follower actor and frame rows',
                 'reference': 'channels/traffic_effect_evidence.jsonl'}},
-        'provenance_kind': 'native',
+        'provenance_kind': 'synthetic_fixture' if source_kind == SYNTHETIC else 'native',
+        'diagnostic_fixture': source_kind == SYNTHETIC,
         'accepted': False, 'legal_verdict_claimed': False,
     }
     if hazard is not None:

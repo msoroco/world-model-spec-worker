@@ -5,6 +5,7 @@ from math import isfinite
 from pathlib import Path
 
 from source_measurement import analyze_hazard, load_rows
+from source_provenance import classify
 
 
 CHANNELS = ('ego_pose', 'ego_speed', 'ego_stop_history',
@@ -29,6 +30,7 @@ def _vector(value, length):
 
 def derive(attempt):
     attempt = Path(attempt)
+    source_kind = classify(attempt)
     rows = load_rows(attempt/'native-actors.jsonl', attempt/'video_frames.jsonl')
     mapping = [json.loads(line) for line in
                (attempt/'video_frames.jsonl').read_text().splitlines() if line.strip()]
@@ -39,11 +41,11 @@ def derive(attempt):
         raise ValueError('Missing original roadway map readback')
     channels = channels_for(map_readback.get('case'))
     if map_readback['case'] == 'safe_operation_stop':
-        analyze_hazard(attempt/'native-actors.jsonl', attempt/'video_frames.jsonl')
+        analyze_hazard(attempt/'native-actors.jsonl', attempt/'video_frames.jsonl', source_kind=source_kind)
     values = {name: [] for name in channels}
     previous_speed = None
     for row, frame in zip(rows, mapping):
-        if (row.get('source_kind') != 'original_carla_actor_and_map_readback'
+        if (row.get('source_kind') != source_kind
                 or not _vector(row.get('ego_velocity_xyz_mps'), 3)
                 or not _vector(row.get('following_velocity_xyz_mps'), 3)
                 or not isinstance(row.get('ego_body_vertices_xyz_m'), list)

@@ -79,7 +79,7 @@ def analyze(path, frame_map_path):
     return measure(load_rows(path, frame_map_path))
 
 
-def analyze_hazard(path, frame_map_path):
+def analyze_hazard(path, frame_map_path, *, source_kind='original_carla_actor_and_map_readback'):
     """Summarize source-visible other-vehicle hazard; do not infer necessity."""
     rows = load_rows(path, frame_map_path)
     gaps = []
@@ -87,7 +87,7 @@ def analyze_hazard(path, frame_map_path):
     on_lane = []
     for row in rows:
         state = row.get('hazard_state')
-        if not isinstance(state, dict) or state.get('source_kind') != 'original_carla_actor_and_map_readback':
+        if not isinstance(state, dict) or state.get('source_kind') != source_kind:
             raise ValueError('Missing original safe-operation hazard state')
         body = state.get('body_vertices_xyz_m')
         velocity = state.get('velocity_xyz_mps')
