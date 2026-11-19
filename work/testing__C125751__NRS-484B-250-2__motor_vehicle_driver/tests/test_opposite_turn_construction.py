@@ -1178,48 +1178,6 @@ class DeviceSourceJoinTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "Original trace/evidence frame join failed"):
                 runner.finalize_candidate_opposite_turn(root, root / "analysis.json")
 
-    def test_straight_saved_finalizer_rebuilds_sources_and_rejects_frame_tamper(self):
-        with tempfile.TemporaryDirectory() as temp:
-            root = Path(temp)
-            self._opposite_finalizer_sources(root)
-            bundle = json.loads((HERE / "straight-primary-construction.json").read_text())
-            config = json.loads(next(item["content"] for item in bundle["files"]
-                                     if item["path"] == "config.json"))
-            (root / "config.json").write_text(json.dumps(config))
-            (root / "straight-route-source.json").write_text((HERE / "straight-route-source.json").read_text())
-            route = json.loads((root / "turn_route_context.json").read_text())
-            route["routes"] = config["site"]["routes"]
-            (root / "turn_route_context.json").write_text(json.dumps(route))
-            bodies = [json.loads(line) for line in (root / "body_history.jsonl").read_text().splitlines()]
-            for body in bodies:
-                body.pop("turning_role")
-                body["maneuver"] = "ego_straight_other_straight"
-            (root / "body_history.jsonl").write_text("".join(json.dumps(row) + "\n" for row in bodies))
-            entry = straight.analyze_saved_straight(root, root / "analysis-report.json")
-            self.assertEqual(entry["first_body_entry"]["ego"]["frame"], 101)
-            self.assertEqual(entry["ego_minus_other_entry_time_s"], 0)
-            result = json.loads((root / "result.json").read_text())
-            self.assertEqual(result["case_id"], straight.COMPARATOR_CASE)
-            self.assertFalse(result["physical_acceptance_claimed"])
-        with tempfile.TemporaryDirectory() as temp:
-            root = Path(temp)
-            self._opposite_finalizer_sources(root)
-            bundle = json.loads((HERE / "straight-primary-construction.json").read_text())
-            config = json.loads(next(item["content"] for item in bundle["files"]
-                                     if item["path"] == "config.json"))
-            (root / "config.json").write_text(json.dumps(config))
-            (root / "straight-route-source.json").write_text((HERE / "straight-route-source.json").read_text())
-            route = json.loads((root / "turn_route_context.json").read_text())
-            route["routes"] = config["site"]["routes"]
-            (root / "turn_route_context.json").write_text(json.dumps(route))
-            bodies = [json.loads(line) for line in (root / "body_history.jsonl").read_text().splitlines()]
-            for body in bodies:
-                body.pop("turning_role")
-                body["maneuver"] = "ego_straight_other_straight"
-            bodies[1]["camera_source_frames"]["overview"] += 1
-            (root / "body_history.jsonl").write_text("".join(json.dumps(row) + "\n" for row in bodies))
-            with self.assertRaisesRegex(ValueError, "Original straight source/frame join failed"):
-                straight.analyze_saved_straight(root, root / "analysis-report.json")
             self._opposite_finalizer_sources(root)
             (root / "opposite-stops-source.json").unlink()
             with self.assertRaisesRegex(ValueError, "Opposite-turn source document missing or changed"):
@@ -1238,6 +1196,56 @@ class DeviceSourceJoinTests(unittest.TestCase):
                 "".join(json.dumps(row) + "\n" for row in rows))
             with self.assertRaisesRegex(ValueError, "Original trace/evidence frame join failed"):
                 runner.finalize_candidate_opposite_turn(root, root / "analysis.json")
+
+    def _straight_finalizer_sources(self, root):
+        self._opposite_finalizer_sources(root)
+        bundle = json.loads((HERE / "straight-primary-construction.json").read_text())
+        files = {item["path"]: item["content"] for item in bundle["files"]}
+        config = json.loads(files["config.json"])
+        for name in ("config.json", "straight-route-source.json", "opposite-site-review.json",
+                     "opposite-polygon-source.json", "opposite-approaches-source.json",
+                     "opposite-governance-source.json", "opposite-stops-source.json",
+                     "opposite-cameras-source.json"):
+            (root / name).write_text(files[name])
+        for name in ("road_geometry.json", "turn_route_context.json",
+                     "signal_context.json", "stop_context.json"):
+            context = json.loads((root / name).read_text())
+            context["site_review_sha256"] = config["site_review"]["sha256"]
+            if name == "turn_route_context.json":
+                context["routes"] = config["site"]["routes"]
+            if name == "signal_context.json":
+                context["device_inventory_source"] = config["site"]["device_inventory_source"]
+            (root / name).write_text(json.dumps(context))
+        bodies = [json.loads(line) for line in (root / "body_history.jsonl").read_text().splitlines()]
+        for body in bodies:
+            body.pop("turning_role")
+            body["maneuver"] = "ego_straight_other_straight"
+        (root / "body_history.jsonl").write_text("".join(json.dumps(row) + "\n" for row in bodies))
+
+    def test_straight_saved_finalizer_rebuilds_sources_and_rejects_frame_tamper(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            self._straight_finalizer_sources(root)
+            entry = straight.analyze_saved_straight(root, root / "analysis-report.json")
+            self.assertEqual(entry["first_body_entry"]["ego"]["frame"], 101)
+            self.assertEqual(entry["ego_minus_other_entry_time_s"], 0)
+            result = json.loads((root / "result.json").read_text())
+            self.assertEqual(result["case_id"], straight.COMPARATOR_CASE)
+            self.assertFalse(result["physical_acceptance_claimed"])
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            self._straight_finalizer_sources(root)
+            bodies = [json.loads(line) for line in (root / "body_history.jsonl").read_text().splitlines()]
+            bodies[1]["camera_source_frames"]["overview"] += 1
+            (root / "body_history.jsonl").write_text("".join(json.dumps(row) + "\n" for row in bodies))
+            with self.assertRaisesRegex(ValueError, "Original straight source/frame join failed"):
+                straight.analyze_saved_straight(root, root / "analysis-report.json")
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            self._straight_finalizer_sources(root)
+            (root / "opposite-approaches-source.json").unlink()
+            with self.assertRaisesRegex(ValueError, "Opposite-turn source document missing or changed"):
+                straight.analyze_saved_straight(root, root / "analysis-report.json")
 
 
 if __name__ == "__main__":

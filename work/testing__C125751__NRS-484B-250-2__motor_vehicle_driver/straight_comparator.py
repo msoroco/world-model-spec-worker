@@ -5,17 +5,19 @@ controlled difference before any Native actor is spawned. Angle bounds are
 engineering route checks, not legal definitions of a turn.
 """
 
-from contextlib import contextmanager
+from contextlib import ExitStack, contextmanager
 import copy
 import hashlib
 import json
 import math
 from pathlib import Path
+from queue import Empty, Queue
 
 from shapely.geometry import Point, Polygon
 
-from camera_setup import SIZES
-from capture_sources import _actor
+from camera_setup import SIZES, source_cameras
+from camera_encoder import FFV1Writer
+from capture_sources import _actor, _native_state, _stop_state
 from route_control import steering_command
 from yield_controller import apply_speed_control
 
@@ -202,7 +204,8 @@ def command_straight_pair(carla, actors, plan, progress, frame_index,
 
 def run_straight_pair(world, carla, plan, blueprints, transforms,
                       release_frames, target_speeds_mps, frames,
-                      collect_camera_frames, write_source, lookahead_m=5.0):
+                      collect_camera_frames, write_source, lookahead_m=5.0,
+                      camera_factory=None):
     """Capture both original actor sources and four joined cameras each tick.
 
     The caller owns video encoding, frame-map writing and Core acquisition.
@@ -214,35 +217,220 @@ def run_straight_pair(world, carla, plan, blueprints, transforms,
     progress = {"ego": 1, "other": 1}
     first_frame = last_frame = None
     with construct_straight_pair(world, blueprints, transforms, plan) as actors:
-        for index in range(frames):
-            decision = command_straight_pair(
-                carla, actors, plan, progress, index, release_frames,
-                target_speeds_mps, lookahead_m)
-            native_frame = world.tick()
-            if (type(native_frame) is not int or
-                    (last_frame is not None and native_frame <= last_frame)):
-                raise ValueError("Increasing original Native frames required")
-            cameras = collect_camera_frames(native_frame)
-            if (not isinstance(cameras, dict) or set(cameras) != set(SIZES) or
-                    any(type(frame) is not int or frame != native_frame
-                        for frame in cameras.values())):
-                raise ValueError("All four cameras must join original Native frame")
-            actors_source = {role: _actor(actor, world.get_map())
-                             for role, actor in actors.items()}
-            if actors_source["ego"]["actor_id"] == actors_source["other"]["actor_id"]:
-                raise ValueError("Distinct original Native actor sources required")
-            write_source({"native_frame": native_frame, "frame_index": index,
-                          "maneuver": "ego_straight_other_straight",
-                          "camera_source_frames": cameras,
-                          "actor_sources": actors_source,
-                          "applied_decisions": decision["decisions"],
-                          "physical_or_legal_acceptance_claimed": False})
-            if first_frame is None:
-                first_frame = native_frame
-            last_frame = native_frame
+        with ExitStack() as stack:
+            if camera_factory is not None:
+                collect_camera_frames = stack.enter_context(camera_factory(world, actors))
+            for index in range(frames):
+                decision = command_straight_pair(
+                    carla, actors, plan, progress, index, release_frames,
+                    target_speeds_mps, lookahead_m)
+                native_frame = world.tick()
+                if (type(native_frame) is not int or
+                        (last_frame is not None and native_frame <= last_frame)):
+                    raise ValueError("Increasing original Native frames required")
+                cameras = collect_camera_frames(native_frame)
+                if (not isinstance(cameras, dict) or set(cameras) != set(SIZES) or
+                        any(type(frame) is not int or frame != native_frame
+                            for frame in cameras.values())):
+                    raise ValueError("All four cameras must join original Native frame")
+                actors_source = {role: _actor(actor, world.get_map())
+                                 for role, actor in actors.items()}
+                if actors_source["ego"]["actor_id"] == actors_source["other"]["actor_id"]:
+                    raise ValueError("Distinct original Native actor sources required")
+                write_source({"native_frame": native_frame, "frame_index": index,
+                              "maneuver": "ego_straight_other_straight",
+                              "camera_source_frames": cameras,
+                              "actor_sources": actors_source,
+                              "applied_decisions": decision["decisions"],
+                              "physical_or_legal_acceptance_claimed": False})
+                if first_frame is None:
+                    first_frame = native_frame
+                last_frame = native_frame
     return {"frames_recorded": frames, "first_native_frame": first_frame,
             "last_native_frame": last_frame,
             "physical_or_legal_acceptance_claimed": False}
+
+
+def _native_pose(carla, values):
+    if (not isinstance(values, list) or len(values) != 6 or
+            any(type(value) not in (int, float) or not math.isfinite(value)
+                for value in values)):
+        raise ValueError("Finite six-value Native pose required")
+    return carla.Transform(carla.Location(x=values[0], y=values[1], z=values[2]),
+                           carla.Rotation(yaw=values[3], pitch=values[4], roll=values[5]))
+
+
+def _joined_camera_image(queue, native_frame):
+    for _ in range(6):
+        try:
+            image = queue.get(timeout=10)
+        except Empty as error:
+            raise ValueError("Missing original straight camera frame") from error
+        if image.frame == native_frame:
+            return image
+        if image.frame > native_frame:
+            raise ValueError("Straight camera skipped original Native frame")
+    raise ValueError("Straight camera frame join exhausted")
+
+
+def capture_straight_media(output_dir, world, carla, plan, blueprints, transforms,
+                           release_frames, target_speeds_mps, frames,
+                           governed_lights, client, original_capture_factory=None,
+                           lookahead_m=5.0):
+    """Capture four lossless cameras and source rows for an exact reviewed site.
+
+    A synthetic diagnostic review cannot enter this Native path. The caller
+    provides a dedicated synchronous world; this function never starts CARLA.
+    """
+    root = Path(output_dir)
+    if not root.is_dir() or not (root / "construction.json").is_file():
+        raise ValueError("Existing exact straight construction required")
+    config = json.loads((root / "config.json").read_text())
+    construction = json.loads((root / "construction.json").read_text())
+    control = config["candidate_plan"]["primary"]
+    source = dict(config["straight_route_source"])
+    source["path"] = str(root / source["path"])
+    compare_sites(config["baseline_site"], config["site"], source)
+    if (config.get("selected_case_id") != COMPARATOR_CASE or
+            construction.get("case_id") != COMPARATOR_CASE or
+            plan["site"] != config["site"] or
+            not isinstance(control.get("transforms"), dict) or
+            set(control["transforms"]) != set(ROLES) or
+            any(control.get(key) != value for key, value in
+                (("release_frames", release_frames), ("target_speeds_mps", target_speeds_mps),
+                 ("frames", frames), ("lookahead_m", lookahead_m)))):
+        raise ValueError("Straight capture differs from exact reviewed construction")
+    from opposite_site_probe import verify_opposite_site_packet
+    review = verify_opposite_site_packet(config, root)
+    if review["diagnostic_only"]:
+        raise ValueError("Diagnostic straight site cannot enter Native capture")
+    live_map = world.get_map()
+    if (live_map.name != config["site"]["native_map_name"] or
+            hashlib.sha256(live_map.to_opendrive().encode()).hexdigest() != review["native_map_sha256"]):
+        raise ValueError("Original Native map differs from reviewed straight site")
+    site = plan["site"]
+    if (not isinstance(governed_lights, dict) or set(governed_lights) != set(ROLES) or
+            any(governed_lights[role].id != site["governed_signal_ids"][role]
+                for role in ROLES)):
+        raise ValueError("Two reviewed governed signal actors required")
+    for role in ROLES:
+        lane = site["expected_approach_lanes"][role]
+        governed = {(int(w.road_id), int(w.lane_id)) for w in
+                    governed_lights[role].get_affected_lane_waypoints()}
+        if tuple(lane) not in governed:
+            raise ValueError("Native signal does not govern straight approach: " + role)
+        route = site["routes"][role]
+        first = live_map.get_waypoint(
+            carla.Location(x=route[0][0], y=route[0][1], z=0), project_to_road=False)
+        middle = live_map.get_waypoint(
+            carla.Location(x=route[2][0], y=route[2][1], z=0), project_to_road=False)
+        if (first is None or [first.road_id, first.lane_id] != lane or
+                middle is None or not middle.is_junction or
+                middle.get_junction().id != site["native_junction_id"]):
+            raise ValueError("Native straight route differs from reviewed approach: " + role)
+    generated = {"capture", "road_geometry.json", "turn_route_context.json",
+                 "stop_context.json", "signal_context.json", "body_history.jsonl",
+                 "crossing_history.jsonl", "stop_history.jsonl", "signal_history.jsonl",
+                 "video_frames.jsonl", "trace.jsonl", *(name + ".mkv" for name in SIZES)}
+    if any((root / name).exists() for name in generated):
+        raise ValueError("Retain prior straight acquisition; choose a fresh attempt")
+    if original_capture_factory is None:
+        from pipeline_capture import PipelineCapture
+        original_capture_factory = PipelineCapture
+    polygon = Polygon(site["crossing_polygon_xy_m"])
+    if not polygon.is_valid or polygon.area <= 0:
+        raise ValueError("Sourced straight crossing polygon required")
+    contexts = {
+        "road_geometry.json": {"intersection_id": site["native_junction_id"],
+            "intersection_polygon_xy_m": site["crossing_polygon_xy_m"],
+            "site_review_sha256": review["packet_sha256"]},
+        "turn_route_context.json": {"intersection_id": site["native_junction_id"],
+            "routes": site["routes"], "site_review_sha256": review["packet_sha256"]},
+        "stop_context.json": {"intersection_id": site["native_junction_id"],
+            "selected_references": site["selected_stop_references"],
+            "review_status": "candidate_only", "site_review_sha256": review["packet_sha256"]},
+        "signal_context.json": {"intersection_id": site["native_junction_id"],
+            "native_map_id": site["native_map_name"],
+            "device_inventory_source": site["device_inventory_source"],
+            "native_signal_id": site["governed_signal_ids"]["ego"],
+            "other_native_signal_id": site["governed_signal_ids"]["other"],
+            "governed_road_id": site["expected_approach_lanes"]["ego"][0],
+            "governed_lane_id": site["expected_approach_lanes"]["ego"][1],
+            "other_governed_road_id": site["expected_approach_lanes"]["other"][0],
+            "other_governed_lane_id": site["expected_approach_lanes"]["other"][1],
+            "review_status": "candidate_only", "site_review_sha256": review["packet_sha256"]}}
+    for name, value in contexts.items():
+        (root / name).write_text(json.dumps(value, allow_nan=False) + "\n")
+    from worker_exchange.native_output import FrameMap
+    with ExitStack() as stack:
+        body = stack.enter_context((root / "body_history.jsonl").open("x", buffering=1))
+        crossing = stack.enter_context((root / "crossing_history.jsonl").open("x", buffering=1))
+        stop = stack.enter_context((root / "stop_history.jsonl").open("x", buffering=1))
+        signal = stack.enter_context((root / "signal_history.jsonl").open("x", buffering=1))
+        mapping = stack.enter_context(FrameMap(root / "video_frames.jsonl"))
+        times = {}
+        original_capture = None
+
+        @contextmanager
+        def cameras(active_world, actors):
+            nonlocal original_capture
+            original_capture = stack.enter_context(original_capture_factory(
+                client, actors["ego"], root, COMPARATOR_CASE))
+            camera_poses = {name: _native_pose(carla, values)
+                            for name, values in site["cameras"].items()}
+            sensors = stack.enter_context(source_cameras(active_world, actors["ego"], camera_poses))
+            queues = {name: Queue() for name in SIZES}
+            for name, sensor in sensors.items():
+                sensor.listen(lambda image, camera_name=name: queues[camera_name].put(image))
+            writers = {name: stack.enter_context(FFV1Writer(root / (name + ".mkv"), *size))
+                       for name, size in SIZES.items()}
+            def collect(native_frame):
+                snapshot = active_world.get_snapshot()
+                if snapshot.frame != native_frame:
+                    raise ValueError("Straight snapshot differs from tick frame")
+                time_s = float(snapshot.timestamp.elapsed_seconds)
+                if not math.isfinite(time_s):
+                    raise ValueError("Finite original straight time required")
+                for name in SIZES:
+                    writers[name].write(bytes(_joined_camera_image(queues[name], native_frame).raw_data))
+                mapping.append(native_frame, time_s)
+                times[native_frame] = time_s
+                return {name: native_frame for name in SIZES}
+            yield collect
+
+        def write_source(record):
+            native_frame = record["native_frame"]
+            time_s = times.pop(native_frame)
+            body.write(json.dumps(record, allow_nan=False) + "\n")
+            if original_capture is not None:
+                original_capture.capture(native_frame, time_s)
+            actors = record["actor_sources"]
+            crossing_row = {"frame": native_frame, "time_s": time_s,
+                            "ego": actors["ego"], "other": actors["other"],
+                            "ego_vertices_m": actors["ego"]["body_vertices_xy_m"]}
+            crossing.write(json.dumps(crossing_row, allow_nan=False) + "\n")
+            stop.write(json.dumps({"frame": native_frame, "time_s": time_s,
+                "ego": _stop_state(actors["ego"], polygon),
+                "other": _stop_state(actors["other"], polygon)}, allow_nan=False) + "\n")
+            signal.write(json.dumps({"frame": native_frame, "time_s": time_s,
+                "native_signal_id": site["governed_signal_ids"]["ego"],
+                "state": _native_state(governed_lights["ego"]),
+                "other_native_signal_id": site["governed_signal_ids"]["other"],
+                "other_state": _native_state(governed_lights["other"])}, allow_nan=False) + "\n")
+        try:
+            return run_straight_pair(world, carla, plan, blueprints, transforms,
+                release_frames, target_speeds_mps, frames, lambda _: {}, write_source,
+                lookahead_m=lookahead_m, camera_factory=cameras)
+        except ValueError as error:
+            if str(error).startswith("Native actor spawn failed: "):
+                (root / "spawn_attempt.json").write_text(json.dumps({
+                    "format": "worker-c125751-straight-spawn-attempt-v1",
+                    "selected_case_id": COMPARATOR_CASE,
+                    "attempted_role": str(error).split(": ", 1)[1],
+                    "approach_spawn_succeeded": False,
+                    "site_review_sha256": review["packet_sha256"],
+                    "physical_or_legal_acceptance_claimed": False}) + "\n")
+            raise
 
 
 def analyze_saved_straight(attempt, output):
@@ -253,7 +441,7 @@ def analyze_saved_straight(attempt, output):
     attempt, output = Path(attempt), Path(output)
     if output.exists() or (attempt / "result.json").exists() or (attempt / "channels").exists():
         raise ValueError("Retain prior straight finalization; choose a fresh attempt")
-    names = ("config.json", "straight-route-source.json",
+    names = ("config.json", "straight-route-source.json", "opposite-site-review.json",
              "road_geometry.json", "turn_route_context.json",
              "body_history.jsonl", "crossing_history.jsonl", "signal_context.json",
              "signal_history.jsonl", "stop_context.json", "stop_history.jsonl",
@@ -270,6 +458,13 @@ def analyze_saved_straight(attempt, output):
     source = dict(config["straight_route_source"])
     source["path"] = str(attempt / source["path"])
     compare_sites(config["baseline_site"], config["site"], source)
+    from opposite_site_probe import verify_opposite_site_packet
+    review = verify_opposite_site_packet(config, attempt)
+    packet = json.loads((attempt / "opposite-site-review.json").read_text())
+    review_sources = tuple(item["path"] for item in packet["source_documents"].values())
+    if "native_map_export" in packet:
+        review_sources += (packet["native_map_export"]["path"],)
+    names += review_sources
     road = json.loads((attempt / "road_geometry.json").read_text())
     route = json.loads((attempt / "turn_route_context.json").read_text())
     signal_context = json.loads((attempt / "signal_context.json").read_text())
@@ -279,7 +474,11 @@ def analyze_saved_straight(attempt, output):
             route.get("intersection_id") != road["intersection_id"] or
             road.get("intersection_polygon_xy_m") != config["site"]["crossing_polygon_xy_m"]):
         raise ValueError("Saved straight site differs from sourced comparison plan")
+    if any(context.get("site_review_sha256") != review["packet_sha256"]
+           for context in (road, route, signal_context, stop_context)):
+        raise ValueError("Saved straight context differs from reviewed site packet")
     if (signal_context.get("intersection_id") != road["intersection_id"] or
+            signal_context.get("device_inventory_source") != config["site"]["device_inventory_source"] or
             signal_context.get("native_signal_id") != config["site"]["governed_signal_ids"]["ego"] or
             signal_context.get("other_native_signal_id") != config["site"]["governed_signal_ids"]["other"] or
             stop_context.get("intersection_id") != road["intersection_id"] or
