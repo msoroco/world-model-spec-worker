@@ -28,7 +28,9 @@ class SavedDirectionTest(unittest.TestCase):
                     ('kin.velocity', 'm/s'), ('drv.stopped', 'boolean'),
                     ('dev.human_direction', 'structured'),
                     ('native_actor_state', 'structured'),
-                    ('camera_frame_join', 'structured'))], 'context_inputs': [],
+                    ('camera_frame_join', 'structured'),
+                    ('ego_pose', 'structured'), ('ego_speed', 'm/s'),
+                    ('bus_obeys_officer_direction', 'boolean'))], 'context_inputs': [],
                     'limitations': ['synthetic Native sample; no physical review']}
             _write_json(root / 'config.json', {
                 'case_id': signal_case_id('reference'), 'case_suffix': 'reference',
@@ -45,7 +47,8 @@ class SavedDirectionTest(unittest.TestCase):
             maps = []
             for frame, station in ((1, -20), (2, -13.75)):
                 rows.append({'native_frame': frame, 'actor_id': 'bus-1',
-                             'station_m': station,
+                             'station_m': station, 'lane_y_native_m': -1.75,
+                             'heading_native_deg': 0.0,
                              'velocity_native_xyz_mps': [0, 0, 0]})
                 signals.append({'native_frame': frame, 'actor_id': 'officer-1',
                                 'recipient_actor_id': 'bus-1', 'crossing_id': 'crossing-1',
@@ -104,7 +107,7 @@ class SavedDirectionTest(unittest.TestCase):
             self.assertEqual('synthetic_fixture', report['provenance_kind'])
             self.assertEqual('synthetic_native_sample',
                              result['measured_values']['officer_direction']['source_kind'])
-            self.assertEqual(5, len(result['recording_evidence']))
+            self.assertEqual(8, len(result['recording_evidence']))
             self.assertFalse(result['target_checks'][0]['physical_cause_confirmed'])
             from batch_pipeline.validation import recording_evidence
             recording_evidence(result, recording, lambda relative: root / relative)

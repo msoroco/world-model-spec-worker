@@ -126,7 +126,8 @@ def _joined_sources(root, mapping, bus, officer):
 
 def _derived_channels(root, description, bus, officer, mapping):
     expected = {'kin.velocity', 'drv.stopped', 'dev.human_direction',
-                'native_actor_state', 'camera_frame_join'}
+                'native_actor_state', 'camera_frame_join', 'ego_pose',
+                'ego_speed', 'bus_obeys_officer_direction'}
     channels = description.get('channels')
     if not isinstance(channels, list) or {c.get('name') for c in channels} != expected:
         raise ValueError('Exact recording channels differ')
@@ -142,9 +143,20 @@ def _derived_channels(root, description, bus, officer, mapping):
         with path.open('x') as stream:
             for b, s, m in zip(bus, officer, mapping):
                 speed = sum(v * v for v in b['velocity_native_xyz_mps']) ** .5
+                direction = s['direction']
+                stop_line = -7.0 * direction
+                front_distance = direction * (stop_line -
+                                              (b['station_m'] + direction * 6.0))
+                obeys_at_frame = bool(s['governing'] and speed <= .05 and
+                                      front_distance >= 0)
                 value = {'kin.velocity': speed, 'drv.stopped': speed <= .05,
                          'dev.human_direction': s, 'native_actor_state': b,
-                         'camera_frame_join': m}[name]
+                         'camera_frame_join': m,
+                         'ego_pose': {'station_m': b['station_m'],
+                                      'lane_y_native_m': b['lane_y_native_m'],
+                                      'heading_native_deg': b['heading_native_deg']},
+                         'ego_speed': speed,
+                         'bus_obeys_officer_direction': obeys_at_frame}[name]
                 stream.write(json.dumps({'time_s': m['time_s'], 'value': value},
                                         allow_nan=False) + '\n')
         evidence.append({'name': name, 'unit': channel['unit'], 'reference': relative})
