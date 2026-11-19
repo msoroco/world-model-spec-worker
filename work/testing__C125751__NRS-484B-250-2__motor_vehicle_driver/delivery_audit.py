@@ -1,4 +1,4 @@
-"""Independent source and measurement audit for the selected signal pair.
+"""Independent source and measurement audit for the selected C125751 cases.
 
 This CPU audit proves the delivery checker works on retained diagnostic sources.
 Synthetic pixels and declared reviews do not establish physical or legal truth.
@@ -14,7 +14,8 @@ from worker_exchange.media import audit as audit_video
 from worker_exchange.measurement_contract import validate, verify_report
 
 PREFIX = "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__"
-CASES = {PREFIX + "signal_operative": "Green", PREFIX + "signal_off": "Off"}
+CASES = {PREFIX + "signal_operative": "Green", PREFIX + "signal_off": "Off",
+         PREFIX + "opposite_left_turn": "Off"}
 CAMERAS = tuple(name + ".mkv" for name in SIZES)
 FRAMES = 1100
 
@@ -41,14 +42,18 @@ def audit_delivery(case_id, attempt, package, receipt_dir=None):
     if (config.get("law_id"), config.get("cell_id"), config.get("rate_hz"), config.get("duration_s")) != (
             "NRS-484B-250-2", "C125751", 20, 55):
         raise ValueError("Exact C125751 law, cell, rate and duration required")
-    if config.get("target_signal_state") != CASES[case_id]:
+    opposite = case_id.endswith("__opposite_left_turn")
+    if not opposite and config.get("target_signal_state") != CASES[case_id]:
         raise ValueError("Selected Native signal request differs")
     if result.get("provenance_kind") != "synthetic_fixture" or result.get("physical_acceptance_claimed") is not False:
         raise ValueError("Diagnostic fixture must not claim physical acceptance")
     hashes = result.get("source_evidence_hashes")
-    if not isinstance(hashes, dict) or not {"video_frames.jsonl", "signal_history.jsonl",
-            "crossing_history.jsonl", "stop_history.jsonl", "head_visibility_review.json",
-            "other_head_visibility_review.json"} <= set(hashes):
+    required_sources = {"video_frames.jsonl", "signal_history.jsonl",
+                        "crossing_history.jsonl", "stop_history.jsonl"}
+    required_sources |= ({"body_history.jsonl", "turn_route_context.json",
+                          "opposite-site-review.json"} if opposite else
+                         {"head_visibility_review.json", "other_head_visibility_review.json"})
+    if not isinstance(hashes, dict) or not required_sources <= set(hashes):
         raise ValueError("Saved result lacks all original participant and device sources")
     for name, expected in hashes.items():
         if not (attempt / name).is_file() or _sha(attempt / name) != expected:
@@ -81,8 +86,16 @@ def audit_delivery(case_id, attempt, package, receipt_dir=None):
                                       or row.get("time_s") != mapping[i]["time_s"] for i, row in enumerate(rows)):
             raise ValueError("Participant or device time join differs: " + name)
 
-    plan, contract = _read(package / "case-plan.json"), _read(package / "measurement-contract.json")
-    validate(contract, plan["requirement_dispositions"], (package / "finalizer.py").read_text(), case_id)
+    plan = _read(package / "case-plan.json")
+    if opposite:
+        contract = _read(package / "opposite-measurement-contract.json")
+        construction = _read(package / "opposite-primary-construction.json")
+        analyzer = next(item["content"] for item in construction["files"]
+                        if item["path"] == "runner.py")
+    else:
+        contract = _read(package / "measurement-contract.json")
+        analyzer = (package / "finalizer.py").read_text()
+    validate(contract, plan["requirement_dispositions"], analyzer, case_id)
     analysis_path = attempt / "analysis-report.json"
     analysis = _read(analysis_path)
     if analysis.get("case_id") != case_id or analysis.get("physical_acceptance_claimed") is not False:
@@ -90,14 +103,26 @@ def audit_delivery(case_id, attempt, package, receipt_dir=None):
     measurements = verify_report(contract, analysis, attempt)
     if len(measurements) != 4:
         raise ValueError("Four exact source-hashed measurements required")
-    entry = measurements["signal_at_entry"]["value"]["at_body_entry"]
+    entry = measurements["signal_at_entry"]["value"]
+    if not opposite:
+        entry = entry["at_body_entry"]
     if entry["ego"]["native_state"] != CASES[case_id]:
         raise ValueError("Measured Native state differs from selected case")
     checks = result.get("target_checks")
-    if (not isinstance(checks, list) or len(checks) != 1 or checks[0].get("target") != "ego_native_signal_state_at_body_entry"
-            or checks[0].get("matched") is not True or checks[0].get("measured") != CASES[case_id]):
+    if opposite:
+        if (not isinstance(checks, list) or len(checks) != 1 or
+                checks[0].get("target") != "opposing_left_turn_body_entries" or
+                checks[0].get("matched") is not True or
+                checks[0].get("physical_cause_confirmed") is not False):
+            raise ValueError("Saved opposite-turn body-entry target is missing or unmatched")
+        timing = measurements["body_entry_timing"]["value"]["first_body_entry"]
+        if not all(timing.get(role, {}).get("frame") in {row["carla_frame"] for row in mapping}
+                   for role in ("ego", "other")):
+            raise ValueError("Opposite-turn body entries lack original frame join")
+    elif (not isinstance(checks, list) or len(checks) != 1 or checks[0].get("target") != "ego_native_signal_state_at_body_entry"
+          or checks[0].get("matched") is not True or checks[0].get("measured") != CASES[case_id]):
         raise ValueError("Saved Native signal target is missing or unmatched")
-    for name in ("head_visibility_review.json", "other_head_visibility_review.json"):
+    for name in (() if opposite else ("head_visibility_review.json", "other_head_visibility_review.json")):
         review = _read(attempt / name)
         source = review.get("camera", "") + ".mkv"
         if source not in CAMERAS or review.get("source_video_sha256") != _sha(attempt / source):
