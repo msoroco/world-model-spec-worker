@@ -13,7 +13,7 @@ NATIVE = PACKAGE / 'native'
 MODULES = ('pathing.py', 'scene_plan.py', 'live_readback.py',
            'recording_contract.py', 'route_control.py', 'capture.py',
            'statutory_variants.py', 'variant_recording_contract.py',
-           'variant_capture.py')
+           'variant_capture.py', 'analyze.py', 'variant_analyze.py')
 
 
 def sha(path):
@@ -56,6 +56,7 @@ def build(kind, route, candidate='primary'):
             'mechanisms': {'scene': 'source-surveyed live map and barrier actor',
                            'control': 'native/route_control.py',
                            'capture': 'native/variant_capture.py',
+                           'source_analysis': 'native/variant_analyze.py',
                            'finalization': 'pending_source_derived_variant_finalizer'}}
 
 
