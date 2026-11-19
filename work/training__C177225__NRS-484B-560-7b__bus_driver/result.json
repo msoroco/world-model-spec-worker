@@ -1,17 +1,90 @@
 {
   "applied_update": 16,
   "assignment_id": "training__C177225__NRS-484B-560-7b__bus_driver",
-  "candidate_plans_proven": 0,
+  "candidate_plans_proven": 8,
   "carla_executed": false,
   "cases_planned": 2,
   "cases_selected": 2,
-  "comparison_audits_passed": 0,
+  "comparison_audits_passed": 1,
   "input_sha256": "0f98bdbc67694d46078a43e334e663045d482fbe71132a40d74f69a9acd5b8d4",
-  "readiness_kind": null,
-  "reason": "Current selected CPU diagnostic chains passed before final recording-description repair, but scoped strict found missing mandatory ego_pose, ego_speed and bus-response channels. Add those source-derived channels to root and all selected constructions/proposals, rebind changed hashes, rerun affected offline/compatibility/saved, physical and independent audits, then require scoped strict before readiness. Original Native and legal acceptance remain unobserved.",
+  "readiness_kind": "delivery_prepared",
+  "reason": "Eight current JSON-graph CPU diagnostic candidate chains and source-bound comparison, physical fixture lifecycle, delivery rejection and independent audit pass. Original Native capture, physical acceptance and legal judgment remain unobserved.",
   "recordings_accepted": 0,
-  "status": "partial",
-  "tests": [],
+  "status": "ready",
+  "tests": [
+    {
+      "command": "runtime.py preflight",
+      "exit_code": 0,
+      "log": "update078-preflight.log",
+      "sha256": "3135f9947a99d27f4b72458aa884c3796fc5fc377bcf42f268774a0421378978"
+    },
+    {
+      "command": "unittest discover assignment",
+      "exit_code": 0,
+      "log": "update078-root-tests.log",
+      "sha256": "a5bf2cda62041a5627701dfbc60499f51b432b435dca7c617cd77c7e2eb1a989"
+    },
+    {
+      "command": "runner.py --check",
+      "exit_code": 0,
+      "log": "update078-root-runner.log",
+      "sha256": "2ba26842e29ce907588533beb33d744f36c9d1bd971d55b76b0e5a162be09119"
+    },
+    {
+      "command": "execution_manifest.validate",
+      "exit_code": 0,
+      "log": "update079-manifest-validation.log",
+      "sha256": "65bc4663d714029826dc4171971257bb5b0f21a1afcf1823cf3d2bae38cfd24a"
+    },
+    {
+      "command": "validate_semantic_delivery.py",
+      "exit_code": 0,
+      "log": "update079-semantic-validation.log",
+      "sha256": "8730ad8127a1c21f5ab60ade560cec4070a990685ef7baeee5a2b7114cea7ba7"
+    },
+    {
+      "command": "validate_delivery_contract.py",
+      "exit_code": 0,
+      "log": "update079-delivery-validation.log",
+      "sha256": "b9f7c8080dbd41063261a1ee5912b24ff46893766a08bddbb134c24c784f1788"
+    },
+    {
+      "command": "audit_current_selected_update078.py",
+      "exit_code": 0,
+      "log": "update079-final-selected-audit.log",
+      "sha256": "7fbcd98257c305eb391b98894e659f4b1889ebe25942d7d99f9859c35f6362d3"
+    },
+    {
+      "command": "prove_comparison.py",
+      "exit_code": 0,
+      "log": "update077-comparison-proof.log",
+      "sha256": "74ab1b3dc349ad54738252fc966b3bd14c8e440e70458fa150d6fb3b989942c2"
+    },
+    {
+      "command": "audit_delivery.py --diagnostic reference",
+      "exit_code": 0,
+      "log": "update077-reference-delivery-audit.log",
+      "sha256": "cfc17036dde60e0bece8bf5cca8defb4b46c64f51ba3ba69262974a1f7a24028"
+    },
+    {
+      "command": "acceptance_delivery.py --diagnostic reference",
+      "exit_code": 0,
+      "log": "update077-reference-delivery-acceptance.log",
+      "sha256": "286ddf71d5433019f4ea2341f0d49ad3d3babbffd75404cc71a88ee2b5cd0966"
+    },
+    {
+      "command": "audit_delivery.py --diagnostic contrast",
+      "exit_code": 0,
+      "log": "update077-contrast-delivery-audit.log",
+      "sha256": "fdb0d369449fd87c261c5cc071d8d3795aad99cfc2f011454682363f08e9e11e"
+    },
+    {
+      "command": "acceptance_delivery.py --diagnostic contrast",
+      "exit_code": 0,
+      "log": "update077-contrast-delivery-acceptance.log",
+      "sha256": "20f2ae3225755685b4fb4a7648780d3d7fc02fbf551109b59100b02e5540c720"
+    }
+  ],
   "historical_tests": [
     {
       "command": ".venv-cpu/bin/python -m unittest discover -s work/training__C177225__NRS-484B-560-7b__bus_driver -p test_officer_direction.py -v",
@@ -873,11 +946,12 @@
     }
   ],
   "current_json_graph_cpu": {
-    "manifest_sha256": "41e85b969f62794e11c9aba8e8580b17ec34ed4183f31bd7e8f0a3c00d765a59",
-    "matrix_index_sha256": "de2b9f2818d13488df90332736786d42d4e38b06be636b1c275342e633696aff",
-    "independent_audit_sha256": "4bfeada9d4acd4e81f84aec3ff3962d0a810560920722e6c049b7ad1d5577505",
+    "manifest_sha256": "1ee6e7768a38602b3acadcc632326be23e85fefe8146db543fe09d80af7d4896",
+    "matrix_index_sha256": "8ab3847d914e8e1a6bad173cdf14b7d91c3781337d9510317b2844d72f7f0130",
+    "independent_audit_sha256": "55d8f93c5fbbef3ec58ae65469352dca5291647f3eb62bf7c89d36a04951bea9",
     "candidate_chains_passed": 8,
     "physical_fixture_kind": "synthetic_fixture",
     "original_native_accepted": false
-  }
+  },
+  "first_gpu_delivery_command": "PYTHONPATH=runtime/pipeline/scenario_pipeline python3.11 -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C177225__NRS-484B-560-7b__bus_driver --case training__C177225__NRS-484B-560-7b__bus_driver__reference --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT"
 }

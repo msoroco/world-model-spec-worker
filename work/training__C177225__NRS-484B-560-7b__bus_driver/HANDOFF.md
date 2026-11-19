@@ -1,14 +1,14 @@
 # training__C177225__NRS-484B-560-7b__bus_driver
 
-Status: partial. No delivery recording is selected or claimed.
+Status: ready/delivery_prepared as of Update079. Two exact cases are selected for CPU handoff; no original delivery recording or acceptance is claimed.
 
 ## Source review
 
 Law: NRS 484B.560(7)(b). Exact text and topic inventory are referenced by hashes in `case-plan.json`. The 1 supplied witness row(s) are planning context, not execution proof. Membership rows: {'full-train': 0}. No accepted equivalence receipt was verified.
 
-## Planned controlled comparison
+## Historical initial controlled-comparison plan
 
-rail-crossing officer direction obeyed versus not obeyed. Compare only `bus_obeys_officer_direction` (bool) while fixing cell, actor, legal context, traffic controls, weather, other controller settings, and capture plan. The 2 case definitions are unselected and have no observed values.
+rail-crossing officer direction obeyed versus not obeyed. Compare only `bus_obeys_officer_direction` (bool) while fixing cell, actor, legal context, traffic controls, weather, other controller settings, and capture plan. The two cases were unselected at this initial planning stage; Update079 records their selected CPU proof. No original Native values have been observed.
 
 ## Incomplete CPU work and resumption
 
@@ -147,3 +147,9 @@ The Update067 semantic case fields affect the pinned compatibility request. All 
 The root `config.json` now lists both selected case IDs; the root `construction.json` inline config matches it. `materialize_top_level.py` preserves that case inventory while verifying all other root config values match the pinned reference primary. `case-plan.json.camera_plan` now has one subject/view/interval coverage row for each source camera and synchronized four-view composition. Each exact manifest entry now includes the three Native handoff environment variables and a saved-only `post_capture` command bound to the refreshed processing log. These metadata edits did not alter any selected construction SHA or the tested controllers/finalizer. Post-edit semantic, delivery-contract, negative-physical-draft, 33-test suite, scoped static complete, primary receipt and candidate receipt validations all pass (`update068r-*` logs). Direct execution-manifest validation still stops at the absent reference `physical_preparation` proof (`update068r-manifest-validation.log`), and scoped strict rejects the truthful partial package (`update068r-scoped-strict.log`).
 
 Next CPU work across this batch: finish other incomplete assignments and the ordered shared GPU queue/local-integration proof; review C177225's canonical branch coverage and source-dependent readiness path once actual Native physical preparation can be supplied. For C177225, its positive complete-motion fixture and lifecycle receipt cannot be produced from this CPU host's synthetic source rows without fabricating Native provenance. The draft negative fixtures and lifecycle unit tests remain available for an operator-provided original attempt. Keep this assignment partial and do not promote its diagnostic acceptance results.
+
+## Update079 current JSON-graph CPU handoff
+
+The two selected bus/officer cases and all four candidates per case now pass the current pinned JSON-graph offline, positive/negative compatibility, and recorded-only saved-processing chains. `update075c-selected-index.json` binds all eight chains (SHA-256 `8ab3847d914e8e1a6bad173cdf14b7d91c3781337d9510317b2844d72f7f0130`). The independent current-source audit `update078-final-selected-audit.json` passes (SHA-256 `55d8f93c5fbbef3ec58ae65469352dca5291647f3eb62bf7c89d36a04951bea9`). Synthetic physical complete/incomplete/missing fixtures and lifecycle proof, exact source-bound comparison, diagnostic delivery audit and original-only rejection all pass. The manifest now binds implemented `ego_pose`, `ego_speed`, and `bus_obeys_officer_direction` acquisition channels. Direct manifest, semantic, package-compatibility and delivery-contract validation pass. The assignment-scoped strict delivery gate passes at `update079-scoped-strict.log` (SHA-256 `0ca52ef3c3be8f5f7299bd93bb16f2381bcafbd101433b8d4b3745d8dd83674d`). `result.json` is `ready`/`delivery_prepared`, with eight proven candidate plans and one comparison audit.
+
+This is CPU preparation and synthetic diagnostic proof. Original Native motion, camera pixels, officer visibility, railroad verification, physical acceptance, canonical recording membership and legal judgment remain unobserved for the GPU operator. The exact first delivery command is in `result.json`. The full 253-assignment strict gate has not passed.
