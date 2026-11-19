@@ -37,7 +37,7 @@ def build():
     trace_base=json.loads(example['trace.jsonl'].splitlines()[0])
     evidence_base=json.loads(example['capture/evidence.jsonl'].splitlines()[0])
     frame_base=json.loads(example['capture/native/frames.jsonl'].splitlines()[0])
-    base_graph=next(g for g in example_spec['graphs'] if g['path'].endswith('base/00038033.pkl'))
+    base_graph=next(g for g in example_spec['graphs'] if g['path'].endswith('base/00038033.adapter.json'))
     crossing=[];controller=[];mapping=[];traces=[];evidence=[];native_frames=[];graphs=[]
     for i in range(60):
         template=templates[0 if i<30 else 1 if i==30 else 2]
@@ -60,8 +60,9 @@ def build():
         evidence.append(item)
         native=json.loads(json.dumps(frame_base))
         native.update(frame=frame,simulation_time=time_s,
-                      base=f'graphs/base/{frame:08d}.pkl',
-                      abstract=f'graphs/abstract/{frame:08d}.pkl')
+                      base=f'graphs/base/{frame:08d}.adapter.json',
+                      abstract=f'graphs/abstract/{frame:08d}.adapter.json',
+                      adapter_graph=f'graphs/base/{frame:08d}.adapter.json')
         native_frames.append(native)
         attributes={key:value for key,value in base_graph['attributes'].items()
                     if key in ('frame','simulation_time_s','units','observed_evidence')}
