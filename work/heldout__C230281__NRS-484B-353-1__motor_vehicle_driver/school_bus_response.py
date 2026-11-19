@@ -319,6 +319,76 @@ def finalize_first_case(attempt):
             raise ValueError('Preexisting derived subject speed differs from original')
     else:
         channel.write_text(content)
+    pupil_rows = _rows(_jsonl(attempt / 'pupil_original.jsonl'), 'pupil')
+    def retain_derived(relative, content):
+        path = attempt / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        if path.exists():
+            if path.read_text() != content:
+                raise ValueError('Preexisting derived school-bus evidence differs: ' + relative)
+        else:
+            path.write_text(content)
+        return {'reference': relative, 'sha256': _sha_file(path)}
+    evidence = [{'name': 'subject_speed_mps', 'unit': 'm/s',
+                 'reference': channel.name, 'sha256': _sha_file(channel)}]
+    for declared_channel in description['channels']:
+        name = declared_channel['name']
+        if name == 'subject_speed_mps':
+            continue
+        values = []
+        for i, (motion_row, pupil_row, red_row) in enumerate(zip(motion, pupil_rows, signal)):
+            candidate = {
+                'school_bus_red_pixel_candidates': red_row,
+                'pupil_service_motion_candidate': pupil_row['pupil_distance_to_bus_m'],
+                'ru.school_bus': {'bus_id': motion_row['bus_id'],
+                                  'stopped_candidate': motion_row['bus_speed_mps'] <= STOP_TOLERANCE_MPS,
+                                  'equipment_verified': False},
+                'dev.school_bus_signal': {'commanded': red_row['red_signal_commanded'],
+                                          'phase_commanded': red_row['red_phase_commanded'],
+                                          'camera_pixels_verified': False},
+                'drv.stopped': {'subject_id': motion_row['subject_id'],
+                                'stopped_candidate': speeds[i] <= STOP_TOLERANCE_MPS},
+                'ru.child': {'pupil_id': pupil_row['pupil_id'],
+                             'distance_to_bus_m': pupil_row['pupil_distance_to_bus_m'],
+                             'purpose_verified': False},
+                'drv.meeting': {'selected_branch': 'meeting_stop', 'physical_relation_verified': False},
+                'drv.overtaking': {'selected_branch': 'meeting_stop', 'physical_relation_verified': False},
+                'rel.same_direction': {'selected_branch': 'meeting_stop', 'physical_relation_verified': False},
+                'kin.velocity': {'subject_speed_mps': speeds[i],
+                                 'travel_tangent_xy': motion_row['travel_tangent_xy']},
+                'st.median_or_divider': {'road_source_sha256': source['source_sha256']['road.xodr'],
+                                         'division_verified': False},
+                'st.roadway': {'road_source_sha256': source['source_sha256']['road.xodr'],
+                               'same_roadway_verified': False},
+                'dev.human_direction': {'officer_control_declared': False,
+                                        'physical_control_verified': False},
+            }[name]
+            values.append({'frame': motion_row['frame'], 'time_s': motion_row['time_s'],
+                           'value': candidate})
+        relative = 'channels/' + name + '.jsonl'
+        retained = retain_derived(relative, ''.join(json.dumps(row, allow_nan=False) + '\n'
+                                                    for row in values))
+        evidence.append({'name': name, 'unit': declared_channel['unit'], **retained})
+    context_values = {
+        'bus_subject_identity': {'bus_id': motion[0]['bus_id'],
+                                 'subject_id': motion[0]['subject_id'], 'physical_identity_verified': False},
+        'opposing_road_lane_identity': {'road_source_sha256': source['source_sha256']['road.xodr'],
+                                        'opposing_lane_verified': False},
+        'pupil_purpose': {'pupil_id': pupil_rows[0]['pupil_id'],
+                          'requested_purpose': pupil_rows[0]['requested_purpose'],
+                          'actual_purpose_verified': False},
+        'signal_and_camera_sources': {'signal_sha256': source['source_sha256']['signal_command_original.jsonl'],
+                                      'camera_sha256': {name: source['source_sha256'][name]
+                                                        for name in ('overview.mkv','approach.mkv',
+                                                                     'reference_corner.mkv','driver_reference.mkv')},
+                                      'actual_pixels_verified': False},
+    }
+    for declared_context in description['context_inputs']:
+        name = declared_context['name']
+        relative = 'contexts/' + name + '.json'
+        retained = retain_derived(relative, json.dumps({name: context_values[name]},
+                                                       allow_nan=False) + '\n')
+        evidence.append({'name': name, 'unit': declared_context['unit'], **retained})
     minimum = min(speeds[i] for i in active)
     result = {'case_id':FIRST_CASE_ID,
               'measured_values':{'minimum_subject_speed_mps':minimum,
@@ -328,7 +398,8 @@ def finalize_first_case(attempt):
               'target_checks':[{'target':'subject stopped during school-bus red interval',
                                 'requested':0.0,'measured':minimum,
                                 'method':'minimum original subject velocity during commanded red interval',
-                                'tolerance':STOP_TOLERANCE_MPS,'matched':False,
+                                'tolerance':STOP_TOLERANCE_MPS,
+                                'matched':minimum <= STOP_TOLERANCE_MPS,
                                 'physical_cause_confirmed':False,
                                 'cause_evidence':'motion_original.jsonl and video_frames.jsonl'}],
               'setup_confirmed':False,'behavior_attempted':True,
@@ -342,8 +413,7 @@ def finalize_first_case(attempt):
                                   'reference_corner.mkv','driver_reference.mkv'],
               'video_frame_map_reference':'video_frames.jsonl',
               'recording_description':description,
-              'recording_evidence':[{'name':'subject_speed_mps','unit':'m/s',
-                                     'reference':channel.name,'sha256':_sha_file(channel)}],
+              'recording_evidence':evidence,
               'realized_observables':{'subject_speed_mps':{
                   'value':minimum,'unit':'m/s','method':'original actor velocity',
                   'time_window':'retained first-case interval','statistic':'minimum',

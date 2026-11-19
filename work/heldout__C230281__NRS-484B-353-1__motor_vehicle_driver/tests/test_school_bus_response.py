@@ -223,7 +223,8 @@ class SourceResponse(unittest.TestCase):
         (attempt/'config.json').write_text(json.dumps({
             'selected_case_id':CASE_ID,'law_id':'NRS-484B-353-1',
             'cell_id':'C230281','actor':'motor_vehicle_driver',
-            'case':{'recording_description':{'summary':'diagnostic first case'}},
+            'case':{'recording_description':json.loads((Path(__file__).resolve().parents[1]
+                    /'config.json').read_text())['case']['recording_description']},
             'school_bus_lamp_review':{'front_roi':[1,1,5,3],
                                       'rear_roi':[1,1,5,3],
                                       'pupil_purpose':'receiving'}})+'\n')
@@ -239,6 +240,8 @@ class SourceResponse(unittest.TestCase):
         self.assertFalse(native['setup_confirmed'])
         self.assertFalse(native['physical_acceptance_claimed'])
         self.assertEqual(native['realized_observables']['subject_speed_mps']['value'],0.0)
+        self.assertTrue(native['target_checks'][0]['matched'])
+        self.assertFalse(native['target_checks'][0]['physical_cause_confirmed'])
         response=native['measured_values']['stop_response_candidate']
         self.assertEqual((response['red_onset_frame'],response['red_cessation_frame']),
                          (101,104))
