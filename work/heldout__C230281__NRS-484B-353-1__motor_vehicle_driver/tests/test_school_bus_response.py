@@ -21,6 +21,40 @@ def corners(x):
 
 
 class SourceResponse(unittest.TestCase):
+    def test_returned_restart_case_cpu_proof_bundle(self):
+        package = Path(__file__).resolve().parents[1]
+        proof = json.loads((package/'restart-case-proof-bundle.json').read_text())
+        self.assertEqual(proof['format'], 'worker-exact-case-cpu-proof-bundle')
+        self.assertTrue(proof['case_id'].endswith('__meeting_restart_before_red_ceases'))
+        for field, name in (('construction_sha256','restart-construction.json'),
+                            ('execution_manifest_sha256','execution-manifest.json'),
+                            ('fixture_recipe_sha256','school-bus-restart-recipe.json'),
+                            ('diagnostic_spec_sha256','school-bus-restart-diagnostic.json'),
+                            ('measurement_contract_sha256','restart-measurement-contract.json')):
+            self.assertEqual(proof[field], hashlib.sha256((package/name).read_bytes()).hexdigest())
+        decoded = {}
+        for name, item in proof['artifacts'].items():
+            raw = zlib.decompress(base64.b64decode(item['zlib_base64']))
+            self.assertEqual((len(raw), hashlib.sha256(raw).hexdigest()),
+                             (item['bytes'], item['sha256']))
+            decoded[name] = raw
+        compatibility = json.loads(decoded['compatibility.json'])
+        positive = json.loads(decoded['saved-positive-processing.json'])
+        missing = json.loads(decoded['saved-missing-processing.json'])
+        audit = json.loads(decoded['independent-delivery-audit.json'])
+        response = compatibility['measurement_examples']['stop_response_candidate']['value']
+        self.assertTrue(compatibility['passed'])
+        self.assertEqual(response['premature_restart_frame'], 10080)
+        self.assertFalse(response['held_stop_until_cessation_candidate'])
+        self.assertTrue(positive['passed'] and positive['originals_preserved'])
+        self.assertFalse(positive['missing_evidence'])
+        self.assertTrue(missing['passed'] and missing['missing_evidence'] and
+                        missing['originals_preserved'])
+        self.assertTrue(audit['software_source_join_passed'])
+        self.assertEqual((audit['frame_count'], len(audit['source_decode'])), (160, 4))
+        self.assertFalse(proof['checks']['actual_native_capture'])
+        self.assertFalse(proof['checks']['physical_acceptance_claimed'])
+
     def test_returned_restart_diagnostic_has_source_bound_temporal_change(self):
         package = Path(__file__).resolve().parents[1]
         spec_path = package/'school-bus-restart-diagnostic.json'
