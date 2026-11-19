@@ -1,0 +1,119 @@
+{
+  "law_id": "NRS-484B-207-2",
+  "cell_id": "C179789",
+  "actor": "motor_vehicle_driver",
+  "selected_case_id": "heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__gives_way_holds_speed",
+  "rate_hz": 20,
+  "duration_s": 8,
+  "required_atoms": [
+    "rel.visible",
+    "rel.ahead_behind_in_lane",
+    "rel.bearing",
+    "kin.speed",
+    "kin.accel_longitudinal",
+    "rel.occupies"
+  ],
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "pose_strategy": "subject-mounted original Native source camera",
+      "fov_deg": 95
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "subject-mounted original Native source camera",
+      "fov_deg": 90
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "subject-mounted original Native source camera",
+      "fov_deg": 100
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "subject-mounted original Native source camera",
+      "fov_deg": 85
+    }
+  ],
+  "frames": 160,
+  "source_packets": [],
+  "case": {
+    "case_id": "heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__gives_way_holds_speed",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "subject_right_offset_m",
+          "unit": "m",
+          "method": "original actor pose against Native road tangent",
+          "sampling_rate_hz": 20,
+          "time_window": "notice through pass completion",
+          "reference_frame": "road tangent",
+          "uncertainty": "Native pose and waypoint precision"
+        },
+        {
+          "name": "subject_speed_mps",
+          "unit": "m/s",
+          "method": "original actor velocity",
+          "sampling_rate_hz": 20,
+          "time_window": "entire capture",
+          "reference_frame": "world",
+          "uncertainty": "Native actor velocity precision"
+        },
+        {
+          "name": "observed_notice_source_context",
+          "unit": "structured",
+          "method": "Not applicable to this generated-signal case; no observed-notice assertion is made",
+          "sampling_rate_hz": 20,
+          "time_window": "notice and passing interval",
+          "reference_frame": "subject and overtaker original actor identities",
+          "uncertainty": "Simulated visibility and camera pixels do not establish driver observation"
+        },
+        {
+          "name": "audible_signal_source_context",
+          "unit": "structured",
+          "method": "Original generated signal_command_original.jsonl and signal_audio_envelope_original.jsonl joined to overtaken_source.jsonl and video_frames.jsonl",
+          "sampling_rate_hz": 20,
+          "time_window": "notice and passing interval",
+          "reference_frame": "original frame and overtaker actor identity",
+          "uncertainty": "Command and generated envelope do not establish sound propagation or hearing"
+        },
+        {
+          "name": "full_body_pass_gap_m",
+          "unit": "m",
+          "method": "Signed rear-of-overtaker minus front-of-subject longitudinal gap from original body corners and road_tangent_xy, joined to frame map and trace",
+          "sampling_rate_hz": 20,
+          "time_window": "entire passing interval",
+          "reference_frame": "original road tangent",
+          "uncertainty": "Completion is bracketed between adjacent original frames"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "right_pass_permission_context",
+          "unit": "structured",
+          "method": "Official NRS 484B.210 source reference and, for a right-pass attempt, original right_pass_road_survey.json plus separately reviewed premise; permission and safety remain unresolved until source review"
+        }
+      ],
+      "limitations": [
+        "Scripted notice is a construction stimulus; audible/visual notice and right-pass permission are unverified by this prototype. No legal outcome is inferred.",
+        "Alternative notice modalities are explicitly not applicable where their original source is absent; their channel descriptions do not assert an observed or heard notice.",
+        "The right-pass source context is a review requirement, not a verified permission or legal conclusion."
+      ]
+    }
+  },
+  "supported_case_ids": [
+    "heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__gives_way_holds_speed",
+    "heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__observed_gives_way_holds_speed",
+    "heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__no_right_yield_holds_speed",
+    "heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__gives_way_increases_speed",
+    "heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__right_pass_permitted_no_right_yield"
+  ]
+}

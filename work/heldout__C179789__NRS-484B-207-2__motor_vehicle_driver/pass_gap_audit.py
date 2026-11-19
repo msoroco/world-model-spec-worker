@@ -220,6 +220,16 @@ if __name__ == '__main__':
     parser.add_argument('--source', required=True)
     parser.add_argument('--output', required=True)
     parser.add_argument('--audible', action='store_true')
+    parser.add_argument('--fixture-results', action='store_true')
+    parser.add_argument('--case-id')
     args = parser.parse_args()
     report = diagnostic_outcomes(args.source, args.output, audible=args.audible)
     (Path(args.output) / 'diagnostic-outcomes.json').write_text(json.dumps(report, indent=2) + '\n')
+    if args.fixture_results:
+        if not args.case_id:
+            raise ValueError('Fixture results require an exact case ID')
+        for kind in ('complete_motion', 'incomplete_motion', 'missing_evidence'):
+            result = physical_fixture_result(report, kind, args.case_id)
+            (Path(args.output) / (kind + '.json')).write_text(json.dumps(result, indent=2) + '\n')
+            print(args.case_id, kind, result['physical_checks']['maneuver']['status'],
+                  'actual_native_maneuver_status=unverified')
