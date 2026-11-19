@@ -246,90 +246,79 @@
       ]
     }
   ],
-  "source_observation_mapping": [
-    {
-      "term": "drv.turning",
+  "source_observation_mapping": {
+    "drv.turning": {
+      "evidence": "turn_history.jsonl",
+      "channels": [
+        "destination_exit"
+      ],
+      "source_refs": [
+        "turn_history.jsonl"
+      ],
       "measurement_or_context": "left-turn command and observed heading/path",
+      "limitation": "synthetic CPU diagnostic does not establish actual Native or legal fact"
+    },
+    "drv.in_intersection": {
       "evidence": "turn_history.jsonl",
       "channels": [
-        "trace.jsonl"
+        "destination_exit"
       ],
       "source_refs": [
         "turn_history.jsonl"
       ],
-      "limitation": "synthetic CPU diagnostic does not establish actual Native or legal fact"
-    },
-    {
-      "term": "drv.in_intersection",
       "measurement_or_context": "complete body intersects sourced junction polygon before exit",
-      "evidence": "turn_history.jsonl",
-      "channels": [
-        "road_context.json"
-      ],
-      "source_refs": [
-        "turn_history.jsonl"
-      ],
       "limitation": "synthetic CPU diagnostic does not establish actual Native or legal fact"
     },
-    {
-      "term": "st.centre_line",
-      "measurement_or_context": "destination centerline kind and 2D geometry",
+    "st.centre_line": {
       "evidence": "site_packet.json",
-      "channels": [
-        "road_context.json"
-      ],
+      "channels": [],
       "source_refs": [
         "site_packet.json"
       ],
+      "measurement_or_context": "destination centerline kind and 2D geometry",
       "limitation": "synthetic CPU diagnostic does not establish actual Native or legal fact"
     },
-    {
-      "term": "rel.occupies",
-      "measurement_or_context": "complete body right-half containment and centerline intersection at exit",
+    "rel.occupies": {
       "evidence": "turn_history.jsonl",
       "channels": [
-        "channels/destination_exit.jsonl"
+        "destination_exit"
       ],
       "source_refs": [
         "turn_history.jsonl"
       ],
+      "measurement_or_context": "complete body right-half containment and centerline intersection at exit",
       "limitation": "synthetic CPU diagnostic does not establish actual Native or legal fact"
     },
-    {
-      "term": "kin.position",
-      "measurement_or_context": "original-frame position and complete-body exit sample",
+    "kin.position": {
       "evidence": "trace.jsonl",
       "channels": [
-        "body_history.jsonl"
+        "destination_exit"
       ],
       "source_refs": [
         "trace.jsonl"
       ],
+      "measurement_or_context": "original-frame position and complete-body exit sample",
       "limitation": "synthetic CPU diagnostic does not establish actual Native or legal fact"
     },
-    {
-      "term": "st.lane_direction",
-      "measurement_or_context": "opposing signed driving lanes on destination Native road",
+    "st.lane_direction": {
       "evidence": "site_packet.json",
-      "channels": [
-        "road_context.json"
-      ],
+      "channels": [],
       "source_refs": [
         "site_packet.json"
       ],
+      "measurement_or_context": "opposing signed driving lanes on destination Native road",
       "limitation": "synthetic CPU diagnostic does not establish actual Native or legal fact"
     },
-    {
-      "term": "st.lane_enters",
-      "measurement_or_context": "approach/connector/destination road transitions",
+    "st.lane_enters": {
       "evidence": "body_history.jsonl",
       "channels": [
-        "road_geometry.json"
+        "destination_exit"
       ],
       "source_refs": [
         "body_history.jsonl"
       ],
+      "measurement_or_context": "approach/connector/destination road transitions",
       "limitation": "synthetic CPU diagnostic does not establish actual Native or legal fact"
     }
-  ]
+  }
 }
