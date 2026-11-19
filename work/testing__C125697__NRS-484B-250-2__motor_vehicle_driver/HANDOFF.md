@@ -197,3 +197,7 @@ Remaining CPU work before strict readiness: author and bind three-outcome plus c
 To stay within the 8,600-file return cap, 100 older logs absent from current JSON/Python proof references were moved to ignored `.runtime-work/retired-logs/ready-c125697-20261115/`; its manifest retains original paths. Current proof-bound files were retained, and the scoped strict gate was rerun.
 
 2026-11-16 file-cap maintenance: moved 43 historical `.log` files absent from this assignment's current `execution-manifest.json` and `result.json` to ignored `.runtime-work/archived-unbound-logs/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/`. The current scoped `worker_check.py --complete` passed after moving them. This preserves local bytes for restoration while keeping the returned `work/` file count within 8,600; older handoff references to those historical logs point to the ignored local archive.
+
+## 2026-11-18 return-budget log preservation
+
+Fifty historical result-only CPU command logs were losslessly archived as `cpu-test-log-archive-v2.json` SHA256 `5b84bff9b63cbfc4f9e8327dfbe714b6a05f2dcf1f7fb18f6fab4daf011d0a98`. Each member preserves its original filename, UTF-8 text and SHA256; `result.json.tests` now binds the archive and original member hash. No construction, source, compatibility receipt or saved-processing receipt was changed. This creates return-file slots for the worker-owned C158196 physical preparation proofs. This package remains partial.
