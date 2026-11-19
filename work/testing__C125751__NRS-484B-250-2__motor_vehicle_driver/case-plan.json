@@ -1,27 +1,56 @@
 {
-  "assignment_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver",
   "actor": "motor_vehicle_driver",
-  "cell_id": "C125751",
-  "law_id": "NRS-484B-250-2",
-  "selected_branch": "Measured crossing-entry timing at a median-opening intersection.",
+  "assignment_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver",
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "startup through final 55-second observation",
+        "subject": "both complete vehicle bodies, median crossing and approach paths",
+        "view": "overview"
+      },
+      {
+        "interval": "startup through ego clearance",
+        "subject": "ego approach, governing signal head and stop reference",
+        "view": "approach"
+      },
+      {
+        "interval": "startup through other clearance",
+        "subject": "other approach, governing signal head and stop reference",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "startup through ego clearance",
+        "subject": "ego-relative approach, signal, crossing and turn context",
+        "view": "driver_reference"
+      }
+    ],
+    "duration_s": 55,
+    "limitations": [
+      "Current pose file is an explicitly synthetic diagnostic fixture with identical camera poses; Native framing and actual visibility are not established."
+    ],
+    "profile": "overview1080-capability"
+  },
   "cases": [
     {
       "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_operative",
-      "target_law_id": "NRS-484B-250-2",
-      "purpose": "Official traffic-control device governs both approaches; signal operates at entry; examine statutory exclusion."
+      "purpose": "Official traffic-control device governs both approaches; signal operates at entry; examine statutory exclusion.",
+      "target_law_id": "NRS-484B-250-2"
     },
     {
       "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
-      "target_law_id": "NRS-484B-250-2",
-      "purpose": "Same junction and approaches; installed uncovered signal Off at entry; examine subsection 4 qualification, stop and priority history."
+      "purpose": "Same junction and approaches; installed uncovered signal Off at entry; examine subsection 4 qualification, stop and priority history.",
+      "target_law_id": "NRS-484B-250-2"
     }
   ],
+  "cell_id": "C125751",
   "comparisons": [
     {
       "case_ids": [
         "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_operative",
         "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off"
       ],
+      "comparison_id": "governing_signal_operative_vs_off",
       "deliberate_differences": [
         "requested Native governing signal state: Green/Red versus Off/Off",
         "measured Native signal states at each body-entry frame; retain actual trajectory and entry-time differences as observations"
@@ -30,234 +59,143 @@
         "same reviewed map, identified median-opening junction, crossing polygon and highway approaches",
         "same planned routes, source-selected stop references and vehicle geometry",
         "same camera poses, duration, rate and target speeds; observed camera pixels and trajectories may differ between Native runs"
-      ],
-      "comparison_id": "governing_signal_operative_vs_off"
+      ]
     }
   ],
-  "observations": [
-    {
-      "name": "signal_state",
-      "mandatory": true,
-      "method": "original 20 Hz Native signal state and affected lane history, joined by original frame",
-      "limitations": "official device status and visible head pixels require physical review"
-    },
-    {
-      "name": "stop_state",
-      "mandatory": true,
-      "method": "original 20 Hz actor speed, body occupancy and approach history, joined by original frame",
-      "limitations": "statutory stop, yield and approximately-same-time judgments remain unresolved"
-    }
-  ],
-  "sources": [
-    {
-      "path": "inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
-      "sha256": "e3b5bb7a92911ca45c19a0b91de13fa879bcc063cecd48a9d03599620ccee74a"
-    },
-    {
-      "path": "inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/evidence.json",
-      "sha256": "e0673877b9b6d5cc1dac09658216b3e834dc00c19e63d0d6a55c0355de648c8f"
-    },
-    {
-      "path": "inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/witnesses.json",
-      "sha256": "2c9bb0d2660c3f3a348f7a24fed0837644e7c763bfcfd3bcf726c6fb58674013"
-    },
-    {
-      "path": "inputs/testing__C24757__NRS-484B-250-4__motor_vehicle_driver/assignment.json",
-      "sha256": "722d0249f55646a6acaf41003e54716cc221b185367644b0d2a30e4ab2a64cc8"
-    }
-  ],
-  "existing_evidence": [],
-  "runtime_uncertainties": [
-    "No accepted recordings in frozen evidence.json; all selected cases require new construction and proof.",
-    "Native signal actor and Off state do not by themselves prove official control, installed uncovered vehicular heads, or statutory inoperability.",
-    "A fixed numeric approximately-same-time tolerance is not in the law; report entry delta without legal cutoff.",
-    "Actual map intersection, signal governance and head visibility require a later CARLA run; CPU construction, finalizer, audits and exact-case proofs remain worker-owned."
-  ],
-  "source_observation_mapping": {
-    "st.intersection": {
-      "evidence": "Selected original stop_state channel plus source-bound crossing, frame, route, signal or stop context measured by the saved finalizer; physical and statutory interpretation remains unverified.",
-      "channels": [
-        "stop_state"
-      ],
-      "source_refs": [
-        {
-          "path": "inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
-          "sha256": "e3b5bb7a92911ca45c19a0b91de13fa879bcc063cecd48a9d03599620ccee74a"
-        }
-      ],
-      "status": "selected_diagnostic_unverified"
-    },
-    "st.lane_enters": {
-      "evidence": "Selected original stop_state channel plus source-bound crossing, frame, route, signal or stop context measured by the saved finalizer; physical and statutory interpretation remains unverified.",
-      "channels": [
-        "stop_state"
-      ],
-      "source_refs": [
-        {
-          "path": "inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
-          "sha256": "e3b5bb7a92911ca45c19a0b91de13fa879bcc063cecd48a9d03599620ccee74a"
-        }
-      ],
-      "status": "selected_diagnostic_unverified"
-    },
-    "drv.entering_intersection": {
-      "evidence": "Selected original stop_state channel plus source-bound crossing, frame, route, signal or stop context measured by the saved finalizer; physical and statutory interpretation remains unverified.",
-      "channels": [
-        "stop_state"
-      ],
-      "source_refs": [
-        {
-          "path": "inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
-          "sha256": "e3b5bb7a92911ca45c19a0b91de13fa879bcc063cecd48a9d03599620ccee74a"
-        }
-      ],
-      "status": "selected_diagnostic_unverified"
-    },
-    "drv.arrival_order": {
-      "evidence": "Selected original stop_state channel plus source-bound crossing, frame, route, signal or stop context measured by the saved finalizer; physical and statutory interpretation remains unverified.",
-      "channels": [
-        "stop_state"
-      ],
-      "source_refs": [
-        {
-          "path": "inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
-          "sha256": "e3b5bb7a92911ca45c19a0b91de13fa879bcc063cecd48a9d03599620ccee74a"
-        }
-      ],
-      "status": "selected_diagnostic_unverified"
-    },
-    "rel.bearing": {
-      "evidence": "Selected original stop_state channel plus source-bound crossing, frame, route, signal or stop context measured by the saved finalizer; physical and statutory interpretation remains unverified.",
-      "channels": [
-        "stop_state"
-      ],
-      "source_refs": [
-        {
-          "path": "inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
-          "sha256": "e3b5bb7a92911ca45c19a0b91de13fa879bcc063cecd48a9d03599620ccee74a"
-        }
-      ],
-      "status": "selected_diagnostic_unverified"
-    },
-    "drv.yields_to": {
-      "evidence": "Selected original stop_state channel plus source-bound crossing, frame, route, signal or stop context measured by the saved finalizer; physical and statutory interpretation remains unverified.",
-      "channels": [
-        "stop_state"
-      ],
-      "source_refs": [
-        {
-          "path": "inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
-          "sha256": "e3b5bb7a92911ca45c19a0b91de13fa879bcc063cecd48a9d03599620ccee74a"
-        }
-      ],
-      "status": "selected_diagnostic_unverified"
-    },
-    "dev.traffic_signal": {
-      "evidence": "Selected original signal_state channel plus source-bound crossing, frame, route, signal or stop context measured by the saved finalizer; physical and statutory interpretation remains unverified.",
-      "channels": [
-        "signal_state"
-      ],
-      "source_refs": [
-        {
-          "path": "inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
-          "sha256": "e3b5bb7a92911ca45c19a0b91de13fa879bcc063cecd48a9d03599620ccee74a"
-        }
-      ],
-      "status": "selected_diagnostic_unverified"
-    },
-    "drv.turning": {
-      "evidence": "Selected original stop_state channel plus source-bound crossing, frame, route, signal or stop context measured by the saved finalizer; physical and statutory interpretation remains unverified.",
-      "channels": [
-        "stop_state"
-      ],
-      "source_refs": [
-        {
-          "path": "inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
-          "sha256": "e3b5bb7a92911ca45c19a0b91de13fa879bcc063cecd48a9d03599620ccee74a"
-        }
-      ],
-      "status": "selected_diagnostic_unverified"
-    }
+  "cpu_saved_processing_proof": {
+    "all_passed": true,
+    "candidate_count": 8,
+    "format": "c125751-stable-current-manifest-saved-proof",
+    "ignored_report": ".runtime-work/c125751-stable-v2-verified.json",
+    "ignored_report_sha256": "6c6797846642c830bb8c7049f99fb22d3f769d8337c8cb9c6acff71d19ec5010",
+    "manifest_sha256": "dea4400b04a5c7581e57bbf53cd1416da64970066957e24886456165eb617917",
+    "replay_script_sha256": "2b13ccfa99932eae754cf1fc9d7cb91cd0d94943b61498d1c9712ba53efcc014",
+    "rows": [
+      {
+        "candidate_id": "fallback1",
+        "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
+        "compatibility_log_sha256": "a7a20b927e42d69638312ec69064339c160614195e12c0db95420d13debe32d7",
+        "compatibility_receipt_sha256": "a7a20b927e42d69638312ec69064339c160614195e12c0db95420d13debe32d7",
+        "construction_sha256": "e7ca7a0afa2929e58542ca75e60461eb4b398d35ccded460c91a0866c20e0ba2",
+        "offline_log_sha256": "b01c9fb2b92ad456c7ab0c6e168c94240c8edd53d7ecfdefe9a2cff71b9d4d7e",
+        "processing_sha256": "16491e609fa4448d6e1f1073167aa6a1d5b35b3fdf45650f7a23bd0f656de71c",
+        "saved_log_sha256": "16491e609fa4448d6e1f1073167aa6a1d5b35b3fdf45650f7a23bd0f656de71c",
+        "selection_sha256": "9d0e6ae0df84be0166cf34e405491c5c50c18fbf89f245e1d6fcd7e83ac3a723",
+        "source_count": 2282
+      },
+      {
+        "candidate_id": "fallback2",
+        "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
+        "compatibility_log_sha256": "7a46e29a513f1825da552e867e9fdb5ba1bc0b4e1227f824e65cbb25c8fa6e33",
+        "compatibility_receipt_sha256": "7a46e29a513f1825da552e867e9fdb5ba1bc0b4e1227f824e65cbb25c8fa6e33",
+        "construction_sha256": "bfe7b714940ef7cd730164cae24227e919f488620981af4850e121ddee7f462e",
+        "offline_log_sha256": "26838700403fdfe518686deb218b142c8b564dd168d24447e96ce194eef8ab33",
+        "processing_sha256": "a3a99b3ab46ab2a454988f8327feab50bb4001057035c9bc7b2a6146f9fb913d",
+        "saved_log_sha256": "a3a99b3ab46ab2a454988f8327feab50bb4001057035c9bc7b2a6146f9fb913d",
+        "selection_sha256": "45046232b03d22ee9cd66e73ff18058c9e06809fec285efd4a3308302c188975",
+        "source_count": 2282
+      },
+      {
+        "candidate_id": "fallback3",
+        "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
+        "compatibility_log_sha256": "8151121737087e670e85350b2f9ebf4bdc5e2ceb6ad81b58b9be77f1e4e4d2ac",
+        "compatibility_receipt_sha256": "8151121737087e670e85350b2f9ebf4bdc5e2ceb6ad81b58b9be77f1e4e4d2ac",
+        "construction_sha256": "3b40953144b33720aa078c7d7873ac1e6dc291d5383018c5695a314fd366a0a7",
+        "offline_log_sha256": "473c348afca1fb0f4ae3924156bd926e815855d7a50df28d470bf42df7f2827a",
+        "processing_sha256": "99fd3db3329b1bc88453873f189069e17f121f1bf3ff83ddd33efa4b46d8e0c9",
+        "saved_log_sha256": "99fd3db3329b1bc88453873f189069e17f121f1bf3ff83ddd33efa4b46d8e0c9",
+        "selection_sha256": "06984f9c9e40bcece8d14380ea0047720e344719d66c3eb9cbedf077f3278a20",
+        "source_count": 2282
+      },
+      {
+        "candidate_id": "primary",
+        "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
+        "compatibility_log_sha256": "6de37f1de93ae0e64798a1864f23561f0b840e867f464c32a5dacfea2d11d9e7",
+        "compatibility_receipt_sha256": "6de37f1de93ae0e64798a1864f23561f0b840e867f464c32a5dacfea2d11d9e7",
+        "construction_sha256": "d11aebc9416a0d34419da975c7c8a3caa9ce7f906cde40cfb5603478d4af659d",
+        "offline_log_sha256": "356a8e16b30ea8be1018530741949b0090155281fe8baa7ca2d6dd9038c058f2",
+        "processing_sha256": "1adca74819c01234bba03babaa15ddc43fb8166bb39726f35d24ff0cfa2543a8",
+        "saved_log_sha256": "1adca74819c01234bba03babaa15ddc43fb8166bb39726f35d24ff0cfa2543a8",
+        "selection_sha256": "093e7cf30dca145b38d90d0739e56222ba08fe1b7ef203df2b234027278eae3f",
+        "source_count": 2282
+      },
+      {
+        "candidate_id": "fallback1",
+        "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_operative",
+        "compatibility_log_sha256": "d70254fcb5873535bdc733bab52375fa43723ab3da2d8f53d58ae91aa857e77d",
+        "compatibility_receipt_sha256": "d70254fcb5873535bdc733bab52375fa43723ab3da2d8f53d58ae91aa857e77d",
+        "construction_sha256": "a68772ba2318b1e98246597d1efee48b099fd6f7d7459220ebbe02f39c01cebf",
+        "offline_log_sha256": "0bce159c865b15ca708fea4abd431b35332bae57d058397b86d804045a927e06",
+        "processing_sha256": "d46e3bcdb7c69159a33a675145acd058bc5d980cbfb48b7448385bc9319b6291",
+        "saved_log_sha256": "d46e3bcdb7c69159a33a675145acd058bc5d980cbfb48b7448385bc9319b6291",
+        "selection_sha256": "18d228e0c0dc68d7799ed81a48d3cd5d7161ec81904dfeebdb7f54ef9d8831c6",
+        "source_count": 2282
+      },
+      {
+        "candidate_id": "fallback2",
+        "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_operative",
+        "compatibility_log_sha256": "99605980efbbf3cdd71d7faf1a05960691f0615063fd497d5095b8ac905d80ff",
+        "compatibility_receipt_sha256": "99605980efbbf3cdd71d7faf1a05960691f0615063fd497d5095b8ac905d80ff",
+        "construction_sha256": "24ca44bf4b35d4a85d9348992693241eb85db13442ede53a5457873d5c85485f",
+        "offline_log_sha256": "d87d8691eac245cd7a6f68bfae82c0e9704d572210f44328e8cd5ca6823bd435",
+        "processing_sha256": "2af1468993bf4ac0c4636181a80fc250b6eff048d900cf4286916badb4849fab",
+        "saved_log_sha256": "2af1468993bf4ac0c4636181a80fc250b6eff048d900cf4286916badb4849fab",
+        "selection_sha256": "f3f18ba385c52e68c7745ba5069b47d9fcc499b90ef56ff358452914a6dafc30",
+        "source_count": 2282
+      },
+      {
+        "candidate_id": "fallback3",
+        "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_operative",
+        "compatibility_log_sha256": "f3dc59dfedc031c6c0d020f173c13ef4f95a1683cdabb5210e15eddc8a90c66a",
+        "compatibility_receipt_sha256": "f3dc59dfedc031c6c0d020f173c13ef4f95a1683cdabb5210e15eddc8a90c66a",
+        "construction_sha256": "2d3c245410452a149e945938c0ad4f541a636928438f61550d58e3d909ee1748",
+        "offline_log_sha256": "6dc2e0a8fed2ee04d7fc795ba9219b6166d6e2f890b42482da7247711d09e7d4",
+        "processing_sha256": "010f5d84d49b7a603dea7d460ae243f33e9828e3890d5c235979091a2e6123da",
+        "saved_log_sha256": "010f5d84d49b7a603dea7d460ae243f33e9828e3890d5c235979091a2e6123da",
+        "selection_sha256": "35f4de40ff44ad0d3c9ce7f859c04b5380677244e00c3d406a1622d6df3075f4",
+        "source_count": 2282
+      },
+      {
+        "candidate_id": "primary",
+        "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_operative",
+        "compatibility_log_sha256": "99736e43fba33fc0b9522324c6cfdd2183e6b84ad7aaa9718c1bfdc335b5e3e9",
+        "compatibility_receipt_sha256": "99736e43fba33fc0b9522324c6cfdd2183e6b84ad7aaa9718c1bfdc335b5e3e9",
+        "construction_sha256": "89242c551ec12bd77530d0357b2162df476155707ee7931f681d1252a2961b44",
+        "offline_log_sha256": "26a610bda48f84e5abe7f40f5551aa1a2e68977e3e888684facc86048e8930ca",
+        "processing_sha256": "3c1807dfb28eae6eee70af75de99a467dcd01db2f32487c479654a9ebb4dbc2c",
+        "saved_log_sha256": "3c1807dfb28eae6eee70af75de99a467dcd01db2f32487c479654a9ebb4dbc2c",
+        "selection_sha256": "427979f88f35ca5702602bd347ce18338c3deda38d06ea14932178963bb0453d",
+        "source_count": 2282
+      }
+    ],
+    "selected_case_count": 2,
+    "source_files_verified": 18256
   },
-  "planning_status": "Two selected exact signal cases and three tested fallback constructions each; synthetic site remains diagnostic, four judgment sweeps and full branch coverage are incomplete.",
-  "requirement_dispositions": [
-    {
-      "requirement": "Both complete vehicle bodies enter one sourced crossing from different highways; original frame/time joins report entry delta and right-hand approach geometry without inventing a legal simultaneity cutoff",
-      "source": "NRS 484B.250(2), including its subsection-4 exception; inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
-      "status": "selected_required",
-      "case_ids": [
-        "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_operative",
-        "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off"
-      ],
-      "evidence_or_gap": "Original crossing history, road geometry and frame map; finalizer body_entry_timing. Statutory approximate-time and right-of-way judgments remain unresolved."
-    },
-    {
-      "requirement": "A reviewed governing signal inventory and both original Native light states at body entry identify the controlled-device comparison while leaving official status and statutory inoperability unresolved",
-      "source": "NRS 484B.250(2), including its subsection-4 exception; inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
-      "status": "selected_required",
-      "case_ids": [
-        "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_operative",
-        "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off"
-      ],
-      "evidence_or_gap": "Distinct Native light IDs, lane context, original signal/frame history and source-camera head review; finalizer signal_at_entry. Physical head pixels and official status remain unverified."
-    },
-    {
-      "requirement": "For the signal-Off branch, source-selected stop references and original zero-speed, entry-order and occupancy histories retain subsection-4 stop and yield evidence without a legal stop/yield verdict",
-      "source": "NRS 484B.250(2), including its subsection-4 exception; inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
-      "status": "selected_required",
-      "case_ids": [
-        "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_operative",
-        "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off"
-      ],
-      "evidence_or_gap": "Original stop context/history and frame joins; finalizer stop_order. Recorded zero speed is an observation, not a statutory stop."
-    },
-    {
-      "requirement": "The opposite-direction left-turn exception requires approach intention and trajectory evidence even though this selected travel comparison is not a left-turn test",
-      "source": "NRS 484B.250(2), including its subsection-4 exception; inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
-      "status": "selected_required",
-      "case_ids": [
-        "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_operative",
-        "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off"
-      ],
-      "evidence_or_gap": "opposite_turn_construction.py is an unselected, CPU-tested lazy Native spawn/route draft for both opposing approaches and a left turn. A source-reviewed opposite-direction site, selected exact case, controller/capture/finalizer integration and full proofs remain pending. turn_context.py preserves original headings and routes without legal classification."
-    },
-    {
-      "requirement": "Both complete vehicle bodies enter one sourced crossing; retain their original frame/time delta without a legal simultaneity cutoff",
-      "source": "NRS 484B.250(2), including its subsection-4 exception; inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
-      "status": "selected_required",
-      "case_ids": [
-        "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_left_turn"
-      ],
-      "evidence_or_gap": "Source-hashed diagnostic measurement is implemented; reviewed Native source and legal judgment remain pending."
-    },
-    {
-      "requirement": "Retain opposing approach bearings and the turning vehicle's source route and trajectory for the opposite-direction left-turn exception",
-      "source": "NRS 484B.250(2), including its subsection-4 exception; inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
-      "status": "selected_required",
-      "case_ids": [
-        "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_left_turn"
-      ],
-      "evidence_or_gap": "Source-hashed diagnostic measurement is implemented; reviewed Native source and legal judgment remain pending."
-    },
-    {
-      "requirement": "Retain both governed Native signal states at body entry without treating Off as statutory inoperability or resolving official-device status",
-      "source": "NRS 484B.250(2), including its subsection-4 exception; inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
-      "status": "selected_required",
-      "case_ids": [
-        "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_left_turn"
-      ],
-      "evidence_or_gap": "Source-hashed diagnostic measurement is implemented; reviewed Native source and legal judgment remain pending."
-    },
-    {
-      "requirement": "Retain both source-selected stop references, zero-speed histories and entry order for the subsection-4 stop and yield exception",
-      "source": "NRS 484B.250(2), including its subsection-4 exception; inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
-      "status": "selected_required",
-      "case_ids": [
-        "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_left_turn"
-      ],
-      "evidence_or_gap": "Source-hashed diagnostic measurement is implemented; reviewed Native source and legal judgment remain pending."
-    }
-  ],
+  "current_delivery_audit_proof": {
+    "all_passed": true,
+    "audits": [
+      {
+        "attempt": ".runtime-work/c125751-stable-v2-operative-primary-compat",
+        "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_operative",
+        "log_sha256": "f7063457cdfe1621ebb0fa087112c284cef1fbd0ff6a4a16da6717c8c899dbdc",
+        "receipt": ".runtime-work/c125751-stable-v2-operative-audit.json",
+        "receipt_sha256": "f017e76c2109b9aff76ea795c6106af546b1bab6a22f086ce16b3c800d186b95"
+      },
+      {
+        "attempt": ".runtime-work/c125751-stable-v2-off-primary-compat",
+        "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
+        "log_sha256": "cba86fc3656927be1ba6927c1a94e4f27ef1af9a21db180310ff6740d472251a",
+        "receipt": ".runtime-work/c125751-stable-v2-off-audit.json",
+        "receipt_sha256": "e895d1a84caaa77df1e91d5d44ccbeb1cae2b5648682c244b3d58fee9274bd54"
+      }
+    ],
+    "format": "c125751-current-manifest-independent-delivery-audits",
+    "manifest_sha256": "dea4400b04a5c7581e57bbf53cd1416da64970066957e24886456165eb617917",
+    "physical_acceptance_claimed": false,
+    "script_sha256": "2eb4e468acf6928a7332025002bba208334a914de1935d146a0c1e1b9b5d42b3"
+  },
+  "existing_evidence": [],
+  "law_id": "NRS-484B-250-2",
   "observation_requirements": [
     "Native intersection and lane identity for both highways",
     "body-entry times and frame join to original video",
@@ -267,582 +205,101 @@
     "stop-line, prior-stop and in-intersection histories for subsection 4",
     "turn intention and measured trajectory; no statutory judgment from a label"
   ],
-  "camera_plan": {
-    "profile": "overview1080-capability",
-    "duration_s": 55,
-    "composition": "synchronized_four_view_primary",
-    "coverage": [
-      {
-        "view": "overview",
-        "subject": "both complete vehicle bodies, median crossing and approach paths",
-        "interval": "startup through final 55-second observation"
-      },
-      {
-        "view": "approach",
-        "subject": "ego approach, governing signal head and stop reference",
-        "interval": "startup through ego clearance"
-      },
-      {
-        "view": "reference_corner",
-        "subject": "other approach, governing signal head and stop reference",
-        "interval": "startup through other clearance"
-      },
-      {
-        "view": "driver_reference",
-        "subject": "ego-relative approach, signal, crossing and turn context",
-        "interval": "startup through ego clearance"
-      }
-    ],
-    "limitations": [
-      "Current pose file is an explicitly synthetic diagnostic fixture with identical camera poses; Native framing and actual visibility are not established."
-    ]
-  },
+  "observations": [
+    {
+      "limitations": "official device status and visible head pixels require physical review",
+      "mandatory": true,
+      "method": "original 20 Hz Native signal state and affected lane history, joined by original frame",
+      "name": "signal_state"
+    },
+    {
+      "limitations": "statutory stop, yield and approximately-same-time judgments remain unresolved",
+      "mandatory": true,
+      "method": "original 20 Hz actor speed, body occupancy and approach history, joined by original frame",
+      "name": "stop_state"
+    }
+  ],
   "off_signal_release_sweep_cpu_proof": {
-    "status": "diagnostic_controller_variant_paths_passed;_native_entry_feasibility_unverified",
     "builder": "build_diagnostic_constructions.py:build_release_sweep",
     "builder_sha256": "181676ddd4c20c9e5b8423b68ac979eb1d08849a34221f0e12eda3e62452edbc",
-    "selected_case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
-    "fixed_conditions": [
-      "same selected Off-signal case ID",
-      "same diagnostic site packet",
-      "same four source cameras",
-      "same 20 Hz and 55-second duration",
-      "same original source fixture and measurement contract"
-    ],
-    "declared_difference": "ego_release_frame 8, 9, 10, 11; other_release_frame fixed 10",
-    "variants": [
-      {
-        "ego_release_frame": 8,
-        "other_release_frame": 10,
-        "construction": ".runtime-work/c125751-off-release-sweep-v2/construction-ego-8.json",
-        "construction_sha256": "ae8634e7bc5564739192acc8e7f82d6efa7a95ecd65be02816c7ee26101c5083",
-        "manifest": ".runtime-work/c125751-off-release-sweep-v2/manifest-ego-8.json",
-        "manifest_sha256": "428bfc3771effc5faa8d4de86eae6ed618fee2e28194ac05534c4b52eb8dc9cf",
-        "offline_log": ".runtime-work/c125751-off-release-sweep-v2/ego-8-offline-command.log",
-        "offline_log_sha256": "09373c6469a14b7874c58b144e044bede44c41b3fcc6ebbcc1a5656f7640fada",
-        "compatibility_receipt": ".runtime-work/c125751-off-release-sweep-v2/ego-8-compat/compatibility.json",
-        "compatibility_sha256": "0c435b47bf36e8de4a09397007fd46e5810387cae572d540b991778cb459f8b2",
-        "negative_removed": "signal_history.jsonl",
-        "saved_log": ".runtime-work/c125751-off-release-sweep-v2/ego-8-saved-command.log",
-        "saved_log_sha256": "9c1f5a3a2fbcb7f23c48bc7deb813057e9e59e4746e199775c87a82affbc2d3c",
-        "saved_recorded_only": true,
-        "physical_acceptance_claimed": false,
-        "legal_acceptance_claimed": false
-      },
-      {
-        "ego_release_frame": 9,
-        "other_release_frame": 10,
-        "construction": ".runtime-work/c125751-off-release-sweep-v2/construction-ego-9.json",
-        "construction_sha256": "22c6368cfa499d7f6473d12f58195dd4b5400cf7c0e5126203dd9b4907adeb5e",
-        "manifest": ".runtime-work/c125751-off-release-sweep-v2/manifest-ego-9.json",
-        "manifest_sha256": "4ead63ecc7f595518ec5dae13da7d289a8eb035812b7ca82a1ead6c70d0ceb04",
-        "offline_log": ".runtime-work/c125751-off-release-sweep-v2/ego-9-offline-command.log",
-        "offline_log_sha256": "5d35d59faf79503cab99b4c4e3bdbbc58997ea9a6475e2fa7b24793867fd3dc9",
-        "compatibility_receipt": ".runtime-work/c125751-off-release-sweep-v2/ego-9-compat/compatibility.json",
-        "compatibility_sha256": "9787c401b56278b9ac184232a44b46acb3ba3cc4c44bf58c1c030a68e49466e9",
-        "negative_removed": "signal_history.jsonl",
-        "saved_log": ".runtime-work/c125751-off-release-sweep-v2/ego-9-saved-command.log",
-        "saved_log_sha256": "a0ab380a30b5571e6a49efda6eebbfaf924ea829e4845a226bb35d5eafbd7ad1",
-        "saved_recorded_only": true,
-        "physical_acceptance_claimed": false,
-        "legal_acceptance_claimed": false
-      },
-      {
-        "ego_release_frame": 10,
-        "other_release_frame": 10,
-        "construction": ".runtime-work/c125751-off-release-sweep-v2/construction-ego-10.json",
-        "construction_sha256": "0ba28a84436a501312686a414d1c7b48dec428d3ad361398143151d4c32f51c3",
-        "manifest": ".runtime-work/c125751-off-release-sweep-v2/manifest-ego-10.json",
-        "manifest_sha256": "41b4ca67c126ed2c99629e6815d1b7a342394664f0a47b49fdd23342a1d4f145",
-        "offline_log": ".runtime-work/c125751-off-release-sweep-v2/ego-10-offline-command.log",
-        "offline_log_sha256": "54d826006cb294175f00a7951151fb4eb3684d9656fd70b1cf6d6769f612012c",
-        "compatibility_receipt": ".runtime-work/c125751-off-release-sweep-v2/ego-10-compat/compatibility.json",
-        "compatibility_sha256": "f5fe6d1e6f7b3a97047c6d1938823fdaca9245b2699f081d3be34c6e69000508",
-        "negative_removed": "signal_history.jsonl",
-        "saved_log": ".runtime-work/c125751-off-release-sweep-v2/ego-10-saved-command.log",
-        "saved_log_sha256": "9e1a24f7f661fb6fe6cbea9c358245f6edbf5c1bf4bdbf738dd5e40f937bec7d",
-        "saved_recorded_only": true,
-        "physical_acceptance_claimed": false,
-        "legal_acceptance_claimed": false
-      },
-      {
-        "ego_release_frame": 11,
-        "other_release_frame": 10,
-        "construction": ".runtime-work/c125751-off-release-sweep-v2/construction-ego-11.json",
-        "construction_sha256": "b96a0ecea23163533c41ede2206dca07d50cac0be360ae3051d5c5e65a6ae759",
-        "manifest": ".runtime-work/c125751-off-release-sweep-v2/manifest-ego-11.json",
-        "manifest_sha256": "c5b13b069e7dce4b02ab3b3c50c9c32f174e999d9e0be2211a60c8e2e779834f",
-        "offline_log": ".runtime-work/c125751-off-release-sweep-v2/ego-11-offline-command.log",
-        "offline_log_sha256": "98e3f6c2e7cc7abe3cdcbfd4ef6052911908a59766ee60ef21435334e5c64365",
-        "compatibility_receipt": ".runtime-work/c125751-off-release-sweep-v2/ego-11-compat/compatibility.json",
-        "compatibility_sha256": "0eb4d85d93662ab5c25d9dc34d55bd041fd98e243f662c0eb35c0172faa15ccf",
-        "negative_removed": "signal_history.jsonl",
-        "saved_log": ".runtime-work/c125751-off-release-sweep-v2/ego-11-saved-command.log",
-        "saved_log_sha256": "2d17a0230a4b03e290dd7782e670555c8ffeff0501a8e7da424632506dfd0ce5",
-        "saved_recorded_only": true,
-        "physical_acceptance_claimed": false,
-        "legal_acceptance_claimed": false
-      }
-    ],
-    "limits": [
-      "Fixture histories are independent of controller schedule",
-      "No Native release-to-body-entry response or feasible entry-time range measured",
-      "No statutory approximately-same-time cutoff or legal priority verdict asserted"
-    ],
-    "release_entry_audit": {
-      "entrypoint": "build_diagnostic_constructions.py:audit_release_attempt",
-      "source_sha256": "181676ddd4c20c9e5b8423b68ac979eb1d08849a34221f0e12eda3e62452edbc",
-      "proof_log": ".runtime-work/c125751-release-entry-audit-proof.log",
-      "proof_log_sha256": "ab3b9993bf3925f8064f7f087814a67c34448503e2076f9a6aa59e2e7ede4e6d",
-      "status": "synthetic_join_positive_and_four_negative_checks_passed;_no_native_response_claim",
-      "required_original_sources": [
-        "config.json",
-        "controller_history.jsonl",
-        "crossing_history.jsonl",
-        "road_geometry.json",
-        "video_frames.jsonl"
-      ],
-      "four_point_diagnostic_proof_log": ".runtime-work/c125751-release-entry-four-point.log",
-      "four_point_diagnostic_proof_log_sha256": "654bed2bf90c33445f2e7eecfc9ca6c8198cd8393edca33fbfe1b08e9554a39a",
-      "four_point_observed_ego_minus_other_entry_time_s": [
-        -0.1,
-        -0.05,
-        0,
-        0.05
-      ],
-      "four_point_limit": "Authored synthetic crossing and controller histories prove source join sensitivity only; staged offline fixtures do not contain controller history and no Native schedule response is established."
+    "controller_command_sweep": {
+      "all_eight_actual_controller_command_transitions_passed": true,
+      "builder_sha256": "fc8e54eaca95d92a0e0c81071000bc9742d6e9c073d54c037072d3a678931f9e",
+      "cross_axis_baseline_identical": true,
+      "fixed_role_commands_identical": true,
+      "native_motion_or_entry_proven": false,
+      "proof": ".runtime-work/c125751-controller-command-sweep-v2.json",
+      "sha256": "2d96ac5a2ac5a4ad2845225d75f69f66fc4ddfd7d3b1175e20b9c6bbdae275ec"
     },
-    "opposing_release_axis": {
-      "status": "four_exact_diagnostic_variants_passed;_native_entry_response_unverified",
-      "selected_case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
-      "builder_sha256": "223205e66cc9ff3c24ad20858dac54d3d33defeb44a241620e70ac1752027cf8",
-      "stage_proof": ".runtime-work/c125751-other-release-sweep-v1/other-release-proof.json",
-      "stage_proof_sha256": "747120e2083d76d4d54860f8bfe718a866431a58d790ef8ae69af358d3f8f745",
-      "fixed_condition_audit": {
-        "format": "worker-fixed-release-axis-diagnostic",
-        "varied_role": "other",
-        "releases": [
-          8,
-          9,
-          10,
-          11
-        ],
-        "fixed_construction_conditions": true,
-        "changed_fixed_release_rejected": true,
-        "physical_acceptance_claimed": false,
-        "legal_verdict_asserted": false,
-        "construction_sha256": [
-          "dd1b8d98ab92986212a68266653e8ed57d0b9a41e78e70a35d30e22ea85a9d1f",
-          "f1bf5f96b853ea392df68574014db1615aa8848dd6cc00ec769e6fb4ad04406e",
-          "50058e7fb1d3a4243be40b5daf0c5a70292d665f5ed24b708bd2e71d26d20f96",
-          "05b3b0a6b7b17affd97cc76885aace655a8c63be741cb62326cc9377a1b316d3"
-        ]
-      },
-      "fixed_condition_audit_sha256": "77fdcb301065296b63d6c8cb0ae9b52600b279f44a35bbe45fbee62e02a89182",
-      "variants": [
-        {
-          "ego_release_frame": 10,
-          "other_release_frame": 8,
-          "varied_release_role": "other",
-          "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
-          "construction": ".runtime-work/c125751-other-release-sweep-v1/construction-other-8.json",
-          "construction_sha256": "dd1b8d98ab92986212a68266653e8ed57d0b9a41e78e70a35d30e22ea85a9d1f",
-          "manifest": ".runtime-work/c125751-other-release-sweep-v1/manifest-other-8.json",
-          "proofs": [
-            {
-              "kind": "offline",
-              "command": [
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py",
-                "offline",
-                "--manifest",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/manifest-other-8.json",
-                "--case",
-                "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
-                "--output",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/other-8-offline"
-              ],
-              "log": ".runtime-work/c125751-other-release-sweep-v1/other-8-offline.log",
-              "log_sha256": "29a96140a7175ffed1df1d9b0ec1d74160ddf5089fd393092c611480f6253fe4"
-            },
-            {
-              "kind": "compatibility",
-              "command": [
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py",
-                "compatibility",
-                "--manifest",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/manifest-other-8.json",
-                "--case",
-                "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
-                "--output",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/other-8-compat",
-                "--library",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/library",
-                "--validator",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
-              ],
-              "log": ".runtime-work/c125751-other-release-sweep-v1/other-8-compatibility.log",
-              "log_sha256": "bf1afe680e66ffeb1cd61f28c1e80f670820dc29caf976896acc5e86e3254046"
-            },
-            {
-              "kind": "saved",
-              "command": [
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py",
-                "process-saved",
-                "--manifest",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/manifest-other-8.json",
-                "--case",
-                "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
-                "--attempt",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/other-8-compat",
-                "--output",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/other-8-saved",
-                "--library",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/library",
-                "--validator",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
-              ],
-              "log": ".runtime-work/c125751-other-release-sweep-v1/other-8-saved.log",
-              "log_sha256": "30d2d0a4f4e39c4f2383a174cd5403876b6491b3e5cec2514c7cbdb226efd122"
-            }
-          ],
-          "compatibility_sha256": "bf1afe680e66ffeb1cd61f28c1e80f670820dc29caf976896acc5e86e3254046",
-          "saved_sha256": "30d2d0a4f4e39c4f2383a174cd5403876b6491b3e5cec2514c7cbdb226efd122",
-          "recorded_only": true
-        },
-        {
-          "ego_release_frame": 10,
-          "other_release_frame": 9,
-          "varied_release_role": "other",
-          "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
-          "construction": ".runtime-work/c125751-other-release-sweep-v1/construction-other-9.json",
-          "construction_sha256": "f1bf5f96b853ea392df68574014db1615aa8848dd6cc00ec769e6fb4ad04406e",
-          "manifest": ".runtime-work/c125751-other-release-sweep-v1/manifest-other-9.json",
-          "proofs": [
-            {
-              "kind": "offline",
-              "command": [
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py",
-                "offline",
-                "--manifest",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/manifest-other-9.json",
-                "--case",
-                "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
-                "--output",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/other-9-offline"
-              ],
-              "log": ".runtime-work/c125751-other-release-sweep-v1/other-9-offline.log",
-              "log_sha256": "2a1a0d4a50a9e9915140dca5e8e1cdaaa2fa567e7ca9816bfef3d3db13a6d661"
-            },
-            {
-              "kind": "compatibility",
-              "command": [
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py",
-                "compatibility",
-                "--manifest",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/manifest-other-9.json",
-                "--case",
-                "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
-                "--output",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/other-9-compat",
-                "--library",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/library",
-                "--validator",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
-              ],
-              "log": ".runtime-work/c125751-other-release-sweep-v1/other-9-compatibility.log",
-              "log_sha256": "3126a0a9a3f1d21f8430cbd1665cc5ace834aee9ccc3409083c2499a1d04800d"
-            },
-            {
-              "kind": "saved",
-              "command": [
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py",
-                "process-saved",
-                "--manifest",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/manifest-other-9.json",
-                "--case",
-                "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
-                "--attempt",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/other-9-compat",
-                "--output",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/other-9-saved",
-                "--library",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/library",
-                "--validator",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
-              ],
-              "log": ".runtime-work/c125751-other-release-sweep-v1/other-9-saved.log",
-              "log_sha256": "ce17e358ec06154443c0fec40d86dba3629db43935efa202b0e3e08a3dd1b8bc"
-            }
-          ],
-          "compatibility_sha256": "3126a0a9a3f1d21f8430cbd1665cc5ace834aee9ccc3409083c2499a1d04800d",
-          "saved_sha256": "ce17e358ec06154443c0fec40d86dba3629db43935efa202b0e3e08a3dd1b8bc",
-          "recorded_only": true
-        },
-        {
-          "ego_release_frame": 10,
-          "other_release_frame": 10,
-          "varied_release_role": "other",
-          "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
-          "construction": ".runtime-work/c125751-other-release-sweep-v1/construction-other-10.json",
-          "construction_sha256": "50058e7fb1d3a4243be40b5daf0c5a70292d665f5ed24b708bd2e71d26d20f96",
-          "manifest": ".runtime-work/c125751-other-release-sweep-v1/manifest-other-10.json",
-          "proofs": [
-            {
-              "kind": "offline",
-              "command": [
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py",
-                "offline",
-                "--manifest",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/manifest-other-10.json",
-                "--case",
-                "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
-                "--output",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/other-10-offline"
-              ],
-              "log": ".runtime-work/c125751-other-release-sweep-v1/other-10-offline.log",
-              "log_sha256": "5326502fb5f7b6604745d3c7e8e12bf29ac8d9b12cd33f6e56c67a905e932e2a"
-            },
-            {
-              "kind": "compatibility",
-              "command": [
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py",
-                "compatibility",
-                "--manifest",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/manifest-other-10.json",
-                "--case",
-                "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
-                "--output",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/other-10-compat",
-                "--library",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/library",
-                "--validator",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
-              ],
-              "log": ".runtime-work/c125751-other-release-sweep-v1/other-10-compatibility.log",
-              "log_sha256": "1966faf8e89736ff64a55611d1d4cc62c06315910251f2a896b022be96f59dc7"
-            },
-            {
-              "kind": "saved",
-              "command": [
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py",
-                "process-saved",
-                "--manifest",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/manifest-other-10.json",
-                "--case",
-                "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
-                "--attempt",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/other-10-compat",
-                "--output",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/other-10-saved",
-                "--library",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/library",
-                "--validator",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
-              ],
-              "log": ".runtime-work/c125751-other-release-sweep-v1/other-10-saved.log",
-              "log_sha256": "bf109bd3d513919c1613648084f14974f0b719fabfef79ceef9668e1beb29073"
-            }
-          ],
-          "compatibility_sha256": "1966faf8e89736ff64a55611d1d4cc62c06315910251f2a896b022be96f59dc7",
-          "saved_sha256": "bf109bd3d513919c1613648084f14974f0b719fabfef79ceef9668e1beb29073",
-          "recorded_only": true
-        },
-        {
-          "ego_release_frame": 10,
-          "other_release_frame": 11,
-          "varied_release_role": "other",
-          "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
-          "construction": ".runtime-work/c125751-other-release-sweep-v1/construction-other-11.json",
-          "construction_sha256": "05b3b0a6b7b17affd97cc76885aace655a8c63be741cb62326cc9377a1b316d3",
-          "manifest": ".runtime-work/c125751-other-release-sweep-v1/manifest-other-11.json",
-          "proofs": [
-            {
-              "kind": "offline",
-              "command": [
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py",
-                "offline",
-                "--manifest",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/manifest-other-11.json",
-                "--case",
-                "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
-                "--output",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/other-11-offline"
-              ],
-              "log": ".runtime-work/c125751-other-release-sweep-v1/other-11-offline.log",
-              "log_sha256": "39a1da7bf2a714869b1171d58dfbb90ff2886e133f0ac9c8b44f894f8aed72dd"
-            },
-            {
-              "kind": "compatibility",
-              "command": [
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py",
-                "compatibility",
-                "--manifest",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/manifest-other-11.json",
-                "--case",
-                "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
-                "--output",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/other-11-compat",
-                "--library",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/library",
-                "--validator",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
-              ],
-              "log": ".runtime-work/c125751-other-release-sweep-v1/other-11-compatibility.log",
-              "log_sha256": "d27398a279c177b86b3f4bd9bbf2c8c171e518525b8be5e502db1e77583833ba"
-            },
-            {
-              "kind": "saved",
-              "command": [
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py",
-                "process-saved",
-                "--manifest",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/manifest-other-11.json",
-                "--case",
-                "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
-                "--attempt",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/other-11-compat",
-                "--output",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/other-11-saved",
-                "--library",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/library",
-                "--validator",
-                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
-              ],
-              "log": ".runtime-work/c125751-other-release-sweep-v1/other-11-saved.log",
-              "log_sha256": "422e4705494100cdea251d4e824538ce466c2590ac22aa5dbc97b9cd3ee1e339"
-            }
-          ],
-          "compatibility_sha256": "d27398a279c177b86b3f4bd9bbf2c8c171e518525b8be5e502db1e77583833ba",
-          "saved_sha256": "422e4705494100cdea251d4e824538ce466c2590ac22aa5dbc97b9cd3ee1e339",
-          "recorded_only": true
-        }
-      ],
-      "limit": "Synthetic controller and source-specific software proofs only; Native body-entry response, site authority and legal right of way remain unverified.",
-      "cross_axis_audit": {
-        "format": "worker-cross-release-axis-diagnostic",
-        "ego_axis": {
-          "format": "worker-fixed-release-axis-diagnostic",
-          "varied_role": "ego",
-          "releases": [
-            8,
-            9,
-            10,
-            11
-          ],
-          "fixed_construction_conditions": true,
-          "changed_fixed_release_rejected": true,
-          "physical_acceptance_claimed": false,
-          "legal_verdict_asserted": false,
-          "construction_sha256": [
-            "a1e7a79905d73b35ddfd6c13ebf4863e089c572fc4055692ac8487eec3becdf7",
-            "6fb217bf8355d1a4151ebc08f76c101ce41bc7e8cdefeb3636a063a297706e7c",
-            "50058e7fb1d3a4243be40b5daf0c5a70292d665f5ed24b708bd2e71d26d20f96",
-            "eea15c9683a26132f4f3716167a8aebf54ad25adc1e5bbd6bce96555087d3eb6"
-          ]
-        },
-        "other_axis": {
-          "format": "worker-fixed-release-axis-diagnostic",
-          "varied_role": "other",
-          "releases": [
-            8,
-            9,
-            10,
-            11
-          ],
-          "fixed_construction_conditions": true,
-          "changed_fixed_release_rejected": true,
-          "physical_acceptance_claimed": false,
-          "legal_verdict_asserted": false,
-          "construction_sha256": [
-            "dd1b8d98ab92986212a68266653e8ed57d0b9a41e78e70a35d30e22ea85a9d1f",
-            "f1bf5f96b853ea392df68574014db1615aa8848dd6cc00ec769e6fb4ad04406e",
-            "50058e7fb1d3a4243be40b5daf0c5a70292d665f5ed24b708bd2e71d26d20f96",
-            "05b3b0a6b7b17affd97cc76885aace655a8c63be741cb62326cc9377a1b316d3"
-          ]
-        },
-        "shared_baseline_construction_sha256": "50058e7fb1d3a4243be40b5daf0c5a70292d665f5ed24b708bd2e71d26d20f96",
-        "physical_acceptance_claimed": false,
-        "legal_verdict_asserted": false
-      },
-      "cross_axis_audit_sha256": "12344e2f314657cbb958627be60eb7459ea7e52f9885d3cccb140f1c75fe768e"
+    "current_builder_reproduction": {
+      "all_eight_exact_construction_bytes_reproduced": true,
+      "proof": ".runtime-work/c125751-current-builder-reproduction-v3.json",
+      "sha256": "5c120122fa3f2f9c5a9a382880c05ec9dd713b4895c2237efb3dc1c8962a32bb"
     },
     "current_ego_release_axis": {
       "builder_sha256": "223205e66cc9ff3c24ad20858dac54d3d33defeb44a241620e70ac1752027cf8",
       "cross_axis_audit": {
-        "format": "worker-cross-release-axis-diagnostic",
         "ego_axis": {
-          "format": "worker-fixed-release-axis-diagnostic",
-          "varied_role": "ego",
-          "releases": [
-            8,
-            9,
-            10,
-            11
-          ],
-          "fixed_construction_conditions": true,
           "changed_fixed_release_rejected": true,
-          "physical_acceptance_claimed": false,
-          "legal_verdict_asserted": false,
           "construction_sha256": [
             "a1e7a79905d73b35ddfd6c13ebf4863e089c572fc4055692ac8487eec3becdf7",
             "6fb217bf8355d1a4151ebc08f76c101ce41bc7e8cdefeb3636a063a297706e7c",
             "50058e7fb1d3a4243be40b5daf0c5a70292d665f5ed24b708bd2e71d26d20f96",
             "eea15c9683a26132f4f3716167a8aebf54ad25adc1e5bbd6bce96555087d3eb6"
-          ]
-        },
-        "other_axis": {
+          ],
+          "fixed_construction_conditions": true,
           "format": "worker-fixed-release-axis-diagnostic",
-          "varied_role": "other",
+          "legal_verdict_asserted": false,
+          "physical_acceptance_claimed": false,
           "releases": [
             8,
             9,
             10,
             11
           ],
-          "fixed_construction_conditions": true,
+          "varied_role": "ego"
+        },
+        "format": "worker-cross-release-axis-diagnostic",
+        "legal_verdict_asserted": false,
+        "other_axis": {
           "changed_fixed_release_rejected": true,
-          "physical_acceptance_claimed": false,
-          "legal_verdict_asserted": false,
           "construction_sha256": [
             "dd1b8d98ab92986212a68266653e8ed57d0b9a41e78e70a35d30e22ea85a9d1f",
             "f1bf5f96b853ea392df68574014db1615aa8848dd6cc00ec769e6fb4ad04406e",
             "50058e7fb1d3a4243be40b5daf0c5a70292d665f5ed24b708bd2e71d26d20f96",
             "05b3b0a6b7b17affd97cc76885aace655a8c63be741cb62326cc9377a1b316d3"
-          ]
+          ],
+          "fixed_construction_conditions": true,
+          "format": "worker-fixed-release-axis-diagnostic",
+          "legal_verdict_asserted": false,
+          "physical_acceptance_claimed": false,
+          "releases": [
+            8,
+            9,
+            10,
+            11
+          ],
+          "varied_role": "other"
         },
-        "shared_baseline_construction_sha256": "50058e7fb1d3a4243be40b5daf0c5a70292d665f5ed24b708bd2e71d26d20f96",
         "physical_acceptance_claimed": false,
-        "legal_verdict_asserted": false
+        "shared_baseline_construction_sha256": "50058e7fb1d3a4243be40b5daf0c5a70292d665f5ed24b708bd2e71d26d20f96"
       },
       "cross_axis_audit_sha256": "12344e2f314657cbb958627be60eb7459ea7e52f9885d3cccb140f1c75fe768e",
       "limit": "Synthetic controller and source-specific software proofs only; Native body-entry response, site authority and legal right of way remain unverified.",
-      "status": "four_current_base_exact_diagnostic_variants_passed",
       "stage_proof": ".runtime-work/c125751-off-release-sweep-v3/ego-release-proof.json",
       "stage_proof_sha256": "1d785d749b024185a5938299d3f811603eef8b36342c8c4ae5fe8097d8d2d233",
+      "status": "four_current_base_exact_diagnostic_variants_passed",
       "variants": [
         {
-          "ego_release_frame": 8,
-          "other_release_frame": 10,
-          "varied_release_role": "ego",
           "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
+          "compatibility_sha256": "e46e7bb08112cdd083c7304770defbf4a5f8227dc3b77f90fa03a80e105fc2aa",
           "construction": ".runtime-work/c125751-off-release-sweep-v3/construction-ego-8.json",
           "construction_sha256": "a1e7a79905d73b35ddfd6c13ebf4863e089c572fc4055692ac8487eec3becdf7",
+          "ego_release_frame": 8,
           "manifest": ".runtime-work/c125751-off-release-sweep-v3/manifest-ego-8.json",
+          "other_release_frame": 10,
           "proofs": [
             {
-              "kind": "offline",
               "command": [
                 "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
                 "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py",
@@ -854,11 +311,11 @@
                 "--output",
                 "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-off-release-sweep-v3/ego-8-offline"
               ],
+              "kind": "offline",
               "log": ".runtime-work/c125751-off-release-sweep-v3/ego-8-offline.log",
               "log_sha256": "c16167b0f0bb7e582426b1b469ae3200ad7fba2af6bf2895bea6ffdbbe52bfd8"
             },
             {
-              "kind": "compatibility",
               "command": [
                 "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
                 "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py",
@@ -874,11 +331,11 @@
                 "--validator",
                 "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
               ],
+              "kind": "compatibility",
               "log": ".runtime-work/c125751-off-release-sweep-v3/ego-8-compatibility.log",
               "log_sha256": "e46e7bb08112cdd083c7304770defbf4a5f8227dc3b77f90fa03a80e105fc2aa"
             },
             {
-              "kind": "saved",
               "command": [
                 "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
                 "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py",
@@ -896,25 +353,25 @@
                 "--validator",
                 "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
               ],
+              "kind": "saved",
               "log": ".runtime-work/c125751-off-release-sweep-v3/ego-8-saved.log",
               "log_sha256": "7a0c66725ceaa5576ac59c6d7d8be08a30670ce0e7a4b93b7ee3528bb50be020"
             }
           ],
-          "compatibility_sha256": "e46e7bb08112cdd083c7304770defbf4a5f8227dc3b77f90fa03a80e105fc2aa",
+          "recorded_only": true,
           "saved_sha256": "7a0c66725ceaa5576ac59c6d7d8be08a30670ce0e7a4b93b7ee3528bb50be020",
-          "recorded_only": true
+          "varied_release_role": "ego"
         },
         {
-          "ego_release_frame": 9,
-          "other_release_frame": 10,
-          "varied_release_role": "ego",
           "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
+          "compatibility_sha256": "bb7a49717bcc1bc96b298e5338cf0a87f4e3fc339905932ee94497969f6ea75f",
           "construction": ".runtime-work/c125751-off-release-sweep-v3/construction-ego-9.json",
           "construction_sha256": "6fb217bf8355d1a4151ebc08f76c101ce41bc7e8cdefeb3636a063a297706e7c",
+          "ego_release_frame": 9,
           "manifest": ".runtime-work/c125751-off-release-sweep-v3/manifest-ego-9.json",
+          "other_release_frame": 10,
           "proofs": [
             {
-              "kind": "offline",
               "command": [
                 "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
                 "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py",
@@ -926,11 +383,11 @@
                 "--output",
                 "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-off-release-sweep-v3/ego-9-offline"
               ],
+              "kind": "offline",
               "log": ".runtime-work/c125751-off-release-sweep-v3/ego-9-offline.log",
               "log_sha256": "8001e94be3e501bfa90ee178e0a2e6a457f37f5da5e386e2bb2fa54d504d3357"
             },
             {
-              "kind": "compatibility",
               "command": [
                 "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
                 "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py",
@@ -946,11 +403,11 @@
                 "--validator",
                 "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
               ],
+              "kind": "compatibility",
               "log": ".runtime-work/c125751-off-release-sweep-v3/ego-9-compatibility.log",
               "log_sha256": "bb7a49717bcc1bc96b298e5338cf0a87f4e3fc339905932ee94497969f6ea75f"
             },
             {
-              "kind": "saved",
               "command": [
                 "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
                 "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py",
@@ -968,25 +425,25 @@
                 "--validator",
                 "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
               ],
+              "kind": "saved",
               "log": ".runtime-work/c125751-off-release-sweep-v3/ego-9-saved.log",
               "log_sha256": "ef9a59e8655b060e3ec157794d9db61638c3fd31f5b7307dac07b66b612dc7b8"
             }
           ],
-          "compatibility_sha256": "bb7a49717bcc1bc96b298e5338cf0a87f4e3fc339905932ee94497969f6ea75f",
+          "recorded_only": true,
           "saved_sha256": "ef9a59e8655b060e3ec157794d9db61638c3fd31f5b7307dac07b66b612dc7b8",
-          "recorded_only": true
+          "varied_release_role": "ego"
         },
         {
-          "ego_release_frame": 10,
-          "other_release_frame": 10,
-          "varied_release_role": "ego",
           "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
+          "compatibility_sha256": "89b241d3c201c2de3de3b40de626b474f709bd20b2f1da37ecb46ba41dba2dec",
           "construction": ".runtime-work/c125751-off-release-sweep-v3/construction-ego-10.json",
           "construction_sha256": "50058e7fb1d3a4243be40b5daf0c5a70292d665f5ed24b708bd2e71d26d20f96",
+          "ego_release_frame": 10,
           "manifest": ".runtime-work/c125751-off-release-sweep-v3/manifest-ego-10.json",
+          "other_release_frame": 10,
           "proofs": [
             {
-              "kind": "offline",
               "command": [
                 "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
                 "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py",
@@ -998,11 +455,11 @@
                 "--output",
                 "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-off-release-sweep-v3/ego-10-offline"
               ],
+              "kind": "offline",
               "log": ".runtime-work/c125751-off-release-sweep-v3/ego-10-offline.log",
               "log_sha256": "37d3209c557a8c58c9cab7835e33913f35831f46fb1e4a101de68f5a1826a127"
             },
             {
-              "kind": "compatibility",
               "command": [
                 "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
                 "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py",
@@ -1018,11 +475,11 @@
                 "--validator",
                 "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
               ],
+              "kind": "compatibility",
               "log": ".runtime-work/c125751-off-release-sweep-v3/ego-10-compatibility.log",
               "log_sha256": "89b241d3c201c2de3de3b40de626b474f709bd20b2f1da37ecb46ba41dba2dec"
             },
             {
-              "kind": "saved",
               "command": [
                 "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
                 "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py",
@@ -1040,25 +497,25 @@
                 "--validator",
                 "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
               ],
+              "kind": "saved",
               "log": ".runtime-work/c125751-off-release-sweep-v3/ego-10-saved.log",
               "log_sha256": "42b8d3bc686a5f74ec896f40b4a74d7733c63292d710ce6d301786a423e67287"
             }
           ],
-          "compatibility_sha256": "89b241d3c201c2de3de3b40de626b474f709bd20b2f1da37ecb46ba41dba2dec",
+          "recorded_only": true,
           "saved_sha256": "42b8d3bc686a5f74ec896f40b4a74d7733c63292d710ce6d301786a423e67287",
-          "recorded_only": true
+          "varied_release_role": "ego"
         },
         {
-          "ego_release_frame": 11,
-          "other_release_frame": 10,
-          "varied_release_role": "ego",
           "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
+          "compatibility_sha256": "97c186546eba376461aacd633aefd8c79c800d279ad3305a87a9acc7254843cc",
           "construction": ".runtime-work/c125751-off-release-sweep-v3/construction-ego-11.json",
           "construction_sha256": "eea15c9683a26132f4f3716167a8aebf54ad25adc1e5bbd6bce96555087d3eb6",
+          "ego_release_frame": 11,
           "manifest": ".runtime-work/c125751-off-release-sweep-v3/manifest-ego-11.json",
+          "other_release_frame": 10,
           "proofs": [
             {
-              "kind": "offline",
               "command": [
                 "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
                 "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py",
@@ -1070,11 +527,11 @@
                 "--output",
                 "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-off-release-sweep-v3/ego-11-offline"
               ],
+              "kind": "offline",
               "log": ".runtime-work/c125751-off-release-sweep-v3/ego-11-offline.log",
               "log_sha256": "9ef131c2542231654516bdb7a6a933841bf68c9b91bf4c2b32d0f533d9d3c30c"
             },
             {
-              "kind": "compatibility",
               "command": [
                 "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
                 "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py",
@@ -1090,11 +547,11 @@
                 "--validator",
                 "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
               ],
+              "kind": "compatibility",
               "log": ".runtime-work/c125751-off-release-sweep-v3/ego-11-compatibility.log",
               "log_sha256": "97c186546eba376461aacd633aefd8c79c800d279ad3305a87a9acc7254843cc"
             },
             {
-              "kind": "saved",
               "command": [
                 "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
                 "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py",
@@ -1112,265 +569,627 @@
                 "--validator",
                 "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
               ],
+              "kind": "saved",
               "log": ".runtime-work/c125751-off-release-sweep-v3/ego-11-saved.log",
               "log_sha256": "77056becdcfcbe430f7e10f5c5a57e9688707eaf8878ebb215a6f06e7de2355e"
             }
           ],
-          "compatibility_sha256": "97c186546eba376461aacd633aefd8c79c800d279ad3305a87a9acc7254843cc",
+          "recorded_only": true,
           "saved_sha256": "77056becdcfcbe430f7e10f5c5a57e9688707eaf8878ebb215a6f06e7de2355e",
-          "recorded_only": true
+          "varied_release_role": "ego"
         }
       ]
     },
-    "static_fixture_release_join": {
-      "format": "worker-static-crossing-release-join-diagnostic",
-      "proof": ".runtime-work/c125751-static-crossing-release-join-v2/proof.json",
-      "proof_sha256": "446cece3e17014975eb0e93b3a198a927ccb069a490378ccd825a9e27f848e66",
-      "builder_sha256": "223205e66cc9ff3c24ad20858dac54d3d33defeb44a241620e70ac1752027cf8",
-      "all_eight_source_joins_passed": true,
-      "static_entry_delta_s": 0.05,
-      "native_release_response_proven": false,
-      "negative": "Each of eight constructed controller histories rejected an altered subject permission; diagnostic body tracks were explicitly delayed 20 frames from compatibility fixtures."
-    },
-    "current_builder_reproduction": {
-      "proof": ".runtime-work/c125751-current-builder-reproduction-v3.json",
-      "sha256": "5c120122fa3f2f9c5a9a382880c05ec9dd713b4895c2237efb3dc1c8962a32bb",
-      "all_eight_exact_construction_bytes_reproduced": true
-    },
-    "controller_command_sweep": {
-      "proof": ".runtime-work/c125751-controller-command-sweep-v2.json",
-      "sha256": "2d96ac5a2ac5a4ad2845225d75f69f66fc4ddfd7d3b1175e20b9c6bbdae275ec",
-      "builder_sha256": "fc8e54eaca95d92a0e0c81071000bc9742d6e9c073d54c037072d3a678931f9e",
-      "all_eight_actual_controller_command_transitions_passed": true,
-      "fixed_role_commands_identical": true,
-      "cross_axis_baseline_identical": true,
-      "native_motion_or_entry_proven": false
-    },
+    "declared_difference": "ego_release_frame 8, 9, 10, 11; other_release_frame fixed 10",
+    "fixed_conditions": [
+      "same selected Off-signal case ID",
+      "same diagnostic site packet",
+      "same four source cameras",
+      "same 20 Hz and 55-second duration",
+      "same original source fixture and measurement contract"
+    ],
+    "limits": [
+      "Fixture histories are independent of controller schedule",
+      "No Native release-to-body-entry response or feasible entry-time range measured",
+      "No statutory approximately-same-time cutoff or legal priority verdict asserted"
+    ],
     "measured_yield_controller_sweep": {
-      "proof": ".runtime-work/c125751-measured-yield-controller-v1.json",
-      "sha256": "213f9237bf41a5bdb050711d016b96861e2239b933f384ea76200cf708c1bf10",
       "builder_sha256": "fc8e54eaca95d92a0e0c81071000bc9742d6e9c073d54c037072d3a678931f9e",
+      "native_entry_feedback_proven": false,
       "observed_other_entry_indices": [
         8,
         9,
         10,
         11
       ],
-      "subject_command_follows_observation": true,
-      "native_entry_feedback_proven": false
+      "proof": ".runtime-work/c125751-measured-yield-controller-v1.json",
+      "sha256": "213f9237bf41a5bdb050711d016b96861e2239b933f384ea76200cf708c1bf10",
+      "subject_command_follows_observation": true
+    },
+    "opposing_release_axis": {
+      "builder_sha256": "223205e66cc9ff3c24ad20858dac54d3d33defeb44a241620e70ac1752027cf8",
+      "cross_axis_audit": {
+        "ego_axis": {
+          "changed_fixed_release_rejected": true,
+          "construction_sha256": [
+            "a1e7a79905d73b35ddfd6c13ebf4863e089c572fc4055692ac8487eec3becdf7",
+            "6fb217bf8355d1a4151ebc08f76c101ce41bc7e8cdefeb3636a063a297706e7c",
+            "50058e7fb1d3a4243be40b5daf0c5a70292d665f5ed24b708bd2e71d26d20f96",
+            "eea15c9683a26132f4f3716167a8aebf54ad25adc1e5bbd6bce96555087d3eb6"
+          ],
+          "fixed_construction_conditions": true,
+          "format": "worker-fixed-release-axis-diagnostic",
+          "legal_verdict_asserted": false,
+          "physical_acceptance_claimed": false,
+          "releases": [
+            8,
+            9,
+            10,
+            11
+          ],
+          "varied_role": "ego"
+        },
+        "format": "worker-cross-release-axis-diagnostic",
+        "legal_verdict_asserted": false,
+        "other_axis": {
+          "changed_fixed_release_rejected": true,
+          "construction_sha256": [
+            "dd1b8d98ab92986212a68266653e8ed57d0b9a41e78e70a35d30e22ea85a9d1f",
+            "f1bf5f96b853ea392df68574014db1615aa8848dd6cc00ec769e6fb4ad04406e",
+            "50058e7fb1d3a4243be40b5daf0c5a70292d665f5ed24b708bd2e71d26d20f96",
+            "05b3b0a6b7b17affd97cc76885aace655a8c63be741cb62326cc9377a1b316d3"
+          ],
+          "fixed_construction_conditions": true,
+          "format": "worker-fixed-release-axis-diagnostic",
+          "legal_verdict_asserted": false,
+          "physical_acceptance_claimed": false,
+          "releases": [
+            8,
+            9,
+            10,
+            11
+          ],
+          "varied_role": "other"
+        },
+        "physical_acceptance_claimed": false,
+        "shared_baseline_construction_sha256": "50058e7fb1d3a4243be40b5daf0c5a70292d665f5ed24b708bd2e71d26d20f96"
+      },
+      "cross_axis_audit_sha256": "12344e2f314657cbb958627be60eb7459ea7e52f9885d3cccb140f1c75fe768e",
+      "fixed_condition_audit": {
+        "changed_fixed_release_rejected": true,
+        "construction_sha256": [
+          "dd1b8d98ab92986212a68266653e8ed57d0b9a41e78e70a35d30e22ea85a9d1f",
+          "f1bf5f96b853ea392df68574014db1615aa8848dd6cc00ec769e6fb4ad04406e",
+          "50058e7fb1d3a4243be40b5daf0c5a70292d665f5ed24b708bd2e71d26d20f96",
+          "05b3b0a6b7b17affd97cc76885aace655a8c63be741cb62326cc9377a1b316d3"
+        ],
+        "fixed_construction_conditions": true,
+        "format": "worker-fixed-release-axis-diagnostic",
+        "legal_verdict_asserted": false,
+        "physical_acceptance_claimed": false,
+        "releases": [
+          8,
+          9,
+          10,
+          11
+        ],
+        "varied_role": "other"
+      },
+      "fixed_condition_audit_sha256": "77fdcb301065296b63d6c8cb0ae9b52600b279f44a35bbe45fbee62e02a89182",
+      "limit": "Synthetic controller and source-specific software proofs only; Native body-entry response, site authority and legal right of way remain unverified.",
+      "selected_case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
+      "stage_proof": ".runtime-work/c125751-other-release-sweep-v1/other-release-proof.json",
+      "stage_proof_sha256": "747120e2083d76d4d54860f8bfe718a866431a58d790ef8ae69af358d3f8f745",
+      "status": "four_exact_diagnostic_variants_passed;_native_entry_response_unverified",
+      "variants": [
+        {
+          "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
+          "compatibility_sha256": "bf1afe680e66ffeb1cd61f28c1e80f670820dc29caf976896acc5e86e3254046",
+          "construction": ".runtime-work/c125751-other-release-sweep-v1/construction-other-8.json",
+          "construction_sha256": "dd1b8d98ab92986212a68266653e8ed57d0b9a41e78e70a35d30e22ea85a9d1f",
+          "ego_release_frame": 10,
+          "manifest": ".runtime-work/c125751-other-release-sweep-v1/manifest-other-8.json",
+          "other_release_frame": 8,
+          "proofs": [
+            {
+              "command": [
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py",
+                "offline",
+                "--manifest",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/manifest-other-8.json",
+                "--case",
+                "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
+                "--output",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/other-8-offline"
+              ],
+              "kind": "offline",
+              "log": ".runtime-work/c125751-other-release-sweep-v1/other-8-offline.log",
+              "log_sha256": "29a96140a7175ffed1df1d9b0ec1d74160ddf5089fd393092c611480f6253fe4"
+            },
+            {
+              "command": [
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py",
+                "compatibility",
+                "--manifest",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/manifest-other-8.json",
+                "--case",
+                "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
+                "--output",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/other-8-compat",
+                "--library",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/library",
+                "--validator",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+              ],
+              "kind": "compatibility",
+              "log": ".runtime-work/c125751-other-release-sweep-v1/other-8-compatibility.log",
+              "log_sha256": "bf1afe680e66ffeb1cd61f28c1e80f670820dc29caf976896acc5e86e3254046"
+            },
+            {
+              "command": [
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py",
+                "process-saved",
+                "--manifest",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/manifest-other-8.json",
+                "--case",
+                "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
+                "--attempt",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/other-8-compat",
+                "--output",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/other-8-saved",
+                "--library",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/library",
+                "--validator",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+              ],
+              "kind": "saved",
+              "log": ".runtime-work/c125751-other-release-sweep-v1/other-8-saved.log",
+              "log_sha256": "30d2d0a4f4e39c4f2383a174cd5403876b6491b3e5cec2514c7cbdb226efd122"
+            }
+          ],
+          "recorded_only": true,
+          "saved_sha256": "30d2d0a4f4e39c4f2383a174cd5403876b6491b3e5cec2514c7cbdb226efd122",
+          "varied_release_role": "other"
+        },
+        {
+          "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
+          "compatibility_sha256": "3126a0a9a3f1d21f8430cbd1665cc5ace834aee9ccc3409083c2499a1d04800d",
+          "construction": ".runtime-work/c125751-other-release-sweep-v1/construction-other-9.json",
+          "construction_sha256": "f1bf5f96b853ea392df68574014db1615aa8848dd6cc00ec769e6fb4ad04406e",
+          "ego_release_frame": 10,
+          "manifest": ".runtime-work/c125751-other-release-sweep-v1/manifest-other-9.json",
+          "other_release_frame": 9,
+          "proofs": [
+            {
+              "command": [
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py",
+                "offline",
+                "--manifest",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/manifest-other-9.json",
+                "--case",
+                "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
+                "--output",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/other-9-offline"
+              ],
+              "kind": "offline",
+              "log": ".runtime-work/c125751-other-release-sweep-v1/other-9-offline.log",
+              "log_sha256": "2a1a0d4a50a9e9915140dca5e8e1cdaaa2fa567e7ca9816bfef3d3db13a6d661"
+            },
+            {
+              "command": [
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py",
+                "compatibility",
+                "--manifest",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/manifest-other-9.json",
+                "--case",
+                "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
+                "--output",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/other-9-compat",
+                "--library",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/library",
+                "--validator",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+              ],
+              "kind": "compatibility",
+              "log": ".runtime-work/c125751-other-release-sweep-v1/other-9-compatibility.log",
+              "log_sha256": "3126a0a9a3f1d21f8430cbd1665cc5ace834aee9ccc3409083c2499a1d04800d"
+            },
+            {
+              "command": [
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py",
+                "process-saved",
+                "--manifest",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/manifest-other-9.json",
+                "--case",
+                "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
+                "--attempt",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/other-9-compat",
+                "--output",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/other-9-saved",
+                "--library",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/library",
+                "--validator",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+              ],
+              "kind": "saved",
+              "log": ".runtime-work/c125751-other-release-sweep-v1/other-9-saved.log",
+              "log_sha256": "ce17e358ec06154443c0fec40d86dba3629db43935efa202b0e3e08a3dd1b8bc"
+            }
+          ],
+          "recorded_only": true,
+          "saved_sha256": "ce17e358ec06154443c0fec40d86dba3629db43935efa202b0e3e08a3dd1b8bc",
+          "varied_release_role": "other"
+        },
+        {
+          "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
+          "compatibility_sha256": "1966faf8e89736ff64a55611d1d4cc62c06315910251f2a896b022be96f59dc7",
+          "construction": ".runtime-work/c125751-other-release-sweep-v1/construction-other-10.json",
+          "construction_sha256": "50058e7fb1d3a4243be40b5daf0c5a70292d665f5ed24b708bd2e71d26d20f96",
+          "ego_release_frame": 10,
+          "manifest": ".runtime-work/c125751-other-release-sweep-v1/manifest-other-10.json",
+          "other_release_frame": 10,
+          "proofs": [
+            {
+              "command": [
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py",
+                "offline",
+                "--manifest",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/manifest-other-10.json",
+                "--case",
+                "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
+                "--output",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/other-10-offline"
+              ],
+              "kind": "offline",
+              "log": ".runtime-work/c125751-other-release-sweep-v1/other-10-offline.log",
+              "log_sha256": "5326502fb5f7b6604745d3c7e8e12bf29ac8d9b12cd33f6e56c67a905e932e2a"
+            },
+            {
+              "command": [
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py",
+                "compatibility",
+                "--manifest",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/manifest-other-10.json",
+                "--case",
+                "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
+                "--output",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/other-10-compat",
+                "--library",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/library",
+                "--validator",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+              ],
+              "kind": "compatibility",
+              "log": ".runtime-work/c125751-other-release-sweep-v1/other-10-compatibility.log",
+              "log_sha256": "1966faf8e89736ff64a55611d1d4cc62c06315910251f2a896b022be96f59dc7"
+            },
+            {
+              "command": [
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py",
+                "process-saved",
+                "--manifest",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/manifest-other-10.json",
+                "--case",
+                "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
+                "--attempt",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/other-10-compat",
+                "--output",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/other-10-saved",
+                "--library",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/library",
+                "--validator",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+              ],
+              "kind": "saved",
+              "log": ".runtime-work/c125751-other-release-sweep-v1/other-10-saved.log",
+              "log_sha256": "bf109bd3d513919c1613648084f14974f0b719fabfef79ceef9668e1beb29073"
+            }
+          ],
+          "recorded_only": true,
+          "saved_sha256": "bf109bd3d513919c1613648084f14974f0b719fabfef79ceef9668e1beb29073",
+          "varied_release_role": "other"
+        },
+        {
+          "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
+          "compatibility_sha256": "d27398a279c177b86b3f4bd9bbf2c8c171e518525b8be5e502db1e77583833ba",
+          "construction": ".runtime-work/c125751-other-release-sweep-v1/construction-other-11.json",
+          "construction_sha256": "05b3b0a6b7b17affd97cc76885aace655a8c63be741cb62326cc9377a1b316d3",
+          "ego_release_frame": 10,
+          "manifest": ".runtime-work/c125751-other-release-sweep-v1/manifest-other-11.json",
+          "other_release_frame": 11,
+          "proofs": [
+            {
+              "command": [
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py",
+                "offline",
+                "--manifest",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/manifest-other-11.json",
+                "--case",
+                "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
+                "--output",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/other-11-offline"
+              ],
+              "kind": "offline",
+              "log": ".runtime-work/c125751-other-release-sweep-v1/other-11-offline.log",
+              "log_sha256": "39a1da7bf2a714869b1171d58dfbb90ff2886e133f0ac9c8b44f894f8aed72dd"
+            },
+            {
+              "command": [
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py",
+                "compatibility",
+                "--manifest",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/manifest-other-11.json",
+                "--case",
+                "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
+                "--output",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/other-11-compat",
+                "--library",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/library",
+                "--validator",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+              ],
+              "kind": "compatibility",
+              "log": ".runtime-work/c125751-other-release-sweep-v1/other-11-compatibility.log",
+              "log_sha256": "d27398a279c177b86b3f4bd9bbf2c8c171e518525b8be5e502db1e77583833ba"
+            },
+            {
+              "command": [
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime.py",
+                "process-saved",
+                "--manifest",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/manifest-other-11.json",
+                "--case",
+                "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
+                "--attempt",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/other-11-compat",
+                "--output",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c125751-other-release-sweep-v1/other-11-saved",
+                "--library",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/runtime/library",
+                "--validator",
+                "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+              ],
+              "kind": "saved",
+              "log": ".runtime-work/c125751-other-release-sweep-v1/other-11-saved.log",
+              "log_sha256": "422e4705494100cdea251d4e824538ce466c2590ac22aa5dbc97b9cd3ee1e339"
+            }
+          ],
+          "recorded_only": true,
+          "saved_sha256": "422e4705494100cdea251d4e824538ce466c2590ac22aa5dbc97b9cd3ee1e339",
+          "varied_release_role": "other"
+        }
+      ]
     },
     "original_response_axis_audit": {
-      "status": "implemented_and_negative_tested;_original_native_attempts_pending",
+      "control_requirement": "Sealed original controller history must show a held full-brake frame before release and applied positive throttle after release.",
       "source": "original_release_axis.py",
       "source_sha256": "92b91c4ffbfacf8f42923579a73c574df31596ed3db14e2745069967dcee7c98",
-      "test_source": "tests/test_original_release_axis.py",
-      "test_source_sha256": "8999cd35d41999cc41054ed4ed569b2caa22dfdda3c6efedee4fd686cf091d3c",
-      "test_log": "cpu-tests.log",
-      "test_log_sha256": "77bace11063663b5c1384a2aed0ec02d2404726bf4af88f7cb3b5c0d7fef7f99",
       "static_fixture_negative_log": ".runtime-work/c125751-original-release-axis-static-negative.log",
       "static_fixture_negative_log_sha256": "d8b833e0b9d9e1dda28f23af2a0989397c13c980c58cdbe956e6b830fcfe73c0",
-      "unresolved": "Four source-sealed original Native attempts for each role are needed to measure feasible entry response; no legal threshold inferred.",
-      "control_requirement": "Sealed original controller history must show a held full-brake frame before release and applied positive throttle after release."
-    }
-  },
-  "opposite_left_turn_construction_draft": {
-    "status": "unselected_cpu_construction_tested",
-    "source": "opposite_turn_construction.py",
-    "source_sha256": "7372e600f4ba00af69f67aa25134084c5b0b13abae62360ad7c50d58a0cedc21",
-    "test_source": "tests/test_opposite_turn_construction.py",
-    "test_source_sha256": "bd614a2a252149cd9d08da88fb2d6d4f8068f6d141c29acde4f88956657449fa",
-    "test_log": "cpu-tests.log",
-    "test_log_sha256": "3bcff3fc89d3fd0d62962bdad1ac59a56eb3b821331c6de58d8f82042ebaaaac",
-    "limitations": [
-      "Current FixtureTown site has perpendicular approaches and cannot be reused for this branch.",
-      "Opposing and left angular bounds are construction checks, not legal definitions.",
-      "No selected exact case, original Native site/capture or exception judgment is claimed.",
-      "The command path is CPU-tested with frame-joined candidate capture; no exact selected Native attempt has been recorded."
-    ],
-    "motion_command_path": "opposite_turn_construction.py:command_opposite_turn_pair",
-    "motion_command_proof": "CPU fake-Native tests hold both roles then release at distinct frames, check applied controls and reject invalid route index before either command; source crossing polygon must contain both route centers with starts/exits outside, and invalid crossing geometry is rejected before actor commands",
-    "candidate_capture_runner": "opposite_turn_runner.py:run_candidate_opposite_turn",
-    "candidate_capture_runner_sha256": "a42602c9da0822f11fc45ac9ed4ccaa48f7a622e21eceb33cb6a65438ca19a3e",
-    "candidate_capture_runner_limit": "Fake-Native CPU proof checks selected config/construction/site/control joins, retained map export against live Native readback, route starts and common junction, signal lane governance, camera streams and original source histories. Synthetic source records remain diagnostic; reviewed physical site, actual Native media and selected fallback proof remain unfinished.",
-    "site_candidate_probe": "opposite_site_probe.py:probe_native_opposite_approaches",
-    "site_candidate_probe_source_sha256": "7a15c1b3c3f17d278fc57bd0b3b9e753eacd2d58125b0a0e8b8c483c60d27e48",
-    "site_candidate_probe_test": "tests/test_opposite_site_probe.py",
-    "site_candidate_probe_test_sha256": "bd614a2a252149cd9d08da88fb2d6d4f8068f6d141c29acde4f88956657449fa",
-    "site_candidate_probe_limit": "Native same-junction opposing approaches with bounded left and straight Native waypoint route candidates; map identity, median opening, original trajectory, official status and physical turn require source review",
-    "saved_candidate_entry_analysis": "opposite_turn_runner.py:analyze_candidate_opposite_entry",
-    "saved_candidate_finalizer": "opposite_turn_runner.py:finalize_candidate_opposite_turn",
-    "saved_candidate_finalizer_source_sha256": "e904885975c9bc7d30e6bf26189af2472f6d829d08108178053e8263bccae8a7",
-    "saved_candidate_finalizer_proof": "Fake-Native saved-source test writes signal/stop/entry channels and a source-hashed physical result; rejects missing evidence and trace/evidence frame/time mismatch.",
-    "independent_candidate_audit": "opposite_site_probe.py:audit_opposite_candidate",
-    "independent_candidate_audit_source_sha256": "7a15c1b3c3f17d278fc57bd0b3b9e753eacd2d58125b0a0e8b8c483c60d27e48",
-    "independent_candidate_audit_proof": "tests/test_opposite_turn_construction.py::DeviceSourceJoinTests.test_opposite_candidate_audit_recomputes_stop_order_without_finalizer; independent stop-history/reference recomputation, forged derived measurement rejected",
-    "site_packet_validator": "opposite_site_probe.py:verify_opposite_site_packet",
-    "site_packet_validator_proof": "Fake-Native five-document packet binds reviewed content and retained original OpenDRIVE export by hash; live Native map export must match before acquisition. Diagnostic-only packet and altered source content are rejected.",
-    "fallback_construction_draft": {
-      "status": "unselected_fake_native_cpu_tested",
-      "source": "opposite_turn_construction.py:validate_opposite_fallbacks",
-      "candidate_binding": "opposite_turn_runner.py:_validate_candidate_construction",
-      "physical_risks": {
-        "fallback1": "spawn_occupied: predeclared alternative paired transforms on the same sourced approach lanes; Native try_spawn_actor failure retained in spawn_attempt.json",
-        "fallback2": "entry_timing_missed: predeclared alternate finite target speeds; same release schedule, geometry and cameras",
-        "fallback3": "turn_path_missed: predeclared alternate finite route-controller lookahead; same route, site and four camera poses"
-      },
-      "trigger_sources": {
-        "fallback1": "spawn_attempt.json:approach_spawn_succeeded",
-        "fallback2": "crossing_history.jsonl:paired_body_entry_observed_by_planned_frame",
-        "fallback3": "body_history.jsonl:turning_body_route_deviation_m"
-      },
-      "fixed_invariants": "same exact case ID, law, turning role, route/crossing geometry, four cameras, release schedule, frame count and source packet; no new planned case or legal outcome selected",
-      "proof": "78-test fake-Native suite exercises spawn, target speed, route lookahead, fixed cameras, variant binding and failed-spawn trigger; rejects wrong trigger source, changed geometry, schedule and attempted controls",
-      "limitation": "No real Native alternative transforms or controller response have been source-reviewed; no selected exact fallback, offline, compatibility, process-saved or physical proof is claimed."
+      "status": "implemented_and_negative_tested;_original_native_attempts_pending",
+      "test_log": "cpu-tests.log",
+      "test_log_sha256": "77bace11063663b5c1384a2aed0ec02d2404726bf4af88f7cb3b5c0d7fef7f99",
+      "test_source": "tests/test_original_release_axis.py",
+      "test_source_sha256": "8999cd35d41999cc41054ed4ed569b2caa22dfdda3c6efedee4fd686cf091d3c",
+      "unresolved": "Four source-sealed original Native attempts for each role are needed to measure feasible entry response; no legal threshold inferred."
     },
-    "offline_diagnostic_bundle_proof": {
-      "status": "synthetic_diagnostic_only_unselected",
-      "builder": "build_diagnostic_constructions.py:build_opposite_offline_bundle",
-      "builder_sha256": "61b073ab8f588dfb3c9bd084271d5d68a71140068cc3a04a48a8f155351eacb9",
-      "manifest": ".runtime-work/c125751-opposite-bundle-v15/manifest.json",
-      "manifest_sha256": "3f6d6b17d31989bd4f7086f4515f0d69742c3fe4485233115ebb6e2c8acc312d",
-      "candidate_static_validation": "worker_exchange.candidate_constructions.validate(candidate_count=4) passed",
-      "offline": {
-        "primary": {
-          "construction_sha256": "3835efe9b422a802b590d91202861925dfc14ff8d27a3a478157cdc04fc9da64",
-          "log_sha256": "cd39fdb6e8afbfa8979a3bc19640b94c25b9e4a86048763e02066974691faa75",
-          "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c125751-opposite-bundle-v15/formal-manifest.json --case testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_left_turn --candidate primary --output .runtime-work/c125751-opposite-reproof-v17/primary-offline",
-          "exit_code": 0,
-          "tests": 82
-        },
-        "fallback1": {
-          "construction_sha256": "cfba745cb711e82f6d1e63295dca2bd41d7ee510df1af69c14b5c150e12bb48b",
-          "log_sha256": "ff2036cf589f11d713b7e9d02e4a5334f9887c39e2ba6db9f4071fe3fe88e0ae",
-          "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c125751-opposite-bundle-v15/formal-manifest.json --case testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_left_turn --candidate fallback1 --output .runtime-work/c125751-opposite-reproof-v17/fallback1-offline",
-          "exit_code": 0,
-          "tests": 82
-        },
-        "fallback2": {
-          "construction_sha256": "67373a5ede361e5fe27a5110013518868f3129d1b6c82faed369817a79c09bb0",
-          "log_sha256": "7ffa9e882fd4f987553eb4ececd07227f6b967b44390bc3f5fb59eea18694666",
-          "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c125751-opposite-bundle-v15/formal-manifest.json --case testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_left_turn --candidate fallback2 --output .runtime-work/c125751-opposite-reproof-v17/fallback2-offline",
-          "exit_code": 0,
-          "tests": 82
-        },
-        "fallback3": {
-          "construction_sha256": "0d9122e6c219f90a86c2e0ace49cd762910f1f61f99c36531866a2d4952629af",
-          "log_sha256": "7b3323e8e320fa8c1224dc641c9528d1c8f46a5f1a56144b61ea0af8209cde38",
-          "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c125751-opposite-bundle-v15/formal-manifest.json --case testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_left_turn --candidate fallback3 --output .runtime-work/c125751-opposite-reproof-v17/fallback3-offline",
-          "exit_code": 0,
-          "tests": 82
-        }
-      },
-      "native_capture_rejected_for_diagnostic_site": true,
-      "physical_or_legal_acceptance_claimed": false
-    },
-    "opposite_entry_saved_diagnostic_sweep": {
-      "status": "synthetic_saved_source_diagnostic_only_unselected",
-      "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/build_diagnostic_constructions.py --prove-opposite-entry-sweep .runtime-work/c125751-opposite-entry-sweep-v12",
-      "proof": ".runtime-work/c125751-opposite-entry-sweep-v12/proof.json",
-      "proof_sha256": "11c7cfd50bdbe89a55e7a963db28fd185b988ec5202dadca6f4dd4ea4a94c9ed",
-      "builder_sha256": "fe41ee1de2b68dfa8aaa7be76736be431706783f577d52a739d5634161e3e9c1",
-      "entry_offsets_s": [
+    "release_entry_audit": {
+      "entrypoint": "build_diagnostic_constructions.py:audit_release_attempt",
+      "four_point_diagnostic_proof_log": ".runtime-work/c125751-release-entry-four-point.log",
+      "four_point_diagnostic_proof_log_sha256": "654bed2bf90c33445f2e7eecfc9ca6c8198cd8393edca33fbfe1b08e9554a39a",
+      "four_point_limit": "Authored synthetic crossing and controller histories prove source join sensitivity only; staged offline fixtures do not contain controller history and no Native schedule response is established.",
+      "four_point_observed_ego_minus_other_entry_time_s": [
         -0.1,
         -0.05,
         0,
-        0.05,
-        0.1
+        0.05
       ],
-      "independent_saved_source_audits_passed": 5,
-      "changed_original_body_rejections": 5,
-      "limits": "Authored diagnostic tracks and generated decodable color media with source-joined native frame and graph packets; no Native pixels, physical motion, selected formal compatibility, physical acceptance, or legal timing threshold established.",
-      "four_camera_ffv1_decodes_passed": 5,
-      "composed_video_decodes_passed": 5,
-      "native_output_validations_passed": 5
+      "proof_log": ".runtime-work/c125751-release-entry-audit-proof.log",
+      "proof_log_sha256": "ab3b9993bf3925f8064f7f087814a67c34448503e2076f9a6aa59e2e7ede4e6d",
+      "required_original_sources": [
+        "config.json",
+        "controller_history.jsonl",
+        "crossing_history.jsonl",
+        "road_geometry.json",
+        "video_frames.jsonl"
+      ],
+      "source_sha256": "181676ddd4c20c9e5b8423b68ac979eb1d08849a34221f0e12eda3e62452edbc",
+      "status": "synthetic_join_positive_and_four_negative_checks_passed;_no_native_response_claim"
     },
-    "opposite_positive_compatibility_probe": {
-      "status": "synthetic_diagnostic_only_unselected",
-      "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/build_diagnostic_constructions.py --prove-opposite-positive-compatibility .runtime-work/c125751-opposite-bundle-v9/manifest.json .runtime-work/c125751-opposite-entry-sweep-v12/ego-1-other-1 .runtime-work/c125751-opposite-positive-compat-v7",
-      "proof": ".runtime-work/c125751-opposite-positive-compat-v7/proof.json",
-      "proof_sha256": "4429ba06fd33130f0768648efbd47a72436c4661fef4f18039a43ef8ae7ce6e9",
-      "positive_candidates_passed": 4,
-      "missing_original_body_source_rejected": true,
-      "limits": "Direct positive diagnostic compatibility probe reached actual analysis, source immutability, four camera media, adapter, Lean and final render. Formal selected measurement contract/fixture recipe, recorded-only saved processing and physical Native evidence remain unfinished."
+    "selected_case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
+    "static_fixture_release_join": {
+      "all_eight_source_joins_passed": true,
+      "builder_sha256": "223205e66cc9ff3c24ad20858dac54d3d33defeb44a241620e70ac1752027cf8",
+      "format": "worker-static-crossing-release-join-diagnostic",
+      "native_release_response_proven": false,
+      "negative": "Each of eight constructed controller histories rejected an altered subject permission; diagnostic body tracks were explicitly delayed 20 frames from compatibility fixtures.",
+      "proof": ".runtime-work/c125751-static-crossing-release-join-v2/proof.json",
+      "proof_sha256": "446cece3e17014975eb0e93b3a198a927ccb069a490378ccd825a9e27f848e66",
+      "static_entry_delta_s": 0.05
     },
-    "opposite_recorded_only_saved_processing_probe": {
-      "status": "synthetic_diagnostic_only_unselected",
-      "proof": ".runtime-work/c125751-opposite-saved-v3/proof.json",
-      "proof_sha256": "d4c8409572d04595c8fe8353dc05607e978dfb5a34d98c1b4133ad35618319a7",
-      "candidate_receipts_passed": 4,
-      "limits": "Generated diagnostic frame/graph/map and color video source; no reviewed Native site, pixels, physical behavior, or formal selected measurement contract."
+    "status": "diagnostic_controller_variant_paths_passed;_native_entry_feasibility_unverified",
+    "variants": [
+      {
+        "compatibility_receipt": ".runtime-work/c125751-off-release-sweep-v2/ego-8-compat/compatibility.json",
+        "compatibility_sha256": "0c435b47bf36e8de4a09397007fd46e5810387cae572d540b991778cb459f8b2",
+        "construction": ".runtime-work/c125751-off-release-sweep-v2/construction-ego-8.json",
+        "construction_sha256": "ae8634e7bc5564739192acc8e7f82d6efa7a95ecd65be02816c7ee26101c5083",
+        "ego_release_frame": 8,
+        "legal_acceptance_claimed": false,
+        "manifest": ".runtime-work/c125751-off-release-sweep-v2/manifest-ego-8.json",
+        "manifest_sha256": "428bfc3771effc5faa8d4de86eae6ed618fee2e28194ac05534c4b52eb8dc9cf",
+        "negative_removed": "signal_history.jsonl",
+        "offline_log": ".runtime-work/c125751-off-release-sweep-v2/ego-8-offline-command.log",
+        "offline_log_sha256": "09373c6469a14b7874c58b144e044bede44c41b3fcc6ebbcc1a5656f7640fada",
+        "other_release_frame": 10,
+        "physical_acceptance_claimed": false,
+        "saved_log": ".runtime-work/c125751-off-release-sweep-v2/ego-8-saved-command.log",
+        "saved_log_sha256": "9c1f5a3a2fbcb7f23c48bc7deb813057e9e59e4746e199775c87a82affbc2d3c",
+        "saved_recorded_only": true
+      },
+      {
+        "compatibility_receipt": ".runtime-work/c125751-off-release-sweep-v2/ego-9-compat/compatibility.json",
+        "compatibility_sha256": "9787c401b56278b9ac184232a44b46acb3ba3cc4c44bf58c1c030a68e49466e9",
+        "construction": ".runtime-work/c125751-off-release-sweep-v2/construction-ego-9.json",
+        "construction_sha256": "22c6368cfa499d7f6473d12f58195dd4b5400cf7c0e5126203dd9b4907adeb5e",
+        "ego_release_frame": 9,
+        "legal_acceptance_claimed": false,
+        "manifest": ".runtime-work/c125751-off-release-sweep-v2/manifest-ego-9.json",
+        "manifest_sha256": "4ead63ecc7f595518ec5dae13da7d289a8eb035812b7ca82a1ead6c70d0ceb04",
+        "negative_removed": "signal_history.jsonl",
+        "offline_log": ".runtime-work/c125751-off-release-sweep-v2/ego-9-offline-command.log",
+        "offline_log_sha256": "5d35d59faf79503cab99b4c4e3bdbbc58997ea9a6475e2fa7b24793867fd3dc9",
+        "other_release_frame": 10,
+        "physical_acceptance_claimed": false,
+        "saved_log": ".runtime-work/c125751-off-release-sweep-v2/ego-9-saved-command.log",
+        "saved_log_sha256": "a0ab380a30b5571e6a49efda6eebbfaf924ea829e4845a226bb35d5eafbd7ad1",
+        "saved_recorded_only": true
+      },
+      {
+        "compatibility_receipt": ".runtime-work/c125751-off-release-sweep-v2/ego-10-compat/compatibility.json",
+        "compatibility_sha256": "f5fe6d1e6f7b3a97047c6d1938823fdaca9245b2699f081d3be34c6e69000508",
+        "construction": ".runtime-work/c125751-off-release-sweep-v2/construction-ego-10.json",
+        "construction_sha256": "0ba28a84436a501312686a414d1c7b48dec428d3ad361398143151d4c32f51c3",
+        "ego_release_frame": 10,
+        "legal_acceptance_claimed": false,
+        "manifest": ".runtime-work/c125751-off-release-sweep-v2/manifest-ego-10.json",
+        "manifest_sha256": "41b4ca67c126ed2c99629e6815d1b7a342394664f0a47b49fdd23342a1d4f145",
+        "negative_removed": "signal_history.jsonl",
+        "offline_log": ".runtime-work/c125751-off-release-sweep-v2/ego-10-offline-command.log",
+        "offline_log_sha256": "54d826006cb294175f00a7951151fb4eb3684d9656fd70b1cf6d6769f612012c",
+        "other_release_frame": 10,
+        "physical_acceptance_claimed": false,
+        "saved_log": ".runtime-work/c125751-off-release-sweep-v2/ego-10-saved-command.log",
+        "saved_log_sha256": "9e1a24f7f661fb6fe6cbea9c358245f6edbf5c1bf4bdbf738dd5e40f937bec7d",
+        "saved_recorded_only": true
+      },
+      {
+        "compatibility_receipt": ".runtime-work/c125751-off-release-sweep-v2/ego-11-compat/compatibility.json",
+        "compatibility_sha256": "0eb4d85d93662ab5c25d9dc34d55bd041fd98e243f662c0eb35c0172faa15ccf",
+        "construction": ".runtime-work/c125751-off-release-sweep-v2/construction-ego-11.json",
+        "construction_sha256": "b96a0ecea23163533c41ede2206dca07d50cac0be360ae3051d5c5e65a6ae759",
+        "ego_release_frame": 11,
+        "legal_acceptance_claimed": false,
+        "manifest": ".runtime-work/c125751-off-release-sweep-v2/manifest-ego-11.json",
+        "manifest_sha256": "c5b13b069e7dce4b02ab3b3c50c9c32f174e999d9e0be2211a60c8e2e779834f",
+        "negative_removed": "signal_history.jsonl",
+        "offline_log": ".runtime-work/c125751-off-release-sweep-v2/ego-11-offline-command.log",
+        "offline_log_sha256": "98e3f6c2e7cc7abe3cdcbfd4ef6052911908a59766ee60ef21435334e5c64365",
+        "other_release_frame": 10,
+        "physical_acceptance_claimed": false,
+        "saved_log": ".runtime-work/c125751-off-release-sweep-v2/ego-11-saved-command.log",
+        "saved_log_sha256": "2d17a0230a4b03e290dd7782e670555c8ffeff0501a8e7da424632506dfd0ce5",
+        "saved_recorded_only": true
+      }
+    ]
+  },
+  "opposite_left_turn_construction_draft": {
+    "55_second_construction_proof": {
+      "all_primary_and_fallback_positive_negative_compatibility_passed": true,
+      "all_primary_and_fallback_recorded_only_saved_processing_passed": true,
+      "candidates": [
+        {
+          "candidate": "primary",
+          "compatibility_log": ".runtime-work/c125751-opposite-55s-primary-compat-v3.log",
+          "compatibility_log_sha256": "1a6f539f6b759c96344aa673c87dbc69655875a1ae4b4d7daebe9f2b842ab08c",
+          "compatibility_receipt": "opposite-primary-compatibility-receipt.json",
+          "compatibility_receipt_sha256": "1a6f539f6b759c96344aa673c87dbc69655875a1ae4b4d7daebe9f2b842ab08c",
+          "construction": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver/opposite-primary-construction.json",
+          "construction_sha256": "efc9fc1e5a65d9f48c1c7b21928be3b720deb9e0e66df747d252c5210c9b02a7",
+          "negative_log_sha256": "de56607aed8080f86e2264156718e37382ddcaefcd17eaa2c96cd10889eb29a6",
+          "offline_exit_code": 0,
+          "offline_log": ".runtime-work/c125751-opposite-55s-primary/offline.log",
+          "offline_log_sha256": "504c0cb2c0dba38073bcbbd71a5e23530586ce02491c8aaf85b2258398e35136",
+          "saved_processing_log": ".runtime-work/c125751-opposite-55s-primary-saved-v2.log",
+          "saved_processing_log_sha256": "03a5615f418afb56793f99b77b317be35f2f8d5821285a99e63159d3d5112285",
+          "saved_processing_receipt": "opposite-primary-process-saved-receipt.json",
+          "saved_processing_receipt_sha256": "03a5615f418afb56793f99b77b317be35f2f8d5821285a99e63159d3d5112285"
+        },
+        {
+          "candidate": "fallback1",
+          "compatibility_log": ".runtime-work/c125751-opposite-55s-fallback1-compat.log",
+          "compatibility_log_sha256": "f25d2e9d241777f018d4ec2180091f191833a357f8f8129955fd1d32d03eb193",
+          "compatibility_receipt": "opposite-fallback1-compatibility-receipt.json",
+          "compatibility_receipt_sha256": "f25d2e9d241777f018d4ec2180091f191833a357f8f8129955fd1d32d03eb193",
+          "construction": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver/opposite-fallback1-construction.json",
+          "construction_sha256": "87f2ff98ebce174b2ef50e5a8295fcb0bb0790fcb6cc7af83d3c7d97cc6fd878",
+          "negative_log_sha256": "7450f8d0a3a744cc5ec80bc8b8fc3d45694d65dbd43ffbaa43fd86299497ea17",
+          "offline_exit_code": 0,
+          "offline_log": ".runtime-work/c125751-opposite-55s-fallback1/offline.log",
+          "offline_log_sha256": "566f8552cfe68522d18139211cd057a7f018a1ae43523eb3b45d85458fc65994",
+          "saved_processing_log": ".runtime-work/c125751-opposite-55s-fallback1-saved-v2.log",
+          "saved_processing_log_sha256": "23faa94b68ccfecf6c12bf50b7f872aa41c7fd56549f47047c187d424b232b69",
+          "saved_processing_receipt_sha256": "23faa94b68ccfecf6c12bf50b7f872aa41c7fd56549f47047c187d424b232b69"
+        },
+        {
+          "candidate": "fallback2",
+          "compatibility_log": ".runtime-work/c125751-opposite-55s-fallback2-compat.log",
+          "compatibility_log_sha256": "4a5e5ecc23118abaef721d194be285d88a551327bb5d17a610b9630fda24dcc5",
+          "compatibility_receipt": "opposite-fallback2-compatibility-receipt.json",
+          "compatibility_receipt_sha256": "4a5e5ecc23118abaef721d194be285d88a551327bb5d17a610b9630fda24dcc5",
+          "construction": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver/opposite-fallback2-construction.json",
+          "construction_sha256": "7e9c2da79d68a5aaceaae36a698b8a30a80aaf088a72bcb846d9110729ffb65b",
+          "negative_log_sha256": "d9efb0797e35109b2d04e69eda70c8c5fefdd2a9a1797b8ee34a19ec7187a62a",
+          "offline_exit_code": 0,
+          "offline_log": ".runtime-work/c125751-opposite-55s-fallback2/offline.log",
+          "offline_log_sha256": "504c0cb2c0dba38073bcbbd71a5e23530586ce02491c8aaf85b2258398e35136",
+          "saved_processing_log": ".runtime-work/c125751-opposite-55s-fallback2-saved-v2.log",
+          "saved_processing_log_sha256": "1aa61c0fc8aa97b9f3c4f1b71788984043667f2fda710f14d1876849abe415df",
+          "saved_processing_receipt_sha256": "1aa61c0fc8aa97b9f3c4f1b71788984043667f2fda710f14d1876849abe415df"
+        },
+        {
+          "candidate": "fallback3",
+          "compatibility_log": ".runtime-work/c125751-opposite-55s-fallback3-compat.log",
+          "compatibility_log_sha256": "f1bd4f570690fe5461363bf4e594b4a1de00925cb3cbfb3ff95a5360b38931f2",
+          "compatibility_receipt": "opposite-fallback3-compatibility-receipt.json",
+          "compatibility_receipt_sha256": "f1bd4f570690fe5461363bf4e594b4a1de00925cb3cbfb3ff95a5360b38931f2",
+          "construction": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver/opposite-fallback3-construction.json",
+          "construction_sha256": "09c4e477143533eabcd0e2fa5670c2633332dd61b45a0ade6ef127c07572816a",
+          "negative_log_sha256": "64eae13a22eeed25282ccd3ad8d35c9f257abba7cc634aa01361a614100e6fb6",
+          "offline_exit_code": 0,
+          "offline_log": ".runtime-work/c125751-opposite-55s-fallback3/offline.log",
+          "offline_log_sha256": "7f76ac9459adc9e106602c6e77e6e4ce102916621a64b196d5b1dd5a72896e35",
+          "saved_processing_log": ".runtime-work/c125751-opposite-55s-fallback3-saved-v2.log",
+          "saved_processing_log_sha256": "a64ad8d06b391df66c52bdc4139eb88207fda1378b7256877e381fda97bb6df8",
+          "saved_processing_receipt_sha256": "a64ad8d06b391df66c52bdc4139eb88207fda1378b7256877e381fda97bb6df8"
+        }
+      ],
+      "canonical_manifest_selected": false,
+      "current_runtime_json_graphs": true,
+      "diagnostic_only": true,
+      "duration_s": 55,
+      "fixture_recipe_sha256": "46a0bf1eef5f1dd7008aacae6c79d9eb2b6c0b003436660bd9381adc04f1e7c1",
+      "fixture_spec_sha256": "823e6cd81085fad1acbb15f0db99e36042ddf3da23f88efa749ef632d1ce33f2",
+      "format": "worker-opposite-turn-55s-offline",
+      "frames": 1100,
+      "physical_acceptance_claimed": false,
+      "rate_hz": 20,
+      "selection_status": "draft_unselected",
+      "supersedes_prior_pickle_fixture_receipts": true
     },
-    "opposite_draft_measurement_contract": {
-      "status": "draft_unselected_diagnostic_only",
-      "contract": ".runtime-work/c125751-opposite-bundle-v9/draft-measurement-contract.json",
-      "contract_sha256": "10ff37aff455f2575d1121c82ba10dba787ceaad007a1283dea6b3a06ce8c974",
-      "dispositions": ".runtime-work/c125751-opposite-bundle-v9/draft-requirement-dispositions.json",
-      "dispositions_sha256": "6925854362004ca6b208c7b031c3722718746bb4905cc9ad7dd7fd0435e0d7d5",
-      "positive_proof": ".runtime-work/c125751-opposite-positive-compat-v7/proof.json",
-      "positive_proof_sha256": "4429ba06fd33130f0768648efbd47a72436c4661fef4f18039a43ef8ae7ce6e9",
-      "requirements_verified_per_candidate": 4,
-      "limitations": "Draft measurements verified against generated diagnostic fixture and exact bundle analyzer; no returned selected contract/fixture recipe, Native median-opening geometry, official-device governance or physical evidence."
-    },
-    "generated_fixture_probe": {
-      "status": "synthetic_diagnostic_only_unselected",
-      "command": "PYTHONPATH=runtime/scenario_pipeline PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/build_diagnostic_constructions.py --prove-opposite-generated-fixture .runtime-work/c125751-opposite-bundle-v15/manifest.json .runtime-work/c125751-opposite-entry-sweep-v12/ego-1-other-1 .runtime-work/c125751-opposite-generated-fixture-v7",
-      "builder_sha256": "3b99bc927b496a2bca01e20571407b1e0dea246ed2e123dcea29e3680204443d",
-      "spec": ".runtime-work/c125751-opposite-generated-fixture-v7/diagnostic-fixture-spec.json",
-      "spec_sha256": "35e7182dae352d3933654e65b85853e90784997a34a08991e730b7bef5f23371",
-      "proof": ".runtime-work/c125751-opposite-generated-fixture-v7/proof.json",
-      "proof_sha256": "c57425702cc7fed9db06098608dc7e4dfe73335afcccd94040fc36719c10be67",
-      "generated_source_count": 24,
-      "positive_candidates_passed": 4,
-      "formal_returned_fixture_recipe_proven": false,
-      "physical_acceptance_claimed": false
-    },
-    "formal_returned_fixture_and_contract_probe": {
-      "status": "synthetic_diagnostic_only_unselected",
-      "fixture_spec": "opposite-diagnostic-fixture-spec.json",
-      "fixture_spec_sha256": "35e7182dae352d3933654e65b85853e90784997a34a08991e730b7bef5f23371",
-      "fixture_recipe": "opposite-diagnostic-recipe.json",
-      "fixture_recipe_sha256": "c86aadf1c48cbe7cba558b3f8dfeb10755b9673aa5decab8914dc973fee4e39f",
-      "measurement_contract": "opposite-measurement-contract.json",
-      "measurement_contract_sha256": "8ad3e5ced7a3a1b7158a3a2177420716cb2b7b3ed2c941f09d6ff601bc3013dc",
-      "proof": ".runtime-work/c125751-opposite-reproof-v17/proof.json",
-      "proof_sha256": "52b9c283b4ad1de96aded1236056558d578db9881524e6421742d9fa25a004f0",
-      "positive_and_negative_candidates_passed": 4,
-      "existing_selected_contracts_revalidated": 2,
-      "physical_or_legal_acceptance_claimed": false,
-      "manifest": ".runtime-work/c125751-opposite-bundle-v15/formal-manifest.json",
-      "manifest_sha256": "5d5752cdf49583b531d35b5fc6c4d5bab48ad0df9729a94dca422da61912e244",
-      "independent_candidate_audits_passed": 4,
-      "recorded_only_saved_candidates_passed": 4,
-      "originals_preserved": true,
-      "missing_evidence": false
-    },
-    "native_route_readback_proof": {
-      "status": "synthetic_diagnostic_only_unselected",
-      "runner_source": "opposite_turn_runner.py",
-      "runner_sha256": "a42602c9da0822f11fc45ac9ed4ccaa48f7a622e21eceb33cb6a65438ca19a3e",
-      "test_source": "tests/test_opposite_turn_construction.py",
-      "test_source_sha256": "bd614a2a252149cd9d08da88fb2d6d4f8068f6d141c29acde4f88956657449fa",
-      "cpu_tests_passed": 82,
-      "test_log": "cpu-tests.log",
-      "test_log_sha256": "21500469e36220d0bd3bad84522b0a2f1c3cc6d0084295b1ea77285f464ba49c",
-      "manifest": ".runtime-work/c125751-opposite-bundle-v15/formal-manifest.json",
-      "manifest_sha256": "5d5752cdf49583b531d35b5fc6c4d5bab48ad0df9729a94dca422da61912e244",
-      "proof": ".runtime-work/c125751-opposite-reproof-v17/proof.json",
-      "proof_sha256": "52b9c283b4ad1de96aded1236056558d578db9881524e6421742d9fa25a004f0",
-      "offline_compatibility_saved_candidate_count": 4,
-      "independent_candidate_audits_passed": 4,
-      "generated_fixture_proof": ".runtime-work/c125751-opposite-generated-fixture-v7/proof.json",
-      "generated_fixture_proof_sha256": "c57425702cc7fed9db06098608dc7e4dfe73335afcccd94040fc36719c10be67",
-      "physical_or_legal_acceptance_claimed": false,
-      "limit": "Fake Native route, signal and live map export readback passed; no reviewed physical map or actual Native capture was available."
-    },
+    "candidate_capture_runner": "opposite_turn_runner.py:run_candidate_opposite_turn",
+    "candidate_capture_runner_limit": "Fake-Native CPU proof checks selected config/construction/site/control joins, retained map export against live Native readback, route starts and common junction, signal lane governance, camera streams and original source histories. Synthetic source records remain diagnostic; reviewed physical site, actual Native media and selected fallback proof remain unfinished.",
+    "candidate_capture_runner_sha256": "a42602c9da0822f11fc45ac9ed4ccaa48f7a622e21eceb33cb6a65438ca19a3e",
     "current_json_adapter_diagnostic_proof": {
-      "status": "synthetic_diagnostic_only_unselected",
       "builder_sha256": "41e47da5eb13a1b38ffd8cb5d1536b0086ad334a27fc1266ba63da4d5718efd1",
-      "manifest_sha256": "8ca08b3b7dfc0db7c03a0ef3757a8fde13b15df996014f2ebe635820a6aff5cb",
-      "offline_candidates_passed": 4,
       "entry_sweep_proof_sha256": "d2c83cdbd13e7edf06adae382072d7dbf0a8484dafbf2dcefcb22e0db51145ab",
       "generated_fixture_proof_sha256": "7493c9bccab6302167f8209da0dd57105605e95f1b73850f7aee1633dfbe9a69",
+      "legal_conclusion": "unresolved",
+      "manifest_sha256": "8ca08b3b7dfc0db7c03a0ef3757a8fde13b15df996014f2ebe635820a6aff5cb",
+      "offline_candidates_passed": 4,
+      "physical_acceptance_claimed": false,
       "positive_negative_compatibility_proof_sha256": "5a79f4bda118e0321ff692c06b488b989dd9460545e726d7c1a0732bc153c1aa",
       "saved_candidates": [
         {
@@ -1394,160 +1213,424 @@
           "saved_log_sha256": "d0bd1bb2bfe656676e7b9fbc1781c0c4deeeaf022d9bfdc2b5f01e9a71d8df83"
         }
       ],
+      "status": "synthetic_diagnostic_only_unselected"
+    },
+    "fallback_construction_draft": {
+      "candidate_binding": "opposite_turn_runner.py:_validate_candidate_construction",
+      "fixed_invariants": "same exact case ID, law, turning role, route/crossing geometry, four cameras, release schedule, frame count and source packet; no new planned case or legal outcome selected",
+      "limitation": "No real Native alternative transforms or controller response have been source-reviewed; no selected exact fallback, offline, compatibility, process-saved or physical proof is claimed.",
+      "physical_risks": {
+        "fallback1": "spawn_occupied: predeclared alternative paired transforms on the same sourced approach lanes; Native try_spawn_actor failure retained in spawn_attempt.json",
+        "fallback2": "entry_timing_missed: predeclared alternate finite target speeds; same release schedule, geometry and cameras",
+        "fallback3": "turn_path_missed: predeclared alternate finite route-controller lookahead; same route, site and four camera poses"
+      },
+      "proof": "78-test fake-Native suite exercises spawn, target speed, route lookahead, fixed cameras, variant binding and failed-spawn trigger; rejects wrong trigger source, changed geometry, schedule and attempted controls",
+      "source": "opposite_turn_construction.py:validate_opposite_fallbacks",
+      "status": "unselected_fake_native_cpu_tested",
+      "trigger_sources": {
+        "fallback1": "spawn_attempt.json:approach_spawn_succeeded",
+        "fallback2": "crossing_history.jsonl:paired_body_entry_observed_by_planned_frame",
+        "fallback3": "body_history.jsonl:turning_body_route_deviation_m"
+      }
+    },
+    "formal_returned_fixture_and_contract_probe": {
+      "existing_selected_contracts_revalidated": 2,
+      "fixture_recipe": "opposite-diagnostic-recipe.json",
+      "fixture_recipe_sha256": "c86aadf1c48cbe7cba558b3f8dfeb10755b9673aa5decab8914dc973fee4e39f",
+      "fixture_spec": "opposite-diagnostic-fixture-spec.json",
+      "fixture_spec_sha256": "35e7182dae352d3933654e65b85853e90784997a34a08991e730b7bef5f23371",
+      "independent_candidate_audits_passed": 4,
+      "manifest": ".runtime-work/c125751-opposite-bundle-v15/formal-manifest.json",
+      "manifest_sha256": "5d5752cdf49583b531d35b5fc6c4d5bab48ad0df9729a94dca422da61912e244",
+      "measurement_contract": "opposite-measurement-contract.json",
+      "measurement_contract_sha256": "8ad3e5ced7a3a1b7158a3a2177420716cb2b7b3ed2c941f09d6ff601bc3013dc",
+      "missing_evidence": false,
+      "originals_preserved": true,
+      "physical_or_legal_acceptance_claimed": false,
+      "positive_and_negative_candidates_passed": 4,
+      "proof": ".runtime-work/c125751-opposite-reproof-v17/proof.json",
+      "proof_sha256": "52b9c283b4ad1de96aded1236056558d578db9881524e6421742d9fa25a004f0",
+      "recorded_only_saved_candidates_passed": 4,
+      "status": "synthetic_diagnostic_only_unselected"
+    },
+    "generated_fixture_probe": {
+      "builder_sha256": "3b99bc927b496a2bca01e20571407b1e0dea246ed2e123dcea29e3680204443d",
+      "command": "PYTHONPATH=runtime/scenario_pipeline PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/build_diagnostic_constructions.py --prove-opposite-generated-fixture .runtime-work/c125751-opposite-bundle-v15/manifest.json .runtime-work/c125751-opposite-entry-sweep-v12/ego-1-other-1 .runtime-work/c125751-opposite-generated-fixture-v7",
+      "formal_returned_fixture_recipe_proven": false,
+      "generated_source_count": 24,
       "physical_acceptance_claimed": false,
-      "legal_conclusion": "unresolved"
+      "positive_candidates_passed": 4,
+      "proof": ".runtime-work/c125751-opposite-generated-fixture-v7/proof.json",
+      "proof_sha256": "c57425702cc7fed9db06098608dc7e4dfe73335afcccd94040fc36719c10be67",
+      "spec": ".runtime-work/c125751-opposite-generated-fixture-v7/diagnostic-fixture-spec.json",
+      "spec_sha256": "35e7182dae352d3933654e65b85853e90784997a34a08991e730b7bef5f23371",
+      "status": "synthetic_diagnostic_only_unselected"
+    },
+    "independent_candidate_audit": "opposite_site_probe.py:audit_opposite_candidate",
+    "independent_candidate_audit_proof": "tests/test_opposite_turn_construction.py::DeviceSourceJoinTests.test_opposite_candidate_audit_recomputes_stop_order_without_finalizer; independent stop-history/reference recomputation, forged derived measurement rejected",
+    "independent_candidate_audit_source_sha256": "7a15c1b3c3f17d278fc57bd0b3b9e753eacd2d58125b0a0e8b8c483c60d27e48",
+    "limitations": [
+      "Current FixtureTown site has perpendicular approaches and cannot be reused for this branch.",
+      "Opposing and left angular bounds are construction checks, not legal definitions.",
+      "No selected exact case, original Native site/capture or exception judgment is claimed.",
+      "The command path is CPU-tested with frame-joined candidate capture; no exact selected Native attempt has been recorded."
+    ],
+    "motion_command_path": "opposite_turn_construction.py:command_opposite_turn_pair",
+    "motion_command_proof": "CPU fake-Native tests hold both roles then release at distinct frames, check applied controls and reject invalid route index before either command; source crossing polygon must contain both route centers with starts/exits outside, and invalid crossing geometry is rejected before actor commands",
+    "native_route_readback_proof": {
+      "cpu_tests_passed": 82,
+      "generated_fixture_proof": ".runtime-work/c125751-opposite-generated-fixture-v7/proof.json",
+      "generated_fixture_proof_sha256": "c57425702cc7fed9db06098608dc7e4dfe73335afcccd94040fc36719c10be67",
+      "independent_candidate_audits_passed": 4,
+      "limit": "Fake Native route, signal and live map export readback passed; no reviewed physical map or actual Native capture was available.",
+      "manifest": ".runtime-work/c125751-opposite-bundle-v15/formal-manifest.json",
+      "manifest_sha256": "5d5752cdf49583b531d35b5fc6c4d5bab48ad0df9729a94dca422da61912e244",
+      "offline_compatibility_saved_candidate_count": 4,
+      "physical_or_legal_acceptance_claimed": false,
+      "proof": ".runtime-work/c125751-opposite-reproof-v17/proof.json",
+      "proof_sha256": "52b9c283b4ad1de96aded1236056558d578db9881524e6421742d9fa25a004f0",
+      "runner_sha256": "a42602c9da0822f11fc45ac9ed4ccaa48f7a622e21eceb33cb6a65438ca19a3e",
+      "runner_source": "opposite_turn_runner.py",
+      "status": "synthetic_diagnostic_only_unselected",
+      "test_log": "cpu-tests.log",
+      "test_log_sha256": "21500469e36220d0bd3bad84522b0a2f1c3cc6d0084295b1ea77285f464ba49c",
+      "test_source": "tests/test_opposite_turn_construction.py",
+      "test_source_sha256": "bd614a2a252149cd9d08da88fb2d6d4f8068f6d141c29acde4f88956657449fa"
+    },
+    "offline_diagnostic_bundle_proof": {
+      "builder": "build_diagnostic_constructions.py:build_opposite_offline_bundle",
+      "builder_sha256": "61b073ab8f588dfb3c9bd084271d5d68a71140068cc3a04a48a8f155351eacb9",
+      "candidate_static_validation": "worker_exchange.candidate_constructions.validate(candidate_count=4) passed",
+      "manifest": ".runtime-work/c125751-opposite-bundle-v15/manifest.json",
+      "manifest_sha256": "3f6d6b17d31989bd4f7086f4515f0d69742c3fe4485233115ebb6e2c8acc312d",
+      "native_capture_rejected_for_diagnostic_site": true,
+      "offline": {
+        "fallback1": {
+          "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c125751-opposite-bundle-v15/formal-manifest.json --case testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_left_turn --candidate fallback1 --output .runtime-work/c125751-opposite-reproof-v17/fallback1-offline",
+          "construction_sha256": "cfba745cb711e82f6d1e63295dca2bd41d7ee510df1af69c14b5c150e12bb48b",
+          "exit_code": 0,
+          "log_sha256": "ff2036cf589f11d713b7e9d02e4a5334f9887c39e2ba6db9f4071fe3fe88e0ae",
+          "tests": 82
+        },
+        "fallback2": {
+          "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c125751-opposite-bundle-v15/formal-manifest.json --case testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_left_turn --candidate fallback2 --output .runtime-work/c125751-opposite-reproof-v17/fallback2-offline",
+          "construction_sha256": "67373a5ede361e5fe27a5110013518868f3129d1b6c82faed369817a79c09bb0",
+          "exit_code": 0,
+          "log_sha256": "7ffa9e882fd4f987553eb4ececd07227f6b967b44390bc3f5fb59eea18694666",
+          "tests": 82
+        },
+        "fallback3": {
+          "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c125751-opposite-bundle-v15/formal-manifest.json --case testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_left_turn --candidate fallback3 --output .runtime-work/c125751-opposite-reproof-v17/fallback3-offline",
+          "construction_sha256": "0d9122e6c219f90a86c2e0ace49cd762910f1f61f99c36531866a2d4952629af",
+          "exit_code": 0,
+          "log_sha256": "7b3323e8e320fa8c1224dc641c9528d1c8f46a5f1a56144b61ea0af8209cde38",
+          "tests": 82
+        },
+        "primary": {
+          "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c125751-opposite-bundle-v15/formal-manifest.json --case testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_left_turn --candidate primary --output .runtime-work/c125751-opposite-reproof-v17/primary-offline",
+          "construction_sha256": "3835efe9b422a802b590d91202861925dfc14ff8d27a3a478157cdc04fc9da64",
+          "exit_code": 0,
+          "log_sha256": "cd39fdb6e8afbfa8979a3bc19640b94c25b9e4a86048763e02066974691faa75",
+          "tests": 82
+        }
+      },
+      "physical_or_legal_acceptance_claimed": false,
+      "status": "synthetic_diagnostic_only_unselected"
+    },
+    "opposite_draft_measurement_contract": {
+      "contract": ".runtime-work/c125751-opposite-bundle-v9/draft-measurement-contract.json",
+      "contract_sha256": "10ff37aff455f2575d1121c82ba10dba787ceaad007a1283dea6b3a06ce8c974",
+      "dispositions": ".runtime-work/c125751-opposite-bundle-v9/draft-requirement-dispositions.json",
+      "dispositions_sha256": "6925854362004ca6b208c7b031c3722718746bb4905cc9ad7dd7fd0435e0d7d5",
+      "limitations": "Draft measurements verified against generated diagnostic fixture and exact bundle analyzer; no returned selected contract/fixture recipe, Native median-opening geometry, official-device governance or physical evidence.",
+      "positive_proof": ".runtime-work/c125751-opposite-positive-compat-v7/proof.json",
+      "positive_proof_sha256": "4429ba06fd33130f0768648efbd47a72436c4661fef4f18039a43ef8ae7ce6e9",
+      "requirements_verified_per_candidate": 4,
+      "status": "draft_unselected_diagnostic_only"
+    },
+    "opposite_entry_saved_diagnostic_sweep": {
+      "builder_sha256": "fe41ee1de2b68dfa8aaa7be76736be431706783f577d52a739d5634161e3e9c1",
+      "changed_original_body_rejections": 5,
+      "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/build_diagnostic_constructions.py --prove-opposite-entry-sweep .runtime-work/c125751-opposite-entry-sweep-v12",
+      "composed_video_decodes_passed": 5,
+      "entry_offsets_s": [
+        -0.1,
+        -0.05,
+        0,
+        0.05,
+        0.1
+      ],
+      "four_camera_ffv1_decodes_passed": 5,
+      "independent_saved_source_audits_passed": 5,
+      "limits": "Authored diagnostic tracks and generated decodable color media with source-joined native frame and graph packets; no Native pixels, physical motion, selected formal compatibility, physical acceptance, or legal timing threshold established.",
+      "native_output_validations_passed": 5,
+      "proof": ".runtime-work/c125751-opposite-entry-sweep-v12/proof.json",
+      "proof_sha256": "11c7cfd50bdbe89a55e7a963db28fd185b988ec5202dadca6f4dd4ea4a94c9ed",
+      "status": "synthetic_saved_source_diagnostic_only_unselected"
+    },
+    "opposite_positive_compatibility_probe": {
+      "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/build_diagnostic_constructions.py --prove-opposite-positive-compatibility .runtime-work/c125751-opposite-bundle-v9/manifest.json .runtime-work/c125751-opposite-entry-sweep-v12/ego-1-other-1 .runtime-work/c125751-opposite-positive-compat-v7",
+      "limits": "Direct positive diagnostic compatibility probe reached actual analysis, source immutability, four camera media, adapter, Lean and final render. Formal selected measurement contract/fixture recipe, recorded-only saved processing and physical Native evidence remain unfinished.",
+      "missing_original_body_source_rejected": true,
+      "positive_candidates_passed": 4,
+      "proof": ".runtime-work/c125751-opposite-positive-compat-v7/proof.json",
+      "proof_sha256": "4429ba06fd33130f0768648efbd47a72436c4661fef4f18039a43ef8ae7ce6e9",
+      "status": "synthetic_diagnostic_only_unselected"
+    },
+    "opposite_recorded_only_saved_processing_probe": {
+      "candidate_receipts_passed": 4,
+      "limits": "Generated diagnostic frame/graph/map and color video source; no reviewed Native site, pixels, physical behavior, or formal selected measurement contract.",
+      "proof": ".runtime-work/c125751-opposite-saved-v3/proof.json",
+      "proof_sha256": "d4c8409572d04595c8fe8353dc05607e978dfb5a34d98c1b4133ad35618319a7",
+      "status": "synthetic_diagnostic_only_unselected"
+    },
+    "saved_candidate_entry_analysis": "opposite_turn_runner.py:analyze_candidate_opposite_entry",
+    "saved_candidate_finalizer": "opposite_turn_runner.py:finalize_candidate_opposite_turn",
+    "saved_candidate_finalizer_proof": "Fake-Native saved-source test writes signal/stop/entry channels and a source-hashed physical result; rejects missing evidence and trace/evidence frame/time mismatch.",
+    "saved_candidate_finalizer_source_sha256": "e904885975c9bc7d30e6bf26189af2472f6d829d08108178053e8263bccae8a7",
+    "site_candidate_probe": "opposite_site_probe.py:probe_native_opposite_approaches",
+    "site_candidate_probe_limit": "Native same-junction opposing approaches with bounded left and straight Native waypoint route candidates; map identity, median opening, original trajectory, official status and physical turn require source review",
+    "site_candidate_probe_source_sha256": "7a15c1b3c3f17d278fc57bd0b3b9e753eacd2d58125b0a0e8b8c483c60d27e48",
+    "site_candidate_probe_test": "tests/test_opposite_site_probe.py",
+    "site_candidate_probe_test_sha256": "bd614a2a252149cd9d08da88fb2d6d4f8068f6d141c29acde4f88956657449fa",
+    "site_packet_validator": "opposite_site_probe.py:verify_opposite_site_packet",
+    "site_packet_validator_proof": "Fake-Native five-document packet binds reviewed content and retained original OpenDRIVE export by hash; live Native map export must match before acquisition. Diagnostic-only packet and altered source content are rejected.",
+    "source": "opposite_turn_construction.py",
+    "source_sha256": "7372e600f4ba00af69f67aa25134084c5b0b13abae62360ad7c50d58a0cedc21",
+    "status": "unselected_cpu_construction_tested",
+    "test_log": "cpu-tests.log",
+    "test_log_sha256": "3bcff3fc89d3fd0d62962bdad1ac59a56eb3b821331c6de58d8f82042ebaaaac",
+    "test_source": "tests/test_opposite_turn_construction.py",
+    "test_source_sha256": "bd614a2a252149cd9d08da88fb2d6d4f8068f6d141c29acde4f88956657449fa"
+  },
+  "planning_status": "Two selected exact signal cases and three tested fallback constructions each; synthetic site remains diagnostic, four judgment sweeps and full branch coverage are incomplete.",
+  "requirement_dispositions": [
+    {
+      "case_ids": [
+        "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_operative",
+        "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off"
+      ],
+      "evidence_or_gap": "Original crossing history, road geometry and frame map; finalizer body_entry_timing. Statutory approximate-time and right-of-way judgments remain unresolved.",
+      "requirement": "Both complete vehicle bodies enter one sourced crossing from different highways; original frame/time joins report entry delta and right-hand approach geometry without inventing a legal simultaneity cutoff",
+      "source": "NRS 484B.250(2), including its subsection-4 exception; inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_operative",
+        "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off"
+      ],
+      "evidence_or_gap": "Distinct Native light IDs, lane context, original signal/frame history and source-camera head review; finalizer signal_at_entry. Physical head pixels and official status remain unverified.",
+      "requirement": "A reviewed governing signal inventory and both original Native light states at body entry identify the controlled-device comparison while leaving official status and statutory inoperability unresolved",
+      "source": "NRS 484B.250(2), including its subsection-4 exception; inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_operative",
+        "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off"
+      ],
+      "evidence_or_gap": "Original stop context/history and frame joins; finalizer stop_order. Recorded zero speed is an observation, not a statutory stop.",
+      "requirement": "For the signal-Off branch, source-selected stop references and original zero-speed, entry-order and occupancy histories retain subsection-4 stop and yield evidence without a legal stop/yield verdict",
+      "source": "NRS 484B.250(2), including its subsection-4 exception; inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_operative",
+        "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off"
+      ],
+      "evidence_or_gap": "opposite_turn_construction.py is an unselected, CPU-tested lazy Native spawn/route draft for both opposing approaches and a left turn. A source-reviewed opposite-direction site, selected exact case, controller/capture/finalizer integration and full proofs remain pending. turn_context.py preserves original headings and routes without legal classification.",
+      "requirement": "The opposite-direction left-turn exception requires approach intention and trajectory evidence even though this selected travel comparison is not a left-turn test",
+      "source": "NRS 484B.250(2), including its subsection-4 exception; inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_left_turn"
+      ],
+      "evidence_or_gap": "Source-hashed diagnostic measurement is implemented; reviewed Native source and legal judgment remain pending.",
+      "requirement": "Both complete vehicle bodies enter one sourced crossing; retain their original frame/time delta without a legal simultaneity cutoff",
+      "source": "NRS 484B.250(2), including its subsection-4 exception; inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_left_turn"
+      ],
+      "evidence_or_gap": "Source-hashed diagnostic measurement is implemented; reviewed Native source and legal judgment remain pending.",
+      "requirement": "Retain opposing approach bearings and the turning vehicle's source route and trajectory for the opposite-direction left-turn exception",
+      "source": "NRS 484B.250(2), including its subsection-4 exception; inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_left_turn"
+      ],
+      "evidence_or_gap": "Source-hashed diagnostic measurement is implemented; reviewed Native source and legal judgment remain pending.",
+      "requirement": "Retain both governed Native signal states at body entry without treating Off as statutory inoperability or resolving official-device status",
+      "source": "NRS 484B.250(2), including its subsection-4 exception; inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_left_turn"
+      ],
+      "evidence_or_gap": "Source-hashed diagnostic measurement is implemented; reviewed Native source and legal judgment remain pending.",
+      "requirement": "Retain both source-selected stop references, zero-speed histories and entry order for the subsection-4 stop and yield exception",
+      "source": "NRS 484B.250(2), including its subsection-4 exception; inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
+      "status": "selected_required"
+    }
+  ],
+  "runtime_uncertainties": [
+    "No accepted recordings in frozen evidence.json; all selected cases require new construction and proof.",
+    "Native signal actor and Off state do not by themselves prove official control, installed uncovered vehicular heads, or statutory inoperability.",
+    "A fixed numeric approximately-same-time tolerance is not in the law; report entry delta without legal cutoff.",
+    "Actual map intersection, signal governance and head visibility require a later CARLA run; CPU construction, finalizer, audits and exact-case proofs remain worker-owned."
+  ],
+  "selected_branch": "Measured crossing-entry timing at a median-opening intersection.",
+  "source_observation_mapping": {
+    "dev.traffic_signal": {
+      "channels": [
+        "signal_state"
+      ],
+      "evidence": "Selected original signal_state channel plus source-bound crossing, frame, route, signal or stop context measured by the saved finalizer; physical and statutory interpretation remains unverified.",
+      "source_refs": [
+        {
+          "path": "inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
+          "sha256": "e3b5bb7a92911ca45c19a0b91de13fa879bcc063cecd48a9d03599620ccee74a"
+        }
+      ],
+      "status": "selected_diagnostic_unverified"
+    },
+    "drv.arrival_order": {
+      "channels": [
+        "stop_state"
+      ],
+      "evidence": "Selected original stop_state channel plus source-bound crossing, frame, route, signal or stop context measured by the saved finalizer; physical and statutory interpretation remains unverified.",
+      "source_refs": [
+        {
+          "path": "inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
+          "sha256": "e3b5bb7a92911ca45c19a0b91de13fa879bcc063cecd48a9d03599620ccee74a"
+        }
+      ],
+      "status": "selected_diagnostic_unverified"
+    },
+    "drv.entering_intersection": {
+      "channels": [
+        "stop_state"
+      ],
+      "evidence": "Selected original stop_state channel plus source-bound crossing, frame, route, signal or stop context measured by the saved finalizer; physical and statutory interpretation remains unverified.",
+      "source_refs": [
+        {
+          "path": "inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
+          "sha256": "e3b5bb7a92911ca45c19a0b91de13fa879bcc063cecd48a9d03599620ccee74a"
+        }
+      ],
+      "status": "selected_diagnostic_unverified"
+    },
+    "drv.turning": {
+      "channels": [
+        "stop_state"
+      ],
+      "evidence": "Selected original stop_state channel plus source-bound crossing, frame, route, signal or stop context measured by the saved finalizer; physical and statutory interpretation remains unverified.",
+      "source_refs": [
+        {
+          "path": "inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
+          "sha256": "e3b5bb7a92911ca45c19a0b91de13fa879bcc063cecd48a9d03599620ccee74a"
+        }
+      ],
+      "status": "selected_diagnostic_unverified"
+    },
+    "drv.yields_to": {
+      "channels": [
+        "stop_state"
+      ],
+      "evidence": "Selected original stop_state channel plus source-bound crossing, frame, route, signal or stop context measured by the saved finalizer; physical and statutory interpretation remains unverified.",
+      "source_refs": [
+        {
+          "path": "inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
+          "sha256": "e3b5bb7a92911ca45c19a0b91de13fa879bcc063cecd48a9d03599620ccee74a"
+        }
+      ],
+      "status": "selected_diagnostic_unverified"
+    },
+    "rel.bearing": {
+      "channels": [
+        "stop_state"
+      ],
+      "evidence": "Selected original stop_state channel plus source-bound crossing, frame, route, signal or stop context measured by the saved finalizer; physical and statutory interpretation remains unverified.",
+      "source_refs": [
+        {
+          "path": "inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
+          "sha256": "e3b5bb7a92911ca45c19a0b91de13fa879bcc063cecd48a9d03599620ccee74a"
+        }
+      ],
+      "status": "selected_diagnostic_unverified"
+    },
+    "st.intersection": {
+      "channels": [
+        "stop_state"
+      ],
+      "evidence": "Selected original stop_state channel plus source-bound crossing, frame, route, signal or stop context measured by the saved finalizer; physical and statutory interpretation remains unverified.",
+      "source_refs": [
+        {
+          "path": "inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
+          "sha256": "e3b5bb7a92911ca45c19a0b91de13fa879bcc063cecd48a9d03599620ccee74a"
+        }
+      ],
+      "status": "selected_diagnostic_unverified"
+    },
+    "st.lane_enters": {
+      "channels": [
+        "stop_state"
+      ],
+      "evidence": "Selected original stop_state channel plus source-bound crossing, frame, route, signal or stop context measured by the saved finalizer; physical and statutory interpretation remains unverified.",
+      "source_refs": [
+        {
+          "path": "inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
+          "sha256": "e3b5bb7a92911ca45c19a0b91de13fa879bcc063cecd48a9d03599620ccee74a"
+        }
+      ],
+      "status": "selected_diagnostic_unverified"
     }
   },
+  "sources": [
+    {
+      "path": "inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
+      "sha256": "e3b5bb7a92911ca45c19a0b91de13fa879bcc063cecd48a9d03599620ccee74a"
+    },
+    {
+      "path": "inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/evidence.json",
+      "sha256": "e0673877b9b6d5cc1dac09658216b3e834dc00c19e63d0d6a55c0355de648c8f"
+    },
+    {
+      "path": "inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/witnesses.json",
+      "sha256": "2c9bb0d2660c3f3a348f7a24fed0837644e7c763bfcfd3bcf726c6fb58674013"
+    },
+    {
+      "path": "inputs/testing__C24757__NRS-484B-250-4__motor_vehicle_driver/assignment.json",
+      "sha256": "722d0249f55646a6acaf41003e54716cc221b185367644b0d2a30e4ab2a64cc8"
+    }
+  ],
   "yield_speed_sweep_cpu_proof": {
-    "status": "three_exact_diagnostic_speed_variants_passed;_native_speed_response_unverified",
+    "changed_fixed_opposing_speed_rejected": true,
+    "fixed_conditions_audited": true,
+    "legal_yield_claimed": false,
+    "limitation": "Synthetic source media do not prove commanded speed was realized or a legal yield verdict.",
+    "offline_compatibility_saved_command_count": 9,
+    "physical_acceptance_claimed": false,
+    "proof_command": ".venv-cpu/bin/python work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/prove_speed_sweep.py --output-root .runtime-work/c125751-speed-sweep-v1",
+    "proof_json": ".runtime-work/c125751-speed-sweep-v1/proof.json",
+    "proof_sha256": "c174daabbf41f6e71d99f7797d56328f78dfb5bf0bb4389914cf070e9c2b9060",
+    "selected_case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
     "source": "prove_speed_sweep.py",
     "source_sha256": "8e0e4a75850e2f0bf88c42e8f05de6c85875b010361a5f94586f46fd1da82d69",
-    "selected_case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
     "speed_targets_mps": [
       3.5,
       5.0,
       6.5
     ],
-    "proof_command": ".venv-cpu/bin/python work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/prove_speed_sweep.py --output-root .runtime-work/c125751-speed-sweep-v1",
-    "proof_json": ".runtime-work/c125751-speed-sweep-v1/proof.json",
-    "proof_sha256": "c174daabbf41f6e71d99f7797d56328f78dfb5bf0bb4389914cf070e9c2b9060",
-    "offline_compatibility_saved_command_count": 9,
-    "fixed_conditions_audited": true,
-    "changed_fixed_opposing_speed_rejected": true,
-    "physical_acceptance_claimed": false,
-    "legal_yield_claimed": false,
-    "limitation": "Synthetic source media do not prove commanded speed was realized or a legal yield verdict."
-  },
-  "cpu_saved_processing_proof": {
-    "format": "c125751-stable-current-manifest-saved-proof",
-    "manifest_sha256": "dea4400b04a5c7581e57bbf53cd1416da64970066957e24886456165eb617917",
-    "selected_case_count": 2,
-    "candidate_count": 8,
-    "source_files_verified": 18256,
-    "all_passed": true,
-    "ignored_report": ".runtime-work/c125751-stable-v2-verified.json",
-    "ignored_report_sha256": "6c6797846642c830bb8c7049f99fb22d3f769d8337c8cb9c6acff71d19ec5010",
-    "replay_script_sha256": "2b13ccfa99932eae754cf1fc9d7cb91cd0d94943b61498d1c9712ba53efcc014",
-    "rows": [
-      {
-        "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
-        "candidate_id": "fallback1",
-        "construction_sha256": "e7ca7a0afa2929e58542ca75e60461eb4b398d35ccded460c91a0866c20e0ba2",
-        "selection_sha256": "9d0e6ae0df84be0166cf34e405491c5c50c18fbf89f245e1d6fcd7e83ac3a723",
-        "compatibility_receipt_sha256": "a7a20b927e42d69638312ec69064339c160614195e12c0db95420d13debe32d7",
-        "processing_sha256": "16491e609fa4448d6e1f1073167aa6a1d5b35b3fdf45650f7a23bd0f656de71c",
-        "source_count": 2282,
-        "offline_log_sha256": "b01c9fb2b92ad456c7ab0c6e168c94240c8edd53d7ecfdefe9a2cff71b9d4d7e",
-        "compatibility_log_sha256": "a7a20b927e42d69638312ec69064339c160614195e12c0db95420d13debe32d7",
-        "saved_log_sha256": "16491e609fa4448d6e1f1073167aa6a1d5b35b3fdf45650f7a23bd0f656de71c"
-      },
-      {
-        "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
-        "candidate_id": "fallback2",
-        "construction_sha256": "bfe7b714940ef7cd730164cae24227e919f488620981af4850e121ddee7f462e",
-        "selection_sha256": "45046232b03d22ee9cd66e73ff18058c9e06809fec285efd4a3308302c188975",
-        "compatibility_receipt_sha256": "7a46e29a513f1825da552e867e9fdb5ba1bc0b4e1227f824e65cbb25c8fa6e33",
-        "processing_sha256": "a3a99b3ab46ab2a454988f8327feab50bb4001057035c9bc7b2a6146f9fb913d",
-        "source_count": 2282,
-        "offline_log_sha256": "26838700403fdfe518686deb218b142c8b564dd168d24447e96ce194eef8ab33",
-        "compatibility_log_sha256": "7a46e29a513f1825da552e867e9fdb5ba1bc0b4e1227f824e65cbb25c8fa6e33",
-        "saved_log_sha256": "a3a99b3ab46ab2a454988f8327feab50bb4001057035c9bc7b2a6146f9fb913d"
-      },
-      {
-        "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
-        "candidate_id": "fallback3",
-        "construction_sha256": "3b40953144b33720aa078c7d7873ac1e6dc291d5383018c5695a314fd366a0a7",
-        "selection_sha256": "06984f9c9e40bcece8d14380ea0047720e344719d66c3eb9cbedf077f3278a20",
-        "compatibility_receipt_sha256": "8151121737087e670e85350b2f9ebf4bdc5e2ceb6ad81b58b9be77f1e4e4d2ac",
-        "processing_sha256": "99fd3db3329b1bc88453873f189069e17f121f1bf3ff83ddd33efa4b46d8e0c9",
-        "source_count": 2282,
-        "offline_log_sha256": "473c348afca1fb0f4ae3924156bd926e815855d7a50df28d470bf42df7f2827a",
-        "compatibility_log_sha256": "8151121737087e670e85350b2f9ebf4bdc5e2ceb6ad81b58b9be77f1e4e4d2ac",
-        "saved_log_sha256": "99fd3db3329b1bc88453873f189069e17f121f1bf3ff83ddd33efa4b46d8e0c9"
-      },
-      {
-        "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
-        "candidate_id": "primary",
-        "construction_sha256": "d11aebc9416a0d34419da975c7c8a3caa9ce7f906cde40cfb5603478d4af659d",
-        "selection_sha256": "093e7cf30dca145b38d90d0739e56222ba08fe1b7ef203df2b234027278eae3f",
-        "compatibility_receipt_sha256": "6de37f1de93ae0e64798a1864f23561f0b840e867f464c32a5dacfea2d11d9e7",
-        "processing_sha256": "1adca74819c01234bba03babaa15ddc43fb8166bb39726f35d24ff0cfa2543a8",
-        "source_count": 2282,
-        "offline_log_sha256": "356a8e16b30ea8be1018530741949b0090155281fe8baa7ca2d6dd9038c058f2",
-        "compatibility_log_sha256": "6de37f1de93ae0e64798a1864f23561f0b840e867f464c32a5dacfea2d11d9e7",
-        "saved_log_sha256": "1adca74819c01234bba03babaa15ddc43fb8166bb39726f35d24ff0cfa2543a8"
-      },
-      {
-        "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_operative",
-        "candidate_id": "fallback1",
-        "construction_sha256": "a68772ba2318b1e98246597d1efee48b099fd6f7d7459220ebbe02f39c01cebf",
-        "selection_sha256": "18d228e0c0dc68d7799ed81a48d3cd5d7161ec81904dfeebdb7f54ef9d8831c6",
-        "compatibility_receipt_sha256": "d70254fcb5873535bdc733bab52375fa43723ab3da2d8f53d58ae91aa857e77d",
-        "processing_sha256": "d46e3bcdb7c69159a33a675145acd058bc5d980cbfb48b7448385bc9319b6291",
-        "source_count": 2282,
-        "offline_log_sha256": "0bce159c865b15ca708fea4abd431b35332bae57d058397b86d804045a927e06",
-        "compatibility_log_sha256": "d70254fcb5873535bdc733bab52375fa43723ab3da2d8f53d58ae91aa857e77d",
-        "saved_log_sha256": "d46e3bcdb7c69159a33a675145acd058bc5d980cbfb48b7448385bc9319b6291"
-      },
-      {
-        "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_operative",
-        "candidate_id": "fallback2",
-        "construction_sha256": "24ca44bf4b35d4a85d9348992693241eb85db13442ede53a5457873d5c85485f",
-        "selection_sha256": "f3f18ba385c52e68c7745ba5069b47d9fcc499b90ef56ff358452914a6dafc30",
-        "compatibility_receipt_sha256": "99605980efbbf3cdd71d7faf1a05960691f0615063fd497d5095b8ac905d80ff",
-        "processing_sha256": "2af1468993bf4ac0c4636181a80fc250b6eff048d900cf4286916badb4849fab",
-        "source_count": 2282,
-        "offline_log_sha256": "d87d8691eac245cd7a6f68bfae82c0e9704d572210f44328e8cd5ca6823bd435",
-        "compatibility_log_sha256": "99605980efbbf3cdd71d7faf1a05960691f0615063fd497d5095b8ac905d80ff",
-        "saved_log_sha256": "2af1468993bf4ac0c4636181a80fc250b6eff048d900cf4286916badb4849fab"
-      },
-      {
-        "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_operative",
-        "candidate_id": "fallback3",
-        "construction_sha256": "2d3c245410452a149e945938c0ad4f541a636928438f61550d58e3d909ee1748",
-        "selection_sha256": "35f4de40ff44ad0d3c9ce7f859c04b5380677244e00c3d406a1622d6df3075f4",
-        "compatibility_receipt_sha256": "f3dc59dfedc031c6c0d020f173c13ef4f95a1683cdabb5210e15eddc8a90c66a",
-        "processing_sha256": "010f5d84d49b7a603dea7d460ae243f33e9828e3890d5c235979091a2e6123da",
-        "source_count": 2282,
-        "offline_log_sha256": "6dc2e0a8fed2ee04d7fc795ba9219b6166d6e2f890b42482da7247711d09e7d4",
-        "compatibility_log_sha256": "f3dc59dfedc031c6c0d020f173c13ef4f95a1683cdabb5210e15eddc8a90c66a",
-        "saved_log_sha256": "010f5d84d49b7a603dea7d460ae243f33e9828e3890d5c235979091a2e6123da"
-      },
-      {
-        "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_operative",
-        "candidate_id": "primary",
-        "construction_sha256": "89242c551ec12bd77530d0357b2162df476155707ee7931f681d1252a2961b44",
-        "selection_sha256": "427979f88f35ca5702602bd347ce18338c3deda38d06ea14932178963bb0453d",
-        "compatibility_receipt_sha256": "99736e43fba33fc0b9522324c6cfdd2183e6b84ad7aaa9718c1bfdc335b5e3e9",
-        "processing_sha256": "3c1807dfb28eae6eee70af75de99a467dcd01db2f32487c479654a9ebb4dbc2c",
-        "source_count": 2282,
-        "offline_log_sha256": "26a610bda48f84e5abe7f40f5551aa1a2e68977e3e888684facc86048e8930ca",
-        "compatibility_log_sha256": "99736e43fba33fc0b9522324c6cfdd2183e6b84ad7aaa9718c1bfdc335b5e3e9",
-        "saved_log_sha256": "3c1807dfb28eae6eee70af75de99a467dcd01db2f32487c479654a9ebb4dbc2c"
-      }
-    ]
-  },
-  "current_delivery_audit_proof": {
-    "format": "c125751-current-manifest-independent-delivery-audits",
-    "manifest_sha256": "dea4400b04a5c7581e57bbf53cd1416da64970066957e24886456165eb617917",
-    "script_sha256": "2eb4e468acf6928a7332025002bba208334a914de1935d146a0c1e1b9b5d42b3",
-    "audits": [
-      {
-        "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_operative",
-        "receipt": ".runtime-work/c125751-stable-v2-operative-audit.json",
-        "receipt_sha256": "f017e76c2109b9aff76ea795c6106af546b1bab6a22f086ce16b3c800d186b95",
-        "log_sha256": "f7063457cdfe1621ebb0fa087112c284cef1fbd0ff6a4a16da6717c8c899dbdc",
-        "attempt": ".runtime-work/c125751-stable-v2-operative-primary-compat"
-      },
-      {
-        "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__signal_off",
-        "receipt": ".runtime-work/c125751-stable-v2-off-audit.json",
-        "receipt_sha256": "e895d1a84caaa77df1e91d5d44ccbeb1cae2b5648682c244b3d58fee9274bd54",
-        "log_sha256": "cba86fc3656927be1ba6927c1a94e4f27ef1af9a21db180310ff6740d472251a",
-        "attempt": ".runtime-work/c125751-stable-v2-off-primary-compat"
-      }
-    ],
-    "all_passed": true,
-    "physical_acceptance_claimed": false
+    "status": "three_exact_diagnostic_speed_variants_passed;_native_speed_response_unverified"
   }
 }

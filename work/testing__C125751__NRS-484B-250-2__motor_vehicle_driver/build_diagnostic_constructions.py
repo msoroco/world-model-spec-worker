@@ -307,7 +307,7 @@ def build_opposite_offline_bundle(output_root):
                        "other": [10, 0, 0, 180, 0, 0]},
         "release_frames": {"ego": 8, "other": 10},
         "target_speeds_mps": {"ego": 5.0, "other": 5.0},
-        "frames": 100, "lookahead_m": 5.0}
+        "frames": 1100, "lookahead_m": 5.0}
     fallbacks = {}
     for name, risk in (("fallback1", "spawn_occupied"),
                        ("fallback2", "entry_timing_missed"),
@@ -325,6 +325,7 @@ def build_opposite_offline_bundle(output_root):
     case = ASSIGNMENT + "__opposite_left_turn"
     config = {"selected_case_id": case, "law_id": "NRS-484B-250-2",
               "cell_id": "C125751", "actor": "motor_vehicle_driver",
+              "duration_s": 55, "rate_hz": 20,
               "turning_role": "ego", "site": site,
               "candidate_plan": {"primary": primary, "fallbacks": fallbacks},
               "blueprint_ids": {"ego": "vehicle.tesla.model3",
