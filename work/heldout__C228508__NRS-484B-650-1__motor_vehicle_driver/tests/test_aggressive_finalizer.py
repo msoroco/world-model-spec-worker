@@ -58,7 +58,10 @@ class FinalizerTests(unittest.TestCase):
         self.assertEqual(len((self.root / 'path_length_m.jsonl').read_text().splitlines()), 5)
         self.assertFalse(result['physical_acceptance_claimed'])
         self.assertFalse(result['legal_acceptance_claimed'])
-        with self.assertRaisesRegex(ValueError, 'Retain prior'):
+        self.assertEqual(build_result(self.root, report)['recording_evidence'],
+                         result['recording_evidence'])
+        (self.root / 'path_length_m.jsonl').write_text('changed\n')
+        with self.assertRaisesRegex(ValueError, 'Prior derived source disagrees'):
             build_result(self.root, report)
 
     def test_missing_and_misaligned_original_sources_rejected(self):

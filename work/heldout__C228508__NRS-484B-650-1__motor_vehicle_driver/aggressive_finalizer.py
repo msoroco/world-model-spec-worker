@@ -34,6 +34,15 @@ def _rows(path):
         raise ValueError('Invalid original frame source: ' + path.name) from error
 
 
+def _write_or_verify_derived(path, content):
+    """Keep a prior derived channel only when it matches retained originals."""
+    if path.exists():
+        if path.read_text() != content:
+            raise ValueError('Prior derived source disagrees with originals: ' + path.name)
+    else:
+        path.write_text(content)
+
+
 def measure_aggressive_window(trace_path, event_path, source_root):
     return measure(trace_path, event_path, source_root)
 
@@ -86,8 +95,6 @@ def build_result(attempt, report):
         raise ValueError('Selected recording description missing')
     trace = _rows(root / 'driving_trace.jsonl')
     channel = root / 'path_length_m.jsonl'
-    if channel.exists():
-        raise ValueError('Retain prior derived path-length channel')
     distance = 0.0
     output = []
     previous = None
@@ -98,13 +105,11 @@ def build_result(attempt, report):
         output.append({'frame': row['frame'], 'time_s': row['time_s'],
                        'value': distance})
         previous = row
-    channel.write_text(''.join(json.dumps(row, allow_nan=False) + '\n'
-                               for row in output))
+    _write_or_verify_derived(channel, ''.join(json.dumps(row, allow_nan=False) + '\n'
+                                               for row in output))
     actor_source, actor_sha = _required(root, 'following_sources.jsonl')
     actor_context = root / 'original_actor_and_road_context.json'
-    if actor_context.exists():
-        raise ValueError('Retain prior actor and road context')
-    actor_context.write_text(json.dumps({'original_actor_and_road_context': {
+    _write_or_verify_derived(actor_context, json.dumps({'original_actor_and_road_context': {
         'frame_count': len(trace),
         'frame_map_sha256': sha256((root / 'video_frames.jsonl').read_bytes()).hexdigest(),
         'actor_source': actor_source.name, 'actor_source_sha256': actor_sha,
@@ -114,9 +119,7 @@ def build_result(attempt, report):
         'scope': 'original-source pointers; physical and legal review pending'
     }}, indent=2) + '\n')
     legal_context = root / 'governing_cross_referenced_rule.json'
-    if legal_context.exists():
-        raise ValueError('Retain prior cited-rule context')
-    legal_context.write_text(json.dumps({'governing_cross_referenced_rule': {
+    _write_or_verify_derived(legal_context, json.dumps({'governing_cross_referenced_rule': {
         'source': 'frozen NRS 484B.650(1) assignment and its cited predicate provisions',
         'status': 'independent review pending', 'legal_judgment': None
     }}, indent=2) + '\n')

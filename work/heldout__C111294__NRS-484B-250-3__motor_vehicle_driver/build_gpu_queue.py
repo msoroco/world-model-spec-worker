@@ -35,10 +35,15 @@ def digest(path):
 
 def local_audit_command(acceptance, case_id):
     tokens = shlex.split(acceptance["command"])
-    if tokens[0].endswith("/.venv-cpu/bin/python"):
-        tokens[0] = ".venv-cpu/bin/python"
-    if tokens[1].startswith(str(ROOT / "work")):
-        tokens[1] = str(Path(tokens[1]).relative_to(ROOT))
+    python_index = 1 if tokens[0] == "env" and len(tokens) > 2 and "=" in tokens[1] else 0
+    while python_index < len(tokens) and "=" in tokens[python_index]:
+        python_index += 1
+    if python_index + 1 >= len(tokens) or not tokens[python_index].endswith("/.venv-cpu/bin/python"):
+        raise ValueError("Delivery audit lacks local Python command: " + case_id)
+    tokens[python_index] = ".venv-cpu/bin/python"
+    script_index = python_index + 1
+    if tokens[script_index].startswith(str(ROOT / "work")):
+        tokens[script_index] = str(Path(tokens[script_index]).relative_to(ROOT))
     if "--case" not in tokens or tokens[tokens.index("--case") + 1] != case_id:
         raise ValueError("Delivery audit selects another case: " + case_id)
     for option, value in (("--attempt", '"$ATTEMPT"'),
