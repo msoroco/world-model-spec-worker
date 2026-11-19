@@ -13,7 +13,8 @@ NATIVE = PACKAGE / 'native'
 MODULES = ('pathing.py', 'scene_plan.py', 'live_readback.py',
            'recording_contract.py', 'route_control.py', 'capture.py',
            'statutory_variants.py', 'variant_recording_contract.py',
-           'variant_capture.py', 'analyze.py', 'variant_analyze.py')
+           'variant_capture.py', 'analyze.py', 'variant_analyze.py',
+           'variant_finalize.py')
 
 
 def sha(path):
@@ -43,7 +44,7 @@ def build(kind, route, candidate='primary'):
     return {'case_id': cfg['case_id'], 'law_id': cfg['law_id'],
             'cell_id': cfg['cell_id'], 'actor': cfg['actor'],
             'entrypoint': 'runner.py', 'files': files,
-            'status': 'draft_exact_barrier_capture_offline',
+            'status': 'draft_exact_barrier_source_finalization_offline',
             'original_native_observed': False, 'delivery_ready': False,
             'recording_description': cfg['recording_description'],
             'measurement_plan': {'selected_variable': 'requested_pavement_crossing',
@@ -57,7 +58,7 @@ def build(kind, route, candidate='primary'):
                            'control': 'native/route_control.py',
                            'capture': 'native/variant_capture.py',
                            'source_analysis': 'native/variant_analyze.py',
-                           'finalization': 'pending_source_derived_variant_finalizer'}}
+                           'finalization': 'native/variant_finalize.py'}}
 
 
 def write():
@@ -72,11 +73,11 @@ def write():
                       'construction': str(path.relative_to(PACKAGE)),
                       'construction_sha256': sha(path),
                       'candidate_offline_status': 'pending',
-                      'finalizer_status': 'pending_source_derived_variant_finalizer'})
+                      'finalizer_status': 'cpu_unit_tested_not_saved_proven'})
     runtime = PACKAGE.parents[1] / 'runtime/pipeline/SOURCE-MANIFEST.json'
     manifest = {'format': 'worker-execution-manifest',
                 'assignment_id': ASSIGNMENT,
-                'status': 'draft_barrier_capture_only_not_delivery_ready',
+                'status': 'draft_barrier_source_finalization_not_delivery_ready',
                 'runtime_manifest_sha256': sha(runtime),
                 'cases': cases}
     path = PACKAGE / 'draft-barrier-capture-manifest.json'
