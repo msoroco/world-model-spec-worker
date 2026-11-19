@@ -7,7 +7,7 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from capture import CAMERAS, prepare_attempt, sample
+from capture import CAMERAS, install_cameras, prepare_attempt, sample
 from build_exact import build
 from pathing import repository_root
 
@@ -84,6 +84,27 @@ class CaptureTest(unittest.TestCase):
             (attempt/'trace.jsonl').write_text('{}\n')
             with self.assertRaisesRegex(ValueError,'Preserve prior Native capture'):
                 prepare_attempt(attempt,repo,'reference',600,materialized=True)
+
+    def test_overview_camera_fallback_changes_actual_spawn_pose(self):
+        spawned=[]
+        sensor=types.SimpleNamespace(listen=lambda callback:None)
+        blueprint=types.SimpleNamespace(set_attribute=lambda key,value:None)
+        library=types.SimpleNamespace(find=lambda name:blueprint)
+        world=types.SimpleNamespace(spawn_actor=lambda bp,pose,attach_to:
+                                    (spawned.append(pose),sensor)[1])
+        carla=types.SimpleNamespace(
+            Location=lambda **kwargs:types.SimpleNamespace(**kwargs),
+            Rotation=lambda **kwargs:types.SimpleNamespace(**kwargs),
+            Transform=lambda location,rotation:types.SimpleNamespace(
+                location=location,rotation=rotation))
+        callbacks={name:types.SimpleNamespace(put=lambda image:None)
+                   for name,*_ in CAMERAS}
+        install_cameras(world,library,carla,object(),callbacks,{
+            'overview':{'offset_xyz_m':[-8.0,0.0,28.0],'pitch_deg':-62.0}})
+        self.assertEqual(len(spawned),4)
+        self.assertEqual(spawned[0].location.z,28.0)
+        self.assertEqual(spawned[0].rotation.pitch,-62.0)
+        self.assertEqual(spawned[1].location.z,3.0)
 
 
 if __name__ == '__main__':

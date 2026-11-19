@@ -10,11 +10,23 @@ sys.path.insert(0, str(HERE/'native'))
 from pathing import repository_root
 from recording_contract import ASSIGNMENT, description
 
+KNOBS = {
+    'primary': ({'speed_mps':4.0,'reach_m':1.5,'steer_divisor_deg':40.0}, {}),
+    'fallback1': ({'speed_mps':3.0,'reach_m':1.5,'steer_divisor_deg':40.0}, {}),
+    'fallback2': ({'speed_mps':4.0,'reach_m':1.5,'steer_divisor_deg':40.0},
+                  {'overview':{'offset_xyz_m':[-8.0,0.0,28.0],
+                               'pitch_deg':-62.0}}),
+    'fallback3': ({'speed_mps':4.0,'reach_m':1.0,'steer_divisor_deg':32.0}, {}),
+}
+
 
 def check():
     config=json.loads((HERE/'config.json').read_text())
     case=config.get('case_suffix')
+    candidate=config.get('candidate_id')
     if (case not in ('reference','contrast') or
+            candidate not in KNOBS or
+            (config.get('controller_knobs'),config.get('camera_overrides')) != KNOBS[candidate] or
             config.get('case_id') != ASSIGNMENT+'__'+case or
             config.get('selected_case_id') != config['case_id'] or
             config.get('law_id') != 'LVMC-11-22-100' or

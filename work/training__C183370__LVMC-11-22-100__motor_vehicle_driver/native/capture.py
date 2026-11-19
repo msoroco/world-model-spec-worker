@@ -128,10 +128,15 @@ def sample(world, carla, ego, person, command):
     }
 
 
-def install_cameras(world, library, carla, ego, callbacks):
+def install_cameras(world, library, carla, ego, callbacks, overrides=None):
     sensors = []
+    overrides = overrides or {}
     try:
         for name, width, height, fov, offset, pitch in CAMERAS:
+            if name in overrides:
+                row = overrides[name]
+                offset = row['offset_xyz_m']
+                pitch = row['pitch_deg']
             blueprint = library.find('sensor.camera.rgb')
             blueprint.set_attribute('image_size_x', str(width))
             blueprint.set_attribute('image_size_y', str(height))
@@ -157,6 +162,9 @@ def acquire(survey, case, attempt, client, carla, *, sink_factory=FFV1Sink,
     repo = repository_root(__file__)
     attempt = prepare_attempt(attempt, repo, case, survey['frames'],
                               materialized=materialized)
+    selected_config = json.loads((attempt/'config.json').read_text())
+    controls = selected_config.get('controller_knobs', {})
+    camera_overrides = selected_config.get('camera_overrides', {})
     world = client.get_world()
     readback = bind(survey, world, carla)
     route = readback['plan']['cases'][case]['route_xy_m']
@@ -175,7 +183,7 @@ def acquire(survey, case, attempt, client, carla, *, sink_factory=FFV1Sink,
     (attempt/'live-readback.json').write_text(json.dumps(readback, indent=2)+'\n')
     (attempt/'road.xodr').write_text(world.get_map().to_opendrive())
     callbacks = {name: queue.Queue() for name, *_ in CAMERAS}
-    controller = RouteControl(route)
+    controller = RouteControl(route, **controls)
     prior_frame = -1
     prior_time = -1.0
     try:
@@ -185,7 +193,8 @@ def acquire(survey, case, attempt, client, carla, *, sink_factory=FFV1Sink,
         if ego is None:
             raise ValueError('Surveyed ego spawn is occupied')
         person = world.get_actors().find(survey['warning_person_actor_id'])
-        sensors = install_cameras(world, library, carla, ego, callbacks)
+        sensors = install_cameras(world, library, carla, ego, callbacks,
+                                  camera_overrides)
         for name, width, height, *_ in CAMERAS:
             sinks[name] = sink_factory(attempt/(name+'.mkv'), width, height)
         with (attempt/'native-actors.jsonl').open('x') as actors, \

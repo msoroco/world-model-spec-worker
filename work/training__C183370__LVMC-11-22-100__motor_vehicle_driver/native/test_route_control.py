@@ -22,6 +22,16 @@ class RouteControlTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'positive route'):
             RouteControl([[0, 0]])
 
+    def test_speed_and_steering_fallbacks_change_requested_control(self):
+        route=[[0,0],[10,2.1]]
+        primary=RouteControl(route)
+        slower=RouteControl(route,speed_mps=3.0)
+        tighter=RouteControl(route,reach_m=1.0,steer_divisor_deg=32.0)
+        requested=primary.decide(0,0,0,3.6)
+        self.assertEqual(requested['brake'],0.0)
+        self.assertGreater(slower.decide(0,0,0,3.6)['brake'],0.0)
+        self.assertGreater(tighter.decide(0,0,0,3.6)['steer'],requested['steer'])
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,0 +1,115 @@
+{
+  "assignment_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver",
+  "cases": [
+    {
+      "candidate_offline_status": "pending",
+      "candidate_risk": {
+        "reason": "Native body tracking and warning/pavement camera visibility remain unverified",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "lower requested controller speed from 4 to 3 m/s"
+          ],
+          "construction": "draft-exact-candidates/reference/fallback1/construction.json",
+          "construction_sha256": "f0a450fa9f8cef1104afd4c4f01e7715a21192edfe18fa38a7ad2b4befc0de8c",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "ego overshoots the surveyed route while slowing for the protected region",
+            "metric": "observed speed/route tracking at surveyed pavement",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "raise overview camera from 24 to 28 m and pitch from -55 to -62 degrees"
+          ],
+          "construction": "draft-exact-candidates/reference/fallback2/construction.json",
+          "construction_sha256": "bc35cf739a8a4069b07f222870cbe4d9a05461492f9edb85fc1d4a41a90e4e1a",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "overview pixels omit the person or a protected pavement edge",
+            "metric": "visibility of warning person and complete surveyed pavement area",
+            "source": "overview.mkv"
+          }
+        },
+        {
+          "changed_knobs": [
+            "reduce waypoint reach from 1.5 to 1.0 m",
+            "increase steering response by reducing divisor from 40 to 32 degrees"
+          ],
+          "construction": "draft-exact-candidates/reference/fallback3/construction.json",
+          "construction_sha256": "520166b46a76b0b52ca63cbdaf362251ab05b61f8fbeb1e96fa4af34ca92a0ac",
+          "id": "fallback3",
+          "trigger": {
+            "failure_condition": "body footprint leaves the surveyed intended route corridor",
+            "metric": "measured lateral route error at pavement approach",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__reference",
+      "construction": "draft-exact-candidates/reference/primary/construction.json",
+      "construction_sha256": "87093950611a9e3454e13d895f180453ea44d7a8b0f631457021fee3a7485a1f",
+      "kind": "delivery"
+    },
+    {
+      "candidate_offline_status": "pending",
+      "candidate_risk": {
+        "reason": "Native body tracking and warning/pavement camera visibility remain unverified",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "lower requested controller speed from 4 to 3 m/s"
+          ],
+          "construction": "draft-exact-candidates/contrast/fallback1/construction.json",
+          "construction_sha256": "dace5c0be1b5b39a84939d7bd0744ee5b01adb7157cc8e84c56975ebf70a5a40",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "ego overshoots the surveyed route while slowing for the protected region",
+            "metric": "observed speed/route tracking at surveyed pavement",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "raise overview camera from 24 to 28 m and pitch from -55 to -62 degrees"
+          ],
+          "construction": "draft-exact-candidates/contrast/fallback2/construction.json",
+          "construction_sha256": "e8bdf554c28185e5b32f01d18eee30d34ef9b6c6218686de6522d66885084135",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "overview pixels omit the person or a protected pavement edge",
+            "metric": "visibility of warning person and complete surveyed pavement area",
+            "source": "overview.mkv"
+          }
+        },
+        {
+          "changed_knobs": [
+            "reduce waypoint reach from 1.5 to 1.0 m",
+            "increase steering response by reducing divisor from 40 to 32 degrees"
+          ],
+          "construction": "draft-exact-candidates/contrast/fallback3/construction.json",
+          "construction_sha256": "1431a550c3005bf72c8562c09316bffc0b29de1889bccd95e9418ab3987e8a4c",
+          "id": "fallback3",
+          "trigger": {
+            "failure_condition": "body footprint leaves the surveyed intended route corridor",
+            "metric": "measured lateral route error at pavement approach",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__contrast",
+      "construction": "draft-exact-candidates/contrast/primary/construction.json",
+      "construction_sha256": "6158b7b82ad6b778ff033791c8f6c960080ab9bc0c8170f44b56000a436386dc",
+      "kind": "delivery"
+    }
+  ],
+  "format": "worker-execution-manifest",
+  "runtime_manifest_sha256": "5b4738624542c97f321a302bd49b9ec154cb2cf63778acf64ba6042f8d5b4fd3",
+  "source_branch": "warning_person",
+  "status": "draft_exact_candidates_not_delivery_ready"
+}
