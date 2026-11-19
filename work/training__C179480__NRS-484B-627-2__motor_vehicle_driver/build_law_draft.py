@@ -33,11 +33,9 @@ def build():
     config['survey_contract']['governing_traffic_light_id_required'] = True
     channels = config['recording_description']['channels']
     channels[:] = [entry for entry in channels if entry['name'] in channels_for(CASE)]
-    sample = channels[0].copy()
-    sample.update(name='governing_control_readback',
-                  method='native_channels.derive from original traffic-light actor and ego association rows',
-                  uncertainty='50 ms sampling; governing applicability and compliance require independent review')
-    channels.append(sample)
+    control = next(entry for entry in channels if entry['name'] == 'governing_control_readback')
+    control.update(method='native_channels.derive from original traffic-light actor and ego association rows',
+                   uncertainty='50 ms sampling; governing applicability and compliance require independent review')
     files['config.json'] = json.dumps(config, indent=2, sort_keys=True)+'\n'
     construction = safe.copy()
     construction.update(case_id=CASE_ID, files=[{'path':k,'content':v} for k,v in files.items()],

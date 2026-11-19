@@ -21,8 +21,7 @@ def channels_for(case):
     if case not in ('reference', 'contrast', 'safe_operation_stop',
                     'law_required_stop'):
         raise ValueError('Unknown source case for channels')
-    return (CHANNELS + (SAFE_CHANNELS if case == 'safe_operation_stop' else ())
-            + (LAW_CHANNELS if case == 'law_required_stop' else ()))
+    return CHANNELS + SAFE_CHANNELS + LAW_CHANNELS
 
 
 def _vector(value, length):
@@ -64,6 +63,23 @@ def derive(attempt):
                 or row['driving_road_id'] != map_readback['road_id']
                 or row['driving_lane_id'] != map_readback['lane_id']):
             raise ValueError('Missing complete original actor/map channel source')
+        inventory = row.get('scene_actor_inventory')
+        if (not isinstance(inventory, dict)
+                or inventory.get('format') != 'c179480-native-scene-inventory-v1'
+                or inventory.get('source_kind') != source_kind
+                or not isinstance(inventory.get('actors'), list)
+                or inventory.get('coverage', {}).get('center') != 'ego_actor_location'
+                or type(inventory['coverage'].get('radius_m')) not in (int, float)
+                or inventory['coverage']['radius_m'] <= 0
+                or (row.get('ego_associated_control_id') is not None and
+                    type(row['ego_associated_control_id']) is not int)):
+            raise ValueError('Missing original scoped scene/association inventory')
+        actor_ids = [actor.get('actor_id') for actor in inventory['actors']]
+        if (any(type(ident) is not int for ident in actor_ids)
+                or len(actor_ids) != len(set(actor_ids))
+                or any(not isinstance(actor.get('type_id'), str)
+                       for actor in inventory['actors'])):
+            raise ValueError('Invalid original scoped actor identities')
         time_s = frame['time_s']
         body = row['ego_body_vertices_xyz_m']
         position = [row['ego_x_m'], row['ego_y_m']]
@@ -123,8 +139,23 @@ def derive(attempt):
                 'on_driving_lane': hazard['on_driving_lane'],
                 'road_id': hazard['road_id'], 'lane_id': hazard['lane_id']}
             sample['ego_hazard_gap_history'] = hazard['ego_center_gap_m']
+        else:
+            sample['hazard_actor_state'] = {
+                'status': 'no_hazard_designated_for_this_case',
+                'scoped_inventory_actor_ids': actor_ids,
+                'absence_claimed': False}
+            sample['ego_hazard_gap_history'] = {
+                'status': 'not_measured_without_designated_hazard',
+                'absence_claimed': False}
         if map_readback['case'] == 'law_required_stop':
             sample['governing_control_readback'] = row['governing_control_state']
+        else:
+            sample['governing_control_readback'] = {
+                'status': 'no_governing_control_designated_for_this_case',
+                'ego_associated_control_id': row['ego_associated_control_id'],
+                'scoped_light_actor_ids': [actor['actor_id'] for actor in inventory['actors']
+                                           if actor['type_id'] == 'traffic.traffic_light'],
+                'absence_claimed': False}
         for name in channels:
             values[name].append({'time_s': time_s, 'value': sample[name]})
     directory = attempt/'channels'

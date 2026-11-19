@@ -33,7 +33,13 @@ class NativeFinalizeTest(unittest.TestCase):
                        driving_lane_id=-1, following_velocity_xyz_mps=[
                            row['following_speed_mps'],0.,0.],
                        following_x_m=-10., following_y_m=0.,
-                       following_on_driving_lane=True)
+                       following_on_driving_lane=True,
+                       ego_associated_control_id=None,
+                       scene_actor_inventory={
+                           'format':'c179480-native-scene-inventory-v1',
+                           'source_kind':'original_carla_actor_and_map_readback',
+                           'coverage':{'center':'ego_actor_location','radius_m':100.},
+                           'actors':[{'actor_id':1,'type_id':'vehicle.ego'}]})
         for index, row in enumerate(rows):
             row['video_frame'] = index
         actor.write_text(''.join(json.dumps(row)+'\n' for row in rows))
@@ -53,7 +59,7 @@ class NativeFinalizeTest(unittest.TestCase):
             'case_suffix': 'reference', 'law_id': 'NRS-484B-627-2',
             'rate_hz': 20, 'duration_s': 0.15,
             'recording_description': {'channels': [
-                {'name': name, 'unit': 'structured'} for name in module.CHANNELS],
+                {'name': name, 'unit': 'structured'} for name in module.channels_for('reference')],
                 'context_inputs': []}})+'\n')
 
     def safe_sources(self, folder):
@@ -68,6 +74,8 @@ class NativeFinalizeTest(unittest.TestCase):
                 velocity_xyz_mps=[0.,0.,0.], position_xyz_m=[8.,0.,0.],
                 speed_mps=0., ego_center_gap_m=8., on_driving_lane=True,
                 road_id=7, lane_id=-1)
+            row['scene_actor_inventory']['actors'].append(
+                {'actor_id': 8, 'type_id': 'vehicle.hazard'})
         actor.write_text(''.join(json.dumps(row)+'\n' for row in rows))
         map_path = folder/'native-map-readback.json'
         map_data = json.loads(map_path.read_text())
@@ -84,9 +92,6 @@ class NativeFinalizeTest(unittest.TestCase):
         config = json.loads(config_path.read_text())
         config['case_id'] = module.ASSIGNMENT+'__safe_operation_stop'
         config['case_suffix'] = 'safe_operation_stop'
-        config['recording_description']['channels'].extend(
-            {'name': name, 'unit': 'structured'}
-            for name in ('hazard_actor_state','ego_hazard_gap_history'))
         config_path.write_text(json.dumps(config)+'\n')
 
     def test_safe_operation_finalizer_retains_hazard_without_necessity_claim(self):
@@ -96,7 +101,7 @@ class NativeFinalizeTest(unittest.TestCase):
             report = module.finalize(folder,folder/'analysis-report.json')
             result = json.loads((folder/'result.json').read_text())
             self.assertEqual(report['hazard_observation']['minimum_ego_center_gap_m'],8.)
-            self.assertEqual(len(report['derived_channels']['channels']),12)
+            self.assertEqual(len(report['derived_channels']['channels']),13)
             self.assertIn('minimum_source_visible_hazard_gap',result['realized_observables'])
             self.assertIn('safe_operation_necessity_unreviewed',result['physical_failure_flags'])
             self.assertFalse(result['maneuver_completed'])
@@ -126,7 +131,7 @@ class NativeFinalizeTest(unittest.TestCase):
                              'measure_roadway_stop')
             self.assertEqual(report['measurements']['paved_roadway_scope']['value']
                              ['road_id'], 7)
-            self.assertEqual(len(report['derived_channels']['channels']), 10)
+            self.assertEqual(len(report['derived_channels']['channels']), 13)
             self.assertEqual(result['measured_values']['normal_reasonable_movement_impeded'],
                              'independent_original_source_review_required')
             self.assertFalse(result['maneuver_completed'])
@@ -154,6 +159,7 @@ class NativeFinalizeTest(unittest.TestCase):
             rows = [json.loads(line) for line in actor.read_text().splitlines()]
             for row in rows:
                 row['source_kind'] = 'synthetic_native_sample'
+                row['scene_actor_inventory']['source_kind'] = 'synthetic_native_sample'
             actor.write_text(''.join(json.dumps(row)+'\n' for row in rows))
             receipt_path = folder/'source-measurements.json'
             receipt = json.loads(receipt_path.read_text())

@@ -64,6 +64,32 @@ def build(destination, case='reference'):
                 'following_x_m': x-12., 'following_y_m': 0.,
                 'following_on_driving_lane': True,
             }
+            inventory_actors = [
+                {'actor_id': 205, 'type_id': 'vehicle.synthetic_ego',
+                 'position_xyz_m': [x, lateral, 0.], 'ego_distance_xy_m': 0.},
+                {'actor_id': 206, 'type_id': 'vehicle.synthetic_follower',
+                 'position_xyz_m': [x-12., 0., 0.],
+                 'ego_distance_xy_m': ((12.)**2+lateral**2)**0.5},
+            ]
+            if case == 'safe_operation_stop':
+                inventory_actors.append({
+                    'actor_id': 207, 'type_id': 'vehicle.synthetic_hazard',
+                    'position_xyz_m': [x+8., 0., 0.],
+                    'ego_distance_xy_m': (8.**2+lateral**2)**0.5})
+            if case == 'law_required_stop':
+                inventory_actors.append({
+                    'actor_id': 501, 'type_id': 'traffic.traffic_light',
+                    'position_xyz_m': [x+12., 0., 0.],
+                    'ego_distance_xy_m': 12., 'state': 'TrafficLightState.Red'})
+            row['scene_actor_inventory'] = {
+                'format': 'c179480-native-scene-inventory-v1',
+                'source_kind': SYNTHETIC,
+                'coverage': {'center': 'ego_actor_location', 'radius_m': 100.,
+                             'actor_classes': ['vehicle.*', 'traffic.traffic_light']},
+                'actors': inventory_actors,
+                'interpretation': 'scoped synthetic snapshot only; no legal or physical absence claim',
+            }
+            row['ego_associated_control_id'] = 501 if case == 'law_required_stop' and i >= 220 else None
             if case == 'safe_operation_stop':
                 row['hazard_state'] = {
                     'source_kind': SYNTHETIC,

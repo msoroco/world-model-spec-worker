@@ -51,6 +51,8 @@ class FakeLibrary:
 
 class FakeVehicle:
     def __init__(self, x):
+        self.id = int(x) + 100
+        self.type_id = 'vehicle.fake'
         self.location = types.SimpleNamespace(x=x, y=0.0, z=0.0)
         self.velocity = types.SimpleNamespace(x=2.0, y=0.0, z=0.0)
         self.controls = []
@@ -61,6 +63,9 @@ class FakeVehicle:
 
     def get_velocity(self):
         return self.velocity
+
+    def get_traffic_light(self):
+        return None
 
     def apply_control(self, value):
         self.controls.append(value)
@@ -238,13 +243,16 @@ class CaptureAttemptTest(unittest.TestCase):
         carla = types.SimpleNamespace(
             LaneType=types.SimpleNamespace(Driving='driving'))
         ego, follower = Actor(0), Actor(-10)
+        world.get_actors = lambda: [ego, follower]
         in_lane = module.sample_native(world, carla, ego, follower)
         self.assertTrue(in_lane['ego_lane_overlap'])
         self.assertTrue(in_lane['ego_on_roadway'])
         self.assertEqual(in_lane['ego_velocity_xyz_mps'], [2.0, 0.0, 0.0])
         self.assertEqual(len(in_lane['ego_body_vertices_xyz_m']), 4)
         self.assertTrue(in_lane['following_on_driving_lane'])
+        self.assertEqual(len(in_lane['scene_actor_inventory']['actors']), 2)
         hazard = Actor(8)
+        world.get_actors = lambda: [ego, follower, hazard]
         hazard_state = module.sample_native(world,carla,ego,follower,hazard)
         self.assertEqual(hazard_state['hazard_state']['ego_center_gap_m'],8.)
         self.assertEqual(len(hazard_state['hazard_state']['body_vertices_xyz_m']),4)

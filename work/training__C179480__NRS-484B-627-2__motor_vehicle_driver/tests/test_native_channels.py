@@ -28,7 +28,13 @@ class NativeChannelsTest(unittest.TestCase):
                'following_velocity_xyz_mps': [3.0, 0.0, 0.0],
                'following_x_m': -10.0, 'following_y_m': 0.0,
                'following_on_driving_lane': True,
-               'following_gap_m': 10.0}
+               'following_gap_m': 10.0,
+               'ego_associated_control_id': None,
+               'scene_actor_inventory': {
+                   'format': 'c179480-native-scene-inventory-v1',
+                   'source_kind': 'original_carla_actor_and_map_readback',
+                   'coverage': {'center': 'ego_actor_location', 'radius_m': 100.},
+                   'actors': [{'actor_id': 1, 'type_id': 'vehicle.ego'}]}}
         later = dict(row, frame=102, ego_speed_mps=0.0,
                      ego_velocity_xyz_mps=[0., 0., 0.],
                      following_speed_mps=2.0,
@@ -50,7 +56,9 @@ class NativeChannelsTest(unittest.TestCase):
             original = actor.read_bytes()
             result = module.derive(folder)
             self.assertEqual(result['frames'], 2)
-            self.assertEqual(len(result['channels']), 10)
+            self.assertEqual(len(result['channels']), 13)
+            hazard = json.loads((folder/'channels/hazard_actor_state.jsonl').read_text().splitlines()[0])
+            self.assertFalse(hazard['value']['absence_claimed'])
             rows = [json.loads(x) for x in
                     (folder/'channels/following_actor_deceleration.jsonl').read_text().splitlines()]
             self.assertIsNone(rows[0]['value']['acceleration_mps2'])

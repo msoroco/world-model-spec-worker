@@ -2,15 +2,16 @@
   "applied_update": 16,
   "assignment_id": "training__C179480__NRS-484B-627-2__motor_vehicle_driver",
   "candidate_matrix_diagnostic": {
-    "audit": "update092-candidate-matrix-audit.json",
-    "audit_sha256": "db0633e9915c474464254967c9651996cd788766de985ee3e7cf69bca938c145",
+    "audit": "update095-candidate-matrix-audit.json",
+    "audit_sha256": "7deb057bcba71773a9166e8a02e4e780429d0e1d9585196511b3c10a5e916cb4",
     "candidate_count": 16,
     "case_count": 4,
     "compatibility_passed": 16,
     "delivery_ready": false,
     "manifest": "candidate-matrix-manifest.json",
-    "manifest_sha256": "9251dcbbf629508690b4e45d731a1336647073db7bd3b3cc3a51508ccad32737",
+    "manifest_sha256": "7f47910641b59964e4579551e69705432639f47b446e21942ad36f6c26456b7c",
     "offline_passed": 16,
+    "provenance_kind": "synthetic_fixture",
     "recorded_only_saved_passed": 16,
     "selected_cases": 0
   },
@@ -141,7 +142,7 @@
   },
   "input_sha256": "c605fffbcdff464081b55f92053e1253e0f1eb1a941c3b5d5aaa0fdc23b5df8a",
   "readiness_kind": null,
-  "reason": "The four-case, sixteen-candidate diagnostic matrix passes exact current offline, positive/negative compatibility and recorded-only saved processing. Source-faithful draft relevance, law template, three judgment-observable contracts and C179480 binding now pass the pinned semantic validators. The canonical cases stage and selected execution manifest remain unfinished: all selected recordings must provide the judgment sources, and the red-light control needs a compatible frozen cell or a valid additional binding. Independent physical, delivery and three comparison audits plus scoped strict remain worker-owned. No CARLA or legal/physical acceptance claim.",
+  "reason": "The four-case, sixteen-candidate current-runtime diagnostic matrix passes offline, positive/negative compatibility and recorded-only saved processing with all three source-backed judgment channels. The canonical draft semantic chain validates, but its three qualitative judgment sweep specifications remain explicitly incomplete. No final selected execution manifest, physical/delivery/comparison acceptance audits or scoped strict pass exists. The red-light branch must be reconciled with the frozen other-vehicle cell scope before selecting it. Worker-owned CPU work remains; no CARLA, Native, physical or legal acceptance is claimed.",
   "recordings_accepted": 0,
   "semantic_foundation": {
     "artifacts": {
@@ -154,10 +155,14 @@
       "template.json": "c4f3332a35dc0deb60727c5e13f32d706ebb8738ab45951b96fc78ab41cfa30d"
     },
     "build_log": "update093-semantic-build.log",
-    "canonical_cases_validated": false,
+    "canonical_cases_validated": true,
+    "cases_sha256": "ade698fce157c19c8168902ba363ccceaa7718d085265cfe7962c0875b7f9b6b",
+    "incomplete_judgment_sweeps": 3,
     "preflight_log": "update093-preflight.log",
-    "status": "draft_validated",
-    "validation_log": "update093-semantic-validation.log"
+    "selected_execution_manifest_validated": false,
+    "semantic_index_sha256": "3cc5a9e0c2402b5ea99f783dd90913f905382c74b61f06ee73835452286b35ed",
+    "status": "draft_chain_validated",
+    "validation_log": "update095-semantic.log"
   },
   "status": "partial",
   "tests": [
@@ -1131,6 +1136,36 @@
       "command": "worker_check.py scoped strict",
       "exit_code": 1,
       "log": "update091-v4-scoped-strict.log",
+      "sha256": "f105b68de8bd7bbb3e9bdfade14e75a9b56640cac7ca657a4ce02c3efba457fe"
+    },
+    {
+      "command": "semantic_delivery.validate",
+      "exit_code": 0,
+      "log": "update095-semantic.log",
+      "sha256": "cfe2aa43a2ef617f26c08ed0c63ff3f7b5492848483988d1cd1cf14613e4b079"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/training__C179480__NRS-484B-627-2__motor_vehicle_driver/tests",
+      "exit_code": 0,
+      "log": "update095-tests.log",
+      "sha256": "ddf7058d6dffe1587e2d7dd861f1a9a42b6d15f25400ec0beaa9a205f5109391"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "update095-preflight.log",
+      "sha256": "a649379b4bd24a498886c9e9856de001de022118115deded0b1a8aedcb8a01d4"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment training__C179480__NRS-484B-627-2__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "update095-scoped-static.log",
+      "sha256": "b51f0780e6ef9ee199531871d5faf47dcd25fb46b39bc28ce01f5113200eacb2"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment training__C179480__NRS-484B-627-2__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "update095-scoped-strict.log",
       "sha256": "f105b68de8bd7bbb3e9bdfade14e75a9b56640cac7ca657a4ce02c3efba457fe"
     }
   ]

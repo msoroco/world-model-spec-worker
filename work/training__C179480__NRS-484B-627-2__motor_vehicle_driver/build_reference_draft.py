@@ -16,6 +16,7 @@ ROOT = HERE.parents[1]
 CASES = ('reference', 'contrast', 'safe_operation_stop')
 MODULES = ('runner.py', 'native_runner.py', 'native_controller.py',
            'capture_attempt.py', 'candidate_tuning.py', 'stop_construction.py',
+           'scene_inventory.py',
            'source_measurement.py', 'saved_analysis.py', 'native_channels.py',
            'native_finalize.py', 'source_provenance.py')
 

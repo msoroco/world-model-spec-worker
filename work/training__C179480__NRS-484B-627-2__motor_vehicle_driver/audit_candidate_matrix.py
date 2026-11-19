@@ -2,11 +2,11 @@
 import hashlib
 import json
 import shutil
+import argparse
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
-ASSETS = ROOT / '.runtime-work/c179480-update092-matrix'
 MANIFEST = HERE / 'candidate-matrix-manifest.json'
 
 
@@ -18,7 +18,10 @@ def read(path):
     return json.loads(path.read_text())
 
 
-def audit():
+def audit(label):
+    if label not in ('update092', 'update095'):
+        raise ValueError('Unsupported diagnostic matrix label')
+    assets = ROOT / '.runtime-work' / f'c179480-{label}-matrix'
     manifest = read(MANIFEST)
     manifest_sha = sha(MANIFEST)
     rows = []
@@ -28,9 +31,9 @@ def audit():
         choices = [{'id': 'primary', 'construction_sha256': entry['construction_sha256']}, *entry['candidates']]
         for choice in choices:
             candidate = choice['id']
-            stem = f'update092-{name}-{candidate}'
-            compat = ASSETS / f'{name}-{candidate}-compatibility'
-            saved = ASSETS / f'{name}-{candidate}-saved/v0001'
+            stem = f'{label}-{name}-{candidate}'
+            compat = assets / f'{name}-{candidate}-compatibility'
+            saved = assets / f'{name}-{candidate}-saved/v0001'
             artifacts = {
                 'selection': compat / 'candidate-selection.json',
                 'compatibility': compat / 'compatibility.json',
@@ -65,6 +68,24 @@ def audit():
                     or processing.get('final_video_checks', {}).get('frames') != 600
                     or processing.get('final_video_checks', {}).get('passed') is not True):
                 raise ValueError(f'Saved timing or video incomplete: {stem}')
+            if label == 'update095':
+                source_rows = (saved/'analysis/native-actors.jsonl').read_text().splitlines()
+                if len(source_rows) != 600 or any(
+                        'scene_actor_inventory' not in json.loads(row)
+                        for row in source_rows):
+                    raise ValueError(f'Scoped original inventory missing: {stem}')
+                for channel in ('hazard_actor_state', 'ego_hazard_gap_history',
+                                'governing_control_readback'):
+                    path = saved/'analysis/channels'/f'{channel}.jsonl'
+                    samples = [json.loads(line) for line in path.read_text().splitlines()]
+                    if len(samples) != 600:
+                        raise ValueError(f'Judgment channel incomplete: {stem}/{channel}')
+                    if ((name != 'safe_operation_stop' and channel in
+                         ('hazard_actor_state', 'ego_hazard_gap_history')) or
+                            (name != 'law_required_stop' and channel == 'governing_control_readback')):
+                        if any(sample['value'].get('absence_claimed') is not False
+                               for sample in samples):
+                            raise ValueError(f'Unjustified source absence claim: {stem}/{channel}')
             copied = {}
             for kind, source in artifacts.items():
                 destination = HERE / f'{stem}-{kind}.json' if kind in ('selection', 'compatibility', 'processing') else HERE / f'{stem}-{kind}.log'
@@ -83,10 +104,12 @@ def audit():
               'passed': True, 'case_count': 4, 'candidate_count': len(rows),
               'physical_acceptance_claimed': False, 'legal_acceptance_claimed': False,
               'rows': rows}
-    target = HERE / 'update092-candidate-matrix-audit.json'
+    target = HERE / f'{label}-candidate-matrix-audit.json'
     target.write_text(json.dumps(result, indent=2, sort_keys=True) + '\n')
     return target
 
 
 if __name__ == '__main__':
-    print(audit())
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--label', choices=('update092', 'update095'), default='update095')
+    print(audit(parser.parse_args().label))
