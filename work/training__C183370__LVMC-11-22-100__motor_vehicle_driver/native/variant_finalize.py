@@ -83,7 +83,7 @@ def build_result(config, analysis):
     if any(config.get(key) != value for key, value in expected.items()):
         raise ValueError('Native variant config differs from recording contract')
     observed = analysis['observations']
-    requested = route == 'crossing'
+    requested = route.endswith('crossing')
     measured = observed['pavement_footprint_contact_observed']
     matched = observed['requested_footprint_contact_matched']
     sources = {name: analysis['source_hashes'][name] for name in MEASUREMENT_SOURCES}
@@ -138,7 +138,7 @@ def measure_variant_surveyed_pavement_contact(analysis):
     sources = {name: analysis['source_hashes'][name] for name in MEASUREMENT_SOURCES}
     return {
         'method': 'measure_variant_surveyed_pavement_contact',
-        'value': {'requested_contact': analysis['case'] == 'crossing',
+        'value': {'requested_contact': analysis['case'].endswith('crossing'),
                   'measured_contact': observed['pavement_footprint_contact_observed'],
                   'contact_frames': observed['pavement_footprint_contact_frames'],
                   'requested_contact_matched': observed['requested_footprint_contact_matched'],

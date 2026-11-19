@@ -6,7 +6,8 @@ from pathlib import Path
 from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from variant_finalize import build_result, derive_channels, finalize, measurement_records
+from variant_finalize import (build_result, derive_channels, finalize,
+                              measurement_records, measure_variant_surveyed_pavement_contact)
 from variant_recording_contract import CHANNELS, config
 from test_variant_analyze import READBACK, rows
 
@@ -31,6 +32,19 @@ def analysis(route='crossing', diagnostic=False):
 
 
 class VariantFinalizeTest(unittest.TestCase):
+    def test_employee_comparison_keeps_crossing_fixed_and_exception_open(self):
+        for route in ('employee_crossing', 'nonemployee_crossing'):
+            cfg = config('employee_exception', route, 600)
+            observed = analysis('crossing', diagnostic=True)
+            observed.update(case=route, control_kind='employee_exception')
+            result = validate_result(build_result(cfg, observed))
+            measurement = measure_variant_surveyed_pavement_contact(observed)
+            self.assertTrue(result['target_checks'][0]['requested'])
+            self.assertTrue(measurement['value']['requested_contact'])
+            self.assertFalse(result['accepted'])
+            self.assertIn('paving_employee_exception_unreviewed',
+                          result['physical_failure_flags'])
+
     def test_result_uses_pinned_schema_and_keeps_physical_claims_open(self):
         for route in ('crossing', 'avoidance'):
             for diagnostic in (False, True):

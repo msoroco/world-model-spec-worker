@@ -1,0 +1,128 @@
+{
+  "assignment_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver",
+  "cases": [
+    {
+      "candidate_offline_status": "pending",
+      "candidate_risk": {
+        "reason": "Employee activity, surface repair and Native body tracking remain unverified",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "lower requested controller speed from 4 to 3 m/s"
+          ],
+          "construction": "draft-variant-candidates/employee_exception/employee_crossing/fallback1/construction.json",
+          "construction_sha256": "e2b0443ef320d68231cf898a390ab320a57312ab55a405fe46a1536f784de959",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "ego overshoots the requested crossing or avoidance route",
+            "metric": "sampled body/route tracking near surveyed pavement",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "raise overview camera from 24 to 28 m and pitch from -55 to -62 degrees"
+          ],
+          "construction": "draft-variant-candidates/employee_exception/employee_crossing/fallback2/construction.json",
+          "construction_sha256": "9d34922e62d6c6b78080cf13ccdbb100fad7f6bb84b254ec2813cced789ebfc0",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "overview pixels omit the barrier or a pavement edge",
+            "metric": "visibility of barrier actor and full surveyed pavement region",
+            "source": "overview.mkv"
+          }
+        },
+        {
+          "changed_knobs": [
+            "reduce waypoint reach from 1.5 to 1.0 m",
+            "increase steering response by reducing divisor from 40 to 32 degrees"
+          ],
+          "construction": "draft-variant-candidates/employee_exception/employee_crossing/fallback3/construction.json",
+          "construction_sha256": "fda576605ff1b37fccb82e3c3511ede58473c199ec838194decfe55f1aa617ce",
+          "id": "fallback3",
+          "trigger": {
+            "failure_condition": "body footprint leaves the intended route corridor",
+            "metric": "sampled lateral route error on barrier approach",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__employee_exception_employee_crossing",
+      "construction": "draft-variant-candidates/employee_exception/employee_crossing/primary/construction.json",
+      "construction_sha256": "5f9affeee1f7f48cad95d7227c480ab2d8b4de85d75e87086266d422d5f83ec5",
+      "finalizer_status": "cpu_unit_tested_not_saved_proven",
+      "fixture_recipe": "work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/variant-diagnostics/employee_exception/employee_crossing/primary-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "variant-measurement-contracts/employee_exception-employee_crossing.json",
+      "measurement_procedure": {
+        "entrypoint": "native/variant_finalize.py",
+        "output_schema": "c183370-variant-diagnostic-finalization-v1"
+      }
+    },
+    {
+      "candidate_offline_status": "pending",
+      "candidate_risk": {
+        "reason": "Employee activity, surface repair and Native body tracking remain unverified",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "lower requested controller speed from 4 to 3 m/s"
+          ],
+          "construction": "draft-variant-candidates/employee_exception/nonemployee_crossing/fallback1/construction.json",
+          "construction_sha256": "f4a0a2121814e5e307ef0ec4203f5469d1573e8bd232a8f3f0d36691f3ae7da9",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "ego overshoots the requested crossing or avoidance route",
+            "metric": "sampled body/route tracking near surveyed pavement",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "raise overview camera from 24 to 28 m and pitch from -55 to -62 degrees"
+          ],
+          "construction": "draft-variant-candidates/employee_exception/nonemployee_crossing/fallback2/construction.json",
+          "construction_sha256": "50ca29c37cd36504989ce10c98a4993abab3a05a2180852f09bfb22581ea3dc7",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "overview pixels omit the barrier or a pavement edge",
+            "metric": "visibility of barrier actor and full surveyed pavement region",
+            "source": "overview.mkv"
+          }
+        },
+        {
+          "changed_knobs": [
+            "reduce waypoint reach from 1.5 to 1.0 m",
+            "increase steering response by reducing divisor from 40 to 32 degrees"
+          ],
+          "construction": "draft-variant-candidates/employee_exception/nonemployee_crossing/fallback3/construction.json",
+          "construction_sha256": "0b5096735f70543864c02da2a9431c5738cecab274c9d91bb7375891458d5c72",
+          "id": "fallback3",
+          "trigger": {
+            "failure_condition": "body footprint leaves the intended route corridor",
+            "metric": "sampled lateral route error on barrier approach",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__employee_exception_nonemployee_crossing",
+      "construction": "draft-variant-candidates/employee_exception/nonemployee_crossing/primary/construction.json",
+      "construction_sha256": "425b153ab889d6bd60bae725aaa3e7c4d8900a7be57ad3a5409cd0d4edce5e71",
+      "finalizer_status": "cpu_unit_tested_not_saved_proven",
+      "fixture_recipe": "work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/variant-diagnostics/employee_exception/nonemployee_crossing/primary-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "variant-measurement-contracts/employee_exception-nonemployee_crossing.json",
+      "measurement_procedure": {
+        "entrypoint": "native/variant_finalize.py",
+        "output_schema": "c183370-variant-diagnostic-finalization-v1"
+      }
+    }
+  ],
+  "format": "worker-execution-manifest",
+  "runtime_manifest_sha256": "5b4738624542c97f321a302bd49b9ec154cb2cf63778acf64ba6042f8d5b4fd3",
+  "status": "draft_employee_source_finalization_not_delivery_ready"
+}

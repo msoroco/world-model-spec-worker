@@ -23,7 +23,9 @@ def description(frames):
 
 
 def config(kind, route, frames):
-    if kind not in ('barrier', 'warning_sign', 'highway_closed_sign') or route not in ('crossing', 'avoidance'):
+    ordinary = kind in ('barrier', 'warning_sign', 'highway_closed_sign') and route in ('crossing', 'avoidance')
+    employee = kind == 'employee_exception' and route in ('employee_crossing', 'nonemployee_crossing')
+    if not (ordinary or employee):
         raise ValueError('Unknown exact non-person control case')
     return {'case_id': ASSIGNMENT + '__' + kind + '_' + route,
             'case_suffix': route, 'control_kind': kind,

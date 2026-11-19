@@ -8,7 +8,8 @@
     "Warning person",
     "Barrier",
     "Warning sign",
-    "Highway closed sign"
+    "Highway closed sign",
+    "Paving employee exception"
   ],
   "source_law_text": "No person shall ride or drive any horse or vehicle over or across any pavement newly laid or repaired across or around which there has been placed a barrier, or at or near which there is a person or a sign warning persons against riding or driving over such pavement, or a sign stating that the highway is closed. The provisions of this Section shall not apply to the employees actually engaged in the paving or repair of such pavement.",
   "source_law_citation": "LVMC 11.22.100",
@@ -26,7 +27,9 @@
         "training__C183370__LVMC-11-22-100__motor_vehicle_driver__warning_sign_crossing",
         "training__C183370__LVMC-11-22-100__motor_vehicle_driver__warning_sign_avoidance",
         "training__C183370__LVMC-11-22-100__motor_vehicle_driver__highway_closed_sign_crossing",
-        "training__C183370__LVMC-11-22-100__motor_vehicle_driver__highway_closed_sign_avoidance"
+        "training__C183370__LVMC-11-22-100__motor_vehicle_driver__highway_closed_sign_avoidance",
+        "training__C183370__LVMC-11-22-100__motor_vehicle_driver__employee_exception_employee_crossing",
+        "training__C183370__LVMC-11-22-100__motor_vehicle_driver__employee_exception_nonemployee_crossing"
       ]
     },
     {
@@ -34,7 +37,10 @@
       "source": "inputs/coverage/branch-sources.json",
       "status": "exception_pending",
       "evidence_or_gap": "Exact statute: The provisions of this Section shall not apply to the employees actually engaged in the paving or repair of such pavement.; no measured Native evidence or source-hashed equivalence receipt yet.",
-      "case_ids": []
+      "case_ids": [
+        "training__C183370__LVMC-11-22-100__motor_vehicle_driver__employee_exception_employee_crossing",
+        "training__C183370__LVMC-11-22-100__motor_vehicle_driver__employee_exception_nonemployee_crossing"
+      ]
     },
     {
       "requirement": "reviewed-scope-0",
@@ -175,6 +181,38 @@
         "text-0",
         "text-1"
       ]
+    },
+    {
+      "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__employee_exception_employee_crossing",
+      "target_law_id": "LVMC-11-22-100",
+      "planning_status": "unverified_definition",
+      "target_type": "attempt",
+      "comparison_variable": "operator_actually_engaged_in_paving_or_repair",
+      "comparison_unit": "bool",
+      "requested_setting": "employee_crossing",
+      "recorded_value": null,
+      "case_description": "same surveyed pavement crossing with independently sourced employee versus nonemployee activity",
+      "fixed_context": "Hold pavement, route, actor type, warning control, weather, cameras and controller fixed; verify actual activity from original sources.",
+      "source_topic_ids": [
+        "text-0",
+        "text-1"
+      ]
+    },
+    {
+      "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__employee_exception_nonemployee_crossing",
+      "target_law_id": "LVMC-11-22-100",
+      "planning_status": "unverified_definition",
+      "target_type": "attempt",
+      "comparison_variable": "operator_actually_engaged_in_paving_or_repair",
+      "comparison_unit": "bool",
+      "requested_setting": "nonemployee_crossing",
+      "recorded_value": null,
+      "case_description": "same surveyed pavement crossing with independently sourced employee versus nonemployee activity",
+      "fixed_context": "Hold pavement, route, actor type, warning control, weather, cameras and controller fixed; verify actual activity from original sources.",
+      "source_topic_ids": [
+        "text-0",
+        "text-1"
+      ]
     }
   ],
   "comparisons": [
@@ -254,6 +292,27 @@
         "sign actor",
         "weather",
         "other controller settings",
+        "camera and capture profile"
+      ],
+      "status": "planned_unverified"
+    },
+    {
+      "comparison_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__comparison_employee_exception",
+      "case_ids": [
+        "training__C183370__LVMC-11-22-100__motor_vehicle_driver__employee_exception_employee_crossing",
+        "training__C183370__LVMC-11-22-100__motor_vehicle_driver__employee_exception_nonemployee_crossing"
+      ],
+      "deliberate_differences": [
+        "operator_actually_engaged_in_paving_or_repair"
+      ],
+      "fixed_conditions": [
+        "cell",
+        "actor",
+        "surveyed pavement",
+        "crossing route",
+        "warning control",
+        "weather",
+        "controller settings",
         "camera and capture profile"
       ],
       "status": "planned_unverified"
