@@ -34,7 +34,7 @@ def motion(entry, folder, kind, output):
         write(root/'config.json', config)
         for name in ('trace.jsonl','video_frames.jsonl','interaction_history.jsonl','intersection_geometry.json'):
             (root/name).write_text(diagnostic[name])
-        write(root/'acquisition-provenance.json', {'provenance_kind':'native',
+        write(root/'acquisition-provenance.json', {'provenance_kind':'synthetic_fixture',
               'diagnostic_fixture':True,'scope':'Synthetic CPU classifier fixture only'})
         if kind == 'incomplete_motion':
             rows = [json.loads(line) for line in (root/'interaction_history.jsonl').read_text().splitlines()]
@@ -71,7 +71,7 @@ def lifecycle(entry, folder, output):
         (root/'runner.py').write_text(next(f['content'] for f in construction['files'] if f['path']=='runner.py'))
         (root/'trace.jsonl').write_text('{"frame":1,"time_s":0.05}\n')
         (root/'video_frames.jsonl').write_text('{"video_frame":0,"carla_frame":1,"time_s":0.05}\n')
-        write(root/'acquisition-provenance.json', {'provenance_kind':'native',
+        write(root/'acquisition-provenance.json', {'provenance_kind':'synthetic_fixture',
               'diagnostic_fixture':True,'scope':'Synthetic lifecycle fixture only'})
         resource = io.StringIO('fixture camera resource')
         resource.close()
