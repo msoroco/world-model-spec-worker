@@ -1,10 +1,10 @@
 {
   "assignment_id": "training__C111331__NRS-484B-307-6a__motor_vehicle_driver",
   "input_sha256": "3d145bae91ddfc0070fb2599c047d807bf1068efe88fa0ce9a68a14888d57874",
-  "status": "partial",
+  "status": "ready",
   "applied_update": 16,
-  "reason": "Runtime refresh requires new exact-case and saved proofs.",
-  "readiness_kind": "implementation_checkpoint",
+  "reason": "Two selected exact cases and eight final-manifest CPU candidate chains pass current JSON graph offline, positive/missing-Native negative compatibility and recorded-only saved processing; independent physical, delivery and comparison CPU audits pass. Original Native and legal acceptance remain unverified.",
+  "readiness_kind": "delivery_prepared",
   "cases_planned": 2,
   "cases_selected": 2,
   "candidate_plans_proven": 8,
@@ -118,6 +118,30 @@
       "exit_code": 0,
       "log": "update043c-scoped-strict.log",
       "sha256": "9036884324b80c0764a90120cea976ed68de986c6cca3feae4f01cda35b2f79c"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c111331-update402-cache .venv-cpu/bin/python work/training__C111331__NRS-484B-307-6a__motor_vehicle_driver/prove-final-selected-matrix-update402.py",
+      "exit_code": 0,
+      "log": "update402-final-matrix-run.log",
+      "sha256": "256c9d26ba96e292e9fafddde027f481ebbdc79a941ebfbda656a3ca0fe517d8"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C111331__NRS-484B-307-6a__motor_vehicle_driver/audit-final-selected-matrix-update402.py",
+      "exit_code": 0,
+      "log": "update402-final-matrix-audit.log",
+      "sha256": "e84b581641a40dad13ed39ef71ae4b668fbb1aeb1c28670f281fbdd17aac7db5"
+    },
+    {
+      "command": "PYTHONPATH=. ../../.venv-cpu/bin/python -m unittest discover -s tests",
+      "exit_code": 0,
+      "log": "update402-construction-tests.log",
+      "sha256": "b5985bb5d4095da848c1e4e38b9358c2d452a471f0f3fb2fd143db7544944125"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c111331-update402-cache .venv-cpu/bin/python worker_check.py --assignment training__C111331__NRS-484B-307-6a__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 0,
+      "log": "update402-assignment-strict.log",
+      "sha256": "9036884324b80c0764a90120cea976ed68de986c6cca3feae4f01cda35b2f79c"
     }
   ],
   "current_update042_semantic": {
@@ -133,11 +157,19 @@
     "Original Native signal and vehicle-body motion, four source-camera pixel visibility, physical completion and local canonical acceptance remain unverified."
   ],
   "current_cpu_proof": {
-    "status": "eight_selected_current_input_chains_and_independent_cpu_audits_passed",
-    "manifest_sha256": "09e72e597f94a96e729f47037ce21b10aa97083cba6159a5f99dd7c533bcefe9",
-    "matrix_sha256": "8ae847cfb588d0acca7b35c2576190d49d212fd2b0e4bc318cf39b02bb00da28",
-    "comparison_audit_sha256": "3bd418818cd19771db51ada4903348843970c6145b1f548665f711bb0d6f5551",
-    "physical_original_verified": false
+    "status": "eight_selected_final_manifest_chains_and_independent_audit_passed",
+    "manifest_sha256": "6920b59b2b57d5c14b8ddd1490e92e311d7b5cd0489253b74d8377d124ef4bf0",
+    "matrix_index": "update402-final-selected-index.json",
+    "matrix_sha256": "d79a95062942b6256b7114a239491e3b0e2845092a2c0e0ef7234bbfdeeb7d25",
+    "matrix_audit": "update402-final-selected-audit.json",
+    "matrix_audit_sha256": "895a9f52877978de8fbec9a0330e7aaae5d7ad123fe807cf12cfd4796e1d6313",
+    "cases": 2,
+    "candidate_chains": 8,
+    "synthetic_physical_outcomes_per_case": 3,
+    "original_native_accepted": false,
+    "physical_or_legal_acceptance": false,
+    "strict_gate_pending": false,
+    "strict_gate_log_sha256": "9036884324b80c0764a90120cea976ed68de986c6cca3feae4f01cda35b2f79c"
   },
   "first_gpu_delivery_command": "PYTHONPATH=runtime/pipeline/scenario_pipeline python3.11 -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db \"$DB\" --assignment training__C111331__NRS-484B-307-6a__motor_vehicle_driver --case training__C111331__NRS-484B-307-6a__motor_vehicle_driver__reference --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""
 }

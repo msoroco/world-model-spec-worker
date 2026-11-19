@@ -37,8 +37,8 @@ def main() -> None:
     manifest_sha = sha(MANIFEST)
     manifest = load(MANIFEST)
     entries = manifest["cases"]
-    if len(entries) != 2 or len({row["case_id"] for row in entries}) != 4:
-        raise ValueError("Final selected inventory must have six distinct exact cases")
+    if len(entries) != 2 or len({row["case_id"] for row in entries}) != 2:
+        raise ValueError("Final selected inventory must have two distinct exact cases")
     jobs = []
     for entry in entries:
         if (entry.get("kind") != "delivery" or entry.get("id", "primary") != "primary"
