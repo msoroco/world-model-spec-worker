@@ -118,6 +118,111 @@
       "physical_preparation": {
         "receipt": "meeting_stop-physical-preparation.json",
         "sha256": "e4e1696947ec23fd1fc6b320bf6571e3fb6dbcff3ca3679c2f42a6d27a146da9"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__meeting_stop",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_acceptance.py",
+        "script_sha256": "542779f2c785909c5794f1900e2a105b717de191fb0ee73242b3dbcbe3540fb6",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C230281__NRS-484B-353-1__motor_vehicle_driver/delivery_acceptance.py --case heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__meeting_stop --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-source-path-two-primaries/meeting_stop/positive-saved/v0001/analysis --analysis /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-source-path-two-primaries/meeting_stop/positive-saved/v0001/analysis/analysis-report.json",
+        "test_exit_code": 0,
+        "test_log": "meeting_stop-delivery-positive.log",
+        "test_log_sha256": "01bba998fb28b063d16c3aee03fa7cbcc073d74626e68156c83c996a359099f0",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C230281__NRS-484B-353-1__motor_vehicle_driver/delivery_acceptance.py --case heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__meeting_stop --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-source-path-two-primaries/meeting_stop/positive-saved/v0001/analysis --analysis /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-source-path-two-primaries/meeting_stop/positive-saved/v0001/analysis/analysis-report.json --negative-missing-pupil",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: pupil_original.jsonl",
+        "negative_log": "meeting_stop-delivery-negative.log",
+        "negative_log_sha256": "50966e57a1b3e39be36b07b3efd88958618dc873e5adac24ba2337cda321c48d"
+      },
+      "compatibility": {
+        "receipt": "meeting_stop-primary-compatibility.json",
+        "sha256": "e4b9906dca198534e7c0698b2828642a2fcc9977faf48a32cc53b1a062061de8",
+        "log": "meeting_stop-primary-compatibility-analysis.log"
+      },
+      "negative": {
+        "log": "meeting_stop-primary-negative-analysis.log"
+      },
+      "acquisition": {
+        "dev.human_direction": {
+          "entrypoint": "school_bus_native.py",
+          "method": "run",
+          "evidence": "officer_original.jsonl or unverified officer premise"
+        },
+        "dev.school_bus_signal": {
+          "entrypoint": "school_bus_native.py",
+          "method": "run",
+          "evidence": "signal_command_original.jsonl"
+        },
+        "drv.meeting": {
+          "entrypoint": "school_bus_controller.py",
+          "method": "motion_readback",
+          "evidence": "motion_original.jsonl and road.xodr"
+        },
+        "drv.overtaking": {
+          "entrypoint": "school_bus_controller.py",
+          "method": "motion_readback",
+          "evidence": "motion_original.jsonl and road.xodr"
+        },
+        "drv.stopped": {
+          "entrypoint": "school_bus_response.py",
+          "method": "measure",
+          "evidence": "motion_original.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "school_bus_controller.py",
+          "method": "motion_readback",
+          "evidence": "motion_original.jsonl"
+        },
+        "pupil_service_motion_candidate": {
+          "entrypoint": "school_bus_native.py",
+          "method": "pupil_readback",
+          "evidence": "pupil_original.jsonl"
+        },
+        "rel.same_direction": {
+          "entrypoint": "school_bus_controller.py",
+          "method": "motion_readback",
+          "evidence": "motion_original.jsonl and road.xodr"
+        },
+        "ru.child": {
+          "entrypoint": "school_bus_native.py",
+          "method": "pupil_readback",
+          "evidence": "pupil_original.jsonl; service purpose unverified"
+        },
+        "ru.school_bus": {
+          "entrypoint": "school_bus_native.py",
+          "method": "run",
+          "evidence": "bus actor source; physical status unverified"
+        },
+        "school_bus_red_pixel_candidates": {
+          "entrypoint": "school_bus_response.py",
+          "method": "audit_red_pixel_sources",
+          "evidence": "overview.mkv and reference_corner.mkv"
+        },
+        "st.median_or_divider": {
+          "entrypoint": "school_bus_native.py",
+          "method": "run",
+          "evidence": "road.xodr; physical divider unverified"
+        },
+        "st.roadway": {
+          "entrypoint": "school_bus_native.py",
+          "method": "run",
+          "evidence": "road.xodr; roadway identity unverified"
+        },
+        "subject_speed_mps": {
+          "entrypoint": "school_bus_controller.py",
+          "method": "motion_readback",
+          "evidence": "motion_original.jsonl"
+        }
       }
     },
     {
@@ -235,6 +340,111 @@
       "physical_preparation": {
         "receipt": "meeting_restart_before_red_ceases-physical-preparation.json",
         "sha256": "0482f0c87b7d991635799fc911a71370dbe3bc3425039c5b384cb4ff2bb7dca1"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__meeting_restart_before_red_ceases",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_acceptance.py",
+        "script_sha256": "542779f2c785909c5794f1900e2a105b717de191fb0ee73242b3dbcbe3540fb6",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C230281__NRS-484B-353-1__motor_vehicle_driver/delivery_acceptance.py --case heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__meeting_restart_before_red_ceases --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-final-manifest-remaining-primaries/meeting_restart_before_red_ceases/positive-saved/v0001/analysis --analysis /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-final-manifest-remaining-primaries/meeting_restart_before_red_ceases/positive-saved/v0001/analysis/analysis-report.json",
+        "test_exit_code": 0,
+        "test_log": "meeting_restart_before_red_ceases-delivery-positive.log",
+        "test_log_sha256": "717adcedb071c4f98c3b1e01287f6385522000888df8efd3d460d524d0e0ae99",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C230281__NRS-484B-353-1__motor_vehicle_driver/delivery_acceptance.py --case heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__meeting_restart_before_red_ceases --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-final-manifest-remaining-primaries/meeting_restart_before_red_ceases/positive-saved/v0001/analysis --analysis /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-final-manifest-remaining-primaries/meeting_restart_before_red_ceases/positive-saved/v0001/analysis/analysis-report.json --negative-missing-pupil",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: pupil_original.jsonl",
+        "negative_log": "meeting_restart_before_red_ceases-delivery-negative.log",
+        "negative_log_sha256": "50966e57a1b3e39be36b07b3efd88958618dc873e5adac24ba2337cda321c48d"
+      },
+      "compatibility": {
+        "receipt": "meeting_restart_before_red_ceases-primary-compatibility.json",
+        "sha256": "d276c62508a56ce4094e86477847147cc55e2b00c5032bebd641db4c48fe65c5",
+        "log": "meeting_restart_before_red_ceases-primary-compatibility-analysis.log"
+      },
+      "negative": {
+        "log": "meeting_restart_before_red_ceases-primary-negative-analysis.log"
+      },
+      "acquisition": {
+        "dev.human_direction": {
+          "entrypoint": "school_bus_native.py",
+          "method": "run",
+          "evidence": "officer_original.jsonl or unverified officer premise"
+        },
+        "dev.school_bus_signal": {
+          "entrypoint": "school_bus_native.py",
+          "method": "run",
+          "evidence": "signal_command_original.jsonl"
+        },
+        "drv.meeting": {
+          "entrypoint": "school_bus_controller.py",
+          "method": "motion_readback",
+          "evidence": "motion_original.jsonl and road.xodr"
+        },
+        "drv.overtaking": {
+          "entrypoint": "school_bus_controller.py",
+          "method": "motion_readback",
+          "evidence": "motion_original.jsonl and road.xodr"
+        },
+        "drv.stopped": {
+          "entrypoint": "school_bus_response.py",
+          "method": "measure",
+          "evidence": "motion_original.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "school_bus_controller.py",
+          "method": "motion_readback",
+          "evidence": "motion_original.jsonl"
+        },
+        "pupil_service_motion_candidate": {
+          "entrypoint": "school_bus_native.py",
+          "method": "pupil_readback",
+          "evidence": "pupil_original.jsonl"
+        },
+        "rel.same_direction": {
+          "entrypoint": "school_bus_controller.py",
+          "method": "motion_readback",
+          "evidence": "motion_original.jsonl and road.xodr"
+        },
+        "ru.child": {
+          "entrypoint": "school_bus_native.py",
+          "method": "pupil_readback",
+          "evidence": "pupil_original.jsonl; service purpose unverified"
+        },
+        "ru.school_bus": {
+          "entrypoint": "school_bus_native.py",
+          "method": "run",
+          "evidence": "bus actor source; physical status unverified"
+        },
+        "school_bus_red_pixel_candidates": {
+          "entrypoint": "school_bus_response.py",
+          "method": "audit_red_pixel_sources",
+          "evidence": "overview.mkv and reference_corner.mkv"
+        },
+        "st.median_or_divider": {
+          "entrypoint": "school_bus_native.py",
+          "method": "run",
+          "evidence": "road.xodr; physical divider unverified"
+        },
+        "st.roadway": {
+          "entrypoint": "school_bus_native.py",
+          "method": "run",
+          "evidence": "road.xodr; roadway identity unverified"
+        },
+        "subject_speed_mps": {
+          "entrypoint": "school_bus_controller.py",
+          "method": "motion_readback",
+          "evidence": "motion_original.jsonl"
+        }
       }
     },
     {
@@ -352,6 +562,111 @@
       "physical_preparation": {
         "receipt": "meeting_pass_red-physical-preparation.json",
         "sha256": "9c30f28aebdab32328c81a0d1e55cef2f6a2036c172a9501d27dd13587d9612e"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__meeting_pass_red",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_acceptance.py",
+        "script_sha256": "542779f2c785909c5794f1900e2a105b717de191fb0ee73242b3dbcbe3540fb6",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C230281__NRS-484B-353-1__motor_vehicle_driver/delivery_acceptance.py --case heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__meeting_pass_red --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-final-manifest-remaining-primaries/meeting_pass_red/positive-saved/v0001/analysis --analysis /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-final-manifest-remaining-primaries/meeting_pass_red/positive-saved/v0001/analysis/analysis-report.json",
+        "test_exit_code": 0,
+        "test_log": "meeting_pass_red-delivery-positive.log",
+        "test_log_sha256": "6ae42d1e88f9ed5f2961726f1354580067e1131625dfcaeaf5c05dd5ca6d1b9b",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C230281__NRS-484B-353-1__motor_vehicle_driver/delivery_acceptance.py --case heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__meeting_pass_red --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-final-manifest-remaining-primaries/meeting_pass_red/positive-saved/v0001/analysis --analysis /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-final-manifest-remaining-primaries/meeting_pass_red/positive-saved/v0001/analysis/analysis-report.json --negative-missing-pupil",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: pupil_original.jsonl",
+        "negative_log": "meeting_pass_red-delivery-negative.log",
+        "negative_log_sha256": "50966e57a1b3e39be36b07b3efd88958618dc873e5adac24ba2337cda321c48d"
+      },
+      "compatibility": {
+        "receipt": "meeting_pass_red-primary-compatibility.json",
+        "sha256": "d3667863374c5a11e945fc7ba924fc2740a79701a94530799581a3ac720d802e",
+        "log": "meeting_pass_red-primary-compatibility-analysis.log"
+      },
+      "negative": {
+        "log": "meeting_pass_red-primary-negative-analysis.log"
+      },
+      "acquisition": {
+        "dev.human_direction": {
+          "entrypoint": "school_bus_native.py",
+          "method": "run",
+          "evidence": "officer_original.jsonl or unverified officer premise"
+        },
+        "dev.school_bus_signal": {
+          "entrypoint": "school_bus_native.py",
+          "method": "run",
+          "evidence": "signal_command_original.jsonl"
+        },
+        "drv.meeting": {
+          "entrypoint": "school_bus_controller.py",
+          "method": "motion_readback",
+          "evidence": "motion_original.jsonl and road.xodr"
+        },
+        "drv.overtaking": {
+          "entrypoint": "school_bus_controller.py",
+          "method": "motion_readback",
+          "evidence": "motion_original.jsonl and road.xodr"
+        },
+        "drv.stopped": {
+          "entrypoint": "school_bus_response.py",
+          "method": "measure",
+          "evidence": "motion_original.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "school_bus_controller.py",
+          "method": "motion_readback",
+          "evidence": "motion_original.jsonl"
+        },
+        "pupil_service_motion_candidate": {
+          "entrypoint": "school_bus_native.py",
+          "method": "pupil_readback",
+          "evidence": "pupil_original.jsonl"
+        },
+        "rel.same_direction": {
+          "entrypoint": "school_bus_controller.py",
+          "method": "motion_readback",
+          "evidence": "motion_original.jsonl and road.xodr"
+        },
+        "ru.child": {
+          "entrypoint": "school_bus_native.py",
+          "method": "pupil_readback",
+          "evidence": "pupil_original.jsonl; service purpose unverified"
+        },
+        "ru.school_bus": {
+          "entrypoint": "school_bus_native.py",
+          "method": "run",
+          "evidence": "bus actor source; physical status unverified"
+        },
+        "school_bus_red_pixel_candidates": {
+          "entrypoint": "school_bus_response.py",
+          "method": "audit_red_pixel_sources",
+          "evidence": "overview.mkv and reference_corner.mkv"
+        },
+        "st.median_or_divider": {
+          "entrypoint": "school_bus_native.py",
+          "method": "run",
+          "evidence": "road.xodr; physical divider unverified"
+        },
+        "st.roadway": {
+          "entrypoint": "school_bus_native.py",
+          "method": "run",
+          "evidence": "road.xodr; roadway identity unverified"
+        },
+        "subject_speed_mps": {
+          "entrypoint": "school_bus_controller.py",
+          "method": "motion_readback",
+          "evidence": "motion_original.jsonl"
+        }
       }
     },
     {
@@ -469,6 +784,111 @@
       "physical_preparation": {
         "receipt": "overtaking_stop-physical-preparation.json",
         "sha256": "e5191b45fde6eec347bae5bf007db5ff42a2e2c8c341d32c2561999053b00585"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__overtaking_stop",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_acceptance.py",
+        "script_sha256": "542779f2c785909c5794f1900e2a105b717de191fb0ee73242b3dbcbe3540fb6",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C230281__NRS-484B-353-1__motor_vehicle_driver/delivery_acceptance.py --case heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__overtaking_stop --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-final-manifest-remaining-primaries/overtaking_stop/positive-saved/v0001/analysis --analysis /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-final-manifest-remaining-primaries/overtaking_stop/positive-saved/v0001/analysis/analysis-report.json",
+        "test_exit_code": 0,
+        "test_log": "overtaking_stop-delivery-positive.log",
+        "test_log_sha256": "7a4ca4bfb9a5a512c00798baf616e05c1168f04986cc18da296c75a7ce83cac9",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C230281__NRS-484B-353-1__motor_vehicle_driver/delivery_acceptance.py --case heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__overtaking_stop --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-final-manifest-remaining-primaries/overtaking_stop/positive-saved/v0001/analysis --analysis /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-final-manifest-remaining-primaries/overtaking_stop/positive-saved/v0001/analysis/analysis-report.json --negative-missing-pupil",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: pupil_original.jsonl",
+        "negative_log": "overtaking_stop-delivery-negative.log",
+        "negative_log_sha256": "50966e57a1b3e39be36b07b3efd88958618dc873e5adac24ba2337cda321c48d"
+      },
+      "compatibility": {
+        "receipt": "overtaking_stop-primary-compatibility.json",
+        "sha256": "bb4f299c80e857f854c3605c02bbe34727a40fad8e649763f673cabee5fd5180",
+        "log": "overtaking_stop-primary-compatibility-analysis.log"
+      },
+      "negative": {
+        "log": "overtaking_stop-primary-negative-analysis.log"
+      },
+      "acquisition": {
+        "dev.human_direction": {
+          "entrypoint": "school_bus_native.py",
+          "method": "run",
+          "evidence": "officer_original.jsonl or unverified officer premise"
+        },
+        "dev.school_bus_signal": {
+          "entrypoint": "school_bus_native.py",
+          "method": "run",
+          "evidence": "signal_command_original.jsonl"
+        },
+        "drv.meeting": {
+          "entrypoint": "school_bus_controller.py",
+          "method": "motion_readback",
+          "evidence": "motion_original.jsonl and road.xodr"
+        },
+        "drv.overtaking": {
+          "entrypoint": "school_bus_controller.py",
+          "method": "motion_readback",
+          "evidence": "motion_original.jsonl and road.xodr"
+        },
+        "drv.stopped": {
+          "entrypoint": "school_bus_response.py",
+          "method": "measure",
+          "evidence": "motion_original.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "school_bus_controller.py",
+          "method": "motion_readback",
+          "evidence": "motion_original.jsonl"
+        },
+        "pupil_service_motion_candidate": {
+          "entrypoint": "school_bus_native.py",
+          "method": "pupil_readback",
+          "evidence": "pupil_original.jsonl"
+        },
+        "rel.same_direction": {
+          "entrypoint": "school_bus_controller.py",
+          "method": "motion_readback",
+          "evidence": "motion_original.jsonl and road.xodr"
+        },
+        "ru.child": {
+          "entrypoint": "school_bus_native.py",
+          "method": "pupil_readback",
+          "evidence": "pupil_original.jsonl; service purpose unverified"
+        },
+        "ru.school_bus": {
+          "entrypoint": "school_bus_native.py",
+          "method": "run",
+          "evidence": "bus actor source; physical status unverified"
+        },
+        "school_bus_red_pixel_candidates": {
+          "entrypoint": "school_bus_response.py",
+          "method": "audit_red_pixel_sources",
+          "evidence": "overview.mkv and reference_corner.mkv"
+        },
+        "st.median_or_divider": {
+          "entrypoint": "school_bus_native.py",
+          "method": "run",
+          "evidence": "road.xodr; physical divider unverified"
+        },
+        "st.roadway": {
+          "entrypoint": "school_bus_native.py",
+          "method": "run",
+          "evidence": "road.xodr; roadway identity unverified"
+        },
+        "subject_speed_mps": {
+          "entrypoint": "school_bus_controller.py",
+          "method": "motion_readback",
+          "evidence": "motion_original.jsonl"
+        }
       }
     },
     {
@@ -586,6 +1006,111 @@
       "physical_preparation": {
         "receipt": "overtaking_pass_red-physical-preparation.json",
         "sha256": "76d130ceb07685c515e781b6055734bcca9526ff7aee3e080fbe29d75d38f7b6"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__overtaking_pass_red",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_acceptance.py",
+        "script_sha256": "542779f2c785909c5794f1900e2a105b717de191fb0ee73242b3dbcbe3540fb6",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C230281__NRS-484B-353-1__motor_vehicle_driver/delivery_acceptance.py --case heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__overtaking_pass_red --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-final-manifest-remaining-primaries/overtaking_pass_red/positive-saved/v0001/analysis --analysis /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-final-manifest-remaining-primaries/overtaking_pass_red/positive-saved/v0001/analysis/analysis-report.json",
+        "test_exit_code": 0,
+        "test_log": "overtaking_pass_red-delivery-positive.log",
+        "test_log_sha256": "a4122337eac3567de177a8a647a69d0c076d196b4322348be4244c65913daa02",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C230281__NRS-484B-353-1__motor_vehicle_driver/delivery_acceptance.py --case heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__overtaking_pass_red --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-final-manifest-remaining-primaries/overtaking_pass_red/positive-saved/v0001/analysis --analysis /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-final-manifest-remaining-primaries/overtaking_pass_red/positive-saved/v0001/analysis/analysis-report.json --negative-missing-pupil",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: pupil_original.jsonl",
+        "negative_log": "overtaking_pass_red-delivery-negative.log",
+        "negative_log_sha256": "50966e57a1b3e39be36b07b3efd88958618dc873e5adac24ba2337cda321c48d"
+      },
+      "compatibility": {
+        "receipt": "overtaking_pass_red-primary-compatibility.json",
+        "sha256": "877e19b88030dad3de542b7d6b4e58c578ce8fe3c1933e25ad40ff3d8f9ce1ad",
+        "log": "overtaking_pass_red-primary-compatibility-analysis.log"
+      },
+      "negative": {
+        "log": "overtaking_pass_red-primary-negative-analysis.log"
+      },
+      "acquisition": {
+        "dev.human_direction": {
+          "entrypoint": "school_bus_native.py",
+          "method": "run",
+          "evidence": "officer_original.jsonl or unverified officer premise"
+        },
+        "dev.school_bus_signal": {
+          "entrypoint": "school_bus_native.py",
+          "method": "run",
+          "evidence": "signal_command_original.jsonl"
+        },
+        "drv.meeting": {
+          "entrypoint": "school_bus_controller.py",
+          "method": "motion_readback",
+          "evidence": "motion_original.jsonl and road.xodr"
+        },
+        "drv.overtaking": {
+          "entrypoint": "school_bus_controller.py",
+          "method": "motion_readback",
+          "evidence": "motion_original.jsonl and road.xodr"
+        },
+        "drv.stopped": {
+          "entrypoint": "school_bus_response.py",
+          "method": "measure",
+          "evidence": "motion_original.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "school_bus_controller.py",
+          "method": "motion_readback",
+          "evidence": "motion_original.jsonl"
+        },
+        "pupil_service_motion_candidate": {
+          "entrypoint": "school_bus_native.py",
+          "method": "pupil_readback",
+          "evidence": "pupil_original.jsonl"
+        },
+        "rel.same_direction": {
+          "entrypoint": "school_bus_controller.py",
+          "method": "motion_readback",
+          "evidence": "motion_original.jsonl and road.xodr"
+        },
+        "ru.child": {
+          "entrypoint": "school_bus_native.py",
+          "method": "pupil_readback",
+          "evidence": "pupil_original.jsonl; service purpose unverified"
+        },
+        "ru.school_bus": {
+          "entrypoint": "school_bus_native.py",
+          "method": "run",
+          "evidence": "bus actor source; physical status unverified"
+        },
+        "school_bus_red_pixel_candidates": {
+          "entrypoint": "school_bus_response.py",
+          "method": "audit_red_pixel_sources",
+          "evidence": "overview.mkv and reference_corner.mkv"
+        },
+        "st.median_or_divider": {
+          "entrypoint": "school_bus_native.py",
+          "method": "run",
+          "evidence": "road.xodr; physical divider unverified"
+        },
+        "st.roadway": {
+          "entrypoint": "school_bus_native.py",
+          "method": "run",
+          "evidence": "road.xodr; roadway identity unverified"
+        },
+        "subject_speed_mps": {
+          "entrypoint": "school_bus_controller.py",
+          "method": "motion_readback",
+          "evidence": "motion_original.jsonl"
+        }
       }
     },
     {
@@ -703,6 +1228,111 @@
       "physical_preparation": {
         "receipt": "meeting_divided_other_roadway_pass-physical-preparation.json",
         "sha256": "c89360de88db4c8fa2d2399f5874727922f221db23b9c9aa83fd100519835cc5"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__meeting_divided_other_roadway_pass",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_acceptance.py",
+        "script_sha256": "542779f2c785909c5794f1900e2a105b717de191fb0ee73242b3dbcbe3540fb6",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C230281__NRS-484B-353-1__motor_vehicle_driver/delivery_acceptance.py --case heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__meeting_divided_other_roadway_pass --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-inline-source-three-primaries/meeting_divided_other_roadway_pass/positive-saved/v0001/analysis --analysis /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-inline-source-three-primaries/meeting_divided_other_roadway_pass/positive-saved/v0001/analysis/analysis-report.json",
+        "test_exit_code": 0,
+        "test_log": "meeting_divided_other_roadway_pass-delivery-positive.log",
+        "test_log_sha256": "ab77ff27b635e3aa212a9ad03d86a843061d9b22a2229312a9259f9b8939c13e",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C230281__NRS-484B-353-1__motor_vehicle_driver/delivery_acceptance.py --case heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__meeting_divided_other_roadway_pass --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-inline-source-three-primaries/meeting_divided_other_roadway_pass/positive-saved/v0001/analysis --analysis /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-inline-source-three-primaries/meeting_divided_other_roadway_pass/positive-saved/v0001/analysis/analysis-report.json --negative-missing-pupil",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: pupil_original.jsonl",
+        "negative_log": "meeting_divided_other_roadway_pass-delivery-negative.log",
+        "negative_log_sha256": "50966e57a1b3e39be36b07b3efd88958618dc873e5adac24ba2337cda321c48d"
+      },
+      "compatibility": {
+        "receipt": "meeting_divided_other_roadway_pass-primary-compatibility.json",
+        "sha256": "223f15b6126f8045c792e5ba3a671ecc09cfd71dd0a078c1b481928ec5fd2032",
+        "log": "meeting_divided_other_roadway_pass-primary-compatibility-analysis.log"
+      },
+      "negative": {
+        "log": "meeting_divided_other_roadway_pass-primary-negative-analysis.log"
+      },
+      "acquisition": {
+        "dev.human_direction": {
+          "entrypoint": "school_bus_native.py",
+          "method": "run",
+          "evidence": "officer_original.jsonl or unverified officer premise"
+        },
+        "dev.school_bus_signal": {
+          "entrypoint": "school_bus_native.py",
+          "method": "run",
+          "evidence": "signal_command_original.jsonl"
+        },
+        "drv.meeting": {
+          "entrypoint": "school_bus_controller.py",
+          "method": "motion_readback",
+          "evidence": "motion_original.jsonl and road.xodr"
+        },
+        "drv.overtaking": {
+          "entrypoint": "school_bus_controller.py",
+          "method": "motion_readback",
+          "evidence": "motion_original.jsonl and road.xodr"
+        },
+        "drv.stopped": {
+          "entrypoint": "school_bus_response.py",
+          "method": "measure",
+          "evidence": "motion_original.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "school_bus_controller.py",
+          "method": "motion_readback",
+          "evidence": "motion_original.jsonl"
+        },
+        "pupil_service_motion_candidate": {
+          "entrypoint": "school_bus_native.py",
+          "method": "pupil_readback",
+          "evidence": "pupil_original.jsonl"
+        },
+        "rel.same_direction": {
+          "entrypoint": "school_bus_controller.py",
+          "method": "motion_readback",
+          "evidence": "motion_original.jsonl and road.xodr"
+        },
+        "ru.child": {
+          "entrypoint": "school_bus_native.py",
+          "method": "pupil_readback",
+          "evidence": "pupil_original.jsonl; service purpose unverified"
+        },
+        "ru.school_bus": {
+          "entrypoint": "school_bus_native.py",
+          "method": "run",
+          "evidence": "bus actor source; physical status unverified"
+        },
+        "school_bus_red_pixel_candidates": {
+          "entrypoint": "school_bus_response.py",
+          "method": "audit_red_pixel_sources",
+          "evidence": "overview.mkv and reference_corner.mkv"
+        },
+        "st.median_or_divider": {
+          "entrypoint": "school_bus_native.py",
+          "method": "run",
+          "evidence": "road.xodr; physical divider unverified"
+        },
+        "st.roadway": {
+          "entrypoint": "school_bus_native.py",
+          "method": "run",
+          "evidence": "road.xodr; roadway identity unverified"
+        },
+        "subject_speed_mps": {
+          "entrypoint": "school_bus_controller.py",
+          "method": "motion_readback",
+          "evidence": "motion_original.jsonl"
+        }
       }
     },
     {
@@ -820,6 +1450,111 @@
       "physical_preparation": {
         "receipt": "meeting_officer_controlled_pass-physical-preparation.json",
         "sha256": "901a56b27a7a547b6c7d7104fe8030081ea11c9887f0f6568277df4a0cb20944"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__meeting_officer_controlled_pass",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_acceptance.py",
+        "script_sha256": "542779f2c785909c5794f1900e2a105b717de191fb0ee73242b3dbcbe3540fb6",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C230281__NRS-484B-353-1__motor_vehicle_driver/delivery_acceptance.py --case heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__meeting_officer_controlled_pass --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-inline-source-three-primaries/meeting_officer_controlled_pass/positive-saved/v0001/analysis --analysis /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-inline-source-three-primaries/meeting_officer_controlled_pass/positive-saved/v0001/analysis/analysis-report.json",
+        "test_exit_code": 0,
+        "test_log": "meeting_officer_controlled_pass-delivery-positive.log",
+        "test_log_sha256": "cd61f2d0c2a982b5775b3db41f4a2bf6d8fe01ee2407025495b7829469ef6ad8",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C230281__NRS-484B-353-1__motor_vehicle_driver/delivery_acceptance.py --case heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__meeting_officer_controlled_pass --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-inline-source-three-primaries/meeting_officer_controlled_pass/positive-saved/v0001/analysis --analysis /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-inline-source-three-primaries/meeting_officer_controlled_pass/positive-saved/v0001/analysis/analysis-report.json --negative-missing-pupil",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: pupil_original.jsonl",
+        "negative_log": "meeting_officer_controlled_pass-delivery-negative.log",
+        "negative_log_sha256": "50966e57a1b3e39be36b07b3efd88958618dc873e5adac24ba2337cda321c48d"
+      },
+      "compatibility": {
+        "receipt": "meeting_officer_controlled_pass-primary-compatibility.json",
+        "sha256": "536b2673e3cb263473e06484431b4e28331adeb1352adf0415cb27ff5183a441",
+        "log": "meeting_officer_controlled_pass-primary-compatibility-analysis.log"
+      },
+      "negative": {
+        "log": "meeting_officer_controlled_pass-primary-negative-analysis.log"
+      },
+      "acquisition": {
+        "dev.human_direction": {
+          "entrypoint": "school_bus_native.py",
+          "method": "run",
+          "evidence": "officer_original.jsonl or unverified officer premise"
+        },
+        "dev.school_bus_signal": {
+          "entrypoint": "school_bus_native.py",
+          "method": "run",
+          "evidence": "signal_command_original.jsonl"
+        },
+        "drv.meeting": {
+          "entrypoint": "school_bus_controller.py",
+          "method": "motion_readback",
+          "evidence": "motion_original.jsonl and road.xodr"
+        },
+        "drv.overtaking": {
+          "entrypoint": "school_bus_controller.py",
+          "method": "motion_readback",
+          "evidence": "motion_original.jsonl and road.xodr"
+        },
+        "drv.stopped": {
+          "entrypoint": "school_bus_response.py",
+          "method": "measure",
+          "evidence": "motion_original.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "school_bus_controller.py",
+          "method": "motion_readback",
+          "evidence": "motion_original.jsonl"
+        },
+        "pupil_service_motion_candidate": {
+          "entrypoint": "school_bus_native.py",
+          "method": "pupil_readback",
+          "evidence": "pupil_original.jsonl"
+        },
+        "rel.same_direction": {
+          "entrypoint": "school_bus_controller.py",
+          "method": "motion_readback",
+          "evidence": "motion_original.jsonl and road.xodr"
+        },
+        "ru.child": {
+          "entrypoint": "school_bus_native.py",
+          "method": "pupil_readback",
+          "evidence": "pupil_original.jsonl; service purpose unverified"
+        },
+        "ru.school_bus": {
+          "entrypoint": "school_bus_native.py",
+          "method": "run",
+          "evidence": "bus actor source; physical status unverified"
+        },
+        "school_bus_red_pixel_candidates": {
+          "entrypoint": "school_bus_response.py",
+          "method": "audit_red_pixel_sources",
+          "evidence": "overview.mkv and reference_corner.mkv"
+        },
+        "st.median_or_divider": {
+          "entrypoint": "school_bus_native.py",
+          "method": "run",
+          "evidence": "road.xodr; physical divider unverified"
+        },
+        "st.roadway": {
+          "entrypoint": "school_bus_native.py",
+          "method": "run",
+          "evidence": "road.xodr; roadway identity unverified"
+        },
+        "subject_speed_mps": {
+          "entrypoint": "school_bus_controller.py",
+          "method": "motion_readback",
+          "evidence": "motion_original.jsonl"
+        }
       }
     },
     {
@@ -937,6 +1672,111 @@
       "physical_preparation": {
         "receipt": "meeting_resume_after_red_ceases-physical-preparation.json",
         "sha256": "a1d3cb152798d344b9d2aef11fd9d15de571b86e466a9f409c828c9fe00e8032"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__meeting_resume_after_red_ceases",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_acceptance.py",
+        "script_sha256": "542779f2c785909c5794f1900e2a105b717de191fb0ee73242b3dbcbe3540fb6",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C230281__NRS-484B-353-1__motor_vehicle_driver/delivery_acceptance.py --case heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__meeting_resume_after_red_ceases --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-inline-source-three-primaries/meeting_resume_after_red_ceases/positive-saved/v0001/analysis --analysis /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-inline-source-three-primaries/meeting_resume_after_red_ceases/positive-saved/v0001/analysis/analysis-report.json",
+        "test_exit_code": 0,
+        "test_log": "meeting_resume_after_red_ceases-delivery-positive.log",
+        "test_log_sha256": "65c555d0fc632da365b5c989f2a19834125c5ad033b83fd44af7305c275de15d",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C230281__NRS-484B-353-1__motor_vehicle_driver/delivery_acceptance.py --case heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__meeting_resume_after_red_ceases --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-inline-source-three-primaries/meeting_resume_after_red_ceases/positive-saved/v0001/analysis --analysis /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-inline-source-three-primaries/meeting_resume_after_red_ceases/positive-saved/v0001/analysis/analysis-report.json --negative-missing-pupil",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: pupil_original.jsonl",
+        "negative_log": "meeting_resume_after_red_ceases-delivery-negative.log",
+        "negative_log_sha256": "50966e57a1b3e39be36b07b3efd88958618dc873e5adac24ba2337cda321c48d"
+      },
+      "compatibility": {
+        "receipt": "meeting_resume_after_red_ceases-primary-compatibility.json",
+        "sha256": "9b047a154415351880de04d3233009a6851080c5b64ed6b741b7d975d7e07f9c",
+        "log": "meeting_resume_after_red_ceases-primary-compatibility-analysis.log"
+      },
+      "negative": {
+        "log": "meeting_resume_after_red_ceases-primary-negative-analysis.log"
+      },
+      "acquisition": {
+        "dev.human_direction": {
+          "entrypoint": "school_bus_native.py",
+          "method": "run",
+          "evidence": "officer_original.jsonl or unverified officer premise"
+        },
+        "dev.school_bus_signal": {
+          "entrypoint": "school_bus_native.py",
+          "method": "run",
+          "evidence": "signal_command_original.jsonl"
+        },
+        "drv.meeting": {
+          "entrypoint": "school_bus_controller.py",
+          "method": "motion_readback",
+          "evidence": "motion_original.jsonl and road.xodr"
+        },
+        "drv.overtaking": {
+          "entrypoint": "school_bus_controller.py",
+          "method": "motion_readback",
+          "evidence": "motion_original.jsonl and road.xodr"
+        },
+        "drv.stopped": {
+          "entrypoint": "school_bus_response.py",
+          "method": "measure",
+          "evidence": "motion_original.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "school_bus_controller.py",
+          "method": "motion_readback",
+          "evidence": "motion_original.jsonl"
+        },
+        "pupil_service_motion_candidate": {
+          "entrypoint": "school_bus_native.py",
+          "method": "pupil_readback",
+          "evidence": "pupil_original.jsonl"
+        },
+        "rel.same_direction": {
+          "entrypoint": "school_bus_controller.py",
+          "method": "motion_readback",
+          "evidence": "motion_original.jsonl and road.xodr"
+        },
+        "ru.child": {
+          "entrypoint": "school_bus_native.py",
+          "method": "pupil_readback",
+          "evidence": "pupil_original.jsonl; service purpose unverified"
+        },
+        "ru.school_bus": {
+          "entrypoint": "school_bus_native.py",
+          "method": "run",
+          "evidence": "bus actor source; physical status unverified"
+        },
+        "school_bus_red_pixel_candidates": {
+          "entrypoint": "school_bus_response.py",
+          "method": "audit_red_pixel_sources",
+          "evidence": "overview.mkv and reference_corner.mkv"
+        },
+        "st.median_or_divider": {
+          "entrypoint": "school_bus_native.py",
+          "method": "run",
+          "evidence": "road.xodr; physical divider unverified"
+        },
+        "st.roadway": {
+          "entrypoint": "school_bus_native.py",
+          "method": "run",
+          "evidence": "road.xodr; roadway identity unverified"
+        },
+        "subject_speed_mps": {
+          "entrypoint": "school_bus_controller.py",
+          "method": "motion_readback",
+          "evidence": "motion_original.jsonl"
+        }
       }
     }
   ]
