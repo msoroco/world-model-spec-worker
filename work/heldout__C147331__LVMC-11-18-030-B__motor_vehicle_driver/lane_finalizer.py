@@ -41,15 +41,23 @@ def observed_lateral_fraction(row):
     return abs(sum((ego[i] - center[i]) * normal[i] for i in (0, 1))) / width
 
 
-def measure_turn_preparation_context(mapping, trace, source_rows, *, turn_case=False):
+def measure_turn_preparation_context(mapping, trace, source_rows, measured, *, turn_case=False):
     """Retain turn request and original light/motion cues without legal inference."""
     intents = [row.get("route_intent") for row in source_rows]
     if turn_case and (not isinstance(intents[0], dict)
                       or any(intent != intents[0] for intent in intents)):
         raise ValueError("Original connected turn intent missing or changed")
+    clearances = [row["minimum_corner_clearance_m"] for row in measured["frames"]]
+    if len(clearances) != len(source_rows):
+        raise ValueError("Turn clearance history differs from original frames")
+    light_states = [row.get("ego_light_state") for row in source_rows]
     return {
         "role": "turn-preparation crossing" if turn_case else "within-lane travel control; no turning movement selected",
         "requested_route": intents[0] if turn_case else None,
+        "original_lane_clearance_m": clearances,
+        "boundary_excursion_observed": any(value < 0 for value in clearances),
+        "left_indicator_readback_observed": any(
+            isinstance(state, str) and "LeftBlinker" in state for state in light_states),
         "frames": [{
             "video_frame": frame["video_frame"],
             "carla_frame": frame["carla_frame"],
@@ -129,7 +137,7 @@ def analyze(attempt, *, write_channel=True):
         measurements["turn_preparation_control"] = {
             "method": "measure_turn_preparation_context",
             "value": measure_turn_preparation_context(
-                mapping, trace, source_rows,
+                mapping, trace, source_rows, measured,
                 turn_case=case_id.endswith("__turn_preparation_crossing")),
             "sources": sources,
         }

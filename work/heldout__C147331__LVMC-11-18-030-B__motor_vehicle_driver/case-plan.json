@@ -157,6 +157,23 @@
       "delivery_proofs": {
         "manifest": "delivery-construction-manifest.json"
       }
+    },
+    {
+      "case_id": "heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__turn_preparation_crossing",
+      "target_law_id": "LVMC-11-18-030-B",
+      "gap_ids": [
+        "marked-lane-footprint",
+        "turn-exception"
+      ],
+      "construction_state": "primary_offline_compat_software_proven_physical_unverified",
+      "purpose": "Measured lane-boundary crossing while the source rows retain a connected leftward exit request, indicator readback and original ego movement; no lawful-turn or physical outcome claim.",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Lateral controller may not cross the marked boundary before capture ends, or the boundary may be absent or occluded in source cameras; inspect measured corner clearance history and decoded views."
+      },
+      "candidate_constructions_status": "three_fallbacks_not_yet_constructed",
+      "probe_proofs": {},
+      "delivery_proofs": {}
     }
   ],
   "comparisons": [
@@ -208,6 +225,22 @@
       ],
       "cpu_audit": "delivery-passing-sweep-audit.json",
       "physical_clearance_trend_claimed": false
+    },
+    {
+      "comparison_id": "turn_preparation_exception_context",
+      "case_ids": [
+        "heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__within_marked_lane",
+        "heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__turn_preparation_crossing"
+      ],
+      "fixed_conditions": [
+        "one-way multilane marked approach and motor vehicle actor",
+        "20 Hz, 8 s, four named source-camera profile",
+        "no overtaken passing participant"
+      ],
+      "deliberate_differences": [
+        "requested connected leftward exit and indicator readback",
+        "measured pre-junction lane-boundary excursion versus within-lane control"
+      ]
     }
   ],
   "observations": [
@@ -255,7 +288,7 @@
     "Lawful passing requires independently sourced applicable rules and a frozen physical sweep grid; diagnostic motion and signaling do not decide it.",
     "Actual CARLA motion, marked-boundary visibility, full body coverage and physical outcome remain unverified.",
     "All selected C147331 delivery primaries, fallbacks, saved processing, source audits, comparison, physical preparation and acceptance CPU protocols pass; canonical delivery handoff still needs final reconciliation.",
-    "The lawful-turn-preparation exception lacks a compatible assigned turning cell in the frozen 51-package scope; local within-lane measurements are a negative/control only. Native connected-turn facts and legal lawfulness are unverified."
+    "The assigned travel cell now has a constructed preparatory crossing toward a connected leftward exit; actual Native route, marking visibility, physical turn facts, external lawful-turn rules and comparison audits remain unverified."
   ],
   "status": "draft",
   "law_text": "Where such traffic lanes have been marked, it shall be unlawful for the operator of any vehicle to fail or refuse to keep such vehicle within the boundaries of any such lane except when lawfully passing another vehicle or preparatory to making a lawful turning movement.",
@@ -328,25 +361,28 @@
       "disposition_index": 2,
       "requirement": "Exception preparatory to making a lawful turning movement",
       "source": "LVMC 11.18.030(B)",
-      "status": "exception_pending",
-      "evidence_or_gap": "The local within-lane case measures original-frame signal, heading, position and lane identity as a no-turn control. No assigned compatible turning case measures the positive lawful-turn-preparation branch; allocation and its source-backed CPU construction remain pending."
+      "status": "selected_required",
+      "evidence_or_gap": "A selected positive turn-preparation case now has returned primary construction and source-coherent synthetic diagnostic for CPU software proof. Applicable external turn law and Native physical realization remain unconfirmed; three fallbacks and returned exact receipts are still worker-owned CPU work.",
+      "case_ids": [
+        "heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__turn_preparation_crossing"
+      ]
     }
   ],
   "branch_analysis": {
     "source": "inputs/heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver/assignment.json",
-    "status": "planning_only",
+    "status": "positive_turn_construction_in_progress",
     "alternatives_and_boundaries": [
       "Marked traffic lanes activate containment; compare inside-lane travel with an unexcused measured crossing.",
       "The lawful-passing exception needs a recorded overtaken vehicle and external-rule context, compared with the same crossing without passing.",
-      "The lawful-turn-preparation exception needs a compatible turn cell or other proof of an actual lawful turn; the fixed travel cell may not support it."
+      "The assigned travel cell can capture crossing preparatory to a requested connected leftward turn; the positive case and within-lane control compare original route, indicator and footprint cues without deciding lawfulness."
     ],
     "turn_cell_review": {
       "candidate_layout": "adjacent_lanes",
       "candidate_maneuver": "left_turn",
       "candidate_control": "lane_marking",
       "actor_compatibility": "motor_vehicle_driver",
-      "allocation_status": "unallocated_in_frozen_scope",
-      "reason": "Fixed C147331 travel cell cannot realize a left turn. No compatible turn-cell assignment is present in the frozen 51-package scope; positive exception measurement remains pending."
+      "allocation_status": "same_assigned_cell_used_for_preparatory_phase",
+      "reason": "C147331 fixes travel, which can contain the approach phase preparatory to a connected left turn. The selected local case requests and records that route; completed lawful turning and physical realization remain unverified."
     }
   },
   "source_observation_mapping": {
@@ -402,12 +438,16 @@
       ]
     },
     "drv.turning": {
-      "evidence": "The assigned C147331 travel cell records a no-turn control. A positive turning measurement needs a compatible assigned turn cell, which is absent from the frozen scope.",
+      "evidence": "The assigned travel cell now requests a connected leftward exit and retains route intent, indicator and original motion for a preparatory crossing. The completed lawful turn is not inferred.",
       "channels": [
         "ego_turn_motion"
       ],
       "source_refs": [
-        "work/heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver/lane_finalizer.py"
+        "turn_route.py",
+        "runner.py",
+        "lane_sources.py",
+        "marked_lane_sources.jsonl",
+        "lane_finalizer.py"
       ]
     },
     "sig.turn_indicator": {
@@ -420,7 +460,7 @@
       ]
     },
     "drv.lane_change": {
-      "evidence": "Lane identity and body footprint history could establish transition after complete exact runner and finalizer work.",
+      "evidence": "Original lane ID and full body-corner clearance history measure the selected preparatory lateral excursion; actual Native crossing and marking visibility remain for later review.",
       "channels": [
         "native_lane_boundaries"
       ],

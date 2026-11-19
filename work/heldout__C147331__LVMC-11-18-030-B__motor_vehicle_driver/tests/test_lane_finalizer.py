@@ -63,6 +63,8 @@ class SavedLaneFinalizerTests(unittest.TestCase):
             report = analyze(root, write_channel=False)
             value = report['measurements']['turn_preparation_control']['value']
             self.assertEqual(value['requested_route'], intent)
+            self.assertTrue(value['left_indicator_readback_observed'])
+            self.assertFalse(value['boundary_excursion_observed'])
             self.assertFalse(value['lawful_turn_preparation_confirmed'])
             rows[1]['route_intent'] = {**intent, 'exit_road_id': 9}
             source.write_text(''.join(json.dumps(row) + '\n' for row in rows))
