@@ -132,3 +132,5 @@ The remaining worker-owned CPU work is canonical semantic stage proposals, indep
 Remaining CPU work: canonical semantic stage proposals and index; explicit comparison command receipts; physical preparation and final source review; scoped/full strict gates. Status remains partial.
 
 2026-11-18 file-budget preservation: six byte-identical zero-byte compatibility analysis logs were rebound in `execution-manifest.json` to retained `east_faster_proxy-fallback2-analysis.log`. Their exact original paths, SHA256 and bytes are preserved in `work/_shared/historical-receipts-bundle-20261118.json`. The assignment scoped `worker_check.py --complete` passed afterward. Status remains partial for its stated construction and proof work.
+
+2026-11-19 return-cap preservation: historical `cpu-tests.log` and its result test record were losslessly archived at `work/_shared/c147331-turn-return-cap-archive.json`. Restore and hash-check before relying on that historical test. Current package remains partial.

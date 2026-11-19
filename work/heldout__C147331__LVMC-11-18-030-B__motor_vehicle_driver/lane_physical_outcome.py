@@ -41,6 +41,12 @@ def check_physical_outcome(source_audit, analysis, pixel_review, trace):
         realized = all(row["full_footprint_inside"] for row in frames)
     elif suffix == "unexcused_boundary_crossing":
         realized = any(row["boundary_crossing"] for row in frames)
+    elif suffix == "turn_preparation_crossing":
+        context = analysis["measurements"]["turn_preparation_control"]["value"]
+        realized = (any(row["boundary_crossing"] for row in frames)
+                    and context["boundary_excursion_observed"]
+                    and context["left_indicator_readback_observed"]
+                    and isinstance(context["requested_route"], dict))
     elif suffix == "passing_boundary_crossing" or suffix.startswith("passing_excursion-"):
         value = analysis["measurements"]["lane_boundary_observation"]["value"]
         realized = any(row["boundary_crossing"] for row in frames) and value["measured_order_reversal"]

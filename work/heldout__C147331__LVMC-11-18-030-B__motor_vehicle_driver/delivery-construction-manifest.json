@@ -637,6 +637,193 @@
           "evidence": "marked_lane_sources.jsonl joined to video_frames.jsonl and trace.jsonl; saved-only derived lane_crossing_fraction.jsonl"
         }
       }
+    },
+    {
+      "case_id": "heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__turn_preparation_crossing",
+      "kind": "delivery",
+      "construction": "construction-delivery-turn_preparation_crossing.json",
+      "construction_sha256": "eb969212791bbcaf2c84d3f5cd3bfc0c647751a2d0f8969e95d3b45a4818ba40",
+      "measurement_contract": "measurement-contract-turn_preparation_crossing.json",
+      "measurement_procedure": {
+        "entrypoint": "lane_finalizer.py"
+      },
+      "fixture_recipe": "work/heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver/lane-diagnostic-turn_preparation_crossing-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native connected left-exit availability, spawn occupancy and controller lane excursion remain unverified"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-delivery-turn_preparation_crossing-fallback1.json",
+          "construction_sha256": "61c6ef7f9ffd8d7c973265c323e53ceefee9bb807f504f16dbc3b837407cda21",
+          "trigger": {
+            "source": "Native marked waypoint route-selection diagnostic",
+            "metric": "connected marked approach-to-left-exit continuity at 2 m samples",
+            "failure_condition": "Primary 2 m sampling fails to find a continuous marked approach and left exit; retry at 1 m samples."
+          },
+          "changed_knobs": [
+            "route spacing 2 m to 1 m; approach steps 15 to 30"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c147331-turn-prep-v1/manifest.json --case heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__turn_preparation_crossing --candidate fallback1 --output .runtime-work/c147331-turn-prep-v1/offline-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "turn-prep-primary-offline.log",
+            "log_sha256": "4cf7f1d1a01e0a87de085e4e4242cda3c66c0ff89e95a7b50cce948ed3d375cf",
+            "construction_sha256": "61c6ef7f9ffd8d7c973265c323e53ceefee9bb807f504f16dbc3b837407cda21"
+          },
+          "compatibility": {
+            "receipt": "turn-prep-fallback1-compatibility.json",
+            "sha256": "781d6578d16c7dd7a73deacff89b2b5aa47c63f2c2d27641469ea80b7eb8afe3",
+            "log": "delivery-passing_boundary_crossing-compat.log",
+            "negative_log": "turn-prep-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-delivery-turn_preparation_crossing-fallback2.json",
+          "construction_sha256": "5b167801037e7aca94f56bd5ba7a7ac86ac01979011aa31309f303542286f90e",
+          "trigger": {
+            "source": "Native route selection and actor spawn diagnostic",
+            "metric": "selected connected left-exit route spawn availability",
+            "failure_condition": "Primary connected route spawn is occupied or unavailable; select the second verified candidate."
+          },
+          "changed_knobs": [
+            "marked-route candidate index 0 to 1"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c147331-turn-prep-v1/manifest.json --case heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__turn_preparation_crossing --candidate fallback2 --output .runtime-work/c147331-turn-prep-v1/offline-fallback2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "turn-prep-fallback2-offline.log",
+            "log_sha256": "dc93e1ad8c71598c3eb66567fa8d82decd8763a2bb977499ab18ee5efdb2ed29",
+            "construction_sha256": "5b167801037e7aca94f56bd5ba7a7ac86ac01979011aa31309f303542286f90e"
+          },
+          "compatibility": {
+            "receipt": "turn-prep-fallback2-compatibility.json",
+            "sha256": "ffc9296a6f08557844cabd4046058ce585f5db0fa8cbee68a01665cad9f3f074",
+            "log": "delivery-passing_boundary_crossing-compat.log",
+            "negative_log": "turn-prep-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-delivery-turn_preparation_crossing-fallback3.json",
+          "construction_sha256": "3a771da8d9a64be8a0daebe1a0ef6d24e4d9cc79280b0a25435ac3a7dc478a7a",
+          "trigger": {
+            "source": "retained Native trace and marked_lane_sources.jsonl",
+            "metric": "observed body-corner boundary excursion versus requested preparatory path",
+            "failure_condition": "Primary 4.5 m/s controller under-realizes the requested preparatory crossing; retry at 6 m/s and 0.25 gain."
+          },
+          "changed_knobs": [
+            "target speed 4.5 to 6 m/s; speed gain 0.2 to 0.25"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c147331-turn-prep-v1/manifest.json --case heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__turn_preparation_crossing --candidate fallback3 --output .runtime-work/c147331-turn-prep-v1/offline-fallback3 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "turn-prep-primary-offline.log",
+            "log_sha256": "4cf7f1d1a01e0a87de085e4e4242cda3c66c0ff89e95a7b50cce948ed3d375cf",
+            "construction_sha256": "3a771da8d9a64be8a0daebe1a0ef6d24e4d9cc79280b0a25435ac3a7dc478a7a"
+          },
+          "compatibility": {
+            "receipt": "turn-prep-fallback3-compatibility.json",
+            "sha256": "c169ef310ce0890b3328f726f160d9941428e512981cd891c1c181873ad9ffa0",
+            "log": "delivery-passing_boundary_crossing-compat.log",
+            "negative_log": "turn-prep-fallback3-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c147331-turn-prep-v1/manifest.json --case heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__turn_preparation_crossing --output .runtime-work/c147331-turn-prep-v1/offline-primary-v3 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "turn-prep-primary-offline.log",
+        "log_sha256": "4cf7f1d1a01e0a87de085e4e4242cda3c66c0ff89e95a7b50cce948ed3d375cf",
+        "construction_sha256": "eb969212791bbcaf2c84d3f5cd3bfc0c647751a2d0f8969e95d3b45a4818ba40"
+      },
+      "compatibility": {
+        "receipt": "turn-prep-primary-compatibility.json",
+        "sha256": "7c54696382ae375d917e6db89cdc66ccb4a898922224a79c663bb712cc19c8d7",
+        "log": "delivery-passing_boundary_crossing-compat.log"
+      },
+      "negative": {
+        "log": "turn-prep-primary-negative.log"
+      },
+      "saved_processing": {
+        "receipt": "turn-prep-primary-saved.json",
+        "sha256": "9896ff7dd0f22e67904dd07f134c35934a818005e94e3d91c2965f7cd6474851",
+        "scope": "synthetic saved-only CPU diagnostic; no Native or physical acceptance"
+      },
+      "physical_preparation": {
+        "receipt": "physical/turn_preparation_crossing-proof.json",
+        "sha256": "1f543613f622ab2a3263cf5fdfbb76b06c48d33985be69da6ec2bcc5d1497ae9"
+      },
+      "acquisition": {
+        "lane_clearance_m": {
+          "entrypoint": "lane_finalizer.py",
+          "method": "signed minimum body-corner clearance from retained Native waypoint lane source",
+          "evidence": "marked_lane_sources.jsonl joined to video_frames.jsonl and trace.jsonl; saved-only derived channel"
+        },
+        "native_lane_boundaries": {
+          "entrypoint": "lane_finalizer.py",
+          "method": "original Native waypoint lane polygon, direction and marking types",
+          "evidence": "marked_lane_sources.jsonl joined to video_frames.jsonl and trace.jsonl; saved-only derived channel"
+        },
+        "ego_vehicle_footprint": {
+          "entrypoint": "lane_finalizer.py",
+          "method": "original Native lower body corners and velocity",
+          "evidence": "marked_lane_sources.jsonl joined to video_frames.jsonl and trace.jsonl; saved-only derived channel"
+        },
+        "lane_boundary_overlap": {
+          "entrypoint": "lane_finalizer.py",
+          "method": "signed minimum body-corner clearance from retained original lane source",
+          "evidence": "marked_lane_sources.jsonl joined to video_frames.jsonl and trace.jsonl; saved-only derived channel"
+        },
+        "passing_context": {
+          "entrypoint": "lane_finalizer.py",
+          "method": "original overtaken participant body, identity and velocity",
+          "evidence": "marked_lane_sources.jsonl joined to video_frames.jsonl and trace.jsonl; saved-only derived channel"
+        },
+        "turn_indicator_state": {
+          "entrypoint": "lane_finalizer.py",
+          "method": "original ego light-state readback with unknown preserved",
+          "evidence": "marked_lane_sources.jsonl joined to video_frames.jsonl and trace.jsonl; saved-only derived channel"
+        },
+        "ego_turn_motion": {
+          "entrypoint": "lane_finalizer.py",
+          "method": "original Native trace position heading and speed readback",
+          "evidence": "marked_lane_sources.jsonl joined to video_frames.jsonl and trace.jsonl; saved-only derived channel"
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__turn_preparation_crossing",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver/acceptance_fixture.py --case heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__turn_preparation_crossing > work/heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver/acceptance/turn_preparation_crossing-combined.log 2>&1",
+        "test_exit_code": 0,
+        "test_log": "acceptance/turn_preparation_crossing-combined.log",
+        "test_log_sha256": "4513c073b004254d12a13337f0e8f8b6ab8061de8b2d7f9a363870acc1a77ef7",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver/acceptance_fixture.py --case heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver__turn_preparation_crossing --negative >> work/heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver/acceptance/turn_preparation_crossing-combined.log 2>&1",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing, stale, or failed original-pixel review: approach",
+        "negative_log": "acceptance/turn_preparation_crossing-combined.log",
+        "negative_log_sha256": "4513c073b004254d12a13337f0e8f8b6ab8061de8b2d7f9a363870acc1a77ef7",
+        "script": "acceptance_fixture.py",
+        "script_sha256": "d4a34c5cc647b34fdcfe9d5419df76344f674f6ac9d75bef05ecb6e33c9442f1",
+        "fixture_only": true
+      }
     }
   ],
   "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3"

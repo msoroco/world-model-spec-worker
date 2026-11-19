@@ -98,3 +98,5 @@ Result-only historical log reconciliation, 2026-11-16: 4 exact UTF-8 logs were S
 Historical unused returned comparison/source receipts (8 files) are byte-exact in `work/_shared/historical-receipts-bundle-20261116.json`; scoped strict gate rerun follows.
 
 Correction: the eight `center-*` receipts are dynamically required by the scoped strict gate and were restored byte-exact from the historical bundle. The prior archive note does not mean they are inactive.
+
+2026-11-19 return-cap preservation: 7 historical result-test artifacts and their exact test records were losslessly moved to `work/_shared/c147331-turn-return-cap-archive.json`; restore and hash-check them before relying on those historical proofs. This package remains partial; current CPU proofs still need refresh before readiness.

@@ -109,6 +109,12 @@ def run(case_id, kind):
                 behavior = all(frame["full_footprint_inside"] for frame in frames)
             elif suffix == "unexcused_boundary_crossing":
                 behavior = any(frame["boundary_crossing"] for frame in frames)
+            elif suffix == "turn_preparation_crossing":
+                context = analyze(attempt, write_channel=False)["measurements"]["turn_preparation_control"]["value"]
+                behavior = (context["boundary_excursion_observed"]
+                            and context["left_indicator_readback_observed"]
+                            and isinstance(context["requested_route"], dict)
+                            and any(frame["boundary_crossing"] for frame in frames))
             else:
                 behavior = (any(frame["boundary_crossing"] for frame in frames)
                             and measured["measured_order_reversal"])
@@ -129,8 +135,8 @@ def run(case_id, kind):
                                           "minimum_clearance_m": min(frame["minimum_corner_clearance_m"]
                                                                      for frame in measured["frames"])}
                                          if measured is not None else {}),
-                "provenance_kind": "native",
-                "provenance_note": "Native-shaped source protocol test; synthetic diagnostic fixture, not Native acquisition",
+                "provenance_kind": "synthetic_fixture",
+                "provenance_note": "Native-shaped source protocol test from a synthetic diagnostic fixture; no Native acquisition",
                 "physical_acceptance_claimed": False}
 
 
