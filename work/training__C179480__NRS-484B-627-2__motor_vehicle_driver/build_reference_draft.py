@@ -39,7 +39,11 @@ def build():
                  'method': 'native_channels.derive from original actor/map/frame rows',
                  'uncertainty': '50 ms sampling; original pixels and legal effect require independent review'}
                 for name in channels_for(case)],
-            'context_inputs': ['surveyed CARLA map/lane/shoulder and vehicle blueprints'],
+            'context_inputs': [
+                {'name':'surveyed_map_lane_shoulder_and_blueprints',
+                 'unit':'structured','method':'Native survey and live map readback',
+                 'reference_frame':'surveyed CARLA map identity',
+                 'uncertainty':'Original map and actor identity require Native execution'}],
             'limitations': ['normal and reasonable impediment, safe-operation necessity, '
                             'law compliance and physical acceptance require original-source review'],
         }

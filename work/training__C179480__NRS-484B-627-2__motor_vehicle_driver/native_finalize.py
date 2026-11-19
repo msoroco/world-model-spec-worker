@@ -10,7 +10,7 @@ import sys
 
 from native_channels import CHANNELS, channels_for, derive
 from saved_analysis import CAMERAS, review, sha256
-from source_measurement import load_rows
+from source_measurement import analyze_hazard, load_rows, measure
 from source_provenance import classify, ORIGINAL, SYNTHETIC
 
 
@@ -20,11 +20,14 @@ EXPECTED_OVERLAP = {'reference': True, 'contrast': False,
 
 
 def _native_writer():
-    repo = Path(__file__).resolve().parents[2]
-    runtime = str(repo/'runtime/pipeline')
-    if runtime not in sys.path:
-        sys.path.insert(0, runtime)
-    from scenario_pipeline.worker_exchange.native_output import write_result
+    try:
+        from worker_exchange.native_output import write_result
+    except ModuleNotFoundError:
+        repo = Path(__file__).resolve().parents[2]
+        runtime = str(repo/'runtime/pipeline/scenario_pipeline')
+        if runtime not in sys.path:
+            sys.path.insert(0, runtime)
+        from worker_exchange.native_output import write_result
     return write_result
 
 
@@ -86,6 +89,21 @@ def finalize(attempt, output):
     if map_readback.get('case') != case:
         raise ValueError('Original map readback belongs to another case')
     rows = load_rows(attempt/'native-actors.jsonl', attempt/'video_frames.jsonl')
+    if source_kind == SYNTHETIC and not (attempt/'source-measurements.json').exists():
+        if any(row.get('source_kind') != SYNTHETIC for row in rows):
+            raise ValueError('Diagnostic actor source provenance differs')
+        receipt = measure(rows)
+        receipt.update(format='c179480-source-measurements-v1',case=case,
+                       actor_source_sha256=sha256(attempt/'native-actors.jsonl'),
+                       frame_map_sha256=sha256(attempt/'video_frames.jsonl'),
+                       map_readback_sha256=sha256(map_path))
+        if case == 'safe_operation_stop':
+            receipt['hazard_observation'] = analyze_hazard(
+                attempt/'native-actors.jsonl',attempt/'video_frames.jsonl',
+                source_kind=SYNTHETIC)
+        with (attempt/'source-measurements.json').open('x') as stream:
+            json.dump(receipt,stream,allow_nan=False)
+            stream.write('\n')
     mapping = [json.loads(line) for line in
                (attempt/'video_frames.jsonl').read_text().splitlines() if line.strip()]
     if any(row.get('video_frame') != index for index, row in enumerate(rows)):
@@ -104,11 +122,26 @@ def finalize(attempt, output):
         for actor, frame in zip(rows, mapping):
             trace = {'frame': actor['frame'], 'time_s': frame['time_s'],
                      'position_m': [actor['ego_x_m'], actor['ego_y_m']],
+                     'position': {'x': actor['ego_x_m'],
+                                  'y': actor['ego_y_m'], 'z': 0.0},
+                     'heading_deg': actor['ego_yaw_deg'],
                      'speed_mps': actor['ego_speed_mps'],
+                     'speed_mph': actor['ego_speed_mps'] / .44704,
                      'speed_provenance': 'synthetic_native_sample' if source_kind == SYNTHETIC else 'original_carla_velocity',
                      'source_actor_sha256': report['source_sha256']['native-actors.jsonl']}
             stream.write(json.dumps(trace, allow_nan=False)+'\n')
     measured = report['measured_values']
+    contexts = config['recording_description']['context_inputs']
+    if contexts:
+        with (attempt/'recorded-context.json').open('x') as stream:
+            json.dump({entry['name']: {
+                'map_name':map_readback['map_name'],
+                'road_id':map_readback['road_id'],
+                'lane_id':map_readback['lane_id'],
+                'source_sha256':report['source_sha256']['native-map-readback.json'],
+                'provenance_kind':report['provenance_kind'],
+            } for entry in contexts},stream,allow_nan=False)
+            stream.write('\n')
     overlap = bool(measured['roadway_lane_overlap_frames'])
     stopped = measured['complete_stop_observed']
     matched = stopped and overlap == EXPECTED_OVERLAP[case]
@@ -160,32 +193,32 @@ def finalize(attempt, output):
         'recording_evidence': [
             {'name': entry['name'], 'unit': entry['unit'],
              'reference': 'channels/'+entry['name']+'.jsonl'}
-            for entry in config['recording_description']['channels']],
+            for entry in config['recording_description']['channels']] + [
+            {'name': entry['name'], 'unit': entry['unit'],
+             'reference': 'recorded-context.json'}
+            for entry in config['recording_description']['context_inputs']],
         'realized_observables': {
             'sampled_roadway_lane_overlap': {
-                'value': overlap, 'unit': 'bool',
+                'value': len(measured['roadway_lane_overlap_frames']), 'unit': 'count',
                 'method': 'source-joined stopped actor body and driving-lane readback',
-                'reference': 'native-actors.jsonl'},
-            'traffic_effect_evidence': {
-                'value': {
-                    'following_initial_speed_mps': measured['following_initial_speed_mps'],
-                    'following_min_speed_mps': measured['following_min_speed_mps'],
-                    'following_speed_drop_mps': measured['following_speed_drop_mps'],
-                    'following_min_gap_m': measured['following_min_gap_m'],
-                    'normal_reasonable_movement_impeded':
-                        'independent_original_source_review_required'},
-                'unit': 'structured',
+                'time_window':'full 30-second source trace','statistic':'frame_count',
+                'reference': 'channels/ego_lane_footprint.jsonl'},
+            'following_speed_drop': {
+                'value': measured['following_speed_drop_mps'],
+                'unit': 'm/s',
                 'method': 'source-joined '+source_label+' ego/follower actor and frame rows',
+                'time_window':'full 30-second source trace','statistic':'initial_minus_minimum',
                 'reference': 'channels/traffic_effect_evidence.jsonl'}},
         'provenance_kind': 'synthetic_fixture' if source_kind == SYNTHETIC else 'native',
         'diagnostic_fixture': source_kind == SYNTHETIC,
         'accepted': False, 'legal_verdict_claimed': False,
     }
     if hazard is not None:
-        result['realized_observables']['source_visible_hazard'] = {
-            'value': hazard, 'unit': 'structured',
+        result['realized_observables']['minimum_source_visible_hazard_gap'] = {
+            'value': hazard['minimum_ego_center_gap_m'], 'unit': 'm',
             'method': source_label+' actor body, lane, velocity and gap rows',
-            'reference': 'native-actors.jsonl'}
+            'time_window':'full 30-second source trace','statistic':'minimum',
+            'reference': 'channels/ego_hazard_gap_history.jsonl'}
     _native_writer()(attempt, result)
     report['derived_channels'] = derived
     report['trace_sha256'] = source_hashes['trace.jsonl']
