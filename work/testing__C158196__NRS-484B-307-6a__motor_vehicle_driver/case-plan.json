@@ -40,7 +40,18 @@
         "same signal actor and governed lane",
         "same intersection polygon and camera positions",
         "same yellow-to-red sequence and approach speed"
-      ]
+      ],
+      "comparison_id": "red_entry_timing",
+      "cpu_diagnostic_proof": {
+        "script": "prove_comparisons.py",
+        "script_sha256": "073f8081a36f023df32acd140330f0405a2101105bcd2e308c775a93ce61958f",
+        "positive": "comparison-cpu-positive.json",
+        "positive_sha256": "c41384c6a54c5b93324e4747c1d2422aba79d22be70ea097667b9163053622d9",
+        "negative": "comparison-cpu-negative.log",
+        "negative_sha256": "597c81f36338dd8310b0f472ac71f216f25a7e86cc0f6800d371c978dc34a57b",
+        "negative_expected_error": "Original governed signal or lane differs",
+        "scope": "Synthetic source comparison; Native physical measurements remain outstanding"
+      }
     },
     {
       "case_ids": [
@@ -53,7 +64,18 @@
       "fixed_conditions": [
         "same source-grounded signal and approach",
         "same yellow warning start and camera positions"
-      ]
+      ],
+      "comparison_id": "yellow_entry_vs_stop",
+      "cpu_diagnostic_proof": {
+        "script": "prove_comparisons.py",
+        "script_sha256": "073f8081a36f023df32acd140330f0405a2101105bcd2e308c775a93ce61958f",
+        "positive": "comparison-cpu-positive.json",
+        "positive_sha256": "c41384c6a54c5b93324e4747c1d2422aba79d22be70ea097667b9163053622d9",
+        "negative": "comparison-cpu-negative.log",
+        "negative_sha256": "597c81f36338dd8310b0f472ac71f216f25a7e86cc0f6800d371c978dc34a57b",
+        "negative_expected_error": "Original governed signal or lane differs",
+        "scope": "Synthetic source comparison; Native physical measurements remain outstanding"
+      }
     }
   ],
   "observations": [
@@ -84,7 +106,7 @@
     "The first red frame and body entry are observed at capture-frame resolution; subframe ordering cannot be inferred without more precise source timing.",
     "Native signal state is not itself proof that the intended head visibly faced ego; source-camera corroboration remains necessary.",
     "Yellow stopping feasibility is context, not a statutory numeric threshold here.",
-    "Three red-entry exact primary CPU proofs pass; yellow-stop exact construction, fallbacks, semantic stages and independent audits remain worker-owned."
+    "Four primary and twelve fallback exact CPU proofs plus semantic and diagnostic comparison proofs pass; Native realization, independent delivery audits, canonical queue/integration and legal acceptance remain unproved."
   ],
   "source_observation_mapping": {
     "dev.traffic_signal": {
@@ -195,11 +217,11 @@
     "site_validator": "validate_signal_site.py",
     "site_validator_sha256": "9b36a6829ac291b9436c431165a670bfc940822e9727382497f26f3100e65881",
     "site_log": "cpu-diagnostic-proofs.json",
-    "site_log_sha256": "69cb9d14adae39ec92b84fd362f573d11d9142c1fee3c4baf810ae7477a99810",
+    "site_log_sha256": "34d5862a7488cf7f1d6b5364c316416e76b6a35030a60f244270bbfce2f34f85",
     "source_builder": "prove_red_entry_sources.py",
     "source_builder_sha256": "0a1d78f628c152f1cf60dd1b66c5f547649ddbb1ff05184c35cff5679cb15882",
     "source_report": "cpu-diagnostic-proofs.json",
-    "source_report_sha256": "69cb9d14adae39ec92b84fd362f573d11d9142c1fee3c4baf810ae7477a99810",
+    "source_report_sha256": "34d5862a7488cf7f1d6b5364c316416e76b6a35030a60f244270bbfce2f34f85",
     "entry_frames": [
       150,
       160,
@@ -240,7 +262,7 @@
     "proof_builder": "prove_saved_finalizer.py",
     "proof_builder_sha256": "b81ea8626c99b2b5dca6bea2593c57e68b6099567c1ac57f6eae0e1d1a5bbdae",
     "diagnostic_report": "cpu-diagnostic-proofs.json",
-    "diagnostic_report_sha256": "69cb9d14adae39ec92b84fd362f573d11d9142c1fee3c4baf810ae7477a99810",
+    "diagnostic_report_sha256": "34d5862a7488cf7f1d6b5364c316416e76b6a35030a60f244270bbfce2f34f85",
     "sample_rate_hz": 20,
     "samples_per_case": 900,
     "entry_frames": [
@@ -349,7 +371,7 @@
     "proof_script": "prove_four_camera_validation.py",
     "proof_script_sha256": "10deaec22441e0788f95c9544e7bbf0aef7ed6d22f4f1f64b4ee9626478485f2",
     "report": "cpu-diagnostic-proofs.json",
-    "report_sha256": "69cb9d14adae39ec92b84fd362f573d11d9142c1fee3c4baf810ae7477a99810",
+    "report_sha256": "34d5862a7488cf7f1d6b5364c316416e76b6a35030a60f244270bbfce2f34f85",
     "frames_per_camera": 900,
     "provenance_kind": "synthetic_fixture",
     "physical_acceptance_claimed": false,
@@ -402,7 +424,7 @@
     "four_camera_script": "prove_four_camera_validation.py",
     "four_camera_script_sha256": "10deaec22441e0788f95c9544e7bbf0aef7ed6d22f4f1f64b4ee9626478485f2",
     "four_camera_report": "cpu-diagnostic-proofs.json",
-    "four_camera_report_sha256": "69cb9d14adae39ec92b84fd362f573d11d9142c1fee3c4baf810ae7477a99810",
+    "four_camera_report_sha256": "34d5862a7488cf7f1d6b5364c316416e76b6a35030a60f244270bbfce2f34f85",
     "fixture_builder": "build_at_red_diagnostic_spec.py",
     "fixture_builder_sha256": "7ff6d6f69c997d9ebd7eaa73a4dffa3c36754a1deea3cf088d18a1296922659e",
     "diagnostic_sources": "at-red-diagnostic-sources.json",
@@ -444,7 +466,7 @@
     "four_camera_script": "prove_four_camera_validation.py",
     "four_camera_script_sha256": "10deaec22441e0788f95c9544e7bbf0aef7ed6d22f4f1f64b4ee9626478485f2",
     "four_camera_report": "cpu-diagnostic-proofs.json",
-    "four_camera_report_sha256": "69cb9d14adae39ec92b84fd362f573d11d9142c1fee3c4baf810ae7477a99810",
+    "four_camera_report_sha256": "34d5862a7488cf7f1d6b5364c316416e76b6a35030a60f244270bbfce2f34f85",
     "fixture_builder": "build_at_red_diagnostic_spec.py",
     "fixture_builder_sha256": "7ff6d6f69c997d9ebd7eaa73a4dffa3c36754a1deea3cf088d18a1296922659e",
     "diagnostic_sources": "after-red-diagnostic-sources.json",
@@ -486,7 +508,7 @@
     "four_camera_script": "prove_four_camera_validation.py",
     "four_camera_script_sha256": "10deaec22441e0788f95c9544e7bbf0aef7ed6d22f4f1f64b4ee9626478485f2",
     "four_camera_report": "cpu-diagnostic-proofs.json",
-    "four_camera_report_sha256": "69cb9d14adae39ec92b84fd362f573d11d9142c1fee3c4baf810ae7477a99810",
+    "four_camera_report_sha256": "34d5862a7488cf7f1d6b5364c316416e76b6a35030a60f244270bbfce2f34f85",
     "fixture_builder": "build_at_red_diagnostic_spec.py",
     "fixture_builder_sha256": "7ff6d6f69c997d9ebd7eaa73a4dffa3c36754a1deea3cf088d18a1296922659e",
     "diagnostic_sources": "yellow-stop-diagnostic-sources.json",
@@ -789,5 +811,17 @@
     "provenance_kind": "synthetic_fixture",
     "physical_acceptance_claimed": false,
     "offline_log_sha256": "f9c50df87378243809a65b9436be72c8abb9b35fe86d02155d0fb6d772ffc220"
+  },
+  "semantic_delivery_proof": {
+    "status": "canonical_stage_chain_cpu_passed_native_unexecuted",
+    "index": "proposals/semantic-index.json",
+    "index_sha256": "f1a1471692193ad595c006f564527b130703d2633535053f895f5d006edeafdc",
+    "proof": "semantic-delivery-proof.json",
+    "proof_sha256": "29caa0ac0bccd6d574094a8de2ce744c1e99af060646f20b97cba1bdddc2ad95",
+    "stage_count": 5,
+    "selected_cases": 4,
+    "baseline_reuses": "entry_before_red planned source setup",
+    "script": "prove_semantic_delivery.py",
+    "script_sha256": "14fcb19b69a79d5e02f5c3ffe3335e33088f35572de2f6bf20378ed5dd5b896a"
   }
 }

@@ -4,10 +4,10 @@
   "status": "draft",
   "cases": [
     {
-      "case_id": "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__entry_before_red",
+      "case_id": "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__shared_baseline",
       "target_law_id": "NRS-484B-307-6a",
-      "target_type": "boundary_probe",
-      "rationale": "Complete-body entry target precedes first Red frame by ten original frames; construction target only, actual result measured from source",
+      "target_type": "baseline",
+      "rationale": "Shared source and signal schedule reference for the four planned boundary comparisons; reuse the before-red candidate setup without an additional recording.",
       "variable_assignments": {
         "signal_phase_schedule": {
           "kind": "controller",
@@ -94,9 +94,108 @@
       ]
     },
     {
+      "case_id": "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__entry_before_red",
+      "target_law_id": "NRS-484B-307-6a",
+      "target_type": "compliant_attempt",
+      "rationale": "Complete-body entry target precedes first Red frame by ten original frames; construction target only, actual result measured from source",
+      "variable_assignments": {
+        "signal_phase_schedule": {
+          "kind": "controller",
+          "value": {
+            "green_frames": [
+              0,
+              99
+            ],
+            "yellow_frames": [
+              100,
+              159
+            ],
+            "red_start_frame": 160
+          },
+          "unit": "original 20 Hz frame intervals"
+        },
+        "body_entry_target_frame": {
+          "kind": "controller",
+          "value": 150,
+          "unit": "original 20 Hz frame or null for no entry"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "signal_state",
+            "unit": "text",
+            "method": "Original same-frame Native governing signal state readback",
+            "uncertainty": "Physical head indication and official governance require original-camera and site review",
+            "time_window": "original 20 Hz 45-second capture",
+            "reference_frame": "Native map and original camera frames",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_body_vertices_xy_m",
+            "unit": "structured record",
+            "method": "Original same-frame complete ego body vertices in sourced junction coordinates",
+            "uncertainty": "Body geometry depends on Native actor and map registration",
+            "time_window": "original 20 Hz 45-second capture",
+            "reference_frame": "Native map and original camera frames",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_body_in_intersection",
+            "unit": "boolean",
+            "method": "Saved polygon overlap of complete original ego body against sourced junction polygon",
+            "uncertainty": "Geometric overlap does not settle the statutory entry reference point",
+            "time_window": "original 20 Hz 45-second capture",
+            "reference_frame": "Native map and original camera frames",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "ego_approach_speed",
+            "unit": "m/s",
+            "method": "Original same-frame ego speed readback from retained Native history",
+            "uncertainty": "Speed alone does not establish yellow stopping feasibility",
+            "time_window": "original 20 Hz 45-second capture",
+            "reference_frame": "Native map and original camera frames",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "junction_signal_context",
+            "unit": "structured record",
+            "method": "Saved join of original Native signal identity, affected approach lane, authored junction polygon and four source-camera references",
+            "source_refs": [
+              "junction_context.json",
+              "signal_vehicle_history.jsonl",
+              "video_frames.jsonl"
+            ],
+            "uncertainty": "Official governance and physical head visibility remain unresolved"
+          }
+        ],
+        "limitations": [
+          "CPU construction and synthetic diagnostic sources do not establish Native head visibility, physical timing, yellow stopping feasibility or legal compliance"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "official and physically visible governing vehicular head",
+        "yellow stopping feasibility",
+        "statutory entry reference point",
+        "meaning of immediately thereafter"
+      ],
+      "paired_probe_id": "red_onset_entry",
+      "deliberate_differences": [
+        "body_entry_target_frame"
+      ],
+      "probe": {
+        "primary_variable": "body_entry_target_frame",
+        "comparison_or_standard": "First original complete-body entry relative to first observed red exhibition",
+        "target_value_or_branch": "entry_before_red"
+      }
+    },
+    {
       "case_id": "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__entry_at_red",
       "target_law_id": "NRS-484B-307-6a",
-      "target_type": "boundary_probe",
+      "target_type": "violating_attempt",
       "rationale": "Complete-body entry target coincides with first Red frame; construction target only, actual result measured from source",
       "variable_assignments": {
         "signal_phase_schedule": {
@@ -181,12 +280,21 @@
         "yellow stopping feasibility",
         "statutory entry reference point",
         "meaning of immediately thereafter"
-      ]
+      ],
+      "paired_probe_id": "red_onset_entry",
+      "deliberate_differences": [
+        "body_entry_target_frame"
+      ],
+      "probe": {
+        "primary_variable": "body_entry_target_frame",
+        "comparison_or_standard": "First original complete-body entry relative to first observed red exhibition",
+        "target_value_or_branch": "entry_at_red"
+      }
     },
     {
       "case_id": "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__entry_after_red",
       "target_law_id": "NRS-484B-307-6a",
-      "target_type": "boundary_probe",
+      "target_type": "violating_attempt",
       "rationale": "Complete-body entry target follows first Red frame by ten original frames; construction target only, actual result measured from source",
       "variable_assignments": {
         "signal_phase_schedule": {
@@ -271,12 +379,21 @@
         "yellow stopping feasibility",
         "statutory entry reference point",
         "meaning of immediately thereafter"
-      ]
+      ],
+      "paired_probe_id": "red_onset_entry",
+      "deliberate_differences": [
+        "body_entry_target_frame"
+      ],
+      "probe": {
+        "primary_variable": "body_entry_target_frame",
+        "comparison_or_standard": "First original complete-body entry relative to first observed red exhibition",
+        "target_value_or_branch": "entry_after_red"
+      }
     },
     {
       "case_id": "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__stops_on_yellow",
       "target_law_id": "NRS-484B-307-6a",
-      "target_type": "boundary_probe",
+      "target_type": "compliant_attempt",
       "rationale": "Ego target stops on Yellow without geometric intersection entry; construction target only, actual result measured from source",
       "variable_assignments": {
         "signal_phase_schedule": {
@@ -361,7 +478,16 @@
         "yellow stopping feasibility",
         "statutory entry reference point",
         "meaning of immediately thereafter"
-      ]
+      ],
+      "paired_probe_id": "red_onset_entry",
+      "deliberate_differences": [
+        "body_entry_target_frame"
+      ],
+      "probe": {
+        "primary_variable": "body_entry_target_frame",
+        "comparison_or_standard": "First original complete-body entry relative to first observed red exhibition",
+        "target_value_or_branch": "stops_on_yellow"
+      }
     }
   ],
   "sweep_specs": [],
