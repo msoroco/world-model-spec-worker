@@ -20,7 +20,12 @@ SOURCES = ('config.json', 'road_geometry.json', 'body_history.jsonl',
            'video_frames.jsonl', 'trace.jsonl')
 
 
-def check(attempt):
+def write(path, value):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(value, indent=2, allow_nan=False) + '\n')
+
+
+def check(attempt, output_dir=None):
     case = json.loads((attempt / 'config.json').read_text())['selected_case_id']
     manifest = json.loads((HERE / 'draft-execution-manifest.json').read_text())
     selected = [(i, c) for i, c in enumerate(manifest['cases']) if c['case_id'] == case]
@@ -32,19 +37,23 @@ def check(attempt):
         for name in SOURCES:
             os.link(attempt / name, root / name)
         (root / 'acquisition-provenance.json').write_text(json.dumps({
-            'provenance_kind': 'native', 'diagnostic_fixture': True,
+            'provenance_kind': 'synthetic_fixture', 'diagnostic_fixture': True,
             'scope': 'source-shaped CPU protocol proof only'}) + '\n')
         good = physical_result(root, {'case_id': case, 'target_checks': []})
         if (good['physical_checks']['maneuver']['status'] != 'met' or
                 good['physical_checks']['setup']['status'] != 'not_met' or
                 good['physical_acceptance_claimed'] is not False):
             raise AssertionError('Expected synthetic motion and incomplete setup')
+        if output_dir is not None:
+            write(output_dir / 'complete_motion.json', good)
         body = root / 'body_history.jsonl'
         original = body.read_text()
         body.unlink()
         missing = physical_result(root, {'case_id': case, 'target_checks': []})
         if missing['physical_checks']['maneuver']['status'] != 'unverified':
             raise AssertionError('Missing original body source was not rejected')
+        if output_dir is not None:
+            write(output_dir / 'missing_evidence.json', missing)
         rows = [json.loads(line) for line in original.splitlines() if line.strip()]
         for row in rows:
             if row['road_id'] == 2:
@@ -54,6 +63,8 @@ def check(attempt):
         incomplete = physical_result(root, {'case_id': case, 'target_checks': []})
         if incomplete['physical_checks']['maneuver']['status'] != 'not_met':
             raise AssertionError('Incomplete destination turn was not rejected')
+        if output_dir is not None:
+            write(output_dir / 'incomplete_motion.json', incomplete)
         # Lifecycle checker uses source-shaped attempt files and an exact
         # construction. The saved-processing event is bound to the prior
         # successful recorded-only proof, not simulated by this fixture.
@@ -108,9 +119,11 @@ def check(attempt):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('attempts', nargs='+', type=Path)
+    parser.add_argument('--output-root', type=Path)
     args = parser.parse_args()
-    for attempt in args.attempts:
-        print(json.dumps(check(attempt), sort_keys=True))
+    for index, attempt in enumerate(args.attempts, 1):
+        output_dir = args.output_root / f'case{index}' if args.output_root else None
+        print(json.dumps(check(attempt, output_dir), sort_keys=True))
 
 
 if __name__ == '__main__':

@@ -155,3 +155,39 @@ def audit_comparison(near_attempt, far_attempt, kind, decode=False):
     return {'kind': kind, 'near_case_id': near['case_id'], 'far_case_id': far['case_id'],
             'near_exit': near['exit'], 'far_exit': far['exit'],
             'physical_acceptance_claimed': False, 'legal_acceptance_claimed': False}
+
+
+def cli():
+    import argparse
+    import os
+    from tempfile import TemporaryDirectory
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--case', required=True)
+    parser.add_argument('--attempt', required=True, type=Path)
+    parser.add_argument('--negative', action='store_true')
+    args = parser.parse_args()
+    if read(args.attempt / 'config.json').get('selected_case_id') != args.case:
+        raise ValueError('CLI selected another exact case')
+    if args.negative:
+        with TemporaryDirectory(dir='.runtime-work', prefix='c109705-2b-delivery-negative-') as tmp:
+            target = Path(tmp)
+            for name in (*REQUIRED, 'result.json'):
+                if name == 'turn_history.jsonl':
+                    continue
+                dest = target / name
+                dest.parent.mkdir(parents=True, exist_ok=True)
+                os.link(args.attempt / name, dest)
+            audit_delivery(target, decode=True)
+        raise AssertionError('Missing original turn history passed')
+    result = audit_delivery(args.attempt, decode=True)
+    if result['case_id'] != args.case:
+        raise ValueError('Delivery audit selected another exact case')
+    print(json.dumps({'case_id': args.case, 'passed': True,
+                      'source_bound': True, 'full_video_decode': result['decoded'],
+                      'fixture_scope': 'synthetic diagnostic; actor visibility unverified',
+                      'physical_acceptance_claimed': False,
+                      'legal_acceptance_claimed': False}, sort_keys=True))
+
+
+if __name__ == '__main__':
+    cli()
