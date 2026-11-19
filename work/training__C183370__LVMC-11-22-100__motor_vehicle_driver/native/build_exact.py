@@ -84,7 +84,7 @@ def build(case, candidate='primary'):
 
 def write():
     cases=[]
-    target=PACKAGE/'draft-exact-candidates'
+    target=PACKAGE/'draft-measured-candidates'
     for case in ('reference','contrast'):
         variants={}
         for candidate in KNOBS:
@@ -98,6 +98,11 @@ def write():
                     for candidate in FALLBACKS]
         cases.append({'case_id':ASSIGNMENT+'__'+case,'kind':'delivery',
                       **variants['primary'],
+                      'measurement_contract':
+                          'selected-measurement-contracts/'+case+'.json',
+                      'measurement_procedure':{
+                          'entrypoint':'native/finalize.py',
+                          'output_schema':'c183370-native-finalization-v1'},
                       'candidate_risk':{'status':'physical',
                           'reason':'Native body tracking and warning/pavement camera visibility remain unverified'},
                       'candidates':candidates,
@@ -109,7 +114,7 @@ def write():
               'runtime_manifest_sha256':sha(runtime),
               'source_branch':'warning_person',
               'cases':cases}
-    path=PACKAGE/'draft-exact-candidate-manifest.json'
+    path=PACKAGE/'draft-measured-candidate-manifest.json'
     path.write_text(json.dumps(manifest,indent=2,sort_keys=True)+'\n')
     return path
 

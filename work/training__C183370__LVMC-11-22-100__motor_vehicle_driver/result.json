@@ -26,7 +26,7 @@
     "selected_for_delivery": false,
     "source_builder": "native/build_exact.py",
     "source_builder_sha256": "572055df57283b8326b1ffdc426ad60d0bd1932233e85d6f4d605801ff078bb0",
-    "status": "draft_all_candidates_offline_only"
+    "status": "historical_source_before_measurement_finalizer"
   },
   "draft_exact_primary_component": {
     "manifest": "draft-exact-primary-manifest.json",
@@ -37,6 +37,19 @@
     "source_builder": "native/build_exact.py",
     "source_builder_sha256": "96459cbd44475eca726781160426346aa3459393269417bab835209767a1c8e3",
     "status": "draft_primary_offline_only"
+  },
+  "draft_measured_candidate_component": {
+    "candidate_count": 8,
+    "compatibility_passed": 0,
+    "manifest": "draft-measured-candidate-manifest.json",
+    "manifest_sha256": "8f546f7655024cdae18babe2248acb9fcbd49329d964349a8fbfeffc123bfdde",
+    "measurement_builder": "native/build_measurements.py",
+    "measurement_builder_sha256": "d6e151386cdd793899c9f74252a41d11275f603ca6a9d2f4ca0e3e6f528e494e",
+    "offline_passed": 8,
+    "offline_receipt": "update104-measured-offline-receipt.json",
+    "offline_receipt_sha256": "f8218520ccdf181299feda2b328dc6e14592e76bda893bffc55e6a8358d4baf2",
+    "selected_for_delivery": false,
+    "status": "draft_all_candidates_measured_offline_only"
   },
   "input_sha256": "0969b4f3fbcc41e77f6be98c815f6b89b8e464dd337834688c18c47b29467cd0",
   "live_readback_component": {
@@ -52,11 +65,11 @@
     "path": "native/finalize.py",
     "recording_contract_sha256": "30fbbed2dae659a1eda5ab693d7299af1935da1f14fdc8c1b970f537f37480e6",
     "selected_manifest_bound": false,
-    "sha256": "a4f9c286f6cd880390ec7e937f771fc2ef8421e72ce0e860092a97eb0fa8aae2",
+    "sha256": "31ccc924a9dacd5de6b8bd2cfb871c5fc4c69f2a6d34d20ca80d0cb570f747af",
     "status": "cpu_unit_tested_not_native_executed"
   },
   "readiness_kind": null,
-  "reason": "C183370 has two exact draft cases, each with primary and three distinct source-bound fallback constructions. All eight pass pinned offline materialization and bundle CPU tests; focused Native software tests and preflight also pass. No selected delivery manifest, compatibility, saved-processing, original CARLA capture or independent source review exists. Human warning, actual newly repaired surface and paving-employee exception remain unverified; canonical semantic stages, positive/negative compatibility, recorded-only saved processing, independent physical/delivery/comparison audits and scoped strict remain worker-owned. No legal or physical acceptance claimed.",
+  "reason": "C183370 has two exact draft cases with primary and three fallback constructions each. Current bundled finalizer now emits two source-hashed selected measurement records per case, and all eight revised bundles pass pinned offline and measurement-contract checks. No diagnostic recipe, positive/negative compatibility, recorded-only saved processing, canonical semantic chain, selected delivery manifest, original CARLA capture or independent source review exists. Warning act, actual newly repaired surface and paving-employee exception remain unverified; remaining CPU proofs and physical/delivery/comparison audits are worker-owned. No legal or physical acceptance claimed.",
   "recordings_accepted": 0,
   "scene_plan_component": {
     "path": "native/scene_plan.py",
@@ -290,6 +303,30 @@
       "command": ".venv-cpu/bin/python worker_check.py --assignment training__C183370__LVMC-11-22-100__motor_vehicle_driver --complete --require-delivery-ready",
       "exit_code": 1,
       "log": "update103-scoped-strict.log",
+      "sha256": "f105b68de8bd7bbb3e9bdfade14e75a9b56640cac7ca657a4ce02c3efba457fe"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/native -p test_*.py -v",
+      "exit_code": 0,
+      "log": "update104-tests.log",
+      "sha256": "fa96e839d0be9ae94b90644e2e922722a3b5efa6626dad518869af5508ab1916"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "update104-preflight.log",
+      "sha256": "4f80f917ac6a8cfeaf8edaf82997da170a9bb6011e36c0eab78583d3e15edee9"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment training__C183370__LVMC-11-22-100__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "update104-scoped-static.log",
+      "sha256": "f51190cce71609027471d21ae37b0316aa9f907810e09874e885673db6c9c32c"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment training__C183370__LVMC-11-22-100__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "update104-scoped-strict.log",
       "sha256": "f105b68de8bd7bbb3e9bdfade14e75a9b56640cac7ca657a4ce02c3efba457fe"
     }
   ]

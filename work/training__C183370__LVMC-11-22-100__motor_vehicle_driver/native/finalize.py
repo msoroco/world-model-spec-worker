@@ -128,11 +128,56 @@ def build_result(config, analysis):
     }
 
 
+MEASUREMENT_SOURCES = ('native-actors.jsonl','video_frames.jsonl',
+                       'live-readback.json')
+
+
+def measure_surveyed_pavement_contact(analysis):
+    observed = analysis['observations']
+    return {
+        'requested_contact':analysis['case']=='reference',
+        'measured_contact':observed['pavement_footprint_contact_observed'],
+        'contact_frames':observed['pavement_footprint_contact_frames'],
+        'requested_contact_matched':observed['requested_footprint_contact_matched'],
+        'newly_repaired_status_verified':False,
+        'warning_act_verified':False,
+        'legal_verdict_claimed':False,
+    }
+
+
+def measure_warning_person_vicinity(analysis):
+    observed = analysis['observations']
+    return {
+        'person_near_surveyed_pavement_frames':
+            observed['warning_person_present_near_pavement_frames'],
+        'warning_act_verified':False,
+        'paving_employee_exception_verified':False,
+        'legal_verdict_claimed':False,
+    }
+
+
+def measurement_records(analysis):
+    sources={name:analysis['source_hashes'][name] for name in MEASUREMENT_SOURCES}
+    return {
+        'surveyed_pavement_contact':{
+            'method':'measure_surveyed_pavement_contact',
+            'value':measure_surveyed_pavement_contact(analysis),
+            'sources':sources},
+        'warning_person_vicinity':{
+            'method':'measure_warning_person_vicinity',
+            'value':measure_warning_person_vicinity(analysis),
+            'sources':sources},
+    }
+
+
 def finalize(attempt, output):
     attempt = Path(attempt)
     output = Path(output)
     if (attempt/'result.json').exists() or output.exists():
         raise ValueError('Preserve prior Native finalization; use a fresh attempt')
+    for name in MEASUREMENT_SOURCES:
+        if not (attempt/name).is_file():
+            raise ValueError('Missing required source: '+name)
     marker = json.loads((attempt/'acquisition-provenance.json').read_text())
     if marker.get('provenance_kind') != 'native' or marker.get('diagnostic_fixture') is not False:
         raise ValueError('Original Native provenance required')
@@ -156,6 +201,7 @@ def finalize(attempt, output):
               'case_id':config['case_id'], 'source_hashes':analysis['source_hashes'],
               'derived_channel_sha256':channels,
               'native_result_sha256':sha(attempt/'result.json'),
+              'measurements':measurement_records(analysis),
               'provenance_kind':'native','diagnostic_fixture':False,
               'analysis_complete':True,
               'physical_acceptance_claimed':False,
