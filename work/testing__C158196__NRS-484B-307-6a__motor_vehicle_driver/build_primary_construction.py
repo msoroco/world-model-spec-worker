@@ -7,7 +7,7 @@ HERE = Path(__file__).resolve().parent
 ASSIGNMENT = HERE.name
 CASE = ASSIGNMENT + '__entry_before_red'
 FILES = ('runner.py', 'signal_control.py', 'yellow_red_capture.py',
-         'yellow_red_policy.py', 'red_entry_measurements.py',
+         'yellow_red_policy.py', 'red_entry_measurements.py', 'yellow_red_finalizer.py',
          'validate_signal_site.py', 'yellow-red-site.xodr', 'config.json',
          'tests/test_native_capture_draft.py', 'tests/test_red_entry.py',
          'tests/test_yellow_red_policy.py')
@@ -33,8 +33,8 @@ def main():
             'raw_sources': ['junction_context.json', 'signal_vehicle_history.jsonl',
                             'video_frames.jsonl', 'overview.mkv', 'approach.mkv',
                             'reference_corner.mkv', 'driver_reference.mkv'],
-            'analysis_entrypoint': 'red_entry_measurements.py',
-            'saved_processing_status': 'pending'},
+            'analysis_entrypoint': 'yellow_red_finalizer.py',
+            'saved_processing_status': 'diagnostic_source_proof_passed'},
         'files': [{'path': name, 'content': (HERE / name).read_text()} for name in FILES],
         'static_checks': [
             'Validate authored OpenDRIVE head validity and controller linkage',
@@ -59,18 +59,18 @@ def main():
                            'candidate_risk': {'status': 'physical',
                                               'reason': 'Native head may not govern ego lane or remain visible in original forward cameras; timing policy may miss body entry.'},
                            'candidates': [],
-                           'measurement_procedure': {'entrypoint': 'red_entry_measurements.py'},
+                           'measurement_procedure': {'entrypoint': 'yellow_red_finalizer.py'},
                            'native_handoff': {'python_env_var': 'CARLA_PYTHON',
                                               'host_env_var': 'CARLA_HOST',
                                               'port_env_var': 'CARLA_PORT'}}]}
-    offline_log = HERE / 'primary-offline.log'
+    offline_log = HERE / 'primary-offline-v2.log'
     if offline_log.is_file():
         manifest['cases'][0]['offline'] = {
             'command': ('.venv-cpu/bin/python runtime.py offline --manifest work/' +
                         ASSIGNMENT + '/execution-manifest.json --case ' + CASE +
-                        ' --output .runtime-work/c158196-yellow-red-primary-offline-v1'),
+                        ' --output .runtime-work/c158196-yellow-red-primary-offline-v2'),
             'construction_sha256': sha(construction_path), 'exit_code': 0,
-            'log': 'primary-offline.log', 'log_sha256': sha(offline_log)}
+            'log': 'primary-offline-v2.log', 'log_sha256': sha(offline_log)}
     write(HERE / 'execution-manifest.json', manifest)
     print(json.dumps({'case_id': CASE, 'construction_sha256': sha(construction_path),
                       'manifest_sha256': sha(HERE / 'execution-manifest.json'),
