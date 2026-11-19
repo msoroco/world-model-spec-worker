@@ -99,7 +99,13 @@ def main():
                  ['signal_vehicle_history.jsonl', 'video_frames.jsonl']),
                 ('junction_signal_context', 'saved governing head and lane context join',
                  ['junction_context.json', 'signal_vehicle_history.jsonl']))}
-    write(HERE / 'execution-manifest.json', manifest)
+    previous_path = HERE / 'execution-manifest.json'
+    if previous_path.is_file():
+        previous = json.loads(previous_path.read_text())
+        if previous.get('assignment_id') == ASSIGNMENT:
+            manifest['cases'].extend(case for case in previous.get('cases', [])
+                                     if case.get('case_id') != CASE)
+    write(previous_path, manifest)
     print(json.dumps({'case_id': CASE, 'construction_sha256': sha(construction_path),
                       'manifest_sha256': sha(HERE / 'execution-manifest.json'),
                       'status': 'draft'}))

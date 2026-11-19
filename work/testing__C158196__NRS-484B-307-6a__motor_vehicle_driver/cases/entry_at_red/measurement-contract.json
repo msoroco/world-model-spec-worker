@@ -1,0 +1,66 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__entry_at_red",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Original related Green termination, steady Yellow-alone interval and subsequent Red exhibition are retained",
+      "source": "NRS 484B.307(6)(a); inputs/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/assignment.json; inputs/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/witnesses.json",
+      "output_key": "related_phase_sequence",
+      "method": "measure_phase_sequence",
+      "value_type": "array",
+      "kind": "measured",
+      "inputs": [
+        "signal_vehicle_history.jsonl",
+        "video_frames.jsonl",
+        "junction_context.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Complete ego-body entry is timed against the first exhibited Red frame",
+      "source": "NRS 484B.307(6)(a); inputs/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/assignment.json; inputs/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/witnesses.json",
+      "output_key": "entry_minus_red_onset_frames",
+      "method": "measure_body_entry_offset",
+      "value_type": "number",
+      "kind": "measured",
+      "inputs": [
+        "signal_vehicle_history.jsonl",
+        "video_frames.jsonl",
+        "junction_context.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "The governing Native signal and affected one-way approach lane are identified",
+      "source": "NRS 484B.307(6)(a); inputs/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/assignment.json; inputs/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/witnesses.json",
+      "output_key": "governed_approach_context",
+      "method": "measure_governed_approach",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "junction_context.json",
+        "signal_vehicle_history.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "Ego approach speed at steady Yellow onset is retained",
+      "source": "NRS 484B.307(6)(a); inputs/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/assignment.json; inputs/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/witnesses.json",
+      "output_key": "approach_speed_at_yellow_mps",
+      "method": "measure_approach_speed_at_yellow",
+      "value_type": "number",
+      "kind": "measured",
+      "inputs": [
+        "signal_vehicle_history.jsonl",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "signal_vehicle_history.jsonl"
+    ],
+    "error_contains": "Missing required source: signal_vehicle_history.jsonl"
+  }
+}

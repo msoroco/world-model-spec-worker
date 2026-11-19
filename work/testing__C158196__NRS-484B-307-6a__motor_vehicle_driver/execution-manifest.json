@@ -81,6 +81,85 @@
           ]
         }
       }
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__entry_at_red",
+      "kind": "delivery",
+      "construction": "cases/entry_at_red/construction.json",
+      "construction_sha256": "6a02fac974ddf8a3190b9563b2372f11bc79ec93215de722668724c0de507192",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native head may not govern ego lane or remain visible in original forward cameras; timing policy may miss body entry."
+      },
+      "candidates": [],
+      "measurement_contract": "cases/entry_at_red/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "yellow_red_finalizer.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "signal_state": {
+          "entrypoint": "yellow_red_finalizer.py",
+          "method": "original same-frame Native signal readback",
+          "evidence": [
+            "signal_vehicle_history.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "ego_body_vertices_xy_m": {
+          "entrypoint": "yellow_red_finalizer.py",
+          "method": "original complete body vertices",
+          "evidence": [
+            "signal_vehicle_history.jsonl",
+            "junction_context.json"
+          ]
+        },
+        "ego_body_in_intersection": {
+          "entrypoint": "yellow_red_finalizer.py",
+          "method": "saved body-polygon intersection overlap",
+          "evidence": [
+            "signal_vehicle_history.jsonl",
+            "junction_context.json"
+          ]
+        },
+        "ego_approach_speed": {
+          "entrypoint": "yellow_red_finalizer.py",
+          "method": "original same-frame ego speed readback",
+          "evidence": [
+            "signal_vehicle_history.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "junction_signal_context": {
+          "entrypoint": "yellow_red_finalizer.py",
+          "method": "saved governing head and lane context join",
+          "evidence": [
+            "junction_context.json",
+            "signal_vehicle_history.jsonl"
+          ]
+        }
+      },
+      "fixture_recipe": "work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/at-red-fixture-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__entry_at_red --output .runtime-work/c158196-yellow-red-at-red-offline",
+        "construction_sha256": "6a02fac974ddf8a3190b9563b2372f11bc79ec93215de722668724c0de507192",
+        "exit_code": 0,
+        "log": "at-red-offline.log",
+        "log_sha256": "21fe8010d507f064b97bf017fa0695690de4c60760905cb79c2c4462536fcde8"
+      },
+      "compatibility": {
+        "receipt": "at-red-compatibility.json",
+        "sha256": "4c83b44de234cc492655e8174493d320f1d7f782a53bf82f8221d9ac97f17bb8",
+        "log": "at-red-compatibility-analysis.log",
+        "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__entry_at_red --output .runtime-work/c158196-yellow-red-at-red-compatibility --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+      },
+      "negative": {
+        "log": "at-red-negative-analysis.log"
+      }
     }
   ]
 }
