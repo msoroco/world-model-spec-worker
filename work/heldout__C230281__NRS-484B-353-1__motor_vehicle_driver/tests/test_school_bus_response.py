@@ -32,6 +32,32 @@ def returned_json(path):
 
 
 class SourceResponse(unittest.TestCase):
+    def test_all_selected_cases_have_returned_exact_fallback_proofs(self):
+        package = Path(__file__).resolve().parents[1]
+        manifest = json.loads((package / 'execution-manifest.json').read_text())
+        self.assertEqual(len(manifest['cases']), 8)
+        for case in manifest['cases']:
+            self.assertEqual([row['id'] for row in case['candidates']],
+                             ['fallback1', 'fallback2', 'fallback3'])
+            constructions = {case['construction_sha256']}
+            for candidate in case['candidates']:
+                self.assertNotIn(candidate['construction_sha256'], constructions)
+                constructions.add(candidate['construction_sha256'])
+                for key, digest, source in (
+                    ('construction', 'construction_sha256', candidate),
+                    ('log', 'log_sha256', candidate['offline']),
+                    ('receipt', 'sha256', candidate['compatibility']),
+                    ('log', 'log_sha256', candidate['compatibility']),
+                    ('negative_log', 'negative_log_sha256', candidate['compatibility']),
+                ):
+                    self.assertEqual(hashlib.sha256((package / source[key]).read_bytes()).hexdigest(),
+                                     source[digest])
+                receipt = json.loads((package / candidate['compatibility']['receipt']).read_text())
+                self.assertTrue(receipt['passed'])
+                self.assertEqual((receipt['case_id'], receipt['candidate_id'], receipt['construction_sha256']),
+                                 (case['case_id'], candidate['id'], candidate['construction_sha256']))
+                self.assertIn('negative_case_source', receipt['checks'])
+
     def test_returned_meeting_stop_fallbacks(self):
         package = Path(__file__).resolve().parents[1]
         manifest = json.loads((package / 'execution-manifest.json').read_text())

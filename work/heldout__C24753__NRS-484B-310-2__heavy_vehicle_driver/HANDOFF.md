@@ -134,3 +134,7 @@ Remaining CPU work: canonical semantic stage proposals and index; explicit compa
 2026-11-18 file-budget preservation: six byte-identical zero-byte compatibility analysis logs were rebound in `execution-manifest.json` to retained `east_faster_proxy-fallback2-analysis.log`. Their exact original paths, SHA256 and bytes are preserved in `work/_shared/historical-receipts-bundle-20261118.json`. The assignment scoped `worker_check.py --complete` passed afterward. Status remains partial for its stated construction and proof work.
 
 2026-11-19 return-cap preservation: historical `cpu-tests.log` and its result test record were losslessly archived at `work/_shared/c147331-turn-return-cap-archive.json`. Restore and hash-check before relying on that historical test. Current package remains partial.
+
+## 2026-11-19 lossless stale-proof archiving
+
+Sixteen historical saved logs were preserved byte-exact with SHA verification in `work/_shared/c24753-stale-saved-archive.json` (SHA256 `b31562153a7df058446f0923b35f65107e5821ab5ec9f4409e6fe0d4a936d334`). The scoped nonstrict complete check passes. Current-manifest saved-processing reproof remains worker-owned; status remains partial.

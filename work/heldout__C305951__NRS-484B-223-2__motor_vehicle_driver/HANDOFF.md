@@ -100,3 +100,7 @@ Historical unused returned comparison/source receipts (8 files) are byte-exact i
 Correction: the eight `center-*` receipts are dynamically required by the scoped strict gate and were restored byte-exact from the historical bundle. The prior archive note does not mean they are inactive.
 
 2026-11-19 return-cap preservation: 7 historical result-test artifacts and their exact test records were losslessly moved to `work/_shared/c147331-turn-return-cap-archive.json`; restore and hash-check them before relying on those historical proofs. This package remains partial; current CPU proofs still need refresh before readiness.
+
+## 2026-11-19 lossless stale-proof archiving
+
+Historical logs were preserved byte-exact with SHA verification in `work/_shared/c305951-stale-proof-archive.json` (SHA256 `4f86ea48b71b79d4d3c4177902eab59ae5a620e0b56a2756fa6d6d1432f17c27`) and `work/_shared/c305951-stale-proof-archive-2.json` (SHA256 `417b99e2a1842fa9467ccb18dc4501c21753da6b49ecbc442fb3870a563ceea0`). The scoped nonstrict complete check passed after removal of the superseded individual logs. These historical receipts do not establish current-manifest readiness; status remains partial and the current primary, saved, comparison, physical and semantic CPU work in this handoff remains worker-owned.

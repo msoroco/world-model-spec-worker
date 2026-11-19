@@ -763,7 +763,22 @@
           },
           "changed_knobs": [
             "reference_corner_fov_deg"
-          ]
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C230281__NRS-484B-353-1__motor_vehicle_driver/execution-manifest.json --case heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__meeting_officer_controlled_pass --candidate fallback3 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-officer-pass-fallback-returned/fallback3-offline",
+            "exit_code": 0,
+            "log": "officer-pass-fallback3-offline.log",
+            "log_sha256": "b3dc8dfdaaad1c91f144933b6cfb602219e6a0ccbe137871269ac984fdd92143",
+            "construction_sha256": "52942b1b33341f652724cb65e3cc379ec99295f6d5c4edaecddb17cd376d916a"
+          },
+          "compatibility": {
+            "receipt": "officer-pass-fallback3-compatibility.json",
+            "sha256": "b349678bd6675ea59819294d85ec1407364e5351054196fae90a86813a305282",
+            "log": "meeting_stop-fallback1-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "officer-pass-fallback3-negative.log",
+            "negative_log_sha256": "3f8fa9613f3c432d76712f36a93e407b635664183820d72935ab95a6727aaa7d"
+          }
         }
       ],
       "native_handoff": {
@@ -793,7 +808,92 @@
         "status": "physical",
         "reason": "Held stop through red cessation and post-red motion require actual Native/lamp source review and tested fallback constructions."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-postred-resume-fallback1.json",
+          "construction_sha256": "530756030fa576e31ff03a2848874958cf14f86ed65a7915f76d83b773304181",
+          "trigger": {
+            "source": "Native map waypoint inventory",
+            "metric": "opposing nonjunction route pair available at 4 m sampling",
+            "failure_condition": "No valid same-road opposing nonjunction pair at 4 m sampling"
+          },
+          "changed_knobs": [
+            "waypoint_sample_step_m"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C230281__NRS-484B-353-1__motor_vehicle_driver/execution-manifest.json --case heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__meeting_resume_after_red_ceases --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-postred-resume-fallback-returned/fallback1-offline",
+            "exit_code": 0,
+            "log": "postred-resume-fallback1-offline.log",
+            "log_sha256": "3df9da2987dd2ff01037e635747cd2038cfe4d479d07662ff8fdf17f8279fc92",
+            "construction_sha256": "530756030fa576e31ff03a2848874958cf14f86ed65a7915f76d83b773304181"
+          },
+          "compatibility": {
+            "receipt": "postred-resume-fallback1-compatibility.json",
+            "sha256": "5a073cfb1285d9407367bb7ac6928ada33ea32e7474d764922b7739e748feced",
+            "log": "meeting_stop-fallback1-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "postred-resume-fallback1-negative.log",
+            "negative_log_sha256": "360d290e0b9064e8860cdf9893586d73dfb835cf7f7d9e84ddc217212cb5134c"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-postred-resume-fallback2.json",
+          "construction_sha256": "01ffc9d8e8740964c60775c8384d918d21a59254e3d5d86dce0127bf351b0f60",
+          "trigger": {
+            "source": "Native subject motion and signal streams",
+            "metric": "first stop frame and subject speed after red onset",
+            "failure_condition": "Subject fails to stop before the planned post-red resume at baseline brake gain"
+          },
+          "changed_knobs": [
+            "brake_gain"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C230281__NRS-484B-353-1__motor_vehicle_driver/execution-manifest.json --case heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__meeting_resume_after_red_ceases --candidate fallback2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-postred-resume-fallback-returned/fallback2-offline",
+            "exit_code": 0,
+            "log": "postred-resume-fallback2-offline.log",
+            "log_sha256": "3bc6fc848bd79a793181e098be1cbefaa412000731a2d45e3236889805fb6b83",
+            "construction_sha256": "01ffc9d8e8740964c60775c8384d918d21a59254e3d5d86dce0127bf351b0f60"
+          },
+          "compatibility": {
+            "receipt": "postred-resume-fallback2-compatibility.json",
+            "sha256": "568159724e82e56bd6040f571e22aeac42cae45ff6b67626826de244a968710b",
+            "log": "meeting_stop-fallback1-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "postred-resume-fallback2-negative.log",
+            "negative_log_sha256": "5f6b5b36c31aba53b6d0e3f82edde6c16dc63d3d0517df90758030f156720a3b"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-postred-resume-fallback3.json",
+          "construction_sha256": "da931b63391ba75a59b10943c8d94c88844ad462ae44d05690ac21c51e67cce4",
+          "trigger": {
+            "source": "Original reference_corner camera frames",
+            "metric": "front/rear lamp pixel visibility during red operation",
+            "failure_condition": "Baseline reference_corner lamp region remains unresolved in original pixels"
+          },
+          "changed_knobs": [
+            "reference_corner_fov_deg"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C230281__NRS-484B-353-1__motor_vehicle_driver/execution-manifest.json --case heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__meeting_resume_after_red_ceases --candidate fallback3 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-postred-resume-fallback-returned/fallback3-offline",
+            "exit_code": 0,
+            "log": "postred-resume-fallback3-offline.log",
+            "log_sha256": "9ace987bf100478059afa61a1911a58fc7f8a1ce0ae2d6a6e8ec4f148cdc51d0",
+            "construction_sha256": "da931b63391ba75a59b10943c8d94c88844ad462ae44d05690ac21c51e67cce4"
+          },
+          "compatibility": {
+            "receipt": "postred-resume-fallback3-compatibility.json",
+            "sha256": "74e808784d9bdb523aa59d29fe629a132d4c07ee87ecd6f3e01d02ed892301b8",
+            "log": "meeting_stop-fallback1-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "postred-resume-fallback3-negative.log",
+            "negative_log_sha256": "ebcfbfd7cb933acb6de2e01156da322c56847d9ae7aa87812c932454bdf67d85"
+          }
+        }
+      ],
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
