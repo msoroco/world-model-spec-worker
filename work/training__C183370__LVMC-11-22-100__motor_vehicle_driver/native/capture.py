@@ -13,6 +13,7 @@ from math import atan2, degrees, hypot
 from pathlib import Path
 
 from live_readback import bind
+from pathing import repository_root
 from recording_contract import config as recording_config
 from route_control import RouteControl
 
@@ -116,7 +117,7 @@ def install_cameras(world, library, carla, ego, callbacks):
 def acquire(survey, case, attempt, client, carla, *, sink_factory=FFV1Sink):
     if case not in ('reference', 'contrast'):
         raise ValueError('Unknown warning-person draft case')
-    repo = Path(__file__).resolve().parents[3]
+    repo = repository_root(__file__)
     generated = (repo/'.runtime-work').resolve()
     attempt = Path(attempt).resolve()
     if not attempt.is_relative_to(generated) or attempt.exists():

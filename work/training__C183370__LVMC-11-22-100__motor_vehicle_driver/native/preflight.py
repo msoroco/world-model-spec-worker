@@ -4,10 +4,11 @@ import json
 from pathlib import Path
 
 from live_readback import bind
+from pathing import repository_root
 
 
 def run(survey_path, output_path, client, carla):
-    repo = Path(__file__).resolve().parents[3]
+    repo = repository_root(__file__)
     output = Path(output_path).resolve()
     generated = (repo / '.runtime-work').resolve()
     if not output.is_relative_to(generated):

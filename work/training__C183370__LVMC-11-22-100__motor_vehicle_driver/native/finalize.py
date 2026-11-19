@@ -7,11 +7,12 @@ from pathlib import Path
 from shapely.geometry import MultiPoint, Polygon
 
 from analyze import analyze, read_jsonl, sha
+from pathing import repository_root
 from recording_contract import CHANNELS, ASSIGNMENT, description
 
 
 def _write_result():
-    repo = Path(__file__).resolve().parents[3]
+    repo = repository_root(__file__)
     runtime = str(repo/'runtime/pipeline/scenario_pipeline')
     if runtime not in sys.path:
         sys.path.insert(0, runtime)
