@@ -31,7 +31,7 @@
             "construction_sha256": "07222588b97a387e5e8b7c93089ca41f9aa786a6661d859e07d4f1c8229f630a",
             "exit_code": 0,
             "log": "exact-offline-proofs.log",
-            "log_sha256": "13ff371cbbad1d79e5828cb9b0695051dd6e8b8da406720f8e03c729b82c01a6"
+            "log_sha256": "05a03f2e3ef5330125a6f006ab2d2d5b4081414c8d52530fef206c401af70733"
           },
           "compatibility": {
             "receipt": "primary-fallback1-compatibility.json",
@@ -57,7 +57,7 @@
             "construction_sha256": "948cc8b2f460f381cf78c2a53779423644e4d65eac9b6320548f6c47f3200b6c",
             "exit_code": 0,
             "log": "exact-offline-proofs.log",
-            "log_sha256": "13ff371cbbad1d79e5828cb9b0695051dd6e8b8da406720f8e03c729b82c01a6"
+            "log_sha256": "05a03f2e3ef5330125a6f006ab2d2d5b4081414c8d52530fef206c401af70733"
           },
           "compatibility": {
             "receipt": "primary-fallback2-compatibility.json",
@@ -78,7 +78,20 @@
           "changed_knobs": [
             "overview fixed-camera height/pitch mount",
             "reference_corner fixed-camera position/yaw/pitch mount"
-          ]
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__entry_before_red --candidate fallback3 --output .runtime-work/c158196-yellow-red-primary-fallback3-offline",
+            "construction_sha256": "5b90e79b2ad30998917302be30c6c59f63f7f123dc38e3ff6334c6b95e0c5c26",
+            "exit_code": 0,
+            "log": "exact-offline-proofs.log",
+            "log_sha256": "05a03f2e3ef5330125a6f006ab2d2d5b4081414c8d52530fef206c401af70733"
+          },
+          "compatibility": {
+            "receipt": "primary-fallback3-compatibility.json",
+            "sha256": "2bc18f6d8d7812846d6f225cdfaae44eb91d229e1bc4a34a6a48e31bbcc0695b",
+            "log": "primary-compatibility-analysis.log",
+            "negative_log": "primary-fallback3-negative-analysis.log"
+          }
         }
       ],
       "measurement_contract": "measurement-contract.json",
@@ -96,7 +109,7 @@
         "construction_sha256": "984a8d8c4acdec3903c70efd8149d6ea691ea9009667162fe66e548490f6af85",
         "exit_code": 0,
         "log": "exact-offline-proofs.log",
-        "log_sha256": "13ff371cbbad1d79e5828cb9b0695051dd6e8b8da406720f8e03c729b82c01a6"
+        "log_sha256": "05a03f2e3ef5330125a6f006ab2d2d5b4081414c8d52530fef206c401af70733"
       },
       "compatibility": {
         "receipt": "primary-compatibility.json",
@@ -159,7 +172,61 @@
         "status": "physical",
         "reason": "Native head may not govern ego lane or remain visible in original forward cameras; timing policy may miss body entry."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/entry_at_red/fallback1-construction.json",
+          "construction_sha256": "f833d2e102c53962ef8ec7d51eebaf346d11c71b533fb22e6d35376acd730110",
+          "trigger": {
+            "source": "original approach.mkv and driver_reference.mkv source-camera head audit",
+            "metric": "governing_head_visible_yellow_red_frames",
+            "failure_condition": "zero visibly identifiable governing-head frames in either forward source"
+          },
+          "changed_knobs": [
+            "approach camera forward/height/pitch mount",
+            "driver_reference camera height/pitch mount"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__entry_at_red --candidate fallback1 --output .runtime-work/c158196-at-red-fallback1-offline",
+            "construction_sha256": "f833d2e102c53962ef8ec7d51eebaf346d11c71b533fb22e6d35376acd730110",
+            "exit_code": 0,
+            "log": "exact-offline-proofs.log",
+            "log_sha256": "05a03f2e3ef5330125a6f006ab2d2d5b4081414c8d52530fef206c401af70733"
+          },
+          "compatibility": {
+            "receipt": "at-red-fallback1-compatibility.json",
+            "sha256": "4fd261fac8ca848b88c9fb30c053dfb2c816aee92839d135d4688c89a55c4a7f",
+            "log": "primary-compatibility-analysis.log",
+            "negative_log": "at-red-fallback1-negative-analysis.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/entry_at_red/fallback2-construction.json",
+          "construction_sha256": "3b8f2deb68dd2da81a369d378be45b2375a6dbc3c9e470e00d1d2f34a6c82ebb",
+          "trigger": {
+            "source": "original signal_vehicle_history.jsonl and junction_context.json body/polygon audit",
+            "metric": "selected_body_entry_timing_or_no_entry_failure",
+            "failure_condition": "first complete-body entry was more than three frames later than the selected red-onset offset"
+          },
+          "changed_knobs": [
+            "ego spawn longitudinal x: -40.0 m to -36.0 m on the same approach lane"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__entry_at_red --candidate fallback2 --output .runtime-work/c158196-at-red-fallback2-offline",
+            "construction_sha256": "3b8f2deb68dd2da81a369d378be45b2375a6dbc3c9e470e00d1d2f34a6c82ebb",
+            "exit_code": 0,
+            "log": "exact-offline-proofs.log",
+            "log_sha256": "05a03f2e3ef5330125a6f006ab2d2d5b4081414c8d52530fef206c401af70733"
+          },
+          "compatibility": {
+            "receipt": "at-red-fallback2-compatibility.json",
+            "sha256": "5698f564e29613323c688776999817319c8d0a95bc6151e02d8688daa3f1d02c",
+            "log": "primary-compatibility-analysis.log",
+            "negative_log": "at-red-fallback2-negative-analysis.log"
+          }
+        }
+      ],
       "measurement_contract": "cases/entry_at_red/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "yellow_red_finalizer.py"
@@ -217,7 +284,7 @@
         "construction_sha256": "6a02fac974ddf8a3190b9563b2372f11bc79ec93215de722668724c0de507192",
         "exit_code": 0,
         "log": "exact-offline-proofs.log",
-        "log_sha256": "13ff371cbbad1d79e5828cb9b0695051dd6e8b8da406720f8e03c729b82c01a6"
+        "log_sha256": "05a03f2e3ef5330125a6f006ab2d2d5b4081414c8d52530fef206c401af70733"
       },
       "compatibility": {
         "receipt": "at-red-compatibility.json",
@@ -295,7 +362,7 @@
         "construction_sha256": "23b9155ca8427dc872a5355511a1f370f30ca6e531a95f4cb0091c3edd62a9b7",
         "exit_code": 0,
         "log": "exact-offline-proofs.log",
-        "log_sha256": "13ff371cbbad1d79e5828cb9b0695051dd6e8b8da406720f8e03c729b82c01a6"
+        "log_sha256": "05a03f2e3ef5330125a6f006ab2d2d5b4081414c8d52530fef206c401af70733"
       },
       "fixture_recipe": "work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/after-red-fixture-recipe.json",
       "compatibility": {
@@ -374,7 +441,7 @@
         "construction_sha256": "7a7dae81ce47581f02068ec4100192ef638b88073f82391390346c9063fc0221",
         "exit_code": 0,
         "log": "exact-offline-proofs.log",
-        "log_sha256": "13ff371cbbad1d79e5828cb9b0695051dd6e8b8da406720f8e03c729b82c01a6"
+        "log_sha256": "05a03f2e3ef5330125a6f006ab2d2d5b4081414c8d52530fef206c401af70733"
       },
       "fixture_recipe": "work/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/yellow-stop-fixture-recipe.json",
       "compatibility": {
