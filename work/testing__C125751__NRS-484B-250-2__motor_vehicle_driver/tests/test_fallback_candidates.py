@@ -9,9 +9,9 @@ from worker_exchange.candidate_constructions import validate
 
 
 class FallbackCandidateTests(unittest.TestCase):
-    def test_six_exact_candidates_and_distinct_risks(self):
+    def test_all_selected_candidates_and_distinct_risks(self):
         manifest = json.loads((PACKAGE / "execution-manifest.json").read_text())
-        self.assertEqual(len(manifest["cases"]), 2)
+        self.assertEqual(len(manifest["cases"]), 3)
         by_case = {}
         for entry in manifest["cases"]:
             self.assertEqual(validate(PACKAGE, entry, "NRS-484B-250-2", "C125751",
@@ -24,6 +24,8 @@ class FallbackCandidateTests(unittest.TestCase):
             by_case[entry["case_id"].rsplit("__", 1)[-1]] = {
                 c["id"]: (c["trigger"], c["changed_knobs"]) for c in candidates}
         self.assertEqual(by_case["signal_operative"], by_case["signal_off"])
+        self.assertEqual(set(by_case["opposite_left_turn"]),
+                         {"fallback1", "fallback2", "fallback3"})
 
 
 if __name__ == "__main__":

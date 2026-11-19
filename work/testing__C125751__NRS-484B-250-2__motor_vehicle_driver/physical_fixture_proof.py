@@ -31,11 +31,30 @@ def inputs(root, folder, entry):
     construction = read(construction_path)
     config = json.loads(next(item["content"] for item in construction["files"]
                              if item["path"] == "config.json"))
-    source = folder / ("diagnostic-sources" if entry["case_id"].endswith("signal_operative")
-                       else "diagnostic-off-sources")
     write(root / "config.json", config)
-    for name in ("trace.jsonl", "video_frames.jsonl", "crossing_history.jsonl"):
-        shutil.copy2(source / name, root / name)
+    if entry["case_id"].endswith("opposite_left_turn"):
+        # A source-shaped classifier fixture, not a claim about Native motion.
+        positions = ((-10, 0), (0, 0), (0, 10))
+        trace, mapped, crossing = [], [], []
+        for index, (x, y) in enumerate(positions):
+            frame, time_s = 100 + index, index / 20
+            body = [[x - 1, y - 1], [x - 1, y + 1],
+                    [x + 1, y - 1], [x + 1, y + 1]]
+            trace.append({"frame": frame, "time_s": time_s,
+                          "position_m": [x, y, 0]})
+            mapped.append({"carla_frame": frame, "time_s": time_s,
+                           "video_frame": index})
+            crossing.append({"frame": frame, "time_s": time_s,
+                             "ego_vertices_m": body,
+                             "ego": {"body_vertices_xy_m": body}})
+        for name, rows in (("trace.jsonl", trace), ("video_frames.jsonl", mapped),
+                           ("crossing_history.jsonl", crossing)):
+            (root / name).write_text("".join(json.dumps(row) + "\n" for row in rows))
+    else:
+        source = folder / ("diagnostic-sources" if entry["case_id"].endswith("signal_operative")
+                           else "diagnostic-off-sources")
+        for name in ("trace.jsonl", "video_frames.jsonl", "crossing_history.jsonl"):
+            shutil.copy2(source / name, root / name)
     write(root / "acquisition-provenance.json", {"provenance_kind": "synthetic_fixture",
         "diagnostic_fixture": True, "scope": "Synthetic CPU physical-classifier fixture only"})
     return construction
@@ -71,8 +90,10 @@ def motion(folder, entry, kind, output):
 
 
 def lifecycle(folder, entry, output):
-    saved = folder / ("operative-process-saved-receipt.json" if entry["case_id"].endswith("signal_operative")
-                      else "off-process-saved-receipt.json")
+    saved_name = ("opposite-primary-process-saved-receipt.json" if entry["case_id"].endswith("opposite_left_turn")
+                  else "signal_operative-primary-process-saved-receipt-v2.json" if entry["case_id"].endswith("signal_operative")
+                  else "signal_off-primary-process-saved-receipt-v2.json")
+    saved = folder / saved_name
     receipt = read(saved)
     if (receipt.get("format") != "worker-saved-processing" or receipt.get("passed") is not True
             or receipt.get("recorded_only") is not True
@@ -92,7 +113,8 @@ def lifecycle(folder, entry, output):
                 raise
         else:
             raise ValueError("Failed fixture encoder was sealed")
-        seal = seal_capture(root, frames=1100, restoration={"restored": True}, errors=[],
+        seal = seal_capture(root, frames=3 if entry["case_id"].endswith("opposite_left_turn") else 1100,
+                            restoration={"restored": True}, errors=[],
                             encoder_exit_codes={"fixture_encoder": 0}, context={"diagnostic_fixture": True})
         try:
             acknowledge_owner_release(root, root / "owner-release.json", True)

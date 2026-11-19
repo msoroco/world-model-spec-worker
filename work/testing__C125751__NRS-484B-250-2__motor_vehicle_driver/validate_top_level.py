@@ -18,7 +18,8 @@ def main():
     construction = json.loads((HERE / "construction.json").read_text())
     config = json.loads((HERE / "config.json").read_text())
     cases = {case["case_id"] for case in plan["cases"]}
-    if cases != set(TARGETS) or cases != set(config["supported_case_ids"]):
+    opposite = HERE.name + "__opposite_left_turn"
+    if cases != set(TARGETS) | {opposite} or cases != set(config["supported_case_ids"]):
         raise ValueError("Top-level case coverage differs from tested runner")
     if construction["entrypoint"] != "runner.py":
         raise ValueError("Unexpected Native entrypoint")
@@ -33,6 +34,17 @@ def main():
     if not packet["diagnostic_only"] or packet["physical_site_verified"]:
         raise ValueError("Synthetic site fixture lost its diagnostic qualification")
     for case in sorted(cases):
+        if case == opposite:
+            bundle = json.loads((HERE / "opposite-primary-construction.json").read_text())
+            candidate_config = json.loads(next(item["content"] for item in bundle["files"]
+                                               if item["path"] == "config.json"))
+            from opposite_turn_construction import validate_opposite_fallbacks
+            validate_opposite_fallbacks(candidate_config["candidate_plan"]["primary"],
+                                        candidate_config["candidate_plan"]["fallbacks"],
+                                        candidate_config["turning_role"])
+            if candidate_config["selected_case_id"] != case or candidate_config["duration_s"] != 55:
+                raise ValueError("Opposite-turn exact case or duration differs")
+            continue
         if case == config["selected_case_id"]:
             config_path = HERE / "config.json"
         else:
