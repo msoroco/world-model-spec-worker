@@ -35,7 +35,7 @@ def fixture_sources(root,entry):
     for name in ('trace.jsonl','video_frames.jsonl','crossing_history.jsonl'):
         (root/name).write_text(source_files[name])
     write(root/'acquisition-provenance.json',{
-        'provenance_kind':'native','diagnostic_fixture':True,
+        'provenance_kind':'synthetic_fixture','diagnostic_fixture':True,
         'scope':'Synthetic CPU physical-classifier fixture only'})
     return construction
 
