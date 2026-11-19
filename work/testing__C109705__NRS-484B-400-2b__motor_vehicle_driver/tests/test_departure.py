@@ -24,6 +24,12 @@ turn_control = load("turn_control")
 runner = load("runner")
 
 
+def returned_packet():
+    construction = json.loads((ROOT / "construction.json").read_text())
+    return json.loads(next(item["content"] for item in construction["files"]
+                           if item["path"] == "site_packet.json"))
+
+
 def body(x, y):
     return [[x, y-.4], [x, y+.4], [x+2, y+.4], [x+2, y-.4]]
 
@@ -164,7 +170,7 @@ class DepartureTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,"Opposite-direction"): selection.verify_two_directional_roads(world,1,2)
 
     def test_exact_capture_requires_native_connector(self):
-        packet = json.loads((ROOT / "site_packet.json").read_text())
+        packet = returned_packet()
         config = json.loads((ROOT / "config.json").read_text())
         points = [NS(road_id=road, lane_id=lane, lane_type="Driving")
                   for road in (1, 2, 3) for lane in (-1, 1)]
@@ -181,7 +187,7 @@ class DepartureTests(unittest.TestCase):
     def test_saved_destination_finalizer_uses_original_sources(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            packet = json.loads((ROOT / "site_packet.json").read_text())
+            packet = returned_packet()
             context = {key: packet[key] for key in (
                 "native_map_id", "intersection_id", "approach_road_id", "outgoing_road_id",
                 "destination_centerline_xy_m", "destination_right_half_polygon_xy_m",
@@ -199,7 +205,7 @@ class DepartureTests(unittest.TestCase):
             (root / "site_packet.json").write_text(json.dumps(packet))
             rows = [{"frame": 100 + i, "time_s": 1 + i * .05, "road_id": road,
                      "ego_body_vertices_xy_m": body(x, y)} for i, (x, y, road) in
-                    enumerate([(-8, -2, 1), (-2, -2, 3), (2.5, 8, 2)])]
+                    enumerate([(9, -2, 1), (15, -2, 3), (19.5, 8, 2)])]
             (root / "turn_history.jsonl").write_text("".join(json.dumps(r) + "\n" for r in rows))
             frames = [{"video_frame": i, "carla_frame": r["frame"], "time_s": r["time_s"]}
                       for i, r in enumerate(rows)]
@@ -240,7 +246,7 @@ class DepartureTests(unittest.TestCase):
                 measure.finalize(root, root / "analysis-report.json")
             geometry["departure_direction_xy"] = packet["departure_direction_xy"]
             (root / "road_geometry.json").write_text(json.dumps(geometry))
-            rows[2]["ego_body_vertices_xy_m"] = body(-1, 8)
+            rows[2]["ego_body_vertices_xy_m"] = body(16, 8)
             (root / "turn_history.jsonl").write_text("".join(json.dumps(r) + "\n" for r in rows))
             with self.assertRaisesRegex(ValueError, "Complete exit body crosses"):
                 measure.finalize(root, root / "analysis-report.json")

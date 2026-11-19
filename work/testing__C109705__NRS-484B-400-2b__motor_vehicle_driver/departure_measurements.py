@@ -91,6 +91,35 @@ def analyze(root: Path) -> dict:
             "legal_conclusion": "unresolved pending source geometry and physical review"}
 
 
+def measure_two_way_turn_entry(observations: dict) -> dict:
+    context = observations["native_road_context"]
+    return {"both_highways_two_directional": context["both_highways_two_directional"],
+            "intended_turn": context["intended_turn"],
+            "intersection_id": context["intersection_id"],
+            "observed_complete_body_exit_frame": observations["exit_sample"]["frame"],
+            "source_status": "synthetic diagnostic; Native physical status unverified"}
+
+
+def measure_destination_exit(observations: dict) -> dict:
+    sample = observations["exit_sample"]
+    return {"frame": sample["frame"], "time_s": sample["time_s"],
+            "destination_road_id": sample["road_id"],
+            "body_in_destination_right_half": sample["body_in_destination_right_half"],
+            "body_intersects_centerline": sample["body_intersects_centerline"],
+            "complete_body_right_of_destination_centerline":
+                sample["complete_body_right_of_destination_centerline"]}
+
+
+def measure_centerline_branch_exit(observations: dict) -> dict:
+    context, sample = observations["native_road_context"], observations["exit_sample"]
+    return {"centerline_kind": context["site_source_review"]["centerline_kind"],
+            "body_centroid_distance_to_centerline_m":
+                sample["body_centroid_distance_to_centerline_m"],
+            "minimum_vertex_distance_to_centerline_m":
+                sample["minimum_vertex_distance_to_centerline_m"],
+            "legal_nearest_judgment": "unresolved; no statutory numeric cutoff"}
+
+
 def finalize(attempt: Path, output: Path) -> dict:
     """Rebuild the destination exit channel from retained original sources only."""
     from worker_exchange.native_output import physical_result, write_result
@@ -156,6 +185,18 @@ def finalize(attempt: Path, output: Path) -> dict:
                 "body_centroid_distance_to_centerline_m": sample["body_centroid_distance_to_centerline_m"],
                 "minimum_vertex_distance_to_centerline_m": sample["minimum_vertex_distance_to_centerline_m"],
                 "legal_conclusion": "unresolved"}
+    for key, method, inputs, value in (
+            ("two_way_turn_entry", "measure_two_way_turn_entry",
+             ("road_context.json", "turn_history.jsonl", "video_frames.jsonl"),
+             measure_two_way_turn_entry(observations)),
+            ("complete_destination_exit", "measure_destination_exit",
+             ("road_context.json", "turn_history.jsonl", "video_frames.jsonl"),
+             measure_destination_exit(observations)),
+            ("centerline_branch_exit", "measure_centerline_branch_exit",
+             ("road_context.json", "turn_history.jsonl", "video_frames.jsonl"),
+             measure_centerline_branch_exit(observations))):
+        measured[key] = {"method": method, "value": value,
+                         "sources": {name: sources[name] for name in inputs}}
     channels = attempt / "channels"
     channels.mkdir()
     (channels / "destination_exit_context.json").write_text(json.dumps({

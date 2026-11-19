@@ -1,0 +1,55 @@
+{
+  "format": "worker-measurement-contract",
+  "assignment_id": "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver",
+  "selected_case_id": "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__source_verified_near_centerline",
+  "requirements": [
+    {
+      "requirement": "The driver has entered the intersection and is turning left where both intersecting highways are two-directional",
+      "source": "NRS 484B.400(2)(b); inputs/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/witnesses.json",
+      "output_key": "two_way_turn_entry",
+      "method": "measure_two_way_turn_entry",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "road_context.json",
+        "turn_history.jsonl",
+        "video_frames.jsonl"
+      ],
+      "disposition_index": 0
+    },
+    {
+      "requirement": "The complete vehicle body leaves the intersection to the right of the centerline of the highway being entered",
+      "source": "NRS 484B.400(2)(b); inputs/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/witnesses.json",
+      "output_key": "complete_destination_exit",
+      "method": "measure_destination_exit",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "road_context.json",
+        "turn_history.jsonl",
+        "video_frames.jsonl"
+      ],
+      "disposition_index": 1
+    },
+    {
+      "requirement": "Marked and imaginary destination centerline branches and near/far exit placement must be compared without a numeric legal cutoff",
+      "source": "NRS 484B.400(2)(b); inputs/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/witnesses.json",
+      "output_key": "centerline_branch_exit",
+      "method": "measure_centerline_branch_exit",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "road_context.json",
+        "turn_history.jsonl",
+        "video_frames.jsonl"
+      ],
+      "disposition_index": 2
+    }
+  ],
+  "negative": {
+    "remove": [
+      "turn_history.jsonl"
+    ],
+    "error_contains": "Missing required source: turn_history.jsonl"
+  }
+}
