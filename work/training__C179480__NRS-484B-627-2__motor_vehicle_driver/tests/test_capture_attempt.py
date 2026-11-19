@@ -148,6 +148,23 @@ class CaptureAttemptTest(unittest.TestCase):
                                            attempt / 'video_frames.jsonl')
             self.assertEqual(measured['roadway_stop_frames'], [101, 102, 103])
 
+    def test_materialized_bundle_directory_accepts_first_capture_only(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            attempt = Path(tmp)/'materialized'
+            attempt.mkdir()
+            (attempt/'config.json').write_text('{"case_id":"source-preserved"}\n')
+            first = module.acquire_with_world_restore(
+                FakeWorld(), self.carla, FakeVehicle(0), FakeVehicle(-12),
+                FakeLibrary(), (15.0,0.0), attempt, frames=2,
+                sample=self.sample, sink_factory=MemorySink)
+            self.assertEqual(first['source_frames'],2)
+            self.assertTrue((attempt/'config.json').is_file())
+            with self.assertRaisesRegex(ValueError,'Retain prior original source'):
+                module.acquire_with_world_restore(
+                    FakeWorld(), self.carla, FakeVehicle(0), FakeVehicle(-12),
+                    FakeLibrary(), (15.0,0.0), attempt, frames=2,
+                    sample=self.sample, sink_factory=MemorySink)
+
     def test_stale_camera_rejected_and_world_restored(self):
         with tempfile.TemporaryDirectory() as tmp:
             world = FakeWorld(stale_camera=True)

@@ -151,7 +151,11 @@ def acquire(world, carla, ego, follower, blueprints, stop_xy, attempt,
     if not settings.synchronous_mode or settings.fixed_delta_seconds != 0.05:
         raise ValueError('Capture requires original synchronous 20 Hz world')
     attempt = Path(attempt)
-    attempt.mkdir(parents=True, exist_ok=False)
+    attempt.mkdir(parents=True, exist_ok=True)
+    originals = ('native-actors.jsonl', 'video_frames.jsonl',
+                 *(item['name']+'.mkv' for item in camera_specs()))
+    if any((attempt/name).exists() for name in originals):
+        raise ValueError('Retain prior original source; use a fresh attempt')
     queues = {item['name']: queue.Queue() for item in camera_specs()}
     sensors = []
     sinks = {}
