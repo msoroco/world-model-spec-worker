@@ -53,7 +53,8 @@ def build(source):
                       'sha256':sha(road)})
     recorder = dest/'capture/recorder_info.txt'
     recorder.parent.mkdir(parents=True,exist_ok=True)
-    recorder.write_text('Synthetic C179480 diagnostic fixture; no CARLA recorder run.\n')
+    recorder.write_text('Synthetic C179480 diagnostic fixture; no CARLA recorder run.\n'
+                        'Create 205: vehicle.tesla.model3 (0) at (0, 0, 0)\n')
     inventory.append({'path':'capture/recorder_info.txt',
                       'source':str(recorder.relative_to(ROOT)),
                       'sha256':sha(recorder)})
@@ -89,6 +90,8 @@ def build(source):
                          'original_observations':observation,
                          'actor_id':205,
                          'ego':{'position_m':[row['ego_x_m'],row['ego_y_m'],0],
+                                'heading_deg':row['ego_yaw_deg'],
+                                'body_vertices_m':row['ego_body_vertices_xyz_m'],
                                 'speed_mps':row['ego_speed_mps'],
                                 'speed_provenance':'synthetic_native_sample'},
                          'world':{'weather':{'precipitation':0.,

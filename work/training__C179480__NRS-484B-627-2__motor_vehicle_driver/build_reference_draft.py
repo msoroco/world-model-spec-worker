@@ -70,7 +70,7 @@ def build():
         case_id=HERE.name+'__'+case
         description=description_for(case)
         config=dict(common,case_id=case_id,selected_case_id=case_id,
-                    case_suffix=case,case=case,
+                    case_suffix=case,case={'case_id':case_id},
                     comparison_requested_value={
                         'reference':'roadway_lane_overlap_target',
                         'contrast':'shoulder_clear_target',

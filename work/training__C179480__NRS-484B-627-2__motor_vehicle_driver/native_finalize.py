@@ -80,7 +80,7 @@ def finalize(attempt, output):
     expected_channels = channels_for(case)
     if set(names) != set(expected_channels) or len(names) != len(expected_channels):
         raise ValueError('Recording description differs from source channels')
-    if (attempt/'result.json').exists() or (attempt/'trace.jsonl').exists():
+    if (attempt/'result.json').exists():
         raise ValueError('Retain prior finalization; use a fresh attempt')
     map_path = attempt/'native-map-readback.json'
     if not map_path.is_file():
@@ -118,30 +118,42 @@ def finalize(attempt, output):
     if config.get('duration_s') != len(rows)/20:
         raise ValueError('Original source duration differs from config')
     derived = derive(attempt)
-    with (attempt/'trace.jsonl').open('x') as stream:
-        for actor, frame in zip(rows, mapping):
-            trace = {'frame': actor['frame'], 'time_s': frame['time_s'],
-                     'position_m': [actor['ego_x_m'], actor['ego_y_m']],
-                     'position': {'x': actor['ego_x_m'],
-                                  'y': actor['ego_y_m'], 'z': 0.0},
-                     'heading_deg': actor['ego_yaw_deg'],
-                     'speed_mps': actor['ego_speed_mps'],
-                     'speed_mph': actor['ego_speed_mps'] / .44704,
-                     'speed_provenance': 'synthetic_native_sample' if source_kind == SYNTHETIC else 'original_carla_velocity',
-                     'source_actor_sha256': report['source_sha256']['native-actors.jsonl']}
-            stream.write(json.dumps(trace, allow_nan=False)+'\n')
+    trace_text = ''
+    for actor, frame in zip(rows, mapping):
+        trace = {'frame': actor['frame'], 'time_s': frame['time_s'],
+                 'position_m': [actor['ego_x_m'], actor['ego_y_m']],
+                 'position': {'x': actor['ego_x_m'],
+                              'y': actor['ego_y_m'], 'z': 0.0},
+                 'heading_deg': actor['ego_yaw_deg'],
+                 'speed_mps': actor['ego_speed_mps'],
+                 'speed_mph': actor['ego_speed_mps'] / .44704,
+                 'velocity_mps': actor['ego_velocity_xyz_mps'],
+                 'control': {},
+                 'speed_provenance': 'synthetic_native_sample' if source_kind == SYNTHETIC else 'original_carla_velocity',
+                 'source_actor_sha256': report['source_sha256']['native-actors.jsonl']}
+        trace_text += json.dumps(trace, allow_nan=False)+'\n'
+    trace_path = attempt/'trace.jsonl'
+    if trace_path.exists():
+        if trace_path.read_text() != trace_text:
+            raise ValueError('Saved trace differs from current raw sources')
+    else:
+        trace_path.write_text(trace_text)
     measured = report['measured_values']
     contexts = config['recording_description']['context_inputs']
     if contexts:
-        with (attempt/'recorded-context.json').open('x') as stream:
-            json.dump({entry['name']: {
+        context_text = json.dumps({entry['name']: {
                 'map_name':map_readback['map_name'],
                 'road_id':map_readback['road_id'],
                 'lane_id':map_readback['lane_id'],
                 'source_sha256':report['source_sha256']['native-map-readback.json'],
                 'provenance_kind':report['provenance_kind'],
-            } for entry in contexts},stream,allow_nan=False)
-            stream.write('\n')
+            } for entry in contexts},allow_nan=False)+'\n'
+        context_path = attempt/'recorded-context.json'
+        if context_path.exists():
+            if context_path.read_text() != context_text:
+                raise ValueError('Saved context differs from current map source')
+        else:
+            context_path.write_text(context_text)
     overlap = bool(measured['roadway_lane_overlap_frames'])
     stopped = measured['complete_stop_observed']
     matched = stopped and overlap == EXPECTED_OVERLAP[case]
