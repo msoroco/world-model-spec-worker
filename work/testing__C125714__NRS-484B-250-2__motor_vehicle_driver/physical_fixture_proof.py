@@ -104,8 +104,16 @@ def saved_receipt(entry):
     return path, receipt
 
 
-def lifecycle(entry, output):
-    saved_path, saved = saved_receipt(entry)
+def lifecycle(entry, output, saved_override=None):
+    if saved_override:
+        saved_path = Path(saved_override)
+        saved = read(saved_path)
+        if (saved.get("format") != "worker-saved-processing" or saved.get("passed") is not True
+                or saved.get("recorded_only") is not True or saved.get("case_id") != entry["case_id"]
+                or saved["analysis_revision"]["construction_sha256"] != entry["construction_sha256"]):
+            raise ValueError("Current selected recorded-only saved proof missing")
+    else:
+        saved_path, saved = saved_receipt(entry)
     with tempfile.TemporaryDirectory(prefix='c125714-lifecycle-') as temp:
         root = Path(temp)
         construction = inputs(root, entry)
@@ -157,13 +165,14 @@ def main():
     parser.add_argument('--kind', required=True, choices=(
         'complete_motion', 'incomplete_motion', 'missing_evidence', 'lifecycle'))
     parser.add_argument('--output', required=True, type=Path)
+    parser.add_argument('--saved-receipt', type=Path)
     args = parser.parse_args()
     entry = next((x for x in read(args.manifest)['cases'] if x['case_id'] == args.case), None)
     if entry is None:
         raise ValueError('Unknown exact physical fixture case')
     args.output.parent.mkdir(parents=True, exist_ok=True)
     if args.kind == 'lifecycle':
-        lifecycle(entry, args.output)
+        lifecycle(entry, args.output, args.saved_receipt)
     else:
         motion(entry, args.kind, args.output)
 

@@ -56,10 +56,11 @@ def motion(entry, folder, kind, output):
                           'diagnostic_fixture':True,'source_hashes':result['physical_checks']['maneuver']['sources']}))
 
 
-def lifecycle(entry, folder, output):
+def lifecycle(entry, folder, output, saved_override=None):
     construction = read(folder/entry['construction'])
-    saved = (folder/'primary-saved-processing.json' if entry['construction']=='construction.json'
-             else (folder/entry['construction']).parent/'primary-saved-processing.json')
+    saved = (Path(saved_override) if saved_override else
+             folder/'primary-saved-processing.json' if entry['construction']=='construction.json' else
+             (folder/entry['construction']).parent/'primary-saved-processing.json')
     receipt = read(saved)
     if (receipt.get('format') != 'worker-saved-processing' or receipt.get('passed') is not True
             or receipt.get('recorded_only') is not True
@@ -102,13 +103,14 @@ def main():
     parser.add_argument('--case',required=True)
     parser.add_argument('--kind',choices=('complete_motion','incomplete_motion','missing_evidence','lifecycle'),required=True)
     parser.add_argument('--output',required=True)
+    parser.add_argument('--saved-receipt')
     args = parser.parse_args()
     manifest = Path(args.manifest).resolve()
     entry = next(x for x in read(manifest)['cases'] if x['case_id']==args.case)
     output = Path(args.output)
     output.parent.mkdir(parents=True,exist_ok=True)
     if args.kind=='lifecycle':
-        lifecycle(entry,manifest.parent,output)
+        lifecycle(entry,manifest.parent,output,args.saved_receipt)
     else:
         motion(entry,manifest.parent,args.kind,output)
 

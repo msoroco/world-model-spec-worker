@@ -234,3 +234,7 @@ Full `worker_check.py --complete --require-delivery-ready` rerun exited 1 at fro
 ## 2026-11-19 byte-identical historical log consolidation
 
 6 extra historical log copies were byte-identical to retained canonical files. Their exact filename references in `execution-manifest.json` were redirected to the retained identical bytes, then only duplicate copies were removed. The assignment-scoped nonready worker check passes. The freed slots support C109705(2b) fallback and semantic construction. No frozen file or Git command was changed.
+
+## 2026-11-19 CPU preparation checkpoint
+
+Status: **ready**, after exact current CPU proofs and `.venv-cpu/bin/python worker_check.py --assignment testing__C125714__NRS-484B-250-2__motor_vehicle_driver --complete --require-delivery-ready` exited 0 (ignored log SHA256 `818de7401773c997c88df3058aa290716146eeba381d020530629d05e91a50f8`). All 32 current execution-time saved-processing receipts were copied into the manifest return proof paths and verified against the stable proof index. All eight physical lifecycle fixtures were rerun against the current primary saved receipts. `physical_fixture_proof.py` now accepts an explicit saved receipt path. Two byte-identical empty logs were consolidated to keep the 8,600-file cap while materializing 2b required files. The actual assignment scoped strict gate passes.
