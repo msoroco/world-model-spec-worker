@@ -6,6 +6,9 @@ from pathlib import Path
 import sys
 import subprocess
 import os
+import shutil
+import base64
+import zlib
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from school_bus_response import measure, audit_motion_comparison, audit_red_pixel_sources, audit_pupil_service_source, audit_first_case_attempt, finalize_first_case
 from school_bus_controller import BRANCHES, target, apply, motion_readback, spawn_meeting_scene, select_meeting_waypoints
@@ -18,6 +21,34 @@ def corners(x):
 
 
 class SourceResponse(unittest.TestCase):
+    def test_returned_first_case_proof_bundle(self):
+        package = Path(__file__).resolve().parents[1]
+        proof = json.loads((package/'first-case-proof-bundle.json').read_text())
+        self.assertEqual(proof['format'], 'worker-first-case-cpu-proof-bundle')
+        self.assertEqual(proof['assignment_id'], package.name)
+        for field, name in (('construction_sha256','construction.json'),
+                            ('execution_manifest_sha256','execution-manifest.json'),
+                            ('fixture_recipe_sha256','school-bus-recipe.json'),
+                            ('diagnostic_spec_sha256','school-bus-diagnostic.json'),
+                            ('measurement_contract_sha256','measurement-contract.json')):
+            self.assertEqual(proof[field], hashlib.sha256((package/name).read_bytes()).hexdigest())
+        decoded = {}
+        for name, item in proof['artifacts'].items():
+            raw = zlib.decompress(base64.b64decode(item['zlib_base64']))
+            self.assertEqual((len(raw), hashlib.sha256(raw).hexdigest()),
+                             (item['bytes'], item['sha256']))
+            decoded[name] = raw
+        compatibility = json.loads(decoded['compatibility.json'])
+        positive = json.loads(decoded['saved-positive-processing.json'])
+        missing = json.loads(decoded['saved-missing-processing.json'])
+        self.assertTrue(compatibility['passed'])
+        self.assertTrue(positive['passed'] and positive['originals_preserved'])
+        self.assertFalse(positive['missing_evidence'])
+        self.assertTrue(missing['passed'] and missing['missing_evidence'] and
+                        missing['originals_preserved'])
+        self.assertFalse(proof['checks']['actual_native_capture'])
+        self.assertFalse(proof['checks']['physical_acceptance_claimed'])
+
     def setUp(self):
         self.tmp=tempfile.TemporaryDirectory();self.addCleanup(self.tmp.cleanup)
         self.root=Path(self.tmp.name)
@@ -304,6 +335,8 @@ class SourceResponse(unittest.TestCase):
         self.assertEqual(diagnostic['red_pixels']['pixel_evidence_status'],'unverified')
         self.assertIsNone(diagnostic['red_pixels']['frames'][1]['front_red_pixel_count'])
         self.assertFalse(diagnostic['red_pixels']['front_rear_red_visibility_verified'])
+        shutil.rmtree(attempt/'channels')
+        shutil.rmtree(attempt/'contexts')
         diagnostic_report, diagnostic_native = finalize_first_case(attempt)
         saved.write_text(json.dumps(diagnostic_report)+'\n')
         (attempt/'result.json').write_text(json.dumps(diagnostic_native)+'\n')
