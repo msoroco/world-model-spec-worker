@@ -11,7 +11,8 @@ from math import atan2, hypot, isfinite, pi
 
 CASE_SUFFIXES = ("within_marked_lane", "unexcused_boundary_crossing",
                  "passing_boundary_crossing", "passing_excursion-0000",
-                 "passing_excursion-0001", "passing_excursion-0002")
+                 "passing_excursion-0001", "passing_excursion-0002",
+                 "turn_preparation_crossing")
 
 
 def _xy(location):

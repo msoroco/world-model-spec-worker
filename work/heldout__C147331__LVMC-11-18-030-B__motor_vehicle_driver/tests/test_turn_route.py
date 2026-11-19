@@ -5,7 +5,7 @@ from pathlib import Path
 from types import SimpleNamespace
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from turn_route import select_marked_left_turn
+from turn_route import select_marked_left_turn, select_marked_one_way_turn
 
 
 class Waypoint:
@@ -19,9 +19,13 @@ class Waypoint:
             get_forward_vector=lambda: SimpleNamespace(x=math.cos(math.radians(yaw)),
                                                        y=math.sin(math.radians(yaw))))
         self._next = []
+        self._left = None
 
     def next(self, _):
         return self._next
+
+    def get_left_lane(self):
+        return self._left
 
 
 class Map:
@@ -55,6 +59,33 @@ class TurnRouteTest(unittest.TestCase):
             select_marked_left_turn(self.route(-90))
         with self.assertRaisesRegex(ValueError, "No connected"):
             select_marked_left_turn(self.route(90, marked=False))
+
+    def paired_route(self, *, opposite=False, connected=True):
+        right = [Waypoint(i * 2, 0, 0, lane=1) for i in range(16)]
+        left = [Waypoint(i * 2, 3.5, 0, lane=-1 if opposite else 2)
+                for i in range(16)]
+        for chain in (right, left):
+            for a, b in zip(chain, chain[1:]):
+                a._next = [b]
+        right[0]._left = left[0]
+        junction = Waypoint(32, 3.5, 0, lane=2, junction=True)
+        exit_wp = Waypoint(32, 11.5, 90, road=2, lane=1)
+        left[-1]._next = [junction] if connected else []
+        junction._next = [exit_wp]
+        return Map([right[0], left[0]])
+
+    def test_selects_turn_from_marked_one_way_pair(self):
+        selected = select_marked_one_way_turn(self.paired_route())
+        self.assertEqual((selected['lane_id'], selected['adjacent_lane_id']), (1, 2))
+        self.assertEqual(selected['requested_heading_change_deg'], 90)
+        self.assertEqual(len(selected['primary']), 16)
+        self.assertEqual(selected['exit_road_id'], 2)
+
+    def test_rejects_opposing_lane_and_missing_exit(self):
+        with self.assertRaisesRegex(ValueError, 'No connected'):
+            select_marked_one_way_turn(self.paired_route(opposite=True))
+        with self.assertRaisesRegex(ValueError, 'No connected'):
+            select_marked_one_way_turn(self.paired_route(connected=False))
 
 
 if __name__ == "__main__":

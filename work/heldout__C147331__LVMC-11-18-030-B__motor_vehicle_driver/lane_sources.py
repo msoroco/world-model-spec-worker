@@ -74,11 +74,14 @@ def marked_lane_slice(waypoint, *, half_length_m=2.0):
 class LaneSourceRecorder:
     """Write synchronized raw observations, one row per original Native tick."""
 
-    def __init__(self, directory, ego, *, overtaken=None):
+    def __init__(self, directory, ego, *, overtaken=None, route_intent=None):
         if ego.id is None or overtaken is not None and (
                 overtaken.id is None or overtaken.id == ego.id):
             raise ValueError("Distinct Native participant IDs required")
+        if route_intent is not None and not isinstance(route_intent, dict):
+            raise ValueError("Native route intent must be a record")
         self.ego, self.overtaken = ego, overtaken
+        self.route_intent = route_intent
         self.path = Path(directory) / "marked_lane_sources.jsonl"
         self.stream = self.path.open("x", encoding="utf-8")
         self.previous = None
@@ -97,6 +100,8 @@ class LaneSourceRecorder:
                "ego_light_state": str(self.ego.get_light_state()) if hasattr(self.ego, "get_light_state") else None,
                "overtaken_id": None, "overtaken_corners_xy_m": None,
                "overtaken_velocity_xy_mps": None}
+        if self.route_intent is not None:
+            row["route_intent"] = self.route_intent
         if self.overtaken is not None:
             row["overtaken_id"] = int(self.overtaken.id)
             row["overtaken_corners_xy_m"] = body_corners(self.overtaken)

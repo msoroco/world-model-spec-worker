@@ -43,6 +43,32 @@ def write_sources(root):
 
 
 class SavedLaneFinalizerTests(unittest.TestCase):
+    def test_turn_request_is_bound_to_each_original_lane_row(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            rows = write_sources(root)
+            config = json.loads((root / 'config.json').read_text())
+            config['selected_case_id'] = CASE.replace('within_marked_lane',
+                                                       'turn_preparation_crossing')
+            (root / 'config.json').write_text(json.dumps(config))
+            intent = {'kind': 'connected_left_turn_request',
+                      'approach_road_id': 7, 'approach_lane_id': 1,
+                      'preparation_lane_id': 2, 'exit_road_id': 8,
+                      'requested_heading_change_deg': 90}
+            for row in rows:
+                row['route_intent'] = intent
+                row['ego_light_state'] = 'LeftBlinker'
+            source = root / 'marked_lane_sources.jsonl'
+            source.write_text(''.join(json.dumps(row) + '\n' for row in rows))
+            report = analyze(root, write_channel=False)
+            value = report['measurements']['turn_preparation_control']['value']
+            self.assertEqual(value['requested_route'], intent)
+            self.assertFalse(value['lawful_turn_preparation_confirmed'])
+            rows[1]['route_intent'] = {**intent, 'exit_road_id': 9}
+            source.write_text(''.join(json.dumps(row) + '\n' for row in rows))
+            with self.assertRaisesRegex(ValueError, 'intent missing or changed'):
+                analyze(root, write_channel=False)
+
     def test_positive_original_source_and_native_shape(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

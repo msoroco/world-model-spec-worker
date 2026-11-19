@@ -1,4 +1,4 @@
-"""Native original-tick capture for the three marked-lane exact cases.
+"""Native original-tick capture for the marked-lane exact cases.
 
 CARLA is imported only for capture. All legal and geometric assessment happens
 later from sealed original sources in lane_finalizer.py.
@@ -13,6 +13,7 @@ from pathlib import Path
 from lane_camera_capture import CAMERAS, LaneCameraCapture, LosslessSourceSink
 from lane_construction import CASE_SUFFIXES, control_step, route_targets, select_marked_one_way_pair
 from lane_sources import LaneSourceRecorder
+from turn_route import select_marked_one_way_turn
 
 
 def check_config(config):
@@ -100,14 +101,22 @@ def run(output_dir, host, port):
         settings.synchronous_mode = True
         settings.fixed_delta_seconds = 1 / config["rate_hz"]
         world.apply_settings(settings)
-        selection = select_marked_one_way_pair(
-            world.get_map(), spacing_m=engineering.get("route_spacing_m", 2.0),
-            steps=engineering.get("route_steps", 15),
-            candidate_index=engineering.get("route_candidate_index", 0))
+        if suffix == "turn_preparation_crossing":
+            selection = select_marked_one_way_turn(
+                world.get_map(), spacing_m=engineering.get("route_spacing_m", 2.0),
+                approach_steps=engineering.get("route_steps", 15),
+                candidate_index=engineering.get("route_candidate_index", 0))
+        else:
+            selection = select_marked_one_way_pair(
+                world.get_map(), spacing_m=engineering.get("route_spacing_m", 2.0),
+                steps=engineering.get("route_steps", 15),
+                candidate_index=engineering.get("route_candidate_index", 0))
         targets = route_targets(selection, suffix,
                                 crossing_fraction=engineering.get("crossing_fraction", .6))
         ego = _spawn(world, "vehicle.tesla.model3", selection["primary"][0].transform)
         owned.append(ego)
+        if suffix == "turn_preparation_crossing":
+            ego.set_light_state(carla.VehicleLightState.LeftBlinker)
         other = None
         if targets["overtaken_spawn"] is not None:
             other = _spawn(world, "vehicle.audi.tt", targets["overtaken_spawn"])
@@ -117,7 +126,18 @@ def run(output_dir, host, port):
         cameras = LaneCameraCapture(world, carla, ego, sinks)
         pipeline = PipelineCapture(client, ego, output, config["selected_case_id"],
                                    required_observations=config.get("required_atoms", []))
-        recorder = LaneSourceRecorder(output, ego, overtaken=other)
+        turn_intent = None
+        if suffix == "turn_preparation_crossing":
+            turn_intent = {
+                "kind": "connected_left_turn_request",
+                "approach_road_id": selection["road_id"],
+                "approach_lane_id": selection["lane_id"],
+                "preparation_lane_id": selection["adjacent_lane_id"],
+                "exit_road_id": selection["exit_road_id"],
+                "requested_heading_change_deg": selection["requested_heading_change_deg"],
+            }
+        recorder = LaneSourceRecorder(output, ego, overtaken=other,
+                                      route_intent=turn_intent)
         frame_map = FrameMap(output / "video_frames.jsonl")
         start = None
         for index in range(config["frames"]):
@@ -174,7 +194,9 @@ def run(output_dir, host, port):
                  context={"native_map_name": world.get_map().name,
                           "route_road_id": selection["road_id"],
                           "route_lane_id": selection["lane_id"],
-                          "route_adjacent_lane_id": selection["adjacent_lane_id"]})
+                          "route_adjacent_lane_id": selection["adjacent_lane_id"],
+                          "connected_turn_exit_road_id": selection.get("exit_road_id"),
+                          "requested_heading_change_deg": selection.get("requested_heading_change_deg")})
 
 
 def main():

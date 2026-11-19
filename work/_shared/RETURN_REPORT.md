@@ -3091,3 +3091,5 @@ C111610 and C126064 scoped strict gates each exit 0; the complete batch strict g
 
 - `heldout__C329654__NRS-484B-400-2c__motor_vehicle_driver`: CPU preparation incomplete. Five prospective exact cases, three controlled comparisons and four source observations now specify simultaneous opposing left turns, measured front passing, turn-window control and governing official-device exception. No runner, source capture, candidate constructions, finalizer, semantic proposals, exact offline/compatibility/saved-processing receipts or independent audits exist yet. [result](../heldout__C329654__NRS-484B-400-2c__motor_vehicle_driver/result.json)
 
+
+Complete nonstrict batch check `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --complete` exited 0 after scanning all 51 assignments and the 10,200-file return. Ignored log SHA-256: `b240d7e9206f7ce14c8a3993e3129987c0a88e4abdbae1a23fc38114833693b5`. The complete strict gate remains unpassed because 13 packages retain truthful partial status.

@@ -41,11 +41,15 @@ def observed_lateral_fraction(row):
     return abs(sum((ego[i] - center[i]) * normal[i] for i in (0, 1))) / width
 
 
-def measure_turn_preparation_context(mapping, trace, source_rows):
-    """Retain turn cues for a straight-travel control, without classifying lawfulness."""
+def measure_turn_preparation_context(mapping, trace, source_rows, *, turn_case=False):
+    """Retain turn request and original light/motion cues without legal inference."""
+    intents = [row.get("route_intent") for row in source_rows]
+    if turn_case and (not isinstance(intents[0], dict)
+                      or any(intent != intents[0] for intent in intents)):
+        raise ValueError("Original connected turn intent missing or changed")
     return {
-        "role": "within-lane travel control; no turning movement selected",
-        "cross_cell_turn_reference": "heldout__C5191__LVMC-11-18-030-B__motor_vehicle_driver",
+        "role": "turn-preparation crossing" if turn_case else "within-lane travel control; no turning movement selected",
+        "requested_route": intents[0] if turn_case else None,
         "frames": [{
             "video_frame": frame["video_frame"],
             "carla_frame": frame["carla_frame"],
@@ -121,10 +125,12 @@ def analyze(attempt, *, write_channel=True):
                "marked_lane_sources.jsonl": source_sha}
     measurements = {"lane_boundary_observation": {
         "method": "measure_saved_lane", "value": measured, "sources": sources}}
-    if case_id.endswith("__within_marked_lane"):
+    if case_id.endswith(("__within_marked_lane", "__turn_preparation_crossing")):
         measurements["turn_preparation_control"] = {
             "method": "measure_turn_preparation_context",
-            "value": measure_turn_preparation_context(mapping, trace, source_rows),
+            "value": measure_turn_preparation_context(
+                mapping, trace, source_rows,
+                turn_case=case_id.endswith("__turn_preparation_crossing")),
             "sources": sources,
         }
     return {"format": "worker-analysis-report", "case_id": case_id,
