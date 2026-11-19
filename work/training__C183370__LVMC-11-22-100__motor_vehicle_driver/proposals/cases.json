@@ -316,6 +316,314 @@
           "value": "source-surveyed live map and barrier actor required"
         }
       }
+    },
+    {
+      "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__warning_sign_crossing",
+      "target_law_id": "LVMC-11-22-100",
+      "target_type": "attempt",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "derive from original CARLA actor/body/frame rows and surveyed pavement polygon",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original CARLA frame joined to four source-camera videos",
+            "uncertainty": "50 ms sampling; control content, surface repair and legal exception require independent original review"
+          },
+          {
+            "name": "ego_body_footprint",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "derive from original CARLA actor/body/frame rows and surveyed pavement polygon",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original CARLA frame joined to four source-camera videos",
+            "uncertainty": "50 ms sampling; control content, surface repair and legal exception require independent original review"
+          },
+          {
+            "name": "control_actor_state",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "derive from original CARLA actor/body/frame rows and surveyed pavement polygon",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original CARLA frame joined to four source-camera videos",
+            "uncertainty": "50 ms sampling; control content, surface repair and legal exception require independent original review"
+          },
+          {
+            "name": "pavement_footprint_contact",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "derive from original CARLA actor/body/frame rows and surveyed pavement polygon",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original CARLA frame joined to four source-camera videos",
+            "uncertainty": "50 ms sampling; control content, surface repair and legal exception require independent original review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "surveyed_repair_region",
+            "unit": "structured",
+            "method": "live map and control-actor readback joined to surveyed polygon; repair status unverified"
+          }
+        ],
+        "limitations": [
+          "Control actor proximity does not establish warning content.",
+          "Surveyed polygon does not establish newly laid or repaired pavement.",
+          "No paving-employee exception or legal conclusion is inferred."
+        ]
+      },
+      "rationale": "Request crossing of surveyed pavement near a source-surveyed warning sign.",
+      "unresolved_judgment_calls": [
+        "whether the original sign face meets the statutory wording",
+        "whether the pavement was newly laid or repaired",
+        "whether the paving employee exception applies"
+      ],
+      "variable_assignments": {
+        "requested_pavement_crossing": {
+          "kind": "controller",
+          "value": true
+        },
+        "actual_body_contact": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "surveyed_pavement_and_sign": {
+          "kind": "world_setup",
+          "value": "source-surveyed live map, sign actor and original sign face required"
+        }
+      }
+    },
+    {
+      "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__warning_sign_avoidance",
+      "target_law_id": "LVMC-11-22-100",
+      "target_type": "attempt",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "derive from original CARLA actor/body/frame rows and surveyed pavement polygon",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original CARLA frame joined to four source-camera videos",
+            "uncertainty": "50 ms sampling; control content, surface repair and legal exception require independent original review"
+          },
+          {
+            "name": "ego_body_footprint",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "derive from original CARLA actor/body/frame rows and surveyed pavement polygon",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original CARLA frame joined to four source-camera videos",
+            "uncertainty": "50 ms sampling; control content, surface repair and legal exception require independent original review"
+          },
+          {
+            "name": "control_actor_state",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "derive from original CARLA actor/body/frame rows and surveyed pavement polygon",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original CARLA frame joined to four source-camera videos",
+            "uncertainty": "50 ms sampling; control content, surface repair and legal exception require independent original review"
+          },
+          {
+            "name": "pavement_footprint_contact",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "derive from original CARLA actor/body/frame rows and surveyed pavement polygon",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original CARLA frame joined to four source-camera videos",
+            "uncertainty": "50 ms sampling; control content, surface repair and legal exception require independent original review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "surveyed_repair_region",
+            "unit": "structured",
+            "method": "live map and control-actor readback joined to surveyed polygon; repair status unverified"
+          }
+        ],
+        "limitations": [
+          "Control actor proximity does not establish warning content.",
+          "Surveyed polygon does not establish newly laid or repaired pavement.",
+          "No paving-employee exception or legal conclusion is inferred."
+        ]
+      },
+      "rationale": "Request avoidance of surveyed pavement near a source-surveyed warning sign.",
+      "unresolved_judgment_calls": [
+        "whether the original sign face meets the statutory wording",
+        "whether the pavement was newly laid or repaired",
+        "whether the paving employee exception applies"
+      ],
+      "variable_assignments": {
+        "requested_pavement_crossing": {
+          "kind": "controller",
+          "value": false
+        },
+        "actual_body_contact": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "surveyed_pavement_and_sign": {
+          "kind": "world_setup",
+          "value": "source-surveyed live map, sign actor and original sign face required"
+        }
+      }
+    },
+    {
+      "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__highway_closed_sign_crossing",
+      "target_law_id": "LVMC-11-22-100",
+      "target_type": "attempt",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "derive from original CARLA actor/body/frame rows and surveyed pavement polygon",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original CARLA frame joined to four source-camera videos",
+            "uncertainty": "50 ms sampling; control content, surface repair and legal exception require independent original review"
+          },
+          {
+            "name": "ego_body_footprint",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "derive from original CARLA actor/body/frame rows and surveyed pavement polygon",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original CARLA frame joined to four source-camera videos",
+            "uncertainty": "50 ms sampling; control content, surface repair and legal exception require independent original review"
+          },
+          {
+            "name": "control_actor_state",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "derive from original CARLA actor/body/frame rows and surveyed pavement polygon",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original CARLA frame joined to four source-camera videos",
+            "uncertainty": "50 ms sampling; control content, surface repair and legal exception require independent original review"
+          },
+          {
+            "name": "pavement_footprint_contact",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "derive from original CARLA actor/body/frame rows and surveyed pavement polygon",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original CARLA frame joined to four source-camera videos",
+            "uncertainty": "50 ms sampling; control content, surface repair and legal exception require independent original review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "surveyed_repair_region",
+            "unit": "structured",
+            "method": "live map and control-actor readback joined to surveyed polygon; repair status unverified"
+          }
+        ],
+        "limitations": [
+          "Control actor proximity does not establish warning content.",
+          "Surveyed polygon does not establish newly laid or repaired pavement.",
+          "No paving-employee exception or legal conclusion is inferred."
+        ]
+      },
+      "rationale": "Request crossing of surveyed pavement near a source-surveyed highway closed sign.",
+      "unresolved_judgment_calls": [
+        "whether the original sign face meets the statutory wording",
+        "whether the pavement was newly laid or repaired",
+        "whether the paving employee exception applies"
+      ],
+      "variable_assignments": {
+        "requested_pavement_crossing": {
+          "kind": "controller",
+          "value": true
+        },
+        "actual_body_contact": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "surveyed_pavement_and_sign": {
+          "kind": "world_setup",
+          "value": "source-surveyed live map, sign actor and original sign face required"
+        }
+      }
+    },
+    {
+      "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__highway_closed_sign_avoidance",
+      "target_law_id": "LVMC-11-22-100",
+      "target_type": "attempt",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "derive from original CARLA actor/body/frame rows and surveyed pavement polygon",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original CARLA frame joined to four source-camera videos",
+            "uncertainty": "50 ms sampling; control content, surface repair and legal exception require independent original review"
+          },
+          {
+            "name": "ego_body_footprint",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "derive from original CARLA actor/body/frame rows and surveyed pavement polygon",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original CARLA frame joined to four source-camera videos",
+            "uncertainty": "50 ms sampling; control content, surface repair and legal exception require independent original review"
+          },
+          {
+            "name": "control_actor_state",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "derive from original CARLA actor/body/frame rows and surveyed pavement polygon",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original CARLA frame joined to four source-camera videos",
+            "uncertainty": "50 ms sampling; control content, surface repair and legal exception require independent original review"
+          },
+          {
+            "name": "pavement_footprint_contact",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "derive from original CARLA actor/body/frame rows and surveyed pavement polygon",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original CARLA frame joined to four source-camera videos",
+            "uncertainty": "50 ms sampling; control content, surface repair and legal exception require independent original review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "surveyed_repair_region",
+            "unit": "structured",
+            "method": "live map and control-actor readback joined to surveyed polygon; repair status unverified"
+          }
+        ],
+        "limitations": [
+          "Control actor proximity does not establish warning content.",
+          "Surveyed polygon does not establish newly laid or repaired pavement.",
+          "No paving-employee exception or legal conclusion is inferred."
+        ]
+      },
+      "rationale": "Request avoidance of surveyed pavement near a source-surveyed highway closed sign.",
+      "unresolved_judgment_calls": [
+        "whether the original sign face meets the statutory wording",
+        "whether the pavement was newly laid or repaired",
+        "whether the paving employee exception applies"
+      ],
+      "variable_assignments": {
+        "requested_pavement_crossing": {
+          "kind": "controller",
+          "value": false
+        },
+        "actual_body_contact": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "surveyed_pavement_and_sign": {
+          "kind": "world_setup",
+          "value": "source-surveyed live map, sign actor and original sign face required"
+        }
+      }
     }
   ],
   "cell_id": "C183370",
