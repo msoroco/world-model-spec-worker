@@ -5,7 +5,7 @@
   "actor": "heavy_vehicle_driver",
   "sweep_specs": [
     {
-      "sweep_id": "c111273-judgment-1",
+      "sweep_id": "c24753-judgment-1",
       "target_law_id": "NRS-484B-310-2",
       "judgment_refs": [
         {
@@ -20,7 +20,7 @@
       ]
     },
     {
-      "sweep_id": "c111273-judgment-2",
+      "sweep_id": "c24753-judgment-2",
       "target_law_id": "NRS-484B-310-2",
       "judgment_refs": [
         {
@@ -35,7 +35,7 @@
       ]
     },
     {
-      "sweep_id": "c111273-judgment-3",
+      "sweep_id": "c24753-judgment-3",
       "target_law_id": "NRS-484B-310-2",
       "judgment_refs": [
         {
@@ -51,6 +51,86 @@
     }
   ],
   "cases": [
+    {
+      "case_id": "heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver__semantic_baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared semantic reference for the four selected heavy-vehicle cases; reuses the east cautious proxy setup and is not an additional selected recording or legal result.",
+      "variable_assignments": {
+        "target_speed_mps": {
+          "kind": "controller",
+          "value": 3.0
+        },
+        "flash_period_s": {
+          "kind": "controller",
+          "value": 0.5
+        },
+        "crossing_vehicle": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "approach_direction": {
+          "kind": "world_setup",
+          "value": "east"
+        },
+        "native_yellow_transitions": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "ego_speed_mps": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "official_control_valid": {
+          "kind": "world_setup",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "native_yellow_on",
+            "unit": "boolean",
+            "method": "saved Native light state readback",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world and original frame identity",
+            "uncertainty": "Physical lens visibility and legal caution remain unverified"
+          },
+          {
+            "name": "ego_speed_mps",
+            "unit": "m/s",
+            "method": "saved heavy vehicle velocity magnitude",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world and original frame identity",
+            "uncertainty": "Physical lens visibility and legal caution remain unverified"
+          },
+          {
+            "name": "ego_center_xy",
+            "unit": "m",
+            "method": "saved heavy vehicle world center",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world and original frame identity",
+            "uncertainty": "Physical lens visibility and legal caution remain unverified"
+          },
+          {
+            "name": "crossing_center_xy",
+            "unit": "m",
+            "method": "saved crossing vehicle world center",
+            "sampling_rate_hz": 20,
+            "time_window": "all original frames",
+            "reference_frame": "Native world and original frame identity",
+            "uncertainty": "Physical lens visibility and legal caution remain unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Official status, lens illumination in pixels, and legal caution require independent source review."
+        ]
+      }
+    },
     {
       "case_id": "heldout__C24753__NRS-484B-310-2__heavy_vehicle_driver__east_cautious_proxy",
       "target_law_id": "NRS-484B-310-2",
@@ -314,13 +394,13 @@
           "Official status, lens illumination in pixels, and legal caution require independent source review."
         ]
       },
-      "paired_probe_id": "heavy_approach_speed",
+      "paired_probe_id": "crossing_context",
       "deliberate_differences": [
-        "target_speed_mps"
+        "crossing_vehicle"
       ],
       "probe": {
-        "primary_variable": "target_speed_mps",
-        "comparison_or_standard": "controlled heavy-vehicle original-source speed comparison; legal caution unresolved",
+        "primary_variable": "crossing_vehicle",
+        "comparison_or_standard": "controlled presence versus absence of the crossing vehicle in original sources; legal caution unresolved",
         "target_value_or_branch": "east_cautious_proxy"
       }
     },
@@ -408,13 +488,13 @@
           "Official status, lens illumination in pixels, and legal caution require independent source review."
         ]
       },
-      "paired_probe_id": "heavy_approach_speed",
+      "paired_probe_id": "approach_direction",
       "deliberate_differences": [
-        "target_speed_mps"
+        "approach_direction"
       ],
       "probe": {
-        "primary_variable": "target_speed_mps",
-        "comparison_or_standard": "controlled heavy-vehicle original-source speed comparison; legal caution unresolved",
+        "primary_variable": "approach_direction",
+        "comparison_or_standard": "controlled west versus east governed approach in original sources; legal caution unresolved",
         "target_value_or_branch": "east_cautious_proxy"
       }
     }
