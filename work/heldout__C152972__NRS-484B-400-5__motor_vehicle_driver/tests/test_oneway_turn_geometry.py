@@ -309,7 +309,7 @@ class OnewayTurnTests(unittest.TestCase):
    destination.mkdir(parents=True,exist_ok=True)
    for kind,result in (("complete_motion",complete),("incomplete_motion",incomplete),("missing_evidence",missing)):
     result.update(case_id=config["selected_case_id"],fixture_kind=kind,
-                  diagnostic_fixture=True,physical_acceptance_claimed=False,
+                  provenance_kind="synthetic_fixture",diagnostic_fixture=True,physical_acceptance_claimed=False,
                   legal_acceptance_claimed=False)
     destination.joinpath(kind+".json").write_text(json.dumps(result,indent=2)+"\n")
    destination.joinpath("source-snapshots.json").write_text(json.dumps({"diagnostic_fixture":True,"case_id":case_id,"construction_sha256":hashlib.sha256((H/case["construction"]).read_bytes()).hexdigest(),"sources":{"complete_motion":complete_sources,"incomplete_motion":incomplete_sources,"missing_evidence":missing_sources}},indent=2)+"\n")

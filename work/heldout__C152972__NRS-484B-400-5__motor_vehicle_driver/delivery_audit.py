@@ -124,6 +124,50 @@ def audit(case_id, attempt, processed, manifest):
             "physical_acceptance_claimed": False, "legal_acceptance_claimed": False}
 
 
+def audit_curb_sweep(axis, attempts, processed, manifest):
+    """Compare source-joined diagnostic curb grid points, not legal outcomes."""
+    require(axis in ("approach", "departure") and len(attempts) == len(processed) == 3,
+            "Three exact curb sweep attempts required")
+    selected = [entry["case_id"] for entry in read(manifest)["cases"]
+                if entry["case_id"].endswith(tuple(
+                    f"__C152972-{axis}-curb-coverage-{i:04}" for i in range(3)))]
+    require(len(selected) == 3, "Exact curb sweep cases absent")
+    selected.sort(key=lambda case: case[-4:])
+    fixed_phase = "leaving_intersection" if axis == "approach" else "approach"
+    varied_key = axis + "_left_curb_nearest_m"
+    if axis == "departure":
+        varied_key = "departure_left_curb_nearest_m"
+    fixed_key = "departure_left_curb_nearest_m" if axis == "approach" else "approach_left_curb_nearest_m"
+    expected = [0.5, 1.5, 1.0]
+    baseline = None
+    outcomes = []
+    for case, attempt, saved, target in zip(selected, attempts, processed, expected):
+        attempt = Path(attempt).resolve()
+        result = audit(case, attempt, saved, manifest)
+        geometry = read(attempt / "oneway_geometry_original.json")
+        body = read(attempt / "body_ground_original.json")
+        held = [(row["frame"], row["time_s"], row["ground_corners"])
+                for row in body["frames"] if row["phase"] == fixed_phase]
+        identity = (digest(attempt / "oneway_geometry_original.json"), body["subject_id"], held)
+        if baseline is None:
+            baseline = identity
+        else:
+            require(identity == baseline, "Curb sweep changed fixed geometry or held body path")
+        require(geometry["source_directionality"] == geometry["destination_directionality"] == "one_way"
+                and geometry["maneuver"] == "left_turn", "Curb sweep source directionality differs")
+        require(abs(result[varied_key] - target) <= .001 and abs(result[fixed_key] - .5) <= .001,
+                "Requested curb setpoint missing from original-shaped source")
+        outcomes.append({"case_id": case, "requested_m": target,
+                         "measured_m": result[varied_key], "fixed_m": result[fixed_key],
+                         "source_sha256": result["source_sha256"],
+                         "decoded_frames_per_view": result["four_original_camera_frame_counts"]})
+    return {"format": "worker-curb-sweep-source-audit", "axis": axis,
+            "passed": True, "fixed_conditions_checked": True,
+            "diagnostic_fixture": True, "actual_native_capture": False,
+            "cases": outcomes, "physical_acceptance_claimed": False,
+            "legal_acceptance_claimed": False}
+
+
 def main():
     parser = argparse.ArgumentParser()
     for name in ("case", "attempt", "processed", "manifest", "output"):

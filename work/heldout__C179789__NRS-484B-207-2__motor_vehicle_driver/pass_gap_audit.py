@@ -168,6 +168,52 @@ def diagnostic_outcomes(source_root, output_root, *, audible):
             'diagnostic_fixture_only': True, 'physical_acceptance_claimed': False}
 
 
+def physical_fixture_result(report, kind, case_id):
+    """Report one synthetic branch for CPU preparation without Native promotion."""
+    expected = {'complete_motion': 'met', 'incomplete_motion': 'not_met',
+                'missing_evidence': 'unverified'}
+    if kind not in expected or report.get('format') != 'worker-overtaken-physical-diagnostic-outcomes':
+        raise ValueError('Unknown source-bound diagnostic outcome')
+    if report.get('diagnostic_fixture_only') is not True or report.get('physical_acceptance_claimed'):
+        raise ValueError('Physical fixture requires explicit diagnostic provenance')
+    item = report.get('fixtures', {}).get(kind)
+    if not isinstance(item, dict):
+        raise ValueError('Diagnostic outcome branch missing')
+    original = item.get('result', {})
+    measured = original.get('physical_checks', {}).get('maneuver', {})
+    sources = item.get('source_sha256')
+    if (not isinstance(sources, dict) or not sources or
+            measured.get('sources') != sources or
+            measured.get('status') != 'unverified' or
+            original.get('maneuver_completed') is not False):
+        raise ValueError('Diagnostic source branch was altered or promoted')
+    geometry = measured.get('diagnostic_geometry_status')
+    if kind == 'missing_evidence':
+        if 'trace.jsonl' not in measured.get('missing_evidence', []):
+            raise ValueError('Missing trace diagnostic was accepted')
+    elif geometry != expected[kind]:
+        raise ValueError('Diagnostic geometry branch differs')
+    check = {'status': expected[kind],
+             'method': 'synthetic original-shaped signed-body-gap branch after joined notice; fixture only',
+             'sources': sources,
+             'diagnostic_geometry_status': geometry,
+             'actual_native_maneuver_status': 'unverified',
+             'missing_evidence': measured.get('missing_evidence', [])}
+    if kind == 'complete_motion':
+        check['notice_frame'] = measured.get('notice_frame')
+        check['completion_frame_after_notice'] = measured.get('completion_frame_after_notice')
+        if check['completion_frame_after_notice'] is None:
+            raise ValueError('Synthetic completion has no measured source frame')
+    return {'case_id': case_id, 'fixture_kind': kind,
+            'physical_checks': {'maneuver': check},
+            'maneuver_completed': kind == 'complete_motion',
+            'realized_observables': {'first_positive_gap_frame': check['completion_frame_after_notice'],
+                                     'notice_frame': check['notice_frame']} if kind == 'complete_motion' else {},
+            'provenance_kind': 'synthetic_fixture', 'diagnostic_fixture': True,
+            'actual_native_capture': False, 'physical_acceptance_claimed': False,
+            'legal_acceptance_claimed': False}
+
+
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()
