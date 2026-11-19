@@ -120,6 +120,21 @@
         "trigger_metric": "connected route witnesses and both intersection entry observations",
         "failure_condition": "no eligible junction, changed through route, missing source packets or incomplete intersection motion"
       }
+    },
+    {
+      "case_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__opposing_left_travel_subject",
+      "target_law_id": "NRS-484B-250-3",
+      "gap_ids": [
+        "opposing_left_turn"
+      ],
+      "description": "Straight traveling subject with separate opposite-direction actor intending and making a left turn at a connected junction; source-bound route/body/trace observation",
+      "construction_status": "cpu_primary_and_fallback_proofs_passed_native_pending",
+      "physical_risk": {
+        "risk": "Native connected route discovery or approach motion may fail",
+        "trigger_source": "original Native lane successors and both 20 Hz body histories",
+        "trigger_metric": "opposite routes, leftward exit, body headings, and speed/entry window",
+        "failure_condition": "no connected junction or incomplete turn/straight source window"
+      }
     }
   ],
   "comparisons": [
@@ -319,7 +334,8 @@
         "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay-0000",
         "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay-0001",
         "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay-0002",
-        "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__continuing_highway"
+        "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__continuing_highway",
+        "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__opposing_left_travel_subject"
       ]
     }
   ],
@@ -436,6 +452,15 @@
         "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__continuing_highway"
       ],
       "evidence_or_gap": "No accepted recording establishes the continuing subject alternative. Original Native lane successor witnesses, participant bodies, frame map and control inventory must establish this measured point; legal highway identity remains unresolved."
+    },
+    {
+      "requirement": "Original connected opposing approaches, other actor leftward route and body-heading history, traveling subject straight route and source-bound trace",
+      "source": "inputs/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "case_ids": [
+        "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__opposing_left_travel_subject"
+      ],
+      "evidence_or_gap": "No accepted recording is supplied. The synthetic source tests original route/participant/trace joins only; Native physical and legal exception application remain unconfirmed."
     }
   ],
   "camera_plan": {
@@ -502,12 +527,5 @@
     "implementation": "ending_road_camera.py",
     "limitation": "Native pixels and physical or legal judgments require local review."
   },
-  "unallocated_branch_gaps": [
-    {
-      "gap_id": "opposing_left_turn",
-      "requirement": "opposite-direction approaching left-turn exception",
-      "status": "unresolved_frozen_scope_gap",
-      "reason": "The C111294 travel cell cannot execute the opposite-direction left-turn maneuver; no additional assignment is authorized in the frozen batch."
-    }
-  ]
+  "unallocated_branch_gaps": []
 }

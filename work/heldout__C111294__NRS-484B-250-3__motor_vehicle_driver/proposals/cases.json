@@ -892,6 +892,91 @@
         "comparison_or_standard": "original connected lane successor and participant entry source contrast without a legal highway cutoff",
         "target_value_or_branch": "continuing subject approach"
       }
+    },
+    {
+      "case_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__opposing_left_travel_subject",
+      "target_law_id": "NRS-484B-250-3",
+      "target_type": "boundary_probe",
+      "rationale": "Traveling subject on a straight route; separate opposite-direction actor plans and attempts a leftward exit at the same connected junction. Diagnostic sources do not establish legal exception or physical success.",
+      "variable_assignments": {
+        "entry_delta_s": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "ending_through_topology": {
+          "kind": "world_setup",
+          "value": "connected straight traveling subject and opposing left-turn other actor"
+        },
+        "intersection_occupancy": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "official_device_state": {
+          "kind": "world_setup",
+          "value": "no governing Native control inventory"
+        },
+        "subject_release_delay_frames": {
+          "kind": "controller",
+          "value": 0
+        },
+        "subject_displacement_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "subject_entry_elapsed_s": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "approximately the same time",
+        "highway which ends at the intersection",
+        "yield the right-of-way",
+        "official traffic-control devices",
+        "approaching each other from opposite directions",
+        "intending to or is making a left turn"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "opposing_left_participants",
+            "unit": "m and rad",
+            "sampling_rate_hz": 20,
+            "method": "original Native body corners and heading readbacks for both participants",
+            "time_window": "full 8 s trace",
+            "reference_frame": "world ground plane",
+            "uncertainty": "20 Hz sampling and Native body geometry"
+          },
+          {
+            "name": "intersection_occupancy",
+            "unit": "bool",
+            "sampling_rate_hz": 20,
+            "method": "original Native body corners for both actors against the junction conflict area derived from the connected map route",
+            "time_window": "full 8 s trace",
+            "reference_frame": "world ground plane",
+            "uncertainty": "20 Hz sampling and Native body geometry; legal intersection boundary unresolved"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "opposing_left_context",
+            "method": "Native connected junction route and heading readback",
+            "unit": "structured route"
+          }
+        ],
+        "limitations": [
+          "The software fixture does not establish physical turn completion or legal exception applicability."
+        ]
+      },
+      "paired_probe_id": "opposing_left_turn_vs_hold",
+      "deliberate_differences": [
+        "ending_through_topology"
+      ],
+      "probe": {
+        "primary_variable": "ending_through_topology",
+        "comparison_or_standard": "same connected opposing route with controlled other-actor turn versus heading hold, measured from original body and route sources",
+        "target_value_or_branch": "opposing actor leftward turn alongside straight traveling subject"
+      }
     }
   ],
   "sweep_specs": [

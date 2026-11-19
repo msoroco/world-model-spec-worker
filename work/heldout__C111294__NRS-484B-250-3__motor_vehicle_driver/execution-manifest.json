@@ -1491,6 +1491,170 @@
         "test_log_sha256": "721588220e6ba053a7314e008aaf345ade7e5d41bc0ffda9327a4153b45b7bf7",
         "test_exit_code": 0
       }
+    },
+    {
+      "case_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__opposing_left_travel_subject",
+      "kind": "delivery",
+      "construction": "construction-opposing-left.json",
+      "construction_sha256": "14ee991552a44bef36bbd9d9813f471b6936dc8f08cd5bcbe41c2471bcd277cd",
+      "fixture_recipe": "work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/diagnostic-recipe-opposing-left.json",
+      "measurement_procedure": {
+        "entrypoint": "opposing_left_finalizer.py"
+      },
+      "measurement_contract": "measurement-contract-opposing-left.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native route discovery and both actors' speed histories may miss the authored opposing-left observation window"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-opposing-left-fallback1.json",
+          "construction_sha256": "9a27e31979b77532d55e8f47a308c8c71ee7dd547c6eba44e5fd2822ff5f5509",
+          "trigger": {
+            "source": "Native lane successor inventory",
+            "metric": "eligible opposite/left route pairs",
+            "failure_condition": "Primary 300-spawn search cap finds no connected opposite and left route"
+          },
+          "changed_knobs": [
+            "route search cap 300 to 600"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__opposing_left_travel_subject --candidate fallback1 --output .runtime-work/c111294-opposing-final-offline-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "opposing-left-fallback1-offline.log",
+            "log_sha256": "2fdf7a432a53fceb691486981be60fcb65192fbaa6b7627e6b3fe3a0c95917bf",
+            "construction_sha256": "9a27e31979b77532d55e8f47a308c8c71ee7dd547c6eba44e5fd2822ff5f5509"
+          },
+          "compatibility": {
+            "receipt": "opposing-left-fallback1-compatibility.json",
+            "sha256": "a4d59c66ade0c72904dde37d3649098e86c93cad9d8521d75a8e8477342047e5",
+            "log": "opposing-left-compatibility-analysis.log",
+            "negative_log": "opposing-left-fallback1-negative.log"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-opposing-left-fallback2.json",
+          "construction_sha256": "27d76f8e859d0bc23735c78fd0a42a6fac8acf15099624dd7c95c1502ffb759f",
+          "trigger": {
+            "source": "original 20 Hz turning body and speed history",
+            "metric": "turn entry speed and path completion",
+            "failure_condition": "Primary released turn speed overshoots the selected exit or breaks the observation window"
+          },
+          "changed_knobs": [
+            "released turn target speed 4.0 to 3.2 m/s"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__opposing_left_travel_subject --candidate fallback2 --output .runtime-work/c111294-opposing-final-offline-fallback2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "opposing-left-fallback2-offline.log",
+            "log_sha256": "c39c88100a3b6b5a07400fd4f9264af9dcb67d8bf0752a29fda6fee19edc8cbc",
+            "construction_sha256": "27d76f8e859d0bc23735c78fd0a42a6fac8acf15099624dd7c95c1502ffb759f"
+          },
+          "compatibility": {
+            "receipt": "opposing-left-fallback2-compatibility.json",
+            "sha256": "a322e0894cbd039f173e9110e5b5c3ffb8823b77d8f20d5f03f5cfc106411a1c",
+            "log": "opposing-left-compatibility-analysis.log",
+            "negative_log": "opposing-left-fallback2-negative.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-opposing-left-fallback3.json",
+          "construction_sha256": "e4aa7c7bb0e742b4222146cb05ce016a7346d416869984333505637cd09d143c",
+          "trigger": {
+            "source": "original 20 Hz traveling-subject body and speed history",
+            "metric": "opposing approach entry and clearance time",
+            "failure_condition": "Primary opposite speed traverses the conflict before a stable pre-turn observation"
+          },
+          "changed_knobs": [
+            "opposing subject target speed 5.0 to 4.0 m/s"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__opposing_left_travel_subject --candidate fallback3 --output .runtime-work/c111294-opposing-final-offline-fallback3 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "opposing-left-fallback3-offline.log",
+            "log_sha256": "c39c88100a3b6b5a07400fd4f9264af9dcb67d8bf0752a29fda6fee19edc8cbc",
+            "construction_sha256": "e4aa7c7bb0e742b4222146cb05ce016a7346d416869984333505637cd09d143c"
+          },
+          "compatibility": {
+            "receipt": "opposing-left-fallback3-compatibility.json",
+            "sha256": "c17936dd60a98e70497e4eba9f1791d2cbea6d3320b98cdcd0b8b0118b5c9f3c",
+            "log": "opposing-left-compatibility-analysis.log",
+            "negative_log": "opposing-left-fallback3-negative.log"
+          }
+        }
+      ],
+      "physical_preparation": {
+        "receipt": "physical/opposing_left-proof.json",
+        "sha256": "b0a32d1187b0093dc982e4931388d052736da1e01decb596a40a2370f9dc93b7"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "opposing_left_participants": {
+          "entrypoint": "opposing_left_finalizer.py",
+          "method": "original Native body corners and heading readbacks for two actors joined to route context and traveling-subject trace",
+          "evidence": "opposing_left_context.json, opposing_left_participants.jsonl, trace.jsonl and video_frames.jsonl joined by original frame identity"
+        },
+        "intersection_occupancy": {
+          "entrypoint": "opposing_left_finalizer.py",
+          "method": "original 20 Hz body centers against the retained connected junction route envelope",
+          "evidence": "opposing_left_context.json, opposing_left_participants.jsonl and video_frames.jsonl joined by original frame identity"
+        }
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__opposing_left_travel_subject --output .runtime-work/c111294-opposing-final-offline-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "opposing-left-primary-offline.log",
+        "log_sha256": "c39c88100a3b6b5a07400fd4f9264af9dcb67d8bf0752a29fda6fee19edc8cbc",
+        "construction_sha256": "14ee991552a44bef36bbd9d9813f471b6936dc8f08cd5bcbe41c2471bcd277cd"
+      },
+      "compatibility": {
+        "receipt": "opposing-left-primary-compatibility.json",
+        "sha256": "65b26267a8c62995c5ba1a51d28cdcb862993e689e3f7a37a7a55a52da43bc63",
+        "log": "opposing-left-compatibility-analysis.log",
+        "negative_log": "opposing-left-primary-negative.log"
+      },
+      "negative": {
+        "log": "opposing-left-primary-negative.log"
+      },
+      "delivery_acceptance": {
+        "case_id": "heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__opposing_left_travel_subject",
+        "sets": [
+          "held-out"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "opposing_left_delivery_audit.py",
+        "script_sha256": "07f518e789aca6d8f908805449c586731b40d534265c47435a13b881a28cee37",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/opposing_left_delivery_audit.py --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__opposing_left_travel_subject --attempt .runtime-work/c111294-opposing-rebound-compat-primary-v3 --report .runtime-work/c111294-opposing-rebound-compat-primary-v3/analysis-report.json",
+        "test_exit_code": 0,
+        "test_log": "opposing-left-delivery-positive.log",
+        "test_log_sha256": "306a44ecd7a411c6b370cafba051fe5508040d731ba195faa890f4b0bd426f32",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/opposing_left_delivery_audit.py --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__opposing_left_travel_subject --attempt .runtime-work/c111294-opposing-rebound-compat-primary-v3 --report .runtime-work/c111294-opposing-tampered-report.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Opposing-left original source hash differs",
+        "negative_log": "opposing-left-delivery-negative.log",
+        "negative_log_sha256": "51c7b4ca91fd0fc9701ec076273d80413b501e1b0ea5e53c5c8283b7c452b588"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C111294__NRS-484B-250-3__motor_vehicle_driver/execution-manifest.json --case heldout__C111294__NRS-484B-250-3__motor_vehicle_driver__opposing_left_travel_subject --attempt \"$ATTEMPT\" --output \"$PROCESSING_OUTPUT\" --library runtime/library --validator .runtime-work/c125714-validator/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat \"$PROCESSING_OUTPUT/feedback.json\"",
+        "test_log": "opposing-left-lifecycle.log",
+        "test_log_sha256": "e6b78aa167104616615c311eb59ec244ca80ff742618a035224095df325feef1"
+      }
     }
   ],
   "runtime_manifest_sha256": "5b4738624542c97f321a302bd49b9ec154cb2cf63778acf64ba6042f8d5b4fd3"

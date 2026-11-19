@@ -86,6 +86,22 @@ def analyze(attempt):
     if channel.exists() and channel.read_text() != derived:
         raise ValueError('Derived opposing-left channel differs from original source')
     channel.write_text(derived)
+    junction = [node['xy'] for route in (context['turning_route'], context['opposite_route'])
+                for node in route if str(node.get('junction_id')) == str(context['junction_id'])]
+    if len(junction) < 2:
+        raise ValueError('Opposing-left original junction geometry missing')
+    x0, x1 = min(point[0] for point in junction) - 2.5, max(point[0] for point in junction) + 2.5
+    y0, y1 = min(point[1] for point in junction) - 2.5, max(point[1] for point in junction) + 2.5
+    def occupied(corners):
+        center = [sum(point[axis] for point in corners) / 4 for axis in (0, 1)]
+        return x0 <= center[0] <= x1 and y0 <= center[1] <= y1
+    occupancy = ''.join(json.dumps({'time_s': row['time_s'], 'value':
+        occupied(row['turning_corners']) or occupied(row['opposite_corners'])}) + '\n'
+        for row in participants)
+    occupancy_view = root / 'channels' / 'intersection_occupancy.jsonl'
+    if occupancy_view.exists() and occupancy_view.read_text() != occupancy:
+        raise ValueError('Derived intersection occupancy differs from original source')
+    occupancy_view.write_text(occupancy)
     context_view = root / 'channels' / 'opposing_left_context.json'
     context_record = json.dumps({'opposing_left_context': context}, sort_keys=True) + '\n'
     if context_view.exists() and context_view.read_text() != context_record:
@@ -130,7 +146,10 @@ def build_result(attempt, report):
                  'sha256': sha256((root / 'channels/opposing_left_context.json').read_bytes()).hexdigest()},
                 {'name': 'opposing_left_participants', 'unit': 'm and rad',
                  'reference': 'channels/opposing_left_participants.jsonl',
-                 'sha256': sha256((root / 'channels/opposing_left_participants.jsonl').read_bytes()).hexdigest()}],
+                 'sha256': sha256((root / 'channels/opposing_left_participants.jsonl').read_bytes()).hexdigest()},
+                {'name': 'intersection_occupancy', 'unit': 'bool',
+                 'reference': 'channels/intersection_occupancy.jsonl',
+                 'sha256': sha256((root / 'channels/intersection_occupancy.jsonl').read_bytes()).hexdigest()}],
             'realized_observables': {'turn_heading_change': {
                 'unit': 'rad', 'method': 'first to last original turning actor heading',
                 'time_window': 'full original trace', 'statistic': 'difference',
