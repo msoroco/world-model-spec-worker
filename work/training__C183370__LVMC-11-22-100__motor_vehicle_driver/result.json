@@ -33,7 +33,7 @@
     "status": "cpu_unit_tested_not_native_executed"
   },
   "readiness_kind": null,
-  "reason": "C183370 has a source-surveyed scene, live CARLA preflight, route controller, four-camera 600-frame capture, source-only analyzer and draft Native result finalizer. The finalizer derives four channels from original actor/frame sources and passes the pinned Native result schema in CPU tests. No CARLA capture or exact selected execution chain has run. Human warning, actual newly repaired surface and paving-employee exception remain unverified; semantic/execution selection, primary and three fallback current-runtime proofs for both cases, independent physical/delivery/comparison audits and scoped strict remain worker-owned. No legal or physical acceptance claimed.",
+  "reason": "C183370 has a source-surveyed scene, live CARLA preflight, route controller, four-camera 600-frame capture, source-only analyzer, draft Native finalizer and source-review citation validator. Nineteen CPU tests and preflight pass, but no CARLA capture, independent original-source review or exact selected execution chain has run. Human warning, actual newly repaired surface and paving-employee exception remain unverified; semantic/execution selection, primary and three fallback current-runtime proofs for both cases, independent physical/delivery/comparison audits and scoped strict remain worker-owned. No legal or physical acceptance claimed.",
   "recordings_accepted": 0,
   "scene_plan_component": {
     "path": "native/scene_plan.py",
@@ -47,8 +47,15 @@
     "legal_acceptance_claimed": false,
     "minimum_source_frames": 600,
     "path": "native/analyze.py",
-    "sha256": "9326e19d08cbd9fad9fed3d03685042edf292b792cc7f869b4df4c30d1ed05c1",
+    "sha256": "ddb5a2c86acd8cd8fba70a7dabc103044c2c48d00b846bc6831b0f7cbc6a71af",
     "status": "cpu_unit_tested_not_native_executed"
+  },
+  "source_review_component": {
+    "legal_verdict_claimed": false,
+    "original_review_performed": false,
+    "path": "native/review_annotations.py",
+    "sha256": "3e0b7fd1ece8e387b59ad6db5656e4b55acae25d148eb8ab0e8c559700bcbf52",
+    "status": "cpu_unit_tested_no_original_review"
   },
   "status": "partial",
   "tests": [
@@ -170,6 +177,30 @@
       "command": ".venv-cpu/bin/python worker_check.py --assignment training__C183370__LVMC-11-22-100__motor_vehicle_driver --complete --require-delivery-ready",
       "exit_code": 1,
       "log": "update100-scoped-strict.log",
+      "sha256": "f105b68de8bd7bbb3e9bdfade14e75a9b56640cac7ca657a4ce02c3efba457fe"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/native -p test_*.py -v",
+      "exit_code": 0,
+      "log": "update101-tests.log",
+      "sha256": "48f9ead162151d935f7ad55512ef5de33bab8543de49fc4e9a65d944ce85d72f"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "update101-preflight.log",
+      "sha256": "b33b3933babce11851d3a409b10ce0e5fa335f734faa38b8229f25f02b47ed27"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment training__C183370__LVMC-11-22-100__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "update101-scoped-static.log",
+      "sha256": "f51190cce71609027471d21ae37b0316aa9f907810e09874e885673db6c9c32c"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment training__C183370__LVMC-11-22-100__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "update101-scoped-strict.log",
       "sha256": "f105b68de8bd7bbb3e9bdfade14e75a9b56640cac7ca657a4ce02c3efba457fe"
     }
   ]

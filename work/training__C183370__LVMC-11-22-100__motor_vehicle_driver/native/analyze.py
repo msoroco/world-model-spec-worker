@@ -42,7 +42,7 @@ def analyze_rows(frames, actors, readback):
         native_frame, time = frame['carla_frame'], frame['time_s']
         if type(native_frame) is not int or type(time) not in (int, float) or not isfinite(time):
             raise ValueError('Original frame/time identity invalid')
-        if source_frames and (native_frame <= source_frames[-1] or
+        if source_frames and (native_frame != source_frames[-1] + 1 or
                               abs(time-times[-1]-0.05) > 0.001):
             raise ValueError('Original 20 Hz frame/time continuity failed')
         source_frames.append(native_frame); times.append(time)
