@@ -56,8 +56,7 @@ for case_index, entry in enumerate(manifest['cases']):
         life['command'] = shlex.join(command)
         if '--saved-receipt' in command:
             target = repo / command[command.index('--saved-receipt') + 1]
-            version = 'v3' if case_index in (11, 14, 15) else 'v1'
-            current = repo / f'.runtime-work/c109749-district-selected-{version}-{case_index*4:02d}-saved/v0001/processing.json'
+            current = repo / f'.runtime-work/c109749-cutover-current-v2-{case_index:02d}-primary-saved/v0001/processing.json'
             if not current.is_file():
                 raise ValueError('Current primary saved receipt missing: '+str(current))
             target.parent.mkdir(parents=True, exist_ok=True)
