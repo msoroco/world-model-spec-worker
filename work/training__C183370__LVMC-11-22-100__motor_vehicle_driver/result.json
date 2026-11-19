@@ -25,7 +25,7 @@
     "status": "cpu_mock_tested_live_preflight"
   },
   "readiness_kind": null,
-  "reason": "C183370 now has source-surveyed scene validation, live CARLA map/person preflight, a deterministic route controller and a runnable four-camera 600-frame original-source acquisition entrypoint. CPU unit tests and pinned preflight pass, but the acquisition has not run in CARLA and no Native result finalizer or selected execution/semantic chain is proved. Primary and three fallback exact chains for both cases, source-derived warning/pavement observations, independent physical/delivery/comparison audits and scoped strict remain worker-owned. No legal/physical acceptance or selected case is claimed.",
+  "reason": "C183370 now has source-surveyed scene validation, live CARLA preflight, a deterministic route controller, four-camera 600-frame acquisition, and a source-only analyzer for 20 Hz frame/video joins, ego body contact with the planned repair polygon and warning-person presence. CPU tests and pinned preflight pass, but no CARLA capture or final Native result exists. Person warning, newly repaired surface and employee exception remain unverified; exact selected semantic/execution cases, primary plus three fallback proofs per case, independent acceptance/comparison audits and scoped strict remain worker-owned. No legal/physical acceptance or selected case is claimed.",
   "recordings_accepted": 0,
   "scene_plan_component": {
     "path": "native/scene_plan.py",
@@ -33,6 +33,14 @@
     "selected_case": false,
     "sha256": "a6fca771d02f6b69276010b5deb90de2b2516207a947fb1ef001820bd224dea0",
     "status": "validated_draft_component"
+  },
+  "source_analysis_component": {
+    "four_source_video_decode_required": true,
+    "legal_acceptance_claimed": false,
+    "minimum_source_frames": 600,
+    "path": "native/analyze.py",
+    "sha256": "800e5c5141a4aa16ea7a7e4a1bebf9e3d0a82a342355668d2968df045765ed71",
+    "status": "cpu_unit_tested_not_native_executed"
   },
   "status": "partial",
   "tests": [
@@ -106,6 +114,30 @@
       "command": ".venv-cpu/bin/python worker_check.py --assignment training__C183370__LVMC-11-22-100__motor_vehicle_driver --complete --require-delivery-ready",
       "exit_code": 1,
       "log": "update098-scoped-strict.log",
+      "sha256": "f105b68de8bd7bbb3e9bdfade14e75a9b56640cac7ca657a4ce02c3efba457fe"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/native -p test_*.py",
+      "exit_code": 0,
+      "log": "update099-tests.log",
+      "sha256": "d05ba9286bd93539993b18375a33384b610de483e70c928d3adaaea7c89b503b"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "update099-preflight.log",
+      "sha256": "46421688fbc8e59072e4de4745b7b4c75840ec3cfefc3cf0a81100a43f05d818"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment training__C183370__LVMC-11-22-100__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "update099-scoped-static.log",
+      "sha256": "f51190cce71609027471d21ae37b0316aa9f907810e09874e885673db6c9c32c"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment training__C183370__LVMC-11-22-100__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "update099-scoped-strict.log",
       "sha256": "f105b68de8bd7bbb3e9bdfade14e75a9b56640cac7ca657a4ce02c3efba457fe"
     }
   ]
