@@ -3,6 +3,7 @@ import argparse
 import hashlib
 import json
 import math
+import shutil
 from pathlib import Path
 
 import prepare_raw
@@ -88,6 +89,14 @@ def finalize(attempt,output):
             kind!=actor['source_kind']):
             raise ValueError('Selected right-pass Native trace/frame join differs at '+str(i))
     prepared=attempt/'prepared-sources'
+    if prepared.exists():
+        # Saved processing stages retained acquisition from a prior diagnostic
+        # finalization. Its prepared outputs are derived and must be rebuilt
+        # from the staged raw sources, never reused as evidence.
+        if not prepared.is_dir() or {p.name for p in prepared.iterdir()} != {
+                'preparation-receipt.json', 'right-pass-measures.json'}:
+            raise ValueError('Unexpected prior derived preparation inventory')
+        shutil.rmtree(prepared)
     receipt=prepare_raw.prepare(attempt,attempt,prepared,
                                 synthetic_cpu=kind=='synthetic_native_sample')
     measures=json.loads((prepared/'right-pass-measures.json').read_text())
