@@ -3137,3 +3137,9 @@ C147331 remains **partial**. The unexcused-crossing primary and three fallbacks 
 The full strict gate run before this promotion exited 1 at `preparation.py:276` because the batch remains **38 ready / 13 partial**. Four older C147331 cases still need current finalizer and affected CPU proof rebinding, and the passing-sweep audit must be returned. File inventory remains at **10,200** with 37 byte-exact SHA-verified archive entries. No frozen input, runtime, `batch.json` or Git operation was changed or run. No Native, actual pixel, physical or legal acceptance is claimed.
 
 Post-promotion C147331 scoped nonstrict exits 0, and scoped strict exits 1 only at `preparation.py:276` due the truthful partial status. The Goal remains active.
+
+## 2026-11-19 C147331 scoped strict completion and next assignment
+
+C147331 is now **ready**: all seven selected cases and 21 fallbacks have current exact construction, offline and positive/negative compatibility proofs. Seven clean saved-only proofs, independent source/four-camera audits, three ordinary/passing comparisons and the turn comparison pass. Its [handoff](../heldout__C147331__LVMC-11-18-030-B__motor_vehicle_driver/HANDOFF.md) records proof hashes and scope. Pinned execution, semantic, compatibility, delivery and seven-case/four-comparison queue checks pass; 24 local tests pass; assignment-scoped `worker_check.py --complete --require-delivery-ready` exits 0. This is CPU preparation with synthetic fixtures, not Native, pixel, physical or legal acceptance.
+
+Batch inventory is **39 ready / 12 partial**. The next partial in batch order is C111644. The full 51-assignment strict delivery gate has not passed, so the Goal remains active. No frozen inputs, runtime, batch file or Git operation was changed or run. The shared SHA-verified lossless archive preserves historical artifacts for the file ceiling.

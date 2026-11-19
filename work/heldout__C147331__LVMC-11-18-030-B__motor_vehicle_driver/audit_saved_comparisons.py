@@ -159,13 +159,18 @@ def main():
     parser.add_argument("--left-version")
     parser.add_argument("--right-version")
     parser.add_argument("--third-version")
+    parser.add_argument("--sweep-versions", nargs=3)
     parser.add_argument("--assignment")
     parser.add_argument("--output", required=True)
     args = parser.parse_args()
     if args.proofs and not any((args.comparison, args.left_version, args.right_version,
                                args.third_version)):
         result = audit_proofs(args.proofs)
-    elif args.comparison and args.left_version and args.right_version and not args.proofs:
+        if args.sweep_versions:
+            result["comparisons"].append(
+                audit_sweep([Path(version) for version in args.sweep_versions]))
+    elif (args.comparison and args.left_version and args.right_version
+          and not args.proofs and not args.sweep_versions):
         left_version, right_version = Path(args.left_version), Path(args.right_version)
         if args.comparison == "passing_excursion_sweep" and args.third_version:
             checked = audit_sweep([left_version, right_version,
