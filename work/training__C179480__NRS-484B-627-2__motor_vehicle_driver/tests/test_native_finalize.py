@@ -96,7 +96,7 @@ class NativeFinalizeTest(unittest.TestCase):
             report = module.finalize(folder,folder/'analysis-report.json')
             result = json.loads((folder/'result.json').read_text())
             self.assertEqual(report['hazard_observation']['minimum_ego_center_gap_m'],8.)
-            self.assertEqual(len(report['derived_channels']['channels']),11)
+            self.assertEqual(len(report['derived_channels']['channels']),12)
             self.assertIn('source_visible_hazard',result['realized_observables'])
             self.assertIn('safe_operation_necessity_unreviewed',result['physical_failure_flags'])
             self.assertFalse(result['maneuver_completed'])
@@ -122,7 +122,10 @@ class NativeFinalizeTest(unittest.TestCase):
             report = module.finalize(folder, folder/'analysis-report.json')
             result = json.loads((folder/'result.json').read_text())
             self.assertEqual(report['source_frames'], 3)
-            self.assertEqual(len(report['derived_channels']['channels']), 9)
+            self.assertEqual(len(report['derived_channels']['channels']), 10)
+            self.assertEqual(result['realized_observables']['traffic_effect_evidence']
+                             ['value']['normal_reasonable_movement_impeded'],
+                             'independent_original_source_review_required')
             self.assertFalse(result['maneuver_completed'])
             self.assertFalse(result['setup_confirmed'])
             self.assertFalse(result['legal_verdict_claimed'])

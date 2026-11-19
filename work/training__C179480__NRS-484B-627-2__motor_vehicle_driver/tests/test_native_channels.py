@@ -50,11 +50,17 @@ class NativeChannelsTest(unittest.TestCase):
             original = actor.read_bytes()
             result = module.derive(folder)
             self.assertEqual(result['frames'], 2)
-            self.assertEqual(len(result['channels']), 9)
+            self.assertEqual(len(result['channels']), 10)
             rows = [json.loads(x) for x in
                     (folder/'channels/following_actor_deceleration.jsonl').read_text().splitlines()]
             self.assertIsNone(rows[0]['value']['acceleration_mps2'])
             self.assertAlmostEqual(rows[1]['value']['acceleration_mps2'], -20.)
+            interaction = [json.loads(x) for x in
+                           (folder/'channels/traffic_effect_evidence.jsonl').read_text().splitlines()]
+            self.assertEqual(interaction[0]['value']['following_gap_m'], 10.0)
+            self.assertAlmostEqual(interaction[1]['value']['following_acceleration_mps2'], -20.)
+            self.assertEqual(interaction[1]['value']['normal_reasonable_movement_impeded'],
+                             'independent_original_source_review_required')
             self.assertEqual(actor.read_bytes(), original)
             with self.assertRaises(FileExistsError):
                 module.derive(folder)

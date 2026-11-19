@@ -10,7 +10,8 @@ from source_measurement import analyze_hazard, load_rows
 CHANNELS = ('ego_pose', 'ego_speed', 'ego_stop_history',
             'roadway_surface_grounding', 'ego_lane_footprint',
             'following_actor_gap_history', 'following_actor_deceleration',
-            'following_actor_stop_history', 'ego_velocity_history')
+            'following_actor_stop_history', 'ego_velocity_history',
+            'traffic_effect_evidence')
 SAFE_CHANNELS = ('hazard_actor_state', 'ego_hazard_gap_history')
 
 
@@ -88,6 +89,16 @@ def derive(attempt):
                 'speed_mps': row['following_speed_mps'],
                 'velocity_xyz_mps': row['following_velocity_xyz_mps']},
             'ego_velocity_history': row['ego_velocity_xyz_mps'],
+            'traffic_effect_evidence': {
+                'ego_speed_mps': row['ego_speed_mps'],
+                'ego_on_roadway': row['ego_on_roadway'],
+                'ego_lane_overlap': row['ego_lane_overlap'],
+                'following_speed_mps': row['following_speed_mps'],
+                'following_gap_m': row['following_gap_m'],
+                'following_on_driving_lane': row['following_on_driving_lane'],
+                'following_acceleration_mps2': delta,
+                'normal_reasonable_movement_impeded': 'independent_original_source_review_required',
+            },
         }
         if map_readback['case'] == 'safe_operation_stop':
             hazard = row['hazard_state']

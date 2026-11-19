@@ -125,7 +125,18 @@ def finalize(attempt, output):
             'sampled_roadway_lane_overlap': {
                 'value': overlap, 'unit': 'bool',
                 'method': 'source-joined stopped actor body and driving-lane readback',
-                'reference': 'native-actors.jsonl'}},
+                'reference': 'native-actors.jsonl'},
+            'traffic_effect_evidence': {
+                'value': {
+                    'following_initial_speed_mps': measured['following_initial_speed_mps'],
+                    'following_min_speed_mps': measured['following_min_speed_mps'],
+                    'following_speed_drop_mps': measured['following_speed_drop_mps'],
+                    'following_min_gap_m': measured['following_min_gap_m'],
+                    'normal_reasonable_movement_impeded':
+                        'independent_original_source_review_required'},
+                'unit': 'structured',
+                'method': 'source-joined original ego/follower actor and frame rows',
+                'reference': 'channels/traffic_effect_evidence.jsonl'}},
         'provenance_kind': 'native',
         'accepted': False, 'legal_verdict_claimed': False,
     }
