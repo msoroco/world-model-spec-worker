@@ -67,12 +67,26 @@ class OpposingLeftFinalizerTest(unittest.TestCase):
             context['subject_role'] = 'opposite'
             context['subject_actor_id'] = context['opposite_actor_id']
             context_path.write_text(json.dumps(context))
+            participant_rows = [json.loads(line) for line in
+                                (root / 'opposing_left_participants.jsonl').read_text().splitlines()]
+            trace_rows = [json.loads(line) for line in (root / 'trace.jsonl').read_text().splitlines()]
+            for motion, participant in zip(trace_rows, participant_rows):
+                motion['position_m'] = [sum(point[axis] for point in participant['opposite_corners']) / 4
+                                        for axis in (0, 1)]
+                motion['heading_deg'] = participant['opposite_heading_rad'] * 180 / 3.141592653589793
+            (root / 'trace.jsonl').write_text(''.join(json.dumps(row) + '\n' for row in trace_rows))
             report = analyze(root)
             self.assertEqual(report['case_id'], config['selected_case_id'])
             self.assertIn('observed_opposite_heading_change_rad',
                           report['measurements']['opposing_left_observation']['value'])
             result = build_result(root, report)
             self.assertFalse(result['legal_acceptance_claimed'])
+            trace_rows[0]['position_m'][0] += 10
+            (root / 'trace.jsonl').write_text(''.join(json.dumps(row) + '\n' for row in trace_rows))
+            with self.assertRaisesRegex(ValueError, 'body differs from trace'):
+                analyze(root)
+            trace_rows[0]['position_m'][0] -= 10
+            (root / 'trace.jsonl').write_text(''.join(json.dumps(row) + '\n' for row in trace_rows))
             context['opposite_route'][-1]['heading_xy'] = [0, 1]
             context_path.write_text(json.dumps(context))
             with self.assertRaisesRegex(ValueError, 'route turns'):

@@ -3,9 +3,10 @@
 import argparse
 from hashlib import sha256
 import json
+from math import atan2, cos, hypot, sin
 from pathlib import Path
 
-from opposing_left_measurement import measure_opposing_left
+from opposing_left_measurement import measure_opposing_left as _measure_opposing_left
 from opposing_left_runner import check_config
 
 
@@ -18,6 +19,10 @@ def _source(root, name):
 
 def _rows(path):
     return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
+
+
+def measure_opposing_left(root):
+    return _measure_opposing_left(root)
 
 
 def analyze(attempt):
@@ -53,8 +58,39 @@ def analyze(attempt):
                 (motion.get('frame'), motion.get('time_s')) != identity or
                 (participant.get('frame'), participant.get('time_s')) != identity):
             raise ValueError('Opposing-left original source/frame-map join failed')
+        if expected_role == 'opposite':
+            corners = participant.get('opposite_corners')
+            position = motion.get('position_m')
+            if (not isinstance(corners, list) or len(corners) != 4 or
+                    not isinstance(position, list) or len(position) < 2):
+                raise ValueError('Traveling subject original body/trace source missing')
+            center = [sum(point[axis] for point in corners) / 4 for axis in (0, 1)]
+            if hypot(center[0] - position[0], center[1] - position[1]) > .5:
+                raise ValueError('Traveling subject original body differs from trace')
+            heading = participant.get('opposite_heading_rad')
+            trace_heading = motion.get('heading_deg')
+            if not isinstance(heading, (int, float)) or not isinstance(trace_heading, (int, float)) or abs(atan2(sin(heading - trace_heading * 3.141592653589793 / 180), cos(heading - trace_heading * 3.141592653589793 / 180))) > .25:
+                raise ValueError('Traveling subject original heading differs from trace')
     observed = measure_opposing_left(root)
     observed['sources']['trace.jsonl'] = trace_sha
+    channel = root / 'channels' / 'opposing_left_participants.jsonl'
+    channel.parent.mkdir(exist_ok=True)
+    derived = ''.join(json.dumps({'time_s': row['time_s'], 'value': {
+        'turning_actor_id': row['turning_actor_id'],
+        'opposite_actor_id': row['opposite_actor_id'],
+        'turning_corners': row['turning_corners'],
+        'opposite_corners': row['opposite_corners'],
+        'turning_heading_rad': row['turning_heading_rad'],
+        'opposite_heading_rad': row['opposite_heading_rad']}}) + '\n'
+        for row in participants)
+    if channel.exists() and channel.read_text() != derived:
+        raise ValueError('Derived opposing-left channel differs from original source')
+    channel.write_text(derived)
+    context_view = root / 'channels' / 'opposing_left_context.json'
+    context_record = json.dumps({'opposing_left_context': context}, sort_keys=True) + '\n'
+    if context_view.exists() and context_view.read_text() != context_record:
+        raise ValueError('Derived opposing-left context differs from original source')
+    context_view.write_text(context_record)
     return {'format': 'worker-analysis-report', 'case_id': config['selected_case_id'],
             'measurements': {'opposing_left_observation': observed},
             'limitations': ['Original route and body motion do not establish a legal exception or physical completion.'],
@@ -90,11 +126,11 @@ def build_result(attempt, report):
             'recording_description': description,
             'recording_evidence': [
                 {'name': 'opposing_left_context', 'unit': 'structured route',
-                 'reference': 'opposing_left_context.json',
-                 'sha256': sha256((root / 'opposing_left_context.json').read_bytes()).hexdigest()},
-                {'name': 'opposing_left_participants', 'unit': 'body and heading at 20 Hz',
-                 'reference': 'opposing_left_participants.jsonl',
-                 'sha256': sha256((root / 'opposing_left_participants.jsonl').read_bytes()).hexdigest()}],
+                 'reference': 'channels/opposing_left_context.json',
+                 'sha256': sha256((root / 'channels/opposing_left_context.json').read_bytes()).hexdigest()},
+                {'name': 'opposing_left_participants', 'unit': 'm and rad',
+                 'reference': 'channels/opposing_left_participants.jsonl',
+                 'sha256': sha256((root / 'channels/opposing_left_participants.jsonl').read_bytes()).hexdigest()}],
             'realized_observables': {'turn_heading_change': {
                 'unit': 'rad', 'method': 'first to last original turning actor heading',
                 'time_window': 'full original trace', 'statistic': 'difference',
