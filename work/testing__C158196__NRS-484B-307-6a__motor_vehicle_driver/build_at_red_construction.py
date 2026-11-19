@@ -36,6 +36,18 @@ def main():
             config = json.loads(entry['content'])
             config['selected_case_id'] = case
             config['case']['case_id'] = case
+            if suffix == 'stops_on_yellow':
+                config['physical_completion'] = {
+                    'criterion': 'travel_progress',
+                    'motion_source': 'signal_vehicle_history.jsonl',
+                    'body_key': 'ego_body_vertices_xy_m',
+                    'minimum_progress_m': 1.0,
+                    'minimum_samples': 2,
+                    'context_sources': ['junction_context.json'],
+                    'engineering_tolerances_not_legal': True,
+                    'completion_goal_method': ('Sourced approach progress of at least 1m before the planned stop; '
+                                               'no-entry and stationary end are checked by the saved source finalizer.'),
+                }
             entry['content'] = json.dumps(config, indent=2, allow_nan=False) + '\n'
             break
     else:
