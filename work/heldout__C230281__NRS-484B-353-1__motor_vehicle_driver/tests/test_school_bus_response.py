@@ -301,6 +301,17 @@ class SourceResponse(unittest.TestCase):
         self.assertEqual(diagnostic['red_pixels']['pixel_evidence_status'],'unverified')
         self.assertIsNone(diagnostic['red_pixels']['frames'][1]['front_red_pixel_count'])
         self.assertFalse(diagnostic['red_pixels']['front_rear_red_visibility_verified'])
+        diagnostic_report, diagnostic_native = finalize_first_case(attempt)
+        saved.write_text(json.dumps(diagnostic_report)+'\n')
+        (attempt/'result.json').write_text(json.dumps(diagnostic_native)+'\n')
+        self.assertTrue(independent_audit(attempt,saved,package/'measurement-contract.json')
+                        ['software_source_join_passed'])
+        packet = lamp.read_text()
+        lamp.write_text(packet.replace('"front_red_commanded": true',
+                                       '"front_red_commanded": false',1))
+        with self.assertRaisesRegex(ValueError,'source hash differs|provenance differs'):
+            independent_audit(attempt,saved,package/'measurement-contract.json')
+        lamp.write_text(packet)
         (attempt/'fixture-provenance.json').unlink()
         with self.assertRaisesRegex(ValueError,'red pixels disagree'):
             audit_first_case_attempt(attempt,[1,1,5,3],[1,1,5,3],'receiving')

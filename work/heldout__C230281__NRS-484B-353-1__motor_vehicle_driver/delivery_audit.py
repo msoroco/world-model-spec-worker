@@ -78,6 +78,24 @@ def audit(attempt, analysis_path, contract_path):
     decoded = {name: decode_video(attempt / name, frames, mapping_sha256=map_sha)
                for name in VIDEOS}
     measurements = verify_report(contract, report, attempt)
+    red = report.get('measurements', {}).get('first_case_sources', {}).get('value', {}).get('red_pixels', {})
+    marker = attempt / 'fixture-provenance.json'
+    diagnostic = marker.is_file() and json.loads(marker.read_text()).get('diagnostic_fixture') is True
+    if diagnostic:
+        packet = attempt / 'lamp_state_original.jsonl'
+        if (not packet.is_file() or red.get('pixel_evidence_status') != 'unverified' or
+                red.get('front_rear_red_visibility_verified') is not False or
+                red.get('source_sha256', {}).get('lamp_packet') != _hash(packet) or
+                red.get('source_sha256', {}).get('frame_map') != map_sha or
+                red.get('source_sha256', {}).get('command') != _hash(attempt / 'signal_command_original.jsonl')):
+            raise ValueError('Independent diagnostic lamp provenance differs')
+    elif (red.get('format') != 'worker-school-bus-red-pixel-candidates' or
+          red.get('source_sha256', {}).get('front_video') != _hash(attempt / 'reference_corner.mkv') or
+          red.get('source_sha256', {}).get('rear_video') != _hash(attempt / 'driver_reference.mkv') or
+          red.get('source_sha256', {}).get('frame_map') != map_sha or
+          red.get('source_sha256', {}).get('command') != _hash(attempt / 'signal_command_original.jsonl') or
+          len(red.get('frames', [])) != frames):
+        raise ValueError('Independent original camera red source differs')
     response = measurements['stop_response_candidate']['value']
     if not isinstance(response.get('held_stop_until_cessation_candidate'), bool):
         raise ValueError('Independent school-bus stop response missing')
