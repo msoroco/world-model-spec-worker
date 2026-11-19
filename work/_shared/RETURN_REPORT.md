@@ -3007,3 +3007,25 @@ The ignored local exact selection passed 14 targeted tests, `runtime.py offline`
 Next worker-owned tasks: add the case and source-bound measurement contract to the returned plan/manifest and proposal; prove three distinct fallbacks; run physical/lifecycle, independent delivery and opposing-left comparison audits; refresh queue and hashes; resolve the two full-law audit failures and pass scoped plus batch strict gates. No Native run, physical completion, camera-pixel or legal judgment is claimed. No frozen input, runtime, batch.json or Git was edited or run.
 
 Fresh batch gates after this CPU checkpoint: `.venv-cpu/bin/python worker_check.py --complete` exits 0 (log SHA256 `b240d7e9206f7ce14c8a3993e3129987c0a88e4abdbae1a23fc38114833693b5`); `--complete --require-delivery-ready` exits 1 at `Preparation acceptance failed: partial/missing packages remain` (log SHA256 `8a5196a775b4e25dcc5ad430d9aa36835506a570dd5afd41ee669c3da366a69e`). Batch count: 34 ready, 17 partial, 51 total. CPU preflight exits 0 with pinned Lean 4.28.0 (log SHA256 `90911b8c563782d869789ae6c7f1d34b9b1bc0eb4397eda4416cefedae45ce10`). Goal remains active.
+
+## 2026-11-18 opposing-left four-variant continuation
+
+C111294 remains **partial**. The exact local traveling-subject/opposing-left primary and three distinct risk-triggered fallback constructions now pass exact `runtime.py offline`, positive/missing-participant `runtime.py compatibility`, and fresh `runtime.py process-saved`. All four saved receipts report `originals_preserved=true` and `missing_evidence=false`; no Native run or physical/legal acceptance is claimed. The fallback knobs are bounded Native route search (300→600 spawn points), released turn target speed (4.0→3.2 m/s), and straight opposing subject speed (5.0→4.0 m/s), each with a separate observable trigger. The constructions and measurement contract are returned, but the selected plan/manifest and portable proof receipts are still pending.
+
+Exact local proof hashes (construction / compatibility / saved receipt):
+
+- `primary`: `a4be96011afa8bd6fc16d5d40b8a4d2720e921ec223e68f16b619b0d6a1dfd17` / `3d48df651b170621299ef1d134bf45cc4c2d69535a817dd25eb92b5724528e6a` / `beb103ac725032bafe4c8a1e5bf04411a3e1bf4935ae0ebce44f27682f3e0949`.
+
+- `fallback1`: `178b0b09f7ed61165817af4a72020e615448f7a90b5e55f309e8ff499eed62bc` / `fd3acf06801e75586cfce2f074f8b5bbedd0850a7efb4ec3cbb28fad388d775c` / `d18e8a4c4da318a5a0060062d07023a7aa9ee5564136c52115cd75792a948ff5`.
+
+- `fallback2`: `307ab431e63934893038125c802543b3cd0495a3f31f44f9221e0b310699b74b` / `ff7e90d1e8dba916e71aa8a5df8e6ba0576e5bafa0ea5269ec26f00ec18dd772` / `7e906e643ed3e52e6350437bd3aae74e1d843bc466affbbda5983ddfd6b3b500`.
+
+- `fallback3`: `005aea9ae019283696c8a72f39f79b62a7c8ddf3d2d3bc7579589900ac01e9a9` / `66c2f695c49d95813e799fb513e5f0eaf443696246c453776d804fd6e3d2fc4e` / `c866d2978eaf1752a72af094511e94462ba7c0e120fe7cfc6c89381f2bd3ae39`.
+
+
+A local original-source comparison shows 1.57 rad of other-actor left turn versus 0 rad in a retained-setup hold; its swapped-outcome negative is rejected. Audit source SHA256 `935349bfc644aeb151b0f9adaf88866da5ffcb5f70f5f16dcab60dfa599f37b1`; positive receipt SHA256 `edb528618f7faa852793b9e7550f4b45f7736fa03a78b74e102aab34bea23749`. It is a same-case synthetic contrast, not yet a returned queue comparison or legal decision. Fifteen targeted tests pass. The full suite runs 83 tests: 81 pass, one error and one failure remain at the unresolved opposing-left `case-plan.json` gap. Scoped nonstrict `worker_check --complete` passes.
+
+The returned tree remains 10,200/10,200 files. Four historical C111294 logs were archived losslessly in `work/_shared/historical-receipts-bundle-20261119.json`; two logs needed by the current queue were restored after the full suite exposed their use. Two inactive historical gate/fixture logs were archived instead, and C230259 scoped strict still passes. The shared checkpoint was refreshed with the current C111294 result hash.
+
+Next worker-owned work: select the case in returned plan, semantic proposal and execution manifest; return portable exact proof receipts/logs within the file cap; construct synthetic physical/lifecycle and independent delivery audits; bind the opposing-left comparison into the queue and full-law audit; refresh hashes and rerun the scoped and batch strict gates. Status must remain partial until those proofs pass. No frozen input, runtime, batch file or Git command was changed or run.
+Fresh C111294 scoped strict gate exits 1 on truthful partial status (`Preparation acceptance failed: partial/missing packages remain`); log SHA256 `8a5196a775b4e25dcc5ad430d9aa36835506a570dd5afd41ee669c3da366a69e`. The full batch strict gate was not rerun after this returned-work update.
