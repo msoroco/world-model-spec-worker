@@ -21,6 +21,43 @@ def corners(x):
 
 
 class SourceResponse(unittest.TestCase):
+    def test_returned_overtaking_stop_proof(self):
+        package = Path(__file__).resolve().parents[1]
+        manifest = json.loads((package/'execution-manifest.json').read_text())
+        case = next(row for row in manifest['cases']
+                    if row['case_id'].endswith('__overtaking_stop'))
+        bundle = json.loads((package/'first-case-proof-bundle.json').read_text())
+        proof = bundle['additional_case_proofs'][case['case_id']]
+        self.assertEqual(proof['construction_sha256'], case['construction_sha256'])
+        self.assertEqual(proof['execution_manifest_sha256'],
+                         hashlib.sha256((package/'execution-manifest.json').read_bytes()).hexdigest())
+        recipe = json.loads((package/'school-bus-overtaking-stop-recipe.json').read_text())
+        self.assertEqual(recipe['generator']['sha256'],
+                         hashlib.sha256((package/'school-bus-overtaking-stop-diagnostic.json').read_bytes()).hexdigest())
+        construction = json.loads((package/'overtaking-stop-construction.json').read_text())
+        controller = next(row['content'] for row in construction['files']
+                          if row['path'] == 'school_bus_controller.py')
+        self.assertIn('select_overtaking_waypoints', controller)
+        self.assertIn('dot >= .8', controller)
+        self.assertIn('dot < .8', controller)
+        decoded = {}
+        for name, item in proof['artifacts'].items():
+            raw = zlib.decompress(base64.b64decode(item['zlib_base64']))
+            self.assertEqual((len(raw), hashlib.sha256(raw).hexdigest()),
+                             (item['bytes'], item['sha256']))
+            decoded[name] = raw
+        compatibility = json.loads(decoded['compatibility.json'])
+        positive = json.loads(decoded['saved-positive-processing.json'])
+        missing = json.loads(decoded['saved-missing-processing.json'])
+        audit = json.loads(decoded['independent-delivery-audit.json'])
+        self.assertTrue(compatibility['passed'] and positive['passed'] and missing['passed'])
+        self.assertFalse(positive['missing_evidence'])
+        self.assertTrue(missing['missing_evidence'])
+        self.assertTrue(positive['originals_preserved'] and missing['originals_preserved'])
+        self.assertTrue(audit['software_source_join_passed'])
+        self.assertEqual((audit['frame_count'], len(audit['source_decode'])), (160, 4))
+        self.assertFalse(proof['checks']['actual_native_capture'])
+
     def test_returned_restart_case_cpu_proof_bundle(self):
         package = Path(__file__).resolve().parents[1]
         proof = json.loads((package/'restart-case-proof-bundle.json').read_text())
