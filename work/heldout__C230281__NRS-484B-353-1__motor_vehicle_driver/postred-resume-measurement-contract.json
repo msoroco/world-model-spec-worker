@@ -1,0 +1,47 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__meeting_resume_after_red_ceases",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Establish the properly equipped stopped school bus, receiving or discharging a pupil, flashing red visible from front and rear, and meeting or overtaking from either direction.",
+      "source": "inputs/heldout__C230281__NRS-484B-353-1__motor_vehicle_driver/assignment.json",
+      "output_key": "first_case_sources",
+      "method": "audit_first_case_attempt",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "motion_original.jsonl",
+        "pupil_original.jsonl",
+        "signal_command_original.jsonl",
+        "video_frames.jsonl",
+        "trace.jsonl",
+        "road.xodr",
+        "overview.mkv",
+        "approach.mkv",
+        "reference_corner.mkv",
+        "driver_reference.mkv"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Measure the immediate stop and prohibition on overtaking or proceeding past the bus until the flashing red signal ceases operation.",
+      "source": "inputs/heldout__C230281__NRS-484B-353-1__motor_vehicle_driver/assignment.json",
+      "output_key": "stop_response_candidate",
+      "method": "finalize_first_case",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "motion_original.jsonl",
+        "signal_command_original.jsonl",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "pupil_original.jsonl"
+    ],
+    "error_contains": "Missing required source: pupil_original.jsonl"
+  }
+}

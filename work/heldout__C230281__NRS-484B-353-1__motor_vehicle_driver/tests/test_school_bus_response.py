@@ -21,6 +21,42 @@ def corners(x):
 
 
 class SourceResponse(unittest.TestCase):
+    def test_returned_postred_resume_proof(self):
+        package = Path(__file__).resolve().parents[1]
+        manifest_path = package / 'execution-manifest.json'
+        manifest = json.loads(manifest_path.read_text())
+        case = next(row for row in manifest['cases']
+                    if row['case_id'].endswith('__meeting_resume_after_red_ceases'))
+        bundle = json.loads((package / 'first-case-proof-bundle.json').read_text())
+        proof = bundle['additional_case_proofs'][case['case_id']]
+        self.assertEqual(proof['construction_sha256'], case['construction_sha256'])
+        self.assertEqual(proof['execution_manifest_sha256'],
+                         hashlib.sha256(manifest_path.read_bytes()).hexdigest())
+        recipe = json.loads((package / 'school-bus-postred-resume-recipe.json').read_text())
+        self.assertEqual(recipe['generator']['sha256'],
+                         hashlib.sha256((package / 'school-bus-postred-resume-diagnostic.json').read_bytes()).hexdigest())
+        construction = json.loads((package / 'postred-resume-construction.json').read_text())
+        finalizer = next(row['content'] for row in construction['files']
+                         if row['path'] == 'school_bus_response.py')
+        self.assertIn("'post_red_resume_frame'", finalizer)
+        self.assertIn("'matched':held and post_red_resume is not None", finalizer)
+        decoded = {}
+        for name, item in proof['artifacts'].items():
+            raw = zlib.decompress(base64.b64decode(item['zlib_base64']))
+            self.assertEqual((len(raw), hashlib.sha256(raw).hexdigest()),
+                             (item['bytes'], item['sha256']))
+            decoded[name] = raw
+        compatibility = json.loads(decoded['compatibility.json'])
+        positive = json.loads(decoded['saved-positive-processing.json'])
+        missing = json.loads(decoded['saved-missing-processing.json'])
+        audit = json.loads(decoded['independent-delivery-audit.json'])
+        self.assertTrue(compatibility['passed'] and positive['passed'] and missing['passed'])
+        self.assertTrue(positive['originals_preserved'] and missing['originals_preserved'])
+        self.assertFalse(positive['missing_evidence'])
+        self.assertTrue(missing['missing_evidence'])
+        self.assertTrue(audit['software_source_join_passed'])
+        self.assertEqual((audit['frame_count'], len(audit['source_decode'])), (160, 4))
+
     def test_returned_officer_control_proof(self):
         package = Path(__file__).resolve().parents[1]
         manifest_path = package/'execution-manifest.json'
