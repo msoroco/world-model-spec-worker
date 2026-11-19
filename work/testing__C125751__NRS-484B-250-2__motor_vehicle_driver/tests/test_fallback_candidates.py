@@ -10,7 +10,7 @@ from worker_exchange.candidate_constructions import validate
 
 class FallbackCandidateTests(unittest.TestCase):
     def test_six_exact_candidates_and_distinct_risks(self):
-        manifest = json.loads((PACKAGE / "diagnostic-execution-manifest.json").read_text())
+        manifest = json.loads((PACKAGE / "execution-manifest.json").read_text())
         self.assertEqual(len(manifest["cases"]), 2)
         by_case = {}
         for entry in manifest["cases"]:

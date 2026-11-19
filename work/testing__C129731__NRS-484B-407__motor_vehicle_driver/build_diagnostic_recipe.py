@@ -1,6 +1,6 @@
 """Generate a textual, original-source shaped C129731 CPU diagnostic.
 
-The generated videos and graph pickles belong only under ignored .runtime-work.
+The generated videos and adapter graphs belong only under ignored .runtime-work.
 No physical visibility or legal outcome is inferred from this fixture.
 """
 import hashlib
@@ -114,8 +114,9 @@ def build(variant="short_of_500ft", feature="curve"):
                                 "body_vertices_m":vertices},
                          "world":{},
                          "original_observations":original,"visibility":visibility(x,y,variant,height)})
-        base, abstract = (f"graphs/{kind}/{frame:08d}.pkl" for kind in ("base","abstract"))
+        base, abstract = (f"graphs/{kind}/{frame:08d}.adapter.json" for kind in ("base","abstract"))
         frames.append({"frame":frame,"simulation_time":time,"base":base,"abstract":abstract,
+                       "adapter_graph":base,
                        "nodes":0,"edges":0,"extraction_seconds":0,"capture_seconds":0})
         for path, attrs in ((base,{"observed_evidence":original}),(abstract,{})):
             graphs.append({"path":"capture/native/"+path,

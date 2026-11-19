@@ -907,6 +907,8 @@ def prove_opposite_positive_compatibility(manifest_path, sweep_attempt, output_r
     os.environ["SCENARIO_PIPELINE_OUTPUT_ROOT"] = str(
         repo / ".runtime-work/scenario-pipeline-artifacts")
     from worker_exchange.package_compatibility import _process_fixture
+    from worker_exchange.fixture_recipe import fixture_fingerprint
+    from worker_exchange.common import digest
     from worker_exchange.runtime_cli import execution_env, materialize
     from worker_exchange.saved_processing import copy_sources
     from worker_exchange.measurement_contract import validate as validate_measurements
@@ -932,6 +934,8 @@ def prove_opposite_positive_compatibility(manifest_path, sweep_attempt, output_r
             shutil.copy2(path, target)
     if not (fixture / "capture/native/frames.jsonl").is_file():
         raise ValueError("Diagnostic native frame packet missing")
+    inventory = fixture_fingerprint(fixture)
+    source = {"fixture_sha256": digest(inventory), "fixture_manifest": inventory}
     case = json.loads((sweep_attempt / "config.json").read_text())["selected_case_id"]
     dispositions, contract = opposite_measurement_contract()
     construction = json.loads((manifest_path.parent / "primary-construction.json").read_text())
@@ -944,7 +948,7 @@ def prove_opposite_positive_compatibility(manifest_path, sweep_attempt, output_r
         receipt = _process_fixture(manifest_path, case, fixture, attempt,
             repo / "runtime/library",
             repo / ".runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
-            candidate)
+            candidate, source)
         measured = verify_report(contract,
             json.loads((attempt / "analysis-report.json").read_text()), fixture)
         receipts.append({"candidate": candidate,
@@ -986,6 +990,8 @@ def prove_opposite_generated_fixture(manifest_path, sweep_attempt, output_root):
     os.environ["SCENARIO_PIPELINE_OUTPUT_ROOT"] = str(
         repo / ".runtime-work/scenario-pipeline-artifacts")
     from worker_exchange.fixture_generator import generate, inspect
+    from worker_exchange.fixture_recipe import fixture_fingerprint
+    from worker_exchange.common import digest
     from worker_exchange.package_compatibility import _process_fixture
     from worker_exchange.measurement_contract import verify_report
     manifest_path = Path(manifest_path).resolve()
@@ -1025,6 +1031,8 @@ def prove_opposite_generated_fixture(manifest_path, sweep_attempt, output_root):
     fixture = output_root / "fixture"
     fixture.mkdir()
     generated = generate(spec, fixture)
+    inventory = fixture_fingerprint(fixture, spec)
+    source = {"fixture_sha256": digest(inventory), "fixture_manifest": inventory}
     case = ASSIGNMENT + "__opposite_left_turn"
     _, contract = opposite_measurement_contract()
     receipts = []
@@ -1033,7 +1041,7 @@ def prove_opposite_generated_fixture(manifest_path, sweep_attempt, output_root):
         receipt = _process_fixture(manifest_path, case, fixture, attempt,
             repo / "runtime/library",
             repo / ".runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
-            candidate)
+            candidate, source)
         verified = verify_report(contract,
             json.loads((attempt / "analysis-report.json").read_text()), fixture)
         receipts.append({"candidate": candidate,
