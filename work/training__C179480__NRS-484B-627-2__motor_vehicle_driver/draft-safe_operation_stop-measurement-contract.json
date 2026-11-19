@@ -1,0 +1,38 @@
+{
+  "case_id": "training__C179480__NRS-484B-627-2__motor_vehicle_driver__safe_operation_stop",
+  "format": "worker-measurement-contract",
+  "negative": {
+    "error_contains": "Missing required source: native-map-readback.json",
+    "remove": [
+      "native-map-readback.json"
+    ]
+  },
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "inputs": [
+        "native-actors.jsonl",
+        "video_frames.jsonl"
+      ],
+      "kind": "measured",
+      "method": "measure_roadway_stop",
+      "output_key": "roadway_stop",
+      "requirement": "text-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "value_type": "object"
+    },
+    {
+      "disposition_index": 1,
+      "inputs": [
+        "native-map-readback.json",
+        "native-actors.jsonl"
+      ],
+      "kind": "sourced_context",
+      "method": "measure_paved_roadway_scope",
+      "output_key": "paved_roadway_scope",
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "value_type": "object"
+    }
+  ]
+}
