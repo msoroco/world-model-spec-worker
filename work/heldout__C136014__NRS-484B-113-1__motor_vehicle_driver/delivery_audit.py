@@ -44,6 +44,38 @@ def audit(case,attempt):
             'actual_pixels_check':'full codec decode and exact frame count; visual subject/body review remains required',
             'physical_acceptance_claimed':False,'legal_acceptance_claimed':False}
 
+def audit_onset_sweep(attempts):
+    """Compare the three exact synthetic controls through retained joined sources."""
+    expected=(40,120,80)
+    if len(attempts)!=3:raise ValueError('Three exact onset attempts required')
+    cases=[];fixed=None
+    for index,(attempt,target) in enumerate(zip(attempts,expected)):
+        case=PREFIX+f'backing_interference_onset_grid-{index:04}'
+        verified=audit(case,attempt)
+        attempt=Path(attempt)
+        states=[json.loads(s) for s in (attempt/'backing_history.jsonl').read_text().splitlines() if s]
+        frames=[json.loads(s) for s in (attempt/'video_frames.jsonl').read_text().splitlines() if s]
+        if len(states)!=160 or len(frames)!=160:
+            raise ValueError('Onset diagnostic lacks all 160 source-joined frames')
+        constant=[(s['frame'],s['time_s'],s['ego']['position_m'],
+                   s['other']['position_m'],s['ego_reverse_gear']) for s in states]
+        if fixed is None:fixed=constant
+        elif fixed!=constant:raise ValueError('Onset sweep changed a fixed source condition')
+        speeds=[s['other']['speed_mps'] for s in states]
+        decline=next((i for i in range(1,len(speeds)) if speeds[i]<speeds[i-1]-.05),None)
+        if decline!=target or any(abs(speed-1.0)>1e-6 for speed in speeds[:target]) or any(abs(speed-.8)>1e-6 for speed in speeds[target:]):
+            raise ValueError('Requested other-traffic onset not realized in joined source: '+case)
+        result=json.loads((attempt/'result.json').read_text())
+        check=next((x for x in result.get('target_checks',[]) if x.get('target')=='other_traffic_brake_start_frame'),None)
+        if not check or check.get('measured')!=float(target) or check.get('matched') is not True:
+            raise ValueError('Saved result onset readback differs from source: '+case)
+        cases.append({'case_id':case,'requested_frame':target,'measured_frame':decline,
+                      'source_frames':len(states),'four_camera_decodes':verified['video_frames'],
+                      'source_sha256':verified['source_sha256']})
+    return {'format':'worker-onset-sweep-source-audit','passed':True,'fixture_only':True,
+            'actual_native_capture':False,'fixed_conditions_checked':True,
+            'cases':cases,'physical_acceptance_claimed':False,'legal_acceptance_claimed':False}
+
 def main():
     p=argparse.ArgumentParser();p.add_argument('--case',required=True);p.add_argument('--attempt',required=True)
     a=p.parse_args();print(json.dumps(audit(a.case,a.attempt),indent=2))
