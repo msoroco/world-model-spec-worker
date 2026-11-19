@@ -119,75 +119,90 @@
   ],
   "source_observation_mapping": {
     "st.railway_crossing": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Authored rail crossing asset and road context are captured with actor/map readback and four synchronized cameras; original rail identity and visibility remain for Native review.",
       "channels": [
-        "bus_obeys_officer_direction"
+        "native_actor_state",
+        "camera_frame_join"
       ],
       "source_refs": [
-        "inputs/training__C177225__NRS-484B-560-7b__bus_driver/assignment.json"
+        "inputs/training__C177225__NRS-484B-560-7b__bus_driver/assignment.json",
+        "work/training__C177225__NRS-484B-560-7b__bus_driver/native_runner.py",
+        "work/training__C177225__NRS-484B-560-7b__bus_driver/audit_delivery.py"
       ]
     },
     "dev.railway_signal_or_gate": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Four-camera sources can show rail signal or gate context; no diagnostic fixture proves an original signal or gate was present.",
       "channels": [
-        "bus_obeys_officer_direction"
+        "camera_frame_join"
       ],
       "source_refs": [
-        "inputs/training__C177225__NRS-484B-560-7b__bus_driver/assignment.json"
+        "inputs/training__C177225__NRS-484B-560-7b__bus_driver/assignment.json",
+        "work/training__C177225__NRS-484B-560-7b__bus_driver/audit_delivery.py"
       ]
     },
     "dev.stop_sign": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Four-camera source views retain sign context; no original stop-sign presence is claimed.",
       "channels": [
-        "bus_obeys_officer_direction"
+        "camera_frame_join"
       ],
       "source_refs": [
-        "inputs/training__C177225__NRS-484B-560-7b__bus_driver/assignment.json"
+        "inputs/training__C177225__NRS-484B-560-7b__bus_driver/assignment.json",
+        "work/training__C177225__NRS-484B-560-7b__bus_driver/audit_delivery.py"
       ]
     },
     "dev.regulatory_sign": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Four-camera source views retain regulatory-sign context; original sign classification remains for review.",
       "channels": [
-        "bus_obeys_officer_direction"
+        "camera_frame_join"
       ],
       "source_refs": [
-        "inputs/training__C177225__NRS-484B-560-7b__bus_driver/assignment.json"
+        "inputs/training__C177225__NRS-484B-560-7b__bus_driver/assignment.json",
+        "work/training__C177225__NRS-484B-560-7b__bus_driver/audit_delivery.py"
       ]
     },
     "dev.human_direction": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Retained officer signal rows and synchronized cameras support direction timing and later original gesture review.",
       "channels": [
-        "bus_obeys_officer_direction"
+        "dev.human_direction",
+        "camera_frame_join"
       ],
       "source_refs": [
-        "inputs/training__C177225__NRS-484B-560-7b__bus_driver/assignment.json"
+        "inputs/training__C177225__NRS-484B-560-7b__bus_driver/assignment.json",
+        "work/training__C177225__NRS-484B-560-7b__bus_driver/finalize_direction.py",
+        "work/training__C177225__NRS-484B-560-7b__bus_driver/audit_delivery.py"
       ]
     },
     "dev.governs": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Officer signal rows bind directed bus, crossing, authorization and governing frames to retained actor state.",
       "channels": [
-        "bus_obeys_officer_direction"
+        "dev.human_direction",
+        "native_actor_state"
       ],
       "source_refs": [
-        "inputs/training__C177225__NRS-484B-560-7b__bus_driver/assignment.json"
+        "inputs/training__C177225__NRS-484B-560-7b__bus_driver/assignment.json",
+        "work/training__C177225__NRS-484B-560-7b__bus_driver/finalize_direction.py"
       ]
     },
     "kin.velocity": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Saved bus actor rows provide velocity vectors with frame joins; synthetic fixture velocity is diagnostic only.",
       "channels": [
-        "bus_obeys_officer_direction"
+        "kin.velocity",
+        "native_actor_state"
       ],
       "source_refs": [
-        "inputs/training__C177225__NRS-484B-560-7b__bus_driver/assignment.json"
+        "inputs/training__C177225__NRS-484B-560-7b__bus_driver/assignment.json",
+        "work/training__C177225__NRS-484B-560-7b__bus_driver/finalize_direction.py"
       ]
     },
     "drv.stopped": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Saved finalizer derives stopped status from retained bus velocity and station at the stop line.",
       "channels": [
-        "bus_obeys_officer_direction"
+        "drv.stopped",
+        "kin.velocity"
       ],
       "source_refs": [
-        "inputs/training__C177225__NRS-484B-560-7b__bus_driver/assignment.json"
+        "inputs/training__C177225__NRS-484B-560-7b__bus_driver/assignment.json",
+        "work/training__C177225__NRS-484B-560-7b__bus_driver/finalize_direction.py"
       ]
     }
   },

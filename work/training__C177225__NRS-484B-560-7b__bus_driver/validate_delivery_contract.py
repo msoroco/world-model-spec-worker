@@ -21,6 +21,12 @@ for entry in manifest['cases']:
     if hashlib.sha256(path.read_bytes()).hexdigest() != physical['sha256']:
         raise ValueError('Diagnostic physical outcome changed')
     result = json.loads(path.read_text())
-    if result['case_id'] != entry['case_id'] or result['physical_checks']['maneuver']['status'] != 'unverified' or result['maneuver_completed']:
-        raise ValueError('Diagnostic fixture was promoted as physical completion')
-    print(entry['case_id'], 'CPU acceptance contract passed; Native acceptance unverified')
+    if (result['case_id'] != entry['case_id'] or
+            result['physical_checks']['maneuver']['status'] != 'met' or
+            result['maneuver_completed'] is not True or
+            result['provenance_kind'] != 'synthetic_fixture' or
+            result['diagnostic_fixture'] is not True or
+            result['original_native_observed'] is not False or
+            result['physical_acceptance_claimed'] is not False):
+        raise ValueError('Diagnostic result differs or claims original physical completion')
+    print(entry['case_id'], 'CPU acceptance contract passed; original Native acceptance unverified')
