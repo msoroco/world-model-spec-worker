@@ -72,6 +72,13 @@ def write():
                       'kind': 'delivery',
                       'construction': str(path.relative_to(PACKAGE)),
                       'construction_sha256': sha(path),
+                      'measurement_contract': 'variant-measurement-contracts/barrier-' + route + '.json',
+                      'fixture_recipe': 'work/' + ASSIGNMENT + '/variant-diagnostics/barrier/' + route + '/primary-recipe.json',
+                      'measurement_procedure': {
+                          'entrypoint': 'native/variant_finalize.py',
+                          'output_schema': 'c183370-variant-diagnostic-finalization-v1'},
+                      'candidate_risk': {'status': 'physical',
+                          'reason': 'Barrier content, surface repair and Native body tracking remain unverified'},
                       'candidate_offline_status': 'pending',
                       'finalizer_status': 'cpu_unit_tested_not_saved_proven'})
     runtime = PACKAGE.parents[1] / 'runtime/pipeline/SOURCE-MANIFEST.json'

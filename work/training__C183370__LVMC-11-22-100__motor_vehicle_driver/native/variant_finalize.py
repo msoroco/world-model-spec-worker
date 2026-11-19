@@ -133,10 +133,10 @@ def build_result(config, analysis):
             'accepted': False, 'legal_verdict_claimed': False}
 
 
-def measurement_records(analysis):
+def measure_variant_surveyed_pavement_contact(analysis):
     observed = analysis['observations']
     sources = {name: analysis['source_hashes'][name] for name in MEASUREMENT_SOURCES}
-    return {'surveyed_pavement_contact': {
+    return {
         'method': 'measure_variant_surveyed_pavement_contact',
         'value': {'requested_contact': analysis['case'] == 'crossing',
                   'measured_contact': observed['pavement_footprint_contact_observed'],
@@ -145,15 +145,25 @@ def measurement_records(analysis):
                   'newly_repaired_status_verified': False,
                   'control_content_verified': False,
                   'legal_verdict_claimed': False},
-        'sources': sources},
-        'control_actor_vicinity': {
+        'sources': sources}
+
+
+def measure_control_actor_vicinity(analysis):
+    observed = analysis['observations']
+    sources = {name: analysis['source_hashes'][name] for name in MEASUREMENT_SOURCES}
+    return {
             'method': 'measure_control_actor_vicinity',
             'value': {'control_kind': analysis['control_kind'],
                       'actor_near_surveyed_pavement_frames': observed['control_actor_near_pavement_frames'],
                       'control_content_verified': False,
                       'paving_employee_exception_verified': False,
                       'legal_verdict_claimed': False},
-            'sources': sources}}
+            'sources': sources}
+
+
+def measurement_records(analysis):
+    return {'surveyed_pavement_contact': measure_variant_surveyed_pavement_contact(analysis),
+            'control_actor_vicinity': measure_control_actor_vicinity(analysis)}
 
 
 def finalize(attempt, output):
