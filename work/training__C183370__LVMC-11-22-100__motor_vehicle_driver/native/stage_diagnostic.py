@@ -1,0 +1,43 @@
+"""Stage only inventoried synthetic acquisition for a saved-processing proof."""
+import argparse
+import json
+import shutil
+import sys
+from pathlib import Path
+
+PACKAGE=Path(__file__).resolve().parents[1]
+REPO=PACKAGE.parents[1]
+sys.path.insert(0,str(REPO/'runtime/pipeline/scenario_pipeline'))
+from worker_exchange.fixture_generator import inspect
+from worker_exchange.runtime_cli import materialize
+
+
+def stage(case,candidate,compatibility,target):
+    manifest=PACKAGE/'draft-measured-candidate-manifest.json'
+    source=Path(compatibility).resolve()
+    target=Path(target).resolve()
+    receipt=json.loads((source/'compatibility.json').read_text())
+    if (receipt.get('passed') is not True or receipt.get('candidate_id')!=candidate or
+            receipt.get('case_id')!=case):
+        raise ValueError('Compatibility proof differs from requested selected attempt')
+    suffix=case.rsplit('__',1)[1]
+    spec=json.loads((PACKAGE/'selected-diagnostics'/suffix/'primary.json').read_text())
+    materialize(manifest,case,target,candidate)
+    for relative in inspect(spec):
+        original=source/relative
+        destination=target/relative
+        if not original.is_file() or destination.exists():
+            raise ValueError('Diagnostic source missing or shadows selected construction: '+relative)
+        destination.parent.mkdir(parents=True,exist_ok=True)
+        shutil.copy2(original,destination)
+    return len(inspect(spec))
+
+
+if __name__=='__main__':
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--case',required=True)
+    parser.add_argument('--candidate',default='primary')
+    parser.add_argument('--compatibility',required=True)
+    parser.add_argument('--target',required=True)
+    args=parser.parse_args()
+    print(stage(args.case,args.candidate,args.compatibility,args.target))
