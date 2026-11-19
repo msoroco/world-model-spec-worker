@@ -3,7 +3,7 @@
   "actor": "motor_vehicle_driver",
   "cell_id": "C109705",
   "law_id": "NRS-484B-400-2b",
-  "selected_branch": "Both intersecting highways two-directional; left turn exits to right of destination centerline.",
+  "selected_branch": "Two-directional intersection within the general intersection layout.",
   "cases": [
     {
       "case_id": "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__source_verified_near_centerline",
@@ -207,5 +207,129 @@
     "Native signed lane IDs are an engineering preflight, not standalone legal highway status.",
     "Exact runner, cameras, finalizer, fallbacks, proposals, full proofs and audits remain worker-owned CPU work."
   ],
-  "planning_status": "partial; accepted inventories reviewed and source-joined destination-exit geometry CPU-tested"
+  "planning_status": "partial; accepted inventories reviewed and source-joined destination-exit geometry CPU-tested",
+  "requirement_dispositions": [
+    {
+      "requirement": "The driver has entered the intersection and is turning left where both intersecting highways are two-directional",
+      "source": "NRS 484B.400(2)(b); inputs/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/witnesses.json",
+      "status": "selected_required",
+      "evidence_or_gap": "Native road-lane inventory, original entry and turn history, and independent highway authority review are required. Accepted metadata does not expose these original sources.",
+      "case_ids": [
+        "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__source_verified_near_centerline",
+        "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__source_verified_farther_from_centerline",
+        "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__source_verified_imaginary_near_centerline",
+        "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__source_verified_imaginary_farther_from_centerline"
+      ]
+    },
+    {
+      "requirement": "The complete vehicle body leaves the intersection to the right of the centerline of the highway being entered",
+      "source": "NRS 484B.400(2)(b); inputs/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/witnesses.json",
+      "status": "selected_required",
+      "evidence_or_gap": "Original-frame complete-body exit geometry and sourced destination centerline/right-half reference are required. Accepted metadata cannot show the exit footprint.",
+      "case_ids": [
+        "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__source_verified_near_centerline",
+        "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__source_verified_farther_from_centerline",
+        "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__source_verified_imaginary_near_centerline",
+        "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__source_verified_imaginary_farther_from_centerline"
+      ]
+    },
+    {
+      "requirement": "Marked and imaginary destination centerline branches and near/far exit placement must be compared without a numeric legal cutoff",
+      "source": "NRS 484B.400(2)(b); inputs/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/witnesses.json",
+      "status": "selected_required",
+      "evidence_or_gap": "Two controlled marked/imaginary near/far comparisons are planned; actual map reference and body placement remain unverified.",
+      "case_ids": [
+        "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__source_verified_near_centerline",
+        "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__source_verified_farther_from_centerline",
+        "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__source_verified_imaginary_near_centerline",
+        "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__source_verified_imaginary_farther_from_centerline"
+      ]
+    }
+  ],
+  "source_observation_mapping": [
+    {
+      "term": "drv.turning",
+      "measurement_or_context": "left-turn command and observed heading/path",
+      "evidence": "turn_history.jsonl",
+      "channels": [
+        "trace.jsonl"
+      ],
+      "source_refs": [
+        "turn_history.jsonl"
+      ],
+      "limitation": "synthetic CPU diagnostic does not establish actual Native or legal fact"
+    },
+    {
+      "term": "drv.in_intersection",
+      "measurement_or_context": "complete body intersects sourced junction polygon before exit",
+      "evidence": "turn_history.jsonl",
+      "channels": [
+        "road_context.json"
+      ],
+      "source_refs": [
+        "turn_history.jsonl"
+      ],
+      "limitation": "synthetic CPU diagnostic does not establish actual Native or legal fact"
+    },
+    {
+      "term": "st.centre_line",
+      "measurement_or_context": "destination centerline kind and 2D geometry",
+      "evidence": "site_packet.json",
+      "channels": [
+        "road_context.json"
+      ],
+      "source_refs": [
+        "site_packet.json"
+      ],
+      "limitation": "synthetic CPU diagnostic does not establish actual Native or legal fact"
+    },
+    {
+      "term": "rel.occupies",
+      "measurement_or_context": "complete body right-half containment and centerline intersection at exit",
+      "evidence": "turn_history.jsonl",
+      "channels": [
+        "channels/destination_exit.jsonl"
+      ],
+      "source_refs": [
+        "turn_history.jsonl"
+      ],
+      "limitation": "synthetic CPU diagnostic does not establish actual Native or legal fact"
+    },
+    {
+      "term": "kin.position",
+      "measurement_or_context": "original-frame position and complete-body exit sample",
+      "evidence": "trace.jsonl",
+      "channels": [
+        "body_history.jsonl"
+      ],
+      "source_refs": [
+        "trace.jsonl"
+      ],
+      "limitation": "synthetic CPU diagnostic does not establish actual Native or legal fact"
+    },
+    {
+      "term": "st.lane_direction",
+      "measurement_or_context": "opposing signed driving lanes on destination Native road",
+      "evidence": "site_packet.json",
+      "channels": [
+        "road_context.json"
+      ],
+      "source_refs": [
+        "site_packet.json"
+      ],
+      "limitation": "synthetic CPU diagnostic does not establish actual Native or legal fact"
+    },
+    {
+      "term": "st.lane_enters",
+      "measurement_or_context": "approach/connector/destination road transitions",
+      "evidence": "body_history.jsonl",
+      "channels": [
+        "road_geometry.json"
+      ],
+      "source_refs": [
+        "body_history.jsonl"
+      ],
+      "limitation": "synthetic CPU diagnostic does not establish actual Native or legal fact"
+    }
+  ]
 }
