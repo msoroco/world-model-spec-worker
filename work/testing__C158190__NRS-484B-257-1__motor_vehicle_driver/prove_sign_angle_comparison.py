@@ -36,7 +36,9 @@ def require(condition, message):
 def audit_returned_proofs(entries, result_tests, *, read_bytes=None):
     """Check the files shipped with this return, including negative evidence."""
     read_bytes = read_bytes or (lambda path: path.read_bytes())
-    bound = {item['log']: item for item in result_tests}
+    bound = {}
+    for item in result_tests:
+        bound.setdefault(item['log'], []).append(item)
     checked = []
 
     def payload(relative):
@@ -53,8 +55,8 @@ def audit_returned_proofs(entries, result_tests, *, read_bytes=None):
                                       ('saved.log', 'worker-saved-processing')):
             relative = f'{folder}/{name}'
             raw, digest = payload(relative)
-            require(relative in bound and bound[relative]['exit_code'] == 0
-                    and bound[relative]['sha256'] == digest,
+            require(relative in bound and any(item['exit_code'] == 0
+                    and item['sha256'] == digest for item in bound[relative]),
                     'Returned primary result binding differs: ' + relative)
             receipt = json.loads(raw)
             require(receipt['format'] == expected_format and receipt['case_id'] == case_id
@@ -75,47 +77,70 @@ def audit_returned_proofs(entries, result_tests, *, read_bytes=None):
                         and receipt['legal_acceptance_claimed'] is False,
                         'Returned primary saved processing differs')
         require(len(entry['candidates']) == 3, 'Three returned fallbacks required')
+        proof_path = 'current-sign-' + {'minus_015': 'minus', 'zero': 'zero',
+                                       'plus_015': 'plus'}[label] + '-fallback-proofs.json'
+        raw, digest = payload(proof_path)
+        require(proof_path in bound and len(bound[proof_path]) == 3
+                and all(item['exit_code'] == 0 and item['sha256'] == digest
+                        for item in bound[proof_path]),
+                'Returned fallback bundle differs: ' + proof_path)
+        proof = json.loads(raw)
+        require(proof['format'] == 'c158190-current-sign-angle-fallback-proofs'
+                and proof['passed'] is True and proof['case_id'] == case_id
+                and proof['candidate_count'] == 3 and len(proof['candidates']) == 3
+                and proof['native_physical_acceptance'] is False,
+                'Returned fallback bundle content differs')
+        records = {item['candidate_id']: item for item in proof['candidates']}
+        require(len(records) == 3, 'Returned fallback identities repeat')
         for candidate in entry['candidates']:
             ident = candidate['id']
             require(ident in ('fallback1', 'fallback2', 'fallback3'),
                     'Unexpected fallback identity')
             require(sha(ROOT / candidate['construction']) == candidate['construction_sha256'],
                     'Returned fallback construction differs')
-            offline = candidate['offline']
-            raw, digest = payload(offline['log'])
-            require(offline['exit_code'] == 0 and offline['log_sha256'] == digest
-                    and offline['construction_sha256'] == candidate['construction_sha256']
-                    and json.loads(raw)['offline_passed'] is True,
+            record = records[ident]
+            require(record['case_id'] == case_id and
+                    record['construction_sha256'] == candidate['construction_sha256'],
+                    'Returned fallback identity or construction differs')
+            recipe = REPO / candidate['fixture_recipe']
+            require(record['fixture_recipe_sha256'] == sha(recipe),
+                    'Returned fallback recipe differs')
+            offline = record['offline_log'].encode()
+            require(hashlib.sha256(offline).hexdigest() == record['offline_log_sha256']
+                    and 'Ran ' in record['offline_log'] and record['offline_log'].endswith('OK\n'),
                     'Returned fallback offline proof differs')
-            compat = candidate['compatibility']
-            raw, digest = payload(compat['receipt'])
-            receipt = json.loads(raw)
-            require(digest == compat['sha256'] and receipt['passed'] is True
-                    and receipt['case_id'] == case_id and receipt['candidate_id'] == ident
+            receipt = record['compatibility_receipt']
+            receipt_bytes = (json.dumps(receipt, indent=2) + '\n').encode()
+            require(hashlib.sha256(receipt_bytes).hexdigest() == record['compatibility_receipt_sha256']
+                    and receipt['passed'] is True and receipt['case_id'] == case_id
+                    and receipt['candidate_id'] == ident
                     and receipt['construction_sha256'] == candidate['construction_sha256']
-                    and receipt['fixture_recipe_sha256'] == sha(REPO / candidate['fixture_recipe'])
+                    and receipt['fixture_recipe_sha256'] == sha(recipe)
                     and receipt['negative_removed'] == 'visibility_rays.jsonl',
                     'Returned fallback compatibility differs')
-            positive_raw, positive_digest = payload(compat['log'])
-            negative_raw, negative_digest = payload(compat['negative_log'])
-            require(b'Missing required source: visibility_rays.jsonl' in negative_raw
-                    and positive_digest == receipt['log_sha256']
-                    and negative_digest == receipt['negative_log_sha256'],
-                    'Returned fallback positive/negative logs differ')
-            saved_suffix = '-source-saved-v1' if ident == 'fallback1' else '-saved-v1'
-            saved_path = REPO / (f'.runtime-work/c158190-sign-angle-{label}-{ident}'
-                                 + saved_suffix + '/v0001/processing.json')
-            saved = read(saved_path)
-            require(sha(saved_path) == candidate['saved_processing_sha256']
+            negative = record['negative_log'].encode()
+            require(hashlib.sha256(negative).hexdigest() == record['negative_log_sha256']
+                    and receipt['negative_log_sha256'] == record['negative_log_sha256']
+                    and b'Missing required source: visibility_rays.jsonl' in negative,
+                    'Returned fallback negative proof differs')
+            saved = record['saved_receipt']
+            saved_bytes = (json.dumps(saved, indent=2) + '\n').encode()
+            require(hashlib.sha256(saved_bytes).hexdigest() == record['saved_receipt_sha256']
                     and saved['case_id'] == case_id and saved['candidate_id'] == ident
                     and saved['passed'] is True and saved['recorded_only'] is True
                     and saved['originals_preserved'] is True
                     and saved['physical_acceptance_claimed'] is False
                     and saved['legal_acceptance_claimed'] is False,
                     'Fallback saved processing binding differs')
+            expected_manifest = ('sign-angle-fallback1-source-manifest.json' if ident == 'fallback1'
+                                 else 'sign-angle-compatibility-manifest.json')
+            require(all('/' + expected_manifest + ' ' in command for command in
+                        record['commands'].values()),
+                    'Fallback used the wrong source manifest')
             checked.append({'case_id': case_id, 'candidate_id': ident,
-                            'returned_compatibility_sha256': digest,
-                            'returned_negative_log_sha256': negative_digest})
+                            'returned_bundle_sha256': digest,
+                            'returned_compatibility_sha256': record['compatibility_receipt_sha256'],
+                            'returned_negative_log_sha256': record['negative_log_sha256']})
     return checked
 
 
@@ -228,7 +253,7 @@ def main():
     captures = [read(REPO / source['capture/manifest.json']['source']) for source in sources]
     fixed_sources = audit(entries, constructions, recipes, roads, controls, captures)
     returned = audit_returned_proofs(entries, read(ROOT / 'result.json')['tests'])
-    missing_path = ROOT / entries[0]['candidates'][0]['compatibility']['negative_log']
+    missing_path = ROOT / 'current-sign-minus-fallback-proofs.json'
     def missing_reader(path):
         return None if path == missing_path else path.read_bytes()
     try:
@@ -238,14 +263,14 @@ def main():
         require('Returned proof missing' in str(exc), 'Missing proof rejected for wrong reason')
     else:
         raise ValueError('Missing returned negative proof accepted')
-    changed_path = ROOT / entries[1]['candidates'][1]['compatibility']['receipt']
+    changed_path = ROOT / 'current-sign-zero-fallback-proofs.json'
     def changed_reader(path):
         return path.read_bytes() + b' ' if path == changed_path else path.read_bytes()
     try:
         audit_returned_proofs(entries, read(ROOT / 'result.json')['tests'],
                               read_bytes=changed_reader)
     except ValueError as exc:
-        require('Returned fallback compatibility differs' in str(exc),
+        require('Returned fallback bundle differs' in str(exc),
                 'Changed proof rejected for wrong reason')
     else:
         raise ValueError('Changed returned receipt accepted')
@@ -273,8 +298,8 @@ def main():
     require(len(negative) == 3, 'Comparison negative tests did not reject changes')
     receipts = []
     for label, entry, recipe, source in zip(LABELS, entries, recipes, sources):
-        compat = REPO / f'.runtime-work/c158190-sign-angle-{label}-compat-v1/compatibility.json'
-        saved = REPO / f'.runtime-work/c158190-sign-angle-{label}-saved-v1/v0001/processing.json'
+        compat = ROOT / f'cases/sign_angle_{label}/compatibility.log'
+        saved = ROOT / f'cases/sign_angle_{label}/saved.log'
         c, s = read(compat), read(saved)
         require(c['passed'] is True and c['case_id'] == entry['case_id']
                 and c['construction_sha256'] == entry['construction_sha256']
