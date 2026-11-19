@@ -206,3 +206,7 @@ Full-batch strict gate after this replay: `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/b
 ## 2026-11-19 returned-file cap consolidation
 
 Historical fallback analysis logs with byte-identical content were deduplicated by updating the manifest log paths to retained copies. Two stopline logs matched `stopline-fallback1-analysis.log` (SHA-256 `206ca7fc9ae710bdd7c92299d1d01f96d0e60ca366008e1283193489db9b200e`); eleven marked/inside/crossline/unmarked logs matched `marked-fallback1-analysis.log` (SHA-256 `b428d32e7060cbd8b44bde673b40fc69712038ad77543e031c040aa699f0834b`); two first-view logs matched `firstview-fallback1-analysis.log` (SHA-256 `deb8879269c6e5fe121101ef35f8205c2281c8ed5c89298d498abb1a771f0804`). The scoped non-ready complete check passes. This preserved historical log bytes while freeing returned-file slots for current C109705(2b) proofs. C331230 remains partial; no frozen file or Git operation was changed.
+
+## 2026-11-19 byte-identical historical log consolidation
+
+Five extra delivery-negative log copies and four extra fallback-offline log copies were byte-identical to retained canonical files. Their exact filename references in `execution-manifest.json` and `result.json` were redirected to those same retained bytes, and only the nine duplicate copies were removed. The scoped nonready `worker_check.py --complete` passes. This freed nine return-file slots for C109705(2b) marked-far fallback construction and proofs. No frozen file or Git command was changed.

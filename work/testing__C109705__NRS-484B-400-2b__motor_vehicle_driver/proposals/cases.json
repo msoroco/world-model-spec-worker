@@ -4,6 +4,63 @@
   "status": "draft",
   "cases": [
     {
+      "case_id": "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__shared_baseline",
+      "target_law_id": "NRS-484B-400-2b",
+      "target_type": "baseline",
+      "rationale": "Shared source-verified two-directional left-turn departure reference; no physical or legal acceptance",
+      "variable_assignments": {
+        "destination_centerline_kind": {
+          "kind": "world_setup",
+          "value": "marked",
+          "unit": "categorical"
+        },
+        "exit_lateral_offset_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "both_highways_two_directional": {
+          "kind": "world_setup",
+          "value": "source review required",
+          "unit": "categorical"
+        },
+        "commanded_left_turn": {
+          "kind": "controller",
+          "value": "checked route from site packet",
+          "unit": "structured record"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "to the right of destination centerline",
+        "physical two-directional highway authority"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "destination_exit",
+            "unit": "structured record",
+            "method": "original complete body polygon against sourced destination centerline and right-half polygon",
+            "time_window": "first complete-body departure after intersection entry",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "synthetic diagnostic only; original physical and legal review pending"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "destination_exit_context",
+            "unit": "structured record",
+            "method": "source-hashed Native road context and original-frame full-body destination exit"
+          }
+        ],
+        "limitations": [
+          "Synthetic CPU site and media; actual Native two-way highway status, left turn, body exit and camera visibility require local review."
+        ]
+      },
+      "paired_probe_id": null,
+      "deliberate_differences": []
+    },
+    {
       "case_id": "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__source_verified_near_centerline",
       "target_law_id": "NRS-484B-400-2b",
       "target_type": "boundary_probe",
@@ -255,5 +312,71 @@
         "target_value_or_branch": "farther_right"
       }
     }
-  ]
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "c109705-destination-exit-position",
+      "target_law_id": "NRS-484B-400-2b",
+      "judgment_refs": [
+        {
+          "phrase": "to the right of the centerline of the highway being entered",
+          "note": "Retain the original complete-body exit polygon and source authority for the destination highway centerline; the text supplies no numeric lateral cutoff."
+        }
+      ],
+      "status": "incomplete",
+      "mode": "one_dimensional",
+      "axes": [],
+      "landmarks": [],
+      "rationale": "Marked and imaginary near/far departure constructions are authored; original Native destination road, complete-body exit and camera evidence is required to confirm realized geometry and legal right-of judgment.",
+      "variable_assignments": {
+        "destination_centerline_kind": {
+          "kind": "world_setup",
+          "value": "marked",
+          "unit": "categorical"
+        },
+        "exit_lateral_offset_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "both_highways_two_directional": {
+          "kind": "world_setup",
+          "value": "source review required",
+          "unit": "categorical"
+        },
+        "commanded_left_turn": {
+          "kind": "controller",
+          "value": "checked route from site packet",
+          "unit": "structured record"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "destination_exit",
+            "unit": "structured record",
+            "method": "original complete body polygon against sourced destination centerline and right-half polygon",
+            "time_window": "first complete-body departure after intersection entry",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "synthetic diagnostic only; original physical and legal review pending"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "destination_exit_context",
+            "unit": "structured record",
+            "method": "source-hashed Native road context and original-frame full-body destination exit"
+          }
+        ],
+        "limitations": [
+          "Synthetic CPU site and media; actual Native two-way highway status, left turn, body exit and camera visibility require local review."
+        ]
+      },
+      "missing_inputs": [
+        "Source-reviewed Native destination centerline/right-half geometry and original complete-body/camera evidence for the four authored constructions"
+      ]
+    }
+  ],
+  "sweeps_expanded": false
 }

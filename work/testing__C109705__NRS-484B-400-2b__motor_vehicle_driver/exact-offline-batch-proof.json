@@ -2,7 +2,7 @@
   "format": "worker-exact-offline-batch-proof",
   "assignment_id": "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver",
   "runtime": "pinned CPU runtime",
-  "supersedes_sha256": "f9d382726b3a0814b04ddd61390c21ccebd085689edc44dcf7eb973f7dc6172d",
+  "supersedes_sha256": "de0e8761ab87809c7bc7fe7dc72c4c8555a3145ab09bb58b33c7757afb33768b",
   "historical_near_log": {
     "text": "{\"case_id\": \"testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__source_verified_near_centerline\", \"cpu_check_passed\": true, \"carla_started\": false}\n.\n----------------------------------------------------------------------\nRan 1 test in 0.003s\n\nOK\n",
     "sha256": "f88fd3bb13157685456da7b1506f7aa97eba3548f6ab1a7ca66b2b0dd95a80b4"
@@ -139,9 +139,10 @@
   },
   "canonical_proposal": {
     "path": "proposals/cases.json",
-    "sha256": "1238338cc3eea09dace456962a66d6b585f62f9bcda1d112d8a0c94ed59f98e5",
-    "case_count": 4,
-    "scope": "draft exact-case proposals; semantic stage chain and independent audit pending"
+    "sha256": "7ab86496ca213e1bbdab51687b5be055a82f5a243e791e2266b27c82c4df0628",
+    "case_count": 5,
+    "scope": "canonical semantic stage chain source-hashed; physical/legal judgment unresolved",
+    "selected_case_count": 4
   },
   "case_plan_sha256": "a72b0428f5dd152dc1bc795e1ddc87b38d23b3d078c890e693df41eb567002dd",
   "portable_positive": {
@@ -634,5 +635,777 @@
         "legal_acceptance_claimed": false
       }
     }
-  ]
+  ],
+  "marked_far_fallbacks": [
+    {
+      "candidate_id": "fallback1",
+      "construction_sha256": "63a34fec28c9022b2fae25cbd65f2edbb632722ec3e6c80a3494cbccd33fc028",
+      "changed_knobs": [
+        "config.requested_speed_mps"
+      ],
+      "trigger": {
+        "source": "retained original full-body/frame history",
+        "metric": "complete-body intersection with destination centerline at exit",
+        "failure_condition": "Complete exit body intersects the sourced destination centerline"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 MPLCONFIGDIR=.runtime-work/matplotlib PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -m worker_exchange.runtime_cli offline --manifest work/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/draft-execution-manifest.json --case testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__source_verified_farther_from_centerline --candidate fallback1 --output .runtime-work/c109705-2b-far-fallback1-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "stdout": {
+          "case_id": "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__source_verified_farther_from_centerline",
+          "candidate_id": "fallback1",
+          "offline_passed": true,
+          "log": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c109705-2b-far-fallback1-offline-v2/offline.log",
+          "simulation_started": false
+        },
+        "stdout_sha256": "677bb4a8cae6ac74a792ff43268fc395bf2a477e7aa2c1889d2d790ed4619bde",
+        "offline_log": "{\"case_id\": \"testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__source_verified_farther_from_centerline\", \"cpu_check_passed\": true, \"carla_started\": false}\n.\n----------------------------------------------------------------------\nRan 1 test in 0.003s\n\nOK\n",
+        "offline_log_sha256": "7cba7961d561c7674c42eae73a20aafade5bc19e0945307d6d11d1b8c59139a6"
+      },
+      "compatibility": {
+        "receipt": "far-fallback1-compatibility-receipt.json",
+        "receipt_sha256": "dc6b508d160dd63f1106f6104fbccdb6b77c8bea3a3479fefa55521829894518",
+        "positive_log": "far-compatibility-analysis.log",
+        "positive_log_sha256": "a2e269d01836277d873aff46ac7dd52a618f40bc77da5f5380a19a48134d4b1e",
+        "negative_log": "far-fallback1-negative-analysis.log",
+        "negative_log_sha256": "57e0f9e2e760c04a7fc5112fc8cb261b6cca01500daf4478f1b1b919d4c373e4",
+        "passed": true,
+        "checks": [
+          "acquisition_unchanged",
+          "actual_analysis",
+          "derived_outputs_rebuilt",
+          "final_decode",
+          "four_camera_sources",
+          "lean_decoder",
+          "mandatory_observations",
+          "native_validation",
+          "render",
+          "selected_measurements",
+          "negative_case_source"
+        ],
+        "negative_removed": "turn_history.jsonl"
+      },
+      "saved_processing": {
+        "receipt": ".runtime-work/c109705-2b-far-fallback1-saved/output/v0001/processing.json",
+        "receipt_sha256": "3577fffb9349b8ee78a8fb9b1a9b1576c3c88acd9cf5e75d1a47bd15abc77bfc",
+        "exit_code": 0,
+        "passed": true,
+        "candidate_id": "fallback1",
+        "construction_sha256": "63a34fec28c9022b2fae25cbd65f2edbb632722ec3e6c80a3494cbccd33fc028",
+        "originals_preserved": true,
+        "timestamp_joins": {
+          "frames": 9,
+          "passed": true,
+          "missing_original_trace_or_map": false
+        },
+        "final_video_checks": {
+          "format": "source-decode",
+          "passed": true,
+          "video_sha256": "926effb3fd250f4c4ab24476235e759b1716c1bf80305375a675cc9b7f19a421",
+          "frames": 9,
+          "dimensions": [
+            1920,
+            1224
+          ],
+          "rgb_sequence_sha256": "fbd72d0fd1498b9412c8f31c7f5e028d7d28c7d447dee16c263642a0916e9c73",
+          "mapping_sha256": null,
+          "checks": {
+            "frame_count": "all-decoded-frames"
+          },
+          "auditor_sha256": "b63af75d3599fc2401518aa9093561928c43e9c460976ea155b09860f5f02df9",
+          "threads": 4,
+          "seconds": 0.06009722896851599,
+          "ffmpeg_version": "ffmpeg version n8.0.1-48-g0592be14ff-20260116 Copyright (c) 2000-2025 the FFmpeg developers"
+        },
+        "physical_acceptance_claimed": false,
+        "legal_acceptance_claimed": false
+      }
+    },
+    {
+      "candidate_id": "fallback2",
+      "construction_sha256": "c27224bfe3e1a49862dce86fa0139dd677f2544feebc2730b82671ccd122253b",
+      "changed_knobs": [
+        "runner._camera_transforms.overview"
+      ],
+      "trigger": {
+        "source": "retained original overview and reference_corner source videos",
+        "metric": "visibility of full vehicle body and destination centerline at exit",
+        "failure_condition": "Overview source occludes the full exit body or destination centerline"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 MPLCONFIGDIR=.runtime-work/matplotlib PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -m worker_exchange.runtime_cli offline --manifest work/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/draft-execution-manifest.json --case testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__source_verified_farther_from_centerline --candidate fallback2 --output .runtime-work/c109705-2b-far-fallback2-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "stdout": {
+          "case_id": "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__source_verified_farther_from_centerline",
+          "candidate_id": "fallback2",
+          "offline_passed": true,
+          "log": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c109705-2b-far-fallback2-offline-v2/offline.log",
+          "simulation_started": false
+        },
+        "stdout_sha256": "bb97a69270df76a9ce4d4cdf3bb96ea4fb00aa2c4303cfbeafab9fd798277e46",
+        "offline_log": "{\"case_id\": \"testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__source_verified_farther_from_centerline\", \"cpu_check_passed\": true, \"carla_started\": false}\n.\n----------------------------------------------------------------------\nRan 1 test in 0.003s\n\nOK\n",
+        "offline_log_sha256": "7cba7961d561c7674c42eae73a20aafade5bc19e0945307d6d11d1b8c59139a6"
+      },
+      "compatibility": {
+        "receipt": "far-fallback2-compatibility-receipt.json",
+        "receipt_sha256": "cdb382f91e69e9e01a85d0960ded905b6150125035c79e52cb8c9995e4f87a12",
+        "positive_log": "far-compatibility-analysis.log",
+        "positive_log_sha256": "a2e269d01836277d873aff46ac7dd52a618f40bc77da5f5380a19a48134d4b1e",
+        "negative_log": "far-fallback2-negative-analysis.log",
+        "negative_log_sha256": "34241429a1d94f0b402c749706a6a0b9008148c254d88c71f9c09d61846636ec",
+        "passed": true,
+        "checks": [
+          "acquisition_unchanged",
+          "actual_analysis",
+          "derived_outputs_rebuilt",
+          "final_decode",
+          "four_camera_sources",
+          "lean_decoder",
+          "mandatory_observations",
+          "native_validation",
+          "render",
+          "selected_measurements",
+          "negative_case_source"
+        ],
+        "negative_removed": "turn_history.jsonl"
+      },
+      "saved_processing": {
+        "receipt": ".runtime-work/c109705-2b-far-fallback2-saved/output/v0001/processing.json",
+        "receipt_sha256": "23b6b70f35b50c909c352cfe6b1b987b1f6bc2f2164f2ccd087403a14995e3c4",
+        "exit_code": 0,
+        "passed": true,
+        "candidate_id": "fallback2",
+        "construction_sha256": "c27224bfe3e1a49862dce86fa0139dd677f2544feebc2730b82671ccd122253b",
+        "originals_preserved": true,
+        "timestamp_joins": {
+          "frames": 9,
+          "passed": true,
+          "missing_original_trace_or_map": false
+        },
+        "final_video_checks": {
+          "format": "source-decode",
+          "passed": true,
+          "video_sha256": "da8eb0e3d2086d18597fd679efc6fe0bf264757795ae0bb32e7566cb17727cc3",
+          "frames": 9,
+          "dimensions": [
+            1920,
+            1224
+          ],
+          "rgb_sequence_sha256": "fbd72d0fd1498b9412c8f31c7f5e028d7d28c7d447dee16c263642a0916e9c73",
+          "mapping_sha256": null,
+          "checks": {
+            "frame_count": "all-decoded-frames"
+          },
+          "auditor_sha256": "b63af75d3599fc2401518aa9093561928c43e9c460976ea155b09860f5f02df9",
+          "threads": 4,
+          "seconds": 0.06218192703090608,
+          "ffmpeg_version": "ffmpeg version n8.0.1-48-g0592be14ff-20260116 Copyright (c) 2000-2025 the FFmpeg developers"
+        },
+        "physical_acceptance_claimed": false,
+        "legal_acceptance_claimed": false
+      }
+    },
+    {
+      "candidate_id": "fallback3",
+      "construction_sha256": "711bb4232212e84d6a0d6019877a106134cc99f3b41aa5766b96f28f021603c9",
+      "changed_knobs": [
+        "config.requested_speed_mps"
+      ],
+      "trigger": {
+        "source": "retained original body history, frame map and four source videos",
+        "metric": "full-body destination exit before final original frame",
+        "failure_condition": "Complete body has not left the junction by the end of the recording"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 MPLCONFIGDIR=.runtime-work/matplotlib PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -m worker_exchange.runtime_cli offline --manifest work/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/draft-execution-manifest.json --case testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__source_verified_farther_from_centerline --candidate fallback3 --output .runtime-work/c109705-2b-far-fallback3-offline-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "stdout": {
+          "case_id": "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__source_verified_farther_from_centerline",
+          "candidate_id": "fallback3",
+          "offline_passed": true,
+          "log": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c109705-2b-far-fallback3-offline-v2/offline.log",
+          "simulation_started": false
+        },
+        "stdout_sha256": "6e061de26d5a3afbe683cbc5d47a2b17dd73124db28c24a1c217d309156164ca",
+        "offline_log": "{\"case_id\": \"testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__source_verified_farther_from_centerline\", \"cpu_check_passed\": true, \"carla_started\": false}\n.\n----------------------------------------------------------------------\nRan 1 test in 0.003s\n\nOK\n",
+        "offline_log_sha256": "7cba7961d561c7674c42eae73a20aafade5bc19e0945307d6d11d1b8c59139a6"
+      },
+      "compatibility": {
+        "receipt": "far-fallback3-compatibility-receipt.json",
+        "receipt_sha256": "91d7803cf5f7f45b4c160ac429d1e0a1659dc981f6c15397171c6c71350bc607",
+        "positive_log": "far-compatibility-analysis.log",
+        "positive_log_sha256": "a2e269d01836277d873aff46ac7dd52a618f40bc77da5f5380a19a48134d4b1e",
+        "negative_log": "far-fallback3-negative-analysis.log",
+        "negative_log_sha256": "af686697b02f7d58fa4aaefddaec54b7a00af88554a7aeed29c23bcd0b1518ab",
+        "passed": true,
+        "checks": [
+          "acquisition_unchanged",
+          "actual_analysis",
+          "derived_outputs_rebuilt",
+          "final_decode",
+          "four_camera_sources",
+          "lean_decoder",
+          "mandatory_observations",
+          "native_validation",
+          "render",
+          "selected_measurements",
+          "negative_case_source"
+        ],
+        "negative_removed": "turn_history.jsonl"
+      },
+      "saved_processing": {
+        "receipt": ".runtime-work/c109705-2b-far-fallback3-saved/output/v0001/processing.json",
+        "receipt_sha256": "c9155e19a837a9924f3717acbf9a9cd17cf0ebb414cd9e1fa1b09605b964624c",
+        "exit_code": 0,
+        "passed": true,
+        "candidate_id": "fallback3",
+        "construction_sha256": "711bb4232212e84d6a0d6019877a106134cc99f3b41aa5766b96f28f021603c9",
+        "originals_preserved": true,
+        "timestamp_joins": {
+          "frames": 9,
+          "passed": true,
+          "missing_original_trace_or_map": false
+        },
+        "final_video_checks": {
+          "format": "source-decode",
+          "passed": true,
+          "video_sha256": "d59da0e10e62f002ccb5caf727da91e3fee3e7b1b5b596d6eaf4e949de43d8e3",
+          "frames": 9,
+          "dimensions": [
+            1920,
+            1224
+          ],
+          "rgb_sequence_sha256": "fbd72d0fd1498b9412c8f31c7f5e028d7d28c7d447dee16c263642a0916e9c73",
+          "mapping_sha256": null,
+          "checks": {
+            "frame_count": "all-decoded-frames"
+          },
+          "auditor_sha256": "b63af75d3599fc2401518aa9093561928c43e9c460976ea155b09860f5f02df9",
+          "threads": 4,
+          "seconds": 0.059779447969049215,
+          "ffmpeg_version": "ffmpeg version n8.0.1-48-g0592be14ff-20260116 Copyright (c) 2000-2025 the FFmpeg developers"
+        },
+        "physical_acceptance_claimed": false,
+        "legal_acceptance_claimed": false
+      }
+    }
+  ],
+  "imaginary_near_fallbacks": [
+    {
+      "candidate_id": "fallback1",
+      "construction_sha256": "b5be2f8b605b99e7aefd3784ce11f2ed9bf70afd37779f7382f9ac30ee09de32",
+      "changed_knobs": [
+        "config.requested_speed_mps"
+      ],
+      "trigger": {
+        "source": "retained original full-body/frame history",
+        "metric": "complete-body intersection with destination centerline at exit",
+        "failure_condition": "Complete exit body intersects the sourced destination centerline"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 MPLCONFIGDIR=.runtime-work/matplotlib PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -m worker_exchange.runtime_cli offline --manifest work/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/draft-execution-manifest.json --case testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__source_verified_imaginary_near_centerline --candidate fallback1 --output .runtime-work/c109705-2b-imaginary-near-fallback1-offline-v1 --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "stdout": {
+          "case_id": "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__source_verified_imaginary_near_centerline",
+          "candidate_id": "fallback1",
+          "offline_passed": true,
+          "log": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c109705-2b-imaginary-near-fallback1-offline-v1/offline.log",
+          "simulation_started": false
+        },
+        "stdout_sha256": "7194543325da0cf1c1265a145051461fb4702e72d4d0111a32113ee0a494b887",
+        "offline_log": "{\"case_id\": \"testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__source_verified_imaginary_near_centerline\", \"cpu_check_passed\": true, \"carla_started\": false}\n.\n----------------------------------------------------------------------\nRan 1 test in 0.003s\n\nOK\n",
+        "offline_log_sha256": "c8bcfee392a55b5e786f8ea66505f37c8bffa1fc71ea744fb8e59b9cc2ef25ab"
+      },
+      "compatibility": {
+        "receipt": "imaginary-near-fallback1-compatibility-receipt.json",
+        "receipt_sha256": "cb6f345cf1eeea6d003160a79541c28065d6d47d4dcad5de10d29fc4560aa1ec",
+        "positive_log": "imaginary-near-compatibility-analysis.log",
+        "positive_log_sha256": "643247d7bbbcfe68b9259258861cf42351f98f0d24e99876e96c0b5e4e167be9",
+        "negative_log": "imaginary-near-fallback1-negative-analysis.log",
+        "negative_log_sha256": "53a21fd3a94c532eb5bed3fb93151e8cdeb7bedd157512f4a9d9855b1f929b9b",
+        "passed": true,
+        "checks": [
+          "acquisition_unchanged",
+          "actual_analysis",
+          "derived_outputs_rebuilt",
+          "final_decode",
+          "four_camera_sources",
+          "lean_decoder",
+          "mandatory_observations",
+          "native_validation",
+          "render",
+          "selected_measurements",
+          "negative_case_source"
+        ],
+        "negative_removed": "turn_history.jsonl"
+      },
+      "saved_processing": {
+        "receipt": ".runtime-work/c109705-2b-imaginary-near-fallback1-saved/output/v0001/processing.json",
+        "receipt_sha256": "7e360c9b6a793074bd6a1e127ed2bfc6ddec3122cddd470d4ef26ff47d582139",
+        "exit_code": 0,
+        "passed": true,
+        "candidate_id": "fallback1",
+        "construction_sha256": "b5be2f8b605b99e7aefd3784ce11f2ed9bf70afd37779f7382f9ac30ee09de32",
+        "originals_preserved": true,
+        "timestamp_joins": {
+          "frames": 9,
+          "passed": true,
+          "missing_original_trace_or_map": false
+        },
+        "final_video_checks": {
+          "format": "source-decode",
+          "passed": true,
+          "video_sha256": "6068602c1a06f602860986dc637918f75ba985fa7602adbc184d2b3093b5c2f3",
+          "frames": 9,
+          "dimensions": [
+            1920,
+            1224
+          ],
+          "rgb_sequence_sha256": "845891bb90aeb6841cd11fb5f9fb8c1726cf0283262e9a08068cdcfec9abbbac",
+          "mapping_sha256": null,
+          "checks": {
+            "frame_count": "all-decoded-frames"
+          },
+          "auditor_sha256": "b63af75d3599fc2401518aa9093561928c43e9c460976ea155b09860f5f02df9",
+          "threads": 4,
+          "seconds": 0.06847361801192164,
+          "ffmpeg_version": "ffmpeg version n8.0.1-48-g0592be14ff-20260116 Copyright (c) 2000-2025 the FFmpeg developers"
+        },
+        "physical_acceptance_claimed": false,
+        "legal_acceptance_claimed": false
+      }
+    },
+    {
+      "candidate_id": "fallback2",
+      "construction_sha256": "129e3a2f2a93cf2348474695462ea82492678a7b553d94668f4e4cb18dc4970c",
+      "changed_knobs": [
+        "runner._camera_transforms.overview"
+      ],
+      "trigger": {
+        "source": "retained original overview and reference_corner source videos",
+        "metric": "visibility of full vehicle body and destination centerline at exit",
+        "failure_condition": "Overview source occludes the full exit body or destination centerline"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 MPLCONFIGDIR=.runtime-work/matplotlib PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -m worker_exchange.runtime_cli offline --manifest work/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/draft-execution-manifest.json --case testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__source_verified_imaginary_near_centerline --candidate fallback2 --output .runtime-work/c109705-2b-imaginary-near-fallback2-offline-v1 --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "stdout": {
+          "case_id": "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__source_verified_imaginary_near_centerline",
+          "candidate_id": "fallback2",
+          "offline_passed": true,
+          "log": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c109705-2b-imaginary-near-fallback2-offline-v1/offline.log",
+          "simulation_started": false
+        },
+        "stdout_sha256": "b99be2b29fada5b5a810ce2494f5c0bd545ceedcecfd995b86514e58f0db6df2",
+        "offline_log": "{\"case_id\": \"testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__source_verified_imaginary_near_centerline\", \"cpu_check_passed\": true, \"carla_started\": false}\n.\n----------------------------------------------------------------------\nRan 1 test in 0.003s\n\nOK\n",
+        "offline_log_sha256": "c8bcfee392a55b5e786f8ea66505f37c8bffa1fc71ea744fb8e59b9cc2ef25ab"
+      },
+      "compatibility": {
+        "receipt": "imaginary-near-fallback2-compatibility-receipt.json",
+        "receipt_sha256": "6966ba9bfef10e994beaab86f818c6812d1d5278a92a6e8c8b95f6c9eb2fdab7",
+        "positive_log": "imaginary-near-compatibility-analysis.log",
+        "positive_log_sha256": "643247d7bbbcfe68b9259258861cf42351f98f0d24e99876e96c0b5e4e167be9",
+        "negative_log": "imaginary-near-fallback2-negative-analysis.log",
+        "negative_log_sha256": "b28f028e3baacb4234a44b83b0f1bee261d6d3cf012993eb43bf6d1c1ff2c5c5",
+        "passed": true,
+        "checks": [
+          "acquisition_unchanged",
+          "actual_analysis",
+          "derived_outputs_rebuilt",
+          "final_decode",
+          "four_camera_sources",
+          "lean_decoder",
+          "mandatory_observations",
+          "native_validation",
+          "render",
+          "selected_measurements",
+          "negative_case_source"
+        ],
+        "negative_removed": "turn_history.jsonl"
+      },
+      "saved_processing": {
+        "receipt": ".runtime-work/c109705-2b-imaginary-near-fallback2-saved/output/v0001/processing.json",
+        "receipt_sha256": "a26f289b6724aff51f8e4885a687364fcb1f85c01d146b881c6ca1d0b1dae3f2",
+        "exit_code": 0,
+        "passed": true,
+        "candidate_id": "fallback2",
+        "construction_sha256": "129e3a2f2a93cf2348474695462ea82492678a7b553d94668f4e4cb18dc4970c",
+        "originals_preserved": true,
+        "timestamp_joins": {
+          "frames": 9,
+          "passed": true,
+          "missing_original_trace_or_map": false
+        },
+        "final_video_checks": {
+          "format": "source-decode",
+          "passed": true,
+          "video_sha256": "acaf39a87abf0151f955f28108fb465ef62498a9c862d5b13d672b02cb910034",
+          "frames": 9,
+          "dimensions": [
+            1920,
+            1224
+          ],
+          "rgb_sequence_sha256": "845891bb90aeb6841cd11fb5f9fb8c1726cf0283262e9a08068cdcfec9abbbac",
+          "mapping_sha256": null,
+          "checks": {
+            "frame_count": "all-decoded-frames"
+          },
+          "auditor_sha256": "b63af75d3599fc2401518aa9093561928c43e9c460976ea155b09860f5f02df9",
+          "threads": 4,
+          "seconds": 0.06400157697498798,
+          "ffmpeg_version": "ffmpeg version n8.0.1-48-g0592be14ff-20260116 Copyright (c) 2000-2025 the FFmpeg developers"
+        },
+        "physical_acceptance_claimed": false,
+        "legal_acceptance_claimed": false
+      }
+    },
+    {
+      "candidate_id": "fallback3",
+      "construction_sha256": "4e9a07376994bb0dece59bb8a24900b5925f06c7c2ca23fef606d26ba403a45c",
+      "changed_knobs": [
+        "config.requested_speed_mps"
+      ],
+      "trigger": {
+        "source": "retained original body history, frame map and four source videos",
+        "metric": "full-body destination exit before final original frame",
+        "failure_condition": "Complete body has not left the junction by the end of the recording"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 MPLCONFIGDIR=.runtime-work/matplotlib PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -m worker_exchange.runtime_cli offline --manifest work/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/draft-execution-manifest.json --case testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__source_verified_imaginary_near_centerline --candidate fallback3 --output .runtime-work/c109705-2b-imaginary-near-fallback3-offline-v1 --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "stdout": {
+          "case_id": "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__source_verified_imaginary_near_centerline",
+          "candidate_id": "fallback3",
+          "offline_passed": true,
+          "log": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c109705-2b-imaginary-near-fallback3-offline-v1/offline.log",
+          "simulation_started": false
+        },
+        "stdout_sha256": "2ae89df5516e2dd88448f0e0383ee43d0f81de36f0655d681edc76713c60b62b",
+        "offline_log": "{\"case_id\": \"testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__source_verified_imaginary_near_centerline\", \"cpu_check_passed\": true, \"carla_started\": false}\n.\n----------------------------------------------------------------------\nRan 1 test in 0.003s\n\nOK\n",
+        "offline_log_sha256": "c8bcfee392a55b5e786f8ea66505f37c8bffa1fc71ea744fb8e59b9cc2ef25ab"
+      },
+      "compatibility": {
+        "receipt": "imaginary-near-fallback3-compatibility-receipt.json",
+        "receipt_sha256": "2988d23c71e00108bb4218459f297b4b4dbf7d8d187ed3e9d0832f42535445b7",
+        "positive_log": "imaginary-near-compatibility-analysis.log",
+        "positive_log_sha256": "643247d7bbbcfe68b9259258861cf42351f98f0d24e99876e96c0b5e4e167be9",
+        "negative_log": "imaginary-near-fallback3-negative-analysis.log",
+        "negative_log_sha256": "b0f0e8fc410b932a59dadc55d1792c24a2d3f2d9ce7e5f527fb0a6b46e195bc6",
+        "passed": true,
+        "checks": [
+          "acquisition_unchanged",
+          "actual_analysis",
+          "derived_outputs_rebuilt",
+          "final_decode",
+          "four_camera_sources",
+          "lean_decoder",
+          "mandatory_observations",
+          "native_validation",
+          "render",
+          "selected_measurements",
+          "negative_case_source"
+        ],
+        "negative_removed": "turn_history.jsonl"
+      },
+      "saved_processing": {
+        "receipt": ".runtime-work/c109705-2b-imaginary-near-fallback3-saved/output/v0001/processing.json",
+        "receipt_sha256": "5f2a4860b3c68ce2bd9e3b9c750752464bef5b577fc11a9726ebcba721c71599",
+        "exit_code": 0,
+        "passed": true,
+        "candidate_id": "fallback3",
+        "construction_sha256": "4e9a07376994bb0dece59bb8a24900b5925f06c7c2ca23fef606d26ba403a45c",
+        "originals_preserved": true,
+        "timestamp_joins": {
+          "frames": 9,
+          "passed": true,
+          "missing_original_trace_or_map": false
+        },
+        "final_video_checks": {
+          "format": "source-decode",
+          "passed": true,
+          "video_sha256": "4c0d2c1a327aa0c27ccbbaa4f8773049107847b50b95045cb924d42f9825411f",
+          "frames": 9,
+          "dimensions": [
+            1920,
+            1224
+          ],
+          "rgb_sequence_sha256": "845891bb90aeb6841cd11fb5f9fb8c1726cf0283262e9a08068cdcfec9abbbac",
+          "mapping_sha256": null,
+          "checks": {
+            "frame_count": "all-decoded-frames"
+          },
+          "auditor_sha256": "b63af75d3599fc2401518aa9093561928c43e9c460976ea155b09860f5f02df9",
+          "threads": 4,
+          "seconds": 0.08409676910378039,
+          "ffmpeg_version": "ffmpeg version n8.0.1-48-g0592be14ff-20260116 Copyright (c) 2000-2025 the FFmpeg developers"
+        },
+        "physical_acceptance_claimed": false,
+        "legal_acceptance_claimed": false
+      }
+    }
+  ],
+  "imaginary_far_fallbacks": [
+    {
+      "candidate_id": "fallback1",
+      "construction_sha256": "08258ef13282b12248f1351addefec838f95808e78c5bcbea0415babb312badd",
+      "changed_knobs": [
+        "config.requested_speed_mps"
+      ],
+      "trigger": {
+        "source": "retained original full-body/frame history",
+        "metric": "complete-body intersection with destination centerline at exit",
+        "failure_condition": "Complete exit body intersects the sourced destination centerline"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 MPLCONFIGDIR=.runtime-work/matplotlib PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -m worker_exchange.runtime_cli offline --manifest work/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/draft-execution-manifest.json --case testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__source_verified_imaginary_farther_from_centerline --candidate fallback1 --output .runtime-work/c109705-2b-imaginary-far-fallback1-offline-v1 --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "stdout": {
+          "case_id": "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__source_verified_imaginary_farther_from_centerline",
+          "candidate_id": "fallback1",
+          "offline_passed": true,
+          "log": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c109705-2b-imaginary-far-fallback1-offline-v1/offline.log",
+          "simulation_started": false
+        },
+        "stdout_sha256": "b70c0178d87b02f71354d2074ea0ed97b72442f5a795cdd2de43c41687e8be95",
+        "offline_log": "{\"case_id\": \"testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__source_verified_imaginary_farther_from_centerline\", \"cpu_check_passed\": true, \"carla_started\": false}\n.\n----------------------------------------------------------------------\nRan 1 test in 0.004s\n\nOK\n",
+        "offline_log_sha256": "af0afc11f213a8d057318ba3aa970dc5c18c4fe1f50eaaed4774332b3160beb2"
+      },
+      "compatibility": {
+        "receipt": "imaginary-far-fallback1-compatibility-receipt.json",
+        "receipt_sha256": "b21347a4ddf5b0b09227c7b01cd7e1cb62ee07d904c2b9f3fa2b7c8943d2927c",
+        "positive_log": "imaginary-far-compatibility-analysis.log",
+        "positive_log_sha256": "067f046eea5b184bf492dc3db5254c3a3c1137cbf0984d7ea36de3528e8490f6",
+        "negative_log": "imaginary-far-fallback1-negative-analysis.log",
+        "negative_log_sha256": "04a36be5b48f9ce63d9247766a04ce8ef540f849083ced11b39f9a48cc353dfb",
+        "passed": true,
+        "checks": [
+          "acquisition_unchanged",
+          "actual_analysis",
+          "derived_outputs_rebuilt",
+          "final_decode",
+          "four_camera_sources",
+          "lean_decoder",
+          "mandatory_observations",
+          "native_validation",
+          "render",
+          "selected_measurements",
+          "negative_case_source"
+        ],
+        "negative_removed": "turn_history.jsonl"
+      },
+      "saved_processing": {
+        "receipt": ".runtime-work/c109705-2b-imaginary-far-fallback1-saved/output/v0001/processing.json",
+        "receipt_sha256": "7176a9ece67af2c45f69d5a0b3a3d52d6321f31433bdb22442fa14acd1d8dc51",
+        "exit_code": 0,
+        "passed": true,
+        "candidate_id": "fallback1",
+        "construction_sha256": "08258ef13282b12248f1351addefec838f95808e78c5bcbea0415babb312badd",
+        "originals_preserved": true,
+        "timestamp_joins": {
+          "frames": 9,
+          "passed": true,
+          "missing_original_trace_or_map": false
+        },
+        "final_video_checks": {
+          "format": "source-decode",
+          "passed": true,
+          "video_sha256": "a7e56cea45c882ddf461dac8d2afc903479a25acd193373dc6c191f47fb89340",
+          "frames": 9,
+          "dimensions": [
+            1920,
+            1224
+          ],
+          "rgb_sequence_sha256": "5973af29766106ac582245485dd9529846b965b5e24ca9997bedf07d34b8294b",
+          "mapping_sha256": null,
+          "checks": {
+            "frame_count": "all-decoded-frames"
+          },
+          "auditor_sha256": "b63af75d3599fc2401518aa9093561928c43e9c460976ea155b09860f5f02df9",
+          "threads": 4,
+          "seconds": 0.06056614103727043,
+          "ffmpeg_version": "ffmpeg version n8.0.1-48-g0592be14ff-20260116 Copyright (c) 2000-2025 the FFmpeg developers"
+        },
+        "physical_acceptance_claimed": false,
+        "legal_acceptance_claimed": false
+      }
+    },
+    {
+      "candidate_id": "fallback2",
+      "construction_sha256": "4c0036df8a4b8ee2f440aeb5af89d6356f192ddc9581d8109403212f69eb642d",
+      "changed_knobs": [
+        "runner._camera_transforms.overview"
+      ],
+      "trigger": {
+        "source": "retained original overview and reference_corner source videos",
+        "metric": "visibility of full vehicle body and destination centerline at exit",
+        "failure_condition": "Overview source occludes the full exit body or destination centerline"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 MPLCONFIGDIR=.runtime-work/matplotlib PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -m worker_exchange.runtime_cli offline --manifest work/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/draft-execution-manifest.json --case testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__source_verified_imaginary_farther_from_centerline --candidate fallback2 --output .runtime-work/c109705-2b-imaginary-far-fallback2-offline-v1 --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "stdout": {
+          "case_id": "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__source_verified_imaginary_farther_from_centerline",
+          "candidate_id": "fallback2",
+          "offline_passed": true,
+          "log": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c109705-2b-imaginary-far-fallback2-offline-v1/offline.log",
+          "simulation_started": false
+        },
+        "stdout_sha256": "b9c4ca796988a7e4eae7d708533029e61636967f891487df517efc3544f6d147",
+        "offline_log": "{\"case_id\": \"testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__source_verified_imaginary_farther_from_centerline\", \"cpu_check_passed\": true, \"carla_started\": false}\n.\n----------------------------------------------------------------------\nRan 1 test in 0.002s\n\nOK\n",
+        "offline_log_sha256": "23a19edbc30313caa1f476443c2f9b9a983f605de254d86b7d9fbc6911ee06d2"
+      },
+      "compatibility": {
+        "receipt": "imaginary-far-fallback2-compatibility-receipt.json",
+        "receipt_sha256": "aa501b3226591a5470a4d94302cc97a206622e0d6fe81f30ec84d087355369db",
+        "positive_log": "imaginary-far-compatibility-analysis.log",
+        "positive_log_sha256": "067f046eea5b184bf492dc3db5254c3a3c1137cbf0984d7ea36de3528e8490f6",
+        "negative_log": "imaginary-far-fallback2-negative-analysis.log",
+        "negative_log_sha256": "37ae795e899339b88c5680bc85a30669e2223aaeeb46afbf7e456c4ac213b749",
+        "passed": true,
+        "checks": [
+          "acquisition_unchanged",
+          "actual_analysis",
+          "derived_outputs_rebuilt",
+          "final_decode",
+          "four_camera_sources",
+          "lean_decoder",
+          "mandatory_observations",
+          "native_validation",
+          "render",
+          "selected_measurements",
+          "negative_case_source"
+        ],
+        "negative_removed": "turn_history.jsonl"
+      },
+      "saved_processing": {
+        "receipt": ".runtime-work/c109705-2b-imaginary-far-fallback2-saved/output/v0001/processing.json",
+        "receipt_sha256": "751a3140ac54f8baa97349bb7ee1c4218c1856a434909643ab61f858a6477e04",
+        "exit_code": 0,
+        "passed": true,
+        "candidate_id": "fallback2",
+        "construction_sha256": "4c0036df8a4b8ee2f440aeb5af89d6356f192ddc9581d8109403212f69eb642d",
+        "originals_preserved": true,
+        "timestamp_joins": {
+          "frames": 9,
+          "passed": true,
+          "missing_original_trace_or_map": false
+        },
+        "final_video_checks": {
+          "format": "source-decode",
+          "passed": true,
+          "video_sha256": "9419e8da16b6a87b886f09e30d0643a79decf742b211b830ce935aba71507056",
+          "frames": 9,
+          "dimensions": [
+            1920,
+            1224
+          ],
+          "rgb_sequence_sha256": "5973af29766106ac582245485dd9529846b965b5e24ca9997bedf07d34b8294b",
+          "mapping_sha256": null,
+          "checks": {
+            "frame_count": "all-decoded-frames"
+          },
+          "auditor_sha256": "b63af75d3599fc2401518aa9093561928c43e9c460976ea155b09860f5f02df9",
+          "threads": 4,
+          "seconds": 0.06281557003967464,
+          "ffmpeg_version": "ffmpeg version n8.0.1-48-g0592be14ff-20260116 Copyright (c) 2000-2025 the FFmpeg developers"
+        },
+        "physical_acceptance_claimed": false,
+        "legal_acceptance_claimed": false
+      }
+    },
+    {
+      "candidate_id": "fallback3",
+      "construction_sha256": "446e7af32d2aaef4e03c996c15a4096aee16736ff968e2e128f5f52fb02e7c83",
+      "changed_knobs": [
+        "config.requested_speed_mps"
+      ],
+      "trigger": {
+        "source": "retained original body history, frame map and four source videos",
+        "metric": "full-body destination exit before final original frame",
+        "failure_condition": "Complete body has not left the junction by the end of the recording"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 MPLCONFIGDIR=.runtime-work/matplotlib PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -m worker_exchange.runtime_cli offline --manifest work/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/draft-execution-manifest.json --case testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__source_verified_imaginary_farther_from_centerline --candidate fallback3 --output .runtime-work/c109705-2b-imaginary-far-fallback3-offline-v1 --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "stdout": {
+          "case_id": "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__source_verified_imaginary_farther_from_centerline",
+          "candidate_id": "fallback3",
+          "offline_passed": true,
+          "log": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c109705-2b-imaginary-far-fallback3-offline-v1/offline.log",
+          "simulation_started": false
+        },
+        "stdout_sha256": "3e842192b05958c4c44824fe582c25c35db157f9530f467d033d13cf893057b4",
+        "offline_log": "{\"case_id\": \"testing__C109705__NRS-484B-400-2b__motor_vehicle_driver__source_verified_imaginary_farther_from_centerline\", \"cpu_check_passed\": true, \"carla_started\": false}\n.\n----------------------------------------------------------------------\nRan 1 test in 0.003s\n\nOK\n",
+        "offline_log_sha256": "82d36dc8b6059f1fb6a31823968a594f15b26e9852d91a11a4660cb38560e92a"
+      },
+      "compatibility": {
+        "receipt": "imaginary-far-fallback3-compatibility-receipt.json",
+        "receipt_sha256": "5c35d63bb0aa0f76856018f1566472930fd2f5c0cce566d48e7844fc222f9871",
+        "positive_log": "imaginary-far-compatibility-analysis.log",
+        "positive_log_sha256": "067f046eea5b184bf492dc3db5254c3a3c1137cbf0984d7ea36de3528e8490f6",
+        "negative_log": "imaginary-far-fallback3-negative-analysis.log",
+        "negative_log_sha256": "160fdd992defca3d534cb28456cbc0822364da2498425c30f2647b7f9360218d",
+        "passed": true,
+        "checks": [
+          "acquisition_unchanged",
+          "actual_analysis",
+          "derived_outputs_rebuilt",
+          "final_decode",
+          "four_camera_sources",
+          "lean_decoder",
+          "mandatory_observations",
+          "native_validation",
+          "render",
+          "selected_measurements",
+          "negative_case_source"
+        ],
+        "negative_removed": "turn_history.jsonl"
+      },
+      "saved_processing": {
+        "receipt": ".runtime-work/c109705-2b-imaginary-far-fallback3-saved/output/v0001/processing.json",
+        "receipt_sha256": "546f1f8722536d17a0855ce23662a1f5c9843a167065e75b010309445df74e4a",
+        "exit_code": 0,
+        "passed": true,
+        "candidate_id": "fallback3",
+        "construction_sha256": "446e7af32d2aaef4e03c996c15a4096aee16736ff968e2e128f5f52fb02e7c83",
+        "originals_preserved": true,
+        "timestamp_joins": {
+          "frames": 9,
+          "passed": true,
+          "missing_original_trace_or_map": false
+        },
+        "final_video_checks": {
+          "format": "source-decode",
+          "passed": true,
+          "video_sha256": "4b4714e3e59571fbdf413a3af427e51f40514257d2d0f849ad9e3c86c463c3e2",
+          "frames": 9,
+          "dimensions": [
+            1920,
+            1224
+          ],
+          "rgb_sequence_sha256": "5973af29766106ac582245485dd9529846b965b5e24ca9997bedf07d34b8294b",
+          "mapping_sha256": null,
+          "checks": {
+            "frame_count": "all-decoded-frames"
+          },
+          "auditor_sha256": "b63af75d3599fc2401518aa9093561928c43e9c460976ea155b09860f5f02df9",
+          "threads": 4,
+          "seconds": 0.07854498899541795,
+          "ffmpeg_version": "ffmpeg version n8.0.1-48-g0592be14ff-20260116 Copyright (c) 2000-2025 the FFmpeg developers"
+        },
+        "physical_acceptance_claimed": false,
+        "legal_acceptance_claimed": false
+      }
+    }
+  ],
+  "semantic_stage_validation": {
+    "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -c 'import json; from pathlib import Path; from worker_exchange.semantic_delivery import validate; p=Path(\"work/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver\"); a=json.loads(Path(\"inputs/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/assignment.json\").read_text()); m=json.loads((p/\"draft-execution-manifest.json\").read_text()); print(validate(p,a,m))'",
+    "exit_code": 0,
+    "stage_count": 6,
+    "selected_cases": 4,
+    "index": "proposals/semantic-index.json",
+    "index_sha256": "c7a6ea7a95afa55d92c593ae14fa1852d603dac8d1f161759133c0c662b1a58a",
+    "scope": "CPU structural and source-hash stage validation; no physical/legal judgment",
+    "stdout": "{'stage_count': 6, 'selected_cases': 4, 'index_sha256': 'c7a6ea7a95afa55d92c593ae14fa1852d603dac8d1f161759133c0c662b1a58a'}\n"
+  }
 }
