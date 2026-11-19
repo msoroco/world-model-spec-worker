@@ -79,6 +79,28 @@ class SourceResponse(unittest.TestCase):
             self.assertEqual((receipt['case_id'], receipt['candidate_id']), (entry['case_id'], fallback['id']))
             self.assertIn('negative_case_source', receipt['checks'])
 
+    def test_returned_pass_fallbacks(self):
+        package = Path(__file__).resolve().parents[1]
+        manifest = json.loads((package / 'execution-manifest.json').read_text())
+        entry = next(row for row in manifest['cases'] if row['case_id'].endswith('__meeting_pass_red'))
+        self.assertEqual({row['id'] for row in entry['candidates']}, {'fallback1', 'fallback2', 'fallback3'})
+        constructions = {entry['construction_sha256']}
+        for fallback in entry['candidates']:
+            self.assertNotIn(fallback['construction_sha256'], constructions)
+            constructions.add(fallback['construction_sha256'])
+            for path_key, sha_key, source in (
+                ('construction', 'construction_sha256', fallback),
+                ('log', 'log_sha256', fallback['offline']),
+                ('receipt', 'sha256', fallback['compatibility']),
+                ('log', 'log_sha256', fallback['compatibility']),
+                ('negative_log', 'negative_log_sha256', fallback['compatibility']),
+            ):
+                self.assertEqual(hashlib.sha256((package / source[path_key]).read_bytes()).hexdigest(), source[sha_key])
+            receipt = json.loads((package / fallback['compatibility']['receipt']).read_text())
+            self.assertTrue(receipt['passed'])
+            self.assertEqual((receipt['case_id'], receipt['candidate_id']), (entry['case_id'], fallback['id']))
+            self.assertIn('negative_case_source', receipt['checks'])
+
     def test_returned_postred_resume_proof(self):
         package = Path(__file__).resolve().parents[1]
         manifest_path = package / 'execution-manifest.json'

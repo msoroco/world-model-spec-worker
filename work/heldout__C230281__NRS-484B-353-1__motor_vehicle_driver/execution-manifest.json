@@ -243,7 +243,92 @@
         "status": "physical",
         "reason": "Body crossing during commanded red requires Native geometry, lamp and pupil source review and three alternate constructions."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-pass-fallback1.json",
+          "construction_sha256": "55a8ca8e92c34ccb5e599a744ef30af2eb3ddee4bc273d7123d20918e4b1e4b4",
+          "trigger": {
+            "source": "Native map waypoint inventory",
+            "metric": "opposing nonjunction route pair available at 4 m sampling",
+            "failure_condition": "No valid same-road opposing nonjunction pair at 4 m sampling"
+          },
+          "changed_knobs": [
+            "waypoint_sample_step_m"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C230281__NRS-484B-353-1__motor_vehicle_driver/execution-manifest.json --case heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__meeting_pass_red --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-pass-fallback-returned/fallback1-offline",
+            "exit_code": 0,
+            "log": "pass-fallback1-offline.log",
+            "log_sha256": "4afd56f697e93b5aea306b0d8e3910366343ca0635efe54b21e148cade8a340a",
+            "construction_sha256": "55a8ca8e92c34ccb5e599a744ef30af2eb3ddee4bc273d7123d20918e4b1e4b4"
+          },
+          "compatibility": {
+            "receipt": "pass-fallback1-compatibility.json",
+            "sha256": "ef5b0ec2e0d6fcd9aba73634cb8951e3ad6f239052a9569eacb79e107dc3f7a4",
+            "log": "meeting_stop-fallback1-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "pass-fallback1-negative.log",
+            "negative_log_sha256": "cc5f10778bea96e76bdcc4c3c6d1f3b24a7b47f88ab80cbe770cdb78f47f0ecd"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-pass-fallback2.json",
+          "construction_sha256": "1e5ac4a5051b4c0b9ec958d32de11f15790a3704be72718899ce8ba5b19d8908",
+          "trigger": {
+            "source": "Native subject motion and signal streams",
+            "metric": "subject speed and full-body pass frame during commanded red operation",
+            "failure_condition": "Subject accelerates too slowly to complete the planned red-window pass at baseline throttle gain"
+          },
+          "changed_knobs": [
+            "throttle_gain"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C230281__NRS-484B-353-1__motor_vehicle_driver/execution-manifest.json --case heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__meeting_pass_red --candidate fallback2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-pass-fallback-returned/fallback2-offline",
+            "exit_code": 0,
+            "log": "pass-fallback2-offline.log",
+            "log_sha256": "c63fb6f0c65cc8e01f8767a85148583c07ad4e2235e4931a8804e29f45429639",
+            "construction_sha256": "1e5ac4a5051b4c0b9ec958d32de11f15790a3704be72718899ce8ba5b19d8908"
+          },
+          "compatibility": {
+            "receipt": "pass-fallback2-compatibility.json",
+            "sha256": "a4308c92782e97c5aa698adbf878fea934e8ba827fcb05fb592e7e042b4b4505",
+            "log": "meeting_stop-fallback1-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "pass-fallback2-negative.log",
+            "negative_log_sha256": "01133c45a49dd99785cee430245d3b936d45baf4b5cafb3437c2b9a23e71f222"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-pass-fallback3.json",
+          "construction_sha256": "a7d02d72751187733c4a3c5b105badf40fb78378d2fe60d00cb19bfdb099d6fc",
+          "trigger": {
+            "source": "Original reference_corner camera frames",
+            "metric": "front/rear lamp pixel visibility during red operation",
+            "failure_condition": "Baseline reference_corner lamp region remains unresolved in original pixels"
+          },
+          "changed_knobs": [
+            "reference_corner_fov_deg"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/work/heldout__C230281__NRS-484B-353-1__motor_vehicle_driver/execution-manifest.json --case heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__meeting_pass_red --candidate fallback3 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.runtime-work/c230281-pass-fallback-returned/fallback3-offline",
+            "exit_code": 0,
+            "log": "pass-fallback3-offline.log",
+            "log_sha256": "12328f415ee22e0bf8d7d226ded7a24e2c3becbaa80dc4daee281853e6eebad3",
+            "construction_sha256": "a7d02d72751187733c4a3c5b105badf40fb78378d2fe60d00cb19bfdb099d6fc"
+          },
+          "compatibility": {
+            "receipt": "pass-fallback3-compatibility.json",
+            "sha256": "4d40ee1ca303c5d94084b08b6ca707f2c18fe06d20c9b071180f65c247b58201",
+            "log": "meeting_stop-fallback1-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "pass-fallback3-negative.log",
+            "negative_log_sha256": "d0373596b6bd1e9185a1d4e7ae725926f753f369229ae49703e2eafc70312493"
+          }
+        }
+      ],
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
