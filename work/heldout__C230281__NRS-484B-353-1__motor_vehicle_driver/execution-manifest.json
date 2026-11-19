@@ -17,7 +17,36 @@
         "status": "physical",
         "reason": "Native bus lamp visibility, pupil motion and physical stop response remain unverified; fallback constructions pending."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-meeting_stop-fallback1.json",
+          "construction_sha256": "fbd4e49535b9d7a1c8180506570ef82c30132371f6dac592dcaf06e1859a53bf",
+          "trigger": {
+            "source": "Native map waypoint inventory",
+            "metric": "opposing nonjunction route pair available at 4 m sampling",
+            "failure_condition": "No valid same-road opposing nonjunction pair at 4 m sampling"
+          },
+          "changed_knobs": [
+            "waypoint_sample_step_m"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/heldout__C230281__NRS-484B-353-1__motor_vehicle_driver/execution-manifest.json --case heldout__C230281__NRS-484B-353-1__motor_vehicle_driver__meeting_stop --candidate fallback1 --output .runtime-work/c230281-stop-fallback1-returned-offline",
+            "exit_code": 0,
+            "log": "meeting_stop-fallback1-offline.log",
+            "log_sha256": "57a1e04e9bf0fd467badb09ee3a4658d7728768e2ee175dc88b1bfe1189bba4b",
+            "construction_sha256": "fbd4e49535b9d7a1c8180506570ef82c30132371f6dac592dcaf06e1859a53bf"
+          },
+          "compatibility": {
+            "receipt": "meeting_stop-fallback1-compatibility.json",
+            "sha256": "c3be174b6491dfacf633d9eff13844470b93f0c1bcf333a03ee88c96ff1309ef",
+            "log": "meeting_stop-fallback1-analysis.log",
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "negative_log": "meeting_stop-fallback1-negative.log",
+            "negative_log_sha256": "51dbe3bb005a97e1f177cd69c5f04b5d2388035b3439315faebde4af59f83b70"
+          }
+        }
+      ],
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",

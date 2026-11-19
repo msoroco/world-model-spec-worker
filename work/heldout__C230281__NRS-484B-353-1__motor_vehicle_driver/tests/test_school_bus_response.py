@@ -21,6 +21,27 @@ def corners(x):
 
 
 class SourceResponse(unittest.TestCase):
+    def test_returned_meeting_stop_fallback1(self):
+        package = Path(__file__).resolve().parents[1]
+        manifest = json.loads((package / 'execution-manifest.json').read_text())
+        entry = next(row for row in manifest['cases'] if row['case_id'].endswith('__meeting_stop'))
+        fallback = next(row for row in entry['candidates'] if row['id'] == 'fallback1')
+        self.assertNotEqual(fallback['construction_sha256'], entry['construction_sha256'])
+        for path_key, sha_key, source in (
+            ('construction', 'construction_sha256', fallback),
+            ('log', 'log_sha256', fallback['offline']),
+            ('receipt', 'sha256', fallback['compatibility']),
+            ('log', 'log_sha256', fallback['compatibility']),
+            ('negative_log', 'negative_log_sha256', fallback['compatibility']),
+        ):
+            self.assertEqual(hashlib.sha256((package / source[path_key]).read_bytes()).hexdigest(),
+                             source[sha_key])
+        receipt = json.loads((package / fallback['compatibility']['receipt']).read_text())
+        self.assertTrue(receipt['passed'])
+        self.assertEqual(receipt['candidate_id'], 'fallback1')
+        self.assertEqual(receipt['case_id'], entry['case_id'])
+        self.assertIn('negative_case_source', receipt['checks'])
+
     def test_returned_postred_resume_proof(self):
         package = Path(__file__).resolve().parents[1]
         manifest_path = package / 'execution-manifest.json'
