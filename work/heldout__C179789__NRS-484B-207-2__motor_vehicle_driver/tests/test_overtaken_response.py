@@ -109,38 +109,52 @@ class OvertakenTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,"measurement differs"):
             audit([p,q],"right_shift")
     def test_saved_right_pass_requires_distinct_sourced_premise(self):
+        if not (HERE/"right-pass-recipe.json").is_file():
+            self.skipTest("Package-level source recipe is outside the exact Native bundle")
         receipts = [HERE/"no-right-primary-saved-processing.json",
                     HERE/"right-pass-primary-saved-processing.json"]
         with self.assertRaisesRegex(ValueError,"Saved receipt identity or status differs|lacks original permission premise"):
             saved_behavior.audit_right_pass_exception(*receipts)
         staged = []
         roots = []
-        base_receipt = json.loads(receipts[0].read_text())
-        base_source = Path(base_receipt["analysis_directory"])
+        from worker_exchange.fixture_recipe import materialize
+        source=self.root/"right-pass-source"
+        materialize(HERE.parents[1],HERE/"right-pass-recipe.json",source)
+        base_receipt={"case_id":saved_behavior.PREFIX+saved_behavior.RIGHT_PASS_PAIR[0],
+                      "passed":True,"originals_preserved":True,"missing_evidence":False,
+                      "physical_acceptance_claimed":False,"legal_acceptance_claimed":False,
+                      "original_source_hashes":{}}
         for index, receipt_path in enumerate(receipts):
             # Both branches share one synthetic original motion source; only the
             # separately authored diagnostic road premise differs.
             receipt = json.loads(json.dumps(base_receipt))
             receipt["case_id"] = saved_behavior.PREFIX + saved_behavior.RIGHT_PASS_PAIR[index]
-            source = base_source
             root = self.root/("permission-base" if index == 0 else "permission-variant")
             root.mkdir()
-            for name in saved_behavior.SOURCE_NAMES+("analysis-report.json","result.json"):
+            for name in saved_behavior.SOURCE_NAMES:
                 shutil.copy2(source/name,root/name)
-            for name in ("analysis-report.json","result.json"):
-                path=root/name
-                value=json.loads(path.read_text())
-                value["case_id"]=receipt["case_id"]
-                path.write_text(json.dumps(value)+"\n")
+                receipt["original_source_hashes"][name]=hashlib.sha256((root/name).read_bytes()).hexdigest()
+            measured=measure_audible_saved(*(root/name for name in saved_behavior.SOURCE_NAMES))
+            (root/"analysis-report.json").write_text(json.dumps({"case_id":receipt["case_id"],
+                "measurements":{"overtaken_response":{"value":measured}},
+                "physical_acceptance_claimed":False})+"\n")
+            (root/"result.json").write_text(json.dumps({"case_id":receipt["case_id"],
+                "measured_values":{"overtaken_response":measured},
+                "legal_acceptance_claimed":False})+"\n")
             rule=root/"right_pass_governing_rule.txt"
             rule.write_text("Synthetic governing-rule fixture; no legal finding.\n")
             survey=root/"right_pass_road_survey.json"
             survey.write_text(json.dumps({"source_kind":"original_road_survey",
-                "road_id":"synthetic-road","lane_ids":[1] if index == 0 else [1,2],
-                "passing_side":"right","source_provenance":"synthetic diagnostic"})+"\n")
+                "road_id":"synthetic-road","lane_ids":[1,2],
+                "passing_side":"right","source_provenance":"synthetic diagnostic",
+                "diagnostic_fixture":True,"paved_path_verified":True,
+                "safety_condition_verified":True,
+                "subject_left_turn_signal_observed":bool(index),
+                "actual_native_safety_status":"unverified"})+"\n")
             premise=root/"right_pass_premise.json"
             premise.write_text(json.dumps({"source_kind":"reviewed_right_pass_premise",
                 "permission_state":bool(index),"review_scope":"comparison premise only",
+                "diagnostic_fixture":True,"actual_native_permission_status":"unverified",
                 "legal_conclusion":None,"governing_rule_citation":"synthetic fixture",
                 "governing_rule_sha256":hashlib.sha256(rule.read_bytes()).hexdigest(),
                 "road_survey_sha256":hashlib.sha256(survey.read_bytes()).hexdigest()})+"\n")
@@ -158,10 +172,15 @@ class OvertakenTests(unittest.TestCase):
             saved_behavior.audit_right_pass_exception(*staged)
 
     def test_five_saved_diagnostics_do_not_claim_native_completion(self):
-        root=HERE.parents[1]/'.runtime-work/c179789-semantic-reconcile-v6/provisional-compat'
+        if not (HERE/"audible-recipe.json").is_file():
+            self.skipTest("Package-level diagnostic recipes are outside the exact Native bundle")
+        from worker_exchange.fixture_recipe import materialize
+        repo=HERE.parents[1]
         for name in ('audible','observed','no-right','speed-increase','right-pass'):
             with self.subTest(name=name):
-                result=pass_gap.assess(root/name,audible=name!='observed')
+                source=self.root/name
+                materialize(repo,HERE/(name+'-recipe.json'),source)
+                result=pass_gap.assess(source,audible=name!='observed')
                 maneuver=result['physical_checks']['maneuver']
                 self.assertEqual(maneuver['diagnostic_geometry_status'],'met')
                 self.assertEqual(maneuver['status'],'unverified')
@@ -369,6 +388,19 @@ class OvertakenTests(unittest.TestCase):
         self.write("config.json",{"selected_case_id":finalizer.AUDIBLE_CASE_ID,
             "law_id":"NRS-484B-207-2","cell_id":"C179789","actor":"motor_vehicle_driver",
             "case":{"recording_description":{"channels":[],"context_inputs":[],"limitations":[]}}})
+        if finalizer.AUDIBLE_CASE_ID.endswith("__right_pass_permitted_no_right_yield"):
+            rule=self.root/"right_pass_governing_rule.txt"
+            rule.write_text("Synthetic NRS 484B.210(1)(a), (2), (3) condition fixture.\n")
+            survey=self.write("right_pass_road_survey.json",{
+                "diagnostic_fixture":True,"passing_side":"right",
+                "paved_path_verified":True,"safety_condition_verified":True,
+                "subject_left_turn_signal_observed":True,
+                "actual_native_safety_status":"unverified"})
+            self.write("right_pass_premise.json",{
+                "diagnostic_fixture":True,"permission_state":True,
+                "actual_native_permission_status":"unverified","legal_conclusion":None,
+                "road_survey_sha256":hashlib.sha256(survey.read_bytes()).hexdigest(),
+                "governing_rule_sha256":hashlib.sha256(rule.read_bytes()).hexdigest()})
         audible_report=finalizer.analyze(self.root)
         self.assertEqual(audible_report["measurements"]["pass_complete_frame"]["value"],103)
         self.assertIsNone(audible_report["measurements"]["overtaken_response"]["value"]["hearing_confirmed"])

@@ -13,7 +13,7 @@ SOURCE_NAMES = ("overtaken_source.jsonl", "video_frames.jsonl", "trace.jsonl",
 PREFIX = "heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__"
 PAIRS = {"right_yield": ("gives_way_holds_speed", "no_right_yield_holds_speed"),
          "speed_hold_until_complete": ("gives_way_holds_speed", "gives_way_increases_speed")}
-RIGHT_PASS_PAIR = ("no_right_yield_holds_speed", "right_pass_permitted_no_right_yield")
+RIGHT_PASS_PAIR = ("right_pass_permitted_no_right_yield", "right_pass_permitted_no_right_yield")
 
 def read_rows(path):
     return [json.loads(s) for s in Path(path).read_text().splitlines() if s.strip()]
@@ -80,6 +80,16 @@ def read_permission_premise(receipt, root):
         not survey.get("road_id") or not survey.get("lane_ids") or
         not survey.get("passing_side") or not survey.get("source_provenance")):
         raise ValueError("Right-pass road survey lacks original geometry or provenance")
+    if (survey.get("diagnostic_fixture") is not True or
+        survey.get("passing_side") != "right" or
+        survey.get("paved_path_verified") is not True or
+        survey.get("safety_condition_verified") is not True or
+        type(survey.get("subject_left_turn_signal_observed")) is not bool or
+        survey.get("actual_native_safety_status") != "unverified" or
+        premise.get("diagnostic_fixture") is not True or
+        premise.get("actual_native_permission_status") != "unverified" or
+        premise["permission_state"] != survey["subject_left_turn_signal_observed"]):
+        raise ValueError("Right-pass synthetic premise differs from measured fixture sources")
     rule = (root/"right_pass_governing_rule.txt").read_text().strip()
     if not rule or not premise.get("governing_rule_citation"):
         raise ValueError("Right-pass governing rule citation missing")

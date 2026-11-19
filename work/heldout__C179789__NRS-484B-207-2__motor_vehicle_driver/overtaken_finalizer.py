@@ -40,6 +40,38 @@ def measure_pass_completion(observed):
     return observed["pass_complete_frame"]
 
 
+def measure_permission_premise(root):
+    """Read a source-bound diagnostic condition without a Native or legal finding."""
+    names = ("right_pass_governing_rule.txt", "right_pass_road_survey.json",
+             "right_pass_premise.json")
+    paths = {name: Path(root) / name for name in names}
+    for name, path in paths.items():
+        if not path.is_file() or not path.read_bytes():
+            raise ValueError("Missing required source: " + name)
+    hashes = {name: hashlib.sha256(path.read_bytes()).hexdigest()
+              for name, path in paths.items()}
+    survey = json.loads(paths[names[1]].read_text())
+    premise = json.loads(paths[names[2]].read_text())
+    condition = survey.get("subject_left_turn_signal_observed")
+    if (survey.get("diagnostic_fixture") is not True or
+        survey.get("passing_side") != "right" or
+        survey.get("paved_path_verified") is not True or
+        survey.get("safety_condition_verified") is not True or
+        type(condition) is not bool or
+        survey.get("actual_native_safety_status") != "unverified" or
+        premise.get("diagnostic_fixture") is not True or
+        premise.get("permission_state") != condition or
+        premise.get("road_survey_sha256") != hashes[names[1]] or
+        premise.get("governing_rule_sha256") != hashes[names[0]] or
+        premise.get("actual_native_permission_status") != "unverified" or
+        premise.get("legal_conclusion") is not None):
+        raise ValueError("Right-pass diagnostic permission premise differs from its sources")
+    return ({"conditional_permission_premise": condition,
+             "diagnostic_fixture_only": True,
+             "actual_native_permission_status": "unverified",
+             "legal_conclusion": None}, hashes)
+
+
 def analyze(attempt):
     root = Path(attempt)
     config_path = root / "config.json"
@@ -52,8 +84,7 @@ def analyze(attempt):
         ("NRS-484B-207-2", "C179789", "motor_vehicle_driver")):
         raise ValueError("Wrong exact overtaken-driver finalizer identity")
     observed = measure_response(root, case_id)
-    return {"format":"worker-analysis-report", "case_id":case_id,
-            "measurements":{"overtaken_response":{
+    measurements={"overtaken_response":{
                 "method":"measure_response", "value":observed,
                 "sources":observed["source_sha256"]},
                 "right_shift_m":{"method":"measure_right_shift",
@@ -61,7 +92,13 @@ def analyze(attempt):
                 "speed_delta_mps":{"method":"measure_speed_delta",
                     "value":measure_speed_delta(observed),"sources":observed["source_sha256"]},
                 "pass_complete_frame":{"method":"measure_pass_completion",
-                    "value":measure_pass_completion(observed),"sources":observed["source_sha256"]}},
+                    "value":measure_pass_completion(observed),"sources":observed["source_sha256"]}}
+    if case_id.endswith("__right_pass_permitted_no_right_yield"):
+        premise, sources = measure_permission_premise(root)
+        measurements["right_pass_permission_premise"]={
+            "method":"measure_permission_premise", "value":premise, "sources":sources}
+    return {"format":"worker-analysis-report", "case_id":case_id,
+            "measurements":measurements,
             "limitations":observed["limitations"],
             "physical_acceptance_claimed":False,
             "legal_acceptance_claimed":False}
