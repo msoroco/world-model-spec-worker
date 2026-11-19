@@ -131,6 +131,47 @@ def audit_red_pixel_sources(frame_map_path, command_path, front_video_path,
             'physical_acceptance_claimed': False, 'legal_conclusion': None}
 
 
+def audit_diagnostic_lamp_source(frame_map_path, command_path, lamp_path):
+    """Join synthetic command packets without presenting them as camera pixels."""
+    mapping = _frame_map(frame_map_path)
+    commands = _rows(_jsonl(command_path), 'signal command')
+    lamps = _rows(_jsonl(lamp_path), 'diagnostic lamp command')
+    identities = [(row['frame'], row['time_s']) for row in mapping]
+    if any([(row.get('frame'), row.get('time_s')) for row in source] != identities
+           for source in (commands, lamps)):
+        raise ValueError('Diagnostic lamp/source frame join differs')
+    rows = []
+    for mapped, command, lamp in zip(mapping, commands, lamps):
+        phase = command.get('red_phase_commanded')
+        operating = command.get('red_signal_commanded')
+        if (type(phase) is not bool or type(operating) is not bool or
+            (phase and not operating) or
+            lamp.get('source_kind') != 'synthetic_lamp_command_fixture' or
+            lamp.get('diagnostic_fixture') is not True or
+            type(lamp.get('front_red_commanded')) is not bool or
+            type(lamp.get('rear_red_commanded')) is not bool or
+            lamp['front_red_commanded'] != phase or
+            lamp['rear_red_commanded'] != phase):
+            raise ValueError('Diagnostic lamp command differs from original signal')
+        rows.append({'frame': mapped['frame'], 'video_frame': mapped['video_frame'],
+                     'time_s': mapped['time_s'],
+                     'red_signal_commanded': operating,
+                     'red_phase_commanded': phase,
+                     'front_red_pixel_count': None, 'rear_red_pixel_count': None,
+                     'front_red_candidate': None, 'rear_red_candidate': None})
+    if (sum(row['red_phase_commanded'] for row in rows) < 2 or
+        sum(not row['red_phase_commanded'] for row in rows) < 2):
+        raise ValueError('Diagnostic red on/off command interval incomplete')
+    return {'format': 'worker-school-bus-diagnostic-lamp-command-candidates',
+            'source_sha256': {'frame_map': _sha_file(frame_map_path),
+                              'command': _sha_file(command_path),
+                              'lamp_packet': _sha_file(lamp_path)},
+            'frames': rows, 'pixel_evidence_status': 'unverified',
+            'roi_lamp_identity_reviewed': False,
+            'front_rear_red_visibility_verified': False,
+            'physical_acceptance_claimed': False, 'legal_conclusion': None}
+
+
 def audit_pupil_service_source(pupil_path, motion_path, purpose):
     """Reopen walker and bus motion originals; report a service-motion candidate."""
     if purpose not in ('receiving', 'discharging'):
@@ -191,10 +232,18 @@ def audit_first_case_attempt(attempt, front_roi, rear_roi, purpose):
     frame_map = _frame_map(attempt / 'video_frames.jsonl')
     if inventory.get('frames') != [r['frame'] for r in frame_map]:
         raise ValueError('Original school-bus inventory frames differ')
-    pixel = audit_red_pixel_sources(
-        attempt / 'video_frames.jsonl', attempt / 'signal_command_original.jsonl',
-        attempt / 'reference_corner.mkv', attempt / 'driver_reference.mkv',
-        front_roi, rear_roi)
+    marker_path = attempt / 'fixture-provenance.json'
+    diagnostic = (json.loads(marker_path.read_text()).get('diagnostic_fixture') is True
+                  if marker_path.is_file() else False)
+    if diagnostic:
+        pixel = audit_diagnostic_lamp_source(
+            attempt / 'video_frames.jsonl', attempt / 'signal_command_original.jsonl',
+            attempt / 'lamp_state_original.jsonl')
+    else:
+        pixel = audit_red_pixel_sources(
+            attempt / 'video_frames.jsonl', attempt / 'signal_command_original.jsonl',
+            attempt / 'reference_corner.mkv', attempt / 'driver_reference.mkv',
+            front_roi, rear_roi)
     pupil = audit_pupil_service_source(
         attempt / 'pupil_original.jsonl', attempt / 'motion_original.jsonl', purpose)
     return {'format': 'worker-school-bus-first-case-source-candidates',

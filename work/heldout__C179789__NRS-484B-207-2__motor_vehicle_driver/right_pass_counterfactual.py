@@ -1,4 +1,5 @@
 """Saved-only counterfactual of the exact right-pass case with opposite signal premise."""
+import argparse
 import hashlib
 import json
 import os
@@ -9,19 +10,25 @@ import tempfile
 from pathlib import Path
 
 ROOT=Path.cwd()
+parser=argparse.ArgumentParser(description=__doc__)
+parser.add_argument('--validator',required=True,help='Compiled current Lean adapterCheck executable')
+args=parser.parse_args()
+validator=Path(args.validator).resolve()
+if not validator.is_file():raise ValueError('Current adapter validator is missing')
 PKG=ROOT/'work/heldout__C179789__NRS-484B-207-2__motor_vehicle_driver'
 MANIFEST=PKG/'execution-manifest.json'
 manifest=json.loads(MANIFEST.read_text())
 entry=manifest['cases'][4]
 case=entry['case_id']
 sys.path.insert(0,str(ROOT/'runtime/scenario_pipeline'))
+from worker_exchange.fixture_recipe import materialize
 from worker_exchange.package_compatibility import materialize_case
 from worker_exchange.saved_processing import prepare_video
 prefix=ROOT/'.runtime-work/c179789-right-pass-counterfactual'
 if prefix.exists():shutil.rmtree(prefix)
 prefix.mkdir()
 fixture=prefix/'fixture'
-shutil.copytree(ROOT/'.runtime-work/c179789-current-4-primary-saved/fixture',fixture)
+materialize(ROOT,ROOT/entry['fixture_recipe'],fixture)
 survey_path=fixture/'right_pass_road_survey.json'
 survey=json.loads(survey_path.read_text())
 if survey['subject_left_turn_signal_observed'] is not True or survey['diagnostic_fixture'] is not True:
@@ -44,7 +51,7 @@ output=prefix/'output'
 cmd=[str(ROOT/'.venv-cpu/bin/python'),'runtime.py','process-saved',
      '--manifest',str(MANIFEST),'--case',case,'--attempt',str(attempt),
      '--output',str(output),'--library','runtime/library',
-     '--validator',str(ROOT/'.runtime-work/c125714-validator/.lake/build/bin/adapterCheck')]
+     '--validator',str(validator)]
 run=subprocess.run(cmd,cwd=ROOT,env=dict(os.environ,PYTHONDONTWRITEBYTECODE='1'),
                    text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
 (prefix/'command.log').write_text(run.stdout)

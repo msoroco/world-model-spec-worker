@@ -1,21 +1,21 @@
 {
   "assignment_id": "heldout__C179789__NRS-484B-207-2__motor_vehicle_driver",
   "input_sha256": "6126597c5fedd9b4e39ad7ac5e0fd7f8a3536880eba4888264e262b978dec112",
-  "status": "partial",
-  "readiness_kind": "incomplete",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
   "tests": [
     {
       "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python -m unittest discover -s tests -v plus five exact physical-fixture CLI runs",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "003c4d7c0ac13b934df9b56cc237ff24e1a32627c1e1106e77343433d7087fe7"
+      "sha256": "faa24d4bae03bf131374023fb175bc56fbd3dbce5dff36ba8a95f4f27746825e"
     }
   ],
   "remaining_gpu_checks": [
     "Actual motion, geometry, camera visibility and capture quality after CPU preparation"
   ],
-  "reason": "Current cutover CPU work remains incomplete; see cpu_checkpoint for exact current proof and remaining CPU work.",
+  "reason": "CPU preparation passed; local Native motion, camera pixels, right-pass safety and legal permission remain unverified.",
   "preserved_source_artifacts": [
     {
       "format": "base64-zlib-tar-v1",
@@ -142,22 +142,22 @@
   "cpu_checkpoint": {
     "format": "worker-cutover-cpu-checkpoint",
     "assignment_id": "heldout__C179789__NRS-484B-207-2__motor_vehicle_driver",
+    "status": "ready",
     "runtime_manifest_sha256": "5b4738624542c97f321a302bd49b9ec154cb2cf63778acf64ba6042f8d5b4fd3",
-    "status": "partial",
-    "diagnostic_graph_migration": "Source-backed diagnostic graph paths use live .adapter.json and frame adapter_graph pointers where applicable; fixture recipe source hashes refreshed.",
-    "primary_compatibility": {
-      "case_id": "heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__gives_way_holds_speed",
-      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/heldout__C179789__NRS-484B-207-2__motor_vehicle_driver/execution-manifest.json --case heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__gives_way_holds_speed --output .runtime-work/p03-C179789-source-consistent2 --library runtime/library --validator .runtime-work/c125714-validator/.lake/build/bin/adapterCheck",
-      "exit_code": 0,
-      "diagnostic_output": "Ignored .runtime-work/ session artifact; rerun command for current portable proof."
-    },
-    "remaining_cpu_work": "Rerun and bind current offline, compatibility, saved-only, audit, fallback and comparison proofs for every exact case; run assignment strict gate.",
-    "diagnosis": "Synthetic graph, trace, participant speed and body geometry were reconciled; current primary positive/missing-source compatibility passes. Other exact cases and candidate proofs remain stale.",
-    "primary_offline": {
-      "case_id": "heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__gives_way_holds_speed",
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/heldout__C179789__NRS-484B-207-2__motor_vehicle_driver/execution-manifest.json --case heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__gives_way_holds_speed --output .runtime-work/p03-C179789-primary-offline-current --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
-      "exit_code": 0
-    }
+    "execution_manifest_sha256": "b6c1f70854a91ffc3893e8cc67c631eed431cf0c3ce1d469c07abe02bee3c0a9",
+    "delivery_proof_sha256": "1dff137cdac09e847c219234a5f104050dcee636f1f2fdd0a66a79b6dda8f791",
+    "test_log_sha256": "faa24d4bae03bf131374023fb175bc56fbd3dbce5dff36ba8a95f4f27746825e",
+    "exact_cases": 5,
+    "candidate_count": 20,
+    "current_offline_passes": 20,
+    "current_compatibility_passes": 20,
+    "positive_and_missing_source_saved_pairs": 20,
+    "physical_synthetic_branches": 15,
+    "independent_delivery_audits": 5,
+    "saved_source_comparisons": 4,
+    "actual_native_capture": false,
+    "physical_acceptance_claimed": false,
+    "legal_acceptance_claimed": false
   },
   "physical_diagnostic_outcomes_20261119": {
     "script": "pass_gap_audit.py",
@@ -167,6 +167,8 @@
     "diagnostic_fixture_only": true,
     "actual_native_maneuver_status": "unverified",
     "test_log": "cpu-tests.log",
-    "test_log_sha256": "003c4d7c0ac13b934df9b56cc237ff24e1a32627c1e1106e77343433d7087fe7"
-  }
+    "test_log_sha256": "faa24d4bae03bf131374023fb175bc56fbd3dbce5dff36ba8a95f4f27746825e"
+  },
+  "first_gpu_delivery_command": "python scenario_pipeline/pipeline.py execute-delivery --assignment heldout__C179789__NRS-484B-207-2__motor_vehicle_driver --case heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__gives_way_holds_speed --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --job \"$JOB_ID\" --db \"$DB\" --run \"$RUN\"",
+  "historical_20261117_fields_scope": "Older dated proof records are preserved as history; only cpu_checkpoint and current source-bound manifest/proof hashes establish current readiness."
 }

@@ -282,6 +282,32 @@ class SourceResponse(unittest.TestCase):
             audit_first_case_attempt(attempt,[1,1,5,3],[1,1,5,3],'receiving')
         with self.assertRaisesRegex(ValueError,'source hash differs: road.xodr'):
             finalize_first_case(attempt)
+        (attempt/'road.xodr').write_text('<OpenDRIVE/>\n')
+        lamp=attempt/'lamp_state_original.jsonl'
+        lamp.write_text(''.join(json.dumps({'frame':f,'time_s':i*.05,
+            'source_kind':'synthetic_lamp_command_fixture','diagnostic_fixture':True,
+            'front_red_commanded':phases[i],'rear_red_commanded':phases[i]})+'\n'
+            for i,f in enumerate(frames)))
+        (attempt/'fixture-provenance.json').write_text(json.dumps({'diagnostic_fixture':True})+'\n')
+        dark=bytes(width*height*3*len(frames))
+        subprocess.run(['ffmpeg','-nostdin','-loglevel','error','-y','-f','rawvideo',
+                        '-pix_fmt','rgb24','-s',f'{width}x{height}','-r','20',
+                        '-i','pipe:0','-an','-c:v','ffv1',str(attempt/'driver_reference.mkv')],
+                       input=dark,check=True)
+        inventory['source_sha256']['driver_reference.mkv']=hashlib.sha256(
+            (attempt/'driver_reference.mkv').read_bytes()).hexdigest()
+        (attempt/'native-acquisition-inventory.json').write_text(json.dumps(inventory)+'\n')
+        diagnostic=audit_first_case_attempt(attempt,[1,1,5,3],[1,1,5,3],'receiving')
+        self.assertEqual(diagnostic['red_pixels']['pixel_evidence_status'],'unverified')
+        self.assertIsNone(diagnostic['red_pixels']['frames'][1]['front_red_pixel_count'])
+        self.assertFalse(diagnostic['red_pixels']['front_rear_red_visibility_verified'])
+        (attempt/'fixture-provenance.json').unlink()
+        with self.assertRaisesRegex(ValueError,'red pixels disagree'):
+            audit_first_case_attempt(attempt,[1,1,5,3],[1,1,5,3],'receiving')
+        (attempt/'fixture-provenance.json').write_text(json.dumps({'diagnostic_fixture':True})+'\n')
+        lamp.unlink()
+        with self.assertRaisesRegex(ValueError,'Missing original school-bus source'):
+            audit_first_case_attempt(attempt,[1,1,5,3],[1,1,5,3],'receiving')
 
     def test_all_selected_controller_branches_and_actual_apply_call(self):
         self.assertEqual(len(BRANCHES),8)

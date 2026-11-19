@@ -189,40 +189,39 @@
   ],
   "observations": [
     {
-      "term": "drv.overtaking",
-      "note": "another vehicle is overtaking the subject"
+      "name": "subject_right_offset_m",
+      "unit": "m",
+      "method": "original actor pose against Native road tangent",
+      "mandatory": true,
+      "source": "original saved acquisition or generated diagnostic source; Native review pending"
     },
     {
-      "term": "rel.visible",
-      "note": "'upon observing the overtaking vehicle': the overtaking vehicle in the subject's line of sight"
+      "name": "subject_speed_mps",
+      "unit": "m/s",
+      "method": "original actor velocity",
+      "mandatory": true,
+      "source": "original saved acquisition or generated diagnostic source; Native review pending"
     },
     {
-      "term": "rel.ahead_behind_in_lane",
-      "note": "the overtaking vehicle is behind, then abreast"
+      "name": "observed_notice_source_context",
+      "unit": "structured",
+      "method": "Not applicable to this generated-signal case; no observed-notice assertion is made",
+      "mandatory": true,
+      "source": "original saved acquisition or generated diagnostic source; Native review pending"
     },
     {
-      "term": "rel.bearing",
-      "note": "it approaches on the subject's left"
+      "name": "audible_signal_source_context",
+      "unit": "structured",
+      "method": "Original generated signal_command_original.jsonl and signal_audio_envelope_original.jsonl joined to overtaken_source.jsonl and video_frames.jsonl",
+      "mandatory": true,
+      "source": "original saved acquisition or generated diagnostic source; Native review pending"
     },
     {
-      "term": "kin.speed",
-      "note": "the subject's speed must not increase until passed"
-    },
-    {
-      "term": "kin.accel_longitudinal",
-      "note": "the increase itself"
-    },
-    {
-      "term": "rel.occupies",
-      "note": "'give way to the right' \u2014 the subject's lateral movement"
-    },
-    {
-      "term": "sig.horn",
-      "note": "'hearing a signal'"
-    },
-    {
-      "term": "drv.passing_side",
-      "note": "the exception: a lawful pass on the right"
+      "name": "full_body_pass_gap_m",
+      "unit": "m",
+      "method": "Signed rear-of-overtaker minus front-of-subject longitudinal gap from original body corners and road_tangent_xy, joined to frame map and trace",
+      "mandatory": true,
+      "source": "original saved acquisition or generated diagnostic source; Native review pending"
     }
   ],
   "sources": [
@@ -303,11 +302,95 @@
     "source_review": "Fully decode each original stream; inspect both vehicle bodies, signal evidence, pass-completion order and right-side lane clearance in original pixels. This is a prospective CPU capture plan, not observed visibility."
   },
   "source_observation_mapping": {
-    "notice_frame": "retained original visual-event or signal stream with frame ID and source hash",
-    "pass_complete_frame": "original overtaker and subject body pose overlap/clearance readbacks",
-    "rightward_response": "source-hashed original subject body and lane geometry per frame",
-    "speed_change": "source-hashed original subject velocity history per frame",
-    "right_pass_exception": "sourced road-context and passing-side premise retained for independent review"
+    "drv.overtaking": {
+      "evidence": "Original joined subject/overtaker bodies and signed pass gap identify the diagnostic overtake interval.",
+      "channels": [
+        "full_body_pass_gap_m"
+      ],
+      "source_refs": [
+        "overtaken_source.jsonl",
+        "overtake_bodies_original.jsonl"
+      ]
+    },
+    "rel.visible": {
+      "evidence": "Original visibility rays support a simulated line-of-sight proxy; human observation remains unverified.",
+      "channels": [
+        "observed_notice_source_context"
+      ],
+      "source_refs": [
+        "overtaken_source.jsonl"
+      ]
+    },
+    "rel.ahead_behind_in_lane": {
+      "evidence": "Original body corners and frame map bracket behind, abreast, then body-clearance positions.",
+      "channels": [
+        "full_body_pass_gap_m"
+      ],
+      "source_refs": [
+        "overtaken_source.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    "rel.bearing": {
+      "evidence": "Original body corners and road tangent identify the passing side in each selected construction.",
+      "channels": [
+        "full_body_pass_gap_m"
+      ],
+      "source_refs": [
+        "overtaken_source.jsonl",
+        "overtake_site_original.json"
+      ]
+    },
+    "kin.speed": {
+      "evidence": "Original trace gives subject speed until full-body completion.",
+      "channels": [
+        "subject_speed_mps"
+      ],
+      "source_refs": [
+        "trace.jsonl",
+        "overtaken_source.jsonl"
+      ]
+    },
+    "kin.accel_longitudinal": {
+      "evidence": "Source-joined trace speed deltas measure precompletion increases.",
+      "channels": [
+        "subject_speed_mps"
+      ],
+      "source_refs": [
+        "trace.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Subject right offset is computed from original pose, road tangent and waypoint.",
+      "channels": [
+        "subject_right_offset_m"
+      ],
+      "source_refs": [
+        "overtaken_source.jsonl"
+      ]
+    },
+    "sig.horn": {
+      "evidence": "Original generated command and audio-envelope sources record a stimulus, while actual hearing remains unverified.",
+      "channels": [
+        "audible_signal_source_context"
+      ],
+      "source_refs": [
+        "signal_command_original.jsonl",
+        "signal_audio_envelope_original.jsonl"
+      ]
+    },
+    "drv.passing_side": {
+      "evidence": "Original bodies distinguish left/right passage; the conditional right-pass survey and rule premise are retained without Native permission or legal conclusion.",
+      "channels": [
+        "full_body_pass_gap_m"
+      ],
+      "source_refs": [
+        "overtaken_source.jsonl",
+        "right_pass_road_survey.json",
+        "right_pass_premise.json"
+      ]
+    }
   },
   "requirement_dispositions": [
     {
@@ -356,6 +439,44 @@
       "case_ids": [
         "heldout__C179789__NRS-484B-207-2__motor_vehicle_driver__right_pass_permitted_no_right_yield"
       ]
+    }
+  ],
+  "source_observation_terms_snapshot": [
+    {
+      "term": "drv.overtaking",
+      "note": "another vehicle is overtaking the subject"
+    },
+    {
+      "term": "rel.visible",
+      "note": "'upon observing the overtaking vehicle': the overtaking vehicle in the subject's line of sight"
+    },
+    {
+      "term": "rel.ahead_behind_in_lane",
+      "note": "the overtaking vehicle is behind, then abreast"
+    },
+    {
+      "term": "rel.bearing",
+      "note": "it approaches on the subject's left"
+    },
+    {
+      "term": "kin.speed",
+      "note": "the subject's speed must not increase until passed"
+    },
+    {
+      "term": "kin.accel_longitudinal",
+      "note": "the increase itself"
+    },
+    {
+      "term": "rel.occupies",
+      "note": "'give way to the right' \u2014 the subject's lateral movement"
+    },
+    {
+      "term": "sig.horn",
+      "note": "'hearing a signal'"
+    },
+    {
+      "term": "drv.passing_side",
+      "note": "the exception: a lawful pass on the right"
     }
   ]
 }
