@@ -28,10 +28,43 @@ def _native_writer():
     return write_result
 
 
+def measure_roadway_stop(measured, source_hashes):
+    return {
+        'value': {
+            'complete_stop_observed': measured['complete_stop_observed'],
+            'roadway_stop_frames': measured['roadway_stop_frames'],
+            'roadway_lane_overlap_frames': measured['roadway_lane_overlap_frames'],
+            'following_speed_drop_mps': measured['following_speed_drop_mps'],
+            'normal_reasonable_movement_impeded':
+                measured['normal_reasonable_movement_impeded'],
+        },
+        'method': 'measure_roadway_stop',
+        'sources': {name: source_hashes[name] for name in
+                    ('native-actors.jsonl','video_frames.jsonl')},
+    }
+
+
+def measure_paved_roadway_scope(map_readback, measured, source_hashes):
+    return {
+        'value': {
+            'map_name': map_readback['map_name'],
+            'road_id': map_readback['road_id'],
+            'lane_id': map_readback['lane_id'],
+            'roadway_stop_observed': bool(measured['roadway_stop_frames']),
+            'paved_surface_verified': False,
+        },
+        'method': 'measure_paved_roadway_scope',
+        'sources': {name: source_hashes[name] for name in
+                    ('native-map-readback.json','native-actors.jsonl')},
+    }
+
+
 def finalize(attempt, output):
     attempt = Path(attempt).resolve()
     output = Path(output).resolve()
     source_kind = classify(attempt)
+    source_label = ('diagnostic synthetic' if source_kind == SYNTHETIC
+                    else 'original')
     config = json.loads((attempt/'config.json').read_text())
     case = config.get('case_suffix')
     if (case not in EXPECTED_OVERLAP
@@ -46,7 +79,10 @@ def finalize(attempt, output):
         raise ValueError('Recording description differs from source channels')
     if (attempt/'result.json').exists() or (attempt/'trace.jsonl').exists():
         raise ValueError('Retain prior finalization; use a fresh attempt')
-    map_readback = json.loads((attempt/'native-map-readback.json').read_text())
+    map_path = attempt/'native-map-readback.json'
+    if not map_path.is_file():
+        raise ValueError('Missing required source: native-map-readback.json')
+    map_readback = json.loads(map_path.read_text())
     if map_readback.get('case') != case:
         raise ValueError('Original map readback belongs to another case')
     rows = load_rows(attempt/'native-actors.jsonl', attempt/'video_frames.jsonl')
@@ -101,7 +137,7 @@ def finalize(attempt, output):
                      'physical_causation_claimed': False}
               for name, method in (
                   ('setup','independent roadway/map and camera visibility review'),
-                  ('target','original sampled stop and lane-footprint review'),
+                  ('target',source_label+' sampled stop and lane-footprint review'),
                   ('maneuver','independent normal-and-reasonable traffic effect and exception review'))}
     checks['target']['status'] = 'met' if matched else 'not_met'
     result = {
@@ -112,7 +148,7 @@ def finalize(attempt, output):
         'behavior_attempted': True,
         'maneuver_completed': False,
         'physical_checks': checks,
-        'termination_reason': 'full original attempt retained',
+        'termination_reason': 'full '+source_label+' attempt retained',
         'physical_failure_flags': ['traffic_impediment_and_exceptions_unreviewed']+
                                   (['safe_operation_necessity_unreviewed']
                                    if case == 'safe_operation_stop' else [])+
@@ -139,7 +175,7 @@ def finalize(attempt, output):
                     'normal_reasonable_movement_impeded':
                         'independent_original_source_review_required'},
                 'unit': 'structured',
-                'method': 'source-joined original ego/follower actor and frame rows',
+                'method': 'source-joined '+source_label+' ego/follower actor and frame rows',
                 'reference': 'channels/traffic_effect_evidence.jsonl'}},
         'provenance_kind': 'synthetic_fixture' if source_kind == SYNTHETIC else 'native',
         'diagnostic_fixture': source_kind == SYNTHETIC,
@@ -148,12 +184,17 @@ def finalize(attempt, output):
     if hazard is not None:
         result['realized_observables']['source_visible_hazard'] = {
             'value': hazard, 'unit': 'structured',
-            'method': 'original actor body, lane, velocity and gap rows',
+            'method': source_label+' actor body, lane, velocity and gap rows',
             'reference': 'native-actors.jsonl'}
     _native_writer()(attempt, result)
     report['derived_channels'] = derived
     report['trace_sha256'] = source_hashes['trace.jsonl']
     report['native_result_sha256'] = sha256(attempt/'result.json')
+    report['measurements'] = {
+        'roadway_stop': measure_roadway_stop(measured, source_hashes),
+        'paved_roadway_scope': measure_paved_roadway_scope(
+            map_readback, measured, source_hashes),
+    }
     output.write_text(json.dumps(report, indent=2, allow_nan=False)+'\n')
     return report
 

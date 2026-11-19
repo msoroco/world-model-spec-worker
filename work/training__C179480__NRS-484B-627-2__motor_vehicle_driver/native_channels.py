@@ -100,6 +100,7 @@ def derive(attempt):
                 'following_on_driving_lane': row['following_on_driving_lane'],
                 'following_acceleration_mps2': delta,
                 'normal_reasonable_movement_impeded': 'independent_original_source_review_required',
+                'motion_source': source_kind,
             },
         }
         if map_readback['case'] == 'safe_operation_stop':

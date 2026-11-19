@@ -122,6 +122,10 @@ class NativeFinalizeTest(unittest.TestCase):
             report = module.finalize(folder, folder/'analysis-report.json')
             result = json.loads((folder/'result.json').read_text())
             self.assertEqual(report['source_frames'], 3)
+            self.assertEqual(report['measurements']['roadway_stop']['method'],
+                             'measure_roadway_stop')
+            self.assertEqual(report['measurements']['paved_roadway_scope']['value']
+                             ['road_id'], 7)
             self.assertEqual(len(report['derived_channels']['channels']), 10)
             self.assertEqual(result['realized_observables']['traffic_effect_evidence']
                              ['value']['normal_reasonable_movement_impeded'],

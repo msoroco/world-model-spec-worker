@@ -1,0 +1,38 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C179480__NRS-484B-627-2__motor_vehicle_driver__reference",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "text-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "kind": "measured",
+      "method": "measure_roadway_stop",
+      "output_key": "roadway_stop",
+      "value_type": "object",
+      "inputs": [
+        "native-actors.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "kind": "sourced_context",
+      "method": "measure_paved_roadway_scope",
+      "output_key": "paved_roadway_scope",
+      "value_type": "object",
+      "inputs": [
+        "native-map-readback.json",
+        "native-actors.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "native-map-readback.json"
+    ],
+    "error_contains": "Missing required source: native-map-readback.json"
+  }
+}
