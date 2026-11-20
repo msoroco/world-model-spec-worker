@@ -51,15 +51,19 @@ class ExceptionProbeTests(unittest.TestCase):
 
     def test_runner_binds_retained_lead_and_cameras(self):
         client, carla, spawned = environment()
+        tuning = {'same_path_half_width_m': 1.8, 'stop_gap_m': 8.0,
+                  'deceleration_mps2': 3.0, 'cruise_throttle': 0.28}
         def capture(world, carla, ego, follower, lead, sign, plan, attempt):
             self.assertEqual([ego.id, follower.id, lead.id], [100, 101, 102])
             self.assertEqual(plan['capture_frames'], 600)
             self.assertEqual(len(plan['camera_names']), 4)
             self.assertFalse(plan['conflict_probe']['statutory_necessity_verified'])
+            self.assertEqual(plan['conflict_controller_tuning'], tuning)
             return {'source_frames': 600, 'physical_completion_claimed': False}
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp)/'attempt'
             result = run(client, carla, self.survey(), path, acquisition=capture,
+                         controller_tuning=tuning,
                          processor=lambda _: {
                              'physical_or_legal_completion_claimed': False,
                              'statutory_necessity_verified': False})
@@ -94,6 +98,26 @@ class ExceptionProbeTests(unittest.TestCase):
             self.assertTrue((path/'source-measurement.json').is_file())
             with self.assertRaisesRegex(ValueError, 'Retain previous attempt'):
                 run(client, carla, self.survey(), path)
+
+    def test_three_candidate_tunings_reach_native_capture(self):
+        observed = []
+        for ident in ('fallback1', 'fallback2', 'fallback3'):
+            construction = json.loads((HERE/f'draft-conflict-{ident}-construction.json').read_text())
+            config = json.loads(next(row['content'] for row in construction['files']
+                                     if row['path'] == 'config.json'))
+            tuning = config['conflict_controller_tuning']
+            client, carla, _ = environment()
+            with tempfile.TemporaryDirectory() as tmp:
+                def capture(world, carla, ego, follower, lead, sign, plan, attempt):
+                    self.assertEqual(plan['conflict_controller_tuning'], tuning)
+                    return {'source_frames': 600}
+                run(client, carla, self.survey(), Path(tmp)/ident,
+                    acquisition=capture, controller_tuning=tuning,
+                    processor=lambda _: {
+                        'physical_or_legal_completion_claimed': False,
+                        'statutory_necessity_verified': False})
+            observed.append(json.dumps(tuning, sort_keys=True))
+        self.assertEqual(len(set(observed)), 3)
 
     def test_sample_lead_requires_same_road_and_body(self):
         transform = SimpleNamespace(location=location(18, 1),

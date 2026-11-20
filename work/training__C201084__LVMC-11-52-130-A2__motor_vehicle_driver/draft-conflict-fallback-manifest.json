@@ -1,0 +1,64 @@
+{
+  "assignment_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver",
+  "cases": [
+    {
+      "candidate_risk": {
+        "reason": "Lead gap, closing speed and approach speed are separately observed Native motion risks; select alternatives only from source-measured failures.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "stop_gap_m: 6.0 -> 8.0"
+          ],
+          "construction": "draft-conflict-fallback1-construction.json",
+          "construction_sha256": "b2af03d0c0b65bdd5049869e2f389fe94ca04c7adb5346831133f0adfcb36d61",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "gap drops below 6 m while ego speed exceeds 0.05 m/s",
+            "metric": "lead longitudinal gap before near-zero ego speed",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "deceleration_mps2: 3.0 -> 2.0"
+          ],
+          "construction": "draft-conflict-fallback2-construction.json",
+          "construction_sha256": "498eb5f4f2af14c1aefe83f1edf7891f04393d033643cd895a360d1667ce8feb",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "predicted stop distance exceeds retained longitudinal gap",
+            "metric": "closing speed and lead gap over the approach",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "cruise_throttle: 0.28 -> 0.18"
+          ],
+          "construction": "draft-conflict-fallback3-construction.json",
+          "construction_sha256": "b57a4baf98318362e0fe7c46db9237c078fc11f09ead0180fa02edcbc59e760a",
+          "id": "fallback3",
+          "trigger": {
+            "failure_condition": "ego speed exceeds 4 m/s before the first brake request",
+            "metric": "ego speed before first saved brake request",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__conflict",
+      "construction": "draft-conflict-construction.json",
+      "construction_sha256": "8c4c85d3b5164cb77737d98c3a7288d6ad1dd2ea9f49eb530c042e022a33b57f",
+      "fixture_recipe": "work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/draft-conflict-diagnostic-recipe.json",
+      "measurement_contract": "draft-conflict-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "exception_finalize.py",
+        "source_only": true
+      }
+    }
+  ],
+  "format": "worker-execution-manifest",
+  "runtime_manifest_sha256": "5b4738624542c97f321a302bd49b9ec154cb2cf63778acf64ba6042f8d5b4fd3",
+  "status": "draft_conflict_four_candidate_diagnostic"
+}

@@ -61,6 +61,10 @@
           "kind": "subject_behavior",
           "value": null
         },
+        "lead_traffic_conflict_probe": {
+          "kind": "controller",
+          "value": "absent"
+        },
         "requested_stop_destination": {
           "kind": "controller",
           "value": "shared survey"
@@ -137,6 +141,10 @@
         "actual_stop_zone_relation": {
           "kind": "subject_behavior",
           "value": null
+        },
+        "lead_traffic_conflict_probe": {
+          "kind": "controller",
+          "value": "absent"
         },
         "requested_stop_destination": {
           "kind": "controller",
@@ -215,9 +223,103 @@
           "kind": "subject_behavior",
           "value": null
         },
+        "lead_traffic_conflict_probe": {
+          "kind": "controller",
+          "value": "absent"
+        },
         "requested_stop_destination": {
           "kind": "controller",
           "value": "outside"
+        }
+      }
+    },
+    {
+      "case_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__conflict",
+      "deliberate_differences": [
+        "lead_traffic_conflict_probe"
+      ],
+      "probe": {
+        "comparison_or_standard": "saved lead position, velocity and braking request; statutory necessity unresolved",
+        "primary_variable": "lead_traffic_conflict_probe",
+        "target_value_or_branch": {
+          "lead_traffic_conflict_probe": "lead present"
+        }
+      },
+      "rationale": "Record a same-road lead vehicle ahead during the authored-zone stop.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "source_measurement from retained actor, frame, survey and video files",
+            "name": "ego_pose",
+            "reference_frame": "original CARLA frame and four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sample clock; sign face and legal designation require independent review",
+            "unit": "m,deg"
+          },
+          {
+            "method": "source_measurement from retained actor, frame, survey and video files",
+            "name": "ego_speed",
+            "reference_frame": "original CARLA frame and four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sample clock; sign face and legal designation require independent review",
+            "unit": "m/s"
+          },
+          {
+            "method": "source_measurement from retained actor, frame, survey and video files",
+            "name": "vehicle_stops_in_posted_fire_lane",
+            "reference_frame": "original CARLA frame and four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sample clock; sign face and legal designation require independent review",
+            "unit": "bool"
+          },
+          {
+            "method": "saved ego and lead actor pose and velocity source join",
+            "name": "lead_traffic_relation",
+            "reference_frame": "original CARLA ego heading and lead actor",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sample clock; statutory necessity requires original review",
+            "unit": "m"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "live CARLA map and sign actor readback plus authored geometry",
+            "name": "original_map_sign_and_fire_lane_survey",
+            "reference_frame": "surveyed CARLA map",
+            "uncertainty": "Fire Code designation and visible sign text unverified",
+            "unit": "structured"
+          }
+        ],
+        "limitations": [
+          "No legal or physical conclusion from authored geometry",
+          "Original pixels, posting and statutory exceptions need review",
+          "Lead braking request is not statutory conflict necessity"
+        ]
+      },
+      "target_law_id": "LVMC-11-52-130-A2",
+      "target_type": "judgment_sweep",
+      "unresolved_judgment_calls": [
+        "designated and posted as a fire lane pursuant to the City's Fire Code",
+        "necessary to avoid conflict with other traffic",
+        "in compliance with law",
+        "the directions of a police officer or a traffic control device"
+      ],
+      "variable_assignments": {
+        "actual_stop_zone_relation": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "lead_traffic_conflict_probe": {
+          "kind": "controller",
+          "value": "lead present"
+        },
+        "requested_stop_destination": {
+          "kind": "controller",
+          "value": "inside"
         }
       }
     }
@@ -232,7 +334,7 @@
           "phrase": "designated and posted as a fire lane pursuant to the City's Fire Code"
         },
         {
-          "note": "The current follower and ego samples do not establish necessity or an approaching conflict.",
+          "note": "The lead probe samples a traffic relation and brake request but does not establish statutory necessity.",
           "phrase": "necessary to avoid conflict with other traffic"
         },
         {
@@ -246,12 +348,12 @@
       ],
       "missing_inputs": [
         "Original City Fire Code designation and posting evidence",
-        "Conflict traffic and stop-causation construction",
+        "Original conflict causation review and absent-lead contrast",
         "Applicable-law direction source",
         "Police and traffic-control direction constructions",
         "Attendance and public/private property source review"
       ],
-      "rationale": "The source-grounded inside/outside stop pair is built; exception and posting routes require further constructions.",
+      "rationale": "Inside/outside and lead-present probes are built; a source-grounded absent-lead contrast and posting routes remain.",
       "status": "incomplete",
       "sweep_id": "fire_lane_exception_scope_pending",
       "target_law_id": "LVMC-11-52-130-A2"

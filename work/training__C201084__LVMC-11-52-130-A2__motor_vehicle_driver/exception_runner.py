@@ -32,9 +32,11 @@ def _lead_spawn(survey, mapping, carla, road_id):
 
 
 def run(client, carla, survey, attempt, *, acquisition=acquire_with_world_restore,
-        processor=analyze):
+        processor=analyze, controller_tuning=None):
     world = client.get_world()
     plan = inspect(world, carla, survey)
+    if controller_tuning is not None:
+        plan['conflict_controller_tuning'] = controller_tuning
     mapping = world.get_map()
     road_id = plan['fixed_context']['road_id']
     spawns = _spawn_plan(survey, mapping, carla, road_id)

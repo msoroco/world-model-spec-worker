@@ -73,6 +73,8 @@ def finalize(attempt, output):
                 provenance.get('diagnostic_fixture') is False)
     require(diagnostic or original,
             'Acquisition provenance must distinguish original from fixture')
+    require((attempt/'native-survey-readback.json').is_file(),
+            'Missing required source: native-survey-readback.json')
     measured = analyze(attempt, diagnostic=diagnostic)
     videos = (camera_sources(attempt, measured['frames']) if diagnostic else
               measured['source_camera_videos'])
@@ -184,6 +186,7 @@ def finalize(attempt, output):
             'measured': measured['lead_ahead_frames'] > 0 and
                         measured['brake_request_frames'] > 0,
             'method': 'saved lead pose, ego pose and requested control',
+            'tolerance': '20 Hz sampled relation; no legal necessity threshold',
             'matched': measured['lead_ahead_frames'] > 0 and
                        measured['brake_request_frames'] > 0,
             'physical_cause_confirmed': False,

@@ -1,4 +1,4 @@
-"""Write source-faithful draft semantic stages for the two proven CPU probes."""
+"""Write source-faithful draft semantic stages for three CPU probes."""
 import hashlib
 import json
 from pathlib import Path
@@ -27,8 +27,10 @@ def build():
     law_text = assignment['law']['text']
     reference = json.loads((HERE/'draft-reference-fallback-manifest.json').read_text())['cases'][0]
     contrast = json.loads((HERE/'draft-contrast-fallback-manifest.json').read_text())['cases'][0]
+    conflict = json.loads((HERE/'draft-conflict-fallback-manifest.json').read_text())['cases'][0]
     recording = json.loads((HERE/reference['construction']).read_text())['recording_description']
     assert recording == json.loads((HERE/contrast['construction']).read_text())['recording_description']
+    conflict_recording = json.loads((HERE/conflict['construction']).read_text())['recording_description']
     relevance = {'status': 'draft', 'actor': ACTOR, 'cell_id': CELL,
                  'borderline_excluded': [], 'relevant_laws': [{
                      'law_id': LAW, 'applies_to': [ACTOR], 'confidence': 'medium',
@@ -41,8 +43,8 @@ def build():
          'Authored geometry and a sign actor do not verify posting text or City Fire Code designation.',
          'ego_pose', 'Source-joined pose and footprint locate the stopped vehicle; original sign pixels and designation remain to be reviewed.'),
         ('necessary to avoid conflict with other traffic',
-         'The current follower and ego samples do not establish necessity or an approaching conflict.',
-         'ego_speed', 'Source velocity locates a stop; opposing or crossing traffic and causation need a separate construction.'),
+         'The lead probe samples a traffic relation and brake request but does not establish statutory necessity.',
+         'lead_traffic_relation', 'Saved lead and ego pose/velocity establish their sampled relation; necessity and compliance require original review and an absent-lead contrast.'),
         ('in compliance with law',
          'An applicable source of law and the reason for the stop are not supplied by synthetic motion.',
          'ego_pose', 'Source pose locates the vehicle; applicable law must be reviewed independently.'),
@@ -69,7 +71,8 @@ def build():
                                               for phrase, note, _, _ in judgments]}}
     write(PROPOSALS/'template.json', template)
     for i,(phrase,note,channel,description) in enumerate(judgments):
-        unit = next(row['unit'] for row in recording['channels'] if row['name'] == channel)
+        channel_recording = conflict_recording if channel == 'lead_traffic_relation' else recording
+        unit = next(row['unit'] for row in channel_recording['channels'] if row['name'] == channel)
         value = {'status': 'draft', 'template_id': TEMPLATE,
                  'phrase': phrase, 'note': note,
                  'observable_requirements': {
@@ -81,7 +84,7 @@ def build():
                      'sweep_dimensions': [], 'landmarks': [],
                      'recording_needs': [{'name': channel, 'unit': unit,
                                           'description': description}],
-                     'limitations': [note, 'Current two-case probe does not resolve this legal judgment.']}}
+                     'limitations': [note, 'Current three-case probe does not resolve this legal judgment.']}}
         write(PROPOSALS/f'judgment_observables_{i}.json', value)
     bindings = {'status': 'draft', 'actor': ACTOR, 'cell_id': CELL,
                 'law_refs': [{'template_id': TEMPLATE, 'binding_kind': 'direct'}],
@@ -92,6 +95,9 @@ def build():
                      'used_by_laws': [LAW]},
                     {'name': 'actual_stop_zone_relation', 'kind': 'subject_behavior',
                      'range_or_domain': 'source-observed overlap or disjoint relation',
+                     'used_by_laws': [LAW]},
+                    {'name': 'lead_traffic_conflict_probe', 'kind': 'controller',
+                     'range_or_domain': 'lead vehicle present or absent on surveyed road',
                      'used_by_laws': [LAW]}]}
     write(PROPOSALS/'bindings.json', bindings)
     cases = []
@@ -105,14 +111,29 @@ def build():
                       'rationale': 'Request the '+destination+'-zone stop in the same surveyed scene.',
                       'variable_assignments': {
                           'requested_stop_destination': {'kind': 'controller', 'value': destination},
-                          'actual_stop_zone_relation': {'kind': 'subject_behavior', 'value': None}},
+                          'actual_stop_zone_relation': {'kind': 'subject_behavior', 'value': None},
+                          'lead_traffic_conflict_probe': {'kind': 'controller', 'value': 'absent'}},
                       'recording_description': recording,
                       'unresolved_judgment_calls': [phrase for phrase,_,_,_ in judgments]})
+    cases.append({'case_id': ASSIGNMENT+'__conflict', 'target_law_id': LAW,
+                  'target_type': 'judgment_sweep',
+                  'deliberate_differences': ['lead_traffic_conflict_probe'],
+                  'probe': {'primary_variable': 'lead_traffic_conflict_probe',
+                            'comparison_or_standard': 'saved lead position, velocity and braking request; statutory necessity unresolved',
+                            'target_value_or_branch': {'lead_traffic_conflict_probe': 'lead present'}},
+                  'rationale': 'Record a same-road lead vehicle ahead during the authored-zone stop.',
+                  'variable_assignments': {
+                      'requested_stop_destination': {'kind': 'controller', 'value': 'inside'},
+                      'actual_stop_zone_relation': {'kind': 'subject_behavior', 'value': None},
+                      'lead_traffic_conflict_probe': {'kind': 'controller', 'value': 'lead present'}},
+                  'recording_description': conflict_recording,
+                  'unresolved_judgment_calls': [phrase for phrase,_,_,_ in judgments]})
     cases.insert(0, {'case_id': ASSIGNMENT+'__baseline', 'target_law_id': None,
                      'target_type': 'baseline', 'rationale': 'Common source-surveyed fire-lane context.',
                      'variable_assignments': {
                          'requested_stop_destination': {'kind': 'controller', 'value': 'shared survey'},
-                         'actual_stop_zone_relation': {'kind': 'subject_behavior', 'value': None}},
+                         'actual_stop_zone_relation': {'kind': 'subject_behavior', 'value': None},
+                         'lead_traffic_conflict_probe': {'kind': 'controller', 'value': 'absent'}},
                      'recording_description': recording,
                      'unresolved_judgment_calls': [phrase for phrase,_,_,_ in judgments]})
     canonical = {'status': 'draft', 'actor': ACTOR, 'cell_id': CELL,
@@ -121,10 +142,10 @@ def build():
                                  'target_law_id': LAW,
                                  'judgment_refs': [{'phrase': phrase, 'note': note}
                                                    for phrase,note,_,_ in judgments],
-                                 'rationale': 'The source-grounded inside/outside stop pair is built; exception and posting routes require further constructions.',
+                                 'rationale': 'Inside/outside and lead-present probes are built; a source-grounded absent-lead contrast and posting routes remain.',
                                  'status': 'incomplete',
                                  'missing_inputs': ['Original City Fire Code designation and posting evidence',
-                                                    'Conflict traffic and stop-causation construction',
+                                                    'Original conflict causation review and absent-lead contrast',
                                                     'Applicable-law direction source',
                                                     'Police and traffic-control direction constructions',
                                                     'Attendance and public/private property source review']}],
@@ -147,11 +168,11 @@ def build():
            'stages': stages})
     manifest = {'format': 'worker-execution-manifest',
                 'assignment_id': ASSIGNMENT, 'status': 'draft_semantic_validation_only',
-                'cases': [reference, contrast]}
+                'cases': [reference, contrast, conflict]}
     write(HERE/'draft-semantic-manifest.json', manifest)
     return {'semantic_index_sha256': sha(PROPOSALS/'semantic-index.json'),
             'draft_manifest_sha256': sha(HERE/'draft-semantic-manifest.json'),
-            'selected_cpu_probe_cases': 2, 'unresolved_judgments': len(judgments)}
+            'selected_cpu_probe_cases': 3, 'unresolved_judgments': len(judgments)}
 
 
 if __name__ == '__main__':

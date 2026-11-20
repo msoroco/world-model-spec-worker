@@ -121,6 +121,85 @@
       "target_law_id": "LVMC-11-52-130-A2",
       "target_type": "attempt",
       "variable_assignments": {}
+    },
+    {
+      "additional_observations": [
+        {
+          "mandatory": true,
+          "name": "lead_traffic_relation",
+          "purpose": "Observed lead longitudinal/lateral relation and brake request",
+          "unit": "m"
+        }
+      ],
+      "case_description": "lead vehicle ahead during an authored-zone stop; necessity and legal compliance require original review",
+      "case_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__conflict",
+      "comparison_unit": "m",
+      "comparison_variable": "lead_traffic_relation",
+      "fixed_context": "Keep the posted-curb, road, weather and four-camera survey; add a same-road lead actor ahead of ego. The lead braking request is a probe, not a statutory conclusion.",
+      "planning_status": "unverified_definition",
+      "recorded_value": null,
+      "recording_description": {
+        "channels": [
+          {
+            "method": "source_measurement from retained actor, frame, survey and video files",
+            "name": "ego_pose",
+            "reference_frame": "original CARLA frame and four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sample clock; sign face and legal designation require independent review",
+            "unit": "m,deg"
+          },
+          {
+            "method": "source_measurement from retained actor, frame, survey and video files",
+            "name": "ego_speed",
+            "reference_frame": "original CARLA frame and four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sample clock; sign face and legal designation require independent review",
+            "unit": "m/s"
+          },
+          {
+            "method": "source_measurement from retained actor, frame, survey and video files",
+            "name": "vehicle_stops_in_posted_fire_lane",
+            "reference_frame": "original CARLA frame and four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sample clock; sign face and legal designation require independent review",
+            "unit": "bool"
+          },
+          {
+            "method": "saved ego and lead actor pose and velocity source join",
+            "name": "lead_traffic_relation",
+            "reference_frame": "original CARLA ego heading and lead actor",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sample clock; statutory necessity requires original review",
+            "unit": "m"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "live CARLA map and sign actor readback plus authored geometry",
+            "name": "original_map_sign_and_fire_lane_survey",
+            "reference_frame": "surveyed CARLA map",
+            "uncertainty": "Fire Code designation and visible sign text unverified",
+            "unit": "structured"
+          }
+        ],
+        "limitations": [
+          "No legal or physical conclusion from authored geometry",
+          "Original pixels, posting and statutory exceptions need review",
+          "Lead braking request is not statutory conflict necessity"
+        ]
+      },
+      "requested_setting": "lead_traffic_conflict_probe",
+      "source_topic_ids": [
+        "text-0",
+        "text-1"
+      ],
+      "target_law_id": "LVMC-11-52-130-A2",
+      "target_type": "attempt",
+      "variable_assignments": {}
     }
   ]
 }
