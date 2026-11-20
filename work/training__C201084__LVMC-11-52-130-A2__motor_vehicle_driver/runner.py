@@ -3,6 +3,7 @@ import argparse
 import json
 import os
 import shutil
+from math import isfinite
 from pathlib import Path
 
 from fire_lane_survey import CAMERAS
@@ -23,11 +24,23 @@ def check():
             config.get('law_id') != 'LVMC-11-52-130-A2' or
             config.get('cell_id') != 'C201084' or
             config.get('actor') != 'motor_vehicle_driver' or
-            config.get('candidate_id') != 'primary' or
+            config.get('candidate_id') not in ('primary', 'fallback1',
+                                               'fallback2', 'fallback3') or
             config.get('rate_hz') != 20 or
             config.get('frames') != 600 or
             config.get('duration_s') != 30):
         raise ValueError('Exact fire-lane primary identity or clock differs')
+    tuning = config.get('controller_tuning')
+    allowed = ('stop_radius_m', 'cruise_mps', 'deceleration_mps2',
+               'following_brake_gap_m', 'following_cruise_throttle')
+    if tuning is not None and (not isinstance(tuning, dict) or
+            set(tuning) != set(allowed) or
+            any(type(tuning[key]) not in (int, float) or
+                not isfinite(tuning[key]) or tuning[key] <= 0
+                for key in allowed) or tuning['following_cruise_throttle'] > 1):
+        raise ValueError('Invalid candidate controller tuning')
+    if config['candidate_id'] != 'primary' and tuning is None:
+        raise ValueError('Fallback needs explicit controller tuning')
     cameras = config.get('cameras')
     if (not isinstance(cameras, list) or
             [item.get('name') for item in cameras] != list(CAMERAS) or
@@ -68,7 +81,8 @@ def main():
     survey = json.loads(survey_path.read_text())
     receipt = run(client, carla, survey,
                   json.loads((HERE/'config.json').read_text())['case_suffix'],
-                  attempt)
+                  attempt, controller_tuning=json.loads(
+                      (HERE/'config.json').read_text()).get('controller_tuning'))
     for name in ('config.json', 'construction.json',
                  'candidate-selection.json'):
         source = HERE/name

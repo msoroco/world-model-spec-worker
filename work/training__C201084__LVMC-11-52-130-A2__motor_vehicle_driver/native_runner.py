@@ -32,10 +32,13 @@ def _spawn_plan(survey, mapping, carla, road_id):
 
 
 def run(client, carla, survey, case, attempt,
-        *, acquisition=acquire_with_world_restore, processor=analyze):
+        *, acquisition=acquire_with_world_restore, processor=analyze,
+        controller_tuning=None):
     require(case in ('reference', 'contrast'), 'Unknown fire-lane case')
     world = client.get_world()
     plan = inspect(world, carla, survey)
+    if controller_tuning is not None:
+        plan['controller_tuning'] = controller_tuning
     mapping = world.get_map()
     spawns = _spawn_plan(survey, mapping, carla,
                          plan['fixed_context']['road_id'])

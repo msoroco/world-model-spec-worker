@@ -178,15 +178,21 @@ def acquire(world, carla, ego, follower, sign, plan, case, attempt,
         frames = frame_map_factory(attempt/'video_frames.jsonl')
         rows = (attempt/'native-actors.jsonl').open('x', encoding='utf-8')
         target = plan['cases'][case]['stop_center_xy_m']
+        tuning = plan.get('controller_tuning') or {}
+        stop_tuning = {key: tuning[key] for key in
+                       ('stop_radius_m', 'cruise_mps', 'deceleration_mps2')
+                       if key in tuning}
+        following_brake_gap_m = tuning.get('following_brake_gap_m', 7.0)
+        following_cruise_throttle = tuning.get('following_cruise_throttle', 0.32)
         for index in range(plan['capture_frames']):
-            requested = apply(ego, carla, target)
+            requested = apply(ego, carla, target, **stop_tuning)
             ego_location = ego.get_transform().location
             following_location = follower.get_transform().location
             gap = hypot(ego_location.x-following_location.x,
                         ego_location.y-following_location.y)
             follower.apply_control(carla.VehicleControl(
-                throttle=0.0 if gap < 7 else 0.32,
-                brake=1.0 if gap < 7 else 0.0,
+                throttle=0.0 if gap < following_brake_gap_m else following_cruise_throttle,
+                brake=1.0 if gap < following_brake_gap_m else 0.0,
                 steer=0.0, hand_brake=False))
             native_frame = world.tick()
             require(type(native_frame) is int and native_frame > previous_frame,
