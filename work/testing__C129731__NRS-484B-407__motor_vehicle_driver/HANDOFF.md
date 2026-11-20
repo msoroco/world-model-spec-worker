@@ -431,3 +431,8 @@ The assignment-scoped non-ready `worker_check.py --assignment testing__C129731__
 ## Historical proof capacity archive, 2026-11-19
 
 Twenty unbound top-level `canonical-*-proof.json` diagnostics were preserved byte for byte in `historical-unbound-canonical-proofs.json` (SHA256 `651a97f98c015345b13abd11f1850f8eb00d3e32102b66190dfd8dfa8496e7ab`). A global scan of current JSON files found no filename or content-hash references to these twenty. The archive records each original path, exact bytes and SHA256. This frees nineteen return slots for C125751 straight fallback receipts without changing this assignment's selected current proof or partial status. Rehydrate an archived file for historical review; use fresh pinned proofs for readiness.
+
+## 2026-11-19 historical receipt compaction
+
+Twenty-two additional unbound `canonical-*-proof.json` files were verified absent by filename and SHA256 from other returned JSON references, then added with exact bytes and hashes to `historical-unbound-canonical-proofs.json`. The archive now contains 42 reversible entries, SHA256 `9ad88bca9bbd790b7c56de42f88b2051c933898c2b7d004c151e8589274e8163`. The C129731 scoped nonready `worker_check.py --complete` passed after the first twelve were archived; the remaining ten used the same reference and byte-roundtrip checks. No selected proof was replaced.
+After all 42 historical entries were archived, the C129731 scoped nonready static check was rerun and exited 0 (`static_checks_passed=true`).

@@ -46,6 +46,11 @@
       "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_left_turn",
       "purpose": "Opposite-direction left-turn exception source and body-entry measurements; synthetic CPU diagnostic pending Native site review.",
       "target_law_id": "NRS-484B-250-2"
+    },
+    {
+      "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_straight_comparator",
+      "purpose": "Same-site opposing straight approach controls the opposite-left-turn branch; synthetic CPU source only.",
+      "target_law_id": "NRS-484B-250-2"
     }
   ],
   "cell_id": "C125751",
@@ -64,6 +69,29 @@
         "same reviewed map, identified median-opening junction, crossing polygon and highway approaches",
         "same planned routes, source-selected stop references and vehicle geometry",
         "same camera poses, duration, rate and target speeds; observed camera pixels and trajectories may differ between Native runs"
+      ]
+    },
+    {
+      "case_ids": [
+        "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_left_turn",
+        "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_straight_comparator"
+      ],
+      "comparison_id": "opposite_left_turn_vs_straight_same_site",
+      "cpu_audit": {
+        "receipt": "opposite-turn-v2-comparison-audit.json",
+        "receipt_sha256": "dc55a639413a15b025529276250cb14cfab6c653f676b5d7cdef0d90a770ce92",
+        "scope": "source-hashed synthetic diagnostic comparison only",
+        "script": "audit_turn_vs_straight.py",
+        "script_sha256": "98e6927d976b26b2b3fa2e65bb2380bcfd889ea884154426b0e97bcf098088eb"
+      },
+      "deliberate_differences": [
+        "ego planned route terminates northbound after left turn versus eastbound after straight approach",
+        "ego heading and body history after the common start; compare observed Native motion and body entry without assigning a legal cutoff"
+      ],
+      "fixed_conditions": [
+        "same reviewed median-opening site and source road geometry",
+        "same signal and control source histories, other vehicle route and per-frame other body motion",
+        "same ego start, first eight ego body samples, 20 Hz frame identities and four camera source frame joins"
       ]
     }
   ],
@@ -1476,7 +1504,8 @@
     },
     {
       "case_ids": [
-        "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_left_turn"
+        "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_left_turn",
+        "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_straight_comparator"
       ],
       "evidence_or_gap": "Source-hashed diagnostic measurement is implemented; reviewed Native source and legal judgment remain pending.",
       "requirement": "Both complete vehicle bodies enter one sourced crossing; retain their original frame/time delta without a legal simultaneity cutoff",
@@ -1485,7 +1514,8 @@
     },
     {
       "case_ids": [
-        "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_left_turn"
+        "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_left_turn",
+        "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_straight_comparator"
       ],
       "evidence_or_gap": "Source-hashed diagnostic measurement is implemented; reviewed Native source and legal judgment remain pending.",
       "requirement": "Retain opposing approach bearings and the turning vehicle's source route and trajectory for the opposite-direction left-turn exception",
@@ -1494,7 +1524,8 @@
     },
     {
       "case_ids": [
-        "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_left_turn"
+        "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_left_turn",
+        "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_straight_comparator"
       ],
       "evidence_or_gap": "Source-hashed diagnostic measurement is implemented; reviewed Native source and legal judgment remain pending.",
       "requirement": "Retain both governed Native signal states at body entry without treating Off as statutory inoperability or resolving official-device status",
@@ -1503,7 +1534,8 @@
     },
     {
       "case_ids": [
-        "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_left_turn"
+        "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_left_turn",
+        "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_straight_comparator"
       ],
       "evidence_or_gap": "Source-hashed diagnostic measurement is implemented; reviewed Native source and legal judgment remain pending.",
       "requirement": "Retain both source-selected stop references, zero-speed histories and entry order for the subsection-4 stop and yield exception",
@@ -1646,6 +1678,7 @@
     "capture_entrypoint": "runner.py --output-dir",
     "capture_source_sha256": "21b056242e29a3072767f517b16ef87244b5b726ee529bceb97350c209266c5e",
     "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_straight_comparator",
+    "comparison_plan_bound": true,
     "compatibility_analysis_log_sha256": "3379e781977bfb1137c221f44848650d9923ff34d05803a9b9d0e5138cd74eac",
     "compatibility_receipt": "straight-primary-compatibility-receipt.json",
     "compatibility_receipt_sha256": "51532af155de6665a1b461abe25df00e9603e1d1ad6660d3b977550a391b2656",
@@ -1774,6 +1807,20 @@
       "software_analyzer_positive_and_negative_passed": true,
       "source": "transformed 1100-frame opposite-turn synthetic diagnostic attempt under ignored .runtime-work; not a straight-motion acceptance fixture"
     },
+    "independent_delivery_cpu_proof": {
+      "auditor": "delivery_audit.py",
+      "auditor_sha256": "303f808f9c1d61ad5a4a9c38b845974bcdbabdc1651e02b8c704f8d9ec8c991b",
+      "negative_attempt": ".runtime-work/c125751-straight-delivery-negative-v1",
+      "negative_exit_code": 1,
+      "negative_expected_error": "Result source hash differs: body_history.jsonl",
+      "negative_log_sha256": "b050f1b200a116f9cc69486d240ac8a43cf3db2c63764b5e4eb4db7bd4aaa239",
+      "positive_command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=runtime/scenario_pipeline:work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver .venv-cpu/bin/python work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/delivery_audit.py --case testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_straight_comparator --attempt .runtime-work/c125751-straight-compat-v10 --package work/testing__C125751__NRS-484B-250-2__motor_vehicle_driver --output .runtime-work/c125751-straight-delivery-audit-v1.json",
+      "positive_exit_code": 0,
+      "positive_log_sha256": "82ac45e512fe00d0485360ed62b2660c48faa3ce80f63b76c9d07d8903d2fb34",
+      "positive_receipt_sha256": "77b3da94ca3b9da3bed27afe0f63c4b0db5aa8fcbea46131139ce198fc24fe7e",
+      "scope": "synthetic CPU checker proof; no physical or legal acceptance",
+      "status": "positive_and_tampered_body_negative_passed"
+    },
     "measurement_contract": "straight-measurement-contract.json",
     "measurement_contract_sha256": "1360c653eb5684d1323e4e0516077e96d65a2e5fe8805a2e493e3860b66b2838",
     "negative_analysis_log_sha256": "24aa03f9465c6be05289ece7aa1dc8a9598245e1ab92af265810bf80ef7cd05a",
@@ -1782,8 +1829,8 @@
     "offline_log": "straight-comparator-cpu-proof.log",
     "offline_log_sha256": "a03394915d594e6d22cbef0d8439fbabc292d02b4d542a2cd3022d4a4d52fb76",
     "remaining_cpu": [
-      "canonical case, semantic, branch and ordered queue bindings",
-      "independent same-site controlled comparison audit",
+      "canonical proposal, execution manifest, branch and ordered queue bindings",
+      "selected-manifest offline/compatibility/saved-processing proof rebind for primary and fallbacks",
       "assignment-scoped strict check and complete strict delivery gate"
     ],
     "saved_finalizer_module": "straight_comparator.py",
