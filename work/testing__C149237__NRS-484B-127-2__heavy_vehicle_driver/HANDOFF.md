@@ -366,3 +366,7 @@ Full strict rerun exits 1 at frozen `preparation.py:97`, `Unapproved output: run
 ## 2026-11-19 return-cap consolidation
 
 Sixteen byte-identical historical empty analysis logs (SHA-256 `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`) were consolidated to the retained `lead_width_below_80in-fallback2-analysis.log`; references within this assignment were rebound and the retired filenames are recorded under ignored `.runtime-work/c149237-consolidation-20261119.json`. No proof content changed. The assignment-scoped nonready `worker_check.py --complete` passes after consolidation, and status remains partial.
+
+## 2026-11-19 ready-only scope checkpoint
+
+The ready-only in-memory scoped check currently fails at `preparation.py:162`: the fifth requirement disposition for the truck-or-combination alternative remains `alternative_pending` with no assigned case. The canonical manifest has `combination_at_500ft`, but its measurement contract is the common three-requirement contract and does not bind this fifth alternative. Next CPU work: attach the combination case to that disposition, add a case-specific measured component/overall-width contract and saved finalizer output from original tractor/trailer sources, rerun its exact positive/negative compatibility and saved-only proofs, then rerun the scoped strict gate. Preserve partial status until these worker-owned proofs pass.

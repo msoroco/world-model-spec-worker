@@ -2529,3 +2529,7 @@ The complete strict gate was rerun after C158196 became ready and exited 1 at fr
 ## 2026-11-19 C125751 ready and C129731 next
 
 C125751 now has four selected exact cases, both frozen target sets in each delivery audit, the straight comparator in root config and its inline construction, 84 passing package tests, and a passing actual scoped strict gate (`static_checks_passed: true`). It is ready/delivery_prepared for CPU handoff; physical and legal outcomes remain unconfirmed. C129731 is next partial: its 72 classifier fixtures were rerun with truthful synthetic provenance and hashes rebound; its scoped ready validation is in progress. The whole batch is not delivery ready and the frozen runtime inventory failure remains independently reported. No frozen file or Git operation was changed.
+
+## 2026-11-19 C129731 ready and C149237 next
+
+C129731 now has 24 selected cases and 72 candidates with truthfully synthetic physical classifier fixtures, rebound receipts and semantic index, and a passing actual assignment-scoped strict gate. It is ready/delivery_prepared; local Native motion/pixel/legal review remains. Batch statuses are 8 ready / 35 partial, and returned work is exactly 8,600/8,600 files. C149237 is next partial: its combination alternative remains unassigned to a selected requirement and needs a case-specific source-bound measurement contract, exact proof reruns, and scoped strict acceptance. The complete batch gate is being rerun. No frozen inputs, runtime, batch file or Git operation was edited.
