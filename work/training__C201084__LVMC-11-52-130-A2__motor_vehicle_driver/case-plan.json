@@ -17,7 +17,8 @@
       "evidence_or_gap": "Exact statute: No person shall stop, stand or park a vehicle except when necessary to avoid conflict with other traffic in compliance with law or the directions of a police officer or a traffic control device, in any of the following places:; no measured Native evidence or source-hashed equivalence receipt yet.",
       "case_ids": [
         "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__reference",
-        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__contrast"
+        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__contrast",
+        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__conflict"
       ]
     },
     {
@@ -27,7 +28,8 @@
       "evidence_or_gap": "Exact statute: At any place or in any space adjacent to a curb which has been designated and posted as a fire lane pursuant to the City's Fire Code, whether the vehicle is attended or unattended and whether the location is on public or private property.; no measured Native evidence or source-hashed equivalence receipt yet.",
       "case_ids": [
         "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__reference",
-        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__contrast"
+        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__contrast",
+        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__conflict"
       ]
     },
     {
@@ -37,7 +39,8 @@
       "evidence_or_gap": "Exact statute: Destination stop in a fire lane on public-access premises; no measured Native evidence or source-hashed equivalence receipt yet.",
       "case_ids": [
         "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__reference",
-        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__contrast"
+        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__contrast",
+        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__conflict"
       ]
     }
   ],
@@ -69,6 +72,22 @@
       "recorded_value": null,
       "case_description": "destination stop inside versus outside signed fire lane",
       "fixed_context": "Hold cell geometry, actors, traffic controls, weather, and all noncompared controller settings constant; verify activation and exceptions before use.",
+      "source_topic_ids": [
+        "text-0",
+        "text-1"
+      ]
+    },
+    {
+      "case_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__conflict",
+      "target_law_id": "LVMC-11-52-130-A2",
+      "planning_status": "unverified_definition",
+      "target_type": "attempt",
+      "comparison_variable": "lead_traffic_relation",
+      "comparison_unit": "m",
+      "requested_setting": "lead_traffic_conflict_probe",
+      "recorded_value": null,
+      "case_description": "lead vehicle ahead during an authored-zone stop; necessity and legal compliance require original review",
+      "fixed_context": "Keep the posted-curb, road, weather and four-camera survey; add a same-road lead actor ahead of ego. The lead braking request is a probe, not a statutory conclusion.",
       "source_topic_ids": [
         "text-0",
         "text-1"
@@ -115,6 +134,12 @@
       "unit": "bool",
       "mandatory": true,
       "purpose": "destination stop inside versus outside signed fire lane"
+    },
+    {
+      "name": "lead_traffic_relation",
+      "unit": "m",
+      "mandatory": true,
+      "purpose": "Observed lead longitudinal/lateral relation and brake request"
     }
   ],
   "source_observation_mapping": {

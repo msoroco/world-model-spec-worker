@@ -21,7 +21,7 @@ def write(path, value):
 
 
 def build(source, case='reference'):
-    if case not in ('reference', 'contrast'):
+    if case not in ('reference', 'contrast', 'conflict'):
         raise ValueError('Unknown diagnostic case')
     source = Path(source).resolve()
     if '.runtime-work' not in source.parts:
