@@ -387,6 +387,163 @@ def prove_matched_approach_sources(output):
     print(target / 'receipt.json')
 
 
+def build_linked_approach_draft(variant, output):
+    """Rejoin a selected comparison case to the sampled 8 m/s approach.
+
+    Keep the case's through-actor history and view speed. The first sampled
+    ego displacement uses the mean of approach and view speeds; later ego
+    positions shift by the resulting offset. This is synthetic CPU evidence.
+    """
+    import copy
+    import shutil
+
+    if variant not in ('clear', 'no_slow', 'through_entered'):
+        raise ValueError('Unknown linked comparison case')
+    target = (REPO / output).resolve()
+    if REPO / '.runtime-work' not in target.parents or target.exists():
+        raise ValueError('Choose a fresh directory under .runtime-work')
+    draft = REPO / '.runtime-work/c158190-linked-approach8-drafts-v1' / variant
+    if not (draft / 'construction.json').is_file():
+        raise ValueError('Offline-passing linked construction draft required')
+    # Use the current adapter-JSON media generator, then restore every original
+    # linked-case source packet; old linked generator specs still name pickle graphs.
+    materialize_recipe(REPO, HERE / 'diagnostic-recipe.json', target)
+    source = HERE / 'cases' / variant / 'diagnostic-sources'
+    for path in source.rglob('*'):
+        if path.is_file():
+            dest = target / path.relative_to(source)
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(path, dest)
+    for item in json.loads((draft / 'construction.json').read_text())['files']:
+        dest = target / item['path']
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        dest.write_text(item['content'])
+    shutil.copyfile(draft / 'construction.json', target / 'construction.json')
+
+    def rows(name):
+        return [json.loads(line) for line in (target / name).read_text().splitlines()]
+
+    def put(name, values):
+        (target / name).write_text(''.join(
+            json.dumps(value, separators=(',', ':'), allow_nan=False) + '\n'
+            for value in values))
+
+    view = {'clear': 4.0, 'no_slow': 6.0, 'through_entered': 2.0}[variant]
+    approach = rows('approach_history.jsonl')
+    old_step = 12.0 - approach[1]['distance_to_intersection_m']
+    new_step = (8.0 + view) * .05 / 2
+    offset = round(new_step - old_step, 4)
+    approach[0]['ego_speed_mps'] = 8.0
+    approach[1]['distance_to_intersection_m'] = round(12.0 - new_step, 4)
+    put('approach_history.jsonl', approach)
+    rays = rows('visibility_rays.jsonl')
+    rays[1]['distance_to_intersection_m'] = approach[1]['distance_to_intersection_m']
+    put('visibility_rays.jsonl', rays)
+    samples = json.loads((target / 'visibility_samples.json').read_text())
+    samples[1]['distance_to_intersection_m'] = approach[1]['distance_to_intersection_m']
+    (target / 'visibility_samples.json').write_text(json.dumps(samples, indent=2) + '\n')
+
+    trace = rows('trace.jsonl')
+    bodies = rows('interaction_history.jsonl')
+    evidence = rows('capture/evidence.jsonl')
+    if not (len(trace) == len(bodies) == len(evidence) == 600):
+        raise ValueError('Expected 600 joined source frames')
+    for i, (t, body_row, event) in enumerate(zip(trace, bodies, evidence)):
+        shift = offset if i else 0.0
+        x = round(t['position_m'][0] + shift, 4)
+        speed = 8.0 if i == 0 else t['speed_mps']
+        t['position_m'][0] = x
+        t['position']['x'] = x
+        t['speed_mps'] = speed
+        t['speed_mph'] = speed * 2.2369362920544025
+        t['velocity_mps'][0] = speed
+        for vertex in body_row['ego']['body_vertices_m']:
+            vertex[0] = round(vertex[0] + shift, 4)
+        road, station = ((158190, x + 80) if x < -8 else
+                         (158192, x + 8) if x < 8 else (158193, x - 8))
+        body_row['ego']['road_id'] = road
+        event['ego']['position_m'][0] = x
+        event['ego']['speed_mps'] = speed
+        for vertex in event['ego']['body_vertices_m']:
+            vertex[0] = round(vertex[0] + shift, 4)
+        event['world']['road_projection'].update(road_id=road, s_m=round(station, 4))
+        event['visibility']['ego_projection']['road_id'] = road
+        for vertex in event['visibility']['ego_body_samples_m']:
+            vertex[0] = round(vertex[0] + shift, 4)
+        ego = next(p for p in event['original_observations']['participants']
+                   if p['actor_id'] == 101)
+        ego['position_m'][0] = x
+        ego['speed_mps'] = speed
+        ego['velocity_mps'][0] = speed
+        for vertex in ego['body_vertices_m']:
+            vertex[0] = round(vertex[0] + shift, 4)
+        ego['accel_longitudinal_mps2'] = (view - 8.0) / .05 if i == 1 else 0.0
+    put('trace.jsonl', trace)
+    put('interaction_history.jsonl', bodies)
+    put('capture/evidence.jsonl', evidence)
+    capture = json.loads((target / 'capture/manifest.json').read_text())
+    capture['sources']['trace.jsonl'] = sha(target / 'trace.jsonl')
+    (target / 'capture/manifest.json').write_text(json.dumps(capture, indent=2) + '\n')
+    native_frames = rows('capture/native/frames.jsonl')
+    for frame in native_frames:
+        for key in ('base', 'abstract'):
+            frame[key] = frame[key].replace('.pkl', '.adapter.json')
+        frame['adapter_graph'] = frame['base']
+    put('capture/native/frames.jsonl', native_frames)
+    specification = json.loads((HERE / 'cases' / variant / 'diagnostic.json').read_text())
+    by_frame = {event['original_frame']: event for event in evidence}
+    for graph in specification['graphs']:
+        graph['path'] = graph['path'].replace('.pkl', '.adapter.json')
+        frame = graph['attributes']['frame']
+        graph['attributes']['observed_evidence'] = by_frame[frame]['original_observations']
+    from worker_exchange.fixture_generator import inspect as inspect_generated
+    inspect_generated(specification)
+    (target / 'diagnostic-candidate.json').write_text(
+        json.dumps(specification, indent=2) + '\n')
+    originals = {name: sha(target / name) for name in
+                 ('approach_history.jsonl', 'visibility_rays.jsonl',
+                  'interaction_history.jsonl', 'trace.jsonl',
+                  'capture/evidence.jsonl', 'capture/manifest.json',
+                  'capture/native/frames.jsonl')}
+    result = run_finalizer(target)
+    (target / 'source-finalizer.log').write_text(result.stdout)
+    if result.returncode:
+        raise ValueError(f'{variant} finalizer exited {result.returncode}')
+    if any(sha(target / name) != value for name, value in originals.items()):
+        raise ValueError('Draft finalizer rewrote original source')
+    report = json.loads((target / 'analysis-report.json').read_text())
+    measured = report['measurements']['speed_at_closest_view_mps']['value']
+    if measured != view:
+        raise ValueError('Source-bound view speed differs from case plan')
+    negative = target.parent / (target.name + '-missing-rays')
+    shutil.copytree(target, negative)
+    for name in ('analysis-report.json', 'result.json'):
+        path = negative / name
+        if path.exists():
+            path.unlink()
+    channels = negative / 'channels'
+    if channels.exists():
+        shutil.rmtree(channels)
+    (negative / 'visibility_rays.jsonl').unlink()
+    failure = run_finalizer(negative)
+    (negative / 'source-finalizer-negative.log').write_text(failure.stdout)
+    if failure.returncode == 0 or 'Missing required source: visibility_rays.jsonl' not in failure.stdout:
+        raise ValueError('Missing original sight rays were not rejected')
+    receipt = {'format': 'c158190-linked-approach8-source-draft',
+               'variant': variant, 'view_speed_mps': view,
+               'sampled_approach_speed_mps': 8.0,
+               'original_source_sha256': originals,
+               'construction_sha256': sha(target / 'construction.json'),
+               'diagnostic_candidate_sha256': sha(target / 'diagnostic-candidate.json'),
+               'analysis_sha256': sha(target / 'analysis-report.json'),
+               'finalizer_exit_code': 0, 'selected_manifest_changed': False}
+    receipt['negative_removed_source'] = 'visibility_rays.jsonl'
+    receipt['negative_exit_code'] = failure.returncode
+    receipt['negative_log_sha256'] = sha(negative / 'source-finalizer-negative.log')
+    (target / 'receipt.json').write_text(json.dumps(receipt, indent=2) + '\n')
+    print(target / 'receipt.json')
+
+
 if __name__ == '__main__':
     if len(sys.argv) == 3 and sys.argv[1] == '--build-speed6-fixture':
         build_speed6_fixture(sys.argv[2])
@@ -394,5 +551,7 @@ if __name__ == '__main__':
         build_matched_approach_drafts(sys.argv[2])
     elif len(sys.argv) == 3 and sys.argv[1] == '--prove-matched-approach-sources':
         prove_matched_approach_sources(sys.argv[2])
+    elif len(sys.argv) == 4 and sys.argv[1] == '--build-linked-approach-draft':
+        build_linked_approach_draft(sys.argv[2], sys.argv[3])
     else:
         main()
