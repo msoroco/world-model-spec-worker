@@ -1298,6 +1298,153 @@
           }
         }
       ]
+    },
+    {
+      "case_id": "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_lane_change_above_100ft",
+      "kind": "delivery",
+      "construction": "cases/business_lane_change_above_100ft/construction.json",
+      "construction_sha256": "c7010c7d20bffc9a0aad8420b34fe72b550fbbd3fb6f22e2ee602705ddb38143",
+      "measurement_procedure": {
+        "entrypoint": "lane_change_course.py"
+      },
+      "fixture_recipe": "work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/cases/business_lane_change_above_100ft/diagnostic-recipe.json",
+      "measurement_contract": "cases/business_lane_change_above_100ft/measurement-contract.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native right-lamp timing, lateral onset, target-lane completion and camera visibility may differ from the CPU diagnostic"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/business_lane_change_above_100ft/fallback1/construction.json",
+          "construction_sha256": "19c7873f7b93c0071197c1420d90e237dd015bb2fd3a515129c4cee098f97aff",
+          "trigger": {
+            "source": "drive_history.jsonl",
+            "metric": "sampled speed and path step through lateral onset",
+            "failure_condition": "primary target speed produces a path-step or target-lane overshoot"
+          },
+          "changed_knobs": [
+            "requested_speed_mps"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_lane_change_above_100ft --output .runtime-work/c177008-canonical-lane-v1/fallback1-offline --candidate fallback1",
+            "exit_code": 0,
+            "log": "cases/business_lane_change_above_100ft/fallback1/offline.log",
+            "log_sha256": "d423555d1c1f59087d55d6f98ffcdee9653ba03132f2084eca7f187de7c37043",
+            "construction_sha256": "19c7873f7b93c0071197c1420d90e237dd015bb2fd3a515129c4cee098f97aff"
+          },
+          "compatibility": {
+            "receipt": "cases/business_lane_change_above_100ft/fallback1/positive-compatibility.json",
+            "sha256": "a8944c51e1d5948a4e05de897966727981c7076e3e1e8d13eec2ab623b914409",
+            "log": "cases/business_lane_change_above_100ft/fallback1/analysis.log",
+            "negative_log": "cases/business_lane_change_above_100ft/fallback1/negative-compatibility.log",
+            "replay_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_lane_change_above_100ft --output .runtime-work/c177008-canonical-lane-v3/fallback1-compat/attempt --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck --candidate fallback1"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_lane_change_above_100ft --attempt .runtime-work/c177008-canonical-lane-v3/fallback1-compat/attempt --output .runtime-work/c177008-canonical-lane-v3/fallback1-saved --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "test_log": "cases/business_lane_change_above_100ft/fallback1/saved-processing.json",
+            "test_log_sha256": "667885d4f07bb33c1360128bbec8df505d75606fd3cca16290428eef02cde9a7",
+            "test_exit_code": 0
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/business_lane_change_above_100ft/fallback2/construction.json",
+          "construction_sha256": "07d42fd71808dcb4e5195efaee140f3c1f51484349b1cd633d242627dd9776d4",
+          "trigger": {
+            "source": "drive_history.jsonl",
+            "metric": "first lateral course-change station",
+            "failure_condition": "primary lookahead starts lateral motion before the sampled signal lead reaches the selected boundary"
+          },
+          "changed_knobs": [
+            "controller_lookahead_m"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_lane_change_above_100ft --output .runtime-work/c177008-canonical-lane-v1/fallback2-offline --candidate fallback2",
+            "exit_code": 0,
+            "log": "cases/business_lane_change_above_100ft/fallback2/offline.log",
+            "log_sha256": "47fde2f096cb0bc9046855f618b19b929442504a84b8e540b2354af794c468d5",
+            "construction_sha256": "07d42fd71808dcb4e5195efaee140f3c1f51484349b1cd633d242627dd9776d4"
+          },
+          "compatibility": {
+            "receipt": "cases/business_lane_change_above_100ft/fallback2/positive-compatibility.json",
+            "sha256": "f50985512192fddff3cc50456b8811895b76ffe7898bec4f6f4d369420cbcd2c",
+            "log": "cases/business_lane_change_above_100ft/fallback2/analysis.log",
+            "negative_log": "cases/business_lane_change_above_100ft/fallback2/negative-compatibility.log",
+            "replay_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_lane_change_above_100ft --output .runtime-work/c177008-canonical-lane-v3/fallback2-compat/attempt --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck --candidate fallback2"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_lane_change_above_100ft --attempt .runtime-work/c177008-canonical-lane-v3/fallback2-compat/attempt --output .runtime-work/c177008-canonical-lane-v3/fallback2-saved --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "test_log": "cases/business_lane_change_above_100ft/fallback2/saved-processing.json",
+            "test_log_sha256": "91b875fce3d6197c4677ceaf002dacac5633c8943585334e5ce66f00cc7a59a6",
+            "test_exit_code": 0
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/business_lane_change_above_100ft/fallback3/construction.json",
+          "construction_sha256": "c7c2afea85b146c6a3fef901e7488ae259d0f7a031eac63fd5bf291f66958532",
+          "trigger": {
+            "source": "body_history.jsonl",
+            "metric": "target-lane transition frame and final lane ID",
+            "failure_condition": "primary steering response fails to reach target lane by the authored course end"
+          },
+          "changed_knobs": [
+            "controller_steering_divisor_deg"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_lane_change_above_100ft --output .runtime-work/c177008-canonical-lane-v1/fallback3-offline --candidate fallback3",
+            "exit_code": 0,
+            "log": "cases/business_lane_change_above_100ft/fallback3/offline.log",
+            "log_sha256": "a9c9b8466c698f340d701ea4e45f803e44bdd1542c06e78181b3b3d56e6c2e75",
+            "construction_sha256": "c7c2afea85b146c6a3fef901e7488ae259d0f7a031eac63fd5bf291f66958532"
+          },
+          "compatibility": {
+            "receipt": "cases/business_lane_change_above_100ft/fallback3/positive-compatibility.json",
+            "sha256": "f1e4170d3b7d5af61d78b40d0ee24dc5732192f0c093ce3d3dad97a5fb7924b0",
+            "log": "cases/business_lane_change_above_100ft/fallback3/analysis.log",
+            "negative_log": "cases/business_lane_change_above_100ft/fallback3/negative-compatibility.log",
+            "replay_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_lane_change_above_100ft --output .runtime-work/c177008-canonical-lane-v3/fallback3-compat/attempt --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck --candidate fallback3"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_lane_change_above_100ft --attempt .runtime-work/c177008-canonical-lane-v3/fallback3-compat/attempt --output .runtime-work/c177008-canonical-lane-v3/fallback3-saved --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "test_log": "cases/business_lane_change_above_100ft/fallback3/saved-processing.json",
+            "test_log_sha256": "92a21a6918f04e1e2e2412394e02402032b23de72417ba20af0f794f567e53a7",
+            "test_exit_code": 0
+          }
+        }
+      ],
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_lane_change_above_100ft --output .runtime-work/c177008-canonical-lane-v1/primary-offline",
+        "exit_code": 0,
+        "log": "cases/business_lane_change_above_100ft/offline.log",
+        "log_sha256": "5fb8bbd42718535bae8454a7ba106d6bf5a3f331d2ad14b06adfca699b04ed64",
+        "construction_sha256": "c7010c7d20bffc9a0aad8420b34fe72b550fbbd3fb6f22e2ee602705ddb38143"
+      },
+      "compatibility": {
+        "receipt": "cases/business_lane_change_above_100ft/positive-compatibility.json",
+        "sha256": "a5b62a0ddd700cd2bf0385f58fbaaeeab362215150887b9bdaacb2dd22b24f9c",
+        "log": "cases/business_lane_change_above_100ft/analysis.log",
+        "negative_log": "cases/business_lane_change_above_100ft/negative-compatibility.log",
+        "replay_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_lane_change_above_100ft --output .runtime-work/c177008-canonical-lane-v3/primary-compat/attempt --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+      },
+      "negative": {
+        "log": "cases/business_lane_change_above_100ft/negative-compatibility.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_lane_change_above_100ft --attempt .runtime-work/c177008-canonical-lane-v3/primary-compat/attempt --output .runtime-work/c177008-canonical-lane-v3/primary-saved --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "test_log": "cases/business_lane_change_above_100ft/saved-processing.json",
+        "test_log_sha256": "13f007bdc589abdc1415017050cdaf7f48aa67d004549c1e2971219e0cd71231",
+        "test_exit_code": 0
+      },
+      "physical_preparation": {
+        "receipt": "physical-proofs/business_lane_change_above_100ft/receipt.json",
+        "sha256": "3cff9a66550b747edcffbaffeb9d2e082279d59d024c5d61cbd01cb8f6c1729d"
+      }
     }
   ]
 }
