@@ -385,3 +385,7 @@ The full batch gate rerun exited 1 before readiness evaluation at frozen `prepar
 Return cap checkpoint: 10 unbound historical top-level logs and former test rows are preserved byte-for-byte with SHA-256 in work/_shared/archived-unbound-negative-logs-20261119.json. Active case receipts remain unchanged.
 
 2026-11-20 return-cap consolidation: historical unreferenced helper scripts from this owner were archived byte-for-byte under `work/_shared/archived-unbound-negative-logs-20261119.json` with SHA-256. Active construction and bound proof files remain in place. Restore a helper from the archive before rerunning historical authoring workflows.
+
+## 2026-11-20 return-cap consolidation
+
+Seven historical root builder/proof scripts with no JSON or Python import references were preserved byte-for-byte with path and SHA-256 in `work/_shared/archived-unbound-negative-logs-20261119.json`: `author_semantics.py`, `complete_case_drafts.py`, `prove_full_converter.py`, `reprove_root_v17.py`, `build_primary_bundle.py`, `prove_canonical_sweep.py`, and `build_diagnostic.py`. Restore their exact bytes from the archive before any future reproof that needs a builder. The archive round-trip hashes verify, portable import validation passes, and this assignment’s scoped `worker_check.py --complete` passes. Its partial delivery status is unchanged.
