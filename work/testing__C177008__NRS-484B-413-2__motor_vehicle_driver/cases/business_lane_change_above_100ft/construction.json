@@ -19,7 +19,7 @@
     },
     {
       "path": "config.json",
-      "content": "{\n  \"selected_case_id\": \"testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_lane_change_above_100ft\",\n  \"law_id\": \"NRS-484B-413-2\",\n  \"cell_id\": \"C177008\",\n  \"actor\": \"motor_vehicle_driver\",\n  \"course\": \"change_lane\",\n  \"rate_hz\": 20,\n  \"duration_s\": 40,\n  \"required_atoms\": [\n    \"sig.turn_indicator\"\n  ],\n  \"cameras\": [\n    {\n      \"name\": \"overview\",\n      \"width\": 1920,\n      \"height\": 1080,\n      \"fov_deg\": 90\n    },\n    {\n      \"name\": \"approach\",\n      \"width\": 1280,\n      \"height\": 720,\n      \"fov_deg\": 90\n    },\n    {\n      \"name\": \"reference_corner\",\n      \"width\": 1280,\n      \"height\": 720,\n      \"fov_deg\": 90\n    },\n    {\n      \"name\": \"driver_reference\",\n      \"width\": 1280,\n      \"height\": 720,\n      \"fov_deg\": 90\n    }\n  ],\n  \"source_scope\": \"synthetic_diagnostic\",\n  \"requested_speed_mps\": 5.0,\n  \"recording_description\": {\n    \"channels\": [\n      {\n        \"name\": \"ego_turn_indicator\",\n        \"unit\": \"source row\"\n      },\n      {\n        \"name\": \"ego_speed\",\n        \"unit\": \"source row\"\n      },\n      {\n        \"name\": \"ego_heading\",\n        \"unit\": \"source row\"\n      },\n      {\n        \"name\": \"ego_road_id\",\n        \"unit\": \"source row\"\n      },\n      {\n        \"name\": \"ego_position\",\n        \"unit\": \"source row\"\n      }\n    ]\n  }\n}\n"
+      "content": "{\n  \"selected_case_id\": \"testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_lane_change_above_100ft\",\n  \"law_id\": \"NRS-484B-413-2\",\n  \"cell_id\": \"C177008\",\n  \"actor\": \"motor_vehicle_driver\",\n  \"course\": \"change_lane\",\n  \"rate_hz\": 20,\n  \"duration_s\": 40,\n  \"required_atoms\": [\n    \"sig.turn_indicator\"\n  ],\n  \"cameras\": [\n    {\n      \"name\": \"overview\",\n      \"width\": 1920,\n      \"height\": 1080,\n      \"fov_deg\": 90\n    },\n    {\n      \"name\": \"approach\",\n      \"width\": 1280,\n      \"height\": 720,\n      \"fov_deg\": 90\n    },\n    {\n      \"name\": \"reference_corner\",\n      \"width\": 1280,\n      \"height\": 720,\n      \"fov_deg\": 90\n    },\n    {\n      \"name\": \"driver_reference\",\n      \"width\": 1280,\n      \"height\": 720,\n      \"fov_deg\": 90\n    }\n  ],\n  \"source_scope\": \"synthetic_diagnostic\",\n  \"requested_speed_mps\": 5.0,\n  \"recording_description\": {\n    \"channels\": [\n      {\n        \"name\": \"ego_turn_indicator\",\n        \"unit\": \"device state\",\n        \"method\": \"original ego light-mask readback; right/off state\",\n        \"time_window\": \"every retained original frame\",\n        \"reference_frame\": \"original Native frame\",\n        \"sampling_rate_hz\": 20,\n        \"uncertainty\": \"20 Hz sampled source; Native camera visibility requires independent review\"\n      },\n      {\n        \"name\": \"ego_speed\",\n        \"unit\": \"m/s\",\n        \"method\": \"original ego velocity magnitude\",\n        \"time_window\": \"every retained original frame\",\n        \"reference_frame\": \"original Native frame\",\n        \"sampling_rate_hz\": 20,\n        \"uncertainty\": \"20 Hz sampled source; Native camera visibility requires independent review\"\n      },\n      {\n        \"name\": \"ego_heading\",\n        \"unit\": \"deg\",\n        \"method\": \"original ego yaw readback\",\n        \"time_window\": \"every retained original frame\",\n        \"reference_frame\": \"original Native frame\",\n        \"sampling_rate_hz\": 20,\n        \"uncertainty\": \"20 Hz sampled source; Native camera visibility requires independent review\"\n      },\n      {\n        \"name\": \"ego_road_id\",\n        \"unit\": \"id\",\n        \"method\": \"original Native road-id readback\",\n        \"time_window\": \"every retained original frame\",\n        \"reference_frame\": \"original Native frame\",\n        \"sampling_rate_hz\": 20,\n        \"uncertainty\": \"20 Hz sampled source; Native camera visibility requires independent review\"\n      },\n      {\n        \"name\": \"ego_position\",\n        \"unit\": \"m\",\n        \"method\": \"original ego world-position readback\",\n        \"time_window\": \"every retained original frame\",\n        \"reference_frame\": \"original Native frame\",\n        \"sampling_rate_hz\": 20,\n        \"uncertainty\": \"20 Hz sampled source; Native camera visibility requires independent review\"\n      }\n    ],\n    \"context_inputs\": [],\n    \"limitations\": [\n      \"Synthetic lane-change diagnostic does not establish legal district classification\",\n      \"Native indicator pixels and same-road maneuver realization require source review\"\n    ]\n  }\n}\n"
     },
     {
       "path": "tests/test_lane_change.py",
@@ -38,24 +38,54 @@
     "channels": [
       {
         "name": "ego_turn_indicator",
-        "unit": "source row"
+        "unit": "device state",
+        "method": "original ego light-mask readback; right/off state",
+        "time_window": "every retained original frame",
+        "reference_frame": "original Native frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "20 Hz sampled source; Native camera visibility requires independent review"
       },
       {
         "name": "ego_speed",
-        "unit": "source row"
+        "unit": "m/s",
+        "method": "original ego velocity magnitude",
+        "time_window": "every retained original frame",
+        "reference_frame": "original Native frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "20 Hz sampled source; Native camera visibility requires independent review"
       },
       {
         "name": "ego_heading",
-        "unit": "source row"
+        "unit": "deg",
+        "method": "original ego yaw readback",
+        "time_window": "every retained original frame",
+        "reference_frame": "original Native frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "20 Hz sampled source; Native camera visibility requires independent review"
       },
       {
         "name": "ego_road_id",
-        "unit": "source row"
+        "unit": "id",
+        "method": "original Native road-id readback",
+        "time_window": "every retained original frame",
+        "reference_frame": "original Native frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "20 Hz sampled source; Native camera visibility requires independent review"
       },
       {
         "name": "ego_position",
-        "unit": "source row"
+        "unit": "m",
+        "method": "original ego world-position readback",
+        "time_window": "every retained original frame",
+        "reference_frame": "original Native frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "20 Hz sampled source; Native camera visibility requires independent review"
       }
+    ],
+    "context_inputs": [],
+    "limitations": [
+      "Synthetic lane-change diagnostic does not establish legal district classification",
+      "Native indicator pixels and same-road maneuver realization require source review"
     ]
   },
   "measurement_plan": {
