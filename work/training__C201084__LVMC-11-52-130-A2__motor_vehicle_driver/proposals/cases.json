@@ -437,6 +437,83 @@
       "target_law_id": "LVMC-11-52-130-A2",
       "target_type": "attempt",
       "variable_assignments": {}
+    },
+    {
+      "additional_observations": [
+        {
+          "mandatory": true,
+          "name": "device_direction_context",
+          "purpose": "Saved device actor identity and state, without a legal verdict",
+          "unit": "structured"
+        }
+      ],
+      "case_description": "Original traffic-light state during the authored-zone stop; direction applicability and statutory necessity require source review",
+      "case_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__device_direction",
+      "comparison_unit": "structured",
+      "comparison_variable": "traffic_control_device_state",
+      "fixed_context": "Keep the reference stop, sign, road, follower, weather, 600-frame four-camera capture and controller fixed; retain original traffic-light identity and state.",
+      "planning_status": "unverified_definition",
+      "recorded_value": null,
+      "recording_description": {
+        "channels": [
+          {
+            "method": "source_measurement from retained actor, frame, survey and video files",
+            "name": "ego_pose",
+            "reference_frame": "original CARLA frame and four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sample clock; sign face and legal designation require independent review",
+            "unit": "m,deg"
+          },
+          {
+            "method": "source_measurement from retained actor, frame, survey and video files",
+            "name": "ego_speed",
+            "reference_frame": "original CARLA frame and four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sample clock; sign face and legal designation require independent review",
+            "unit": "m/s"
+          },
+          {
+            "method": "source_measurement from retained actor, frame, survey and video files",
+            "name": "vehicle_stops_in_posted_fire_lane",
+            "reference_frame": "original CARLA frame and four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sample clock; sign face and legal designation require independent review",
+            "unit": "bool"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "live CARLA map and sign actor readback plus authored geometry",
+            "name": "original_map_sign_and_fire_lane_survey",
+            "reference_frame": "surveyed CARLA map",
+            "uncertainty": "Fire Code designation and visible sign text unverified",
+            "unit": "structured"
+          },
+          {
+            "method": "saved traffic-control actor state and frame-map join",
+            "name": "device_direction_context",
+            "reference_frame": "original CARLA actor and world frame",
+            "uncertainty": "Device applicability and legal necessity require original review",
+            "unit": "structured"
+          }
+        ],
+        "limitations": [
+          "No legal or physical conclusion from authored geometry",
+          "Original pixels, posting and statutory exceptions need review",
+          "Traffic-light state alone does not establish a direction to stop in the fire lane"
+        ]
+      },
+      "requested_setting": "traffic_control_device_source_probe",
+      "source_topic_ids": [
+        "text-0",
+        "text-1"
+      ],
+      "target_law_id": "LVMC-11-52-130-A2",
+      "target_type": "attempt",
+      "variable_assignments": {}
     }
   ]
 }

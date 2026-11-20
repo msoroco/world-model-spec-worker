@@ -58,7 +58,7 @@ def sample_device(actor, readback, frame):
             'source_kind':'original_carla_actor_readback'}
 
 
-def check_saved_device_rows(rows, frame_rows, readback):
+def check_saved_device_rows(rows, frame_rows, readback, *, source_kind='original_carla_actor_readback'):
     """Check source identity and frame joins without issuing a legal verdict."""
     require(len(rows) == len(frame_rows) and len(rows) >= 600,
             'Device source must cover the full thirty-second capture')
@@ -71,7 +71,7 @@ def check_saved_device_rows(rows, frame_rows, readback):
                 row.get('video_frame') == index and
                 row.get('device_actor_id') == readback['actor_id'] and
                 row.get('device_type_id') == readback['type_id'] and
-                row.get('source_kind') == 'original_carla_actor_readback' and
+                row.get('source_kind') == source_kind and
                 row.get('device_state') in
                 ('Red','Yellow','Green','Off','Unknown') and
                 row.get('direction_applicability_verified') is False and

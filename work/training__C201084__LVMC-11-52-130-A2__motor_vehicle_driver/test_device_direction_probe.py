@@ -96,8 +96,10 @@ class DeviceDirectionTests(unittest.TestCase):
                                   'driver_reference'])
         with tempfile.TemporaryDirectory() as tmp:
             attempt=Path(tmp)
-            def reference_runner(client,carla,survey,case,path,*,acquisition):
+            def reference_runner(client,carla,survey,case,path,*,acquisition,
+                                 controller_tuning):
                 self.assertEqual(case,'reference')
+                self.assertIsNone(controller_tuning)
                 return acquisition(world,carla,None,None,None,plan,case,path)
             def device_capture(world,carla,ego,follower,sign,device,plan,path):
                 self.assertIs(device,actor)

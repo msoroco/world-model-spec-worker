@@ -24,12 +24,16 @@ def finalize_device(attempt):
     readback_path=attempt/'device-survey-readback.json'
     device_path=attempt/'traffic-control-device.jsonl'
     frame_path=attempt/'video_frames.jsonl'
-    require(all(path.is_file() for path in
-                (readback_path,device_path,frame_path)),
-            'Missing original traffic-control source')
+    for path in (readback_path,device_path,frame_path):
+        require(path.is_file(), 'Missing required source: '+path.name)
     readback=json.loads(readback_path.read_text())
     frames=[{'frame':row['carla_frame']} for row in _read_jsonl(frame_path)]
-    measured=check_saved_device_rows(_read_jsonl(device_path),frames,readback)
+    marker=attempt/'acquisition-provenance.json'
+    source_kind='original_carla_actor_readback'
+    if marker.is_file() and json.loads(marker.read_text()).get('diagnostic_fixture') is True:
+        source_kind='synthetic_native_sample'
+    measured=check_saved_device_rows(_read_jsonl(device_path),frames,readback,
+                                     source_kind=source_kind)
     measured['source_sha256']={path.name:_sha(path) for path in
                                (readback_path,device_path,frame_path)}
     measured['physical_or_legal_completion_claimed']=False
@@ -38,7 +42,8 @@ def finalize_device(attempt):
 
 def run(client, carla, survey, attempt,
         *, reference_runner=run_reference,
-        device_capture=capture_with_device):
+        device_capture=capture_with_device,
+        controller_tuning=None):
     """Use the reference controller, retaining a distinct light-state source."""
     attempt=Path(attempt)
     def acquisition(world,carla,ego,follower,sign,plan,case,path):
@@ -52,7 +57,8 @@ def run(client, carla, survey, attempt,
         device=world.get_actors().find(readback['actor_id'])
         return device_capture(world,carla,ego,follower,sign,device,plan,path)
     result=reference_runner(client,carla,survey,'reference',attempt,
-                            acquisition=acquisition)
+                            acquisition=acquisition,
+                            controller_tuning=controller_tuning)
     measured=finalize_device(attempt)
     report=attempt/'device-source-measurement.json'
     require(not report.exists(), 'Retain prior device measurement')

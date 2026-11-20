@@ -1,0 +1,66 @@
+{
+  "assignment_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver",
+  "cases": [
+    {
+      "candidate_risk": {
+        "reason": "Stop-point overshoot, insufficient stopped samples and follower closing remain distinct risks while the device source is held fixed.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "deceleration_mps2: 2.0 -> 3.0"
+          ],
+          "construction": "draft-device-direction-fallback1-construction.json",
+          "construction_sha256": "56e2212d37b0cc723eb8d0a9c9a543587d53d5a94024b4c70bdfb42fd168bf95",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "ego body centre exceeds stop centre by 0.8 m before near-zero speed",
+            "metric": "ego body-centre overshoot after target braking",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "stop_radius_m: 0.8 -> 1.2",
+            "cruise_mps: 4.0 -> 3.0"
+          ],
+          "construction": "draft-device-direction-fallback2-construction.json",
+          "construction_sha256": "e9132ab121d19c5e069875f3ea6b5fe22581629b524267376079640410f04f5d",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "no near-zero sample with body overlap in the 600-frame capture",
+            "metric": "near-zero samples inside authored target zone",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "following_brake_gap_m: 7.0 -> 10.0",
+            "following_cruise_throttle: 0.32 -> 0.24"
+          ],
+          "construction": "draft-device-direction-fallback3-construction.json",
+          "construction_sha256": "fc511c8a34c42ef959b6ea31b036d4b8a5bfeefa7e94fabb65ed02fc318ba06a",
+          "id": "fallback3",
+          "trigger": {
+            "failure_condition": "following_gap_m drops below 7.0 m before the ego stop",
+            "metric": "minimum retained following gap in metres",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__device_direction",
+      "construction": "draft-device-direction-construction.json",
+      "construction_sha256": "9354ef1729513f8c3f4f0a38748673e94c1ec750740d3856aea89b4d616cfe88",
+      "fixture_recipe": "work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/draft-device-direction-diagnostic-recipe.json",
+      "measurement_contract": "draft-device-direction-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "device_direction_finalize.py",
+        "source_only": true
+      }
+    }
+  ],
+  "format": "worker-execution-manifest",
+  "runtime_manifest_sha256": "5b4738624542c97f321a302bd49b9ec154cb2cf63778acf64ba6042f8d5b4fd3",
+  "status": "draft_device_direction_four_candidate_diagnostic"
+}
