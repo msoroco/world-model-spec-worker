@@ -390,3 +390,5 @@ Aggregate strict-gate note: the post-C223016 full command produced no final outp
 ## 2026-11-20 archive consolidation verification
 
 The historical `c223016-first-case-constructions-archive.json` is now a lossless nested entry inside `work/_shared/return-cap-c223016-archive.json`, rather than a separate returned file. The top archive is 2,050,872 bytes, SHA256 `6649d13c88ffb7d0d3af29acbcbc663e4b71544f850cbb404f34398df30492e7`. All stored entries were length/SHA256 checked before consolidation. The C223016 assignment-scoped strict gate passed afterward; its `ready` status remains supported.
+
+Archive update: the shared queue helper `work/_shared/build_gpu_queue.py` is now a SHA256-verified entry in `work/_shared/return-cap-c223016-archive.json` to preserve return capacity for C295149's next construction. The archive now has SHA256 `842bbc7418dc38164fc9280a1889976338825c925a68fafaa9464307c9790c79` and is 2,054,337 bytes. Restore the helper before queue generation. This package's scoped strict gate passed after the archive update.
