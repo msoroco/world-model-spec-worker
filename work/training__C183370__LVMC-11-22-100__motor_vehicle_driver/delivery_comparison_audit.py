@@ -23,7 +23,7 @@ def validate_fixed_context(left_config, right_config,
 
 
 def compare(comparison_id, left_audit_path, right_audit_path,
-            left_attempt, right_attempt, diagnostic):
+            left_attempt, right_attempt, diagnostic, manifest_path=None):
     left_attempt, right_attempt = Path(left_attempt), Path(right_attempt)
     plan = read(HERE / 'case-plan.json')
     comparison = next((row for row in plan['comparisons']
@@ -32,9 +32,16 @@ def compare(comparison_id, left_audit_path, right_audit_path,
             'Unknown exact comparison')
     audits = [read(left_audit_path), read(right_audit_path)]
     attempts = [left_attempt, right_attempt]
-    manifest = (HERE / ('draft-combined-capture-manifest.json' if diagnostic
-                         else 'execution-manifest.json'))
+    manifest = (Path(manifest_path) if manifest_path else
+                HERE / ('draft-combined-capture-manifest.json' if diagnostic
+                        else 'execution-manifest.json'))
     require(manifest.is_file(), 'Exact comparison manifest missing')
+    require(manifest.resolve() in (
+                (HERE / 'execution-manifest.json').resolve(),
+                (HERE / 'draft-combined-capture-manifest.json').resolve())
+            and (diagnostic or manifest.resolve() ==
+                 (HERE / 'execution-manifest.json').resolve()),
+            'Comparison manifest is not an approved selection')
     analyses = []
     contexts = []
     for index, (audit, attempt) in enumerate(zip(audits, attempts)):
@@ -117,10 +124,12 @@ if __name__ == '__main__':
     for key in ('comparison', 'left-audit', 'right-audit', 'left-attempt',
                 'right-attempt', 'output'):
         parser.add_argument('--' + key, required=True)
+    parser.add_argument('--manifest')
     parser.add_argument('--diagnostic', action='store_true')
     args = parser.parse_args()
     value = compare(args.comparison, args.left_audit, args.right_audit,
-                    args.left_attempt, args.right_attempt, args.diagnostic)
+                    args.left_attempt, args.right_attempt, args.diagnostic,
+                    args.manifest)
     output = Path(args.output)
     require(not output.exists(), 'Preserve prior comparison audit')
     output.write_text(json.dumps(value, indent=2, sort_keys=True) + '\n')
