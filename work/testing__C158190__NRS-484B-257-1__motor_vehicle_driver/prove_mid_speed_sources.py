@@ -106,7 +106,7 @@ def build_speed6_fixture():
     ROOT = pathlib.Path(__file__).resolve().parents[2]
     WORK = ROOT / 'work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver'
     SOURCE = WORK / 'cases/through_mid/diagnostic-sources'
-    TARGET = ROOT / '.runtime-work/c158190-speed6-fixture-v2'
+    TARGET = ROOT / '.runtime-work/c158190-speed6-fixture-v3'
     CASE = 'testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_speed_6'
     sys.path.insert(0, str(ROOT / 'runtime/scenario_pipeline'))
     from worker_exchange.runtime_cli import materialize
@@ -172,6 +172,10 @@ def build_speed6_fixture():
         e['ego']['speed_mps'] = speed
         e['ego']['body_vertices_m'] = copy.deepcopy(vertices)
         e['world']['road_projection'].update(road_id=road, s_m=round(s, 4))
+        e['visibility']['ego_body_samples_m'] = copy.deepcopy(vertices) + [[x, 1.8, 0]]
+        e['visibility']['ego_projection']['road_id'] = road
+        for observed in e['original_observations']['participants']:
+            observed['blueprint_attributes'] = {'base_type': 'car'}
         participant = next(p for p in e['original_observations']['participants'] if p['actor_id'] == 101)
         participant['position_m'][0] = x
         participant['speed_mps'] = speed
@@ -186,6 +190,12 @@ def build_speed6_fixture():
     import hashlib
     capture['sources']['trace.jsonl'] = hashlib.sha256((TARGET / 'trace.jsonl').read_bytes()).hexdigest()
     (TARGET / 'capture/manifest.json').write_text(json.dumps(capture, indent=2) + '\n')
+    native_frames = rows(TARGET / 'capture/native/frames.jsonl')
+    for row in native_frames:
+        for key in ('base', 'abstract'):
+            row[key] = row[key].replace('.pkl', '.adapter.json')
+        row['adapter_graph'] = row['base']
+    write_rows(TARGET / 'capture/native/frames.jsonl', native_frames)
     print(TARGET)
 
 
