@@ -230,9 +230,54 @@
       }
     },
     {
+      "candidate_risk": {
+        "reason": "Destination settling and lead-relative closure need separate source-measured alternative controls.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "lead_stop_gap_m: 8.0"
+          ],
+          "construction": "draft-near_lead-fallback1-construction.json",
+          "construction_sha256": "4f4e72e957698dc101d90b2ae41f5650c016aa830764f14532f7df463ffa4ab3",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "gap falls below 6 m while ego remains moving",
+            "metric": "lead longitudinal gap before near-zero speed",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "lead_deceleration_mps2: 2.0"
+          ],
+          "construction": "draft-near_lead-fallback2-construction.json",
+          "construction_sha256": "d3cb6683e1a77e3ea08dc2fa553991c5b48f2b0dac77b2f8ec7db0b208ff23fb",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "predicted stop distance exceeds retained gap",
+            "metric": "lead-relative closing speed and gap",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "cruise_mps: 3.0"
+          ],
+          "construction": "draft-near_lead-fallback3-construction.json",
+          "construction_sha256": "5d6cd548be768f2201e8eca0c75af613790172b2bf18f2b8faf2f8e771f3cfce",
+          "id": "fallback3",
+          "trigger": {
+            "failure_condition": "ego speed exceeds 4 m/s on approach",
+            "metric": "ego speed before the first lead brake request",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
       "case_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__near_lead",
       "construction": "draft-near_lead-construction.json",
-      "construction_sha256": "e43c31e292faff210ed06935159584e501c0026517282aba838c7d6a1bb1245d",
+      "construction_sha256": "68c9415bfbc61b7955408ccc2a27cce3921d077b8874ef1a8300d76cb70b36b4",
       "fixture_recipe": "work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/draft-near_lead-diagnostic-recipe.json",
       "measurement_contract": "draft-near_lead-measurement-contract.json",
       "measurement_procedure": {
@@ -241,9 +286,54 @@
       }
     },
     {
+      "candidate_risk": {
+        "reason": "Destination settling and lead-relative closure need separate source-measured alternative controls.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "destination_deceleration_mps2: 3.0"
+          ],
+          "construction": "draft-absent_lead-fallback1-construction.json",
+          "construction_sha256": "2e2a82c5559fe626636ae01fdefa0d768bb047f9f8fafdb4afc437c20c74f1e7",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "ego overshoots the surveyed destination",
+            "metric": "remaining destination distance and ego speed",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "cruise_mps: 3.0"
+          ],
+          "construction": "draft-absent_lead-fallback2-construction.json",
+          "construction_sha256": "c602d3e4f2dbf9955b1f0fecde5213dee15a59b5ee019020cc28d56c7088e5ee",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "ego approaches faster than a stable stop allows",
+            "metric": "ego speed on approach to destination",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "stop_radius_m: 1.2"
+          ],
+          "construction": "draft-absent_lead-fallback3-construction.json",
+          "construction_sha256": "e6fc0c95d039b83b216467a0eea4bcc1f04b7d721c268538e618fc90c30d916d",
+          "id": "fallback3",
+          "trigger": {
+            "failure_condition": "ego does not settle within the nominal 0.8 m radius",
+            "metric": "distance to destination at near-zero speed",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
       "case_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__absent_lead",
       "construction": "draft-absent_lead-construction.json",
-      "construction_sha256": "f7eba209e383206fcd519b4dedf138466880879b2bc9b3031f34441988838e62",
+      "construction_sha256": "cce0d84bca210353e096f485b82ccdcaa7767646564485b77054cfd6a67edcb1",
       "fixture_recipe": "work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/draft-absent_lead-diagnostic-recipe.json",
       "measurement_contract": "draft-absent_lead-measurement-contract.json",
       "measurement_procedure": {

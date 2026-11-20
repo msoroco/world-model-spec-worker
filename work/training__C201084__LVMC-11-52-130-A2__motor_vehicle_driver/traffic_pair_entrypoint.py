@@ -11,6 +11,18 @@ from native_capture import CAMERA_SPECS
 HERE=Path(__file__).resolve().parent
 ASSIGNMENT='training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver'
 MODES=('near_lead','absent_lead')
+TUNINGS={
+    'near_lead': {
+        'primary': {},
+        'fallback1': {'lead_stop_gap_m':8.0},
+        'fallback2': {'lead_deceleration_mps2':2.0},
+        'fallback3': {'cruise_mps':3.0}},
+    'absent_lead': {
+        'primary': {},
+        'fallback1': {'destination_deceleration_mps2':3.0},
+        'fallback2': {'cruise_mps':3.0},
+        'fallback3': {'stop_radius_m':1.2}},
+}
 
 
 def check():
@@ -18,7 +30,8 @@ def check():
     mode=config.get('case_suffix')
     if mode not in MODES or config.get('case_id')!=ASSIGNMENT+'__'+mode or \
             config.get('selected_case_id')!=config.get('case_id') or \
-            config.get('candidate_id')!='primary' or \
+            config.get('candidate_id') not in TUNINGS[mode] or \
+            config.get('traffic_pair_controller_tuning',{})!=TUNINGS[mode][config.get('candidate_id')] or \
             config.get('law_id')!='LVMC-11-52-130-A2' or \
             config.get('cell_id')!='C201084' or \
             config.get('actor')!='motor_vehicle_driver' or \
@@ -42,7 +55,10 @@ def check():
             config.get('physical_acceptance_claimed') is not False or \
             config.get('legal_verdict') is not None:
         raise ValueError('Traffic-pair observation or no-verdict contract differs')
-    return {'case_id':config['case_id'],'mode':mode,'frames':600,
+    return {'case_id':config['case_id'],'mode':mode,
+            'candidate_id':config['candidate_id'],
+            'controller_tuning':config.get('traffic_pair_controller_tuning',{}),
+            'frames':600,
             'source_cameras':list(CAMERAS),'physical_acceptance_claimed':False}
 
 
@@ -71,7 +87,8 @@ def main():
     client.set_timeout(180)
     survey=json.loads(survey_path.read_text())
     mode=checked['mode']
-    receipt=run(client,carla,survey,mode,attempt)
+    receipt=run(client,carla,survey,mode,attempt,
+                controller_tuning=checked['controller_tuning'])
     for name in ('config.json','construction.json','candidate-selection.json'):
         source,target=HERE/name,attempt/name
         if source.is_file() and source.resolve()!=target.resolve():

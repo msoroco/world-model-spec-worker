@@ -31,8 +31,13 @@ def build(root=ROOT):
             raise ValueError("Result selected count differs from manifest: " + aid)
         manifest = "work/" + aid + "/execution-manifest.json"
         for case_id in sorted(case_ids):
-            prefix = "PYTHONPATH=runtime/pipeline/scenario_pipeline python3.11 -m worker_exchange"
-            identity = "--assignment " + aid + " --case " + case_id
+            prefix = "python3.11 work/_shared/we.py"
+            # Derive the assignment from the exact case ID in a POSIX shell.
+            # This keeps every command executable while avoiding a second long
+            # assignment ID in each of the three local-integration commands.
+            identity = "--assignment ${CASE_ID%__*} --case $CASE_ID"
+            case_binding = "CASE_ID=" + case_id + "; "
+            manifest_binding = case_binding + "MANIFEST=work/${CASE_ID%__*}/execution-manifest.json; "
             row = {
                 "order": len(rows) + 1,
                 "assignment_id": aid,
@@ -40,11 +45,11 @@ def build(root=ROOT):
                 "status": status,
                 "selected": case_id in selected_ids,
                 "dispatchable": False,
-                "capture_command": "python3.11 runtime.py capture --manifest " + manifest
-                    + " --case " + case_id + " --output ${ATTEMPT_DIR} --host ${CARLA_HOST}"
+                "capture_command": manifest_binding + "python3.11 runtime.py capture --manifest $MANIFEST"
+                    + " --case $CASE_ID --output ${ATTEMPT_DIR} --host ${CARLA_HOST}"
                     + " --port ${CARLA_PORT} --python ${NATIVE_PYTHON}",
-                "postprocessing_command": "python3.11 runtime.py process-saved --manifest "
-                    + manifest + " --case " + case_id + " --attempt ${ATTEMPT_DIR}"
+                "postprocessing_command": manifest_binding + "python3.11 runtime.py process-saved --manifest $MANIFEST"
+                    + " --case $CASE_ID --attempt ${ATTEMPT_DIR}"
                     + " --output ${PROCESSED_DIR} --library ${DECODER_LIBRARY}"
                     + " --validator ${VALIDATOR}",
                 "owner_release_command": "CASE_ID=" + case_id
@@ -53,13 +58,13 @@ def build(root=ROOT):
                     + " --acknowledge-owner-released",
                 "additional_source_audit_command": "CASE_ID=" + case_id
                     + " python3.11 worker_check.py --complete --require-delivery-ready",
-                "prepare_command": prefix + " prepare-delivery --repo . --batch full-train-delivery"
+                "prepare_command": case_binding + prefix + " prepare-delivery --repo . --batch full-train-delivery"
                     + " --db ${WORKER_DB} " + identity,
-                "execute_command": prefix + " execute-delivery --repo . --batch full-train-delivery"
+                "execute_command": case_binding + prefix + " execute-delivery --repo . --batch full-train-delivery"
                     + " --db ${WORKER_DB} --run ${RUN_ID} " + identity
                     + " --job ${JOB_ID} --python ${NATIVE_PYTHON} --host ${CARLA_HOST}"
                     + " --port ${CARLA_PORT}",
-                "accept_command": prefix + " accept-delivery --repo . --batch full-train-delivery"
+                "accept_command": case_binding + prefix + " accept-delivery --repo . --batch full-train-delivery"
                     + " --db ${WORKER_DB} --run ${RUN_ID} " + identity
                     + " --job ${JOB_ID} --attempt ${ATTEMPT_ID} --audit ${ACCEPTANCE_AUDIT}",
                 "candidate_commands": {

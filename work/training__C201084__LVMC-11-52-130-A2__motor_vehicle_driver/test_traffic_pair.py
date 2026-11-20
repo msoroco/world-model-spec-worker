@@ -9,6 +9,7 @@ from test_exception_probe import environment
 from traffic_pair_capture import acquire
 from traffic_pair_controller import request
 from traffic_pair_runner import run
+from traffic_pair_entrypoint import TUNINGS
 
 HERE = Path(__file__).resolve().parent
 
@@ -74,6 +75,43 @@ class TrafficPairTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'capture contract differs'):
             acquire(SimpleNamespace(),SimpleNamespace(),None,None,None,None,
                     plan,Path('/tmp/unused-traffic-pair'))
+
+    def test_all_fallback_tunings_reach_native_capture(self):
+        for mode in ('near_lead','absent_lead'):
+            for ident in ('fallback1','fallback2','fallback3'):
+                client, carla, spawned = environment()
+                expected = TUNINGS[mode][ident]
+                with tempfile.TemporaryDirectory() as tmp:
+                    def capture(world, carla, ego, follower, lead, sign, plan, attempt):
+                        self.assertEqual(plan['traffic_pair_controller_tuning'],expected)
+                        self.assertEqual(plan['traffic_pair']['destination_xy_m'],[30,1])
+                        self.assertEqual(lead is not None,mode=='near_lead')
+                        return {'source_frames':600}
+                    run(client,carla,self.survey(mode),mode,Path(tmp)/'attempt',
+                        acquisition=capture,controller_tuning=expected,
+                        processor=lambda _: {'lead_present':mode=='near_lead',
+                            'physical_or_legal_completion_claimed':False,
+                            'statutory_necessity_verified':False})
+                self.assertEqual(spawned.count('destroy'),3 if mode=='near_lead' else 2)
+
+    def test_fallback_controls_change_distinct_source_risks(self):
+        def near(gap, speed, candidate):
+            return request((10,1),0,(speed,0,0),(30,1),
+                           lead_xy_m=(10+gap,1),
+                           lead_velocity_xyz_mps=(0,0,0),
+                           **TUNINGS['near_lead'][candidate])
+        self.assertEqual(near(7,1,'primary')['brake'],0)
+        self.assertEqual(near(7,1,'fallback1')['brake'],1)
+        self.assertEqual(near(13.5,5.5,'fallback1')['brake'],0.75)
+        self.assertEqual(near(13.5,5.5,'fallback2')['brake'],1)
+        self.assertLess(near(20,3,'fallback3')['throttle'],
+                        near(20,3,'primary')['throttle'])
+        outcomes=[]
+        for candidate in TUNINGS['absent_lead']:
+            control=request((25,1),0,(5,0,0),(30,1),
+                            **TUNINGS['absent_lead'][candidate])
+            outcomes.append((control['throttle'],control['brake']))
+        self.assertEqual(len(set(outcomes)),4)
 
 
 if __name__ == '__main__':
