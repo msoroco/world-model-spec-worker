@@ -37,7 +37,7 @@ def run(manifest, case_id, kind, output, saved=None):
             if name not in sources or sha(sources[name]) != next(s["sha256"] for s in recipe["sources"] if s["path"] == name):
                 raise ValueError("Exact fixture original source changed: " + name)
             (stage / name).write_bytes(sources[name].read_bytes())
-        write(stage / "acquisition-provenance.json", {"provenance_kind": "native", "diagnostic_fixture": True,
+        write(stage / "acquisition-provenance.json", {"provenance_kind": "synthetic_fixture", "diagnostic_fixture": True,
                                                      "scope": "Source-shaped CPU classifier fixture only"})
         if kind == "lifecycle":
             if saved is None:
