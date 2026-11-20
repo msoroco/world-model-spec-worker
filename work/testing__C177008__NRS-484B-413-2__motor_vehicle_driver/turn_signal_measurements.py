@@ -10,6 +10,8 @@ import json
 import math
 import argparse
 import subprocess
+import os
+import shutil
 from pathlib import Path
 from contextlib import contextmanager, ExitStack
 from queue import Empty, Queue
@@ -22,6 +24,7 @@ CASE = "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_right_a
 CAMERAS = {"overview": (1920, 1080), "approach": (1280, 720),
            "reference_corner": (1280, 720), "driver_reference": (1280, 720)}
 MAP_SHA256 = "84b791af7a8c8e338416bef33638c83957ec9914fdce73250a8ddd0ba5976bd6"
+RIGHT_BLINKER_MASK = 16
 
 
 def validate_capture_config(config):
@@ -42,6 +45,8 @@ def validate_capture_config(config):
         raise ValueError("Selected indicator observation required")
     if abs(_number(config.get("indicator_start_m")) - 30.98) > 1e-9:
         raise ValueError("One sampled frame of right-signal lead required")
+    if config.get("physical_completion", {}).get("destination_road") != 177011:
+        raise ValueError("Native southbound departure road required")
     return config
 
 
@@ -50,9 +55,49 @@ def capture_config():
         "cell_id": "C177008", "actor": "motor_vehicle_driver", "course": "right_turn",
         "rate_hz": 20, "duration_s": 40, "requested_speed_mps": 5.0,
         "indicator_start_m": 30.98, "map_sha256": MAP_SHA256,
+        "physical_completion": {"criterion": "road_transition", "motion_source": "body_history.jsonl",
+                                "body_key": "body_vertices_m", "road_key": "road_id",
+                                "destination_road": 177011},
         "required_atoms": ["sig.turn_indicator"],
         "cameras": [{"name": name, "width": size[0], "height": size[1],
                      "fov_deg": 90} for name, size in CAMERAS.items()]})
+
+
+def retain_district_source(packet_path, output, native_map_name):
+    """Hash and retain an exact-map, source-reviewed site packet and document.
+
+    The packet is an operator-supplied source assertion. Pixel and legal review
+    remain separate; an absent packet leaves the recorded district unresolved.
+    """
+    if not packet_path:
+        return {"district_type": None, "district_source": None,
+                "district_review_verified": False}
+    path = Path(packet_path).resolve()
+    packet = json.loads(path.read_text())
+    if (packet.get("authored_map_sha256") != MAP_SHA256
+            or packet.get("native_map_name") != native_map_name
+            or packet.get("district_type") not in ("business", "residential", "other")
+            or packet.get("independent_review") is not True):
+        raise ValueError("District source packet lacks exact-map independent review")
+    document = Path(packet.get("source_document", "")).resolve()
+    if not document.is_file() or not packet.get("source_document_sha256"):
+        raise ValueError("District source document missing")
+    document_hash = hashlib.sha256(document.read_bytes()).hexdigest()
+    if document_hash != packet["source_document_sha256"]:
+        raise ValueError("District source document hash differs")
+    output = Path(output)
+    retained_packet, retained_document = output/"district-site-packet.json", output/"district-site-source.txt"
+    if retained_packet.exists() or retained_document.exists():
+        raise ValueError("Fresh district source paths required")
+    shutil.copyfile(path, retained_packet)
+    shutil.copyfile(document, retained_document)
+    if hashlib.sha256(retained_document.read_bytes()).hexdigest() != document_hash:
+        raise ValueError("Retained district document differs")
+    return {"district_type": packet["district_type"],
+            "district_source": "district-site-packet.json",
+            "district_source_document": "district-site-source.txt",
+            "district_source_sha256": document_hash,
+            "district_review_verified": True}
 
 
 def _waypoint_xy(waypoint):
@@ -321,6 +366,24 @@ def analyze(root: Path) -> dict:
     district = context.get("district_type")
     if district not in ("business", "residential", "other"):
         raise ValueError("District class not sourced")
+    if (context.get("district_source") != "district-site-packet.json"
+            or context.get("district_source_document") != "district-site-source.txt"
+            or context.get("district_review_verified") is not True):
+        raise ValueError("District source packet not retained and reviewed")
+    packet_path, document_path = root/"district-site-packet.json", root/"district-site-source.txt"
+    if not packet_path.is_file() or not document_path.is_file():
+        raise ValueError("Missing required source: district site packet/document")
+    packet = json.loads(packet_path.read_text())
+    document_hash = hashlib.sha256(document_path.read_bytes()).hexdigest()
+    if (packet.get("district_type") != district
+            or packet.get("native_map_name") != context["native_map_id"]
+            or packet.get("authored_map_sha256") != MAP_SHA256
+            or packet.get("source_document_sha256") != document_hash
+            or context.get("district_source_sha256") != document_hash
+            or packet.get("independent_review") is not True):
+        raise ValueError("Saved district source does not bind the Native route")
+    hashes["district-site-packet.json"] = hashlib.sha256(packet_path.read_bytes()).hexdigest()
+    hashes["district-site-source.txt"] = document_hash
     threshold = (100 if district in ("business", "residential") else 300) * FEET_TO_M
     rows, frames = _rows(root / "drive_history.jsonl"), _rows(root / "video_frames.jsonl")
     if len(rows) < 3 or len(rows) != len(frames):
@@ -378,6 +441,9 @@ def analyze(root: Path) -> dict:
         indicator = row.get("right_indicator")
         if type(indicator) is not bool:
             raise ValueError("Missing measured right indicator")
+        mask = row.get("ego_light_mask")
+        if type(mask) is not int or mask < 0 or bool(mask & RIGHT_BLINKER_MASK) != indicator:
+            raise ValueError("Native right-indicator flag disagrees with original light mask")
         if indicator and prior_indicator is False:
             seen_off_before_on = True
             signal_start_path = path
@@ -524,6 +590,7 @@ def capture_native(args, config):
                                for name, size in CAMERAS.items()}
                     frame_map = stack.enter_context(FrameMap(output/"video_frames.jsonl"))
                     history = stack.enter_context((output/"drive_history.jsonl").open("x", buffering=1))
+                    body_history = stack.enter_context((output/"body_history.jsonl").open("x", buffering=1))
                     helper = PipelineCapture(client, vehicle, output, CASE,
                                              required_observations=config["required_atoms"])
                     first_heading = None
@@ -553,33 +620,43 @@ def capture_native(args, config):
                             if onset_frame is None and _angle_delta(yaw, first_heading) <= -10:
                                 onset_frame = int(snap.frame)
                             location = pose.location
+                            native_waypoint = world.get_map().get_waypoint(location, project_to_road=False)
+                            if native_waypoint is None:
+                                raise ValueError("Native ego left the authored roadway")
+                            vertices = vehicle.bounding_box.get_world_vertices(pose)
+                            body = [[float(v.x), float(v.y), float(v.z)] for v in vertices]
+                            if len(body) < 4:
+                                raise ValueError("Native ego body geometry incomplete")
                             row = {"frame": int(snap.frame),
                                    "time_s": float(snap.timestamp.elapsed_seconds),
                                    "ego_position_xy_m": [float(location.x), float(location.y)],
                                    "ego_speed_mps": math.sqrt(velocity.x**2+velocity.y**2+velocity.z**2),
                                    "ego_heading_deg": yaw,
+                                   "ego_light_mask": int(vehicle.get_light_state()),
                                    "right_indicator": bool(vehicle.get_light_state() & carla.VehicleLightState.RightBlinker),
-                                   "native_road_id": world.get_map().get_waypoint(location).road_id,
+                                   "native_road_id": int(native_waypoint.road_id),
                                    "requested_indicator": requested}
                             history.write(json.dumps(row, allow_nan=False)+"\n")
+                            body_history.write(json.dumps({"frame": row["frame"],
+                                "time_s": row["time_s"], "road_id": row["native_road_id"],
+                                "body_vertices_m": body}, allow_nan=False)+"\n")
                             frames += 1
                     finally:
                         helper.close()
                         helper = None
-        district_packet = getattr(args, "district_packet", None)
-        district = json.loads(Path(district_packet).read_text()) if district_packet else {}
-        district_verified = (district.get("map_sha256") == MAP_SHA256
-                             and district.get("district_type") == "business"
-                             and district.get("source_document_sha256")
-                             and district.get("independent_review") is True)
+        district_packet = getattr(args, "district_packet", None) or os.environ.get("SCENARIO_DISTRICT_SITE_PACKET")
+        district = retain_district_source(district_packet, output, world.get_map().name)
+        district_verified = district["district_review_verified"] and district["district_type"] == "business"
         context = {"native_map_id": world.get_map().name,
                    "approach_road_id": route["approach_road_id"],
                    "approach_lane_id": route["approach_lane_id"],
                    "outgoing_road_id": route["outgoing_road_id"],
                    "outgoing_lane_id": route["outgoing_lane_id"],
                    "native_route_source": "Native get_waypoint_xodr readback",
-                   "district_type": "business" if district_verified else None,
-                   "district_source": district_packet if district_verified else None,
+                   "district_type": district["district_type"] if district_verified else None,
+                   "district_source": district["district_source"] if district_verified else None,
+                   "district_source_document": district.get("district_source_document"),
+                   "district_source_sha256": district.get("district_source_sha256"),
                    "district_review_verified": bool(district_verified),
                    "turn_onset_frame": onset_frame}
         (output/"route_context.json").write_text(json.dumps(context, indent=2)+"\n")
@@ -597,6 +674,83 @@ def capture_native(args, config):
                          "native_right_turn_candidate": True})
 
 
+def finalize_saved(attempt, output):
+    """Derive the right-turn measurements only from staged original sources."""
+    from worker_exchange.native_output import write_result, physical_result
+    attempt, output = Path(attempt), Path(output)
+    if output.exists() or (attempt/"result.json").exists() or (attempt/"channels").exists():
+        raise ValueError("Retain prior finalization; choose a fresh saved version")
+    required = ("config.json", "drive_history.jsonl", "body_history.jsonl",
+                "route_context.json", "video_frames.jsonl", "trace.jsonl",
+                "capture/evidence.jsonl", *(name+".mkv" for name in CAMERAS))
+    for name in required:
+        if not (attempt/name).is_file():
+            raise ValueError("Missing required source: " + name)
+    config = validate_capture_config(json.loads((attempt/"config.json").read_text()))
+    description = config.get("recording_description")
+    if not isinstance(description, dict) or not description.get("channels"):
+        raise ValueError("Selected recording description required")
+    report = analyze(attempt)
+    rows = _rows(attempt/"drive_history.jsonl")
+    frame_rows = _rows(attempt/"video_frames.jsonl")
+    if len(rows) != len(frame_rows):
+        raise ValueError("Original indicator/frame coverage incomplete")
+    channel_root = attempt/"channels"
+    channel_root.mkdir()
+    specs = {"ego_speed": ("m/s", lambda r: r["ego_speed_mps"]),
+             "ego_heading": ("deg", lambda r: r["ego_heading_deg"]),
+             "ego_road_id": ("id", lambda r: r["native_road_id"]),
+             "ego_turn_indicator": ("device state", lambda r: {
+                 "reported_mask": r["ego_light_mask"],
+                 "reported_device_state": "right" if r["right_indicator"] else "off"})}
+    evidence = []
+    for name, (unit, extract) in specs.items():
+        with (channel_root/(name+".jsonl")).open("x") as stream:
+            for row in rows:
+                stream.write(json.dumps({"time_s": row["time_s"],
+                    "original_frame": row["frame"], "value": extract(row)},
+                    allow_nan=False)+"\n")
+        evidence.append({"name": name, "unit": unit,
+                         "reference": "channels/"+name+".jsonl"})
+    distance = report["turn_onset"]["continuous_right_signal_distance_m"]
+    boundary = report["required_distance_m"]
+    observed = report["observed_continuous_distance_meets_boundary"]
+    result = {"case_id": CASE,
+        "measured_values": {"continuous_right_signal_distance_m": distance,
+                            "statutory_boundary_m": boundary,
+                            "turn_onset_frame": report["turn_onset"]["frame"]},
+        "target_checks": [{"target": "continuous_right_signal_at_least_100ft",
+            "requested": 30.48, "measured": distance,
+            "method": "original right-lamp readback and sampled ego path through measured right-turn onset",
+            "tolerance": 0.0, "matched": observed,
+            "physical_cause_confirmed": False,
+            "cause_evidence": ["drive_history.jsonl", "route_context.json",
+                               "video_frames.jsonl"]}],
+        "setup_confirmed": False, "behavior_attempted": False,
+        "maneuver_completed": False, "termination_reason": "saved source assessment pending",
+        "physical_failure_flags": ["Native right-lamp pixels and legal district review require independent review"],
+        "trace_reference": "trace.jsonl",
+        "video_references": [name+".mkv" for name in CAMERAS],
+        "video_frame_map_reference": "video_frames.jsonl",
+        "recording_description": description, "recording_evidence": evidence,
+        "source_evidence_hashes": report["sources"],
+        "capture_evidence_sha256": hashlib.sha256((attempt/"capture/evidence.jsonl").read_bytes()).hexdigest(),
+        "realized_observables": {}}
+    result = physical_result(attempt, result)
+    analysis = {"format": "worker-right-turn-signal-analysis", "case_id": CASE,
+        "measurements": {"continuous_right_signal_distance_m": {
+            "value": distance, "unit": "m", "method": report["turn_onset"]["onset_method"],
+            "sources": report["sources"]},
+            "district_boundary_m": {"value": boundary, "unit": "m",
+                                    "source": "route_context.json"}},
+        "source_report": report, "source_hashes": report["sources"],
+        "physical_checks": result["physical_checks"],
+        "legal_verdict_asserted": False}
+    write_result(attempt, result)
+    output.write_text(json.dumps(analysis, indent=2, allow_nan=False)+"\n")
+    return analysis
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--check", action="store_true")
@@ -604,9 +758,16 @@ def main():
     parser.add_argument("--district-packet")
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=2000)
+    parser.add_argument("--attempt")
+    parser.add_argument("--output")
     args = parser.parse_args()
     config_path = Path(__file__).parent / "config.json"
     config = validate_capture_config(json.loads(config_path.read_text())) if config_path.is_file() else capture_config()
+    if args.attempt:
+        if not args.output:
+            raise ValueError("--output required for saved finalization")
+        finalize_saved(args.attempt, args.output)
+        return
     if args.check:
         print(json.dumps({"case_id": CASE, "cpu_check_passed": True,
                           "carla_started": False, "map_sha256": MAP_SHA256}))

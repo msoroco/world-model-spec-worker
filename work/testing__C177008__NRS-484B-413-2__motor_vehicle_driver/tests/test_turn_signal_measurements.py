@@ -1,4 +1,5 @@
 import importlib.util
+import hashlib
 import json
 import math
 import tempfile
@@ -70,7 +71,7 @@ class TurnSignalTests(unittest.TestCase):
 
     def test_native_indicator_readback_preserves_lamps_and_rejects_failure(self):
         class State:
-            RightBlinker = 8
+            RightBlinker = 16
         class Vehicle:
             lights = 1
             def get_light_state(self):
@@ -79,7 +80,7 @@ class TurnSignalTests(unittest.TestCase):
                 self.lights = value
         vehicle = Vehicle()
         self.assertTrue(measure.set_native_right_blinker(vehicle, State, True)["readback_right_indicator"])
-        self.assertEqual(vehicle.lights, 9)
+        self.assertEqual(vehicle.lights, 17)
         self.assertFalse(measure.set_native_right_blinker(vehicle, State, False)["readback_right_indicator"])
         self.assertEqual(vehicle.lights, 1)
         vehicle.set_light_state = lambda value: None
@@ -130,12 +131,24 @@ class TurnSignalTests(unittest.TestCase):
             measure.select_native_route(missing)
 
     def fixture(self, root, distance, district="business", interrupted=False):
+        document = root/"district-site-source.txt"
+        document.write_text("diagnostic synthetic district source; no legal acceptance\n")
+        source_hash = hashlib.sha256(document.read_bytes()).hexdigest()
+        packet = {"authored_map_sha256": measure.MAP_SHA256,
+                  "native_map_name": "TownX", "district_type": district,
+                  "source_document": str(document),
+                  "source_document_sha256": source_hash,
+                  "independent_review": True}
+        (root/"district-site-packet.json").write_text(json.dumps(packet))
         steps = math.ceil(distance / 0.25)
         step = distance / steps
         context = {"native_map_id": "TownX", "approach_road_id": 1,
                    "approach_lane_id": -1, "outgoing_road_id": 2,
                    "outgoing_lane_id": -1, "native_route_source": "native-lane-links",
-                   "district_source": "source-reviewed-map-context",
+                   "district_source": "district-site-packet.json",
+                   "district_source_document": "district-site-source.txt",
+                   "district_source_sha256": source_hash,
+                   "district_review_verified": True,
                    "district_type": district, "turn_onset_frame": 101 + steps}
         (root / "route_context.json").write_text(json.dumps(context))
         rows = []
@@ -147,7 +160,9 @@ class TurnSignalTests(unittest.TestCase):
             rows.append({"frame": 100+i, "time_s": 1+i*.05,
                          "ego_position_xy_m": point, "ego_speed_mps": step / .05,
                          "ego_heading_deg": -30 if i == steps + 1 else 0,
-                         "right_indicator": i > 0 and not (interrupted and i == steps // 2)})
+                         "right_indicator": i > 0 and not (interrupted and i == steps // 2),
+                         "ego_light_mask": 16 if i > 0 and not (interrupted and i == steps // 2) else 0,
+                         "native_road_id": 177010 if i == steps + 1 else 177008})
         frames = [{"video_frame": i, "carla_frame": row["frame"], "time_s": row["time_s"]}
                   for i, row in enumerate(rows)]
         (root / "drive_history.jsonl").write_text("".join(json.dumps(row)+"\n" for row in rows))
@@ -214,6 +229,70 @@ class TurnSignalTests(unittest.TestCase):
             path.write_text("".join(json.dumps(row)+"\n" for row in rows))
             with self.assertRaisesRegex(ValueError, "path jump exceeds source speed"):
                 measure.analyze(root)
+
+    def test_saved_finalizer_derives_channels_from_original_sources(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            self.fixture(root, 30.48)
+            bundle = json.loads((Path(__file__).resolve().parents[1]/"construction.json").read_text())
+            config = next(json.loads(item["content"]) for item in bundle["files"]
+                          if item["path"] == "config.json")
+            (root/"config.json").write_text(json.dumps(config))
+            rows = [json.loads(line) for line in (root/"drive_history.jsonl").read_text().splitlines()]
+            body = []
+            for row in rows:
+                x,y = row["ego_position_xy_m"]
+                body.append({"frame":row["frame"],"time_s":row["time_s"],
+                    "road_id":row["native_road_id"],
+                    "body_vertices_m":[[x-1,y-1,0],[x+1,y-1,0],
+                                       [x+1,y+1,0],[x-1,y+1,0]]})
+            (root/"body_history.jsonl").write_text("".join(json.dumps(row)+"\n" for row in body))
+            (root/"trace.jsonl").write_text("".join(json.dumps({"frame":row["frame"],
+                "time_s":row["time_s"]})+"\n" for row in rows))
+            (root/"capture").mkdir()
+            (root/"capture/evidence.jsonl").write_text("{}\n")
+            for name in measure.CAMERAS:
+                (root/(name+".mkv")).write_bytes(b"diagnostic-only")
+            source_hash = measure.analyze(root)["sources"]["drive_history.jsonl"]
+            report = measure.finalize_saved(root,root/"analysis-report.json")
+            self.assertEqual(report["source_hashes"]["drive_history.jsonl"],source_hash)
+            self.assertEqual(json.loads((root/"result.json").read_text())["case_id"],measure.CASE)
+            channel = [json.loads(line) for line in (root/"channels/ego_turn_indicator.jsonl").read_text().splitlines()]
+            self.assertEqual(len(channel),len(rows))
+            self.assertEqual(channel[1]["value"]["reported_mask"],16)
+            self.assertFalse(report["legal_verdict_asserted"])
+
+    def test_right_indicator_requires_matching_original_lamp_mask(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            self.fixture(root, 30.48)
+            path = root/"drive_history.jsonl"
+            rows = [json.loads(line) for line in path.read_text().splitlines()]
+            rows[2]["ego_light_mask"] = 8
+            path.write_text("".join(json.dumps(row)+"\n" for row in rows))
+            with self.assertRaisesRegex(ValueError, "light mask"):
+                measure.analyze(root)
+
+    def test_district_packet_retains_exact_document_and_rejects_hash_drift(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            source = root/"source.txt"
+            source.write_text("diagnostic site description\n")
+            packet = {"authored_map_sha256": measure.MAP_SHA256,
+                      "native_map_name": "TownX", "district_type": "business",
+                      "source_document": str(source),
+                      "source_document_sha256": hashlib.sha256(source.read_bytes()).hexdigest(),
+                      "independent_review": True}
+            source_packet = root/"source-packet.json"
+            source_packet.write_text(json.dumps(packet))
+            output = root/"attempt"
+            output.mkdir()
+            retained = measure.retain_district_source(source_packet,output,"TownX")
+            self.assertTrue(retained["district_review_verified"])
+            self.assertEqual((output/"district-site-source.txt").read_bytes(),source.read_bytes())
+            source.write_text("changed site description\n")
+            with self.assertRaisesRegex(ValueError, "hash differs"):
+                measure.retain_district_source(source_packet,root/"another", "TownX")
 
 
 if __name__ == "__main__":

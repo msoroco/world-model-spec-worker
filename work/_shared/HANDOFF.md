@@ -2718,3 +2718,6 @@ END EXACT ARCHIVE c125751-historical-delivery-v1.tar.gz.base64.part02.txt
 
 
 C177008 2026-11-20: returned exact first-case construction 77b0e6c3ae663426cae1d07a798bfd3754f8bf824104711276f954536f735ebd; offline CPU proof 0f0170c9df7c0def0eae3446a640a976b3413e390f03ea1f7e87da3b70e72169 passes; scoped static check passes. Partial: saved finalizer, three fallbacks, other cases, compatibility/saved proofs and audits remain worker-owned. The full strict path gate is separately unresolved.
+
+
+2026-11-20 final gate replay: `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --complete --require-delivery-ready` exited 1 at `ValueError: Unapproved output: runtime/runs/scenario_pipeline/inputs/shared/manifest.json`. This is a generated file under the frozen runtime path; no runtime file was edited by this worker. The batch remains 10 ready and 33 partial, with 8,600/8,600 returned files. C177008 scoped static and exact first-primary offline checks pass; its status remains partial.
