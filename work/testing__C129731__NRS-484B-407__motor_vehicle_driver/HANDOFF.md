@@ -440,3 +440,7 @@ After all 42 historical entries were archived, the C129731 scoped nonready stati
 ## 2026-11-19 return inventory preservation
 
 Fourteen unreferenced provisional `diagnostic-canonical-*-fallback-manifest.json` files were archived losslessly in `historical-unbound-diagnostic-fallback-manifests.json` (SHA-256 `2bd0bd9e8845a9487cf1abaf6c56f6b58166797571a572d63446b9b1ee115919`). Each original path, SHA-256 and exact base64 bytes are retained. The C129731 scoped nonstrict static gate passed after archival.
+
+## 2026-11-19 synthetic physical fixture provenance repair
+
+The ready-only scoped probe exposed a false Native provenance label in all 72 physical outcome fixtures. `physical_fixture_proof.py` now writes `provenance_kind: synthetic_fixture`; all 24 three-outcome fixture sets were rerun with the pinned physical classifier, and all 24 receipts and manifest hashes were rebound. The cases semantic proposal hash was also rebound in `proposals/semantic-index.json`. This is diagnostic software proof only. The ready-only scoped validation is running; retain partial until it passes and the actual scoped strict gate passes.
