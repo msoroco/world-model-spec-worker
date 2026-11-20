@@ -1,8 +1,8 @@
 {
   "assignment_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver",
   "input_sha256": "82bba9f879337bcddb33ab873c7c954755b44b39881869d4282901c64c8aee18",
-  "status": "partial",
-  "readiness_kind": "current_cpu_reproof_in_progress",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
   "tests": [
     {
@@ -444,12 +444,6 @@
       "sha256": "a6c10abfd952134868caee44c0e837a12d609014e26c592ce662b3a3432a4de2"
     },
     {
-      "command": "env PYTHONPATH=runtime/scenario_pipeline PYTHONDONTWRITEBYTECODE=1 MPLCONFIGDIR=.runtime-work/mplconfig .venv-cpu/bin/python work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c158190-speed3-current-compat-v5 --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_speed_3",
-      "exit_code": 1,
-      "log": "cases/through_speed_3/delivery-audit-negative.log",
-      "sha256": "9d48815fe39aed276428eb7e58c292ad53b89b6dd8f361073164288e4fefcc0d"
-    },
-    {
       "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_speed_6 --output .runtime-work/c158190-portable-speed_6-primary-offline-v3",
       "exit_code": 0,
       "log": "cases/view_speed_6/primary-offline.log",
@@ -477,13 +471,13 @@
       "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/current_comparison_audit.py > work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/comparison-audit-current.log",
       "exit_code": 0,
       "log": "comparison-audit-current.log",
-      "sha256": "992edd9d919811b797c363a5e2c6e9e6445d75891e3eced4dcff0bf8fb3e6b6f"
+      "sha256": "dbfa94b02d8af3ea3c1985771ac077c47b11e648c00dfa55c9bbf3bd3951fb76"
     }
   ],
   "remaining_gpu_checks": [
     "Realized yield-sign governance, absence of line/crosswalk, visible through traffic, actual slowing and conflict behavior."
   ],
-  "reason": "Top-level suite config now covers 15 selected cases; first selected construction must retain its original four-case runner/config for fixed-source comparisons. Rebind the first construction to a separate four-case config source, rerun its exact CPU proofs and scoped strict gate.",
+  "reason": "",
   "view_speed_6_source_checkpoint": {
     "status": "diagnostic_unselected_primary_and_three_fallback_cpu_proven",
     "builder": "prove_mid_speed_sources.py --build-speed6-fixture .runtime-work/c158190-speed6-fixture-v4",
@@ -1720,18 +1714,25 @@
   },
   "first_gpu_delivery_command": ".venv-cpu/bin/python runtime.py execute-delivery --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_approaches --job $JOB_ID --db $DB --run $RUN --assignment testing__C158190__NRS-484B-257-1__motor_vehicle_driver",
   "current_selected_replay": {
-    "manifest_sha256": "fd6937e428579bcd3382abd01ccf8b7f92dd81dca95fbe4dc107fcc129b34749",
+    "manifest_sha256": "3fed3fa7f2b650dff8a43c84816ae834ae3f4431d21a49aa3b7a633cf7994c92",
     "variant_count": 60,
     "compatibility_passed": 60,
     "saved_processing_passed": 60,
-    "comparison_audit_sha256": "992edd9d919811b797c363a5e2c6e9e6445d75891e3eced4dcff0bf8fb3e6b6f",
+    "comparison_audit_sha256": "dbfa94b02d8af3ea3c1985771ac077c47b11e648c00dfa55c9bbf3bd3951fb76",
     "synthetic_occluder_visibility_limitation": "y12/y15/y18 have distinct source positions but identical synthetic visibility rays; Native effect remains for GPU review"
   },
   "whole_batch_gate_checkpoint": {
-    "command": ".venv-cpu/bin/python worker_check.py --complete --require-delivery-ready",
-    "exit_code": 130,
-    "verdict": "interrupted after several minutes during repository tree traversal; no fresh result",
-    "previous_reported_unapproved_runtime_path": "runtime/runs/scenario_pipeline/inputs/shared/manifest.json",
-    "runtime_path_still_exists": true
+    "status": "not_passed",
+    "last_reported_error": "Unapproved output: runtime/runs/scenario_pipeline/inputs/shared/manifest.json",
+    "frozen_path_preserved": true,
+    "ready_assignments": 10,
+    "partial_assignments": 33,
+    "note": "The latest full strict output supplied by the user reported this frozen runtime path. This turn passed only the C158190 scoped strict gate; no new full-batch verdict is claimed."
+  },
+  "scoped_strict_gate": {
+    "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C158190__NRS-484B-257-1__motor_vehicle_driver --complete --require-delivery-ready",
+    "exit_code": 0,
+    "static_checks_passed": true,
+    "manifest_sha256": "3fed3fa7f2b650dff8a43c84816ae834ae3f4431d21a49aa3b7a633cf7994c92"
   }
 }
