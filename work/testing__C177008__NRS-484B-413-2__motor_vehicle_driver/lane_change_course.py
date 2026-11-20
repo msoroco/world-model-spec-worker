@@ -287,11 +287,61 @@ def analyze_source_trace(root):
             "physical_acceptance_claimed": False, "legal_acceptance_claimed": False}
 
 
+def finalize_source_trace(source, output):
+    """Derive replay channels from saved original-shaped rows, once, on CPU."""
+    source, output = Path(source), Path(output)
+    if output.exists():
+        raise ValueError("Retain prior finalization; choose a fresh output")
+    report = analyze_source_trace(source)
+    rows = _rows(source / "drive_history.jsonl")
+    output.mkdir(parents=True)
+    channel_root = output / "channels"
+    channel_root.mkdir()
+    extract = {
+        "ego_speed": ("m/s", lambda row: row["ego_speed_mps"]),
+        "ego_heading": ("deg", lambda row: row["ego_heading_deg"]),
+        "ego_road_id": ("id", lambda row: row["native_road_id"]),
+        "ego_turn_indicator": ("device state", lambda row: {
+            "reported_mask": row["ego_light_mask"],
+            "reported_device_state": "right" if row["right_indicator"] else "off"}),
+        "ego_position": ("m", lambda row: row["ego_position_xy_m"]),
+    }
+    evidence = []
+    for name, (unit, value) in extract.items():
+        relative = "channels/" + name + ".jsonl"
+        with (output / relative).open("x") as stream:
+            for row in rows:
+                stream.write(json.dumps({"time_s": row["time_s"],
+                                         "original_frame": row["frame"],
+                                         "value": value(row)}, allow_nan=False) + "\n")
+        evidence.append({"name": name, "unit": unit, "reference": relative,
+                         "sha256": _hash(output / relative)})
+    result = {"format": "worker-lane-change-saved-source-analysis",
+              "cell_id": "C177008", "course": "change_lane",
+              "measured_values": {
+                  "continuous_right_signal_distance_m":
+                      report["first_course_change"]["continuous_right_signal_distance_m"],
+                  "statutory_boundary_m": report["required_distance_m"],
+                  "first_course_change_frame": report["first_course_change"]["frame"],
+                  "first_body_exit_frame": report["first_body_exit"]["frame"]},
+              "observed_continuous_distance_meets_boundary":
+                  report["observed_continuous_distance_meets_boundary"],
+              "source_scope": report["source_scope"],
+              "source_evidence_hashes": report["sources"],
+              "recording_evidence": evidence,
+              "physical_acceptance_claimed": False,
+              "legal_acceptance_claimed": False}
+    (output / "analysis.json").write_text(json.dumps(result, indent=2,
+                                                       allow_nan=False) + "\n")
+    return result
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--write-diagnostic", action="store_true")
     parser.add_argument("--analyze", type=Path)
+    parser.add_argument("--finalize-source", type=Path)
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
     (args.output / "road.xodr").write_text(build_opendrive())
@@ -299,6 +349,9 @@ def main():
     (args.output / "course-plan.json").write_text(json.dumps(result, indent=2) + "\n")
     if args.write_diagnostic:
         write_diagnostic(args.output / "diagnostic")
+    if args.finalize_source:
+        print(json.dumps(finalize_source_trace(args.finalize_source, args.output / "saved-finalization"), indent=2))
+        return
     if args.analyze:
         print(json.dumps(analyze_source_trace(args.analyze), indent=2))
         return
