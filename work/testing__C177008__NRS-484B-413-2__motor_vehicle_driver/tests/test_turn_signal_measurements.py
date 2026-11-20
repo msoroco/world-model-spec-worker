@@ -5,6 +5,7 @@ import tempfile
 import unittest
 from pathlib import Path
 from types import SimpleNamespace as NS
+from xml.etree import ElementTree as ET
 
 
 spec = importlib.util.spec_from_file_location("turn_signal_measurements", Path(__file__).resolve().parents[1] / "turn_signal_measurements.py")
@@ -13,6 +14,25 @@ spec.loader.exec_module(measure)
 
 
 class TurnSignalTests(unittest.TestCase):
+    def test_generated_right_turn_road_projects_with_pinned_adapter(self):
+        import sys
+        runtime = Path(__file__).resolve().parents[3] / "runtime" / "scenario_pipeline"
+        sys.path.insert(0, str(runtime))
+        from traffic_spec_adapter.geometry import static_map
+        xml = measure.build_right_turn_opendrive()
+        tree = ET.fromstring(xml)
+        roads = {int(road.attrib["id"]): road for road in tree.findall("road")}
+        self.assertEqual(set(roads), {177008, 177010, 177011})
+        self.assertEqual(float(roads[177008].attrib["length"]), 120.0)
+        self.assertEqual(float(roads[177010].find("planView/geometry/arc").attrib["curvature"]), -0.1)
+        self.assertEqual(tree.find("junction/connection/laneLink").attrib, {"from":"-1", "to":"-1"})
+        self.assertNotIn("business", xml.lower())
+        road = Path(__file__).resolve().parents[1] / "native-map-plan" / "right-turn-approach.xodr"
+        self.assertEqual(road.read_text(), xml)
+        regions, _, lane_ids = static_map(road, junctions=True)
+        self.assertEqual(set(lane_ids), {(177008, 0, -1), (177010, 0, -1), (177011, 0, -1)})
+        self.assertTrue(any(item["kind"] == "intersection" for item in regions))
+
     @staticmethod
     def waypoint(x, y, road=1, lane=-1):
         return NS(road_id=road, lane_id=lane,

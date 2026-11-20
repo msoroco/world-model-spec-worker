@@ -10,6 +10,7 @@ import json
 import math
 from pathlib import Path
 from contextlib import contextmanager
+from xml.etree import ElementTree as ET
 
 
 FEET_TO_M = 0.3048
@@ -119,6 +120,66 @@ def indicator_request_at_remaining_distance(remaining_m, *, start_m,
         if low <= remaining <= high:
             return False
     return remaining <= start
+
+
+def build_right_turn_opendrive():
+    """Author a small connected right-turn road with a 120 m direct approach.
+
+    This is synthetic route geometry. It supplies no evidence that any parcel is
+    legally a business or residential district, nor that CARLA realizes the
+    intended lane links. Both require separate source/Native review.
+    """
+    root = ET.Element("OpenDRIVE")
+    ET.SubElement(root, "header", revMajor="1", revMinor="4",
+                  name="C177008 synthetic right-turn approach", version="1",
+                  north="10", south="-55", east="20", west="-125",
+                  vendor="scenario-worker-demo CPU construction")
+    curve_length = 5 * math.pi
+    specs = ((177008, "direct approach", 120, -120, 0, 0, -1,
+              None, ("junction", 177009, None)),
+             (177010, "right-turn connector", curve_length, 0, 0, 0, 177009,
+              ("road", 177008, "end"), ("road", 177011, "start")),
+             (177011, "southbound departure", 40, 10, -10, -math.pi/2, -1,
+              ("junction", 177009, None), None))
+    for road_id, name, length, x, y, heading, junction, predecessor, successor in specs:
+        road = ET.SubElement(root, "road", name=name, length=str(length),
+                             id=str(road_id), junction=str(junction), rule="RHT")
+        link = ET.SubElement(road, "link")
+        for tag, target in (("predecessor", predecessor), ("successor", successor)):
+            if target:
+                attrs = {"elementType":target[0], "elementId":str(target[1])}
+                if target[2]:
+                    attrs["contactPoint"] = target[2]
+                ET.SubElement(link, tag, attrs)
+        plan = ET.SubElement(road, "planView")
+        geometry = ET.SubElement(plan, "geometry", s="0", x=str(x), y=str(y),
+                                 hdg=str(heading), length=str(length))
+        if road_id == 177010:
+            ET.SubElement(geometry, "arc", curvature="-0.1")
+        else:
+            ET.SubElement(geometry, "line")
+        elevation = ET.SubElement(road, "elevationProfile")
+        ET.SubElement(elevation, "elevation", s="0", a="0", b="0", c="0", d="0")
+        ET.SubElement(road, "lateralProfile")
+        lanes = ET.SubElement(road, "lanes")
+        ET.SubElement(lanes, "laneOffset", s="0", a="0", b="0", c="0", d="0")
+        section = ET.SubElement(lanes, "laneSection", s="0")
+        ET.SubElement(section, "left")
+        center = ET.SubElement(section, "center")
+        ET.SubElement(center, "lane", id="0", type="none", level="false")
+        right = ET.SubElement(section, "right")
+        lane = ET.SubElement(right, "lane", id="-1", type="driving", level="false")
+        lane_link = ET.SubElement(lane, "link")
+        if predecessor:
+            ET.SubElement(lane_link, "predecessor", id="-1")
+        if successor:
+            ET.SubElement(lane_link, "successor", id="-1")
+        ET.SubElement(lane, "width", sOffset="0", a="3.6", b="0", c="0", d="0")
+    junction = ET.SubElement(root, "junction", name="C177008 right turn", id="177009")
+    connection = ET.SubElement(junction, "connection", id="0", incomingRoad="177008",
+                                connectingRoad="177010", contactPoint="start")
+    ET.SubElement(connection, "laneLink", {"from":"-1", "to":"-1"})
+    return ET.tostring(root, encoding="unicode") + "\n"
 
 
 def _number(value):
