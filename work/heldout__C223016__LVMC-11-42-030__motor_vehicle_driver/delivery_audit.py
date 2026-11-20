@@ -7,6 +7,7 @@ physical or municipal direction premise used by the diagnostic fixture.
 import argparse
 import hashlib
 import json
+from math import hypot
 from pathlib import Path
 import sys
 from tempfile import TemporaryDirectory
@@ -16,11 +17,11 @@ CAMERAS = {'overview.mkv', 'approach.mkv', 'reference_corner.mkv',
            'driver_reference.mkv'}
 
 
-def physical_fixture(kind):
+def physical_fixture(kind, config_name='config.json'):
     """Exercise the runtime completion criterion with labelled synthetic rows."""
     sys.path.insert(0, str(HERE.parents[1] / 'runtime' / 'scenario_pipeline'))
     from worker_exchange.native_output import assess_physical, default_descriptor
-    config = json.loads((HERE / 'config.json').read_text())
+    config = json.loads((HERE / config_name).read_text())
     criterion = default_descriptor(config)
     if criterion['criterion'] != 'travel_progress':
         raise ValueError('Physical fixture requires the authored progress criterion')
@@ -54,10 +55,11 @@ def digest(path):
 
 def audit(candidate, source, receipt, *, tamper=False):
     manifest = json.loads((HERE / 'execution-manifest.json').read_text())
-    entry = manifest['cases'][0]
+    receipt = json.loads(Path(receipt).read_text())
+    entry = next(item for item in manifest['cases']
+                 if item['case_id'] == receipt.get('case_id'))
     selected = entry if candidate == 'primary' else next(
         item for item in entry['candidates'] if item['id'] == candidate)
-    receipt = json.loads(Path(receipt).read_text())
     if (receipt.get('case_id') != entry['case_id'] or
             receipt.get('candidate_id') != candidate or
             receipt.get('passed') is not True or
@@ -77,6 +79,23 @@ def audit(candidate, source, receipt, *, tamper=False):
             observed = '0' * 64
         if observed != expected:
             raise ValueError('Original source hash differs: ' + name)
+    direction = [json.loads(line) for line in
+                 (Path(source) / 'direction_state.jsonl').read_text().splitlines()]
+    trace = [json.loads(line) for line in
+             (Path(source) / 'trace.jsonl').read_text().splitlines()]
+    config = json.loads((Path(source) / 'config.json').read_text())
+    if len(direction) != len(trace) or len(direction) < 2:
+        raise ValueError('Original direction/trace frame count differs')
+    for observed, traced in zip(direction, trace):
+        if (observed['frame'], observed['time_s']) != (traced['frame'], traced['time_s']):
+            raise ValueError('Original direction/trace frame join differs')
+        if (observed['lane_id'] != config['governed_lane_id'] or
+                observed['device']['governs_lane_id'] != config['governed_lane_id']):
+            raise ValueError('Governed Native lane identity differs')
+        a, b = observed['subject_velocity_xy'], traced['velocity_mps'][:2]
+        length = hypot(*a) * hypot(*b)
+        if length < .01 or sum(x * y for x, y in zip(a, b)) / length < .95:
+            raise ValueError('Direction stream disagrees with retained trace velocity')
     result = Path(receipt['result'])
     if digest(result) != receipt['result_sha256']:
         raise ValueError('Saved result hash differs')
@@ -86,7 +105,7 @@ def audit(candidate, source, receipt, *, tamper=False):
             analysis.get('legal_acceptance_claimed') is True):
         raise ValueError('Saved result identity or status differs')
     return {'candidate_id': candidate, 'case_id': entry['case_id'],
-            'original_source_count': len(hashes),
+            'original_source_count': len(hashes), 'joined_direction_frames': len(direction),
             'source_hashes_verified': True, 'saved_result_verified': True,
             'physical_acceptance_claimed': False,
             'legal_acceptance_claimed': False,
