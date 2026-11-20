@@ -16,14 +16,32 @@
         "reason": "Native steering, route linkage, visible indicator and legal district review can fail"
       },
       "offline": {
-        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_right_at_100ft --output .runtime-work/c177008-returned-primary-offline-v10",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_right_at_100ft --output .runtime-work/c177008-returned-primary-offline-v12",
         "exit_code": 0,
         "log": "cpu-tests.log",
-        "log_sha256": "ad6d96c54104a1f8a7ef024ab7f6ff287e16b10014ce46127f74b1c7f63022f8",
+        "log_sha256": "571ba357b9fd981ce76bac284196cd49145c7f3368000efe7000533b7b04cf27",
         "construction_sha256": "ab60f75eaf0f473a1dc71259b25c81e0c4c14ea3768ac86ce0cd1a50e6bc4252"
       },
       "measurement_contract": "measurement-contract.json",
-      "fixture_recipe": "work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/diagnostic-recipe.json"
+      "fixture_recipe": "work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/diagnostic-recipe.json",
+      "compatibility": {
+        "receipt": "compatibility.json",
+        "sha256": "23fa1a4360d0ed2259cc6d7300782845b465c84a88324a49bbb159f2f0963a15",
+        "log": "analysis-proof.log",
+        "negative_log": "negative-proof.log",
+        "replay_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_right_at_100ft --output .runtime-work/c177008-compatibility-v8/analysis --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+      },
+      "negative": {
+        "log": "negative-proof.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_right_at_100ft --attempt .runtime-work/c177008-compatibility-v8/analysis --output .runtime-work/c177008-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat .runtime-work/c177008-saved-v1/v0001/feedback.json",
+        "test_log": "saved-processing.log",
+        "test_log_sha256": "f0f6c247f0b19702a541e8df197634fe9ff609b7861806e7393875d15333235c",
+        "test_exit_code": 0
+      }
     }
   ]
 }

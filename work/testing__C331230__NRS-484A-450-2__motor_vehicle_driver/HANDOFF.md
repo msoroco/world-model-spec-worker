@@ -210,3 +210,5 @@ Historical fallback analysis logs with byte-identical content were deduplicated 
 ## 2026-11-19 byte-identical historical log consolidation
 
 Five extra delivery-negative log copies and four extra fallback-offline log copies were byte-identical to retained canonical files. Their exact filename references in `execution-manifest.json` and `result.json` were redirected to those same retained bytes, and only the nine duplicate copies were removed. The scoped nonready `worker_check.py --complete` passes. This freed nine return-file slots for C109705(2b) marked-far fallback construction and proofs. No frozen file or Git command was changed.
+
+2026-11-20 return-cap preservation: ten superseded, unbound proof logs and their historical result test entries were retained byte-for-byte in `work/_shared/archived-unbound-negative-logs-20261119.json` with original paths and SHA-256. The current C331230 status remains partial; restore and rerun a historical proof before relying on it.
