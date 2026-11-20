@@ -1,8 +1,9 @@
 """Independently audit source-bound C183370 delivery preparation.
 
 Diagnostic mode checks saved software joins and always rejects acceptance.
-Original mode additionally requires independently reviewed source citations;
-this script never decides the statutory verdict or canonical set membership.
+Original mode additionally requires independently reviewed source citations and
+a separate physical review. This script never decides the statutory verdict
+or canonical set membership.
 """
 import argparse
 import hashlib
@@ -86,6 +87,31 @@ def source_review(attempt, short):
                     'Original operator activity source changed')
         review = review_variant_annotations.evaluate(
             analysis, annotations, analysis_sha256=sha(analysis_path))
+        flagger = annotations.get('annotations', {}).get('fixed_flagger_conduct')
+        require(isinstance(flagger, dict) and flagger.get('status') in (
+                    'warning_observed', 'not_observed_in_reviewed_interval',
+                    'indeterminate'),
+                'Original fixed flagger conduct review required')
+        cameras = {row['name']: row['source_sha256']
+                   for row in analysis['camera_sources']}
+        require(flagger.get('camera') in cameras and
+                flagger.get('camera_sha256') == cameras[flagger['camera']],
+                'Original fixed flagger camera source changed')
+        first = analysis['observations']['source_first_frame']
+        last = analysis['observations']['source_last_frame']
+        interval = flagger.get('frame_interval')
+        context = review['control_and_repair_overlap_frames']
+        require(isinstance(interval, list) and len(interval) == 2 and
+                all(type(frame) is int for frame in interval) and
+                first <= interval[0] <= interval[1] <= last and
+                max(interval[0], context[0]) <= min(interval[1], context[1]) and
+                isinstance(flagger.get('observation'), str) and
+                len(flagger['observation'].strip()) >= 20,
+                'Original fixed flagger conduct needs cited context')
+        if flagger['status'] == 'warning_observed':
+            require(flagger.get('warning_content') ==
+                    'against_riding_or_driving_over_identified_pavement',
+                    'Fixed flagger warning content not reviewed')
     require(review['requested_contact_context_observed'] is True,
             'Requested contact context not observed in original sources')
     expected_activity = ('actually_engaged' if short ==
@@ -110,7 +136,31 @@ def source_review(attempt, short):
             'reviewer_id': review['reviewer_id'],
             'reviewed_contact_frames': len(
                 review.get('contact_during_reviewed_context_frames', [])),
-            'employee_exception_status': expected_activity}
+            'employee_exception_status': expected_activity,
+            'fixed_flagger_conduct_status': (
+                flagger['status'] if short not in ('reference', 'contrast')
+                else 'governing_warning_person')}
+
+
+def validate_physical_review(physical, *, case, candidate, manifest_sha256,
+                             processing_sha256, reviewed, source_hashes):
+    require(physical.get('format') == 'c183370-independent-physical-review-v1'
+            and physical.get('passed') is True
+            and physical.get('case_id') == case
+            and physical.get('candidate_id') == candidate
+            and physical.get('manifest_sha256') == manifest_sha256
+            and physical.get('processing_sha256') == processing_sha256
+            and physical.get('source_analysis_sha256') ==
+            reviewed['analysis_sha256']
+            and physical.get('source_annotations_sha256') ==
+            reviewed['annotations_sha256']
+            and physical.get('original_source_sha256') == source_hashes
+            and physical.get('checks') == {name: True for name in CHECKS}
+            and isinstance(physical.get('reviewer_id'), str)
+            and physical['reviewer_id'].strip()
+            and physical['reviewer_id'] != reviewed['reviewer_id']
+            and physical.get('legal_verdict_claimed') is False,
+            'Independent physical review bindings or checks incomplete')
 
 
 def audit(manifest_path, case, candidate, attempt, processing_path, diagnostic):
@@ -185,20 +235,30 @@ def audit(manifest_path, case, candidate, attempt, processing_path, diagnostic):
                 'original_source_sha256': hashes,
                 'original_native_verified': False,
                 'physical_or_legal_acceptance_claimed': False}
-    require(manifest_path.name == 'execution-manifest.json' and
+    require(manifest_path.resolve() == (HERE / 'execution-manifest.json').resolve() and
             manifest['format'] == 'worker-execution-manifest' and
             receipt['source_kind'] == 'original_carla_capture' and
             provenance['diagnostic_fixture'] is False and
             provenance['provenance_kind'] == 'native',
             'Original Native source required')
     reviewed = source_review(attempt, short)
+    physical_path = attempt / 'independent-physical-review.json'
+    require(physical_path.is_file(), 'Independent physical review required')
+    physical = read(physical_path)
+    validate_physical_review(
+        physical, case=case, candidate=candidate,
+        manifest_sha256=sha(manifest_path),
+        processing_sha256=sha(processing_path), reviewed=reviewed,
+        source_hashes=hashes)
     return {'format': 'c183370-delivery-audit-v1', 'case_id': case,
             'candidate_id': candidate, 'diagnostic_only': False,
-            'accepted': False, 'checks': {name: True for name in CHECKS},
+            'accepted': True, 'checks': {name: True for name in CHECKS},
             'manifest_sha256': sha(manifest_path),
             'original_source_sha256': hashes, 'source_review': reviewed,
+            'physical_review_sha256': sha(physical_path),
             'original_native_verified': True,
-            'physical_or_legal_acceptance_claimed': False}
+            'physical_acceptance_claimed': True,
+            'legal_acceptance_claimed': False}
 
 
 if __name__ == '__main__':
