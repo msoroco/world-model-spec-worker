@@ -339,13 +339,15 @@
     },
     {
       "name": "centerline_context",
-      "mandatory": true,
+      "mandatory": false,
       "source": "original OpenDRIVE lane geometry plus original marking observations",
       "measurement": "centerline location and lane relation, kept separate from temporary device direction",
       "case_ids": [
         "heldout__C223016__LVMC-11-42-030__motor_vehicle_driver__centerline_east_with",
         "heldout__C223016__LVMC-11-42-030__motor_vehicle_driver__centerline_west_against"
-      ]
+      ],
+      "capture_channel_required": false,
+      "source_requirement": "Required for the two centerline cases as original map and device source context; verified by centerline_direction_finalizer.py from retained originals, outside the primary capture-channel list."
     },
     {
       "name": "four_camera_source",
@@ -626,5 +628,32 @@
         "inputs/heldout__C223016__LVMC-11-42-030__motor_vehicle_driver/assignment.json"
       ]
     }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 8,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "governed lane, reversible-direction device and all participating traffic",
+        "interval": "startup through clearance and final observation"
+      },
+      {
+        "view": "approach",
+        "subject": "subject vehicle approach, lane and device face",
+        "interval": "startup through clearance and final observation"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "centerline, signs, signal face and reference road geometry",
+        "interval": "startup through clearance and final observation"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "driver sightline to direction device and governed lane",
+        "interval": "startup through clearance and final observation"
+      }
+    ]
   }
 }
