@@ -62,6 +62,27 @@ def _pose(row):
     return pose
 
 
+def _marking_anchor(row):
+    anchor = row['device'].get('marking_anchor')
+    if not isinstance(anchor, dict) or not isinstance(anchor.get('marking'), dict):
+        raise ValueError('Original marking anchor missing')
+    if (anchor['marking'].get('source_id') != row['device'].get('source_id')
+            or anchor.get('road_id') != anchor['marking'].get('road_id')
+            or anchor.get('lane_id') != row.get('lane_id')):
+        raise ValueError('Original marking anchor identity differs')
+    for key in ('s_m', 'lane_width_m'):
+        value = anchor.get(key)
+        if not isinstance(value, (int, float)) or not math.isfinite(value):
+            raise ValueError('Original marking anchor invalid')
+    for key in ('position_m', 'rotation_deg'):
+        values = anchor.get(key)
+        if not isinstance(values, list) or len(values) != 3 or any(
+                not isinstance(value, (int, float)) or not math.isfinite(value)
+                for value in values):
+            raise ValueError('Original marking anchor invalid')
+    return anchor
+
+
 def compare(comparison_id, *, tamper=False, tamper_pose=False):
     manifest = json.loads((HERE / 'execution-manifest.json').read_text())
     plan = json.loads((HERE / 'case-plan.json').read_text())
@@ -73,11 +94,14 @@ def compare(comparison_id, *, tamper=False, tamper_pose=False):
         right['rows'][0]['device']['source_id'] = 'tampered-device'
     pose_comparisons = {'morning_direction', 'evening_direction',
                         'period_reversal', 'sign_direction',
-                        'centerline_override'}
+                        'centerline_override', 'signal_direction'}
     if tamper_pose:
-        if comparison_id not in pose_comparisons:
-            raise ValueError('Pose tamper is limited to actor-device comparisons')
-        right['rows'][0]['device']['native_pose']['position_m'][0] += 1.0
+        if comparison_id == 'marking_direction':
+            right['rows'][0]['device']['marking_anchor']['position_m'][0] += 1.0
+        elif comparison_id in pose_comparisons:
+            right['rows'][0]['device']['native_pose']['position_m'][0] += 1.0
+        else:
+            raise ValueError('Geometry tamper requires a device comparison')
     a, b = left['config'], right['config']
     fixed = ('governed_lane_id', 'rate_hz', 'frames', 'duration_s', 'cameras')
     if any(a.get(k) != b.get(k) for k in fixed):
@@ -99,6 +123,10 @@ def compare(comparison_id, *, tamper=False, tamper_pose=False):
         fixed_pose = _pose(lhs[0])
         if any(_pose(row) != fixed_pose for row in lhs + rhs):
             raise ValueError('Controlled comparison changed original device pose')
+    if comparison_id == 'marking_direction':
+        fixed_anchor = _marking_anchor(lhs[0])
+        if any(_marking_anchor(row) != fixed_anchor for row in lhs + rhs):
+            raise ValueError('Controlled comparison changed original marking anchor')
     for x, y in zip(lhs, rhs):
         if (x['frame'], x['time_s'], x['lane_id']) != (y['frame'], y['time_s'], y['lane_id']):
             raise ValueError('Controlled comparison changed frame/time/lane')
@@ -132,7 +160,8 @@ def compare(comparison_id, *, tamper=False, tamper_pose=False):
             'original_direction_source_sha256': [x['receipt']['original_source_hashes']['direction_state.jsonl'] for x in (left, right)],
             'joined_frames': len(lhs), 'measured_outcomes': outcomes,
             'fixed_source_conditions_verified': True,
-            'native_device_geometry_verified': comparison_id in pose_comparisons,
+            'source_device_geometry_contract_verified': (
+                comparison_id in pose_comparisons or comparison_id == 'marking_direction'),
             'synthetic_diagnostic_only': True, 'physical_acceptance_claimed': False,
             'legal_acceptance_claimed': False}
 
