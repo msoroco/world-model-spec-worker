@@ -51,7 +51,11 @@ class FinalizeTests(unittest.TestCase):
             channel = [json.loads(line) for line in
                        (path/'channels/vehicle_stops_in_posted_fire_lane.jsonl')
                        .read_text().splitlines()]
-            self.assertTrue(all(row['value'] is None for row in channel))
+            self.assertTrue(all(isinstance(row['value'], bool) and
+                                row['value_basis'] == 'synthetic_authored_zone_only' and
+                                row['original_sign_text_verified'] is False and
+                                row['fire_code_designation_verified'] is False
+                                for row in channel))
             self.assertEqual(before, {name: (path/name).read_bytes()
                                       for name in before})
             with self.assertRaisesRegex(ValueError, 'Retain previous Native result'):

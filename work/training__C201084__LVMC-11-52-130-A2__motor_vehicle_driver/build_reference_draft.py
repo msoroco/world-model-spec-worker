@@ -118,9 +118,17 @@ class BundleTest(unittest.TestCase):
                 'cases': [{'case_id': CASE,
                            'construction': 'draft-reference-construction.json',
                            'construction_sha256': sha(HERE/'draft-reference-construction.json'),
+                           'measurement_contract': 'draft-reference-measurement-contract.json',
+                           'fixture_recipe': str((HERE/'draft-reference-diagnostic-recipe.json').relative_to(ROOT)),
                            'measurement_procedure': {
                                'entrypoint': 'native_finalize.py',
                                'source_only': True}}]}
+    proposal = dict(require_cases[0])
+    proposal['recording_description'] = recording
+    proposal['variable_assignments'] = {}
+    proposals = HERE/'proposals'
+    proposals.mkdir(exist_ok=True)
+    write(proposals/'cases.json', {'cases': [proposal]})
     write(HERE/'draft-reference-manifest.json', manifest)
     return {'case_id': CASE,
             'construction_sha256': sha(HERE/'draft-reference-construction.json'),

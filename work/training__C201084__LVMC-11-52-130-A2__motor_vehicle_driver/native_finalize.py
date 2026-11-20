@@ -3,6 +3,7 @@ import argparse
 import json
 from math import isfinite
 from pathlib import Path
+from shapely.geometry import Polygon
 
 from fire_lane_survey import CAMERAS, require
 from source_measurement import analyze, camera_sources, read_lines, sha, vector
@@ -12,10 +13,51 @@ ASSIGNMENT = 'training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver'
 CHANNELS = ('ego_pose', 'ego_speed', 'vehicle_stops_in_posted_fire_lane')
 
 
+def measure_stop_exception_context(measured):
+    """Report sampled motion and traffic context without deciding a statutory exception."""
+    return {'near_zero_with_authored_overlap_frames':
+            measured['near_zero_with_zone_overlap_frames'],
+            'near_zero_disjoint_frames': measured['near_zero_disjoint_frames'],
+            'following_vehicle_observed': all(
+                sample['following_gap_m'] >= 0 for sample in measured['samples']),
+            'police_direction_verified': False,
+            'traffic_control_direction_verified': False,
+            'conflict_necessity_verified': False}
+
+
+def measure_posted_curb_context(measured, survey):
+    """Keep authored curb overlap distinct from verified posting/designation."""
+    return {'authored_zone_overlap_frames': sum(
+                sample['body_zone_overlap_m2'] > 0 for sample in measured['samples']),
+            'authored_zone_area_m2': Polygon(survey['survey_geometry'][
+                'authored_fire_lane_polygon_xy_m']).area,
+            'sign_actor_id': survey['sign_readback']['actor_id'],
+            'original_sign_text_verified': False,
+            'fire_code_designation_verified': False}
+
+
+def measure_public_access_scope(measured, survey):
+    """Retain the surveyed road identity and sampled destination relation."""
+    return {'road_id': survey['fixed_context']['road_id'],
+            'sampled_stop_in_authored_zone':
+                measured['near_zero_with_zone_overlap_frames'] > 0,
+            'public_access_legally_verified': False,
+            'source_kind': measured['source_kind']}
+
+
 def _write_new(path, value):
     with path.open('x', encoding='utf-8') as stream:
         json.dump(value, stream, indent=2, allow_nan=False)
         stream.write('\n')
+
+
+def _retain_or_verify(path, content):
+    """Saved stages may carry derived originals; reuse only byte-identical output."""
+    if path.exists():
+        require(path.is_file() and path.read_text() == content,
+                'Prior derived output differs from retained sources: '+path.name)
+    else:
+        path.write_text(content)
 
 
 def finalize(attempt, output):
@@ -47,7 +89,10 @@ def finalize(attempt, output):
                 provenance.get('diagnostic_fixture') is False)
     require(diagnostic or original,
             'Acquisition provenance must distinguish original from fixture')
+    require((attempt/'native-survey-readback.json').is_file(),
+            'Missing required source: native-survey-readback.json')
     measured = analyze(attempt, case, diagnostic=diagnostic)
+    survey = json.loads((attempt/'native-survey-readback.json').read_text())
     videos = (camera_sources(attempt, measured['frames']) if diagnostic
               else measured['source_camera_videos'])
     require(set(videos) == set(CAMERAS),
@@ -73,16 +118,19 @@ def finalize(attempt, output):
     for actor, frame, sample in zip(actors, frames, measured['samples']):
         at = {'frame': frame['carla_frame'], 'time_s': frame['time_s']}
         pose = actor['ego_pose_xyz_m']
-        channels['ego_pose'].append({**at, 'position_xyz_m': pose,
+        channels['ego_pose'].append({**at, 'value': pose, 'position_xyz_m': pose,
             'yaw_deg': actor['ego_yaw_deg'],
             'body_vertices_xyz_m': actor['ego_body_vertices_xyz_m']})
-        channels['ego_speed'].append({**at,
+        channels['ego_speed'].append({**at, 'value': sample['speed_mps'],
             'speed_mps': sample['speed_mps'],
             'velocity_xyz_mps': actor['ego_velocity_xyz_mps'],
             'speed_provenance': measured['source_kind']})
         channels['vehicle_stops_in_posted_fire_lane'].append({
             **at,
-            'value': None,
+            'value': (sample['speed_mps'] <= 0.05 and
+                      sample['body_zone_overlap_m2'] > 0) if diagnostic else None,
+            'value_basis': ('synthetic_authored_zone_only' if diagnostic else
+                            'original_posting_review_pending'),
             'sampled_near_zero_motion': sample['speed_mps'] <= 0.05,
             'authored_zone_overlap_m2': sample['body_zone_overlap_m2'],
             'sampled_body_fully_in_authored_zone':
@@ -93,11 +141,18 @@ def finalize(attempt, output):
                        'position': {'x': pose[0], 'y': pose[1], 'z': pose[2]},
                        'heading_deg': actor['ego_yaw_deg'],
                        'speed_mps': sample['speed_mps'],
+                       'speed_mph': sample['speed_mps']/0.44704,
+                       'control': {},
                        'velocity_mps': actor['ego_velocity_xyz_mps'],
                        'speed_provenance': measured['source_kind'],
                        'source_actor_sha256': sources['native-actors.jsonl']})
     source_context = {'map_name': json.loads(
         (attempt/'native-survey-readback.json').read_text())['map_name'],
+        'original_map_sign_and_fire_lane_survey': {
+            'source_kind': measured['source_kind'],
+            'survey_source_sha256': sources['native-survey-readback.json'],
+            'posting_designation_verified': False,
+            'original_sign_text_verified': False},
         'road_id': json.loads(
         (attempt/'native-survey-readback.json').read_text())['fixed_context']['road_id'],
         'sign_actor_id': actors[0]['sign_actor_id'],
@@ -105,17 +160,16 @@ def finalize(attempt, output):
         'original_sign_text_verified': False,
         'fire_code_designation_verified': False}
     channel_dir = attempt/'channels'
-    require(not channel_dir.exists() and
-            not (attempt/'trace.jsonl').exists() and
-            not (attempt/'recorded-context.json').exists(),
-            'Retain previous derived output; use a fresh stage')
+    require(not channel_dir.exists(),
+            'Retain previous derived channels; use a fresh stage')
     channel_dir.mkdir()
     for name, values in channels.items():
         (channel_dir/(name+'.jsonl')).write_text(
             ''.join(json.dumps(row, allow_nan=False)+'\n' for row in values))
-    (attempt/'trace.jsonl').write_text(
+    _retain_or_verify(attempt/'trace.jsonl',
         ''.join(json.dumps(row, allow_nan=False)+'\n' for row in traces))
-    _write_new(attempt/'recorded-context.json', source_context)
+    _retain_or_verify(attempt/'recorded-context.json',
+                      json.dumps(source_context, indent=2, allow_nan=False)+'\n')
     sources['trace.jsonl'] = sha(attempt/'trace.jsonl')
     sampled_target = (measured['near_zero_with_zone_overlap_frames'] > 0
                       if case == 'reference' else
@@ -179,6 +233,21 @@ def finalize(attempt, output):
     report = {
         'format': 'worker-analysis-report', 'case_id': config['case_id'],
         'measurements': {
+            'stop_exception_context': {
+                'value': measure_stop_exception_context(measured),
+                'method': 'measure_stop_exception_context',
+                'sources': {key: sources[key] for key in
+                            ('native-actors.jsonl', 'video_frames.jsonl')}},
+            'posted_curb_context': {
+                'value': measure_posted_curb_context(measured, survey),
+                'method': 'measure_posted_curb_context',
+                'sources': {key: sources[key] for key in
+                            ('native-survey-readback.json', 'native-actors.jsonl')}},
+            'public_access_scope': {
+                'value': measure_public_access_scope(measured, survey),
+                'method': 'measure_public_access_scope',
+                'sources': {key: sources[key] for key in
+                            ('native-survey-readback.json', 'native-actors.jsonl')}},
             'authored_zone_stop': {
                 'value': {'near_zero_with_overlap_frames':
                           measured['near_zero_with_zone_overlap_frames'],
