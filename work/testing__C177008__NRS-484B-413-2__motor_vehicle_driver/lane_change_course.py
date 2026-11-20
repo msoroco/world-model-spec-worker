@@ -292,6 +292,18 @@ def analyze_source_trace(root):
             "physical_acceptance_claimed": False, "legal_acceptance_claimed": False}
 
 
+def measure_continuous_right_signal_distance(report):
+    return report["first_course_change"]["continuous_right_signal_distance_m"]
+
+
+def source_district_boundary(report):
+    return report["required_distance_m"]
+
+
+def measure_lane_change_onset(report):
+    return report["first_course_change"]
+
+
 def finalize_source_trace(source, output):
     """Derive replay channels from saved original-shaped rows, once, on CPU."""
     source, output = Path(source), Path(output)
@@ -403,11 +415,11 @@ def finalize_saved(attempt, output):
                  for p in evidence_root.rglob("*") if p.is_file()}
     (attempt.parent / "evidence-checksums.json").write_text(
         json.dumps(checksums, sort_keys=True, allow_nan=False) + "\n")
-    distance = report["first_course_change"]["continuous_right_signal_distance_m"]
+    distance = measure_continuous_right_signal_distance(report)
     observed = report["observed_continuous_distance_meets_boundary"]
     result = {"case_id": config["selected_case_id"],
         "measured_values": {"continuous_right_signal_distance_m": distance,
-                            "statutory_boundary_m": report["required_distance_m"],
+                            "statutory_boundary_m": source_district_boundary(report),
                             "first_course_change_frame": report["first_course_change"]["frame"],
                             "first_body_exit_frame": report["first_body_exit"]["frame"]},
         "target_checks": [{"target": "continuous_right_signal_before_lane_change",
@@ -431,6 +443,27 @@ def finalize_saved(attempt, output):
     result = physical_result(attempt, result)
     analysis = {"format": "worker-lane-change-saved-analysis",
                 "case_id": config["selected_case_id"],
+                "measurements": {
+                    "continuous_right_signal_distance_m": {
+                        "value": distance, "unit": "m",
+                        "method": "measure_continuous_right_signal_distance",
+                        "sources": {name: report["sources"][name] for name in
+                                    ("drive_history.jsonl", "body_history.jsonl",
+                                     "video_frames.jsonl", "capture/native/frames.jsonl",
+                                     "route_context.json", "road.xodr")}},
+                    "district_boundary_m": {
+                        "value": source_district_boundary(report), "unit": "m",
+                        "method": "source_district_boundary",
+                        "sources": {name: report["sources"][name] for name in
+                                    ("route_context.json", "district-site-packet.json",
+                                     "district-site-source.txt", "road.xodr")}},
+                    "lane_change_onset": {
+                        "value": measure_lane_change_onset(report),
+                        "method": "measure_lane_change_onset",
+                        "sources": {name: report["sources"][name] for name in
+                                    ("drive_history.jsonl", "body_history.jsonl",
+                                     "video_frames.jsonl", "capture/native/frames.jsonl",
+                                     "route_context.json", "road.xodr")}}},
                 "source_report": report, "source_hashes": report["sources"],
                 "physical_checks": result["physical_checks"],
                 "legal_verdict_asserted": False,
@@ -440,14 +473,18 @@ def finalize_saved(attempt, output):
     return analysis
 
 
-def native_control(position_xy, yaw_deg, speed_mps, station_m, target_speed_mps=SPEED_MPS):
+def native_control(position_xy, yaw_deg, speed_mps, station_m,
+                   target_speed_mps=SPEED_MPS, lookahead_m=4.0,
+                   steering_divisor_deg=45.0):
     """Bounded pure-pursuit command for the authored right lane change."""
-    target = course_sample(min(ROAD_LENGTH_M, station_m + 4.0))
+    if not 1.0 <= lookahead_m <= 8.0 or not 20.0 <= steering_divisor_deg <= 70.0:
+        raise ValueError("Lane-change controller knobs outside bounded range")
+    target = course_sample(min(ROAD_LENGTH_M, station_m + lookahead_m))
     dx = target["x_m"] - position_xy[0]
     dy = target["y_m"] - position_xy[1]
     desired = math.degrees(math.atan2(dy, dx))
     error = (desired - yaw_deg + 180.0) % 360.0 - 180.0
-    steer = max(-0.65, min(0.65, error / 45.0))
+    steer = max(-0.65, min(0.65, error / steering_divisor_deg))
     throttle = max(0.0, min(0.55, 0.3 * (target_speed_mps - speed_mps)))
     brake = max(0.0, min(0.5, 0.2 * (speed_mps - target_speed_mps)))
     return {"steer": steer, "throttle": throttle, "brake": brake,
@@ -469,7 +506,10 @@ def capture_native(args, config):
     output = Path(args.output_dir).resolve()
     if not output.is_dir() or not (output / "construction.json").is_file():
         raise ValueError("Use runtime.py capture to materialize exact construction")
-    if _hash(output / "road.xodr") != hashlib.sha256(build_opendrive().encode()).hexdigest():
+    road = output / "road.xodr"
+    if not road.exists():
+        road.write_text(build_opendrive())
+    if _hash(road) != hashlib.sha256(build_opendrive().encode()).hexdigest():
         raise ValueError("Returned lane-change map differs from controller")
     if (config.get("cell_id") != "C177008" or config.get("course") != "change_lane"
             or config.get("rate_hz") != 20 or config.get("duration_s") != 40
@@ -531,7 +571,9 @@ def capture_native(args, config):
                             raise ValueError("Native ego left the authored road")
                         command = native_control((pose.location.x, pose.location.y),
                                                  pose.rotation.yaw, speed, waypoint.s,
-                                                 config.get("requested_speed_mps", SPEED_MPS))
+                                                 config.get("requested_speed_mps", SPEED_MPS),
+                                                 config.get("controller_lookahead_m", 4.0),
+                                                 config.get("controller_steering_divisor_deg", 45.0))
                         set_native_right_blinker(ego, carla.VehicleLightState,
                                                  command["requested_right_indicator"])
                         ego.apply_control(carla.VehicleControl(

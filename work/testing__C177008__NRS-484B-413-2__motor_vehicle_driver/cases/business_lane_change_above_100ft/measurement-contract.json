@@ -1,0 +1,60 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Continuous right-intention signal over traveled approach before course change",
+      "source": "NRS 484B.413(2)",
+      "output_key": "continuous_right_signal_distance_m",
+      "method": "measure_continuous_right_signal_distance",
+      "value_type": "number",
+      "kind": "measured",
+      "inputs": [
+        "drive_history.jsonl",
+        "body_history.jsonl",
+        "video_frames.jsonl",
+        "capture/native/frames.jsonl",
+        "route_context.json",
+        "road.xodr"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Business or residential district selects the 100-foot boundary",
+      "source": "NRS 484B.413(2)",
+      "output_key": "district_boundary_m",
+      "method": "source_district_boundary",
+      "value_type": "number",
+      "kind": "sourced_context",
+      "inputs": [
+        "route_context.json",
+        "district-site-packet.json",
+        "district-site-source.txt",
+        "road.xodr"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "Lane-change course-change onset follows the continuous signal",
+      "source": "NRS 484B.413(2)",
+      "output_key": "lane_change_onset",
+      "method": "measure_lane_change_onset",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "drive_history.jsonl",
+        "body_history.jsonl",
+        "video_frames.jsonl",
+        "capture/native/frames.jsonl",
+        "route_context.json",
+        "road.xodr"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "drive_history.jsonl"
+    ],
+    "error_contains": "Missing required source: drive_history.jsonl"
+  }
+}

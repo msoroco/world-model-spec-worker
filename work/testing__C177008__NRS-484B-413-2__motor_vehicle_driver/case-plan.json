@@ -121,6 +121,19 @@
         "sha256": "6b1c423b9f051eba08e1e6115a40c620b3be510b39e60b340db364d71cfda6a6",
         "exit_code": 0
       }
+    },
+    {
+      "case_id": "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_lane_change_above_100ft",
+      "target_law_id": "NRS-484B-413-2",
+      "purpose": "Frozen change-lane cell: continuous right indicator before same-road two-lane course change in a synthetic business-area diagnostic",
+      "construction": "cases/business_lane_change_above_100ft/construction.json",
+      "construction_sha256": "c7010c7d20bffc9a0aad8420b34fe72b550fbbd3fb6f22e2ee602705ddb38143",
+      "exact_offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/lane-change-execution-draft.json --case testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_lane_change_above_100ft --output .runtime-work/c177008-lane-saved-media-v2/exact-offline-v2 --python .venv-cpu/bin/python",
+        "log": "cases/business_lane_change_above_100ft/offline.log",
+        "sha256": "d10ffbd9f0faa72cd6837063279524e199b59fbc3d035051302a1e8dbc4b36ad",
+        "exit_code": 0
+      }
     }
   ],
   "comparisons": [
@@ -368,7 +381,8 @@
         "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__other_area_right_at_300ft",
         "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__other_area_right_below_300ft",
         "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__other_area_right_above_300ft",
-        "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__residential_right_at_100ft"
+        "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__residential_right_at_100ft",
+        "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_lane_change_above_100ft"
       ],
       "evidence_or_gap": "measured from original Native light-mask readback, ego path and source-joined frames"
     },
@@ -385,7 +399,8 @@
         "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__other_area_right_at_300ft",
         "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__other_area_right_below_300ft",
         "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__other_area_right_above_300ft",
-        "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__residential_right_at_100ft"
+        "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__residential_right_at_100ft",
+        "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_lane_change_above_100ft"
       ],
       "evidence_or_gap": "sourced from retained exact-map district packet and document; legal correctness awaits independent site review"
     },
@@ -405,6 +420,15 @@
         "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__residential_right_at_100ft"
       ],
       "evidence_or_gap": "measured from original frame, ego heading and path bearing"
+    },
+    {
+      "requirement": "Lane-change course-change onset follows the continuous signal",
+      "source": "NRS 484B.413(2)",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_lane_change_above_100ft"
+      ],
+      "evidence_or_gap": "original right-lamp readback, sampled ego path and body/source-lane exit; Native pixels and legal district review remain unverified"
     }
   ],
   "comparison_proofs": [
