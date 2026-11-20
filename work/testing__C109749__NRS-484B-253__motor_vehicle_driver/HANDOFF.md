@@ -684,3 +684,7 @@ Return cap checkpoint: 8 unbound historical top-level logs and former test rows 
 Two further unreferenced historical draft helper scripts (`build_far_approach_draft.py`, `prove_far_fixture_observation.py`) were losslessly archived in the same shared archive for return capacity; assignment-scoped complete check still passes.
 
 Four further unreferenced historical helper scripts (`record_signal_advance_physical.py`, `record_signal_advance_comparison.py`, `build_inside_physical_receipts.py`, `prove_canonical_signal_distance.py`) were preserved byte-for-byte in the shared archive with original paths and SHA-256; scoped complete check passes after archival.
+
+## 2026-11-20 reversible return-slot archive
+
+Eight unreferenced historical semantic authoring/validation helper scripts were byte-preserved with SHA-256 in `work/_shared/archived-unbound-negative-logs-20261119.json` (653 total entries) to free return slots. No current selected construction or receipt was removed. Assignment-scoped `worker_check.py --complete` passed after archival; existing ready status was not changed.

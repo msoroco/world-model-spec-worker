@@ -4,9 +4,106 @@
   "status": "draft",
   "cases": [
     {
+      "case_id": "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared right-turn diagnostic baseline; frozen cell lane-change construction remains pending.",
+      "variable_assignments": {
+        "indicator_start_m": {
+          "kind": "controller",
+          "value": 30.98,
+          "unit": "m",
+          "note": "engineering request with one sampled-frame lead"
+        },
+        "district_type": {
+          "kind": "world_setup",
+          "value": "business",
+          "unit": "district class",
+          "note": "requires separately reviewed statutory site evidence"
+        },
+        "continuous_right_signal_distance_ft": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "ft",
+          "note": "measured only from retained original sources"
+        },
+        "indicator_interruption_m": {
+          "kind": "controller",
+          "value": null,
+          "unit": "remaining approach m",
+          "note": "no interruption"
+        },
+        "weather": {
+          "kind": "world_setup",
+          "value": {
+            "cloudiness": 0.0,
+            "precipitation": 0.0,
+            "wetness": 0.0
+          },
+          "unit": "CARLA weather scale",
+          "note": "clear diagnostic comparison"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Legal business-district classification requires actual highway frontage and building-use evidence.",
+        "Native right-turn realization, indicator pixels and physical motion remain unverified."
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_turn_indicator",
+            "unit": "device state",
+            "method": "original Native ego light mask, right/off only",
+            "time_window": "every original frame",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "20 Hz sampled source; physical camera visibility pending independent review"
+          },
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "method": "original Native ego velocity magnitude",
+            "time_window": "every original frame",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "20 Hz sampled source; physical camera visibility pending independent review"
+          },
+          {
+            "name": "ego_heading",
+            "unit": "deg",
+            "method": "original Native ego yaw readback",
+            "time_window": "every original frame",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "20 Hz sampled source; physical camera visibility pending independent review"
+          },
+          {
+            "name": "ego_road_id",
+            "unit": "id",
+            "method": "original Native road-id readback",
+            "time_window": "every original frame",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "20 Hz sampled source; physical camera visibility pending independent review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "district_packet",
+            "unit": "source document",
+            "method": "independent exact-map district review required"
+          }
+        ],
+        "limitations": [
+          "Synthetic road has no inherent legal business district status",
+          "Actual indicator pixels and turn geometry require source review"
+        ]
+      }
+    },
+    {
       "case_id": "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_right_below_100ft",
       "target_law_id": "NRS-484B-413-2",
-      "target_type": "negative",
+      "target_type": "boundary_probe",
       "rationale": "Diagnostic of a right indicator beginning below the last 100 feet before source-measured course change; business-district source assertion remains independently reviewable.",
       "variable_assignments": {
         "indicator_start_m": {
@@ -15,17 +112,33 @@
           "unit": "m",
           "note": "engineering request below 100-foot boundary"
         },
-        "observed_continuous_distance_m": {
-          "kind": "subject_behavior",
-          "value": null,
-          "unit": "m",
-          "note": "measured only from original drive and frame sources"
-        },
         "district_type": {
           "kind": "world_setup",
           "value": "business",
           "unit": "district class",
           "note": "requires separately reviewed statutory site evidence"
+        },
+        "continuous_right_signal_distance_ft": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "ft",
+          "note": "measured only from retained original sources"
+        },
+        "indicator_interruption_m": {
+          "kind": "controller",
+          "value": null,
+          "unit": "remaining approach m",
+          "note": "no interruption"
+        },
+        "weather": {
+          "kind": "world_setup",
+          "value": {
+            "cloudiness": 0.0,
+            "precipitation": 0.0,
+            "wetness": 0.0
+          },
+          "unit": "CARLA weather scale",
+          "note": "clear diagnostic comparison"
         }
       },
       "unresolved_judgment_calls": [
@@ -82,12 +195,30 @@
           "Synthetic road has no inherent legal business district status",
           "Actual indicator pixels and turn geometry require source review"
         ]
+      },
+      "paired_probe_id": "business_100ft",
+      "deliberate_differences": [
+        "indicator_start_m"
+      ],
+      "probe": {
+        "primary_variable": "continuous_right_signal_distance_ft",
+        "comparison_or_standard": "100 ft final continuous signal distance in the selected district branch",
+        "target_value_or_branch": 100.0,
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": ">=",
+        "unit": "ft",
+        "test_value": 87.09677419354838
+      },
+      "epsilon_used": {
+        "value": 0.01,
+        "unit": "ft",
+        "rationale": "Source sampling resolution; exact legal boundary is unchanged."
       }
     },
     {
       "case_id": "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_right_at_100ft",
       "target_law_id": "NRS-484B-413-2",
-      "target_type": "positive",
+      "target_type": "boundary_probe",
       "rationale": "Diagnostic of a continuous right indicator over the last sampled 100 feet before source-measured course change; business-district source assertion remains independently reviewable.",
       "variable_assignments": {
         "indicator_start_m": {
@@ -96,17 +227,33 @@
           "unit": "m",
           "note": "engineering request with one sampled-frame lead"
         },
-        "observed_continuous_distance_m": {
-          "kind": "subject_behavior",
-          "value": null,
-          "unit": "m",
-          "note": "measured only from original drive and frame sources"
-        },
         "district_type": {
           "kind": "world_setup",
           "value": "business",
           "unit": "district class",
           "note": "requires separately reviewed statutory site evidence"
+        },
+        "continuous_right_signal_distance_ft": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "ft",
+          "note": "measured only from retained original sources"
+        },
+        "indicator_interruption_m": {
+          "kind": "controller",
+          "value": null,
+          "unit": "remaining approach m",
+          "note": "no interruption"
+        },
+        "weather": {
+          "kind": "world_setup",
+          "value": {
+            "cloudiness": 0.0,
+            "precipitation": 0.0,
+            "wetness": 0.0
+          },
+          "unit": "CARLA weather scale",
+          "note": "clear diagnostic comparison"
         }
       },
       "unresolved_judgment_calls": [
@@ -163,12 +310,30 @@
           "Synthetic road has no inherent legal business district status",
           "Actual indicator pixels and turn geometry require source review"
         ]
+      },
+      "paired_probe_id": "business_100ft",
+      "deliberate_differences": [
+        "indicator_start_m"
+      ],
+      "probe": {
+        "primary_variable": "continuous_right_signal_distance_ft",
+        "comparison_or_standard": "100 ft final continuous signal distance in the selected district branch",
+        "target_value_or_branch": 100.0,
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": ">=",
+        "unit": "ft",
+        "test_value": 100.0
+      },
+      "epsilon_used": {
+        "value": 0.01,
+        "unit": "ft",
+        "rationale": "Source sampling resolution; exact legal boundary is unchanged."
       }
     },
     {
       "case_id": "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_right_above_100ft",
       "target_law_id": "NRS-484B-413-2",
-      "target_type": "positive",
+      "target_type": "boundary_probe",
       "rationale": "Diagnostic of a continuous right indicator beginning above the last 100 feet before source-measured course change; business-district source assertion remains independently reviewable.",
       "variable_assignments": {
         "indicator_start_m": {
@@ -177,17 +342,33 @@
           "unit": "m",
           "note": "engineering request above 100-foot boundary"
         },
-        "observed_continuous_distance_m": {
-          "kind": "subject_behavior",
-          "value": null,
-          "unit": "m",
-          "note": "measured only from original drive and frame sources"
-        },
         "district_type": {
           "kind": "world_setup",
           "value": "business",
           "unit": "district class",
           "note": "requires separately reviewed statutory site evidence"
+        },
+        "continuous_right_signal_distance_ft": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "ft",
+          "note": "measured only from retained original sources"
+        },
+        "indicator_interruption_m": {
+          "kind": "controller",
+          "value": null,
+          "unit": "remaining approach m",
+          "note": "no interruption"
+        },
+        "weather": {
+          "kind": "world_setup",
+          "value": {
+            "cloudiness": 0.0,
+            "precipitation": 0.0,
+            "wetness": 0.0
+          },
+          "unit": "CARLA weather scale",
+          "note": "clear diagnostic comparison"
         }
       },
       "unresolved_judgment_calls": [
@@ -244,12 +425,30 @@
           "Synthetic road has no inherent legal business district status",
           "Actual indicator pixels and turn geometry require source review"
         ]
+      },
+      "paired_probe_id": "business_100ft",
+      "deliberate_differences": [
+        "indicator_start_m"
+      ],
+      "probe": {
+        "primary_variable": "continuous_right_signal_distance_ft",
+        "comparison_or_standard": "100 ft final continuous signal distance in the selected district branch",
+        "target_value_or_branch": 100.0,
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": ">=",
+        "unit": "ft",
+        "test_value": 103.34645669291338
+      },
+      "epsilon_used": {
+        "value": 0.01,
+        "unit": "ft",
+        "rationale": "Source sampling resolution; exact legal boundary is unchanged."
       }
     },
     {
       "case_id": "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_right_interrupted",
       "target_law_id": "NRS-484B-413-2",
-      "target_type": "negative",
+      "target_type": "violating_attempt",
       "rationale": "Diagnostic of a right indicator interrupted within the last 100 feet before source-measured course change; business-district source assertion remains independently reviewable.",
       "variable_assignments": {
         "indicator_start_m": {
@@ -257,12 +456,6 @@
           "value": 32.0,
           "unit": "m",
           "note": "engineering request above 100-foot boundary"
-        },
-        "observed_continuous_distance_m": {
-          "kind": "subject_behavior",
-          "value": null,
-          "unit": "m",
-          "note": "measured only from original drive and frame sources"
         },
         "district_type": {
           "kind": "world_setup",
@@ -278,6 +471,22 @@
           ],
           "unit": "m remaining",
           "note": "intentional off interval inside the final 100 feet"
+        },
+        "continuous_right_signal_distance_ft": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "ft",
+          "note": "measured only from retained original sources"
+        },
+        "weather": {
+          "kind": "world_setup",
+          "value": {
+            "cloudiness": 0.0,
+            "precipitation": 0.0,
+            "wetness": 0.0
+          },
+          "unit": "CARLA weather scale",
+          "note": "clear diagnostic comparison"
         }
       },
       "unresolved_judgment_calls": [
@@ -334,12 +543,29 @@
           "Synthetic road has no inherent legal business district status",
           "Actual indicator pixels and turn geometry require source review"
         ]
+      },
+      "paired_probe_id": "business_signal_interruption",
+      "deliberate_differences": [
+        "indicator_interruption_m"
+      ],
+      "probe": {
+        "primary_variable": "continuous_right_signal_distance_ft",
+        "comparison_or_standard": "100 ft final continuous signal distance in the selected district branch",
+        "target_value_or_branch": 100.0,
+        "operator": ">=",
+        "unit": "ft",
+        "test_value": 43.338836677673356
+      },
+      "epsilon_used": {
+        "value": 0.01,
+        "unit": "ft",
+        "rationale": "Source sampling resolution; exact legal boundary is unchanged."
       }
     },
     {
       "case_id": "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_right_wet",
       "target_law_id": "NRS-484B-413-2",
-      "target_type": "positive",
+      "target_type": "boundary_probe",
       "rationale": "Diagnostic of the same continuous right indicator under Native wet-weather setup; business-district source assertion remains independently reviewable.",
       "variable_assignments": {
         "indicator_start_m": {
@@ -347,12 +573,6 @@
           "value": 30.98,
           "unit": "m",
           "note": "engineering request with one sampled-frame lead"
-        },
-        "observed_continuous_distance_m": {
-          "kind": "subject_behavior",
-          "value": null,
-          "unit": "m",
-          "note": "measured only from original drive and frame sources"
         },
         "district_type": {
           "kind": "world_setup",
@@ -369,6 +589,18 @@
           },
           "unit": "CARLA weather scale",
           "note": "wet comparison; no statutory weather exception"
+        },
+        "continuous_right_signal_distance_ft": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "ft",
+          "note": "measured only from retained original sources"
+        },
+        "indicator_interruption_m": {
+          "kind": "controller",
+          "value": null,
+          "unit": "remaining approach m",
+          "note": "no interruption"
         }
       },
       "unresolved_judgment_calls": [
@@ -425,12 +657,29 @@
           "Synthetic road has no inherent legal business district status",
           "Actual indicator pixels and turn geometry require source review"
         ]
+      },
+      "paired_probe_id": "business_weather",
+      "deliberate_differences": [
+        "weather"
+      ],
+      "probe": {
+        "primary_variable": "continuous_right_signal_distance_ft",
+        "comparison_or_standard": "100 ft final continuous signal distance in the selected district branch",
+        "target_value_or_branch": 100.0,
+        "operator": ">=",
+        "unit": "ft",
+        "test_value": 100.0
+      },
+      "epsilon_used": {
+        "value": 0.01,
+        "unit": "ft",
+        "rationale": "Source sampling resolution; exact legal boundary is unchanged."
       }
     },
     {
       "case_id": "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__other_area_right_at_300ft",
       "target_law_id": "NRS-484B-413-2",
-      "target_type": "positive",
+      "target_type": "boundary_probe",
       "rationale": "Diagnostic of a continuous right indicator over the last 300 feet in an asserted other-area district; classification remains independently reviewable.",
       "variable_assignments": {
         "indicator_start_m": {
@@ -439,17 +688,33 @@
           "unit": "m",
           "note": "engineering request with one sampled-frame lead for 300 feet"
         },
-        "observed_continuous_distance_m": {
-          "kind": "subject_behavior",
-          "value": null,
-          "unit": "m",
-          "note": "measured only from original drive and frame sources"
-        },
         "district_type": {
           "kind": "world_setup",
           "value": "other",
           "unit": "district class",
           "note": "requires separately reviewed statutory site evidence"
+        },
+        "continuous_right_signal_distance_ft": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "ft",
+          "note": "measured only from retained original sources"
+        },
+        "indicator_interruption_m": {
+          "kind": "controller",
+          "value": null,
+          "unit": "remaining approach m",
+          "note": "no interruption"
+        },
+        "weather": {
+          "kind": "world_setup",
+          "value": {
+            "cloudiness": 0.0,
+            "precipitation": 0.0,
+            "wetness": 0.0
+          },
+          "unit": "CARLA weather scale",
+          "note": "clear diagnostic comparison"
         }
       },
       "unresolved_judgment_calls": [
@@ -506,12 +771,30 @@
           "Synthetic road has no inherent legal business district status",
           "Actual indicator pixels and turn geometry require source review"
         ]
+      },
+      "paired_probe_id": "other_300ft",
+      "deliberate_differences": [
+        "indicator_start_m"
+      ],
+      "probe": {
+        "primary_variable": "continuous_right_signal_distance_ft",
+        "comparison_or_standard": "300 ft final continuous signal distance in the selected district branch",
+        "target_value_or_branch": 300.0,
+        "threshold_ref": "obligation.numeric_conditions[1]",
+        "operator": ">=",
+        "unit": "ft",
+        "test_value": 300.0
+      },
+      "epsilon_used": {
+        "value": 0.01,
+        "unit": "ft",
+        "rationale": "Source sampling resolution; exact legal boundary is unchanged."
       }
     },
     {
       "case_id": "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__other_area_right_below_300ft",
       "target_law_id": "NRS-484B-413-2",
-      "target_type": "negative",
+      "target_type": "boundary_probe",
       "rationale": "The original right-indicator source starts one sampled approach step later than the 300-foot boundary; the continuous distance must measure below 91.44 m.",
       "variable_assignments": {
         "indicator_start_m": {
@@ -520,17 +803,33 @@
           "unit": "m",
           "note": "Engineering request one approach sample later than the 300-foot boundary case."
         },
-        "observed_continuous_distance_m": {
-          "kind": "subject_behavior",
-          "value": null,
-          "unit": "m",
-          "note": "measured only from original drive and frame sources"
-        },
         "district_type": {
           "kind": "world_setup",
           "value": "other",
           "unit": "district class",
           "note": "requires separately reviewed statutory site evidence"
+        },
+        "continuous_right_signal_distance_ft": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "ft",
+          "note": "measured only from retained original sources"
+        },
+        "indicator_interruption_m": {
+          "kind": "controller",
+          "value": null,
+          "unit": "remaining approach m",
+          "note": "no interruption"
+        },
+        "weather": {
+          "kind": "world_setup",
+          "value": {
+            "cloudiness": 0.0,
+            "precipitation": 0.0,
+            "wetness": 0.0
+          },
+          "unit": "CARLA weather scale",
+          "note": "clear diagnostic comparison"
         }
       },
       "unresolved_judgment_calls": [
@@ -587,12 +886,30 @@
           "Synthetic road has no inherent legal business district status",
           "Actual indicator pixels and turn geometry require source review"
         ]
+      },
+      "paired_probe_id": "other_300ft",
+      "deliberate_differences": [
+        "indicator_start_m"
+      ],
+      "probe": {
+        "primary_variable": "continuous_right_signal_distance_ft",
+        "comparison_or_standard": "300 ft final continuous signal distance in the selected district branch",
+        "target_value_or_branch": 300.0,
+        "threshold_ref": "obligation.numeric_conditions[1]",
+        "operator": ">=",
+        "unit": "ft",
+        "test_value": 296.7741935483871
+      },
+      "epsilon_used": {
+        "value": 0.01,
+        "unit": "ft",
+        "rationale": "Source sampling resolution; exact legal boundary is unchanged."
       }
     },
     {
       "case_id": "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__other_area_right_above_300ft",
       "target_law_id": "NRS-484B-413-2",
-      "target_type": "positive",
+      "target_type": "boundary_probe",
       "rationale": "The original right-indicator source starts one sampled approach step earlier than the 300-foot boundary; the continuous distance must measure above 91.44 m.",
       "variable_assignments": {
         "indicator_start_m": {
@@ -601,17 +918,33 @@
           "unit": "m",
           "note": "Engineering request one approach sample earlier than the 300-foot boundary case."
         },
-        "observed_continuous_distance_m": {
-          "kind": "subject_behavior",
-          "value": null,
-          "unit": "m",
-          "note": "measured only from original drive and frame sources"
-        },
         "district_type": {
           "kind": "world_setup",
           "value": "other",
           "unit": "district class",
           "note": "requires separately reviewed statutory site evidence"
+        },
+        "continuous_right_signal_distance_ft": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "ft",
+          "note": "measured only from retained original sources"
+        },
+        "indicator_interruption_m": {
+          "kind": "controller",
+          "value": null,
+          "unit": "remaining approach m",
+          "note": "no interruption"
+        },
+        "weather": {
+          "kind": "world_setup",
+          "value": {
+            "cloudiness": 0.0,
+            "precipitation": 0.0,
+            "wetness": 0.0
+          },
+          "unit": "CARLA weather scale",
+          "note": "clear diagnostic comparison"
         }
       },
       "unresolved_judgment_calls": [
@@ -668,12 +1001,30 @@
           "Synthetic road has no inherent legal business district status",
           "Actual indicator pixels and turn geometry require source review"
         ]
+      },
+      "paired_probe_id": "other_300ft",
+      "deliberate_differences": [
+        "indicator_start_m"
+      ],
+      "probe": {
+        "primary_variable": "continuous_right_signal_distance_ft",
+        "comparison_or_standard": "300 ft final continuous signal distance in the selected district branch",
+        "target_value_or_branch": 300.0,
+        "threshold_ref": "obligation.numeric_conditions[1]",
+        "operator": ">=",
+        "unit": "ft",
+        "test_value": 303.22580645161287
+      },
+      "epsilon_used": {
+        "value": 0.01,
+        "unit": "ft",
+        "rationale": "Source sampling resolution; exact legal boundary is unchanged."
       }
     },
     {
       "case_id": "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__residential_right_at_100ft",
       "target_law_id": "NRS-484B-413-2",
-      "target_type": "positive",
+      "target_type": "boundary_probe",
       "rationale": "The source district packet asserts residential rather than business status while the original signal and ego motion remain at the 100-foot boundary; legal classification still requires independent review.",
       "variable_assignments": {
         "indicator_start_m": {
@@ -682,17 +1033,33 @@
           "unit": "m",
           "note": "engineering request with one sampled-frame lead"
         },
-        "observed_continuous_distance_m": {
-          "kind": "subject_behavior",
-          "value": null,
-          "unit": "m",
-          "note": "measured only from original drive and frame sources"
-        },
         "district_type": {
           "kind": "world_setup",
           "value": "residential",
           "unit": "district class",
           "note": "requires separately reviewed statutory site evidence"
+        },
+        "continuous_right_signal_distance_ft": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "ft",
+          "note": "measured only from retained original sources"
+        },
+        "indicator_interruption_m": {
+          "kind": "controller",
+          "value": null,
+          "unit": "remaining approach m",
+          "note": "no interruption"
+        },
+        "weather": {
+          "kind": "world_setup",
+          "value": {
+            "cloudiness": 0.0,
+            "precipitation": 0.0,
+            "wetness": 0.0
+          },
+          "unit": "CARLA weather scale",
+          "note": "clear diagnostic comparison"
         }
       },
       "unresolved_judgment_calls": [
@@ -749,6 +1116,23 @@
           "Synthetic road has no inherent legal business district status",
           "Actual indicator pixels and turn geometry require source review"
         ]
+      },
+      "paired_probe_id": "business_residential",
+      "deliberate_differences": [
+        "district_type"
+      ],
+      "probe": {
+        "primary_variable": "continuous_right_signal_distance_ft",
+        "comparison_or_standard": "100 ft final continuous signal distance in the selected district branch",
+        "target_value_or_branch": 100.0,
+        "operator": ">=",
+        "unit": "ft",
+        "test_value": 100.0
+      },
+      "epsilon_used": {
+        "value": 0.01,
+        "unit": "ft",
+        "rationale": "Source sampling resolution; exact legal boundary is unchanged."
       }
     }
   ],
