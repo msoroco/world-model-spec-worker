@@ -41,7 +41,7 @@ judgments = [
      ['ego_pose', 'pavement_footprint_contact'], ['surveyed_repair_region']),
     ('a person or a sign warning persons against riding or driving over such pavement',
      'A nearby person alone does not prove a warning act. Draft barrier, warning-sign and closure-sign routes require original warning evidence.',
-     ['warning_person_state', 'ego_pose'], ['surveyed_repair_region']),
+     ['ego_pose', 'pavement_footprint_contact'], ['surveyed_repair_region']),
     ('employees actually engaged in the paving or repair of such pavement',
      'The employee exception requires original role and activity evidence; no exception is presumed.',
      ['ego_pose'], ['surveyed_repair_region']),
