@@ -238,3 +238,5 @@ Full `worker_check.py --complete --require-delivery-ready` rerun exited 1 at fro
 ## 2026-11-19 CPU preparation checkpoint
 
 Status: **ready**, after exact current CPU proofs and `.venv-cpu/bin/python worker_check.py --assignment testing__C125714__NRS-484B-250-2__motor_vehicle_driver --complete --require-delivery-ready` exited 0 (ignored log SHA256 `818de7401773c997c88df3058aa290716146eeba381d020530629d05e91a50f8`). All 32 current execution-time saved-processing receipts were copied into the manifest return proof paths and verified against the stable proof index. All eight physical lifecycle fixtures were rerun against the current primary saved receipts. `physical_fixture_proof.py` now accepts an explicit saved receipt path. Two byte-identical empty logs were consolidated to keep the 8,600-file cap while materializing 2b required files. The actual assignment scoped strict gate passes.
+
+Further return cap checkpoint: 13 more unbound historical top-level logs, exact bytes, hashes and any test rows were moved to the same shared archive. Current bound case receipts remain unchanged.
