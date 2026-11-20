@@ -1,0 +1,69 @@
+{
+  "template_id": "LVMC-11-42-030@motor_vehicle_driver",
+  "law_id": "LVMC-11-42-030",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "The City Traffic Engineer is authorized to determine and designate streets, or specific lanes thereon upon which vehicular traffic shall proceed in one direction during one period and the opposite direction during another period of the day, and may also erect signs temporarily designating lanes to be used by traffic moving in any particular direction, regardless of the centerline of the roadway. It shall be unlawful for any person to operate any vehicle in violation of such markings, signs, barriers, or other devices so placed in accordance with this Section.",
+  "structure": {
+    "law_id": "LVMC-11-42-030",
+    "activation": {
+      "condition": "A City Traffic Engineer designation places a direction device for a street or specific lane during a period, including temporary signs or other listed devices.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "type": "prohibition",
+      "description": "A person operating a vehicle shall not violate markings, signs, barriers or other devices placed in accordance with this Section.",
+      "numeric_conditions": []
+    },
+    "exceptions": [],
+    "timing": {
+      "description": "The effective direction depends on the original civil-time period; preserve every joined frame of lane occupancy and device state.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "The City Traffic Engineer is authorized to determine and designate streets, or specific lanes thereon",
+        "note": "Original municipal authorization and exact lane designation must be reviewed; a synthetic device source cannot establish authority."
+      },
+      {
+        "phrase": "during one period and the opposite direction during another period of the day",
+        "note": "Retain the original civil-time source and period-indexed designation; do not infer a schedule from the case name."
+      },
+      {
+        "phrase": "regardless of the centerline of the roadway",
+        "note": "Keep the original centerline observation separate from the temporary device direction when present."
+      },
+      {
+        "phrase": "in violation of such markings, signs, barriers, or other devices so placed in accordance with this Section",
+        "note": "Preserve original indication, vehicle trajectory and full camera views; legal violation is unresolved."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "period_id",
+      "kind": "world_setup",
+      "range_or_domain": "civil-time period sourced from the effective designation"
+    },
+    {
+      "name": "designated_direction",
+      "kind": "world_setup",
+      "range_or_domain": "east or west effective direction read from the original governing device"
+    },
+    {
+      "name": "device_form",
+      "kind": "world_setup",
+      "range_or_domain": "marking, sign, barrier or other source-observed device"
+    },
+    {
+      "name": "centerline_relation",
+      "kind": "world_setup",
+      "range_or_domain": "ordinary or contrary original centerline relation, with no legal priority inferred"
+    },
+    {
+      "name": "subject_direction",
+      "kind": "controller",
+      "range_or_domain": "east or west commanded travel; realized direction measured separately"
+    }
+  ]
+}
