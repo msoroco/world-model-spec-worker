@@ -16,7 +16,7 @@ from route_control import RouteControl
 from statutory_variants import bind
 
 
-def sample(world, carla, ego, control, command):
+def sample(world, carla, ego, control, command, governing_warning=None):
     if control is None:
         raise ValueError('Original control actor disappeared')
     pose = ego.get_transform()
@@ -32,6 +32,15 @@ def sample(world, carla, ego, control, command):
         raise ValueError('Original vehicle left drivable pavement')
     actor_location = control.get_transform().location
     speed = hypot(hypot(velocity.x, velocity.y), velocity.z)
+    warning_row = None
+    if governing_warning is not None:
+        if not governing_warning.is_alive:
+            raise ValueError('Original governing warning actor disappeared')
+        warning_location = governing_warning.get_transform().location
+        warning_row = {'actor_id': governing_warning.id,
+                       'type_id': governing_warning.type_id,
+                       'xyz_m': [warning_location.x, warning_location.y,
+                                 warning_location.z]}
     return {'source_kind': 'original_carla_actor_and_map_readback',
             'ego_actor_id': ego.id, 'ego_type_id': ego.type_id,
             'ego_position_xyz_m': [location.x, location.y, location.z],
@@ -43,6 +52,7 @@ def sample(world, carla, ego, control, command):
             'ego_lane_type': str(waypoint.lane_type),
             'control_actor_id': control.id, 'control_type_id': control.type_id,
             'control_xyz_m': [actor_location.x, actor_location.y, actor_location.z],
+            'governing_warning_control': warning_row,
             'requested_control': command, 'control_content_verified': False,
             'employee_exception_verified': False,
             'physical_completion_claimed': False}
@@ -104,6 +114,9 @@ def acquire(survey, case, attempt, client, carla, *, sink_factory=FFV1Sink):
         if ego is None:
             raise ValueError('Variant ego spawn is occupied')
         control = world.get_actors().find(survey['control_actor_id'])
+        warning = readback['governing_warning_control']
+        governing_warning = (world.get_actors().find(warning['actor_id'])
+                             if warning is not None else None)
         sensors = install_cameras(world, library, carla, ego, callbacks,
                                   config.get('camera_overrides'))
         for name, width, height, *_ in CAMERAS:
@@ -135,7 +148,8 @@ def acquire(survey, case, attempt, client, carla, *, sink_factory=FFV1Sink):
                 prior_time = timestamp
                 frames.write(json.dumps({'video_frame': index, 'carla_frame': frame,
                                          'native_frame': frame, 'time_s': timestamp}) + '\n')
-                observed = sample(world, carla, ego, control, command)
+                observed = sample(world, carla, ego, control, command,
+                                  governing_warning)
                 actors.write(json.dumps(dict(observed, frame=frame,
                                              video_frame=index, time_s=timestamp),
                                         allow_nan=False) + '\n')

@@ -24,6 +24,9 @@ def survey(kind):
     if kind == 'employee_exception':
         row['employee_activity_source'] = 'independent paving-work source review'
         row['nonemployee_activity_source'] = 'independent nonemployee source review'
+        row['governing_warning_control'] = {
+            'actor_id': 13, 'type_id': 'static.prop.trafficwarning',
+            'xy_m': [3, 0], 'source_reference': 'original warning-control pixels'}
     return row
 
 
@@ -44,7 +47,10 @@ class World:
         actor = types.SimpleNamespace(id=12, type_id=self.actor_type,
             get_transform=lambda: types.SimpleNamespace(location=types.SimpleNamespace(
                 x=self.actor_x, y=0, z=0)))
-        return types.SimpleNamespace(find=lambda ident: actor if ident == 12 else None)
+        warning = types.SimpleNamespace(id=13, type_id='static.prop.trafficwarning',
+            get_transform=lambda: types.SimpleNamespace(location=types.SimpleNamespace(
+                x=3, y=0, z=0)))
+        return types.SimpleNamespace(find=lambda ident: {12: actor, 13: warning}.get(ident))
 
 
 CARLA = types.SimpleNamespace(Location=lambda **kwargs: types.SimpleNamespace(**kwargs),
@@ -71,6 +77,8 @@ class StatutoryVariantTest(unittest.TestCase):
                 self.assertEqual(receipt['control_type_id'], row['control_type_id'])
                 self.assertFalse(receipt['control_content_verified'])
                 self.assertFalse(receipt['employee_exception_verified'])
+                if kind == 'employee_exception':
+                    self.assertEqual(receipt['governing_warning_control']['actor_id'], 13)
 
     def test_rejects_unisolated_or_unmeasured_scene(self):
         row = survey('barrier')
@@ -94,6 +102,14 @@ class StatutoryVariantTest(unittest.TestCase):
         employee = survey('employee_exception')
         del employee['employee_activity_source']
         with self.assertRaisesRegex(ValueError, 'activity source'):
+            validate(employee, 'surveyed-map')
+        employee = survey('employee_exception')
+        del employee['governing_warning_control']
+        with self.assertRaisesRegex(ValueError, 'distinct sourced governing'):
+            validate(employee, 'surveyed-map')
+        employee = survey('employee_exception')
+        employee['governing_warning_control']['actor_id'] = 12
+        with self.assertRaisesRegex(ValueError, 'distinct sourced governing'):
             validate(employee, 'surveyed-map')
 
     def test_rejects_live_actor_and_map_mismatch(self):

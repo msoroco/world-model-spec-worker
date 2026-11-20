@@ -19,6 +19,13 @@ def analyze_rows(frames, actors, readback, *, diagnostic=False):
         raise ValueError('Surveyed variant pavement polygon invalid')
     actor_id = readback['control_actor_id']
     actor_type = readback['control_type_id']
+    warning = readback.get('governing_warning_control')
+    if not diagnostic and plan['control_kind'] == 'employee_exception':
+        if (not isinstance(warning, dict) or
+                warning.get('actor_id') == actor_id or
+                warning.get('actor_id') != plan['governing_warning_control']['actor_id'] or
+                warning.get('type_id') != plan['governing_warning_control']['type_id']):
+            raise ValueError('Distinct original governing warning control is required')
     contact = []
     source_frames = []
     times = []
@@ -48,6 +55,18 @@ def analyze_rows(frames, actors, readback, *, diagnostic=False):
             raise ValueError('Original variant control position invalid')
         if Point(position[:2]).distance(polygon) > 15:
             raise ValueError('Original control actor left surveyed pavement vicinity')
+        if warning is not None and not diagnostic:
+            observed_warning = actor.get('governing_warning_control')
+            if (not isinstance(observed_warning, dict) or
+                    observed_warning.get('actor_id') != warning['actor_id'] or
+                    observed_warning.get('type_id') != warning['type_id']):
+                raise ValueError('Original governing warning actor identity differs')
+            warning_xyz = observed_warning.get('xyz_m')
+            if (not isinstance(warning_xyz, list) or len(warning_xyz) != 3 or
+                    not all(type(v) in (int, float) and isfinite(v)
+                            for v in warning_xyz) or
+                    Point(warning_xyz[:2]).distance(polygon) > 15):
+                raise ValueError('Original governing warning actor left surveyed pavement vicinity')
         vertices = actor['ego_body_vertices_xyz_m']
         if len(vertices) != 8 or any(len(v) != 3 or not all(
                 type(c) in (int, float) and isfinite(c) for c in v) for v in vertices):

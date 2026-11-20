@@ -80,6 +80,19 @@ def validate(survey, live_map_name):
                                                 'nonemployee_activity_source')):
         raise ValueError('Employee route needs independent employee and nonemployee activity source references')
     if kind == 'employee_exception':
+        warning = survey.get('governing_warning_control')
+        if (not isinstance(warning, dict) or
+                type(warning.get('actor_id')) is not int or
+                warning['actor_id'] == survey['control_actor_id'] or
+                not isinstance(warning.get('type_id'), str) or
+                not warning['type_id'].startswith(('walker.pedestrian.', 'static.prop.')) or
+                not isinstance(warning.get('source_reference'), str) or
+                not warning['source_reference'].strip()):
+            raise ValueError('Employee route needs a distinct sourced governing warning control')
+        warning_xy = _point(warning.get('xy_m'), 'Governing warning location')
+        if Point(warning_xy).distance(polygon) > 15:
+            raise ValueError('Governing warning control is not near surveyed pavement')
+    if kind == 'employee_exception':
         cases = {
             'employee_crossing': {'route_xy_m': survey['route_over_xy_m'],
                                   'requested_pavement_crossing': True,
@@ -100,6 +113,7 @@ def validate(survey, live_map_name):
             'control_actor_id': survey['control_actor_id'],
             'control_type_id': survey['control_type_id'],
             'control_xy_m': control_xy, 'frames': survey['frames'],
+            'governing_warning_control': survey.get('governing_warning_control'),
             'capture_rate_hz': 20, 'ego_blueprint': survey['ego_blueprint'],
             'weather_profile': survey['weather_profile'],
             'anchor_z_m': survey['anchor_z_m'],
@@ -142,12 +156,28 @@ def bind(survey, world, carla):
     if hypot(location.x - plan['control_xy_m'][0],
              location.y - plan['control_xy_m'][1]) > .5:
         raise ValueError('Live control actor position differs from variant survey')
+    warning_readback = None
+    if plan['control_kind'] == 'employee_exception':
+        warning = plan['governing_warning_control']
+        governing = world.get_actors().find(warning['actor_id'])
+        if governing is None or governing.type_id != warning['type_id']:
+            raise ValueError('Live governing warning actor differs from variant survey')
+        governing_location = governing.get_transform().location
+        if hypot(governing_location.x - warning['xy_m'][0],
+                 governing_location.y - warning['xy_m'][1]) > .5:
+            raise ValueError('Live governing warning position differs from variant survey')
+        warning_readback = {'actor_id': governing.id,
+                            'type_id': governing.type_id,
+                            'xyz_m': [governing_location.x, governing_location.y,
+                                      governing_location.z],
+                            'source_reference': warning['source_reference']}
     return {'plan': plan, 'source_kind': 'live_carla_map_and_actor_readback',
             'pavement_road_id': pavement.road_id,
             'pavement_lane_id': pavement.lane_id,
             'route_waypoints': routes, 'control_actor_id': actor.id,
             'control_type_id': actor.type_id,
             'control_xyz_m': [location.x, location.y, location.z],
+            'governing_warning_control': warning_readback,
             'control_content_verified': False,
             'employee_exception_verified': False,
             'physical_completion_claimed': False}
