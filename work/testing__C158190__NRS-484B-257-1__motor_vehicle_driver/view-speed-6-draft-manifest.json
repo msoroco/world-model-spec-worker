@@ -1,0 +1,87 @@
+{
+  "format": "worker-execution-manifest-draft",
+  "assignment_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver",
+  "cases": [
+    {
+      "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_speed_6",
+      "construction": "cases/view_speed_6/construction.json",
+      "construction_sha256": "20c5a29fd6258a439c4391a72d2d3f06e76a279edc33233654ec9e96e08e7e0f",
+      "kind": "diagnostic_unselected",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/view_speed_6/fallbacks/fallback1-construction.json",
+          "construction_sha256": "0c71b9e755aa5d820ec2897566567bbcd5fe5f526e57b88e31252e38b0d90977",
+          "trigger": {
+            "source": "interaction_history.jsonl",
+            "metric": "last original frame with ego body fully outside the junction",
+            "failure_condition": "ego body has not fully exited the junction by original frame 599"
+          },
+          "changed_knobs": [
+            "ego approach spawn from OpenDRIVE x=-60 m to x=-50 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/view-speed-6-draft-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_speed_6 --candidate fallback1 --output .runtime-work/view-speed-6-fallback1-offline",
+            "exit_code": 0,
+            "construction_sha256": "0c71b9e755aa5d820ec2897566567bbcd5fe5f526e57b88e31252e38b0d90977",
+            "log": "cases/view_speed_6/fallback1-offline.log",
+            "log_sha256": "27efeb253daa1c632dbc0ae72c51eaa502edd2adddd3002a9b8d338f663b4d41"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/view_speed_6/fallbacks/fallback2-construction.json",
+          "construction_sha256": "7b25afd1d02f7aa4d502038b6f14d8bc3a29b0b6defe296b0d349cc1f320e6d3",
+          "trigger": {
+            "source": "reference_corner.mkv",
+            "metric": "source-camera frames with yield sign face and through-highway approach visible",
+            "failure_condition": "original reference-corner frames do not show the sign face and through-highway approach together"
+          },
+          "changed_knobs": [
+            "reference_corner camera origin (19,-25,15) to (23,-28,18) m and pitch -24 to -27 degrees"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/view-speed-6-draft-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_speed_6 --candidate fallback2 --output .runtime-work/view-speed-6-fallback2-offline",
+            "exit_code": 0,
+            "construction_sha256": "7b25afd1d02f7aa4d502038b6f14d8bc3a29b0b6defe296b0d349cc1f320e6d3",
+            "log": "cases/view_speed_6/fallback2-offline.log",
+            "log_sha256": "e38b3702155a5f2314ca802ab5dfbe23a8c29bb216bf8593b910a6eaa0f15ebe"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/view_speed_6/fallbacks/fallback3-construction.json",
+          "construction_sha256": "3f478e1100a593af87be97ee6e2f33824b5ac7aab19f370758e8c1ce6eb76b36",
+          "trigger": {
+            "source": "approach_history.jsonl",
+            "metric": "absolute original-frame ego speed error versus constructed target near closest view",
+            "failure_condition": "measured ego speed differs from the case target by more than 1 m/s near closest view"
+          },
+          "changed_knobs": [
+            "bounded longitudinal speed-control gain from 0.25 to 0.4"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/view-speed-6-draft-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_speed_6 --candidate fallback3 --output .runtime-work/view-speed-6-fallback3-offline",
+            "exit_code": 0,
+            "construction_sha256": "3f478e1100a593af87be97ee6e2f33824b5ac7aab19f370758e8c1ce6eb76b36",
+            "log": "cases/view_speed_6/fallback3-offline.log",
+            "log_sha256": "6b4c47d9b8618dfcc341a1ebad05985da8445f334f148106ff5ec320f524bd4c"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/view-speed-6-draft-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_speed_6 --output .runtime-work/view-speed-6-draft-offline-4",
+        "exit_code": 0,
+        "construction_sha256": "20c5a29fd6258a439c4391a72d2d3f06e76a279edc33233654ec9e96e08e7e0f",
+        "log": "cases/view_speed_6/primary-offline.log",
+        "log_sha256": "d73dff9c1256f424480c5385837bbb567f2b17136edb0df2a7eae8986012842e"
+      },
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py",
+        "method": "source-backed exact 6 m/s diagnostic finalizer"
+      }
+    }
+  ],
+  "limitation": "Exact scalar CPU draft only; not selected until source-bound compatibility, fallback, saved-only, physical and comparison proofs pass."
+}
