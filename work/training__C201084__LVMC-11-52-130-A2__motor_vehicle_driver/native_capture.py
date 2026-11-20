@@ -234,6 +234,12 @@ def acquire_with_world_restore(world, *args, **kwargs):
     configured.fixed_delta_seconds = 0.05
     world.apply_settings(configured)
     try:
-        return acquire(world, *args, **kwargs)
+        result = acquire(world, *args, **kwargs)
     finally:
         world.apply_settings(previous)
+    restored = world.get_settings()
+    require(restored.synchronous_mode == previous.synchronous_mode and
+            restored.fixed_delta_seconds == previous.fixed_delta_seconds,
+            'Original world timing was not restored')
+    result['restoration_verified'] = True
+    return result

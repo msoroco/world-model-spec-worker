@@ -4,9 +4,11 @@ import tempfile
 import unittest
 from pathlib import Path
 from types import SimpleNamespace
+from unittest.mock import patch
 
 from fire_lane_survey import build
 from native_capture import (CAMERA_SPECS, OriginalFrameMap, acquire,
+                            acquire_with_world_restore,
                             install_cameras, sample_native)
 from native_controller import command
 
@@ -47,6 +49,17 @@ def follower():
 
 
 class CaptureTests(unittest.TestCase):
+    def test_world_timing_restoration_is_verified(self):
+        state = {'synchronous_mode': False, 'fixed_delta_seconds': None}
+        world = SimpleNamespace(
+            get_settings=lambda: SimpleNamespace(**state),
+            apply_settings=lambda settings: state.update(vars(settings)))
+        with patch('native_capture.acquire', return_value={'source_frames': 600}):
+            result = acquire_with_world_restore(world)
+        self.assertTrue(result['restoration_verified'])
+        self.assertFalse(state['synchronous_mode'])
+        self.assertIsNone(state['fixed_delta_seconds'])
+
     def test_partial_camera_install_destroys_spawned_sensors(self):
         closed = []
         class Sensor:

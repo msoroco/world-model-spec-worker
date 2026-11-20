@@ -42,8 +42,17 @@ def run(client, carla, survey, case, attempt,
     sign = world.get_actors().find(plan['sign_readback']['actor_id'])
     require(sign is not None, 'Surveyed sign actor disappeared before capture')
     attempt = Path(attempt)
-    require(not attempt.exists() or not any(attempt.iterdir()),
-            'Retain previous attempt; use a fresh output directory')
+    if attempt.exists() and any(attempt.iterdir()):
+        construction_path = attempt/'construction.json'
+        require(construction_path.is_file() and
+                (attempt/'config.json').is_file(),
+                'Retain previous attempt; use a fresh output directory')
+        construction = json.loads(construction_path.read_text())
+        allowed = {Path(row['path']).parts[0]
+                   for row in construction.get('files', [])}
+        allowed.update(('construction.json', 'candidate-selection.json'))
+        require({path.name for path in attempt.iterdir()} <= allowed,
+                'Retain previous attempt; use a fresh output directory')
     attempt.mkdir(parents=True, exist_ok=True)
     actors = []
     try:
@@ -56,6 +65,11 @@ def run(client, carla, survey, case, attempt,
         with readback.open('x') as stream:
             json.dump(plan, stream, indent=2, allow_nan=False)
             stream.write('\n')
+        (attempt/'acquisition-provenance.json').write_text(json.dumps({
+            'provenance_kind': 'native', 'diagnostic_fixture': False,
+            'source': 'original_carla_actor_and_map_readback',
+            'physical_acceptance_claimed': False,
+        }, indent=2)+'\n')
         capture = acquisition(world, carla, actors[0], actors[1], sign,
                               plan, case, attempt)
         measured = processor(attempt, case)

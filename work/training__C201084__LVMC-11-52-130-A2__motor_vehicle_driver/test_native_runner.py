@@ -58,6 +58,9 @@ class RunnerTests(unittest.TestCase):
             self.assertEqual(result['case'], 'reference')
             self.assertTrue((Path(tmp)/'attempt/native-survey-readback.json').is_file())
             self.assertTrue((Path(tmp)/'attempt/source-measurement.json').is_file())
+            provenance = json.loads((Path(tmp)/'attempt/acquisition-provenance.json').read_text())
+            self.assertEqual(provenance['provenance_kind'], 'native')
+            self.assertFalse(provenance['diagnostic_fixture'])
         self.assertEqual(spawned[-2:], ['destroy', 'destroy'])
 
     def test_different_following_road_rejected_before_spawn(self):
@@ -77,6 +80,24 @@ class RunnerTests(unittest.TestCase):
                 run(client, carla, fixture(), 'reference', path)
             self.assertEqual((path/'sentinel').read_text(), 'retained')
         self.assertEqual(spawned, [])
+
+    def test_materialized_bundle_directory_is_accepted(self):
+        client, carla, spawned = environment()
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp)/'attempt'
+            path.mkdir()
+            (path/'config.json').write_text('{}')
+            (path/'runner.py').write_text('')
+            (path/'construction.json').write_text(json.dumps({
+                'files': [{'path': 'runner.py'}, {'path': 'config.json'}]}))
+            result = run(client, carla, fixture(), 'reference', path,
+                         acquisition=lambda *args: {
+                             'source_frames': 600, 'restoration_verified': True},
+                         processor=lambda *args: {
+                             'physical_or_legal_completion_claimed': False})
+            self.assertEqual(result['capture']['source_frames'], 600)
+            self.assertTrue((path/'native-survey-readback.json').is_file())
+        self.assertEqual(spawned[-2:], ['destroy', 'destroy'])
 
 
 if __name__ == '__main__':

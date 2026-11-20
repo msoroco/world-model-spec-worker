@@ -32,6 +32,7 @@ def make_attempt(directory, case, *, corrupt=None):
     for i, speed in enumerate((4, 2, 0, 0)):
         actors.append({'frame': 100+i, 'source_kind': 'synthetic_native_sample',
                        'ego_actor_id': 41, 'driving_road_id': 17,
+                       'ego_pose_xyz_m': [x, 1, 0], 'ego_yaw_deg': 0,
                        'following_actor_id': 42, 'following_road_id': 17,
                        'following_velocity_xyz_mps': [3, 0, 0],
                        'following_body_vertices_xyz_m': [

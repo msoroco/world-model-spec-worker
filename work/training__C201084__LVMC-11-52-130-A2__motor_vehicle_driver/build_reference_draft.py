@@ -10,7 +10,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 MODULES = ('runner.py', 'native_runner.py', 'native_controller.py',
            'native_capture.py', 'native_survey.py', 'fire_lane_survey.py',
-           'source_measurement.py')
+           'source_measurement.py', 'native_finalize.py')
 CASE = HERE.name+'__reference'
 
 
@@ -91,7 +91,8 @@ class BundleTest(unittest.TestCase):
         'mechanisms': ['live map and sign actor survey',
                        'source-driven ego and following vehicle stop',
                        'four synchronized original RGB cameras',
-                       'retained actor and frame source measurement'],
+                       'retained actor and frame source measurement',
+                       'saved-only source finalizer'],
         'raw_sources': ['native-survey-readback.json',
                         'native-actors.jsonl', 'video_frames.jsonl'] +
                        [spec[0]+'.mkv' for spec in CAMERA_SPECS],
@@ -116,7 +117,10 @@ class BundleTest(unittest.TestCase):
                 'status': 'draft_primary_offline_only',
                 'cases': [{'case_id': CASE,
                            'construction': 'draft-reference-construction.json',
-                           'construction_sha256': sha(HERE/'draft-reference-construction.json')}]}
+                           'construction_sha256': sha(HERE/'draft-reference-construction.json'),
+                           'measurement_procedure': {
+                               'entrypoint': 'native_finalize.py',
+                               'source_only': True}}]}
     write(HERE/'draft-reference-manifest.json', manifest)
     return {'case_id': CASE,
             'construction_sha256': sha(HERE/'draft-reference-construction.json'),

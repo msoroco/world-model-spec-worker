@@ -1,6 +1,8 @@
 """Exact C201084 draft primary entrypoint for CPU and Native handoff."""
 import argparse
 import json
+import os
+import shutil
 from pathlib import Path
 
 from fire_lane_survey import CAMERAS
@@ -45,6 +47,7 @@ def main():
     parser.add_argument('--check', action='store_true')
     parser.add_argument('--survey', type=Path)
     parser.add_argument('--attempt', type=Path)
+    parser.add_argument('--output-dir', type=Path)
     parser.add_argument('--host', default='127.0.0.1')
     parser.add_argument('--port', type=int, default=2000)
     args = parser.parse_args()
@@ -52,16 +55,37 @@ def main():
     if args.check:
         print(json.dumps(checked, sort_keys=True))
         return
-    if args.survey is None or args.attempt is None:
-        parser.error('--survey and --attempt are required for Native acquisition')
+    survey_path = args.survey or (Path(os.environ['CARLA_SURVEY'])
+                                  if os.environ.get('CARLA_SURVEY') else None)
+    attempt = args.output_dir or args.attempt
+    if survey_path is None or attempt is None:
+        parser.error('Supply CARLA_SURVEY or --survey, and --output-dir')
     import carla
     from native_runner import run
+    from native_finalize import finalize
     client = carla.Client(args.host, args.port)
     client.set_timeout(180)
-    survey = json.loads(args.survey.read_text())
-    print(json.dumps(run(client, carla, survey,
-                         json.loads((HERE/'config.json').read_text())['case_suffix'],
-                         args.attempt), sort_keys=True))
+    survey = json.loads(survey_path.read_text())
+    receipt = run(client, carla, survey,
+                  json.loads((HERE/'config.json').read_text())['case_suffix'],
+                  attempt)
+    for name in ('config.json', 'construction.json',
+                 'candidate-selection.json'):
+        source = HERE/name
+        target = attempt/name
+        if source.is_file() and source.resolve() != target.resolve():
+            shutil.copyfile(source, target)
+    analysis = finalize(attempt, attempt/'analysis-report.json')
+    from scenario_pipeline.worker_exchange.native_output import seal_capture
+    seal_capture(attempt, frames=receipt['capture']['source_frames'],
+                 restoration={'restored': receipt['capture']['restoration_verified']},
+                 errors=[], encoder_exit_codes={name: 0 for name in CAMERAS},
+                 context={'survey_map_name': survey['map_name'],
+                          'case_id': checked['case_id']})
+    print(json.dumps({'capture': receipt, 'analysis_report':
+                      str(attempt/'analysis-report.json'),
+                      'analysis_complete': analysis['analysis_complete'],
+                      'physical_acceptance_claimed': False}, sort_keys=True))
 
 
 if __name__ == '__main__':
