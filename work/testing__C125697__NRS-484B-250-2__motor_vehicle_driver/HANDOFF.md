@@ -211,3 +211,7 @@ Return cap checkpoint: 18 unbound historical top-level logs and former test rows
 Return cap checkpoint: 25 unbound historical top-level logs and former test rows are preserved byte-for-byte with SHA-256 in work/_shared/archived-unbound-negative-logs-20261119.json. Active case receipts remain unchanged.
 
 Return cap checkpoint: 40 unbound historical top-level logs and former test rows are preserved byte-for-byte with SHA-256 in work/_shared/archived-unbound-negative-logs-20261119.json. Active case receipts remain unchanged.
+
+## 2026-11-20 return-slot preservation
+
+Twenty-eight historical unreferenced root builder/proof scripts were added byte-for-byte to `work/_shared/archived-unbound-negative-logs-20261119.json`; SHA-256 round trips were verified and this assignment's scoped `worker_check.py --complete` passed after removal of the redundant loose copies. The retained `repair_completion.py`, current constructions and bound receipts were preserved. Status remains partial; the archive creates return slots and is not an acceptance claim.

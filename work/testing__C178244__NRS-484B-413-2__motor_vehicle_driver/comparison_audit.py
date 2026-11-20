@@ -14,7 +14,7 @@ from pathlib import Path
 
 GROUPS = {
     "business_threshold_100_ft": ("left_business_under_100_ft", "left_business_at_100_ft", "left_business_over_100_ft"),
-    "other_threshold_300_ft": ("left_other_under_300_ft", "left_other_at_300_ft"),
+    "other_threshold_300_ft": ("left_other_under_300_ft", "left_other_at_300_ft", "left_other_over_300_ft"),
     "business_signal_interruption": ("left_business_at_100_ft", "left_interrupted"),
 }
 
@@ -102,11 +102,12 @@ def audit(comparison_id, sources):
         require(under["distance_m"] < 30.48 and math.isclose(at["distance_m"], 30.48, abs_tol=1e-6)
                 and over["distance_m"] > 30.48, "100-foot contrast missing")
     elif comparison_id == "other_threshold_300_ft":
-        under, at = (evidence[name] for name in names)
+        under, at, over = (evidence[name] for name in names)
         require(first["context"]["district_type"] == "other", "Other-area context missing")
         require(under["hashes"]["body_history.jsonl"] == at["hashes"]["body_history.jsonl"],
                 "Below/at fixed body motion changed")
-        require(under["distance_m"] < 91.44 and math.isclose(at["distance_m"], 91.44, abs_tol=1e-6),
+        require(under["distance_m"] < 91.44 and math.isclose(at["distance_m"], 91.44, abs_tol=1e-6)
+                and over["distance_m"] > 91.44,
                 "300-foot contrast missing")
     else:
         continuous, interrupted = (evidence[name] for name in names)

@@ -711,6 +711,111 @@
         "target_value_or_branch": "interrupted",
         "test_value": 14.0
       }
+    },
+    {
+      "case_id": "testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_other_over_300_ft",
+      "target_law_id": "NRS-484B-413-2",
+      "target_type": "boundary_probe",
+      "rationale": "Other-area left-indication source-shaped diagnostic begins above the 300-foot boundary; Native/site facts pending.",
+      "variable_assignments": {
+        "indicator_start_m": {
+          "kind": "controller",
+          "value": 93.0,
+          "unit": "m",
+          "note": "engineering request with an observed off frame and an above-300-foot on frame"
+        },
+        "district_type": {
+          "kind": "world_setup",
+          "value": "other",
+          "unit": "district class",
+          "note": "requires reviewed site packet"
+        },
+        "indicator_interruption_m": {
+          "kind": "controller",
+          "value": null,
+          "unit": "remaining approach m",
+          "note": "no interruption"
+        },
+        "continuous_left_signal_distance_ft": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "ft",
+          "note": "must be measured from original source"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Legal business district requires actual frontage and building-use evidence.",
+        "Native left-turn realization and lamp pixels remain unverified."
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_turn_indicator",
+            "unit": "device state",
+            "method": "original Native ego light mask, left/off only",
+            "time_window": "every original frame",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "20 Hz sampled source; physical camera visibility pending independent review"
+          },
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "method": "original Native ego velocity magnitude",
+            "time_window": "every original frame",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "20 Hz sampled source; physical camera visibility pending independent review"
+          },
+          {
+            "name": "ego_heading",
+            "unit": "deg",
+            "method": "original Native ego yaw readback",
+            "time_window": "every original frame",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "20 Hz sampled source; physical camera visibility pending independent review"
+          },
+          {
+            "name": "ego_road_id",
+            "unit": "id",
+            "method": "original Native road-id readback",
+            "time_window": "every original frame",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "20 Hz sampled source; physical camera visibility pending independent review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "district_packet",
+            "unit": "source document",
+            "method": "independent exact-map district review required"
+          }
+        ],
+        "limitations": [
+          "Synthetic road has no inherent legal business district status",
+          "Actual indicator pixels and turn geometry require source review"
+        ]
+      },
+      "paired_probe_id": "other_300ft",
+      "deliberate_differences": [
+        "indicator_start_m"
+      ],
+      "probe": {
+        "primary_variable": "continuous_left_signal_distance_ft",
+        "comparison_or_standard": "300 ft final continuous signal distance in the selected district branch",
+        "target_value_or_branch": 303.83858267716533,
+        "threshold_ref": "obligation.numeric_conditions[1]",
+        "operator": ">=",
+        "unit": "ft",
+        "test_value": 303.83858267716533
+      },
+      "epsilon_used": {
+        "value": 0.01,
+        "unit": "ft",
+        "rationale": "Sampling and construction resolution; exact legal boundary is unchanged."
+      }
     }
   ],
   "cell_id": "C178244",

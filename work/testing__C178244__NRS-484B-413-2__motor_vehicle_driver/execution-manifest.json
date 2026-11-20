@@ -884,6 +884,153 @@
         "test_log_sha256": "a404feb560d9387910e779956c86704712310678dfbe5418dd074da20c6798f4",
         "test_exit_code": 0
       }
+    },
+    {
+      "case_id": "testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_other_over_300_ft",
+      "kind": "delivery",
+      "construction": "cases/left_other_over_300_ft/construction.json",
+      "construction_sha256": "019965afd46b84e9d25547b93158e687a3ad99e33daadca8351e3e4e21672f8e",
+      "measurement_procedure": {
+        "entrypoint": "left_turn_delivery.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Long approach and two-source-camera sight line require Native motion and pixel review; fallback constructions pending."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/left_other_over_300_ft/fallback1/construction.json",
+          "construction_sha256": "ea50d58f3b8f851fcc8e7dd898d44a01231d42e9f7e86aeca0f0b446765a75ae",
+          "trigger": {
+            "source": "original source cameras and Native participant motion review",
+            "metric": "ego approach speed and route tracking",
+            "failure_condition": "requested 5.0 m/s approach fails stable left-turn course or camera coverage"
+          },
+          "changed_knobs": [
+            "requested_speed_mps"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_other_over_300_ft --candidate fallback1 --output .runtime-work/c178244-other-over-fallback1-offline",
+            "exit_code": 0,
+            "log": "cases/left_other_over_300_ft/fallback1/offline.log",
+            "log_sha256": "ca6f66ef79239cbc08cba024be2d87bc2e886b40585b6a36d26bdc5daa916853",
+            "construction_sha256": "ea50d58f3b8f851fcc8e7dd898d44a01231d42e9f7e86aeca0f0b446765a75ae"
+          },
+          "compatibility": {
+            "receipt": "cases/left_other_over_300_ft/fallback1/compatibility.json",
+            "sha256": "f4fa2b636375c3c2904c2e3b8acfe99f33c035e449dd40e93f96123bbc5fcaa8",
+            "log": "cases/left_other_over_300_ft/fallback1/analysis.log",
+            "negative_log": "cases/left_other_over_300_ft/fallback1/negative.log",
+            "replay_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_other_over_300_ft --candidate fallback1 --output .runtime-work/c178244-other-over-fallback1-compat/analysis --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_other_over_300_ft --attempt .runtime-work/c178244-other-over-fallback1-compat/analysis --output .runtime-work/c178244-other-over-fallback1-saved --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat .runtime-work/c178244-other-over-fallback1-saved/v0001/feedback.json",
+            "test_log": "cases/left_other_over_300_ft/fallback1/saved-processing.json",
+            "test_log_sha256": "cf779a3c6b6a1577044e57a957fec5ab81ca6307decd3a06af198b6aa3673ff0",
+            "test_exit_code": 0
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/left_other_over_300_ft/fallback2/construction.json",
+          "construction_sha256": "33d409da977781ecf843ed6ee8959e25f48720b10d037a69b91bf3d7669a0981",
+          "trigger": {
+            "source": "original source cameras and Native participant motion review",
+            "metric": "ego route tracking and turn path stability",
+            "failure_condition": "default 5 m controller lookahead overshoots the planned left-turn course or loses camera coverage"
+          },
+          "changed_knobs": [
+            "controller_lookahead_m"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_other_over_300_ft --candidate fallback2 --output .runtime-work/c178244-other-over-fallback2-offline",
+            "exit_code": 0,
+            "log": "cases/left_other_over_300_ft/fallback2/offline.log",
+            "log_sha256": "8e6fa6a451becd6f4467aeb5f8f52ffd61e06e9998fd84cf0a515b4d9f2d562f",
+            "construction_sha256": "33d409da977781ecf843ed6ee8959e25f48720b10d037a69b91bf3d7669a0981"
+          },
+          "compatibility": {
+            "receipt": "cases/left_other_over_300_ft/fallback2/compatibility.json",
+            "sha256": "e9c8f3b28cd678b680e2f7bdb12aadba5988903cb3c75ecb1b1c6881bf429cd0",
+            "log": "cases/left_other_over_300_ft/fallback2/analysis.log",
+            "negative_log": "cases/left_other_over_300_ft/fallback2/negative.log",
+            "replay_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_other_over_300_ft --candidate fallback2 --output .runtime-work/c178244-other-over-fallback2-compat/analysis --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_other_over_300_ft --attempt .runtime-work/c178244-other-over-fallback2-compat/analysis --output .runtime-work/c178244-other-over-fallback2-saved --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat .runtime-work/c178244-other-over-fallback2-saved/v0001/feedback.json",
+            "test_log": "cases/left_other_over_300_ft/fallback2/saved-processing.json",
+            "test_log_sha256": "cbf0ecbdf16b9b74c344d225713c718106719331538d599fa7644f7c52c85ced",
+            "test_exit_code": 0
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/left_other_over_300_ft/fallback3/construction.json",
+          "construction_sha256": "acee2657c2baee816a61590a358001910b6fd27508c3809fd04edcc9a9a60135",
+          "trigger": {
+            "source": "original source cameras and Native participant motion review",
+            "metric": "departure-lane vehicle spacing during left-turn course",
+            "failure_condition": "default other-vehicle station causes a physical route conflict or occludes required view"
+          },
+          "changed_knobs": [
+            "other_vehicle_station_m"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_other_over_300_ft --candidate fallback3 --output .runtime-work/c178244-other-over-fallback3-offline",
+            "exit_code": 0,
+            "log": "cases/left_other_over_300_ft/fallback3/offline.log",
+            "log_sha256": "9424eed10b798e5f53756ad4b6321dfffa035f03f8e4ff74018d650a9f95c57d",
+            "construction_sha256": "acee2657c2baee816a61590a358001910b6fd27508c3809fd04edcc9a9a60135"
+          },
+          "compatibility": {
+            "receipt": "cases/left_other_over_300_ft/fallback3/compatibility.json",
+            "sha256": "11e59990681eb11d3068af33f512654f49822d42594fb92f84eafd5c2572174a",
+            "log": "cases/left_other_over_300_ft/fallback3/analysis.log",
+            "negative_log": "cases/left_other_over_300_ft/fallback3/negative.log",
+            "replay_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_other_over_300_ft --candidate fallback3 --output .runtime-work/c178244-other-over-fallback3-compat/analysis --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_other_over_300_ft --attempt .runtime-work/c178244-other-over-fallback3-compat/analysis --output .runtime-work/c178244-other-over-fallback3-saved --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat .runtime-work/c178244-other-over-fallback3-saved/v0001/feedback.json",
+            "test_log": "cases/left_other_over_300_ft/fallback3/saved-processing.json",
+            "test_log_sha256": "8c919c5a7827a630cbfaf06db1c509854432f104caa5a7608245e992804eb70c",
+            "test_exit_code": 0
+          }
+        }
+      ],
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/cases/left_other_over_300_ft/diagnostic-recipe.json",
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_other_over_300_ft --output .runtime-work/c178244-other-over-primary-offline-v2",
+        "exit_code": 0,
+        "log": "cases/left_other_over_300_ft/offline.log",
+        "log_sha256": "10b4efe08c7093e6e559a3ec842b629ecce6351ada3a48b531e37dbbda12716c",
+        "construction_sha256": "019965afd46b84e9d25547b93158e687a3ad99e33daadca8351e3e4e21672f8e"
+      },
+      "compatibility": {
+        "receipt": "cases/left_other_over_300_ft/compatibility.json",
+        "sha256": "55cb9a79fb808e35df29ea33d336a152dbd843c04594f5f260be9c1d1f8b4781",
+        "log": "cases/left_other_over_300_ft/analysis.log",
+        "negative_log": "cases/left_other_over_300_ft/negative.log",
+        "replay_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_other_over_300_ft --output .runtime-work/c178244-other-over-primary-compat-v3/analysis --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+      },
+      "negative": {
+        "log": "cases/left_other_over_300_ft/negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_other_over_300_ft --attempt .runtime-work/c178244-other-over-primary-compat-v3/analysis --output .runtime-work/c178244-other-over-primary-saved-v3 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat .runtime-work/c178244-other-over-primary-saved-v3/v0001/feedback.json",
+        "test_log": "cases/left_other_over_300_ft/saved-processing.json",
+        "test_log_sha256": "2514a9db8a50be0f52fae93a4277ddc51590ef1faa2a7d9b0a1d2b2821439ffc",
+        "test_exit_code": 0
+      }
     }
   ],
   "comparisons": [
@@ -898,21 +1045,22 @@
       "sha256": "e34dad5b6206fdf17250efe7da8364581e85ab4b725863fe1479fc0acf556874",
       "scope": "synthetic original-source diagnostic comparison; physical and legal acceptance unresolved",
       "audit_script": "comparison_audit.py",
-      "audit_script_sha256": "0861dcc494e90e1c3b731643bf1eb754d10481a8539165444ce23af5cd910b64",
+      "audit_script_sha256": "194c2fe1104b313dbdac33729463ff3f2aa71170c1d8970f803003823765bd93",
       "audit_command": ".venv-cpu/bin/python work/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/comparison_audit.py --comparison-id business_threshold_100_ft --source left_business_under_100_ft .runtime-work/c178244-left-business_under_100_ft-dedup-v1-compat/analysis --source left_business_at_100_ft .runtime-work/c178244-left-at-primary-compat-v3/analysis --source left_business_over_100_ft .runtime-work/c178244-left-business_over_100_ft-dedup-v1-compat/analysis"
     },
     {
       "comparison_id": "other_threshold_300_ft",
       "case_ids": [
         "testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_other_under_300_ft",
-        "testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_other_at_300_ft"
+        "testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_other_at_300_ft",
+        "testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_other_over_300_ft"
       ],
       "receipt": "comparison-proofs/other_threshold_300_ft.json",
-      "sha256": "fe3d0cb7f54518ffac70d72ff979fd0cfc40c363c23d138d5a7fa7d9b3f5bbb4",
+      "sha256": "97b29876978ae0a409772b809c2d77fa0ef947f91ea3cfdc85433e0942ac594e",
       "scope": "synthetic original-source diagnostic comparison; physical and legal acceptance unresolved",
       "audit_script": "comparison_audit.py",
-      "audit_script_sha256": "0861dcc494e90e1c3b731643bf1eb754d10481a8539165444ce23af5cd910b64",
-      "audit_command": ".venv-cpu/bin/python work/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/comparison_audit.py --comparison-id other_threshold_300_ft --source left_other_under_300_ft .runtime-work/c178244-left-other_under_300_ft-dedup-v1-compat/analysis --source left_other_at_300_ft .runtime-work/c178244-left-other_at_300_ft-dedup-v1-compat/analysis"
+      "audit_script_sha256": "194c2fe1104b313dbdac33729463ff3f2aa71170c1d8970f803003823765bd93",
+      "audit_command": ".venv-cpu/bin/python work/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/comparison_audit.py --comparison-id other_threshold_300_ft --source left_other_under_300_ft .runtime-work/c178244-left-other_under_300_ft-dedup-v1-compat/analysis --source left_other_at_300_ft .runtime-work/c178244-left-other_at_300_ft-dedup-v1-compat/analysis --source left_other_over_300_ft .runtime-work/c178244-other-over-primary-compat-v3/analysis"
     },
     {
       "comparison_id": "business_signal_interruption",
@@ -924,7 +1072,7 @@
       "sha256": "3e909c2b40f5415335ff24a3783bf4930cd8922454ccfe34c80705691af6d207",
       "scope": "synthetic original-source diagnostic comparison; physical and legal acceptance unresolved",
       "audit_script": "comparison_audit.py",
-      "audit_script_sha256": "0861dcc494e90e1c3b731643bf1eb754d10481a8539165444ce23af5cd910b64",
+      "audit_script_sha256": "194c2fe1104b313dbdac33729463ff3f2aa71170c1d8970f803003823765bd93",
       "audit_command": ".venv-cpu/bin/python work/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/comparison_audit.py --comparison-id business_signal_interruption --source left_business_at_100_ft .runtime-work/c178244-left-at-primary-compat-v3/analysis --source left_interrupted .runtime-work/c178244-left-interrupted-compat-v1/analysis"
     }
   ]
