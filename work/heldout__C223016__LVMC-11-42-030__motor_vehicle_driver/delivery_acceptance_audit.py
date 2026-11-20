@@ -17,8 +17,8 @@ CAMERAS = ('overview.mkv', 'approach.mkv', 'reference_corner.mkv',
 
 
 def verify(case_id, negative=False, *, attempt_override=None, receipt_override=None,
-           candidate='primary'):
-    manifest = json.loads((HERE / 'execution-manifest.json').read_text())
+           candidate='primary', manifest_override=None):
+    manifest = json.loads(Path(manifest_override or HERE / 'execution-manifest.json').read_text())
     entry = next((x for x in manifest['cases'] if x['case_id'] == case_id), None)
     if entry is None or entry['kind'] != 'delivery':
         raise ValueError('Unknown exact C223016 delivery case')
@@ -28,7 +28,8 @@ def verify(case_id, negative=False, *, attempt_override=None, receipt_override=N
     receipt = HERE / proof['log']
     attempt = Path(attempt_override) if attempt_override else attempt
     receipt = Path(receipt_override) if receipt_override else receipt
-    source = audit_sources(candidate, attempt, receipt, tamper=negative)
+    source = audit_sources(candidate, attempt, receipt, tamper=negative,
+                           manifest_override=manifest_override)
     saved = json.loads(receipt.read_text())
     if saved['missing_evidence'] or not saved['recorded_only']:
         raise ValueError('Saved source analysis incomplete')
@@ -63,8 +64,10 @@ if __name__ == '__main__':
     parser.add_argument('--attempt')
     parser.add_argument('--receipt')
     parser.add_argument('--candidate', default='primary')
+    parser.add_argument('--manifest')
     args = parser.parse_args()
     print(json.dumps(verify(args.case, args.negative,
                             attempt_override=args.attempt,
                             receipt_override=args.receipt,
-                            candidate=args.candidate)))
+                            candidate=args.candidate,
+                            manifest_override=args.manifest)))

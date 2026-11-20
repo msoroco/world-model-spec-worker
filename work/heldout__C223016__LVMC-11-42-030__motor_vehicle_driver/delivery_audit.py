@@ -53,8 +53,8 @@ def digest(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
-def audit(candidate, source, receipt, *, tamper=False):
-    manifest = json.loads((HERE / 'execution-manifest.json').read_text())
+def audit(candidate, source, receipt, *, tamper=False, manifest_override=None):
+    manifest = json.loads(Path(manifest_override or HERE / 'execution-manifest.json').read_text())
     receipt = json.loads(Path(receipt).read_text())
     entry = next(item for item in manifest['cases']
                  if item['case_id'] == receipt.get('case_id'))
