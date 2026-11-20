@@ -1,4 +1,4 @@
-"""Write source-faithful draft semantic stages for six CPU probes."""
+"""Write source-faithful draft semantic stages for seven CPU probes."""
 import hashlib
 import json
 from pathlib import Path
@@ -31,12 +31,14 @@ def build():
     clear = json.loads((HERE/'draft-clear-fallback-manifest.json').read_text())['cases'][0]
     near = json.loads((HERE/'draft-near_lead-fallback-manifest.json').read_text())['cases'][0]
     absent = json.loads((HERE/'draft-absent_lead-fallback-manifest.json').read_text())['cases'][0]
+    device = json.loads((HERE/'draft-device-direction-fallback-manifest.json').read_text())['cases'][0]
     recording = json.loads((HERE/reference['construction']).read_text())['recording_description']
     assert recording == json.loads((HERE/contrast['construction']).read_text())['recording_description']
     conflict_recording = json.loads((HERE/conflict['construction']).read_text())['recording_description']
     clear_recording = json.loads((HERE/clear['construction']).read_text())['recording_description']
     near_recording = json.loads((HERE/near['construction']).read_text())['recording_description']
     absent_recording = json.loads((HERE/absent['construction']).read_text())['recording_description']
+    device_recording = json.loads((HERE/device['construction']).read_text())['recording_description']
     relevance = {'status': 'draft', 'actor': ACTOR, 'cell_id': CELL,
                  'borderline_excluded': [], 'relevant_laws': [{
                      'law_id': LAW, 'applies_to': [ACTOR], 'confidence': 'medium',
@@ -55,8 +57,8 @@ def build():
          'An applicable source of law and the reason for the stop are not supplied by synthetic motion.',
          'ego_pose', 'Source pose locates the vehicle; applicable law must be reviewed independently.'),
         ('the directions of a police officer or a traffic control device',
-         'The fire-lane sign is not evidence of a police or traffic-control stop direction.',
-         'ego_speed', 'Source speed locates the stop; direction content, timing and driver response need original evidence.'),
+         'The fire-lane sign is not evidence of a police direction. The device probe retains light state, but applicability and necessity need original review.',
+         'ego_speed', 'Source speed locates the stop; the device probe adds source-joined light state, while direction applicability and response need original evidence.'),
     ]
     template = {'status': 'draft', 'law_id': LAW, 'actor': ACTOR,
                 'template_id': TEMPLATE, 'quote': law_text, 'parameter_refs': [],
@@ -106,6 +108,9 @@ def build():
                      'used_by_laws': [LAW]},
                     {'name': 'lead_traffic_presence', 'kind': 'controller',
                      'range_or_domain': 'lead at x=18 m or no lead actor at shared destination',
+                     'used_by_laws': [LAW]},
+                    {'name': 'traffic_control_device_state', 'kind': 'world_setup',
+                     'range_or_domain': 'source-observed traffic-light state throughout the attempted stop',
                      'used_by_laws': [LAW]}]}
     write(PROPOSALS/'bindings.json', bindings)
     cases = []
@@ -169,6 +174,22 @@ def build():
                           'lead_traffic_presence': {'kind': 'controller', 'value': present}},
                       'recording_description': near_recording if present else absent_recording,
                       'unresolved_judgment_calls': [phrase for phrase,_,_,_ in judgments]})
+    cases.append({'case_id': ASSIGNMENT+'__device_direction',
+                  'target_law_id': LAW, 'target_type': 'judgment_sweep',
+                  'paired_probe_id': ASSIGNMENT+'__device_direction_probe',
+                  'deliberate_differences': ['traffic_control_device_state'],
+                  'probe': {'primary_variable': 'traffic_control_device_state',
+                            'comparison_or_standard': 'saved per-frame light state; direction applicability and statutory necessity unresolved',
+                            'target_value_or_branch': {'traffic_control_device_state': 'source-observed'}},
+                  'rationale': 'Retain original traffic-light state during the authored-zone stop without a legal conclusion.',
+                  'variable_assignments': {
+                      'requested_stop_destination': {'kind': 'controller', 'value': 'inside'},
+                      'actual_stop_zone_relation': {'kind': 'subject_behavior', 'value': None},
+                      'lead_traffic_conflict_probe': {'kind': 'controller', 'value': 'absent'},
+                      'lead_traffic_presence': {'kind': 'controller', 'value': False},
+                      'traffic_control_device_state': {'kind': 'world_setup', 'value': 'source-observed traffic light'}},
+                  'recording_description': device_recording,
+                  'unresolved_judgment_calls': [phrase for phrase,_,_,_ in judgments]})
     cases.insert(0, {'case_id': ASSIGNMENT+'__baseline', 'target_law_id': None,
                      'target_type': 'baseline', 'rationale': 'Common source-surveyed fire-lane context.',
                      'variable_assignments': {
@@ -182,18 +203,21 @@ def build():
         item['variable_assignments'].setdefault('lead_traffic_presence',
             {'kind': 'controller',
              'value': suffix in ('conflict', 'clear', 'near_lead')})
+        item['variable_assignments'].setdefault('traffic_control_device_state',
+            {'kind': 'world_setup', 'value': 'not separately inventoried'})
     canonical = {'status': 'draft', 'actor': ACTOR, 'cell_id': CELL,
                  'cases': cases, 'sweeps_expanded': True,
                  'sweep_specs': [{'sweep_id': 'fire_lane_exception_scope_pending',
                                  'target_law_id': LAW,
                                  'judgment_refs': [{'phrase': phrase, 'note': note}
                                                    for phrase,note,_,_ in judgments],
-                                 'rationale': 'Inside/outside, near/far lead and lead-presence diagnostic probes are built; posting and other statutory routes remain.',
+                                 'rationale': 'Inside/outside, lead and light-state diagnostic probes are built; posting and remaining statutory routes are unresolved.',
                                  'status': 'incomplete',
                                  'missing_inputs': ['Original City Fire Code designation and posting evidence',
                                                     'Original conflict causation review',
                                                     'Applicable-law direction source',
-                                                    'Police and traffic-control direction constructions',
+                                                    'Police direction construction',
+                                                    'Original traffic-light applicability and stop-direction review',
                                                     'Attendance and public/private property source review']}],
                  'unselected_statutory_routes': ['conflict necessity', 'applicable-law compliance',
                                                   'police direction', 'traffic-control device direction',
@@ -214,11 +238,11 @@ def build():
            'stages': stages})
     manifest = {'format': 'worker-execution-manifest',
                 'assignment_id': ASSIGNMENT, 'status': 'draft_semantic_validation_only',
-                'cases': [reference, contrast, conflict, clear, near, absent]}
+                'cases': [reference, contrast, conflict, clear, near, absent, device]}
     write(HERE/'draft-semantic-manifest.json', manifest)
     return {'semantic_index_sha256': sha(PROPOSALS/'semantic-index.json'),
             'draft_manifest_sha256': sha(HERE/'draft-semantic-manifest.json'),
-            'selected_cpu_probe_cases': 6, 'unresolved_judgments': len(judgments)}
+            'selected_cpu_probe_cases': 7, 'unresolved_judgments': len(judgments)}
 
 
 if __name__ == '__main__':

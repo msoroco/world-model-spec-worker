@@ -9,6 +9,8 @@ from device_direction_runner import run as run_device
 import tempfile
 from pathlib import Path
 
+HERE=Path(__file__).resolve().parent
+
 
 def location(x, y, z=0):
     return SimpleNamespace(x=x, y=y, z=z)
@@ -123,6 +125,40 @@ class DeviceDirectionTests(unittest.TestCase):
             self.assertEqual(measured['source_frames'],600)
             self.assertEqual(len(measured['source_sha256']),3)
             self.assertFalse(measured['physical_or_legal_completion_claimed'])
+
+    def test_fallback_tunings_reach_native_reference_controller(self):
+        actor,world,carla,survey,plan=self.fixture()
+        plan.update(capture_hz=20,capture_frames=600,
+                    camera_names=['overview','approach','reference_corner',
+                                  'driver_reference'])
+        for ident in ('fallback1','fallback2','fallback3'):
+            import json
+            construction=json.loads((HERE/f'draft-device-direction-{ident}-construction.json').read_text())
+            config=json.loads(next(row['content'] for row in construction['files']
+                                   if row['path']=='config.json'))
+            expected=config['controller_tuning']
+            with tempfile.TemporaryDirectory() as tmp:
+                attempt=Path(tmp)
+                def reference_runner(client,carla,survey,case,path,*,acquisition,
+                                     controller_tuning):
+                    self.assertEqual(controller_tuning,expected)
+                    plan['controller_tuning']=controller_tuning
+                    return acquisition(world,carla,None,None,None,plan,case,path)
+                def device_capture(world,carla,ego,follower,sign,device,plan,path):
+                    self.assertIs(device,actor)
+                    self.assertEqual(plan['controller_tuning'],expected)
+                    with (path/'video_frames.jsonl').open('x') as frames, \
+                         (path/'traffic-control-device.jsonl').open('x') as devices:
+                        for i in range(600):
+                            frames.write(json.dumps({'carla_frame':i+50})+'\n')
+                            devices.write(json.dumps(dict(sample_device(
+                                actor,plan['traffic_control_device_readback'],i+50),
+                                video_frame=i))+'\n')
+                    return {'source_frames':600}
+                run_device(SimpleNamespace(get_world=lambda:world),carla,
+                           survey,attempt,reference_runner=reference_runner,
+                           device_capture=device_capture,
+                           controller_tuning=expected)
 
 
 if __name__ == '__main__':
