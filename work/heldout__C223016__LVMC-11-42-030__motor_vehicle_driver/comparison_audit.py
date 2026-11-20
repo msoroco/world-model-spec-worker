@@ -71,9 +71,12 @@ def compare(comparison_id, *, tamper=False, tamper_pose=False):
     left, right = [load(x, manifest) for x in spec['case_ids']]
     if tamper:
         right['rows'][0]['device']['source_id'] = 'tampered-device'
+    pose_comparisons = {'morning_direction', 'evening_direction',
+                        'period_reversal', 'sign_direction',
+                        'centerline_override'}
     if tamper_pose:
-        if comparison_id != 'sign_direction':
-            raise ValueError('Pose tamper is limited to sign comparison')
+        if comparison_id not in pose_comparisons:
+            raise ValueError('Pose tamper is limited to actor-device comparisons')
         right['rows'][0]['device']['native_pose']['position_m'][0] += 1.0
     a, b = left['config'], right['config']
     fixed = ('governed_lane_id', 'rate_hz', 'frames', 'duration_s', 'cameras')
@@ -92,7 +95,7 @@ def compare(comparison_id, *, tamper=False, tamper_pose=False):
     lhs, rhs = left['rows'], right['rows']
     if len(lhs) != len(rhs):
         raise ValueError('Comparison frame counts differ')
-    if comparison_id == 'sign_direction':
+    if comparison_id in pose_comparisons:
         fixed_pose = _pose(lhs[0])
         if any(_pose(row) != fixed_pose for row in lhs + rhs):
             raise ValueError('Controlled comparison changed original device pose')
@@ -129,7 +132,7 @@ def compare(comparison_id, *, tamper=False, tamper_pose=False):
             'original_direction_source_sha256': [x['receipt']['original_source_hashes']['direction_state.jsonl'] for x in (left, right)],
             'joined_frames': len(lhs), 'measured_outcomes': outcomes,
             'fixed_source_conditions_verified': True,
-            'native_device_geometry_verified': comparison_id == 'sign_direction',
+            'native_device_geometry_verified': comparison_id in pose_comparisons,
             'synthetic_diagnostic_only': True, 'physical_acceptance_claimed': False,
             'legal_acceptance_claimed': False}
 

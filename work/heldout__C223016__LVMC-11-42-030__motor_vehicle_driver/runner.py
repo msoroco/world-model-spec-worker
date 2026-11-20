@@ -84,11 +84,14 @@ def _spawn_device(world, carla, subject, config):
     if not cones:
         raise ValueError('Native traffic-cone barrier blueprint unavailable')
     pose = subject.get_transform()
-    yaw = radians(pose.rotation.yaw)
+    anchor = world.get_map().get_waypoint(pose.location)
+    if anchor is None or anchor.lane_id != config['governed_lane_id']:
+        raise ValueError('Native barrier anchor lane unavailable')
+    yaw = radians(anchor.transform.rotation.yaw)
     forward = config['device_forward_m']
     location = pose.location + carla.Location(x=forward * cos(yaw) - 1.8 * sin(yaw),
                                                y=forward * sin(yaw) + 1.8 * cos(yaw), z=.1)
-    actor = world.try_spawn_actor(cones[0], carla.Transform(location, pose.rotation))
+    actor = world.try_spawn_actor(cones[0], carla.Transform(location, anchor.transform.rotation))
     if actor is None:
         raise ValueError('Native barrier spawn failed')
     return actor
@@ -217,10 +220,13 @@ def run(output, host, port):
             if waypoint is None or waypoint.lane_id != config['governed_lane_id'] or not device.is_alive:
                 raise ValueError('Subject lane or barrier source changed')
             velocity = subject.get_velocity()
+            device_pose = device.get_transform()
             row = {'frame': frame, 'time_s': time_s, 'lane_id': waypoint.lane_id,
                    'civil_time': {'source': 'capture host UTC clock',
                                   'iso8601': datetime.now(timezone.utc).isoformat()},
                    'device': {'kind': 'barrier', 'source_id': str(device.id),
+                              'native_pose': {'position_m': [device_pose.location.x, device_pose.location.y, device_pose.location.z],
+                                              'rotation_deg': [device_pose.rotation.pitch, device_pose.rotation.yaw, device_pose.rotation.roll]},
                               'governs_lane_id': waypoint.lane_id,
                               'period_id': config['period_id'], 'effective': True,
                               'direction_xy': config['period_direction_xy']},
