@@ -18,6 +18,7 @@ ROAD_LENGTH_M = 160.0
 SAMPLE_HZ = 20
 SPEED_MPS = 5.0
 SIGNAL_START_S_M = 82.0
+RIGHT_BLINKER_MASK = 16
 LATERAL_START_S_M = 115.0
 LATERAL_END_S_M = 135.0
 
@@ -155,7 +156,8 @@ def write_diagnostic(root, signal_start_m=SIGNAL_START_S_M, district_type="busin
                 indicator = sample["station_m"] >= signal_start_m
                 drive = {"frame": frame, "time_s": time, "ego_position_xy_m": [x, y],
                          "ego_heading_deg": sample["yaw_deg"], "ego_speed_mps": SPEED_MPS,
-                         "native_road_id": ROAD_ID, "ego_light_mask": 64 if indicator else 0,
+                         "native_road_id": ROAD_ID,
+                         "ego_light_mask": RIGHT_BLINKER_MASK if indicator else 0,
                          "right_indicator": indicator, "requested_indicator": indicator}
                 body = {"frame": frame, "time_s": time, "road_id": ROAD_ID,
                         "body_vertices_m": [[x + dx, y + dy, 0.0] for dx in (-1.0, 1.0)
@@ -257,7 +259,8 @@ def analyze_source_trace(root):
                 raise ValueError("First body is not in source lane")
         indicator = row.get("right_indicator")
         mask = row.get("ego_light_mask")
-        if type(indicator) is not bool or type(mask) is not int or indicator != bool(mask & 64):
+        if (type(indicator) is not bool or type(mask) is not int
+                or indicator != bool(mask & RIGHT_BLINKER_MASK)):
             raise ValueError("Right indicator differs from original light mask")
         if not indicator:
             ever_off = True
@@ -336,13 +339,178 @@ def finalize_source_trace(source, output):
     return result
 
 
+def native_control(position_xy, yaw_deg, speed_mps, station_m, target_speed_mps=SPEED_MPS):
+    """Bounded pure-pursuit command for the authored right lane change."""
+    target = course_sample(min(ROAD_LENGTH_M, station_m + 4.0))
+    dx = target["x_m"] - position_xy[0]
+    dy = target["y_m"] - position_xy[1]
+    desired = math.degrees(math.atan2(dy, dx))
+    error = (desired - yaw_deg + 180.0) % 360.0 - 180.0
+    steer = max(-0.65, min(0.65, error / 45.0))
+    throttle = max(0.0, min(0.55, 0.3 * (target_speed_mps - speed_mps)))
+    brake = max(0.0, min(0.5, 0.2 * (speed_mps - target_speed_mps)))
+    return {"steer": steer, "throttle": throttle, "brake": brake,
+            "requested_right_indicator": station_m >= SIGNAL_START_S_M,
+            "target_xy_m": [target["x_m"], target["y_m"]]}
+
+
+def capture_native(args, config):
+    """Acquire one original CARLA run only through explicit runtime capture."""
+    import carla
+    from contextlib import ExitStack
+    from queue import Queue
+    from pipeline_capture import PipelineCapture
+    from worker_exchange.native_output import FrameMap, seal_capture
+    from worker_exchange.world_restore import snapshot as snapshot_world, restore
+    from turn_signal_measurements import (_source_cameras, _ffv1, _read_camera,
+                                          set_native_right_blinker)
+
+    output = Path(args.output_dir).resolve()
+    if not output.is_dir() or not (output / "construction.json").is_file():
+        raise ValueError("Use runtime.py capture to materialize exact construction")
+    if _hash(output / "road.xodr") != hashlib.sha256(build_opendrive().encode()).hexdigest():
+        raise ValueError("Returned lane-change map differs from controller")
+    if (config.get("cell_id") != "C177008" or config.get("course") != "change_lane"
+            or config.get("rate_hz") != 20 or config.get("duration_s") != 40
+            or config.get("required_atoms") != ["sig.turn_indicator"]):
+        raise ValueError("Exact lane-change capture configuration required")
+    cameras = config.get("cameras", [])
+    sizes = {"overview": (1920, 1080), "approach": (1280, 720),
+             "reference_corner": (1280, 720), "driver_reference": (1280, 720)}
+    if (not isinstance(cameras, list) or [c.get("name") for c in cameras] != list(sizes)
+            or any((c.get("width"), c.get("height")) != sizes[c["name"]]
+                   for c in cameras)):
+        raise ValueError("Four source cameras required")
+    client = carla.Client(args.host, args.port)
+    client.set_timeout(30)
+    saved = snapshot_world(client)
+    ego = None
+    collector = None
+    frames = 0
+    error = None
+    try:
+        world = client.generate_opendrive_world(build_opendrive())
+        settings = world.get_settings()
+        settings.synchronous_mode = True
+        settings.fixed_delta_seconds = 0.05
+        world.apply_settings(settings)
+        native_map = world.get_map()
+        origin = native_map.get_waypoint_xodr(ROAD_ID, -1, 5.0)
+        target = native_map.get_waypoint_xodr(ROAD_ID, -2, 145.0)
+        if origin is None or target is None or origin.road_id != target.road_id:
+            raise ValueError("Native two-lane same-road chain unavailable")
+        blueprints = world.get_blueprint_library().filter("vehicle.*")
+        if not blueprints:
+            raise ValueError("No Native vehicle blueprint")
+        transform = origin.transform
+        transform.location.z += 0.5
+        ego = world.try_spawn_actor(blueprints[0], transform)
+        if ego is None:
+            raise ValueError("Native source-lane ego spawn failed")
+        with _source_cameras(world, ego, carla, cameras) as sensors:
+            queues = {name: Queue() for name in sizes}
+            for name, sensor in sensors.items():
+                sensor.listen(lambda image, name=name: queues[name].put(image))
+            with ExitStack() as stack:
+                writers = {name: stack.enter_context(_ffv1(output / (name + ".mkv"), size))
+                           for name, size in sizes.items()}
+                frame_map = stack.enter_context(FrameMap(output / "video_frames.jsonl"))
+                drive = stack.enter_context((output / "drive_history.jsonl").open("x", buffering=1))
+                bodies = stack.enter_context((output / "body_history.jsonl").open("x", buffering=1))
+                collector = PipelineCapture(client, ego, output,
+                                            config["selected_case_id"],
+                                            required_observations=config["required_atoms"])
+                try:
+                    for _ in range(config["duration_s"] * config["rate_hz"]):
+                        pose = ego.get_transform()
+                        velocity = ego.get_velocity()
+                        speed = math.sqrt(velocity.x**2 + velocity.y**2 + velocity.z**2)
+                        waypoint = native_map.get_waypoint(pose.location, project_to_road=False)
+                        if waypoint is None or waypoint.road_id != ROAD_ID:
+                            raise ValueError("Native ego left the authored road")
+                        command = native_control((pose.location.x, pose.location.y),
+                                                 pose.rotation.yaw, speed, waypoint.s,
+                                                 config.get("requested_speed_mps", SPEED_MPS))
+                        set_native_right_blinker(ego, carla.VehicleLightState,
+                                                 command["requested_right_indicator"])
+                        ego.apply_control(carla.VehicleControl(
+                            throttle=command["throttle"], brake=command["brake"],
+                            steer=command["steer"]))
+                        world.tick()
+                        snap = world.get_snapshot()
+                        for name in sizes:
+                            writers[name].write(_read_camera(queues[name], snap.frame))
+                        frame_map.append(snap.frame, snap.timestamp.elapsed_seconds)
+                        collector.capture(snap.frame, snap.timestamp.elapsed_seconds)
+                        pose = ego.get_transform()
+                        velocity = ego.get_velocity()
+                        waypoint = native_map.get_waypoint(pose.location, project_to_road=False)
+                        if waypoint is None or waypoint.road_id != ROAD_ID:
+                            raise ValueError("Native ego left the authored road")
+                        lamp = int(ego.get_light_state())
+                        row = {"frame": int(snap.frame),
+                               "time_s": float(snap.timestamp.elapsed_seconds),
+                               "ego_position_xy_m": [float(pose.location.x), float(pose.location.y)],
+                               "ego_heading_deg": float(pose.rotation.yaw),
+                               "ego_speed_mps": math.sqrt(velocity.x**2 + velocity.y**2 + velocity.z**2),
+                               "native_road_id": int(waypoint.road_id),
+                               "native_lane_id": int(waypoint.lane_id),
+                               "ego_light_mask": lamp,
+                               "right_indicator": bool(lamp & RIGHT_BLINKER_MASK),
+                               "requested_indicator": command["requested_right_indicator"]}
+                        drive.write(json.dumps(row, allow_nan=False) + "\n")
+                        vertices = ego.bounding_box.get_world_vertices(pose)
+                        bodies.write(json.dumps({"frame": row["frame"],
+                            "time_s": row["time_s"], "road_id": row["native_road_id"],
+                            "lane_id": row["native_lane_id"],
+                            "body_vertices_m": [[float(v.x), float(v.y), float(v.z)]
+                                                for v in vertices]}, allow_nan=False) + "\n")
+                        frames += 1
+                finally:
+                    collector.close()
+                    collector = None
+        (output / "route_context.json").write_text(json.dumps({
+            "cell_id": "C177008", "course": "change_lane", "road_id": ROAD_ID,
+            "source_lane_id": -1, "target_lane_id": -2,
+            "native_map_id": native_map.name, "source_scope": "native_unverified",
+            "district_type": None, "district_review_verified": False,
+            "map_sha256": _hash(output / "road.xodr")}, indent=2) + "\n")
+    except BaseException as exc:
+        error = exc
+        raise
+    finally:
+        if collector is not None:
+            collector.close(confirmed=False)
+        if ego is not None:
+            ego.destroy()
+        restoration = restore(client, saved)
+        if error is None:
+            seal_capture(output, frames=frames, restoration=restoration, errors=[],
+                         encoder_exit_codes={name: 0 for name in sizes},
+                         context={"native_lane_change_candidate": True,
+                                  "district_review_verified": False})
+
+
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--output", type=Path)
     parser.add_argument("--write-diagnostic", action="store_true")
     parser.add_argument("--analyze", type=Path)
     parser.add_argument("--finalize-source", type=Path)
+    parser.add_argument("--check", action="store_true")
+    parser.add_argument("--output-dir", type=Path)
+    parser.add_argument("--host")
+    parser.add_argument("--port", type=int)
     args = parser.parse_args()
+    if args.check:
+        validate_plan(plan()["samples"])
+        return
+    if args.output_dir:
+        config = json.loads((Path(__file__).parent / "config.json").read_text())
+        capture_native(args, config)
+        return
+    if args.output is None:
+        parser.error("--output is required for diagnostic construction")
     args.output.mkdir(parents=True, exist_ok=True)
     (args.output / "road.xodr").write_text(build_opendrive())
     result = plan()
