@@ -422,13 +422,122 @@
     }
   ],
   "source_observation_mapping": {
-    "school_bus_equipment_and_stop": "native bus identity, road.xodr and source-reviewed equipment/sign inventory; current blueprint and commanded lights remain provisional",
-    "pupil_receipt_or_discharge": "pupil_original.jsonl and motion_original.jsonl joined on frame, time, bus and walker; purpose remains source-review pending",
-    "red_visible_front_and_rear": "signal_command_original.jsonl joined to original reference_corner.mkv and driver_reference.mkv red pixel candidates; lamp identity and legal visibility require review",
-    "meeting_or_overtaking": "native-acquisition-inventory.json road and initial heading readback plus motion_original.jsonl travel tangent and body tracks",
-    "immediate_stop_and_release": "motion_original.jsonl body and velocity joined to signal_command_original.jsonl and video_frames.jsonl; no numeric legal reaction threshold asserted",
-    "divided_other_roadway": "road.xodr lane topology and native bus/subject road and lane identity, independently audited",
-    "traffic_officer_control": "original officer actor/control source and sight/command timeline, independently audited"
+    "dev.human_direction": {
+      "evidence": "Preserve the original officer-control actor, control timeline, and source-camera views for independent review.",
+      "channels": [
+        "dev.human_direction"
+      ],
+      "source_refs": [
+        "native-acquisition-inventory.json",
+        "overview.mkv",
+        "reference_corner.mkv"
+      ]
+    },
+    "dev.school_bus_signal": {
+      "evidence": "Join commanded lamp state to original reference-corner and driver-reference camera pixels; physical lamp identity and visibility require Native review.",
+      "channels": [
+        "dev.school_bus_signal",
+        "school_bus_red_pixel_candidates"
+      ],
+      "source_refs": [
+        "signal_command_original.jsonl",
+        "reference_corner.mkv",
+        "driver_reference.mkv"
+      ]
+    },
+    "drv.meeting": {
+      "evidence": "Use original road and heading readback plus subject and bus body tracks to identify opposing approaches.",
+      "channels": [
+        "drv.meeting"
+      ],
+      "source_refs": [
+        "native-acquisition-inventory.json",
+        "motion_original.jsonl"
+      ]
+    },
+    "drv.overtaking": {
+      "evidence": "Use original same-direction road, heading and body tracks to identify passing from behind.",
+      "channels": [
+        "drv.overtaking"
+      ],
+      "source_refs": [
+        "native-acquisition-inventory.json",
+        "motion_original.jsonl"
+      ]
+    },
+    "drv.stopped": {
+      "evidence": "Measure subject body motion and velocity over the warning interval without a numerical legal stopping threshold.",
+      "channels": [
+        "drv.stopped",
+        "subject_speed_mps"
+      ],
+      "source_refs": [
+        "motion_original.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    "kin.velocity": {
+      "evidence": "Measure subject velocity from original time-joined body history and frame map.",
+      "channels": [
+        "kin.velocity",
+        "subject_speed_mps"
+      ],
+      "source_refs": [
+        "motion_original.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    "rel.same_direction": {
+      "evidence": "Compare bus and subject lane-direction tangents and original body histories on the governed roadway.",
+      "channels": [
+        "rel.same_direction"
+      ],
+      "source_refs": [
+        "road.xodr",
+        "motion_original.jsonl"
+      ]
+    },
+    "ru.child": {
+      "evidence": "Join pupil body motion to bus identity and service interval; pupil purpose remains source-review pending.",
+      "channels": [
+        "ru.child",
+        "pupil_service_motion_candidate"
+      ],
+      "source_refs": [
+        "pupil_original.jsonl",
+        "motion_original.jsonl"
+      ]
+    },
+    "ru.school_bus": {
+      "evidence": "Bus actor identity, equipment and roadway stop remain source-review questions.",
+      "channels": [
+        "ru.school_bus"
+      ],
+      "source_refs": [
+        "native-acquisition-inventory.json",
+        "road.xodr"
+      ]
+    },
+    "st.median_or_divider": {
+      "evidence": "Read divider geometry and both actor lane identifiers from original map and Native acquisition inventory.",
+      "channels": [
+        "st.median_or_divider"
+      ],
+      "source_refs": [
+        "road.xodr",
+        "native-acquisition-inventory.json"
+      ]
+    },
+    "st.roadway": {
+      "evidence": "Bind bus and subject to original road identifiers and preserve the other-roadway distinction.",
+      "channels": [
+        "st.roadway"
+      ],
+      "source_refs": [
+        "road.xodr",
+        "native-acquisition-inventory.json"
+      ]
+    }
   },
   "requirement_dispositions": [
     {
