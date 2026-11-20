@@ -20,11 +20,13 @@ def write(path, value):
     path.write_text(json.dumps(value, sort_keys=True, indent=2) + '\n')
 
 
-def build(source):
+def build(source, case='reference'):
+    if case not in ('reference', 'contrast'):
+        raise ValueError('Unknown diagnostic case')
     source = Path(source).resolve()
     if '.runtime-work' not in source.parts:
         raise ValueError('Use an ignored synthetic diagnostic source')
-    destination = HERE/'fixtures/reference-sources'
+    destination = HERE/f'fixtures/{case}-sources'
     destination.mkdir(parents=True, exist_ok=True)
     inventory = []
 
@@ -82,7 +84,7 @@ def build(source):
                                  'speed_provenance': 'synthetic_native_sample'},
                          'world': {'weather': {'precipitation': 0., 'wetness': 0.,
                                                'sun_altitude_angle': 45.}}})
-    manifest = {'acquisition': 'synthetic_fixture', 'case_id': HERE.name+'__reference',
+    manifest = {'acquisition': 'synthetic_fixture', 'case_id': HERE.name+'__'+case,
                 'frames': 600, 'observation_contract_version': 2,
                 'status': 'draft', 'extraction_confirmed': True,
                 'complete_driving_lanes': False, 'required_observations': [],
@@ -97,12 +99,12 @@ def build(source):
             'videos': [{'path': name+'.mkv', 'frames': 600, 'width': size[0],
                         'height': size[1], 'fps': 20, 'color': 'black'}
                        for name, size in zip(CAMERAS, sizes)]}
-    spec_path = HERE/'draft-reference-diagnostic-spec.json'
+    spec_path = HERE/f'draft-{case}-diagnostic-spec.json'
     write(spec_path, spec)
     recipe = {'format': 'worker-fixture-recipe', 'sources': inventory,
               'generator': {'source': str(spec_path.relative_to(ROOT)),
                             'sha256': sha(spec_path)}}
-    recipe_path = HERE/'draft-reference-diagnostic-recipe.json'
+    recipe_path = HERE/f'draft-{case}-diagnostic-recipe.json'
     write(recipe_path, recipe)
     return {'sources': len(inventory), 'graphs': len(graphs),
             'recipe_sha256': sha(recipe_path)}
@@ -110,4 +112,4 @@ def build(source):
 
 if __name__ == '__main__':
     import sys
-    print(json.dumps(build(sys.argv[1]), sort_keys=True))
+    print(json.dumps(build(sys.argv[1], sys.argv[2] if len(sys.argv) > 2 else 'reference'), sort_keys=True))

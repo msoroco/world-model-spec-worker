@@ -35,8 +35,10 @@ OPTIONS = (
 )
 
 
-def build():
-    draft = json.loads((HERE/'draft-reference-manifest.json').read_text())
+def build(case='reference'):
+    if case not in ('reference', 'contrast'):
+        raise ValueError('Unknown case')
+    draft = json.loads((HERE/f'draft-{case}-manifest.json').read_text())
     entry = copy.deepcopy(draft['cases'][0])
     primary = json.loads((HERE/entry['construction']).read_text())
     if sha(HERE/entry['construction']) != entry['construction_sha256']:
@@ -46,6 +48,10 @@ def build():
         'reason': 'Stop-point overshoot, insufficient settled samples and follower closing are distinct Native motion risks; select alternatives from source-measured failures only.'}
     candidates = []
     for ident, changes, reason, source, metric, failure in OPTIONS:
+        if case == 'contrast' and ident == 'fallback2':
+            reason = 'Ego remains moving through the outside-zone target after the nominal approach'
+            metric = 'near-zero samples disjoint from the authored zone'
+            failure = 'no near-zero disjoint sample in the 600-frame capture'
         construction = copy.deepcopy(primary)
         config_file = next(item for item in construction['files']
                            if item['path'] == 'config.json')
@@ -57,7 +63,7 @@ def build():
         construction['candidate_id'] = ident
         construction['mechanisms'] = primary['mechanisms'] + [
             ident+': '+reason+'; controller tuning '+json.dumps(changes, sort_keys=True)]
-        name = f'draft-reference-{ident}-construction.json'
+        name = f'draft-{case}-{ident}-construction.json'
         write(HERE/name, construction)
         candidates.append({'id': ident, 'construction': name,
                            'construction_sha256': sha(HERE/name),
@@ -67,8 +73,8 @@ def build():
                                              for key, value in changes.items()]})
     entry['candidates'] = candidates
     draft['cases'] = [entry]
-    draft['status'] = 'draft_reference_four_candidate_diagnostic'
-    name = HERE/'draft-reference-fallback-manifest.json'
+    draft['status'] = f'draft_{case}_four_candidate_diagnostic'
+    name = HERE/f'draft-{case}-fallback-manifest.json'
     write(name, draft)
     return {'manifest_sha256': sha(name),
             'candidates': {item['id']: item['construction_sha256']
@@ -76,4 +82,5 @@ def build():
 
 
 if __name__ == '__main__':
-    print(json.dumps(build(), sort_keys=True))
+    import sys
+    print(json.dumps(build(sys.argv[1] if len(sys.argv) > 1 else 'reference'), sort_keys=True))
