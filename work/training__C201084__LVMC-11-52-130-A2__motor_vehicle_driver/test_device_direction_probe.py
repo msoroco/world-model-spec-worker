@@ -5,6 +5,7 @@ from types import SimpleNamespace
 from device_direction_probe import (check_saved_device_rows, inspect_device,
                                     sample_device)
 from device_direction_capture import acquire
+from device_direction_runner import run as run_device
 import tempfile
 from pathlib import Path
 
@@ -87,6 +88,39 @@ class DeviceDirectionTests(unittest.TestCase):
             self.assertFalse(result['direction_applicability_verified'])
             with (attempt/'traffic-control-device.jsonl').open() as stream:
                 self.assertEqual(sum(1 for _ in stream),600)
+
+    def test_runner_remeasures_hashed_device_source(self):
+        actor,world,carla,survey,plan=self.fixture()
+        plan.update(capture_hz=20,capture_frames=600,
+                    camera_names=['overview','approach','reference_corner',
+                                  'driver_reference'])
+        with tempfile.TemporaryDirectory() as tmp:
+            attempt=Path(tmp)
+            def reference_runner(client,carla,survey,case,path,*,acquisition):
+                self.assertEqual(case,'reference')
+                return acquisition(world,carla,None,None,None,plan,case,path)
+            def device_capture(world,carla,ego,follower,sign,device,plan,path):
+                self.assertIs(device,actor)
+                self.assertEqual(plan['traffic_control_device_readback']['actor_id'],203)
+                with (path/'video_frames.jsonl').open('x') as frames, \
+                     (path/'traffic-control-device.jsonl').open('x') as devices:
+                    import json
+                    for i in range(600):
+                        frames.write(json.dumps({'carla_frame':i+50})+'\n')
+                        devices.write(json.dumps(dict(sample_device(
+                            actor,plan['traffic_control_device_readback'],i+50),
+                            video_frame=i))+'\n')
+                return {'source_frames':600}
+            result=run_device(SimpleNamespace(get_world=lambda:world),carla,
+                              survey,attempt,reference_runner=reference_runner,
+                              device_capture=device_capture)
+            self.assertEqual(result['device_source_measurement'],
+                             'device-source-measurement.json')
+            import json
+            measured=json.loads((attempt/result['device_source_measurement']).read_text())
+            self.assertEqual(measured['source_frames'],600)
+            self.assertEqual(len(measured['source_sha256']),3)
+            self.assertFalse(measured['physical_or_legal_completion_claimed'])
 
 
 if __name__ == '__main__':
