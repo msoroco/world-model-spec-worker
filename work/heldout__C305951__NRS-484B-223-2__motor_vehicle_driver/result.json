@@ -220,7 +220,7 @@
       "exit_code": 0,
       "diagnostic_output": "Ignored .runtime-work/ session artifact; rerun command for current portable proof."
     },
-    "remaining_cpu_work": "Current offline matrix passes 32/32; physical two of eight, primary compatibility two of eight, source-only saved and delivery audit one of eight. Remaining current compatibility, physical, saved-only, delivery and comparison proofs must be returned and strict scoped gate passed.",
+    "remaining_cpu_work": "32/32 current offline; physical 4/8; primary compatibility 2/8; six current fallbacks; saved processing and delivery audit 1/8. Renew remaining candidate/primary compatibility, physical, saved, delivery and comparison CPU proofs, then pass scoped strict gate.",
     "stale_proof_archives_20261119": [
       {
         "path": "_shared/c305951-stale-proof-archive.json",
@@ -233,9 +233,9 @@
     ],
     "stale_proofs_reuse_for_current_readiness": false,
     "next_exact_failure": {
-      "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -c \"from worker_exchange.execution_manifest import validate; from pathlib import Path; validate(Path.cwd(),'heldout__C305951__NRS-484B-223-2__motor_vehicle_driver')\"",
-      "failure": "FileNotFoundError: work/heldout__C305951__NRS-484B-223-2__motor_vehicle_driver/left-travel-fallback1-negative.log",
-      "resume_action": "Rerun and return remaining 30 positive/negative compatibility proofs, then complete six remaining physical cases, seven saved paths and their delivery/comparison audits before scoped strict readiness",
+      "command": "PYTHONPATH=runtime:runtime/scenario_pipeline .venv-cpu/bin/python -c \"from scenario_pipeline.worker_exchange.execution_manifest import validate; from pathlib import Path; validate(Path.cwd(),'heldout__C305951__NRS-484B-223-2__motor_vehicle_driver')\"",
+      "failure": "FileNotFoundError: work/heldout__C305951__NRS-484B-223-2__motor_vehicle_driver/center-pass-clear-fallback1-negative.log",
+      "resume_action": "Run current center_pass_clear fallback1 compatibility with missing-source negative, return direct negative log and rebind receipt; then continue current CPU proof chain.",
       "status": "partial"
     },
     "primary_physical_preparation": {
@@ -256,7 +256,9 @@
     },
     "current_physical_cases": [
       "right_baseline",
-      "left_travel"
+      "left_travel",
+      "center_no_exception",
+      "center_pass_clear"
     ],
     "current_compatibility_cases": [
       "right_baseline",
@@ -279,6 +281,21 @@
       "positive_exit_code": 0,
       "negative_exit_code": 1,
       "frozen_delivery_validator": "passed"
-    }
+    },
+    "current_candidate_compatibility": {
+      "passed_cases": [
+        "left_travel",
+        "center_no_exception"
+      ],
+      "passed_candidates_per_case": [
+        "fallback1",
+        "fallback2",
+        "fallback3"
+      ],
+      "positive_and_missing_source_negative": true,
+      "scope": "current pinned CPU runtime"
+    },
+    "current_manifest_sha256": "2153f25000d45263da9e310f9266b44b583ba535de350f4cb1c99cf12dfdb203",
+    "return_cap_archive_sha256": "8e03df7fb0276563b00cf36d45036cc3308e8c2c9b9eea25a3f77a3e4e37ab65"
   }
 }
