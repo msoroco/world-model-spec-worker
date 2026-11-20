@@ -367,6 +367,101 @@
           "value": 10
         }
       }
+    },
+    {
+      "case_id": "testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_straight_comparator",
+      "deliberate_differences": [
+        "opposite_direction_left_turn",
+        "commanded_turn_path"
+      ],
+      "paired_probe_id": "opposite_left_turn_vs_straight_same_site",
+      "probe": {
+        "comparison_or_standard": "same-site opposite left turn with common other vehicle motion",
+        "primary_variable": "opposite_direction_left_turn",
+        "target_value_or_branch": "planned_opposing_straight_unverified"
+      },
+      "rationale": "Same-site opposing straight approach controls the opposite-left-turn exception; original source frames retain body entry, signal and stop histories without a statutory cutoff.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original Native signal state by frame",
+            "name": "signal_state",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire capture",
+            "uncertainty": "synthetic diagnostic only",
+            "unit": "structured record"
+          },
+          {
+            "method": "original speed/body occupancy by frame",
+            "name": "stop_state",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire capture",
+            "uncertainty": "synthetic diagnostic only",
+            "unit": "structured record"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "saved original-source join",
+            "name": "entry_context",
+            "unit": "structured record"
+          }
+        ],
+        "limitations": [
+          "Synthetic straight-route diagnostic; no physical or legal acceptance"
+        ]
+      },
+      "target_law_id": "NRS-484B-250-2",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "official device status",
+        "approximately same time",
+        "opposite-left-turn exception and statutory yield"
+      ],
+      "variable_assignments": {
+        "body_entry_time_delta_s": {
+          "kind": "subject_behavior",
+          "unit": "s",
+          "value": null
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "unit": "m/s",
+          "value": 5
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "unit": "structured record",
+          "value": "opposite_straight_waypoints"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "unit": "m/s",
+          "value": null
+        },
+        "native_signal_state": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "Off"
+        },
+        "official_device_status": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "unverified"
+        },
+        "opposite_direction_left_turn": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "planned_opposing_straight_unverified"
+        },
+        "other_release_frame": {
+          "kind": "controller",
+          "unit": "frame",
+          "value": 10
+        }
+      }
     }
   ],
   "cell_id": "C125751",
