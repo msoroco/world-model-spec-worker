@@ -56,7 +56,7 @@ def observe_sight(world, ego, through, frame, time_s, *, location_factory=None,
     visible_ids = []
     if through is not None:
         if visible_relation is None:
-            from runtime.python.original_observations import visible_relation
+            from original_observations import visible_relation
         relation = visible_relation(world, ego, through)
         if relation.get('a') != ego.id or relation.get('b') != through.id:
             raise ValueError('Through-vehicle relation has different actor IDs')
