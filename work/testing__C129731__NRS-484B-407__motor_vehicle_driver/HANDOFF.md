@@ -436,3 +436,7 @@ Twenty unbound top-level `canonical-*-proof.json` diagnostics were preserved byt
 
 Twenty-two additional unbound `canonical-*-proof.json` files were verified absent by filename and SHA256 from other returned JSON references, then added with exact bytes and hashes to `historical-unbound-canonical-proofs.json`. The archive now contains 42 reversible entries, SHA256 `9ad88bca9bbd790b7c56de42f88b2051c933898c2b7d004c151e8589274e8163`. The C129731 scoped nonready `worker_check.py --complete` passed after the first twelve were archived; the remaining ten used the same reference and byte-roundtrip checks. No selected proof was replaced.
 After all 42 historical entries were archived, the C129731 scoped nonready static check was rerun and exited 0 (`static_checks_passed=true`).
+
+## 2026-11-19 return inventory preservation
+
+Fourteen unreferenced provisional `diagnostic-canonical-*-fallback-manifest.json` files were archived losslessly in `historical-unbound-diagnostic-fallback-manifests.json` (SHA-256 `2bd0bd9e8845a9487cf1abaf6c56f6b58166797571a572d63446b9b1ee115919`). Each original path, SHA-256 and exact base64 bytes are retained. The C129731 scoped nonstrict static gate passed after archival.
