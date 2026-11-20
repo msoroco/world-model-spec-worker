@@ -434,7 +434,8 @@ def build_linked_approach_draft(variant, output):
     new_step = (8.0 + view) * .05 / 2
     offset = round(new_step - old_step, 4)
     approach[0]['ego_speed_mps'] = 8.0
-    approach[1]['distance_to_intersection_m'] = round(12.0 - new_step, 4)
+    boundary_epsilon = 0.0001 if variant in ('clear', 'through_entered') else 0.0
+    approach[1]['distance_to_intersection_m'] = round(12.0 - new_step - boundary_epsilon, 4)
     put('approach_history.jsonl', approach)
     rays = rows('visibility_rays.jsonl')
     rays[1]['distance_to_intersection_m'] = approach[1]['distance_to_intersection_m']
@@ -449,7 +450,7 @@ def build_linked_approach_draft(variant, output):
     if not (len(trace) == len(bodies) == len(evidence) == 600):
         raise ValueError('Expected 600 joined source frames')
     for i, (t, body_row, event) in enumerate(zip(trace, bodies, evidence)):
-        shift = offset if i else 0.0
+        shift = offset + boundary_epsilon if i else 0.0
         x = round(t['position_m'][0] + shift, 4)
         speed = 8.0 if i == 0 else t['speed_mps']
         t['position_m'][0] = x
@@ -503,7 +504,7 @@ def build_linked_approach_draft(variant, output):
     from worker_exchange.fixture_generator import inspect as inspect_generated
     inspect_generated(specification)
     (target / 'diagnostic-candidate.json').write_text(
-        json.dumps(specification, indent=2) + '\n')
+        json.dumps(specification, separators=(',', ':'), allow_nan=False) + '\n')
     originals = {name: sha(target / name) for name in
                  ('approach_history.jsonl', 'visibility_rays.jsonl',
                   'interaction_history.jsonl', 'trace.jsonl',
