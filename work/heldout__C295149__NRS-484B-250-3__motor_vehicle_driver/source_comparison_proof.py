@@ -1,6 +1,7 @@
 """Independent fixed-topology entry-order audit for the ending-road branch."""
 
 import argparse
+import ast
 from hashlib import sha256
 import json
 from pathlib import Path
@@ -90,6 +91,8 @@ def _selected(manifest, suffix):
 
 def audit_exact(comparison_id, *, tamper=False):
     """Audit exact retained originals; synthetic fixtures make no legal finding."""
+    if comparison_id == 'release_controller_sweep':
+        return audit_release_controller_sweep(tamper=tamper)
     here = Path(__file__).resolve().parent
     manifest = json.loads((here / 'execution-manifest.json').read_text())
     plan = json.loads((here / 'case-plan.json').read_text())
@@ -248,6 +251,79 @@ def _audit_opposing_probe(manifest, spec, *, tamper):
             'original_source_hashes': {name: _sha(original / name) for name in sources},
             'measurement': value, 'synthetic_diagnostic_only': True,
             'physical_acceptance_claimed': False, 'legal_acceptance_claimed': False}
+
+
+def audit_release_controller_sweep(*, tamper=False):
+    """Check returned controller alternatives without claiming observed Native motion."""
+    here = Path(__file__).resolve().parent
+    constructions = []
+    fixed_files = None
+    normalized_runners = None
+    for delay in (0, 4, 8):
+        primary = json.loads((here / f'construction-yield-release-delay-{delay}.json').read_text())
+        primary_files = {row['path']: row['content'] for row in primary['files']}
+        base = json.loads(primary_files['config.json'])
+        expected_case = here.name + f'__yield_release_delay_{delay}'
+        if (primary['case_id'] != expected_case or
+                base['selected_case_id'] != expected_case or
+                base['case']['case_id'] != expected_case or
+                base['subject_release_delay_frames'] != delay):
+            raise ValueError('Release sweep primary identity or delay differs')
+        for candidate in range(4):
+            name = (f'construction-yield-release-delay-{delay}.json' if candidate == 0
+                    else f'construction-yield-release-delay-{delay}-fallback{candidate}.json')
+            path = here / name
+            construction = json.loads(path.read_text())
+            files = {row['path']: row['content'] for row in construction['files']}
+            config = json.loads(files['config.json'])
+            expected = json.loads(json.dumps(base))
+            if candidate == 1:
+                expected['max_spawns'] = 600
+            elif candidate == 2:
+                expected['yield_clearance_m'] = 4
+            elif candidate == 3:
+                expected['frames'] = 240
+                expected['duration_s'] = 12
+                expected['case']['recording_description']['channels'][0]['time_window'] = 'full 12 s trace'
+            if tamper and delay == 8 and candidate == 2:
+                config['subject_release_delay_frames'] = 7
+            if construction['case_id'] != expected_case or config != expected:
+                raise ValueError('Release sweep candidate changes an unplanned condition: ' + name)
+            common = {key: value for key, value in files.items()
+                      if key not in ('config.json', 'ending_road_runner.py', 'runner.py',
+                                     'tests/test_ending_road_runner.py')}
+            if fixed_files is None:
+                fixed_files = common
+            elif common != fixed_files:
+                raise ValueError('Release sweep changes fixed construction source: ' + name)
+            runners = tuple(files[key].replace(f'yield_release_delay_{delay}', 'yield_release_delay_N')
+                            for key in ('ending_road_runner.py', 'runner.py'))
+            if normalized_runners is None:
+                normalized_runners = runners
+            elif runners != normalized_runners:
+                raise ValueError('Release sweep changes controller source: ' + name)
+            tree = ast.parse(files['ending_road_runner.py'])
+            calls = [node for node in ast.walk(tree) if isinstance(node, ast.Call)
+                     and isinstance(node.func, ast.Name) and node.func.id == 'release_ready']
+            if len(calls) != 1 or [ast.unparse(arg) for arg in calls[0].args] != [
+                    'tick_index', 'release_eligible_tick', "config['subject_release_delay_frames']"]:
+                raise ValueError('Release sweep no longer uses configured delay: ' + name)
+            function = next(node for node in tree.body if isinstance(node, ast.FunctionDef)
+                            and node.name == 'release_ready')
+            namespace = {}
+            exec(compile(ast.Module(body=[function], type_ignores=[]), name, 'exec'), namespace)
+            ready = namespace['release_ready']
+            if (ready(6, None, delay) or ready(5, 6, delay)
+                    or not ready(6 + delay, 6, delay)
+                    or (delay and ready(5 + delay, 6, delay))):
+                raise ValueError('Release sweep controller boundary differs: ' + name)
+            constructions.append({'case_id': expected_case, 'candidate': candidate,
+                                  'construction': name, 'sha256': _sha(path)})
+    return {'passed': True, 'comparison_id': 'release_controller_sweep',
+            'release_ticks_after_eligibility': [0, 4, 8],
+            'constructions': constructions, 'fixed_embedded_sources_verified': True,
+            'native_motion_observed': False, 'physical_acceptance_claimed': False,
+            'legal_acceptance_claimed': False}
 
 
 if __name__ == '__main__':
