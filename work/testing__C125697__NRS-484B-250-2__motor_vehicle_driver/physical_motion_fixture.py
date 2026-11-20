@@ -61,7 +61,7 @@ def run(kind, case=CASE, output=None):
         for name in ('trace.jsonl', 'video_frames.jsonl', 'crossing_history.jsonl'):
             (attempt / name).write_text(sources[name])
         write(attempt / 'acquisition-provenance.json', {
-            'provenance_kind': 'native', 'diagnostic_fixture': True,
+            'provenance_kind': 'synthetic_fixture', 'diagnostic_fixture': True,
             'scope': 'Synthetic CPU classifier fixture only',
         })
         if kind == 'lifecycle':
