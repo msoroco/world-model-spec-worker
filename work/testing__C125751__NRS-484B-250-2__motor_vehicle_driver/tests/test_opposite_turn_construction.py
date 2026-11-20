@@ -1222,16 +1222,12 @@ class DeviceSourceJoinTests(unittest.TestCase):
             body["maneuver"] = "ego_straight_other_straight"
         (root / "body_history.jsonl").write_text("".join(json.dumps(row) + "\n" for row in bodies))
 
-    def test_straight_saved_finalizer_rebuilds_sources_and_rejects_frame_tamper(self):
+    def test_straight_saved_finalizer_rejects_stagnant_and_frame_tamper(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
             self._straight_finalizer_sources(root)
-            entry = straight.analyze_saved_straight(root, root / "analysis-report.json")
-            self.assertEqual(entry["first_body_entry"]["ego"]["frame"], 101)
-            self.assertEqual(entry["ego_minus_other_entry_time_s"], 0)
-            result = json.loads((root / "result.json").read_text())
-            self.assertEqual(result["case_id"], straight.COMPARATOR_CASE)
-            self.assertFalse(result["physical_acceptance_claimed"])
+            with self.assertRaisesRegex(ValueError, "Straight trajectory departs sourced opposing route"):
+                straight.analyze_saved_straight(root, root / "analysis-report.json")
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
             self._straight_finalizer_sources(root)

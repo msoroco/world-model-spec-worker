@@ -1,0 +1,69 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 4,
+      "requirement": "Both complete vehicle bodies enter one sourced crossing; retain their original frame/time delta without a legal simultaneity cutoff",
+      "source": "NRS 484B.250(2), including its subsection-4 exception; inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
+      "output_key": "straight_body_entry",
+      "method": "measure_straight_entry",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "body_history.jsonl",
+        "crossing_history.jsonl",
+        "road_geometry.json",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 5,
+      "requirement": "Retain opposing approach bearings and the turning vehicle's source route and trajectory for the opposite-direction left-turn exception",
+      "source": "NRS 484B.250(2), including its subsection-4 exception; inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
+      "output_key": "straight_route_context",
+      "method": "measure_straight_route",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "turn_route_context.json",
+        "road_geometry.json",
+        "crossing_history.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 6,
+      "requirement": "Retain both governed Native signal states at body entry without treating Off as statutory inoperability or resolving official-device status",
+      "source": "NRS 484B.250(2), including its subsection-4 exception; inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
+      "output_key": "straight_signal_at_entry",
+      "method": "measure_straight_signal",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "signal_context.json",
+        "signal_history.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 7,
+      "requirement": "Retain both source-selected stop references, zero-speed histories and entry order for the subsection-4 stop and yield exception",
+      "source": "NRS 484B.250(2), including its subsection-4 exception; inputs/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
+      "output_key": "straight_stop_order",
+      "method": "measure_straight_stop",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "stop_context.json",
+        "stop_history.jsonl",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "body_history.jsonl"
+    ],
+    "error_contains": "Missing required source: body_history.jsonl"
+  }
+}

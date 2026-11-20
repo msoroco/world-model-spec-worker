@@ -497,6 +497,8 @@ def analyze_saved_straight(attempt, output):
     if not polygon.is_valid or polygon.area <= 0:
         raise ValueError("Valid saved crossing polygon required")
     first = {role: None for role in ROLES}
+    previous_centers = {role: None for role in ROLES}
+    completed_centers = {role: None for role in ROLES}
     previous = -1
     for index, (frame, body, crossed, signal, stop, motion, observed) in enumerate(
             zip(mapping, bodies, crossing, signals, stops, trace, evidence)):
@@ -529,12 +531,28 @@ def analyze_saved_straight(attempt, output):
                             for value in point) for point in vertices)):
                 raise ValueError("Finite original straight body vertices required: " + role)
             inside = MultiPoint(vertices).convex_hull.intersects(polygon)
+            center_x = (min(p[0] for p in vertices) + max(p[0] for p in vertices)) / 2
+            center_y = (min(p[1] for p in vertices) + max(p[1] for p in vertices)) / 2
+            direction = 1 if role == "ego" else -1
+            earlier = previous_centers[role]
+            heading = actor.get("heading_deg")
+            if (type(heading) not in (int, float) or not math.isfinite(heading) or
+                    abs(center_y) > 1.25 or
+                    abs(_angle(0 if role == "ego" else 180, heading)) > 20 or
+                    (earlier is not None and
+                     (direction * (center_x - earlier[0]) < -0.05 or
+                      abs(center_x - earlier[0]) > 0.6))):
+                raise ValueError("Straight trajectory departs sourced opposing route: " + role)
+            previous_centers[role] = (center_x, center_y)
+            completed_centers[role] = (center_x, center_y)
             if index == 0 and inside:
                 raise ValueError("Straight actor starts inside crossing: " + role)
             if first[role] is None and inside:
                 first[role] = {"frame": native, "time_s": when}
     if not all(first.values()):
         raise ValueError("Both original straight body entries required")
+    if completed_centers["ego"][0] < 8 or completed_centers["other"][0] > -8:
+        raise ValueError("Both straight actors must clear the sourced crossing")
     source_hashes = {name: hashlib.sha256((attempt / name).read_bytes()).hexdigest()
                      for name in names}
     channels = attempt / "channels"
