@@ -452,3 +452,5 @@ The physical classifier fixture generator now labels all 72 outcome results `syn
 Return cap checkpoint: 90 unbound historical top-level logs and their former test rows were preserved byte-for-byte with SHA-256 in work/_shared/archived-unbound-negative-logs-20261119.json. Active case receipts remain unchanged.
 
 Return cap checkpoint: 16 additional unbound historical top-level logs and their former test rows were preserved byte-for-byte with SHA-256 in work/_shared/archived-unbound-negative-logs-20261119.json. Active case receipts remain unchanged.
+
+2026-11-20 return-cap consolidation: historical unreferenced helper scripts from this owner were archived byte-for-byte under `work/_shared/archived-unbound-negative-logs-20261119.json` with SHA-256. Active construction and bound proof files remain in place. Restore a helper from the archive before rerunning historical authoring workflows.

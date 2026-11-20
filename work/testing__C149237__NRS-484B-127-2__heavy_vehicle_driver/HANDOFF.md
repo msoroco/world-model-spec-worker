@@ -383,3 +383,5 @@ The other 13 selected diagnostic recipes were also migrated from retained `.pkl`
 The full batch gate rerun exited 1 before readiness evaluation at frozen `preparation.py:97`: `Unapproved output: runtime/runs/scenario_pipeline/inputs/shared/manifest.json`. Returned `work/_shared/HANDOFF.md (historical full-gate log section)` SHA256 `1619540c7826a8754909c30b9a431397b0eb2ffd3d1e0a6dfdbc09ce68150e62` records the exact traceback. Frozen runtime was not edited. Work remains 8,600/8,600 files; batch 9 ready / 34 partial.
 
 Return cap checkpoint: 10 unbound historical top-level logs and former test rows are preserved byte-for-byte with SHA-256 in work/_shared/archived-unbound-negative-logs-20261119.json. Active case receipts remain unchanged.
+
+2026-11-20 return-cap consolidation: historical unreferenced helper scripts from this owner were archived byte-for-byte under `work/_shared/archived-unbound-negative-logs-20261119.json` with SHA-256. Active construction and bound proof files remain in place. Restore a helper from the archive before rerunning historical authoring workflows.
