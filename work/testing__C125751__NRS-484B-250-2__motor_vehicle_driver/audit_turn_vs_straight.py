@@ -38,6 +38,14 @@ def check_motion(series,role,terminal,turn):
 def run():
     turn_recipe=check_source('opposite-turn-v2-recipe.json')
     straight_recipe=check_source('straight-diagnostic-recipe.json')
+    manifest=load('execution-manifest.json')
+    selected={entry['case_id'].rsplit('__',1)[-1]:entry for entry in manifest['cases']}
+    assert {'opposite_left_turn','opposite_straight_comparator'} <= set(selected)
+    assert selected['opposite_left_turn']['fixture_recipe']==str(P/'opposite-turn-v2-recipe.json')
+    assert selected['opposite_straight_comparator']['fixture_recipe']==str(P/'straight-diagnostic-recipe.json')
+    for suffix in ('opposite_left_turn','opposite_straight_comparator'):
+        entry=selected[suffix]
+        assert hashlib.sha256((P/entry['construction']).read_bytes()).hexdigest()==entry['construction_sha256']
     turn_spec=load('opposite-turn-v2-fixture-spec.json')['files']
     straight_spec=load('straight-diagnostic-fixture-spec.json')['files']
     for field in ('road.xodr','signal_history.jsonl','video_frames.jsonl'):
@@ -58,6 +66,8 @@ def run():
     assert all(a['actor_sources']['other']==b['actor_sources']['other'] for a,b in zip(turn,straight))
     assert all(a['actor_sources']['ego']==b['actor_sources']['ego'] for a,b in zip(turn,straight[:8]))
     return {'frames':1100,'turn_endpoint_m':t[-1],'straight_endpoint_m':s[-1],
+            'selected_manifest_sha256':hashlib.sha256((P/'execution-manifest.json').read_bytes()).hexdigest(),
+            'selected_case_ids':[selected[suffix]['case_id'] for suffix in ('opposite_left_turn','opposite_straight_comparator')],
             'fixed_fields':['road.xodr','signal_history.jsonl','video_frames.jsonl','road_geometry.json','signal_context.json','stop_context.json','other_route','other_body_history','four_camera_frame_ids'],
             'source_hashes_checked':len(turn_recipe['sources'])+len(straight_recipe['sources'])+2,
             'native_motion_proven':False,'physical_acceptance_claimed':False}

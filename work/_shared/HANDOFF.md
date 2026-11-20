@@ -2491,3 +2491,11 @@ Post-repair full strict `.venv-cpu/bin/python worker_check.py --complete --requi
 Return inventory: 8,598 files after lossless archival of 14 unreferenced C129731 provisional fallback manifests; C129731 scoped nonstrict static gate passed. Archive SHA-256 `2bd0bd9e8845a9487cf1abaf6c56f6b58166797571a572d63446b9b1ee115919`. Full strict gate is being rerun after this repair.
 
 Final gate rerun after inventory archival: `.venv-cpu/bin/python worker_check.py --complete --require-delivery-ready` exited 1 at `ValueError: Unapproved output: runtime/runs/scenario_pipeline/inputs/shared/manifest.json` in frozen runtime. The returned `work/` inventory is 8,598 files, under the 8,600 cap. This is a separate frozen-output inventory failure; 39 packages, including C125751, also remain truthfully partial with CPU construction/binding work. No frozen runtime file was edited.
+
+C125751 now has four selected canonical cases, including the same-site straight comparator; primary and three fallback offline, positive/negative compatibility and saved-only CPU paths passed. Independent delivery and controlled comparison audits passed. See C125751 HANDOFF.md for commands and hashes. Status remains partial pending branch review, ordered queue, local integration proof and strict gate.
+
+## 2026-11-19 continuation checkpoint
+
+C125751 scoped static check passes after its fourth selected straight comparator and current CPU proofs. C125763 now returns four exact selected-case primary saved-processing logs and binds their hashes in `post_capture`; its scoped complete static check also passes. Both packages remain `partial` pending the worker-owned proof and coverage work stated in their handoffs. Return file count is 8,597/8,600. Four assignments are labeled `ready` and 39 `partial`; these labels were not upgraded in this turn.
+
+The rerun of `.venv-cpu/bin/python worker_check.py --complete --require-delivery-ready` exited 1 at `runtime/scenario_pipeline/worker_exchange/preparation.py:97`: `ValueError: Unapproved output: runtime/runs/scenario_pipeline/inputs/shared/manifest.json`. This path is inside frozen runtime and was not edited. The batch also lacks completed CPU coverage, queue and local integration work. Goal remains active; strict delivery readiness has not passed.
