@@ -2,7 +2,7 @@
   "assignment_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver",
   "input_sha256": "82bba9f879337bcddb33ab873c7c954755b44b39881869d4282901c64c8aee18",
   "status": "partial",
-  "readiness_kind": "five_case_selected_twenty_path_cpu_proof_checkpoint",
+  "readiness_kind": "current_cpu_proof_with_portable_import_gap",
   "applied_update": 0,
   "tests": [
     {
@@ -100,12 +100,6 @@
       "exit_code": 0,
       "log": "selected-saved-summary-current.log",
       "sha256": "fc7b5b8edde380f442d3a41342cd6c4bef851c44feec6e56322c24c3c27499c5"
-    },
-    {
-      "command": "four source-grounded comparison audits",
-      "exit_code": 0,
-      "log": "comparison-audit-current.log",
-      "sha256": "61c5d959efc3906e1276559f987d1fe14e6e86782b3691970d3a42e658682b29"
     },
     {
       "command": ".venv-cpu/bin/python work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/physical_fixture_proof.py --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_approaches --source .runtime-work/c158190-yield_nearest_view_through_approaches-primary-stable-v2-compat --kind complete_motion --output work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/physical-proofs/yield_nearest_view_through_approaches/complete_motion.json --saved-receipt work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/physical-proofs/yield_nearest_view_through_approaches/primary-saved-processing.json",
@@ -478,12 +472,18 @@
       "exit_code": 0,
       "log": "cases/view_speed_6/fallback3-offline.log",
       "sha256": "9316e0c943e586cf0a0e7f6139f6258748f2615287ed39976208d3cb95151414"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/current_comparison_audit.py > work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/comparison-audit-current.log",
+      "exit_code": 0,
+      "log": "comparison-audit-current.log",
+      "sha256": "e74661661742acaa681c734b09622561103e90ec9a1db0b8d29900297e712a12"
     }
   ],
   "remaining_gpu_checks": [
     "Realized yield-sign governance, absence of line/crosswalk, visible through traffic, actual slowing and conflict behavior."
   ],
-  "reason": "All 15 selected cases have current-runtime exact offline and primary/fallback positive/negative compatibility receipts, source-normalized construction bundles, physical-preparation receipts, semantic chain, delivery acceptance contracts, and official primary receipt validation. A final 60-variant compatibility plus recorded-only saved replay is running against selected manifest SHA256 6f3d0122c179ac3c2497a34aa7d536a88f37d7583098697c642f7c17fe5fce5d. Independent current comparison review, scoped strict gate and full strict gate remain pending. Status partial.",
+  "reason": "Final selected manifest 6f3d0122c179ac3c2497a34aa7d536a88f37d7583098697c642f7c17fe5fce5d passed 60/60 current compatibility and recorded-only saved-processing variants; eight current comparison membership/source checks pass, with synthetic y12/y15/y18 rays identical and Native visibility effect unresolved. Scoped strict ready gate fails at runtime/scenario_pipeline/worker_exchange/portable.py:62: undeclared import runtime in yield_capture_sources.py:61. Worker must replace the unused default import with the portable original_observations import, rehash all 60 linked constructions and exact manifest, rerun all affected offline/compatibility/saved/comparison proofs, and rerun scoped strict before ready. Full batch strict remains unpassed.",
   "view_speed_6_source_checkpoint": {
     "status": "diagnostic_unselected_primary_and_three_fallback_cpu_proven",
     "builder": "prove_mid_speed_sources.py --build-speed6-fixture .runtime-work/c158190-speed6-fixture-v4",
@@ -1717,5 +1717,21 @@
     "official_primary_receipts": "15/15 passed",
     "execution_semantic_delivery": "15/15 passed",
     "final_60_variant_replay": "running"
+  },
+  "first_gpu_delivery_command": ".venv-cpu/bin/python runtime.py execute-delivery --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_approaches --job $JOB_ID --db $DB --run $RUN --assignment testing__C158190__NRS-484B-257-1__motor_vehicle_driver",
+  "current_selected_replay": {
+    "manifest_sha256": "6f3d0122c179ac3c2497a34aa7d536a88f37d7583098697c642f7c17fe5fce5d",
+    "variant_count": 60,
+    "compatibility_passed": 60,
+    "saved_processing_passed": 60,
+    "comparison_audit_sha256": "e74661661742acaa681c734b09622561103e90ec9a1db0b8d29900297e712a12",
+    "synthetic_occluder_visibility_limitation": "y12/y15/y18 have distinct source positions but identical synthetic visibility rays; Native effect remains for GPU review"
+  },
+  "whole_batch_gate_checkpoint": {
+    "command": ".venv-cpu/bin/python worker_check.py --complete --require-delivery-ready",
+    "exit_code": 130,
+    "verdict": "interrupted after several minutes during repository tree traversal; no fresh result",
+    "previous_reported_unapproved_runtime_path": "runtime/runs/scenario_pipeline/inputs/shared/manifest.json",
+    "runtime_path_still_exists": true
   }
 }
