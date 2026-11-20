@@ -174,6 +174,51 @@
       }
     },
     {
+      "candidate_risk": {
+        "reason": "Lead gap, closing speed and approach speed are separately observed Native motion risks; select alternatives only from source-measured failures.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "stop_gap_m: 6.0 -> 8.0"
+          ],
+          "construction": "draft-clear-fallback1-construction.json",
+          "construction_sha256": "a6b1771b152e3d36e2c90ffacbea3b77b41aae43689cdef834d20588f2c21c9c",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "gap drops below 6 m while ego speed exceeds 0.05 m/s",
+            "metric": "lead longitudinal gap before near-zero ego speed",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "deceleration_mps2: 3.0 -> 2.0"
+          ],
+          "construction": "draft-clear-fallback2-construction.json",
+          "construction_sha256": "67f1d6e4daf7e7e9cba273b10cd36210e236412be0c4d92bae3caf106ad9ac8c",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "predicted stop distance exceeds retained longitudinal gap",
+            "metric": "closing speed and lead gap over the approach",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "cruise_throttle: 0.28 -> 0.18"
+          ],
+          "construction": "draft-clear-fallback3-construction.json",
+          "construction_sha256": "6c2443ed32ff7960d5cb299fdb6f3da3ebbdd23eae1666e763da98719cd88e2d",
+          "id": "fallback3",
+          "trigger": {
+            "failure_condition": "ego speed exceeds 4 m/s before the first brake request",
+            "metric": "ego speed before first saved brake request",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
       "case_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__clear",
       "construction": "draft-clear-construction.json",
       "construction_sha256": "04c2392ba19f4da6a60a5cbd3a3e99bf2427e1ca141fa01fa93b4d43981e5e8a",

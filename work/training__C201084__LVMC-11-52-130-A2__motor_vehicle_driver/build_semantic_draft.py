@@ -28,7 +28,7 @@ def build():
     reference = json.loads((HERE/'draft-reference-fallback-manifest.json').read_text())['cases'][0]
     contrast = json.loads((HERE/'draft-contrast-fallback-manifest.json').read_text())['cases'][0]
     conflict = json.loads((HERE/'draft-conflict-fallback-manifest.json').read_text())['cases'][0]
-    clear = json.loads((HERE/'draft-clear-manifest.json').read_text())['cases'][0]
+    clear = json.loads((HERE/'draft-clear-fallback-manifest.json').read_text())['cases'][0]
     recording = json.loads((HERE/reference['construction']).read_text())['recording_description']
     assert recording == json.loads((HERE/contrast['construction']).read_text())['recording_description']
     conflict_recording = json.loads((HERE/conflict['construction']).read_text())['recording_description']
