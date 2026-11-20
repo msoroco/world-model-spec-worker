@@ -123,6 +123,26 @@
       "description": "same temporary designation and centerline; westbound subject",
       "construction_status": "primary_and_three_fallbacks_offline_compatibility_saved_audit_cpu_passed_synthetic_only",
       "evidence_limit": "Proposed controlled construction only; no physical realization or regulatory authorization inferred from synthetic devices."
+    },
+    {
+      "case_id": "heldout__C223016__LVMC-11-42-030__motor_vehicle_driver__morning_east_speed_3",
+      "target_law_id": "LVMC-11-42-030",
+      "gap_ids": [
+        "period-reversal"
+      ],
+      "description": "morning eastbound source-backed numeric speed grid point; commanded 3 m/s, same designation, device, period and cameras as 5 m/s baseline",
+      "construction_status": "primary_and_three_fallbacks_offline_compatibility_saved_cpu_passed_synthetic_only_pending_canonical_receipts",
+      "evidence_limit": "Proposed controlled construction only; no physical realization or regulatory authorization inferred from synthetic devices."
+    },
+    {
+      "case_id": "heldout__C223016__LVMC-11-42-030__motor_vehicle_driver__morning_east_speed_7",
+      "target_law_id": "LVMC-11-42-030",
+      "gap_ids": [
+        "period-reversal"
+      ],
+      "description": "morning eastbound source-backed numeric speed grid point; commanded 7 m/s, same designation, device, period and cameras as 5 m/s baseline",
+      "construction_status": "primary_and_three_fallbacks_offline_compatibility_saved_cpu_passed_synthetic_only_pending_canonical_receipts",
+      "evidence_limit": "Proposed controlled construction only; no physical realization or regulatory authorization inferred from synthetic devices."
     }
   ],
   "comparisons": [
@@ -237,6 +257,23 @@
       "cpu_audit_status": "source_bound_positive_and_fixed-condition_tamper_rejection_passed_synthetic_only",
       "audit_script": "comparison_audit.py",
       "audit_proof": "comparison-proofs.json"
+    },
+    {
+      "comparison_id": "morning_numeric_speed_grid",
+      "case_ids": [
+        "heldout__C223016__LVMC-11-42-030__motor_vehicle_driver__morning_east_speed_3",
+        "heldout__C223016__LVMC-11-42-030__motor_vehicle_driver__morning_east_with",
+        "heldout__C223016__LVMC-11-42-030__motor_vehicle_driver__morning_east_speed_7"
+      ],
+      "fixed_conditions": [
+        "same temporary reversible designation, direction, civil period, lane, camera geometry, and every non-speed configuration field"
+      ],
+      "deliberate_differences": [
+        "commanded target speed 3, 5, and 7 m/s with original same-frame source speed 2, 4, and 6 m/s"
+      ],
+      "cpu_audit_status": "source_bound_three_point_grid_and_fixed_condition_tamper_rejection_passed_synthetic_only",
+      "audit_script": "numeric_speed_sweep_audit.py",
+      "audit_proof": "numeric-speed-sweep-proof.json"
     }
   ],
   "observations": [
@@ -451,7 +488,9 @@
         "heldout__C223016__LVMC-11-42-030__motor_vehicle_driver__morning_east_with",
         "heldout__C223016__LVMC-11-42-030__motor_vehicle_driver__morning_west_against",
         "heldout__C223016__LVMC-11-42-030__motor_vehicle_driver__evening_west_with",
-        "heldout__C223016__LVMC-11-42-030__motor_vehicle_driver__evening_east_against"
+        "heldout__C223016__LVMC-11-42-030__motor_vehicle_driver__evening_east_against",
+        "heldout__C223016__LVMC-11-42-030__motor_vehicle_driver__morning_east_speed_3",
+        "heldout__C223016__LVMC-11-42-030__motor_vehicle_driver__morning_east_speed_7"
       ],
       "evidence_or_gap": "period-reversal: accepted recordings do not prove an observed transition"
     },
