@@ -392,3 +392,7 @@ Aggregate strict-gate note: the post-C223016 full command produced no final outp
 The historical `c223016-first-case-constructions-archive.json` is now a lossless nested entry inside `work/_shared/return-cap-c223016-archive.json`, rather than a separate returned file. The top archive is 2,050,872 bytes, SHA256 `6649d13c88ffb7d0d3af29acbcbc663e4b71544f850cbb404f34398df30492e7`. All stored entries were length/SHA256 checked before consolidation. The C223016 assignment-scoped strict gate passed afterward; its `ready` status remains supported.
 
 Archive update: the shared queue helper `work/_shared/build_gpu_queue.py` is now a SHA256-verified entry in `work/_shared/return-cap-c223016-archive.json` to preserve return capacity for C295149's next construction. The archive now has SHA256 `842bbc7418dc38164fc9280a1889976338825c925a68fafaa9464307c9790c79` and is 2,054,337 bytes. Restore the helper before queue generation. This package's scoped strict gate passed after the archive update.
+
+## 2026-11-20 byte-identical negative-log rebinding
+
+To preserve the 10,200-file return cap during C329654 construction, this package's selected manifest now points `numeric-speed-7` at the byte-identical surviving `numeric-speed-3` negative log, and `centerline-east` and `morning_east_with` at the byte-identical surviving `centerline-west` negative log. Three redundant direct logs were removed only after exact byte comparison. The C223016 assignment-scoped strict gate exits 0 after the rebinding, so its `ready` result remains supported. No diagnostic or claim changed.
