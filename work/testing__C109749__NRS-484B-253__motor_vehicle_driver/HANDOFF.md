@@ -678,3 +678,5 @@ Status: **ready**, after exact current CPU proofs and `.venv-cpu/bin/python work
 Return cap checkpoint: 7 unbound historical top-level logs and former test rows are preserved byte-for-byte with SHA-256 in work/_shared/archived-unbound-negative-logs-20261119.json. Active case receipts remain unchanged.
 
 Return cap checkpoint: 8 unbound historical top-level logs and former test rows are preserved byte-for-byte with SHA-256 in work/_shared/archived-unbound-negative-logs-20261119.json. Active case receipts remain unchanged.
+
+2026-11-20 packaging checkpoint: Six unreferenced historical refresh/checkpoint helper scripts were preserved byte-for-byte with original paths, SHA-256 and zlib/base64 payloads in `work/_shared/archived-unbound-negative-logs-20261119.json`, then removed to make room under the frozen 8,600-file cap. The assignment-scoped `worker_check.py --complete` passes after archival. Active manifests, result-bound proofs, tests and cited source scripts remain in place.
