@@ -478,6 +478,10 @@ def build_linked_approach_draft(variant, output):
         for vertex in ego['body_vertices_m']:
             vertex[0] = round(vertex[0] + shift, 4)
         ego['accel_longitudinal_mps2'] = (view - 8.0) / .05 if i == 1 else 0.0
+    for event in evidence:
+        for participant in event['original_observations']['participants']:
+            if participant.get('blueprint', '').startswith('vehicle.'):
+                participant.setdefault('blueprint_attributes', {'base_type': 'car'})
     put('trace.jsonl', trace)
     put('interaction_history.jsonl', bodies)
     put('capture/evidence.jsonl', evidence)
