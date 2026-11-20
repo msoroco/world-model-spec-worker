@@ -299,3 +299,11 @@ Final full strict gate after C101303 midpoint and physical receipt repair: `.ven
 ## 2026-11-19 CPU preparation checkpoint
 
 Status: **ready**, after exact current CPU proofs and `.venv-cpu/bin/python worker_check.py --assignment testing__C101303__NRS-484B-127-1__motor_vehicle_driver --complete --require-delivery-ready` exited 0 (ignored log SHA256 `887b30b325ad7ce0b4e52930d7ffea24858d3efc676139847c210a95a0b3347f`). All nine selected and 27 fallback CPU proof paths retain current construction hashes. Nine lifecycle fixtures were rerun with the current returned primary saved-processing receipts; each fixture now joins the exact current receipt digest. The actual assignment scoped strict gate passes. Reasonable-and-prudent legal judgment, Native motion/pixels and local integration remain for the GPU operator.
+
+Return cap checkpoint: 12 unbound historical top-level logs were moved with exact bytes, hashes and any historical test rows into `work/_shared/archived-unbound-negative-logs-20261119.json`. Current bound case receipts are unchanged.
+
+Further return cap checkpoint: 10 more unbound historical top-level logs, exact bytes, hashes and any test rows were moved to the same shared archive. Current bound case receipts remain unchanged.
+
+Further return cap checkpoint: 8 more unbound historical top-level logs, exact bytes, hashes and any test rows were moved to the same shared archive. Current bound case receipts remain unchanged.
+
+Further return cap checkpoint: 8 more unbound historical top-level logs, exact bytes, hashes and any test rows were moved to the same shared archive. Current bound case receipts remain unchanged.

@@ -65,3 +65,18 @@ Full strict gate attempt on 2026-11-20: `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin
 The exact offline command passed 13 CPU tests. Source-bound compatibility passed Native-graph validation, negative required-source rejection, Lean decode and four-camera render; saved-only processing passed with `missing_evidence: false` and originals preserved. The case-specific receipts and logs are under `cases/business_right_below_100ft/` and bound in `execution-manifest.json`, `case-plan.json` and `result.json`. `runtime.py preflight` and assignment-scoped `worker_check.py --complete` passed after binding. Status stays partial: four selected cases, three risk fallbacks per selected case, comparisons and independent audits remain CPU work. The complete strict gate still has the separately observed frozen generated `runtime/runs/scenario_pipeline/inputs/shared/manifest.json` output issue.
 
 Full strict gate rerun after the second case: `timeout 45s env PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --complete --require-delivery-ready` exited 124 with no emitted output; ignored `.runtime-work/c177008-strict-below.log` is empty (SHA-256 e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855). This is a bounded timeout during whole-tree traversal, not a passing delivery gate. The latest completed strict failure remains unapproved frozen generated `runtime/runs/scenario_pipeline/inputs/shared/manifest.json`. The file was not edited.
+
+## 2026-11-20 six selected C177008 cases bound
+
+All six selected cases now have distinct returned constructions, source-shaped diagnostic recipes, exact offline logs, compatibility receipts with positive/negative source checks, four source-camera render and Lean decode, and saved-only processing logs bound in `execution-manifest.json`. `runtime.py preflight` and assignment-scoped `worker_check.py --complete` pass. The at-100-foot case was rerun against the expanded plan and its current compatibility/negative and saved-only receipts rebound. The return has 8,594/8,600 files. No Native CARLA motion, physical pixels, legal district acceptance or canonical recording membership is claimed.
+
+| Case | Saved diagnostic signal distance | Source district boundary | Target |
+| --- | ---: | ---: | --- |
+| business_right_below_100ft | 26.547096774193548 m | 30.48 m | negative, matched |
+| business_right_at_100ft | 30.48 m | 30.48 m | positive, matched |
+| business_right_above_100ft | 31.5 m | 30.48 m | positive, matched |
+| business_right_interrupted | 13.20967741935484 m after off interval | 30.48 m | negative, matched |
+| business_right_wet | 30.48 m with requested/read-back wet setup | 30.48 m | positive, matched |
+| other_area_right_at_300ft | 91.44 m | 91.44 m | positive, matched |
+
+The next worker-owned step is three distinct physical-risk fallback constructions for each of the six selected cases, with exact candidate offline, compatibility, negative-source and saved-only proofs and bound hashes. Then run the case comparisons and independent semantic/delivery audits, review the frozen branch semantics, and only then attempt assignment delivery-ready and the full strict gate. The latest completed full gate still rejects the generated frozen `runtime/runs/scenario_pipeline/inputs/shared/manifest.json`; the prior bounded full gate traversal timed out without a result. Neither output was edited. Thirty-eight historical unbound C101303 top-level logs were archived reversibly with exact bytes and any old test rows in the shared archive to retain room under the 8,600-file cap; C101303 scoped static checks pass.
