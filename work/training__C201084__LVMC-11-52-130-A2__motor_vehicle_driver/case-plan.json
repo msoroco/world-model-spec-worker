@@ -1,141 +1,144 @@
 {
-  "assignment_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver",
   "actor": "motor_vehicle_driver",
-  "cell_id": "C201084",
-  "law_id": "LVMC-11-52-130-A2",
-  "selected_branch": null,
-  "scope_branches": [
-    "Destination stop in a fire lane on public-access premises"
-  ],
-  "source_law_text": "No person shall stop, stand or park a vehicle except when necessary to avoid conflict with other traffic in compliance with law or the directions of a police officer or a traffic control device, in any of the following places: At any place or in any space adjacent to a curb which has been designated and posted as a fire lane pursuant to the City's Fire Code, whether the vehicle is attended or unattended and whether the location is on public or private property.",
-  "source_law_citation": "LVMC 11.52.130(A)(2)",
-  "requirement_dispositions": [
-    {
-      "requirement": "text-0",
-      "source": "inputs/coverage/branch-sources.json",
-      "status": "selected_required",
-      "evidence_or_gap": "Exact statute: No person shall stop, stand or park a vehicle except when necessary to avoid conflict with other traffic in compliance with law or the directions of a police officer or a traffic control device, in any of the following places:; no measured Native evidence or source-hashed equivalence receipt yet.",
-      "case_ids": [
-        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__reference",
-        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__contrast",
-        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__conflict",
-        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__clear"
-      ]
-    },
-    {
-      "requirement": "text-1",
-      "source": "inputs/coverage/branch-sources.json",
-      "status": "selected_required",
-      "evidence_or_gap": "Exact statute: At any place or in any space adjacent to a curb which has been designated and posted as a fire lane pursuant to the City's Fire Code, whether the vehicle is attended or unattended and whether the location is on public or private property.; no measured Native evidence or source-hashed equivalence receipt yet.",
-      "case_ids": [
-        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__reference",
-        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__contrast",
-        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__conflict",
-        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__clear"
-      ]
-    },
-    {
-      "requirement": "reviewed-scope-0",
-      "source": "inputs/coverage/branch-sources.json",
-      "status": "selected_required",
-      "evidence_or_gap": "Exact statute: Destination stop in a fire lane on public-access premises; no measured Native evidence or source-hashed equivalence receipt yet.",
-      "case_ids": [
-        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__reference",
-        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__contrast",
-        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__conflict",
-        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__clear"
-      ]
-    }
-  ],
+  "assignment_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver",
   "cases": [
     {
+      "case_description": "destination stop inside versus outside signed fire lane",
       "case_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__reference",
-      "target_law_id": "LVMC-11-52-130-A2",
-      "planning_status": "unverified_definition",
-      "target_type": "attempt",
-      "comparison_variable": "vehicle_stops_in_posted_fire_lane",
       "comparison_unit": "bool",
+      "comparison_variable": "vehicle_stops_in_posted_fire_lane",
+      "fixed_context": "Hold cell geometry, actors, traffic controls, weather, and all noncompared controller settings constant; verify activation and exceptions before use.",
+      "planning_status": "unverified_definition",
+      "recorded_value": null,
       "requested_setting": "reference",
-      "recorded_value": null,
-      "case_description": "destination stop inside versus outside signed fire lane",
-      "fixed_context": "Hold cell geometry, actors, traffic controls, weather, and all noncompared controller settings constant; verify activation and exceptions before use.",
       "source_topic_ids": [
         "text-0",
         "text-1"
-      ]
+      ],
+      "target_law_id": "LVMC-11-52-130-A2",
+      "target_type": "attempt"
     },
     {
+      "case_description": "destination stop inside versus outside signed fire lane",
       "case_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__contrast",
-      "target_law_id": "LVMC-11-52-130-A2",
-      "planning_status": "unverified_definition",
-      "target_type": "attempt",
-      "comparison_variable": "vehicle_stops_in_posted_fire_lane",
       "comparison_unit": "bool",
-      "requested_setting": "contrast",
-      "recorded_value": null,
-      "case_description": "destination stop inside versus outside signed fire lane",
+      "comparison_variable": "vehicle_stops_in_posted_fire_lane",
       "fixed_context": "Hold cell geometry, actors, traffic controls, weather, and all noncompared controller settings constant; verify activation and exceptions before use.",
+      "planning_status": "unverified_definition",
+      "recorded_value": null,
+      "requested_setting": "contrast",
       "source_topic_ids": [
         "text-0",
         "text-1"
-      ]
+      ],
+      "target_law_id": "LVMC-11-52-130-A2",
+      "target_type": "attempt"
     },
     {
-      "case_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__conflict",
-      "target_law_id": "LVMC-11-52-130-A2",
-      "planning_status": "unverified_definition",
-      "target_type": "attempt",
-      "comparison_variable": "lead_traffic_relation",
-      "comparison_unit": "m",
-      "requested_setting": "lead_traffic_conflict_probe",
-      "recorded_value": null,
+      "additional_observations": [
+        {
+          "mandatory": true,
+          "name": "lead_traffic_relation",
+          "purpose": "Observed lead longitudinal/lateral relation and brake request",
+          "unit": "m"
+        }
+      ],
       "case_description": "lead vehicle ahead during an authored-zone stop; necessity and legal compliance require original review",
+      "case_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__conflict",
+      "comparison_unit": "m",
+      "comparison_variable": "lead_traffic_relation",
       "fixed_context": "Keep the posted-curb, road, weather and four-camera survey; add a same-road lead actor ahead of ego. The lead braking request is a probe, not a statutory conclusion.",
+      "planning_status": "unverified_definition",
+      "recorded_value": null,
+      "requested_setting": "lead_traffic_conflict_probe",
       "source_topic_ids": [
         "text-0",
         "text-1"
       ],
-      "additional_observations": [
-        {
-          "name": "lead_traffic_relation",
-          "unit": "m",
-          "mandatory": true,
-          "purpose": "Observed lead longitudinal/lateral relation and brake request"
-        }
-      ]
+      "target_law_id": "LVMC-11-52-130-A2",
+      "target_type": "attempt"
     },
     {
-      "case_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__clear",
-      "target_law_id": "LVMC-11-52-130-A2",
-      "planning_status": "unverified_definition",
-      "target_type": "attempt",
-      "comparison_variable": "lead_traffic_relation",
-      "comparison_unit": "m",
-      "requested_setting": "lead_traffic_clear_probe",
-      "recorded_value": null,
+      "additional_observations": [
+        {
+          "mandatory": true,
+          "name": "lead_traffic_relation",
+          "purpose": "Observed lead longitudinal/lateral relation and brake request",
+          "unit": "m"
+        }
+      ],
       "case_description": "same-road lead beyond authored fire-lane segment; initial relation is clear of the braking request; necessity and legal compliance require original review",
+      "case_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__clear",
+      "comparison_unit": "m",
+      "comparison_variable": "lead_traffic_relation",
       "fixed_context": "Keep road, curb, sign, follower, weather, four cameras, capture and primary controller fixed; move lead spawn from x=18 to x=35 m.",
+      "planning_status": "unverified_definition",
+      "recorded_value": null,
+      "requested_setting": "lead_traffic_clear_probe",
       "source_topic_ids": [
         "text-0",
         "text-1"
       ],
+      "target_law_id": "LVMC-11-52-130-A2",
+      "target_type": "attempt"
+    },
+    {
       "additional_observations": [
         {
-          "name": "lead_traffic_relation",
-          "unit": "m",
           "mandatory": true,
-          "purpose": "Observed lead longitudinal/lateral relation and brake request"
+          "name": "lead_traffic_presence",
+          "purpose": "Saved per-frame lead presence",
+          "unit": "bool"
         }
-      ]
+      ],
+      "case_description": "Shared destination beyond authored zone; same-road lead at x=18 m",
+      "case_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__near_lead",
+      "comparison_unit": "bool",
+      "comparison_variable": "lead_traffic_presence",
+      "fixed_context": "Same x=30 m destination, ego, follower, curb/sign, road, weather, controller, 600-frame capture and four cameras; vary lead presence only.",
+      "planning_status": "unverified_definition",
+      "recorded_value": null,
+      "requested_setting": "near_lead",
+      "source_topic_ids": [
+        "text-0",
+        "text-1"
+      ],
+      "target_law_id": "LVMC-11-52-130-A2",
+      "target_type": "attempt"
+    },
+    {
+      "additional_observations": [
+        {
+          "mandatory": true,
+          "name": "lead_traffic_presence",
+          "purpose": "Saved per-frame lead presence",
+          "unit": "bool"
+        }
+      ],
+      "case_description": "Shared destination beyond authored zone; no lead actor",
+      "case_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__absent_lead",
+      "comparison_unit": "bool",
+      "comparison_variable": "lead_traffic_presence",
+      "fixed_context": "Same x=30 m destination, ego, follower, curb/sign, road, weather, controller, 600-frame capture and four cameras; vary lead presence only.",
+      "planning_status": "unverified_definition",
+      "recorded_value": null,
+      "requested_setting": "absent_lead",
+      "source_topic_ids": [
+        "text-0",
+        "text-1"
+      ],
+      "target_law_id": "LVMC-11-52-130-A2",
+      "target_type": "attempt"
     }
   ],
+  "cell_id": "C201084",
   "comparisons": [
     {
-      "comparison_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__comparison_main",
       "case_ids": [
         "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__reference",
         "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__contrast"
       ],
+      "comparison_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__comparison_main",
       "deliberate_differences": [
         "vehicle_stops_in_posted_fire_lane"
       ],
@@ -151,11 +154,11 @@
       "status": "planned_unverified"
     },
     {
-      "comparison_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__comparison_lead_position",
       "case_ids": [
         "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__conflict",
         "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__clear"
       ],
+      "comparison_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__comparison_lead_position",
       "deliberate_differences": [
         "lead_spawn_xy_m"
       ],
@@ -171,79 +174,171 @@
         "camera and capture profile"
       ],
       "status": "planned_unverified"
+    },
+    {
+      "case_ids": [
+        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__near_lead",
+        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__absent_lead"
+      ],
+      "comparison_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__comparison_lead_presence",
+      "deliberate_differences": [
+        "lead_traffic_presence"
+      ],
+      "fixed_conditions": [
+        "cell",
+        "actor",
+        "authored curb and sign",
+        "road",
+        "weather",
+        "follower",
+        "destination_xy_m",
+        "controller tuning",
+        "camera and capture profile"
+      ],
+      "status": "planned_unverified"
     }
   ],
+  "existing_evidence": [
+    {
+      "membership_rows": 0,
+      "reuse_receipt": null,
+      "set_id": "full-train",
+      "status": "unreviewed_membership_only"
+    }
+  ],
+  "law_id": "LVMC-11-52-130-A2",
   "observations": [
     {
+      "mandatory": true,
       "name": "ego_pose",
-      "unit": "m,deg",
-      "mandatory": true,
-      "purpose": "Measured position, heading and footprint over time"
+      "purpose": "Measured position, heading and footprint over time",
+      "unit": "m,deg"
     },
     {
+      "mandatory": true,
       "name": "ego_speed",
-      "unit": "m/s",
-      "mandatory": true,
-      "purpose": "Observed movement and stop intervals"
+      "purpose": "Observed movement and stop intervals",
+      "unit": "m/s"
     },
     {
-      "name": "vehicle_stops_in_posted_fire_lane",
-      "unit": "bool",
       "mandatory": true,
-      "purpose": "destination stop inside versus outside signed fire lane"
+      "name": "vehicle_stops_in_posted_fire_lane",
+      "purpose": "destination stop inside versus outside signed fire lane",
+      "unit": "bool"
     }
   ],
-  "source_observation_mapping": {
-    "st.curb_zone": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
-      "channels": [
-        "vehicle_stops_in_posted_fire_lane"
+  "requirement_dispositions": [
+    {
+      "case_ids": [
+        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__reference",
+        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__contrast",
+        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__conflict",
+        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__clear",
+        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__near_lead",
+        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__absent_lead"
       ],
-      "source_refs": [
-        "inputs/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/assignment.json"
-      ]
+      "evidence_or_gap": "Exact statute: No person shall stop, stand or park a vehicle except when necessary to avoid conflict with other traffic in compliance with law or the directions of a police officer or a traffic control device, in any of the following places:; no measured Native evidence or source-hashed equivalence receipt yet.",
+      "requirement": "text-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "selected_required"
     },
+    {
+      "case_ids": [
+        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__reference",
+        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__contrast",
+        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__conflict",
+        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__clear",
+        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__near_lead",
+        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__absent_lead"
+      ],
+      "evidence_or_gap": "Exact statute: At any place or in any space adjacent to a curb which has been designated and posted as a fire lane pursuant to the City's Fire Code, whether the vehicle is attended or unattended and whether the location is on public or private property.; no measured Native evidence or source-hashed equivalence receipt yet.",
+      "requirement": "text-1",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__reference",
+        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__contrast",
+        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__conflict",
+        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__clear",
+        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__near_lead",
+        "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__absent_lead"
+      ],
+      "evidence_or_gap": "Exact statute: Destination stop in a fire lane on public-access premises; no measured Native evidence or source-hashed equivalence receipt yet.",
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "selected_required"
+    }
+  ],
+  "runtime_uncertainties": [
+    "Reference, contrast and conflict probes have four exact diagnostic CPU candidates each under the current runtime; no case is selected for delivery or physically accepted.",
+    "The conflict probe records lead geometry, velocity and braking requests, but original traffic conflict necessity and compliance with law remain unreviewed.",
+    "City Fire Code designation, visible posting text, public-access scope, standing/parking and attendance require source-based review and additional constructions.",
+    "The nine-stage draft semantic chain needs rebinding to the near/absent pair; wider statutory sweep remains incomplete.",
+    "CARLA execution, Native motion, camera pixels, physical realization, legal judgment and canonical recording membership remain unverified.",
+    "The clear-lead x=35 m draft is a controlled lead-position counterpart to x=18 m; it has no original Native or statutory finding."
+  ],
+  "scope_branches": [
+    "Destination stop in a fire lane on public-access premises"
+  ],
+  "selected_branch": null,
+  "selection_targets": [
+    "full-train"
+  ],
+  "source_law_citation": "LVMC 11.52.130(A)(2)",
+  "source_law_text": "No person shall stop, stand or park a vehicle except when necessary to avoid conflict with other traffic in compliance with law or the directions of a police officer or a traffic control device, in any of the following places: At any place or in any space adjacent to a curb which has been designated and posted as a fire lane pursuant to the City's Fire Code, whether the vehicle is attended or unattended and whether the location is on public or private property.",
+  "source_observation_mapping": {
     "dev.regulatory_sign": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
       "channels": [
         "vehicle_stops_in_posted_fire_lane"
       ],
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
       "source_refs": [
         "inputs/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/assignment.json"
       ]
     },
     "drv.standing_or_parked": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
       "channels": [
         "vehicle_stops_in_posted_fire_lane"
       ],
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
       "source_refs": [
         "inputs/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/assignment.json"
       ]
     },
     "rel.occupies": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
       "channels": [
         "vehicle_stops_in_posted_fire_lane"
       ],
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
       "source_refs": [
         "inputs/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/assignment.json"
       ]
     },
     "ru.occupant_count": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
       "channels": [
         "vehicle_stops_in_posted_fire_lane"
       ],
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "source_refs": [
+        "inputs/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.curb_zone": {
+      "channels": [
+        "vehicle_stops_in_posted_fire_lane"
+      ],
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
       "source_refs": [
         "inputs/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/assignment.json"
       ]
     },
     "st.driveway_or_alley_entrance": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
       "channels": [
         "vehicle_stops_in_posted_fire_lane"
       ],
+      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
       "source_refs": [
         "inputs/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/assignment.json"
       ]
@@ -262,24 +357,5 @@
       "path": "inputs/coverage/branch-sources.json",
       "sha256": "ab199471886c9ff9abf7aba8fb82ab1a1e4e6c08a2560def7637911a23a28d80"
     }
-  ],
-  "existing_evidence": [
-    {
-      "set_id": "full-train",
-      "membership_rows": 0,
-      "status": "unreviewed_membership_only",
-      "reuse_receipt": null
-    }
-  ],
-  "runtime_uncertainties": [
-    "Reference, contrast and conflict probes have four exact diagnostic CPU candidates each under the current runtime; no case is selected for delivery or physically accepted.",
-    "The conflict probe records lead geometry, velocity and braking requests, but original traffic conflict necessity and compliance with law remain unreviewed.",
-    "City Fire Code designation, visible posting text, public-access scope, standing/parking and attendance require source-based review and additional constructions.",
-    "The nine-stage draft semantic chain includes all three probes, but the lead-absent pair and wider statutory sweep remain incomplete.",
-    "CARLA execution, Native motion, camera pixels, physical realization, legal judgment and canonical recording membership remain unverified.",
-    "The clear-lead x=35 m draft is a controlled lead-position counterpart to x=18 m; it has no original Native or statutory finding."
-  ],
-  "selection_targets": [
-    "full-train"
   ]
 }

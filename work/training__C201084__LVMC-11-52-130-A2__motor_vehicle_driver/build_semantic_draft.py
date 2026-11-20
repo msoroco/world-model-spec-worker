@@ -1,4 +1,4 @@
-"""Write source-faithful draft semantic stages for four CPU probes."""
+"""Write source-faithful draft semantic stages for six CPU probes."""
 import hashlib
 import json
 from pathlib import Path
@@ -29,10 +29,14 @@ def build():
     contrast = json.loads((HERE/'draft-contrast-fallback-manifest.json').read_text())['cases'][0]
     conflict = json.loads((HERE/'draft-conflict-fallback-manifest.json').read_text())['cases'][0]
     clear = json.loads((HERE/'draft-clear-fallback-manifest.json').read_text())['cases'][0]
+    near = json.loads((HERE/'draft-near_lead-manifest.json').read_text())['cases'][0]
+    absent = json.loads((HERE/'draft-absent_lead-manifest.json').read_text())['cases'][0]
     recording = json.loads((HERE/reference['construction']).read_text())['recording_description']
     assert recording == json.loads((HERE/contrast['construction']).read_text())['recording_description']
     conflict_recording = json.loads((HERE/conflict['construction']).read_text())['recording_description']
     clear_recording = json.loads((HERE/clear['construction']).read_text())['recording_description']
+    near_recording = json.loads((HERE/near['construction']).read_text())['recording_description']
+    absent_recording = json.loads((HERE/absent['construction']).read_text())['recording_description']
     relevance = {'status': 'draft', 'actor': ACTOR, 'cell_id': CELL,
                  'borderline_excluded': [], 'relevant_laws': [{
                      'law_id': LAW, 'applies_to': [ACTOR], 'confidence': 'medium',
@@ -46,7 +50,7 @@ def build():
          'ego_pose', 'Source-joined pose and footprint locate the stopped vehicle; original sign pixels and designation remain to be reviewed.'),
         ('necessary to avoid conflict with other traffic',
          'The lead probe samples a traffic relation and brake request but does not establish statutory necessity.',
-         'ego_speed', 'Saved ego speed locates the stop in every case; the lead probe additionally records lead relation. Necessity and compliance require original review and an absent-lead contrast.'),
+         'ego_speed', 'Saved ego speed locates the stop in every case; the lead-presence pair additionally records an actor inventory. Necessity and compliance require original review.'),
         ('in compliance with law',
          'An applicable source of law and the reason for the stop are not supplied by synthetic motion.',
          'ego_pose', 'Source pose locates the vehicle; applicable law must be reviewed independently.'),
@@ -85,7 +89,7 @@ def build():
                      'sweep_dimensions': [], 'landmarks': [],
                      'recording_needs': [{'name': channel, 'unit': unit,
                                           'description': description}],
-                     'limitations': [note, 'Current three-case probe does not resolve this legal judgment.']}}
+                     'limitations': [note, 'Current diagnostic probes do not resolve this legal judgment.']}}
         write(PROPOSALS/f'judgment_observables_{i}.json', value)
     bindings = {'status': 'draft', 'actor': ACTOR, 'cell_id': CELL,
                 'law_refs': [{'template_id': TEMPLATE, 'binding_kind': 'direct'}],
@@ -144,6 +148,23 @@ def build():
                       'lead_traffic_conflict_probe': {'kind': 'controller', 'value': 'lead at x=35 m'}},
                   'recording_description': clear_recording,
                   'unresolved_judgment_calls': [phrase for phrase,_,_,_ in judgments]})
+    for suffix, present, description in (
+            ('near_lead', True, 'same-road lead at x=18 m'),
+            ('absent_lead', False, 'no lead actor')):
+        cases.append({'case_id': ASSIGNMENT+'__'+suffix, 'target_law_id': LAW,
+                      'target_type': 'judgment_sweep',
+                      'paired_probe_id': ASSIGNMENT+'__lead_presence_pair',
+                      'deliberate_differences': ['lead_traffic_presence'],
+                      'probe': {'primary_variable': 'lead_traffic_presence',
+                                'comparison_or_standard': 'saved actor inventory and control requests; statutory necessity unresolved',
+                                'target_value_or_branch': {'lead_traffic_presence': present}},
+                      'rationale': 'At the shared x=30 m destination, record '+description+' under one controller.',
+                      'variable_assignments': {
+                          'requested_stop_destination': {'kind': 'controller', 'value': 'x=30 m beyond authored zone'},
+                          'actual_stop_zone_relation': {'kind': 'subject_behavior', 'value': None},
+                          'lead_traffic_conflict_probe': {'kind': 'controller', 'value': description}},
+                      'recording_description': near_recording if present else absent_recording,
+                      'unresolved_judgment_calls': [phrase for phrase,_,_,_ in judgments]})
     cases.insert(0, {'case_id': ASSIGNMENT+'__baseline', 'target_law_id': None,
                      'target_type': 'baseline', 'rationale': 'Common source-surveyed fire-lane context.',
                      'variable_assignments': {
@@ -158,10 +179,10 @@ def build():
                                  'target_law_id': LAW,
                                  'judgment_refs': [{'phrase': phrase, 'note': note}
                                                    for phrase,note,_,_ in judgments],
-                                 'rationale': 'Inside/outside and near/far lead probes are built; a source-grounded absent-lead contrast and posting routes remain.',
+                                 'rationale': 'Inside/outside, near/far lead and lead-presence diagnostic probes are built; posting and other statutory routes remain.',
                                  'status': 'incomplete',
                                  'missing_inputs': ['Original City Fire Code designation and posting evidence',
-                                                    'Original conflict causation review and absent-lead contrast',
+                                                    'Original conflict causation review',
                                                     'Applicable-law direction source',
                                                     'Police and traffic-control direction constructions',
                                                     'Attendance and public/private property source review']}],
@@ -184,11 +205,11 @@ def build():
            'stages': stages})
     manifest = {'format': 'worker-execution-manifest',
                 'assignment_id': ASSIGNMENT, 'status': 'draft_semantic_validation_only',
-                'cases': [reference, contrast, conflict, clear]}
+                'cases': [reference, contrast, conflict, clear, near, absent]}
     write(HERE/'draft-semantic-manifest.json', manifest)
     return {'semantic_index_sha256': sha(PROPOSALS/'semantic-index.json'),
             'draft_manifest_sha256': sha(HERE/'draft-semantic-manifest.json'),
-            'selected_cpu_probe_cases': 4, 'unresolved_judgments': len(judgments)}
+            'selected_cpu_probe_cases': 6, 'unresolved_judgments': len(judgments)}
 
 
 if __name__ == '__main__':
