@@ -291,3 +291,5 @@ The latest full batch strict gate exited 1 with `Preparation acceptance failed: 
 ## 2026-11-19 byte-identical historical log consolidation
 
 18 extra historical log copies were byte-identical to retained canonical files. Their exact filename references in `execution-manifest.json` were redirected to the retained identical bytes, then only duplicate copies were removed. The assignment-scoped nonready worker check passes. The freed slots support C109705(2b) fallback and semantic construction. No frozen file or Git command was changed.
+
+2026-11-20 packaging checkpoint: two unreferenced historical build helpers (`build_second_case.py`, `build_third_case.py`) were preserved byte-for-byte with paths and hashes in `work/_shared/archived-unbound-negative-logs-20261119.json`, then removed for the frozen file cap. Assignment-scoped complete check passes after archival; active constructions and proofs remain in place.

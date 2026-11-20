@@ -2786,3 +2786,9 @@ The six selected C178244 left-turn primary cases retain bound offline, positive/
 Fresh full strict gate after the C178244 comparison audit timed out at 95 seconds with empty `.runtime-work/strict-after-c178244-comparison.log`; latest completed gate error remains the user-supplied unapproved generated runtime manifest.
 
 C178244 `left_business_at_100_ft` fallback1 is now constructed and bound with exact offline, positive/negative compatibility and saved-only proofs; scoped complete check passes. It changes only the engineering requested speed 5.0 to 4.5 m/s and remains a diagnostic CPU proof. Ten unreferenced historical helper scripts from C101303/C109749 were archived losslessly under `_shared` and both affected scoped checks pass. Return count is 8,596/8,600. Seventeen C178244 fallbacks and its other CPU deliverables remain.
+
+C178244 `left_business_at_100_ft` fallback2 now has its distinct 4.0 m controller-lookahead construction and exact offline, positive/missing-source negative compatibility and saved-only receipts bound; scoped complete check passes. Sixteen C178244 fallbacks remain. Two more unreferenced C109749 draft helpers were losslessly archived and its scoped check passes. Work return count is 8,600/8,600.
+
+C178244 `left_business_at_100_ft` fallback3 is now bound and passes exact offline, positive/missing-source negative compatibility and recorded-only saved processing. The first selected case has three distinct fallback constructions and proofs. Fifteen fallbacks remain across five cases. Six more unreferenced historical helpers from C109749/C125745 were losslessly archived and both scoped checks pass. The returned work tree remains at 8,600 files.
+
+Final verification: pinned CPU preflight and C178244 scoped complete check pass; scoped strict check still rejects partial/missing packages. All 517 shared archive entries round-trip to their SHA-256. Work return count is 8,600.
