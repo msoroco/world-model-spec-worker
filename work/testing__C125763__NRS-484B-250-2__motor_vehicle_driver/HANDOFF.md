@@ -219,7 +219,7 @@ The exact primary compatibility command passed in `primary-compat-v6.log`:
 ```
 
 Its retained `primary-compatibility-receipt.json`, `promoted-right-fallback3-analysis.log` and
-`primary-negative-analysis.log` bind actual finalization, Native validation,
+`primary-negative-analysis.log` (preserved byte-for-byte in `work/_shared/archived-unbound-negative-logs-20261119.json`) bind actual finalization, Native validation,
 the required observations, Lean decoder, four source cameras, final video
 decode, selected measurements and rejection when
 `controller_history.jsonl` is removed. `finalizer.py` now wraps the saved
