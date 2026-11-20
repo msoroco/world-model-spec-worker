@@ -94,5 +94,103 @@ def main():
     print(json.dumps(receipt, indent=2))
 
 
+
+
+def build_speed6_fixture():
+    import copy
+    import json
+    import pathlib
+    import shutil
+    import sys
+
+    ROOT = pathlib.Path(__file__).resolve().parents[2]
+    WORK = ROOT / 'work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver'
+    SOURCE = WORK / 'cases/through_mid/diagnostic-sources'
+    TARGET = ROOT / '.runtime-work/c158190-speed6-fixture-v2'
+    CASE = 'testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_speed_6'
+    sys.path.insert(0, str(ROOT / 'runtime/scenario_pipeline'))
+    from worker_exchange.runtime_cli import materialize
+
+
+    def rows(path):
+        return [json.loads(line) for line in path.read_text().splitlines()]
+
+
+    def write_rows(path, content):
+        path.write_text(''.join(json.dumps(row, separators=(',', ':'), allow_nan=False) + '\n' for row in content))
+
+
+    def body(x):
+        return [[x + dx, y, z] for dx in (-1.5, 1.5) for y in (1.1, 2.5) for z in (0, 1.5)]
+
+
+    def projection(x):
+        if x < -8:
+            return 158190, x + 80
+        if x < 8:
+            return 158192, x + 8
+        return 158193, x - 8
+
+
+    if TARGET.exists():
+        raise SystemExit('Choose fresh fixture directory')
+    materialize(WORK / 'view-speed-6-draft-manifest.json', CASE, TARGET)
+    for source in SOURCE.rglob('*'):
+        if source.is_file():
+            target = TARGET / source.relative_to(SOURCE)
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(source, target)
+
+    approach = rows(TARGET / 'approach_history.jsonl')
+    approach[0]['ego_speed_mps'] = 8.0
+    approach[1]['ego_speed_mps'] = 6.0
+    approach[1]['distance_to_intersection_m'] = 11.65
+    write_rows(TARGET / 'approach_history.jsonl', approach)
+    rays = rows(TARGET / 'visibility_rays.jsonl')
+    rays[1]['distance_to_intersection_m'] = 11.65
+    write_rows(TARGET / 'visibility_rays.jsonl', rays)
+    samples = json.loads((TARGET / 'visibility_samples.json').read_text())
+    samples[1]['distance_to_intersection_m'] = 11.65
+    (TARGET / 'visibility_samples.json').write_text(json.dumps(samples, indent=2) + '\n')
+
+    trace = rows(TARGET / 'trace.jsonl')
+    interaction = rows(TARGET / 'interaction_history.jsonl')
+    evidence = rows(TARGET / 'capture/evidence.jsonl')
+    for i, (t, interaction_row, e) in enumerate(zip(trace, interaction, evidence)):
+        x = round(min(62.6, -20.0 + (0 if i == 0 else 0.35 + 0.3 * (i - 1))), 4)
+        speed = 8.0 if i == 0 else (6.0 if x < 62.6 else 0.0)
+        vertices = body(x)
+        road, s = projection(x)
+        t['position_m'][0] = x
+        t['position']['x'] = x
+        t['speed_mps'] = speed
+        t['speed_mph'] = speed * 2.2369362920544025
+        t['velocity_mps'][0] = speed
+        interaction_row['ego']['body_vertices_m'] = copy.deepcopy(vertices)
+        interaction_row['ego']['road_id'] = road
+        e['ego']['position_m'][0] = x
+        e['ego']['speed_mps'] = speed
+        e['ego']['body_vertices_m'] = copy.deepcopy(vertices)
+        e['world']['road_projection'].update(road_id=road, s_m=round(s, 4))
+        participant = next(p for p in e['original_observations']['participants'] if p['actor_id'] == 101)
+        participant['position_m'][0] = x
+        participant['speed_mps'] = speed
+        participant['velocity_mps'][0] = speed
+        participant['body_vertices_m'] = copy.deepcopy(vertices)
+        participant['accel_longitudinal_mps2'] = -40.0 if i == 1 else 0.0
+    write_rows(TARGET / 'trace.jsonl', trace)
+    write_rows(TARGET / 'interaction_history.jsonl', interaction)
+    write_rows(TARGET / 'capture/evidence.jsonl', evidence)
+    capture = json.loads((TARGET / 'capture/manifest.json').read_text())
+    capture['case_id'] = CASE
+    import hashlib
+    capture['sources']['trace.jsonl'] = hashlib.sha256((TARGET / 'trace.jsonl').read_bytes()).hexdigest()
+    (TARGET / 'capture/manifest.json').write_text(json.dumps(capture, indent=2) + '\n')
+    print(TARGET)
+
+
 if __name__ == '__main__':
-    main()
+    if len(sys.argv) == 2 and sys.argv[1] == '--build-speed6-fixture':
+        build_speed6_fixture()
+    else:
+        main()

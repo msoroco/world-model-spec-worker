@@ -80,8 +80,90 @@
       "measurement_procedure": {
         "entrypoint": "finalizer.py",
         "method": "source-backed exact 6 m/s diagnostic finalizer"
+      },
+      "acquisition": {
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "st.lane": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "st.sight_distance": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "rel.visible": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "dev.yield_sign": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "ego_approach_speed": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original approach velocity samples",
+          "evidence": "approach_history.jsonl"
+        },
+        "through_highway_sight_clear": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original sight rays",
+          "evidence": "visibility_rays.jsonl"
+        },
+        "ego_distance_to_junction_m": {
+          "entrypoint": "finalizer.py",
+          "method": "join original approach distance to intersection with saved frame map",
+          "evidence": "approach_history.jsonl and video_frames.jsonl"
+        },
+        "ego_crossing_body": {
+          "entrypoint": "finalizer.py",
+          "method": "join original Native ego body vertices and lane state to saved frame map",
+          "evidence": "interaction_history.jsonl and video_frames.jsonl"
+        },
+        "through_vehicle_position": {
+          "entrypoint": "finalizer.py",
+          "method": "join original Native through actor body vertices and lane state; retain explicit absent actor state",
+          "evidence": "interaction_history.jsonl and video_frames.jsonl"
+        },
+        "through_vehicle_speed": {
+          "entrypoint": "finalizer.py",
+          "method": "derive finite difference through actor center motion from original Native body history with explicit absent state",
+          "evidence": "interaction_history.jsonl and video_frames.jsonl"
+        }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "diagnostic synthetic source; Native motion and four-camera visibility require review"
       }
     }
   ],
-  "limitation": "Exact scalar CPU draft only; not selected until source-bound compatibility, fallback, saved-only, physical and comparison proofs pass."
+  "limitation": "Exact scalar CPU draft only; not selected until source-bound compatibility, fallback, saved-only, physical and comparison proofs pass.",
+  "runtime_manifest_sha256": "a4626c89ca4e80fb42351a8fdd4f6aa2601a670a9df51707d306bb45732cdaf3"
 }
