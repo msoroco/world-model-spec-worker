@@ -197,6 +197,76 @@
             "test_log_sha256": "2a559f6af576d5fcf20cbc1373f6a5590e72aa1cb96bc54621939260c322236b",
             "test_exit_code": 0
           }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/left_business_under_100_ft/fallback2/construction.json",
+          "construction_sha256": "3375c807ac9653bc3a0ee0b6fd8df53273f8de616eae6a88cb4eca908dac6604",
+          "trigger": {
+            "source": "original source camera and Native motion review",
+            "metric": "ego route tracking and turn path stability",
+            "failure_condition": "default 5 m controller lookahead overshoots the planned left-turn course or loses camera coverage"
+          },
+          "changed_knobs": [
+            "controller_lookahead_m"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_business_under_100_ft --candidate fallback2 --output .runtime-work/c178244-left-under-fallback2-offline",
+            "exit_code": 0,
+            "log": "cases/left_business_under_100_ft/fallback2/offline.log",
+            "log_sha256": "7c1d0cca72e95f33f967ddd74ec3d0e2e4c1d76ca17e447890f64704a10bdeef",
+            "construction_sha256": "3375c807ac9653bc3a0ee0b6fd8df53273f8de616eae6a88cb4eca908dac6604"
+          },
+          "compatibility": {
+            "receipt": "cases/left_business_under_100_ft/fallback2/compatibility.json",
+            "sha256": "511c19d36856510c5d19b000cf894fa0ad949a1e697179afa993ef7ef1a41042",
+            "log": "cases/left_business_under_100_ft/fallback2/analysis.log",
+            "negative_log": "cases/left_business_under_100_ft/fallback2/negative.log",
+            "replay_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_business_under_100_ft --candidate fallback2 --output .runtime-work/c178244-left-under-fallback2-compat/analysis --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_business_under_100_ft --attempt .runtime-work/c178244-left-under-fallback2-compat/analysis --output .runtime-work/c178244-left-under-fallback2-saved --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat .runtime-work/c178244-left-under-fallback2-saved/v0001/feedback.json",
+            "test_log": "cases/left_business_under_100_ft/fallback2/saved-processing.json",
+            "test_log_sha256": "80b4e783c5156a44d33dd769936a76809e48406f5007b834fece75d83df84a54",
+            "test_exit_code": 0
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/left_business_under_100_ft/fallback3/construction.json",
+          "construction_sha256": "38a110f9f62fd458fbfa86cb8d28419e2d25075d3b46163352f99b863d76591a",
+          "trigger": {
+            "source": "original source cameras and Native participant motion review",
+            "metric": "departure-lane vehicle spacing during left-turn course",
+            "failure_condition": "default other-vehicle station causes a physical route conflict or occludes required view"
+          },
+          "changed_knobs": [
+            "other_vehicle_station_m"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_business_under_100_ft --candidate fallback3 --output .runtime-work/c178244-left-under-fallback3-offline",
+            "exit_code": 0,
+            "log": "cases/left_business_under_100_ft/fallback3/offline.log",
+            "log_sha256": "9912aaf265f66afdc2e468116f7c8019982bafb58341324081614c9f631a4c53",
+            "construction_sha256": "38a110f9f62fd458fbfa86cb8d28419e2d25075d3b46163352f99b863d76591a"
+          },
+          "compatibility": {
+            "receipt": "cases/left_business_under_100_ft/fallback3/compatibility.json",
+            "sha256": "418fdb5d636963bcfd85eb2f4eb90178606384bd2cf92f8231e3258c311abb57",
+            "log": "cases/left_business_under_100_ft/fallback3/analysis.log",
+            "negative_log": "cases/left_business_under_100_ft/fallback3/negative.log",
+            "replay_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_business_under_100_ft --candidate fallback3 --output .runtime-work/c178244-left-under-fallback3-compat/analysis --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_business_under_100_ft --attempt .runtime-work/c178244-left-under-fallback3-compat/analysis --output .runtime-work/c178244-left-under-fallback3-saved --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat .runtime-work/c178244-left-under-fallback3-saved/v0001/feedback.json",
+            "test_log": "cases/left_business_under_100_ft/fallback3/saved-processing.json",
+            "test_log_sha256": "bca5554581f4d289b211f2031be2c37cff91e566d53690e5bf41f14222fdb3d8",
+            "test_exit_code": 0
+          }
         }
       ],
       "measurement_contract": "measurement-contract.json",
