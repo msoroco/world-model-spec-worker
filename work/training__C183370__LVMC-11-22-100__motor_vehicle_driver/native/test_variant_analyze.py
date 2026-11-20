@@ -1,4 +1,5 @@
 import json
+import copy
 import sys
 import tempfile
 import unittest
@@ -64,6 +65,29 @@ class VariantAnalysisTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'provenance'):
             analyze_rows(frames, actors, READBACK)
         self.assertEqual(analyze_rows(frames, actors, READBACK, diagnostic=True)['source_frames'], 600)
+
+    def test_original_employee_requires_distinct_retained_warning_actor(self):
+        frames, actors = rows()
+        readback = copy.deepcopy(READBACK)
+        readback['control_type_id'] = 'walker.pedestrian.0001'
+        readback['plan']['control_kind'] = 'employee_exception'
+        readback['plan']['governing_warning_control'] = {
+            'actor_id': 13, 'type_id': 'static.prop.trafficwarning'}
+        readback['governing_warning_control'] = {
+            'actor_id': 13, 'type_id': 'static.prop.trafficwarning'}
+        for actor in actors:
+            actor['control_type_id'] = 'walker.pedestrian.0001'
+            actor['governing_warning_control'] = {
+                'actor_id': 13, 'type_id': 'static.prop.trafficwarning',
+                'xyz_m': [3, 0, 0]}
+        self.assertEqual(analyze_rows(frames, actors, readback)['source_frames'], 600)
+        actors[200]['governing_warning_control']['actor_id'] = 12
+        with self.assertRaisesRegex(ValueError, 'governing warning actor identity'):
+            analyze_rows(frames, actors, readback)
+        actors[200]['governing_warning_control']['actor_id'] = 13
+        readback['governing_warning_control'] = None
+        with self.assertRaisesRegex(ValueError, 'Distinct original governing'):
+            analyze_rows(frames, actors, readback)
 
     def test_full_analysis_binds_trace_and_source_hashes(self):
         frames, actors = rows()

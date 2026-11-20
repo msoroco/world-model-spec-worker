@@ -128,6 +128,18 @@ class VariantCaptureTest(unittest.TestCase):
         self.assertEqual(row['control_type_id'], 'static.prop.trafficwarning')
         self.assertFalse(row['control_content_verified'])
 
+    def test_employee_sample_keeps_separate_warning_actor(self):
+        world = World()
+        worker = types.SimpleNamespace(id=12, type_id='walker.pedestrian.0001',
+            get_transform=lambda: types.SimpleNamespace(location=xyz(2, 0)))
+        warning = types.SimpleNamespace(id=13, type_id='static.prop.trafficwarning',
+            is_alive=True,
+            get_transform=lambda: types.SimpleNamespace(location=xyz(3, 0)))
+        row = sample(world, CARLA, world.ego, worker, {'steer': .1}, warning)
+        self.assertEqual(row['control_actor_id'], 12)
+        self.assertEqual(row['governing_warning_control']['actor_id'], 13)
+        self.assertFalse(row['employee_exception_verified'])
+
     def test_600_frame_selected_variant_capture_keeps_sources(self):
         repo = repository_root(__file__)
         (repo / '.runtime-work').mkdir(exist_ok=True)
