@@ -98,6 +98,12 @@ def build(survey, map_probe):
             'map_name': survey['map_name'], 'cell_id': survey['cell_id'],
             'capture_frames': survey['capture_frames'],
             'capture_hz': survey['capture_hz'], 'camera_names': list(CAMERAS),
+            'survey_geometry': {
+                'curb_polyline_xy_m': curb_values,
+                'authored_fire_lane_polygon_xy_m':
+                    survey['authored_fire_lane_polygon_xy_m'],
+                'posted_sign_xy_m': survey['posted_sign_xy_m'],
+                'planned_stop_footprints_xy_m': footprints},
             'fixed_context': {'property_context': survey['property_context'],
                               'posted_sign_actor_id': survey['posted_sign_actor_id'],
                               'road_id': road_rows['reference']['road_id']},
