@@ -4,6 +4,7 @@ This module measures a device designation and a vehicle's travel direction.
 It does not infer municipal authorization, visual legibility or a legal finding.
 """
 
+from datetime import datetime
 from math import hypot, isfinite
 
 
@@ -45,6 +46,8 @@ def measure_direction(rows, *, case_suffix, lane_id):
     result = []
     previous = None
     source_identity = None
+    designation_identity = None
+    previous_civil = None
     for row in rows:
         frame, stamp = row.get('frame'), row.get('time_s')
         if type(frame) is not int or frame < 0 or type(stamp) not in (int, float) or not isfinite(stamp):
@@ -57,6 +60,15 @@ def measure_direction(rows, *, case_suffix, lane_id):
         civil = row.get('civil_time')
         if not isinstance(civil, dict) or not civil.get('source') or not civil.get('iso8601'):
             raise ValueError('Civil-time source and timestamp required')
+        try:
+            civil_stamp = datetime.fromisoformat(civil['iso8601'])
+        except (TypeError, ValueError) as error:
+            raise ValueError('Civil-time timestamp is invalid') from error
+        if civil_stamp.tzinfo is None or civil_stamp.utcoffset() is None:
+            raise ValueError('Civil-time offset required')
+        if previous_civil is not None and civil_stamp <= previous_civil:
+            raise ValueError('Civil-time source did not advance with original frames')
+        previous_civil = civil_stamp
         device = row.get('device')
         if not isinstance(device, dict) or device.get('kind') not in SOURCE_KINDS:
             raise ValueError('Original direction device source required')
@@ -65,12 +77,17 @@ def measure_direction(rows, *, case_suffix, lane_id):
         if not device.get('period_id') or device.get('effective') is not True:
             raise ValueError('Effective designation period must be source-observed')
         identity = device['source_id'], device['kind']
+        designation = _unit(device.get('direction_xy'), 'Device designation')
+        designation_key = device['period_id'], tuple(round(x, 8) for x in designation)
         if source_identity is None:
             source_identity = identity
         elif identity != source_identity:
             raise ValueError('Device source changed within comparison window')
+        if designation_identity is None:
+            designation_identity = designation_key
+        elif designation_key != designation_identity:
+            raise ValueError('Effective designation changed within comparison window')
         travel = _unit(row.get('subject_velocity_xy'), 'Subject velocity')
-        designation = _unit(device.get('direction_xy'), 'Device designation')
         dot = sum(a * b for a, b in zip(travel, designation))
         result.append({
             'frame': frame, 'time_s': stamp,
