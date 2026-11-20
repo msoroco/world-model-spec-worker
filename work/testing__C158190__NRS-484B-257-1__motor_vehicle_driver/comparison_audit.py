@@ -15,6 +15,7 @@ PAIRS = {
     'approaching_vs_already_entered': ('through_approaches', 'through_entered'),
     'same_approaching_traffic_view_speed_2_vs_4': ('through_approaches', 'mid_speed'),
 }
+THREE_SPEED_ID = 'same_approaching_traffic_view_speed_2_4_6'
 
 
 def sha(path):
@@ -130,13 +131,78 @@ def audit(left, right, comparison_id):
             'legal_conclusion': 'unresolved'}
 
 
+def audit_three_speed(left, middle, right):
+    """Independently check the unselected 6 m/s extension against matched sources."""
+    roots = tuple(Path(p) for p in (left, middle, right))
+    cases = tuple(PREFIX + suffix for suffix in
+                  ('through_approaches', 'mid_speed', 'speed_6'))
+    configs = tuple(read(root / 'config.json') for root in roots)
+    if tuple(config['selected_case_id'] for config in configs) != cases:
+        raise ValueError('Three-speed comparison selected another exact case')
+    for config in configs:
+        if (config.get('law_id'), config.get('cell_id'), config.get('rate_hz'),
+                config.get('duration_s')) != ('NRS-484B-257-1', 'C158190', 20, 30):
+            raise ValueError('Three-speed capture profile changed')
+    if any(config['cameras'] != configs[0]['cameras'] for config in configs[1:]):
+        raise ValueError('Three-speed source cameras changed')
+    fixed = ('road.xodr', 'road_context.json', 'control_context.json',
+             'capture/native_map_facts.json', 'video_frames.jsonl')
+    if any(sha(root / name) != sha(roots[0] / name)
+           for root in roots[1:] for name in fixed):
+        raise ValueError('Three-speed fixed site source changed')
+    histories = tuple(rows(root / 'interaction_history.jsonl') for root in roots)
+    approaches = tuple(rows(root / 'approach_history.jsonl') for root in roots)
+    if any(len(history) != 600 for history in histories):
+        raise ValueError('Three-speed comparison lacks full body history')
+    if any(len(approach) < 2 or approach[0]['ego_speed_mps'] != 8.0
+           for approach in approaches):
+        raise ValueError('Three-speed sampled approach is not matched at 8 m/s')
+    if any(a['through'] != b['through'] for a, b in zip(histories[0], histories[1])) or any(
+            a['through'] != b['through'] for a, b in zip(histories[0], histories[2])):
+        raise ValueError('Three-speed through traffic differs')
+    if any(a['ego']['body_vertices_m'] != b['ego']['body_vertices_m']
+           for a, b in ((histories[0][i], histories[j][i]) for i in (0, 1) for j in (1, 2))):
+        raise ValueError('Three-speed initial ego bodies differ')
+    contract = read(ROOT / 'measurement-contract.json')
+    reports = tuple(read(root / 'analysis-report.json') for root in roots)
+    for root, report in zip(roots, reports):
+        if len(verify_report(contract, report, root)) != 7:
+            raise ValueError('Three-speed source measurements incomplete')
+    speeds = [report['measurements']['speed_at_closest_view_mps']['value']
+              for report in reports]
+    if speeds != [2.0, 4.0, 6.0]:
+        raise ValueError('Three-speed view targets were not measured')
+    relations = [report['measurements']['yield_relation']['value'] for report in reports]
+    return {'format': 'worker-c158190-independent-three-speed-draft-audit',
+            'comparison_id': THREE_SPEED_ID, 'case_ids': list(cases),
+            'approach_speed_mps': 8.0, 'closest_view_speeds_mps': speeds,
+            'fixed_source_sha256': {name: sha(roots[0] / name) for name in fixed},
+            'analysis_sha256': [sha(root / 'analysis-report.json') for root in roots],
+            'through_history_sha256': [sha(root / 'interaction_history.jsonl') for root in roots],
+            'sampled_body_contact_frames': [relation['body_contact_frames']
+                                            for relation in relations],
+            'minimum_sampled_body_gap_m': [relation['minimum_body_gap_m']
+                                           for relation in relations],
+            'software_comparison_passed': True,
+            'selected_delivery_claimed': False,
+            'physical_acceptance_claimed': False,
+            'legal_conclusion': 'unresolved'}
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--left', type=Path, required=True)
     parser.add_argument('--right', type=Path, required=True)
     parser.add_argument('--comparison', required=True)
+    parser.add_argument('--third', type=Path)
     args = parser.parse_args()
-    print(json.dumps(audit(args.left, args.right, args.comparison), indent=2))
+    if args.comparison == THREE_SPEED_ID:
+        if args.third is None:
+            raise ValueError('Three-speed audit requires --third')
+        result = audit_three_speed(args.left, args.right, args.third)
+    else:
+        result = audit(args.left, args.right, args.comparison)
+    print(json.dumps(result, indent=2))
 
 
 if __name__ == '__main__':
