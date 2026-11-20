@@ -11,7 +11,7 @@ sys.path.insert(0, str(REPO / 'runtime/pipeline/scenario_pipeline'))
 from worker_exchange.semantic_delivery import validate as validate_delivery
 
 assignment = json.loads((REPO / 'inputs' / ROOT.name / 'assignment.json').read_text())
-manifest = json.loads((ROOT / 'draft-measured-candidate-manifest.json').read_text())
+manifest = json.loads((ROOT / 'draft-combined-capture-manifest.json').read_text())
 proposal = json.loads((ROOT / 'proposals/cases.json').read_text())
 law = assignment['law']
 actor = assignment['actor']
@@ -30,7 +30,7 @@ relevance = {
     'cell_id': assignment['cell_id'], 'actor': actor, 'status': 'draft',
     'relevant_laws': [{'law_id': law_id, 'quote': law['text'], 'applies_to': [actor],
                        'confidence': 'high', 'relevance_type': 'specific_match',
-                       'notes': 'The flagger/paved-shoulder cell supports a warning-person probe; newly repaired pavement and an actual warning act require original evidence.'}],
+                       'notes': 'The flagger/paved-shoulder cell supports the warning-person probe; barrier, sign, closure and employee routes are draft comparisons. Actual warnings, pavement repair and employment require original evidence.'}],
     'borderline_excluded': [],
 }
 r_batch = write('relevance_batch.json', relevance)
@@ -40,7 +40,7 @@ judgments = [
     ('pavement newly laid or repaired', 'Surface condition and repair history require independent original review.',
      ['ego_pose', 'pavement_footprint_contact'], ['surveyed_repair_region']),
     ('a person or a sign warning persons against riding or driving over such pavement',
-     'The warning-person branch is selected; a nearby person alone does not prove a warning act. Barrier, warning-sign and closure-sign routes remain unselected.',
+     'A nearby person alone does not prove a warning act. Draft barrier, warning-sign and closure-sign routes require original warning evidence.',
      ['warning_person_state', 'ego_pose'], ['surveyed_repair_region']),
     ('employees actually engaged in the paving or repair of such pavement',
      'The employee exception requires original role and activity evidence; no exception is presumed.',
@@ -76,6 +76,9 @@ for number, (phrase, note, streams, contexts) in enumerate(judgments):
         'status': 'draft', 'observable_requirements': requirements}))
 
 names = [('surveyed_pavement_and_warning_person', 'world_setup'),
+         ('surveyed_pavement_and_barrier', 'world_setup'),
+         ('surveyed_pavement_and_sign', 'world_setup'),
+         ('operator_actually_engaged_in_paving_or_repair', 'world_setup'),
          ('requested_pavement_crossing', 'controller'),
          ('actual_body_contact', 'subject_behavior'),
          ('warning_act', 'subject_behavior')]
@@ -90,27 +93,43 @@ b_ref = write('bindings.json', binding)
 cases = []
 baseline = copy.deepcopy(proposal['cases'][0])
 baseline.update(case_id=ROOT.name + '__baseline', target_law_id=None,
-                target_type='baseline', rationale='Shared source-surveyed setup for the selected warning-person comparison.')
+                target_type='baseline', rationale='Source-surveyed setup for the draft statutory comparisons.')
 cases.append(baseline)
+pair_names = ('warning_person', 'barrier', 'warning_sign', 'highway_closed_sign',
+              'employee_exception')
+def complete_variables(item):
+    assignments = item['variable_assignments']
+    for name, kind in names:
+        assignments.setdefault(name, {'kind': kind, 'value': None if kind == 'subject_behavior'
+                               else 'original source required; held fixed in this probe'})
+    return item
+
+complete_variables(baseline)
 for case in proposal['cases']:
     item = copy.deepcopy(case)
-    item.update(target_type='judgment_sweep', paired_probe_id=ROOT.name + '__warning_person_pair',
-                deliberate_differences=['requested_pavement_crossing'],
-                probe={'primary_variable': 'requested_pavement_crossing',
-                       'comparison_or_standard': 'physical contact coverage; statute judgments unresolved',
-                       'target_value_or_branch': {'requested_pavement_crossing': case['variable_assignments']['requested_pavement_crossing']['value']}},
+    complete_variables(item)
+    short = case['case_id'][len(ROOT.name) + 2:]
+    pair = next((name for name in pair_names if short.startswith(name)), 'warning_person')
+    variable = ('operator_actually_engaged_in_paving_or_repair'
+                if pair == 'employee_exception' else 'requested_pavement_crossing')
+    item.update(target_type='judgment_sweep', paired_probe_id=ROOT.name + '__' + pair + '_pair',
+                deliberate_differences=[variable],
+                probe={'primary_variable': variable,
+                       'comparison_or_standard': 'source-grounded body contact and statutory condition review pending',
+                       'target_value_or_branch': {variable: case['variable_assignments'][variable]['value']}},
                 unresolved_judgment_calls=[phrase for phrase, _, _, _ in judgments])
     cases.append(item)
 canonical = {'cell_id': assignment['cell_id'], 'actor': actor, 'status': 'draft',
              'cases': cases, 'sweeps_expanded': True,
              'sweep_specs': [{'sweep_id': ROOT.name + '__scope_pending', 'target_law_id': law_id,
                               'judgment_refs': [{'phrase': phrase, 'note': note} for phrase, note, _, _ in judgments],
-                              'rationale': 'Physical warning-route and exception sweep awaits source-grounded construction.',
+                              'rationale': 'Ten draft routes are constructed; original source review and exact delivery selection remain.',
                               'status': 'incomplete',
                               'missing_inputs': ['Original warning act and pavement repair evidence',
-                                                 'Barrier, warning-sign and closure-sign route constructions',
-                                                 'Employee exception source evidence']}],
-             'unselected_statutory_routes': ['barrier', 'warning sign', 'highway closure sign', 'paving/repair employee exception']}
+                                                 'Original barrier and sign-face evidence',
+                                                 'Original employee activity evidence']}],
+             'unselected_statutory_routes': ['warning person', 'barrier', 'warning sign',
+                                            'highway closure sign', 'paving/repair employee exception']}
 c_ref = write('canonical-cases.json', canonical)
 index = {'format': 'worker-semantic-delivery', 'assignment_id': ROOT.name,
          'stages': {'relevance_batch': r_batch, 'relevance': r_cell, 'template': t_ref,
