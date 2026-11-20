@@ -56,6 +56,17 @@ class DirectionFinalizerTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'first exact C223016'):
             check_config(config)
 
+    def test_fallback_knob_bounds(self):
+        config = json.loads((Path(__file__).resolve().parents[1] / 'config.json').read_text())
+        for knob, invalid in [('spawn_candidate_index', -1),
+                              ('device_forward_m', 3), ('speed_kp', .8)]:
+            changed = dict(config, **{knob: invalid})
+            with self.assertRaises(ValueError):
+                check_config(changed)
+        for knob, value in [('spawn_candidate_index', 1),
+                            ('device_forward_m', 6), ('speed_kp', .12)]:
+            self.assertTrue(check_config(dict(config, **{knob: value})))
+
     def test_positive_saved_join_stays_legally_unresolved(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

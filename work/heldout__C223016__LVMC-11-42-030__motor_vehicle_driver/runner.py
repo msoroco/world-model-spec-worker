@@ -48,6 +48,12 @@ def check_config(config):
         raise ValueError('four named source cameras required')
     if config.get('target_speed_mps', 0) <= 0 or config.get('target_speed_mps', 0) > 12:
         raise ValueError('target speed outside construction bounds')
+    if type(config.get('spawn_candidate_index')) is not int or not 0 <= config['spawn_candidate_index'] <= 3:
+        raise ValueError('spawn candidate index outside construction bounds')
+    if not 5 <= config.get('device_forward_m', 0) <= 12:
+        raise ValueError('barrier forward distance outside construction bounds')
+    if not 0.05 <= config.get('speed_kp', 0) <= 0.4:
+        raise ValueError('speed gain outside construction bounds')
     return True
 
 
@@ -62,33 +68,37 @@ def _spawn_subject(world, carla, config):
         yaw = radians(spawn.rotation.yaw)
         if cos(yaw) * heading[0] + sin(yaw) * heading[1] >= .9:
             candidates.append(spawn)
-    if not candidates:
-        raise ValueError('No Native driving spawn on governed lane and direction')
+    index = config['spawn_candidate_index']
+    if len(candidates) <= index:
+        raise ValueError('No Native driving spawn at selected governed-lane candidate')
     bp = world.get_blueprint_library().filter('vehicle.*')[0]
-    actor = world.try_spawn_actor(bp, candidates[0])
+    actor = world.try_spawn_actor(bp, candidates[index])
     if actor is None:
         raise ValueError('Native subject spawn failed')
     return actor
 
 
-def _spawn_device(world, carla, subject):
+def _spawn_device(world, carla, subject, config):
     library = world.get_blueprint_library()
     cones = library.filter('*trafficcone*')
     if not cones:
         raise ValueError('Native traffic-cone barrier blueprint unavailable')
     pose = subject.get_transform()
-    location = pose.location + carla.Location(x=8, y=1.8, z=.1)
+    yaw = radians(pose.rotation.yaw)
+    forward = config['device_forward_m']
+    location = pose.location + carla.Location(x=forward * cos(yaw) - 1.8 * sin(yaw),
+                                               y=forward * sin(yaw) + 1.8 * cos(yaw), z=.1)
     actor = world.try_spawn_actor(cones[0], carla.Transform(location, pose.rotation))
     if actor is None:
         raise ValueError('Native barrier spawn failed')
     return actor
 
 
-def _control(actor, carla, target_speed):
+def _control(actor, carla, target_speed, speed_kp):
     velocity = actor.get_velocity()
     error = target_speed - hypot(velocity.x, velocity.y)
     actor.apply_control(carla.VehicleControl(
-        throttle=min(.6, max(0., .2 * error)),
+        throttle=min(.6, max(0., speed_kp * error)),
         brake=min(.8, max(0., -.25 * error)), steer=0.))
 
 
@@ -186,7 +196,7 @@ def run(output, host, port):
         settings.fixed_delta_seconds = .05
         world.apply_settings(settings)
         subject = _spawn_subject(world, carla, config)
-        device = _spawn_device(world, carla, subject)
+        device = _spawn_device(world, carla, subject, config)
         camera = CameraCapture(world, carla, subject, output)
         pipeline = PipelineCapture(client, subject, output, config['selected_case_id'],
                                    required_observations=config.get('required_atoms', []))
@@ -194,7 +204,7 @@ def run(output, host, port):
         stream = (output / 'direction_state.jsonl').open('x')
         first_time = None
         for _ in range(config['frames']):
-            _control(subject, carla, config['target_speed_mps'])
+            _control(subject, carla, config['target_speed_mps'], config['speed_kp'])
             frame = world.tick()
             snapshot = world.get_snapshot()
             if snapshot.frame != frame:
