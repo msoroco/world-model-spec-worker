@@ -16,7 +16,11 @@ spec.loader.exec_module(measure)
 class TurnSignalTests(unittest.TestCase):
     def test_generated_right_turn_road_projects_with_pinned_adapter(self):
         import sys
-        runtime = Path(__file__).resolve().parents[3] / "runtime" / "scenario_pipeline"
+        runtime = next((parent / "runtime" / "scenario_pipeline"
+                        for parent in Path(__file__).resolve().parents
+                        if (parent / "runtime" / "scenario_pipeline").is_dir()), None)
+        if runtime is None:
+            self.fail("Pinned runtime/scenario_pipeline unavailable")
         sys.path.insert(0, str(runtime))
         from traffic_spec_adapter.geometry import static_map
         xml = measure.build_right_turn_opendrive()
@@ -93,6 +97,37 @@ class TurnSignalTests(unittest.TestCase):
         self.assertTrue(request(8.9, start_m=30.48, interruption_m=(9, 11)))
         with self.assertRaisesRegex(ValueError, "inside the active approach"):
             request(20, start_m=30.48, interruption_m=(10, 40))
+
+    def test_selected_native_lane_chain_and_controller_uses_actual_pose(self):
+        def waypoint(road, lane, station):
+            if road == 177008:
+                x, y = station - 120, -1.8
+            else:
+                angle = station / 10
+                x, y = 1.8 + 10 * math.sin(angle), -10 * (1 - math.cos(angle)) - 1.8
+            return NS(road_id=road, lane_id=lane, s=station,
+                      transform=NS(location=NS(x=x, y=y)))
+        native_map = NS(get_waypoint_xodr=waypoint)
+        route = measure.select_native_route(native_map)
+        self.assertEqual(route["approach_road_id"], 177008)
+        self.assertEqual(route["outgoing_road_id"], 177010)
+        self.assertGreaterEqual(route["direct_approach_m"], 91.44)
+        pose = NS(location=NS(x=-50, y=-1.8), rotation=NS(yaw=0))
+        vehicle = NS(get_transform=lambda: pose,
+                     get_velocity=lambda: NS(x=4.0, y=0.0, z=0.0))
+        command = measure.native_route_control(vehicle, route)
+        self.assertAlmostEqual(command["remaining_approach_m"], 50)
+        self.assertGreater(command["throttle"], 0)
+        self.assertEqual(command["brake"], 0)
+        self.assertAlmostEqual(command["steer"], 0, places=2)
+        self.assertFalse(measure.indicator_request_at_remaining_distance(
+            command["remaining_approach_m"], start_m=30.48))
+        pose.location.x = -30
+        self.assertTrue(measure.indicator_request_at_remaining_distance(
+            measure.native_route_control(vehicle, route)["remaining_approach_m"], start_m=30.48))
+        missing = NS(get_waypoint_xodr=lambda road, lane, station: None)
+        with self.assertRaisesRegex(ValueError, "station missing"):
+            measure.select_native_route(missing)
 
     def fixture(self, root, distance, district="business", interrupted=False):
         steps = math.ceil(distance / 0.25)

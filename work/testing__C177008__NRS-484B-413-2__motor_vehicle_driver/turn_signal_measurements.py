@@ -8,13 +8,51 @@ frame to the authored onset; it never treats weather as an excuse.
 import hashlib
 import json
 import math
+import argparse
+import subprocess
 from pathlib import Path
-from contextlib import contextmanager
+from contextlib import contextmanager, ExitStack
+from queue import Empty, Queue
 from xml.etree import ElementTree as ET
 
 
 FEET_TO_M = 0.3048
 REQUIRED = ("drive_history.jsonl", "video_frames.jsonl", "route_context.json")
+CASE = "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_right_at_100ft"
+CAMERAS = {"overview": (1920, 1080), "approach": (1280, 720),
+           "reference_corner": (1280, 720), "driver_reference": (1280, 720)}
+MAP_SHA256 = "84b791af7a8c8e338416bef33638c83957ec9914fdce73250a8ddd0ba5976bd6"
+
+
+def validate_capture_config(config):
+    if (config.get("selected_case_id") != CASE or config.get("law_id") != "NRS-484B-413-2"
+            or config.get("cell_id") != "C177008" or config.get("rate_hz") != 20
+            or config.get("duration_s") != 40 or config.get("course") != "right_turn"):
+        raise ValueError("Exact C177008 right-turn capture identity required")
+    if config.get("map_sha256") != MAP_SHA256:
+        raise ValueError("Returned right-turn map hash required")
+    rows = config.get("cameras")
+    if not isinstance(rows, list) or [r.get("name") for r in rows] != list(CAMERAS):
+        raise ValueError("Four named source cameras required")
+    if any((r.get("width"), r.get("height")) != CAMERAS[r["name"]]
+           or type(r.get("fov_deg")) not in (int, float)
+           or not 30 <= r["fov_deg"] <= 120 for r in rows):
+        raise ValueError("Pinned source camera dimensions/FOV required")
+    if config.get("required_atoms") != ["sig.turn_indicator"]:
+        raise ValueError("Selected indicator observation required")
+    if abs(_number(config.get("indicator_start_m")) - 30.98) > 1e-9:
+        raise ValueError("One sampled frame of right-signal lead required")
+    return config
+
+
+def capture_config():
+    return validate_capture_config({"selected_case_id": CASE, "law_id": "NRS-484B-413-2",
+        "cell_id": "C177008", "actor": "motor_vehicle_driver", "course": "right_turn",
+        "rate_hz": 20, "duration_s": 40, "requested_speed_mps": 5.0,
+        "indicator_start_m": 30.98, "map_sha256": MAP_SHA256,
+        "required_atoms": ["sig.turn_indicator"],
+        "cameras": [{"name": name, "width": size[0], "height": size[1],
+                     "fov_deg": 90} for name, size in CAMERAS.items()]})
 
 
 def _waypoint_xy(waypoint):
@@ -120,6 +158,76 @@ def indicator_request_at_remaining_distance(remaining_m, *, start_m,
         if low <= remaining <= high:
             return False
     return remaining <= start
+
+
+def select_native_route(native_map, *, step_m=2.0):
+    """Read back the authored approach and connector as real Native waypoints.
+
+    The connector is the distinct outgoing road. Legal district status is not
+    inferred from the synthetic road name or from this route readback.
+    """
+    step = _number(step_m)
+    if not 0 < step <= 5:
+        raise ValueError("Native route sampling must be within five metres")
+    def sample(road, length):
+        stations = [min(length, i * step) for i in range(math.ceil(length / step) + 1)]
+        if stations[-1] != length:
+            stations.append(length)
+        points = []
+        for station in stations:
+            point = native_map.get_waypoint_xodr(road, -1, station)
+            if point is None:
+                raise ValueError("Authored Native road/lane station missing")
+            points.append(point)
+        return points
+    approach = sample(177008, 120.0)
+    connector = sample(177010, 5 * math.pi)
+    return verify_native_right_turn(approach, connector)
+
+
+def native_route_control(vehicle, route, *, target_speed_mps=5.0,
+                         lookahead_m=5.0):
+    """Make one bounded control request from actual actor pose and route points.
+
+    The caller applies this request before the next Native tick and separately
+    records its actual post-tick pose, speed and light readback.
+    """
+    speed_target = _number(target_speed_mps)
+    lookahead = _number(lookahead_m)
+    if not 0 < speed_target <= 15 or not 1 <= lookahead <= 15:
+        raise ValueError("Invalid right-turn controller tuning")
+    transform = vehicle.get_transform()
+    x, y = _number(transform.location.x), _number(transform.location.y)
+    heading = _number(transform.rotation.yaw)
+    points = route["waypoints"]
+    if len(points) < 4:
+        raise ValueError("Native controller has no sampled route")
+    positions = [_waypoint_xy(point) for point in points]
+    nearest = min(range(len(positions)), key=lambda i: math.dist((x, y), positions[i]))
+    cumulative = 0.0
+    target_index = nearest
+    for i in range(nearest, len(positions) - 1):
+        cumulative += math.dist(positions[i], positions[i + 1])
+        target_index = i + 1
+        if cumulative >= lookahead:
+            break
+    tx, ty = positions[target_index]
+    bearing = math.degrees(math.atan2(ty - y, tx - x))
+    yaw_error = _angle_delta(bearing, heading)
+    steer = max(-0.75, min(0.75, yaw_error / 35.0))
+    velocity = vehicle.get_velocity()
+    speed = math.sqrt(sum(_number(getattr(velocity, axis)) ** 2 for axis in ("x", "y", "z")))
+    throttle = max(0.0, min(0.45, 0.18 * (speed_target - speed)))
+    brake = max(0.0, min(1.0, 0.35 * (speed - speed_target)))
+    if nearest >= len(points) - 2:
+        throttle, brake, steer = 0.0, 1.0, 0.0
+    # Approach stations are sampled every two metres; this is a controller
+    # request, while the saved distance proof uses original post-tick motion.
+    remaining = max(0.0, 120.0 - _number(getattr(points[nearest], "s"))) if nearest < len(points) else 0.0
+    return {"throttle": throttle, "brake": brake, "steer": steer,
+            "nearest_route_index": nearest, "target_route_index": target_index,
+            "remaining_approach_m": remaining, "speed_mps": speed,
+            "heading_error_deg": yaw_error}
 
 
 def build_right_turn_opendrive():
@@ -296,3 +404,217 @@ def analyze(root: Path) -> dict:
             "approach_speed_samples_mps": speeds,
             "route_turn_direction_judgment": "unresolved until Native route geometry is reviewed",
             "weather_exception": "none in NRS 484B.413(2)"}
+
+
+def _read_camera(queue, frame):
+    for _ in range(8):
+        try:
+            image = queue.get(timeout=10)
+        except Empty as error:
+            raise ValueError("Source camera frame missing") from error
+        if image.frame == frame:
+            return bytes(image.raw_data)
+        if image.frame > frame:
+            raise ValueError("Source camera skipped Native frame")
+    raise ValueError("Source camera frame join failed")
+
+
+@contextmanager
+def _source_cameras(world, ego, carla, plan):
+    loc = ego.get_transform().location
+    def at(x, y, z, yaw, pitch):
+        return carla.Transform(carla.Location(x=x, y=y, z=z),
+                               carla.Rotation(yaw=yaw, pitch=pitch))
+    transforms = {"overview": at(-8, -10, loc.z+42, 0, -80),
+                  "approach": at(-70, -15, loc.z+8, 0, -15),
+                  "reference_corner": at(12, -8, loc.z+12, 150, -30),
+                  "driver_reference": at(1.0, 0, 1.65, 0, -6)}
+    sensors = {}
+    try:
+        for row in plan:
+            name = row["name"]
+            blueprint = world.get_blueprint_library().find("sensor.camera.rgb")
+            for key, value in (("image_size_x", row["width"]),
+                               ("image_size_y", row["height"]),
+                               ("fov", row["fov_deg"]), ("sensor_tick", 0.05)):
+                blueprint.set_attribute(key, str(value))
+            kwargs = {"attach_to": ego} if name == "driver_reference" else {}
+            sensor = world.spawn_actor(blueprint, transforms[name], **kwargs)
+            if sensor is None:
+                raise ValueError("Native source camera spawn failed: " + name)
+            sensors[name] = sensor
+        yield sensors
+    finally:
+        for sensor in reversed(list(sensors.values())):
+            sensor.stop()
+            sensor.destroy()
+
+
+@contextmanager
+def _ffv1(path, size):
+    width, height = size
+    if Path(path).exists():
+        raise ValueError("Fresh source-video path required")
+    process = subprocess.Popen(["ffmpeg", "-hide_banner", "-loglevel", "error", "-n",
+        "-f", "rawvideo", "-pixel_format", "bgra", "-video_size", f"{width}x{height}",
+        "-framerate", "20", "-i", "pipe:0", "-an", "-c:v", "ffv1", "-level", "3",
+        "-pix_fmt", "bgr0", str(path)], stdin=subprocess.PIPE, stderr=subprocess.PIPE)
+    count = 0
+    class Writer:
+        def write(self, data):
+            nonlocal count
+            if len(data) != width * height * 4 or process.poll() is not None:
+                raise ValueError("Native source-camera BGRA size/encoder mismatch")
+            process.stdin.write(data)
+            count += 1
+    try:
+        yield Writer()
+    finally:
+        process.stdin.close()
+        code = process.wait(timeout=60)
+        stderr = process.stderr.read().decode(errors="replace")
+        process.stderr.close()
+        if code or not count:
+            raise ValueError("Native FFV1 encoder failed: " + stderr[-500:])
+
+
+def capture_native(args, config):
+    """Capture original Native motion/pixels on the returned synthetic map.
+
+    The resulting route context remains district-unverified unless an exact-map
+    independent legal-site packet is supplied. No legal status is fabricated.
+    """
+    import carla
+    from pipeline_capture import PipelineCapture
+    from worker_exchange.native_output import FrameMap, seal_capture
+    from worker_exchange.world_restore import snapshot as save_world, restore
+
+    output = Path(args.output_dir).resolve()
+    if not output.is_dir() or not (output / "construction.json").is_file():
+        raise ValueError("Use runtime.py capture to materialize exact construction")
+    map_text = build_right_turn_opendrive()
+    if hashlib.sha256(map_text.encode()).hexdigest() != config["map_sha256"]:
+        raise ValueError("Authored map differs from returned map")
+    client = carla.Client(args.host, args.port)
+    client.set_timeout(30)
+    saved = save_world(client)
+    vehicle = None
+    helper = None
+    frames = 0
+    original_error = None
+    try:
+        world = client.generate_opendrive_world(map_text)
+        settings = world.get_settings()
+        settings.synchronous_mode = True
+        settings.fixed_delta_seconds = 0.05
+        world.apply_settings(settings)
+        route = select_native_route(world.get_map())
+        blueprints = world.get_blueprint_library().filter("vehicle.*")
+        if not blueprints:
+            raise ValueError("No Native vehicle blueprint")
+        with spawn_native_right_turn(world, blueprints[0], route["waypoints"][:61],
+                                     route["waypoints"][61:]) as built:
+            vehicle = built["vehicle"]
+            with _source_cameras(world, vehicle, carla, config["cameras"]) as sensors:
+                queues = {name: Queue() for name in CAMERAS}
+                for name, sensor in sensors.items():
+                    sensor.listen(lambda image, name=name: queues[name].put(image))
+                with ExitStack() as stack:
+                    writers = {name: stack.enter_context(_ffv1(output/(name+".mkv"), size))
+                               for name, size in CAMERAS.items()}
+                    frame_map = stack.enter_context(FrameMap(output/"video_frames.jsonl"))
+                    history = stack.enter_context((output/"drive_history.jsonl").open("x", buffering=1))
+                    helper = PipelineCapture(client, vehicle, output, CASE,
+                                             required_observations=config["required_atoms"])
+                    first_heading = None
+                    onset_frame = None
+                    try:
+                        for _ in range(config["duration_s"] * config["rate_hz"]):
+                            command = native_route_control(vehicle, route,
+                                target_speed_mps=config["requested_speed_mps"])
+                            requested = indicator_request_at_remaining_distance(
+                                command["remaining_approach_m"],
+                                start_m=config["indicator_start_m"])
+                            set_native_right_blinker(vehicle, carla.VehicleLightState, requested)
+                            vehicle.apply_control(carla.VehicleControl(
+                                throttle=command["throttle"], brake=command["brake"],
+                                steer=command["steer"]))
+                            world.tick()
+                            snap = world.get_snapshot()
+                            for name in CAMERAS:
+                                writers[name].write(_read_camera(queues[name], snap.frame))
+                            frame_map.append(snap.frame, snap.timestamp.elapsed_seconds)
+                            helper.capture(snap.frame, snap.timestamp.elapsed_seconds)
+                            pose = vehicle.get_transform()
+                            velocity = vehicle.get_velocity()
+                            yaw = float(pose.rotation.yaw)
+                            if first_heading is None:
+                                first_heading = yaw
+                            if onset_frame is None and _angle_delta(yaw, first_heading) <= -10:
+                                onset_frame = int(snap.frame)
+                            location = pose.location
+                            row = {"frame": int(snap.frame),
+                                   "time_s": float(snap.timestamp.elapsed_seconds),
+                                   "ego_position_xy_m": [float(location.x), float(location.y)],
+                                   "ego_speed_mps": math.sqrt(velocity.x**2+velocity.y**2+velocity.z**2),
+                                   "ego_heading_deg": yaw,
+                                   "right_indicator": bool(vehicle.get_light_state() & carla.VehicleLightState.RightBlinker),
+                                   "native_road_id": world.get_map().get_waypoint(location).road_id,
+                                   "requested_indicator": requested}
+                            history.write(json.dumps(row, allow_nan=False)+"\n")
+                            frames += 1
+                    finally:
+                        helper.close()
+                        helper = None
+        district_packet = getattr(args, "district_packet", None)
+        district = json.loads(Path(district_packet).read_text()) if district_packet else {}
+        district_verified = (district.get("map_sha256") == MAP_SHA256
+                             and district.get("district_type") == "business"
+                             and district.get("source_document_sha256")
+                             and district.get("independent_review") is True)
+        context = {"native_map_id": world.get_map().name,
+                   "approach_road_id": route["approach_road_id"],
+                   "approach_lane_id": route["approach_lane_id"],
+                   "outgoing_road_id": route["outgoing_road_id"],
+                   "outgoing_lane_id": route["outgoing_lane_id"],
+                   "native_route_source": "Native get_waypoint_xodr readback",
+                   "district_type": "business" if district_verified else None,
+                   "district_source": district_packet if district_verified else None,
+                   "district_review_verified": bool(district_verified),
+                   "turn_onset_frame": onset_frame}
+        (output/"route_context.json").write_text(json.dumps(context, indent=2)+"\n")
+    except BaseException as error:
+        original_error = error
+        raise
+    finally:
+        if helper is not None:
+            helper.close(confirmed=False)
+        restoration = restore(client, saved)
+        if original_error is None:
+            seal_capture(output, frames=frames, restoration=restoration, errors=[],
+                encoder_exit_codes={name: 0 for name in CAMERAS},
+                context={"district_review_verified": bool(district_verified),
+                         "native_right_turn_candidate": True})
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--check", action="store_true")
+    parser.add_argument("--output-dir")
+    parser.add_argument("--district-packet")
+    parser.add_argument("--host", default="127.0.0.1")
+    parser.add_argument("--port", type=int, default=2000)
+    args = parser.parse_args()
+    config_path = Path(__file__).parent / "config.json"
+    config = validate_capture_config(json.loads(config_path.read_text())) if config_path.is_file() else capture_config()
+    if args.check:
+        print(json.dumps({"case_id": CASE, "cpu_check_passed": True,
+                          "carla_started": False, "map_sha256": MAP_SHA256}))
+        return
+    if not args.output_dir:
+        raise ValueError("--output-dir required for Native capture")
+    capture_native(args, config)
+
+
+if __name__ == "__main__":
+    main()
