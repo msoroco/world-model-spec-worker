@@ -36,7 +36,7 @@ def run(entry, source, kind, output, saved):
         for name in SOURCES:
             shutil.copy2(source / name, root / name)
         write(root / 'acquisition-provenance.json',
-              {'provenance_kind': 'native', 'diagnostic_fixture': True,
+              {'provenance_kind': 'synthetic_fixture', 'diagnostic_fixture': True,
                'scope': 'Synthetic Native-shaped classifier fixture only'})
         if kind == 'incomplete_motion':
             rows = [json.loads(line) for line in (root / 'interaction_history.jsonl').read_text().splitlines()]
