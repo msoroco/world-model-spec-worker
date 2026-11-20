@@ -6,6 +6,7 @@ municipal authorization, actual camera legibility, or Native physical success.
 import argparse
 import hashlib
 import json
+import math
 import shlex
 from pathlib import Path
 
@@ -48,7 +49,20 @@ def load(case_id, manifest):
             'rows': rows, 'config': json.loads((root / 'config.json').read_text())}
 
 
-def compare(comparison_id, *, tamper=False):
+def _pose(row):
+    pose = row['device'].get('native_pose')
+    if not isinstance(pose, dict):
+        raise ValueError('Original device pose missing')
+    for key in ('position_m', 'rotation_deg'):
+        values = pose.get(key)
+        if not isinstance(values, list) or len(values) != 3 or any(
+                not isinstance(value, (int, float)) or not math.isfinite(value)
+                for value in values):
+            raise ValueError('Original device pose invalid')
+    return pose
+
+
+def compare(comparison_id, *, tamper=False, tamper_pose=False):
     manifest = json.loads((HERE / 'execution-manifest.json').read_text())
     plan = json.loads((HERE / 'case-plan.json').read_text())
     spec = next(x for x in plan['comparisons'] if x['comparison_id'] == comparison_id)
@@ -57,6 +71,10 @@ def compare(comparison_id, *, tamper=False):
     left, right = [load(x, manifest) for x in spec['case_ids']]
     if tamper:
         right['rows'][0]['device']['source_id'] = 'tampered-device'
+    if tamper_pose:
+        if comparison_id != 'sign_direction':
+            raise ValueError('Pose tamper is limited to sign comparison')
+        right['rows'][0]['device']['native_pose']['position_m'][0] += 1.0
     a, b = left['config'], right['config']
     fixed = ('governed_lane_id', 'rate_hz', 'frames', 'duration_s', 'cameras')
     if any(a.get(k) != b.get(k) for k in fixed):
@@ -74,6 +92,10 @@ def compare(comparison_id, *, tamper=False):
     lhs, rhs = left['rows'], right['rows']
     if len(lhs) != len(rhs):
         raise ValueError('Comparison frame counts differ')
+    if comparison_id == 'sign_direction':
+        fixed_pose = _pose(lhs[0])
+        if any(_pose(row) != fixed_pose for row in lhs + rhs):
+            raise ValueError('Controlled comparison changed original device pose')
     for x, y in zip(lhs, rhs):
         if (x['frame'], x['time_s'], x['lane_id']) != (y['frame'], y['time_s'], y['lane_id']):
             raise ValueError('Controlled comparison changed frame/time/lane')
@@ -107,6 +129,7 @@ def compare(comparison_id, *, tamper=False):
             'original_direction_source_sha256': [x['receipt']['original_source_hashes']['direction_state.jsonl'] for x in (left, right)],
             'joined_frames': len(lhs), 'measured_outcomes': outcomes,
             'fixed_source_conditions_verified': True,
+            'native_device_geometry_verified': comparison_id == 'sign_direction',
             'synthetic_diagnostic_only': True, 'physical_acceptance_claimed': False,
             'legal_acceptance_claimed': False}
 
@@ -115,5 +138,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--comparison', required=True)
     parser.add_argument('--tamper', action='store_true')
+    parser.add_argument('--tamper-pose', action='store_true')
     args = parser.parse_args()
-    print(json.dumps(compare(args.comparison, tamper=args.tamper)))
+    print(json.dumps(compare(args.comparison, tamper=args.tamper,
+                             tamper_pose=args.tamper_pose)))
