@@ -1374,6 +1374,480 @@
         "test_log": "cases/through_speed_3/saved.log",
         "test_log_sha256": "df84f2775f7af98366aa86902291531c6171b49f4b71e53a71e575b7a12f52ec"
       }
+    },
+    {
+      "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_speed_7",
+      "kind": "delivery",
+      "construction": "cases/through_speed_7/construction.json",
+      "construction_sha256": "eca14155ab450a53bb0435d523f64b497110b796a75206c29281c4fcf1035606",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/cases/through_speed_7/diagnostic-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "through motion, sight and pixels need original Native verification"
+      },
+      "acquisition": {
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "st.lane": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "st.sight_distance": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "rel.visible": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "dev.yield_sign": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "ego_approach_speed": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original approach velocity samples",
+          "evidence": "approach_history.jsonl"
+        },
+        "through_highway_sight_clear": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original sight rays",
+          "evidence": "visibility_rays.jsonl"
+        },
+        "ego_distance_to_junction_m": {
+          "entrypoint": "finalizer.py",
+          "method": "join original approach distance to intersection with saved frame map",
+          "evidence": "approach_history.jsonl and video_frames.jsonl"
+        },
+        "ego_crossing_body": {
+          "entrypoint": "finalizer.py",
+          "method": "join original Native ego body vertices and lane state to saved frame map",
+          "evidence": "interaction_history.jsonl and video_frames.jsonl"
+        },
+        "through_vehicle_position": {
+          "entrypoint": "finalizer.py",
+          "method": "join original Native through actor body vertices and lane state; retain explicit absent actor state",
+          "evidence": "interaction_history.jsonl and video_frames.jsonl"
+        },
+        "through_vehicle_speed": {
+          "entrypoint": "finalizer.py",
+          "method": "derive finite difference through actor center motion from original Native body history with explicit absent state",
+          "evidence": "interaction_history.jsonl and video_frames.jsonl"
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/through_speed_7/fallbacks/fallback1-construction.json",
+          "construction_sha256": "69da9852c34e25f60bcea90cd7ddc22f97c2bbde07e8c147af33e8a23faf111a",
+          "trigger": {
+            "source": "interaction_history.jsonl",
+            "metric": "last original frame with ego body fully outside the junction",
+            "failure_condition": "ego body has not fully exited the junction by original frame 599"
+          },
+          "changed_knobs": [
+            "ego approach spawn from OpenDRIVE x=-60 m to x=-50 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/through-speed-compatibility-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_speed_7 --candidate fallback1 --output .runtime-work/c158190-speed7-current-fallback1-offline",
+            "exit_code": 0,
+            "log": "cases/through_speed_7/fallbacks/fallback1-offline.log",
+            "log_sha256": "0231b318b1e09bcf7686d47f83b71aef82499a1ccec41cf2a11e153e4b94d6bf",
+            "construction_sha256": "69da9852c34e25f60bcea90cd7ddc22f97c2bbde07e8c147af33e8a23faf111a"
+          },
+          "compatibility": {
+            "receipt": "cases/through_speed_7/fallbacks/fallback1-compatibility.json",
+            "sha256": "1e74b7942a5116e3e4382390b9f21e545bb3dfd3f0af072508d21ddde0c71228",
+            "log": "cases/through_speed_7/fallbacks/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/through_speed_7/fallbacks/fallback1-negative-analysis.log",
+            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/through-speed-compatibility-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_speed_7 --candidate fallback1 --output .runtime-work/c158190-speed7-current-fallback1-compat --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/through_speed_7/fallbacks/fallback2-construction.json",
+          "construction_sha256": "09f1e3955a0111c06dfb2777ef621b9f92fd5b33e9ebc453f4b91db141c9b78d",
+          "trigger": {
+            "source": "reference_corner.mkv",
+            "metric": "source-camera frames with yield sign face and through-highway approach visible",
+            "failure_condition": "original reference-corner frames do not show the sign face and through-highway approach together"
+          },
+          "changed_knobs": [
+            "reference_corner camera origin (19,-25,15) to (23,-28,18) m and pitch -24 to -27 degrees"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/through-speed-compatibility-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_speed_7 --candidate fallback2 --output .runtime-work/c158190-speed7-current-fallback2-offline",
+            "exit_code": 0,
+            "log": "cases/through_speed_7/fallbacks/fallback2-offline.log",
+            "log_sha256": "b989afa970231b01a62a4ed3d240d9433d74fa1b495ffe6239edb0537a1ffb95",
+            "construction_sha256": "09f1e3955a0111c06dfb2777ef621b9f92fd5b33e9ebc453f4b91db141c9b78d"
+          },
+          "compatibility": {
+            "receipt": "cases/through_speed_7/fallbacks/fallback2-compatibility.json",
+            "sha256": "b6b2d2aee01fabb960167da23083533da192a97960d93b7c91b45af180d040ae",
+            "log": "cases/through_speed_7/fallbacks/fallback2-compatibility-analysis.log",
+            "negative_log": "cases/through_speed_7/fallbacks/fallback2-negative-analysis.log",
+            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/through-speed-compatibility-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_speed_7 --candidate fallback2 --output .runtime-work/c158190-speed7-current-fallback2-compat --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/through_speed_7/fallbacks/fallback3-construction.json",
+          "construction_sha256": "bfeb00b46e9b305c4956d18b0511cd23e338275ae39bfd0f8ba10356120ebe4d",
+          "trigger": {
+            "source": "interaction_history.jsonl",
+            "metric": "measured same-actor through-body speed versus commanded scalar target",
+            "failure_condition": "measured through speed differs from its case target by more than 1 m/s before crossing"
+          },
+          "changed_knobs": [
+            "bounded longitudinal speed-control gain from 0.25 to 0.4 for through actor"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/through-speed-compatibility-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_speed_7 --candidate fallback3 --output .runtime-work/c158190-speed7-current-fallback3-offline",
+            "exit_code": 0,
+            "log": "cases/through_speed_7/fallbacks/fallback3-offline.log",
+            "log_sha256": "b989afa970231b01a62a4ed3d240d9433d74fa1b495ffe6239edb0537a1ffb95",
+            "construction_sha256": "bfeb00b46e9b305c4956d18b0511cd23e338275ae39bfd0f8ba10356120ebe4d"
+          },
+          "compatibility": {
+            "receipt": "cases/through_speed_7/fallbacks/fallback3-compatibility.json",
+            "sha256": "00ac87bef7481738f68a7ee5c6b144a2527ecd68e5781a31aebcae2ceec5b0e0",
+            "log": "cases/through_speed_7/fallbacks/fallback3-compatibility-analysis.log",
+            "negative_log": "cases/through_speed_7/fallbacks/fallback3-negative-analysis.log",
+            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/through-speed-compatibility-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_speed_7 --candidate fallback3 --output .runtime-work/c158190-speed7-current-fallback3-compat --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/through-speed-compatibility-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_speed_7 --output .runtime-work/c158190-speed7-current-primary-offline",
+        "exit_code": 0,
+        "log": "cases/through_speed_7/offline.log",
+        "log_sha256": "a8c1e1596cf6ee5844d266b347a994694fa3bdf557e89b6a200e086eb9fb3e1d",
+        "construction_sha256": "eca14155ab450a53bb0435d523f64b497110b796a75206c29281c4fcf1035606"
+      },
+      "compatibility": {
+        "receipt": "cases/through_speed_7/compatibility.log",
+        "sha256": "5699bd99ac03d7648c441b233a5b50f5dcb1b7b8de76281d91b605364f527294",
+        "log": "cases/through_speed_7/primary-compatibility-analysis.log",
+        "negative_log": "cases/through_speed_7/primary-negative-analysis.log",
+        "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/through-speed-compatibility-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_speed_7 --output .runtime-work/c158190-speed7-current-primary-compat --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+      },
+      "negative": {
+        "log": "cases/through_speed_7/primary-negative-analysis.log"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_speed_7",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "2070692d030e2f00e5033f42b592212af9358b2f5db0c68000e4649730d8a83d",
+        "command": "env PYTHONPATH=runtime/scenario_pipeline PYTHONDONTWRITEBYTECODE=1 MPLCONFIGDIR=.runtime-work/mplconfig .venv-cpu/bin/python work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c158190-speed7-current-primary-compat --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_speed_7 --diagnostic-fixture",
+        "test_exit_code": 0,
+        "test_log": "cases/through_speed_7/delivery-audit-current.log",
+        "test_log_sha256": "6502ebf403bf856e4cd9f0d71074882f76acfe44da21c2e66cde14085a00ad9a",
+        "negative_command": "env PYTHONPATH=runtime/scenario_pipeline PYTHONDONTWRITEBYTECODE=1 MPLCONFIGDIR=.runtime-work/mplconfig .venv-cpu/bin/python work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c158190-speed7-current-primary-compat --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_speed_7",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Independent original-camera pixel reviewer required",
+        "negative_log": "cases/through_speed_7/delivery-audit-current.log",
+        "negative_log_sha256": "6502ebf403bf856e4cd9f0d71074882f76acfe44da21c2e66cde14085a00ad9a"
+      },
+      "physical_preparation": {
+        "receipt": "cases/through_speed_7/physical/receipt.json",
+        "sha256": "ee92132192b608f1443129a627c44e24ec1d93ae48a23afc36f04a619b96d7a8"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/through-speed-compatibility-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_speed_7 --attempt .runtime-work/c158190-speed7-current-primary-compat --output .runtime-work/c158190-speed7-current-primary-saved --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "receipt": "cases/through_speed_7/saved.log",
+        "receipt_sha256": "f9b0f6225edd0a869e808087b6dfc12107031432b71ad1835851d81cd1884848",
+        "recorded_only": true,
+        "scope": "synthetic saved-only software processing",
+        "test_exit_code": 0,
+        "test_log": "cases/through_speed_7/saved.log",
+        "test_log_sha256": "f9b0f6225edd0a869e808087b6dfc12107031432b71ad1835851d81cd1884848"
+      }
+    },
+    {
+      "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_speed_11",
+      "kind": "delivery",
+      "construction": "cases/through_speed_11/construction.json",
+      "construction_sha256": "e22dfe465377309a828920bd809acca5818593f0d2b9d1c22defd6ba1643e7f6",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/cases/through_speed_11/diagnostic-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "through motion, sight and pixels need original Native verification"
+      },
+      "acquisition": {
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "st.lane": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "st.sight_distance": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "rel.visible": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "dev.yield_sign": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original Native frame and source packet",
+          "evidence": "capture/evidence.jsonl and trace.jsonl"
+        },
+        "ego_approach_speed": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original approach velocity samples",
+          "evidence": "approach_history.jsonl"
+        },
+        "through_highway_sight_clear": {
+          "entrypoint": "finalizer.py",
+          "method": "rebuild from original sight rays",
+          "evidence": "visibility_rays.jsonl"
+        },
+        "ego_distance_to_junction_m": {
+          "entrypoint": "finalizer.py",
+          "method": "join original approach distance to intersection with saved frame map",
+          "evidence": "approach_history.jsonl and video_frames.jsonl"
+        },
+        "ego_crossing_body": {
+          "entrypoint": "finalizer.py",
+          "method": "join original Native ego body vertices and lane state to saved frame map",
+          "evidence": "interaction_history.jsonl and video_frames.jsonl"
+        },
+        "through_vehicle_position": {
+          "entrypoint": "finalizer.py",
+          "method": "join original Native through actor body vertices and lane state; retain explicit absent actor state",
+          "evidence": "interaction_history.jsonl and video_frames.jsonl"
+        },
+        "through_vehicle_speed": {
+          "entrypoint": "finalizer.py",
+          "method": "derive finite difference through actor center motion from original Native body history with explicit absent state",
+          "evidence": "interaction_history.jsonl and video_frames.jsonl"
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/through_speed_11/fallbacks/fallback1-construction.json",
+          "construction_sha256": "1f26a0504bf8981967487abb16753e1d85c991752a010a0028cebadb0de996ca",
+          "trigger": {
+            "source": "interaction_history.jsonl",
+            "metric": "last original frame with ego body fully outside the junction",
+            "failure_condition": "ego body has not fully exited the junction by original frame 599"
+          },
+          "changed_knobs": [
+            "ego approach spawn from OpenDRIVE x=-60 m to x=-50 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/through-speed-compatibility-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_speed_11 --candidate fallback1 --output .runtime-work/c158190-speed11-current-fallback1-offline",
+            "exit_code": 0,
+            "log": "cases/through_speed_11/fallbacks/fallback1-offline.log",
+            "log_sha256": "7736f19dfc7e85e5ac46a62aeb4be6493c5816e18e8af27631a84f27336d4256",
+            "construction_sha256": "1f26a0504bf8981967487abb16753e1d85c991752a010a0028cebadb0de996ca"
+          },
+          "compatibility": {
+            "receipt": "cases/through_speed_11/fallbacks/fallback1-compatibility.json",
+            "sha256": "e475821c60bcbb60d248b69ab40f661917339f4746adea05655dfe57c7fb48eb",
+            "log": "cases/through_speed_11/fallbacks/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/through_speed_11/fallbacks/fallback1-negative-analysis.log",
+            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/through-speed-compatibility-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_speed_11 --candidate fallback1 --output .runtime-work/c158190-speed11-current-fallback1-compat --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/through_speed_11/fallbacks/fallback2-construction.json",
+          "construction_sha256": "e421114b02996136638dd51d444b1b4ae439d42ce182b66b821825b2e1f65ca9",
+          "trigger": {
+            "source": "reference_corner.mkv",
+            "metric": "source-camera frames with yield sign face and through-highway approach visible",
+            "failure_condition": "original reference-corner frames do not show the sign face and through-highway approach together"
+          },
+          "changed_knobs": [
+            "reference_corner camera origin (19,-25,15) to (23,-28,18) m and pitch -24 to -27 degrees"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/through-speed-compatibility-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_speed_11 --candidate fallback2 --output .runtime-work/c158190-speed11-current-fallback2-offline",
+            "exit_code": 0,
+            "log": "cases/through_speed_11/fallbacks/fallback2-offline.log",
+            "log_sha256": "7736f19dfc7e85e5ac46a62aeb4be6493c5816e18e8af27631a84f27336d4256",
+            "construction_sha256": "e421114b02996136638dd51d444b1b4ae439d42ce182b66b821825b2e1f65ca9"
+          },
+          "compatibility": {
+            "receipt": "cases/through_speed_11/fallbacks/fallback2-compatibility.json",
+            "sha256": "ea9796cd65694ebea7d2e5941407207c838010af37d09886dad0c73ade72efb4",
+            "log": "cases/through_speed_11/fallbacks/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/through_speed_11/fallbacks/fallback2-negative-analysis.log",
+            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/through-speed-compatibility-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_speed_11 --candidate fallback2 --output .runtime-work/c158190-speed11-current-fallback2-compat --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/through_speed_11/fallbacks/fallback3-construction.json",
+          "construction_sha256": "7b199254886b42da5de56723b19331cf22dbb091eb72fbcae0e65da89a5fb7f0",
+          "trigger": {
+            "source": "interaction_history.jsonl",
+            "metric": "measured same-actor through-body speed versus commanded scalar target",
+            "failure_condition": "measured through speed differs from its case target by more than 1 m/s before crossing"
+          },
+          "changed_knobs": [
+            "bounded longitudinal speed-control gain from 0.25 to 0.4 for through actor"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/through-speed-compatibility-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_speed_11 --candidate fallback3 --output .runtime-work/c158190-speed11-current-fallback3-offline",
+            "exit_code": 0,
+            "log": "cases/through_speed_11/fallbacks/fallback3-offline.log",
+            "log_sha256": "c0d8a34769bb10a63e85ddf432974fc6f691a4654c5cb1b5c5c6c447be8498d6",
+            "construction_sha256": "7b199254886b42da5de56723b19331cf22dbb091eb72fbcae0e65da89a5fb7f0"
+          },
+          "compatibility": {
+            "receipt": "cases/through_speed_11/fallbacks/fallback3-compatibility.json",
+            "sha256": "9654db6d58f59d3652fbe5743298fac51495dc26afc7864a099be35579db0890",
+            "log": "cases/through_speed_11/fallbacks/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/through_speed_11/fallbacks/fallback3-negative-analysis.log",
+            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/through-speed-compatibility-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_speed_11 --candidate fallback3 --output .runtime-work/c158190-speed11-current-fallback3-compat --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/through-speed-compatibility-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_speed_11 --output .runtime-work/c158190-speed11-current-primary-offline",
+        "exit_code": 0,
+        "log": "cases/through_speed_11/offline.log",
+        "log_sha256": "b03601cc519b515e7bcfe46c1cadcec286b78bbd1d52a6062aefa46e113cb565",
+        "construction_sha256": "e22dfe465377309a828920bd809acca5818593f0d2b9d1c22defd6ba1643e7f6"
+      },
+      "compatibility": {
+        "receipt": "cases/through_speed_11/compatibility.log",
+        "sha256": "ee85858b75bf3e722a68c54a9a9f144db2b3bc61b42504f1c96acb18a288ebb0",
+        "log": "cases/through_speed_11/fallbacks/fallback1-compatibility-analysis.log",
+        "negative_log": "cases/through_speed_11/primary-negative-analysis.log",
+        "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/through-speed-compatibility-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_speed_11 --output .runtime-work/c158190-speed11-current-primary-compat --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+      },
+      "negative": {
+        "log": "cases/through_speed_11/primary-negative-analysis.log"
+      },
+      "physical_preparation": {
+        "receipt": "cases/through_speed_11/physical/receipt.json",
+        "sha256": "8e7ead7cea188efcbaf2505ac83634bd02b74f258979215dcad79257946db734"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_speed_11",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "2070692d030e2f00e5033f42b592212af9358b2f5db0c68000e4649730d8a83d",
+        "command": "env PYTHONPATH=runtime/scenario_pipeline PYTHONDONTWRITEBYTECODE=1 MPLCONFIGDIR=.runtime-work/mplconfig .venv-cpu/bin/python work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c158190-speed11-current-primary-compat --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_speed_11 --diagnostic-fixture",
+        "test_exit_code": 0,
+        "test_log": "cases/through_speed_11/delivery-audit-current.log",
+        "test_log_sha256": "93ba45fd60e3ba528648e69f9939b271e60db3da6ad16a943c1136ae757fd8b5",
+        "negative_command": "env PYTHONPATH=runtime/scenario_pipeline PYTHONDONTWRITEBYTECODE=1 MPLCONFIGDIR=.runtime-work/mplconfig .venv-cpu/bin/python work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c158190-speed11-current-primary-compat --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_speed_11",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Independent original-camera pixel reviewer required",
+        "negative_log": "cases/through_speed_11/delivery-audit-current.log",
+        "negative_log_sha256": "93ba45fd60e3ba528648e69f9939b271e60db3da6ad16a943c1136ae757fd8b5"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/through-speed-compatibility-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_through_speed_11 --attempt .runtime-work/c158190-speed11-current-primary-compat --output .runtime-work/c158190-speed11-current-primary-saved --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "receipt": "cases/through_speed_11/saved.log",
+        "receipt_sha256": "02c1ac65c7bb8e36f044cc3e42abc21dd19dfeaa4a56ff2e445a35a522146bd7",
+        "recorded_only": true,
+        "scope": "synthetic saved-only software processing",
+        "test_exit_code": 0,
+        "test_log": "cases/through_speed_11/saved.log",
+        "test_log_sha256": "02c1ac65c7bb8e36f044cc3e42abc21dd19dfeaa4a56ff2e445a35a522146bd7"
+      }
     }
   ]
 }
