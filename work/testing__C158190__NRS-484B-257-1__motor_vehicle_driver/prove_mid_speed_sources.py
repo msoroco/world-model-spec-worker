@@ -96,7 +96,7 @@ def main():
 
 
 
-def build_speed6_fixture():
+def build_speed6_fixture(output):
     import copy
     import json
     import pathlib
@@ -106,7 +106,9 @@ def build_speed6_fixture():
     ROOT = pathlib.Path(__file__).resolve().parents[2]
     WORK = ROOT / 'work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver'
     SOURCE = WORK / 'cases/through_mid/diagnostic-sources'
-    TARGET = ROOT / '.runtime-work/c158190-speed6-fixture-v3'
+    TARGET = (ROOT / output).resolve()
+    if ROOT / '.runtime-work' not in TARGET.parents:
+        raise ValueError('Diagnostic output belongs under .runtime-work')
     CASE = 'testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_nearest_view_speed_6'
     sys.path.insert(0, str(ROOT / 'runtime/scenario_pipeline'))
     from worker_exchange.runtime_cli import materialize
@@ -199,8 +201,195 @@ def build_speed6_fixture():
     print(TARGET)
 
 
+def build_matched_approach_drafts(output):
+    """Offline prove 8 m/s approach variants of the selected 2/4 m/s cases.
+
+    These are draft constructions under ignored runtime work. They do not
+    replace either selected manifest entry or its existing receipt bindings.
+    """
+    import copy
+
+    target = (REPO / output).resolve()
+    if REPO / '.runtime-work' not in target.parents or target.exists():
+        raise ValueError('Choose a fresh directory under .runtime-work')
+    target.mkdir(parents=True)
+    evidence = []
+    for name, source in (('view_speed_2', HERE / 'construction.json'),
+                         ('view_speed_4', HERE / 'cases/through_mid/construction.json')):
+        proposal = copy.deepcopy(json.loads(source.read_text()))
+        controller = next(item for item in proposal['files']
+                          if item['path'] == 'yield_controller.py')
+        old = 'approach_speed_mps: float = 6.0'
+        if controller['content'].count(old) != 1:
+            raise ValueError('Selected controller approach default changed')
+        controller['content'] = controller['content'].replace(
+            old, 'approach_speed_mps: float = 8.0')
+        for item in proposal['files']:
+            if item['path'] == 'tests/test_yield_controller.py':
+                item['content'] = item['content'].replace(
+                    'through_vehicle_clear=False), 6)',
+                    'through_vehicle_clear=False), 8)')
+            elif item['path'] == 'tests/test_yield_motion.py':
+                item['content'] = item['content'].replace(
+                    "self.assertEqual(fast['ego_target_mps'], 6.)",
+                    "self.assertEqual(fast['ego_target_mps'], 8.)")
+            elif item['path'] == 'tests/test_mid_speed.py':
+                item['content'] = item['content'].replace(
+                    'through_vehicle_clear=False), 6.0)',
+                    'through_vehicle_clear=False), 8.0)')
+        proposal['mechanisms'].append(
+            'draft matched 8 m/s ego approach for 2/4/6 m/s view-speed comparison')
+        folder = target / name
+        folder.mkdir()
+        for item in proposal['files']:
+            path = folder / item['path']
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(item['content'])
+        (folder / 'construction.json').write_text(json.dumps(proposal, indent=2) + '\n')
+        log = folder / 'offline.log'
+        with log.open('w') as stream:
+            for args in ([sys.executable, str(folder / proposal['entrypoint']), '--check'],
+                         [sys.executable, '-m', 'unittest', 'discover', '-s', 'tests']):
+                result = subprocess.run(args, cwd=folder, env=execution_env(),
+                                        stdout=stream, stderr=subprocess.STDOUT,
+                                        timeout=300)
+                if result.returncode:
+                    raise ValueError(f'{name} draft offline check failed: {result.returncode}; {log}')
+        evidence.append({'case_id': proposal['case_id'], 'draft_construction': str(folder / 'construction.json'),
+                         'draft_construction_sha256': sha(folder / 'construction.json'),
+                         'offline_log': str(log), 'offline_log_sha256': sha(log),
+                         'offline_exit_code': 0})
+    (target / 'receipt.json').write_text(json.dumps({
+        'format': 'c158190-matched-approach-offline-draft',
+        'approach_speed_mps': 8.0, 'view_speeds_mps': [2.0, 4.0, 6.0],
+        'selected_manifest_changed': False, 'cases': evidence,
+    }, indent=2) + '\n')
+    print(target / 'receipt.json')
+
+
+def prove_matched_approach_sources(output):
+    """Run saved finalizers against synthetic, internally joined 8 m/s sources."""
+    import copy
+    import shutil
+
+    target = (REPO / output).resolve()
+    if REPO / '.runtime-work' not in target.parents or target.exists():
+        raise ValueError('Choose a fresh directory under .runtime-work')
+    source = REPO / '.runtime-work/c158190-speed6-fixture-v4'
+    drafts = REPO / '.runtime-work/c158190-matched-approach-drafts-20261120-v3'
+    if not source.is_dir() or not (drafts / 'receipt.json').is_file():
+        raise ValueError('Current speed-6 source and matched construction drafts required')
+    target.mkdir(parents=True)
+    media = target / 'shared-media'
+    materialize_recipe(REPO, HERE / 'cases/view_speed_6/diagnostic-recipe.json', media)
+
+    def rows(path):
+        return [json.loads(line) for line in path.read_text().splitlines()]
+
+    def put_rows(path, values):
+        path.write_text(''.join(json.dumps(value, separators=(',', ':'), allow_nan=False) + '\n'
+                                for value in values))
+
+    def body(x):
+        return [[x + dx, y, z] for dx in (-1.5, 1.5)
+                for y in (1.1, 2.5) for z in (0, 1.5)]
+
+    receipt = {'format': 'c158190-matched-approach-source-finalizer-draft',
+               'synthetic_fixture': True, 'approach_speed_mps': 8.0, 'cases': []}
+    for name, view in (('view_speed_2', 2.0), ('view_speed_4', 4.0)):
+        folder = target / name
+        shutil.copytree(source, folder)
+        for camera in ('overview', 'approach', 'reference_corner', 'driver_reference'):
+            shutil.copyfile(media / (camera + '.mkv'), folder / (camera + '.mkv'))
+        proposal = json.loads((drafts / name / 'construction.json').read_text())
+        for item in proposal['files']:
+            path = folder / item['path']
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(item['content'])
+        (folder / 'construction.json').write_text(json.dumps(proposal, indent=2) + '\n')
+        (folder / 'candidate-selection.json').unlink()
+        case = proposal['case_id']
+        approach = rows(folder / 'approach_history.jsonl')
+        approach[0]['ego_speed_mps'] = 8.0
+        approach[1]['ego_speed_mps'] = view
+        put_rows(folder / 'approach_history.jsonl', approach)
+        trace = rows(folder / 'trace.jsonl')
+        interaction = rows(folder / 'interaction_history.jsonl')
+        evidence = rows(folder / 'capture/evidence.jsonl')
+        if not (len(trace) == len(interaction) == len(evidence) == 600):
+            raise ValueError('Expected 600 joined source frames')
+        for i, (t, inter, e) in enumerate(zip(trace, interaction, evidence)):
+            x = round(min(62.6, -20.0 + (0 if i == 0 else .35 + view / 20 * (i - 1))), 4)
+            speed = 8.0 if i == 0 else (view if x < 62.6 else 0.0)
+            vertices = body(x)
+            road, s = ((158190, x + 80) if x < -8 else
+                       (158192, x + 8) if x < 8 else (158193, x - 8))
+            t['position_m'][0] = x
+            t['position']['x'] = x
+            t['speed_mps'] = speed
+            t['speed_mph'] = speed * 2.2369362920544025
+            t['velocity_mps'][0] = speed
+            inter['ego']['body_vertices_m'] = copy.deepcopy(vertices)
+            inter['ego']['road_id'] = road
+            e['ego']['position_m'][0] = x
+            e['ego']['speed_mps'] = speed
+            e['ego']['body_vertices_m'] = copy.deepcopy(vertices)
+            e['world']['road_projection'].update(road_id=road, s_m=round(s, 4))
+            e['visibility']['ego_body_samples_m'] = copy.deepcopy(vertices) + [[x, 1.8, 0]]
+            e['visibility']['ego_projection']['road_id'] = road
+            actor = next(p for p in e['original_observations']['participants']
+                         if p['actor_id'] == 101)
+            actor['position_m'][0] = x
+            actor['speed_mps'] = speed
+            actor['velocity_mps'][0] = speed
+            actor['body_vertices_m'] = copy.deepcopy(vertices)
+            actor['accel_longitudinal_mps2'] = (view - 8.0) / .05 if i == 1 else 0.0
+        put_rows(folder / 'trace.jsonl', trace)
+        put_rows(folder / 'interaction_history.jsonl', interaction)
+        put_rows(folder / 'capture/evidence.jsonl', evidence)
+        capture = json.loads((folder / 'capture/manifest.json').read_text())
+        capture['case_id'] = case
+        capture['sources']['trace.jsonl'] = sha(folder / 'trace.jsonl')
+        (folder / 'capture/manifest.json').write_text(json.dumps(capture, indent=2) + '\n')
+        original = {p: sha(folder / p) for p in
+                    ('trace.jsonl', 'approach_history.jsonl', 'interaction_history.jsonl',
+                     'capture/evidence.jsonl', 'capture/manifest.json')}
+        result = run_finalizer(folder)
+        log = folder / 'source-finalizer.log'
+        log.write_text(result.stdout)
+        if result.returncode:
+            raise ValueError(f'{name} saved finalizer failed: {result.returncode}; {log}')
+        if any(sha(folder / p) != expected for p, expected in original.items()):
+            raise ValueError(f'{name} saved finalizer rewrote original source')
+        report = json.loads((folder / 'analysis-report.json').read_text())
+        measured = report['measurements']['speed_at_closest_view_mps']['value']
+        if report['case_id'] != case or measured != view:
+            raise ValueError(f'{name} saved speed measurement differs from plan')
+        negative = target / (name + '-missing-rays')
+        shutil.copytree(folder, negative)
+        (negative / 'visibility_rays.jsonl').unlink()
+        failure = run_finalizer(negative)
+        negative_log = negative / 'source-finalizer-negative.log'
+        negative_log.write_text(failure.stdout)
+        if failure.returncode == 0 or 'Missing required source: visibility_rays.jsonl' not in failure.stdout:
+            raise ValueError(f'{name} missing-ray source was not rejected')
+        receipt['cases'].append({'case_id': case, 'view_speed_mps': view,
+                                 'analysis_sha256': sha(folder / 'analysis-report.json'),
+                                 'log_sha256': sha(log), 'source_sha256': original,
+                                 'finalizer_exit_code': 0,
+                                 'negative_removed_source': 'visibility_rays.jsonl',
+                                 'negative_exit_code': failure.returncode,
+                                 'negative_log_sha256': sha(negative_log)})
+    (target / 'receipt.json').write_text(json.dumps(receipt, indent=2) + '\n')
+    print(target / 'receipt.json')
+
+
 if __name__ == '__main__':
-    if len(sys.argv) == 2 and sys.argv[1] == '--build-speed6-fixture':
-        build_speed6_fixture()
+    if len(sys.argv) == 3 and sys.argv[1] == '--build-speed6-fixture':
+        build_speed6_fixture(sys.argv[2])
+    elif len(sys.argv) == 3 and sys.argv[1] == '--build-matched-approach-drafts':
+        build_matched_approach_drafts(sys.argv[2])
+    elif len(sys.argv) == 3 and sys.argv[1] == '--prove-matched-approach-sources':
+        prove_matched_approach_sources(sys.argv[2])
     else:
         main()
