@@ -3,9 +3,11 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from types import SimpleNamespace
+from unittest.mock import patch
 
-from fire_lane_survey import build
-from source_measurement import analyze
+from fire_lane_survey import CAMERAS, build
+from source_measurement import analyze, camera_sources
 
 HERE = Path(__file__).resolve().parent
 
@@ -51,6 +53,28 @@ def make_attempt(directory, case, *, corrupt=None):
 
 
 class SourceMeasurementTests(unittest.TestCase):
+    def test_original_video_sources_require_four_decoded_streams(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp)
+            for name in CAMERAS:
+                (path/(name+'.mkv')).write_bytes(b'retained diagnostic bytes')
+            stream = {'codec_name': 'ffv1', 'r_frame_rate': '20/1',
+                      'nb_read_frames': '600', 'width': 640, 'height': 360}
+            with patch('source_measurement.subprocess.run',
+                       return_value=SimpleNamespace(
+                           returncode=0,
+                           stdout=json.dumps({'streams': [stream]}))) as probe:
+                sources = camera_sources(path, 600)
+            self.assertEqual(set(sources), set(CAMERAS))
+            self.assertEqual(probe.call_count, 4)
+            stream['nb_read_frames'] = '599'
+            with patch('source_measurement.subprocess.run',
+                       return_value=SimpleNamespace(
+                           returncode=0,
+                           stdout=json.dumps({'streams': [stream]}))):
+                with self.assertRaisesRegex(ValueError, 'frame count differs'):
+                    camera_sources(path, 600)
+
     def test_inside_and_outside_from_retained_body(self):
         for case, inside in [('reference', True), ('contrast', False)]:
             with self.subTest(case=case), tempfile.TemporaryDirectory() as tmp:

@@ -5,12 +5,13 @@ proves City Fire Code designation, posting text, or actual pixel visibility.
 """
 import hashlib
 import json
+import subprocess
 from math import hypot, isfinite
 from pathlib import Path
 
 from shapely.geometry import MultiPoint, Polygon
 
-from fire_lane_survey import require
+from fire_lane_survey import CAMERAS, require
 
 
 KINDS = {'original_carla_actor_and_map_readback', 'synthetic_native_sample'}
@@ -28,6 +29,35 @@ def read_lines(path):
 def vector(value, length):
     return isinstance(value, list) and len(value) == length and all(
         type(x) in (int, float) and isfinite(x) for x in value)
+
+
+def camera_sources(attempt, expected_frames):
+    """Inspect retained original video files, counting decoded frames."""
+    sources = {}
+    for name in CAMERAS:
+        path = attempt/(name+'.mkv')
+        require(path.is_file() and path.stat().st_size > 0,
+                'Missing original source camera: '+name)
+        probe = subprocess.run([
+            'ffprobe', '-v', 'error', '-count_frames', '-select_streams',
+            'v:0', '-show_entries',
+            'stream=codec_name,nb_read_frames,width,height,r_frame_rate',
+            '-of', 'json', str(path)], capture_output=True, text=True)
+        require(probe.returncode == 0,
+                'Original source camera probe failed: '+name)
+        streams = json.loads(probe.stdout).get('streams', [])
+        require(len(streams) == 1 and
+                streams[0].get('codec_name') == 'ffv1' and
+                streams[0].get('r_frame_rate') == '20/1' and
+                str(streams[0].get('nb_read_frames')) == str(expected_frames) and
+                type(streams[0].get('width')) is int and streams[0]['width'] > 0 and
+                type(streams[0].get('height')) is int and streams[0]['height'] > 0,
+                'Original source camera format or frame count differs: '+name)
+        sources[name] = {'path': path.name, 'sha256': sha(path),
+                         'decoded_frames': expected_frames,
+                         'width': streams[0]['width'],
+                         'height': streams[0]['height']}
+    return sources
 
 
 def analyze(attempt, case, *, diagnostic=False):
@@ -63,6 +93,9 @@ def analyze(attempt, case, *, diagnostic=False):
     if not diagnostic:
         require(len(actors) >= plan['capture_frames'] >= 600,
                 'Original capture shorter than thirty seconds')
+        videos = camera_sources(attempt, len(frames))
+    else:
+        videos = {}
     observed_actor = None
     observed_follower = None
     samples = []
@@ -119,6 +152,7 @@ def analyze(attempt, case, *, diagnostic=False):
             'frames': len(samples), 'actor_source_sha256': sha(actor_path),
             'frame_map_sha256': sha(frame_path),
             'survey_readback_sha256': sha(plan_path),
+            'source_camera_videos': videos,
             'samples': samples,
             'near_zero_motion_sample_tolerance_mps': 0.05,
             'near_zero_with_zone_overlap_frames': sum(

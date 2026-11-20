@@ -7,8 +7,7 @@ import copy
 import json
 import queue
 import subprocess
-import sys
-from math import hypot
+from math import hypot, isfinite
 from pathlib import Path
 
 from fire_lane_survey import CAMERAS, require
@@ -116,18 +115,35 @@ def sample_native(world, carla, ego, follower, sign, plan):
                                      location.y-other_location.y)}
 
 
-def _frame_map(path):
-    repo = Path(__file__).resolve().parents[2]
-    runtime = str(repo/'runtime/pipeline')
-    if runtime not in sys.path:
-        sys.path.insert(0, runtime)
-    from scenario_pipeline.worker_exchange.native_output import FrameMap
-    return FrameMap(path)
+class OriginalFrameMap:
+    """Retain camera/world identities in acquisition order inside the bundle."""
+
+    def __init__(self, path):
+        self.stream = Path(path).open('x', encoding='utf-8', buffering=1)
+        self.index = 0
+        self.previous = None
+
+    def append(self, frame, time_s):
+        require(type(frame) is int and frame >= 0 and
+                type(time_s) in (int, float) and isfinite(time_s),
+                'Invalid original frame identity')
+        if self.previous is not None:
+            require(frame > self.previous[0] and time_s > self.previous[1],
+                    'Original frames and times must increase')
+        row = {'video_frame': self.index, 'carla_frame': frame,
+               'native_frame': frame, 'time_s': time_s}
+        self.stream.write(json.dumps(row, allow_nan=False)+'\n')
+        self.previous = (frame, time_s)
+        self.index += 1
+        return row
+
+    def close(self):
+        self.stream.close()
 
 
 def acquire(world, carla, ego, follower, sign, plan, case, attempt,
             *, sink_factory=FFV1Sink, camera_installer=install_cameras,
-            timeout_s=10, frame_map_factory=_frame_map):
+            timeout_s=10, frame_map_factory=OriginalFrameMap):
     require(case in ('reference', 'contrast'), 'Unknown fire-lane case')
     require(plan['capture_hz'] == 20 and plan['capture_frames'] >= 600 and
             plan['camera_names'] == list(CAMERAS),
