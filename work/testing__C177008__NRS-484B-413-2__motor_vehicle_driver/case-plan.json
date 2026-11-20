@@ -86,44 +86,60 @@
   ],
   "comparisons": [
     {
+      "comparison_id": "business_threshold_below_at",
       "case_ids": [
         "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_right_below_100ft",
-        "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_right_at_100ft",
-        "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_right_above_100ft"
+        "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_right_at_100ft"
       ],
       "deliberate_differences": [
-        "continuous observed right-signal distance before course change"
+        "continuous observed right-signal distance: below versus at 30.48 m boundary"
       ],
       "fixed_conditions": [
-        "business district and Native right-turn route",
-        "same ego and other-vehicle geometry",
-        "same speed and weather"
+        "same authored OpenDRIVE map and source route context",
+        "same 33-frame ego body motion, speed and dry weather"
       ]
     },
     {
+      "comparison_id": "business_signal_interruption",
       "case_ids": [
-        "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_right_at_100ft",
+        "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_right_above_100ft",
         "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_right_interrupted"
       ],
       "deliberate_differences": [
-        "interruption in right signal during last 100 feet"
+        "right indicator off interval inside the 30.48 m approach"
       ],
       "fixed_conditions": [
-        "same route, district and onset position",
-        "same other vehicle and speed"
+        "same authored OpenDRIVE map and source route context",
+        "same 33-frame ego body motion, speed, signal start and dry weather"
       ]
     },
     {
+      "comparison_id": "business_wet_weather",
       "case_ids": [
         "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_right_at_100ft",
         "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_right_wet"
       ],
       "deliberate_differences": [
-        "rain versus dry weather"
+        "requested rain and wet road versus dry setup"
       ],
       "fixed_conditions": [
-        "same Native route and signal distance",
-        "same vehicle speed and course change"
+        "same authored OpenDRIVE map and source route context",
+        "same 33-frame ego body motion, speed and indicator history"
+      ]
+    },
+    {
+      "comparison_id": "district_boundary_100_300",
+      "case_ids": [
+        "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_right_at_100ft",
+        "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__other_area_right_at_300ft"
+      ],
+      "deliberate_differences": [
+        "sourced district type and 30.48 m versus 91.44 m boundary",
+        "longer source approach and indicator schedule for 300-foot case"
+      ],
+      "fixed_conditions": [
+        "same authored OpenDRIVE map and right-turn connector",
+        "same actor and dry weather"
       ]
     }
   ],
@@ -300,6 +316,64 @@
         "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__other_area_right_at_300ft"
       ],
       "evidence_or_gap": "measured from original frame, ego heading and path bearing"
+    }
+  ],
+  "comparison_proofs": [
+    {
+      "comparison_id": "business_threshold_below_at",
+      "script": "comparison_audit.py",
+      "script_sha256": "cffb85ff5a7d278f97dd644ad1bf1702622308aa94532ad0ee96a14df44406b7",
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/comparison_audit.py --comparison-id business_threshold_below_at --left .runtime-work/c177008-below-saved-v1/v0001/evidence --right .runtime-work/c177008-at-recheck-saved-v1/v0001/evidence",
+      "exit_code": 0,
+      "receipt": "comparisons/business_threshold_below_at.json",
+      "receipt_sha256": "95f70d6304670e731f347125135d9b18c2be17eeca2c4a3db45f5cc4fba086ac",
+      "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/comparison_audit.py --comparison-id business_threshold_below_at --left .runtime-work/c177008-below-saved-v1/v0001/evidence --right .runtime-work/c177008-comparison-negative/business_threshold_below_at/evidence",
+      "negative_exit_code": 1,
+      "negative_expected_error": "Below/at distance contrast missing",
+      "negative_log": "comparisons/business_threshold_below_at-negative.log",
+      "negative_log_sha256": "5499d67c7b00f23df19789f898ce6e4a938815a5c125c292addd7c7011fc60d5"
+    },
+    {
+      "comparison_id": "business_signal_interruption",
+      "script": "comparison_audit.py",
+      "script_sha256": "cffb85ff5a7d278f97dd644ad1bf1702622308aa94532ad0ee96a14df44406b7",
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/comparison_audit.py --comparison-id business_signal_interruption --left .runtime-work/c177008-above-saved-v1/v0001/evidence --right .runtime-work/c177008-interrupted-saved-v1/v0001/evidence",
+      "exit_code": 0,
+      "receipt": "comparisons/business_signal_interruption.json",
+      "receipt_sha256": "46b89c4b24161dd24105b9740a4ab7b13d105b42c1feda7162c28a6a5e5b17e4",
+      "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/comparison_audit.py --comparison-id business_signal_interruption --left .runtime-work/c177008-above-saved-v1/v0001/evidence --right .runtime-work/c177008-comparison-negative/business_signal_interruption/evidence",
+      "negative_exit_code": 1,
+      "negative_expected_error": "Fixed ego body motion changed",
+      "negative_log": "comparisons/business_signal_interruption-negative.log",
+      "negative_log_sha256": "6da92f8fed059f8e611e992ddb5140fec3906456fa21be8e69e3d9b55a785935"
+    },
+    {
+      "comparison_id": "business_wet_weather",
+      "script": "comparison_audit.py",
+      "script_sha256": "cffb85ff5a7d278f97dd644ad1bf1702622308aa94532ad0ee96a14df44406b7",
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/comparison_audit.py --comparison-id business_wet_weather --left .runtime-work/c177008-at-recheck-saved-v1/v0001/evidence --right .runtime-work/c177008-wet-saved-v1/v0001/evidence",
+      "exit_code": 0,
+      "receipt": "comparisons/business_wet_weather.json",
+      "receipt_sha256": "6109bbe4e2a5894dcdd554fe61e12d13ba8d55e06a74850a233f8be3df2451d8",
+      "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/comparison_audit.py --comparison-id business_wet_weather --left .runtime-work/c177008-at-recheck-saved-v1/v0001/evidence --right .runtime-work/c177008-comparison-negative/business_wet_weather/evidence",
+      "negative_exit_code": 1,
+      "negative_expected_error": "Wet source lacks rain readback",
+      "negative_log": "comparisons/business_wet_weather-negative.log",
+      "negative_log_sha256": "765f6d741dda6366ecd20559be1f2ed4098f8fae534ee0479547674c77df9fe1"
+    },
+    {
+      "comparison_id": "district_boundary_100_300",
+      "script": "comparison_audit.py",
+      "script_sha256": "cffb85ff5a7d278f97dd644ad1bf1702622308aa94532ad0ee96a14df44406b7",
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/comparison_audit.py --comparison-id district_boundary_100_300 --left .runtime-work/c177008-at-recheck-saved-v1/v0001/evidence --right .runtime-work/c177008-other-saved-v1/v0001/evidence",
+      "exit_code": 0,
+      "receipt": "comparisons/district_boundary_100_300.json",
+      "receipt_sha256": "736912bba0a0631af4dd4e125e720b0ab64185eac512151f1ca19f448c750881",
+      "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/comparison_audit.py --comparison-id district_boundary_100_300 --left .runtime-work/c177008-at-recheck-saved-v1/v0001/evidence --right .runtime-work/c177008-comparison-negative/district_boundary_100_300/evidence",
+      "negative_exit_code": 1,
+      "negative_expected_error": "District contrast missing",
+      "negative_log": "comparisons/district_boundary_100_300-negative.log",
+      "negative_log_sha256": "5c437d60bbce3cd822550d522e7c6e6f3411d417237b84129300be409050130f"
     }
   ]
 }
