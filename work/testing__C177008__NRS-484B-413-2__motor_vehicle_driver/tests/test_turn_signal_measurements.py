@@ -1,5 +1,6 @@
 import importlib.util
 import json
+import math
 import tempfile
 import unittest
 from pathlib import Path
@@ -18,10 +19,12 @@ class TurnSignalTests(unittest.TestCase):
                    "district_source": "source-reviewed-map-context",
                    "district_type": district, "turn_onset_frame": 104}
         (root / "route_context.json").write_text(json.dumps(context))
-        x = [-1, 0, distance / 2, distance * .75, distance]
+        x = [-1, 0, distance / 2, distance - 1, distance - 1 + math.cos(math.pi / 6)]
+        y = [0, 0, 0, 0, -math.sin(math.pi / 6)]
         indicators = [False, True, not interrupted, True, True]
         rows = [{"frame": 100+i, "time_s": 1+i*.05,
-                 "ego_position_xy_m": [point, 0], "ego_speed_mps": 5,
+                 "ego_position_xy_m": [point, y[i]], "ego_speed_mps": 5,
+                 "ego_heading_deg": -30 if i == 4 else 0,
                  "right_indicator": indicators[i]}
                 for i, point in enumerate(x)]
         frames = [{"video_frame": i, "carla_frame": row["frame"], "time_s": row["time_s"]}
@@ -36,6 +39,7 @@ class TurnSignalTests(unittest.TestCase):
                 self.fixture(root, distance)
                 result = measure.analyze(root)
                 self.assertAlmostEqual(result["turn_onset"]["continuous_right_signal_distance_m"], distance)
+                self.assertEqual(result["turn_onset"]["heading_delta_deg"], -30)
                 self.assertEqual(result["observed_continuous_distance_meets_boundary"], expected)
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
@@ -53,6 +57,30 @@ class TurnSignalTests(unittest.TestCase):
             frames[3]["carla_frame"] = 999
             (root / "video_frames.jsonl").write_text("".join(json.dumps(row)+"\n" for row in frames))
             with self.assertRaisesRegex(ValueError, "frame join"):
+                measure.analyze(root)
+
+    def test_turn_onset_must_match_source_heading_and_turn_right(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            self.fixture(root, 30.48)
+            path = root / "drive_history.jsonl"
+            rows = [json.loads(line) for line in path.read_text().splitlines()]
+            rows[4]["ego_heading_deg"] = 0
+            path.write_text("".join(json.dumps(row)+"\n" for row in rows))
+            with self.assertRaisesRegex(ValueError, "heading disagrees"):
+                measure.analyze(root)
+            rows[4]["ego_heading_deg"] = 30
+            rows[4]["ego_position_xy_m"][1] = 0.5
+            path.write_text("".join(json.dumps(row)+"\n" for row in rows))
+            with self.assertRaisesRegex(ValueError, "not a right turn"):
+                measure.analyze(root)
+            rows[4]["ego_heading_deg"] = -30
+            rows[4]["ego_position_xy_m"][1] = -0.5
+            path.write_text("".join(json.dumps(row)+"\n" for row in rows))
+            context = json.loads((root / "route_context.json").read_text())
+            context["turn_onset_frame"] = 103
+            (root / "route_context.json").write_text(json.dumps(context))
+            with self.assertRaisesRegex(ValueError, "Authored turn onset"):
                 measure.analyze(root)
 
 

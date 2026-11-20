@@ -25,6 +25,10 @@ def _rows(path):
     return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
 
 
+def _angle_delta(degrees, reference):
+    return (degrees - reference + 180.0) % 360.0 - 180.0
+
+
 def analyze(root: Path) -> dict:
     root = Path(root)
     hashes = {}
@@ -54,6 +58,8 @@ def analyze(root: Path) -> dict:
     speeds = []
     seen_off_before_on = False
     prior_indicator = None
+    initial_heading = None
+    measured_onset_frame = None
     for i, (row, frame) in enumerate(zip(rows, frames)):
         fid, time = row.get("frame"), _number(row.get("time_s"))
         if type(fid) is not int or fid <= prior[0] or time <= prior[1]:
@@ -67,7 +73,22 @@ def analyze(root: Path) -> dict:
         xy = (_number(xy[0]), _number(xy[1]))
         if previous_xy is not None:
             path += math.dist(xy, previous_xy)
+        heading = _number(row.get("ego_heading_deg"))
+        if previous_xy is not None and math.dist(xy, previous_xy) > 0.01:
+            measured_bearing = math.degrees(math.atan2(xy[1] - previous_xy[1],
+                                                        xy[0] - previous_xy[0]))
+            if abs(_angle_delta(heading, measured_bearing)) > 5.0:
+                raise ValueError("Source heading disagrees with measured path bearing")
         previous_xy = xy
+        if initial_heading is None:
+            initial_heading = heading
+        heading_delta = _angle_delta(heading, initial_heading)
+        if measured_onset_frame is None and abs(heading_delta) >= 10.0:
+            measured_onset_frame = fid
+            if heading_delta >= 0:
+                raise ValueError("Measured course change is not a right turn")
+        elif measured_onset_frame is None and abs(heading_delta) > 3.0:
+            raise ValueError("Unstable pre-turn course heading")
         indicator = row.get("right_indicator")
         if type(indicator) is not bool:
             raise ValueError("Missing measured right indicator")
@@ -79,11 +100,14 @@ def analyze(root: Path) -> dict:
         prior_indicator = indicator
         speeds.append(_number(row.get("ego_speed_mps")))
         if fid == context["turn_onset_frame"]:
+            if measured_onset_frame != fid:
+                raise ValueError("Authored turn onset disagrees with measured heading change")
             if not seen_off_before_on or signal_start_path is None or not indicator:
                 raise ValueError("No fully observed continuous pre-turn right signal")
             onset = {"frame": fid, "time_s": time, "path_length_m": path,
                      "continuous_right_signal_distance_m": path - signal_start_path,
-                     "ego_position_xy_m": list(xy)}
+                     "ego_position_xy_m": list(xy), "heading_delta_deg": heading_delta,
+                     "onset_method": "first_source_heading_change_at_least_10deg"}
             break
     if onset is None:
         raise ValueError("Turn onset absent from original trace")
