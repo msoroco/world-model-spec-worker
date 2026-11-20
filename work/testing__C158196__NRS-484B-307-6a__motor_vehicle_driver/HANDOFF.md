@@ -173,3 +173,9 @@ Traceback (most recent call last):
     raise ValueError("Missing required source: " + name)
 ValueError: Missing required source: signal_vehicle_history.jsonl
 ```
+
+## 2026-11-19 independent audit negative coverage
+
+`prove_delivery_audit.py` reran all four selected-case synthetic source audits and now also rejects (1) a changed governed lane in retained signal history, (2) a changed original video-frame join, (3) passing synthetic provenance to the Native audit path, and (4) passing Native-labeled provenance to the diagnostic path. The current proof `delivery-audit-cpu-proof.json` SHA-256 is `3849ff0801a13a227cefa3e4e2b0be6053f17da8fbda26ff82b7d7f2ff159203`; runner SHA-256 `eb66332c6feddc3f0ba5daf59e166210401a27d21b7537655c1090e4495d3fb8`. These negatives exercise the software source and provenance gates only. They do not assert Native capture, pixels or physical acceptance. All 22 `result.tests` hashes match current returned files; the scoped complete static gate passes. C158196 remains partial pending the unfinished independent Native branch software review and cross-batch coverage, queue and integration work.
+
+Pinned CPU preflight exits 0 with the current dependencies and Lean/Lake. The full strict gate was rerun after the proof update and exited 1 at frozen `runtime/scenario_pipeline/worker_exchange/preparation.py:97`, rejecting `runtime/runs/scenario_pipeline/inputs/shared/manifest.json` as an unapproved output. No frozen file was edited. The returned `work/` tree is at its 8,600-file cap; archive or consolidate verified redundant historical evidence before adding returned artifacts. No Git command was run.

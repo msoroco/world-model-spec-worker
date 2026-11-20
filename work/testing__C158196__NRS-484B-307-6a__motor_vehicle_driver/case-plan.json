@@ -79,12 +79,26 @@
     }
   ],
   "observations": [
-    "Native governing signal actor and visible vehicular head",
-    "original-frame Green/Yellow/Red state sequence and red onset",
-    "sourced intersection polygon and complete body vertices",
-    "first body entry relative to red onset at frame resolution",
-    "approach speed and distance, physically achievable stopping context",
-    "stop-line crossing and before-intersection stop"
+    {
+      "name": "signal_state",
+      "mandatory": true,
+      "description": "Original-frame governing signal identity and Green/Yellow/Red sequence; head-facing pixels require Native review."
+    },
+    {
+      "name": "ego_body_vertices_xy_m",
+      "mandatory": true,
+      "description": "Complete ego body vertices in sourced intersection coordinates for entry and no-entry cases."
+    },
+    {
+      "name": "ego_body_in_intersection",
+      "mandatory": true,
+      "description": "Original-frame complete-body polygon overlap and first entry relative to first Red."
+    },
+    {
+      "name": "ego_approach_speed",
+      "mandatory": true,
+      "description": "Original-frame speed at Yellow onset and stop-case approach progress; physical stopping feasibility remains unverified."
+    }
   ],
   "sources": [
     {
@@ -340,30 +354,6 @@
         "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__stops_on_yellow"
       ],
       "evidence_or_gap": "The full 900-frame body polygon source can establish no geometric entry in the diagnostic contrast; Native realization remains unproved."
-    },
-    {
-      "requirement": "Physical vehicular and pedestrian head facing and visibility are independently reviewed",
-      "source": "NRS 484B.307(6)(a); inputs/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/assignment.json; inputs/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/witnesses.json",
-      "status": "alternative_pending",
-      "case_ids": [
-        "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__entry_before_red",
-        "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__entry_at_red",
-        "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__entry_after_red",
-        "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__stops_on_yellow"
-      ],
-      "evidence_or_gap": "Four original camera streams and signal selector are authored; no Native pixels or physical head review exists."
-    },
-    {
-      "requirement": "The meaning of immediately thereafter and the statutory entry reference point are resolved by a legal authority",
-      "source": "NRS 484B.307(6)(a); inputs/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/assignment.json; inputs/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/witnesses.json",
-      "status": "exception_pending",
-      "case_ids": [
-        "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__entry_before_red",
-        "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__entry_at_red",
-        "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__entry_after_red",
-        "testing__C158196__NRS-484B-307-6a__motor_vehicle_driver__stops_on_yellow"
-      ],
-      "evidence_or_gap": "The worker records measured original timing and body overlap only; legal interpretation remains outside CPU preparation."
     }
   ],
   "primary_four_camera_validation_proof": {
@@ -892,5 +882,49 @@
     "source": "yellow-stop-diagnostic-sources.json",
     "source_sha256": "93acf8d06d30592cf5964c8356f939a258d330bb8e5f80464eb86b138dc5b6dc",
     "scope": "100 original synthetic source frames show zero speed and unchanged body; Native stop and feasibility unverified"
+  },
+  "deferred_review_requirements": [
+    {
+      "review": "Native governing vehicular and pedestrian head facing and four-camera visibility",
+      "source": "NRS 484B.307(6)(a); inputs/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/assignment.json; inputs/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/witnesses.json",
+      "current_evidence": "Authored four-camera capture and governed signal/lane selector; synthetic diagnostics only",
+      "completion_owner": "local GPU operator"
+    },
+    {
+      "review": "Legal interpretation of immediately thereafter and statutory entry reference",
+      "source": "NRS 484B.307(6)(a); inputs/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/assignment.json; inputs/testing__C158196__NRS-484B-307-6a__motor_vehicle_driver/witnesses.json",
+      "current_evidence": "Original-frame Yellow-to-Red and complete-body entry measurements are retained without a legal cutoff",
+      "completion_owner": "legal review after Native capture"
+    }
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "ego full body, intersection polygon, governing signal head and approach context",
+        "interval": "startup through final 45 second observation"
+      },
+      {
+        "view": "approach",
+        "subject": "ego approach, stop reference, Yellow-to-Red head state and first body entry",
+        "interval": "startup through intersection entry or final stop"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "governing head facing, intersection boundary and complete ego body occupancy",
+        "interval": "before Yellow onset through final clearance or stop"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "forward ego-relative view of governing head and intersection approach",
+        "interval": "entire 45 second capture"
+      }
+    ],
+    "limitations": [
+      "Camera mounts are authored; synthetic four-color diagnostics establish stream shape only. Actual Native head facing, visibility and vehicle pixels require independent review."
+    ]
   }
 }
