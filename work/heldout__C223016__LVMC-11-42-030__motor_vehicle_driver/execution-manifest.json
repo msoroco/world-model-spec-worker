@@ -1298,6 +1298,168 @@
         "log": "marking-west-primary-saved.json",
         "log_sha256": "b5de2108acdebf2be1926ebb0b9422f33ceb1e35ed6de4cf363e84883b83400b"
       }
+    },
+    {
+      "kind": "delivery",
+      "measurement_procedure": {
+        "entrypoint": "direction_finalizer.py"
+      },
+      "acquisition": {
+        "source_frame_and_civil_time": {
+          "entrypoint": "direction_finalizer.py",
+          "method": "derive only from retained direction_state, original trace and frame map",
+          "evidence": "direction_state.jsonl; trace.jsonl; video_frames.jsonl"
+        },
+        "lane_and_subject_direction": {
+          "entrypoint": "direction_finalizer.py",
+          "method": "derive only from retained direction_state, original trace and frame map",
+          "evidence": "direction_state.jsonl; trace.jsonl; video_frames.jsonl"
+        },
+        "direction_device_source": {
+          "entrypoint": "direction_finalizer.py",
+          "method": "derive only from retained direction_state, original trace and frame map",
+          "evidence": "direction_state.jsonl; trace.jsonl; video_frames.jsonl"
+        },
+        "four_camera_source": {
+          "entrypoint": "direction_finalizer.py",
+          "method": "derive only from retained direction_state, original trace and frame map",
+          "evidence": "direction_state.jsonl; trace.jsonl; video_frames.jsonl"
+        },
+        "observed_direction": {
+          "entrypoint": "direction_finalizer.py",
+          "method": "derive only from retained direction_state, original trace and frame map",
+          "evidence": "direction_state.jsonl; trace.jsonl; video_frames.jsonl"
+        }
+      },
+      "case_id": "heldout__C223016__LVMC-11-42-030__motor_vehicle_driver__signal_east_with",
+      "construction": "signal-east-construction.json",
+      "construction_sha256": "003116b03fe33f12ed4cd36592b9163d3d84aaba06c407b8e0acbbf93fdbb044",
+      "measurement_contract": "signal-east-measurement-contract.json",
+      "fixture_recipe": "work/heldout__C223016__LVMC-11-42-030__motor_vehicle_driver/diagnostic-signal-east-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The assigned map may have no Native overhead lane-control actor, or its state/pose may not govern the chosen lane; physical realization requires a source review."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "signal-east-fallback1-construction.json",
+          "construction_sha256": "f8e3841029d94a5b5813b995665ac6f3503224226d379f8655ced078ed49cc1d",
+          "trigger": {
+            "source": "Native same-lane spawn survey",
+            "metric": "available contraflow spawn points and occupancy",
+            "failure_condition": "primary contraflow spawn fails or is occupied"
+          },
+          "changed_knobs": [
+            "spawn_candidate_index"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C223016__LVMC-11-42-030__motor_vehicle_driver/execution-manifest.json --case heldout__C223016__LVMC-11-42-030__motor_vehicle_driver__signal_east_with --output .runtime-work/c223016-signal-east-proof/offline-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback1",
+            "exit_code": 0,
+            "log": "evening-west-primary-offline.log",
+            "log_sha256": "fe008aab760eb03ccac7578e2b84665b1b50b0d7f855b17a0c7a8d039435b658",
+            "construction_sha256": "f8e3841029d94a5b5813b995665ac6f3503224226d379f8655ced078ed49cc1d"
+          },
+          "compatibility": {
+            "receipt": "signal-east-fallback1-compatibility.json",
+            "log": "evening-west-analysis.log",
+            "negative_log": "signal-east-fallback1-negative.log",
+            "sha256": "1299a0ff7c5c2b58332a4d0884d93b2766d872d9f232a409342ac946ff609d2e"
+          },
+          "saved_processing_proof": {
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C223016__LVMC-11-42-030__motor_vehicle_driver/execution-manifest.json --case heldout__C223016__LVMC-11-42-030__motor_vehicle_driver__signal_east_with --attempt .runtime-work/c223016-signal-east-proof/saved-attempt-fallback1 --output .runtime-work/c223016-signal-east-proof/saved-fallback1 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+            "exit_code": 0,
+            "log": "signal-east-fallback1-saved.json",
+            "log_sha256": "75fadae7cc03c1d27ec2aeaab24cbbe8ac58123af07defec1ea8f04d0cce4fe1"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "signal-east-fallback2-construction.json",
+          "construction_sha256": "1094f7c3ae2b1bbaf68fd7f48dcb0e5e224bb90843160d924cb32591eca0e4b6",
+          "trigger": {
+            "source": "Native source cameras and barrier survey",
+            "metric": "barrier visibility and longitudinal distance",
+            "failure_condition": "primary barrier is hidden or lies outside governed lane"
+          },
+          "changed_knobs": [
+            "device_forward_m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C223016__LVMC-11-42-030__motor_vehicle_driver/execution-manifest.json --case heldout__C223016__LVMC-11-42-030__motor_vehicle_driver__signal_east_with --output .runtime-work/c223016-signal-east-proof/offline-fallback2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback2",
+            "exit_code": 0,
+            "log": "evening-west-primary-offline.log",
+            "log_sha256": "fe008aab760eb03ccac7578e2b84665b1b50b0d7f855b17a0c7a8d039435b658",
+            "construction_sha256": "1094f7c3ae2b1bbaf68fd7f48dcb0e5e224bb90843160d924cb32591eca0e4b6"
+          },
+          "compatibility": {
+            "receipt": "signal-east-fallback2-compatibility.json",
+            "log": "evening-west-analysis.log",
+            "negative_log": "signal-east-fallback2-negative.log",
+            "sha256": "652fd1feea59c926aac64d0b211c6dc4176c674e40ac4da1a670083217362384"
+          },
+          "saved_processing_proof": {
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C223016__LVMC-11-42-030__motor_vehicle_driver/execution-manifest.json --case heldout__C223016__LVMC-11-42-030__motor_vehicle_driver__signal_east_with --attempt .runtime-work/c223016-signal-east-proof/saved-attempt-fallback2 --output .runtime-work/c223016-signal-east-proof/saved-fallback2 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+            "exit_code": 0,
+            "log": "signal-east-fallback2-saved.json",
+            "log_sha256": "4c91fdcf5844650353d776e580132d801423c150df1d01a18ce39376bcdf772a"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "signal-east-fallback3-construction.json",
+          "construction_sha256": "d7305e920ce5842e31c474ba02e9b16251460d89b385ac4b74d3ca375d40ab8c",
+          "trigger": {
+            "source": "Native trace",
+            "metric": "westbound speed and acceleration",
+            "failure_condition": "primary gain causes unstable westbound motion or frame loss"
+          },
+          "changed_knobs": [
+            "speed_kp"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C223016__LVMC-11-42-030__motor_vehicle_driver/execution-manifest.json --case heldout__C223016__LVMC-11-42-030__motor_vehicle_driver__signal_east_with --output .runtime-work/c223016-signal-east-proof/offline-fallback3 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback3",
+            "exit_code": 0,
+            "log": "evening-west-primary-offline.log",
+            "log_sha256": "fe008aab760eb03ccac7578e2b84665b1b50b0d7f855b17a0c7a8d039435b658",
+            "construction_sha256": "d7305e920ce5842e31c474ba02e9b16251460d89b385ac4b74d3ca375d40ab8c"
+          },
+          "compatibility": {
+            "receipt": "signal-east-fallback3-compatibility.json",
+            "log": "evening-west-analysis.log",
+            "negative_log": "signal-east-fallback3-negative.log",
+            "sha256": "20cef16f29a4b91d66330a8bf9ded5cb7361a39072278c5bf289d71ca4377c69"
+          },
+          "saved_processing_proof": {
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C223016__LVMC-11-42-030__motor_vehicle_driver/execution-manifest.json --case heldout__C223016__LVMC-11-42-030__motor_vehicle_driver__signal_east_with --attempt .runtime-work/c223016-signal-east-proof/saved-attempt-fallback3 --output .runtime-work/c223016-signal-east-proof/saved-fallback3 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+            "exit_code": 0,
+            "log": "signal-east-fallback3-saved.json",
+            "log_sha256": "b67daad711ea43345e90bd9aaf0b5ce47e4811f399235aceac3cd5f233180e4b"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C223016__LVMC-11-42-030__motor_vehicle_driver/execution-manifest.json --case heldout__C223016__LVMC-11-42-030__motor_vehicle_driver__signal_east_with --output .runtime-work/c223016-signal-east-proof/offline-primary-v2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "evening-west-primary-offline.log",
+        "log_sha256": "fe008aab760eb03ccac7578e2b84665b1b50b0d7f855b17a0c7a8d039435b658",
+        "construction_sha256": "003116b03fe33f12ed4cd36592b9163d3d84aaba06c407b8e0acbbf93fdbb044"
+      },
+      "compatibility": {
+        "receipt": "signal-east-primary-compatibility.json",
+        "log": "evening-west-analysis.log",
+        "negative_log": "signal-east-primary-negative.log",
+        "sha256": "50596c07bfae2746a2ace8cb4896ac2b6f6ef76c51bfff5ea5581b4652673fad"
+      },
+      "negative": {
+        "log": "signal-east-primary-negative.log"
+      },
+      "saved_processing_proof": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C223016__LVMC-11-42-030__motor_vehicle_driver/execution-manifest.json --case heldout__C223016__LVMC-11-42-030__motor_vehicle_driver__signal_east_with --attempt .runtime-work/c223016-signal-east-proof/saved-attempt-primary --output .runtime-work/c223016-signal-east-proof/saved-primary --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "exit_code": 0,
+        "log": "signal-east-primary-saved.json",
+        "log_sha256": "d722f7e18f1bf5a2fc5da9321dce9ed5d6b048e77c8a8969c533809970c3b6d4"
+      }
     }
   ]
 }
