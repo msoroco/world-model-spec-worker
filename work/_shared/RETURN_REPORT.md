@@ -3902,3 +3902,13 @@ Next: build source-shaped timing diagnostics with coherent original participant/
 Return-cap correction for the controller audit: direct `ending_road_measurement.py` was restored so the independent source comparison script remains runnable; direct `runner.py` was archived in its place. The lossless archive now has 317 verified entries and is 2,084,496 bytes; the return remains 10,200 files, each <=2 MiB. The full strict gate rerun was still running at this checkpoint and no passing result is claimed.
 
 After adding the prospective 0/4/8 cases, C295149 scoped strict was rerun and still exits 1 at `Preparation acceptance failed: partial/missing packages remain`, matching its partial result status. The contemporaneous full strict run remained pending beyond 90 seconds; there is no new successful delivery gate.
+
+### 2026-11-20: C295149 measured release-delay CPU diagnostic
+
+The returned `source_comparison_proof.py` (SHA256 `ae3fa5141976cb35a58576dafc7a4ae2d2783074a73ba836338aa3eb3622285f`) now generates fixed-topology, 20 Hz participant/trace/frame records for the prospective 0/4/8-frame release-delay sweep. Its `release_motion_diagnostic` command passes, with measured subject entry frames 38047/38051/38055 and entry deltas 0.55/0.75/0.95 s; an altered initial actor record is rejected. The independent `release_controller_sweep` audit still passes all 12 constructions. C295149 scoped nonstrict complete passes. These generated traces are synthetic source-shaped CPU evidence and do not prove Native motion or camera pixels.
+
+The strict delivery gate remains unmet: C295149 and C329654 have truthful `partial` results. C295149's three sweep cases still need selected-manifest and returned exact-proof binding, plus expanded semantic/source/physical audits and queue; C329654 needs construction and CPU proofs for its five planned cases. These are worker-owned CPU tasks. The return remains 10,200 files, each <=2 MiB. No frozen input, runtime, batch.json or Git operation occurred.
+
+The C295149 scoped strict command was rerun after this diagnostic and exits 1 with `Preparation acceptance failed: partial/missing packages remain`, consistent with its `partial` result.
+
+C329654's handoff now identifies the ready same-law C109749 `front_pass_no_device` construction as the concrete source for its first `opposing_front_pass` implementation. No C329654 construction or receipt is claimed. A trial file-cap archive of a C109749 source test was fully reversed when its scoped strict check required the direct path; C109749 scoped strict passes again and the archive returned to 2,084,496 bytes.

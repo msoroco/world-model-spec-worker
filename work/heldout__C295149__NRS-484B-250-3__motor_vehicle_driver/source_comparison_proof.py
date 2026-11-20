@@ -326,9 +326,94 @@ def audit_release_controller_sweep(*, tamper=False):
             'legal_acceptance_claimed': False}
 
 
+def audit_release_motion_diagnostic(output, *, tamper=False):
+    """Generate and measure joined synthetic timing source records.
+
+    The authored tracks test source measurement sensitivity. They are not
+    original Native motion or four-camera compatibility fixtures.
+    """
+    root = Path(output)
+    root.mkdir(parents=True, exist_ok=True)
+    here = Path(__file__).resolve().parent
+    fixture = json.loads((here / 'diagnostic-ending-yields.json').read_text())
+    topology_bytes = fixture['files']['intersection_topology.json'].encode()
+    topology = json.loads(topology_bytes)
+    if topology['conflict_polygon_xy'] != [[-1, -1], [1, -1], [1, 1], [-1, 1]]:
+        raise ValueError('Diagnostic conflict geometry changed')
+    measured = []
+    first_rows = []
+    for delay in (0, 4, 8):
+        folder = root / f'delay-{delay}'
+        folder.mkdir(exist_ok=True)
+        (folder / 'intersection_topology.json').write_bytes(topology_bytes)
+        rows = []
+        trace_rows = []
+        frame_rows = []
+        for tick in range(32):
+            frame, time_s = 38033 + tick, .05 * (tick + 1)
+            other_y = min(-2.5 + .5 * tick, 4)
+            subject_x = (-2.5 if tick < 12 + delay else
+                         min(-2 + .5 * (tick - 12 - delay), 4))
+            def box(x, y):
+                return [[x - .4, y - .4], [x + .4, y - .4],
+                        [x + .4, y + .4], [x - .4, y + .4]]
+            rows.append({'frame': frame, 'time_s': time_s,
+                         'subject_id': topology['subject_id'],
+                         'other_id': topology['other_id'],
+                         'subject_corners': box(subject_x, 0),
+                         'other_corners': box(0, other_y)})
+            trace_rows.append({'frame': frame, 'time_s': time_s,
+                               'position_m': [subject_x, 0, 0],
+                               'velocity_mps': [10 if tick >= 12 + delay and subject_x < 4 else 0, 0, 0],
+                               'control': {'throttle': .5 if tick >= 12 + delay else 0,
+                                           'brake': 0 if tick >= 12 + delay else 1}})
+            frame_rows.append({'video_frame': tick, 'carla_frame': frame,
+                               'native_frame': frame, 'time_s': time_s})
+        if tamper and delay == 8:
+            rows[0]['subject_corners'][0][0] -= 1
+            trace_rows[0]['position_m'][0] -= 1
+        (folder / 'intersection_participants.jsonl').write_text(
+            ''.join(json.dumps(row, separators=(',', ':')) + '\n' for row in rows))
+        (folder / 'trace.jsonl').write_text(
+            ''.join(json.dumps(row, separators=(',', ':')) + '\n' for row in trace_rows))
+        (folder / 'video_frames.jsonl').write_text(
+            ''.join(json.dumps(row, separators=(',', ':')) + '\n' for row in frame_rows))
+        first_rows.append(rows[0])
+        result = measure(folder / 'intersection_topology.json',
+                         folder / 'intersection_participants.jsonl')
+        if result['subject_entry_frame'] != 38033 + 14 + delay:
+            raise ValueError('Diagnostic measured entry does not follow release delay')
+        if any((row['frame'] != trace['frame'] or row['frame'] != frames['carla_frame']
+                or row['time_s'] != trace['time_s'] or row['time_s'] != frames['time_s']
+                or abs(trace['position_m'][0] - (row['subject_corners'][0][0] + .4)) > 1e-8)
+               for row, trace, frames in zip(rows, trace_rows, frame_rows)):
+            raise ValueError('Diagnostic participant/trace/frame source join differs')
+        measured.append({'delay_frames': delay,
+                         'subject_entry_frame': result['subject_entry_frame'],
+                         'other_entry_frame': result['other_entry_frame'],
+                         'entry_delta_s': result['entry_delta_s'],
+                         'topology_sha256': result['topology_sha256'],
+                         'participants_sha256': result['frames_sha256']})
+    if any(first_rows[0] != row for row in first_rows[1:]):
+        raise ValueError('Diagnostic changed initial actor setup')
+    if len({row['topology_sha256'] for row in measured}) != 1:
+        raise ValueError('Diagnostic changed fixed topology')
+    if [row['subject_entry_frame'] for row in measured] != [38047, 38051, 38055]:
+        raise ValueError('Diagnostic did not change measured entry timing')
+    return {'passed': True, 'comparison_id': 'release_motion_diagnostic',
+            'authored_clearance_eligibility_tick': 12,
+            'measurements': measured, 'source_records_only_synthetic_diagnostic': True,
+            'four_camera_compatibility_proven': False, 'native_motion_observed': False,
+            'physical_acceptance_claimed': False, 'legal_acceptance_claimed': False}
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--comparison', required=True)
     parser.add_argument('--tamper', action='store_true')
+    parser.add_argument('--output', default='.runtime-work/c295149-release-motion-diagnostic')
     args = parser.parse_args()
-    print(json.dumps(audit_exact(args.comparison, tamper=args.tamper)))
+    if args.comparison == 'release_motion_diagnostic':
+        print(json.dumps(audit_release_motion_diagnostic(args.output, tamper=args.tamper)))
+    else:
+        print(json.dumps(audit_exact(args.comparison, tamper=args.tamper)))
