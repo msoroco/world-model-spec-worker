@@ -64,6 +64,7 @@ def analyze(attempt, case, *, diagnostic=False):
         require(len(actors) >= plan['capture_frames'] >= 600,
                 'Original capture shorter than thirty seconds')
     observed_actor = None
+    observed_follower = None
     samples = []
     for index, (actor, frame) in enumerate(zip(actors, frames)):
         require(type(actor.get('frame')) is int and
@@ -76,15 +77,27 @@ def analyze(attempt, case, *, diagnostic=False):
         require(actor.get('source_kind') == kind and
                 type(actor.get('ego_actor_id')) is int and
                 actor.get('driving_road_id') == plan['fixed_context']['road_id'] and
+                actor.get('following_road_id') == plan['fixed_context']['road_id'] and
                 actor.get('sign_actor_id') == sign['actor_id'],
                 'Actor, road or sign source identity differs')
         if observed_actor is None:
             observed_actor = actor['ego_actor_id']
+        if observed_follower is None:
+            observed_follower = actor.get('following_actor_id')
         require(actor['ego_actor_id'] == observed_actor and
+                type(observed_follower) is int and
+                observed_follower != observed_actor and
+                actor.get('following_actor_id') == observed_follower and
                 vector(actor.get('ego_velocity_xyz_mps'), 3) and
+                vector(actor.get('following_velocity_xyz_mps'), 3) and
                 isinstance(actor.get('ego_body_vertices_xyz_m'), list) and
                 len(actor['ego_body_vertices_xyz_m']) >= 4 and
-                all(vector(v, 3) for v in actor['ego_body_vertices_xyz_m']),
+                all(vector(v, 3) for v in actor['ego_body_vertices_xyz_m']) and
+                isinstance(actor.get('following_body_vertices_xyz_m'), list) and
+                len(actor['following_body_vertices_xyz_m']) >= 4 and
+                all(vector(v, 3) for v in actor['following_body_vertices_xyz_m']) and
+                type(actor.get('following_gap_m')) in (int, float) and
+                isfinite(actor['following_gap_m']) and actor['following_gap_m'] >= 0,
                 'Original ego motion or body source incomplete')
         body = MultiPoint([(v[0], v[1]) for v in
                            actor['ego_body_vertices_xyz_m']]).convex_hull
@@ -92,8 +105,12 @@ def analyze(attempt, case, *, diagnostic=False):
                 'Original body footprint invalid')
         vx, vy, vz = actor['ego_velocity_xyz_mps']
         speed = hypot(hypot(vx, vy), vz)
+        fx, fy, fz = actor['following_velocity_xyz_mps']
+        following_speed = hypot(hypot(fx, fy), fz)
         samples.append({'carla_frame': actor['frame'], 'time_s': frame['time_s'],
                         'speed_mps': speed,
+                        'following_speed_mps': following_speed,
+                        'following_gap_m': actor['following_gap_m'],
                         'body_zone_overlap_m2': body.intersection(zone).area,
                         'body_fully_in_authored_zone': zone.covers(body),
                         'body_disjoint_from_authored_zone': zone.disjoint(body)})

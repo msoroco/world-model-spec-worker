@@ -30,6 +30,12 @@ def make_attempt(directory, case, *, corrupt=None):
     for i, speed in enumerate((4, 2, 0, 0)):
         actors.append({'frame': 100+i, 'source_kind': 'synthetic_native_sample',
                        'ego_actor_id': 41, 'driving_road_id': 17,
+                       'following_actor_id': 42, 'following_road_id': 17,
+                       'following_velocity_xyz_mps': [3, 0, 0],
+                       'following_body_vertices_xyz_m': [
+                           [x-12.5, 0.7, 0], [x-11.5, 0.7, 0],
+                           [x-11.5, 1.3, 0], [x-12.5, 1.3, 0]],
+                       'following_gap_m': 12,
                        'sign_actor_id': 101,
                        'ego_velocity_xyz_mps': [speed, 0, 0],
                        'ego_body_vertices_xyz_m': body})
@@ -77,6 +83,18 @@ class SourceMeasurementTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp)
             make_attempt(path, 'reference', corrupt='body')
+            with self.assertRaisesRegex(ValueError, 'body source incomplete'):
+                analyze(path, 'reference', diagnostic=True)
+
+    def test_following_source_required(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp)
+            make_attempt(path, 'reference')
+            rows = [json.loads(line) for line in
+                    (path/'native-actors.jsonl').read_text().splitlines()]
+            rows[2].pop('following_velocity_xyz_mps')
+            (path/'native-actors.jsonl').write_text(
+                ''.join(json.dumps(row)+'\n' for row in rows))
             with self.assertRaisesRegex(ValueError, 'body source incomplete'):
                 analyze(path, 'reference', diagnostic=True)
 
