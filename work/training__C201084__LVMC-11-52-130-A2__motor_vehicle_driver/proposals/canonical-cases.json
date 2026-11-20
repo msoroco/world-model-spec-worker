@@ -65,6 +65,10 @@
           "kind": "controller",
           "value": "absent"
         },
+        "lead_traffic_presence": {
+          "kind": "controller",
+          "value": false
+        },
         "requested_stop_destination": {
           "kind": "controller",
           "value": "shared survey"
@@ -146,6 +150,10 @@
           "kind": "controller",
           "value": "absent"
         },
+        "lead_traffic_presence": {
+          "kind": "controller",
+          "value": false
+        },
         "requested_stop_destination": {
           "kind": "controller",
           "value": "inside"
@@ -226,6 +234,10 @@
         "lead_traffic_conflict_probe": {
           "kind": "controller",
           "value": "absent"
+        },
+        "lead_traffic_presence": {
+          "kind": "controller",
+          "value": false
         },
         "requested_stop_destination": {
           "kind": "controller",
@@ -318,6 +330,10 @@
           "kind": "controller",
           "value": "lead at x=18 m"
         },
+        "lead_traffic_presence": {
+          "kind": "controller",
+          "value": true
+        },
         "requested_stop_destination": {
           "kind": "controller",
           "value": "inside"
@@ -409,9 +425,203 @@
           "kind": "controller",
           "value": "lead at x=35 m"
         },
+        "lead_traffic_presence": {
+          "kind": "controller",
+          "value": true
+        },
         "requested_stop_destination": {
           "kind": "controller",
           "value": "inside"
+        }
+      }
+    },
+    {
+      "case_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__near_lead",
+      "deliberate_differences": [
+        "lead_traffic_presence"
+      ],
+      "paired_probe_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__lead_presence_pair",
+      "probe": {
+        "comparison_or_standard": "saved actor inventory and control requests; statutory necessity unresolved",
+        "primary_variable": "lead_traffic_presence",
+        "target_value_or_branch": {
+          "lead_traffic_presence": true
+        }
+      },
+      "rationale": "At the shared x=30 m destination, record same-road lead at x=18 m under one controller.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "source_measurement from retained actor, frame, survey and video files",
+            "name": "ego_pose",
+            "reference_frame": "original CARLA frame and four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sample clock; sign face and legal designation require independent review",
+            "unit": "m,deg"
+          },
+          {
+            "method": "source_measurement from retained actor, frame, survey and video files",
+            "name": "ego_speed",
+            "reference_frame": "original CARLA frame and four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sample clock; sign face and legal designation require independent review",
+            "unit": "m/s"
+          },
+          {
+            "method": "source_measurement from retained actor, frame, survey and video files",
+            "name": "vehicle_stops_in_posted_fire_lane",
+            "reference_frame": "original CARLA frame and four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sample clock; sign face and legal designation require independent review",
+            "unit": "bool"
+          },
+          {
+            "method": "saved lead actor inventory and pose source join",
+            "name": "lead_traffic_presence",
+            "reference_frame": "original CARLA actor inventory",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms clock; statutory necessity needs original review",
+            "unit": "bool"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "live CARLA map and sign actor readback plus authored geometry",
+            "name": "original_map_sign_and_fire_lane_survey",
+            "reference_frame": "surveyed CARLA map",
+            "uncertainty": "Fire Code designation and visible sign text unverified",
+            "unit": "structured"
+          }
+        ],
+        "limitations": [
+          "No legal or physical conclusion from authored geometry",
+          "Original pixels, posting and statutory exceptions need review",
+          "Lead presence and braking request do not establish statutory necessity"
+        ]
+      },
+      "target_law_id": "LVMC-11-52-130-A2",
+      "target_type": "judgment_sweep",
+      "unresolved_judgment_calls": [
+        "designated and posted as a fire lane pursuant to the City's Fire Code",
+        "necessary to avoid conflict with other traffic",
+        "in compliance with law",
+        "the directions of a police officer or a traffic control device"
+      ],
+      "variable_assignments": {
+        "actual_stop_zone_relation": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "lead_traffic_conflict_probe": {
+          "kind": "controller",
+          "value": "optional source-observed lead under common controller"
+        },
+        "lead_traffic_presence": {
+          "kind": "controller",
+          "value": true
+        },
+        "requested_stop_destination": {
+          "kind": "controller",
+          "value": "x=30 m beyond authored zone"
+        }
+      }
+    },
+    {
+      "case_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__absent_lead",
+      "deliberate_differences": [
+        "lead_traffic_presence"
+      ],
+      "paired_probe_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__lead_presence_pair",
+      "probe": {
+        "comparison_or_standard": "saved actor inventory and control requests; statutory necessity unresolved",
+        "primary_variable": "lead_traffic_presence",
+        "target_value_or_branch": {
+          "lead_traffic_presence": false
+        }
+      },
+      "rationale": "At the shared x=30 m destination, record no lead actor under one controller.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "source_measurement from retained actor, frame, survey and video files",
+            "name": "ego_pose",
+            "reference_frame": "original CARLA frame and four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sample clock; sign face and legal designation require independent review",
+            "unit": "m,deg"
+          },
+          {
+            "method": "source_measurement from retained actor, frame, survey and video files",
+            "name": "ego_speed",
+            "reference_frame": "original CARLA frame and four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sample clock; sign face and legal designation require independent review",
+            "unit": "m/s"
+          },
+          {
+            "method": "source_measurement from retained actor, frame, survey and video files",
+            "name": "vehicle_stops_in_posted_fire_lane",
+            "reference_frame": "original CARLA frame and four video sources",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms sample clock; sign face and legal designation require independent review",
+            "unit": "bool"
+          },
+          {
+            "method": "saved lead actor inventory and pose source join",
+            "name": "lead_traffic_presence",
+            "reference_frame": "original CARLA actor inventory",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames / 30 seconds",
+            "uncertainty": "50 ms clock; statutory necessity needs original review",
+            "unit": "bool"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "live CARLA map and sign actor readback plus authored geometry",
+            "name": "original_map_sign_and_fire_lane_survey",
+            "reference_frame": "surveyed CARLA map",
+            "uncertainty": "Fire Code designation and visible sign text unverified",
+            "unit": "structured"
+          }
+        ],
+        "limitations": [
+          "No legal or physical conclusion from authored geometry",
+          "Original pixels, posting and statutory exceptions need review",
+          "Lead presence and braking request do not establish statutory necessity"
+        ]
+      },
+      "target_law_id": "LVMC-11-52-130-A2",
+      "target_type": "judgment_sweep",
+      "unresolved_judgment_calls": [
+        "designated and posted as a fire lane pursuant to the City's Fire Code",
+        "necessary to avoid conflict with other traffic",
+        "in compliance with law",
+        "the directions of a police officer or a traffic control device"
+      ],
+      "variable_assignments": {
+        "actual_stop_zone_relation": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "lead_traffic_conflict_probe": {
+          "kind": "controller",
+          "value": "optional source-observed lead under common controller"
+        },
+        "lead_traffic_presence": {
+          "kind": "controller",
+          "value": false
+        },
+        "requested_stop_destination": {
+          "kind": "controller",
+          "value": "x=30 m beyond authored zone"
         }
       }
     }
@@ -440,12 +650,12 @@
       ],
       "missing_inputs": [
         "Original City Fire Code designation and posting evidence",
-        "Original conflict causation review and absent-lead contrast",
+        "Original conflict causation review",
         "Applicable-law direction source",
         "Police and traffic-control direction constructions",
         "Attendance and public/private property source review"
       ],
-      "rationale": "Inside/outside and near/far lead probes are built; a source-grounded absent-lead contrast and posting routes remain.",
+      "rationale": "Inside/outside, near/far lead and lead-presence diagnostic probes are built; posting and other statutory routes remain.",
       "status": "incomplete",
       "sweep_id": "fire_lane_exception_scope_pending",
       "target_law_id": "LVMC-11-52-130-A2"

@@ -103,6 +103,9 @@ def build():
                      'used_by_laws': [LAW]},
                     {'name': 'lead_traffic_conflict_probe', 'kind': 'controller',
                      'range_or_domain': 'lead near, lead beyond authored segment, or absent on surveyed road',
+                     'used_by_laws': [LAW]},
+                    {'name': 'lead_traffic_presence', 'kind': 'controller',
+                     'range_or_domain': 'lead at x=18 m or no lead actor at shared destination',
                      'used_by_laws': [LAW]}]}
     write(PROPOSALS/'bindings.json', bindings)
     cases = []
@@ -162,7 +165,8 @@ def build():
                       'variable_assignments': {
                           'requested_stop_destination': {'kind': 'controller', 'value': 'x=30 m beyond authored zone'},
                           'actual_stop_zone_relation': {'kind': 'subject_behavior', 'value': None},
-                          'lead_traffic_conflict_probe': {'kind': 'controller', 'value': description}},
+                          'lead_traffic_conflict_probe': {'kind': 'controller', 'value': 'optional source-observed lead under common controller'},
+                          'lead_traffic_presence': {'kind': 'controller', 'value': present}},
                       'recording_description': near_recording if present else absent_recording,
                       'unresolved_judgment_calls': [phrase for phrase,_,_,_ in judgments]})
     cases.insert(0, {'case_id': ASSIGNMENT+'__baseline', 'target_law_id': None,
@@ -173,6 +177,11 @@ def build():
                          'lead_traffic_conflict_probe': {'kind': 'controller', 'value': 'absent'}},
                      'recording_description': recording,
                      'unresolved_judgment_calls': [phrase for phrase,_,_,_ in judgments]})
+    for item in cases:
+        suffix = item['case_id'].rsplit('__', 1)[-1]
+        item['variable_assignments'].setdefault('lead_traffic_presence',
+            {'kind': 'controller',
+             'value': suffix in ('conflict', 'clear', 'near_lead')})
     canonical = {'status': 'draft', 'actor': ACTOR, 'cell_id': CELL,
                  'cases': cases, 'sweeps_expanded': True,
                  'sweep_specs': [{'sweep_id': 'fire_lane_exception_scope_pending',
