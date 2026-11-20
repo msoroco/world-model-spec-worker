@@ -49,12 +49,21 @@ def physical_fixture(kind, config_name='config.json'):
                 'physical_acceptance_claimed': False, 'legal_acceptance_claimed': False}
 
 
-def physical_result_fixture(kind, output, config_name='config.json'):
+def physical_result_fixture(kind, output, config_name=None, case_id=None):
     """Write the measured source-bound diagnostic result for one exact config."""
     sys.path.insert(0, str(HERE.parents[1] / 'runtime' / 'scenario_pipeline'))
     from worker_exchange.native_output import assess_physical, default_descriptor
-    config_path = Path(config_name)
-    config = json.loads(config_path.read_text())
+    if case_id:
+        manifest = json.loads((HERE / 'execution-manifest.json').read_text())
+        entry = next(item for item in manifest['cases']
+                     if item['case_id'] == case_id)
+        construction = json.loads((HERE / entry['construction']).read_text())
+        config = json.loads(next(item['content'] for item in construction['files']
+                                 if item['path'] == 'config.json'))
+        if config['selected_case_id'] != case_id:
+            raise ValueError('Construction and requested physical case differ')
+    else:
+        config = json.loads(Path(config_name).read_text())
     descriptor = default_descriptor(config)
     if descriptor['criterion'] != 'travel_progress':
         raise ValueError('Unexpected physical criterion')
@@ -219,6 +228,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--physical-kind')
     parser.add_argument('--physical-config')
+    parser.add_argument('--physical-case')
     parser.add_argument('--physical-output')
     parser.add_argument('--lifecycle-case')
     parser.add_argument('--candidate', default='primary')
@@ -232,7 +242,7 @@ if __name__ == '__main__':
         sys.exit(0)
     if args.physical_kind:
         print(physical_result_fixture(args.physical_kind, args.physical_output,
-                                      args.physical_config))
+                                      args.physical_config, args.physical_case))
         sys.exit(0)
     if not args.source or not args.receipt:
         parser.error('--source and --receipt are required for the source audit')
