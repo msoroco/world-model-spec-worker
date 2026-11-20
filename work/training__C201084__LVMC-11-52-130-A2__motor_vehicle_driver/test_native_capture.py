@@ -6,7 +6,8 @@ from pathlib import Path
 from types import SimpleNamespace
 
 from fire_lane_survey import build
-from native_capture import CAMERA_SPECS, OriginalFrameMap, acquire, sample_native
+from native_capture import (CAMERA_SPECS, OriginalFrameMap, acquire,
+                            install_cameras, sample_native)
 from native_controller import command
 
 HERE = Path(__file__).resolve().parent
@@ -46,6 +47,35 @@ def follower():
 
 
 class CaptureTests(unittest.TestCase):
+    def test_partial_camera_install_destroys_spawned_sensors(self):
+        closed = []
+        class Sensor:
+            def listen(self, callback):
+                pass
+            def stop(self):
+                closed.append('stop')
+            def destroy(self):
+                closed.append('destroy')
+        class Blueprint:
+            def set_attribute(self, name, value):
+                pass
+        calls = []
+        def spawn(*args, **kwargs):
+            calls.append(1)
+            if len(calls) == 2:
+                raise RuntimeError('spawn failure')
+            return Sensor()
+        world = SimpleNamespace(
+            get_blueprint_library=lambda: SimpleNamespace(find=lambda name: Blueprint()),
+            spawn_actor=spawn)
+        carla = SimpleNamespace(
+            Location=lambda **kwargs: SimpleNamespace(**kwargs),
+            Rotation=lambda **kwargs: SimpleNamespace(**kwargs),
+            Transform=lambda loc, rot: SimpleNamespace(location=loc, rotation=rot))
+        with self.assertRaisesRegex(RuntimeError, 'spawn failure'):
+            install_cameras(world, carla, ego(), lambda name, image: None)
+        self.assertEqual(closed, ['stop', 'destroy'])
+
     def test_frame_map_retains_exact_order_and_rejects_time_reversal(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp)/'video_frames.jsonl'

@@ -17,7 +17,7 @@ from native_controller import apply
 CAMERA_SPECS = (
     ('overview', 640, 360, (-8, 0, 12), 0, -55),
     ('approach', 640, 360, (3, 0, 2), 0, -8),
-    ('curb_sign', 1280, 720, (0, 3, 2), 90, -8),
+    ('reference_corner', 1280, 720, (0, 3, 2), 90, -8),
     ('driver_reference', 1280, 720, (1, 0, 1.6), 0, -4),
 )
 assert tuple(row[0] for row in CAMERA_SPECS) == CAMERAS
@@ -54,17 +54,23 @@ class FFV1Sink:
 def install_cameras(world, carla, ego, callback):
     library = world.get_blueprint_library()
     sensors = []
-    for name, width, height, xyz, yaw, pitch in CAMERA_SPECS:
-        blueprint = library.find('sensor.camera.rgb')
-        blueprint.set_attribute('image_size_x', str(width))
-        blueprint.set_attribute('image_size_y', str(height))
-        blueprint.set_attribute('fov', '90')
-        transform = carla.Transform(carla.Location(x=xyz[0], y=xyz[1], z=xyz[2]),
-                                    carla.Rotation(yaw=yaw, pitch=pitch))
-        sensor = world.spawn_actor(blueprint, transform, attach_to=ego)
-        require(sensor is not None, 'Original camera spawn failed: '+name)
-        sensor.listen(lambda image, camera=name: callback(camera, image))
-        sensors.append(sensor)
+    try:
+        for name, width, height, xyz, yaw, pitch in CAMERA_SPECS:
+            blueprint = library.find('sensor.camera.rgb')
+            blueprint.set_attribute('image_size_x', str(width))
+            blueprint.set_attribute('image_size_y', str(height))
+            blueprint.set_attribute('fov', '90')
+            transform = carla.Transform(carla.Location(x=xyz[0], y=xyz[1], z=xyz[2]),
+                                        carla.Rotation(yaw=yaw, pitch=pitch))
+            sensor = world.spawn_actor(blueprint, transform, attach_to=ego)
+            require(sensor is not None, 'Original camera spawn failed: '+name)
+            sensors.append(sensor)
+            sensor.listen(lambda image, camera=name: callback(camera, image))
+    except Exception:
+        for sensor in reversed(sensors):
+            sensor.stop()
+            sensor.destroy()
+        raise
     return sensors
 
 

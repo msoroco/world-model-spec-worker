@@ -8,7 +8,7 @@ from math import isfinite
 from shapely.geometry import LineString, Point, Polygon
 
 
-CAMERAS = ('overview', 'approach', 'curb_sign', 'driver_reference')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
 
 def require(condition, message):
