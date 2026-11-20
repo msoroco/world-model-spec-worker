@@ -38,6 +38,15 @@
             "log": "primary-compatibility-analysis.log",
             "negative_log": "fallback1-negative-analysis.log",
             "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_controls_ego --candidate fallback1 --output .runtime-work/c158196-remaining-channels-sweep/signal_controls_ego-fallback1-compatibility --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_controls_ego --attempt .runtime-work/c158196-fallback-saved-v8/signal_controls_ego-fallback1-attempt --output .runtime-work/c158196-fallback-saved-v8/signal_controls_ego-fallback1-processed --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "test_log": "fallback1-process-saved.json",
+            "test_log_sha256": "67ac3aaa6b69d2f3ca9d8cd56edb155fc066f267be6f5edf6e6003919f06b204",
+            "test_exit_code": 0,
+            "processing_receipt": "fallback1-process-saved.json",
+            "processing_sha256": "67ac3aaa6b69d2f3ca9d8cd56edb155fc066f267be6f5edf6e6003919f06b204"
           }
         },
         {
@@ -67,6 +76,15 @@
             "log": "primary-compatibility-analysis.log",
             "negative_log": "fallback2-negative-analysis.log",
             "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_controls_ego --candidate fallback2 --output .runtime-work/c158196-remaining-channels-sweep/signal_controls_ego-fallback2-compatibility --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_controls_ego --attempt .runtime-work/c158196-fallback-saved-v8/signal_controls_ego-fallback2-attempt --output .runtime-work/c158196-fallback-saved-v8/signal_controls_ego-fallback2-processed --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "test_log": "fallback2-process-saved.json",
+            "test_log_sha256": "da6edc5ece695ea7284889c1011b1bf2f30cc8288d723cd9100b39401a74ed22",
+            "test_exit_code": 0,
+            "processing_receipt": "fallback2-process-saved.json",
+            "processing_sha256": "da6edc5ece695ea7284889c1011b1bf2f30cc8288d723cd9100b39401a74ed22"
           }
         },
         {
@@ -96,6 +114,15 @@
             "log": "primary-compatibility-analysis.log",
             "negative_log": "fallback3-negative-analysis.log",
             "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_controls_ego --candidate fallback3 --output .runtime-work/c158196-remaining-channels-sweep/signal_controls_ego-fallback3-compatibility --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_controls_ego --attempt .runtime-work/c158196-fallback-saved-v8/signal_controls_ego-fallback3-attempt --output .runtime-work/c158196-fallback-saved-v8/signal_controls_ego-fallback3-processed --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "test_log": "fallback3-process-saved.json",
+            "test_log_sha256": "a6691a08df59e722f788b4d72d063ebfaa542dcb3479a3e15c83e35a77334372",
+            "test_exit_code": 0,
+            "processing_receipt": "fallback3-process-saved.json",
+            "processing_sha256": "a6691a08df59e722f788b4d72d063ebfaa542dcb3479a3e15c83e35a77334372"
           }
         }
       ],
@@ -142,6 +169,49 @@
           "method": "original complete-body interaction history",
           "evidence": [
             "interaction_history.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "through_highway_sight_clear": {
+          "entrypoint": "signal_exception_measurements.py",
+          "method": "same-frame Native collision-ray observation checked against original ego and through-actor bodies",
+          "evidence": [
+            "interaction_history.jsonl",
+            "signal_context.json",
+            "video_frames.jsonl"
+          ]
+        },
+        "ego_distance_to_junction_m": {
+          "entrypoint": "signal_exception_measurements.py",
+          "method": "saved shortest plan-view distance from original complete ego body to sourced junction polygon",
+          "evidence": [
+            "interaction_history.jsonl",
+            "signal_context.json",
+            "video_frames.jsonl"
+          ]
+        },
+        "through_vehicle_position": {
+          "entrypoint": "signal_exception_measurements.py",
+          "method": "saved through actor identity and original same-frame position and lane readback",
+          "evidence": [
+            "interaction_history.jsonl",
+            "signal_context.json",
+            "video_frames.jsonl"
+          ]
+        },
+        "through_vehicle_speed": {
+          "entrypoint": "signal_exception_measurements.py",
+          "method": "saved magnitude of original through-actor velocity joined by actor identity",
+          "evidence": [
+            "interaction_history.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "ego_approach_speed": {
+          "entrypoint": "signal_exception_measurements.py",
+          "method": "saved original ego speed from checked same-frame signal history",
+          "evidence": [
+            "signal_history.jsonl",
             "video_frames.jsonl"
           ]
         }
@@ -227,6 +297,15 @@
             "log": "primary-compatibility-analysis.log",
             "negative_log": "signal-off-fallback1-negative-analysis.log",
             "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_off --candidate fallback1 --output .runtime-work/c158196-remaining-channels-sweep/signal_off-fallback1-compatibility --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_off --attempt .runtime-work/c158196-fallback-saved-v8/signal_off-fallback1-attempt --output .runtime-work/c158196-fallback-saved-v8/signal_off-fallback1-processed --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "test_log": "signal-off-fallback1-process-saved.json",
+            "test_log_sha256": "b6b5cd943f9b70d52fbaa0af8f239b2fee2e9678b0bf9d7645a4d32c5d423dc7",
+            "test_exit_code": 0,
+            "processing_receipt": "signal-off-fallback1-process-saved.json",
+            "processing_sha256": "b6b5cd943f9b70d52fbaa0af8f239b2fee2e9678b0bf9d7645a4d32c5d423dc7"
           }
         },
         {
@@ -256,6 +335,15 @@
             "log": "primary-compatibility-analysis.log",
             "negative_log": "signal-off-fallback2-negative-analysis.log",
             "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_off --candidate fallback2 --output .runtime-work/c158196-remaining-channels-sweep/signal_off-fallback2-compatibility --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_off --attempt .runtime-work/c158196-fallback-saved-v8/signal_off-fallback2-attempt --output .runtime-work/c158196-fallback-saved-v8/signal_off-fallback2-processed --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "test_log": "signal-off-fallback2-process-saved.json",
+            "test_log_sha256": "4402224e4e8ccc3c8ebab8e20033c1158525948bd77e039d3f86703cf69a7143",
+            "test_exit_code": 0,
+            "processing_receipt": "signal-off-fallback2-process-saved.json",
+            "processing_sha256": "4402224e4e8ccc3c8ebab8e20033c1158525948bd77e039d3f86703cf69a7143"
           }
         },
         {
@@ -285,6 +373,15 @@
             "log": "primary-compatibility-analysis.log",
             "negative_log": "signal-off-fallback3-negative-analysis.log",
             "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_off --candidate fallback3 --output .runtime-work/c158196-remaining-channels-sweep/signal_off-fallback3-compatibility --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_off --attempt .runtime-work/c158196-fallback-saved-v8/signal_off-fallback3-attempt --output .runtime-work/c158196-fallback-saved-v8/signal_off-fallback3-processed --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "test_log": "signal-off-fallback3-process-saved.json",
+            "test_log_sha256": "1f4a28c779966b68396486e6aabf47e9494483c7571b50c57cfb6a4ea5789cd4",
+            "test_exit_code": 0,
+            "processing_receipt": "signal-off-fallback3-process-saved.json",
+            "processing_sha256": "1f4a28c779966b68396486e6aabf47e9494483c7571b50c57cfb6a4ea5789cd4"
           }
         }
       ],
@@ -315,6 +412,49 @@
           "method": "original complete-body interaction history",
           "evidence": [
             "interaction_history.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "through_highway_sight_clear": {
+          "entrypoint": "signal_exception_measurements.py",
+          "method": "same-frame Native collision-ray observation checked against original ego and through-actor bodies",
+          "evidence": [
+            "interaction_history.jsonl",
+            "signal_context.json",
+            "video_frames.jsonl"
+          ]
+        },
+        "ego_distance_to_junction_m": {
+          "entrypoint": "signal_exception_measurements.py",
+          "method": "saved shortest plan-view distance from original complete ego body to sourced junction polygon",
+          "evidence": [
+            "interaction_history.jsonl",
+            "signal_context.json",
+            "video_frames.jsonl"
+          ]
+        },
+        "through_vehicle_position": {
+          "entrypoint": "signal_exception_measurements.py",
+          "method": "saved through actor identity and original same-frame position and lane readback",
+          "evidence": [
+            "interaction_history.jsonl",
+            "signal_context.json",
+            "video_frames.jsonl"
+          ]
+        },
+        "through_vehicle_speed": {
+          "entrypoint": "signal_exception_measurements.py",
+          "method": "saved magnitude of original through-actor velocity joined by actor identity",
+          "evidence": [
+            "interaction_history.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "ego_approach_speed": {
+          "entrypoint": "signal_exception_measurements.py",
+          "method": "saved original ego speed from checked same-frame signal history",
+          "evidence": [
+            "signal_history.jsonl",
             "video_frames.jsonl"
           ]
         }
@@ -416,6 +556,15 @@
             "log": "primary-compatibility-analysis.log",
             "negative_log": "signal-visible-fallback1-negative-analysis.log",
             "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_visible_not_governing --candidate fallback1 --output .runtime-work/c158196-remaining-channels-sweep/signal_visible_not_governing-fallback1-compatibility --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_visible_not_governing --attempt .runtime-work/c158196-fallback-saved-v8/signal_visible_not_governing-fallback1-attempt --output .runtime-work/c158196-fallback-saved-v8/signal_visible_not_governing-fallback1-processed --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "test_log": "signal-visible-fallback1-process-saved.json",
+            "test_log_sha256": "d541c8dc48e45029c1e031a0ce2922fa680766c807dd24f58ef36f0dc7deeada",
+            "test_exit_code": 0,
+            "processing_receipt": "signal-visible-fallback1-process-saved.json",
+            "processing_sha256": "d541c8dc48e45029c1e031a0ce2922fa680766c807dd24f58ef36f0dc7deeada"
           }
         },
         {
@@ -445,6 +594,15 @@
             "log": "primary-compatibility-analysis.log",
             "negative_log": "signal-visible-fallback2-negative-analysis.log",
             "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_visible_not_governing --candidate fallback2 --output .runtime-work/c158196-remaining-channels-sweep/signal_visible_not_governing-fallback2-compatibility --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_visible_not_governing --attempt .runtime-work/c158196-fallback-saved-v8/signal_visible_not_governing-fallback2-attempt --output .runtime-work/c158196-fallback-saved-v8/signal_visible_not_governing-fallback2-processed --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "test_log": "signal-visible-fallback2-process-saved.json",
+            "test_log_sha256": "e88ef6653082076b23ffe024d5459dc5b8db73934897c83016e47f14d09a9234",
+            "test_exit_code": 0,
+            "processing_receipt": "signal-visible-fallback2-process-saved.json",
+            "processing_sha256": "e88ef6653082076b23ffe024d5459dc5b8db73934897c83016e47f14d09a9234"
           }
         },
         {
@@ -474,6 +632,15 @@
             "log": "primary-compatibility-analysis.log",
             "negative_log": "signal-visible-fallback3-negative-analysis.log",
             "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_visible_not_governing --candidate fallback3 --output .runtime-work/c158196-remaining-channels-sweep/signal_visible_not_governing-fallback3-compatibility --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__signal_visible_not_governing --attempt .runtime-work/c158196-fallback-saved-v8/signal_visible_not_governing-fallback3-attempt --output .runtime-work/c158196-fallback-saved-v8/signal_visible_not_governing-fallback3-processed --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "test_log": "signal-visible-fallback3-process-saved.json",
+            "test_log_sha256": "62d35c4b79be338ffe26431e64cb2f1611d431366efc416d52da3e9f381024e7",
+            "test_exit_code": 0,
+            "processing_receipt": "signal-visible-fallback3-process-saved.json",
+            "processing_sha256": "62d35c4b79be338ffe26431e64cb2f1611d431366efc416d52da3e9f381024e7"
           }
         }
       ],
@@ -504,6 +671,49 @@
           "method": "original complete-body interaction history",
           "evidence": [
             "interaction_history.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "through_highway_sight_clear": {
+          "entrypoint": "signal_exception_measurements.py",
+          "method": "same-frame Native collision-ray observation checked against original ego and through-actor bodies",
+          "evidence": [
+            "interaction_history.jsonl",
+            "signal_context.json",
+            "video_frames.jsonl"
+          ]
+        },
+        "ego_distance_to_junction_m": {
+          "entrypoint": "signal_exception_measurements.py",
+          "method": "saved shortest plan-view distance from original complete ego body to sourced junction polygon",
+          "evidence": [
+            "interaction_history.jsonl",
+            "signal_context.json",
+            "video_frames.jsonl"
+          ]
+        },
+        "through_vehicle_position": {
+          "entrypoint": "signal_exception_measurements.py",
+          "method": "saved through actor identity and original same-frame position and lane readback",
+          "evidence": [
+            "interaction_history.jsonl",
+            "signal_context.json",
+            "video_frames.jsonl"
+          ]
+        },
+        "through_vehicle_speed": {
+          "entrypoint": "signal_exception_measurements.py",
+          "method": "saved magnitude of original through-actor velocity joined by actor identity",
+          "evidence": [
+            "interaction_history.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "ego_approach_speed": {
+          "entrypoint": "signal_exception_measurements.py",
+          "method": "saved original ego speed from checked same-frame signal history",
+          "evidence": [
+            "signal_history.jsonl",
             "video_frames.jsonl"
           ]
         }
@@ -605,6 +815,15 @@
             "log": "primary-compatibility-analysis.log",
             "negative_log": "yield-fallback1-negative-analysis.log",
             "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__yield_without_signal_control --candidate fallback1 --output .runtime-work/c158196-remaining-channels-sweep/yield_without_signal_control-fallback1-compatibility --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__yield_without_signal_control --attempt .runtime-work/c158196-fallback-saved-v8/yield_without_signal_control-fallback1-attempt --output .runtime-work/c158196-fallback-saved-v8/yield_without_signal_control-fallback1-processed --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "test_log": "yield-fallback1-process-saved.json",
+            "test_log_sha256": "38bb50a360489625a3ce5cbe90140a524adf650f94dd1f6f1ab3e2fa10a170e7",
+            "test_exit_code": 0,
+            "processing_receipt": "yield-fallback1-process-saved.json",
+            "processing_sha256": "38bb50a360489625a3ce5cbe90140a524adf650f94dd1f6f1ab3e2fa10a170e7"
           }
         },
         {
@@ -634,6 +853,15 @@
             "log": "primary-compatibility-analysis.log",
             "negative_log": "yield-fallback2-negative-analysis.log",
             "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__yield_without_signal_control --candidate fallback2 --output .runtime-work/c158196-remaining-channels-sweep/yield_without_signal_control-fallback2-compatibility --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__yield_without_signal_control --attempt .runtime-work/c158196-fallback-saved-v8/yield_without_signal_control-fallback2-attempt --output .runtime-work/c158196-fallback-saved-v8/yield_without_signal_control-fallback2-processed --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "test_log": "yield-fallback2-process-saved.json",
+            "test_log_sha256": "40eec220491c06af0597496296a165661fa3a7ab4b613b3f528853aa75055082",
+            "test_exit_code": 0,
+            "processing_receipt": "yield-fallback2-process-saved.json",
+            "processing_sha256": "40eec220491c06af0597496296a165661fa3a7ab4b613b3f528853aa75055082"
           }
         },
         {
@@ -663,6 +891,15 @@
             "log": "primary-compatibility-analysis.log",
             "negative_log": "yield-fallback3-negative-analysis.log",
             "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__yield_without_signal_control --candidate fallback3 --output .runtime-work/c158196-remaining-channels-sweep/yield_without_signal_control-fallback3-compatibility --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__yield_without_signal_control --attempt .runtime-work/c158196-fallback-saved-v8/yield_without_signal_control-fallback3-attempt --output .runtime-work/c158196-fallback-saved-v8/yield_without_signal_control-fallback3-processed --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "test_log": "yield-fallback3-process-saved.json",
+            "test_log_sha256": "dd6f6fbce0617456118987dab83f3d809d6d2b8d0f6c75c6a13b9ae9b3fe478b",
+            "test_exit_code": 0,
+            "processing_receipt": "yield-fallback3-process-saved.json",
+            "processing_sha256": "dd6f6fbce0617456118987dab83f3d809d6d2b8d0f6c75c6a13b9ae9b3fe478b"
           }
         }
       ],
@@ -693,6 +930,49 @@
           "method": "original complete-body interaction history",
           "evidence": [
             "interaction_history.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "through_highway_sight_clear": {
+          "entrypoint": "signal_exception_measurements.py",
+          "method": "same-frame Native collision-ray observation checked against original ego and through-actor bodies",
+          "evidence": [
+            "interaction_history.jsonl",
+            "signal_context.json",
+            "video_frames.jsonl"
+          ]
+        },
+        "ego_distance_to_junction_m": {
+          "entrypoint": "signal_exception_measurements.py",
+          "method": "saved shortest plan-view distance from original complete ego body to sourced junction polygon",
+          "evidence": [
+            "interaction_history.jsonl",
+            "signal_context.json",
+            "video_frames.jsonl"
+          ]
+        },
+        "through_vehicle_position": {
+          "entrypoint": "signal_exception_measurements.py",
+          "method": "saved through actor identity and original same-frame position and lane readback",
+          "evidence": [
+            "interaction_history.jsonl",
+            "signal_context.json",
+            "video_frames.jsonl"
+          ]
+        },
+        "through_vehicle_speed": {
+          "entrypoint": "signal_exception_measurements.py",
+          "method": "saved magnitude of original through-actor velocity joined by actor identity",
+          "evidence": [
+            "interaction_history.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "ego_approach_speed": {
+          "entrypoint": "signal_exception_measurements.py",
+          "method": "saved original ego speed from checked same-frame signal history",
+          "evidence": [
+            "signal_history.jsonl",
             "video_frames.jsonl"
           ]
         }
