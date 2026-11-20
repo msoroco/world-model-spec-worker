@@ -20,7 +20,7 @@ PREFIX = 'heldout__C223016__LVMC-11-42-030__motor_vehicle_driver__'
 def fixture(root, *, suffix='morning_east_with', velocity=(5, 0)):
     config = {'selected_case_id': PREFIX + suffix, 'cell_id': 'C223016',
               'law_id': 'LVMC-11-42-030', 'actor': 'motor_vehicle_driver',
-              'governed_lane_id': 1,
+              'governed_lane_id': -1,
               'case': {'recording_description': {'channels': [
                   {'name': 'observed_direction', 'unit': 'category'}]}}}
     (root / 'config.json').write_text(json.dumps(config))
@@ -28,10 +28,10 @@ def fixture(root, *, suffix='morning_east_with', velocity=(5, 0)):
     base_time = datetime(2026, 11, 19, 8, 0, tzinfo=timezone(timedelta(hours=-8)))
     for index in range(4):
         frame, stamp = 100 + index, index * .05
-        rows.append({'frame': frame, 'time_s': stamp, 'lane_id': 1,
+        rows.append({'frame': frame, 'time_s': stamp, 'lane_id': -1,
                      'civil_time': {'source': 'Native capture clock',
                                     'iso8601': (base_time + timedelta(seconds=stamp)).isoformat()},
-                     'device': {'kind': 'barrier', 'governs_lane_id': 1,
+                     'device': {'kind': 'barrier', 'governs_lane_id': -1,
                                 'source_id': 'native-device-7',
                                 'period_id': 'morning', 'effective': True,
                                 'direction_xy': [1, 0]},
