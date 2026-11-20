@@ -35,7 +35,7 @@ def write_rows(path,values):
 
 def fixture(entry, kind, output):
     suffix=entry['case_id'].split('__')[-1]
-    source=ROOT/'.runtime-work'/f'c149237-{suffix}-primary-canonical-saved-v1/v0001/analysis'
+    source=ROOT/'.runtime-work/c149237-adapter-migration-v1'/f'{suffix}-primary-saved/v0001/analysis'
     with tempfile.TemporaryDirectory(prefix='c149237-physical-') as temporary:
         stage=Path(temporary)
         for name in ('config.json','truck_history.jsonl','video_frames.jsonl',
@@ -45,8 +45,8 @@ def fixture(entry, kind, output):
         if not cfg.get('physical_completion') or cfg['selected_case_id']!=entry['case_id']:
             raise ValueError('Current exact physical descriptor missing')
         write(stage/'acquisition-provenance.json',{
-            'provenance_kind':'native','diagnostic_fixture':True,
-            'scope':'Native-shaped synthetic classifier fixture; no CARLA acquisition'})
+            'provenance_kind':'synthetic_fixture','diagnostic_fixture':True,
+            'scope':'Synthetic classifier fixture; no CARLA acquisition'})
         if kind=='complete_motion' and suffix!='overtaking':
             motion=rows(stage/'truck_history.jsonl')
             for index,row in enumerate(motion):

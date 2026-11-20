@@ -36,11 +36,11 @@ def write_rows(path,values):
 def fixture(entry, kind, output):
     suffix=entry['case_id'].split('__')[-1]
     if suffix == 'gap_below_500ft':
-        source = ROOT/'.runtime-work/c149237-root-support-primary-saved-v1/v0001/analysis'
+        source = ROOT/'.runtime-work/c149237-adapter-migration-v1/gap_below_500ft-primary-saved/v0001/analysis'
     elif suffix == 'combination_at_500ft':
         source = ROOT/'.runtime-work/c149237-combination-requirement-v1/saved-primary/v0001/analysis'
     else:
-        source = ROOT/'.runtime-work'/f'c149237-{suffix}-saved-v16/v0001/analysis'
+        source = ROOT/'.runtime-work/c149237-adapter-migration-v1'/f'{suffix}-primary-saved/v0001/analysis'
     with tempfile.TemporaryDirectory(prefix='c149237-physical-') as temporary:
         stage=Path(temporary)
         for name in ('config.json','truck_history.jsonl','video_frames.jsonl',
