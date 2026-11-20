@@ -457,6 +457,44 @@
         "log": "uncontrolled-staggered-primary-saved.json",
         "log_sha256": "d9464800b5b3d410039ecb4f4f6011d5ccfb123c47e1f72cb83a9debacc59dcb"
       }
+    },
+    {
+      "kind": "delivery",
+      "measurement_procedure": {
+        "entrypoint": "ending_road_official_finalizer.py"
+      },
+      "acquisition": {
+        "intersection_occupancy": {
+          "entrypoint": "ending_road_finalizer.py",
+          "method": "original Native body polygon overlap against retained conflict polygon",
+          "evidence": "intersection_topology.json, intersection_participants.jsonl, trace.jsonl and video_frames.jsonl joined by original frame identity"
+        },
+        "official_device_state": {
+          "entrypoint": "ending_road_device.py",
+          "method": "Native signal state readback joined to original frames",
+          "evidence": "official_device_context.json and official_device_states.jsonl"
+        },
+        "official_geometry_binding": {
+          "entrypoint": "official_geometry_source_audit.py",
+          "method": "hash and map/source route/device join on retained originals",
+          "evidence": "official_geometry_binding.json, road.xodr, intersection_topology.json and official_device_context.json"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "case_id": "heldout__C295149__NRS-484B-250-3__motor_vehicle_driver__official_control_active",
+      "construction": "construction-official-control-active.json",
+      "construction_sha256": "f2df0fdba676e9031d0ceddf03106b96d53370fb614d228c59b1f9f143e39b64",
+      "measurement_contract": "measurement-contract-official-control-active.json",
+      "fixture_recipe": "work/heldout__C295149__NRS-484B-250-3__motor_vehicle_driver/diagnostic-recipe-official-control-active.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The selected Native governed T-route and affected-lane signal may be unavailable or cropped in original overview pixels."
+      },
+      "candidates": []
     }
   ],
   "runtime_manifest_sha256": "5b4738624542c97f321a302bd49b9ec154cb2cf63778acf64ba6042f8d5b4fd3",
