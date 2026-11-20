@@ -3653,3 +3653,15 @@ Batch remains 48 ready / 3 partial: C223016, C295149, C329654. Three C295149 exa
 ### End-of-turn gate and return capacity
 
 The C295149 scoped strict check exits 1 at the truthful partial-status acceptance assertion. A full strict check was retried with a 90-second timeout and exited 124 with no output; this is not a completed full-gate result. The last completed full strict check remains the user-provided partial/missing-packages failure. Eleven SHA-identical C223016 delivery-negative logs were rebound to a retained log, and C223016 scoped complete still passes. Current return capacity is 10,189/10,200 files, none over 2 MiB; this supersedes the earlier 10,200 count in this checkpoint. Results remain 48 ready / 3 partial.
+
+## 2026-11-20 C295149 official-device CPU checkpoint
+
+C295149 now has five exact cases with primary and three risk-triggered fallbacks each. The new `official_control_active` and `official_control_inoperative` cases passed exact offline, positive/missing-source compatibility, and source-only saved processing for every bound candidate. Their source-shaped diagnostics measure Native Red and Off respectively, while physical target matching and legal authority remain unconfirmed. Frozen C295149 scoped complete passes; its status remains partial. `opposing_left_exception`, semantic dispositions, independent audits, comparisons, ordered queue and local integration proof are the next worker-owned CPU tasks. Batch strict delivery remains unmet at the latest known 48 ready / 3 partial state; no strict pass is claimed.
+
+The return has 10,199/10,200 files. SHA-identical returned artifacts were rebound in C179789, C305951, C152976, C10364 and C136539 to create room for current proofs; all five affected ready-owner scoped strict gates passed. No frozen inputs, runtime, batch.json or Git operation was performed.
+
+## 2026-11-20 six-case C295149 CPU proof checkpoint
+
+C295149 now has all six planned exact constructions, each with primary and three distinct risk-triggered fallbacks. All 24 candidates have bound passing exact offline, positive/missing-source compatibility and source-only saved-processing receipts. Frozen receipt validation returns true; 72 returned test references are hash-bound; C295149 scoped nonstrict complete passes. The scoped strict gate still exits 1 at the truthful partial-status assertion. The current C295149 manifest SHA256 is `68cc4c5f6b6cbd694abd53d868de51c410b86e560498b1f996cb2ac9f6446138`.
+
+Remaining worker-owned CPU work for C295149: semantic stage dispositions, independent physical-preparation and delivery audits, controlled-comparison audits, ordered GPU handoff queue and local integration proof. C223016 and C329654 remain partial. No Native physical or legal success is claimed. The return contains 10,200/10,200 files, largest 2,094,837 bytes; byte-identical returned proofs were rebound to make room, and affected ready owners C136539, C305951, C178038 and C136014 passed their scoped strict gates. No frozen inputs, runtime, batch.json or Git operation was performed.
