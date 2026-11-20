@@ -583,6 +583,7 @@ def capture_native(args, config):
     client.set_timeout(30)
     saved = save_world(client)
     vehicle = None
+    other_vehicle = None
     helper = None
     frames = 0
     original_error = None
@@ -596,6 +597,15 @@ def capture_native(args, config):
         blueprints = world.get_blueprint_library().filter("vehicle.*")
         if not blueprints:
             raise ValueError("No Native vehicle blueprint")
+        other_waypoint = world.get_map().get_waypoint_xodr(178247, -1, 25.0)
+        if other_waypoint is None:
+            raise ValueError("Assigned other-vehicle departure lane missing")
+        other_vehicle = world.try_spawn_actor(blueprints[0], other_waypoint.transform)
+        if other_vehicle is None:
+            raise ValueError("Assigned other-vehicle spawn failed")
+        observed_other = world.get_map().get_waypoint(other_vehicle.get_location(), project_to_road=False)
+        if observed_other is None or (observed_other.road_id, observed_other.lane_id) != (178247, -1):
+            raise ValueError("Assigned other vehicle outside departure lane")
         with spawn_native_left_turn(world, blueprints[0], route["waypoints"][:61],
                                      route["waypoints"][61:]) as built:
             vehicle = built["vehicle"]
@@ -684,6 +694,8 @@ def capture_native(args, config):
     finally:
         if helper is not None:
             helper.close(confirmed=False)
+        if other_vehicle is not None and other_vehicle.is_alive:
+            other_vehicle.destroy()
         restoration = restore(client, saved)
         if original_error is None:
             seal_capture(output, frames=frames, restoration=restoration, errors=[],

@@ -7,7 +7,7 @@
       "case_id": "testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_business_at_100_ft",
       "kind": "delivery",
       "construction": "construction.json",
-      "construction_sha256": "652e5f2cd6c9fe5e7ec5c2676892552cd31726917570579db9f9108f693ceb83",
+      "construction_sha256": "3c9a57744e673d4a1652b81260f0e765870855695e2e68ed071e13ff5ea0b120",
       "measurement_procedure": {
         "entrypoint": "left_turn_delivery.py"
       },
@@ -15,7 +15,116 @@
         "status": "physical",
         "reason": "Native left-turn path following, exact indicator onset and visible lamp remain unverified"
       },
-      "candidates": []
+      "candidates": [],
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/diagnostic-recipe.json",
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_business_at_100_ft --output .runtime-work/c178244-left-at-primary-offline-v2",
+        "exit_code": 0,
+        "log": "primary-offline.log",
+        "log_sha256": "2389c1687252e644f1554fb10e622a6b769a645154da394cf5b3ebee0e221e4d",
+        "construction_sha256": "3c9a57744e673d4a1652b81260f0e765870855695e2e68ed071e13ff5ea0b120"
+      },
+      "compatibility": {
+        "receipt": "primary-compatibility.json",
+        "sha256": "04b21568dc9b941a57d6bfb2e99fbd26c817a9825f27cccb4567cda39b0d7204",
+        "log": "primary-analysis.log",
+        "negative_log": "primary-negative.log",
+        "replay_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_business_at_100_ft --output .runtime-work/c178244-left-at-primary-compat-v3/analysis --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+      },
+      "negative": {
+        "log": "primary-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_business_at_100_ft --attempt .runtime-work/c178244-left-at-primary-compat-v3/analysis --output .runtime-work/c178244-left-at-primary-saved-v3 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat .runtime-work/c178244-left-at-primary-saved-v3/v0001/feedback.json",
+        "test_log": "primary-saved-processing.json",
+        "test_log_sha256": "3eede3723558e8af03b2729cf4bcbaad027ab24ce1523eaffc4c3f7fa6d416f6",
+        "test_exit_code": 0
+      }
+    },
+    {
+      "case_id": "testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_business_under_100_ft",
+      "kind": "delivery",
+      "construction": "cases/left_business_under_100_ft/construction.json",
+      "construction_sha256": "8154bf971ec2914b6b4dc2f0c4c50daca771199c762716765b90e4557d4b55e2",
+      "measurement_procedure": {
+        "entrypoint": "left_turn_delivery.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native path and indicator onset timing may drift around the below-boundary comparison"
+      },
+      "candidates": [],
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/cases/left_business_under_100_ft/diagnostic-recipe.json",
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_business_under_100_ft --output .runtime-work/c178244-left-under-offline-v2",
+        "exit_code": 0,
+        "log": "cases/left_business_under_100_ft/offline.log",
+        "log_sha256": "7c1d0cca72e95f33f967ddd74ec3d0e2e4c1d76ca17e447890f64704a10bdeef",
+        "construction_sha256": "8154bf971ec2914b6b4dc2f0c4c50daca771199c762716765b90e4557d4b55e2"
+      },
+      "compatibility": {
+        "receipt": "cases/left_business_under_100_ft/compatibility.json",
+        "sha256": "c454e8df12db775ad28b66d612524d15000380655c55893a0d19f94715f90e52",
+        "log": "cases/left_business_under_100_ft/analysis.log",
+        "negative_log": "cases/left_business_under_100_ft/negative.log",
+        "replay_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_business_under_100_ft --output .runtime-work/c178244-left-under-compat-v1/analysis --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+      },
+      "negative": {
+        "log": "cases/left_business_under_100_ft/negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_business_under_100_ft --attempt .runtime-work/c178244-left-under-compat-v1/analysis --output .runtime-work/c178244-left-under-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat .runtime-work/c178244-left-under-saved-v1/v0001/feedback.json",
+        "test_log": "cases/left_business_under_100_ft/saved-processing.json",
+        "test_log_sha256": "6c4998fa33bf42020ce7c211ca15a20a276fd85e3d01a2d1473e4f11e56ac1bc",
+        "test_exit_code": 0
+      }
+    },
+    {
+      "case_id": "testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_business_over_100_ft",
+      "kind": "delivery",
+      "construction": "cases/left_business_over_100_ft/construction.json",
+      "construction_sha256": "82fc58ed71607f3eebc2e10e67da4ecbad9e1828041b43cb663d8b9bcd80f284",
+      "measurement_procedure": {
+        "entrypoint": "left_turn_delivery.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native path and indicator onset timing may drift around the above-boundary comparison"
+      },
+      "candidates": [],
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/cases/left_business_over_100_ft/diagnostic-recipe.json",
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_business_over_100_ft --output .runtime-work/c178244-left-over-offline-v1",
+        "exit_code": 0,
+        "log": "cases/left_business_over_100_ft/offline.log",
+        "log_sha256": "7c2a694335a319e73ab0797a168c905b7c04559f4d9760c1524f47e777e8ce79",
+        "construction_sha256": "82fc58ed71607f3eebc2e10e67da4ecbad9e1828041b43cb663d8b9bcd80f284"
+      },
+      "compatibility": {
+        "receipt": "cases/left_business_over_100_ft/compatibility.json",
+        "sha256": "35f17ef75873b577fd28c647220695167aa76fee9c568b887180e73abe943137",
+        "log": "cases/left_business_over_100_ft/analysis.log",
+        "negative_log": "cases/left_business_over_100_ft/negative.log",
+        "replay_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_business_over_100_ft --output .runtime-work/c178244-left-over-compat-v1/analysis --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+      },
+      "negative": {
+        "log": "cases/left_business_over_100_ft/negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C178244__NRS-484B-413-2__motor_vehicle_driver__left_business_over_100_ft --attempt .runtime-work/c178244-left-over-compat-v1/analysis --output .runtime-work/c178244-left-over-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat .runtime-work/c178244-left-over-saved-v1/v0001/feedback.json",
+        "test_log": "cases/left_business_over_100_ft/saved-processing.json",
+        "test_log_sha256": "bf87e922628e8d5e8c98493184d9b8ec789e3bfb72b70d04db8c99bdb1f8475b",
+        "test_exit_code": 0
+      }
     }
   ]
 }

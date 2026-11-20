@@ -1,0 +1,53 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Continuous left-intention signal over traveled approach before course change",
+      "source": "NRS 484B.413(2)",
+      "output_key": "continuous_left_signal_distance_m",
+      "method": "measure_continuous_left_signal_distance",
+      "value_type": "number",
+      "kind": "measured",
+      "inputs": [
+        "drive_history.jsonl",
+        "video_frames.jsonl",
+        "route_context.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Business or residential district selects the 100-foot boundary",
+      "source": "NRS 484B.413(2)",
+      "output_key": "district_boundary_m",
+      "method": "source_district_boundary",
+      "value_type": "number",
+      "kind": "sourced_context",
+      "inputs": [
+        "route_context.json",
+        "district-site-packet.json",
+        "district-site-source.txt"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Left-turn course-change onset follows the continuous signal",
+      "source": "NRS 484B.413(2)",
+      "output_key": "left_turn_onset",
+      "method": "measure_left_turn_onset",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "drive_history.jsonl",
+        "video_frames.jsonl",
+        "route_context.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "drive_history.jsonl"
+    ],
+    "error_contains": "Missing required source: drive_history.jsonl"
+  }
+}
