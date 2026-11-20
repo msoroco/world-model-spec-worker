@@ -15,12 +15,14 @@ from reversible_direction import measure_direction
 SOURCE_FILES = ('config.json', 'direction_state.jsonl', 'video_frames.jsonl',
                 'trace.jsonl')
 CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
+CHANNELS = ('source_frame_and_civil_time', 'lane_and_subject_direction',
+            'direction_device_source', 'four_camera_source', 'observed_direction')
 
 
 def _load(root, name):
     path = root / name
     if not path.is_file() or not path.read_bytes():
-        raise ValueError('Missing original source: ' + name)
+        raise ValueError('Missing required source: ' + name)
     return path.read_bytes(), hashlib.sha256(path.read_bytes()).hexdigest()
 
 
@@ -59,18 +61,38 @@ def analyze(attempt, *, write_channels=False):
     expected = 'against_designation' if suffix.endswith('_against') else 'with_designation'
     if any(row['observed_direction'] != expected for row in observations):
         raise ValueError('Source direction differs from exact case target')
-    channel = 'observed_direction'
-    channel_path = root / (channel + '.jsonl')
+    derived = {
+        'source_frame_and_civil_time': [
+            {'civil_time': row['civil_time'], 'source': row['civil_time_source'],
+             'period_id': row['period_id']} for row in observations],
+        'lane_and_subject_direction': [
+            {'lane_id': row['lane_id'], 'travel_alignment': row['travel_alignment']}
+            for row in observations],
+        'direction_device_source': [
+            {'source_id': row['device_source_id'], 'kind': row['device_kind'],
+             'period_id': row['period_id']} for row in observations],
+        'four_camera_source': [True for _ in observations],
+        'observed_direction': [row['observed_direction'] for row in observations],
+    }
     if write_channels:
-        if channel_path.exists():
+        if any((root / (name + '.jsonl')).exists() for name in CHANNELS):
             raise ValueError('Retain prior derived direction channel')
-        channel_path.write_text(''.join(json.dumps({
-            'frame': row['frame'], 'time_s': row['time_s'],
-            'value': row['observed_direction']}) + '\n' for row in observations))
+        for name, values in derived.items():
+            (root / (name + '.jsonl')).write_text(''.join(json.dumps({
+                'frame': row['frame'], 'time_s': row['time_s'], 'value': value}) + '\n'
+                for row, value in zip(observations, values)))
+    source_hashes = {name: hashes[name] for name in SOURCE_FILES if name != 'config.json'}
+    period_value = {'period_id': observations[0]['period_id'],
+                    'first_civil_time': observations[0]['civil_time'],
+                    'last_civil_time': observations[-1]['civil_time'],
+                    'designated_direction': rows[0]['device']['direction_xy'],
+                    'observed_direction': expected}
     return {
         'format': 'worker-analysis-report', 'case_id': case_id,
-        'measurements': {'reversible_direction': {
-            'method': 'analyze', 'sources': hashes,
+        'measurements': {'period_direction': {
+            'method': 'analyze', 'sources': source_hashes, 'value': period_value},
+            'reversible_direction': {
+            'method': 'analyze', 'sources': source_hashes,
             'value': {'frames': len(observations), 'lane_id': config['governed_lane_id'],
                       'period_id': observations[0]['period_id'],
                       'device_source_id': observations[0]['device_source_id'],
@@ -86,8 +108,8 @@ def analyze(attempt, *, write_channels=False):
 
 def build_result(attempt, report):
     root = Path(attempt)
-    channel = root / 'observed_direction.jsonl'
-    if not channel.is_file():
+    paths = {name: root / (name + '.jsonl') for name in CHANNELS}
+    if any(not path.is_file() for path in paths.values()):
         raise ValueError('Saved direction channel absent')
     measured = report['measurements']['reversible_direction']['value']
     config = json.loads((root / 'config.json').read_text())
@@ -107,14 +129,15 @@ def build_result(attempt, report):
         'video_references': [name + '.mkv' for name in CAMERAS],
         'video_frame_map_reference': 'video_frames.jsonl',
         'recording_description': config.get('case', {}).get('recording_description', {}),
-        'recording_evidence': [{'name': 'observed_direction', 'unit': 'category',
-                                'reference': channel.name,
-                                'sha256': hashlib.sha256(channel.read_bytes()).hexdigest()}],
-        'realized_observables': {'observed_direction': {
-            'value': measured['direction'], 'unit': 'category',
+        'recording_evidence': [{'name': item['name'], 'unit': item['unit'],
+                                'reference': paths[item['name']].name,
+                                'sha256': hashlib.sha256(paths[item['name']].read_bytes()).hexdigest()}
+                               for item in config.get('case', {}).get('recording_description', {}).get('channels', [])],
+        'realized_observables': {'minimum_absolute_alignment': {
+            'value': measured['minimum_absolute_alignment'], 'unit': 'ratio',
             'method': 'same-frame source designation versus velocity',
-            'time_window': 'all original frames', 'statistic': 'per-frame agreement',
-            'reference': channel.name}},
+            'time_window': 'all original frames', 'statistic': 'minimum',
+            'reference': paths['lane_and_subject_direction'].name}},
         'physical_acceptance_claimed': False, 'legal_acceptance_claimed': False}
 
 

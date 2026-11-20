@@ -11,7 +11,7 @@
         "period-reversal"
       ],
       "description": "morning period, eastbound travel with east designation",
-      "construction_status": "planned_cpu_unimplemented",
+      "construction_status": "primary_offline_passed_pending_compatibility_saved_and_fallbacks",
       "evidence_limit": "Proposed controlled construction only; no physical realization or regulatory authorization inferred from synthetic devices."
     },
     {
@@ -420,5 +420,151 @@
         "why_existing_insufficient": "The accepted cone cases do not isolate a designation that overrides a contrary centerline inference."
       }
     ]
+  },
+  "requirement_dispositions": [
+    {
+      "status": "selected_required",
+      "requirement": "One direction during one period and the opposite direction during another period of the day",
+      "source": "inputs/heldout__C223016__LVMC-11-42-030__motor_vehicle_driver/assignment.json law.text",
+      "case_ids": [
+        "heldout__C223016__LVMC-11-42-030__motor_vehicle_driver__morning_east_with",
+        "heldout__C223016__LVMC-11-42-030__motor_vehicle_driver__morning_west_against",
+        "heldout__C223016__LVMC-11-42-030__motor_vehicle_driver__evening_west_with",
+        "heldout__C223016__LVMC-11-42-030__motor_vehicle_driver__evening_east_against"
+      ],
+      "evidence_or_gap": "period-reversal: accepted recordings do not prove an observed transition"
+    },
+    {
+      "status": "selected_required",
+      "requirement": "Signs temporarily designating lanes in a particular direction and violation of markings, signs, barriers or other devices so placed",
+      "source": "inputs/heldout__C223016__LVMC-11-42-030__motor_vehicle_driver/assignment.json law.text",
+      "case_ids": [
+        "heldout__C223016__LVMC-11-42-030__motor_vehicle_driver__sign_east_with",
+        "heldout__C223016__LVMC-11-42-030__motor_vehicle_driver__sign_west_against",
+        "heldout__C223016__LVMC-11-42-030__motor_vehicle_driver__marking_east_with",
+        "heldout__C223016__LVMC-11-42-030__motor_vehicle_driver__marking_west_against",
+        "heldout__C223016__LVMC-11-42-030__motor_vehicle_driver__signal_east_with",
+        "heldout__C223016__LVMC-11-42-030__motor_vehicle_driver__signal_west_against"
+      ],
+      "evidence_or_gap": "device-alternatives: accepted cone barrier does not prove sign, marking or overhead signal alternatives"
+    },
+    {
+      "status": "selected_required",
+      "requirement": "Temporary designation governs direction regardless of the centerline of the roadway",
+      "source": "inputs/heldout__C223016__LVMC-11-42-030__motor_vehicle_driver/assignment.json law.text",
+      "case_ids": [
+        "heldout__C223016__LVMC-11-42-030__motor_vehicle_driver__centerline_east_with",
+        "heldout__C223016__LVMC-11-42-030__motor_vehicle_driver__centerline_west_against"
+      ],
+      "evidence_or_gap": "centerline-override: accepted recordings do not establish the contrary centerline comparison"
+    }
+  ],
+  "source_observation_mapping": {
+    "dev.regulatory_sign": {
+      "evidence": "the temporary signs designating the lane's direction; retain original source and leave legal effect unresolved",
+      "channels": [
+        "direction_device_source"
+      ],
+      "source_refs": [
+        "inputs/heldout__C223016__LVMC-11-42-030__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "dev.lane_control_signal": {
+      "evidence": "where the designation is by overhead signals; retain original source and leave legal effect unresolved",
+      "channels": [
+        "direction_device_source"
+      ],
+      "source_refs": [
+        "inputs/heldout__C223016__LVMC-11-42-030__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "dev.temporary_traffic_control": {
+      "evidence": "the barriers or other devices placed; retain original source and leave legal effect unresolved",
+      "channels": [
+        "direction_device_source"
+      ],
+      "source_refs": [
+        "inputs/heldout__C223016__LVMC-11-42-030__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.lane_marking": {
+      "evidence": "the markings placed; retain original source and leave legal effect unresolved",
+      "channels": [
+        "direction_device_source"
+      ],
+      "source_refs": [
+        "inputs/heldout__C223016__LVMC-11-42-030__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "dev.governs": {
+      "evidence": "the lane and period each device controls; retain original source and leave legal effect unresolved",
+      "channels": [
+        "direction_device_source"
+      ],
+      "source_refs": [
+        "inputs/heldout__C223016__LVMC-11-42-030__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.lane_direction": {
+      "evidence": "the direction designated for the period; retain original source and leave legal effect unresolved",
+      "channels": [
+        "lane_and_subject_direction"
+      ],
+      "source_refs": [
+        "inputs/heldout__C223016__LVMC-11-42-030__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "kin.heading": {
+      "evidence": "the subject's direction of travel; retain original source and leave legal effect unresolved",
+      "channels": [
+        "lane_and_subject_direction"
+      ],
+      "source_refs": [
+        "inputs/heldout__C223016__LVMC-11-42-030__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.wrong_way": {
+      "evidence": "travel against the designated direction; retain original source and leave legal effect unresolved",
+      "channels": [
+        "lane_and_subject_direction"
+      ],
+      "source_refs": [
+        "inputs/heldout__C223016__LVMC-11-42-030__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "the lane occupied; retain original source and leave legal effect unresolved",
+      "channels": [
+        "lane_and_subject_direction"
+      ],
+      "source_refs": [
+        "inputs/heldout__C223016__LVMC-11-42-030__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.condition_in_effect": {
+      "evidence": "whether the period the designation applies to holds now; retain original source and leave legal effect unresolved",
+      "channels": [
+        "source_frame_and_civil_time"
+      ],
+      "source_refs": [
+        "inputs/heldout__C223016__LVMC-11-42-030__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "env.civil_time": {
+      "evidence": "the clock time it is judged against; retain original source and leave legal effect unresolved",
+      "channels": [
+        "source_frame_and_civil_time"
+      ],
+      "source_refs": [
+        "inputs/heldout__C223016__LVMC-11-42-030__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.centre_line": {
+      "evidence": "which the designation overrides; retain original source and leave legal effect unresolved",
+      "channels": [],
+      "source_refs": [
+        "inputs/heldout__C223016__LVMC-11-42-030__motor_vehicle_driver/assignment.json"
+      ]
+    }
   }
 }

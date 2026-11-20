@@ -8,8 +8,10 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).resolve().parents[3] / 'runtime' / 'scenario_pipeline'))
 from direction_finalizer import analyze, build_result
 from runner import check_config
+from batch_pipeline.validation import recording_evidence
 
 
 PREFIX = 'heldout__C223016__LVMC-11-42-030__motor_vehicle_driver__'
@@ -67,6 +69,18 @@ class DirectionFinalizerTests(unittest.TestCase):
             self.assertEqual(len(result['video_references']), 4)
             with self.assertRaisesRegex(ValueError, 'Retain prior'):
                 analyze(root, write_channels=True)
+
+    def test_full_planned_channel_evidence_validates(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            fixture(root)
+            source = Path(__file__).resolve().parents[1] / 'config.json'
+            root.joinpath('config.json').write_bytes(source.read_bytes())
+            report = analyze(root, write_channels=True)
+            result = build_result(root, report)
+            planned = json.loads(source.read_text())['case']['recording_description']
+            recording_evidence(result, planned, lambda reference: root / reference)
+            self.assertEqual(len(result['recording_evidence']), 5)
 
     def test_opposed_source(self):
         with tempfile.TemporaryDirectory() as temporary:
