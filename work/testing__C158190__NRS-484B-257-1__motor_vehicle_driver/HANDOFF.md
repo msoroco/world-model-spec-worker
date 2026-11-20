@@ -734,3 +734,5 @@ The whole batch still has 10 ready and 33 partial assignments. The last full str
 Return cap checkpoint: 21 unbound historical top-level logs and former test rows are preserved byte-for-byte with SHA-256 in work/_shared/archived-unbound-negative-logs-20261119.json. Active case receipts remain unchanged.
 
 Return cap checkpoint: 6 unbound historical top-level logs and former test rows are preserved byte-for-byte with SHA-256 in work/_shared/archived-unbound-negative-logs-20261119.json. Active case receipts remain unchanged.
+
+2026-11-20 packaging checkpoint: six unreferenced historical proof/semantic builder scripts were preserved byte-for-byte with original paths and SHA-256 in `work/_shared/archived-unbound-negative-logs-20261119.json`, then removed for return capacity. The C158190 scoped `worker_check.py --complete` passed after archival; active manifest, result-bound proofs and retained tests were not removed.

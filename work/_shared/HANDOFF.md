@@ -2792,3 +2792,7 @@ C178244 `left_business_at_100_ft` fallback2 now has its distinct 4.0 m controlle
 C178244 `left_business_at_100_ft` fallback3 is now bound and passes exact offline, positive/missing-source negative compatibility and recorded-only saved processing. The first selected case has three distinct fallback constructions and proofs. Fifteen fallbacks remain across five cases. Six more unreferenced historical helpers from C109749/C125745 were losslessly archived and both scoped checks pass. The returned work tree remains at 8,600 files.
 
 Final verification: pinned CPU preflight and C178244 scoped complete check pass; scoped strict check still rejects partial/missing packages. All 517 shared archive entries round-trip to their SHA-256. Work return count is 8,600.
+
+C178244 `left_business_under_100_ft` fallback1 now has exact offline, positive/missing-source negative compatibility and recorded-only saved receipts bound; scoped complete check passes. Fourteen C178244 fallbacks remain. Six unreferenced C158190 historical helpers were archived losslessly, and its scoped complete check passes. Return count is 8,600 files.
+
+Final verification: pinned CPU preflight and C178244 scoped complete check pass; scoped strict check rejects partial/missing packages. All 523 archive records round-trip to their SHA-256. Work return count is 8,600.
