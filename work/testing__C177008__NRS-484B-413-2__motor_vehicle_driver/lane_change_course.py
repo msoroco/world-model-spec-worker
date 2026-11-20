@@ -8,6 +8,7 @@ import argparse
 import hashlib
 import json
 import math
+import shutil
 from pathlib import Path
 from xml.etree import ElementTree as ET
 
@@ -160,6 +161,7 @@ def write_diagnostic(root, signal_start_m=SIGNAL_START_S_M, district_type="busin
                          "ego_light_mask": RIGHT_BLINKER_MASK if indicator else 0,
                          "right_indicator": indicator, "requested_indicator": indicator}
                 body = {"frame": frame, "time_s": time, "road_id": ROAD_ID,
+                        "lane_id": -1 if y >= -LANE_WIDTH_M else -2,
                         "body_vertices_m": [[x + dx, y + dy, 0.0] for dx in (-1.0, 1.0)
                                             for dy in (-0.7, 0.7)]}
                 video = {"video_frame": i, "carla_frame": frame, "time_s": time,
@@ -339,6 +341,105 @@ def finalize_source_trace(source, output):
     return result
 
 
+def finalize_saved(attempt, output):
+    """Run the selected analyzer on a fresh staged acquisition."""
+    from worker_exchange.native_output import physical_result, write_result
+    attempt, output = Path(attempt), Path(output)
+    if (output.exists() or (attempt / "result.json").exists() or
+            (attempt / "channels").exists() or (attempt.parent / "evidence").exists()):
+        raise ValueError("Retain prior finalization; choose a fresh saved version")
+    required = ("config.json", "trace.jsonl", "capture/evidence.jsonl",
+                *(name + ".mkv" for name in
+                  ("overview", "approach", "reference_corner", "driver_reference")))
+    for name in required:
+        if not (attempt / name).is_file():
+            raise ValueError("Missing required source: " + name)
+    config = json.loads((attempt / "config.json").read_text())
+    if (config.get("cell_id") != "C177008" or config.get("course") != "change_lane" or
+            config.get("law_id") != "NRS-484B-413-2" or
+            config.get("selected_case_id") is None):
+        raise ValueError("Wrong C177008 lane-change capture identity")
+    description = config.get("recording_description")
+    if not isinstance(description, dict) or not description.get("channels"):
+        raise ValueError("Selected recording description required")
+    report = analyze_source_trace(attempt)
+    rows = _rows(attempt / "drive_history.jsonl")
+    mapping = _rows(attempt / "video_frames.jsonl")
+    trace = _rows(attempt / "trace.jsonl")
+    if (len(rows) != len(mapping) or len(trace) != len(mapping) or
+            any(t.get("frame") != m.get("carla_frame") or
+                t.get("time_s") != m.get("time_s") for t, m in zip(trace, mapping))):
+        raise ValueError("Original trace/video frame join changed")
+    evidence_root = attempt.parent / "evidence"
+    evidence_root.mkdir()
+    for name in ("trace.jsonl", "road.xodr", "route_context.json",
+                 "drive_history.jsonl", "body_history.jsonl",
+                 "district-site-packet.json", "district-site-source.txt"):
+        shutil.copyfile(attempt / name, evidence_root / name)
+    shutil.copytree(attempt / "capture", evidence_root / "capture")
+    channels = attempt / "channels"
+    channels.mkdir()
+    extract = {
+        "ego_speed": ("m/s", lambda row: row["ego_speed_mps"]),
+        "ego_heading": ("deg", lambda row: row["ego_heading_deg"]),
+        "ego_road_id": ("id", lambda row: row["native_road_id"]),
+        "ego_turn_indicator": ("device state", lambda row: {
+            "reported_mask": row["ego_light_mask"],
+            "reported_device_state": "right" if row["right_indicator"] else "off"}),
+        "ego_position": ("m", lambda row: row["ego_position_xy_m"]),
+    }
+    evidence = []
+    for name, (unit, value) in extract.items():
+        relative = "channels/" + name + ".jsonl"
+        with (attempt / relative).open("x") as stream:
+            for row in rows:
+                stream.write(json.dumps({"time_s": row["time_s"],
+                                         "original_frame": row["frame"],
+                                         "value": value(row)}, allow_nan=False) + "\n")
+        evidence.append({"name": name, "unit": unit, "reference": relative})
+    shutil.copyfile(channels / "ego_turn_indicator.jsonl",
+                    evidence_root / "ego_turn_indicator.jsonl")
+    checksums = {"evidence/" + p.relative_to(evidence_root).as_posix(): _hash(p)
+                 for p in evidence_root.rglob("*") if p.is_file()}
+    (attempt.parent / "evidence-checksums.json").write_text(
+        json.dumps(checksums, sort_keys=True, allow_nan=False) + "\n")
+    distance = report["first_course_change"]["continuous_right_signal_distance_m"]
+    observed = report["observed_continuous_distance_meets_boundary"]
+    result = {"case_id": config["selected_case_id"],
+        "measured_values": {"continuous_right_signal_distance_m": distance,
+                            "statutory_boundary_m": report["required_distance_m"],
+                            "first_course_change_frame": report["first_course_change"]["frame"],
+                            "first_body_exit_frame": report["first_body_exit"]["frame"]},
+        "target_checks": [{"target": "continuous_right_signal_before_lane_change",
+            "requested": True, "measured": observed,
+            "method": "original right-lamp readback and sampled path before first course change",
+            "tolerance": 0.0, "matched": observed,
+            "physical_cause_confirmed": False,
+            "cause_evidence": ["drive_history.jsonl", "body_history.jsonl",
+                               "video_frames.jsonl", "route_context.json"]}],
+        "setup_confirmed": False, "behavior_attempted": False,
+        "maneuver_completed": False, "termination_reason": "saved source assessment pending",
+        "physical_failure_flags": ["Native lamp pixels and legal district review require independent review"],
+        "trace_reference": "trace.jsonl",
+        "video_references": [name + ".mkv" for name in
+                             ("overview", "approach", "reference_corner", "driver_reference")],
+        "video_frame_map_reference": "video_frames.jsonl",
+        "recording_description": description, "recording_evidence": evidence,
+        "source_evidence_hashes": report["sources"],
+        "capture_evidence_sha256": _hash(attempt / "capture/evidence.jsonl"),
+        "realized_observables": {}}
+    result = physical_result(attempt, result)
+    analysis = {"format": "worker-lane-change-saved-analysis",
+                "case_id": config["selected_case_id"],
+                "source_report": report, "source_hashes": report["sources"],
+                "physical_checks": result["physical_checks"],
+                "legal_verdict_asserted": False,
+                "analysis_complete": True}
+    write_result(attempt, result)
+    output.write_text(json.dumps(analysis, indent=2, allow_nan=False) + "\n")
+    return analysis
+
+
 def native_control(position_xy, yaw_deg, speed_mps, station_m, target_speed_mps=SPEED_MPS):
     """Bounded pure-pursuit command for the authored right lane change."""
     target = course_sample(min(ROAD_LENGTH_M, station_m + 4.0))
@@ -497,11 +598,17 @@ def main():
     parser.add_argument("--write-diagnostic", action="store_true")
     parser.add_argument("--analyze", type=Path)
     parser.add_argument("--finalize-source", type=Path)
+    parser.add_argument("--attempt", type=Path)
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--output-dir", type=Path)
     parser.add_argument("--host")
     parser.add_argument("--port", type=int)
     args = parser.parse_args()
+    if args.attempt:
+        if args.output is None:
+            parser.error("--output is required for saved finalization")
+        finalize_saved(args.attempt, args.output)
+        return
     if args.check:
         validate_plan(plan()["samples"])
         return
