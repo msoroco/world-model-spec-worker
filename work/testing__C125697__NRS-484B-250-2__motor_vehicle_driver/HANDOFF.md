@@ -207,3 +207,7 @@ Fifty historical result-only CPU command logs were losslessly archived as `cpu-t
 Seven superseded compatibility receipts with no current JSON machine references were preserved byte for byte in `historical-unbound-compatibility-receipts.json` (SHA256 `fcbc7a13fb5509e633b859677669b68ed177909a2f68e314ce30d773ae78daef`). The archive records original filenames, exact bytes and SHA256 values. This frees six return slots for the C125751 straight fallback constructions without changing C125697's selected proofs or partial status. Rehydrate an archived receipt from its base64 field only if a historical diagnostic is needed; rerun the current pinned compatibility proof for readiness.
 
 Return cap checkpoint: 18 unbound historical top-level logs and former test rows are preserved byte-for-byte with SHA-256 in work/_shared/archived-unbound-negative-logs-20261119.json. Active case receipts remain unchanged.
+
+Return cap checkpoint: 25 unbound historical top-level logs and former test rows are preserved byte-for-byte with SHA-256 in work/_shared/archived-unbound-negative-logs-20261119.json. Active case receipts remain unchanged.
+
+Return cap checkpoint: 40 unbound historical top-level logs and former test rows are preserved byte-for-byte with SHA-256 in work/_shared/archived-unbound-negative-logs-20261119.json. Active case receipts remain unchanged.

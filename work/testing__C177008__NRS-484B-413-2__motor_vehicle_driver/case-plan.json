@@ -208,6 +208,19 @@
         "same authored map, actor, other-area district and dry weather",
         "same body trajectory; above case adds one leading approach sample"
       ]
+    },
+    {
+      "comparison_id": "district_business_residential_100",
+      "case_ids": [
+        "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_right_at_100ft",
+        "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__residential_right_at_100ft"
+      ],
+      "deliberate_differences": [
+        "source packet classifies business versus residential district"
+      ],
+      "fixed_conditions": [
+        "identical original map, drive, body, weather and signal distance"
+      ]
     }
   ],
   "observations": [
@@ -478,6 +491,20 @@
       "negative_expected_error": "Approach body trajectory changed beyond one lead sample",
       "negative_log": "comparisons/other_area_threshold_at_above-negative.log",
       "negative_log_sha256": "efe33d9e2351dafad7e09e5649440ce57321545a540e1a2a4038222d904efcc3"
+    },
+    {
+      "comparison_id": "district_business_residential_100",
+      "script": "comparison_residential_audit.py",
+      "script_sha256": "c3884b9a47a312b4a1fbd2938d170917cae047ae6a599e15758f845b3b7ff6b8",
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/comparison_residential_audit.py --left .runtime-work/c177008-at-recheck-saved-v1/v0001/evidence --right .runtime-work/c177008-residential-saved-v1/v0001/evidence",
+      "exit_code": 0,
+      "receipt": "comparisons/district_business_residential_100.json",
+      "receipt_sha256": "a350dc1a67a5b2db69459896f3934175a53e94c9b210fc2e4f813a058be4529f",
+      "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/comparison_residential_audit.py --left .runtime-work/c177008-at-recheck-saved-v1/v0001/evidence --right .runtime-work/c177008-comparison-negative/district_business_residential_100/evidence",
+      "negative_exit_code": 1,
+      "negative_expected_error": "Business/residential district contrast missing",
+      "negative_log": "comparisons/district_business_residential_100-negative.log",
+      "negative_log_sha256": "21aec740342efc858909f89d586ea5d555e3f437ac036caed70110ce57f396b1"
     }
   ]
 }
