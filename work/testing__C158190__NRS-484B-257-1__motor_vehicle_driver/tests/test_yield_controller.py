@@ -16,7 +16,7 @@ class YieldStageTests(unittest.TestCase):
     def test_slows_only_at_view_bracket_then_crosses(self):
         stage = module.Stage(PREFIX + 'yield_nearest_view_through_approaches')
         self.assertEqual(stage.target(30, within_intersection=False,
-                                      through_vehicle_clear=False), 6)
+                                      through_vehicle_clear=False), 8)
         self.assertEqual(stage.target(15, within_intersection=False,
                                       through_vehicle_clear=False), 2)
         self.assertEqual(stage.target(5, within_intersection=False,
@@ -28,7 +28,7 @@ class YieldStageTests(unittest.TestCase):
     def test_no_slow_contrast_keeps_same_speed(self):
         stage = module.Stage(PREFIX + 'yield_nearest_view_no_slow')
         self.assertEqual(stage.target(15, within_intersection=False,
-                                      through_vehicle_clear=False), 6)
+                                      through_vehicle_clear=False), 8)
         self.assertEqual(module.speed_control(6, 2), {'throttle': 1, 'brake': 0})
 
     def test_rejects_unsourced_distance_and_unknown_case(self):

@@ -50,7 +50,7 @@ class MotionTests(unittest.TestCase):
         self.assertGreater(through.control['throttle'], 0)
         fast = apply_motion(world, dict(base, stage=Stage(PREFIX+'yield_nearest_view_no_slow')),
                             control_factory=self.control_factory)
-        self.assertEqual(fast['ego_target_mps'], 6.)
+        self.assertEqual(fast['ego_target_mps'], 8.)
         self.assertEqual(ego.control['brake'], 0)
 
     def test_clear_road_and_entered_vehicle_clearance(self):

@@ -367,6 +367,9 @@ def prove_matched_approach_sources(output):
             raise ValueError(f'{name} saved speed measurement differs from plan')
         negative = target / (name + '-missing-rays')
         shutil.copytree(folder, negative)
+        (negative / 'analysis-report.json').unlink()
+        (negative / 'result.json').unlink()
+        shutil.rmtree(negative / 'channels')
         (negative / 'visibility_rays.jsonl').unlink()
         failure = run_finalizer(negative)
         negative_log = negative / 'source-finalizer-negative.log'

@@ -12,7 +12,7 @@ PREFIX = 'testing__C158190__NRS-484B-257-1__motor_vehicle_driver__'
 @dataclass(frozen=True)
 class Stage:
     case_id: str
-    approach_speed_mps: float = 6.0
+    approach_speed_mps: float = 8.0
     view_speed_mps: float = 2.0
     clear_speed_mps: float = 4.0
     view_bracket_m: float = 15.0
