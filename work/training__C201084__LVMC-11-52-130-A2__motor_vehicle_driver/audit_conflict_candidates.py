@@ -94,7 +94,7 @@ def audit(prefix):
                 result['measured_values']['source_frames'] == 600 and
                 result['measured_values']['statutory_necessity_verified'] is False and
                 result['measured_values']['lead_ahead_frames'] == 600 and
-                result['measured_values']['brake_request_frames'] == 600 and
+                result['measured_values']['brake_request_frames'] == 1 and
                 report['analysis_complete'] is True and
                 report['diagnostic_fixture'] is True,
                 ident+' saved result overclaims or lacks lead samples')
@@ -120,7 +120,7 @@ def audit(prefix):
             'saved_receipt_sha256': sha(saved/'processing.json'),
             'source_frames': 600,
             'lead_ahead_frames': 600,
-            'brake_request_frames': 600}
+            'brake_request_frames': 1}
     require(len(constructions) == len(IDS) and len(tunings) == len(IDS),
             'Conflict fallback constructions or controller tunings repeat')
     return {'case_id': case, 'manifest_sha256': sha(manifest_path),

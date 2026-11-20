@@ -1,4 +1,4 @@
-"""Write source-faithful draft semantic stages for three CPU probes."""
+"""Write source-faithful draft semantic stages for four CPU probes."""
 import hashlib
 import json
 from pathlib import Path
@@ -28,9 +28,11 @@ def build():
     reference = json.loads((HERE/'draft-reference-fallback-manifest.json').read_text())['cases'][0]
     contrast = json.loads((HERE/'draft-contrast-fallback-manifest.json').read_text())['cases'][0]
     conflict = json.loads((HERE/'draft-conflict-fallback-manifest.json').read_text())['cases'][0]
+    clear = json.loads((HERE/'draft-clear-manifest.json').read_text())['cases'][0]
     recording = json.loads((HERE/reference['construction']).read_text())['recording_description']
     assert recording == json.loads((HERE/contrast['construction']).read_text())['recording_description']
     conflict_recording = json.loads((HERE/conflict['construction']).read_text())['recording_description']
+    clear_recording = json.loads((HERE/clear['construction']).read_text())['recording_description']
     relevance = {'status': 'draft', 'actor': ACTOR, 'cell_id': CELL,
                  'borderline_excluded': [], 'relevant_laws': [{
                      'law_id': LAW, 'applies_to': [ACTOR], 'confidence': 'medium',
@@ -96,7 +98,7 @@ def build():
                      'range_or_domain': 'source-observed overlap or disjoint relation',
                      'used_by_laws': [LAW]},
                     {'name': 'lead_traffic_conflict_probe', 'kind': 'controller',
-                     'range_or_domain': 'lead vehicle present or absent on surveyed road',
+                     'range_or_domain': 'lead near, lead beyond authored segment, or absent on surveyed road',
                      'used_by_laws': [LAW]}]}
     write(PROPOSALS/'bindings.json', bindings)
     cases = []
@@ -116,17 +118,31 @@ def build():
                       'unresolved_judgment_calls': [phrase for phrase,_,_,_ in judgments]})
     cases.append({'case_id': ASSIGNMENT+'__conflict', 'target_law_id': LAW,
                   'target_type': 'judgment_sweep',
-                  'paired_probe_id': ASSIGNMENT+'__lead_conflict_pending_pair',
+                  'paired_probe_id': ASSIGNMENT+'__lead_position_pair',
                   'deliberate_differences': ['lead_traffic_conflict_probe'],
                   'probe': {'primary_variable': 'lead_traffic_conflict_probe',
                             'comparison_or_standard': 'saved lead position, velocity and braking request; statutory necessity unresolved',
-                            'target_value_or_branch': {'lead_traffic_conflict_probe': 'lead present'}},
+                            'target_value_or_branch': {'lead_traffic_conflict_probe': 'lead at x=18 m'}},
                   'rationale': 'Record a same-road lead vehicle ahead during the authored-zone stop.',
                   'variable_assignments': {
                       'requested_stop_destination': {'kind': 'controller', 'value': 'inside'},
                       'actual_stop_zone_relation': {'kind': 'subject_behavior', 'value': None},
-                      'lead_traffic_conflict_probe': {'kind': 'controller', 'value': 'lead present'}},
+                      'lead_traffic_conflict_probe': {'kind': 'controller', 'value': 'lead at x=18 m'}},
                   'recording_description': conflict_recording,
+                  'unresolved_judgment_calls': [phrase for phrase,_,_,_ in judgments]})
+    cases.append({'case_id': ASSIGNMENT+'__clear', 'target_law_id': LAW,
+                  'target_type': 'judgment_sweep',
+                  'paired_probe_id': ASSIGNMENT+'__lead_position_pair',
+                  'deliberate_differences': ['lead_traffic_conflict_probe'],
+                  'probe': {'primary_variable': 'lead_traffic_conflict_probe',
+                            'comparison_or_standard': 'saved lead position and initial braking request; statutory necessity unresolved',
+                            'target_value_or_branch': {'lead_traffic_conflict_probe': 'lead at x=35 m'}},
+                  'rationale': 'Move the same-road lead beyond the authored fire-lane segment with the same controller and capture.',
+                  'variable_assignments': {
+                      'requested_stop_destination': {'kind': 'controller', 'value': 'inside'},
+                      'actual_stop_zone_relation': {'kind': 'subject_behavior', 'value': None},
+                      'lead_traffic_conflict_probe': {'kind': 'controller', 'value': 'lead at x=35 m'}},
+                  'recording_description': clear_recording,
                   'unresolved_judgment_calls': [phrase for phrase,_,_,_ in judgments]})
     cases.insert(0, {'case_id': ASSIGNMENT+'__baseline', 'target_law_id': None,
                      'target_type': 'baseline', 'rationale': 'Common source-surveyed fire-lane context.',
@@ -142,7 +158,7 @@ def build():
                                  'target_law_id': LAW,
                                  'judgment_refs': [{'phrase': phrase, 'note': note}
                                                    for phrase,note,_,_ in judgments],
-                                 'rationale': 'Inside/outside and lead-present probes are built; a source-grounded absent-lead contrast and posting routes remain.',
+                                 'rationale': 'Inside/outside and near/far lead probes are built; a source-grounded absent-lead contrast and posting routes remain.',
                                  'status': 'incomplete',
                                  'missing_inputs': ['Original City Fire Code designation and posting evidence',
                                                     'Original conflict causation review and absent-lead contrast',
@@ -168,11 +184,11 @@ def build():
            'stages': stages})
     manifest = {'format': 'worker-execution-manifest',
                 'assignment_id': ASSIGNMENT, 'status': 'draft_semantic_validation_only',
-                'cases': [reference, contrast, conflict]}
+                'cases': [reference, contrast, conflict, clear]}
     write(HERE/'draft-semantic-manifest.json', manifest)
     return {'semantic_index_sha256': sha(PROPOSALS/'semantic-index.json'),
             'draft_manifest_sha256': sha(HERE/'draft-semantic-manifest.json'),
-            'selected_cpu_probe_cases': 3, 'unresolved_judgments': len(judgments)}
+            'selected_cpu_probe_cases': 4, 'unresolved_judgments': len(judgments)}
 
 
 if __name__ == '__main__':

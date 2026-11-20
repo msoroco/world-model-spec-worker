@@ -3,6 +3,7 @@ import argparse
 import json
 import shutil
 from pathlib import Path
+from conflict_controller import decision
 
 
 HERE = Path(__file__).resolve().parent
@@ -40,14 +41,16 @@ def build(source, output):
             for actor in actors):
         raise ValueError('Expected 600 explicitly synthetic source rows')
     for actor in actors:
+        requested = decision(actor['ego_pose_xyz_m'][:2],
+                             actor['ego_velocity_xyz_mps'][:2],
+                             [18, 1], [0, 0],
+                             actor['ego_yaw_deg'])
         actor.update(lead_actor_id=77, lead_road_id=17, lead_lane_id=-1,
             lead_pose_xyz_m=[18, 1, 0], lead_yaw_deg=0,
             lead_velocity_xyz_mps=[0, 0, 0],
             lead_body_vertices_xyz_m=[[17, 0, 0], [19, 0, 0],
                                       [19, 2, 0], [17, 2, 0]],
-            requested_control={'brake': 1.0, 'throttle': 0.0,
-                'physical_completion_claimed': False,
-                'statutory_necessity_claimed': False},
+            requested_control=requested,
             physical_completion_claimed=False,
             statutory_necessity_claimed=False)
     (output/'native-actors.jsonl').write_text(''.join(
