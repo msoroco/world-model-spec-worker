@@ -4,6 +4,7 @@ import math
 import tempfile
 import unittest
 from pathlib import Path
+from types import SimpleNamespace as NS
 
 
 spec = importlib.util.spec_from_file_location("turn_signal_measurements", Path(__file__).resolve().parents[1] / "turn_signal_measurements.py")
@@ -12,6 +13,67 @@ spec.loader.exec_module(measure)
 
 
 class TurnSignalTests(unittest.TestCase):
+    @staticmethod
+    def waypoint(x, y, road=1, lane=-1):
+        return NS(road_id=road, lane_id=lane,
+                  transform=NS(location=NS(x=x, y=y)))
+
+    def test_native_right_turn_spawn_and_cleanup(self):
+        approach = [self.waypoint(x, 0) for x in range(0, 101, 2)]
+        departure = [self.waypoint(100, -2, 2), self.waypoint(100, -4, 2)]
+        destroyed = []
+        vehicle = NS(get_location=lambda: approach[0].transform.location,
+                     destroy=lambda: destroyed.append(True))
+        world = NS(try_spawn_actor=lambda blueprint, transform: vehicle,
+                   get_map=lambda: NS(get_waypoint=lambda location, project_to_road: approach[0]))
+        with measure.spawn_native_right_turn(world, "vehicle", approach, departure) as built:
+            self.assertEqual(built["route"]["direct_approach_m"], 100)
+            self.assertAlmostEqual(built["route"]["turn_angle_deg"], -90)
+        self.assertEqual(destroyed, [True])
+
+    def test_native_route_rejects_lane_change_short_approach_and_left_turn(self):
+        long = [self.waypoint(x, 0) for x in range(0, 101, 2)]
+        right = [self.waypoint(100, -2, 2), self.waypoint(100, -4, 2)]
+        with self.assertRaisesRegex(ValueError, "shorter"):
+            measure.verify_native_right_turn(long[:25], right)
+        with self.assertRaisesRegex(ValueError, "lane or road changes"):
+            measure.verify_native_right_turn(long[:-1] + [self.waypoint(100, 0, lane=-2)], right)
+        left = [self.waypoint(100, 2, 2), self.waypoint(100, 4, 2)]
+        with self.assertRaisesRegex(ValueError, "not a right turn"):
+            measure.verify_native_right_turn(long, left)
+        with self.assertRaisesRegex(ValueError, "distinct outgoing road"):
+            measure.verify_native_right_turn(long, [self.waypoint(100, -2), self.waypoint(100, -4)])
+
+    def test_native_indicator_readback_preserves_lamps_and_rejects_failure(self):
+        class State:
+            RightBlinker = 8
+        class Vehicle:
+            lights = 1
+            def get_light_state(self):
+                return self.lights
+            def set_light_state(self, value):
+                self.lights = value
+        vehicle = Vehicle()
+        self.assertTrue(measure.set_native_right_blinker(vehicle, State, True)["readback_right_indicator"])
+        self.assertEqual(vehicle.lights, 9)
+        self.assertFalse(measure.set_native_right_blinker(vehicle, State, False)["readback_right_indicator"])
+        self.assertEqual(vehicle.lights, 1)
+        vehicle.set_light_state = lambda value: None
+        with self.assertRaisesRegex(ValueError, "readback"):
+            measure.set_native_right_blinker(vehicle, State, True)
+
+    def test_route_distance_indicator_schedule_and_interruption(self):
+        request = measure.indicator_request_at_remaining_distance
+        self.assertFalse(request(30.49, start_m=30.48))
+        self.assertTrue(request(30.48, start_m=30.48))
+        self.assertTrue(request(0, start_m=30.48))
+        self.assertFalse(request(91.45, start_m=91.44))
+        self.assertTrue(request(91.44, start_m=91.44))
+        self.assertFalse(request(10, start_m=30.48, interruption_m=(9, 11)))
+        self.assertTrue(request(8.9, start_m=30.48, interruption_m=(9, 11)))
+        with self.assertRaisesRegex(ValueError, "inside the active approach"):
+            request(20, start_m=30.48, interruption_m=(10, 40))
+
     def fixture(self, root, distance, district="business", interrupted=False):
         steps = math.ceil(distance / 0.25)
         step = distance / steps

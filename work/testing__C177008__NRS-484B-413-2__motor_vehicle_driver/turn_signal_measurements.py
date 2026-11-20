@@ -9,10 +9,116 @@ import hashlib
 import json
 import math
 from pathlib import Path
+from contextlib import contextmanager
 
 
 FEET_TO_M = 0.3048
 REQUIRED = ("drive_history.jsonl", "video_frames.jsonl", "route_context.json")
+
+
+def _waypoint_xy(waypoint):
+    location = waypoint.transform.location
+    return (_number(location.x), _number(location.y))
+
+
+def verify_native_right_turn(approach, departure, *, minimum_approach_m=300 * FEET_TO_M,
+                             max_step_m=5.0):
+    """Validate the Native lane chain before using it for any signaling case.
+
+    District classification is deliberately outside geometry: it needs a
+    separately reviewed source, recorded in route_context.json.
+    """
+    if len(approach) < 3 or len(departure) < 2:
+        raise ValueError("Incomplete Native right-turn route")
+    incoming_key = (approach[0].road_id, approach[0].lane_id)
+    outgoing_key = (departure[0].road_id, departure[0].lane_id)
+    if any((wp.road_id, wp.lane_id) != incoming_key for wp in approach):
+        raise ValueError("Approach lane or road changes before turn")
+    if any((wp.road_id, wp.lane_id) != outgoing_key for wp in departure):
+        raise ValueError("Departure lane or road changes after turn")
+    if incoming_key[0] == outgoing_key[0]:
+        raise ValueError("Right turn needs a distinct outgoing road")
+    incoming_xy = [_waypoint_xy(wp) for wp in approach]
+    outgoing_xy = [_waypoint_xy(wp) for wp in departure]
+    steps = [math.dist(a, b) for a, b in zip(incoming_xy, incoming_xy[1:])]
+    if any(not 0 < step <= max_step_m for step in steps):
+        raise ValueError("Discontinuous Native approach")
+    length = sum(steps)
+    if length < minimum_approach_m:
+        raise ValueError("Native approach shorter than 300-foot observation span")
+    if math.dist(incoming_xy[-1], outgoing_xy[0]) > max_step_m:
+        raise ValueError("Native turn connection is discontinuous")
+    if any(not 0 < math.dist(a, b) <= max_step_m
+           for a, b in zip(outgoing_xy, outgoing_xy[1:])):
+        raise ValueError("Discontinuous Native departure")
+    first = (incoming_xy[-1][0] - incoming_xy[-2][0],
+             incoming_xy[-1][1] - incoming_xy[-2][1])
+    last = (outgoing_xy[-1][0] - outgoing_xy[0][0],
+            outgoing_xy[-1][1] - outgoing_xy[0][1])
+    denominator = math.hypot(*first) * math.hypot(*last)
+    if denominator == 0:
+        raise ValueError("Zero Native turn vector")
+    angle = math.degrees(math.atan2(first[0] * last[1] - first[1] * last[0],
+                                    first[0] * last[0] + first[1] * last[1]))
+    if not -150 < angle < -30:
+        raise ValueError("Native route is not a right turn")
+    return {"approach_road_id": incoming_key[0], "approach_lane_id": incoming_key[1],
+            "outgoing_road_id": outgoing_key[0], "outgoing_lane_id": outgoing_key[1],
+            "direct_approach_m": length, "turn_angle_deg": angle,
+            "waypoints": list(approach) + list(departure)}
+
+
+@contextmanager
+def spawn_native_right_turn(world, blueprint, approach, departure):
+    route = verify_native_right_turn(approach, departure)
+    vehicle = world.try_spawn_actor(blueprint, approach[0].transform)
+    if vehicle is None:
+        raise ValueError("Native right-turn vehicle spawn failed")
+    try:
+        observed = world.get_map().get_waypoint(vehicle.get_location(), project_to_road=False)
+        if observed is None or (observed.road_id, observed.lane_id) != (
+                route["approach_road_id"], route["approach_lane_id"]):
+            raise ValueError("Spawned vehicle outside Native approach lane")
+        yield {"vehicle": vehicle, "route": route}
+    finally:
+        vehicle.destroy()
+
+
+def set_native_right_blinker(vehicle, light_state_type, enabled):
+    flag = light_state_type.RightBlinker
+    prior = vehicle.get_light_state()
+    requested = prior | flag if enabled else prior & ~flag
+    vehicle.set_light_state(requested)
+    readback = vehicle.get_light_state()
+    if bool(readback & flag) != bool(enabled):
+        raise ValueError("Native right-indicator readback disagrees with request")
+    if (readback & ~flag) != (prior & ~flag):
+        raise ValueError("Native light actuation changed unrelated lamps")
+    return {"requested_right_indicator": bool(enabled),
+            "readback_right_indicator": bool(readback & flag)}
+
+
+def indicator_request_at_remaining_distance(remaining_m, *, start_m,
+                                            interruption_m=None):
+    """Return the authored request for an approach station, before actuation.
+
+    `remaining_m` must come from the selected route's cumulative lane distance.
+    An interruption interval is a closed pair of remaining distances; it is a
+    deliberate case variable and never inferred from the desired legal label.
+    """
+    remaining = _number(remaining_m)
+    start = _number(start_m)
+    if remaining < 0 or start <= 0:
+        raise ValueError("Invalid route-distance indicator schedule")
+    if interruption_m is not None:
+        if not isinstance(interruption_m, (list, tuple)) or len(interruption_m) != 2:
+            raise ValueError("Invalid indicator interruption interval")
+        low, high = map(_number, interruption_m)
+        if not 0 <= low < high < start:
+            raise ValueError("Indicator interruption must lie inside the active approach")
+        if low <= remaining <= high:
+            return False
+    return remaining <= start
 
 
 def _number(value):
