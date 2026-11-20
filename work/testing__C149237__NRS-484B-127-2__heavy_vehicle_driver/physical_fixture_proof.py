@@ -38,7 +38,7 @@ def fixture(entry, kind, output):
     if suffix == 'gap_below_500ft':
         source = ROOT/'.runtime-work/c149237-root-support-primary-saved-v1/v0001/analysis'
     elif suffix == 'combination_at_500ft':
-        source = ROOT/'.runtime-work/c149237-combination-selected/saved-v3/v0001/analysis'
+        source = ROOT/'.runtime-work/c149237-combination-requirement-v1/saved-primary/v0001/analysis'
     else:
         source = ROOT/'.runtime-work'/f'c149237-{suffix}-saved-v16/v0001/analysis'
     with tempfile.TemporaryDirectory(prefix='c149237-physical-') as temporary:
@@ -50,8 +50,8 @@ def fixture(entry, kind, output):
         if not cfg.get('physical_completion') or cfg['selected_case_id']!=entry['case_id']:
             raise ValueError('Current exact physical descriptor missing')
         write(stage/'acquisition-provenance.json',{
-            'provenance_kind':'native','diagnostic_fixture':True,
-            'scope':'Native-shaped synthetic classifier fixture; no CARLA acquisition'})
+            'provenance_kind':'synthetic_fixture','diagnostic_fixture':True,
+            'scope':'Synthetic classifier fixture; no CARLA acquisition'})
         if kind=='complete_motion' and suffix!='overtaking':
             motion=rows(stage/'truck_history.jsonl')
             for index,row in enumerate(motion):
