@@ -39,14 +39,20 @@ def run(entry, source, kind, output, saved):
               {'provenance_kind': 'synthetic_fixture', 'diagnostic_fixture': True,
                'scope': 'Synthetic source-shaped classifier fixture only'})
         if kind == 'complete_motion':
-            pass  # The original diagnostic source already reaches the destination lane.
+            cfg = read(root / 'config.json')
+            if cfg.get('course') != 'change_lane':
+                rows = [json.loads(line) for line in (root / 'body_history.jsonl').read_text().splitlines()]
+                rows[-1]['road_id'] = cfg['physical_completion']['destination_road']
+                (root / 'body_history.jsonl').write_text(
+                    ''.join(json.dumps(row, separators=(',', ':')) + '\n' for row in rows))
         elif kind == 'incomplete_motion':
             rows = [json.loads(line) for line in (root / 'body_history.jsonl').read_text().splitlines()]
             first = rows[0]
             for row in rows:
                 row['body_vertices_m'] = first['body_vertices_m']
                 row['road_id'] = first['road_id']
-                row['lane_id'] = first['lane_id']
+                if 'lane_id' in first:
+                    row['lane_id'] = first['lane_id']
             (root / 'body_history.jsonl').write_text(
                 ''.join(json.dumps(row, separators=(',', ':')) + '\n' for row in rows))
         elif kind == 'missing_evidence':
