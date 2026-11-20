@@ -9,7 +9,7 @@ from device_direction_probe import check_saved_device_rows
 IDS=('primary','fallback1','fallback2','fallback3')
 
 
-def check():
+def check(update='update114'):
     manifest=read(HERE/'draft-device-direction-fallback-manifest.json')
     entry=manifest['cases'][0]
     assert entry['case_id']==CASE
@@ -34,7 +34,7 @@ def check():
         assert config['direction_applicability_verified'] is False
         assert config['statutory_necessity_verified'] is False
         tunings.append(json.dumps(config.get('controller_tuning',{}),sort_keys=True))
-        stem='update114-device-'+ident
+        stem=update+'-device-'+ident
         selected=read(HERE/(stem+'-offline-selection.json'))
         positive=read(HERE/(stem+'-compatibility-receipt.json'))
         saved=read(HERE/(stem+'-saved-receipt.json'))
@@ -79,4 +79,6 @@ def check():
 
 
 if __name__=='__main__':
-    print(json.dumps(check(),indent=2,sort_keys=True))
+    import sys
+    print(json.dumps(check(sys.argv[1] if len(sys.argv)>1 else 'update114'),
+                     indent=2,sort_keys=True))

@@ -66,6 +66,41 @@ class DeviceDirectionTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'source differs'):
             check_saved_device_rows(rows,frames,readback)
 
+    def test_unique_original_light_discovery_and_ambiguity(self):
+        actor,_,carla,_,_=self.fixture()
+        far = SimpleNamespace(id=204,type_id='traffic.traffic_light',
+            get_transform=lambda:SimpleNamespace(location=location(90,1)))
+        wrong_road = SimpleNamespace(id=205,type_id='traffic.traffic_light',
+            get_transform=lambda:SimpleNamespace(location=location(18,1)))
+        actors = [actor,far,wrong_road]
+        class ActorList:
+            def filter(self, pattern):
+                assert pattern == 'traffic.traffic_light'
+                return actors
+            def find(self, ident):
+                return next((row for row in actors if row.id == ident),None)
+        world=SimpleNamespace(get_actors=lambda:ActorList(),
+            get_map=lambda:SimpleNamespace(get_waypoint=lambda loc,**kw:
+                SimpleNamespace(road_id=18 if loc.x==18 else 17,lane_id=-1)))
+        survey={'traffic_control_device':{'actor_id':None,
+            'position_xy_m':None,'selection_mode':'unique_same_road_near_stop',
+            'search_radius_m':30}}
+        plan={'fixed_context':{'road_id':17},
+              'cases':{'reference':{'stop_center_xy_m':[10,1]}}}
+        readback=inspect_device(world,carla,survey,plan)
+        self.assertEqual(readback['actor_id'],203)
+        self.assertEqual(readback['selection_mode'],'unique_same_road_near_stop')
+        actors.append(SimpleNamespace(id=206,type_id='traffic.traffic_light',
+            get_transform=lambda:SimpleNamespace(location=location(25,1))))
+        with self.assertRaisesRegex(ValueError,'exactly one'):
+            inspect_device(world,carla,survey,plan)
+        actors.clear()
+        with self.assertRaisesRegex(ValueError,'found 0'):
+            inspect_device(world,carla,survey,plan)
+        survey['traffic_control_device']['search_radius_m']=51
+        with self.assertRaisesRegex(ValueError,'radius invalid'):
+            inspect_device(world,carla,survey,plan)
+
     def test_native_capture_sidecar_joins_all_600_frames(self):
         actor,world,carla,survey,plan=self.fixture()
         readback=inspect_device(world,carla,survey,plan)

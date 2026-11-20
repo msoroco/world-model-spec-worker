@@ -13,11 +13,39 @@ def inspect_device(world, carla, survey, fire_lane_plan):
     require(isinstance(requested, dict), 'Traffic-control device survey missing')
     actor_id = requested.get('actor_id')
     xy = requested.get('position_xy_m')
-    require(type(actor_id) is int and actor_id > 0 and
-            isinstance(xy, list) and len(xy) == 2 and
-            all(type(v) in (int, float) and isfinite(v) for v in xy),
-            'Traffic-control device identity or position invalid')
-    actor = world.get_actors().find(actor_id)
+    if requested.get('selection_mode') == 'unique_same_road_near_stop':
+        require(actor_id is None and xy is None,
+                'Device discovery cannot override a surveyed actor')
+        radius = requested.get('search_radius_m')
+        require(type(radius) in (int, float) and isfinite(radius) and
+                0 < radius <= 50, 'Device search radius invalid')
+        center = fire_lane_plan['cases']['reference']['stop_center_xy_m']
+        require(isinstance(center, list) and len(center) == 2 and
+                all(type(v) in (int, float) and isfinite(v) for v in center),
+                'Surveyed reference stop center invalid')
+        actors = world.get_actors()
+        matches = []
+        for candidate in actors.filter('traffic.traffic_light'):
+            if candidate.type_id != 'traffic.traffic_light':
+                continue
+            position = candidate.get_transform().location
+            if hypot(position.x-center[0], position.y-center[1]) > radius:
+                continue
+            lane = world.get_map().get_waypoint(
+                position, project_to_road=True, lane_type=carla.LaneType.Driving)
+            if lane is not None and lane.road_id == fire_lane_plan['fixed_context']['road_id']:
+                matches.append(candidate)
+        require(len(matches) == 1,
+                'Device discovery needs exactly one nearby same-road original light; found '+str(len(matches)))
+        actor = matches[0]
+        location = actor.get_transform().location
+        actor_id, xy = actor.id, [location.x, location.y]
+    else:
+        require(type(actor_id) is int and actor_id > 0 and
+                isinstance(xy, list) and len(xy) == 2 and
+                all(type(v) in (int, float) and isfinite(v) for v in xy),
+                'Traffic-control device identity or position invalid')
+        actor = world.get_actors().find(actor_id)
     require(actor is not None and getattr(actor, 'type_id', None) ==
             'traffic.traffic_light', 'Original traffic light actor missing')
     location = actor.get_transform().location
@@ -32,6 +60,7 @@ def inspect_device(world, carla, survey, fire_lane_plan):
             'position_xy_m':[location.x, location.y],
             'road_id':waypoint.road_id, 'lane_id':waypoint.lane_id,
             'source_kind':'original_carla_actor_and_map_readback',
+            'selection_mode':requested.get('selection_mode', 'surveyed_actor_id'),
             'direction_applicability_verified':False,
             'statutory_necessity_verified':False}
 
