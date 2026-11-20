@@ -866,6 +866,127 @@
           }
         }
       ]
+    },
+    {
+      "case_id": "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__other_area_right_below_300ft",
+      "kind": "delivery",
+      "construction": "cases/other_area_right_below_300ft/construction.json",
+      "construction_sha256": "ab82cce3f810166a8da710519fd3c9916d9f4b5175be47de4d8778a79949ae9c",
+      "measurement_procedure": {
+        "entrypoint": "turn_signal_measurements.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native steering, route linkage, visible indicator and legal district review can fail"
+      },
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/cases/other_area_right_below_300ft/diagnostic-recipe.json",
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C177008__NRS-484B-413-2__motor_vehicle_driver__other_area_right_below_300ft --output .runtime-work/c177008-other-below-offline-v1",
+        "exit_code": 0,
+        "log": "cases/other_area_right_below_300ft/offline.log",
+        "log_sha256": "94923672078fe0df9a11ea0164890b33659631ed0a9d2fb51c27e4aa2abf7129",
+        "construction_sha256": "ab82cce3f810166a8da710519fd3c9916d9f4b5175be47de4d8778a79949ae9c"
+      },
+      "compatibility": {
+        "receipt": "cases/other_area_right_below_300ft/compatibility.json",
+        "sha256": "c20eed9e4c98cd3f5956b92bb5410abaf7f2ac061575990068fbe81713c39c7d",
+        "log": "cases/other_area_right_below_300ft/analysis-proof.log",
+        "negative_log": "cases/other_area_right_below_300ft/negative-proof.log",
+        "replay_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C177008__NRS-484B-413-2__motor_vehicle_driver__other_area_right_below_300ft --output .runtime-work/c177008-other-below-compat-v1/analysis --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+      },
+      "negative": {
+        "log": "cases/other_area_right_below_300ft/negative-proof.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C177008__NRS-484B-413-2__motor_vehicle_driver__other_area_right_below_300ft --attempt .runtime-work/c177008-other-below-compat-v1/analysis --output .runtime-work/c177008-other-below-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat .runtime-work/c177008-other-below-saved-v1/v0001/processing.json",
+        "test_log": "cases/other_area_right_below_300ft/saved-processing.log",
+        "test_log_sha256": "52c43b536cd829b18e8cfa9e43b38384d2a56fde7cdc0b2444c1a761c0390ebd",
+        "test_exit_code": 0
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/other_area_right_below_300ft/fallback1/construction.json",
+          "construction_sha256": "1eb2c3de4b86d3d3eb8fefb4316ec20b94170a833a9e3e79c96a0073a39b0269",
+          "trigger": {
+            "source": "drive_history.jsonl",
+            "metric": "Native speed and turn-onset overshoot",
+            "failure_condition": "primary 5 m/s request overshoots connector entry"
+          },
+          "changed_knobs": [
+            "requested_speed_mps"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/other_area_right_below_300ft/fallback2/construction.json",
+          "construction_sha256": "1246ee10aef3cf6a93c6399fedfbbd600645e539a50876e8e58531c048b19da4",
+          "trigger": {
+            "source": "drive_history.jsonl",
+            "metric": "heading versus path bearing at connector entry",
+            "failure_condition": "primary 5 m lookahead misses the rightward connector heading envelope"
+          },
+          "changed_knobs": [
+            "controller_lookahead_m"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/other_area_right_below_300ft/fallback3/construction.json",
+          "construction_sha256": "ef28edfd8b8d9b316bf28cdac548ea967e6ac500b698f4bcbfd8d6e3525da80b",
+          "trigger": {
+            "source": "drive_history.jsonl",
+            "metric": "rightward heading delta before departure",
+            "failure_condition": "primary steering response fails to complete the rightward connector transition"
+          },
+          "changed_knobs": [
+            "controller_steer_gain"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__other_area_right_above_300ft",
+      "kind": "delivery",
+      "construction": "cases/other_area_right_above_300ft/construction.json",
+      "construction_sha256": "269b6e181c57bcd98228b536e489f78abbff8868c26e61b4a534ab64457eb7a9",
+      "measurement_procedure": {
+        "entrypoint": "turn_signal_measurements.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native steering, route linkage, visible indicator and legal district review can fail"
+      },
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/cases/other_area_right_above_300ft/diagnostic-recipe.json",
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C177008__NRS-484B-413-2__motor_vehicle_driver__other_area_right_above_300ft --output .runtime-work/c177008-other-above-offline-v1",
+        "exit_code": 0,
+        "log": "cases/other_area_right_above_300ft/offline.log",
+        "log_sha256": "cd244dbc3f8cd28434da57a75bba946d1a68f7a7bcc434d1c744e9dcd1e476c8",
+        "construction_sha256": "269b6e181c57bcd98228b536e489f78abbff8868c26e61b4a534ab64457eb7a9"
+      },
+      "compatibility": {
+        "receipt": "cases/other_area_right_above_300ft/compatibility.json",
+        "sha256": "1024e3ad0739bc190feb46f77b40833b1446dd260de9a2a6ed04ff451d00ae94",
+        "log": "cases/other_area_right_above_300ft/analysis-proof.log",
+        "negative_log": "cases/other_area_right_above_300ft/negative-proof.log",
+        "replay_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C177008__NRS-484B-413-2__motor_vehicle_driver__other_area_right_above_300ft --output .runtime-work/c177008-other-above-compat-v1/analysis --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+      },
+      "negative": {
+        "log": "cases/other_area_right_above_300ft/negative-proof.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C177008__NRS-484B-413-2__motor_vehicle_driver__other_area_right_above_300ft --attempt .runtime-work/c177008-other-above-compat-v1/analysis --output .runtime-work/c177008-other-above-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat .runtime-work/c177008-other-above-saved-v1/v0001/processing.json",
+        "test_log": "cases/other_area_right_above_300ft/saved-processing.log",
+        "test_log_sha256": "038c692e985aeb54e333436cc270a26c4e6b184be0fadf639e77d2fee0eea4a8",
+        "test_exit_code": 0
+      }
     }
   ]
 }
