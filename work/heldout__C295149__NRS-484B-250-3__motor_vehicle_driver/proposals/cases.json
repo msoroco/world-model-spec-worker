@@ -1,8 +1,72 @@
 {
   "cell_id": "C295149",
   "actor": "motor_vehicle_driver",
-  "status": "partial_cpu_proposal",
+  "status": "draft",
   "cases": [
+    {
+      "case_id": "heldout__C295149__NRS-484B-250-3__motor_vehicle_driver__baseline",
+      "target_law_id": "NRS-484B-250-3",
+      "target_type": "baseline",
+      "rationale": "Shared authored ending/through T-intersection context only; no planned recording or legal result.",
+      "variable_assignments": {
+        "entry_delta_s": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "ending_through_topology": {
+          "kind": "world_setup",
+          "value": "connected ending and through Native route plan"
+        },
+        "intersection_occupancy": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "official_device_state": {
+          "kind": "world_setup",
+          "value": "no governing Native control inventory"
+        },
+        "subject_release_delay_frames": {
+          "kind": "controller",
+          "value": 0
+        },
+        "subject_displacement_m": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "subject_entry_elapsed_s": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "approximately the same time",
+        "highway identity",
+        "yield right of way"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "intersection_occupancy",
+            "unit": "bool",
+            "sampling_rate_hz": 20,
+            "method": "original Native body polygons against retained conflict polygon for both participants",
+            "time_window": "full 8 s trace",
+            "reference_frame": "world ground plane",
+            "uncertainty": "20 Hz sampling and Native bounding-box precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "lanes",
+            "method": "Native OpenDRIVE road/lane and successor readback",
+            "unit": "structured topology"
+          }
+        ],
+        "limitations": [
+          "No legal approximately-same-time or yield judgment follows from a CPU fixture."
+        ]
+      }
+    },
     {
       "case_id": "heldout__C295149__NRS-484B-250-3__motor_vehicle_driver__uncontrolled_end_yields",
       "target_law_id": "NRS-484B-250-3",
@@ -498,6 +562,53 @@
       }
     }
   ],
-  "sweep_specs": [],
+  "sweep_specs": [
+    {
+      "sweep_id": "ending_road_other_qualitative_judgments",
+      "target_law_id": "NRS-484B-250-3",
+      "judgment_refs": [
+        {
+          "phrase": "highway which ends at the intersection",
+          "note": "Retain connected Native lane successor identity; legal highway status remains unresolved."
+        },
+        {
+          "phrase": "official traffic-control devices",
+          "note": "Retain governing Native device identity and phase; official status remains unresolved."
+        },
+        {
+          "phrase": "approaching each other from opposite directions",
+          "note": "Retain original connected route headings and actor headings for the separately bound left-turn cell."
+        },
+        {
+          "phrase": "intending to or is making a left turn",
+          "note": "Retain selected Native left branch and original heading/trajectory for the separately bound left-turn cell."
+        }
+      ],
+      "rationale": "Exact route-continuity, official-device phase, opposing approach and left-intent categories are source-bound by selected cases and independent comparisons; the pinned numeric sweep schema has no honest scalar interval for these categories.",
+      "status": "incomplete",
+      "missing_inputs": [
+        "Categorical highway identity, official-device governance and opposite-left intent require the six selected source-bound exact cases and independent comparison audits; their physical and legal outcomes remain unresolved."
+      ]
+    },
+    {
+      "sweep_id": "heldout__C295149__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay",
+      "target_law_id": "NRS-484B-250-3",
+      "judgment_refs": [
+        {
+          "phrase": "approximately the same time",
+          "note": "Compare original intersection entry frames without assigning a numeric legal cutoff."
+        },
+        {
+          "phrase": "yield the right-of-way",
+          "note": "Retain original body occupancy and entry order without a legal finding."
+        }
+      ],
+      "rationale": "A finite fixed-condition release-delay sweep is required to probe measured entry timing without assigning a legal simultaneity threshold.",
+      "status": "incomplete",
+      "missing_inputs": [
+        "Three exact C295149 release-delay grid constructions and their CPU proof chains are not yet built. Existing first-entry, yielding, and staggered cases vary different conditions and cannot be relabeled as one fixed-condition numeric sweep."
+      ]
+    }
+  ],
   "sweeps_expanded": false
 }
