@@ -8,9 +8,14 @@ import argparse
 import hashlib
 import json
 import math
+import sys
 from pathlib import Path
 
 from speed_measurements import analyze
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'runtime/scenario_pipeline'))
+from worker_exchange.common import digest
+from worker_exchange.media import audit as audit_video
 
 
 SUFFIXES = ("source_verified_below_80", "source_verified_at_80",
@@ -85,12 +90,29 @@ def audit(attempts, compatibility_receipts):
                 raise ValueError("Missing fixed context: " + key)
             fixed_context[key] = context[key]
         hashes = {}
+        decoded_video_hashes = {}
         for source in SOURCES:
             path = attempt / source
             if not path.is_file():
                 raise ValueError("Missing source: " + source)
             hashes[source] = _sha(path)
-            if receipt.get("fixture_manifest", {}).get(source) != hashes[source]:
+            expected = receipt.get("fixture_manifest", {}).get(source)
+            if source in ("overview.mkv", "approach.mkv", "reference_corner.mkv", "driver_reference.mkv"):
+                provenance = _read(attempt / 'fixture-provenance.json')
+                if (receipt.get('scope') != 'diagnostic software compatibility only' or
+                        'CPU diagnostic only' not in provenance.get('scope', '')):
+                    raise ValueError('Diagnostic comparison requires synthetic fixture provenance')
+                frame_count = _read(attempt / 'capture/manifest.json')['frames']
+                decoded = audit_video(path, frame_count)
+                fingerprint = digest({'kind': 'generated-diagnostic-video',
+                                      'frames': decoded['frames'],
+                                      'dimensions': decoded['dimensions'],
+                                      'fps': config['fps'],
+                                      'rgb_sequence_sha256': decoded['rgb_sequence_sha256']})
+                decoded_video_hashes[source] = fingerprint
+                if expected != fingerprint:
+                    raise ValueError("Compatibility decoded video differs: " + source)
+            elif expected != hashes[source]:
                 raise ValueError("Compatibility source hash differs: " + source)
         report = analyze(attempt)
         _check_trace_dynamics(attempt)
@@ -100,7 +122,9 @@ def audit(attempts, compatibility_receipts):
                              "sampled_peak_speed_mph": report["peak_sample"]["speed_mph"],
                              "sampled_peak_over_80": report["sampled_peak_greater_than_80_mph"],
                              "fixed_config": fixed_config, "fixed_context": fixed_context,
-                             "source_sha256": hashes, "compatibility_receipt_sha256": _sha(receipt_path)}
+                             "source_sha256": hashes,
+                             "decoded_video_fingerprint": decoded_video_hashes,
+                             "compatibility_receipt_sha256": _sha(receipt_path)}
     if set(by_suffix) != set(SUFFIXES):
         raise ValueError("Missing comparison case")
     rows = [by_suffix[s] for s in SUFFIXES]

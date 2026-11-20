@@ -36,7 +36,7 @@ def sources(root, entry, speed_mps):
     write(root / 'construction.json', construction)
     (root / 'runner.py').write_text(files['runner.py'])
     write(root / 'acquisition-provenance.json', {
-        'provenance_kind': 'native', 'diagnostic_fixture': True,
+        'provenance_kind': 'synthetic_fixture', 'diagnostic_fixture': True,
         'scope': 'Synthetic Native-shaped CPU classifier fixture only'})
     trace, mapping = [], []
     for index in range(61):
