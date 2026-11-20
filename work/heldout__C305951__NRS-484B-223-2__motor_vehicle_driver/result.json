@@ -220,7 +220,7 @@
       "exit_code": 0,
       "diagnostic_output": "Ignored .runtime-work/ session artifact; rerun command for current portable proof."
     },
-    "remaining_cpu_work": "32/32 current offline; physical 4/8; primary compatibility 2/8; six current fallbacks; saved processing and delivery audit 1/8. Renew remaining candidate/primary compatibility, physical, saved, delivery and comparison CPU proofs, then pass scoped strict gate.",
+    "remaining_cpu_work": "32/32 current exact offline; 8/8 physical; 21 newly rerun fallbacks plus 3 earlier hash-bound fallbacks; 3/8 current primary compatibility and source-only saved delivery. Renew remaining five primary compatibility and saved/delivery paths, check comparisons and all ready contracts, then pass real scoped strict gate.",
     "stale_proof_archives_20261119": [
       {
         "path": "_shared/c305951-stale-proof-archive.json",
@@ -233,9 +233,9 @@
     ],
     "stale_proofs_reuse_for_current_readiness": false,
     "next_exact_failure": {
-      "command": "PYTHONPATH=runtime:runtime/scenario_pipeline .venv-cpu/bin/python -c \"from scenario_pipeline.worker_exchange.execution_manifest import validate; from pathlib import Path; validate(Path.cwd(),'heldout__C305951__NRS-484B-223-2__motor_vehicle_driver')\"",
-      "failure": "FileNotFoundError: work/heldout__C305951__NRS-484B-223-2__motor_vehicle_driver/center-pass-clear-fallback1-negative.log",
-      "resume_action": "Run current center_pass_clear fallback1 compatibility with missing-source negative, return direct negative log and rebind receipt; then continue current CPU proof chain.",
+      "command": "Read-only hypothetical ready probe via scenario_pipeline.worker_exchange.preparation.check with in-memory result status=ready, assignment C305951",
+      "failure": "ValueError: Delivery acceptance proof changed: heldout__C305951__NRS-484B-223-2__motor_vehicle_driver__center_pass_clear",
+      "resume_action": "Rerun center_pass_clear primary compatibility and construct current source-only saved attempt, process-saved, and positive/tampered-original delivery audit; return logs and rebind manifest. Continue remaining cases and run actual scoped strict gate before changing status.",
       "status": "partial"
     },
     "primary_physical_preparation": {
@@ -258,11 +258,16 @@
       "right_baseline",
       "left_travel",
       "center_no_exception",
-      "center_pass_clear"
+      "center_pass_clear",
+      "center_pass_occluded",
+      "center_prepare_left",
+      "center_allocated_signed",
+      "center_allocated_unsigned"
     ],
     "current_compatibility_cases": [
       "right_baseline",
-      "left_travel"
+      "left_travel",
+      "center_no_exception"
     ],
     "current_saved_primary": {
       "case_id": "heldout__C305951__NRS-484B-223-2__motor_vehicle_driver__right_baseline",
@@ -283,19 +288,31 @@
       "frozen_delivery_validator": "passed"
     },
     "current_candidate_compatibility": {
-      "passed_cases": [
+      "rerun_cases": [
         "left_travel",
-        "center_no_exception"
+        "center_no_exception",
+        "center_pass_clear",
+        "center_pass_occluded",
+        "center_prepare_left",
+        "center_allocated_signed",
+        "center_allocated_unsigned"
       ],
       "passed_candidates_per_case": [
         "fallback1",
         "fallback2",
         "fallback3"
       ],
+      "rerun_passes": 21,
       "positive_and_missing_source_negative": true,
-      "scope": "current pinned CPU runtime"
+      "scope": "current pinned CPU runtime",
+      "right_baseline": "earlier returned candidate receipts pass current execution manifest validator; not counted as rerun this turn"
     },
-    "current_manifest_sha256": "2153f25000d45263da9e310f9266b44b583ba535de350f4cb1c99cf12dfdb203",
-    "return_cap_archive_sha256": "8e03df7fb0276563b00cf36d45036cc3308e8c2c9b9eea25a3f77a3e4e37ab65"
+    "current_manifest_sha256": "19a94cfec040e2bba58e681ea961add2f6b740029a94f44f32dba62ce4db42a7",
+    "return_cap_archive_sha256": "0abd93195a63aa0e3207c219afdbfb1d76093477c56549487ed72116b41e3f9f",
+    "current_saved_delivery_cases": [
+      "right_baseline",
+      "left_travel",
+      "center_no_exception"
+    ]
   }
 }
