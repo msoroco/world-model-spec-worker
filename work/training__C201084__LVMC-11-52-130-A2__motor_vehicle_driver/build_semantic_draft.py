@@ -44,7 +44,7 @@ def build():
          'ego_pose', 'Source-joined pose and footprint locate the stopped vehicle; original sign pixels and designation remain to be reviewed.'),
         ('necessary to avoid conflict with other traffic',
          'The lead probe samples a traffic relation and brake request but does not establish statutory necessity.',
-         'lead_traffic_relation', 'Saved lead and ego pose/velocity establish their sampled relation; necessity and compliance require original review and an absent-lead contrast.'),
+         'ego_speed', 'Saved ego speed locates the stop in every case; the lead probe additionally records lead relation. Necessity and compliance require original review and an absent-lead contrast.'),
         ('in compliance with law',
          'An applicable source of law and the reason for the stop are not supplied by synthetic motion.',
          'ego_pose', 'Source pose locates the vehicle; applicable law must be reviewed independently.'),
@@ -71,8 +71,7 @@ def build():
                                               for phrase, note, _, _ in judgments]}}
     write(PROPOSALS/'template.json', template)
     for i,(phrase,note,channel,description) in enumerate(judgments):
-        channel_recording = conflict_recording if channel == 'lead_traffic_relation' else recording
-        unit = next(row['unit'] for row in channel_recording['channels'] if row['name'] == channel)
+        unit = next(row['unit'] for row in recording['channels'] if row['name'] == channel)
         value = {'status': 'draft', 'template_id': TEMPLATE,
                  'phrase': phrase, 'note': note,
                  'observable_requirements': {
@@ -117,6 +116,7 @@ def build():
                       'unresolved_judgment_calls': [phrase for phrase,_,_,_ in judgments]})
     cases.append({'case_id': ASSIGNMENT+'__conflict', 'target_law_id': LAW,
                   'target_type': 'judgment_sweep',
+                  'paired_probe_id': ASSIGNMENT+'__lead_conflict_pending_pair',
                   'deliberate_differences': ['lead_traffic_conflict_probe'],
                   'probe': {'primary_variable': 'lead_traffic_conflict_probe',
                             'comparison_or_standard': 'saved lead position, velocity and braking request; statutory necessity unresolved',
