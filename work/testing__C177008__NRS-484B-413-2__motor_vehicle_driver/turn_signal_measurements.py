@@ -696,7 +696,9 @@ def finalize_saved(attempt, output):
     """Derive the right-turn measurements only from staged original sources."""
     from worker_exchange.native_output import write_result, physical_result
     attempt, output = Path(attempt), Path(output)
-    if output.exists() or (attempt/"result.json").exists() or (attempt/"channels").exists():
+    if (output.exists() or (attempt/"result.json").exists() or
+            (attempt/"channels").exists() or (attempt.parent/"evidence").exists() or
+            (attempt.parent/"evidence-checksums.json").exists()):
         raise ValueError("Retain prior finalization; choose a fresh saved version")
     required = ("config.json", "drive_history.jsonl", "body_history.jsonl",
                 "route_context.json", "video_frames.jsonl", "trace.jsonl",
@@ -730,6 +732,33 @@ def finalize_saved(attempt, output):
                     allow_nan=False)+"\n")
         evidence.append({"name": name, "unit": unit,
                          "reference": "channels/"+name+".jsonl"})
+    # The pinned adapter opens Evidence(original.parent): a hash-bound export
+    # beside this staged attempt. Rebuild it from saved sources, never labels.
+    evidence_root = attempt.parent/"evidence"
+    evidence_root.mkdir()
+    original_export = ("trace.jsonl", "road.xodr", "route_context.json",
+                       "drive_history.jsonl", "body_history.jsonl",
+                       "district-site-packet.json", "district-site-source.txt")
+    for name in original_export:
+        source = attempt/name
+        if source.is_file():
+            shutil.copyfile(source, evidence_root/name)
+    shutil.copytree(attempt/"capture", evidence_root/"capture")
+    shutil.copyfile(channel_root/"ego_turn_indicator.jsonl",
+                    evidence_root/"ego_turn_indicator.jsonl")
+    checksums = {"evidence/"+p.relative_to(evidence_root).as_posix():
+                 hashlib.sha256(p.read_bytes()).hexdigest()
+                 for p in evidence_root.rglob("*") if p.is_file()}
+    (attempt.parent/"evidence-checksums.json").write_text(
+        json.dumps(checksums, sort_keys=True, allow_nan=False)+"\n")
+    (attempt/"district-context.json").write_text(json.dumps({"district_packet": {
+        "district_type": report["district_type"],
+        "native_map_id": json.loads((attempt/"route_context.json").read_text())["native_map_id"],
+        "packet_sha256": report["sources"]["district-site-packet.json"],
+        "document_sha256": report["sources"]["district-site-source.txt"],
+        "legal_classification_confirmed": False}}, allow_nan=False)+"\n")
+    evidence.append({"name": "district_packet", "unit": "source document",
+                     "reference": "district-context.json"})
     distance = measure_continuous_right_signal_distance(report)
     boundary = source_district_boundary(report)
     turn_onset = measure_right_turn_onset(report)
