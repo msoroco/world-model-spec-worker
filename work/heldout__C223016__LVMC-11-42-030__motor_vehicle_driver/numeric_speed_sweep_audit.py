@@ -82,14 +82,16 @@ def member(speed, attempt, receipt_path):
             'period': rows[0]['civil_time']['iso8601'], 'receipt_sha256': sha(receipt_path)}
 
 
-def audit(pairs):
+def audit(pairs, *, tamper_fixed=False):
     points = [member(speed, *pairs[speed]) for speed in (3, 5, 7)]
+    if tamper_fixed:
+        points[0]['config']['device_forward_m'] += 1
     baseline = points[1]
+    identity_keys = {'case', 'selected_case_id', 'supported_case_ids', 'target_speed_mps'}
     for point in points:
         a, b = point['config'], baseline['config']
-        for key in ('period_id', 'period_direction_xy', 'subject_direction_xy',
-                    'governed_lane_id', 'rate_hz', 'frames', 'duration_s', 'cameras'):
-            if a[key] != b[key]:
+        for key in sorted(set(a) | set(b)):
+            if key not in identity_keys and a.get(key) != b.get(key):
                 raise ValueError('Numeric sweep changed fixed condition: ' + key)
         if (point['device'] != baseline['device'] or point['lane_id'] != baseline['lane_id']
                 or point['period'] != baseline['period']):
@@ -99,7 +101,13 @@ def audit(pairs):
     return {'axis': 'original same-frame subject speed_mps', 'points': [
         {k: p[k] for k in ('case_id', 'commanded_speed_mps', 'source_speed_mps',
                           'frames', 'direction_source_sha256', 'trace_sha256', 'receipt_sha256')}
-        for p in points], 'fixed_device_and_period_verified': True,
+        for p in points], 'controlled_pairs': [
+            {'case_ids': [left['case_id'], right['case_id']],
+             'commanded_speed_mps': [left['commanded_speed_mps'], right['commanded_speed_mps']],
+             'original_source_speed_mps': [left['source_speed_mps'], right['source_speed_mps']]}
+            for left, right in zip(points, points[1:])],
+        'fixed_device_and_period_verified': True,
+        'all_non_speed_config_fields_fixed': True,
         'synthetic_diagnostic_only': True, 'legal_threshold_inferred': False,
         'physical_acceptance_claimed': False, 'legal_acceptance_claimed': False}
 
