@@ -1664,7 +1664,6 @@
     "diagnostic_only": true,
     "remaining_cpu": [
       "canonical case, semantic, branch and ordered queue bindings",
-      "three risk-triggered fallback constructions with exact offline, compatibility and saved-only proofs",
       "independent same-site controlled comparison audit",
       "assignment-scoped strict check and complete strict delivery gate"
     ],
@@ -1698,6 +1697,112 @@
     "saved_processing_receipt": "straight-primary-process-saved-receipt.json",
     "saved_processing_receipt_sha256": "da374ad1694926bd6799ad032ff50fe61caef9c08a0ce9e883f160901fb4a61b",
     "saved_processing_log_ignored": ".runtime-work/c125751-straight-saved-v10.log",
-    "saved_processing_log_sha256": "da374ad1694926bd6799ad032ff50fe61caef9c08a0ce9e883f160901fb4a61b"
+    "saved_processing_log_sha256": "da374ad1694926bd6799ad032ff50fe61caef9c08a0ce9e883f160901fb4a61b",
+    "fallback_construction_draft": {
+      "status": "three_exact_offline_positive_negative_compatibility_and_recorded_only_saved_processing_passed_provisionally",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "straight-fallback1-construction.json",
+          "construction_sha256": "14e632a2b18309c3b892a54a05223e7840df40ea8c4d475a3437486b4b2c6838",
+          "trigger": {
+            "source": "stop_history.jsonl",
+            "metric": "ego first-zero-speed frame before body entry",
+            "failure_condition": "no sampled zero-speed interval before ego release"
+          },
+          "changed_knobs": [
+            "ego.release_frame: 8 -> 11"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c125751-straight-fallback-stage-v1/manifest.json --case testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_straight_comparator --candidate fallback1 --output .runtime-work/c125751-straight-fallback-stage-v1/fallback1-offline",
+            "exit_code": 0,
+            "construction_sha256": "14e632a2b18309c3b892a54a05223e7840df40ea8c4d475a3437486b4b2c6838",
+            "log": "straight-fallback-offline-proof.log",
+            "log_sha256": "b03b80441e244de058afc36e495c864f9c4e4858adfaaec69d5dd29c47bf97d9"
+          },
+          "compatibility": {
+            "receipt": "straight-fallback1-compatibility-receipt.json",
+            "sha256": "f796df49e7c2929c29bc5ca65ac656c456253ee38de27fefed6dbd12a03db78b",
+            "log": "straight-fallback1-compatibility-analysis.log",
+            "negative_log": "straight-fallback1-negative.log"
+          },
+          "saved_processing": {
+            "receipt": "straight-fallback1-process-saved-receipt.json",
+            "sha256": "75a2b55385c5b4a0ba8f47e3362a11ca0302c3c5e52bd2fbd79f2fca2c701fc4",
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest .runtime-work/c125751-straight-fallback-stage-v1/manifest.json --case testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_straight_comparator --attempt .runtime-work/c125751-straight-fallback-stage-v1/fallback1-compat-v2 --output .runtime-work/c125751-straight-fallback-stage-v1/fallback1-saved --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "exit_code": 0
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "straight-fallback2-construction.json",
+          "construction_sha256": "70f4e355465c0250d28db4cc7c30b0f1c71c99b4b6a466892bbd65b59d65a3d5",
+          "trigger": {
+            "source": "body_history.jsonl",
+            "metric": "other per-frame displacement and body clearance",
+            "failure_condition": "other body overshoots the crossing before ego reaches the entry plane"
+          },
+          "changed_knobs": [
+            "other.target_speed_mps: 5.0 -> 4.5"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c125751-straight-fallback-stage-v1/manifest.json --case testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_straight_comparator --candidate fallback2 --output .runtime-work/c125751-straight-fallback-stage-v1/fallback2-offline",
+            "exit_code": 0,
+            "construction_sha256": "70f4e355465c0250d28db4cc7c30b0f1c71c99b4b6a466892bbd65b59d65a3d5",
+            "log": "straight-fallback-offline-proof.log",
+            "log_sha256": "b03b80441e244de058afc36e495c864f9c4e4858adfaaec69d5dd29c47bf97d9"
+          },
+          "compatibility": {
+            "receipt": "straight-fallback2-compatibility-receipt.json",
+            "sha256": "2378cc0edb8654b2d3aa50d6fafd6d90058c16f117fc79911e1a97fccbeae744",
+            "log": "straight-fallback2-compatibility-analysis.log",
+            "negative_log": "straight-fallback2-negative.log"
+          },
+          "saved_processing": {
+            "receipt": "straight-fallback2-process-saved-receipt.json",
+            "sha256": "bf21f3d51d0f160cfb7420c7d9313006a24aab481e8fe94abd4201c7a7d2b785",
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest .runtime-work/c125751-straight-fallback-stage-v1/manifest.json --case testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_straight_comparator --attempt .runtime-work/c125751-straight-fallback-stage-v1/fallback2-compat --output .runtime-work/c125751-straight-fallback-stage-v1/fallback2-saved --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "exit_code": 0
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "straight-fallback3-construction.json",
+          "construction_sha256": "02b5b591a62b68be4f6a055f9c71cad3290e36c1412f727dbbc48eb26fa1c702",
+          "trigger": {
+            "source": "body_history.jsonl",
+            "metric": "ego heading error against straight-route source",
+            "failure_condition": "ego body deviates from the straight route before clearing the crossing"
+          },
+          "changed_knobs": [
+            "lookahead_m: 5.0 -> 7.0"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c125751-straight-fallback-stage-v1/manifest.json --case testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_straight_comparator --candidate fallback3 --output .runtime-work/c125751-straight-fallback-stage-v1/fallback3-offline",
+            "exit_code": 0,
+            "construction_sha256": "02b5b591a62b68be4f6a055f9c71cad3290e36c1412f727dbbc48eb26fa1c702",
+            "log": "straight-fallback-offline-proof.log",
+            "log_sha256": "b03b80441e244de058afc36e495c864f9c4e4858adfaaec69d5dd29c47bf97d9"
+          },
+          "compatibility": {
+            "receipt": "straight-fallback3-compatibility-receipt.json",
+            "sha256": "6ecc3e3a9fe46015bb435bc3919e0d2c980019f1c53722e53f6f5b6fd93a5770",
+            "log": "straight-fallback3-compatibility-analysis.log",
+            "negative_log": "straight-fallback3-negative.log"
+          },
+          "saved_processing": {
+            "receipt": "straight-fallback3-process-saved-receipt.json",
+            "sha256": "f39996b824ae64b9f25a824aaed17902e9087794e7d2b7c7105a91ec424cc70a",
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest .runtime-work/c125751-straight-fallback-stage-v1/manifest.json --case testing__C125751__NRS-484B-250-2__motor_vehicle_driver__opposite_straight_comparator --attempt .runtime-work/c125751-straight-fallback-stage-v1/fallback3-compat --output .runtime-work/c125751-straight-fallback-stage-v1/fallback3-saved --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "exit_code": 0
+          }
+        }
+      ],
+      "provisional_manifest": ".runtime-work/c125751-straight-fallback-stage-v1/manifest.json",
+      "physical_or_legal_acceptance_claimed": false,
+      "proof_manifest": "straight-fallback-proof-manifest.json",
+      "proof_manifest_sha256": "21b3dd64d3d1e3e37f2e70fb45bc1b48fab67e9f248f7a1b258ddcc6a8686695",
+      "fixture_scope": "The same source-hashed synthetic straight-motion diagnostic tests software compatibility for each selected construction; distinct Native fallback behavior is not observed by this fixture."
+    }
   }
 }

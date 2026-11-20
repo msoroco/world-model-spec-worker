@@ -201,3 +201,7 @@ To stay within the 8,600-file return cap, 100 older logs absent from current JSO
 ## 2026-11-18 return-budget log preservation
 
 Fifty historical result-only CPU command logs were losslessly archived as `cpu-test-log-archive-v2.json` SHA256 `5b84bff9b63cbfc4f9e8327dfbe714b6a05f2dcf1f7fb18f6fab4daf011d0a98`. Each member preserves its original filename, UTF-8 text and SHA256; `result.json.tests` now binds the archive and original member hash. No construction, source, compatibility receipt or saved-processing receipt was changed. This creates return-file slots for the worker-owned C158196 physical preparation proofs. This package remains partial.
+
+## Historical receipt capacity archive, 2026-11-19
+
+Seven superseded compatibility receipts with no current JSON machine references were preserved byte for byte in `historical-unbound-compatibility-receipts.json` (SHA256 `fcbc7a13fb5509e633b859677669b68ed177909a2f68e314ce30d773ae78daef`). The archive records original filenames, exact bytes and SHA256 values. This frees six return slots for the C125751 straight fallback constructions without changing C125697's selected proofs or partial status. Rehydrate an archived receipt from its base64 field only if a historical diagnostic is needed; rerun the current pinned compatibility proof for readiness.
