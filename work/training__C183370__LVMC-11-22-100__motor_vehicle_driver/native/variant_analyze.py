@@ -20,6 +20,15 @@ def analyze_rows(frames, actors, readback, *, diagnostic=False):
     actor_id = readback['control_actor_id']
     actor_type = readback['control_type_id']
     warning = readback.get('governing_warning_control')
+    fixed = readback.get('fixed_flagger')
+    if not diagnostic and plan['control_kind'] != 'warning_person':
+        survey_flagger = plan.get('fixed_flagger')
+        if (not isinstance(fixed, dict) or
+                not isinstance(survey_flagger, dict) or
+                fixed.get('actor_id') == actor_id or
+                fixed.get('actor_id') != survey_flagger.get('actor_id') or
+                fixed.get('type_id') != survey_flagger.get('type_id')):
+            raise ValueError('Distinct original fixed-cell flagger is required')
     if not diagnostic and plan['control_kind'] == 'employee_exception':
         if (not isinstance(warning, dict) or
                 warning.get('actor_id') == actor_id or
@@ -55,6 +64,18 @@ def analyze_rows(frames, actors, readback, *, diagnostic=False):
             raise ValueError('Original variant control position invalid')
         if Point(position[:2]).distance(polygon) > 15:
             raise ValueError('Original control actor left surveyed pavement vicinity')
+        if fixed is not None and not diagnostic:
+            observed_flagger = actor.get('fixed_flagger')
+            if (not isinstance(observed_flagger, dict) or
+                    observed_flagger.get('actor_id') != fixed['actor_id'] or
+                    observed_flagger.get('type_id') != fixed['type_id']):
+                raise ValueError('Original fixed flagger actor identity differs')
+            flagger_xyz = observed_flagger.get('xyz_m')
+            if (not isinstance(flagger_xyz, list) or len(flagger_xyz) != 3 or
+                    not all(type(v) in (int, float) and isfinite(v)
+                            for v in flagger_xyz) or
+                    Point(flagger_xyz[:2]).distance(polygon) > 15):
+                raise ValueError('Original fixed flagger left surveyed pavement vicinity')
         if warning is not None and not diagnostic:
             observed_warning = actor.get('governing_warning_control')
             if (not isinstance(observed_warning, dict) or

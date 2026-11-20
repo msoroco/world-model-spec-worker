@@ -73,7 +73,7 @@ def build(kind, route, candidate='primary'):
                                  'employee_exception': 'independent original source review required'},
             'static_checks': ['runner.py --check', 'tests/test_bundle.py'],
             'termination_rules': {'frames': 600, 'capture_rate_hz': 20},
-            'mechanisms': {'scene': 'source-surveyed live map and barrier actor',
+            'mechanisms': {'scene': 'C183370 fixed flagger plus separately source-surveyed barrier actor',
                            'control': 'native/route_control.py',
                            'capture': 'native/variant_capture.py',
                            'source_analysis': 'native/variant_analyze.py',

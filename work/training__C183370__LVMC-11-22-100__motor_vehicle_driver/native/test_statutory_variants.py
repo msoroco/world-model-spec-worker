@@ -11,7 +11,7 @@ from statutory_variants import bind, validate
 def survey(kind):
     control_type = ('walker.pedestrian.0001' if kind in
                     ('warning_person', 'employee_exception') else 'static.prop.trafficwarning')
-    row = {'map_name': 'surveyed-map', 'road_id': 8,
+    row = {'map_name': 'surveyed-map', 'road_id': 8, 'cell_id': 'C183370',
            'repair_polygon_xy_m': [[-1, -1], [1, -1], [1, 1], [-1, 1]],
            'route_over_xy_m': [[-5, 0], [5, 0]],
            'route_avoid_xy_m': [[-5, 0], [-3, 2], [0, 3], [3, 2], [5, 0]],
@@ -19,6 +19,10 @@ def survey(kind):
            'weather_profile': 'surveyed-clear', 'anchor_z_m': 0.0,
            'control_kind': kind, 'control_actor_id': 12,
            'control_xy_m': [2, 0], 'control_type_id': control_type}
+    if kind != 'warning_person':
+        row['fixed_flagger'] = {
+            'actor_id': 14, 'type_id': 'walker.pedestrian.0002',
+            'xy_m': [4, 0], 'source_reference': 'fixed cell flagger source'}
     if kind in ('warning_sign', 'highway_closed_sign'):
         row['sign_face_source'] = 'original overview and approach camera frames'
     if kind == 'employee_exception':
@@ -50,7 +54,11 @@ class World:
         warning = types.SimpleNamespace(id=13, type_id='static.prop.trafficwarning',
             get_transform=lambda: types.SimpleNamespace(location=types.SimpleNamespace(
                 x=3, y=0, z=0)))
-        return types.SimpleNamespace(find=lambda ident: {12: actor, 13: warning}.get(ident))
+        flagger = types.SimpleNamespace(id=14, type_id='walker.pedestrian.0002',
+            get_transform=lambda: types.SimpleNamespace(location=types.SimpleNamespace(
+                x=4, y=0, z=0)))
+        return types.SimpleNamespace(find=lambda ident: {12: actor, 13: warning,
+                                                        14: flagger}.get(ident))
 
 
 CARLA = types.SimpleNamespace(Location=lambda **kwargs: types.SimpleNamespace(**kwargs),
@@ -79,6 +87,8 @@ class StatutoryVariantTest(unittest.TestCase):
                 self.assertFalse(receipt['employee_exception_verified'])
                 if kind == 'employee_exception':
                     self.assertEqual(receipt['governing_warning_control']['actor_id'], 13)
+                if kind != 'warning_person':
+                    self.assertEqual(receipt['fixed_flagger']['actor_id'], 14)
 
     def test_rejects_unisolated_or_unmeasured_scene(self):
         row = survey('barrier')
@@ -111,6 +121,14 @@ class StatutoryVariantTest(unittest.TestCase):
         employee['governing_warning_control']['actor_id'] = 12
         with self.assertRaisesRegex(ValueError, 'distinct sourced governing'):
             validate(employee, 'surveyed-map')
+        barrier = survey('barrier')
+        del barrier['fixed_flagger']
+        with self.assertRaisesRegex(ValueError, 'fixed flagger'):
+            validate(barrier, 'surveyed-map')
+        barrier = survey('barrier')
+        barrier['cell_id'] = 'C183429'
+        with self.assertRaisesRegex(ValueError, 'fixed C183370'):
+            validate(barrier, 'surveyed-map')
 
     def test_rejects_live_actor_and_map_mismatch(self):
         row = survey('barrier')

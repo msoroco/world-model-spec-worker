@@ -33,7 +33,8 @@ def write():
                                                 PACKAGE / 'native/sign_offline_bundle_test.py'))
                 construction.update(case_id=cfg['case_id'],
                                     status='draft_exact_sign_source_finalization_offline')
-                construction['mechanisms']['scene'] = 'source-surveyed live map and ' + kind + ' actor'
+                construction['mechanisms']['scene'] = (
+                    'C183370 fixed flagger plus separately source-surveyed ' + kind + ' actor')
                 construction['measurement_plan']['barrier_and_repair'] = (
                     'original sign-face content and pavement repair review required')
                 folder = PACKAGE / 'draft-variant-candidates' / kind / route / candidate

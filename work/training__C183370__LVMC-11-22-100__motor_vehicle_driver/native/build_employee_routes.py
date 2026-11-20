@@ -29,7 +29,8 @@ def write():
                     file.update(source_file('tests/test_bundle.py',
                                             PACKAGE / 'native/employee_offline_bundle_test.py'))
             construction.update(case_id=cfg['case_id'], status='draft_exact_employee_source_finalization_offline')
-            construction['mechanisms']['scene'] = 'source-surveyed live pavement and activity-provenanced pedestrian'
+            construction['mechanisms']['scene'] = (
+                'C183370 fixed flagger plus separately source-surveyed activity-provenanced pedestrian')
             construction['measurement_plan']['employee_exception'] = 'independent original activity source review required'
             folder = PACKAGE / 'draft-variant-candidates/employee_exception' / route / candidate
             folder.mkdir(parents=True, exist_ok=True)

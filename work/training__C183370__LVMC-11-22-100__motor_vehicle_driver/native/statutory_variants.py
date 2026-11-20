@@ -52,11 +52,24 @@ def validate(survey, live_map_name):
     kind = survey['control_kind']
     if kind not in CONTROL_KINDS:
         raise ValueError('Unknown statutory control route')
+    if survey.get('cell_id') != 'C183370':
+        raise ValueError('Variant survey must remain in fixed C183370 cell')
     expected = ('walker.pedestrian.' if kind in ('warning_person', 'employee_exception')
                 else 'static.prop.')
     if not isinstance(survey['control_type_id'], str) or not survey['control_type_id'].startswith(expected):
         raise ValueError('Control actor type does not match route')
     control_xy = _point(survey['control_xy_m'], 'Control location')
+    fixed_flagger = survey.get('fixed_flagger')
+    if kind != 'warning_person':
+        if (not isinstance(fixed_flagger, dict) or
+                type(fixed_flagger.get('actor_id')) is not int or
+                fixed_flagger['actor_id'] == survey['control_actor_id'] or
+                not isinstance(fixed_flagger.get('type_id'), str) or
+                not fixed_flagger['type_id'].startswith('walker.pedestrian.') or
+                not isinstance(fixed_flagger.get('source_reference'), str) or
+                not fixed_flagger['source_reference'].strip()):
+            raise ValueError('Non-person branch needs a distinct source-bound fixed flagger')
+        flagger_xy = _point(fixed_flagger.get('xy_m'), 'Fixed flagger location')
     polygon_points = survey['repair_polygon_xy_m']
     if not isinstance(polygon_points, list) or len(polygon_points) < 3:
         raise ValueError('Repair polygon needs at least three points')
@@ -72,6 +85,8 @@ def validate(survey, live_map_name):
         raise ValueError('Variant comparison needs shared route endpoints')
     if Point(control_xy).distance(polygon) > 15:
         raise ValueError('Control actor is not near surveyed pavement')
+    if kind != 'warning_person' and Point(flagger_xy).distance(polygon) > 15:
+        raise ValueError('Fixed flagger is not near surveyed pavement')
     if kind in SIGN_KINDS:
         if not survey.get('sign_face_source'):
             raise ValueError('Sign route needs original sign-face source reference')
@@ -110,6 +125,7 @@ def validate(survey, live_map_name):
         }
     return {'map_name': survey['map_name'], 'road_id': survey['road_id'],
             'repair_polygon_xy_m': polygon_points, 'control_kind': kind,
+            'cell_id': survey['cell_id'], 'fixed_flagger': fixed_flagger,
             'control_actor_id': survey['control_actor_id'],
             'control_type_id': survey['control_type_id'],
             'control_xy_m': control_xy, 'frames': survey['frames'],
@@ -156,6 +172,20 @@ def bind(survey, world, carla):
     if hypot(location.x - plan['control_xy_m'][0],
              location.y - plan['control_xy_m'][1]) > .5:
         raise ValueError('Live control actor position differs from variant survey')
+    flagger_readback = None
+    if plan['fixed_flagger'] is not None:
+        fixed = plan['fixed_flagger']
+        flagger = world.get_actors().find(fixed['actor_id'])
+        if flagger is None or flagger.type_id != fixed['type_id']:
+            raise ValueError('Live fixed flagger actor differs from variant survey')
+        flagger_location = flagger.get_transform().location
+        if hypot(flagger_location.x - fixed['xy_m'][0],
+                 flagger_location.y - fixed['xy_m'][1]) > .5:
+            raise ValueError('Live fixed flagger position differs from variant survey')
+        flagger_readback = {'actor_id': flagger.id, 'type_id': flagger.type_id,
+                            'xyz_m': [flagger_location.x, flagger_location.y,
+                                      flagger_location.z],
+                            'source_reference': fixed['source_reference']}
     warning_readback = None
     if plan['control_kind'] == 'employee_exception':
         warning = plan['governing_warning_control']
@@ -177,6 +207,7 @@ def bind(survey, world, carla):
             'route_waypoints': routes, 'control_actor_id': actor.id,
             'control_type_id': actor.type_id,
             'control_xyz_m': [location.x, location.y, location.z],
+            'fixed_flagger': flagger_readback,
             'governing_warning_control': warning_readback,
             'control_content_verified': False,
             'employee_exception_verified': False,

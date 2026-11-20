@@ -58,6 +58,9 @@ class World:
         self.control = types.SimpleNamespace(id=12,
             type_id='static.prop.trafficwarning',
             get_transform=lambda: types.SimpleNamespace(location=xyz(2, 0)))
+        self.flagger = types.SimpleNamespace(id=14,
+            type_id='walker.pedestrian.0002', is_alive=True,
+            get_transform=lambda: types.SimpleNamespace(location=xyz(4, 0)))
         self.settings = types.SimpleNamespace(synchronous_mode=False,
                                               fixed_delta_seconds=None)
 
@@ -68,7 +71,8 @@ class World:
             to_opendrive=lambda: '<OpenDRIVE/>')
 
     def get_actors(self):
-        return types.SimpleNamespace(find=lambda ident: self.control if ident == 12 else None)
+        return types.SimpleNamespace(find=lambda ident:
+            {12: self.control, 14: self.flagger}.get(ident))
 
     def get_settings(self):
         return self.settings
@@ -151,7 +155,7 @@ class VariantCaptureTest(unittest.TestCase):
             (attempt / 'construction.json').write_bytes(construction)
             (attempt / 'config.json').write_text(json.dumps({
                 'case_suffix': 'crossing', 'selected_case_id': case_id,
-                'case_id': case_id, 'frames': 600,
+                'case_id': case_id, 'cell_id': 'C183370', 'frames': 600,
                 'controller_knobs': {'speed_mps': 4, 'reach_m': 1.5,
                                      'steer_divisor_deg': 40}}))
             (attempt / 'candidate-selection.json').write_text(json.dumps({
@@ -164,6 +168,8 @@ class VariantCaptureTest(unittest.TestCase):
             self.assertEqual(receipt['source_frames'], 600)
             self.assertEqual(receipt['control_kind'], 'barrier')
             self.assertEqual(len((attempt / 'native-actors.jsonl').read_text().splitlines()), 600)
+            first_actor = json.loads((attempt / 'native-actors.jsonl').read_text().splitlines()[0])
+            self.assertEqual(first_actor['fixed_flagger']['actor_id'], 14)
             trace = json.loads((attempt / 'trace.jsonl').read_text().splitlines()[0])
             self.assertEqual(trace['speed_provenance'], 'original_carla_velocity')
             self.assertEqual(len(world.sensors), 4)

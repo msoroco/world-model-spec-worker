@@ -16,7 +16,8 @@ from route_control import RouteControl
 from statutory_variants import bind
 
 
-def sample(world, carla, ego, control, command, governing_warning=None):
+def sample(world, carla, ego, control, command, governing_warning=None,
+           fixed_flagger=None):
     if control is None:
         raise ValueError('Original control actor disappeared')
     pose = ego.get_transform()
@@ -41,6 +42,15 @@ def sample(world, carla, ego, control, command, governing_warning=None):
                        'type_id': governing_warning.type_id,
                        'xyz_m': [warning_location.x, warning_location.y,
                                  warning_location.z]}
+    flagger_row = None
+    if fixed_flagger is not None:
+        if not fixed_flagger.is_alive:
+            raise ValueError('Original fixed flagger disappeared')
+        flagger_location = fixed_flagger.get_transform().location
+        flagger_row = {'actor_id': fixed_flagger.id,
+                       'type_id': fixed_flagger.type_id,
+                       'xyz_m': [flagger_location.x, flagger_location.y,
+                                 flagger_location.z]}
     return {'source_kind': 'original_carla_actor_and_map_readback',
             'ego_actor_id': ego.id, 'ego_type_id': ego.type_id,
             'ego_position_xyz_m': [location.x, location.y, location.z],
@@ -53,6 +63,7 @@ def sample(world, carla, ego, control, command, governing_warning=None):
             'control_actor_id': control.id, 'control_type_id': control.type_id,
             'control_xyz_m': [actor_location.x, actor_location.y, actor_location.z],
             'governing_warning_control': warning_row,
+            'fixed_flagger': flagger_row,
             'requested_control': command, 'control_content_verified': False,
             'employee_exception_verified': False,
             'physical_completion_claimed': False}
@@ -79,7 +90,8 @@ def acquire(survey, case, attempt, client, carla, *, sink_factory=FFV1Sink):
             config.get('selected_case_id') != selection.get('case_id') or
             config.get('case_id') != selection.get('case_id') or
             selection.get('construction_sha256') != hashlib.sha256(construction.read_bytes()).hexdigest() or
-            config.get('frames') != survey.get('frames')):
+            config.get('frames') != survey.get('frames') or
+            config.get('cell_id') != survey.get('cell_id')):
         raise ValueError('Exact variant selection/config differs')
     if any((attempt / name).exists() for name in
            ('capture-receipt.json', 'native-actors.jsonl', 'video_frames.jsonl', 'trace.jsonl')):
@@ -117,6 +129,9 @@ def acquire(survey, case, attempt, client, carla, *, sink_factory=FFV1Sink):
         warning = readback['governing_warning_control']
         governing_warning = (world.get_actors().find(warning['actor_id'])
                              if warning is not None else None)
+        fixed = readback['fixed_flagger']
+        fixed_flagger = (world.get_actors().find(fixed['actor_id'])
+                         if fixed is not None else None)
         sensors = install_cameras(world, library, carla, ego, callbacks,
                                   config.get('camera_overrides'))
         for name, width, height, *_ in CAMERAS:
@@ -149,7 +164,7 @@ def acquire(survey, case, attempt, client, carla, *, sink_factory=FFV1Sink):
                 frames.write(json.dumps({'video_frame': index, 'carla_frame': frame,
                                          'native_frame': frame, 'time_s': timestamp}) + '\n')
                 observed = sample(world, carla, ego, control, command,
-                                  governing_warning)
+                                  governing_warning, fixed_flagger)
                 actors.write(json.dumps(dict(observed, frame=frame,
                                              video_frame=index, time_s=timestamp),
                                         allow_nan=False) + '\n')

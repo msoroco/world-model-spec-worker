@@ -14,7 +14,10 @@ from variant_recording_contract import config as variant_config
 
 READBACK = {'control_actor_id': 12,
             'control_type_id': 'static.prop.trafficwarning',
+            'fixed_flagger': {'actor_id': 14, 'type_id': 'walker.pedestrian.0002'},
             'plan': {'control_kind': 'barrier',
+                     'fixed_flagger': {'actor_id': 14,
+                                       'type_id': 'walker.pedestrian.0002'},
                      'repair_polygon_xy_m': [[-1, -1], [1, -1], [1, 1], [-1, 1]],
                      'cases': {'crossing': {'requested_pavement_crossing': True},
                                'avoidance': {'requested_pavement_crossing': False}}}}
@@ -29,6 +32,9 @@ def rows(count=600, diagnostic=False):
         actor['control_actor_id'] = 12
         actor['control_type_id'] = 'static.prop.trafficwarning'
         actor['control_xyz_m'] = [2, 0, 0]
+        actor['fixed_flagger'] = {'actor_id': 14,
+                                  'type_id': 'walker.pedestrian.0002',
+                                  'xyz_m': [4, 0, 0]}
         actor['ego_position_xyz_m'] = [0, 0, 0]
         actor['ego_speed_mps'] = 5
         if diagnostic:
@@ -88,6 +94,12 @@ class VariantAnalysisTest(unittest.TestCase):
         readback['governing_warning_control'] = None
         with self.assertRaisesRegex(ValueError, 'Distinct original governing'):
             analyze_rows(frames, actors, readback)
+
+    def test_original_branch_rejects_missing_fixed_flagger(self):
+        frames, actors = rows()
+        actors[50]['fixed_flagger']['actor_id'] = 99
+        with self.assertRaisesRegex(ValueError, 'fixed flagger actor identity'):
+            analyze_rows(frames, actors, READBACK)
 
     def test_full_analysis_binds_trace_and_source_hashes(self):
         frames, actors = rows()
