@@ -256,7 +256,18 @@ class TurnSignalTests(unittest.TestCase):
             source_hash = measure.analyze(root)["sources"]["drive_history.jsonl"]
             report = measure.finalize_saved(root,root/"analysis-report.json")
             self.assertEqual(report["source_hashes"]["drive_history.jsonl"],source_hash)
-            self.assertEqual(json.loads((root/"result.json").read_text())["case_id"],measure.CASE)
+            self.assertAlmostEqual(report["measurements"]["continuous_right_signal_distance_m"]["value"],30.48)
+            self.assertAlmostEqual(report["measurements"]["district_boundary_m"]["value"],30.48)
+            self.assertEqual(report["measurements"]["right_turn_onset"]["value"]["original_frame"],rows[-1]["frame"])
+            for item in report["measurements"].values():
+                self.assertTrue(item["sources"])
+                for name, digest in item["sources"].items():
+                    self.assertEqual(hashlib.sha256((root/name).read_bytes()).hexdigest(),digest)
+            saved_result = json.loads((root/"result.json").read_text())
+            self.assertEqual(saved_result["case_id"],measure.CASE)
+            self.assertEqual(saved_result["target_checks"][0]["requested"],True)
+            self.assertEqual(saved_result["target_checks"][0]["measured"],True)
+            self.assertAlmostEqual(saved_result["measured_values"]["continuous_right_signal_distance_m"],30.48)
             channel = [json.loads(line) for line in (root/"channels/ego_turn_indicator.jsonl").read_text().splitlines()]
             self.assertEqual(len(channel),len(rows))
             self.assertEqual(channel[1]["value"]["reported_mask"],16)

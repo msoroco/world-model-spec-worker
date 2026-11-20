@@ -15,11 +15,11 @@
       "target_law_id": "NRS-484B-413-2",
       "purpose": "Right-turn signal continuously on for last 100 feet in business district",
       "construction": "construction.json",
-      "construction_sha256": "005128a0f28cf31974f93fb21972b32447c3ff06887cbd0f4495ed637de6aca8",
+      "construction_sha256": "4ebf70332d35afef903bf71e4baf07649a947e9b8d83c5afb0bdac0eef64fe85",
       "exact_offline": {
-        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_right_at_100ft --output .runtime-work/c177008-returned-primary-offline-v5",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_right_at_100ft --output .runtime-work/c177008-returned-primary-offline-v8",
         "log": "cpu-tests.log",
-        "sha256": "6320f171cde9b99119d864f8a3660178bfa9302c74c67f20df8f19d24810f4c6",
+        "sha256": "fc4dbc4c23efc01a91ac99e1b9016df5b2ca7e51b4613ea25c7499b71f8edc7e",
         "exit_code": 0
       }
     },
@@ -217,5 +217,34 @@
     "cpu_projection": "three driving lanes and one intersection through pinned static_map",
     "district_authority": "unresolved; no business-district classification from this road",
     "native_realization": "unverified until local CARLA capture"
-  }
+  },
+  "requirement_dispositions": [
+    {
+      "requirement": "Continuous right-intention signal over traveled approach before course change",
+      "source": "NRS 484B.413(2)",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_right_at_100ft"
+      ],
+      "evidence_or_gap": "measured from original Native light-mask readback, ego path and source-joined frames"
+    },
+    {
+      "requirement": "Business or residential district selects the 100-foot boundary",
+      "source": "NRS 484B.413(2)",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_right_at_100ft"
+      ],
+      "evidence_or_gap": "sourced from retained exact-map district packet and document; legal correctness awaits independent site review"
+    },
+    {
+      "requirement": "Right-turn course-change onset follows the continuous signal",
+      "source": "NRS 484B.413(2)",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_right_at_100ft"
+      ],
+      "evidence_or_gap": "measured from original frame, ego heading and path bearing"
+    }
+  ]
 }

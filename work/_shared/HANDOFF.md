@@ -2721,3 +2721,9 @@ C177008 2026-11-20: returned exact first-case construction 77b0e6c3ae663426cae1d
 
 
 2026-11-20 final gate replay: `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --complete --require-delivery-ready` exited 1 at `ValueError: Unapproved output: runtime/runs/scenario_pipeline/inputs/shared/manifest.json`. This is a generated file under the frozen runtime path; no runtime file was edited by this worker. The batch remains 10 ready and 33 partial, with 8,600/8,600 returned files. C177008 scoped static and exact first-primary offline checks pass; its status remains partial.
+
+
+C177008 2026-11-20 saved-source update: construction `005128a0f28cf31974f93fb21972b32447c3ff06887cbd0f4495ed637de6aca8`, exact offline log `6320f171cde9b99119d864f8a3660178bfa9302c74c67f20df8f19d24810f4c6`, thirteen CPU tests and scoped static check pass. Finalizer, original body history and retained district-document hash checks are returned; compatibility, saved processing, fallbacks, other cases and audits remain. Status partial.
+
+
+Latest C177008 binding after channel-description repair: construction SHA-256 `96e191f8655a3891c4f525eb04fec867ce70680b6d95b83cc186dd024281d912`, manifest SHA-256 `6f3840d5fd68463bbc1efbf860c7891c64ba1c30b5812cc5d3c4a893905f250a`, exact offline v6 log SHA-256 `819dc1e1abef52d07377704aaba65e8a73e916e2f9f037dd66563446d458115f`. The declared four channels now match saved finalizer outputs. Thirteen CPU tests pass. Status remains partial.

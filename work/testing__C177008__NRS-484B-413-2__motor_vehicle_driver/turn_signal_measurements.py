@@ -472,6 +472,24 @@ def analyze(root: Path) -> dict:
             "weather_exception": "none in NRS 484B.413(2)"}
 
 
+def measure_continuous_right_signal_distance(report):
+    """Measure the uninterrupted sampled path before the right-turn onset."""
+    return report["turn_onset"]["continuous_right_signal_distance_m"]
+
+
+def source_district_boundary(report):
+    """Return the boundary selected by the retained district source."""
+    return report["required_distance_m"]
+
+
+def measure_right_turn_onset(report):
+    """Return the original frame and heading change used for the course onset."""
+    onset = report["turn_onset"]
+    return {"original_frame": onset["frame"],
+            "heading_delta_deg": onset["heading_delta_deg"],
+            "method": onset["onset_method"]}
+
+
 def _read_camera(queue, frame):
     for _ in range(8):
         try:
@@ -712,15 +730,16 @@ def finalize_saved(attempt, output):
                     allow_nan=False)+"\n")
         evidence.append({"name": name, "unit": unit,
                          "reference": "channels/"+name+".jsonl"})
-    distance = report["turn_onset"]["continuous_right_signal_distance_m"]
-    boundary = report["required_distance_m"]
+    distance = measure_continuous_right_signal_distance(report)
+    boundary = source_district_boundary(report)
+    turn_onset = measure_right_turn_onset(report)
     observed = report["observed_continuous_distance_meets_boundary"]
     result = {"case_id": CASE,
         "measured_values": {"continuous_right_signal_distance_m": distance,
                             "statutory_boundary_m": boundary,
                             "turn_onset_frame": report["turn_onset"]["frame"]},
         "target_checks": [{"target": "continuous_right_signal_at_least_100ft",
-            "requested": 30.48, "measured": distance,
+            "requested": True, "measured": observed,
             "method": "original right-lamp readback and sampled ego path through measured right-turn onset",
             "tolerance": 0.0, "matched": observed,
             "physical_cause_confirmed": False,
@@ -739,10 +758,18 @@ def finalize_saved(attempt, output):
     result = physical_result(attempt, result)
     analysis = {"format": "worker-right-turn-signal-analysis", "case_id": CASE,
         "measurements": {"continuous_right_signal_distance_m": {
-            "value": distance, "unit": "m", "method": report["turn_onset"]["onset_method"],
-            "sources": report["sources"]},
+            "value": distance, "unit": "m", "method": "measure_continuous_right_signal_distance",
+            "sources": {name: report["sources"][name] for name in
+                        ("drive_history.jsonl", "video_frames.jsonl", "route_context.json")}},
             "district_boundary_m": {"value": boundary, "unit": "m",
-                                    "source": "route_context.json"}},
+                "method": "source_district_boundary",
+                "sources": {name: report["sources"][name] for name in
+                            ("route_context.json", "district-site-packet.json",
+                             "district-site-source.txt")}},
+            "right_turn_onset": {"value": turn_onset, "method": "measure_right_turn_onset",
+                "sources": {name: report["sources"][name] for name in
+                            ("drive_history.jsonl", "video_frames.jsonl",
+                             "route_context.json")}}},
         "source_report": report, "source_hashes": report["sources"],
         "physical_checks": result["physical_checks"],
         "legal_verdict_asserted": False}
