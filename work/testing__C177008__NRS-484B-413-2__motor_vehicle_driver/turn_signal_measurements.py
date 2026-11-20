@@ -58,12 +58,14 @@ def analyze(root: Path) -> dict:
     speeds = []
     seen_off_before_on = False
     prior_indicator = None
+    prior_speed = None
     initial_heading = None
     measured_onset_frame = None
     for i, (row, frame) in enumerate(zip(rows, frames)):
         fid, time = row.get("frame"), _number(row.get("time_s"))
         if type(fid) is not int or fid <= prior[0] or time <= prior[1]:
             raise ValueError("Nonmonotone original drive history")
+        prior_time = prior[1]
         prior = (fid, time)
         if frame.get("video_frame") != i or frame.get("carla_frame") != fid or frame.get("time_s") != time:
             raise ValueError("Original video frame join failed")
@@ -71,8 +73,16 @@ def analyze(root: Path) -> dict:
         if not isinstance(xy, list) or len(xy) != 2:
             raise ValueError("Missing ego path point")
         xy = (_number(xy[0]), _number(xy[1]))
+        speed = _number(row.get("ego_speed_mps"))
+        if speed < 0:
+            raise ValueError("Negative measured speed")
         if previous_xy is not None:
-            path += math.dist(xy, previous_xy)
+            segment_m = math.dist(xy, previous_xy)
+            elapsed_s = time - prior_time
+            plausible_m = max(speed, prior_speed) * elapsed_s
+            if segment_m > plausible_m + max(0.1, 0.1 * plausible_m):
+                raise ValueError("Measured path jump exceeds source speed")
+            path += segment_m
         heading = _number(row.get("ego_heading_deg"))
         if previous_xy is not None and math.dist(xy, previous_xy) > 0.01:
             measured_bearing = math.degrees(math.atan2(xy[1] - previous_xy[1],
@@ -80,6 +90,7 @@ def analyze(root: Path) -> dict:
             if abs(_angle_delta(heading, measured_bearing)) > 5.0:
                 raise ValueError("Source heading disagrees with measured path bearing")
         previous_xy = xy
+        prior_speed = speed
         if initial_heading is None:
             initial_heading = heading
         heading_delta = _angle_delta(heading, initial_heading)
@@ -98,7 +109,7 @@ def analyze(root: Path) -> dict:
         if not indicator:
             signal_start_path = None
         prior_indicator = indicator
-        speeds.append(_number(row.get("ego_speed_mps")))
+        speeds.append(speed)
         if fid == context["turn_onset_frame"]:
             if measured_onset_frame != fid:
                 raise ValueError("Authored turn onset disagrees with measured heading change")

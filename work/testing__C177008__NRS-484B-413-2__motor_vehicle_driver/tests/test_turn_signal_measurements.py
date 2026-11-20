@@ -13,20 +13,24 @@ spec.loader.exec_module(measure)
 
 class TurnSignalTests(unittest.TestCase):
     def fixture(self, root, distance, district="business", interrupted=False):
+        steps = math.ceil(distance / 0.25)
+        step = distance / steps
         context = {"native_map_id": "TownX", "approach_road_id": 1,
                    "approach_lane_id": -1, "outgoing_road_id": 2,
                    "outgoing_lane_id": -1, "native_route_source": "native-lane-links",
                    "district_source": "source-reviewed-map-context",
-                   "district_type": district, "turn_onset_frame": 104}
+                   "district_type": district, "turn_onset_frame": 101 + steps}
         (root / "route_context.json").write_text(json.dumps(context))
-        x = [-1, 0, distance / 2, distance - 1, distance - 1 + math.cos(math.pi / 6)]
-        y = [0, 0, 0, 0, -math.sin(math.pi / 6)]
-        indicators = [False, True, not interrupted, True, True]
-        rows = [{"frame": 100+i, "time_s": 1+i*.05,
-                 "ego_position_xy_m": [point, y[i]], "ego_speed_mps": 5,
-                 "ego_heading_deg": -30 if i == 4 else 0,
-                 "right_indicator": indicators[i]}
-                for i, point in enumerate(x)]
+        rows = []
+        for i in range(steps + 2):
+            point = [step * (i - 1), 0]
+            if i == steps + 1:
+                point = [distance - step + step * math.cos(math.pi / 6),
+                         -step * math.sin(math.pi / 6)]
+            rows.append({"frame": 100+i, "time_s": 1+i*.05,
+                         "ego_position_xy_m": point, "ego_speed_mps": step / .05,
+                         "ego_heading_deg": -30 if i == steps + 1 else 0,
+                         "right_indicator": i > 0 and not (interrupted and i == steps // 2)})
         frames = [{"video_frame": i, "carla_frame": row["frame"], "time_s": row["time_s"]}
                   for i, row in enumerate(rows)]
         (root / "drive_history.jsonl").write_text("".join(json.dumps(row)+"\n" for row in rows))
@@ -65,22 +69,33 @@ class TurnSignalTests(unittest.TestCase):
             self.fixture(root, 30.48)
             path = root / "drive_history.jsonl"
             rows = [json.loads(line) for line in path.read_text().splitlines()]
-            rows[4]["ego_heading_deg"] = 0
+            rows[-1]["ego_heading_deg"] = 0
             path.write_text("".join(json.dumps(row)+"\n" for row in rows))
             with self.assertRaisesRegex(ValueError, "heading disagrees"):
                 measure.analyze(root)
-            rows[4]["ego_heading_deg"] = 30
-            rows[4]["ego_position_xy_m"][1] = 0.5
+            rows[-1]["ego_heading_deg"] = 30
+            rows[-1]["ego_position_xy_m"][1] *= -1
             path.write_text("".join(json.dumps(row)+"\n" for row in rows))
             with self.assertRaisesRegex(ValueError, "not a right turn"):
                 measure.analyze(root)
-            rows[4]["ego_heading_deg"] = -30
-            rows[4]["ego_position_xy_m"][1] = -0.5
+            rows[-1]["ego_heading_deg"] = -30
+            rows[-1]["ego_position_xy_m"][1] *= -1
             path.write_text("".join(json.dumps(row)+"\n" for row in rows))
             context = json.loads((root / "route_context.json").read_text())
-            context["turn_onset_frame"] = 103
+            context["turn_onset_frame"] -= 1
             (root / "route_context.json").write_text(json.dumps(context))
             with self.assertRaisesRegex(ValueError, "Authored turn onset"):
+                measure.analyze(root)
+
+    def test_path_jump_incompatible_with_speed_rejected(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            self.fixture(root, 30.48)
+            path = root / "drive_history.jsonl"
+            rows = [json.loads(line) for line in path.read_text().splitlines()]
+            rows[5]["ego_position_xy_m"][0] += 10
+            path.write_text("".join(json.dumps(row)+"\n" for row in rows))
+            with self.assertRaisesRegex(ValueError, "path jump exceeds source speed"):
                 measure.analyze(root)
 
 

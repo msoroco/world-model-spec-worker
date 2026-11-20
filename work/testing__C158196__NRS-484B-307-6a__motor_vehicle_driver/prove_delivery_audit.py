@@ -16,6 +16,16 @@ ATTEMPTS = {
 EXPECTED = "Original governed signal or lane differs"
 
 
+def rejects(call, message):
+    try:
+        call()
+    except ValueError as exc:
+        if message not in str(exc):
+            raise
+    else:
+        raise ValueError("Negative audit was accepted: " + message)
+
+
 def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
@@ -44,17 +54,32 @@ def main():
     first = json.loads(rows[0]); first["lane_id"] += 1
     rows[0] = json.dumps(first, separators=(",", ":"))
     history.write_text("\n".join(rows) + "\n")
-    try:
-        audit(negative, HERE.name + "__entry_before_red", diagnostic_selftest=True)
-    except ValueError as exc:
-        if EXPECTED not in str(exc):
-            raise
-    else:
-        raise ValueError("Missing governance negative was accepted")
+    case_id = HERE.name + "__entry_before_red"
+    rejects(lambda: audit(negative, case_id, diagnostic_selftest=True), EXPECTED)
+    shutil.copyfile(source / "signal_vehicle_history.jsonl", history)
+    frame_map = negative / "video_frames.jsonl"
+    frame_rows = frame_map.read_text().splitlines()
+    first = json.loads(frame_rows[0]); first["carla_frame"] += 1
+    frame_rows[0] = json.dumps(first, separators=(",", ":"))
+    frame_map.write_text("\n".join(frame_rows) + "\n")
+    rejects(lambda: audit(negative, case_id, diagnostic_selftest=True),
+            "Original frame/time join differs")
+    shutil.copyfile(source / "video_frames.jsonl", frame_map)
+    rejects(lambda: audit(source, case_id), "Native non-diagnostic source required")
+    provenance = negative / "acquisition-provenance.json"
+    native = json.loads(provenance.read_text())
+    native["provenance_kind"] = "native"
+    native["diagnostic_fixture"] = False
+    provenance.write_text(json.dumps(native, sort_keys=True) + "\n")
+    rejects(lambda: audit(negative, case_id, diagnostic_selftest=True),
+            "Diagnostic selftest requires synthetic provenance")
     return {"format": "worker-cpu-delivery-audit-proof", "passed": True,
             "scope": "Synthetic software diagnostics only; no Native pixel or physical acceptance",
             "auditor": "delivery_audit.py", "auditor_sha256": sha(HERE / "delivery_audit.py"),
-            "positive_cases": reports, "negative_expected_error": EXPECTED}
+            "positive_cases": reports, "negative_expected_error": EXPECTED,
+            "negative_checks": [EXPECTED, "Original frame/time join differs",
+                                "Native non-diagnostic source required",
+                                "Diagnostic selftest requires synthetic provenance"]}
 
 
 if __name__ == "__main__":
