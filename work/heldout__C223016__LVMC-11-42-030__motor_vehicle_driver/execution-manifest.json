@@ -1784,6 +1784,168 @@
         "log": "centerline-east-primary-saved.json",
         "log_sha256": "72db8d46340fdb1c77240e78d29be8b29156aebf47ae9fd14a32e54543bf9267"
       }
+    },
+    {
+      "kind": "delivery",
+      "measurement_procedure": {
+        "entrypoint": "direction_finalizer.py"
+      },
+      "acquisition": {
+        "source_frame_and_civil_time": {
+          "entrypoint": "direction_finalizer.py",
+          "method": "derive only from retained direction_state, original trace and frame map",
+          "evidence": "direction_state.jsonl; trace.jsonl; video_frames.jsonl"
+        },
+        "lane_and_subject_direction": {
+          "entrypoint": "direction_finalizer.py",
+          "method": "derive only from retained direction_state, original trace and frame map",
+          "evidence": "direction_state.jsonl; trace.jsonl; video_frames.jsonl"
+        },
+        "direction_device_source": {
+          "entrypoint": "direction_finalizer.py",
+          "method": "derive only from retained direction_state, original trace and frame map",
+          "evidence": "direction_state.jsonl; trace.jsonl; video_frames.jsonl"
+        },
+        "four_camera_source": {
+          "entrypoint": "direction_finalizer.py",
+          "method": "derive only from retained direction_state, original trace and frame map",
+          "evidence": "direction_state.jsonl; trace.jsonl; video_frames.jsonl"
+        },
+        "observed_direction": {
+          "entrypoint": "direction_finalizer.py",
+          "method": "derive only from retained direction_state, original trace and frame map",
+          "evidence": "direction_state.jsonl; trace.jsonl; video_frames.jsonl"
+        }
+      },
+      "case_id": "heldout__C223016__LVMC-11-42-030__motor_vehicle_driver__centerline_west_against",
+      "construction": "centerline-west-construction.json",
+      "construction_sha256": "5b79ed7569c3bcd1ba10bc6eedb2d9b22b8caf2b79e486e8cd33daecfed09f54",
+      "measurement_contract": "centerline-west-measurement-contract.json",
+      "fixture_recipe": "work/heldout__C223016__LVMC-11-42-030__motor_vehicle_driver/diagnostic-centerline-west-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "A governed lane with contrary Native map heading and solid centerline may be unavailable; sign legibility and legal temporary designation remain unresolved."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "centerline-west-fallback1-construction.json",
+          "construction_sha256": "d3c11df965ab0e428ae970e2ffeeecd034a0f8fbf7745086334a25353a3b17e7",
+          "trigger": {
+            "source": "Native same-lane spawn survey",
+            "metric": "available contraflow spawn points and occupancy",
+            "failure_condition": "primary contraflow spawn fails or is occupied"
+          },
+          "changed_knobs": [
+            "spawn_candidate_index"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C223016__LVMC-11-42-030__motor_vehicle_driver/execution-manifest.json --case heldout__C223016__LVMC-11-42-030__motor_vehicle_driver__centerline_west_against --output .runtime-work/c223016-centerline-west-proof/offline-v2-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback1",
+            "exit_code": 0,
+            "log": "evening-west-primary-offline.log",
+            "log_sha256": "fe008aab760eb03ccac7578e2b84665b1b50b0d7f855b17a0c7a8d039435b658",
+            "construction_sha256": "d3c11df965ab0e428ae970e2ffeeecd034a0f8fbf7745086334a25353a3b17e7"
+          },
+          "compatibility": {
+            "receipt": "centerline-west-fallback1-compatibility.json",
+            "log": "evening-west-analysis.log",
+            "negative_log": "centerline-west-fallback1-negative.log",
+            "sha256": "1df4f97868c4671c8fa03a4768b949b761c4296f2f2b706e3ab8e1c45ebb3354"
+          },
+          "saved_processing_proof": {
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C223016__LVMC-11-42-030__motor_vehicle_driver/execution-manifest.json --case heldout__C223016__LVMC-11-42-030__motor_vehicle_driver__centerline_west_against --attempt .runtime-work/c223016-centerline-west-proof/saved-attempt-fallback1 --output .runtime-work/c223016-centerline-west-proof/saved-fallback1 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+            "exit_code": 0,
+            "log": "centerline-west-fallback1-saved.json",
+            "log_sha256": "10505c0da29b39a84c893bca6118f90466298a53575d36256862a27a7c9785c3"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "centerline-west-fallback2-construction.json",
+          "construction_sha256": "0ba597345919df503194c8371bddee9d52ba13dc2e2b6cee8c5eb3ca532e1d36",
+          "trigger": {
+            "source": "Native source cameras and barrier survey",
+            "metric": "barrier visibility and longitudinal distance",
+            "failure_condition": "primary barrier is hidden or lies outside governed lane"
+          },
+          "changed_knobs": [
+            "device_forward_m"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C223016__LVMC-11-42-030__motor_vehicle_driver/execution-manifest.json --case heldout__C223016__LVMC-11-42-030__motor_vehicle_driver__centerline_west_against --output .runtime-work/c223016-centerline-west-proof/offline-v2-fallback2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback2",
+            "exit_code": 0,
+            "log": "evening-west-primary-offline.log",
+            "log_sha256": "fe008aab760eb03ccac7578e2b84665b1b50b0d7f855b17a0c7a8d039435b658",
+            "construction_sha256": "0ba597345919df503194c8371bddee9d52ba13dc2e2b6cee8c5eb3ca532e1d36"
+          },
+          "compatibility": {
+            "receipt": "centerline-west-fallback2-compatibility.json",
+            "log": "evening-west-analysis.log",
+            "negative_log": "centerline-west-fallback2-negative.log",
+            "sha256": "a692bcae60acef1bfb36d6685e32e73c45c26a7a40a8ef24d7abeb10266220ef"
+          },
+          "saved_processing_proof": {
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C223016__LVMC-11-42-030__motor_vehicle_driver/execution-manifest.json --case heldout__C223016__LVMC-11-42-030__motor_vehicle_driver__centerline_west_against --attempt .runtime-work/c223016-centerline-west-proof/saved-attempt-fallback2 --output .runtime-work/c223016-centerline-west-proof/saved-fallback2 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+            "exit_code": 0,
+            "log": "centerline-west-fallback2-saved.json",
+            "log_sha256": "45baa38e2ac5d28cd61374ff724c90671f6f3a4381760f5911d3df7be6205e99"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "centerline-west-fallback3-construction.json",
+          "construction_sha256": "8b99cc4c6527e59e085766a52a094c0ad81608b282261c214a877bd6878b3b28",
+          "trigger": {
+            "source": "Native trace",
+            "metric": "westbound speed and acceleration",
+            "failure_condition": "primary gain causes unstable westbound motion or frame loss"
+          },
+          "changed_knobs": [
+            "speed_kp"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C223016__LVMC-11-42-030__motor_vehicle_driver/execution-manifest.json --case heldout__C223016__LVMC-11-42-030__motor_vehicle_driver__centerline_west_against --output .runtime-work/c223016-centerline-west-proof/offline-v2-fallback3 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python --candidate fallback3",
+            "exit_code": 0,
+            "log": "evening-west-primary-offline.log",
+            "log_sha256": "fe008aab760eb03ccac7578e2b84665b1b50b0d7f855b17a0c7a8d039435b658",
+            "construction_sha256": "8b99cc4c6527e59e085766a52a094c0ad81608b282261c214a877bd6878b3b28"
+          },
+          "compatibility": {
+            "receipt": "centerline-west-fallback3-compatibility.json",
+            "log": "evening-west-analysis.log",
+            "negative_log": "centerline-west-fallback3-negative.log",
+            "sha256": "f2a3eab5c391cee27f8a8e55483a91bff55f294f641f87fee54e4ae176cc07b0"
+          },
+          "saved_processing_proof": {
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C223016__LVMC-11-42-030__motor_vehicle_driver/execution-manifest.json --case heldout__C223016__LVMC-11-42-030__motor_vehicle_driver__centerline_west_against --attempt .runtime-work/c223016-centerline-west-proof/saved-attempt-fallback3 --output .runtime-work/c223016-centerline-west-proof/saved-fallback3 --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+            "exit_code": 0,
+            "log": "centerline-west-fallback3-saved.json",
+            "log_sha256": "5abd2aea92e257957403a9e11ca110516900d28ee6f77a4f1d01b0745433051e"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python runtime.py offline --manifest work/heldout__C223016__LVMC-11-42-030__motor_vehicle_driver/execution-manifest.json --case heldout__C223016__LVMC-11-42-030__motor_vehicle_driver__centerline_west_against --output .runtime-work/c223016-centerline-west-proof/offline-v2-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-held/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "evening-west-primary-offline.log",
+        "log_sha256": "fe008aab760eb03ccac7578e2b84665b1b50b0d7f855b17a0c7a8d039435b658",
+        "construction_sha256": "5b79ed7569c3bcd1ba10bc6eedb2d9b22b8caf2b79e486e8cd33daecfed09f54"
+      },
+      "compatibility": {
+        "receipt": "centerline-west-primary-compatibility.json",
+        "log": "evening-west-analysis.log",
+        "negative_log": "centerline-west-primary-negative.log",
+        "sha256": "3bed6b394d0423960880d833c3422a09f6b264a334079ae364857da58a7bb7ab"
+      },
+      "negative": {
+        "log": "centerline-west-primary-negative.log"
+      },
+      "saved_processing_proof": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/heldout__C223016__LVMC-11-42-030__motor_vehicle_driver/execution-manifest.json --case heldout__C223016__LVMC-11-42-030__motor_vehicle_driver__centerline_west_against --attempt .runtime-work/c223016-centerline-west-proof/saved-attempt-primary --output .runtime-work/c223016-centerline-west-proof/saved-primary --library runtime/library --validator .runtime-work/fire-decoder/.lake/build/bin/adapterCheck",
+        "exit_code": 0,
+        "log": "centerline-west-primary-saved.json",
+        "log_sha256": "63406a42e287c88c782c8a5e961a3ea2208cd37bd488a537bc58e1f9aa1c135c"
+      }
     }
   ]
 }
