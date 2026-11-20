@@ -1,0 +1,123 @@
+{
+  "assignment_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver",
+  "cases": [
+    {
+      "candidate_risk": {
+        "reason": "Stop-point overshoot, insufficient settled samples and follower closing are distinct Native motion risks; select alternatives from source-measured failures only.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "deceleration_mps2: 2.0 -> 3.0"
+          ],
+          "construction": "draft-reference-fallback1-construction.json",
+          "construction_sha256": "207fe103798893f544c47a64150b00d7db310c03f1e7fe6d38a7c5589e0a419b",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "ego body centre exceeds stop centre by 0.8 m before near-zero speed",
+            "metric": "ego body-centre overshoot after target braking",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "stop_radius_m: 0.8 -> 1.2",
+            "cruise_mps: 4.0 -> 3.0"
+          ],
+          "construction": "draft-reference-fallback2-construction.json",
+          "construction_sha256": "31601c9c3c2bde7281fc783f480e388768f5d07dc14c2d5fcf81a2b5830ad423",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "no near-zero sample with body overlap in the 600-frame capture",
+            "metric": "near-zero samples inside authored target zone",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "following_brake_gap_m: 7.0 -> 10.0",
+            "following_cruise_throttle: 0.32 -> 0.24"
+          ],
+          "construction": "draft-reference-fallback3-construction.json",
+          "construction_sha256": "2926927fc2680f4ca4d168b0017b56b31f618cc6ebff8f14e0f9851cc993b3ed",
+          "id": "fallback3",
+          "trigger": {
+            "failure_condition": "following_gap_m drops below 7.0 m before the ego stop",
+            "metric": "minimum retained following gap in metres",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__reference",
+      "construction": "draft-reference-construction.json",
+      "construction_sha256": "a99fa3751598b84b9880a36643c8f438c6fd151cb8370cf66d3ada146e9109f8",
+      "fixture_recipe": "work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/draft-reference-diagnostic-recipe.json",
+      "measurement_contract": "draft-reference-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "native_finalize.py",
+        "source_only": true
+      }
+    },
+    {
+      "candidate_risk": {
+        "reason": "Stop-point overshoot, insufficient settled samples and follower closing are distinct Native motion risks; select alternatives from source-measured failures only.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "deceleration_mps2: 2.0 -> 3.0"
+          ],
+          "construction": "draft-contrast-fallback1-construction.json",
+          "construction_sha256": "fcb35dd4d3d98d1adde030c1d0cc7c2cc69dbc408314404f618af8914cbc422f",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "ego body centre exceeds stop centre by 0.8 m before near-zero speed",
+            "metric": "ego body-centre overshoot after target braking",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "stop_radius_m: 0.8 -> 1.2",
+            "cruise_mps: 4.0 -> 3.0"
+          ],
+          "construction": "draft-contrast-fallback2-construction.json",
+          "construction_sha256": "4ef1a1ca868241c38833d52ad627cb800d559b4798f98ae553047d9a2f4a5c0d",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "no near-zero disjoint sample in the 600-frame capture",
+            "metric": "near-zero samples disjoint from the authored zone",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "following_brake_gap_m: 7.0 -> 10.0",
+            "following_cruise_throttle: 0.32 -> 0.24"
+          ],
+          "construction": "draft-contrast-fallback3-construction.json",
+          "construction_sha256": "1e786a3735e8dfab6312a4cdf314f7b3fe23e0b03bcbefcc75155cd2d149ef8b",
+          "id": "fallback3",
+          "trigger": {
+            "failure_condition": "following_gap_m drops below 7.0 m before the ego stop",
+            "metric": "minimum retained following gap in metres",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver__contrast",
+      "construction": "draft-contrast-construction.json",
+      "construction_sha256": "7e16d19f70851718eb90e243dd4bf0b5c5927278b03d75c768bc5a8d8ddf3ace",
+      "fixture_recipe": "work/training__C201084__LVMC-11-52-130-A2__motor_vehicle_driver/draft-contrast-diagnostic-recipe.json",
+      "measurement_contract": "draft-contrast-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "native_finalize.py",
+        "source_only": true
+      }
+    }
+  ],
+  "format": "worker-execution-manifest",
+  "status": "draft_semantic_validation_only"
+}
