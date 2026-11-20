@@ -674,3 +674,7 @@ Pinned `runtime.py preflight` passes with numpy/Lean/ffmpeg available. Current `
 ## 2026-11-19 CPU preparation checkpoint
 
 Status: **ready**, after exact current CPU proofs and `.venv-cpu/bin/python worker_check.py --assignment testing__C109749__NRS-484B-253__motor_vehicle_driver --complete --require-delivery-ready` exited 0 (ignored log SHA256 `a5165396057b4eb55a93c9232431f354a98be5e870445d3d73803f56b08064e3`). All 64 current execution-time saved-processing receipts were copied into the manifest return proof paths and verified against the stable proof index. All 16 physical lifecycle fixtures were rerun against the current primary saved receipts. `physical_fixture_proof.py` now accepts an explicit saved receipt path. The actual assignment scoped strict gate passes. The proof index retains the execution-time manifest SHA and records the equivalent current manifest SHA after receipt binding.
+
+Return cap checkpoint: 7 unbound historical top-level logs and former test rows are preserved byte-for-byte with SHA-256 in work/_shared/archived-unbound-negative-logs-20261119.json. Active case receipts remain unchanged.
+
+Return cap checkpoint: 8 unbound historical top-level logs and former test rows are preserved byte-for-byte with SHA-256 in work/_shared/archived-unbound-negative-logs-20261119.json. Active case receipts remain unchanged.

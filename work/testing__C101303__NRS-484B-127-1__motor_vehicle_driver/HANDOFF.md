@@ -307,3 +307,5 @@ Further return cap checkpoint: 10 more unbound historical top-level logs, exact 
 Further return cap checkpoint: 8 more unbound historical top-level logs, exact bytes, hashes and any test rows were moved to the same shared archive. Current bound case receipts remain unchanged.
 
 Further return cap checkpoint: 8 more unbound historical top-level logs, exact bytes, hashes and any test rows were moved to the same shared archive. Current bound case receipts remain unchanged.
+
+Return cap checkpoint: 7 unbound historical top-level logs and former test rows are preserved byte-for-byte with SHA-256 in work/_shared/archived-unbound-negative-logs-20261119.json. Active case receipts remain unchanged.

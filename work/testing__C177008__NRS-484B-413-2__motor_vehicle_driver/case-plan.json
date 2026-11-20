@@ -108,6 +108,19 @@
         "sha256": "cd244dbc3f8cd28434da57a75bba946d1a68f7a7bcc434d1c744e9dcd1e476c8",
         "exit_code": 0
       }
+    },
+    {
+      "case_id": "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__residential_right_at_100ft",
+      "target_law_id": "NRS-484B-413-2",
+      "purpose": "Residential-district right turn at the same 100-foot threshold, with an independent source classification packet",
+      "construction": "cases/residential_right_at_100ft/construction.json",
+      "construction_sha256": "b985f7f84cc8a91f24d584b886d26cdcbf916cebfb0c5427f3e027ebecb94b33",
+      "exact_offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C177008__NRS-484B-413-2__motor_vehicle_driver__residential_right_at_100ft --output .runtime-work/c177008-residential-offline-v1",
+        "log": "cases/residential_right_at_100ft/offline.log",
+        "sha256": "6b1c423b9f051eba08e1e6115a40c620b3be510b39e60b340db364d71cfda6a6",
+        "exit_code": 0
+      }
     }
   ],
   "comparisons": [
@@ -166,6 +179,34 @@
       "fixed_conditions": [
         "same authored OpenDRIVE map and right-turn connector",
         "same actor and dry weather"
+      ]
+    },
+    {
+      "comparison_id": "other_area_threshold_below_at",
+      "case_ids": [
+        "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__other_area_right_below_300ft",
+        "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__other_area_right_at_300ft"
+      ],
+      "deliberate_differences": [
+        "continuous right-signal distance across the 91.44 m boundary"
+      ],
+      "fixed_conditions": [
+        "same authored map, actor, other-area district and dry weather",
+        "same body trajectory; above case adds one leading approach sample"
+      ]
+    },
+    {
+      "comparison_id": "other_area_threshold_at_above",
+      "case_ids": [
+        "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__other_area_right_at_300ft",
+        "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__other_area_right_above_300ft"
+      ],
+      "deliberate_differences": [
+        "continuous right-signal distance across the 91.44 m boundary"
+      ],
+      "fixed_conditions": [
+        "same authored map, actor, other-area district and dry weather",
+        "same body trajectory; above case adds one leading approach sample"
       ]
     }
   ],
@@ -313,7 +354,8 @@
         "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_right_wet",
         "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__other_area_right_at_300ft",
         "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__other_area_right_below_300ft",
-        "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__other_area_right_above_300ft"
+        "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__other_area_right_above_300ft",
+        "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__residential_right_at_100ft"
       ],
       "evidence_or_gap": "measured from original Native light-mask readback, ego path and source-joined frames"
     },
@@ -329,7 +371,8 @@
         "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_right_wet",
         "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__other_area_right_at_300ft",
         "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__other_area_right_below_300ft",
-        "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__other_area_right_above_300ft"
+        "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__other_area_right_above_300ft",
+        "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__residential_right_at_100ft"
       ],
       "evidence_or_gap": "sourced from retained exact-map district packet and document; legal correctness awaits independent site review"
     },
@@ -345,7 +388,8 @@
         "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_right_wet",
         "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__other_area_right_at_300ft",
         "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__other_area_right_below_300ft",
-        "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__other_area_right_above_300ft"
+        "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__other_area_right_above_300ft",
+        "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__residential_right_at_100ft"
       ],
       "evidence_or_gap": "measured from original frame, ego heading and path bearing"
     }
@@ -406,6 +450,34 @@
       "negative_expected_error": "District contrast missing",
       "negative_log": "comparisons/district_boundary_100_300-negative.log",
       "negative_log_sha256": "5c437d60bbce3cd822550d522e7c6e6f3411d417237b84129300be409050130f"
+    },
+    {
+      "comparison_id": "other_area_threshold_below_at",
+      "script": "comparison_300_audit.py",
+      "script_sha256": "c55925ecd82a98edba04dd7d1d5cb253e7464d1152c789e0cb7649f563b5f401",
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/comparison_300_audit.py --comparison-id other_area_threshold_below_at --left .runtime-work/c177008-other-below-saved-v1/v0001/evidence --right .runtime-work/c177008-other-saved-v1/v0001/evidence",
+      "exit_code": 0,
+      "receipt": "comparisons/other_area_threshold_below_at.json",
+      "receipt_sha256": "a385a463cc4cde3395ac679c15f5ab64db53ce51ec6d7ef3a9abbaacee8b1d62",
+      "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/comparison_300_audit.py --comparison-id other_area_threshold_below_at --left .runtime-work/c177008-other-below-saved-v1/v0001/evidence --right .runtime-work/c177008-comparison-negative/other_area_threshold_below_at/evidence",
+      "negative_exit_code": 1,
+      "negative_expected_error": "Below/at 300-foot distance contrast missing",
+      "negative_log": "comparisons/other_area_threshold_below_at-negative.log",
+      "negative_log_sha256": "94f44b479fcb0515ba4f109ed2361168d357fe393a30d979818fcab4dd659030"
+    },
+    {
+      "comparison_id": "other_area_threshold_at_above",
+      "script": "comparison_300_audit.py",
+      "script_sha256": "c55925ecd82a98edba04dd7d1d5cb253e7464d1152c789e0cb7649f563b5f401",
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/comparison_300_audit.py --comparison-id other_area_threshold_at_above --left .runtime-work/c177008-other-saved-v1/v0001/evidence --right .runtime-work/c177008-other-above-saved-v1/v0001/evidence",
+      "exit_code": 0,
+      "receipt": "comparisons/other_area_threshold_at_above.json",
+      "receipt_sha256": "7dea75c963050e446b9a4a14252de18d7a2c8cf2b8fb1b93386b3e1012b55a3a",
+      "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/comparison_300_audit.py --comparison-id other_area_threshold_at_above --left .runtime-work/c177008-other-saved-v1/v0001/evidence --right .runtime-work/c177008-comparison-negative/other_area_threshold_at_above/evidence",
+      "negative_exit_code": 1,
+      "negative_expected_error": "Approach body trajectory changed beyond one lead sample",
+      "negative_log": "comparisons/other_area_threshold_at_above-negative.log",
+      "negative_log_sha256": "efe33d9e2351dafad7e09e5649440ce57321545a540e1a2a4038222d904efcc3"
     }
   ]
 }

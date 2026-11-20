@@ -669,6 +669,87 @@
           "Actual indicator pixels and turn geometry require source review"
         ]
       }
+    },
+    {
+      "case_id": "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__residential_right_at_100ft",
+      "target_law_id": "NRS-484B-413-2",
+      "target_type": "positive",
+      "rationale": "The source district packet asserts residential rather than business status while the original signal and ego motion remain at the 100-foot boundary; legal classification still requires independent review.",
+      "variable_assignments": {
+        "indicator_start_m": {
+          "kind": "controller",
+          "value": 30.98,
+          "unit": "m",
+          "note": "engineering request with one sampled-frame lead"
+        },
+        "observed_continuous_distance_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m",
+          "note": "measured only from original drive and frame sources"
+        },
+        "district_type": {
+          "kind": "world_setup",
+          "value": "residential",
+          "unit": "district class",
+          "note": "requires separately reviewed statutory site evidence"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Legal business-district classification requires actual highway frontage and building-use evidence.",
+        "Native right-turn realization, indicator pixels and physical motion remain unverified."
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_turn_indicator",
+            "unit": "device state",
+            "method": "original Native ego light mask, right/off only",
+            "time_window": "every original frame",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "20 Hz sampled source; physical camera visibility pending independent review"
+          },
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "method": "original Native ego velocity magnitude",
+            "time_window": "every original frame",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "20 Hz sampled source; physical camera visibility pending independent review"
+          },
+          {
+            "name": "ego_heading",
+            "unit": "deg",
+            "method": "original Native ego yaw readback",
+            "time_window": "every original frame",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "20 Hz sampled source; physical camera visibility pending independent review"
+          },
+          {
+            "name": "ego_road_id",
+            "unit": "id",
+            "method": "original Native road-id readback",
+            "time_window": "every original frame",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "20 Hz sampled source; physical camera visibility pending independent review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "district_packet",
+            "unit": "source document",
+            "method": "independent exact-map district review required"
+          }
+        ],
+        "limitations": [
+          "Synthetic road has no inherent legal business district status",
+          "Actual indicator pixels and turn geometry require source review"
+        ]
+      }
     }
   ],
   "sweep_specs": [],

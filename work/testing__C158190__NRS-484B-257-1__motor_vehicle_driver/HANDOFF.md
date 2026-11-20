@@ -732,3 +732,5 @@ The top-level suite config lists all 15 selected case IDs. The first selected fo
 The whole batch still has 10 ready and 33 partial assignments. The last full strict output supplied by the user reported `Unapproved output: runtime/runs/scenario_pipeline/inputs/shared/manifest.json`. This path is under frozen `runtime/` and was preserved. No new full-batch verdict is claimed here. Continue the remaining worker-owned constructions and proofs. No frozen input, runtime or batch file was edited and no Git command was run.
 
 Return cap checkpoint: 21 unbound historical top-level logs and former test rows are preserved byte-for-byte with SHA-256 in work/_shared/archived-unbound-negative-logs-20261119.json. Active case receipts remain unchanged.
+
+Return cap checkpoint: 6 unbound historical top-level logs and former test rows are preserved byte-for-byte with SHA-256 in work/_shared/archived-unbound-negative-logs-20261119.json. Active case receipts remain unchanged.
