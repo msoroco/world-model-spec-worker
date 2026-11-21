@@ -77,3 +77,7 @@ A prior clean-exit saved test reused a compatibility attempt with derived channe
 ## 2026-11-20 historical offline log archival
 
 `left_edge_reference-primary-offline-v4.log` was archived losslessly under its original path, SHA256 `132a520e1627c5aa869bfa30374e56c1950c25ce9dd12cbc5e57686b39d6ebdf`, in `work/_shared/c329654-combined-draft-archive.json`. The corresponding historical `result.json.tests` entry was removed; the direct `cpu-tests.log` and current saved proof entry remain. The assignment-scoped strict gate passes after the change.
+
+## 2026-11-20 proof-log consolidation
+
+Archived historical left_edge_reference-primary-saved-v2.log losslessly in work/_shared/c329654-combined-draft-archive.json; current direct CPU tests and compact saved receipts remain. Scoped strict gate passed. A physical-log archival trial was restored after its scoped gate required the direct log.

@@ -85,3 +85,7 @@ The provisional and canonical manifests now bind the pinned runtime. All four ex
 ## 2026-11-18 saved processing correction
 
 A prior clean-exit saved test reused a compatibility attempt with derived channels; the selected finalizer rejected those existing channels, so its `processing.json.missing_evidence` was true. Fresh source-only diagnostic attempts were materialized for all 4 primaries and 12 fallbacks. Every saved run now has `passed: true` and `missing_evidence: false`. Primary receipts are bound in `execution-manifest.json`; fallback receipts and hashes are embedded in `result.json`. The scoped strict gate passes. This remains CPU diagnostic proof; physical and legal acceptance require local Native sources and review.
+
+## 2026-11-20 proof-log consolidation
+
+Archived two historical offline logs losslessly in work/_shared/c329654-combined-draft-archive.json; retained direct compatibility/saved receipts and a direct offline log. Scoped strict gate passed.
