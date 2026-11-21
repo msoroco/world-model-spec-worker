@@ -23,3 +23,9 @@ Next CPU actions: source an actual map median opening, sign and full official-de
 ## Return file consolidation
 
 Four historical command logs are preserved byte-for-byte in `command-log-archive.json` with member hashes; `result.json` binds the archive. Standalone copies are in ignored `.runtime-work/retired-logs/20261121-c125745-1-archive/`. These are prior diagnostic proofs.
+
+## 2026-11-21 next-assignment construction continuation
+
+Status remains **partial**. `crossing_measurements.py` now distinguishes a vehicle already inside the crossing at the first original frame from an observed entry. It records `entry_left_censored`, leaves first entry time and comparative entry order unknown for that actor, and still measures occupancy and ego speed. This is needed for the selected `stop_sign_other_inside` exact case; it does not infer a legal yield conclusion. A new CPU test checks that first-frame occupancy produces `None` entry time/order. All eight scoped unit tests pass; `cpu-tests-current.log` SHA-256 `a3ea6c000fe0a82d9ea79716a9c951618958ec9d16dc73a457c21ce148a87efd` is bound in `result.json`. Pinned CPU preflight and assignment-scoped `worker_check.py --complete` pass.
+
+Next worker-owned work: source-bound stop-sign median-opening site packet, first exact four-camera runner and saved finalizer, then exact offline, positive/negative compatibility and recorded-only processing before sweeping the three other selected cases and three risk-distinct fallbacks each. No Native, physical or legal acceptance is claimed.

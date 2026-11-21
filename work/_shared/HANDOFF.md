@@ -3232,3 +3232,7 @@ C125697 scoped complete check after the exact primary construction update exited
 ## 2026-11-21 C125697 subsection (1) classifier checkpoint
 
 Five exact cases now pass 15 source-bound synthetic physical classifier checks. The return is in `work/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/physical-classifier-proof.json` (SHA-256 `a5540d1fd4b871e947fa480bbdc4b8c17857faa3c0366df3f08129010f076b34`). CPU preflight and scoped complete check pass. Scoped strict readiness still rejects the truthful partial package. Canonical physical/delivery receipts, ordered queue and shared local integration remain worker-owned CPU work. No Native or legal acceptance claimed.
+
+## 2026-11-21 strict preparation checkpoint
+
+C125697 NRS-484B-250-1 now reports **ready** after its actual assignment-scoped strict delivery gate passed. It has five exact canonical physical-preparation receipts, five positive/negative delivery-acceptance contracts, 20 bound primary/fallback compatibility proofs, root construction and camera/source plan. C125745 NRS-484B-250-1 remains **partial**; its other-inside measurement now preserves first-frame left censoring and eight CPU tests pass. Current count is 15 ready of 43. Full strict batch retry timed out after 55 seconds with no output (exit 124), so no batch acceptance is claimed. Return file count is 8,596 of 8,600; historical result-only logs were archived with original hashes, and affected scoped complete checks passed. Continue C125745 exact runner/finalizer and then the remaining partial packages.

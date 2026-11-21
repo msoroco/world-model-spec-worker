@@ -63,6 +63,7 @@ def analyze(root: Path) -> dict:
         raise ValueError("Incomplete crossing/frame history")
     prior = (-1, -math.inf)
     first_entry = {"ego": None, "other": None}
+    left_censored = {"ego": False, "other": False}
     prior_inside = {"ego": False, "other": False}
     samples = []
     for index, (row, frame) in enumerate(zip(rows, frames)):
@@ -81,32 +82,38 @@ def analyze(root: Path) -> dict:
                 raise ValueError("Actor not on sourced junction approach")
             inside = _inside(actor, polygon)
             if index == 0 and inside:
-                raise ValueError("No observed pre-entry approach")
+                left_censored[who] = True
             distance = _number(actor.get("distance_to_intersection_m"))
             speed = _number(actor.get("speed_mps"))
             if distance < 0 or speed < 0:
                 raise ValueError("Invalid approach distance or speed")
-            if inside and not prior_inside[who] and first_entry[who] is None:
+            if inside and not prior_inside[who] and first_entry[who] is None and not left_censored[who]:
                 first_entry[who] = {"frame": fid, "time_s": time}
             prior_inside[who] = inside
             sample[who] = {"body_in_intersection": inside, "distance_to_intersection_m": distance,
                            "speed_mps": speed}
         samples.append(sample)
-    if first_entry["other"] is None or first_entry["ego"] is None:
-        raise ValueError("Both body entries must be observed")
-    other_frame = first_entry["other"]["frame"]
-    other_index = next(i for i, sample in enumerate(samples) if sample["frame"] == other_frame)
-    ego_approaching_at_other_entry = (not samples[other_index]["ego"]["body_in_intersection"]
-        and samples[other_index]["ego"]["distance_to_intersection_m"] > 0
-        and other_index + 1 < len(samples)
-        and samples[other_index + 1]["ego"]["distance_to_intersection_m"] < samples[other_index]["ego"]["distance_to_intersection_m"])
+    if first_entry["ego"] is None and not left_censored["ego"]:
+        raise ValueError("Ego body entry must be observed or left-censored")
+    if first_entry["other"] is None and not left_censored["other"]:
+        raise ValueError("Other body entry must be observed or left-censored")
+    ego_approaching_at_other_entry = None
+    if first_entry["other"] is not None:
+        other_frame = first_entry["other"]["frame"]
+        other_index = next(i for i, sample in enumerate(samples) if sample["frame"] == other_frame)
+        ego_approaching_at_other_entry = (not samples[other_index]["ego"]["body_in_intersection"]
+            and samples[other_index]["ego"]["distance_to_intersection_m"] > 0
+            and other_index + 1 < len(samples)
+            and samples[other_index + 1]["ego"]["distance_to_intersection_m"] < samples[other_index]["ego"]["distance_to_intersection_m"])
     ego_speeds_while_other_inside = [sample["ego"]["speed_mps"] for sample in samples
                                      if sample["other"]["body_in_intersection"] and not sample["ego"]["body_in_intersection"]]
     return {"format": "worker-stop-sign-other-first-observations", "sources": sources,
             "intersection_id": context["intersection_id"],
             "highway_ids": [context["ego_highway_id"], context["other_highway_id"]],
             "first_body_entry": first_entry,
-            "other_entered_before_ego_observed": first_entry["other"]["time_s"] < first_entry["ego"]["time_s"],
+            "entry_left_censored": left_censored,
+            "other_entered_before_ego_observed": (first_entry["other"]["time_s"] < first_entry["ego"]["time_s"]
+                                                   if all(first_entry.values()) else None),
             "ego_approaching_at_other_entry_observed": ego_approaching_at_other_entry,
             "minimum_ego_speed_while_other_inside_mps": min(ego_speeds_while_other_inside) if ego_speeds_while_other_inside else None,
             "samples": samples,

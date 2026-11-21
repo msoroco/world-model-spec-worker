@@ -117,6 +117,22 @@ class CrossingTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "frame join"):
                 measure.analyze(root)
 
+    def test_other_already_inside_is_left_censored(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            self.fixture(root)
+            path = root / "crossing_history.jsonl"
+            rows = [json.loads(line) for line in path.read_text().splitlines()]
+            rows[0]["other"]["body_vertices_xy_m"] = body(3)
+            rows[0]["other"]["distance_to_intersection_m"] = 0
+            path.write_text("".join(json.dumps(row) + "\n" for row in rows))
+            report = measure.analyze(root)
+            self.assertTrue(report["entry_left_censored"]["other"])
+            self.assertIsNone(report["first_body_entry"]["other"])
+            self.assertIsNone(report["other_entered_before_ego_observed"])
+            self.assertIsNone(report["ego_approaching_at_other_entry_observed"])
+            self.assertIsNotNone(report["minimum_ego_speed_while_other_inside_mps"])
+
     def test_site_geometry_rejects_wrong_direction_and_highway(self):
         packet = site()
         self.assertGreater(signs.validate_site(packet).area, 0)

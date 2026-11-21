@@ -77,13 +77,51 @@
     }
   ],
   "observations": [
-    "Native junction polygon and statutory crossing context at a median opening",
-    "two roadway/highway identities and governed lane approach mapping",
-    "ego approaching while other first enters or occupies the intersection",
-    "first complete body entry and same-frame signal state",
-    "Native installed uncovered Off signal and operative-device exception",
-    "ego speed/hold behavior while other is inside",
-    "opposite-direction left-turn intention backed by route and measured trajectory"
+    {
+      "name": "ego_speed",
+      "mandatory": true,
+      "source": "original-frame crossing/controller history joined to video frame map"
+    },
+    {
+      "name": "other_speed",
+      "mandatory": true,
+      "source": "original-frame crossing/controller history joined to video frame map"
+    },
+    {
+      "name": "ego_approach_distance",
+      "mandatory": true,
+      "source": "original-frame crossing/controller history joined to video frame map"
+    },
+    {
+      "name": "other_approach_distance",
+      "mandatory": true,
+      "source": "original-frame crossing/controller history joined to video frame map"
+    },
+    {
+      "name": "ego_body_inside",
+      "mandatory": true,
+      "source": "original-frame crossing/controller history joined to video frame map"
+    },
+    {
+      "name": "other_body_inside",
+      "mandatory": true,
+      "source": "original-frame crossing/controller history joined to video frame map"
+    },
+    {
+      "name": "signal_state",
+      "mandatory": true,
+      "source": "original-frame crossing/controller history joined to video frame map"
+    },
+    {
+      "name": "ego_position",
+      "mandatory": true,
+      "source": "original-frame crossing/controller history joined to video frame map"
+    },
+    {
+      "name": "other_position",
+      "mandatory": true,
+      "source": "original-frame crossing/controller history joined to video frame map"
+    }
   ],
   "sources": [
     {
@@ -481,5 +519,42 @@
       ],
       "evidence_or_gap": "Opposed route and left-turn intent source packet with original body/heading diagnostic; Native physical and statutory exception review remain open."
     }
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "both complete vehicle bodies and crossing polygon",
+        "interval": "startup through both complete-body clearances"
+      },
+      {
+        "view": "approach",
+        "subject": "ego and other approach lanes with entry order",
+        "interval": "pre-entry through crossing occupancy"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "crossing boundaries, signal heads and stop lines",
+        "interval": "setup through restoration"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "ego approach and both participant identities",
+        "interval": "startup through final observation"
+      }
+    ],
+    "physical_claim": false
+  },
+  "observation_objectives": [
+    "Native junction polygon and statutory crossing context at a median opening",
+    "two roadway/highway identities and governed lane approach mapping",
+    "ego approaching while other first enters or occupies the intersection",
+    "first complete body entry and same-frame signal state",
+    "Native installed uncovered Off signal and operative-device exception",
+    "ego speed/hold behavior while other is inside",
+    "opposite-direction left-turn intention backed by route and measured trajectory"
   ]
 }

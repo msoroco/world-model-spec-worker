@@ -74,6 +74,12 @@
             "sha256": "c4195e4b68c3c8231f54cec32d4bc49263f62560e3565b369d711d3b4541902a",
             "recorded_only": true,
             "scope": "synthetic fixture; not Native physical"
+          },
+          "compatibility": {
+            "receipt": "fallback1-compatibility-receipt.json",
+            "sha256": "e88488f96bb7d35a4e0a2ae18db205272a22fc435de4d134a7a63d3d7186fb4e",
+            "log": "proof-logs/analysis.log",
+            "negative_log": "proof-logs/off_other_enters_first-fallback1-negative.log"
           }
         },
         {
@@ -109,6 +115,12 @@
             "sha256": "9b2a7693479208a7c3f609a982bd6fc0451cca9432c3aed0aa3d62c415554a79",
             "recorded_only": true,
             "scope": "synthetic fixture; not Native physical"
+          },
+          "compatibility": {
+            "receipt": "fallback2-compatibility-receipt.json",
+            "sha256": "9cb0cfa7721b65e0bcf7481a545346354299242bb1c6f5543785753f08115b91",
+            "log": "proof-logs/analysis.log",
+            "negative_log": "proof-logs/off_other_enters_first-fallback2-negative.log"
           }
         },
         {
@@ -144,9 +156,142 @@
             "sha256": "6e59e5cd5efc8c0f4a4419d649b07dda3cbddc05a1371fd7048c9bca29df11fa",
             "recorded_only": true,
             "scope": "synthetic fixture; not Native physical"
+          },
+          "compatibility": {
+            "receipt": "fallback3-compatibility-receipt.json",
+            "sha256": "86331181d673a86a2addecbd7e7c715260396acf1f40bfe875f457f6d480bfd5",
+            "log": "proof-logs/analysis.log",
+            "negative_log": "proof-logs/off_other_enters_first-fallback3-negative.log"
           }
         }
-      ]
+      ],
+      "physical_preparation": {
+        "receipt": "physical-proofs/off_other_enters_first/receipt.json",
+        "sha256": "b03a63ed75d81e04530457e973c9ded8626ea860c15bf6812186dfd0c599ad3a"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C125697__NRS-484B-250-1__motor_vehicle_driver__off_other_enters_first",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_delivery_acceptance.py",
+        "script_sha256": "bc0afbedff6168faac445223596f018eb327cc54a5679f9f6471a80eb3e3313a",
+        "command": ".venv-cpu/bin/python work/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C125697__NRS-484B-250-1__motor_vehicle_driver__off_other_enters_first --mode positive",
+        "test_log": "delivery-acceptance-positive.log",
+        "test_log_sha256": "7efcb6e6bd41b2809366fa5780381155dae231807abb9475e64f89402fc33880",
+        "test_exit_code": 0,
+        "negative_command": ".venv-cpu/bin/python work/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C125697__NRS-484B-250-1__motor_vehicle_driver__off_other_enters_first --mode negative",
+        "negative_log": "delivery-acceptance-negative.log",
+        "negative_log_sha256": "125580e3fd03323573040dbfcee3edae7c8b66ddb8edd4855d94f1cd9ad053db",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Physical completion source changed",
+        "proof_scope": "Diagnostic CPU boundary only; independent Native/pixel review pending"
+      },
+      "compatibility": {
+        "receipt": "primary-compatibility-receipt.json",
+        "sha256": "699c827d9b41055f6b5a166d8137c1bce14da2fbdbbad5e2074bef89dca36b6a",
+        "log": "proof-logs/analysis.log",
+        "negative_log": "proof-logs/off_other_enters_first-primary-negative.log"
+      },
+      "negative": {
+        "log": "proof-logs/off_other_enters_first-primary-negative.log"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "ru.subject": {
+          "entrypoint": "capture_sources.py",
+          "method": "Native actor identity",
+          "evidence": "capture/evidence.jsonl"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "capture_sources.py",
+          "method": "Native motor vehicle blueprint",
+          "evidence": "capture/evidence.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "capture_sources.py",
+          "method": "original actor pose",
+          "evidence": "trace.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "capture_sources.py",
+          "method": "original actor velocity",
+          "evidence": "trace.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "capture_sources.py",
+          "method": "original actor speed magnitude",
+          "evidence": "trace.jsonl"
+        },
+        "st.intersection": {
+          "entrypoint": "site_packet.py",
+          "method": "source-reviewed crossing polygon and roadway identity",
+          "evidence": "junction_context.json"
+        },
+        "rel.bearing": {
+          "entrypoint": "simultaneous_entries.py",
+          "method": "source approach bearing and actor orientation",
+          "evidence": "junction_context.json"
+        },
+        "ego_speed": {
+          "entrypoint": "finalizer.py",
+          "method": "original ego speed joined to video frame",
+          "evidence": "crossing_history.jsonl"
+        },
+        "other_speed": {
+          "entrypoint": "finalizer.py",
+          "method": "original other speed joined to video frame",
+          "evidence": "crossing_history.jsonl"
+        },
+        "ego_approach_distance": {
+          "entrypoint": "finalizer.py",
+          "method": "original ego polygon approach distance",
+          "evidence": "crossing_history.jsonl"
+        },
+        "other_approach_distance": {
+          "entrypoint": "finalizer.py",
+          "method": "original other polygon approach distance",
+          "evidence": "crossing_history.jsonl"
+        },
+        "ego_body_inside": {
+          "entrypoint": "finalizer.py",
+          "method": "original ego full-body polygon occupancy",
+          "evidence": "crossing_history.jsonl"
+        },
+        "other_body_inside": {
+          "entrypoint": "finalizer.py",
+          "method": "original other full-body polygon occupancy",
+          "evidence": "crossing_history.jsonl"
+        },
+        "signal_state": {
+          "entrypoint": "finalizer.py",
+          "method": "original governing signal readback joined to video frame",
+          "evidence": "controller_history.jsonl"
+        },
+        "ego_position": {
+          "entrypoint": "finalizer.py",
+          "method": "original ego body-center position",
+          "evidence": "crossing_history.jsonl"
+        },
+        "other_position": {
+          "entrypoint": "finalizer.py",
+          "method": "original other body-center position",
+          "evidence": "crossing_history.jsonl"
+        }
+      }
     },
     {
       "case_id": "testing__C125697__NRS-484B-250-1__motor_vehicle_driver__off_ego_enters_first",
@@ -220,6 +365,12 @@
             "sha256": "fa2fb2fffa6c0327417afc56552a82b30f56a32bc5b4b8f8db0ae4838f77b237",
             "recorded_only": true,
             "scope": "synthetic fixture; not Native physical"
+          },
+          "compatibility": {
+            "receipt": "cases/off_ego_enters_first/fallback1-compatibility-receipt.json",
+            "sha256": "3e402d1de1b78f840ece85488b22e6beefea0a29018fef4b2e83eace5a70e636",
+            "log": "proof-logs/analysis.log",
+            "negative_log": "proof-logs/off_ego_enters_first-fallback1-negative.log"
           }
         },
         {
@@ -255,6 +406,12 @@
             "sha256": "d2aab56a0729820afc41be9788280e145826b97d34989454a24a55c01dad5f8d",
             "recorded_only": true,
             "scope": "synthetic fixture; not Native physical"
+          },
+          "compatibility": {
+            "receipt": "cases/off_ego_enters_first/fallback2-compatibility-receipt.json",
+            "sha256": "2fc922d21274c8de3a48217520f5a192c1d306ed0c358c8b9255346eef5257e9",
+            "log": "proof-logs/analysis.log",
+            "negative_log": "proof-logs/off_ego_enters_first-fallback2-negative.log"
           }
         },
         {
@@ -290,9 +447,142 @@
             "sha256": "d14be11f3aa04becb21d9bed66c8a67b4f0cbc4af724972727ec38e96bca46d5",
             "recorded_only": true,
             "scope": "synthetic fixture; not Native physical"
+          },
+          "compatibility": {
+            "receipt": "cases/off_ego_enters_first/fallback3-compatibility-receipt.json",
+            "sha256": "d874c401a476e4555b6d4ba1fef18228047907888ec72f4369c4bf6b0b432191",
+            "log": "proof-logs/analysis.log",
+            "negative_log": "proof-logs/off_ego_enters_first-fallback3-negative.log"
           }
         }
-      ]
+      ],
+      "physical_preparation": {
+        "receipt": "physical-proofs/off_ego_enters_first/receipt.json",
+        "sha256": "f0d0da56d12233c7925dfb79597407bb380b4e03cb0a0d821ab5a79ca40c81a6"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C125697__NRS-484B-250-1__motor_vehicle_driver__off_ego_enters_first",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_delivery_acceptance.py",
+        "script_sha256": "bc0afbedff6168faac445223596f018eb327cc54a5679f9f6471a80eb3e3313a",
+        "command": ".venv-cpu/bin/python work/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C125697__NRS-484B-250-1__motor_vehicle_driver__off_ego_enters_first --mode positive",
+        "test_log": "delivery-acceptance-positive.log",
+        "test_log_sha256": "7efcb6e6bd41b2809366fa5780381155dae231807abb9475e64f89402fc33880",
+        "test_exit_code": 0,
+        "negative_command": ".venv-cpu/bin/python work/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C125697__NRS-484B-250-1__motor_vehicle_driver__off_ego_enters_first --mode negative",
+        "negative_log": "delivery-acceptance-negative.log",
+        "negative_log_sha256": "125580e3fd03323573040dbfcee3edae7c8b66ddb8edd4855d94f1cd9ad053db",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Physical completion source changed",
+        "proof_scope": "Diagnostic CPU boundary only; independent Native/pixel review pending"
+      },
+      "compatibility": {
+        "receipt": "cases/off_ego_enters_first/primary-compatibility-receipt.json",
+        "sha256": "cd18875beb70e7f5f4be3abcda17c3424ad343aa492407f267be8e0203154369",
+        "log": "proof-logs/analysis.log",
+        "negative_log": "proof-logs/off_ego_enters_first-primary-negative.log"
+      },
+      "negative": {
+        "log": "proof-logs/off_ego_enters_first-primary-negative.log"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "ru.subject": {
+          "entrypoint": "capture_sources.py",
+          "method": "Native actor identity",
+          "evidence": "capture/evidence.jsonl"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "capture_sources.py",
+          "method": "Native motor vehicle blueprint",
+          "evidence": "capture/evidence.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "capture_sources.py",
+          "method": "original actor pose",
+          "evidence": "trace.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "capture_sources.py",
+          "method": "original actor velocity",
+          "evidence": "trace.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "capture_sources.py",
+          "method": "original actor speed magnitude",
+          "evidence": "trace.jsonl"
+        },
+        "st.intersection": {
+          "entrypoint": "site_packet.py",
+          "method": "source-reviewed crossing polygon and roadway identity",
+          "evidence": "junction_context.json"
+        },
+        "rel.bearing": {
+          "entrypoint": "simultaneous_entries.py",
+          "method": "source approach bearing and actor orientation",
+          "evidence": "junction_context.json"
+        },
+        "ego_speed": {
+          "entrypoint": "finalizer.py",
+          "method": "original ego speed joined to video frame",
+          "evidence": "crossing_history.jsonl"
+        },
+        "other_speed": {
+          "entrypoint": "finalizer.py",
+          "method": "original other speed joined to video frame",
+          "evidence": "crossing_history.jsonl"
+        },
+        "ego_approach_distance": {
+          "entrypoint": "finalizer.py",
+          "method": "original ego polygon approach distance",
+          "evidence": "crossing_history.jsonl"
+        },
+        "other_approach_distance": {
+          "entrypoint": "finalizer.py",
+          "method": "original other polygon approach distance",
+          "evidence": "crossing_history.jsonl"
+        },
+        "ego_body_inside": {
+          "entrypoint": "finalizer.py",
+          "method": "original ego full-body polygon occupancy",
+          "evidence": "crossing_history.jsonl"
+        },
+        "other_body_inside": {
+          "entrypoint": "finalizer.py",
+          "method": "original other full-body polygon occupancy",
+          "evidence": "crossing_history.jsonl"
+        },
+        "signal_state": {
+          "entrypoint": "finalizer.py",
+          "method": "original governing signal readback joined to video frame",
+          "evidence": "controller_history.jsonl"
+        },
+        "ego_position": {
+          "entrypoint": "finalizer.py",
+          "method": "original ego body-center position",
+          "evidence": "crossing_history.jsonl"
+        },
+        "other_position": {
+          "entrypoint": "finalizer.py",
+          "method": "original other body-center position",
+          "evidence": "crossing_history.jsonl"
+        }
+      }
     },
     {
       "case_id": "testing__C125697__NRS-484B-250-1__motor_vehicle_driver__off_other_already_inside",
@@ -365,6 +655,12 @@
             "sha256": "f3069b5f8936b60e9abeef0f9d9b0988bf566efbdfc6f579066640412578ba33",
             "recorded_only": true,
             "scope": "synthetic fixture; not Native physical"
+          },
+          "compatibility": {
+            "receipt": "cases/off_other_already_inside/fallback1-compatibility-receipt.json",
+            "sha256": "c7d6910a82e80030b9e63ba1fc9947f27db49640830bc780bb23d1624c3a434b",
+            "log": "proof-logs/analysis.log",
+            "negative_log": "proof-logs/off_other_already_inside-fallback1-negative.log"
           }
         },
         {
@@ -400,6 +696,12 @@
             "sha256": "bd9be9b8f51bc177f561b9a85931df1cb683633e6748646c607299fd4b68dc15",
             "recorded_only": true,
             "scope": "synthetic fixture; not Native physical"
+          },
+          "compatibility": {
+            "receipt": "cases/off_other_already_inside/fallback2-compatibility-receipt.json",
+            "sha256": "17a1b1008da72d1e0ec3edf2e878375914129db9654a144d83b43a96a1bef106",
+            "log": "proof-logs/analysis.log",
+            "negative_log": "proof-logs/off_other_already_inside-fallback2-negative.log"
           }
         },
         {
@@ -435,9 +737,142 @@
             "sha256": "5780f6677054aba3d70f7db7e5509796dddd21b73d91c464c26e116546f838c5",
             "recorded_only": true,
             "scope": "synthetic fixture; not Native physical"
+          },
+          "compatibility": {
+            "receipt": "cases/off_other_already_inside/fallback3-compatibility-receipt.json",
+            "sha256": "519df325961887e2761bc04c154b8597f864e71596e7a9c0da60bf62df5c9a61",
+            "log": "proof-logs/analysis.log",
+            "negative_log": "proof-logs/off_other_already_inside-fallback3-negative.log"
           }
         }
-      ]
+      ],
+      "physical_preparation": {
+        "receipt": "physical-proofs/off_other_already_inside/receipt.json",
+        "sha256": "7d28529bcf917c24f7acd879bac7700f37d2c7576e5a89495db4c27a904bf08d"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C125697__NRS-484B-250-1__motor_vehicle_driver__off_other_already_inside",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_delivery_acceptance.py",
+        "script_sha256": "bc0afbedff6168faac445223596f018eb327cc54a5679f9f6471a80eb3e3313a",
+        "command": ".venv-cpu/bin/python work/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C125697__NRS-484B-250-1__motor_vehicle_driver__off_other_already_inside --mode positive",
+        "test_log": "delivery-acceptance-positive.log",
+        "test_log_sha256": "7efcb6e6bd41b2809366fa5780381155dae231807abb9475e64f89402fc33880",
+        "test_exit_code": 0,
+        "negative_command": ".venv-cpu/bin/python work/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C125697__NRS-484B-250-1__motor_vehicle_driver__off_other_already_inside --mode negative",
+        "negative_log": "delivery-acceptance-negative.log",
+        "negative_log_sha256": "125580e3fd03323573040dbfcee3edae7c8b66ddb8edd4855d94f1cd9ad053db",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Physical completion source changed",
+        "proof_scope": "Diagnostic CPU boundary only; independent Native/pixel review pending"
+      },
+      "compatibility": {
+        "receipt": "cases/off_other_already_inside/primary-compatibility-receipt.json",
+        "sha256": "c3f68926816cd8bc219a6766917cc65fe91c16ed10ad263f06b9dcc75574cf81",
+        "log": "proof-logs/analysis.log",
+        "negative_log": "proof-logs/off_other_already_inside-primary-negative.log"
+      },
+      "negative": {
+        "log": "proof-logs/off_other_already_inside-primary-negative.log"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "ru.subject": {
+          "entrypoint": "capture_sources.py",
+          "method": "Native actor identity",
+          "evidence": "capture/evidence.jsonl"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "capture_sources.py",
+          "method": "Native motor vehicle blueprint",
+          "evidence": "capture/evidence.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "capture_sources.py",
+          "method": "original actor pose",
+          "evidence": "trace.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "capture_sources.py",
+          "method": "original actor velocity",
+          "evidence": "trace.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "capture_sources.py",
+          "method": "original actor speed magnitude",
+          "evidence": "trace.jsonl"
+        },
+        "st.intersection": {
+          "entrypoint": "site_packet.py",
+          "method": "source-reviewed crossing polygon and roadway identity",
+          "evidence": "junction_context.json"
+        },
+        "rel.bearing": {
+          "entrypoint": "simultaneous_entries.py",
+          "method": "source approach bearing and actor orientation",
+          "evidence": "junction_context.json"
+        },
+        "ego_speed": {
+          "entrypoint": "finalizer.py",
+          "method": "original ego speed joined to video frame",
+          "evidence": "crossing_history.jsonl"
+        },
+        "other_speed": {
+          "entrypoint": "finalizer.py",
+          "method": "original other speed joined to video frame",
+          "evidence": "crossing_history.jsonl"
+        },
+        "ego_approach_distance": {
+          "entrypoint": "finalizer.py",
+          "method": "original ego polygon approach distance",
+          "evidence": "crossing_history.jsonl"
+        },
+        "other_approach_distance": {
+          "entrypoint": "finalizer.py",
+          "method": "original other polygon approach distance",
+          "evidence": "crossing_history.jsonl"
+        },
+        "ego_body_inside": {
+          "entrypoint": "finalizer.py",
+          "method": "original ego full-body polygon occupancy",
+          "evidence": "crossing_history.jsonl"
+        },
+        "other_body_inside": {
+          "entrypoint": "finalizer.py",
+          "method": "original other full-body polygon occupancy",
+          "evidence": "crossing_history.jsonl"
+        },
+        "signal_state": {
+          "entrypoint": "finalizer.py",
+          "method": "original governing signal readback joined to video frame",
+          "evidence": "controller_history.jsonl"
+        },
+        "ego_position": {
+          "entrypoint": "finalizer.py",
+          "method": "original ego body-center position",
+          "evidence": "crossing_history.jsonl"
+        },
+        "other_position": {
+          "entrypoint": "finalizer.py",
+          "method": "original other body-center position",
+          "evidence": "crossing_history.jsonl"
+        }
+      }
     },
     {
       "case_id": "testing__C125697__NRS-484B-250-1__motor_vehicle_driver__operative_signal_exclusion",
@@ -510,6 +945,12 @@
             "sha256": "1f8e2d81f2558501a0f0ea411dc03570fa831ff64efeb06d89c7efffb8b26d91",
             "recorded_only": true,
             "scope": "synthetic fixture; not Native physical"
+          },
+          "compatibility": {
+            "receipt": "cases/operative_signal_exclusion/fallback1-compatibility-receipt.json",
+            "sha256": "c9445b9f13a9b91f77bc2fe673b44d8da111d036dd863508b4c6916110733bc6",
+            "log": "proof-logs/analysis.log",
+            "negative_log": "proof-logs/operative_signal_exclusion-fallback1-negative.log"
           }
         },
         {
@@ -545,6 +986,12 @@
             "sha256": "c34c3788b2bb1a3e30f86b23c757708c63f9e5808d8902c21bacc05f42d9e34e",
             "recorded_only": true,
             "scope": "synthetic fixture; not Native physical"
+          },
+          "compatibility": {
+            "receipt": "cases/operative_signal_exclusion/fallback2-compatibility-receipt.json",
+            "sha256": "e3f83d6ee396e509c1f857e83e9e1b2a317b0187d2cb54d1d0533ac15ab2bc2e",
+            "log": "proof-logs/analysis.log",
+            "negative_log": "proof-logs/operative_signal_exclusion-fallback2-negative.log"
           }
         },
         {
@@ -580,9 +1027,142 @@
             "sha256": "317a54f5f126bcaf9d4ca93ff587d8f2472fa7fee5f622299d7ae6ed976c7b62",
             "recorded_only": true,
             "scope": "synthetic fixture; not Native physical"
+          },
+          "compatibility": {
+            "receipt": "cases/operative_signal_exclusion/fallback3-compatibility-receipt.json",
+            "sha256": "4de0e2eca777a3de31072301d48ce33818cc6b263b1062b5c34332c8c97cb400",
+            "log": "proof-logs/analysis.log",
+            "negative_log": "proof-logs/operative_signal_exclusion-fallback3-negative.log"
           }
         }
-      ]
+      ],
+      "physical_preparation": {
+        "receipt": "physical-proofs/operative_signal_exclusion/receipt.json",
+        "sha256": "01d9da8641143ecfb6c3009ca4f671d596985d5ecbb2ff582f312e7f466da8af"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C125697__NRS-484B-250-1__motor_vehicle_driver__operative_signal_exclusion",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_delivery_acceptance.py",
+        "script_sha256": "bc0afbedff6168faac445223596f018eb327cc54a5679f9f6471a80eb3e3313a",
+        "command": ".venv-cpu/bin/python work/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C125697__NRS-484B-250-1__motor_vehicle_driver__operative_signal_exclusion --mode positive",
+        "test_log": "delivery-acceptance-positive.log",
+        "test_log_sha256": "7efcb6e6bd41b2809366fa5780381155dae231807abb9475e64f89402fc33880",
+        "test_exit_code": 0,
+        "negative_command": ".venv-cpu/bin/python work/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C125697__NRS-484B-250-1__motor_vehicle_driver__operative_signal_exclusion --mode negative",
+        "negative_log": "delivery-acceptance-negative.log",
+        "negative_log_sha256": "125580e3fd03323573040dbfcee3edae7c8b66ddb8edd4855d94f1cd9ad053db",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Physical completion source changed",
+        "proof_scope": "Diagnostic CPU boundary only; independent Native/pixel review pending"
+      },
+      "compatibility": {
+        "receipt": "cases/operative_signal_exclusion/primary-compatibility-receipt.json",
+        "sha256": "f8c3b1a7597c308f2d69e6d09959de56cb5172834eed79baf5503a144d3dbe3c",
+        "log": "proof-logs/analysis.log",
+        "negative_log": "proof-logs/operative_signal_exclusion-primary-negative.log"
+      },
+      "negative": {
+        "log": "proof-logs/operative_signal_exclusion-primary-negative.log"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "ru.subject": {
+          "entrypoint": "capture_sources.py",
+          "method": "Native actor identity",
+          "evidence": "capture/evidence.jsonl"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "capture_sources.py",
+          "method": "Native motor vehicle blueprint",
+          "evidence": "capture/evidence.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "capture_sources.py",
+          "method": "original actor pose",
+          "evidence": "trace.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "capture_sources.py",
+          "method": "original actor velocity",
+          "evidence": "trace.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "capture_sources.py",
+          "method": "original actor speed magnitude",
+          "evidence": "trace.jsonl"
+        },
+        "st.intersection": {
+          "entrypoint": "site_packet.py",
+          "method": "source-reviewed crossing polygon and roadway identity",
+          "evidence": "junction_context.json"
+        },
+        "rel.bearing": {
+          "entrypoint": "simultaneous_entries.py",
+          "method": "source approach bearing and actor orientation",
+          "evidence": "junction_context.json"
+        },
+        "ego_speed": {
+          "entrypoint": "finalizer.py",
+          "method": "original ego speed joined to video frame",
+          "evidence": "crossing_history.jsonl"
+        },
+        "other_speed": {
+          "entrypoint": "finalizer.py",
+          "method": "original other speed joined to video frame",
+          "evidence": "crossing_history.jsonl"
+        },
+        "ego_approach_distance": {
+          "entrypoint": "finalizer.py",
+          "method": "original ego polygon approach distance",
+          "evidence": "crossing_history.jsonl"
+        },
+        "other_approach_distance": {
+          "entrypoint": "finalizer.py",
+          "method": "original other polygon approach distance",
+          "evidence": "crossing_history.jsonl"
+        },
+        "ego_body_inside": {
+          "entrypoint": "finalizer.py",
+          "method": "original ego full-body polygon occupancy",
+          "evidence": "crossing_history.jsonl"
+        },
+        "other_body_inside": {
+          "entrypoint": "finalizer.py",
+          "method": "original other full-body polygon occupancy",
+          "evidence": "crossing_history.jsonl"
+        },
+        "signal_state": {
+          "entrypoint": "finalizer.py",
+          "method": "original governing signal readback joined to video frame",
+          "evidence": "controller_history.jsonl"
+        },
+        "ego_position": {
+          "entrypoint": "finalizer.py",
+          "method": "original ego body-center position",
+          "evidence": "crossing_history.jsonl"
+        },
+        "other_position": {
+          "entrypoint": "finalizer.py",
+          "method": "original other body-center position",
+          "evidence": "crossing_history.jsonl"
+        }
+      }
     },
     {
       "case_id": "testing__C125697__NRS-484B-250-1__motor_vehicle_driver__opposite_left_exception",
@@ -655,6 +1235,12 @@
             "sha256": "d9c053518fa811125922d995e08593d07b702f22f29179758d28a1bc336495f4",
             "recorded_only": true,
             "scope": "synthetic fixture; not Native physical"
+          },
+          "compatibility": {
+            "receipt": "cases/opposite_left_exception/fallback1-compatibility-receipt.json",
+            "sha256": "904811488c25abd9e08725bf529afef7540ed0bff35111e43ddd018ca375a81d",
+            "log": "proof-logs/analysis.log",
+            "negative_log": "proof-logs/opposite_left_exception-fallback1-negative.log"
           }
         },
         {
@@ -690,6 +1276,12 @@
             "sha256": "5afb92b68023914fc65b46066726bb4cc4eea4079a0d44d3122e8351d323f3a1",
             "recorded_only": true,
             "scope": "synthetic fixture; not Native physical"
+          },
+          "compatibility": {
+            "receipt": "cases/opposite_left_exception/fallback2-compatibility-receipt.json",
+            "sha256": "37156510d8cbc9dfa8ee1bf3ec182b307bcc08f1eb55ac04e93e86160cc4b400",
+            "log": "proof-logs/analysis.log",
+            "negative_log": "proof-logs/opposite_left_exception-fallback2-negative.log"
           }
         },
         {
@@ -725,9 +1317,142 @@
             "sha256": "c5a941f680d7f289403ae18e73be974e07d466f0c37fed61a24b63f951fd3b67",
             "recorded_only": true,
             "scope": "synthetic fixture; not Native physical"
+          },
+          "compatibility": {
+            "receipt": "cases/opposite_left_exception/fallback3-compatibility-receipt.json",
+            "sha256": "81a0baa7f80c2ea03297d17abe4406e67347f55b06b868c3427dcf409de83931",
+            "log": "proof-logs/analysis.log",
+            "negative_log": "proof-logs/opposite_left_exception-fallback3-negative.log"
           }
         }
-      ]
+      ],
+      "physical_preparation": {
+        "receipt": "physical-proofs/opposite_left_exception/receipt.json",
+        "sha256": "62b0e8d220f0c56fa16c49f5ac471dacf9a4a5ba05ad43a26e193b23b48bf2ee"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C125697__NRS-484B-250-1__motor_vehicle_driver__opposite_left_exception",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_delivery_acceptance.py",
+        "script_sha256": "bc0afbedff6168faac445223596f018eb327cc54a5679f9f6471a80eb3e3313a",
+        "command": ".venv-cpu/bin/python work/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C125697__NRS-484B-250-1__motor_vehicle_driver__opposite_left_exception --mode positive",
+        "test_log": "delivery-acceptance-positive.log",
+        "test_log_sha256": "7efcb6e6bd41b2809366fa5780381155dae231807abb9475e64f89402fc33880",
+        "test_exit_code": 0,
+        "negative_command": ".venv-cpu/bin/python work/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C125697__NRS-484B-250-1__motor_vehicle_driver__opposite_left_exception --mode negative",
+        "negative_log": "delivery-acceptance-negative.log",
+        "negative_log_sha256": "125580e3fd03323573040dbfcee3edae7c8b66ddb8edd4855d94f1cd9ad053db",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Physical completion source changed",
+        "proof_scope": "Diagnostic CPU boundary only; independent Native/pixel review pending"
+      },
+      "compatibility": {
+        "receipt": "cases/opposite_left_exception/primary-compatibility-receipt.json",
+        "sha256": "4fde0f2239da56a764b925794aab50a493de43e67ff7ad50a67380856e2303a0",
+        "log": "proof-logs/analysis.log",
+        "negative_log": "proof-logs/opposite_left_exception-primary-negative.log"
+      },
+      "negative": {
+        "log": "proof-logs/opposite_left_exception-primary-negative.log"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "ru.subject": {
+          "entrypoint": "capture_sources.py",
+          "method": "Native actor identity",
+          "evidence": "capture/evidence.jsonl"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "capture_sources.py",
+          "method": "Native motor vehicle blueprint",
+          "evidence": "capture/evidence.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "capture_sources.py",
+          "method": "original actor pose",
+          "evidence": "trace.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "capture_sources.py",
+          "method": "original actor velocity",
+          "evidence": "trace.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "capture_sources.py",
+          "method": "original actor speed magnitude",
+          "evidence": "trace.jsonl"
+        },
+        "st.intersection": {
+          "entrypoint": "site_packet.py",
+          "method": "source-reviewed crossing polygon and roadway identity",
+          "evidence": "junction_context.json"
+        },
+        "rel.bearing": {
+          "entrypoint": "simultaneous_entries.py",
+          "method": "source approach bearing and actor orientation",
+          "evidence": "junction_context.json"
+        },
+        "ego_speed": {
+          "entrypoint": "finalizer.py",
+          "method": "original ego speed joined to video frame",
+          "evidence": "crossing_history.jsonl"
+        },
+        "other_speed": {
+          "entrypoint": "finalizer.py",
+          "method": "original other speed joined to video frame",
+          "evidence": "crossing_history.jsonl"
+        },
+        "ego_approach_distance": {
+          "entrypoint": "finalizer.py",
+          "method": "original ego polygon approach distance",
+          "evidence": "crossing_history.jsonl"
+        },
+        "other_approach_distance": {
+          "entrypoint": "finalizer.py",
+          "method": "original other polygon approach distance",
+          "evidence": "crossing_history.jsonl"
+        },
+        "ego_body_inside": {
+          "entrypoint": "finalizer.py",
+          "method": "original ego full-body polygon occupancy",
+          "evidence": "crossing_history.jsonl"
+        },
+        "other_body_inside": {
+          "entrypoint": "finalizer.py",
+          "method": "original other full-body polygon occupancy",
+          "evidence": "crossing_history.jsonl"
+        },
+        "signal_state": {
+          "entrypoint": "finalizer.py",
+          "method": "original governing signal readback joined to video frame",
+          "evidence": "controller_history.jsonl"
+        },
+        "ego_position": {
+          "entrypoint": "finalizer.py",
+          "method": "original ego body-center position",
+          "evidence": "crossing_history.jsonl"
+        },
+        "other_position": {
+          "entrypoint": "finalizer.py",
+          "method": "original other body-center position",
+          "evidence": "crossing_history.jsonl"
+        }
+      }
     }
   ],
   "status": "staged"
