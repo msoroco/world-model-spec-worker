@@ -28,6 +28,53 @@ def _rows(path):
     return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
 
 
+def measure_signal_states(report):
+    return {"sample_count": len(report["samples"]),
+            "ego_governing_off_all_frames": all(s["signal_state"] == "Off" for s in report["samples"]),
+            "other_governing_off_all_frames": all(s["other_signal_state"] == "Off" for s in report["samples"]),
+            "statutory_inoperability_judgment": "unresolved"}
+
+
+def measure_stop_reference(report):
+    return report["selected_stop_boundary"]
+
+
+def measure_ego_full_halt(report):
+    return report["ego_stopped_before_entry_observed"]
+
+
+def measure_prior_stop(report):
+    return report["other_completed_stop_before_ego_observed"]
+
+
+def measure_intersection_occupancy(report):
+    return {"other_inside_at_ego_entry": report["other_body_inside_at_ego_entry_observed"],
+            "ego_entry": report["first_body_entry"]["ego"],
+            "other_entry": report["first_body_entry"]["other"]}
+
+
+def measure_post_stop_motion(report):
+    halt = report["first_full_halt_before_or_at_selected_boundary"]["ego"]
+    entry = report["first_body_entry"]["ego"]
+    rows = [s for s in report["samples"] if halt and s["time_s"] > halt["time_s"] and
+            (not entry or s["time_s"] <= entry["time_s"])]
+    return {"halt_observed": halt is not None,
+            "post_halt_through_entry_samples": [{"frame": s["frame"],
+                                                   "time_s": s["time_s"],
+                                                   "speed_mps": s["ego"]["speed_mps"]} for s in rows],
+            "cautiousness_judgment": "unresolved"}
+
+
+MEASUREMENTS = {
+    "signal_states": measure_signal_states,
+    "stop_reference": measure_stop_reference,
+    "ego_full_halt": measure_ego_full_halt,
+    "prior_stop": measure_prior_stop,
+    "intersection_occupancy": measure_intersection_occupancy,
+    "post_stop_motion": measure_post_stop_motion,
+}
+
+
 def finalize_saved(attempt, output):
     """Validate acquisition, derive channels, and write one fresh saved result."""
     from worker_exchange.native_output import physical_result, write_result
@@ -111,9 +158,17 @@ def finalize_saved(attempt, output):
     }
     result = physical_result(attempt, result)
     write_result(attempt, result)
-    analysis = {"format": "worker-inoperative-signal-saved-analysis",
+    measurements = {name: {"method": method.__name__, "value": method(report),
+                           "sources": report["sources"]}
+                    for name, method in MEASUREMENTS.items()}
+    analysis = {"format": "worker-analysis-report",
                 "case_id": cfg["selected_case_id"], "source_report": report,
-                "source_hashes": report["sources"], "physical_checks": result["physical_checks"],
+                "source_hashes": report["sources"], "measurements": measurements,
+                "physical_checks": result["physical_checks"],
+                "realized_observables": result["realized_observables"],
+                "provenance_kind": result["provenance_kind"],
+                "diagnostic_fixture": result["diagnostic_fixture"],
+                "limitations": ["Original signal states and motion require physical review; legal judgments unresolved"],
                 "legal_verdict_asserted": False, "analysis_complete": True}
     output.write_text(json.dumps(analysis, indent=2, allow_nan=False) + "\n")
     return analysis

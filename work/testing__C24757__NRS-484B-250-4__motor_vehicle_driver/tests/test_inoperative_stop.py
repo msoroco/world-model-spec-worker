@@ -13,6 +13,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "runtime" / "scenario_pipeline"))
 import saved_finalizer
 import comparison_audit
+from worker_exchange.measurement_contract import verify_report
 
 
 def body(x):
@@ -22,7 +23,8 @@ def body(x):
 class StopTests(unittest.TestCase):
     def fixture(self, root):
         context = {"native_map_id": "TownX", "intersection_id": 6,
-                   "native_signal_id": 13, "signal_head_video_source": "front-original",
+                   "native_signal_id": 13, "other_native_signal_id": 14,
+                   "signal_head_video_source": "front-original",
                    "lane_governance_source": "native-affected-waypoints",
                    "stop_line_source": "native-map-and-front-video",
                    "other_stop_boundary": {"kind": "stop_line", "source": "other-approach-map-and-video"},
@@ -38,6 +40,7 @@ class StopTests(unittest.TestCase):
         for i in range(4):
             rows.append({"frame": 100 + i, "time_s": 1 + i * .05,
                          "native_signal_id": 13, "signal_state": "Off",
+                         "other_native_signal_id": 14, "other_signal_state": "Off",
                          "ego": {"intersection_id": 6, "speed_mps": ego_speed[i],
                                  "front_to_stop_line_signed_m": 1 if i <= 2 else -1,
                                  "body_vertices_xy_m": body(ego_x[i])},
@@ -86,6 +89,12 @@ class StopTests(unittest.TestCase):
             rows[2]["signal_state"] = "Red"
             (root / "vehicle_signal_history.jsonl").write_text("".join(json.dumps(row)+"\n" for row in rows))
             with self.assertRaisesRegex(ValueError, "Off state"):
+                measure.analyze(root)
+            self.fixture(root)
+            rows = [json.loads(line) for line in (root / "vehicle_signal_history.jsonl").read_text().splitlines()]
+            rows[2]["other_signal_state"] = "Green"
+            (root / "vehicle_signal_history.jsonl").write_text("".join(json.dumps(row)+"\n" for row in rows))
+            with self.assertRaisesRegex(ValueError, "both identified signals"):
                 measure.analyze(root)
             self.fixture(root)
             frames = [json.loads(line) for line in (root / "video_frames.jsonl").read_text().splitlines()]
@@ -170,6 +179,16 @@ class StopTests(unittest.TestCase):
             self.assertEqual([row["value"] for row in channel], [2, 2, 0, 2])
             self.assertFalse(result["physical_acceptance_claimed"])
             self.assertEqual(result["measured_values"]["selected_stop_boundary"], "stop_line")
+            contract = {"requirements": [
+                {"output_key": "signal_states", "method": "measure_signal_states",
+                 "value_type": "object", "inputs": list(analysis["source_report"]["sources"])},
+                {"output_key": "post_stop_motion", "method": "measure_post_stop_motion",
+                 "value_type": "object", "inputs": list(analysis["source_report"]["sources"])}]}
+            checked = verify_report(contract, analysis, attempt)
+            self.assertTrue(checked["signal_states"]["value"]["other_governing_off_all_frames"])
+            self.assertEqual([s["speed_mps"] for s in
+                              checked["post_stop_motion"]["value"]["post_halt_through_entry_samples"]], [2])
+            self.assertEqual(analysis["format"], "worker-analysis-report")
             with self.assertRaisesRegex(ValueError, "Retain prior finalization"):
                 saved_finalizer.finalize_saved(attempt, root / "another-analysis.json")
 
@@ -185,6 +204,16 @@ class StopTests(unittest.TestCase):
                 saved_finalizer.finalize_saved(attempt, root / "analysis.json")
             self.assertFalse((attempt / "channels").exists())
             self.assertFalse((attempt / "result.json").exists())
+
+    def test_saved_finalizer_rejects_missing_case_source(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            attempt = self.saved_fixture(root)
+            (attempt / "junction_context.json").unlink()
+            with self.assertRaisesRegex(ValueError, "Missing required source: junction_context.json"):
+                saved_finalizer.finalize_saved(attempt, root / "analysis.json")
+            self.assertFalse((attempt / "result.json").exists())
+            self.assertFalse((attempt / "channels").exists())
 
     def test_independent_order_and_no_halt_comparisons(self):
         with tempfile.TemporaryDirectory() as temp:

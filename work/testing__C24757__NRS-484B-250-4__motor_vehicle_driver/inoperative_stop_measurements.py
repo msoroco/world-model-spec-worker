@@ -38,7 +38,7 @@ def analyze(root: Path) -> dict:
             raise ValueError("Missing required source: " + name)
         hashes[name] = hashlib.sha256(path.read_bytes()).hexdigest()
     context = json.loads((root / "junction_context.json").read_text())
-    for key in ("native_map_id", "intersection_id", "native_signal_id",
+    for key in ("native_map_id", "intersection_id", "native_signal_id", "other_native_signal_id",
                 "signal_head_video_source", "lane_governance_source"):
         if not context.get(key):
             raise ValueError("Missing sourced junction context: " + key)
@@ -82,9 +82,13 @@ def analyze(root: Path) -> dict:
         previous = (fid, time)
         if frame.get("video_frame") != index or frame.get("carla_frame") != fid or frame.get("time_s") != time:
             raise ValueError("Original video frame join failed")
-        if row.get("native_signal_id") != context["native_signal_id"] or row.get("signal_state") != "Off":
-            raise ValueError("No observed Off state on identified signal")
-        sample = {"frame": fid, "time_s": time, "signal_state": "Off"}
+        if (row.get("native_signal_id") != context["native_signal_id"] or
+                row.get("other_native_signal_id") != context["other_native_signal_id"] or
+                context["native_signal_id"] == context["other_native_signal_id"] or
+                row.get("signal_state") != "Off" or row.get("other_signal_state") != "Off"):
+            raise ValueError("No observed Off state on both identified signals")
+        sample = {"frame": fid, "time_s": time, "signal_state": "Off",
+                  "other_signal_state": "Off"}
         for who in ("ego", "other"):
             actor = row.get(who)
             if not isinstance(actor, dict) or actor.get("intersection_id") != context["intersection_id"]:

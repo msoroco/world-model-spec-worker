@@ -24,7 +24,8 @@ def write_bound(root, name, value):
 class SiteTests(unittest.TestCase):
     def fixture(self, root, kind="stop_line"):
         site = {"native_map_name": "DiagnosticTown", "intersection_id": 6,
-                "native_signal_id": 13, "installed_uncovered_vehicular_heads": True,
+                "native_signal_id": 13, "other_native_signal_id": 14,
+                "installed_uncovered_vehicular_heads": True,
                 "intersection_polygon_xy_m": [[0, -5], [10, -5], [10, 5], [0, 5]],
                 "entrance_road_lanes": [[1, -1], [2, -1]],
                 "stop_line_exists": kind == "stop_line",
@@ -110,6 +111,12 @@ class SiteTests(unittest.TestCase):
             config["actor_routes"]["other"]["spawn"] = [1, -1, 10.0]
             with self.assertRaisesRegex(ValueError, "distinct Native approaches"):
                 native_runner.validate_capture_plan(config, root)
+            config["actor_routes"]["other"]["spawn"] = [2, -1, 10.0]
+            config["actor_routes"]["ego"]["spawn"] = [2, -1, 10.0]
+            config["actor_routes"]["other"]["spawn"] = [1, -1, 10.0]
+            with self.assertRaisesRegex(ValueError, "ordered signal-governed"):
+                native_runner.validate_capture_plan(config, root)
+            config["actor_routes"]["ego"]["spawn"] = [1, -1, 10.0]
             config["actor_routes"]["other"]["spawn"] = [2, -1, 10.0]
             config["actor_routes"]["other"]["release_rule"] = "after_other_clear"
             with self.assertRaisesRegex(ValueError, "Circular Native release"):

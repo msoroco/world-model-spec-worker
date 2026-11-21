@@ -21,7 +21,7 @@ def audit_pair(left, right, mode):
     a, b = analyze(left), analyze(right)
     ac = json.loads((left / "junction_context.json").read_text())
     bc = json.loads((right / "junction_context.json").read_text())
-    fixed = ("native_map_id", "intersection_id", "native_signal_id",
+    fixed = ("native_map_id", "intersection_id", "native_signal_id", "other_native_signal_id",
              "installed_uncovered_vehicular_heads", "intersection_polygon_xy_m",
              "lane_governance_source", "signal_head_video_source")
     if any(ac.get(key) != bc.get(key) for key in fixed):

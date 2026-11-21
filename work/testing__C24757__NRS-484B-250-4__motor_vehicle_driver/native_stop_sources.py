@@ -42,7 +42,7 @@ def actor_source(actor, intersection_id, point, upstream_normal, signed_field):
             "body_vertices_xy_m": xy}
 
 
-def source_row(frame, time_s, signal, ego, other, site):
+def source_row(frame, time_s, signal, ego, other, site, other_signal):
     if type(frame) is not int or frame < 0:
         raise ValueError("Nonnegative Native frame required")
     _finite(time_s, "Native time")
@@ -57,15 +57,18 @@ def source_row(frame, time_s, signal, ego, other, site):
         point, normal = candidate.get("point_xy_m"), candidate.get("upstream_normal_xy")
         if not isinstance(point, list) or len(point) != 2 or not isinstance(normal, list) or len(normal) != 2:
             raise ValueError("Boundary geometry required")
-    if not site.get("intersection_id") or not site.get("native_signal_id"):
+    if not site.get("intersection_id") or not site.get("native_signal_id") or not site.get("other_native_signal_id"):
         raise ValueError("Sourced Native signal and intersection IDs required")
-    if signal.id != site["native_signal_id"]:
+    if (signal.id != site["native_signal_id"] or
+            other_signal.id != site["other_native_signal_id"] or signal.id == other_signal.id):
         raise ValueError("Observed different Native signal head")
     signal_state = str(signal.get_state()).split(".")[-1]
-    if signal_state != "Off":
+    other_signal_state = str(other_signal.get_state()).split(".")[-1]
+    if signal_state != "Off" or other_signal_state != "Off":
         raise ValueError("Native Off readback failed in source row")
     return {"frame": frame, "time_s": time_s,
             "native_signal_id": signal.id, "signal_state": signal_state,
+            "other_native_signal_id": other_signal.id, "other_signal_state": other_signal_state,
             "ego": actor_source(ego, site["intersection_id"], boundary["point_xy_m"],
                                 boundary["upstream_normal_xy"], fields[boundary["kind"]]),
             "other": actor_source(other, site["intersection_id"], other_boundary["point_xy_m"],

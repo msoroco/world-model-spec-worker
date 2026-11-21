@@ -14,7 +14,7 @@ REQUIRED_SOURCES = ("map_geometry", "signal_governance", "signal_heads",
                     "stop_boundary", "approach_visibility")
 SOURCE_CLAIMS = {
     "map_geometry": {"native_map_name", "intersection_id", "intersection_polygon_xy_m"},
-    "signal_governance": {"native_signal_id", "entrance_road_lanes"},
+    "signal_governance": {"native_signal_id", "other_native_signal_id", "entrance_road_lanes"},
     "signal_heads": {"installed_uncovered_vehicular_heads"},
     "stop_boundary": {"stop_line_exists", "crosswalk_exists", "stop_boundary",
                       "other_stop_line_exists", "other_crosswalk_exists", "other_stop_boundary"},
@@ -69,15 +69,19 @@ def validate_site(config, base_dir):
         for field, value in document["reviewed_site_fields"].items():
             if site.get(field) != value:
                 raise ValueError("Junction claim differs from source: " + field)
-    for field in ("native_map_name", "intersection_id", "native_signal_id",
+    for field in ("native_map_name", "intersection_id", "native_signal_id", "other_native_signal_id",
                   "installed_uncovered_vehicular_heads", "intersection_polygon_xy_m",
                   "entrance_road_lanes", "stop_boundary", "other_stop_boundary"):
         if field not in site:
             raise ValueError("Missing junction construction field: " + field)
     if site["installed_uncovered_vehicular_heads"] is not True:
         raise ValueError("Uncovered installed heads must be sourced")
+    if (type(site["native_signal_id"]) is not int or
+            type(site["other_native_signal_id"]) is not int or
+            site["native_signal_id"] == site["other_native_signal_id"]):
+        raise ValueError("Two distinct sourced Native signal IDs required")
     lanes = site["entrance_road_lanes"]
-    if (not isinstance(lanes, list) or len(lanes) < 2 or
+    if (not isinstance(lanes, list) or len(lanes) != 2 or
             any(not isinstance(lane, list) or len(lane) != 2 or
                 any(type(number) is not int for number in lane) for lane in lanes) or
             len({tuple(lane) for lane in lanes}) != len(lanes)):

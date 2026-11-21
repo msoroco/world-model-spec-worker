@@ -34,18 +34,21 @@ class Actor:
 
 class SourceTests(unittest.TestCase):
     def site(self, kind):
-        return {"intersection_id": 6, "native_signal_id": 13,
+        return {"intersection_id": 6, "native_signal_id": 13, "other_native_signal_id": 14,
                 "stop_boundary": {"kind": kind, "source": "reviewed-map-and-original-video",
                                   "point_xy_m": [0, 0], "upstream_normal_xy": [-1, 0]},
                 "other_stop_boundary": {"kind": kind, "source": "other-approach-map-and-video",
                                         "point_xy_m": [0, 0], "upstream_normal_xy": [-1, 0]}}
+
+    def other_signal(self, state="Off"):
+        return types.SimpleNamespace(id=14, get_state=lambda: state)
 
     def test_body_front_signed_distance_and_original_off_readback(self):
         signal = types.SimpleNamespace(id=13, get_state=lambda: "Off")
         for kind, field in [("stop_line", "front_to_stop_line_signed_m"),
                             ("crosswalk", "front_to_crosswalk_signed_m"),
                             ("nearest_view", "front_to_nearest_view_signed_m")]:
-            row = sources.source_row(100, 1.0, signal, Actor(-3, 0), Actor(-5, 2), self.site(kind))
+            row = sources.source_row(100, 1.0, signal, Actor(-3, 0), Actor(-5, 2), self.site(kind), self.other_signal())
             self.assertEqual(row["ego"][field], 3)
             self.assertEqual(row["other"][field], 5)
             self.assertEqual(row["signal_state"], "Off")
@@ -56,7 +59,7 @@ class SourceTests(unittest.TestCase):
         site = self.site("stop_line")
         site["other_stop_boundary"]["point_xy_m"] = [0, -5]
         site["other_stop_boundary"]["upstream_normal_xy"] = [0, 1]
-        row = sources.source_row(100, 1.0, signal, Actor(-3, 0), Actor(-5, 0), site)
+        row = sources.source_row(100, 1.0, signal, Actor(-3, 0), Actor(-5, 0), site, self.other_signal())
         self.assertEqual(row["ego"]["front_to_stop_line_signed_m"], 3)
         self.assertEqual(row["other"]["front_to_stop_line_signed_m"], 4)
 
@@ -65,17 +68,22 @@ class SourceTests(unittest.TestCase):
         site["stop_boundary"]["source"] = ""
         signal = types.SimpleNamespace(id=13, get_state=lambda: "Off")
         with self.assertRaisesRegex(ValueError, "Sourced statutory stop boundary"):
-            sources.source_row(100, 1, signal, Actor(-3, 0), Actor(-5, 2), site)
+            sources.source_row(100, 1, signal, Actor(-3, 0), Actor(-5, 2), site, self.other_signal())
         site = self.site("stop_line")
         signal = types.SimpleNamespace(id=13, get_state=lambda: "Green")
         with self.assertRaisesRegex(ValueError, "Off readback"):
-            sources.source_row(100, 1, signal, Actor(-3, 0), Actor(-5, 2), site)
+            sources.source_row(100, 1, signal, Actor(-3, 0), Actor(-5, 2), site, self.other_signal())
+        site = self.site("stop_line")
+        signal = types.SimpleNamespace(id=13, get_state=lambda: "Off")
+        with self.assertRaisesRegex(ValueError, "Off readback"):
+            sources.source_row(100, 1, signal, Actor(-3, 0), Actor(-5, 2), site, self.other_signal("Green"))
 
     def test_native_source_rows_feed_saved_measurement(self):
         signal = types.SimpleNamespace(id=13, get_state=lambda: "Off")
         site = self.site("stop_line")
         context = {"native_map_id": "TownX", "intersection_id": 6,
-                   "native_signal_id": 13, "signal_head_video_source": "front-original",
+                   "native_signal_id": 13, "other_native_signal_id": 14,
+                   "signal_head_video_source": "front-original",
                    "lane_governance_source": "native-affected-waypoints",
                    "stop_line_source": "reviewed-map-and-original-video",
                    "other_stop_boundary": {"kind": "stop_line", "source": "other-approach-map-and-video"},
@@ -84,7 +92,7 @@ class SourceTests(unittest.TestCase):
                    "intersection_polygon_xy_m": [[0, -5], [10, -5], [10, 5], [0, 5]]}
         ego = [Actor(-3, 2), Actor(-3, 2), Actor(-3, 0), Actor(1, 2)]
         other = [Actor(-3, 2), Actor(-3, 0), Actor(1, 2), Actor(3, 2)]
-        rows = [sources.source_row(100 + i, 1 + i * .05, signal, ego[i], other[i], site)
+        rows = [sources.source_row(100 + i, 1 + i * .05, signal, ego[i], other[i], site, self.other_signal())
                 for i in range(4)]
         frames = [{"video_frame": i, "carla_frame": row["frame"], "time_s": row["time_s"]}
                   for i, row in enumerate(rows)]

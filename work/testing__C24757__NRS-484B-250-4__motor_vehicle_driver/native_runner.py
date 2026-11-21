@@ -74,6 +74,9 @@ def validate_capture_plan(config, packet_root):
             raise ValueError("Named Native release condition required: " + who)
     if routes["ego"]["spawn"][:2] == routes["other"]["spawn"][:2]:
         raise ValueError("Two distinct Native approaches required")
+    if ([routes["ego"]["spawn"][:2], routes["other"]["spawn"][:2]] !=
+            config["site"]["entrance_road_lanes"][:2]):
+        raise ValueError("Actor routes must match ordered signal-governed approaches")
     if all(route["release_rule"] == "after_other_clear" for route in routes.values()):
         raise ValueError("Circular Native release conditions")
     return receipt
@@ -203,9 +206,10 @@ def capture_native(args, config):
             actors.append(actor)
         ego, other = actors
         lights = governing_lights(world, config["site"]["entrance_road_lanes"])
-        selected = next((light for light in lights if light.id == config["site"]["native_signal_id"]), None)
-        if selected is None:
-            raise ValueError("Reviewed Native signal does not govern a selected approach")
+        selected, other_selected = lights[:2]
+        if (selected.id != config["site"]["native_signal_id"] or
+                other_selected.id != config["site"]["other_native_signal_id"]):
+            raise ValueError("Reviewed Native signal heads do not govern the selected approaches")
         controllers = {who: StopController(routes[who]["release_frame"], routes[who]["target_speed_mps"])
                        for who in routes}
         polygon = Polygon(config["site"]["intersection_polygon_xy_m"])
@@ -246,7 +250,7 @@ def capture_native(args, config):
                             collector.capture(snap.frame, snap.timestamp.elapsed_seconds)
                             row = source_row(int(snap.frame),
                                 float(snap.timestamp.elapsed_seconds), selected, ego, other,
-                                config["site"])
+                                config["site"], other_selected)
                             for who in ("ego", "other"):
                                 inside = MultiPoint(row[who]["body_vertices_xy_m"]).convex_hull.intersects(polygon)
                                 if inside:
@@ -262,6 +266,7 @@ def capture_native(args, config):
         context = {"native_map_id": site["native_map_name"],
                    "intersection_id": site["intersection_id"],
                    "native_signal_id": site["native_signal_id"],
+                   "other_native_signal_id": site["other_native_signal_id"],
                    "installed_uncovered_vehicular_heads": site["installed_uncovered_vehicular_heads"],
                    "stop_line_exists": site["stop_line_exists"],
                    "crosswalk_exists": site["crosswalk_exists"],
