@@ -43,7 +43,7 @@ def main():
         'test_log_sha256':sha(target/'positive.log'),
         'negative_command':f'{py} {script} --case {CASE} --output-root .runtime-work/c101303-full-duration/midpoint-negative-v1 --negative-missing-source --negative-source-root .runtime-work/c101303-full-duration/midpoint-positive-v1',
         'negative_exit_code':1,'negative_expected_error':'Sealed original source changed: vehicle_history.jsonl',
-        'negative_log':'delivery-proofs/midpoint/negative.log',
+        'negative_log':'delivery-proofs/following_ends/negative.log',
         'negative_log_sha256':sha(target/'negative.log'),
         'diagnostic_audit':'delivery-proofs/midpoint/diagnostic-audit.json',
         'diagnostic_audit_sha256':sha(target/'diagnostic-audit.json'),

@@ -37,7 +37,7 @@ CLAIMS = (
     ("canonical-at-approach-b-branch-processing.json", "SCENARIO_PIPELINE_OUTPUT_ROOT=" + OUTPUT_ROOT + " .venv-cpu/bin/python runtime.py process-saved --manifest " + PREFIX + "diagnostic-canonical-at-approach-b-manifest.json --case " + AID + "__crest__at_500ft__approach_to_crest__occluded_approach_b --attempt .runtime-work/c129731-canonical-at-approach-b-compat-v3 --output .runtime-work/c129731-canonical-at-approach-b-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"),
     ("canonical-at-approach-b-proof.log", ".venv-cpu/bin/python " + PREFIX + "record_promoted_crest_case.py"),
     ("canonical-at-comparison-proof.log", ".venv-cpu/bin/python " + PREFIX + "prove_canonical_crest_comparison.py"),
-    ("canonical-short-comparison-proof.log", ".venv-cpu/bin/python " + PREFIX + "prove_canonical_short_comparison.py"),
+    ("canonical-beyond-comparison-proof.log", ".venv-cpu/bin/python " + PREFIX + "prove_canonical_short_comparison.py"),
     ("canonical-beyond-comparison-proof.log", ".venv-cpu/bin/python " + PREFIX + "prove_canonical_beyond_comparison.py"),
     ("canonical-at-approach-b-fallback-build.log", ".venv-cpu/bin/python " + PREFIX + "build_promoted_crest_fallbacks.py --name canonical-at-approach-b"),
     ("canonical-at-approach-b-fallback-proof.log", ".venv-cpu/bin/python " + PREFIX + "record_promoted_crest_fallbacks.py --name canonical-at-approach-b"),
