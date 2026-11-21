@@ -1,0 +1,2152 @@
+{
+  "assignment_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver",
+  "cases": [
+    {
+      "acquisition": {
+        "ego_body_footprint": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl ego_body_vertices_xyz_m joined by frame",
+          "method": "capture original Native eight-vertex ego body geometry per frame"
+        },
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl and four original camera streams",
+          "method": "capture original Native ego position, yaw and velocity at every 20 Hz frame"
+        },
+        "pavement_footprint_contact": {
+          "entrypoint": "native/finalize.py",
+          "evidence": "native-actors.jsonl and live-readback.json; independent source review establishes actual newly laid or repaired condition",
+          "method": "derive footprint-polygon contact from retained Native vertices and surveyed pavement polygon"
+        },
+        "warning_person_state": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl warning_person_actor_id, video_frames.jsonl and four original camera streams",
+          "method": "capture warning-person Native actor identity, pose and source camera frame"
+        }
+      },
+      "candidate_offline_status": "pending",
+      "candidate_risk": {
+        "reason": "Native body tracking and warning/pavement camera visibility remain unverified",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "lower requested controller speed from 4 to 3 m/s"
+          ],
+          "compatibility": {
+            "log": "selected-proof-receipts/reference/fallback1/analysis.log",
+            "negative_log": "selected-proof-receipts/reference/fallback1/negative.log",
+            "receipt": "selected-proof-receipts/reference/fallback1/compatibility.json",
+            "sha256": "e0df957059fd6904e79fb9d41c446cb9cc5ffab91e3951a2fd04a9b2f1f8829a"
+          },
+          "construction": "draft-measured-candidates/reference/fallback1/construction.json",
+          "construction_sha256": "b2a2a409c18909d158b63a653f9fd2fb8d884d519495a6adbaf983d6ee1e9f25",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__reference --candidate fallback1 --output ${OFFLINE_DIR} --python \"$PWD/.venv-cpu/bin/python\"",
+            "construction_sha256": "b2a2a409c18909d158b63a653f9fd2fb8d884d519495a6adbaf983d6ee1e9f25",
+            "exit_code": 0,
+            "log": "update132-selected-reference-fallback1-offline-v2.log",
+            "log_sha256": "f93ff27b5708e092f726bde9b4e34a0e0337f4e948471c894aaa14560f752bc8"
+          },
+          "trigger": {
+            "failure_condition": "ego overshoots the surveyed route while slowing for the protected region",
+            "metric": "observed speed/route tracking at surveyed pavement",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "raise overview camera from 24 to 28 m and pitch from -55 to -62 degrees"
+          ],
+          "compatibility": {
+            "log": "selected-proof-receipts/reference/fallback2/analysis.log",
+            "negative_log": "selected-proof-receipts/reference/fallback2/negative.log",
+            "receipt": "selected-proof-receipts/reference/fallback2/compatibility.json",
+            "sha256": "fb24eeb0f5d9a22ae83264cb5318616ef859fa3e93d5e6d0b0250f3bce01a1d8"
+          },
+          "construction": "draft-measured-candidates/reference/fallback2/construction.json",
+          "construction_sha256": "9c4e8bf9a24fc0e591bcac4d8f89effa6ef36416be8f7a323438ea7df6cde7ec",
+          "id": "fallback2",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__reference --candidate fallback2 --output ${OFFLINE_DIR} --python \"$PWD/.venv-cpu/bin/python\"",
+            "construction_sha256": "9c4e8bf9a24fc0e591bcac4d8f89effa6ef36416be8f7a323438ea7df6cde7ec",
+            "exit_code": 0,
+            "log": "update132-selected-reference-fallback2-offline.log",
+            "log_sha256": "0b9015cf9f2299c3c2092da29fd37306cd7ae4458fa501563865d3fe98ae9d94"
+          },
+          "trigger": {
+            "failure_condition": "overview pixels omit the person or a protected pavement edge",
+            "metric": "visibility of warning person and complete surveyed pavement area",
+            "source": "overview.mkv"
+          }
+        },
+        {
+          "changed_knobs": [
+            "reduce waypoint reach from 1.5 to 1.0 m",
+            "increase steering response by reducing divisor from 40 to 32 degrees"
+          ],
+          "compatibility": {
+            "log": "selected-proof-receipts/reference/fallback3/analysis.log",
+            "negative_log": "selected-proof-receipts/reference/fallback3/negative.log",
+            "receipt": "selected-proof-receipts/reference/fallback3/compatibility.json",
+            "sha256": "a5227d0328e877a1b96fbc29847fb75199bb303fc514b55ac894f926b19d445c"
+          },
+          "construction": "draft-measured-candidates/reference/fallback3/construction.json",
+          "construction_sha256": "758a07d54dd05ded46b4c8bc3a07dc8c34148130d8b97608cd64d455f77131ee",
+          "id": "fallback3",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__reference --candidate fallback3 --output ${OFFLINE_DIR} --python \"$PWD/.venv-cpu/bin/python\"",
+            "construction_sha256": "758a07d54dd05ded46b4c8bc3a07dc8c34148130d8b97608cd64d455f77131ee",
+            "exit_code": 0,
+            "log": "update132-selected-reference-fallback3-offline.log",
+            "log_sha256": "984b0df2436abaf365fd1823a73c3ab7defd4c8c1b0cb877b08ef20d5243223f"
+          },
+          "trigger": {
+            "failure_condition": "body footprint leaves the surveyed intended route corridor",
+            "metric": "measured lateral route error at pavement approach",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__reference",
+      "compatibility": {
+        "log": "selected-proof-receipts/reference/primary/analysis.log",
+        "negative_log": "selected-proof-receipts/reference/primary/negative.log",
+        "receipt": "selected-proof-receipts/reference/primary/compatibility.json",
+        "sha256": "5eddc8330ec0a9036778ee7970c0c989aaaca5fec8114a0dcc4f825db6e98589"
+      },
+      "construction": "draft-measured-candidates/reference/primary/construction.json",
+      "construction_sha256": "d4ce89945fbf9ab9bd7e06ac347be026fc09924b1637f8495bbbd9b0789b8b0b",
+      "delivery_acceptance": {
+        "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__reference",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/run_delivery_contract_fixture.py --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__reference",
+        "negative_command": ".venv-cpu/bin/python work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/run_delivery_contract_fixture.py --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__reference --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Independent physical review bindings or checks incomplete",
+        "negative_log": "selected-delivery-contracts/reference/negative.log",
+        "negative_log_sha256": "bb2782e675727187d6aab6cea9f197f824c10a6eb03d411fceb16f9b09a44b71",
+        "script": "run_delivery_contract_fixture.py",
+        "script_sha256": "8744e427838964f9d21137ca0aa77911d7198f956b57926b599effdda0b847a0",
+        "sets": [
+          "full-train"
+        ],
+        "test_exit_code": 0,
+        "test_log": "selected-delivery-contracts/reference/positive.log",
+        "test_log_sha256": "d20ef870c74a61d92b9e9bbe9862b0f1ff20a367c42fbe3e2c7d6635c289a6d9"
+      },
+      "fixture_recipe": "work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/selected-diagnostics/reference/primary-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "selected-measurement-contracts/reference.json",
+      "measurement_procedure": {
+        "entrypoint": "native/finalize.py",
+        "output_schema": "c183370-native-finalization-v1"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "selected-proof-receipts/reference/primary/negative.log",
+        "log_sha256": "b0baa93fc58e09adcca526c270e27a68c55585ca3e8a318666f99a892e9c02e7"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__reference --candidate primary --output ${OFFLINE_DIR} --python \"$PWD/.venv-cpu/bin/python\"",
+        "construction_sha256": "d4ce89945fbf9ab9bd7e06ac347be026fc09924b1637f8495bbbd9b0789b8b0b",
+        "exit_code": 0,
+        "log": "update130-selected-reference-primary-offline-v2.log",
+        "log_sha256": "57df07de6f6ee237edd20a00b298aedd089c354c5ce02f856dde582622710256"
+      },
+      "physical_preparation": {
+        "receipt": "selected-physical-preparation/reference/proof.json",
+        "sha256": "13f501cce81d41d56aec42dec82e6cf80708787d23c6f0bac771990f3474802e"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__reference --attempt ${ATTEMPT_DIR} --output ${PROCESSED_DIR} --library ${DECODER_LIBRARY} --validator ${VALIDATOR}",
+        "feedback_command": ".venv-cpu/bin/python -m json.tool ${PROCESSED_DIR}/v0001/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "update130-selected-reference-primary-saved.log",
+        "test_log_sha256": "bbdaddd0c1463dece3f9b7902df521b524af3ec02bde7e8b3ab348e89f5a7fd3"
+      }
+    },
+    {
+      "acquisition": {
+        "ego_body_footprint": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl ego_body_vertices_xyz_m joined by frame",
+          "method": "capture original Native eight-vertex ego body geometry per frame"
+        },
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl and four original camera streams",
+          "method": "capture original Native ego position, yaw and velocity at every 20 Hz frame"
+        },
+        "pavement_footprint_contact": {
+          "entrypoint": "native/finalize.py",
+          "evidence": "native-actors.jsonl and live-readback.json; independent source review establishes actual newly laid or repaired condition",
+          "method": "derive footprint-polygon contact from retained Native vertices and surveyed pavement polygon"
+        },
+        "warning_person_state": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl warning_person_actor_id, video_frames.jsonl and four original camera streams",
+          "method": "capture warning-person Native actor identity, pose and source camera frame"
+        }
+      },
+      "candidate_offline_status": "pending",
+      "candidate_risk": {
+        "reason": "Native body tracking and warning/pavement camera visibility remain unverified",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "lower requested controller speed from 4 to 3 m/s"
+          ],
+          "compatibility": {
+            "log": "selected-proof-receipts/contrast/fallback1/analysis.log",
+            "negative_log": "selected-proof-receipts/contrast/fallback1/negative.log",
+            "receipt": "selected-proof-receipts/contrast/fallback1/compatibility.json",
+            "sha256": "38786d866ee23e2601217c87f89f3803fffb4b1edbeae13cf9aab69043b7cbc5"
+          },
+          "construction": "draft-measured-candidates/contrast/fallback1/construction.json",
+          "construction_sha256": "55eb4c0ce8ea8edbe3f0d9672aab58c82c9928d95b736b9662e346e7e9354182",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__contrast --candidate fallback1 --output ${OFFLINE_DIR} --python \"$PWD/.venv-cpu/bin/python\"",
+            "construction_sha256": "55eb4c0ce8ea8edbe3f0d9672aab58c82c9928d95b736b9662e346e7e9354182",
+            "exit_code": 0,
+            "log": "update132-selected-contrast-fallback1-offline.log",
+            "log_sha256": "52907aaeea3cb482e2dbe126eb1ad073cddcecc7a11dc889e4d5948493726119"
+          },
+          "trigger": {
+            "failure_condition": "ego overshoots the surveyed route while slowing for the protected region",
+            "metric": "observed speed/route tracking at surveyed pavement",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "raise overview camera from 24 to 28 m and pitch from -55 to -62 degrees"
+          ],
+          "compatibility": {
+            "log": "selected-proof-receipts/contrast/fallback2/analysis.log",
+            "negative_log": "selected-proof-receipts/contrast/fallback2/negative.log",
+            "receipt": "selected-proof-receipts/contrast/fallback2/compatibility.json",
+            "sha256": "c1503cabc8eefbac23ddfe14e2e492583eb9c1b6a107dd4eb843c9949a6e4d0b"
+          },
+          "construction": "draft-measured-candidates/contrast/fallback2/construction.json",
+          "construction_sha256": "a4d86f161e370cea0aab4a87c8ce8a33f8b1fdecb5c11a7c9ee1cee2b0fcd377",
+          "id": "fallback2",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__contrast --candidate fallback2 --output ${OFFLINE_DIR} --python \"$PWD/.venv-cpu/bin/python\"",
+            "construction_sha256": "a4d86f161e370cea0aab4a87c8ce8a33f8b1fdecb5c11a7c9ee1cee2b0fcd377",
+            "exit_code": 0,
+            "log": "update132-selected-contrast-fallback2-offline.log",
+            "log_sha256": "9d1de432ab5d2256089f27a631b46888f72ce74e9c07c605e14c2311f27126f5"
+          },
+          "trigger": {
+            "failure_condition": "overview pixels omit the person or a protected pavement edge",
+            "metric": "visibility of warning person and complete surveyed pavement area",
+            "source": "overview.mkv"
+          }
+        },
+        {
+          "changed_knobs": [
+            "reduce waypoint reach from 1.5 to 1.0 m",
+            "increase steering response by reducing divisor from 40 to 32 degrees"
+          ],
+          "compatibility": {
+            "log": "selected-proof-receipts/contrast/fallback3/analysis.log",
+            "negative_log": "selected-proof-receipts/contrast/fallback3/negative.log",
+            "receipt": "selected-proof-receipts/contrast/fallback3/compatibility.json",
+            "sha256": "0a4bee4ae9e3fd2fa00ba87bbce61b19be9ca709e04ac0bef7c84620d86b4b6d"
+          },
+          "construction": "draft-measured-candidates/contrast/fallback3/construction.json",
+          "construction_sha256": "507ffd81c35300144776da96456a003260fb49b100db85a0f2107df481bc252b",
+          "id": "fallback3",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__contrast --candidate fallback3 --output ${OFFLINE_DIR} --python \"$PWD/.venv-cpu/bin/python\"",
+            "construction_sha256": "507ffd81c35300144776da96456a003260fb49b100db85a0f2107df481bc252b",
+            "exit_code": 0,
+            "log": "update132-selected-contrast-fallback3-offline.log",
+            "log_sha256": "e2d66cb39f23041f9c2a9468a8d09c5e32fe06329acfdfa850aad2f9f9c039a6"
+          },
+          "trigger": {
+            "failure_condition": "body footprint leaves the surveyed intended route corridor",
+            "metric": "measured lateral route error at pavement approach",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__contrast",
+      "compatibility": {
+        "log": "selected-proof-receipts/contrast/primary/analysis.log",
+        "negative_log": "selected-proof-receipts/contrast/primary/negative.log",
+        "receipt": "selected-proof-receipts/contrast/primary/compatibility.json",
+        "sha256": "e5d01106e9b535629ec9779b15b95aacee8cf204c60bc832ff15ff6fed0cb989"
+      },
+      "construction": "draft-measured-candidates/contrast/primary/construction.json",
+      "construction_sha256": "fe922f75d2d32a5330fe3ccbb28da6fd24a21f4dfd0c852847bcf8eee7cc6a7d",
+      "delivery_acceptance": {
+        "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__contrast",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/run_delivery_contract_fixture.py --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__contrast",
+        "negative_command": ".venv-cpu/bin/python work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/run_delivery_contract_fixture.py --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__contrast --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Independent physical review bindings or checks incomplete",
+        "negative_log": "selected-delivery-contracts/contrast/negative.log",
+        "negative_log_sha256": "bb2782e675727187d6aab6cea9f197f824c10a6eb03d411fceb16f9b09a44b71",
+        "script": "run_delivery_contract_fixture.py",
+        "script_sha256": "8744e427838964f9d21137ca0aa77911d7198f956b57926b599effdda0b847a0",
+        "sets": [
+          "full-train"
+        ],
+        "test_exit_code": 0,
+        "test_log": "selected-delivery-contracts/contrast/positive.log",
+        "test_log_sha256": "2da2e44286d9790e4a3282a49660cd139ccc74d0c6d8381a8075ba0ebf1ad0dd"
+      },
+      "fixture_recipe": "work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/selected-diagnostics/contrast/primary-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "selected-measurement-contracts/contrast.json",
+      "measurement_procedure": {
+        "entrypoint": "native/finalize.py",
+        "output_schema": "c183370-native-finalization-v1"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "selected-proof-receipts/contrast/primary/negative.log",
+        "log_sha256": "7e573afeb78d484c54efe313d2dd20812248e49fb18958d7d8384c1d163c0268"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__contrast --candidate primary --output ${OFFLINE_DIR} --python \"$PWD/.venv-cpu/bin/python\"",
+        "construction_sha256": "fe922f75d2d32a5330fe3ccbb28da6fd24a21f4dfd0c852847bcf8eee7cc6a7d",
+        "exit_code": 0,
+        "log": "update130-selected-contrast-primary-offline.log",
+        "log_sha256": "e15cb81766bf8d42da75c12a93935006dd38aa9c476c65dbba9b90ab9259085b"
+      },
+      "physical_preparation": {
+        "receipt": "selected-physical-preparation/contrast/proof.json",
+        "sha256": "b2a007ba34601ba2f8a4446b31089b6bce096eb9c404dc2c2e6a8b6c30ef6d8d"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__contrast --attempt ${ATTEMPT_DIR} --output ${PROCESSED_DIR} --library ${DECODER_LIBRARY} --validator ${VALIDATOR}",
+        "feedback_command": ".venv-cpu/bin/python -m json.tool ${PROCESSED_DIR}/v0001/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "update130-selected-contrast-primary-saved.log",
+        "test_log_sha256": "2103fea95ebfa766567d5635947ce37954ce58b0243d2fa3715c1148fd9a57e9"
+      }
+    },
+    {
+      "acquisition": {
+        "control_actor_state": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl, live-readback.json, video_frames.jsonl and four original camera streams; sign content and employee activity require independent review",
+          "method": "capture barrier, sign or operator Native actor identity, type, pose and source camera frame"
+        },
+        "ego_body_footprint": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl ego_body_vertices_xyz_m joined by frame",
+          "method": "capture original Native eight-vertex ego body geometry per frame"
+        },
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl and four original camera streams",
+          "method": "capture original Native ego position, yaw and velocity at every 20 Hz frame"
+        },
+        "pavement_footprint_contact": {
+          "entrypoint": "native/variant_finalize.py",
+          "evidence": "native-actors.jsonl and live-readback.json; independent source review establishes actual newly laid or repaired condition",
+          "method": "derive footprint-polygon contact from retained Native vertices and surveyed pavement polygon"
+        }
+      },
+      "candidate_offline_status": "pending",
+      "candidate_risk": {
+        "reason": "Barrier content, surface repair and Native body tracking remain unverified",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "lower requested controller speed from 4 to 3 m/s"
+          ],
+          "compatibility": {
+            "log": "selected-proof-receipts/barrier_crossing/fallback1/analysis.log",
+            "negative_log": "selected-proof-receipts/barrier_crossing/fallback1/negative.log",
+            "receipt": "selected-proof-receipts/barrier_crossing/fallback1/compatibility.json",
+            "sha256": "841adf33b2587527d1fe4bafa64372b71d2386332dab00505bc0d8e7122cc6b6"
+          },
+          "construction": "draft-variant-candidates/barrier/crossing/fallback1/construction.json",
+          "construction_sha256": "956c56a3dccef573007427ea5f9c15726c6fac8740126924b64ffa896c38ff1c",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__barrier_crossing --candidate fallback1 --output ${OFFLINE_DIR} --python \"$PWD/.venv-cpu/bin/python\"",
+            "construction_sha256": "956c56a3dccef573007427ea5f9c15726c6fac8740126924b64ffa896c38ff1c",
+            "exit_code": 0,
+            "log": "update132-selected-barrier_crossing-fallback1-offline.log",
+            "log_sha256": "e8713e48c520bf57ee8755a6d90fd5102537780efcb785a963f8c05bc4041e52"
+          },
+          "trigger": {
+            "failure_condition": "ego overshoots the requested crossing or avoidance route",
+            "metric": "sampled body/route tracking near surveyed pavement",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "raise overview camera from 24 to 28 m and pitch from -55 to -62 degrees"
+          ],
+          "compatibility": {
+            "log": "selected-proof-receipts/barrier_crossing/fallback2/analysis.log",
+            "negative_log": "selected-proof-receipts/barrier_crossing/fallback2/negative.log",
+            "receipt": "selected-proof-receipts/barrier_crossing/fallback2/compatibility.json",
+            "sha256": "6eb9036a81091880a54f0723388ea4212dc442bc6815594ead8a252a7931a886"
+          },
+          "construction": "draft-variant-candidates/barrier/crossing/fallback2/construction.json",
+          "construction_sha256": "71ed5396f7dee4a1178d50deff679b9a08c043101831677211baf7cf0a77d91d",
+          "id": "fallback2",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__barrier_crossing --candidate fallback2 --output ${OFFLINE_DIR} --python \"$PWD/.venv-cpu/bin/python\"",
+            "construction_sha256": "71ed5396f7dee4a1178d50deff679b9a08c043101831677211baf7cf0a77d91d",
+            "exit_code": 0,
+            "log": "update132-selected-barrier_crossing-fallback2-offline.log",
+            "log_sha256": "d18c6e4d5a6761ff224c1432ff8785a2ed7774266deebd13027e082f3bcfa817"
+          },
+          "trigger": {
+            "failure_condition": "overview pixels omit the barrier or a pavement edge",
+            "metric": "visibility of barrier actor and full surveyed pavement region",
+            "source": "overview.mkv"
+          }
+        },
+        {
+          "changed_knobs": [
+            "reduce waypoint reach from 1.5 to 1.0 m",
+            "increase steering response by reducing divisor from 40 to 32 degrees"
+          ],
+          "compatibility": {
+            "log": "selected-proof-receipts/barrier_crossing/fallback3/analysis.log",
+            "negative_log": "selected-proof-receipts/barrier_crossing/fallback3/negative.log",
+            "receipt": "selected-proof-receipts/barrier_crossing/fallback3/compatibility.json",
+            "sha256": "b52a5c240e5001a8af3d5939e2f61dbcf5be5c0f457a6d9206b5b421286b7734"
+          },
+          "construction": "draft-variant-candidates/barrier/crossing/fallback3/construction.json",
+          "construction_sha256": "02972ef949faed510505bc267e81eaffdc0c1053010eb51b0fa023d33711a02c",
+          "id": "fallback3",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__barrier_crossing --candidate fallback3 --output ${OFFLINE_DIR} --python \"$PWD/.venv-cpu/bin/python\"",
+            "construction_sha256": "02972ef949faed510505bc267e81eaffdc0c1053010eb51b0fa023d33711a02c",
+            "exit_code": 0,
+            "log": "update132-selected-barrier_crossing-fallback3-offline.log",
+            "log_sha256": "c8c75f775b5b3f63caaa6cf6f993b62bd1afc1da37447d11859f2c287e6deaa4"
+          },
+          "trigger": {
+            "failure_condition": "body footprint leaves the intended route corridor",
+            "metric": "sampled lateral route error on barrier approach",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__barrier_crossing",
+      "compatibility": {
+        "log": "selected-proof-receipts/barrier_crossing/primary/analysis.log",
+        "negative_log": "selected-proof-receipts/barrier_crossing/primary/negative.log",
+        "receipt": "selected-proof-receipts/barrier_crossing/primary/compatibility.json",
+        "sha256": "63fcc47e07675ec48fb5df4b355c1ee5204ec1b30a98d4b775de3791eb42beb5"
+      },
+      "construction": "draft-variant-candidates/barrier/crossing/primary/construction.json",
+      "construction_sha256": "54cba3172a047439f4440a8d3389c66f2943067942fcaf154799766a810325bd",
+      "delivery_acceptance": {
+        "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__barrier_crossing",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/run_delivery_contract_fixture.py --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__barrier_crossing",
+        "negative_command": ".venv-cpu/bin/python work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/run_delivery_contract_fixture.py --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__barrier_crossing --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Independent physical review bindings or checks incomplete",
+        "negative_log": "selected-delivery-contracts/barrier_crossing/negative.log",
+        "negative_log_sha256": "bb2782e675727187d6aab6cea9f197f824c10a6eb03d411fceb16f9b09a44b71",
+        "script": "run_delivery_contract_fixture.py",
+        "script_sha256": "8744e427838964f9d21137ca0aa77911d7198f956b57926b599effdda0b847a0",
+        "sets": [
+          "full-train"
+        ],
+        "test_exit_code": 0,
+        "test_log": "selected-delivery-contracts/barrier_crossing/positive.log",
+        "test_log_sha256": "af5d838155f3aff70955abf76236892fc6bdc51f67d41a695ac67e112fba7ecb"
+      },
+      "finalizer_status": "cpu_unit_tested_not_saved_proven",
+      "fixture_recipe": "work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/variant-diagnostics/barrier/crossing/primary-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "variant-measurement-contracts/barrier-crossing.json",
+      "measurement_procedure": {
+        "entrypoint": "native/variant_finalize.py",
+        "output_schema": "c183370-variant-diagnostic-finalization-v1"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "selected-proof-receipts/barrier_crossing/primary/negative.log",
+        "log_sha256": "51be7f0a3288ee1b5e2e6577e2e6698f1d5e4714371429bc41a693d122f7152c"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__barrier_crossing --candidate primary --output ${OFFLINE_DIR} --python \"$PWD/.venv-cpu/bin/python\"",
+        "construction_sha256": "54cba3172a047439f4440a8d3389c66f2943067942fcaf154799766a810325bd",
+        "exit_code": 0,
+        "log": "update131-selected-barrier_crossing-primary-offline.log",
+        "log_sha256": "c6976297df6be3e8d9eee7deaf6c9e89cb8509c0a70e5d741c3315ef819c360e"
+      },
+      "physical_preparation": {
+        "receipt": "selected-physical-preparation/barrier_crossing/proof.json",
+        "sha256": "82c5a57a90c928bda05e57c9afd16987f31bc7d630cd4a69bfe73e8541a451ab"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__barrier_crossing --attempt ${ATTEMPT_DIR} --output ${PROCESSED_DIR} --library ${DECODER_LIBRARY} --validator ${VALIDATOR}",
+        "feedback_command": ".venv-cpu/bin/python -m json.tool ${PROCESSED_DIR}/v0001/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "update131-selected-barrier_crossing-primary-saved.log",
+        "test_log_sha256": "2ea5f8f702bd3e89dbd6f73c74be986ce4e5d0bd7e40db9f20a7410136cb37b0"
+      }
+    },
+    {
+      "acquisition": {
+        "control_actor_state": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl, live-readback.json, video_frames.jsonl and four original camera streams; sign content and employee activity require independent review",
+          "method": "capture barrier, sign or operator Native actor identity, type, pose and source camera frame"
+        },
+        "ego_body_footprint": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl ego_body_vertices_xyz_m joined by frame",
+          "method": "capture original Native eight-vertex ego body geometry per frame"
+        },
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl and four original camera streams",
+          "method": "capture original Native ego position, yaw and velocity at every 20 Hz frame"
+        },
+        "pavement_footprint_contact": {
+          "entrypoint": "native/variant_finalize.py",
+          "evidence": "native-actors.jsonl and live-readback.json; independent source review establishes actual newly laid or repaired condition",
+          "method": "derive footprint-polygon contact from retained Native vertices and surveyed pavement polygon"
+        }
+      },
+      "candidate_offline_status": "pending",
+      "candidate_risk": {
+        "reason": "Barrier content, surface repair and Native body tracking remain unverified",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "lower requested controller speed from 4 to 3 m/s"
+          ],
+          "compatibility": {
+            "log": "selected-proof-receipts/barrier_avoidance/fallback1/analysis.log",
+            "negative_log": "selected-proof-receipts/barrier_avoidance/fallback1/negative.log",
+            "receipt": "selected-proof-receipts/barrier_avoidance/fallback1/compatibility.json",
+            "sha256": "fe9337e0a71c9586fd6b7630981ac8cda56803410db5a7d32e69eb0b439bdfe6"
+          },
+          "construction": "draft-variant-candidates/barrier/avoidance/fallback1/construction.json",
+          "construction_sha256": "07280adb0932218f753f8158bd3bf4c0ec96a8b33a33d8f7070648daccb604d5",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__barrier_avoidance --candidate fallback1 --output ${OFFLINE_DIR} --python \"$PWD/.venv-cpu/bin/python\"",
+            "construction_sha256": "07280adb0932218f753f8158bd3bf4c0ec96a8b33a33d8f7070648daccb604d5",
+            "exit_code": 0,
+            "log": "update132-selected-barrier_avoidance-fallback1-offline.log",
+            "log_sha256": "54f6186b1233cd97412bf5f12dd83a389ee7b0ac76e587eacb964bda55ed625e"
+          },
+          "trigger": {
+            "failure_condition": "ego overshoots the requested crossing or avoidance route",
+            "metric": "sampled body/route tracking near surveyed pavement",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "raise overview camera from 24 to 28 m and pitch from -55 to -62 degrees"
+          ],
+          "compatibility": {
+            "log": "selected-proof-receipts/barrier_avoidance/fallback2/analysis.log",
+            "negative_log": "selected-proof-receipts/barrier_avoidance/fallback2/negative.log",
+            "receipt": "selected-proof-receipts/barrier_avoidance/fallback2/compatibility.json",
+            "sha256": "bb826ee19a35ee53ab7dece65229a26c81aa52c5f6ff9c8918171f7986430b87"
+          },
+          "construction": "draft-variant-candidates/barrier/avoidance/fallback2/construction.json",
+          "construction_sha256": "934d020720e320c2795d544dbedd8c2718a1460073ee603613610984f7fe4191",
+          "id": "fallback2",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__barrier_avoidance --candidate fallback2 --output ${OFFLINE_DIR} --python \"$PWD/.venv-cpu/bin/python\"",
+            "construction_sha256": "934d020720e320c2795d544dbedd8c2718a1460073ee603613610984f7fe4191",
+            "exit_code": 0,
+            "log": "update132-selected-barrier_avoidance-fallback2-offline.log",
+            "log_sha256": "6f428db283501bc1cc34d05e8a27ec1b42f9078b4294a029918633141255d34e"
+          },
+          "trigger": {
+            "failure_condition": "overview pixels omit the barrier or a pavement edge",
+            "metric": "visibility of barrier actor and full surveyed pavement region",
+            "source": "overview.mkv"
+          }
+        },
+        {
+          "changed_knobs": [
+            "reduce waypoint reach from 1.5 to 1.0 m",
+            "increase steering response by reducing divisor from 40 to 32 degrees"
+          ],
+          "compatibility": {
+            "log": "selected-proof-receipts/barrier_avoidance/fallback3/analysis.log",
+            "negative_log": "selected-proof-receipts/barrier_avoidance/fallback3/negative.log",
+            "receipt": "selected-proof-receipts/barrier_avoidance/fallback3/compatibility.json",
+            "sha256": "d52f5656890db3dab2645f140770722c8664d67003c8aaa4ef31c53143b001de"
+          },
+          "construction": "draft-variant-candidates/barrier/avoidance/fallback3/construction.json",
+          "construction_sha256": "23226d26623ad812ded726f415aea5ea080e62c9bbc8778cc50120cd0f6b47cd",
+          "id": "fallback3",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__barrier_avoidance --candidate fallback3 --output ${OFFLINE_DIR} --python \"$PWD/.venv-cpu/bin/python\"",
+            "construction_sha256": "23226d26623ad812ded726f415aea5ea080e62c9bbc8778cc50120cd0f6b47cd",
+            "exit_code": 0,
+            "log": "update132-selected-barrier_avoidance-fallback3-offline.log",
+            "log_sha256": "6020f7f3a577780f1c3f1cd2be1f6730ee65fa5c14da2954482972810dcc0f39"
+          },
+          "trigger": {
+            "failure_condition": "body footprint leaves the intended route corridor",
+            "metric": "sampled lateral route error on barrier approach",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__barrier_avoidance",
+      "compatibility": {
+        "log": "selected-proof-receipts/barrier_avoidance/primary/analysis.log",
+        "negative_log": "selected-proof-receipts/barrier_avoidance/primary/negative.log",
+        "receipt": "selected-proof-receipts/barrier_avoidance/primary/compatibility.json",
+        "sha256": "be29f5d4be38534840904033f2b30980503a47320eeb005fd96f93d768b48086"
+      },
+      "construction": "draft-variant-candidates/barrier/avoidance/primary/construction.json",
+      "construction_sha256": "0f4976fe74792f506a9baba71d76c62449e99c5bb4e55ba02e451fa621fc5384",
+      "delivery_acceptance": {
+        "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__barrier_avoidance",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/run_delivery_contract_fixture.py --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__barrier_avoidance",
+        "negative_command": ".venv-cpu/bin/python work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/run_delivery_contract_fixture.py --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__barrier_avoidance --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Independent physical review bindings or checks incomplete",
+        "negative_log": "selected-delivery-contracts/barrier_avoidance/negative.log",
+        "negative_log_sha256": "bb2782e675727187d6aab6cea9f197f824c10a6eb03d411fceb16f9b09a44b71",
+        "script": "run_delivery_contract_fixture.py",
+        "script_sha256": "8744e427838964f9d21137ca0aa77911d7198f956b57926b599effdda0b847a0",
+        "sets": [
+          "full-train"
+        ],
+        "test_exit_code": 0,
+        "test_log": "selected-delivery-contracts/barrier_avoidance/positive.log",
+        "test_log_sha256": "66fa624ca67a3d4dee4ee75f39cfc9199ca6aa015ea46a5408e9b676ca1af760"
+      },
+      "finalizer_status": "cpu_unit_tested_not_saved_proven",
+      "fixture_recipe": "work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/variant-diagnostics/barrier/avoidance/primary-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "variant-measurement-contracts/barrier-avoidance.json",
+      "measurement_procedure": {
+        "entrypoint": "native/variant_finalize.py",
+        "output_schema": "c183370-variant-diagnostic-finalization-v1"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "selected-proof-receipts/barrier_avoidance/primary/negative.log",
+        "log_sha256": "34cae8f5470ed061a898a59d8631ad6aff45454548f13bf1e1e021e1672b6d01"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__barrier_avoidance --candidate primary --output ${OFFLINE_DIR} --python \"$PWD/.venv-cpu/bin/python\"",
+        "construction_sha256": "0f4976fe74792f506a9baba71d76c62449e99c5bb4e55ba02e451fa621fc5384",
+        "exit_code": 0,
+        "log": "update131-selected-barrier_avoidance-primary-offline.log",
+        "log_sha256": "2f8c9fa82ebfb723f2326649487c16081885f6695b248900c90b4bf9bfeefaaa"
+      },
+      "physical_preparation": {
+        "receipt": "selected-physical-preparation/barrier_avoidance/proof.json",
+        "sha256": "184f817dda70f933b8945cee8d27f9da3025710763164a4b07b43faafe624c5f"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__barrier_avoidance --attempt ${ATTEMPT_DIR} --output ${PROCESSED_DIR} --library ${DECODER_LIBRARY} --validator ${VALIDATOR}",
+        "feedback_command": ".venv-cpu/bin/python -m json.tool ${PROCESSED_DIR}/v0001/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "update131-selected-barrier_avoidance-primary-saved.log",
+        "test_log_sha256": "15d98031a424f7d4e90b912e9d1b6b92ccaddd40f24b7f09b20b01ec39906f63"
+      }
+    },
+    {
+      "acquisition": {
+        "control_actor_state": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl, live-readback.json, video_frames.jsonl and four original camera streams; sign content and employee activity require independent review",
+          "method": "capture barrier, sign or operator Native actor identity, type, pose and source camera frame"
+        },
+        "ego_body_footprint": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl ego_body_vertices_xyz_m joined by frame",
+          "method": "capture original Native eight-vertex ego body geometry per frame"
+        },
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl and four original camera streams",
+          "method": "capture original Native ego position, yaw and velocity at every 20 Hz frame"
+        },
+        "pavement_footprint_contact": {
+          "entrypoint": "native/variant_finalize.py",
+          "evidence": "native-actors.jsonl and live-readback.json; independent source review establishes actual newly laid or repaired condition",
+          "method": "derive footprint-polygon contact from retained Native vertices and surveyed pavement polygon"
+        }
+      },
+      "candidate_offline_status": "pending",
+      "candidate_risk": {
+        "reason": "Sign-face content, surface repair and Native body tracking remain unverified",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "lower requested controller speed from 4 to 3 m/s"
+          ],
+          "compatibility": {
+            "log": "selected-proof-receipts/warning_sign_crossing/fallback1/analysis.log",
+            "negative_log": "selected-proof-receipts/warning_sign_crossing/fallback1/negative.log",
+            "receipt": "selected-proof-receipts/warning_sign_crossing/fallback1/compatibility.json",
+            "sha256": "181fff162669468727ea4379c0e8c977bb1249eb2b548c3ed87f9ac204867bc6"
+          },
+          "construction": "draft-variant-candidates/warning_sign/crossing/fallback1/construction.json",
+          "construction_sha256": "ea22c9103c178ca0bcd5d5ef4e7d2750247997ccc2db55455ad97e9020d9b3e3",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__warning_sign_crossing --candidate fallback1 --output ${OFFLINE_DIR} --python \"$PWD/.venv-cpu/bin/python\"",
+            "construction_sha256": "ea22c9103c178ca0bcd5d5ef4e7d2750247997ccc2db55455ad97e9020d9b3e3",
+            "exit_code": 0,
+            "log": "update132-selected-warning_sign_crossing-fallback1-offline.log",
+            "log_sha256": "77735ff5c9f02164cc951f6b9c1ea258ae58281ba2b7d7cf042c021e520eeb29"
+          },
+          "trigger": {
+            "failure_condition": "ego overshoots the requested crossing or avoidance route",
+            "metric": "sampled body/route tracking near surveyed pavement",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "raise overview camera from 24 to 28 m and pitch from -55 to -62 degrees"
+          ],
+          "compatibility": {
+            "log": "selected-proof-receipts/warning_sign_crossing/fallback2/analysis.log",
+            "negative_log": "selected-proof-receipts/warning_sign_crossing/fallback2/negative.log",
+            "receipt": "selected-proof-receipts/warning_sign_crossing/fallback2/compatibility.json",
+            "sha256": "77ed928a22a6d4bf4ee0a479c7c85b7184705cfab8c6981d1eebe4212ca4da3d"
+          },
+          "construction": "draft-variant-candidates/warning_sign/crossing/fallback2/construction.json",
+          "construction_sha256": "32789a7ad6ca6c7abf34d99936d68ae0ea76a9be3ba294cfa688757e259f6efb",
+          "id": "fallback2",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__warning_sign_crossing --candidate fallback2 --output ${OFFLINE_DIR} --python \"$PWD/.venv-cpu/bin/python\"",
+            "construction_sha256": "32789a7ad6ca6c7abf34d99936d68ae0ea76a9be3ba294cfa688757e259f6efb",
+            "exit_code": 0,
+            "log": "update132-selected-warning_sign_crossing-fallback2-offline.log",
+            "log_sha256": "6e47b8a5b2eb07c79e1dc0ae6d772c6bfb4fa236b8589ef1063723f60d9149e0"
+          },
+          "trigger": {
+            "failure_condition": "overview pixels omit the sign or a pavement edge",
+            "metric": "visibility of sign actor and full surveyed pavement region",
+            "source": "overview.mkv"
+          }
+        },
+        {
+          "changed_knobs": [
+            "reduce waypoint reach from 1.5 to 1.0 m",
+            "increase steering response by reducing divisor from 40 to 32 degrees"
+          ],
+          "compatibility": {
+            "log": "selected-proof-receipts/warning_sign_crossing/fallback3/analysis.log",
+            "negative_log": "selected-proof-receipts/warning_sign_crossing/fallback3/negative.log",
+            "receipt": "selected-proof-receipts/warning_sign_crossing/fallback3/compatibility.json",
+            "sha256": "4d6699a9cda29a575cc7b9b5d4f759a0d1bfabd8cfa682cd9ba785dfb1239b09"
+          },
+          "construction": "draft-variant-candidates/warning_sign/crossing/fallback3/construction.json",
+          "construction_sha256": "96aebaabf6547e6234c0ebe199456605a517f48dc2942b0046a3dc46524eb3c2",
+          "id": "fallback3",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__warning_sign_crossing --candidate fallback3 --output ${OFFLINE_DIR} --python \"$PWD/.venv-cpu/bin/python\"",
+            "construction_sha256": "96aebaabf6547e6234c0ebe199456605a517f48dc2942b0046a3dc46524eb3c2",
+            "exit_code": 0,
+            "log": "update132-selected-warning_sign_crossing-fallback3-offline.log",
+            "log_sha256": "b40db573989d7e009eff67e4201ddb8a82abdf8277196e18b82ade8c8c37ddea"
+          },
+          "trigger": {
+            "failure_condition": "body footprint leaves the intended route corridor",
+            "metric": "sampled lateral route error on sign approach",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__warning_sign_crossing",
+      "compatibility": {
+        "log": "selected-proof-receipts/warning_sign_crossing/primary/analysis.log",
+        "negative_log": "selected-proof-receipts/warning_sign_crossing/primary/negative.log",
+        "receipt": "selected-proof-receipts/warning_sign_crossing/primary/compatibility.json",
+        "sha256": "c4dfd62bcbb45eb2de3a21ccb062c8dc2bd6ff5e1f03fc9a293e2ef8435ac649"
+      },
+      "construction": "draft-variant-candidates/warning_sign/crossing/primary/construction.json",
+      "construction_sha256": "1e9cba188a4f3d2dd3ef6fd6edcc7f973dd073705d29ae4a3a7707412e94de46",
+      "delivery_acceptance": {
+        "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__warning_sign_crossing",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/run_delivery_contract_fixture.py --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__warning_sign_crossing",
+        "negative_command": ".venv-cpu/bin/python work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/run_delivery_contract_fixture.py --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__warning_sign_crossing --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Independent physical review bindings or checks incomplete",
+        "negative_log": "selected-delivery-contracts/warning_sign_crossing/negative.log",
+        "negative_log_sha256": "bb2782e675727187d6aab6cea9f197f824c10a6eb03d411fceb16f9b09a44b71",
+        "script": "run_delivery_contract_fixture.py",
+        "script_sha256": "8744e427838964f9d21137ca0aa77911d7198f956b57926b599effdda0b847a0",
+        "sets": [
+          "full-train"
+        ],
+        "test_exit_code": 0,
+        "test_log": "selected-delivery-contracts/warning_sign_crossing/positive.log",
+        "test_log_sha256": "24d8915e9a4b788cefdc3e5f165e635328ab98c5d62aa15dd6574c9363ac5abe"
+      },
+      "finalizer_status": "cpu_unit_tested_not_saved_proven",
+      "fixture_recipe": "work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/variant-diagnostics/warning_sign/crossing/primary-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "variant-measurement-contracts/warning_sign-crossing.json",
+      "measurement_procedure": {
+        "entrypoint": "native/variant_finalize.py",
+        "output_schema": "c183370-variant-diagnostic-finalization-v1"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "selected-proof-receipts/warning_sign_crossing/primary/negative.log",
+        "log_sha256": "a1344cf227b9ace7db86e0ee876b35af517c9d226b72777e3dfe04d5d79983f0"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__warning_sign_crossing --candidate primary --output ${OFFLINE_DIR} --python \"$PWD/.venv-cpu/bin/python\"",
+        "construction_sha256": "1e9cba188a4f3d2dd3ef6fd6edcc7f973dd073705d29ae4a3a7707412e94de46",
+        "exit_code": 0,
+        "log": "update131-selected-warning_sign_crossing-primary-offline.log",
+        "log_sha256": "aa8a77ada6e98c892c94605086d233afaa2fe04d0948bca351a7eea0216569d0"
+      },
+      "physical_preparation": {
+        "receipt": "selected-physical-preparation/warning_sign_crossing/proof.json",
+        "sha256": "b5632c8b1712d49e4382cd9436c2f74226daad83d433d06deb4b1f793d5127f2"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__warning_sign_crossing --attempt ${ATTEMPT_DIR} --output ${PROCESSED_DIR} --library ${DECODER_LIBRARY} --validator ${VALIDATOR}",
+        "feedback_command": ".venv-cpu/bin/python -m json.tool ${PROCESSED_DIR}/v0001/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "update131-selected-warning_sign_crossing-primary-saved.log",
+        "test_log_sha256": "b02ba41942b9521cb235f4963e3a54e077b65081bcd54cab88fb7bab11664fd9"
+      }
+    },
+    {
+      "acquisition": {
+        "control_actor_state": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl, live-readback.json, video_frames.jsonl and four original camera streams; sign content and employee activity require independent review",
+          "method": "capture barrier, sign or operator Native actor identity, type, pose and source camera frame"
+        },
+        "ego_body_footprint": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl ego_body_vertices_xyz_m joined by frame",
+          "method": "capture original Native eight-vertex ego body geometry per frame"
+        },
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl and four original camera streams",
+          "method": "capture original Native ego position, yaw and velocity at every 20 Hz frame"
+        },
+        "pavement_footprint_contact": {
+          "entrypoint": "native/variant_finalize.py",
+          "evidence": "native-actors.jsonl and live-readback.json; independent source review establishes actual newly laid or repaired condition",
+          "method": "derive footprint-polygon contact from retained Native vertices and surveyed pavement polygon"
+        }
+      },
+      "candidate_offline_status": "pending",
+      "candidate_risk": {
+        "reason": "Sign-face content, surface repair and Native body tracking remain unverified",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "lower requested controller speed from 4 to 3 m/s"
+          ],
+          "compatibility": {
+            "log": "selected-proof-receipts/warning_sign_avoidance/fallback1/analysis.log",
+            "negative_log": "selected-proof-receipts/warning_sign_avoidance/fallback1/negative.log",
+            "receipt": "selected-proof-receipts/warning_sign_avoidance/fallback1/compatibility.json",
+            "sha256": "1075f0cd5511aeab489d45ffffc8f03a976117c9faa941e8e467c6987d6b08c2"
+          },
+          "construction": "draft-variant-candidates/warning_sign/avoidance/fallback1/construction.json",
+          "construction_sha256": "c729f39a0591cb3494620f744e09941f417aa97ddcbde1df315e1c8faed18b32",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__warning_sign_avoidance --candidate fallback1 --output ${OFFLINE_DIR} --python \"$PWD/.venv-cpu/bin/python\"",
+            "construction_sha256": "c729f39a0591cb3494620f744e09941f417aa97ddcbde1df315e1c8faed18b32",
+            "exit_code": 0,
+            "log": "update132-selected-warning_sign_avoidance-fallback1-offline.log",
+            "log_sha256": "d1478f3a6b92b3b87c8afb398a18351eaddef2870c883aa89b5a664773b08c63"
+          },
+          "trigger": {
+            "failure_condition": "ego overshoots the requested crossing or avoidance route",
+            "metric": "sampled body/route tracking near surveyed pavement",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "raise overview camera from 24 to 28 m and pitch from -55 to -62 degrees"
+          ],
+          "compatibility": {
+            "log": "selected-proof-receipts/warning_sign_avoidance/fallback2/analysis.log",
+            "negative_log": "selected-proof-receipts/warning_sign_avoidance/fallback2/negative.log",
+            "receipt": "selected-proof-receipts/warning_sign_avoidance/fallback2/compatibility.json",
+            "sha256": "e5521abb8162aaeca7c39ea367f0642ec489088e95a1324f873fc5f3c3830dd9"
+          },
+          "construction": "draft-variant-candidates/warning_sign/avoidance/fallback2/construction.json",
+          "construction_sha256": "1d0e29f66fa6b677f970181662e3c0c966f69c885bd35435c37cfd5d33db17ec",
+          "id": "fallback2",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__warning_sign_avoidance --candidate fallback2 --output ${OFFLINE_DIR} --python \"$PWD/.venv-cpu/bin/python\"",
+            "construction_sha256": "1d0e29f66fa6b677f970181662e3c0c966f69c885bd35435c37cfd5d33db17ec",
+            "exit_code": 0,
+            "log": "update132-selected-warning_sign_avoidance-fallback2-offline.log",
+            "log_sha256": "fc3734cf20f78581172227a0a7f754d925335696aca79d5146738d753393379c"
+          },
+          "trigger": {
+            "failure_condition": "overview pixels omit the sign or a pavement edge",
+            "metric": "visibility of sign actor and full surveyed pavement region",
+            "source": "overview.mkv"
+          }
+        },
+        {
+          "changed_knobs": [
+            "reduce waypoint reach from 1.5 to 1.0 m",
+            "increase steering response by reducing divisor from 40 to 32 degrees"
+          ],
+          "compatibility": {
+            "log": "selected-proof-receipts/warning_sign_avoidance/fallback3/analysis.log",
+            "negative_log": "selected-proof-receipts/warning_sign_avoidance/fallback3/negative.log",
+            "receipt": "selected-proof-receipts/warning_sign_avoidance/fallback3/compatibility.json",
+            "sha256": "e9bd521fd21d4c823f1b100521fa60e1e49aed8dc84b61b1d5241a0878d9ded1"
+          },
+          "construction": "draft-variant-candidates/warning_sign/avoidance/fallback3/construction.json",
+          "construction_sha256": "110092ad48a1329aa1f4a10527e3a4ef851d382592e133db012e2728760d649a",
+          "id": "fallback3",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__warning_sign_avoidance --candidate fallback3 --output ${OFFLINE_DIR} --python \"$PWD/.venv-cpu/bin/python\"",
+            "construction_sha256": "110092ad48a1329aa1f4a10527e3a4ef851d382592e133db012e2728760d649a",
+            "exit_code": 0,
+            "log": "update132-selected-warning_sign_avoidance-fallback3-offline.log",
+            "log_sha256": "171cb7c4fd14a6a4535e77b303612457848ffafd747268599f8ac0ef3a2221aa"
+          },
+          "trigger": {
+            "failure_condition": "body footprint leaves the intended route corridor",
+            "metric": "sampled lateral route error on sign approach",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__warning_sign_avoidance",
+      "compatibility": {
+        "log": "selected-proof-receipts/warning_sign_avoidance/primary/analysis.log",
+        "negative_log": "selected-proof-receipts/warning_sign_avoidance/primary/negative.log",
+        "receipt": "selected-proof-receipts/warning_sign_avoidance/primary/compatibility.json",
+        "sha256": "d7fe85566d47af71f00b9273131ee4b48a1e89dc55c3aa01aeba059d4de12d55"
+      },
+      "construction": "draft-variant-candidates/warning_sign/avoidance/primary/construction.json",
+      "construction_sha256": "6523728edca14cb24a7b0494e214013596551fdc1b2727110ef16156b00d8d19",
+      "delivery_acceptance": {
+        "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__warning_sign_avoidance",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/run_delivery_contract_fixture.py --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__warning_sign_avoidance",
+        "negative_command": ".venv-cpu/bin/python work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/run_delivery_contract_fixture.py --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__warning_sign_avoidance --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Independent physical review bindings or checks incomplete",
+        "negative_log": "selected-delivery-contracts/warning_sign_avoidance/negative.log",
+        "negative_log_sha256": "bb2782e675727187d6aab6cea9f197f824c10a6eb03d411fceb16f9b09a44b71",
+        "script": "run_delivery_contract_fixture.py",
+        "script_sha256": "8744e427838964f9d21137ca0aa77911d7198f956b57926b599effdda0b847a0",
+        "sets": [
+          "full-train"
+        ],
+        "test_exit_code": 0,
+        "test_log": "selected-delivery-contracts/warning_sign_avoidance/positive.log",
+        "test_log_sha256": "afb772df0a2ad761e41f314b4be2d6ce56b669031c555600f715b569a5323203"
+      },
+      "finalizer_status": "cpu_unit_tested_not_saved_proven",
+      "fixture_recipe": "work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/variant-diagnostics/warning_sign/avoidance/primary-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "variant-measurement-contracts/warning_sign-avoidance.json",
+      "measurement_procedure": {
+        "entrypoint": "native/variant_finalize.py",
+        "output_schema": "c183370-variant-diagnostic-finalization-v1"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "selected-proof-receipts/warning_sign_avoidance/primary/negative.log",
+        "log_sha256": "78d6ac5494e38f7bbf0512aab7258d38a25422fd852ba3ee0832253a3e2eabdd"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__warning_sign_avoidance --candidate primary --output ${OFFLINE_DIR} --python \"$PWD/.venv-cpu/bin/python\"",
+        "construction_sha256": "6523728edca14cb24a7b0494e214013596551fdc1b2727110ef16156b00d8d19",
+        "exit_code": 0,
+        "log": "update131-selected-warning_sign_avoidance-primary-offline.log",
+        "log_sha256": "ce58e2232806fe571abe28099e05e04a430d9684a0e1f1638ab3878eef9916c9"
+      },
+      "physical_preparation": {
+        "receipt": "selected-physical-preparation/warning_sign_avoidance/proof.json",
+        "sha256": "65b86430f34e99ca1e2ad42d7ec51abf1177a14b62988ed0bf887e3d9c7b7bfa"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__warning_sign_avoidance --attempt ${ATTEMPT_DIR} --output ${PROCESSED_DIR} --library ${DECODER_LIBRARY} --validator ${VALIDATOR}",
+        "feedback_command": ".venv-cpu/bin/python -m json.tool ${PROCESSED_DIR}/v0001/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "update131-selected-warning_sign_avoidance-primary-saved.log",
+        "test_log_sha256": "62902bcb2f1d7ef272a2c548fbc458efa441955e987435a9c1aa47c6656791dd"
+      }
+    },
+    {
+      "acquisition": {
+        "control_actor_state": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl, live-readback.json, video_frames.jsonl and four original camera streams; sign content and employee activity require independent review",
+          "method": "capture barrier, sign or operator Native actor identity, type, pose and source camera frame"
+        },
+        "ego_body_footprint": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl ego_body_vertices_xyz_m joined by frame",
+          "method": "capture original Native eight-vertex ego body geometry per frame"
+        },
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl and four original camera streams",
+          "method": "capture original Native ego position, yaw and velocity at every 20 Hz frame"
+        },
+        "pavement_footprint_contact": {
+          "entrypoint": "native/variant_finalize.py",
+          "evidence": "native-actors.jsonl and live-readback.json; independent source review establishes actual newly laid or repaired condition",
+          "method": "derive footprint-polygon contact from retained Native vertices and surveyed pavement polygon"
+        }
+      },
+      "candidate_offline_status": "pending",
+      "candidate_risk": {
+        "reason": "Sign-face content, surface repair and Native body tracking remain unverified",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "lower requested controller speed from 4 to 3 m/s"
+          ],
+          "compatibility": {
+            "log": "selected-proof-receipts/highway_closed_sign_crossing/fallback1/analysis.log",
+            "negative_log": "selected-proof-receipts/highway_closed_sign_crossing/fallback1/negative.log",
+            "receipt": "selected-proof-receipts/highway_closed_sign_crossing/fallback1/compatibility.json",
+            "sha256": "3067ee2cf2259c39b8b7c0b9839b443d4627ebaab5fdfa07854bfe64721cf354"
+          },
+          "construction": "draft-variant-candidates/highway_closed_sign/crossing/fallback1/construction.json",
+          "construction_sha256": "48a85e3f688ca06b9088fc9050fc1bb484b4c0a27fbc493783a3d666180170ce",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__highway_closed_sign_crossing --candidate fallback1 --output ${OFFLINE_DIR} --python \"$PWD/.venv-cpu/bin/python\"",
+            "construction_sha256": "48a85e3f688ca06b9088fc9050fc1bb484b4c0a27fbc493783a3d666180170ce",
+            "exit_code": 0,
+            "log": "update132-selected-highway_closed_sign_crossing-fallback1-offline.log",
+            "log_sha256": "85282ac998d1eb75c9719315eca415190dd61c789898aa7479c4737de467960e"
+          },
+          "trigger": {
+            "failure_condition": "ego overshoots the requested crossing or avoidance route",
+            "metric": "sampled body/route tracking near surveyed pavement",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "raise overview camera from 24 to 28 m and pitch from -55 to -62 degrees"
+          ],
+          "compatibility": {
+            "log": "selected-proof-receipts/highway_closed_sign_crossing/fallback2/analysis.log",
+            "negative_log": "selected-proof-receipts/highway_closed_sign_crossing/fallback2/negative.log",
+            "receipt": "selected-proof-receipts/highway_closed_sign_crossing/fallback2/compatibility.json",
+            "sha256": "071b7890f655c1fe56fe83bedec2c0f46007c003316fa31519ea47b16f52a049"
+          },
+          "construction": "draft-variant-candidates/highway_closed_sign/crossing/fallback2/construction.json",
+          "construction_sha256": "65916a92733bc197c4a8b86b88be4bb8ee6320d4d5c24a71ac2e3e3a7583de53",
+          "id": "fallback2",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__highway_closed_sign_crossing --candidate fallback2 --output ${OFFLINE_DIR} --python \"$PWD/.venv-cpu/bin/python\"",
+            "construction_sha256": "65916a92733bc197c4a8b86b88be4bb8ee6320d4d5c24a71ac2e3e3a7583de53",
+            "exit_code": 0,
+            "log": "update132-selected-highway_closed_sign_crossing-fallback2-offline.log",
+            "log_sha256": "c34591c491f9886daf470ce2620b77255533835b2263dba31e0ce8163c57f126"
+          },
+          "trigger": {
+            "failure_condition": "overview pixels omit the sign or a pavement edge",
+            "metric": "visibility of sign actor and full surveyed pavement region",
+            "source": "overview.mkv"
+          }
+        },
+        {
+          "changed_knobs": [
+            "reduce waypoint reach from 1.5 to 1.0 m",
+            "increase steering response by reducing divisor from 40 to 32 degrees"
+          ],
+          "compatibility": {
+            "log": "selected-proof-receipts/highway_closed_sign_crossing/fallback3/analysis.log",
+            "negative_log": "selected-proof-receipts/highway_closed_sign_crossing/fallback3/negative.log",
+            "receipt": "selected-proof-receipts/highway_closed_sign_crossing/fallback3/compatibility.json",
+            "sha256": "6f9029283d3db6c85bcb25e1e71c591359abd1866e85a13a4d5c49df5a5cb23d"
+          },
+          "construction": "draft-variant-candidates/highway_closed_sign/crossing/fallback3/construction.json",
+          "construction_sha256": "d27d3ff5a1306d5b07787fa9a05f2fa410f7a18439fc3ba18db5c2e58bdfd624",
+          "id": "fallback3",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__highway_closed_sign_crossing --candidate fallback3 --output ${OFFLINE_DIR} --python \"$PWD/.venv-cpu/bin/python\"",
+            "construction_sha256": "d27d3ff5a1306d5b07787fa9a05f2fa410f7a18439fc3ba18db5c2e58bdfd624",
+            "exit_code": 0,
+            "log": "update132-selected-highway_closed_sign_crossing-fallback3-offline.log",
+            "log_sha256": "64d15fc09d26502095723d24d94894a89a2fa0ca93e1b5a044ee29979bf58c84"
+          },
+          "trigger": {
+            "failure_condition": "body footprint leaves the intended route corridor",
+            "metric": "sampled lateral route error on sign approach",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__highway_closed_sign_crossing",
+      "compatibility": {
+        "log": "selected-proof-receipts/highway_closed_sign_crossing/primary/analysis.log",
+        "negative_log": "selected-proof-receipts/highway_closed_sign_crossing/primary/negative.log",
+        "receipt": "selected-proof-receipts/highway_closed_sign_crossing/primary/compatibility.json",
+        "sha256": "c7fff2ef624c1ccb4a0f6bd6c9b006613eb0587f432e8cb0d6f51c4b9146b8c7"
+      },
+      "construction": "draft-variant-candidates/highway_closed_sign/crossing/primary/construction.json",
+      "construction_sha256": "3b68ecc917d244728469430ac5e1edf37ad9f9e1799d611ef606867a7547aa4e",
+      "delivery_acceptance": {
+        "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__highway_closed_sign_crossing",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/run_delivery_contract_fixture.py --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__highway_closed_sign_crossing",
+        "negative_command": ".venv-cpu/bin/python work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/run_delivery_contract_fixture.py --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__highway_closed_sign_crossing --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Independent physical review bindings or checks incomplete",
+        "negative_log": "selected-delivery-contracts/highway_closed_sign_crossing/negative.log",
+        "negative_log_sha256": "bb2782e675727187d6aab6cea9f197f824c10a6eb03d411fceb16f9b09a44b71",
+        "script": "run_delivery_contract_fixture.py",
+        "script_sha256": "8744e427838964f9d21137ca0aa77911d7198f956b57926b599effdda0b847a0",
+        "sets": [
+          "full-train"
+        ],
+        "test_exit_code": 0,
+        "test_log": "selected-delivery-contracts/highway_closed_sign_crossing/positive.log",
+        "test_log_sha256": "a99e4c336cba0d84691a6c1f8f9bece80da944c362cec95a1f9c97e6d7516003"
+      },
+      "finalizer_status": "cpu_unit_tested_not_saved_proven",
+      "fixture_recipe": "work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/variant-diagnostics/highway_closed_sign/crossing/primary-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "variant-measurement-contracts/highway_closed_sign-crossing.json",
+      "measurement_procedure": {
+        "entrypoint": "native/variant_finalize.py",
+        "output_schema": "c183370-variant-diagnostic-finalization-v1"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "selected-proof-receipts/highway_closed_sign_crossing/primary/negative.log",
+        "log_sha256": "20b8ff9f2201cb4d46561ba5a48deb0c99ef9badcb6e6fdd0f4491693ceb6a23"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__highway_closed_sign_crossing --candidate primary --output ${OFFLINE_DIR} --python \"$PWD/.venv-cpu/bin/python\"",
+        "construction_sha256": "3b68ecc917d244728469430ac5e1edf37ad9f9e1799d611ef606867a7547aa4e",
+        "exit_code": 0,
+        "log": "update131-selected-highway_closed_sign_crossing-primary-offline.log",
+        "log_sha256": "713aed9ab767bce7d5937327ce84f7d7e9db9ffacfcccebb60dd376f3adaddbc"
+      },
+      "physical_preparation": {
+        "receipt": "selected-physical-preparation/highway_closed_sign_crossing/proof.json",
+        "sha256": "b09ddff599e9fc42d6898af3d3e5f140ff2b2978e7a862b10014d2f16657dfbd"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__highway_closed_sign_crossing --attempt ${ATTEMPT_DIR} --output ${PROCESSED_DIR} --library ${DECODER_LIBRARY} --validator ${VALIDATOR}",
+        "feedback_command": ".venv-cpu/bin/python -m json.tool ${PROCESSED_DIR}/v0001/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "update131-selected-highway_closed_sign_crossing-primary-saved.log",
+        "test_log_sha256": "0dfa676c95076bf26ba2693d42c5a4b8c6892c3784580a7705a4fb9ed257b310"
+      }
+    },
+    {
+      "acquisition": {
+        "control_actor_state": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl, live-readback.json, video_frames.jsonl and four original camera streams; sign content and employee activity require independent review",
+          "method": "capture barrier, sign or operator Native actor identity, type, pose and source camera frame"
+        },
+        "ego_body_footprint": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl ego_body_vertices_xyz_m joined by frame",
+          "method": "capture original Native eight-vertex ego body geometry per frame"
+        },
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl and four original camera streams",
+          "method": "capture original Native ego position, yaw and velocity at every 20 Hz frame"
+        },
+        "pavement_footprint_contact": {
+          "entrypoint": "native/variant_finalize.py",
+          "evidence": "native-actors.jsonl and live-readback.json; independent source review establishes actual newly laid or repaired condition",
+          "method": "derive footprint-polygon contact from retained Native vertices and surveyed pavement polygon"
+        }
+      },
+      "candidate_offline_status": "pending",
+      "candidate_risk": {
+        "reason": "Sign-face content, surface repair and Native body tracking remain unverified",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "lower requested controller speed from 4 to 3 m/s"
+          ],
+          "compatibility": {
+            "log": "selected-proof-receipts/highway_closed_sign_avoidance/fallback1/analysis.log",
+            "negative_log": "selected-proof-receipts/highway_closed_sign_avoidance/fallback1/negative.log",
+            "receipt": "selected-proof-receipts/highway_closed_sign_avoidance/fallback1/compatibility.json",
+            "sha256": "2be6d34a2457362e7cb32d1b6bfdf265608d85f532e2e80a6d864ef4bc49c416"
+          },
+          "construction": "draft-variant-candidates/highway_closed_sign/avoidance/fallback1/construction.json",
+          "construction_sha256": "1a75237a13611c94d01cacc964b674090acb202aa07be222dc467938817946d7",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__highway_closed_sign_avoidance --candidate fallback1 --output ${OFFLINE_DIR} --python \"$PWD/.venv-cpu/bin/python\"",
+            "construction_sha256": "1a75237a13611c94d01cacc964b674090acb202aa07be222dc467938817946d7",
+            "exit_code": 0,
+            "log": "update132-selected-highway_closed_sign_avoidance-fallback1-offline.log",
+            "log_sha256": "46a10b86f6850a8a35eb9b1c8a09a26aac9f9769b7836010049ca5e1cd135e38"
+          },
+          "trigger": {
+            "failure_condition": "ego overshoots the requested crossing or avoidance route",
+            "metric": "sampled body/route tracking near surveyed pavement",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "raise overview camera from 24 to 28 m and pitch from -55 to -62 degrees"
+          ],
+          "compatibility": {
+            "log": "selected-proof-receipts/highway_closed_sign_avoidance/fallback2/analysis.log",
+            "negative_log": "selected-proof-receipts/highway_closed_sign_avoidance/fallback2/negative.log",
+            "receipt": "selected-proof-receipts/highway_closed_sign_avoidance/fallback2/compatibility.json",
+            "sha256": "0fc914ac01635fe9a6b4c1141a823a3b8ef606701e06759bd8b7791744c8528b"
+          },
+          "construction": "draft-variant-candidates/highway_closed_sign/avoidance/fallback2/construction.json",
+          "construction_sha256": "dae0ee038b40086462a93251ca6261baa5345ff18ce88e08727ac2a227668d74",
+          "id": "fallback2",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__highway_closed_sign_avoidance --candidate fallback2 --output ${OFFLINE_DIR} --python \"$PWD/.venv-cpu/bin/python\"",
+            "construction_sha256": "dae0ee038b40086462a93251ca6261baa5345ff18ce88e08727ac2a227668d74",
+            "exit_code": 0,
+            "log": "update132-selected-highway_closed_sign_avoidance-fallback2-offline.log",
+            "log_sha256": "419a278a520dab4a5b8da331ed1a95fe8b96545f966cd29e6f40ed70bc501161"
+          },
+          "trigger": {
+            "failure_condition": "overview pixels omit the sign or a pavement edge",
+            "metric": "visibility of sign actor and full surveyed pavement region",
+            "source": "overview.mkv"
+          }
+        },
+        {
+          "changed_knobs": [
+            "reduce waypoint reach from 1.5 to 1.0 m",
+            "increase steering response by reducing divisor from 40 to 32 degrees"
+          ],
+          "compatibility": {
+            "log": "selected-proof-receipts/highway_closed_sign_avoidance/fallback3/analysis.log",
+            "negative_log": "selected-proof-receipts/highway_closed_sign_avoidance/fallback3/negative.log",
+            "receipt": "selected-proof-receipts/highway_closed_sign_avoidance/fallback3/compatibility.json",
+            "sha256": "6e3861e3ea65111939ab624c9a242f6c54374f3272dbc8d84822a8a582849b08"
+          },
+          "construction": "draft-variant-candidates/highway_closed_sign/avoidance/fallback3/construction.json",
+          "construction_sha256": "9ca856c42046239f6fd5fc17b428623604a3cf52768e6027e8d2fe7e7220db0c",
+          "id": "fallback3",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__highway_closed_sign_avoidance --candidate fallback3 --output ${OFFLINE_DIR} --python \"$PWD/.venv-cpu/bin/python\"",
+            "construction_sha256": "9ca856c42046239f6fd5fc17b428623604a3cf52768e6027e8d2fe7e7220db0c",
+            "exit_code": 0,
+            "log": "update132-selected-highway_closed_sign_avoidance-fallback3-offline.log",
+            "log_sha256": "1a0784f2d6e77e09bf377d27d19914825f247596190b4b20ce40c725fa56d392"
+          },
+          "trigger": {
+            "failure_condition": "body footprint leaves the intended route corridor",
+            "metric": "sampled lateral route error on sign approach",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__highway_closed_sign_avoidance",
+      "compatibility": null,
+      "construction": "draft-integrated-selected/highway_closed_sign_avoidance/primary/construction.json",
+      "construction_sha256": "83db1031a2ecd55d9b625f59b09fa4c8699c83e14f4345e19684d3dcb8153d80",
+      "delivery_acceptance": {
+        "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__highway_closed_sign_avoidance",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/run_delivery_contract_fixture.py --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__highway_closed_sign_avoidance",
+        "negative_command": ".venv-cpu/bin/python work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/run_delivery_contract_fixture.py --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__highway_closed_sign_avoidance --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Independent physical review bindings or checks incomplete",
+        "negative_log": "selected-delivery-contracts/highway_closed_sign_avoidance/negative.log",
+        "negative_log_sha256": "bb2782e675727187d6aab6cea9f197f824c10a6eb03d411fceb16f9b09a44b71",
+        "script": "run_delivery_contract_fixture.py",
+        "script_sha256": "8744e427838964f9d21137ca0aa77911d7198f956b57926b599effdda0b847a0",
+        "sets": [
+          "full-train"
+        ],
+        "test_exit_code": 0,
+        "test_log": "selected-delivery-contracts/highway_closed_sign_avoidance/positive.log",
+        "test_log_sha256": "dc869fed93690c1f8f14b276784013d7189f0d3a90540852741ae3235fe79369"
+      },
+      "finalizer_status": "cpu_unit_tested_not_saved_proven",
+      "fixture_recipe": "work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/variant-diagnostics/highway_closed_sign/avoidance/primary-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "variant-measurement-contracts/highway_closed_sign-avoidance.json",
+      "measurement_procedure": {
+        "entrypoint": "native/variant_finalize.py",
+        "output_schema": "c183370-variant-diagnostic-finalization-v1"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "selected-proof-receipts/highway_closed_sign_avoidance/primary/negative.log",
+        "log_sha256": "7c41b8080b6674c85c611eadb5c1f6364055940c45c931391c133d8e53f68456"
+      },
+      "offline": null,
+      "physical_preparation": {
+        "receipt": "selected-physical-preparation/highway_closed_sign_avoidance/proof.json",
+        "sha256": "2a502424e09bbb17678bd19fa60fcf587ac7f9f32d186ac07bba5a0b41ea6472"
+      },
+      "post_capture": null
+    },
+    {
+      "acquisition": {
+        "control_actor_state": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl, live-readback.json, video_frames.jsonl and four original camera streams; sign content and employee activity require independent review",
+          "method": "capture barrier, sign or operator Native actor identity, type, pose and source camera frame"
+        },
+        "ego_body_footprint": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl ego_body_vertices_xyz_m joined by frame",
+          "method": "capture original Native eight-vertex ego body geometry per frame"
+        },
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl and four original camera streams",
+          "method": "capture original Native ego position, yaw and velocity at every 20 Hz frame"
+        },
+        "pavement_footprint_contact": {
+          "entrypoint": "native/variant_finalize.py",
+          "evidence": "native-actors.jsonl and live-readback.json; independent source review establishes actual newly laid or repaired condition",
+          "method": "derive footprint-polygon contact from retained Native vertices and surveyed pavement polygon"
+        }
+      },
+      "candidate_offline_status": "pending",
+      "candidate_risk": {
+        "reason": "Employee activity, surface repair and Native body tracking remain unverified",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "lower requested controller speed from 4 to 3 m/s"
+          ],
+          "compatibility": {
+            "log": "selected-proof-receipts/employee_exception_employee_crossing/fallback1/analysis.log",
+            "negative_log": "selected-proof-receipts/employee_exception_employee_crossing/fallback1/negative.log",
+            "receipt": "selected-proof-receipts/employee_exception_employee_crossing/fallback1/compatibility.json",
+            "sha256": "b71435739f38f0e06abc384f065494eecfb057e7fadb3e714ea4e8c5945536ee"
+          },
+          "construction": "draft-variant-candidates/employee_exception/employee_crossing/fallback1/construction.json",
+          "construction_sha256": "7442773c3eb76a2926b017dfe2694612ad217818f7f984aa317425671d6574bb",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__employee_exception_employee_crossing --candidate fallback1 --output ${OFFLINE_DIR} --python \"$PWD/.venv-cpu/bin/python\"",
+            "construction_sha256": "7442773c3eb76a2926b017dfe2694612ad217818f7f984aa317425671d6574bb",
+            "exit_code": 0,
+            "log": "update132-selected-employee_exception_employee_crossing-fallback1-offline.log",
+            "log_sha256": "2eb4732aa9a7cc5e57a3869f4dd9afb11ffa5ee21dc73bcfd5812048e5b4be9c"
+          },
+          "trigger": {
+            "failure_condition": "ego overshoots the requested crossing or avoidance route",
+            "metric": "sampled body/route tracking near surveyed pavement",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "raise overview camera from 24 to 28 m and pitch from -55 to -62 degrees"
+          ],
+          "compatibility": {
+            "log": "selected-proof-receipts/employee_exception_employee_crossing/fallback2/analysis.log",
+            "negative_log": "selected-proof-receipts/employee_exception_employee_crossing/fallback2/negative.log",
+            "receipt": "selected-proof-receipts/employee_exception_employee_crossing/fallback2/compatibility.json",
+            "sha256": "48e4c2e6bd992c487faccaf675b9b16898746a7a59ad4174d9ef0ea14c6026a6"
+          },
+          "construction": "draft-variant-candidates/employee_exception/employee_crossing/fallback2/construction.json",
+          "construction_sha256": "d0a170dce28bb8f6e62451749d31faab7be71796da73f6f71a08403bde831b60",
+          "id": "fallback2",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__employee_exception_employee_crossing --candidate fallback2 --output ${OFFLINE_DIR} --python \"$PWD/.venv-cpu/bin/python\"",
+            "construction_sha256": "d0a170dce28bb8f6e62451749d31faab7be71796da73f6f71a08403bde831b60",
+            "exit_code": 0,
+            "log": "update132-selected-employee_exception_employee_crossing-fallback2-offline.log",
+            "log_sha256": "f4da02853c8a35b8e941dbf22a3c552096ff2337ac44423a7ee066516f8c9641"
+          },
+          "trigger": {
+            "failure_condition": "overview pixels omit the barrier or a pavement edge",
+            "metric": "visibility of barrier actor and full surveyed pavement region",
+            "source": "overview.mkv"
+          }
+        },
+        {
+          "changed_knobs": [
+            "reduce waypoint reach from 1.5 to 1.0 m",
+            "increase steering response by reducing divisor from 40 to 32 degrees"
+          ],
+          "compatibility": {
+            "log": "selected-proof-receipts/employee_exception_employee_crossing/fallback3/analysis.log",
+            "negative_log": "selected-proof-receipts/employee_exception_employee_crossing/fallback3/negative.log",
+            "receipt": "selected-proof-receipts/employee_exception_employee_crossing/fallback3/compatibility.json",
+            "sha256": "6685741c1af3bce6e967ece773900c37fa7f6b7ecf3e64415a76e9296bb13e27"
+          },
+          "construction": "draft-variant-candidates/employee_exception/employee_crossing/fallback3/construction.json",
+          "construction_sha256": "9753c703bc074ba29d67088b9403aec47e55c5dad7ec9df3dcdc69d67ab430d3",
+          "id": "fallback3",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__employee_exception_employee_crossing --candidate fallback3 --output ${OFFLINE_DIR} --python \"$PWD/.venv-cpu/bin/python\"",
+            "construction_sha256": "9753c703bc074ba29d67088b9403aec47e55c5dad7ec9df3dcdc69d67ab430d3",
+            "exit_code": 0,
+            "log": "update132-selected-employee_exception_employee_crossing-fallback3-offline.log",
+            "log_sha256": "911f813e1ca255b318d69380163d19e9b7879ebb247dd4e99e9b16f2ba394713"
+          },
+          "trigger": {
+            "failure_condition": "body footprint leaves the intended route corridor",
+            "metric": "sampled lateral route error on barrier approach",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__employee_exception_employee_crossing",
+      "compatibility": {
+        "log": "selected-proof-receipts/employee_exception_employee_crossing/primary/analysis.log",
+        "negative_log": "selected-proof-receipts/employee_exception_employee_crossing/primary/negative.log",
+        "receipt": "selected-proof-receipts/employee_exception_employee_crossing/primary/compatibility.json",
+        "sha256": "a810769599b69ddcca0a421607088e0025089467a4b213d7698c459c0d7f3cea"
+      },
+      "construction": "draft-variant-candidates/employee_exception/employee_crossing/primary/construction.json",
+      "construction_sha256": "ae4ce917789a2dd4245e1fdd4a58f5e73d23f9b1d9ed3c847c52e26e1c80013c",
+      "delivery_acceptance": {
+        "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__employee_exception_employee_crossing",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/run_delivery_contract_fixture.py --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__employee_exception_employee_crossing",
+        "negative_command": ".venv-cpu/bin/python work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/run_delivery_contract_fixture.py --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__employee_exception_employee_crossing --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Independent physical review bindings or checks incomplete",
+        "negative_log": "selected-delivery-contracts/employee_exception_employee_crossing/negative.log",
+        "negative_log_sha256": "bb2782e675727187d6aab6cea9f197f824c10a6eb03d411fceb16f9b09a44b71",
+        "script": "run_delivery_contract_fixture.py",
+        "script_sha256": "8744e427838964f9d21137ca0aa77911d7198f956b57926b599effdda0b847a0",
+        "sets": [
+          "full-train"
+        ],
+        "test_exit_code": 0,
+        "test_log": "selected-delivery-contracts/employee_exception_employee_crossing/positive.log",
+        "test_log_sha256": "118ff89245b4b3834e4ea0aafe721c077a5bfc7ae071baa11a7eff01d195bce3"
+      },
+      "finalizer_status": "cpu_unit_tested_not_saved_proven",
+      "fixture_recipe": "work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/variant-diagnostics/employee_exception/employee_crossing/primary-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "variant-measurement-contracts/employee_exception-employee_crossing.json",
+      "measurement_procedure": {
+        "entrypoint": "native/variant_finalize.py",
+        "output_schema": "c183370-variant-diagnostic-finalization-v1"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "selected-proof-receipts/employee_exception_employee_crossing/primary/negative.log",
+        "log_sha256": "cf7836ac3d2660f661d12690412da57903c754ace669f5564f71a355ec751322"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__employee_exception_employee_crossing --candidate primary --output ${OFFLINE_DIR} --python \"$PWD/.venv-cpu/bin/python\"",
+        "construction_sha256": "ae4ce917789a2dd4245e1fdd4a58f5e73d23f9b1d9ed3c847c52e26e1c80013c",
+        "exit_code": 0,
+        "log": "update131-selected-employee_exception_employee_crossing-primary-offline.log",
+        "log_sha256": "caf905412c391d04f87a4abc74fddd6abb211f8691f3ddcfbd9b1c65aa8a906c"
+      },
+      "physical_preparation": {
+        "receipt": "selected-physical-preparation/employee_exception_employee_crossing/proof.json",
+        "sha256": "97138aad168a918aa07a1ceaa13108788598a69a13daa3053460c11163e9103e"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__employee_exception_employee_crossing --attempt ${ATTEMPT_DIR} --output ${PROCESSED_DIR} --library ${DECODER_LIBRARY} --validator ${VALIDATOR}",
+        "feedback_command": ".venv-cpu/bin/python -m json.tool ${PROCESSED_DIR}/v0001/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "update131-selected-employee_exception_employee_crossing-primary-saved.log",
+        "test_log_sha256": "c759c46856c4d46e3bc659473974a08fcc858616d6d7a46d9441097b050fd379"
+      }
+    },
+    {
+      "acquisition": {
+        "control_actor_state": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl, live-readback.json, video_frames.jsonl and four original camera streams; sign content and employee activity require independent review",
+          "method": "capture barrier, sign or operator Native actor identity, type, pose and source camera frame"
+        },
+        "ego_body_footprint": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl ego_body_vertices_xyz_m joined by frame",
+          "method": "capture original Native eight-vertex ego body geometry per frame"
+        },
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl and four original camera streams",
+          "method": "capture original Native ego position, yaw and velocity at every 20 Hz frame"
+        },
+        "pavement_footprint_contact": {
+          "entrypoint": "native/variant_finalize.py",
+          "evidence": "native-actors.jsonl and live-readback.json; independent source review establishes actual newly laid or repaired condition",
+          "method": "derive footprint-polygon contact from retained Native vertices and surveyed pavement polygon"
+        }
+      },
+      "candidate_offline_status": "pending",
+      "candidate_risk": {
+        "reason": "Employee activity, surface repair and Native body tracking remain unverified",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "lower requested controller speed from 4 to 3 m/s"
+          ],
+          "compatibility": {
+            "log": "selected-proof-receipts/employee_exception_nonemployee_crossing/fallback1/analysis.log",
+            "negative_log": "selected-proof-receipts/employee_exception_nonemployee_crossing/fallback1/negative.log",
+            "receipt": "selected-proof-receipts/employee_exception_nonemployee_crossing/fallback1/compatibility.json",
+            "sha256": "6b569a0b77bec5ea1e7dfdd95095742ac57f2f8565829166b6c52481ae601240"
+          },
+          "construction": "draft-variant-candidates/employee_exception/nonemployee_crossing/fallback1/construction.json",
+          "construction_sha256": "53fe38f33eeea11790adb9200ecce27004042949601bccff449ecee923f22d56",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__employee_exception_nonemployee_crossing --candidate fallback1 --output ${OFFLINE_DIR} --python \"$PWD/.venv-cpu/bin/python\"",
+            "construction_sha256": "53fe38f33eeea11790adb9200ecce27004042949601bccff449ecee923f22d56",
+            "exit_code": 0,
+            "log": "update132-selected-employee_exception_nonemployee_crossing-fallback1-offline.log",
+            "log_sha256": "c8a40cdb64c710b151d4f847f3967277a1c82bb55149fd8dce0f2b06b1730703"
+          },
+          "trigger": {
+            "failure_condition": "ego overshoots the requested crossing or avoidance route",
+            "metric": "sampled body/route tracking near surveyed pavement",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "raise overview camera from 24 to 28 m and pitch from -55 to -62 degrees"
+          ],
+          "compatibility": {
+            "log": "selected-proof-receipts/employee_exception_nonemployee_crossing/fallback2/analysis.log",
+            "negative_log": "selected-proof-receipts/employee_exception_nonemployee_crossing/fallback2/negative.log",
+            "receipt": "selected-proof-receipts/employee_exception_nonemployee_crossing/fallback2/compatibility.json",
+            "sha256": "7c126eb6b0141df38da1d2ac818e4448476aa60b2d6b1a2b9d66769715bdc985"
+          },
+          "construction": "draft-variant-candidates/employee_exception/nonemployee_crossing/fallback2/construction.json",
+          "construction_sha256": "578e61918cf68bdaf7e3aaad1e3d39feb476ba8c5f3393a5e49e00d1359f6218",
+          "id": "fallback2",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__employee_exception_nonemployee_crossing --candidate fallback2 --output ${OFFLINE_DIR} --python \"$PWD/.venv-cpu/bin/python\"",
+            "construction_sha256": "578e61918cf68bdaf7e3aaad1e3d39feb476ba8c5f3393a5e49e00d1359f6218",
+            "exit_code": 0,
+            "log": "update132-selected-employee_exception_nonemployee_crossing-fallback2-offline.log",
+            "log_sha256": "2725ce2998e64c8c4b9fe7a26a4e67ab76d5e8967ba1334ce36291fcc6b4e6bc"
+          },
+          "trigger": {
+            "failure_condition": "overview pixels omit the barrier or a pavement edge",
+            "metric": "visibility of barrier actor and full surveyed pavement region",
+            "source": "overview.mkv"
+          }
+        },
+        {
+          "changed_knobs": [
+            "reduce waypoint reach from 1.5 to 1.0 m",
+            "increase steering response by reducing divisor from 40 to 32 degrees"
+          ],
+          "compatibility": {
+            "log": "selected-proof-receipts/employee_exception_nonemployee_crossing/fallback3/analysis.log",
+            "negative_log": "selected-proof-receipts/employee_exception_nonemployee_crossing/fallback3/negative.log",
+            "receipt": "selected-proof-receipts/employee_exception_nonemployee_crossing/fallback3/compatibility.json",
+            "sha256": "40a618afb3b43e8b05565488955f4458481a1f2d99e6f679fe179f061f00aa18"
+          },
+          "construction": "draft-variant-candidates/employee_exception/nonemployee_crossing/fallback3/construction.json",
+          "construction_sha256": "cc46d5668e0ef57b7352f7b607af17ae23cecf95f594a32f041da9c6838704e0",
+          "id": "fallback3",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__employee_exception_nonemployee_crossing --candidate fallback3 --output ${OFFLINE_DIR} --python \"$PWD/.venv-cpu/bin/python\"",
+            "construction_sha256": "cc46d5668e0ef57b7352f7b607af17ae23cecf95f594a32f041da9c6838704e0",
+            "exit_code": 0,
+            "log": "update132-selected-employee_exception_nonemployee_crossing-fallback3-offline.log",
+            "log_sha256": "b7ee0d793078d97344b0c7fe38005e7332a3df1ad18f5ce7efddbf47e044b8b7"
+          },
+          "trigger": {
+            "failure_condition": "body footprint leaves the intended route corridor",
+            "metric": "sampled lateral route error on barrier approach",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__employee_exception_nonemployee_crossing",
+      "compatibility": {
+        "log": "selected-proof-receipts/employee_exception_nonemployee_crossing/primary/analysis.log",
+        "negative_log": "selected-proof-receipts/employee_exception_nonemployee_crossing/primary/negative.log",
+        "receipt": "selected-proof-receipts/employee_exception_nonemployee_crossing/primary/compatibility.json",
+        "sha256": "3689954909196e7556e1f9a295e3b996026bfb4cc074d1927a3cef16949dd402"
+      },
+      "construction": "draft-variant-candidates/employee_exception/nonemployee_crossing/primary/construction.json",
+      "construction_sha256": "ffb56b5036f3a68a2a6dd5d2758e7b5757610c7a499ac5f9ba745004c160a272",
+      "delivery_acceptance": {
+        "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__employee_exception_nonemployee_crossing",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/run_delivery_contract_fixture.py --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__employee_exception_nonemployee_crossing",
+        "negative_command": ".venv-cpu/bin/python work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/run_delivery_contract_fixture.py --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__employee_exception_nonemployee_crossing --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Independent physical review bindings or checks incomplete",
+        "negative_log": "selected-delivery-contracts/employee_exception_nonemployee_crossing/negative.log",
+        "negative_log_sha256": "bb2782e675727187d6aab6cea9f197f824c10a6eb03d411fceb16f9b09a44b71",
+        "script": "run_delivery_contract_fixture.py",
+        "script_sha256": "8744e427838964f9d21137ca0aa77911d7198f956b57926b599effdda0b847a0",
+        "sets": [
+          "full-train"
+        ],
+        "test_exit_code": 0,
+        "test_log": "selected-delivery-contracts/employee_exception_nonemployee_crossing/positive.log",
+        "test_log_sha256": "5e70906325d61d1abf38e31aa992ab65653d101331966c3f56ee81ee0deb5883"
+      },
+      "finalizer_status": "cpu_unit_tested_not_saved_proven",
+      "fixture_recipe": "work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/variant-diagnostics/employee_exception/nonemployee_crossing/primary-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "variant-measurement-contracts/employee_exception-nonemployee_crossing.json",
+      "measurement_procedure": {
+        "entrypoint": "native/variant_finalize.py",
+        "output_schema": "c183370-variant-diagnostic-finalization-v1"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "selected-proof-receipts/employee_exception_nonemployee_crossing/primary/negative.log",
+        "log_sha256": "d602e495e2ab2b963ad026e5e06d2011213bd59291d1b5a7862e1f2e21fb0176"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__employee_exception_nonemployee_crossing --candidate primary --output ${OFFLINE_DIR} --python \"$PWD/.venv-cpu/bin/python\"",
+        "construction_sha256": "ffb56b5036f3a68a2a6dd5d2758e7b5757610c7a499ac5f9ba745004c160a272",
+        "exit_code": 0,
+        "log": "update131-selected-employee_exception_nonemployee_crossing-primary-offline.log",
+        "log_sha256": "7fdb655a758b6fd7869ca02110f0186d482896ed8a646657b696a509af3ed059"
+      },
+      "physical_preparation": {
+        "receipt": "selected-physical-preparation/employee_exception_nonemployee_crossing/proof.json",
+        "sha256": "10cc36d7e48d80eb7a7ea454901a791a25861c0c775369976068e1051a0ffde7"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__employee_exception_nonemployee_crossing --attempt ${ATTEMPT_DIR} --output ${PROCESSED_DIR} --library ${DECODER_LIBRARY} --validator ${VALIDATOR}",
+        "feedback_command": ".venv-cpu/bin/python -m json.tool ${PROCESSED_DIR}/v0001/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "update131-selected-employee_exception_nonemployee_crossing-primary-saved.log",
+        "test_log_sha256": "d09f1278c3a7e21a51b4e4799e47b1342dc416b7cb08f27276a8ee70158aabdb"
+      }
+    },
+    {
+      "acquisition": {
+        "ego_body_footprint": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl ego_body_vertices_xyz_m joined by frame",
+          "method": "capture original Native eight-vertex ego body geometry per frame"
+        },
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl and four original camera streams",
+          "method": "capture original Native ego position, yaw and velocity at every 20 Hz frame"
+        },
+        "pavement_footprint_contact": {
+          "entrypoint": "native/newly_laid_finalize.py",
+          "evidence": "native-actors.jsonl and live-readback.json; independent source review establishes actual newly laid or repaired condition",
+          "method": "derive footprint-polygon contact from retained Native vertices and surveyed pavement polygon"
+        },
+        "warning_person_state": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl warning_person_actor_id, video_frames.jsonl and four original camera streams",
+          "method": "capture warning-person Native actor identity, pose and source camera frame"
+        }
+      },
+      "candidate_offline_status": "diagnostic_passed_final_manifest_recheck_pending",
+      "candidate_risk": {
+        "reason": "Native body tracking and original warning/surface pixels remain unverified",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "lower requested controller speed from 4 to 3 m/s"
+          ],
+          "compatibility": {
+            "log": "selected-proof-receipts/newly_laid_crossing/fallback1/analysis.log",
+            "negative_log": "selected-proof-receipts/newly_laid_crossing/fallback1/negative.log",
+            "receipt": "selected-proof-receipts/newly_laid_crossing/fallback1/compatibility.json",
+            "sha256": "f817314748d8a91edd7242ecf31dffc2a8c257853cf8502795b5ce16d86ef9d8"
+          },
+          "construction": "draft-newly-laid-finalized-candidates/newly_laid_crossing/fallback1/construction.json",
+          "construction_sha256": "e93580258eff6dc1b7aeb160b4868ec56fef5f2b863fed52614e2066d622cd1f",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__newly_laid_crossing --candidate fallback1 --output ${OFFLINE_DIR} --python \"$PWD/.venv-cpu/bin/python\"",
+            "construction_sha256": "e93580258eff6dc1b7aeb160b4868ec56fef5f2b863fed52614e2066d622cd1f",
+            "exit_code": 0,
+            "log": "update141-newly_laid_crossing-fallback1-offline.log",
+            "log_sha256": "aa24a8337d258c438c7c43aff56df6c5400697fbda1909569c7757b1da77465c"
+          },
+          "trigger": {
+            "failure_condition": "ego overshoots the surveyed crossing or avoidance route",
+            "metric": "sampled body/route tracking near laid-surface polygon",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "raise overview camera from 24 to 28 m and pitch from -55 to -62 degrees"
+          ],
+          "compatibility": {
+            "log": "selected-proof-receipts/newly_laid_crossing/fallback2/analysis.log",
+            "negative_log": "selected-proof-receipts/newly_laid_crossing/fallback2/negative.log",
+            "receipt": "selected-proof-receipts/newly_laid_crossing/fallback2/compatibility.json",
+            "sha256": "6f933e6293e493d04ffc64f74b1968b05fcfb269001c9467058f60bb73c76b70"
+          },
+          "construction": "draft-newly-laid-finalized-candidates/newly_laid_crossing/fallback2/construction.json",
+          "construction_sha256": "dd9d68fcdb8010db51aba7a6edb49c3b28bad04a5e69b9de5ba1456578f257b7",
+          "id": "fallback2",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__newly_laid_crossing --candidate fallback2 --output ${OFFLINE_DIR} --python \"$PWD/.venv-cpu/bin/python\"",
+            "construction_sha256": "dd9d68fcdb8010db51aba7a6edb49c3b28bad04a5e69b9de5ba1456578f257b7",
+            "exit_code": 0,
+            "log": "update141-newly_laid_crossing-fallback2-offline.log",
+            "log_sha256": "325aba69eb41b5d7eecf0e0760a173ae8ebf686e65d2acf360ae0cf447eed276"
+          },
+          "trigger": {
+            "failure_condition": "overview pixels omit the warning person or laid-surface edge",
+            "metric": "warning-person and full laid-surface polygon visibility",
+            "source": "overview.mkv"
+          }
+        },
+        {
+          "changed_knobs": [
+            "reduce waypoint reach from 1.5 to 1.0 m",
+            "increase steering response by reducing divisor from 40 to 32 degrees"
+          ],
+          "compatibility": {
+            "log": "selected-proof-receipts/newly_laid_crossing/fallback3/analysis.log",
+            "negative_log": "selected-proof-receipts/newly_laid_crossing/fallback3/negative.log",
+            "receipt": "selected-proof-receipts/newly_laid_crossing/fallback3/compatibility.json",
+            "sha256": "3a9b736c2132f5e69e6b1f2053e85fe6236bc9f1c7c059807cdfda9cb45390d6"
+          },
+          "construction": "draft-newly-laid-finalized-candidates/newly_laid_crossing/fallback3/construction.json",
+          "construction_sha256": "a498c860a871de5dadba5e76e278cf13e574285272dba323ca92da33709418a6",
+          "id": "fallback3",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__newly_laid_crossing --candidate fallback3 --output ${OFFLINE_DIR} --python \"$PWD/.venv-cpu/bin/python\"",
+            "construction_sha256": "a498c860a871de5dadba5e76e278cf13e574285272dba323ca92da33709418a6",
+            "exit_code": 0,
+            "log": "update141-newly_laid_crossing-fallback3-offline.log",
+            "log_sha256": "abbc6170be38960a0f5f31513b01942a24c9adcfa5d764404cae10bd9d5f8747"
+          },
+          "trigger": {
+            "failure_condition": "body footprint leaves the surveyed route corridor",
+            "metric": "sampled lateral route error on surface approach",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__newly_laid_crossing",
+      "compatibility": {
+        "log": "selected-proof-receipts/newly_laid_crossing/primary/analysis.log",
+        "negative_log": "selected-proof-receipts/newly_laid_crossing/primary/negative.log",
+        "receipt": "selected-proof-receipts/newly_laid_crossing/primary/compatibility.json",
+        "sha256": "993095baf89f4f1651784d27aa84f6116ff1a7cde2b5c9295d39f5e15c2d0517"
+      },
+      "construction": "draft-newly-laid-finalized-candidates/newly_laid_crossing/primary/construction.json",
+      "construction_sha256": "afa7e6db8bc34bc9d94887f4985dbc252420b0aaa9e7bfee4cc2925533c43664",
+      "delivery_acceptance": {
+        "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__newly_laid_crossing",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/run_delivery_contract_fixture.py --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__newly_laid_crossing",
+        "negative_command": ".venv-cpu/bin/python work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/run_delivery_contract_fixture.py --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__newly_laid_crossing --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Independent physical review bindings or checks incomplete",
+        "negative_log": "selected-delivery-contracts/newly_laid_crossing/negative.log",
+        "negative_log_sha256": "bb2782e675727187d6aab6cea9f197f824c10a6eb03d411fceb16f9b09a44b71",
+        "script": "run_delivery_contract_fixture.py",
+        "script_sha256": "8744e427838964f9d21137ca0aa77911d7198f956b57926b599effdda0b847a0",
+        "sets": [
+          "full-train"
+        ],
+        "test_exit_code": 0,
+        "test_log": "selected-delivery-contracts/newly_laid_crossing/positive.log",
+        "test_log_sha256": "34295f1cfb982cb1a008602e33f1a56a66c56d61c2be7da54e4d1ad98a1a5b30"
+      },
+      "finalizer_status": "source_derived_cpu_test_pending",
+      "fixture_recipe": "work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/newly-laid-diagnostics/newly_laid_crossing/primary-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "newly-laid-measurement-contracts/newly_laid_crossing.json",
+      "measurement_procedure": {
+        "entrypoint": "native/newly_laid_finalize.py",
+        "output_schema": "c183370-newly-laid-diagnostic-finalization-v1"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "selected-proof-receipts/newly_laid_crossing/primary/negative.log",
+        "log_sha256": "fc9b769ad3f1aa6fd9db753838a283cd94b105cc1b34e444fa1fb390a19d2161"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__newly_laid_crossing --candidate primary --output ${OFFLINE_DIR} --python \"$PWD/.venv-cpu/bin/python\"",
+        "construction_sha256": "afa7e6db8bc34bc9d94887f4985dbc252420b0aaa9e7bfee4cc2925533c43664",
+        "exit_code": 0,
+        "log": "update141-newly_laid_crossing-primary-offline.log",
+        "log_sha256": "0d0692961f1ad526d681e8087a1abf12d2c6e7ec19724dfa9588aaa3d48d6526"
+      },
+      "physical_preparation": {
+        "receipt": "selected-physical-preparation/newly_laid_crossing/proof.json",
+        "sha256": "80ee0b5e969053959d94c5799329d5dacec453f5ef941e3655cf15785689e156"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__newly_laid_crossing --attempt ${ATTEMPT_DIR} --output ${PROCESSED_DIR} --library ${DECODER_LIBRARY} --validator ${VALIDATOR}",
+        "feedback_command": ".venv-cpu/bin/python -m json.tool ${PROCESSED_DIR}/v0001/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "update141-newly_laid_crossing-primary-saved.log",
+        "test_log_sha256": "70c309618e37356727c9c7906d220605b82599abc75ed8d104035ef254e52d1b"
+      }
+    },
+    {
+      "acquisition": {
+        "ego_body_footprint": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl ego_body_vertices_xyz_m joined by frame",
+          "method": "capture original Native eight-vertex ego body geometry per frame"
+        },
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl, video_frames.jsonl and four original camera streams",
+          "method": "capture original Native ego position, yaw and velocity at every 20 Hz frame"
+        },
+        "pavement_footprint_contact": {
+          "entrypoint": "native/newly_laid_finalize.py",
+          "evidence": "native-actors.jsonl and live-readback.json; independent source review establishes actual newly laid or repaired condition",
+          "method": "derive footprint-polygon contact from retained Native vertices and surveyed pavement polygon"
+        },
+        "warning_person_state": {
+          "entrypoint": "runner.py",
+          "evidence": "native-actors.jsonl warning_person_actor_id, video_frames.jsonl and four original camera streams",
+          "method": "capture warning-person Native actor identity, pose and source camera frame"
+        }
+      },
+      "candidate_offline_status": "diagnostic_passed_final_manifest_recheck_pending",
+      "candidate_risk": {
+        "reason": "Native body tracking and original warning/surface pixels remain unverified",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "lower requested controller speed from 4 to 3 m/s"
+          ],
+          "compatibility": {
+            "log": "selected-proof-receipts/newly_laid_avoidance/fallback1/analysis.log",
+            "negative_log": "selected-proof-receipts/newly_laid_avoidance/fallback1/negative.log",
+            "receipt": "selected-proof-receipts/newly_laid_avoidance/fallback1/compatibility.json",
+            "sha256": "d053ad0c6781ee6705ff519ebc7fabaa461f65fdb9efa35df5b9ce2eb1228e8c"
+          },
+          "construction": "draft-newly-laid-finalized-candidates/newly_laid_avoidance/fallback1/construction.json",
+          "construction_sha256": "16c4da92bcfce3b183eeca7a4cae8ea20440ae006068225b7dfa373a8696be29",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__newly_laid_avoidance --candidate fallback1 --output ${OFFLINE_DIR} --python \"$PWD/.venv-cpu/bin/python\"",
+            "construction_sha256": "16c4da92bcfce3b183eeca7a4cae8ea20440ae006068225b7dfa373a8696be29",
+            "exit_code": 0,
+            "log": "update141-newly_laid_avoidance-fallback1-offline.log",
+            "log_sha256": "08a2fc16ef984c162cfb01e528ba94a0b74d3bd3db295c4236d553605a7ff0a2"
+          },
+          "trigger": {
+            "failure_condition": "ego overshoots the surveyed crossing or avoidance route",
+            "metric": "sampled body/route tracking near laid-surface polygon",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "raise overview camera from 24 to 28 m and pitch from -55 to -62 degrees"
+          ],
+          "compatibility": {
+            "log": "selected-proof-receipts/newly_laid_avoidance/fallback2/analysis.log",
+            "negative_log": "selected-proof-receipts/newly_laid_avoidance/fallback2/negative.log",
+            "receipt": "selected-proof-receipts/newly_laid_avoidance/fallback2/compatibility.json",
+            "sha256": "081ec2f90a1db3ba32753429d9826fc1a745342c593996c86a79742ca943d799"
+          },
+          "construction": "draft-newly-laid-finalized-candidates/newly_laid_avoidance/fallback2/construction.json",
+          "construction_sha256": "ef2cf49e67701a1566be040a69b4b6452c8dd31616bb51f67e9ad0d291d0918a",
+          "id": "fallback2",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__newly_laid_avoidance --candidate fallback2 --output ${OFFLINE_DIR} --python \"$PWD/.venv-cpu/bin/python\"",
+            "construction_sha256": "ef2cf49e67701a1566be040a69b4b6452c8dd31616bb51f67e9ad0d291d0918a",
+            "exit_code": 0,
+            "log": "update141-newly_laid_avoidance-fallback2-offline.log",
+            "log_sha256": "8ecec2d5683ddda586be05bbf776a3e1969d377994c5dc2af433bf15907e1c5b"
+          },
+          "trigger": {
+            "failure_condition": "overview pixels omit the warning person or laid-surface edge",
+            "metric": "warning-person and full laid-surface polygon visibility",
+            "source": "overview.mkv"
+          }
+        },
+        {
+          "changed_knobs": [
+            "reduce waypoint reach from 1.5 to 1.0 m",
+            "increase steering response by reducing divisor from 40 to 32 degrees"
+          ],
+          "compatibility": {
+            "log": "selected-proof-receipts/newly_laid_avoidance/fallback3/analysis.log",
+            "negative_log": "selected-proof-receipts/newly_laid_avoidance/fallback3/negative.log",
+            "receipt": "selected-proof-receipts/newly_laid_avoidance/fallback3/compatibility.json",
+            "sha256": "e84015068df619e06bbc3135982e87bda33af5313edca1aa24206969f4ab7bcc"
+          },
+          "construction": "draft-newly-laid-finalized-candidates/newly_laid_avoidance/fallback3/construction.json",
+          "construction_sha256": "af6a91d21d56ad1e6e686f75a37c3f3cb1831abd458b3fd88ee0391cf1148e26",
+          "id": "fallback3",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__newly_laid_avoidance --candidate fallback3 --output ${OFFLINE_DIR} --python \"$PWD/.venv-cpu/bin/python\"",
+            "construction_sha256": "af6a91d21d56ad1e6e686f75a37c3f3cb1831abd458b3fd88ee0391cf1148e26",
+            "exit_code": 0,
+            "log": "update141-newly_laid_avoidance-fallback3-offline.log",
+            "log_sha256": "5d75d5d820ca8f4baf2f7b287ff900bded36721114b8bbdefb1066641229b459"
+          },
+          "trigger": {
+            "failure_condition": "body footprint leaves the surveyed route corridor",
+            "metric": "sampled lateral route error on surface approach",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__newly_laid_avoidance",
+      "compatibility": {
+        "log": "selected-proof-receipts/newly_laid_avoidance/primary/analysis.log",
+        "negative_log": "selected-proof-receipts/newly_laid_avoidance/primary/negative.log",
+        "receipt": "selected-proof-receipts/newly_laid_avoidance/primary/compatibility.json",
+        "sha256": "a9d6f6567bb64bd20387097e260a59cdfbc0bfdc9c2114cd28bad19a9da237f4"
+      },
+      "construction": "draft-newly-laid-finalized-candidates/newly_laid_avoidance/primary/construction.json",
+      "construction_sha256": "bdf81f6154d6cc11a605e0791f159b3d9a9ca62117f19e229039b9b2e6b26a48",
+      "delivery_acceptance": {
+        "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__newly_laid_avoidance",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/run_delivery_contract_fixture.py --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__newly_laid_avoidance",
+        "negative_command": ".venv-cpu/bin/python work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/run_delivery_contract_fixture.py --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__newly_laid_avoidance --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Independent physical review bindings or checks incomplete",
+        "negative_log": "selected-delivery-contracts/newly_laid_avoidance/negative.log",
+        "negative_log_sha256": "bb2782e675727187d6aab6cea9f197f824c10a6eb03d411fceb16f9b09a44b71",
+        "script": "run_delivery_contract_fixture.py",
+        "script_sha256": "8744e427838964f9d21137ca0aa77911d7198f956b57926b599effdda0b847a0",
+        "sets": [
+          "full-train"
+        ],
+        "test_exit_code": 0,
+        "test_log": "selected-delivery-contracts/newly_laid_avoidance/positive.log",
+        "test_log_sha256": "a2161db1c663e2eda2d3432c4f757600755ef7a99a9213db271df53f82a6bfb0"
+      },
+      "finalizer_status": "source_derived_cpu_test_pending",
+      "fixture_recipe": "work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/newly-laid-diagnostics/newly_laid_avoidance/primary-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "newly-laid-measurement-contracts/newly_laid_avoidance.json",
+      "measurement_procedure": {
+        "entrypoint": "native/newly_laid_finalize.py",
+        "output_schema": "c183370-newly-laid-diagnostic-finalization-v1"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "selected-proof-receipts/newly_laid_avoidance/primary/negative.log",
+        "log_sha256": "98bea10ef4fdc0e758b18d7b02a35237ccb1d5e73180d7a134d9905674d89a6d"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__newly_laid_avoidance --candidate primary --output ${OFFLINE_DIR} --python \"$PWD/.venv-cpu/bin/python\"",
+        "construction_sha256": "bdf81f6154d6cc11a605e0791f159b3d9a9ca62117f19e229039b9b2e6b26a48",
+        "exit_code": 0,
+        "log": "update141-newly_laid_avoidance-primary-offline.log",
+        "log_sha256": "1652cb80166507642c91335ae2671191917065fe1dd995d3a78ab2904645660c"
+      },
+      "physical_preparation": {
+        "receipt": "selected-physical-preparation/newly_laid_avoidance/proof.json",
+        "sha256": "bd620beddfcd3e6fe6bec8a23013c09abc87a25f1aeb6639abeba611c4cf3f8e"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case training__C183370__LVMC-11-22-100__motor_vehicle_driver__newly_laid_avoidance --attempt ${ATTEMPT_DIR} --output ${PROCESSED_DIR} --library ${DECODER_LIBRARY} --validator ${VALIDATOR}",
+        "feedback_command": ".venv-cpu/bin/python -m json.tool ${PROCESSED_DIR}/v0001/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "update141-newly_laid_avoidance-primary-saved.log",
+        "test_log_sha256": "2981cc9c87d94a968c5731816e1f0740e87d26a093e7ea10e5f853e3874d661d"
+      }
+    }
+  ],
+  "format": "worker-execution-manifest",
+  "runtime_manifest_sha256": "5b4738624542c97f321a302bd49b9ec154cb2cf63778acf64ba6042f8d5b4fd3",
+  "selection_review": {
+    "path": "native/selection-review.json",
+    "sha256": "92f1095f25729c909553f2a04e0ca725a3c4f605eef1f66c3c7a41448a64dedd"
+  },
+  "status": "selected_twelve_cpu_diagnostics_bound_final_hash_recheck_pending"
+}
