@@ -26,7 +26,7 @@ def check(repo, assignment, comparison_id, report_path):
     for cid,item in report['cases'].items():
         attempt=Path(item['attempt']).resolve()
         sources=item.get('source_sha256',{})
-        if not sources or not any('original' in name for name in sources):
+        if not sources or not item.get('original_source_paths') or not set(item['original_source_paths']) <= set(sources):
             raise ValueError('Missing original source hashes: '+cid)
         for name,expected in sources.items():
             path=(attempt/name).resolve()
