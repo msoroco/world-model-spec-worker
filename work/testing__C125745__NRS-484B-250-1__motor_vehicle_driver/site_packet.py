@@ -86,6 +86,7 @@ def load_site(root=None):
         "other_approach": other["spawn_pose"],
         "other_entry": center + [other["spawn_pose"][3]],
         "crossing_polygon_xy_m": source["crossing_polygon_xy_m"],
+        "ego_stop_line_xy_m": source["ego_stop_line_xy_m"],
         "crossing_source": refs["crossing_geometry_source"],
         "median_opening_source": refs["median_spacing_source"],
         "different_highways_source": refs["all_entrances_source"],

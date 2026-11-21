@@ -84,7 +84,11 @@ def construct_candidate(world, site, transforms, blueprint):
         junction = entry.get_junction() if entry.is_junction else None
         if junction is None or junction.id != site["junction_id"]:
             raise ValueError("Entry outside selected Native junction: " + role)
-    sign = find_governing_stop_sign(world, waypoints["ego_approach"])
+    sign_waypoint = (waypoints["ego_approach"] if "ego_sign_check" not in transforms
+                     else _waypoint(world_map, transforms["ego_sign_check"]))
+    if sign_waypoint.road_id != waypoints["ego_approach"].road_id:
+        raise ValueError("Stop sign check is not on ego approach road")
+    sign = find_governing_stop_sign(world, sign_waypoint)
     if sign.trigger_volume.contains(waypoints["other_approach"].transform.location,
                                     sign.get_transform()):
         raise ValueError("Selected sign also governs other approach")

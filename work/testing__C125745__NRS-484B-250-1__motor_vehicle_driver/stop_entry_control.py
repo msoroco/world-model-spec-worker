@@ -29,8 +29,11 @@ def step_ego(distance_to_stop_m, speed_mps, stopped_frames, conflict_clear,
     if type(conflict_clear) is not bool:
         raise ValueError("Measured conflict-clear boolean required")
     near = distance <= 1.5
-    stopped_frames = stopped_frames + 1 if near and speed <= 0.15 else 0
     if stopped_frames < 2:
+        stopped_frames = stopped_frames + 1 if near and speed <= 0.15 else 0
+    if stopped_frames < 2:
+        if distance > max(2.0, speed * speed / 3.0):
+            return min(0.4, max(0.0, (target - speed) * 0.15)), 0.0, stopped_frames, "approach_stop"
         # Begin braking early enough for the planned low-speed diagnostic route.
         brake = max(0.25, min(1.0, (speed * speed / max(2 * max(distance, 0.2), 0.4)) / 4))
         return 0.0, brake, stopped_frames, "approach_stop"
