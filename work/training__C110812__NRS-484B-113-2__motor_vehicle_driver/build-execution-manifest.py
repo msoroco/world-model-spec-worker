@@ -21,7 +21,7 @@ def reference(path, **extra):
 
 
 def offline(entry, suffix, candidate):
-    log = HERE / f'selected-offline-{suffix}-{candidate}.log'
+    log = HERE / f'current-base-offline-{suffix}-{candidate}.log'
     selected = entry if candidate == 'primary' else next(
         c for c in entry['candidates'] if c['id'] == candidate)
     return {'exit_code': 0, 'construction_sha256': selected['construction_sha256'],
@@ -32,19 +32,25 @@ def offline(entry, suffix, candidate):
 
 
 def compatibility(suffix, candidate):
-    if candidate == 'primary':
-        path = HERE / f'selected-compatible-{suffix}-primary-receipt.json'
-        log = HERE / f'selected-compatible-{suffix}-primary-analysis.log'
-        negative = HERE / f'selected-compatible-{suffix}-primary-negative.log'
+    if candidate == 'primary' and suffix == 'true':
+        path = HERE / 'current-base-compatible-true-primary-receipt.json'
+        log = HERE / 'current-base-compatible-true-primary-analysis.log'
+        negative = HERE / 'current-base-compatible-true-primary-negative.log'
     else:
-        path = HERE / f'selected-{suffix}-{candidate}-compatibility-receipt.json'
-        log = HERE / f'selected-{suffix}-{candidate}-analysis.log'
-        negative = HERE / f'selected-{suffix}-{candidate}-negative.log'
+        path = HERE / f'current-base-{suffix}-{candidate}-compatibility-receipt.json'
+        log = HERE / f'current-base-{suffix}-{candidate}-analysis.log'
+        negative = HERE / f'current-base-{suffix}-{candidate}-negative.log'
     return reference(path, log=log.name, negative_log=negative.name)
 
 
 def main():
-    harness = read(HERE / 'selected-proof-manifest.json')
+    harness = read(HERE / 'current-base-proof-manifest.json')
+    current = sha(HERE.parents[1] / 'runtime/pipeline/SOURCE-MANIFEST.json')
+    if harness['runtime_manifest_sha256'] != current:
+        raise ValueError('Selected proof harness binds another runtime')
+    matrix_path = HERE / 'current-base-matrix-summary.json'
+    if not matrix_path.is_file() or len(read(matrix_path).get('rows', [])) != 8:
+        raise ValueError('All eight current-runtime compatibility and saved proofs must pass first')
     comparison = read(HERE / 'selected-comparison-proof.json')
     acceptance = read(HERE / 'selected-delivery-proof.json')
     entries = []
@@ -69,7 +75,7 @@ def main():
             'method': 'derive from retained original Native sample, frame map, road geometry and synchronized source cameras',
             'evidence': 'native_samples.jsonl; video_frames.jsonl; road_geometry.json; four named source videos'}
             for name in sorted(required)}
-        saved_log = HERE / f'selected-saved-{suffix}-primary.log'
+        saved_log = HERE / f'current-base-saved-{suffix}-primary.log'
         entry['post_capture'] = {
             'recorded_only': True,
             'command': f'.venv-cpu/bin/python runtime.py process-saved --manifest {PREFIX}execution-manifest.json '
@@ -82,7 +88,7 @@ def main():
         script = HERE / 'audit-selected-delivery.py'
         command = f'.venv-cpu/bin/python {PREFIX}{script.name} --case {entry["case_id"]}'
         entry['delivery_acceptance'] = {
-            'case_id': entry['case_id'], 'sets': ['full-train'],
+            'case_id': entry['case_id'], 'sets': ['demo-train', 'full-train'],
             'checks': ['native_source', 'all_participants', 'time_join', 'full_video_decode',
                        'actual_pixels', 'physical_completion'],
             'script': script.name, 'script_sha256': sha(script),
