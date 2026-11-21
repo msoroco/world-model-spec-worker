@@ -11,13 +11,18 @@ EXTRA = ('ego_speed', 'newly_laid_footprint_contact',
          'drive_over_warned_new_pavement')
 
 
-def build(candidate='primary'):
+def build(candidate='primary', case_suffix='reference'):
     if candidate not in ('primary', 'fallback1', 'fallback2', 'fallback3'):
-        raise ValueError('Unknown reference candidate')
-    source = HERE / 'draft-measured-candidates/reference' / candidate / 'construction.json'
-    target = HERE / 'draft-integrated-reference' / candidate / 'construction.json'
-    draft_manifest = HERE / ('update152-draft-integrated-manifest.json' if candidate == 'primary'
-                             else f'update152-draft-integrated-{candidate}-manifest.json')
+        raise ValueError('Unknown candidate')
+    if case_suffix not in ('reference', 'contrast'):
+        raise ValueError('Unknown warning-person case')
+    source = HERE / 'draft-measured-candidates' / case_suffix / candidate / 'construction.json'
+    target = HERE / ('draft-integrated-' + case_suffix) / candidate / 'construction.json'
+    draft_manifest = HERE / (
+        ('update152-draft-integrated-manifest.json' if candidate == 'primary'
+         else f'update152-draft-integrated-{candidate}-manifest.json')
+        if case_suffix == 'reference' else
+        f'update153-draft-integrated-contrast-{candidate}-manifest.json')
     construction = json.loads(source.read_text())
     files = {item['path']: item for item in construction['files']}
     contract = files['native/recording_contract.py']['content']
@@ -69,17 +74,17 @@ def build(candidate='primary'):
     target.write_text(json.dumps(construction, indent=2, sort_keys=True) + '\n')
 
     manifest = json.loads(MANIFEST.read_text())
-    reference = next(item for item in manifest['cases']
-                     if item['case_id'] == HERE.name + '__reference')
-    selected = reference if candidate == 'primary' else next(
-        item for item in reference['candidates'] if item['id'] == candidate)
+    entry = next(item for item in manifest['cases']
+                 if item['case_id'] == HERE.name + '__' + case_suffix)
+    selected = entry if candidate == 'primary' else next(
+        item for item in entry['candidates'] if item['id'] == candidate)
     selected['construction'] = str(target.relative_to(HERE))
     selected['construction_sha256'] = hashlib.sha256(target.read_bytes()).hexdigest()
-    reference['candidate_offline_status'] = 'pending'
+    entry['candidate_offline_status'] = 'pending'
     selected['compatibility'] = None
     selected['offline'] = None
     if candidate == 'primary':
-        reference['post_capture'] = None
+        entry['post_capture'] = None
     draft_manifest.write_text(json.dumps(manifest, indent=2, sort_keys=True) + '\n')
     print(json.dumps({'construction': str(target),
                       'sha256': selected['construction_sha256'],
@@ -89,4 +94,6 @@ def build(candidate='primary'):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--candidate', default='primary')
-    build(parser.parse_args().candidate)
+    parser.add_argument('--case-suffix', default='reference')
+    args = parser.parse_args()
+    build(args.candidate, args.case_suffix)
