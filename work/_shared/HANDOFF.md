@@ -3200,3 +3200,7 @@ C125697 remains `partial`. Added original-row opposing-left observation with sou
 Both C24757 and C378304 passed their assignment-scoped `--complete --require-delivery-ready` gates (exit 0) on 2026-11-21. The full batch strict gate remains unpassed.
 
 Batch gate retry on 2026-11-21: `timeout 55 env PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --complete --require-delivery-ready` exited 124 with no output (`.runtime-work/strict-gate-20261121-current.log`, zero bytes); this is not a pass. Current inventory is 14 ready and 29 partial, so batch readiness remains false. The last completed operator gate output reports unapproved generated `runtime/runs/scenario_pipeline/inputs/shared/manifest.json`. Frozen runtime was not edited.
+
+## 2026-11-21 C125697 saved finalizer continuation
+
+C125697 now has saved-only finalization code in `crossing_measurements.py` that derives nine channels from retained original rows, checks source/frame joins and calls the pinned runtime result writers. Nine unit tests pass, including stale trace and source-preservation checks; the scoped complete gate passes. Pinned CPU preflight passes with simulation not started. The package remains `partial`: it has no exact median-opening construction, four-camera capture, runtime saved-processing proof or delivery chain yet. Those are next worker-owned steps. The full strict batch gate has not passed. No frozen input, runtime, batch or Git action was taken.

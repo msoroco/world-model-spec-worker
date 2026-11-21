@@ -9,12 +9,14 @@ import hashlib
 import json
 import math
 import argparse
+import shutil
 from pathlib import Path
 
 from shapely.geometry import MultiPoint, Polygon
 
 
 REQUIRED = ("crossing_history.jsonl", "video_frames.jsonl", "junction_context.json")
+CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 
 
 def _number(value):
@@ -206,14 +208,126 @@ def analyze(root: Path, *, signal_mode: str = "off", allow_other_initially_insid
             "right_of_way_judgment": "unresolved"}
 
 
+def finalize_saved(attempt: Path, output: Path) -> dict:
+    """Derive evidence channels only from retained original rows and context."""
+    attempt, output = Path(attempt), Path(output)
+    if output.exists() or (attempt / "result.json").exists() or (attempt / "channels").exists():
+        raise ValueError("Fresh saved-processing version required")
+    from worker_exchange.native_output import physical_result, write_result
+    required = ("config.json", "trace.jsonl", "capture/evidence.jsonl", *REQUIRED,
+                *(camera + ".mkv" for camera in CAMERAS))
+    for name in required:
+        if not (attempt / name).is_file():
+            raise ValueError("Missing required source: " + name)
+    config = json.loads((attempt / "config.json").read_text())
+    case_id = config.get("selected_case_id", "")
+    prefix = "testing__C125697__NRS-484B-250-1__motor_vehicle_driver__"
+    if (config.get("cell_id") != "C125697" or config.get("law_id") != "NRS-484B-250-1" or
+            not case_id.startswith(prefix) or not config.get("recording_description", {}).get("channels")):
+        raise ValueError("Wrong exact C125697 capture identity or description")
+    suffix = case_id.removeprefix(prefix)
+    if suffix not in ("off_other_enters_first", "off_ego_enters_first", "off_other_already_inside",
+                      "operative_signal_exclusion", "opposite_left_exception"):
+        raise ValueError("Unknown selected C125697 branch")
+    report = analyze(attempt,
+                     signal_mode="operating" if suffix == "operative_signal_exclusion" else "off",
+                     allow_other_initially_inside=suffix == "off_other_already_inside",
+                     opposing_left_exception=suffix == "opposite_left_exception")
+    rows, frames, trace = (_rows(attempt / name) for name in
+                           ("crossing_history.jsonl", "video_frames.jsonl", "trace.jsonl"))
+    if len(rows) != len(frames) or len(trace) != len(frames) or any(
+            original.get("frame") != frame.get("carla_frame") or
+            original.get("time_s") != frame.get("time_s")
+            for original, frame in zip(trace, frames)):
+        raise ValueError("Original trace/video frame join failed")
+    values = {
+        "ego_speed": ("m/s", lambda row, sample: sample["ego"]["speed_mps"]),
+        "other_speed": ("m/s", lambda row, sample: sample["other"]["speed_mps"]),
+        "ego_approach_distance": ("m", lambda row, sample: sample["ego"]["distance_to_intersection_m"]),
+        "other_approach_distance": ("m", lambda row, sample: sample["other"]["distance_to_intersection_m"]),
+        "ego_body_inside": ("boolean", lambda row, sample: sample["ego"]["body_in_intersection"]),
+        "other_body_inside": ("boolean", lambda row, sample: sample["other"]["body_in_intersection"]),
+        "signal_state": ("device state", lambda row, sample: row["signal_state"]),
+        "ego_position": ("m", lambda row, sample: _body_center(row["ego"])),
+        "other_position": ("m", lambda row, sample: _body_center(row["other"])),
+    }
+    derived = {name: [fn(row, sample) for row, sample in zip(rows, report["samples"])]
+               for name, (_, fn) in values.items()}
+    evidence_root = attempt / "evidence"
+    evidence_root.mkdir(exist_ok=True)
+    for name in ("config.json", "trace.jsonl", *REQUIRED):
+        shutil.copyfile(attempt / name, evidence_root / name)
+    shutil.copytree(attempt / "capture", evidence_root / "capture", dirs_exist_ok=True)
+    channels = attempt / "channels"
+    channels.mkdir()
+    evidence = []
+    for name, (unit, _) in values.items():
+        reference = "channels/" + name + ".jsonl"
+        with (attempt / reference).open("x") as stream:
+            for row, value in zip(rows, derived[name]):
+                stream.write(json.dumps({"time_s": row["time_s"], "original_frame": row["frame"],
+                                         "value": value}, allow_nan=False) + "\n")
+        evidence.append({"name": name, "unit": unit, "reference": reference})
+    evidence.append({"name": "junction_context", "unit": "structured record",
+                     "reference": "junction_context.json"})
+    checksums = {"evidence/" + path.relative_to(evidence_root).as_posix():
+                 hashlib.sha256(path.read_bytes()).hexdigest()
+                 for path in evidence_root.rglob("*") if path.is_file()}
+    (attempt / "evidence-checksums.json").write_text(json.dumps(checksums, sort_keys=True) + "\n")
+    result = {
+        "case_id": case_id,
+        "measured_values": {"first_body_entry": report["first_body_entry"],
+                            "occupancy_intervals": report["occupancy_intervals"],
+                            "observed_signal_states": report["observed_signal_states"],
+                            "ego_approaching_at_other_entry_observed":
+                                report["ego_approaching_at_other_entry_observed"]},
+        "target_checks": [{"target": "other_enters_before_ego", "requested": suffix == "off_other_enters_first",
+                           "measured": report["other_entered_before_ego_observed"],
+                           "method": "source-hashed complete-body entry and original frame join",
+                           "tolerance": 0,
+                           "matched": report["other_entered_before_ego_observed"] is True,
+                           "physical_cause_confirmed": False,
+                           "cause_evidence": list(report["sources"])}],
+        "setup_confirmed": False, "behavior_attempted": False,
+        "maneuver_completed": False, "termination_reason": "Saved source assessment pending",
+        "physical_failure_flags": ["Native geometry, signal visibility and legal judgments require original review"],
+        "trace_reference": "trace.jsonl", "video_references": [name + ".mkv" for name in CAMERAS],
+        "video_frame_map_reference": "video_frames.jsonl",
+        "recording_description": config["recording_description"],
+        "recording_evidence": evidence, "source_evidence_hashes": report["sources"],
+        "capture_evidence_sha256": hashlib.sha256((attempt / "capture/evidence.jsonl").read_bytes()).hexdigest(),
+        "realized_observables": {},
+    }
+    result = physical_result(attempt, result)
+    write_result(attempt, result)
+    analysis = {"format": "worker-analysis-report", "case_id": case_id,
+                "source_report": report, "source_hashes": report["sources"],
+                "physical_checks": result["physical_checks"],
+                "realized_observables": result["realized_observables"],
+                "provenance_kind": result["provenance_kind"],
+                "diagnostic_fixture": result["diagnostic_fixture"],
+                "legal_verdict_asserted": False, "analysis_complete": True}
+    output.write_text(json.dumps(analysis, indent=2, allow_nan=False) + "\n")
+    return analysis
+
+
 def main():
     parser = argparse.ArgumentParser(description="Finalize saved median-opening crossing observations")
-    parser.add_argument("source_dir", type=Path)
-    parser.add_argument("output_json", type=Path)
+    parser.add_argument("source_dir", type=Path, nargs="?")
+    parser.add_argument("output_json", type=Path, nargs="?")
     parser.add_argument("--signal-mode", choices=("off", "operating"), default="off")
     parser.add_argument("--allow-other-initially-inside", action="store_true")
     parser.add_argument("--opposing-left-exception", action="store_true")
+    parser.add_argument("--attempt", type=Path)
+    parser.add_argument("--output", type=Path)
     args = parser.parse_args()
+    if args.attempt:
+        if not args.output:
+            parser.error("--output required with --attempt")
+        finalize_saved(args.attempt, args.output)
+        return
+    if not args.source_dir or not args.output_json:
+        parser.error("source_dir and output_json required for measurement mode")
     result = analyze(args.source_dir, signal_mode=args.signal_mode,
                      allow_other_initially_inside=args.allow_other_initially_inside,
                      opposing_left_exception=args.opposing_left_exception)

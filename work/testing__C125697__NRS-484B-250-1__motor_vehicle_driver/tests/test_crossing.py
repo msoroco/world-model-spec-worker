@@ -5,6 +5,9 @@ import unittest
 import subprocess
 import sys
 import shutil
+import hashlib
+import types
+from unittest import mock
 from pathlib import Path
 from types import SimpleNamespace as NS
 
@@ -179,6 +182,52 @@ class CrossingTests(unittest.TestCase):
             (ego_first / "crossing_history.jsonl").write_text("".join(json.dumps(row)+"\n" for row in rows))
             with self.assertRaisesRegex(ValueError, "Identified signal source changed"):
                 comparison.audit_entry_order(other_first, ego_first)
+
+    def test_saved_finalizer_derives_original_channels_and_rejects_stale_trace(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            self.fixture(root)
+            frames = [json.loads(line) for line in (root / "video_frames.jsonl").read_text().splitlines()]
+            (root / "trace.jsonl").write_text("".join(json.dumps({"frame": row["carla_frame"],
+                "time_s": row["time_s"]})+"\n" for row in frames))
+            (root / "config.json").write_text(json.dumps({
+                "selected_case_id": "testing__C125697__NRS-484B-250-1__motor_vehicle_driver__off_other_enters_first",
+                "cell_id": "C125697", "law_id": "NRS-484B-250-1",
+                "recording_description": {"channels": [{"name": "ego_speed"}]}}))
+            (root / "capture").mkdir()
+            (root / "capture/evidence.jsonl").write_text('{"frame":100}\n')
+            for name in measure.CAMERAS:
+                (root / (name + ".mkv")).write_bytes(b"synthetic-test-placeholder")
+            original = hashlib.sha256((root / "crossing_history.jsonl").read_bytes()).hexdigest()
+            def physical(_, result):
+                result.update(physical_checks={"status": "unverified"}, realized_observables={},
+                              provenance_kind="diagnostic_fixture", diagnostic_fixture=True)
+                return result
+            def write_result(attempt, result):
+                (attempt / "result.json").write_text(json.dumps(result))
+            native_output = types.ModuleType("worker_exchange.native_output")
+            native_output.physical_result = physical
+            native_output.write_result = write_result
+            worker_exchange = types.ModuleType("worker_exchange")
+            worker_exchange.native_output = native_output
+            with mock.patch.dict(sys.modules, {"worker_exchange": worker_exchange,
+                                                "worker_exchange.native_output": native_output}):
+                trace_path = root / "trace.jsonl"
+                original_trace = trace_path.read_text()
+                stale = [json.loads(line) for line in original_trace.splitlines()]
+                stale[1]["frame"] = 999
+                trace_path.write_text("".join(json.dumps(row)+"\n" for row in stale))
+                with self.assertRaisesRegex(ValueError, "trace/video frame join"):
+                    measure.finalize_saved(root, root / "analysis.json")
+                trace_path.write_text(original_trace)
+                analysis = measure.finalize_saved(root, root / "analysis.json")
+            self.assertEqual(analysis["source_hashes"]["crossing_history.jsonl"], original)
+            self.assertEqual(hashlib.sha256((root / "crossing_history.jsonl").read_bytes()).hexdigest(), original)
+            rows = [json.loads(line) for line in (root / "channels/other_body_inside.jsonl").read_text().splitlines()]
+            self.assertEqual([row["value"] for row in rows], [False, True, True, True])
+            self.assertTrue((root / "evidence/crossing_history.jsonl").is_file())
+            with self.assertRaisesRegex(ValueError, "Fresh saved-processing version"):
+                measure.finalize_saved(root, root / "second-analysis.json")
 
     def test_off_signal_native_selection_and_restoration(self):
         wrong, selected = FakeLight(99, -1), FakeLight(3, -1)
