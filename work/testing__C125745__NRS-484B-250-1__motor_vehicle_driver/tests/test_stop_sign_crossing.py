@@ -3,6 +3,7 @@ import json
 import tempfile
 import unittest
 import sys
+import subprocess
 from pathlib import Path
 from types import SimpleNamespace as NS
 
@@ -21,6 +22,9 @@ def load(name):
 measure = load("crossing_measurements")
 signs = load("stop_sign_control")
 comparison = load("comparison_audit")
+packet = load("site_packet")
+control = load("stop_entry_control")
+cameras = load("source_cameras")
 
 
 def body(x):
@@ -58,6 +62,88 @@ class FakeActors(list):
 
 
 class CrossingTests(unittest.TestCase):
+    def test_four_camera_exact_join_and_owner_cleanup(self):
+        created = []
+        class Sensor:
+            def listen(self, callback):
+                self.callback = callback
+            def stop(self):
+                self.stopped = True
+            def destroy(self):
+                self.destroyed = True
+        class Blueprint:
+            def set_attribute(self, key, value):
+                pass
+        def spawn(blueprint, transform, **kwargs):
+            sensor = Sensor()
+            created.append(sensor)
+            return sensor
+        world = NS(get_blueprint_library=lambda: NS(find=lambda name: Blueprint()),
+                   spawn_actor=spawn)
+        with cameras.source_cameras(world, "ego", dict.fromkeys(cameras.CAMERAS, "pose")) as queues:
+            self.assertEqual(set(queues), set(cameras.CAMERAS))
+            for sensor in created:
+                sensor.callback(NS(frame=101))
+            self.assertEqual([cameras.matching_frame(queues[name], 101).frame
+                              for name in cameras.CAMERAS], [101] * 4)
+            created[0].callback(NS(frame=103))
+            with self.assertRaisesRegex(ValueError, "skipped Native frame"):
+                cameras.matching_frame(queues["overview"], 102)
+        self.assertTrue(all(s.stopped and s.destroyed for s in created))
+        with self.assertRaisesRegex(ValueError, "Four named"):
+            with cameras.source_cameras(world, "ego", {"overview": "pose"}):
+                pass
+
+    def test_lossless_source_writer_checks_original_frame(self):
+        with tempfile.TemporaryDirectory() as temp:
+            video = Path(temp) / "source.mkv"
+            writer = cameras.SourceVideo(video, 2, 2)
+            with self.assertRaisesRegex(ValueError, "differs from Native tick"):
+                writer.write(NS(frame=2, raw_data=bytes(16)), 1)
+            with self.assertRaisesRegex(ValueError, "dimensions differ"):
+                writer.write(NS(frame=1, raw_data=bytes(4)), 1)
+            writer.write(NS(frame=1, raw_data=bytes(16)), 1)
+            receipt = writer.close()
+            self.assertEqual(receipt["frames"], 1)
+            self.assertGreater(video.stat().st_size, 0)
+            decoded = subprocess.run(
+                ["ffprobe", "-v", "error", "-select_streams", "v:0",
+                 "-count_frames", "-show_entries", "stream=nb_read_frames",
+                 "-of", "default=noprint_wrappers=1:nokey=1", str(video)],
+                check=True, capture_output=True, text=True)
+            self.assertEqual(decoded.stdout.strip(), "1")
+            with self.assertRaisesRegex(ValueError, "already released"):
+                writer.close()
+
+    def test_stop_controller_holds_for_measured_other_body_then_releases(self):
+        throttle, brake, count, phase = control.step_ego(1.0, 0.1, 0, False)
+        self.assertEqual((throttle, count, phase), (0.0, 1, "approach_stop"))
+        self.assertGreater(brake, 0)
+        throttle, brake, count, phase = control.step_ego(0.8, 0.1, count, False)
+        self.assertEqual((throttle, brake, count, phase),
+                         (0.0, 1.0, 2, "hold_for_other_body"))
+        self.assertEqual(control.step_ego(0.8, 0.1, count, True)[3], "released")
+        self.assertEqual(control.step_other(0, 10, 9)[2], "held")
+        self.assertEqual(control.step_other(0, 10, 10)[2], "released")
+        with self.assertRaisesRegex(ValueError, "Measured conflict"):
+            control.step_ego(1, 0, 0, None)
+
+    def test_sibling_median_site_is_hash_bound_and_only_a_cpu_candidate(self):
+        site_packet = packet.load_site()
+        self.assertEqual(site_packet["highway_ids"], {"ego": "EW", "other": "NS"})
+        self.assertEqual(site_packet["stop_sign_native_id"], 17)
+        self.assertEqual(site_packet["review_status"], "synthetic_cpu_candidate")
+        self.assertEqual(len(site_packet["camera_poses"]), 4)
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            target = root / packet.SIBLING
+            target.mkdir()
+            source = target / "site.json"
+            source.write_text((ROOT.parent / packet.SIBLING / "site.json")
+                              .read_text().replace("TownSynthetic", "TownOther"))
+            with self.assertRaisesRegex(ValueError, "SHA mismatch"):
+                packet.load_site(root)
+
     def fixture(self, root):
         context = {"native_map_id": "TownX", "intersection_id": 9,
                    "ego_highway_id": "highway-a", "other_highway_id": "highway-b",
@@ -192,6 +278,12 @@ class CrossingTests(unittest.TestCase):
         self.assertEqual(row["ego"]["road_id"], 3)
         self.assertEqual(row["other"]["actor_id"], 2)
         self.assertEqual(len(row["other"]["body_vertices_xy_m"]), 4)
+        junction_map = NS(get_waypoint=lambda location, project_to_road:
+                          NS(road_id=99, lane_id=1, is_junction=True))
+        joined = measure.capture_sample(snapshot, junction_map, ego, other, NS(id=10),
+                                        polygon, 9, {"ego": 3, "other": 4})
+        self.assertEqual(joined["ego"]["road_id"], 3)
+        self.assertEqual(joined["ego"]["native_road_id"], 99)
         with self.assertRaisesRegex(ValueError, "Distinct Native"):
             measure.capture_sample(snapshot, world_map, ego, ego, NS(id=10), polygon, 9)
 

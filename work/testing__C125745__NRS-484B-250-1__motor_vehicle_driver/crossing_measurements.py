@@ -122,7 +122,8 @@ def analyze(root: Path) -> dict:
             "right_of_way_judgment": "unresolved"}
 
 
-def capture_sample(snapshot, world_map, ego, other, sign, crossing_polygon, junction_id):
+def capture_sample(snapshot, world_map, ego, other, sign, crossing_polygon,
+                   junction_id, approach_road_ids=None):
     """Build one retained Native row; the caller writes it with the same-frame video map.
 
     This records full body vertices and live road identities. Distances are
@@ -138,12 +139,20 @@ def capture_sample(snapshot, world_map, ego, other, sign, crossing_polygon, junc
     _number(time_s)
     if ego.id == other.id:
         raise ValueError("Distinct Native vehicles required")
+    if approach_road_ids is not None and (
+            not isinstance(approach_road_ids, dict) or
+            set(approach_road_ids) != {"ego", "other"} or
+            any(type(v) is not int for v in approach_road_ids.values()) or
+            approach_road_ids["ego"] == approach_road_ids["other"]):
+        raise ValueError("Distinct sourced approach road IDs required")
     row = {"frame": frame, "time_s": time_s, "native_stop_sign_id": sign.id}
     for role, actor in (("ego", ego), ("other", other)):
         transform = actor.get_transform()
         waypoint = world_map.get_waypoint(transform.location, project_to_road=False)
         if waypoint is None:
             raise ValueError("Native vehicle left mapped road: " + role)
+        if approach_road_ids is not None and not waypoint.is_junction and waypoint.road_id != approach_road_ids[role]:
+            raise ValueError("Native approach road differs from sourced road: " + role)
         vertices = actor.bounding_box.get_world_vertices(transform)
         points = [[_number(vertex.x), _number(vertex.y)] for vertex in vertices]
         if len(points) < 4 or MultiPoint(points).convex_hull.area <= 0:
@@ -153,7 +162,8 @@ def capture_sample(snapshot, world_map, ego, other, sign, crossing_polygon, junc
                               (velocity.x, velocity.y, velocity.z)))
         distance = MultiPoint(points).convex_hull.distance(polygon)
         row[role] = {"actor_id": actor.id, "intersection_id": junction_id,
-                     "road_id": waypoint.road_id, "lane_id": waypoint.lane_id,
+                     "road_id": approach_road_ids[role] if approach_road_ids is not None else waypoint.road_id,
+                     "native_road_id": waypoint.road_id, "lane_id": waypoint.lane_id,
                      "body_vertices_xy_m": points,
                      "distance_to_intersection_m": distance, "speed_mps": speed}
     return row
