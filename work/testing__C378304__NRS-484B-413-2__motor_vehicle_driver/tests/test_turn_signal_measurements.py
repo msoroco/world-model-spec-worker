@@ -116,7 +116,7 @@ class TurnSignalTests(unittest.TestCase):
             (root / "route_context.json").write_text(json.dumps(context))
             with self.assertRaisesRegex(ValueError, "Exact-case district"):
                 measure.analyze(root)
-            context["district_type"] = "other" if json.loads((root / "config.json").read_text())["selected_case_id"].endswith("__other_area_right_at_300ft") else "business"
+            context["district_type"] = "other" if json.loads((root / "config.json").read_text())["selected_case_id"].endswith(("__other_area_right_at_300ft", "__other_area_right_below_300ft", "__other_area_right_above_300ft")) else "business"
             context["native_weather_readback"]["precipitation"] = 70.0 if not json.loads((root / "config.json").read_text())["selected_case_id"].endswith("__zone_right_wet") else 0.0
             (root / "route_context.json").write_text(json.dumps(context))
             with self.assertRaisesRegex(ValueError, "precipitation"):
@@ -127,7 +127,7 @@ class TurnSignalTests(unittest.TestCase):
             root = Path(temp)
             folder = Path(__file__).resolve().parents[1]
             selected = json.loads((folder / "config.json").read_text())["selected_case_id"]
-            self.fixture(root, 30.48, district="other" if selected.endswith("__other_area_right_at_300ft") else "business")
+            self.fixture(root, 30.48, district="other" if selected.endswith(("__other_area_right_at_300ft", "__other_area_right_below_300ft", "__other_area_right_above_300ft")) else "business")
             if selected.endswith("__zone_right_wet"):
                 context = json.loads((root / "route_context.json").read_text())
                 context["native_weather_readback"] = {"cloudiness": 80.0,

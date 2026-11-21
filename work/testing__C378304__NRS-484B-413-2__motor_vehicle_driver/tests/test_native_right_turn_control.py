@@ -35,7 +35,7 @@ class NativeRightTurnTests(unittest.TestCase):
             packet = root / "site.json"
             source = {"authored_map_sha256": CONFIG["map_sha256"],
                       "native_map_name": "Native C378304", "case_id": CONFIG["selected_case_id"],
-                      "district_type": "other" if CONFIG["selected_case_id"].endswith("__other_area_right_at_300ft") else "business",
+                      "district_type": "other" if CONFIG["selected_case_id"].endswith(("__other_area_right_at_300ft", "__other_area_right_below_300ft", "__other_area_right_above_300ft")) else "business",
                       "independent_review": True,
                       "freight_loading_zone_review": True,
                       "source_document": str(document),
@@ -63,7 +63,7 @@ class NativeRightTurnTests(unittest.TestCase):
         self.assertEqual(config["physical_completion"]["motion_source"], "drive_history.jsonl")
 
     def test_all_six_exact_indicator_starts(self):
-        self.assertEqual(len(CASE_DISTANCES_M), 6)
+        self.assertEqual(len(CASE_DISTANCES_M), 8)
         for name, distance in CASE_DISTANCES_M.items():
             with self.subTest(name=name):
                 policy = RightTurnPolicy("testing__C378304__NRS-484B-413-2__motor_vehicle_driver__" + name)

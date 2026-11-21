@@ -53,7 +53,7 @@ def retain_site_packet(packet_path, output, native_map_name, case_id):
         raise ValueError("C378304 requires SCENARIO_C378304_SITE_PACKET before capture")
     packet_path = Path(packet_path).resolve()
     packet = json.loads(packet_path.read_text())
-    expected_district = "other" if case_id.endswith("__other_area_right_at_300ft") else "business"
+    expected_district = "other" if case_id.endswith(("__other_area_right_at_300ft", "__other_area_right_below_300ft", "__other_area_right_above_300ft")) else "business"
     if (packet.get("authored_map_sha256") != CONFIG["map_sha256"]
             or packet.get("native_map_name") != native_map_name
             or packet.get("case_id") != case_id

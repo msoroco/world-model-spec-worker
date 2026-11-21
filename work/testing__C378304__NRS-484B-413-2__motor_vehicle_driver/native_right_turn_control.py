@@ -15,6 +15,8 @@ CASE_DISTANCES_M = {
     "zone_right_interrupted": 38.0,
     "zone_right_wet": 30.48,
     "other_area_right_at_300ft": 91.44,
+    "other_area_right_below_300ft": 90.45677419354839,
+    "other_area_right_above_300ft": 92.42322580645161,
 }
 
 
