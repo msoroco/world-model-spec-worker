@@ -171,3 +171,34 @@ negative changed-sign Fixed ego stop-sign crossing context changed
 negative missing-left-intent Opposing left-turn intention lacks source
 negative changed-ego-motion Fixed ego motion or sign changed
 audit_sha256 6f0471759f627d94302ee25731dfbf8958de21e09586aa5114e6bd72acfa2587
+
+=== CURRENT 900-FRAME prove_inside_comparison.py ===
+COMMAND PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python .runtime-work/c125745-1-opposite-left/prove_inside_comparison.py
+EXIT 0
+positive worker-stop-sign-initial-occupancy-comparison [False, True] 900
+negative changed-sign Fixed stop-sign crossing context changed
+negative missing-occupancy Other initial intersection occupancy did not change
+negative changed-ego-endpoint Fixed ego route endpoints changed
+negative changed-cameras Fixed source cameras or duration changed
+negative incomplete-history Incomplete original comparison history
+audit_sha256 41b8aa3fe633e705464a7a35a6202f210d866dc151c6eeaff81addd63611460e
+
+=== CURRENT 900-FRAME prove_ego_comparison.py ===
+COMMAND PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python .runtime-work/c125745-1-opposite-left/prove_ego_comparison.py
+EXIT 0
+positive worker-stop-sign-entry-comparison {'ego': {'frame': 333, 'time_s': 12.65}, 'other': {'frame': 185, 'time_s': 5.25}} {'ego': {'frame': 333, 'time_s': 12.65}, 'other': {'frame': 485, 'time_s': 20.25}}
+negative changed-sign Identified governing stop sign not observed
+negative changed-ego-motion Fixed ego motion or sign changed
+negative changed-cameras Fixed source cameras or duration changed
+negative incomplete-history Incomplete crossing/frame history
+negative wrong-order Ego-first source did not measure requested order
+audit_sha256 41b8aa3fe633e705464a7a35a6202f210d866dc151c6eeaff81addd63611460e
+
+=== CURRENT 900-FRAME prove_comparison.py ===
+COMMAND PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python .runtime-work/c125745-1-opposite-left/prove_comparison.py
+EXIT 0
+positive worker-stop-sign-opposite-left-comparison [{'ego': 333, 'other': 185}, {'ego': 333, 'other': 213}] 90.0
+negative changed-sign Fixed ego stop-sign crossing context changed
+negative missing-left-intent Opposing left-turn intention lacks source
+negative changed-ego-motion Fixed ego motion or sign changed
+audit_sha256 41b8aa3fe633e705464a7a35a6202f210d866dc151c6eeaff81addd63611460e

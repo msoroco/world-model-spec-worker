@@ -163,3 +163,63 @@ def compare_opposite_left(other_first_root, opposite_left_root, expected_frames=
             "official_device_exclusion_judgment": "unresolved",
             "opposite_left_turn_exception_judgment": "unresolved",
             "physical_acceptance_claimed": False}
+
+
+def compare_other_inside(other_first_root, other_inside_root, expected_frames=900):
+    """Check the controlled initial-occupancy change from original sources."""
+    from shapely.geometry import MultiPoint, Polygon
+
+    if type(expected_frames) is not int or expected_frames < 3:
+        raise ValueError("Expected full frame count required")
+    roots = [Path(other_first_root), Path(other_inside_root)]
+    contexts = []
+    rows = []
+    maps = []
+    configs = []
+    source_hashes = []
+    for root in roots:
+        names = ("junction_context.json", "crossing_history.jsonl", "video_frames.jsonl", "config.json")
+        if any(not (root / name).is_file() for name in names):
+            raise ValueError("Comparison lacks original source")
+        source_hashes.append({name: hashlib.sha256((root / name).read_bytes()).hexdigest()
+                              for name in names})
+        contexts.append(json.loads((root / names[0]).read_text()))
+        rows.append([json.loads(line) for line in (root / names[1]).read_text().splitlines()])
+        maps.append([json.loads(line) for line in (root / names[2]).read_text().splitlines()])
+        configs.append(json.loads((root / names[3]).read_text()))
+    if any(contexts[0].get(key) != contexts[1].get(key) for key in FIXED):
+        raise ValueError("Fixed stop-sign crossing context changed")
+    if configs[0].get('cameras') != configs[1].get('cameras') or \
+            any(config.get('frames') != expected_frames or config.get('rate_hz') != 20 for config in configs):
+        raise ValueError("Fixed source cameras or duration changed")
+    if any(len(series) != expected_frames for series in rows + maps):
+        raise ValueError("Incomplete original comparison history")
+    for left_row, right_row, left_map, right_map in zip(rows[0], rows[1], maps[0], maps[1]):
+        if (left_row['frame'], left_row['time_s']) != (right_row['frame'], right_row['time_s']) or \
+                left_map != right_map:
+            raise ValueError("Original frame/time or camera join changed")
+        if left_row['native_stop_sign_id'] != right_row['native_stop_sign_id']:
+            raise ValueError("Governing stop sign changed")
+        for who in ('ego', 'other'):
+            if left_row[who]['road_id'] != right_row[who]['road_id'] or \
+                    left_row[who]['lane_id'] != right_row[who]['lane_id']:
+                raise ValueError("Road or lane assignment changed")
+    if (rows[0][0]['ego']['body_vertices_xy_m'] != rows[1][0]['ego']['body_vertices_xy_m'] or
+            rows[0][-1]['ego']['body_vertices_xy_m'] != rows[1][-1]['ego']['body_vertices_xy_m']):
+        raise ValueError("Fixed ego route endpoints changed")
+    polygon = Polygon(contexts[0]['intersection_polygon_xy_m'])
+    def overlaps(body):
+        return MultiPoint(body).convex_hull.intersects(polygon)
+    first_inside = overlaps(rows[0][0]['other']['body_vertices_xy_m'])
+    changed_inside = overlaps(rows[1][0]['other']['body_vertices_xy_m'])
+    if first_inside or not changed_inside:
+        raise ValueError("Other initial intersection occupancy did not change")
+    if any(overlaps(row['ego']['body_vertices_xy_m']) for row in (rows[0][0], rows[1][0])):
+        raise ValueError("Ego initial approach was already inside")
+    return {"format": "worker-stop-sign-initial-occupancy-comparison",
+            "expected_frames": expected_frames, "source_sha256": source_hashes,
+            "other_initially_inside": [first_inside, changed_inside],
+            "ego_route_endpoints": [rows[0][0]['ego']['body_vertices_xy_m'],
+                                    rows[0][-1]['ego']['body_vertices_xy_m']],
+            "official_device_exclusion_judgment": "unresolved",
+            "physical_acceptance_claimed": False}
