@@ -25,6 +25,7 @@ class StopTests(unittest.TestCase):
                    "native_signal_id": 13, "signal_head_video_source": "front-original",
                    "lane_governance_source": "native-affected-waypoints",
                    "stop_line_source": "native-map-and-front-video",
+                   "other_stop_boundary": {"kind": "stop_line", "source": "other-approach-map-and-video"},
                    "installed_uncovered_vehicular_heads": True,
                    "stop_line_exists": True,
                    "intersection_polygon_xy_m": [[0, -5], [10, -5], [10, 5], [0, 5]]}
@@ -59,6 +60,24 @@ class StopTests(unittest.TestCase):
             self.assertEqual(report["first_body_entry"]["ego"]["frame"], 103)
             self.assertTrue(report["other_body_inside_at_ego_entry_observed"])
 
+    def test_other_halt_is_measured_at_its_own_crosswalk(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            self.fixture(root)
+            context_path = root / "junction_context.json"
+            context = json.loads(context_path.read_text())
+            context["other_stop_boundary"] = {"kind": "crosswalk", "source": "other-approach-map-and-video"}
+            context_path.write_text(json.dumps(context))
+            history_path = root / "vehicle_signal_history.jsonl"
+            rows = [json.loads(line) for line in history_path.read_text().splitlines()]
+            for row in rows:
+                row["other"]["front_to_crosswalk_signed_m"] = row["other"].pop("front_to_stop_line_signed_m")
+            rows[1]["other"]["front_to_crosswalk_signed_m"] = -0.5
+            history_path.write_text("".join(json.dumps(row) + "\n" for row in rows))
+            report = measure.analyze(root)
+            self.assertIsNone(report["first_full_halt_before_or_at_selected_boundary"]["other"])
+            self.assertFalse(report["other_completed_stop_before_ego_observed"])
+
     def test_rejects_operating_signal_and_stale_frame(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
@@ -86,6 +105,7 @@ class StopTests(unittest.TestCase):
             context["stop_line_exists"] = False
             context["crosswalk_exists"] = True
             context["crosswalk_source"] = "native-map-and-front-video-crosswalk"
+            context["other_stop_boundary"] = {"kind": "crosswalk", "source": "other-approach-crosswalk"}
             for row in rows:
                 for actor in ("ego", "other"):
                     row[actor]["front_to_crosswalk_signed_m"] = row[actor].pop("front_to_stop_line_signed_m")
@@ -97,6 +117,7 @@ class StopTests(unittest.TestCase):
 
             context["crosswalk_exists"] = False
             context["nearest_view_source"] = "native-map-and-original-view-review"
+            context["other_stop_boundary"] = {"kind": "nearest_view", "source": "other-approach-view-review"}
             for row in rows:
                 for actor in ("ego", "other"):
                     row[actor]["front_to_nearest_view_signed_m"] = row[actor].pop("front_to_crosswalk_signed_m")
@@ -214,7 +235,8 @@ class StopTests(unittest.TestCase):
             history_path = right / "vehicle_signal_history.jsonl"
             context = json.loads(context_path.read_text())
             context.update(stop_line_exists=False, crosswalk_exists=True,
-                           crosswalk_source="native-map-and-front-video-crosswalk")
+                           crosswalk_source="native-map-and-front-video-crosswalk",
+                           other_stop_boundary={"kind": "crosswalk", "source": "other-approach-crosswalk"})
             context_path.write_text(json.dumps(context))
             rows = [json.loads(line) for line in history_path.read_text().splitlines()]
             for row in rows:

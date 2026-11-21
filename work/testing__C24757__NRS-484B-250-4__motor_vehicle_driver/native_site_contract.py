@@ -16,7 +16,8 @@ SOURCE_CLAIMS = {
     "map_geometry": {"native_map_name", "intersection_id", "intersection_polygon_xy_m"},
     "signal_governance": {"native_signal_id", "entrance_road_lanes"},
     "signal_heads": {"installed_uncovered_vehicular_heads"},
-    "stop_boundary": {"stop_line_exists", "crosswalk_exists", "stop_boundary"},
+    "stop_boundary": {"stop_line_exists", "crosswalk_exists", "stop_boundary",
+                      "other_stop_line_exists", "other_crosswalk_exists", "other_stop_boundary"},
     "approach_visibility": {"approach_visibility_source"},
 }
 
@@ -70,7 +71,7 @@ def validate_site(config, base_dir):
                 raise ValueError("Junction claim differs from source: " + field)
     for field in ("native_map_name", "intersection_id", "native_signal_id",
                   "installed_uncovered_vehicular_heads", "intersection_polygon_xy_m",
-                  "entrance_road_lanes", "stop_boundary"):
+                  "entrance_road_lanes", "stop_boundary", "other_stop_boundary"):
         if field not in site:
             raise ValueError("Missing junction construction field: " + field)
     if site["installed_uncovered_vehicular_heads"] is not True:
@@ -87,12 +88,22 @@ def validate_site(config, base_dir):
                 "nearest_view" if site.get("stop_line_exists") is False and site.get("crosswalk_exists") is False else None)
     if not expected or not isinstance(boundary, dict) or boundary.get("kind") != expected or not boundary.get("source"):
         raise ValueError("Statutory stopping-reference hierarchy differs from source")
-    point, normal = boundary.get("point_xy_m"), boundary.get("upstream_normal_xy")
-    if (not isinstance(point, list) or len(point) != 2 or
-            not isinstance(normal, list) or len(normal) != 2 or
-            any(type(v) not in (int, float) or not math.isfinite(v) for v in point + normal) or
-            abs(math.hypot(*normal) - 1) > 1e-5):
-        raise ValueError("Finite sourced boundary geometry required")
+    other_expected = ("stop_line" if site.get("other_stop_line_exists") is True else
+                      "crosswalk" if site.get("other_stop_line_exists") is False and site.get("other_crosswalk_exists") is True else
+                      "nearest_view" if site.get("other_stop_line_exists") is False and site.get("other_crosswalk_exists") is False else None)
+    if (other_expected is None or not isinstance(site["other_stop_boundary"], dict) or
+            site["other_stop_boundary"].get("kind") != other_expected):
+        raise ValueError("Other approach stopping-reference hierarchy differs from source")
+    for who, candidate in (("ego", boundary), ("other", site["other_stop_boundary"])):
+        if (not isinstance(candidate, dict) or candidate.get("kind") not in
+                ("stop_line", "crosswalk", "nearest_view") or not candidate.get("source")):
+            raise ValueError("Sourced " + who + " boundary required")
+        point, normal = candidate.get("point_xy_m"), candidate.get("upstream_normal_xy")
+        if (not isinstance(point, list) or len(point) != 2 or
+                not isinstance(normal, list) or len(normal) != 2 or
+                any(type(v) not in (int, float) or not math.isfinite(v) for v in point + normal) or
+                abs(math.hypot(*normal) - 1) > 1e-5):
+            raise ValueError("Finite sourced " + who + " boundary geometry required")
     if expected == "nearest_view" and not site.get("approach_visibility_source"):
         raise ValueError("Nearest-view approach visibility source required")
     return {"site_review_sha256": config["site_review"]["sha256"],

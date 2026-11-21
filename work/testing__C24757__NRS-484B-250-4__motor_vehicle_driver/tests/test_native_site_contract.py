@@ -31,6 +31,9 @@ class SiteTests(unittest.TestCase):
                 "crosswalk_exists": kind == "crosswalk",
                 "stop_boundary": {"kind": kind, "source": "map-and-original-front-view",
                                   "point_xy_m": [0, 0], "upstream_normal_xy": [-1, 0]},
+                "other_stop_line_exists": True, "other_crosswalk_exists": False,
+                "other_stop_boundary": {"kind": "stop_line", "source": "other-approach-map-and-view",
+                                        "point_xy_m": [0, 0], "upstream_normal_xy": [0, -1]},
                 "approach_visibility_source": "native-map-and-front-view"}
         docs = {}
         for role, fields in site_contract.SOURCE_CLAIMS.items():
@@ -67,6 +70,15 @@ class SiteTests(unittest.TestCase):
             config = self.fixture(root)
             config["site_review"]["path"] = "../review.json"
             with self.assertRaisesRegex(ValueError, "escapes packet root"):
+                site_contract.validate_site(config, root)
+
+    def test_other_approach_boundary_must_be_sourced_and_distinct(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            config = self.fixture(root)
+            self.assertEqual(config["site"]["other_stop_boundary"]["upstream_normal_xy"], [0, -1])
+            config["site"]["other_stop_boundary"]["upstream_normal_xy"] = [-1, 0]
+            with self.assertRaisesRegex(ValueError, "differs from bound review packet"):
                 site_contract.validate_site(config, root)
 
     def test_two_actor_four_camera_capture_plan(self):

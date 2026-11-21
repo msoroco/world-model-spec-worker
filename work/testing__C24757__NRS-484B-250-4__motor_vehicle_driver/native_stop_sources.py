@@ -47,17 +47,16 @@ def source_row(frame, time_s, signal, ego, other, site):
         raise ValueError("Nonnegative Native frame required")
     _finite(time_s, "Native time")
     boundary = site.get("stop_boundary")
-    if not isinstance(boundary, dict):
-        raise ValueError("Reviewed stop boundary required")
-    kind = boundary.get("kind")
+    other_boundary = site.get("other_stop_boundary")
     fields = {"stop_line": "front_to_stop_line_signed_m",
               "crosswalk": "front_to_crosswalk_signed_m",
               "nearest_view": "front_to_nearest_view_signed_m"}
-    if kind not in fields or not boundary.get("source"):
-        raise ValueError("Sourced statutory stop boundary required")
-    point, normal = boundary.get("point_xy_m"), boundary.get("upstream_normal_xy")
-    if not isinstance(point, list) or len(point) != 2 or not isinstance(normal, list) or len(normal) != 2:
-        raise ValueError("Boundary geometry required")
+    for candidate in (boundary, other_boundary):
+        if not isinstance(candidate, dict) or candidate.get("kind") not in fields or not candidate.get("source"):
+            raise ValueError("Sourced statutory stop boundary required for each approach")
+        point, normal = candidate.get("point_xy_m"), candidate.get("upstream_normal_xy")
+        if not isinstance(point, list) or len(point) != 2 or not isinstance(normal, list) or len(normal) != 2:
+            raise ValueError("Boundary geometry required")
     if not site.get("intersection_id") or not site.get("native_signal_id"):
         raise ValueError("Sourced Native signal and intersection IDs required")
     if signal.id != site["native_signal_id"]:
@@ -67,5 +66,7 @@ def source_row(frame, time_s, signal, ego, other, site):
         raise ValueError("Native Off readback failed in source row")
     return {"frame": frame, "time_s": time_s,
             "native_signal_id": signal.id, "signal_state": signal_state,
-            "ego": actor_source(ego, site["intersection_id"], point, normal, fields[kind]),
-            "other": actor_source(other, site["intersection_id"], point, normal, fields[kind])}
+            "ego": actor_source(ego, site["intersection_id"], boundary["point_xy_m"],
+                                boundary["upstream_normal_xy"], fields[boundary["kind"]]),
+            "other": actor_source(other, site["intersection_id"], other_boundary["point_xy_m"],
+                                  other_boundary["upstream_normal_xy"], fields[other_boundary["kind"]])}

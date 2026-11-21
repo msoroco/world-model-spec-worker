@@ -36,7 +36,9 @@ class SourceTests(unittest.TestCase):
     def site(self, kind):
         return {"intersection_id": 6, "native_signal_id": 13,
                 "stop_boundary": {"kind": kind, "source": "reviewed-map-and-original-video",
-                                  "point_xy_m": [0, 0], "upstream_normal_xy": [-1, 0]}}
+                                  "point_xy_m": [0, 0], "upstream_normal_xy": [-1, 0]},
+                "other_stop_boundary": {"kind": kind, "source": "other-approach-map-and-video",
+                                        "point_xy_m": [0, 0], "upstream_normal_xy": [-1, 0]}}
 
     def test_body_front_signed_distance_and_original_off_readback(self):
         signal = types.SimpleNamespace(id=13, get_state=lambda: "Off")
@@ -48,6 +50,15 @@ class SourceTests(unittest.TestCase):
             self.assertEqual(row["other"][field], 5)
             self.assertEqual(row["signal_state"], "Off")
             self.assertEqual(len(row["ego"]["body_vertices_xy_m"]), 4)
+
+    def test_other_approach_uses_its_own_boundary_geometry(self):
+        signal = types.SimpleNamespace(id=13, get_state=lambda: "Off")
+        site = self.site("stop_line")
+        site["other_stop_boundary"]["point_xy_m"] = [0, -5]
+        site["other_stop_boundary"]["upstream_normal_xy"] = [0, 1]
+        row = sources.source_row(100, 1.0, signal, Actor(-3, 0), Actor(-5, 0), site)
+        self.assertEqual(row["ego"]["front_to_stop_line_signed_m"], 3)
+        self.assertEqual(row["other"]["front_to_stop_line_signed_m"], 4)
 
     def test_rejects_unreviewed_geometry_and_operating_head(self):
         site = self.site("stop_line")
@@ -67,6 +78,7 @@ class SourceTests(unittest.TestCase):
                    "native_signal_id": 13, "signal_head_video_source": "front-original",
                    "lane_governance_source": "native-affected-waypoints",
                    "stop_line_source": "reviewed-map-and-original-video",
+                   "other_stop_boundary": {"kind": "stop_line", "source": "other-approach-map-and-video"},
                    "installed_uncovered_vehicular_heads": True,
                    "stop_line_exists": True,
                    "intersection_polygon_xy_m": [[0, -5], [10, -5], [10, 5], [0, 5]]}

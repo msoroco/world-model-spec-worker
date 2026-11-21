@@ -224,9 +224,9 @@ def capture_native(args, config):
                     collector = PipelineCapture(client, ego, output, config["selected_case_id"],
                                                 required_observations=config["required_atoms"])
                     try:
-                        boundary = config["site"]["stop_boundary"]
                         for index in range(config["duration_s"]*20):
                             for who, actor in (("ego", ego), ("other", other)):
+                                boundary = config["site"]["stop_boundary" if who == "ego" else "other_stop_boundary"]
                                 verts = actor.bounding_box.get_world_vertices(actor.get_transform())
                                 xy = [[v.x, v.y] for v in verts]
                                 signed = signed_front_distance(xy, boundary["point_xy_m"],
@@ -265,6 +265,8 @@ def capture_native(args, config):
                    "installed_uncovered_vehicular_heads": site["installed_uncovered_vehicular_heads"],
                    "stop_line_exists": site["stop_line_exists"],
                    "crosswalk_exists": site["crosswalk_exists"],
+                   "other_stop_boundary": {"kind": site["other_stop_boundary"]["kind"],
+                                           "source": site["other_stop_boundary"]["source"]},
                    "intersection_polygon_xy_m": site["intersection_polygon_xy_m"],
                    "signal_head_video_source": site["approach_visibility_source"],
                    "lane_governance_source": config["site_review"]["sha256"],

@@ -54,6 +54,14 @@ def analyze(root: Path) -> dict:
         raise ValueError("Stop boundary hierarchy is not sourced")
     if not context.get(source):
         raise ValueError("Missing sourced stop boundary: " + source)
+    other_boundary = context.get("other_stop_boundary")
+    if (not isinstance(other_boundary, dict) or
+            other_boundary.get("kind") not in ("stop_line", "crosswalk", "nearest_view") or
+            not other_boundary.get("source")):
+        raise ValueError("Missing sourced other-approach stop boundary")
+    other_signed_field = {"stop_line": "front_to_stop_line_signed_m",
+                          "crosswalk": "front_to_crosswalk_signed_m",
+                          "nearest_view": "front_to_nearest_view_signed_m"}[other_boundary["kind"]]
     vertices = context.get("intersection_polygon_xy_m")
     if not isinstance(vertices, list) or len(vertices) < 3:
         raise ValueError("Missing intersection polygon")
@@ -82,16 +90,17 @@ def analyze(root: Path) -> dict:
             if not isinstance(actor, dict) or actor.get("intersection_id") != context["intersection_id"]:
                 raise ValueError("Vehicle on wrong junction")
             speed = _number(actor.get("speed_mps"))
-            signed = _number(actor.get(signed_field))
+            actor_field = signed_field if who == "ego" else other_signed_field
+            signed = _number(actor.get(actor_field))
             inside = _body_inside(actor, polygon)
             if index == 0 and inside:
                 raise ValueError("No pre-entry approach observation")
             if speed == 0 and signed >= 0 and first_stop[who] is None:
-                first_stop[who] = {"frame": fid, "time_s": time, signed_field: signed}
+                first_stop[who] = {"frame": fid, "time_s": time, actor_field: signed}
             if inside and not prior_inside[who] and first_entry[who] is None:
                 first_entry[who] = {"frame": fid, "time_s": time}
             prior_inside[who] = inside
-            sample[who] = {"speed_mps": speed, signed_field: signed,
+            sample[who] = {"speed_mps": speed, actor_field: signed,
                            "body_in_intersection": inside}
         samples.append(sample)
     ego_entry_sample = next((sample for sample in samples if first_entry["ego"] and
@@ -100,6 +109,8 @@ def analyze(root: Path) -> dict:
                                  if ego_entry_sample else None)
     return {"format": "worker-inoperative-signal-stop-history", "sources": hashes,
             "selected_stop_boundary": boundary, "selected_stop_boundary_source": context[source],
+            "other_stop_boundary": other_boundary["kind"],
+            "other_stop_boundary_source": other_boundary["source"],
             "intersection_id": context["intersection_id"],
             "first_full_halt_before_or_at_line": first_stop,
             "first_full_halt_before_or_at_selected_boundary": first_stop,
