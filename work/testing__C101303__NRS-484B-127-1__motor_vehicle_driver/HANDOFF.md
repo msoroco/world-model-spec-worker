@@ -313,3 +313,7 @@ Return cap checkpoint: 7 unbound historical top-level logs and former test rows 
 2026-11-20 packaging checkpoint: Four unreferenced historical draft helper scripts were preserved byte-for-byte with original paths, SHA-256 and zlib/base64 payloads in `work/_shared/archived-unbound-negative-logs-20261119.json`, then removed to make room under the frozen 8,600-file cap. The assignment-scoped `worker_check.py --complete` passes after archival. Active manifests, result-bound proofs, tests and cited source scripts remain in place.
 
 2026-11-20 return-cap consolidation: historical unreferenced helper scripts from this owner were archived byte-for-byte under `work/_shared/archived-unbound-negative-logs-20261119.json` with SHA-256. Active construction and bound proof files remain in place. Restore a helper from the archive before rerunning historical authoring workflows.
+
+## 2026-11-20 empty-log consolidation
+
+Thirty-five zero-byte midpoint-promotion analysis logs, referenced only by this assignment's execution manifest, now share the zero-byte `shared-empty-analysis.log`. Their SHA-256 remains the empty-file hash. The one analysis log referenced by other historical proof documents remains at its original path. Assignment-scoped `worker_check.py --complete` passes after rebinding. No construction, source content, frozen input, runtime, batch.json or Git action changed.

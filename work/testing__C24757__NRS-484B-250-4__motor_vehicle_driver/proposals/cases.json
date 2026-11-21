@@ -7,8 +7,568 @@
       "case_id": "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__stop_line_other_prior",
       "target_law_id": "NRS-484B-250-4",
       "target_type": "delivery",
-      "sweep_measurements": [],
-      "variable_assignments": {},
+      "rationale": "Off installed uncovered signal; marked line; other vehicle completes stop first and enters before ego",
+      "variable_assignments": {
+        "stop_reference": {
+          "kind": "world_setup",
+          "value": "stop_line",
+          "unit": "categorical"
+        },
+        "ego_stop_control": {
+          "kind": "controller",
+          "value": "full_halt",
+          "unit": "categorical"
+        },
+        "other_stop_control": {
+          "kind": "controller",
+          "value": "full_halt",
+          "unit": "categorical"
+        },
+        "ego_release_rule": {
+          "kind": "controller",
+          "value": "after_other_clear",
+          "unit": "categorical"
+        },
+        "other_release_rule": {
+          "kind": "controller",
+          "value": "scheduled",
+          "unit": "categorical"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "method": "Original ego complete-body velocity magnitude per Native frame",
+            "time_window": "full original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Actual motion, pixels and legal significance require local source review"
+          },
+          {
+            "name": "other_speed",
+            "unit": "m/s",
+            "method": "Original other complete-body velocity magnitude per Native frame",
+            "time_window": "full original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Actual motion, pixels and legal significance require local source review"
+          },
+          {
+            "name": "ego_stop_boundary_distance",
+            "unit": "m",
+            "method": "Original ego complete-body signed front distance to sourced stop line",
+            "time_window": "full original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Actual motion, pixels and legal significance require local source review"
+          },
+          {
+            "name": "signal_state",
+            "unit": "device state",
+            "method": "Original ego governed signal Off-state readback per Native frame",
+            "time_window": "full original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Actual motion, pixels and legal significance require local source review"
+          },
+          {
+            "name": "ego_position",
+            "unit": "m",
+            "method": "Original complete-body vertex mean XY per Native frame",
+            "time_window": "full original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Actual motion, pixels and legal significance require local source review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "junction_context",
+            "unit": "structured record",
+            "method": "Authored map and observed Native head IDs joined to original source rows"
+          }
+        ],
+        "limitations": [
+          "Authored site packet is a construction candidate; actual physical and legal acceptance unclaimed"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "Statutory inoperability, cautiousness and yielding require original physical review"
+      ]
+    },
+    {
+      "case_id": "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__stop_line_ego_prior",
+      "target_law_id": "NRS-484B-250-4",
+      "target_type": "delivery",
+      "rationale": "Same physical junction; ego completes stop first",
+      "variable_assignments": {
+        "stop_reference": {
+          "kind": "world_setup",
+          "value": "stop_line",
+          "unit": "categorical"
+        },
+        "ego_stop_control": {
+          "kind": "controller",
+          "value": "full_halt",
+          "unit": "categorical"
+        },
+        "other_stop_control": {
+          "kind": "controller",
+          "value": "full_halt",
+          "unit": "categorical"
+        },
+        "ego_release_rule": {
+          "kind": "controller",
+          "value": "scheduled",
+          "unit": "categorical"
+        },
+        "other_release_rule": {
+          "kind": "controller",
+          "value": "after_other_clear",
+          "unit": "categorical"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "method": "Original ego complete-body velocity magnitude per Native frame",
+            "time_window": "full original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Actual motion, pixels and legal significance require local source review"
+          },
+          {
+            "name": "other_speed",
+            "unit": "m/s",
+            "method": "Original other complete-body velocity magnitude per Native frame",
+            "time_window": "full original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Actual motion, pixels and legal significance require local source review"
+          },
+          {
+            "name": "ego_stop_boundary_distance",
+            "unit": "m",
+            "method": "Original ego complete-body signed front distance to sourced stop line",
+            "time_window": "full original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Actual motion, pixels and legal significance require local source review"
+          },
+          {
+            "name": "signal_state",
+            "unit": "device state",
+            "method": "Original ego governed signal Off-state readback per Native frame",
+            "time_window": "full original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Actual motion, pixels and legal significance require local source review"
+          },
+          {
+            "name": "ego_position",
+            "unit": "m",
+            "method": "Original complete-body vertex mean XY per Native frame",
+            "time_window": "full original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Actual motion, pixels and legal significance require local source review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "junction_context",
+            "unit": "structured record",
+            "method": "Authored map and observed Native head IDs joined to original source rows"
+          }
+        ],
+        "limitations": [
+          "Authored site packet is a construction candidate; actual physical and legal acceptance unclaimed"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "Statutory inoperability, cautiousness and yielding require original physical review"
+      ]
+    },
+    {
+      "case_id": "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__stop_line_other_inside",
+      "target_law_id": "NRS-484B-250-4",
+      "target_type": "delivery",
+      "rationale": "Other vehicle already inside at ego post-stop entry",
+      "variable_assignments": {
+        "stop_reference": {
+          "kind": "world_setup",
+          "value": "stop_line",
+          "unit": "categorical"
+        },
+        "ego_stop_control": {
+          "kind": "controller",
+          "value": "full_halt",
+          "unit": "categorical"
+        },
+        "other_stop_control": {
+          "kind": "controller",
+          "value": "full_halt",
+          "unit": "categorical"
+        },
+        "ego_release_rule": {
+          "kind": "controller",
+          "value": "after_partner_entry",
+          "unit": "categorical"
+        },
+        "other_release_rule": {
+          "kind": "controller",
+          "value": "scheduled",
+          "unit": "categorical"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "method": "Original ego complete-body velocity magnitude per Native frame",
+            "time_window": "full original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Actual motion, pixels and legal significance require local source review"
+          },
+          {
+            "name": "other_speed",
+            "unit": "m/s",
+            "method": "Original other complete-body velocity magnitude per Native frame",
+            "time_window": "full original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Actual motion, pixels and legal significance require local source review"
+          },
+          {
+            "name": "ego_stop_boundary_distance",
+            "unit": "m",
+            "method": "Original ego complete-body signed front distance to sourced stop line",
+            "time_window": "full original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Actual motion, pixels and legal significance require local source review"
+          },
+          {
+            "name": "signal_state",
+            "unit": "device state",
+            "method": "Original ego governed signal Off-state readback per Native frame",
+            "time_window": "full original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Actual motion, pixels and legal significance require local source review"
+          },
+          {
+            "name": "ego_position",
+            "unit": "m",
+            "method": "Original complete-body vertex mean XY per Native frame",
+            "time_window": "full original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Actual motion, pixels and legal significance require local source review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "junction_context",
+            "unit": "structured record",
+            "method": "Authored map and observed Native head IDs joined to original source rows"
+          }
+        ],
+        "limitations": [
+          "Authored site packet is a construction candidate; actual physical and legal acceptance unclaimed"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "Statutory inoperability, cautiousness and yielding require original physical review"
+      ]
+    },
+    {
+      "case_id": "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__stop_line_no_halt",
+      "target_law_id": "NRS-484B-250-4",
+      "target_type": "delivery",
+      "rationale": "Ego slows but does not fully halt at marked line",
+      "variable_assignments": {
+        "stop_reference": {
+          "kind": "world_setup",
+          "value": "stop_line",
+          "unit": "categorical"
+        },
+        "ego_stop_control": {
+          "kind": "controller",
+          "value": "rolling_comparison",
+          "unit": "categorical"
+        },
+        "other_stop_control": {
+          "kind": "controller",
+          "value": "full_halt",
+          "unit": "categorical"
+        },
+        "ego_release_rule": {
+          "kind": "controller",
+          "value": "scheduled",
+          "unit": "categorical"
+        },
+        "other_release_rule": {
+          "kind": "controller",
+          "value": "scheduled",
+          "unit": "categorical"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "method": "Original ego complete-body velocity magnitude per Native frame",
+            "time_window": "full original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Actual motion, pixels and legal significance require local source review"
+          },
+          {
+            "name": "other_speed",
+            "unit": "m/s",
+            "method": "Original other complete-body velocity magnitude per Native frame",
+            "time_window": "full original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Actual motion, pixels and legal significance require local source review"
+          },
+          {
+            "name": "ego_stop_boundary_distance",
+            "unit": "m",
+            "method": "Original ego complete-body signed front distance to sourced stop line",
+            "time_window": "full original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Actual motion, pixels and legal significance require local source review"
+          },
+          {
+            "name": "signal_state",
+            "unit": "device state",
+            "method": "Original ego governed signal Off-state readback per Native frame",
+            "time_window": "full original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Actual motion, pixels and legal significance require local source review"
+          },
+          {
+            "name": "ego_position",
+            "unit": "m",
+            "method": "Original complete-body vertex mean XY per Native frame",
+            "time_window": "full original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Actual motion, pixels and legal significance require local source review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "junction_context",
+            "unit": "structured record",
+            "method": "Authored map and observed Native head IDs joined to original source rows"
+          }
+        ],
+        "limitations": [
+          "Authored site packet is a construction candidate; actual physical and legal acceptance unclaimed"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "Statutory inoperability, cautiousness and yielding require original physical review"
+      ]
+    },
+    {
+      "case_id": "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__crosswalk_no_stop_line",
+      "target_law_id": "NRS-484B-250-4",
+      "target_type": "delivery",
+      "rationale": "No line; near-side crosswalk is the required stopping location",
+      "variable_assignments": {
+        "stop_reference": {
+          "kind": "world_setup",
+          "value": "crosswalk",
+          "unit": "categorical"
+        },
+        "ego_stop_control": {
+          "kind": "controller",
+          "value": "full_halt",
+          "unit": "categorical"
+        },
+        "other_stop_control": {
+          "kind": "controller",
+          "value": "full_halt",
+          "unit": "categorical"
+        },
+        "ego_release_rule": {
+          "kind": "controller",
+          "value": "after_other_clear",
+          "unit": "categorical"
+        },
+        "other_release_rule": {
+          "kind": "controller",
+          "value": "scheduled",
+          "unit": "categorical"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "method": "Original ego complete-body velocity magnitude per Native frame",
+            "time_window": "full original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Actual motion, pixels and legal significance require local source review"
+          },
+          {
+            "name": "other_speed",
+            "unit": "m/s",
+            "method": "Original other complete-body velocity magnitude per Native frame",
+            "time_window": "full original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Actual motion, pixels and legal significance require local source review"
+          },
+          {
+            "name": "ego_stop_boundary_distance",
+            "unit": "m",
+            "method": "Original ego complete-body signed front distance to sourced crosswalk reference",
+            "time_window": "full original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Actual motion, pixels and legal significance require local source review"
+          },
+          {
+            "name": "signal_state",
+            "unit": "device state",
+            "method": "Original ego governed signal Off-state readback per Native frame",
+            "time_window": "full original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Actual motion, pixels and legal significance require local source review"
+          },
+          {
+            "name": "ego_position",
+            "unit": "m",
+            "method": "Original complete-body vertex mean XY per Native frame",
+            "time_window": "full original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Actual motion, pixels and legal significance require local source review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "junction_context",
+            "unit": "structured record",
+            "method": "Authored map and observed Native head IDs joined to original source rows"
+          }
+        ],
+        "limitations": [
+          "Authored site packet is a construction candidate; actual physical and legal acceptance unclaimed"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "Statutory inoperability, cautiousness and yielding require original physical review"
+      ]
+    },
+    {
+      "case_id": "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__nearest_view_no_line_or_crosswalk",
+      "target_law_id": "NRS-484B-250-4",
+      "target_type": "delivery",
+      "rationale": "No line/crosswalk; stop at nearest point with a view of through traffic",
+      "variable_assignments": {
+        "stop_reference": {
+          "kind": "world_setup",
+          "value": "nearest_view",
+          "unit": "categorical"
+        },
+        "ego_stop_control": {
+          "kind": "controller",
+          "value": "full_halt",
+          "unit": "categorical"
+        },
+        "other_stop_control": {
+          "kind": "controller",
+          "value": "full_halt",
+          "unit": "categorical"
+        },
+        "ego_release_rule": {
+          "kind": "controller",
+          "value": "after_other_clear",
+          "unit": "categorical"
+        },
+        "other_release_rule": {
+          "kind": "controller",
+          "value": "scheduled",
+          "unit": "categorical"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "method": "Original ego complete-body velocity magnitude per Native frame",
+            "time_window": "full original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Actual motion, pixels and legal significance require local source review"
+          },
+          {
+            "name": "other_speed",
+            "unit": "m/s",
+            "method": "Original other complete-body velocity magnitude per Native frame",
+            "time_window": "full original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Actual motion, pixels and legal significance require local source review"
+          },
+          {
+            "name": "ego_stop_boundary_distance",
+            "unit": "m",
+            "method": "Original ego complete-body signed front distance to sourced nearest view reference",
+            "time_window": "full original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Actual motion, pixels and legal significance require local source review"
+          },
+          {
+            "name": "signal_state",
+            "unit": "device state",
+            "method": "Original ego governed signal Off-state readback per Native frame",
+            "time_window": "full original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Actual motion, pixels and legal significance require local source review"
+          },
+          {
+            "name": "ego_position",
+            "unit": "m",
+            "method": "Original complete-body vertex mean XY per Native frame",
+            "time_window": "full original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Actual motion, pixels and legal significance require local source review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "junction_context",
+            "unit": "structured record",
+            "method": "Authored map and observed Native head IDs joined to original source rows"
+          }
+        ],
+        "limitations": [
+          "Authored site packet is a construction candidate; actual physical and legal acceptance unclaimed"
+        ]
+      },
       "unresolved_judgment_calls": [
         "Statutory inoperability, cautiousness and yielding require original physical review"
       ]
