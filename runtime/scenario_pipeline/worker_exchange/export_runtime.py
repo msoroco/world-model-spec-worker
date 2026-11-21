@@ -102,6 +102,9 @@ def export(project,destination,fixture_attempt=None,capability_root=None):
     full=library/'splits/full/TrafficSpec/Core' if active.exists() and active.read_text().strip()!='full' else core
     shutil.copytree(core,destination/'library/TrafficSpec/Core')
     shutil.copytree(full,destination/'library/TrafficSpec/Core',dirs_exist_ok=True)
+    # The recorded-capture adapter checks the full ontology at this pinned
+    # path even when the active Lean library is a training split.
+    shutil.copytree(full,destination/'library/splits/full/TrafficSpec/Core')
     shutil.copyfile(library/'TrafficSpec/Core.lean',destination/'library/TrafficSpec/Core.lean')
     shutil.copyfile(library/'lean-toolchain',destination/'library/lean-toolchain')
     (destination/'ontology').mkdir()
