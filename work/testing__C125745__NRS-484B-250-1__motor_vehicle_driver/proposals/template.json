@@ -1,0 +1,125 @@
+{
+  "template_id": "NRS-484B-250-1@motor_vehicle_driver",
+  "law_id": "NRS-484B-250-1",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "The driver of a vehicle approaching an intersection shall yield the right-of-way to a vehicle which has entered the intersection from a different highway. Except as otherwise provided in subsection 4 [NRS-484B-250-4], this section does not apply at intersections controlled by official traffic-control devices or to vehicles approaching each other from opposite directions, when the driver of one of the vehicles is intending to or is making a left turn.",
+  "structure": {
+    "law_id": "NRS-484B-250-1",
+    "activation": {
+      "condition": "ego approaches one crossing after entry from another highway; source-reviewed sign governance and opposing left-turn exception remain separate",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "approaching driver yields the right-of-way to the vehicle that has entered",
+      "type": "must",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "trigger": "intersection controlled by official traffic-control devices except as otherwise provided in subsection 4",
+        "effect": "the subsection (1) right-of-way rule is excluded unless subsection 4 applies",
+        "replacement_obligation": "subsection-4 duties require separate review",
+        "source_clause": "Except as otherwise provided in subsection 4 [NRS-484B-250-4], this section does not apply at intersections controlled by official traffic-control devices"
+      },
+      {
+        "trigger": "vehicles approach from opposite directions and one driver intends or makes a left turn",
+        "effect": "the subsection (1) right-of-way rule is excluded for the specified opposing left-turn context",
+        "replacement_obligation": "applicable left-turn duty requires separate review",
+        "source_clause": "or to vehicles approaching each other from opposite directions, when the driver of one of the vehicles is intending to or is making a left turn."
+      }
+    ],
+    "timing": {
+      "description": "compare original complete-body entry and approach history, then observe yielding through the encounter",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "entered the intersection",
+        "note": "Complete-body entry and one statutory crossing require original geometry and frame review."
+      },
+      {
+        "phrase": "different highway",
+        "note": "Original approach lanes and crossing identity require independent source review."
+      },
+      {
+        "phrase": "yield the right-of-way",
+        "note": "Original motion and priority context are required; no speed or time surrogate decides the duty."
+      },
+      {
+        "phrase": "official traffic-control devices",
+        "note": "Official status and governance require independent source review; Native light state alone is insufficient."
+      },
+      {
+        "phrase": "intending to or is making a left turn",
+        "note": "Turn intention and realized trajectory require route and original heading/body evidence."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "other_release_frame",
+      "kind": "controller",
+      "range_or_domain": "nonnegative Native frame",
+      "used_by_laws": [
+        "NRS-484B-250-1"
+      ]
+    },
+    {
+      "name": "body_entry_time_delta_s",
+      "kind": "subject_behavior",
+      "range_or_domain": "source-measured signed seconds, unknown until capture",
+      "used_by_laws": [
+        "NRS-484B-250-1"
+      ]
+    },
+    {
+      "name": "official_device_status",
+      "kind": "world_setup",
+      "range_or_domain": "source-reviewed status; unknown allowed",
+      "used_by_laws": [
+        "NRS-484B-250-1"
+      ]
+    },
+    {
+      "name": "other_approach_relation",
+      "kind": "world_setup",
+      "range_or_domain": "different highway or opposing lane at the same crossing",
+      "used_by_laws": [
+        "NRS-484B-250-1"
+      ]
+    },
+    {
+      "name": "opposite_direction_left_turn",
+      "kind": "world_setup",
+      "range_or_domain": "source-measured intention and trajectory; unknown allowed",
+      "used_by_laws": [
+        "NRS-484B-250-1"
+      ]
+    },
+    {
+      "name": "commanded_turn_path",
+      "kind": "controller",
+      "range_or_domain": "authored crossing or opposing left-turn waypoints",
+      "used_by_laws": [
+        "NRS-484B-250-1"
+      ]
+    },
+    {
+      "name": "native_stop_sign_id",
+      "kind": "world_setup",
+      "range_or_domain": "source-reviewed Native sign actor ID",
+      "used_by_laws": [
+        "NRS-484B-250-1"
+      ]
+    },
+    {
+      "name": "ego_hold_after_clear_frames",
+      "kind": "controller",
+      "range_or_domain": "nonnegative engineering hold frames",
+      "used_by_laws": [
+        "NRS-484B-250-1"
+      ]
+    }
+  ]
+}
