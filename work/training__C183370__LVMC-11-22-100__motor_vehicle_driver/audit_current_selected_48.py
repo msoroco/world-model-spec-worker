@@ -21,6 +21,8 @@ LABELS = {
     'newly_laid_crossing': 'update142', 'newly_laid_avoidance': 'update142',
 }
 CANDIDATES = ('primary', 'fallback1', 'fallback2', 'fallback3')
+CAMERAS = ('overview.mkv', 'approach.mkv', 'reference_corner.mkv',
+           'driver_reference.mkv')
 
 
 def require(condition, reason):
@@ -79,12 +81,35 @@ def audit(shorts):
             for key, path in artifacts.items():
                 require(sha(path) == proof[key],
                         'Diagnostic artifact hash differs: ' + name + '/' + key)
+            offline = read(artifacts['offline_selection_sha256'])
+            compatible = read(artifacts['compatibility_sha256'])
             processing = read(artifacts['saved_sha256'])
+            source = Path(str(base) + '-source')
+            source_selection = read(source / 'candidate-selection.json')
+            require(offline['manifest_sha256'] == source_selection['manifest_sha256'] ==
+                    manifest_sha and offline['case_id'] == source_selection['case_id'] ==
+                    entry['case_id'] and offline['candidate_id'] ==
+                    source_selection['candidate_id'] == candidate,
+                    'Offline/source selection differs: ' + name)
+            require(compatible['passed'] is True and
+                    compatible['case_id'] == entry['case_id'] and
+                    compatible['candidate_id'] == candidate and
+                    compatible['construction_sha256'] == construction['construction_sha256'],
+                    'Compatibility differs: ' + name)
             require(processing['passed'] is True
                     and processing['recorded_only'] is True
                     and processing['originals_preserved'] is True
-                    and processing['timestamp_joins']['frames'] == 600,
+                    and processing['timestamp_joins']['passed'] is True
+                    and processing['timestamp_joins']['frames'] == 600
+                    and processing['final_video_checks']['passed'] is True
+                    and processing['final_video_checks']['frames'] == 600
+                    and processing['analysis_revision']['construction_sha256'] ==
+                    construction['construction_sha256'],
                     'Saved processing differs: ' + name)
+            for camera in CAMERAS:
+                require(sha(source / camera) ==
+                        processing['original_source_hashes'][camera],
+                        'Four-view source differs: ' + name + '/' + camera)
             rows.append({'case_id': entry['case_id'], 'candidate_id': candidate,
                          'proof_path': proof_path.name, 'proof_sha256': sha(proof_path),
                          'saved_sha256': proof['saved_sha256']})
