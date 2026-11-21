@@ -107,8 +107,10 @@
   ],
   "source_observation_mapping": {
     "sig.turn_indicator": {
-      "evidence": "Planned Native route, freight-zone, indicator, weather and original-video sources; turn_signal_measurements.py currently covers sampled indicator distance only.",
-      "channels": [],
+      "evidence": "Original Native per-frame telemetry and source-only saved channel; physical pixels require review.",
+      "channels": [
+        "ego_turn_indicator"
+      ],
       "source_refs": [
         {
           "path": "inputs/testing__C378304__NRS-484B-413-2__motor_vehicle_driver/assignment.json",
@@ -118,7 +120,7 @@
       "status": "planned_unverified"
     },
     "sig.hand_signal": {
-      "evidence": "Planned Native route, freight-zone, indicator, weather and original-video sources; turn_signal_measurements.py currently covers sampled indicator distance only.",
+      "evidence": "Hand signal is not actuated by this Native controller; cameras/body remain for review.",
       "channels": [],
       "source_refs": [
         {
@@ -129,8 +131,11 @@
       "status": "planned_unverified"
     },
     "drv.distance_while": {
-      "evidence": "Planned Native route, freight-zone, indicator, weather and original-video sources; turn_signal_measurements.py currently covers sampled indicator distance only.",
-      "channels": [],
+      "evidence": "Original Native per-frame telemetry and source-only saved channel; physical pixels require review.",
+      "channels": [
+        "path_distance",
+        "ego_turn_indicator"
+      ],
       "source_refs": [
         {
           "path": "inputs/testing__C378304__NRS-484B-413-2__motor_vehicle_driver/assignment.json",
@@ -140,8 +145,10 @@
       "status": "planned_unverified"
     },
     "kin.path_length": {
-      "evidence": "Planned Native route, freight-zone, indicator, weather and original-video sources; turn_signal_measurements.py currently covers sampled indicator distance only.",
-      "channels": [],
+      "evidence": "Original Native per-frame telemetry and source-only saved channel; physical pixels require review.",
+      "channels": [
+        "path_distance"
+      ],
       "source_refs": [
         {
           "path": "inputs/testing__C378304__NRS-484B-413-2__motor_vehicle_driver/assignment.json",
@@ -151,8 +158,11 @@
       "status": "planned_unverified"
     },
     "drv.turning": {
-      "evidence": "Planned Native route, freight-zone, indicator, weather and original-video sources; turn_signal_measurements.py currently covers sampled indicator distance only.",
-      "channels": [],
+      "evidence": "Original Native per-frame telemetry and source-only saved channel; physical pixels require review.",
+      "channels": [
+        "ego_heading",
+        "ego_road_id"
+      ],
       "source_refs": [
         {
           "path": "inputs/testing__C378304__NRS-484B-413-2__motor_vehicle_driver/assignment.json",
@@ -162,8 +172,10 @@
       "status": "planned_unverified"
     },
     "drv.lane_change": {
-      "evidence": "Planned Native route, freight-zone, indicator, weather and original-video sources; turn_signal_measurements.py currently covers sampled indicator distance only.",
-      "channels": [],
+      "evidence": "The right turn is measured by heading and road transition; no lane-change claim is made.",
+      "channels": [
+        "ego_road_id"
+      ],
       "source_refs": [
         {
           "path": "inputs/testing__C378304__NRS-484B-413-2__motor_vehicle_driver/assignment.json",
@@ -173,7 +185,7 @@
       "status": "planned_unverified"
     },
     "env.precipitation": {
-      "evidence": "Planned Native route, freight-zone, indicator, weather and original-video sources; turn_signal_measurements.py currently covers sampled indicator distance only.",
+      "evidence": "Native weather readback is retained in route_context.json; wet case requests precipitation 70.",
       "channels": [],
       "source_refs": [
         {
@@ -184,8 +196,10 @@
       "status": "planned_unverified"
     },
     "kin.speed": {
-      "evidence": "Planned Native route, freight-zone, indicator, weather and original-video sources; turn_signal_measurements.py currently covers sampled indicator distance only.",
-      "channels": [],
+      "evidence": "Original Native per-frame telemetry and source-only saved channel; physical pixels require review.",
+      "channels": [
+        "ego_speed"
+      ],
       "source_refs": [
         {
           "path": "inputs/testing__C378304__NRS-484B-413-2__motor_vehicle_driver/assignment.json",
@@ -195,5 +209,78 @@
       "status": "planned_unverified"
     }
   },
-  "planning_status": "partial; zone-context indicator distance measurement CPU-tested; physical zone construction pending"
+  "planning_status": "partial; zone-context indicator distance measurement CPU-tested; physical zone construction pending",
+  "first_primary_case_id": "testing__C378304__NRS-484B-413-2__motor_vehicle_driver__zone_right_at_100ft",
+  "construction_site": "freight-zone-right-turn.xodr; authored sign and bay, Native rendering and legal district unverified",
+  "requirement_dispositions": [
+    {
+      "requirement": "Continuous right-intention signal over traveled approach before right-turn course change",
+      "source": "NRS 484B.413(2)",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C378304__NRS-484B-413-2__motor_vehicle_driver__zone_right_below_100ft",
+        "testing__C378304__NRS-484B-413-2__motor_vehicle_driver__zone_right_at_100ft",
+        "testing__C378304__NRS-484B-413-2__motor_vehicle_driver__zone_right_above_100ft",
+        "testing__C378304__NRS-484B-413-2__motor_vehicle_driver__zone_right_interrupted",
+        "testing__C378304__NRS-484B-413-2__motor_vehicle_driver__zone_right_wet",
+        "testing__C378304__NRS-484B-413-2__motor_vehicle_driver__other_area_right_at_300ft"
+      ],
+      "evidence_or_gap": "Original Native light-mask readback and sampled path-distance channel; Native pixels unverified"
+    },
+    {
+      "requirement": "Business/residential 100-foot versus other-area 300-foot boundary",
+      "source": "NRS 484B.413(2)",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C378304__NRS-484B-413-2__motor_vehicle_driver__zone_right_below_100ft",
+        "testing__C378304__NRS-484B-413-2__motor_vehicle_driver__zone_right_at_100ft",
+        "testing__C378304__NRS-484B-413-2__motor_vehicle_driver__zone_right_above_100ft",
+        "testing__C378304__NRS-484B-413-2__motor_vehicle_driver__zone_right_interrupted",
+        "testing__C378304__NRS-484B-413-2__motor_vehicle_driver__zone_right_wet",
+        "testing__C378304__NRS-484B-413-2__motor_vehicle_driver__other_area_right_at_300ft"
+      ],
+      "evidence_or_gap": "Exact-map independent district/site packet required; no legal classification claimed from XODR"
+    },
+    {
+      "requirement": "Right-turn onset after continuous signal; weather does not excuse threshold",
+      "source": "NRS 484B.413(2)",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C378304__NRS-484B-413-2__motor_vehicle_driver__zone_right_below_100ft",
+        "testing__C378304__NRS-484B-413-2__motor_vehicle_driver__zone_right_at_100ft",
+        "testing__C378304__NRS-484B-413-2__motor_vehicle_driver__zone_right_above_100ft",
+        "testing__C378304__NRS-484B-413-2__motor_vehicle_driver__zone_right_interrupted",
+        "testing__C378304__NRS-484B-413-2__motor_vehicle_driver__zone_right_wet",
+        "testing__C378304__NRS-484B-413-2__motor_vehicle_driver__other_area_right_at_300ft"
+      ],
+      "evidence_or_gap": "Original heading/road transition and Native weather readback; physical course and rain pixels unverified"
+    }
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "120 m approach, freight sign/bay and right-turn course",
+        "interval": "0-45 s planned; Native pixels unverified"
+      },
+      {
+        "view": "approach",
+        "subject": "right indicator onset and 100/300-foot approach",
+        "interval": "0-45 s planned; Native pixels unverified"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "freight zone, turn onset and outgoing road",
+        "interval": "0-45 s planned; Native pixels unverified"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "ego right-indicator and turn reference",
+        "interval": "0-45 s planned; Native pixels unverified"
+      }
+    ]
+  }
 }

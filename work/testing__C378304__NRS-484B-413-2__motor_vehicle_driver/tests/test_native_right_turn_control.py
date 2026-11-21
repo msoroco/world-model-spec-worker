@@ -35,7 +35,8 @@ class NativeRightTurnTests(unittest.TestCase):
             packet = root / "site.json"
             source = {"authored_map_sha256": CONFIG["map_sha256"],
                       "native_map_name": "Native C378304", "case_id": CONFIG["selected_case_id"],
-                      "district_type": "business", "independent_review": True,
+                      "district_type": "other" if CONFIG["selected_case_id"].endswith("__other_area_right_at_300ft") else "business",
+                      "independent_review": True,
                       "freight_loading_zone_review": True,
                       "source_document": str(document),
                       "source_document_sha256": hashlib.sha256(document.read_bytes()).hexdigest()}

@@ -25,6 +25,8 @@ class TurnSignalTests(unittest.TestCase):
                    "freight_loading_zone_source": zone.name,
                    "freight_loading_zone_source_sha256": hashlib.sha256(zone.read_bytes()).hexdigest(),
                    "district_type": district, "turn_onset_frame": 104}
+        context["native_weather_readback"] = {"cloudiness": 0.0,
+                                              "precipitation": 0.0, "wetness": 0.0}
         (root / "route_context.json").write_text(json.dumps(context))
         x = [-1, 0, distance / 2, distance * .75, distance,
              distance + 1, distance + 2]
@@ -103,11 +105,34 @@ class TurnSignalTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "light-mask"):
                 measure.analyze(root)
 
-    def test_saved_finalizer_derives_channels_and_preserves_unknown_physical_status(self):
+    def test_exact_case_weather_and_district_must_match_readback(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
             self.fixture(root, 30.48)
             folder = Path(__file__).resolve().parents[1]
+            (root / "config.json").write_bytes((folder / "config.json").read_bytes())
+            context = json.loads((root / "route_context.json").read_text())
+            context["district_type"] = "residential"
+            (root / "route_context.json").write_text(json.dumps(context))
+            with self.assertRaisesRegex(ValueError, "Exact-case district"):
+                measure.analyze(root)
+            context["district_type"] = "other" if json.loads((root / "config.json").read_text())["selected_case_id"].endswith("__other_area_right_at_300ft") else "business"
+            context["native_weather_readback"]["precipitation"] = 70.0 if not json.loads((root / "config.json").read_text())["selected_case_id"].endswith("__zone_right_wet") else 0.0
+            (root / "route_context.json").write_text(json.dumps(context))
+            with self.assertRaisesRegex(ValueError, "precipitation"):
+                measure.analyze(root)
+
+    def test_saved_finalizer_derives_channels_and_preserves_unknown_physical_status(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            folder = Path(__file__).resolve().parents[1]
+            selected = json.loads((folder / "config.json").read_text())["selected_case_id"]
+            self.fixture(root, 30.48, district="other" if selected.endswith("__other_area_right_at_300ft") else "business")
+            if selected.endswith("__zone_right_wet"):
+                context = json.loads((root / "route_context.json").read_text())
+                context["native_weather_readback"] = {"cloudiness": 80.0,
+                                                       "precipitation": 70.0, "wetness": 70.0}
+                (root / "route_context.json").write_text(json.dumps(context))
             (root / "config.json").write_bytes((folder / "config.json").read_bytes())
             history = [json.loads(line) for line in (root / "drive_history.jsonl").read_text().splitlines()]
             (root / "trace.jsonl").write_text("".join(json.dumps({

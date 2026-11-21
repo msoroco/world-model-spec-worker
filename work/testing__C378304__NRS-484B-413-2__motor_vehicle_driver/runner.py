@@ -53,10 +53,11 @@ def retain_site_packet(packet_path, output, native_map_name, case_id):
         raise ValueError("C378304 requires SCENARIO_C378304_SITE_PACKET before capture")
     packet_path = Path(packet_path).resolve()
     packet = json.loads(packet_path.read_text())
+    expected_district = "other" if case_id.endswith("__other_area_right_at_300ft") else "business"
     if (packet.get("authored_map_sha256") != CONFIG["map_sha256"]
             or packet.get("native_map_name") != native_map_name
             or packet.get("case_id") != case_id
-            or packet.get("district_type") not in ("business", "residential", "other")
+            or packet.get("district_type") != expected_district
             or packet.get("independent_review") is not True
             or packet.get("freight_loading_zone_review") is not True):
         raise ValueError("Site packet lacks exact-map independent district/zone review")
@@ -196,6 +197,15 @@ def capture(args):
         settings.synchronous_mode = True
         settings.fixed_delta_seconds = 0.05
         world.apply_settings(settings)
+        weather = CONFIG.get("weather", {})
+        if weather:
+            native_weather = world.get_weather()
+            for key in ("cloudiness", "precipitation", "wetness"):
+                value = weather.get(key)
+                if type(value) not in (int, float) or not 0 <= value <= 100:
+                    raise ValueError("Invalid exact-case Native weather: " + key)
+                setattr(native_weather, key, float(value))
+            world.set_weather(native_weather)
         route = select_route(world.get_map())
         blueprints = world.get_blueprint_library().filter("vehicle.*")
         if not blueprints:
@@ -245,6 +255,10 @@ def capture(args):
                            approach_road_id=APPROACH_ROAD, approach_lane_id=-1,
                            outgoing_road_id=DEPARTURE_ROAD, outgoing_lane_id=-1,
                            native_route_source="Native get_waypoint_xodr readback")
+            observed_weather = world.get_weather()
+            context["native_weather_readback"] = {
+                key: float(getattr(observed_weather, key))
+                for key in ("cloudiness", "precipitation", "wetness")}
             context["turn_onset_frame"] = measure_right_turn(rows, context)["turn_onset_frame"]
             (output / "route_context.json").write_text(json.dumps(context, indent=2) + "\n")
             completed = True

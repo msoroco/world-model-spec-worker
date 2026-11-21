@@ -44,6 +44,20 @@ def analyze(root: Path) -> dict:
     district = context.get("district_type")
     if district not in ("business", "residential", "other"):
         raise ValueError("District class not sourced")
+    config_path = root / "config.json"
+    if config_path.is_file():
+        case_id = json.loads(config_path.read_text()).get("selected_case_id", "")
+        expected_district = "other" if case_id.endswith("__other_area_right_at_300ft") else "business"
+        if district != expected_district:
+            raise ValueError("Exact-case district differs from retained source")
+        weather = context.get("native_weather_readback")
+        if not isinstance(weather, dict) or any(
+                key not in weather or not 0 <= _number(weather[key]) <= 100
+                for key in ("cloudiness", "precipitation", "wetness")):
+            raise ValueError("Native weather readback missing")
+        if (case_id.endswith("__zone_right_wet") and weather["precipitation"] <= 0
+                or not case_id.endswith("__zone_right_wet") and weather["precipitation"] != 0):
+            raise ValueError("Exact-case precipitation differs from Native readback")
     if (context["freight_loading_zone_source"] != "freight-zone-site-source.txt"
             or context.get("freight_loading_zone_source_sha256") !=
             hashes["freight-zone-site-source.txt"]):
