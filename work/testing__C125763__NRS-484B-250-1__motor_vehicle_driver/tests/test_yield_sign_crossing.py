@@ -1,5 +1,6 @@
 import importlib.util
 import json
+import hashlib
 import tempfile
 import unittest
 from pathlib import Path
@@ -101,6 +102,73 @@ class CrossingTests(unittest.TestCase):
             (root / "video_frames.jsonl").write_text("".join(json.dumps(row)+"\n" for row in frames))
             with self.assertRaisesRegex(ValueError, "frame join"):
                 measure.analyze(root)
+
+    def test_900_frame_saved_finalizer_and_missing_source(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            self.fixture(root)
+            # Retain the source-shaped context and replace the short diagnostic
+            # with a complete 45-second, 20 Hz original-frame history.
+            history, frames = [], []
+            for i in range(900):
+                # Bodies enter at 185 and 333 respectively; neither is inside
+                # on the first frame. The other body eventually clears.
+                other_x = -184 + i
+                ego_x = -332 + i
+                history.append({"frame": 1000 + i, "time_s": i / 20,
+                    "native_yield_sign_id": 10,
+                    "ego": {"intersection_id": 9, "road_id": 3,
+                            "distance_to_intersection_m": max(0, -ego_x),
+                            "speed_mps": 0 if 180 <= i <= 250 else 3,
+                            "body_vertices_xy_m": body(ego_x)},
+                    "other": {"intersection_id": 9, "road_id": 4,
+                              "distance_to_intersection_m": max(0, -other_x),
+                              "speed_mps": 3,
+                              "body_vertices_xy_m": body(other_x)}})
+                frames.append({"video_frame": i, "carla_frame": 1000 + i,
+                               "time_s": i / 20})
+            for name, values in (("crossing_history.jsonl", history),
+                                 ("video_frames.jsonl", frames)):
+                (root / name).write_text("".join(json.dumps(v) + "\n" for v in values))
+            output = root / "diagnostic.json"
+            report = measure.finalize(root, output)
+            saved = json.loads(output.read_text())
+            self.assertEqual(len(saved["samples"]), 900)
+            self.assertEqual(saved["source_kind"], "original_frame_source_only")
+            self.assertFalse(saved["physical_acceptance_claimed"])
+            self.assertFalse(saved["legal_acceptance_claimed"])
+            self.assertTrue(saved["other_entered_before_ego_observed"])
+            self.assertTrue(saved["ego_approaching_at_other_entry_observed"])
+            self.assertEqual(saved["sources"]["crossing_history.jsonl"],
+                             hashlib.sha256((root / "crossing_history.jsonl").read_bytes()).hexdigest())
+            self.assertEqual(report, saved)
+            (root / "video_frames.jsonl").unlink()
+            with self.assertRaisesRegex(ValueError, "Missing required source: video_frames.jsonl"):
+                measure.finalize(root, output)
+
+    def test_missing_original_frame_rejected(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            self.fixture(root)
+            rows = [json.loads(line) for line in (root / "crossing_history.jsonl").read_text().splitlines()]
+            frames = [json.loads(line) for line in (root / "video_frames.jsonl").read_text().splitlines()]
+            rows[2]["frame"] = frames[2]["carla_frame"] = 103
+            rows[3]["frame"] = frames[3]["carla_frame"] = 104
+            for name, values in (("crossing_history.jsonl", rows),
+                                 ("video_frames.jsonl", frames)):
+                (root / name).write_text("".join(json.dumps(v) + "\n" for v in values))
+            with self.assertRaisesRegex(ValueError, "Missing original frame"):
+                measure.analyze(root)
+
+    def test_yield_approach_controller(self):
+        throttle, brake, phase = signs.step_ego(2, 4, True)
+        self.assertEqual((throttle, phase), (0, "hold_for_other_body"))
+        self.assertGreater(brake, 0)
+        self.assertEqual(signs.step_ego(2, 0, False)[2], "clear_body_proceed")
+        with self.assertRaisesRegex(ValueError, "occupancy"):
+            signs.step_ego(2, 4, None)
+        with self.assertRaisesRegex(ValueError, "Finite"):
+            signs.step_ego(float("nan"), 4, True)
 
 
 if __name__ == "__main__":

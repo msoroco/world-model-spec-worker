@@ -69,6 +69,8 @@ def analyze(root: Path) -> dict:
         fid, time = row.get("frame"), _number(row.get("time_s"))
         if type(fid) is not int or fid <= prior[0] or time <= prior[1]:
             raise ValueError("Nonmonotone original frame/time")
+        if index and fid != prior[0] + 1:
+            raise ValueError("Missing original frame in crossing history")
         prior = (fid, time)
         if frame.get("video_frame") != index or frame.get("carla_frame") != fid or frame.get("time_s") != time:
             raise ValueError("Original video frame join failed")
@@ -113,3 +115,22 @@ def analyze(root: Path) -> dict:
             "statutory_roadway_crossing_judgment": "unresolved",
             "official_device_exclusion_judgment": "unresolved; Native yield-sign trigger and images need authority review",
             "right_of_way_judgment": "unresolved"}
+
+
+def finalize(root: Path, output: Path) -> dict:
+    """Write a source-hashed diagnostic from retained raw crossing sources."""
+    report = analyze(root)
+    report["source_kind"] = "original_frame_source_only"
+    report["physical_acceptance_claimed"] = False
+    report["legal_acceptance_claimed"] = False
+    Path(output).write_text(json.dumps(report, sort_keys=True, separators=(",", ":")) + "\n")
+    return report
+
+
+if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("source_dir", type=Path)
+    parser.add_argument("output", type=Path)
+    args = parser.parse_args()
+    finalize(args.source_dir, args.output)
