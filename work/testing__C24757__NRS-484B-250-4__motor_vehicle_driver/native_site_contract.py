@@ -8,6 +8,7 @@ import hashlib
 import json
 import math
 from pathlib import Path
+from xml.etree import ElementTree as ET
 
 
 REQUIRED_SOURCES = ("map_geometry", "signal_governance", "signal_heads",
@@ -27,6 +28,10 @@ def _sha(path):
 
 
 def _read_bound(base, binding, label):
+    return json.loads(_bound_path(base, binding, label).read_text())
+
+
+def _bound_path(base, binding, label):
     if not isinstance(binding, dict) or set(binding) != {"path", "sha256"}:
         raise ValueError("Hashed " + label + " binding required")
     if (not isinstance(binding["path"], str) or not binding["path"] or
@@ -41,7 +46,7 @@ def _read_bound(base, binding, label):
         raise ValueError("Junction source path escapes packet root")
     if not path.is_file() or _sha(path) != binding["sha256"]:
         raise ValueError(label + " source missing or changed")
-    return json.loads(path.read_text())
+    return path
 
 
 def validate_site(config, base_dir):
@@ -69,6 +74,30 @@ def validate_site(config, base_dir):
         for field, value in document["reviewed_site_fields"].items():
             if site.get(field) != value:
                 raise ValueError("Junction claim differs from source: " + field)
+    if "native_map_xodr" in site:
+        if docs["map_geometry"] is None:
+            raise ValueError("Authored map must be source reviewed")
+        map_doc = _read_bound(base_dir, docs["map_geometry"], "map_geometry")
+        if map_doc["reviewed_site_fields"].get("native_map_xodr") != site["native_map_xodr"]:
+            raise ValueError("Authored map binding must be source reviewed")
+        map_path = _bound_path(base_dir, site["native_map_xodr"], "Native OpenDRIVE")
+        root = ET.parse(map_path).getroot()
+        if root.tag != "OpenDRIVE":
+            raise ValueError("Native OpenDRIVE root required")
+        roads = {int(road.get("id")): road for road in root.findall("road")}
+        junction = root.find("junction")
+        if junction is None or int(junction.get("id")) != site["intersection_id"]:
+            raise ValueError("Reviewed junction differs from authored map")
+        for lane, signal_id in zip(site["entrance_road_lanes"],
+                                   (site["native_signal_id"], site["other_native_signal_id"])):
+            road_id, lane_id = lane
+            road = roads.get(road_id)
+            if road is None or not any(signal.get("id") == str(signal_id) and
+                                      signal.find("validity") is not None and
+                                      int(signal.find("validity").get("fromLane")) <= lane_id <=
+                                      int(signal.find("validity").get("toLane"))
+                                      for signal in road.findall("signals/signal")):
+                raise ValueError("Reviewed signal governance differs from authored map")
     for field in ("native_map_name", "intersection_id", "native_signal_id", "other_native_signal_id",
                   "installed_uncovered_vehicular_heads", "intersection_polygon_xy_m",
                   "entrance_road_lanes", "stop_boundary", "other_stop_boundary"):

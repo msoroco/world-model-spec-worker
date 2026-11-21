@@ -14,7 +14,7 @@ from pathlib import Path
 from queue import Empty, Queue
 
 from native_inoperative_control import StopController, all_heads_off, governing_lights
-from native_site_contract import validate_site
+from native_site_contract import _bound_path, validate_site
 from native_stop_sources import signed_front_distance, source_row
 from saved_finalizer import CAMERAS, finalize_saved
 
@@ -177,16 +177,21 @@ def capture_native(args, config):
     frames = 0
     error = None
     try:
-        available = client.get_available_maps()
         map_name = config["site"]["native_map_name"]
-        if map_name not in available:
-            raise ValueError("Reviewed Native map unavailable")
-        world = client.load_world(map_name)
+        if "native_map_xodr" in config["site"]:
+            source_path = _bound_path(packet_root, config["site"]["native_map_xodr"],
+                                      "Native OpenDRIVE")
+            world = client.generate_opendrive_world(source_path.read_text())
+        else:
+            available = client.get_available_maps()
+            if map_name not in available:
+                raise ValueError("Reviewed Native map unavailable")
+            world = client.load_world(map_name)
         settings = world.get_settings()
         settings.synchronous_mode = True
         settings.fixed_delta_seconds = 0.05
         world.apply_settings(settings)
-        if world.get_map().name != map_name:
+        if "native_map_xodr" not in config["site"] and world.get_map().name != map_name:
             raise ValueError("Reviewed Native map readback failed")
         blueprints = world.get_blueprint_library().filter("vehicle.*")
         if not blueprints:
