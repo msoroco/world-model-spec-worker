@@ -3204,3 +3204,11 @@ Batch gate retry on 2026-11-21: `timeout 55 env PYTHONDONTWRITEBYTECODE=1 .venv-
 ## 2026-11-21 C125697 saved finalizer continuation
 
 C125697 now has saved-only finalization code in `crossing_measurements.py` that derives nine channels from retained original rows, checks source/frame joins and calls the pinned runtime result writers. Nine unit tests pass, including stale trace and source-preservation checks; the scoped complete gate passes. Pinned CPU preflight passes with simulation not started. The package remains `partial`: it has no exact median-opening construction, four-camera capture, runtime saved-processing proof or delivery chain yet. Those are next worker-owned steps. The full strict batch gate has not passed. No frozen input, runtime, batch or Git action was taken.
+
+## 2026-11-21 C125697 exact primary construction checkpoint
+
+C125697 now returns an exact Off other-first inline primary construction and a source-shaped diagnostic specification. The returned construction passes pinned runtime offline validation; the materialized finalizer passes a synthetic source diagnostic with original bytes preserved and a validated result. The diagnostic generator inventories 20 outputs. The package remains `partial` pending positive/negative compatibility, recorded-only saved processing and all remaining selected-case/fallback/delivery work. The prior C125697 partial strict-gate log was retained under ignored `.runtime-work/retired-logs/20261121-c125697-primary/`, with its original SHA recorded in its handoff.
+
+Two C158196 command logs were preserved byte-for-byte as members of `primary-command-log-archive.json`, and their standalone copies moved to ignored `.runtime-work/retired-logs/20261121-c158196-archive/`; its result hashes were rebound and scoped complete check passed. Returned `work/` remains at the 8,600-file cap. No frozen input, runtime, batch or Git action was taken. The full strict batch gate remains unpassed.
+
+C125697 scoped complete check after the exact primary construction update exited 0; its readiness remains partial.
