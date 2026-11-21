@@ -1,6 +1,6 @@
 # training__C111088__NRS-484B-307-5a__motor_vehicle_driver
 
-Status: blocked. No selected delivery case, accepted recording or legal verdict is claimed.
+Status: partial. No selected delivery case, accepted recording or legal verdict is claimed.
 
 ## Source and scope
 
@@ -14,4 +14,8 @@ sole green straight-through arrow facing ego; ego proceeds straight; other vehic
 
 ## Blockers and resumption
 
-Executable Native construction and four candidate offline/compatibility proofs absent; saved audit and comparison proof absent. Straight-only turn prohibition is a separate branch requiring a turn attempt, incompatible with this fixed straight maneuver. Resolve exact statutory branches and external authority from the frozen law and cited sources. Build semantic stages, Native construction, primary plus three truly distinct fallbacks per selected case, mandatory synchronized capture and Core mapping; run exact offline, positive/negative compatibility, saved-only and independent comparison audits. Recheck physical cause and camera evidence in CARLA later. Set `ready` / `delivery_prepared` only after worker CPU proofs pass.
+Executable Native construction and four candidate offline/compatibility proofs absent; saved audit and comparison proof absent. Straight-only turn prohibition is a separate branch requiring a turn attempt, incompatible with this fixed straight maneuver. Construct a source-grounded straight-arrow/yield pair and a separate turn-prohibition case from the frozen law and cited sources. Build semantic stages, Native construction, primary plus three truly distinct fallbacks per selected case, mandatory synchronized capture and supported Core mapping; run exact offline, positive/negative compatibility, saved-only and independent comparison audits. These are worker-owned CPU tasks. Recheck physical cause and camera evidence in CARLA later. Set `ready` / `delivery_prepared` only after worker CPU proofs pass and the scoped strict gate succeeds.
+
+## CPU construction started after C110812
+
+`native/controller.py` now chooses a straight route and brakes for a same-frame, lawfully within other vehicle or pedestrian under a sole governing green straight arrow. It rejects missing/mixed signal observations and incomplete participant evidence. `native/geometry.py` checks the authored prior-entered vehicle clears before the ego release frame; `native/test_controller.py` passes hold/release and source-specific rejection tests. These are authored CPU controls only. A Native runner, source-derived finalizer, exact candidate bundles, fallback and saved-processing proofs are still to be built; the assignment stays partial.

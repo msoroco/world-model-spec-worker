@@ -216,68 +216,110 @@
   ],
   "observations": [
     {
-      "name": "ego_pose",
-      "unit": "m,deg",
+      "name": "drv.backing",
+      "unit": "structured",
       "mandatory": true,
-      "purpose": "Actual pose, trajectory and footprint over full event"
+      "purpose": "original Native body, map and controller sample; 42-second synchronized source review, original Native/actual pixels pending"
     },
     {
-      "name": "reverse_footprint_overlap",
-      "unit": "bool",
+      "name": "drv.turning",
+      "unit": "structured",
       "mandatory": true,
-      "purpose": "Measure reverse trajectory and vehicle footprint against intersection, crosswalk and corner polygons."
+      "purpose": "original Native body, map and controller sample; 42-second synchronized source review, original Native/actual pixels pending"
+    },
+    {
+      "name": "st.crosswalk",
+      "unit": "structured",
+      "mandatory": true,
+      "purpose": "original Native body, map and controller sample; 42-second synchronized source review, original Native/actual pixels pending"
+    },
+    {
+      "name": "st.intersection",
+      "unit": "structured",
+      "mandatory": true,
+      "purpose": "original Native body, map and controller sample; 42-second synchronized source review, original Native/actual pixels pending"
+    },
+    {
+      "name": "rel.occupies",
+      "unit": "structured",
+      "mandatory": true,
+      "purpose": "original Native body, map and controller sample; 42-second synchronized source review, original Native/actual pixels pending"
+    },
+    {
+      "name": "kin.heading",
+      "unit": "structured",
+      "mandatory": true,
+      "purpose": "original Native body, map and controller sample; 42-second synchronized source review, original Native/actual pixels pending"
+    },
+    {
+      "name": "kin.velocity",
+      "unit": "structured",
+      "mandatory": true,
+      "purpose": "original Native body, map and controller sample; 42-second synchronized source review, original Native/actual pixels pending"
+    },
+    {
+      "name": "native_body_pose_control",
+      "unit": "structured",
+      "mandatory": true,
+      "purpose": "original Native body, map and controller sample; 42-second synchronized source review, original Native/actual pixels pending"
+    },
+    {
+      "name": "camera_frame_join",
+      "unit": "structured",
+      "mandatory": true,
+      "purpose": "original Native body, map and controller sample; 42-second synchronized source review, original Native/actual pixels pending"
     }
   ],
   "source_observation_mapping": {
     "drv.backing": {
-      "evidence": "Proposed capture only: the subject is backing. No Native channel or Core atom proof yet.",
+      "evidence": "Authored 42-second source-derived capture channel drv.backing; original Native value and pixels require local capture.",
       "channels": [
-        "reverse_footprint_overlap"
+        "drv.backing"
       ],
       "source_refs": [
         "inputs/training__C110812__NRS-484B-113-2__motor_vehicle_driver/assignment.json"
       ]
     },
     "st.intersection": {
-      "evidence": "Proposed capture only: the intersection region. No Native channel or Core atom proof yet.",
+      "evidence": "Authored 42-second source-derived capture channel st.intersection; original Native value and pixels require local capture.",
       "channels": [
-        "reverse_footprint_overlap"
+        "st.intersection"
       ],
       "source_refs": [
         "inputs/training__C110812__NRS-484B-113-2__motor_vehicle_driver/assignment.json"
       ]
     },
     "st.crosswalk": {
-      "evidence": "Proposed capture only: the crosswalk region. No Native channel or Core atom proof yet.",
+      "evidence": "Authored 42-second source-derived capture channel st.crosswalk; original Native value and pixels require local capture.",
       "channels": [
-        "reverse_footprint_overlap"
+        "st.crosswalk"
       ],
       "source_refs": [
         "inputs/training__C110812__NRS-484B-113-2__motor_vehicle_driver/assignment.json"
       ]
     },
     "rel.occupies": {
-      "evidence": "Proposed capture only: the footprint overlapping the intersection or crosswalk while backing. No Native channel or Core atom proof yet.",
+      "evidence": "Authored 42-second source-derived capture channel rel.occupies; original Native value and pixels require local capture.",
       "channels": [
-        "reverse_footprint_overlap"
+        "rel.occupies"
       ],
       "source_refs": [
         "inputs/training__C110812__NRS-484B-113-2__motor_vehicle_driver/assignment.json"
       ]
     },
     "drv.turning": {
-      "evidence": "Proposed capture only: 'around a street corner' \u2014 a heading change while reversing. No Native channel or Core atom proof yet.",
+      "evidence": "Authored 42-second source-derived capture channel drv.turning; original Native value and pixels require local capture.",
       "channels": [
-        "reverse_footprint_overlap"
+        "drv.turning"
       ],
       "source_refs": [
         "inputs/training__C110812__NRS-484B-113-2__motor_vehicle_driver/assignment.json"
       ]
     },
     "kin.heading": {
-      "evidence": "Proposed capture only: the heading change during the reverse movement. No Native channel or Core atom proof yet.",
+      "evidence": "Authored 42-second source-derived capture channel kin.heading; original Native value and pixels require local capture.",
       "channels": [
-        "reverse_footprint_overlap"
+        "kin.heading"
       ],
       "source_refs": [
         "inputs/training__C110812__NRS-484B-113-2__motor_vehicle_driver/assignment.json"
@@ -352,5 +394,19 @@
     ],
     "physical_status": "mounting and original pixel visibility require local CARLA review"
   },
-  "legal_analysis_note": "The straight-reverse reference may itself back into the intersection or over the crosswalk. This controlled pair isolates the corner relation only and is not a lawful-versus-unlawful verdict. Independently audit all three statutory alternatives from original Native/map/pixel evidence."
+  "legal_analysis_note": "The straight-reverse reference may itself back into the intersection or over the crosswalk. This controlled pair isolates the corner relation only and is not a lawful-versus-unlawful verdict. Independently audit all three statutory alternatives from original Native/map/pixel evidence.",
+  "historical_observations": [
+    {
+      "name": "ego_pose",
+      "unit": "m,deg",
+      "mandatory": true,
+      "purpose": "Actual pose, trajectory and footprint over full event"
+    },
+    {
+      "name": "reverse_footprint_overlap",
+      "unit": "bool",
+      "mandatory": true,
+      "purpose": "Measure reverse trajectory and vehicle footprint against intersection, crosswalk and corner polygons."
+    }
+  ]
 }
