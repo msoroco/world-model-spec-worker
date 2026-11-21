@@ -30,8 +30,15 @@ def main():
             graphs = []
             for index in range(480):
                 frame = 100 + index
-                graphs.append({'path': f'capture/native/graphs/base/{frame:08d}.pkl',
+                graphs.append({'path': f'capture/native/graphs/base/{frame:08d}.adapter.json',
                                'attributes': {'frame': frame}, 'nodes': [], 'edges': []})
+            frames = [json.loads(line) for line in files['capture/native/frames.jsonl'].splitlines()]
+            for frame in frames:
+                stem = f"graphs/base/{frame['frame']:08d}.adapter.json"
+                frame.update(base=stem, abstract=stem, adapter_graph=stem,
+                             nodes=0, edges=0)
+            files['capture/native/frames.jsonl'] = ''.join(
+                json.dumps(frame, sort_keys=True) + '\n' for frame in frames)
             videos = [{'path': name + '.mkv', 'frames': 480, 'width': width,
                        'height': height, 'fps': 20, 'color': 'black'}
                       for name, width, height in
