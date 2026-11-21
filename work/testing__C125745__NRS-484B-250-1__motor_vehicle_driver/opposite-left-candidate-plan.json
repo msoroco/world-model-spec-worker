@@ -1,0 +1,87 @@
+{
+  "case_id": "testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_opposite_left",
+  "construction": "opposite-left-construction.json",
+  "construction_sha256": "05082e889ff4c1cd2e4e9629f0725e9b2a0a6ac022dd6bf6d799cb61570530c7",
+  "candidate_risk": {
+    "status": "physical",
+    "reason": "Opposing left turn timing, execution and source-camera visibility require measured alternatives"
+  },
+  "candidates": [
+    {
+      "id": "fallback1",
+      "construction": "opposite-left-fallback1-construction.json",
+      "construction_sha256": "8d69eecbf2aac4b9dd9d68036f47ca300c469cfeecc7b16097f643ff75b4a1ba",
+      "trigger": {
+        "source": "original crossing_history.jsonl and controller_history.jsonl",
+        "metric": "other complete-body entry frame relative to ego stop and approach",
+        "failure_condition": "opposing vehicle reaches crossing before original cameras establish approach"
+      },
+      "changed_knobs": [
+        "delay opposing vehicle release to frame 130"
+      ],
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c125745-1-opposite-left/fallback-manifest.json --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_opposite_left --candidate fallback1 --output .runtime-work/c125745-1-opposite-left/offline-final-fallback1",
+        "exit_code": 0,
+        "log_member": "offline-final-fallback1/offline.log",
+        "log_aggregate": "opposite-left-offline.log",
+        "log_aggregate_sha256": "fd052db30d04d265b8e7121555fe0039eb337ac6c7f86e3df25a6511e9d31380"
+      }
+    },
+    {
+      "id": "fallback2",
+      "construction": "opposite-left-fallback2-construction.json",
+      "construction_sha256": "b85d819f32cef9ae380c1ed375ed1513c32e4799a9641fbbefa5164c5cb29f21",
+      "trigger": {
+        "source": "original crossing_history.jsonl heading_yaw_deg and body vertices",
+        "metric": "opposing vehicle turn heading change and southward body displacement",
+        "failure_condition": "late steering fails to produce source-measured left turn"
+      },
+      "changed_knobs": [
+        "begin the opposing left-turn steering before x=19 m"
+      ],
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c125745-1-opposite-left/fallback-manifest.json --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_opposite_left --candidate fallback2 --output .runtime-work/c125745-1-opposite-left/offline-final-fallback2",
+        "exit_code": 0,
+        "log_member": "offline-final-fallback2/offline.log",
+        "log_aggregate": "opposite-left-offline.log",
+        "log_aggregate_sha256": "fd052db30d04d265b8e7121555fe0039eb337ac6c7f86e3df25a6511e9d31380"
+      }
+    },
+    {
+      "id": "fallback3",
+      "construction": "opposite-left-fallback3-construction.json",
+      "construction_sha256": "fd5d1a197a82915f7d783abd60d72ef10bf21026ab4ed211932738d2f6c83f63",
+      "trigger": {
+        "source": "original reference_corner.mkv and source camera frame map",
+        "metric": "opposing approach and turn visible in reference-corner frames",
+        "failure_condition": "camera occludes left-turn trajectory"
+      },
+      "changed_knobs": [
+        "shift reference-corner camera x by 2 m for turn visibility"
+      ],
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c125745-1-opposite-left/fallback-manifest.json --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_opposite_left --candidate fallback3 --output .runtime-work/c125745-1-opposite-left/offline-final-fallback3",
+        "exit_code": 0,
+        "log_member": "offline-final-fallback3/offline.log",
+        "log_aggregate": "opposite-left-offline.log",
+        "log_aggregate_sha256": "fd052db30d04d265b8e7121555fe0039eb337ac6c7f86e3df25a6511e9d31380"
+      }
+    }
+  ],
+  "offline": {
+    "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c125745-1-opposite-left/fallback-manifest.json --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_opposite_left --output .runtime-work/c125745-1-opposite-left/offline-final-primary",
+    "exit_code": 0,
+    "log_member": "offline-final-primary/offline.log",
+    "log_aggregate": "opposite-left-offline.log",
+    "log_aggregate_sha256": "fd052db30d04d265b8e7121555fe0039eb337ac6c7f86e3df25a6511e9d31380"
+  },
+  "format": "worker-draft-candidate-plan",
+  "status": "partial",
+  "proof_scope": "Exact CPU offline and source-row diagnostic only; no source-bound compatibility or 900-frame recorded-only saved processing",
+  "remaining_cpu_work": [
+    "reconcile opposite-direction case with shared different-highways disposition and rebind affected constructions",
+    "formal measurement contract and source-bound diagnostic recipe",
+    "positive/missing-source compatibility and 900-frame saved processing for primary and all fallbacks",
+    "semantic stage chain, controlled comparison and independent delivery audits"
+  ]
+}
