@@ -929,6 +929,278 @@
         "unit": "m",
         "rationale": "Source sampling resolution; legal boundary is unchanged."
       }
+    },
+    {
+      "case_id": "testing__C378304__NRS-484B-413-2__motor_vehicle_driver__other_area_right_below_300ft",
+      "target_law_id": "NRS-484B-413-2",
+      "target_type": "boundary_probe",
+      "rationale": "Below other-area 300-foot threshold",
+      "variable_assignments": {
+        "indicator_start_m": {
+          "kind": "controller",
+          "value": 90.45677419354838,
+          "unit": "m",
+          "note": "Requested start; actual continuous distance is source-measured"
+        },
+        "district_type": {
+          "kind": "world_setup",
+          "value": "other",
+          "unit": "district class",
+          "note": "Requires independently reviewed exact-map site packet"
+        },
+        "freight_zone": {
+          "kind": "world_setup",
+          "value": true,
+          "unit": "site feature",
+          "note": "Authored sign/bay requires independent rendering and site review"
+        },
+        "indicator_interruption_m": {
+          "kind": "controller",
+          "value": null,
+          "unit": "approach station m",
+          "note": "Only interrupted case disables right indicator in this span"
+        },
+        "precipitation": {
+          "kind": "world_setup",
+          "value": 0,
+          "unit": "CARLA weather scale",
+          "note": "Weather does not alter statutory threshold"
+        },
+        "measured_continuous_distance_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m",
+          "note": "Read from retained original drive history"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Native right-turn path and indicator pixels need physical review",
+        "Freight zone and district classification need independent site source"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_turn_indicator",
+            "unit": "device state",
+            "method": "original Native light mask readback",
+            "time_window": "every original 20 Hz Native frame",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Native camera visibility and legal district require independent review"
+          },
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "method": "original Native velocity magnitude",
+            "time_window": "every original 20 Hz Native frame",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Native camera visibility and legal district require independent review"
+          },
+          {
+            "name": "ego_heading",
+            "unit": "deg",
+            "method": "original Native yaw readback",
+            "time_window": "every original 20 Hz Native frame",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Native camera visibility and legal district require independent review"
+          },
+          {
+            "name": "ego_road_id",
+            "unit": "id",
+            "method": "original Native waypoint road ID",
+            "time_window": "every original 20 Hz Native frame",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Native camera visibility and legal district require independent review"
+          },
+          {
+            "name": "path_distance",
+            "unit": "m",
+            "method": "original source position increments joined to frame map",
+            "time_window": "every original 20 Hz Native frame",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Native camera visibility and legal district require independent review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "freight_zone_site",
+            "unit": "source document",
+            "method": "authored OpenDRIVE sign and bay positions; Native rendering pending"
+          },
+          {
+            "name": "district",
+            "unit": "legal region class",
+            "method": "independent Native/site review required"
+          },
+          {
+            "name": "weather",
+            "unit": "CARLA weather scale",
+            "method": "original Native world.get_weather readback retained in route_context.json"
+          }
+        ],
+        "limitations": [
+          "Authored freight objects do not establish legal business-district status",
+          "Actual indicator pixels and right-turn geometry require Native review"
+        ]
+      },
+      "paired_probe_id": "other_300ft",
+      "deliberate_differences": [
+        "indicator_start_m"
+      ],
+      "probe": {
+        "primary_variable": "measured_continuous_distance_m",
+        "comparison_or_standard": "91.44 m final continuous signal distance in the selected district branch",
+        "target_value_or_branch": 91.44,
+        "operator": ">=",
+        "unit": "m",
+        "test_value": 90.45677419354838,
+        "threshold_ref": "obligation.numeric_conditions[1]"
+      },
+      "epsilon_used": {
+        "value": 0.01,
+        "unit": "m",
+        "rationale": "Source sampling resolution; legal boundary is unchanged."
+      }
+    },
+    {
+      "case_id": "testing__C378304__NRS-484B-413-2__motor_vehicle_driver__other_area_right_above_300ft",
+      "target_law_id": "NRS-484B-413-2",
+      "target_type": "boundary_probe",
+      "rationale": "Above other-area 300-foot threshold",
+      "variable_assignments": {
+        "indicator_start_m": {
+          "kind": "controller",
+          "value": 92.42322580645161,
+          "unit": "m",
+          "note": "Requested start; actual continuous distance is source-measured"
+        },
+        "district_type": {
+          "kind": "world_setup",
+          "value": "other",
+          "unit": "district class",
+          "note": "Requires independently reviewed exact-map site packet"
+        },
+        "freight_zone": {
+          "kind": "world_setup",
+          "value": true,
+          "unit": "site feature",
+          "note": "Authored sign/bay requires independent rendering and site review"
+        },
+        "indicator_interruption_m": {
+          "kind": "controller",
+          "value": null,
+          "unit": "approach station m",
+          "note": "Only interrupted case disables right indicator in this span"
+        },
+        "precipitation": {
+          "kind": "world_setup",
+          "value": 0,
+          "unit": "CARLA weather scale",
+          "note": "Weather does not alter statutory threshold"
+        },
+        "measured_continuous_distance_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m",
+          "note": "Read from retained original drive history"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Native right-turn path and indicator pixels need physical review",
+        "Freight zone and district classification need independent site source"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_turn_indicator",
+            "unit": "device state",
+            "method": "original Native light mask readback",
+            "time_window": "every original 20 Hz Native frame",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Native camera visibility and legal district require independent review"
+          },
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "method": "original Native velocity magnitude",
+            "time_window": "every original 20 Hz Native frame",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Native camera visibility and legal district require independent review"
+          },
+          {
+            "name": "ego_heading",
+            "unit": "deg",
+            "method": "original Native yaw readback",
+            "time_window": "every original 20 Hz Native frame",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Native camera visibility and legal district require independent review"
+          },
+          {
+            "name": "ego_road_id",
+            "unit": "id",
+            "method": "original Native waypoint road ID",
+            "time_window": "every original 20 Hz Native frame",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Native camera visibility and legal district require independent review"
+          },
+          {
+            "name": "path_distance",
+            "unit": "m",
+            "method": "original source position increments joined to frame map",
+            "time_window": "every original 20 Hz Native frame",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Native camera visibility and legal district require independent review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "freight_zone_site",
+            "unit": "source document",
+            "method": "authored OpenDRIVE sign and bay positions; Native rendering pending"
+          },
+          {
+            "name": "district",
+            "unit": "legal region class",
+            "method": "independent Native/site review required"
+          },
+          {
+            "name": "weather",
+            "unit": "CARLA weather scale",
+            "method": "original Native world.get_weather readback retained in route_context.json"
+          }
+        ],
+        "limitations": [
+          "Authored freight objects do not establish legal business-district status",
+          "Actual indicator pixels and right-turn geometry require Native review"
+        ]
+      },
+      "paired_probe_id": "other_300ft",
+      "deliberate_differences": [
+        "indicator_start_m"
+      ],
+      "probe": {
+        "primary_variable": "measured_continuous_distance_m",
+        "comparison_or_standard": "91.44 m final continuous signal distance in the selected district branch",
+        "target_value_or_branch": 91.44,
+        "operator": ">=",
+        "unit": "m",
+        "test_value": 92.42322580645161,
+        "threshold_ref": "obligation.numeric_conditions[1]"
+      },
+      "epsilon_used": {
+        "value": 0.01,
+        "unit": "m",
+        "rationale": "Source sampling resolution; legal boundary is unchanged."
+      }
     }
   ]
 }
