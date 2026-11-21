@@ -13,13 +13,118 @@
         "status": "physical",
         "reason": "Native stop sign trigger, other-first body entry, and four-camera visibility may drift"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback1-construction.json",
+          "construction_sha256": "0e50439583d7fb8c5b417d6fb841d0eff0ec3dbba25e23faea4e84d861d3aeaf",
+          "trigger": {
+            "source": "original Native crossing history and four source-camera frame joins",
+            "metric": "measured other-body complete-entry frame relative to ego approach",
+            "failure_condition": "Other vehicle enters too late for the planned other-first timing while ego approaches"
+          },
+          "changed_knobs": [
+            "other_release_frame: 100 to 84"
+          ],
+          "remedy": "Release the other vehicle 16 frames earlier while retaining route, ego hold, case identity and capture contract",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c125745-1-first/manifest.json --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_other_first --candidate fallback1 --output .runtime-work/c125745-1-first/fallback1-offline",
+            "exit_code": 0,
+            "construction_sha256": "0e50439583d7fb8c5b417d6fb841d0eff0ec3dbba25e23faea4e84d861d3aeaf",
+            "log": "command-log-archive.json",
+            "log_sha256": "8b16e5a709935f086108566379065f62d18ecb1956ee414be8847d19decefbe2",
+            "log_member": "fallback1-offline.log"
+          },
+          "compatibility": {
+            "receipt": "fallback1-compatibility-receipt.json",
+            "sha256": "4c9a1e30072012959155c2cef8887bd2173ff5dcf77179f398f6d1e7ec281e01",
+            "log": "first-primary-analysis.log",
+            "negative_log": "fallback1-negative.log"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_other_first --attempt .runtime-work/c125745-1-first/fallback1-saved-original --output .runtime-work/c125745-1-first/fallback1-saved-current --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat .runtime-work/c125745-1-first/fallback1-saved-current/v0002/feedback.json",
+            "test_log": "command-log-archive.json",
+            "test_log_sha256": "8b16e5a709935f086108566379065f62d18ecb1956ee414be8847d19decefbe2",
+            "test_log_member": "fallback1-saved-current.log",
+            "test_exit_code": 0,
+            "proof_scope": "900-frame synthetic source attempt with fallback-specific other release motion; four black source videos test media path only; no physical/legal acceptance"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "fallback2-construction.json",
+          "construction_sha256": "f4f5834383c0d49234c2162ed84c3a05a71b752cd819417e954b5deaf622dd92",
+          "trigger": {
+            "source": "original Native crossing/body occupancy and controller history",
+            "metric": "ego release frame after measured other-body clearance",
+            "failure_condition": "Ego leaves the stop too soon after measured other-body clearance for stable conflict-free crossing"
+          },
+          "changed_knobs": [
+            "ego measured-clearance hold: 0 to 12 frames"
+          ],
+          "remedy": "Retain a 12-frame engineering hold after measured other-body clearance before ego release",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c125745-1-first/manifest.json --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_other_first --candidate fallback2 --output .runtime-work/c125745-1-first/fallback2-offline",
+            "exit_code": 0,
+            "construction_sha256": "f4f5834383c0d49234c2162ed84c3a05a71b752cd819417e954b5deaf622dd92",
+            "log": "command-log-archive.json",
+            "log_sha256": "8b16e5a709935f086108566379065f62d18ecb1956ee414be8847d19decefbe2",
+            "log_member": "fallback2-offline.log"
+          },
+          "compatibility": {
+            "receipt": "fallback2-compatibility-receipt.json",
+            "sha256": "9ae00725008056bf09924c2dbb20e3cbd25ae14d0128a691e54243ce8fe265e0",
+            "log": "first-primary-analysis.log",
+            "negative_log": "fallback2-negative.log"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_other_first --attempt .runtime-work/c125745-1-first/fallback2-saved-original --output .runtime-work/c125745-1-first/fallback2-saved-current --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat .runtime-work/c125745-1-first/fallback2-saved-current/v0001/feedback.json",
+            "test_log": "command-log-archive.json",
+            "test_log_sha256": "8b16e5a709935f086108566379065f62d18ecb1956ee414be8847d19decefbe2",
+            "test_log_member": "fallback2-saved-current.log",
+            "test_exit_code": 0,
+            "proof_scope": "900-frame synthetic source attempt with later ego departure; four black source videos test media path only; no physical/legal acceptance"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "fallback3-construction.json",
+          "construction_sha256": "8231f9edc5e6eeb85e31128e6bc8a3f2b76db101f3ad03e1d2adf5d44e28646a",
+          "trigger": {
+            "source": "original reference-corner source-camera frames and complete Native actor/sign inventory",
+            "metric": "visibility of the stop-sign face and crossing entry in reference-corner frames",
+            "failure_condition": "The reference-corner view does not show the sign face and both crossing approaches throughout the required entry window"
+          },
+          "changed_knobs": [
+            "reference_corner camera x position: +2.0 m"
+          ],
+          "remedy": "Shift only the reference-corner Native source camera 2 m east while retaining all four streams and capture profile",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c125745-1-first/manifest.json --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_other_first --candidate fallback3 --output .runtime-work/c125745-1-first/fallback3-offline",
+            "exit_code": 0,
+            "construction_sha256": "8231f9edc5e6eeb85e31128e6bc8a3f2b76db101f3ad03e1d2adf5d44e28646a",
+            "log": "command-log-archive.json",
+            "log_sha256": "8b16e5a709935f086108566379065f62d18ecb1956ee414be8847d19decefbe2",
+            "log_member": "fallback3-offline.log"
+          },
+          "compatibility": {
+            "receipt": "fallback3-compatibility-receipt.json",
+            "sha256": "eceb8e69e5ab8e4e5ade763d784b6c11310692a7e61859f97587dbf3e97169d4",
+            "log": "first-primary-analysis.log",
+            "negative_log": "fallback3-negative.log"
+          }
+        }
+      ],
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c125745-1-first/manifest.json --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_other_first --output .runtime-work/c125745-1-first/offline-contract",
         "exit_code": 0,
         "construction_sha256": "a5ab54eaf58a02db6030264ccd48eec07f0275a2cd3826a45814b975e97592df",
         "log": "command-log-archive.json",
-        "log_sha256": "9ef98f39058f831d5c3f3b3a3e1dcf45bb0f68c7502ebbaca56f3d5bbabf1318",
+        "log_sha256": "8b16e5a709935f086108566379065f62d18ecb1956ee414be8847d19decefbe2",
         "log_member": "first-primary-offline-contract.log"
       },
       "measurement_procedure": {
@@ -29,7 +134,7 @@
       "pending_cpu_proofs": [
         "semantic validation",
         "delivery acceptance",
-        "three risk-distinct fallbacks"
+        "fallback3 recorded-only processing"
       ],
       "fixture_recipe": "work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/diagnostic-recipe.json",
       "measurement_contract": "measurement-contract.json",
@@ -127,10 +232,11 @@
         "recorded_only": true,
         "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_other_first --attempt .runtime-work/c125745-1-first/saved-original --output .runtime-work/c125745-1-first/returned-recorded-only --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
         "feedback_command": "cat .runtime-work/c125745-1-first/returned-recorded-only/v0001/feedback.json",
-        "test_log": "first-primary-returned-saved.log",
-        "test_log_sha256": "5a6d5cec08180b3e51ef36cc690ad0cf879d1d632a7da7b135917178a7c20115",
+        "test_log": "command-log-archive.json",
+        "test_log_sha256": "8b16e5a709935f086108566379065f62d18ecb1956ee414be8847d19decefbe2",
         "test_exit_code": 0,
-        "proof_scope": "900-frame source-bundled synthetic original-source saved processing; no Native or physical/legal acceptance"
+        "proof_scope": "900-frame source-bundled synthetic original-source saved processing; no Native or physical/legal acceptance",
+        "test_log_member": "first-primary-returned-saved.log"
       }
     }
   ]
