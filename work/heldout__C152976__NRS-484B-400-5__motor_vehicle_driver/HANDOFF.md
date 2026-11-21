@@ -73,3 +73,7 @@ The prior cutover physical-proof blocker is resolved. `prove_physical_preparatio
 ## 2026-11-18 saved processing correction
 
 A prior clean-exit saved test reused a compatibility attempt with derived channels; the selected finalizer rejected those existing channels, so its `processing.json.missing_evidence` was true. Fresh source-only diagnostic attempts were materialized for all 3 primaries and 9 fallbacks. Every saved run now has `passed: true` and `missing_evidence: false`. Primary receipts are bound in `execution-manifest.json`; fallback receipts and hashes are embedded in `result.json`. The scoped strict gate passes. This remains CPU diagnostic proof; physical and legal acceptance require local Native sources and review.
+
+## 2026-11-20 historical offline log archival
+
+`left_edge_reference-primary-offline-v4.log` was archived losslessly under its original path, SHA256 `132a520e1627c5aa869bfa30374e56c1950c25ce9dd12cbc5e57686b39d6ebdf`, in `work/_shared/c329654-combined-draft-archive.json`. The corresponding historical `result.json.tests` entry was removed; the direct `cpu-tests.log` and current saved proof entry remain. The assignment-scoped strict gate passes after the change.

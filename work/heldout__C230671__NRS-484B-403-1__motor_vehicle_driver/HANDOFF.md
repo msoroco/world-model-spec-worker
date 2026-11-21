@@ -93,3 +93,7 @@ Seven selected cases and 21 fallbacks were migrated to live `.adapter.json` grap
 ## 2026-11-18 pristine saved reproof correction
 
 Earlier saved-processing receipts with `missing_evidence=true` are superseded. All 28 candidates were rematerialized from final constructions and untouched diagnostic fixture sources, then processed into fresh saved outputs. `saved-proofs.json` now records `missing_evidence=false`, preserved original hashes and passed final video checks for all 28.
+
+## 2026-11-20 duplicate 41-test log consolidation
+
+Five per-candidate `*-offline-tests.log` files, each containing a passing 41-test unit-suite transcript, were archived losslessly with original path, bytes and SHA256 in `work/_shared/c329654-combined-draft-archive.json`. Their 19 duplicate `result.json.tests` entries were removed; the direct `prohibition_227-primary-offline-tests.log` retains the 41-test suite evidence, and delivery/physical/saved proof entries remain direct. The assignment-scoped strict gate passes after the change.
