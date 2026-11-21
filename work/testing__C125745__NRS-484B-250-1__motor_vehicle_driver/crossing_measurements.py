@@ -273,7 +273,31 @@ def finalize_saved(attempt, output):
     }
     result = physical_result(attempt, result)
     write_result(attempt, result)
+    context = json.loads((attempt / "junction_context.json").read_text())
+    measurements = {
+        "median_opening_crossing": {"method": "analyze", "value": {
+            "intersection_id": context["intersection_id"],
+            "highway_ids": [context["ego_highway_id"], context["other_highway_id"]],
+            "intersection_polygon_xy_m": context["intersection_polygon_xy_m"],
+            "statutory_crossing_judgment": "unresolved"},
+            "sources": {"junction_context.json": report["sources"]["junction_context.json"]}},
+        "other_first_body_entry": {"method": "analyze", "value": {
+            "first_body_entry": report["first_body_entry"],
+            "other_entered_before_ego_observed": report["other_entered_before_ego_observed"],
+            "ego_approaching_at_other_entry_observed":
+                report["ego_approaching_at_other_entry_observed"]},
+            "sources": {name: report["sources"][name] for name in REQUIRED}},
+        "stop_sign_authority_boundary": {"method": "analyze", "value": {
+            "native_stop_sign_id": context["native_stop_sign_id"],
+            "sign_governance_source": context["sign_governance_source"],
+            "stop_sign_video_source": context["stop_sign_video_source"],
+            "official_device_exclusion_judgment": "unresolved"},
+            "sources": {"junction_context.json": report["sources"]["junction_context.json"],
+                "capture/evidence.jsonl": hashlib.sha256(
+                    (attempt / "capture/evidence.jsonl").read_bytes()).hexdigest()}}
+    }
     analysis = {"format": "worker-analysis-report", "case_id": case_id,
+                "measurements": measurements,
                 "source_report": report, "source_hashes": report["sources"],
                 "physical_checks": result["physical_checks"],
                 "realized_observables": result["realized_observables"],

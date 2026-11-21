@@ -8,31 +8,122 @@
       "case_id": "testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_other_first",
       "kind": "delivery",
       "construction": "construction.json",
-      "construction_sha256": "44185fdd024c86f2a447240fd6957b3fe298a7fc8f4e08c3c4cecbd5f84a7b50",
+      "construction_sha256": "a5ab54eaf58a02db6030264ccd48eec07f0275a2cd3826a45814b975e97592df",
       "candidate_risk": {
         "status": "physical",
         "reason": "Native stop sign trigger, other-first body entry, and four-camera visibility may drift"
       },
       "candidates": [],
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c125745-1-first/manifest.json --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_other_first --output .runtime-work/c125745-1-first/offline-context",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c125745-1-first/manifest.json --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_other_first --output .runtime-work/c125745-1-first/offline-contract",
         "exit_code": 0,
-        "construction_sha256": "44185fdd024c86f2a447240fd6957b3fe298a7fc8f4e08c3c4cecbd5f84a7b50",
+        "construction_sha256": "a5ab54eaf58a02db6030264ccd48eec07f0275a2cd3826a45814b975e97592df",
         "log": "command-log-archive.json",
-        "log_sha256": "d55c3bd5984b5807996584c6f77a9c74513038ca29839ceed17b1963bc4e76eb",
-        "log_member": "first-primary-offline-context.log"
+        "log_sha256": "9ef98f39058f831d5c3f3b3a3e1dcf45bb0f68c7502ebbaca56f3d5bbabf1318",
+        "log_member": "first-primary-offline-contract.log"
       },
       "measurement_procedure": {
         "entrypoint": "crossing_measurements.py",
         "method": "source-hashed original body entry and frame joins"
       },
       "pending_cpu_proofs": [
-        "positive/negative compatibility",
-        "recorded-only process-saved",
         "semantic validation",
         "delivery acceptance",
-        "three risk-distinct fallbacks"
-      ]
+        "three risk-distinct fallbacks",
+        "canonical returned recorded-only post-capture receipt"
+      ],
+      "fixture_recipe": "work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/diagnostic-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "compatibility": {
+        "receipt": "first-primary-compatibility-receipt.json",
+        "sha256": "a9e49938ed8800d2f081659862cbe087bf887ab9b563f7edccfa611bf5caf8fd",
+        "log": "first-primary-analysis.log"
+      },
+      "negative": {
+        "log": "first-primary-negative.log"
+      },
+      "acquisition": {
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native graph and actor evidence",
+          "evidence": "capture/evidence.jsonl and capture/native/frames.jsonl"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native graph and actor evidence",
+          "evidence": "capture/evidence.jsonl and capture/native/frames.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native graph and actor evidence",
+          "evidence": "capture/evidence.jsonl and capture/native/frames.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native graph and actor evidence",
+          "evidence": "capture/evidence.jsonl and capture/native/frames.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native graph and actor evidence",
+          "evidence": "capture/evidence.jsonl and capture/native/frames.jsonl"
+        },
+        "st.intersection": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native graph and actor evidence",
+          "evidence": "capture/evidence.jsonl and capture/native/frames.jsonl"
+        },
+        "rel.bearing": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native graph and actor evidence",
+          "evidence": "capture/evidence.jsonl and capture/native/frames.jsonl"
+        },
+        "ego_speed": {
+          "entrypoint": "crossing_measurements.py",
+          "method": "finalize_saved derives channel from retained crossing/trace/frame sources",
+          "evidence": "channels/ego_speed.jsonl"
+        },
+        "other_speed": {
+          "entrypoint": "crossing_measurements.py",
+          "method": "finalize_saved derives channel from retained crossing/trace/frame sources",
+          "evidence": "channels/other_speed.jsonl"
+        },
+        "ego_approach_distance": {
+          "entrypoint": "crossing_measurements.py",
+          "method": "finalize_saved derives channel from retained crossing/trace/frame sources",
+          "evidence": "channels/ego_approach_distance.jsonl"
+        },
+        "other_approach_distance": {
+          "entrypoint": "crossing_measurements.py",
+          "method": "finalize_saved derives channel from retained crossing/trace/frame sources",
+          "evidence": "channels/other_approach_distance.jsonl"
+        },
+        "ego_body_inside": {
+          "entrypoint": "crossing_measurements.py",
+          "method": "finalize_saved derives channel from retained crossing/trace/frame sources",
+          "evidence": "channels/ego_body_inside.jsonl"
+        },
+        "other_body_inside": {
+          "entrypoint": "crossing_measurements.py",
+          "method": "finalize_saved derives channel from retained crossing/trace/frame sources",
+          "evidence": "channels/other_body_inside.jsonl"
+        },
+        "stop_sign_id": {
+          "entrypoint": "crossing_measurements.py",
+          "method": "finalize_saved derives channel from retained crossing/trace/frame sources",
+          "evidence": "channels/stop_sign_id.jsonl"
+        },
+        "ego_position": {
+          "entrypoint": "crossing_measurements.py",
+          "method": "finalize_saved derives channel from retained crossing/trace/frame sources",
+          "evidence": "channels/ego_position.jsonl"
+        },
+        "other_position": {
+          "entrypoint": "crossing_measurements.py",
+          "method": "finalize_saved derives channel from retained crossing/trace/frame sources",
+          "evidence": "channels/other_position.jsonl"
+        }
+      }
     }
   ]
 }
