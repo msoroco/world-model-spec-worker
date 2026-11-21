@@ -28,7 +28,16 @@ def _sha(path):
 def _read_bound(base, binding, label):
     if not isinstance(binding, dict) or set(binding) != {"path", "sha256"}:
         raise ValueError("Hashed " + label + " binding required")
-    path = (Path(base) / binding["path"]).resolve()
+    if (not isinstance(binding["path"], str) or not binding["path"] or
+            not isinstance(binding["sha256"], str) or len(binding["sha256"]) != 64):
+        raise ValueError("Hashed " + label + " binding required")
+    reference = Path(binding["path"])
+    if reference.is_absolute() or ".." in reference.parts:
+        raise ValueError("Junction source path escapes packet root")
+    root = Path(base).resolve()
+    path = (root / reference).resolve()
+    if not path.is_relative_to(root):
+        raise ValueError("Junction source path escapes packet root")
     if not path.is_file() or _sha(path) != binding["sha256"]:
         raise ValueError(label + " source missing or changed")
     return json.loads(path.read_text())

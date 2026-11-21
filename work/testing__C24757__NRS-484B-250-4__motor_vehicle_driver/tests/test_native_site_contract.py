@@ -61,6 +61,10 @@ class SiteTests(unittest.TestCase):
             config["site"]["stop_line_exists"] = False
             with self.assertRaisesRegex(ValueError, "differs from bound review packet"):
                 site_contract.validate_site(config, root)
+            config = self.fixture(root)
+            config["site_review"]["path"] = "../review.json"
+            with self.assertRaisesRegex(ValueError, "escapes packet root"):
+                site_contract.validate_site(config, root)
 
 
 if __name__ == "__main__":

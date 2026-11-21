@@ -113,3 +113,40 @@ def analyze(root: Path) -> dict:
             "statutory_roadway_crossing_judgment": "unresolved",
             "official_device_exclusion_judgment": "unresolved; Native stop-sign trigger and images need authority review",
             "right_of_way_judgment": "unresolved"}
+
+
+def capture_sample(snapshot, world_map, ego, other, sign, crossing_polygon, junction_id):
+    """Build one retained Native row; the caller writes it with the same-frame video map.
+
+    This records full body vertices and live road identities. Distances are
+    geometric diagnostics to the reviewed crossing, not legal thresholds.
+    """
+    polygon = Polygon(crossing_polygon)
+    if not polygon.is_valid or polygon.area <= 0:
+        raise ValueError("Invalid source crossing polygon")
+    frame = snapshot.frame
+    time_s = snapshot.timestamp.elapsed_seconds
+    if type(frame) is not int or frame < 0:
+        raise ValueError("Native frame required")
+    _number(time_s)
+    if ego.id == other.id:
+        raise ValueError("Distinct Native vehicles required")
+    row = {"frame": frame, "time_s": time_s, "native_stop_sign_id": sign.id}
+    for role, actor in (("ego", ego), ("other", other)):
+        transform = actor.get_transform()
+        waypoint = world_map.get_waypoint(transform.location, project_to_road=False)
+        if waypoint is None:
+            raise ValueError("Native vehicle left mapped road: " + role)
+        vertices = actor.bounding_box.get_world_vertices(transform)
+        points = [[_number(vertex.x), _number(vertex.y)] for vertex in vertices]
+        if len(points) < 4 or MultiPoint(points).convex_hull.area <= 0:
+            raise ValueError("Complete Native body required: " + role)
+        velocity = actor.get_velocity()
+        speed = math.sqrt(sum(_number(value) ** 2 for value in
+                              (velocity.x, velocity.y, velocity.z)))
+        distance = MultiPoint(points).convex_hull.distance(polygon)
+        row[role] = {"actor_id": actor.id, "intersection_id": junction_id,
+                     "road_id": waypoint.road_id, "lane_id": waypoint.lane_id,
+                     "body_vertices_xy_m": points,
+                     "distance_to_intersection_m": distance, "speed_mps": speed}
+    return row

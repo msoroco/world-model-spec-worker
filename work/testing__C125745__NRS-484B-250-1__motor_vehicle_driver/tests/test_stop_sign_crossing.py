@@ -2,11 +2,13 @@ import importlib.util
 import json
 import tempfile
 import unittest
+import sys
 from pathlib import Path
 from types import SimpleNamespace as NS
 
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
 
 
 def load(name):
@@ -18,6 +20,7 @@ def load(name):
 
 measure = load("crossing_measurements")
 signs = load("stop_sign_control")
+comparison = load("comparison_audit")
 
 
 def body(x):
@@ -156,6 +159,49 @@ class CrossingTests(unittest.TestCase):
             with signs.construct_candidate(world, packet, transforms, "vehicle"):
                 pass
         self.assertEqual(actors, [])
+
+    def test_native_capture_row_keeps_body_and_live_road(self):
+        polygon = site()["crossing_polygon_xy_m"]
+        snapshot = NS(frame=101, timestamp=NS(elapsed_seconds=5.05))
+        world_map = NS(get_waypoint=lambda location, project_to_road:
+                       NS(road_id=3 if location == "ego" else 4, lane_id=1))
+        def actor(actor_id, location, x):
+            transform = NS(location=location)
+            vertices = [NS(x=px, y=py) for px, py in body(x)]
+            return NS(id=actor_id, get_transform=lambda: transform,
+                      bounding_box=NS(get_world_vertices=lambda value: vertices),
+                      get_velocity=lambda: NS(x=3, y=0, z=0))
+        ego, other = actor(1, "ego", -10), actor(2, "other", 2)
+        row = measure.capture_sample(snapshot, world_map, ego, other, NS(id=10), polygon, 9)
+        self.assertEqual(row["ego"]["road_id"], 3)
+        self.assertEqual(row["other"]["actor_id"], 2)
+        self.assertEqual(len(row["other"]["body_vertices_xy_m"]), 4)
+        with self.assertRaisesRegex(ValueError, "Distinct Native"):
+            measure.capture_sample(snapshot, world_map, ego, ego, NS(id=10), polygon, 9)
+
+    def test_independent_entry_order_comparison(self):
+        with tempfile.TemporaryDirectory() as temp:
+            first, second = Path(temp) / "first", Path(temp) / "second"
+            first.mkdir()
+            second.mkdir()
+            self.fixture(first)
+            self.fixture(second)
+            rows = [json.loads(line) for line in (second / "crossing_history.jsonl").read_text().splitlines()]
+            ego_bodies = [row["ego"]["body_vertices_xy_m"] for row in rows]
+            other_bodies = [row["other"]["body_vertices_xy_m"] for row in rows]
+            for row, ego_body, other_body in zip(rows, ego_bodies, other_bodies):
+                row["ego"]["body_vertices_xy_m"] = other_body
+                row["other"]["body_vertices_xy_m"] = ego_body
+            (second / "crossing_history.jsonl").write_text("".join(json.dumps(row)+"\n" for row in rows))
+            receipt = comparison.compare(first, second, expected_frames=4)
+            self.assertFalse(receipt["physical_acceptance_claimed"])
+            with self.assertRaisesRegex(ValueError, "Incomplete original"):
+                comparison.compare(first, second)
+            context = json.loads((second / "junction_context.json").read_text())
+            context["native_stop_sign_id"] = 99
+            (second / "junction_context.json").write_text(json.dumps(context))
+            with self.assertRaises(ValueError):
+                comparison.compare(first, second, expected_frames=4)
 
 
 if __name__ == "__main__":
