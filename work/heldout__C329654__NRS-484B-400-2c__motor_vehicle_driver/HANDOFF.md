@@ -157,3 +157,7 @@ To stay within 10,200 direct files, 13 C295149 missing-source negative transcrip
 ## 2026-11-20 final verification for this checkpoint
 
 `.venv-cpu/bin/python runtime.py preflight` passed. Scoped nonstrict `worker_check.py --complete` passed for C329654 and C295149. The full `.venv-cpu/bin/python worker_check.py --complete --require-delivery-ready` completed with exit 1 at `Preparation acceptance failed: partial/missing packages remain`; the 51 returned results remain 49 `ready`, 2 `partial`, and the return contains 10,200 files. The strict failure is expected from the truthful partial statuses, not a missing dependency. C329654 direct construction, measurement, semantic and synthetic primary source-audit proofs are complete; direct receipt/manifest, physical/lifecycle/delivery and queue bindings remain. C295149 must restore its 13 archived negative transcripts and finish its own direct proof binding. Keep both partial until their scoped strict gates pass.
+
+## 2026-11-21 07:01 UTC capacity-preserving diagnostic source move
+
+The unbound `diagnostic-official-device-inactive.json` and `diagnostic-staggered-left-turns.json` were preserved byte-for-byte, with SHA256 and compressed contents, in `work/_shared/c295149-physical-proof-capacity-archive.json` (SHA256 `ca7ec5553afe020fb452cfa8c577d6390d9ccf58c900033a305f3f8422f55b0a`). Restore these direct source packets before binding their exact C329654 compatibility proofs. This is a worker-owned packaging action, not a capability blocker. C329654 remains partial.
