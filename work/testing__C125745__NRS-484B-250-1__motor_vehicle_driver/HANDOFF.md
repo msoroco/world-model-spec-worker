@@ -19,3 +19,7 @@ Checkpoint: assignment-scoped `worker_check.py --complete` passed; see `assignme
 Seven scoped unit tests pass (`cpu-tests.log`). Pinned `runtime.py preflight` passes (`preflight-current.log`). Assignment `worker_check.py --complete` passes (`assignment-check.log`). The assignment strict gate exits 1 with `Preparation acceptance failed: partial/missing packages remain` (`strict-assignment.log`), accurately reflecting this package's partial status. Each log hash is recorded in `result.json`; no Git command was run.
 
 Next CPU actions: source an actual map median opening, sign and full official-device inventory; require source hashes and independent review of official governance and the statutory crossing. Build the configuration-driven runner and all four named source cameras, finish source-retained finalization and physical/pixel audits, then run exact offline, positive/negative compatibility and saved-processing for each selected case and risk-based fallback. Complete semantic proposals and the other-inside and opposite-left comparisons. Keep the legal exclusion unresolved until source review and physical evidence support it. Only actual Native behavior, pixels and physical acceptance belong in later GPU checks.
+
+## Return file consolidation
+
+Four historical command logs are preserved byte-for-byte in `command-log-archive.json` with member hashes; `result.json` binds the archive. Standalone copies are in ignored `.runtime-work/retired-logs/20261121-c125745-1-archive/`. These are prior diagnostic proofs.

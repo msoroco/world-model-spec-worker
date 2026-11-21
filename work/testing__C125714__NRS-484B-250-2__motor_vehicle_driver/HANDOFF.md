@@ -246,3 +246,7 @@ Further return cap checkpoint: 13 more unbound historical top-level logs, exact 
 ## 2026-11-20 identical empty analysis-log consolidation
 
 Rebound 31 execution-manifest references from 29 duplicate zero-byte compatibility-analysis logs to the retained zero-byte `primary-compatibility-analysis.log`. SHA-256 remains the empty-file digest; receipts and construction evidence were unchanged. Assignment-scoped `worker_check.py --complete` passes after consolidation. Its ready status was not changed. This frees returned-file capacity for remaining worker-owned C24757 proofs.
+
+## Return file consolidation
+
+Two historical command logs are preserved byte-for-byte in `command-log-archive.json` with member hashes; `result.json` binds the archive. Standalone copies are in ignored `.runtime-work/retired-logs/20261121-c125714-2-archive/`. These are prior diagnostic proofs.

@@ -6,10 +6,10 @@
   "applied_update": 0,
   "tests": [
     {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/tests -v",
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "04ed20bf1f55825ee1b4bdf7b738edcb086c07e0fc0d0a1cd5bef06dbf25f575"
+      "sha256": "5d9214081dd0906f8ed57ebfa23d49aa3321fa1f299a3e683b31fcd12326bae2"
     },
     {
       "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C125697__NRS-484B-250-1__motor_vehicle_driver --complete",
@@ -18,20 +18,52 @@
       "sha256": "a3c935bb1d86b6d8cd0eead99fb7485b8e5cac77d3cbf0923bdce4b37e2c49c4"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125697__NRS-484B-250-1__motor_vehicle_driver__off_other_enters_first --output .runtime-work/c125697-sub1-primary-offline-return-v2",
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125697__NRS-484B-250-1__motor_vehicle_driver__off_other_enters_first --output .runtime-work/c125697-sub1-primary-compat-return-v2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "04ed20bf1f55825ee1b4bdf7b738edcb086c07e0fc0d0a1cd5bef06dbf25f575"
+      "sha256": "5d9214081dd0906f8ed57ebfa23d49aa3321fa1f299a3e683b31fcd12326bae2",
+      "receipt": "primary-compatibility-receipt.json",
+      "receipt_sha256": "699c827d9b41055f6b5a166d8137c1bce14da2fbdbbad5e2074bef89dca36b6a"
     },
     {
-      "command": "PYTHONPATH=runtime/scenario_pipeline:runtime/python PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python .runtime-work/c125697-sub1-primary-finalizer-v1/finalizer.py --attempt .runtime-work/c125697-sub1-primary-finalizer-v1 --output .runtime-work/c125697-sub1-primary-finalizer-v1/analysis-report.json",
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125697__NRS-484B-250-1__motor_vehicle_driver__off_other_enters_first --attempt .runtime-work/c125697-sub1-primary-compat-return-v2 --output .runtime-work/c125697-sub1-primary-saved-return-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "04ed20bf1f55825ee1b4bdf7b738edcb086c07e0fc0d0a1cd5bef06dbf25f575"
+      "sha256": "5d9214081dd0906f8ed57ebfa23d49aa3321fa1f299a3e683b31fcd12326bae2",
+      "receipt": "primary-saved-receipt.json",
+      "receipt_sha256": "ff04a007b69026c1e0d76f3e73d9dd386cc970c45281f5c78d416d48755a989c"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125697__NRS-484B-250-1__motor_vehicle_driver__off_other_enters_first --output .runtime-work/c125697-sub1-primary-offline-return-v4",
+      "exit_code": 0,
+      "log": "cpu-tests.log",
+      "sha256": "5d9214081dd0906f8ed57ebfa23d49aa3321fa1f299a3e683b31fcd12326bae2"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125697__NRS-484B-250-1__motor_vehicle_driver__off_ego_enters_first --output .runtime-work/c125697-sub1-ego-first-offline-v3",
+      "exit_code": 0,
+      "log": "cpu-tests.log",
+      "sha256": "5d9214081dd0906f8ed57ebfa23d49aa3321fa1f299a3e683b31fcd12326bae2"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125697__NRS-484B-250-1__motor_vehicle_driver__off_ego_enters_first --output .runtime-work/c125697-sub1-ego-first-compat-v5 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cpu-tests.log",
+      "sha256": "5d9214081dd0906f8ed57ebfa23d49aa3321fa1f299a3e683b31fcd12326bae2",
+      "receipt": "cases/off_ego_enters_first/primary-compatibility-receipt.json",
+      "receipt_sha256": "cd18875beb70e7f5f4be3abcda17c3424ad343aa492407f267be8e0203154369"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125697__NRS-484B-250-1__motor_vehicle_driver__off_ego_enters_first --attempt .runtime-work/c125697-sub1-ego-first-compat-v5 --output .runtime-work/c125697-sub1-ego-first-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cpu-tests.log",
+      "sha256": "5d9214081dd0906f8ed57ebfa23d49aa3321fa1f299a3e683b31fcd12326bae2",
+      "receipt": "cases/off_ego_enters_first/primary-saved-receipt.json",
+      "receipt_sha256": "c71b5469a4885e1046cf001173bf87281d98199fed7e09116b9314b803aaa1ce"
     }
   ],
   "remaining_gpu_checks": [
     "Actual statutory median-opening crossing, highway/lanes, installed uncovered Off signal, realized entry order/yield and four-camera visibility."
   ],
-  "reason": "Nine CPU unit tests, first exact Off other-first primary offline construction, source-shaped diagnostic generator and materialized saved finalizer source diagnostic pass. Full positive/negative compatibility and recorded-only process-saved, remaining exact cases/fallbacks, semantic and delivery audits remain worker-owned; no Native or legal acceptance is claimed."
+  "reason": "Two exact cases pass pinned offline, positive/missing-source compatibility and recorded-only saved processing with source-bound diagnostic measurements. Three remaining exact cases, risk-based fallbacks, semantic/delivery/comparison audits and strict scoped gate remain worker-owned. No Native or legal acceptance is claimed."
 }

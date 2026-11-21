@@ -147,3 +147,7 @@ The assignment `--complete` static check passes (`assignment-check.log`). Assign
 The exact recorded-only runtime `process-saved` path, real median site source, primary construction/compatibility bundle, remaining cases and fallbacks, semantic proposals and actual-source comparison audits remain unfinished worker-owned CPU work. `result.json` stays `partial` and the Goal active. No runtime, frozen input, batch or Git edit was made by this worker.
 
 After the audit change, the assignment `--complete` static gate passes (`assignment-check.log`), while assignment and full-batch strict gates exit 1 with `Preparation acceptance failed: partial/missing packages remain` (`strict-assignment-current.log`, `strict-gate.log`). The current `result.json` hashes bind the passing 14-test log, pinned preflight, both comparison proofs and the refreshed independent full-duration saved-source proof.
+
+## Return file consolidation
+
+Five historical command logs are preserved byte-for-byte in `command-log-archive.json` with member hashes; `result.json` binds the archive. Standalone copies are in ignored `.runtime-work/retired-logs/20261121-c125714-archive/`. These remain prior diagnostic proofs, not new readiness evidence.

@@ -21,3 +21,7 @@ Eight assignment CPU tests pass in `cpu-tests.log`; scoped `worker_check.py --co
 No frozen input, runtime or batch file was edited. The independent timer owns Git operations.
 
 2026-11-16 file-cap maintenance: moved 1 historical log(s) absent from current execution manifest and result claims to ignored `.runtime-work/archived-unbound-logs/testing__C136559__NRS-484B-600-1c__motor_vehicle_driver/`. The scoped `worker_check.py --complete` passed after moving them when checked. Previous checkpoint bytes remain locally recoverable.
+
+## Return file consolidation
+
+Two historical command logs are preserved byte-for-byte in `command-log-archive.json` with member hashes; `result.json` binds the archive. Standalone copies are in ignored `.runtime-work/retired-logs/20261121-testing__C136559__NRS-484B-600-1c__motor_vehicle_driver-archive/`. These are prior diagnostic proofs.

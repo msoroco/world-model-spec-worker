@@ -1,0 +1,76 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 5,
+      "requirement": "One identified crossing and two distinct highway approaches",
+      "source": "NRS 484B.250(1); inputs/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/witnesses.json",
+      "output_key": "crossing_identity",
+      "method": "measure_crossing_context",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "junction_context.json"
+      ]
+    },
+    {
+      "disposition_index": 6,
+      "requirement": "Ego complete body enters before other at the same crossing",
+      "source": "NRS 484B.250(1); inputs/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/witnesses.json",
+      "output_key": "entry_order",
+      "method": "measure_entry_order",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "crossing_history.jsonl",
+        "video_frames.jsonl",
+        "junction_context.json"
+      ]
+    },
+    {
+      "disposition_index": 7,
+      "requirement": "Retain other body occupancy and ego action during occupancy without asserting legal yield",
+      "source": "NRS 484B.250(1); inputs/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/witnesses.json",
+      "output_key": "other_occupancy",
+      "method": "measure_occupancy",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "crossing_history.jsonl",
+        "video_frames.jsonl",
+        "junction_context.json"
+      ]
+    },
+    {
+      "disposition_index": 8,
+      "requirement": "Identify controlling signal and retain its Off source rows and subsection-4 qualification",
+      "source": "NRS 484B.250(1); inputs/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/witnesses.json",
+      "output_key": "device_context",
+      "method": "measure_signal_context",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "junction_context.json",
+        "crossing_history.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 9,
+      "requirement": "Keep opposite-direction left-turn exception separate and unresolved",
+      "source": "NRS 484B.250(1); inputs/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/witnesses.json",
+      "output_key": "opposite_turn_context",
+      "method": "measure_opposite_turn_context",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "junction_context.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "crossing_history.jsonl"
+    ],
+    "error_contains": "Missing required source: crossing_history.jsonl"
+  }
+}

@@ -106,3 +106,7 @@ Six more historical fallback analysis logs were byte-identical to their retained
 ## 2026-11-19 final byte-identical historical analysis consolidation
 
 The three `imaginary-far-fallback{1,2,3}-analysis.log` files were byte-identical to retained `imaginary-far-analysis.log` (SHA-256 `f4a97e56b193012012a9b1d217651cb8894bcf4836c4ed25df225aa4b1035635`); their manifest paths now reference that copy. No log bytes were lost. The 2a scoped non-ready complete check passes; status remains partial.
+
+## Return file consolidation
+
+Two historical command logs are preserved byte-for-byte in `command-log-archive.json` with member hashes; `result.json` binds the archive. Standalone copies are in ignored `.runtime-work/retired-logs/20261121-c109705-archive/`. These are prior diagnostic proofs.

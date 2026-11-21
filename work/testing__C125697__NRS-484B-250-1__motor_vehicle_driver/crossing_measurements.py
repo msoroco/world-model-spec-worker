@@ -208,6 +208,53 @@ def analyze(root: Path, *, signal_mode: str = "off", allow_other_initially_insid
             "right_of_way_judgment": "unresolved"}
 
 
+def measure_crossing_context(report, context):
+    return {"intersection_id": report["intersection_id"],
+            "highway_ids": report["highway_ids"],
+            "native_map_id": context["native_map_id"],
+            "intersection_polygon_source": context["intersection_polygon_source"]}
+
+
+def measure_entry_order(report, context):
+    return {"first_body_entry": report["first_body_entry"],
+            "other_before_ego": report["other_entered_before_ego_observed"],
+            "ego_approaching_at_other_entry": report["ego_approaching_at_other_entry_observed"]}
+
+
+def measure_occupancy(report, context):
+    return {"occupancy_intervals": report["occupancy_intervals"],
+            "ego_speed_samples_while_other_inside": report["ego_speed_samples_while_other_inside"]}
+
+
+def measure_signal_context(report, context):
+    return {"native_signal_id": context["native_signal_id"],
+            "signal_governance_source": context["signal_governance_source"],
+            "observed_signal_states": report["observed_signal_states"],
+            "official_device_judgment": "unresolved"}
+
+
+def measure_opposite_turn_context(report, context):
+    return {"opposite_left_turn_observations": report["opposing_left_exception_observations"],
+            "exception_judgment": "unresolved"}
+
+
+def _contract_measurements(attempt, report):
+    context = json.loads((attempt / "junction_context.json").read_text())
+    definitions = {
+        "crossing_identity": (measure_crossing_context, ("junction_context.json",)),
+        "entry_order": (measure_entry_order, REQUIRED),
+        "other_occupancy": (measure_occupancy, REQUIRED),
+        "device_context": (measure_signal_context, ("junction_context.json", "crossing_history.jsonl")),
+        "opposite_turn_context": (measure_opposite_turn_context, ("junction_context.json",)),
+    }
+    measurements = {}
+    for key, (method, inputs) in definitions.items():
+        measurements[key] = {"method": method.__name__, "value": method(report, context),
+                             "sources": {name: hashlib.sha256((attempt / name).read_bytes()).hexdigest()
+                                         for name in inputs}}
+    return measurements
+
+
 def finalize_saved(attempt: Path, output: Path) -> dict:
     """Derive evidence channels only from retained original rows and context."""
     attempt, output = Path(attempt), Path(output)
@@ -268,7 +315,7 @@ def finalize_saved(attempt: Path, output: Path) -> dict:
                 stream.write(json.dumps({"time_s": row["time_s"], "original_frame": row["frame"],
                                          "value": value}, allow_nan=False) + "\n")
         evidence.append({"name": name, "unit": unit, "reference": reference})
-    evidence.append({"name": "junction_context", "unit": "structured record",
+    evidence.append({"name": "intersection_id", "unit": "structured record",
                      "reference": "junction_context.json"})
     checksums = {"evidence/" + path.relative_to(evidence_root).as_posix():
                  hashlib.sha256(path.read_bytes()).hexdigest()
@@ -302,6 +349,7 @@ def finalize_saved(attempt: Path, output: Path) -> dict:
     write_result(attempt, result)
     analysis = {"format": "worker-analysis-report", "case_id": case_id,
                 "source_report": report, "source_hashes": report["sources"],
+                "measurements": _contract_measurements(attempt, report),
                 "physical_checks": result["physical_checks"],
                 "realized_observables": result["realized_observables"],
                 "provenance_kind": result["provenance_kind"],
