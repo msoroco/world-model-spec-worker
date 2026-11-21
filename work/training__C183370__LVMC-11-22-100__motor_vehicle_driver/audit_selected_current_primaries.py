@@ -40,8 +40,10 @@ def main():
             raise ValueError('Diagnostic audit asserted original acceptance')
         receipt = output / (short + '.json')
         if receipt.exists():
-            raise ValueError('Retain previous current primary audit')
-        receipt.write_text(json.dumps(value, indent=2, sort_keys=True) + '\n')
+            if json.loads(receipt.read_text()) != value:
+                raise ValueError('Previous current primary audit differs')
+        else:
+            receipt.write_text(json.dumps(value, indent=2, sort_keys=True) + '\n')
         attempts[case], audit_paths[case] = attempt, receipt
         case_rows.append({'case_id': case, 'chain_sha256': sha(proof_path),
                           'audit_sha256': sha(receipt), 'accepted': False})
