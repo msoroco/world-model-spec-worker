@@ -38,7 +38,7 @@ def derive(source, output):
         raise ValueError('Preserve prior derived output; select a fresh directory')
     source_hashes = {name: _sha(source / name) for name in
                      ('native-actors.jsonl', 'video_frames.jsonl', 'live-readback.json')}
-    speed_rows, contact_rows = [], []
+    speed_rows, contact_rows, condition_rows = [], [], []
     for index, (actor, frame) in enumerate(zip(actors, frames)):
         frame_id = frame['carla_frame']
         time_s = frame['time_s']
@@ -62,18 +62,29 @@ def derive(source, output):
         contact_rows.append({**common, 'value': contact,
                              'surveyed_region_kind': 'laid' if polygon_key.startswith('laid') else 'repair',
                              'surface_age_verified': False, 'warning_act_verified': False})
+        condition_rows.append({**common, 'value': {
+            'surveyed_polygon_contact': contact,
+            'surveyed_region_kind': 'laid' if polygon_key.startswith('laid') else 'repair',
+            'warning_person_actor_id': actor.get('warning_person_actor_id'),
+            'warning_act_verified': False,
+            'newly_laid_or_repaired_status_verified': False,
+            'drive_over_warned_new_pavement': None,
+            'reason': 'Original warning act and pavement condition require source review',
+        }})
     if frames[-1]['time_s'] - frames[0]['time_s'] < 29.9:
         raise ValueError('Source time window is shorter than 30 seconds')
     output.mkdir(parents=True)
     for name, rows in (('ego_speed', speed_rows),
-                       ('newly_laid_footprint_contact', contact_rows)):
+                       ('newly_laid_footprint_contact', contact_rows),
+                       ('drive_over_warned_new_pavement', condition_rows)):
         (output / (name + '.jsonl')).write_text(''.join(json.dumps(row, allow_nan=False,
             sort_keys=True) + '\n' for row in rows))
     receipt = {'format': 'c183370-source-derived-channels-v1',
                'source_hashes': source_hashes, 'frames': len(frames),
                'duration_s': frames[-1]['time_s'] - frames[0]['time_s'],
                'channels': {name: _sha(output / (name + '.jsonl')) for name in
-                            ('ego_speed', 'newly_laid_footprint_contact')},
+                            ('ego_speed', 'newly_laid_footprint_contact',
+                             'drive_over_warned_new_pavement')},
                'original_native_verified': False, 'physical_acceptance_claimed': False,
                'warning_and_surface_status_verified': False}
     (output / 'receipt.json').write_text(json.dumps(receipt, indent=2) + '\n')

@@ -1,0 +1,163 @@
+{
+  "law_id": "LVMC-11-22-100",
+  "cell_id": "C183370",
+  "actor": "motor_vehicle_driver",
+  "entrypoint": "runner.py",
+  "status": "partial_selected_dispatch",
+  "delivery_ready": false,
+  "original_native_observed": false,
+  "files": [
+    {
+      "path": "runner.py",
+      "content": "\"\"\"Dispatch one selected C183370 case through the pinned runtime.\n\nThis package entrypoint checks exact selections on CPU. Native capture is only\nstarted by an explicit ``--capture`` call with a supplied CARLA interpreter.\n\"\"\"\nimport argparse\nimport json\nimport subprocess\nimport sys\nfrom pathlib import Path\n\nHERE = Path(__file__).resolve().parent\nROOT = HERE.parents[1]\nASSIGNMENT = HERE.name\nMANIFEST = HERE / 'execution-manifest.json'\n\n\ndef selection(case_id, candidate_id):\n    sys.path.insert(0, str(ROOT / 'runtime' / 'pipeline'))\n    from scenario_pipeline.worker_exchange.candidate_constructions import select\n    from scenario_pipeline.worker_exchange.common import sha\n\n    configuration = json.loads((HERE / 'config.json').read_text())\n    if configuration['actor'] != 'motor_vehicle_driver' or configuration['law_id'] != 'LVMC-11-22-100':\n        raise ValueError('Package identity changed')\n    if case_id not in configuration['supported_case_ids']:\n        raise ValueError('Case is outside this package')\n    entry, selected, construction = select(MANIFEST, case_id, candidate_id)\n    if construction['entrypoint'] != 'runner.py':\n        raise ValueError('Selected bundle has no canonical runner')\n    for file in construction['files']:\n        if file.get('source') and sha(ROOT / file['source']) != sha_text(file['content']):\n            raise ValueError('Selected source changed: ' + file['path'])\n    return {'case_id': entry['case_id'], 'candidate_id': selected['id'],\n            'construction_sha256': selected['construction_sha256'],\n            'original_native_observed': False}\n\n\ndef sha_text(content):\n    import hashlib\n    return hashlib.sha256(content.encode()).hexdigest()\n\n\ndef main():\n    parser = argparse.ArgumentParser(description=__doc__)\n    parser.add_argument('--case', required=True)\n    parser.add_argument('--candidate', default='primary',\n                        choices=('primary', 'fallback1', 'fallback2', 'fallback3'))\n    parser.add_argument('--check', action='store_true')\n    parser.add_argument('--capture', action='store_true')\n    parser.add_argument('--output')\n    parser.add_argument('--python')\n    parser.add_argument('--host')\n    parser.add_argument('--port')\n    args = parser.parse_args()\n    selected = selection(args.case, args.candidate)\n    if args.check:\n        print(json.dumps(selected, sort_keys=True))\n        return\n    if not args.output:\n        parser.error('--output is required to materialize an exact case')\n    command = [sys.executable, str(ROOT / 'runtime.py'),\n               'capture' if args.capture else 'materialize',\n               '--manifest', str(MANIFEST), '--case', args.case,\n               '--candidate', args.candidate, '--output', args.output]\n    if args.capture:\n        if not all((args.python, args.host, args.port)):\n            parser.error('Native capture requires --python, --host and --port')\n        command += ['--python', args.python, '--host', args.host, '--port', args.port]\n    subprocess.run(command, cwd=ROOT, check=True)\n\n\nif __name__ == '__main__':\n    main()\n"
+    },
+    {
+      "path": "config.json",
+      "content": "{\n  \"actor\": \"motor_vehicle_driver\",\n  \"law_id\": \"LVMC-11-22-100\",\n  \"cell_id\": \"C183370\",\n  \"assignment_id\": \"training__C183370__LVMC-11-22-100__motor_vehicle_driver\",\n  \"supported_case_ids\": [\n    \"training__C183370__LVMC-11-22-100__motor_vehicle_driver__reference\",\n    \"training__C183370__LVMC-11-22-100__motor_vehicle_driver__contrast\",\n    \"training__C183370__LVMC-11-22-100__motor_vehicle_driver__barrier_crossing\",\n    \"training__C183370__LVMC-11-22-100__motor_vehicle_driver__barrier_avoidance\",\n    \"training__C183370__LVMC-11-22-100__motor_vehicle_driver__warning_sign_crossing\",\n    \"training__C183370__LVMC-11-22-100__motor_vehicle_driver__warning_sign_avoidance\",\n    \"training__C183370__LVMC-11-22-100__motor_vehicle_driver__highway_closed_sign_crossing\",\n    \"training__C183370__LVMC-11-22-100__motor_vehicle_driver__highway_closed_sign_avoidance\",\n    \"training__C183370__LVMC-11-22-100__motor_vehicle_driver__employee_exception_employee_crossing\",\n    \"training__C183370__LVMC-11-22-100__motor_vehicle_driver__employee_exception_nonemployee_crossing\",\n    \"training__C183370__LVMC-11-22-100__motor_vehicle_driver__newly_laid_crossing\",\n    \"training__C183370__LVMC-11-22-100__motor_vehicle_driver__newly_laid_avoidance\"\n  ],\n  \"duration_s\": 30,\n  \"rate_hz\": 20,\n  \"cameras\": [\n    {\n      \"name\": \"overview\",\n      \"width\": 1920,\n      \"height\": 1080,\n      \"pose_strategy\": \"surveyed scene relative to ego route and selected pavement/warning subject; confirm original view before capture\",\n      \"fov_deg\": 90\n    },\n    {\n      \"name\": \"approach\",\n      \"width\": 1280,\n      \"height\": 720,\n      \"pose_strategy\": \"surveyed scene relative to ego route and selected pavement/warning subject; confirm original view before capture\",\n      \"fov_deg\": 90\n    },\n    {\n      \"name\": \"reference_corner\",\n      \"width\": 1280,\n      \"height\": 720,\n      \"pose_strategy\": \"surveyed scene relative to ego route and selected pavement/warning subject; confirm original view before capture\",\n      \"fov_deg\": 90\n    },\n    {\n      \"name\": \"driver_reference\",\n      \"width\": 1280,\n      \"height\": 720,\n      \"pose_strategy\": \"surveyed scene relative to ego route and selected pavement/warning subject; confirm original view before capture\",\n      \"fov_deg\": 90\n    }\n  ],\n  \"required_atoms\": [],\n  \"source_packets\": [],\n  \"selection_manifest\": \"execution-manifest.json\",\n  \"capture_profile\": \"overview1080-capability\",\n  \"original_native_observed\": false\n}\n"
+    },
+    {
+      "path": "derive_mandatory_channels.py",
+      "content": "\"\"\"Derive measured C183370 speed and surveyed contact from retained raw rows.\n\nThe output is a CPU preparation artifact. Polygon contact alone cannot prove\nthat pavement was newly laid or that a person actually warned the driver.\n\"\"\"\nimport argparse\nimport hashlib\nimport json\nimport math\nfrom pathlib import Path\n\nfrom shapely.geometry import MultiPoint, Polygon\n\n\ndef _sha(path):\n    return hashlib.sha256(Path(path).read_bytes()).hexdigest()\n\n\ndef _rows(path):\n    return [json.loads(line) for line in Path(path).read_text().splitlines() if line.strip()]\n\n\ndef derive(source, output):\n    source, output = Path(source), Path(output)\n    actor_file = source / 'native-actors.jsonl'\n    frame_file = source / 'video_frames.jsonl'\n    readback_file = source / 'live-readback.json'\n    actors, frames = _rows(actor_file), _rows(frame_file)\n    readback = json.loads(readback_file.read_text())\n    plan = readback['plan']\n    polygon_key = 'laid_polygon_xy_m' if 'laid_polygon_xy_m' in plan else 'repair_polygon_xy_m'\n    polygon = Polygon(plan[polygon_key])\n    if not polygon.is_valid or polygon.is_empty or polygon.area <= 0:\n        raise ValueError('Invalid surveyed pavement polygon')\n    if len(actors) != len(frames) or len(actors) < 600:\n        raise ValueError('Actor/frame source length or 30-second coverage differs')\n    if output.exists():\n        raise ValueError('Preserve prior derived output; select a fresh directory')\n    source_hashes = {name: _sha(source / name) for name in\n                     ('native-actors.jsonl', 'video_frames.jsonl', 'live-readback.json')}\n    speed_rows, contact_rows, condition_rows = [], [], []\n    for index, (actor, frame) in enumerate(zip(actors, frames)):\n        frame_id = frame['carla_frame']\n        time_s = frame['time_s']\n        if actor.get('carla_frame', actor.get('frame')) != frame_id:\n            raise ValueError('Actor/frame identity differs')\n        if index and (frame_id <= frames[index - 1]['carla_frame'] or\n                      time_s <= frames[index - 1]['time_s']):\n            raise ValueError('Source frames are not ordered')\n        velocity = actor['ego_velocity_xyz_mps']\n        speed = math.sqrt(sum(float(value) ** 2 for value in velocity))\n        if not math.isfinite(speed) or abs(speed - actor['ego_speed_mps']) > 1e-5:\n            raise ValueError('Native speed differs from source velocity')\n        vertices = actor['ego_body_vertices_xyz_m']\n        if len(vertices) < 4:\n            raise ValueError('Ego body polygon is incomplete')\n        body = MultiPoint([(float(v[0]), float(v[1])) for v in vertices]).convex_hull\n        contact = bool(body.intersects(polygon))\n        common = {'frame': frame_id, 'time_s': time_s,\n                  'source_hashes': source_hashes}\n        speed_rows.append({**common, 'value': speed, 'unit': 'm/s'})\n        contact_rows.append({**common, 'value': contact,\n                             'surveyed_region_kind': 'laid' if polygon_key.startswith('laid') else 'repair',\n                             'surface_age_verified': False, 'warning_act_verified': False})\n        condition_rows.append({**common, 'value': {\n            'surveyed_polygon_contact': contact,\n            'surveyed_region_kind': 'laid' if polygon_key.startswith('laid') else 'repair',\n            'warning_person_actor_id': actor.get('warning_person_actor_id'),\n            'warning_act_verified': False,\n            'newly_laid_or_repaired_status_verified': False,\n            'drive_over_warned_new_pavement': None,\n            'reason': 'Original warning act and pavement condition require source review',\n        }})\n    if frames[-1]['time_s'] - frames[0]['time_s'] < 29.9:\n        raise ValueError('Source time window is shorter than 30 seconds')\n    output.mkdir(parents=True)\n    for name, rows in (('ego_speed', speed_rows),\n                       ('newly_laid_footprint_contact', contact_rows),\n                       ('drive_over_warned_new_pavement', condition_rows)):\n        (output / (name + '.jsonl')).write_text(''.join(json.dumps(row, allow_nan=False,\n            sort_keys=True) + '\\n' for row in rows))\n    receipt = {'format': 'c183370-source-derived-channels-v1',\n               'source_hashes': source_hashes, 'frames': len(frames),\n               'duration_s': frames[-1]['time_s'] - frames[0]['time_s'],\n               'channels': {name: _sha(output / (name + '.jsonl')) for name in\n                            ('ego_speed', 'newly_laid_footprint_contact',\n                             'drive_over_warned_new_pavement')},\n               'original_native_verified': False, 'physical_acceptance_claimed': False,\n               'warning_and_surface_status_verified': False}\n    (output / 'receipt.json').write_text(json.dumps(receipt, indent=2) + '\\n')\n    return receipt\n\n\ndef main():\n    parser = argparse.ArgumentParser(description=__doc__)\n    parser.add_argument('--source', type=Path, required=True)\n    parser.add_argument('--output', type=Path, required=True)\n    args = parser.parse_args()\n    print(json.dumps(derive(args.source, args.output), sort_keys=True))\n\n\nif __name__ == '__main__':\n    main()\n"
+    },
+    {
+      "path": "tests/test_dispatch.py",
+      "content": "\"\"\"CPU checks for the package-level exact-case dispatcher.\"\"\"\nimport json\nimport subprocess\nimport sys\nimport tempfile\nimport unittest\nfrom pathlib import Path\n\nPACKAGE = Path(__file__).resolve().parents[1]\nRUNNER = PACKAGE / 'runner.py'\nCONFIG = json.loads((PACKAGE / 'config.json').read_text())\n\n\nclass DispatchTest(unittest.TestCase):\n    def test_all_selected_bundles_are_source_bound(self):\n        for case_id in CONFIG['supported_case_ids']:\n            for candidate in ('primary', 'fallback1', 'fallback2', 'fallback3'):\n                checked = subprocess.run(\n                    [sys.executable, str(RUNNER), '--case', case_id,\n                     '--candidate', candidate, '--check'],\n                    capture_output=True, text=True, check=True)\n                receipt = json.loads(checked.stdout)\n                self.assertEqual(receipt['case_id'], case_id)\n                self.assertEqual(receipt['candidate_id'], candidate)\n                self.assertFalse(receipt['original_native_observed'])\n\n    def test_unknown_case_rejects(self):\n        checked = subprocess.run(\n            [sys.executable, str(RUNNER), '--case', 'unknown', '--check'],\n            capture_output=True, text=True)\n        self.assertNotEqual(checked.returncode, 0)\n        self.assertIn('outside this package', checked.stderr)\n\n    def test_primary_materializes_exact_selected_construction(self):\n        with tempfile.TemporaryDirectory(prefix='c183370-dispatch-') as temp:\n            target = Path(temp) / 'selected'\n            case_id = CONFIG['supported_case_ids'][0]\n            subprocess.run([sys.executable, str(RUNNER), '--case', case_id,\n                            '--output', str(target)],\n                           capture_output=True, text=True, check=True)\n            receipt = json.loads((target / 'candidate-selection.json').read_text())\n            self.assertEqual(receipt['case_id'], case_id)\n            self.assertEqual(receipt['candidate_id'], 'primary')\n            self.assertTrue((target / 'runner.py').is_file())\n            self.assertTrue((target / 'construction.json').is_file())\n\n\nif __name__ == '__main__':\n    unittest.main()\n"
+    },
+    {
+      "path": "tests/test_derive.py",
+      "content": "\"\"\"Raw-source channel checks, including a missing-contact and tampered-speed case.\"\"\"\nimport json\nimport sys\nimport tempfile\nimport unittest\nfrom pathlib import Path\n\nHERE = Path(__file__).resolve().parents[1]\nsys.path.insert(0, str(HERE))\nfrom derive_mandatory_channels import derive\n\n\ndef write_source(root, *, crossing, tamper_speed=False):\n    root.mkdir()\n    (root / 'live-readback.json').write_text(json.dumps({\n        'plan': {'laid_polygon_xy_m': [[0, 0], [2, 0], [2, 2], [0, 2]]}}))\n    with (root / 'native-actors.jsonl').open('w') as actors, \\\n         (root / 'video_frames.jsonl').open('w') as frames:\n        for index in range(600):\n            x = 1 if crossing and 200 <= index < 400 else 10\n            vertices = [[x-0.2, 0.5, 0], [x+0.2, 0.5, 0],\n                        [x+0.2, 1.5, 0], [x-0.2, 1.5, 0]]\n            actors.write(json.dumps({'frame': index,\n                'ego_velocity_xyz_mps': [2, 0, 0],\n                'ego_speed_mps': 3 if tamper_speed and index == 300 else 2,\n                'ego_body_vertices_xyz_m': vertices}) + '\\n')\n            frames.write(json.dumps({'carla_frame': index,\n                'time_s': round((index+1)/20, 2)}) + '\\n')\n\n\nclass DerivedChannelsTest(unittest.TestCase):\n    def test_measured_contact_and_speed_from_raw_sources(self):\n        with tempfile.TemporaryDirectory(prefix='c183370-raw-') as temp:\n            root = Path(temp)\n            for crossing, count in ((True, 200), (False, 0)):\n                source = root / ('cross' if crossing else 'avoid')\n                output = root / ('cross-out' if crossing else 'avoid-out')\n                write_source(source, crossing=crossing)\n                receipt = derive(source, output)\n                contacts = [json.loads(row)['value'] for row in\n                            (output / 'newly_laid_footprint_contact.jsonl').read_text().splitlines()]\n                speeds = [json.loads(row)['value'] for row in\n                          (output / 'ego_speed.jsonl').read_text().splitlines()]\n                conditions = [json.loads(row)['value'] for row in\n                              (output / 'drive_over_warned_new_pavement.jsonl').read_text().splitlines()]\n                self.assertEqual(sum(contacts), count)\n                self.assertEqual(set(speeds), {2.0})\n                self.assertEqual(sum(item['surveyed_polygon_contact'] for item in conditions), count)\n                self.assertTrue(all(item['drive_over_warned_new_pavement'] is None and\n                                    item['warning_act_verified'] is False and\n                                    item['newly_laid_or_repaired_status_verified'] is False\n                                    for item in conditions))\n                self.assertFalse(receipt['warning_and_surface_status_verified'])\n\n    def test_reported_speed_cannot_override_retained_velocity(self):\n        with tempfile.TemporaryDirectory(prefix='c183370-tamper-') as temp:\n            root = Path(temp)\n            source = root / 'tamper'\n            write_source(source, crossing=True, tamper_speed=True)\n            with self.assertRaisesRegex(ValueError, 'speed differs'):\n                derive(source, root / 'output')\n\n\nif __name__ == '__main__':\n    unittest.main()\n"
+    }
+  ],
+  "measurement_plan": {
+    "selected_cases": [
+      "training__C183370__LVMC-11-22-100__motor_vehicle_driver__reference",
+      "training__C183370__LVMC-11-22-100__motor_vehicle_driver__contrast",
+      "training__C183370__LVMC-11-22-100__motor_vehicle_driver__barrier_crossing",
+      "training__C183370__LVMC-11-22-100__motor_vehicle_driver__barrier_avoidance",
+      "training__C183370__LVMC-11-22-100__motor_vehicle_driver__warning_sign_crossing",
+      "training__C183370__LVMC-11-22-100__motor_vehicle_driver__warning_sign_avoidance",
+      "training__C183370__LVMC-11-22-100__motor_vehicle_driver__highway_closed_sign_crossing",
+      "training__C183370__LVMC-11-22-100__motor_vehicle_driver__highway_closed_sign_avoidance",
+      "training__C183370__LVMC-11-22-100__motor_vehicle_driver__employee_exception_employee_crossing",
+      "training__C183370__LVMC-11-22-100__motor_vehicle_driver__employee_exception_nonemployee_crossing",
+      "training__C183370__LVMC-11-22-100__motor_vehicle_driver__newly_laid_crossing",
+      "training__C183370__LVMC-11-22-100__motor_vehicle_driver__newly_laid_avoidance"
+    ],
+    "retained_sources": [
+      "native-actors.jsonl",
+      "video_frames.jsonl",
+      "live-readback.json",
+      "overview.mkv",
+      "approach.mkv",
+      "reference_corner.mkv",
+      "driver_reference.mkv"
+    ],
+    "derived_channel_module": "derive_mandatory_channels.py",
+    "selected_delivery_binding_status": "pending",
+    "employee_exception_measurement_status": "pending_original_activity_source_review"
+  },
+  "recording_description": {
+    "channels": [
+      {
+        "method": "derive from original CARLA actor/body/frame rows and surveyed pavement polygon",
+        "name": "ego_pose",
+        "reference_frame": "original CARLA frame joined to four source-camera videos",
+        "sampling_rate_hz": 20,
+        "time_window": "all 600 frames / 30 seconds",
+        "uncertainty": "50 ms sampling; human warning, surface repair and legal exception require independent original review",
+        "unit": "structured"
+      },
+      {
+        "method": "derive from original CARLA actor/body/frame rows and surveyed pavement polygon",
+        "name": "ego_body_footprint",
+        "reference_frame": "original CARLA frame joined to four source-camera videos",
+        "sampling_rate_hz": 20,
+        "time_window": "all 600 frames / 30 seconds",
+        "uncertainty": "50 ms sampling; human warning, surface repair and legal exception require independent original review",
+        "unit": "structured"
+      },
+      {
+        "method": "derive from original CARLA actor/body/frame rows and surveyed pavement polygon",
+        "name": "warning_person_state",
+        "reference_frame": "original CARLA frame joined to four source-camera videos",
+        "sampling_rate_hz": 20,
+        "time_window": "all 600 frames / 30 seconds",
+        "uncertainty": "50 ms sampling; human warning, surface repair and legal exception require independent original review",
+        "unit": "structured"
+      },
+      {
+        "method": "derive from original CARLA actor/body/frame rows and surveyed pavement polygon",
+        "name": "pavement_footprint_contact",
+        "reference_frame": "original CARLA frame joined to four source-camera videos",
+        "sampling_rate_hz": 20,
+        "time_window": "all 600 frames / 30 seconds",
+        "uncertainty": "50 ms sampling; human warning, surface repair and legal exception require independent original review",
+        "unit": "structured"
+      },
+      {
+        "method": "derive from original CARLA actor/body/frame rows and surveyed pavement polygon",
+        "name": "control_actor_state",
+        "reference_frame": "original CARLA frame joined to four source-camera videos",
+        "sampling_rate_hz": 20,
+        "time_window": "all 600 frames / 30 seconds",
+        "uncertainty": "50 ms sampling; control content, surface repair and legal exception require independent original review",
+        "unit": "structured"
+      },
+      {
+        "name": "ego_speed",
+        "unit": "m/s",
+        "method": "Recompute the magnitude of retained Native velocity and require consistency with the retained speed sample",
+        "sampling_rate_hz": 20,
+        "time_window": "all 600 source-joined frames / 30 seconds",
+        "reference_frame": "retained native-actors.jsonl and video_frames.jsonl with live-readback.json polygon",
+        "uncertainty": "50 ms sample spacing; original warning conduct and pavement status unverified"
+      },
+      {
+        "name": "newly_laid_footprint_contact",
+        "unit": "bool",
+        "method": "Intersect retained ego body vertices with the source-hashed surveyed laid or repair polygon",
+        "sampling_rate_hz": 20,
+        "time_window": "all 600 source-joined frames / 30 seconds",
+        "reference_frame": "retained native-actors.jsonl and video_frames.jsonl with live-readback.json polygon",
+        "uncertainty": "50 ms sample spacing; original warning conduct and pavement status unverified"
+      },
+      {
+        "name": "drive_over_warned_new_pavement",
+        "unit": "structured",
+        "method": "Join surveyed contact, warning-person actor identity and explicit unknown warning-act/surface-status flags; original review must resolve the legal condition",
+        "sampling_rate_hz": 20,
+        "time_window": "all 600 source-joined frames / 30 seconds",
+        "reference_frame": "retained native-actors.jsonl and video_frames.jsonl with live-readback.json polygon",
+        "uncertainty": "50 ms sample spacing; original warning conduct and pavement status unverified"
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "surveyed_pavement_region",
+        "method": "source-hashed live-readback.json polygon",
+        "unit": "structured"
+      }
+    ],
+    "limitations": [
+      "Composite warned-pavement law condition remains unknown in CPU diagnostics.",
+      "Package-level derived channels are not yet bound into selected saved-processing constructions.",
+      "Original Native camera pixels, surface age, warning act and employee activity require local review."
+    ]
+  },
+  "static_checks": [
+    "runner.py --case CASE --candidate CANDIDATE --check",
+    "tests/test_dispatch.py",
+    "tests/test_derive.py"
+  ],
+  "termination_rules": {
+    "frames": 600,
+    "rate_hz": 20,
+    "duration_s": 30
+  },
+  "mechanisms": {
+    "dispatch": "runner.py source-binds selected exact case/candidate and invokes pinned runtime materialization or explicit capture",
+    "acquisition": "the selected case construction implements controller and synchronized four-view capture",
+    "measured_derivation": "derive_mandatory_channels.py computes speed, body contact and structured unresolved warned-pavement evidence from retained raw rows",
+    "finalization": "selected case finalizers and package derivation require binding before delivery readiness"
+  }
+}

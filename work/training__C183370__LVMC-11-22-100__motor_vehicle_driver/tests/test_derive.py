@@ -41,8 +41,15 @@ class DerivedChannelsTest(unittest.TestCase):
                             (output / 'newly_laid_footprint_contact.jsonl').read_text().splitlines()]
                 speeds = [json.loads(row)['value'] for row in
                           (output / 'ego_speed.jsonl').read_text().splitlines()]
+                conditions = [json.loads(row)['value'] for row in
+                              (output / 'drive_over_warned_new_pavement.jsonl').read_text().splitlines()]
                 self.assertEqual(sum(contacts), count)
                 self.assertEqual(set(speeds), {2.0})
+                self.assertEqual(sum(item['surveyed_polygon_contact'] for item in conditions), count)
+                self.assertTrue(all(item['drive_over_warned_new_pavement'] is None and
+                                    item['warning_act_verified'] is False and
+                                    item['newly_laid_or_repaired_status_verified'] is False
+                                    for item in conditions))
                 self.assertFalse(receipt['warning_and_surface_status_verified'])
 
     def test_reported_speed_cannot_override_retained_velocity(self):
