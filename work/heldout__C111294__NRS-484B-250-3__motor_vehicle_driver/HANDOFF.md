@@ -617,3 +617,7 @@ The current returned tree has 10,178 of 10,200 allowed files. Twenty-six graph-u
 ## 2026-11-18 current ten-case strict CPU return
 
 The pinned runtime preflight passed. All ten selected cases have current manifest-bound synthetic saved-processing receipts with original-source preservation and timestamp joins. Six exact comparison dispatches, wrong-case negatives, and six queued commands passed; the ordered queue has ten cases. The categorical source matrix now binds local C111294 opposing-left turn, hold, shallow and three release-delay diagnostic variants, with six altered-source rejections. The full-law audit and 83/83 assignment tests pass. `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment heldout__C111294__NRS-484B-250-3__motor_vehicle_driver --complete --require-delivery-ready` exited 0. Current manifest SHA-256 `0596f9a5a10be20eae82246cbcb22c20dca8e73ec0c95a3ce74242085eb69d3f`, queue SHA-256 `606d4a04844761b6a8bf0e8a1e57090e1183d326c57739c07d7e1bb3097cd59b`, result SHA-256 `b2b8fb4caad50142ea843dbbd315b5010284599c8665ed83e80ee06d266e5020`. Status **ready / delivery_prepared** for CPU preparation only. Actual Native motion, camera pixels, physical completion and legal judgment remain unverified.
+
+
+## 2026-11-21 08:34 UTC checkpoint
+Six archived saved-only proof logs were SHA-verified and consolidated into one bound log; opposing-left lifecycle fixture records passing synthetic saved processing. Assignment-scoped strict gate passed. Native/physical completion remains pending local execution.
