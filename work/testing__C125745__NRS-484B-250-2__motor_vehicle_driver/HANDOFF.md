@@ -295,3 +295,9 @@ The latest full batch strict gate exited 1 with `Preparation acceptance failed: 
 2026-11-20 packaging checkpoint: two unreferenced historical build helpers (`build_second_case.py`, `build_third_case.py`) were preserved byte-for-byte with paths and hashes in `work/_shared/archived-unbound-negative-logs-20261119.json`, then removed for the frozen file cap. Assignment-scoped complete check passes after archival; active constructions and proofs remain in place.
 
 2026-11-20 return-cap consolidation: historical unreferenced helper scripts from this owner were archived byte-for-byte under `work/_shared/archived-unbound-negative-logs-20261119.json` with SHA-256. Active construction and bound proof files remain in place. Restore a helper from the archive before rerunning historical authoring workflows.
+
+## 2026-11-21 returned-log consolidation
+
+Status remains **partial**. Seventeen small root `*offline*.log` results were preserved byte-for-byte as labeled sections of `primary-offline-v3.log` (SHA-256 `ba6e53dd95f343cf16386d217d1015294c1e46fd65dce94972864e04ff2f9dc7`); the redundant 16 files were removed from the returned tree. Exact log references and hashes in `result.json` and `execution-manifest.json` now point to the aggregate. Original files and JSON backups are in ignored `.runtime-work/c125745-2-offline-consolidation/`. Assignment-scoped `worker_check.py --complete` exits 0. This is file-cap maintenance and does not alter case readiness.
+
+This checkpoint's scoped strict `--complete --require-delivery-ready` exits 1 at `Preparation acceptance failed: partial/missing packages remain`, consistent with partial status.
