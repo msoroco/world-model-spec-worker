@@ -69,6 +69,49 @@ class StopTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "frame join"):
                 measure.analyze(root)
 
+    def test_crosswalk_and_nearest_view_stop_boundaries(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            self.fixture(root)
+            context_path = root / "junction_context.json"
+            history_path = root / "vehicle_signal_history.jsonl"
+            context = json.loads(context_path.read_text())
+            rows = [json.loads(line) for line in history_path.read_text().splitlines()]
+            context["stop_line_exists"] = False
+            context["crosswalk_exists"] = True
+            context["crosswalk_source"] = "native-map-and-front-video-crosswalk"
+            for row in rows:
+                for actor in ("ego", "other"):
+                    row[actor]["front_to_crosswalk_signed_m"] = row[actor].pop("front_to_stop_line_signed_m")
+            context_path.write_text(json.dumps(context))
+            history_path.write_text("".join(json.dumps(row) + "\n" for row in rows))
+            report = measure.analyze(root)
+            self.assertEqual(report["selected_stop_boundary"], "crosswalk")
+            self.assertTrue(report["ego_stopped_before_entry_observed"])
+
+            context["crosswalk_exists"] = False
+            context["nearest_view_source"] = "native-map-and-original-view-review"
+            for row in rows:
+                for actor in ("ego", "other"):
+                    row[actor]["front_to_nearest_view_signed_m"] = row[actor].pop("front_to_crosswalk_signed_m")
+            context_path.write_text(json.dumps(context))
+            history_path.write_text("".join(json.dumps(row) + "\n" for row in rows))
+            report = measure.analyze(root)
+            self.assertEqual(report["selected_stop_boundary"], "nearest_view")
+            self.assertTrue(report["other_completed_stop_before_ego_observed"])
+
+    def test_rejects_unsourced_boundary_hierarchy(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            self.fixture(root)
+            path = root / "junction_context.json"
+            context = json.loads(path.read_text())
+            context["stop_line_exists"] = False
+            context["crosswalk_exists"] = False
+            path.write_text(json.dumps(context))
+            with self.assertRaisesRegex(ValueError, "nearest_view_source"):
+                measure.analyze(root)
+
 
 if __name__ == "__main__":
     unittest.main()

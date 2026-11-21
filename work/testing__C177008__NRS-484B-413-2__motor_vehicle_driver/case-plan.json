@@ -237,13 +237,41 @@
     }
   ],
   "observations": [
-    "Native district classification and map source for business/residential vs other area",
-    "selected Native right-turn route and measured course-change onset",
-    "retained turn-indicator state on every original frame",
-    "continuous sampled path length before onset, below/at/above 100 feet",
-    "300-foot other-area counterpart",
-    "rain/weather state without legal exception",
-    "other-vehicle position and four-camera indicator visibility"
+    {
+      "name": "ego_road_id",
+      "description": "Native district classification and map source for business/residential vs other area",
+      "mandatory": true
+    },
+    {
+      "name": "ego_heading",
+      "description": "selected Native right-turn route and measured course-change onset",
+      "mandatory": true
+    },
+    {
+      "name": "ego_turn_indicator",
+      "description": "retained turn-indicator state on every original frame",
+      "mandatory": true
+    },
+    {
+      "name": "ego_speed",
+      "description": "continuous sampled path length before onset, below/at/above 100 feet",
+      "mandatory": true
+    },
+    {
+      "name": "ego_speed",
+      "description": "300-foot other-area counterpart",
+      "mandatory": false
+    },
+    {
+      "name": "ego_road_id",
+      "description": "rain/weather state without legal exception",
+      "mandatory": false
+    },
+    {
+      "name": "ego_heading",
+      "description": "other-vehicle position and four-camera indicator visibility",
+      "mandatory": false
+    }
   ],
   "sources": [
     {
@@ -436,7 +464,7 @@
       "comparison_id": "business_threshold_below_at",
       "script": "comparison_audit.py",
       "script_sha256": "cffb85ff5a7d278f97dd644ad1bf1702622308aa94532ad0ee96a14df44406b7",
-      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/comparison_audit.py --comparison-id business_threshold_below_at --left .runtime-work/c177008-below-saved-v1/v0001/evidence --right .runtime-work/c177008-construction-contract-v4/primary-saved/v0001/evidence",
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/comparison_audit.py --comparison-id business_threshold_below_at --left .runtime-work/c177008-below-saved-v1/v0001/evidence --right .runtime-work/c177008-case-coverage-v5/primary-saved/v0001/evidence",
       "exit_code": 0,
       "receipt": "comparisons/business_threshold_below_at.json",
       "receipt_sha256": "95f70d6304670e731f347125135d9b18c2be17eeca2c4a3db45f5cc4fba086ac",
@@ -464,11 +492,11 @@
       "comparison_id": "business_wet_weather",
       "script": "comparison_audit.py",
       "script_sha256": "cffb85ff5a7d278f97dd644ad1bf1702622308aa94532ad0ee96a14df44406b7",
-      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/comparison_audit.py --comparison-id business_wet_weather --left .runtime-work/c177008-construction-contract-v4/primary-saved/v0001/evidence --right .runtime-work/c177008-wet-saved-v1/v0001/evidence",
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/comparison_audit.py --comparison-id business_wet_weather --left .runtime-work/c177008-case-coverage-v5/primary-saved/v0001/evidence --right .runtime-work/c177008-wet-saved-v1/v0001/evidence",
       "exit_code": 0,
       "receipt": "comparisons/business_wet_weather.json",
       "receipt_sha256": "6109bbe4e2a5894dcdd554fe61e12d13ba8d55e06a74850a233f8be3df2451d8",
-      "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/comparison_audit.py --comparison-id business_wet_weather --left .runtime-work/c177008-construction-contract-v4/primary-saved/v0001/evidence --right .runtime-work/c177008-comparison-negative/business_wet_weather/evidence",
+      "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/comparison_audit.py --comparison-id business_wet_weather --left .runtime-work/c177008-case-coverage-v5/primary-saved/v0001/evidence --right .runtime-work/c177008-comparison-negative/business_wet_weather/evidence",
       "negative_exit_code": 1,
       "negative_expected_error": "Wet source lacks rain readback",
       "negative_log": "comparisons/business_wet_weather-negative.log",
@@ -478,11 +506,11 @@
       "comparison_id": "district_boundary_100_300",
       "script": "comparison_audit.py",
       "script_sha256": "cffb85ff5a7d278f97dd644ad1bf1702622308aa94532ad0ee96a14df44406b7",
-      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/comparison_audit.py --comparison-id district_boundary_100_300 --left .runtime-work/c177008-construction-contract-v4/primary-saved/v0001/evidence --right .runtime-work/c177008-other-saved-v1/v0001/evidence",
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/comparison_audit.py --comparison-id district_boundary_100_300 --left .runtime-work/c177008-case-coverage-v5/primary-saved/v0001/evidence --right .runtime-work/c177008-other-saved-v1/v0001/evidence",
       "exit_code": 0,
       "receipt": "comparisons/district_boundary_100_300.json",
       "receipt_sha256": "736912bba0a0631af4dd4e125e720b0ab64185eac512151f1ca19f448c750881",
-      "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/comparison_audit.py --comparison-id district_boundary_100_300 --left .runtime-work/c177008-construction-contract-v4/primary-saved/v0001/evidence --right .runtime-work/c177008-comparison-negative/district_boundary_100_300/evidence",
+      "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/comparison_audit.py --comparison-id district_boundary_100_300 --left .runtime-work/c177008-case-coverage-v5/primary-saved/v0001/evidence --right .runtime-work/c177008-comparison-negative/district_boundary_100_300/evidence",
       "negative_exit_code": 1,
       "negative_expected_error": "District contrast missing",
       "negative_log": "comparisons/district_boundary_100_300-negative.log",
@@ -520,11 +548,11 @@
       "comparison_id": "district_business_residential_100",
       "script": "comparison_residential_audit.py",
       "script_sha256": "c3884b9a47a312b4a1fbd2938d170917cae047ae6a599e15758f845b3b7ff6b8",
-      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/comparison_residential_audit.py --left .runtime-work/c177008-construction-contract-v4/primary-saved/v0001/evidence --right .runtime-work/c177008-residential-saved-v1/v0001/evidence",
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/comparison_residential_audit.py --left .runtime-work/c177008-case-coverage-v5/primary-saved/v0001/evidence --right .runtime-work/c177008-residential-saved-v1/v0001/evidence",
       "exit_code": 0,
       "receipt": "comparisons/district_business_residential_100.json",
       "receipt_sha256": "a350dc1a67a5b2db69459896f3934175a53e94c9b210fc2e4f813a058be4529f",
-      "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/comparison_residential_audit.py --left .runtime-work/c177008-construction-contract-v4/primary-saved/v0001/evidence --right .runtime-work/c177008-comparison-negative/district_business_residential_100/evidence",
+      "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C177008__NRS-484B-413-2__motor_vehicle_driver/comparison_residential_audit.py --left .runtime-work/c177008-case-coverage-v5/primary-saved/v0001/evidence --right .runtime-work/c177008-comparison-negative/district_business_residential_100/evidence",
       "negative_exit_code": 1,
       "negative_expected_error": "Business/residential district contrast missing",
       "negative_log": "comparisons/district_business_residential_100-negative.log",

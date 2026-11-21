@@ -9,3 +9,9 @@ Next CPU work: implement Native signal control and physical head visibility capt
 The pinned CPU preflight passes. No frozen input, runtime or batch file was edited.
 
 Checkpoint: assignment-scoped `worker_check.py --complete` passed; see `assignment-check.log`. The complete strict gate then failed at missing C378304 result in `strict-gate.log`; that assignment has since received a partial checkpoint.
+
+## 2026-11-20 continuation
+
+Extended `inoperative_stop_measurements.py` to select the sourced stop line, near-side crosswalk or nearest-view boundary in statutory order and retain a boundary-specific signed distance in each original sample. A missing or unsourced boundary is rejected. Four CPU tests passed using `.venv-cpu/bin/python -m unittest discover -s work/testing__C24757__NRS-484B-250-4__motor_vehicle_driver/tests -v`; `cpu-tests.log` and `result.json` are refreshed. Status remains partial. Next construction: Native two-vehicle Off-signal controller and four-camera capture for the selected source-grounded junction, followed by exact offline, compatibility, saved-processing, fallback and independent audits.
+
+The scoped non-ready `worker_check.py --assignment testing__C24757__NRS-484B-250-4__motor_vehicle_driver --complete` passed after this change.

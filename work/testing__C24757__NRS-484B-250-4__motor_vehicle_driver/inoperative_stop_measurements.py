@@ -39,13 +39,21 @@ def analyze(root: Path) -> dict:
         hashes[name] = hashlib.sha256(path.read_bytes()).hexdigest()
     context = json.loads((root / "junction_context.json").read_text())
     for key in ("native_map_id", "intersection_id", "native_signal_id",
-                "signal_head_video_source", "lane_governance_source", "stop_line_source"):
+                "signal_head_video_source", "lane_governance_source"):
         if not context.get(key):
             raise ValueError("Missing sourced junction context: " + key)
     if context.get("installed_uncovered_vehicular_heads") is not True:
         raise ValueError("Uncovered vehicular heads not sourced")
-    if context.get("stop_line_exists") is not True:
-        raise ValueError("This stop-line branch requires a sourced marked line")
+    if context.get("stop_line_exists") is True:
+        boundary, source, signed_field = "stop_line", "stop_line_source", "front_to_stop_line_signed_m"
+    elif context.get("stop_line_exists") is False and context.get("crosswalk_exists") is True:
+        boundary, source, signed_field = "crosswalk", "crosswalk_source", "front_to_crosswalk_signed_m"
+    elif context.get("stop_line_exists") is False and context.get("crosswalk_exists") is False:
+        boundary, source, signed_field = "nearest_view", "nearest_view_source", "front_to_nearest_view_signed_m"
+    else:
+        raise ValueError("Stop boundary hierarchy is not sourced")
+    if not context.get(source):
+        raise ValueError("Missing sourced stop boundary: " + source)
     vertices = context.get("intersection_polygon_xy_m")
     if not isinstance(vertices, list) or len(vertices) < 3:
         raise ValueError("Missing intersection polygon")
@@ -74,21 +82,23 @@ def analyze(root: Path) -> dict:
             if not isinstance(actor, dict) or actor.get("intersection_id") != context["intersection_id"]:
                 raise ValueError("Vehicle on wrong junction")
             speed = _number(actor.get("speed_mps"))
-            signed = _number(actor.get("front_to_stop_line_signed_m"))
+            signed = _number(actor.get(signed_field))
             inside = _body_inside(actor, polygon)
             if index == 0 and inside:
                 raise ValueError("No pre-entry approach observation")
             if speed == 0 and signed >= 0 and first_stop[who] is None:
-                first_stop[who] = {"frame": fid, "time_s": time, "front_to_stop_line_signed_m": signed}
+                first_stop[who] = {"frame": fid, "time_s": time, signed_field: signed}
             if inside and not prior_inside[who] and first_entry[who] is None:
                 first_entry[who] = {"frame": fid, "time_s": time}
             prior_inside[who] = inside
-            sample[who] = {"speed_mps": speed, "front_to_stop_line_signed_m": signed,
+            sample[who] = {"speed_mps": speed, signed_field: signed,
                            "body_in_intersection": inside}
         samples.append(sample)
     return {"format": "worker-inoperative-signal-stop-history", "sources": hashes,
+            "selected_stop_boundary": boundary, "selected_stop_boundary_source": context[source],
             "intersection_id": context["intersection_id"],
             "first_full_halt_before_or_at_line": first_stop,
+            "first_full_halt_before_or_at_selected_boundary": first_stop,
             "first_body_entry": first_entry,
             "ego_stopped_before_entry_observed": bool(first_stop["ego"] and first_entry["ego"] and first_stop["ego"]["time_s"] < first_entry["ego"]["time_s"]),
             "other_completed_stop_before_ego_observed": bool(first_stop["other"] and first_stop["ego"] and first_stop["other"]["time_s"] < first_stop["ego"]["time_s"]),
