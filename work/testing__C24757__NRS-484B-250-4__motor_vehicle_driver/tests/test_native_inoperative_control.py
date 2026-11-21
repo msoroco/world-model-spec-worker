@@ -11,8 +11,8 @@ spec.loader.exec_module(control)
 
 
 class Light:
-    def __init__(self, ident, lane, state="Green", ignores_off=False):
-        self.id, self.lane, self.state, self.frozen, self.ignores_off = ident, lane, state, False, ignores_off
+    def __init__(self, ident, lane, state="Green", ignores_off=False, frozen=False):
+        self.id, self.lane, self.state, self.frozen, self.ignores_off = ident, lane, state, frozen, ignores_off
 
     def get_affected_lane_waypoints(self):
         return [types.SimpleNamespace(road_id=self.lane[0], lane_id=self.lane[1])]
@@ -26,6 +26,9 @@ class Light:
 
     def freeze(self, value):
         self.frozen = value
+
+    def is_frozen(self):
+        return self.frozen
 
 
 class World:
@@ -52,14 +55,14 @@ class Actor:
 
 class NativeControlTests(unittest.TestCase):
     def test_all_governed_heads_off_and_restored_after_capture(self):
-        lights = [Light(10, (1, -1)), Light(20, (2, -1), "Red")]
+        lights = [Light(10, (1, -1)), Light(20, (2, -1), "Red", frozen=True)]
         world = World(lights)
         selected = control.governing_lights(world, [[1, -1], [2, -1]])
         with control.all_heads_off(world, selected, types.SimpleNamespace(Off="Off")):
             self.assertEqual([light.state for light in lights], ["Off", "Off"])
             self.assertTrue(all(light.frozen for light in lights))
         self.assertEqual([light.state for light in lights], ["Green", "Red"])
-        self.assertTrue(all(not light.frozen for light in lights))
+        self.assertEqual([light.frozen for light in lights], [False, True])
         self.assertEqual(world.ticks, 2)
 
     def test_rejects_duplicate_governance_and_failed_off_readback(self):
@@ -94,6 +97,29 @@ class NativeControlTests(unittest.TestCase):
         planner = control.StopController(release_frame=0, target_speed_mps=5)
         with self.assertRaisesRegex(ValueError, "without measured full halt"):
             planner.step(carla, Actor(2), 1, -0.1)
+
+    def test_brakes_before_boundary_and_requires_observed_zero(self):
+        carla = types.SimpleNamespace(VehicleControl=lambda: types.SimpleNamespace())
+        actor = Actor(6)
+        planner = control.StopController(release_frame=10, target_speed_mps=6)
+        far = planner.step(carla, actor, 0, 12)
+        near = planner.step(carla, actor, 1, 1.0)
+        self.assertEqual(far["brake"], 0)
+        self.assertGreater(near["brake"], 0)
+        self.assertEqual(near["throttle"], 0)
+        actor.speed = 0.005
+        crawl = planner.step(carla, actor, 11, 0.2)
+        self.assertIsNone(crawl["full_halt_frame"])
+        self.assertTrue(crawl["held"])
+        actor.speed = 0
+        stopped = planner.step(carla, actor, 12, 0.2)
+        self.assertEqual(stopped["full_halt_frame"], 12)
+        released = planner.step(carla, actor, 13, 0.2)
+        self.assertFalse(released["held"])
+
+    def test_rejects_unbounded_approach_deceleration(self):
+        with self.assertRaisesRegex(ValueError, "approach deceleration"):
+            control.StopController(10, 5, approach_deceleration_mps2=0)
 
 
 if __name__ == "__main__":
