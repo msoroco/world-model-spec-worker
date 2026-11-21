@@ -27,7 +27,7 @@ def require(ok, message):
         raise ValueError(message)
 
 
-def inspect_case(manifest, short, source, saved):
+def inspect_case(manifest, manifest_path, short, source, saved):
     source, saved = Path(source), Path(saved)
     case_id = HERE.name + '__' + short
     entry = next(row for row in manifest['cases'] if row['case_id'] == case_id)
@@ -38,7 +38,7 @@ def inspect_case(manifest, short, source, saved):
     readback = read(source / 'live-readback.json')
     require(selection['case_id'] == case_id and
             selection['candidate_id'] == 'primary' and
-            selection['manifest_sha256'] == sha(HERE / 'draft-newly-laid-finalized-manifest.json') and
+            selection['manifest_sha256'] == sha(manifest_path) and
             selection['construction_sha256'] == entry['construction_sha256'],
             'Newly laid diagnostic candidate selection differs')
     require(processing['case_id'] == case_id and processing['candidate_id'] == 'primary'
@@ -83,10 +83,11 @@ def inspect_case(manifest, short, source, saved):
             'source_analysis_sha256': sha(saved / 'v0001/analysis/source-analysis.json')}
 
 
-def audit(left_source, left_saved, right_source, right_saved):
-    manifest_path = HERE / 'draft-newly-laid-finalized-manifest.json'
+def audit(left_source, left_saved, right_source, right_saved, manifest_path=None):
+    manifest_path = Path(manifest_path or HERE / 'draft-newly-laid-finalized-manifest.json')
     manifest = read(manifest_path)
-    require([row['case_id'] for row in manifest['cases']] ==
+    require([row['case_id'] for row in manifest['cases']
+             if row['case_id'] in {HERE.name + '__' + short for short in CASES}] ==
             [HERE.name + '__' + short for short in CASES],
             'Newly laid exact pair differs')
     plan = read(HERE / 'case-plan.json')
@@ -96,8 +97,8 @@ def audit(left_source, left_saved, right_source, right_saved):
     require(comparison['case_ids'] == [HERE.name + '__' + short for short in CASES]
             and comparison['deliberate_differences'] == ['requested_pavement_crossing'],
             'Newly laid comparison plan differs')
-    left = inspect_case(manifest, CASES[0], left_source, left_saved)
-    right = inspect_case(manifest, CASES[1], right_source, right_saved)
+    left = inspect_case(manifest, manifest_path, CASES[0], left_source, left_saved)
+    right = inspect_case(manifest, manifest_path, CASES[1], right_source, right_saved)
     require(all(left['config'].get(key) == right['config'].get(key) for key in FIXED)
             and left['readback'] == right['readback'],
             'Newly laid fixed capture/survey context changed')
@@ -122,9 +123,10 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     for key in ('left-source', 'left-saved', 'right-source', 'right-saved', 'output'):
         parser.add_argument('--' + key, required=True)
+    parser.add_argument('--manifest', type=Path)
     args = parser.parse_args()
     result = audit(args.left_source, args.left_saved,
-                   args.right_source, args.right_saved)
+                   args.right_source, args.right_saved, args.manifest)
     path = Path(args.output)
     require(not path.exists(), 'Preserve prior newly laid diagnostic pair audit')
     path.write_text(json.dumps(result, indent=2, sort_keys=True) + '\n')
