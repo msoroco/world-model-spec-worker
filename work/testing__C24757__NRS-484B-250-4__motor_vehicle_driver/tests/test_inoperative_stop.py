@@ -260,6 +260,10 @@ class StopTests(unittest.TestCase):
             right.mkdir()
             self.fixture(left)
             self.fixture(right)
+            for attempt in (left, right):
+                (attempt / "trace.jsonl").write_text('{"frame":1,"time_s":1.0}\n')
+                (attempt / "capture").mkdir(exist_ok=True)
+                (attempt / "capture/evidence.jsonl").write_text('{"frame":1,"time_s":1.0}\n')
             context_path = right / "junction_context.json"
             history_path = right / "vehicle_signal_history.jsonl"
             context = json.loads(context_path.read_text())

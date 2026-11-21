@@ -21,13 +21,19 @@ def audit_pair(left, right, mode):
     a, b = analyze(left), analyze(right)
     ac = json.loads((left / "junction_context.json").read_text())
     bc = json.loads((right / "junction_context.json").read_text())
-    fixed = ("native_map_id", "intersection_id", "native_signal_id", "other_native_signal_id",
+    fixed = ("intersection_id", "native_signal_id", "other_native_signal_id",
              "installed_uncovered_vehicular_heads", "intersection_polygon_xy_m",
-             "lane_governance_source", "signal_head_video_source")
+             "signal_head_video_source")
+    if mode != "stopping_reference":
+        fixed += ("native_map_id", "lane_governance_source")
     if any(ac.get(key) != bc.get(key) for key in fixed):
         raise ValueError("Fixed Native junction or signal context changed")
     if mode != "stopping_reference" and _sha(left / "junction_context.json") != _sha(right / "junction_context.json"):
         raise ValueError("Fixed stopping-reference context changed")
+    if mode == "stopping_reference":
+        for source in ("trace.jsonl", "capture/evidence.jsonl"):
+            if _sha(left / source) != _sha(right / source):
+                raise ValueError("Stopping-reference comparison changed original motion: " + source)
     if mode == "full_halt_order":
         if (not all(a["first_full_halt_before_or_at_selected_boundary"].values()) or
                 not all(b["first_full_halt_before_or_at_selected_boundary"].values())):
