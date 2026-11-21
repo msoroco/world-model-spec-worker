@@ -1704,8 +1704,13 @@ def retained_map(evidence, first, cache=None, inventory=None):
     for ident,value in retained_directed_roadway_fields(evidence,first.get('structures',[]),native,region_sources,provenance,inventory).items():
         roads=value.get('_source_road_ids',[])
         if roads and all(road in highways for road in roads):value['ways']=sorted({way for road in roads for way in highways[road]})
-        if any(k in fields.get(ident,{})and fields[ident][k]!=v for k,v in value.items()):raise ValueError('Conflicting authored directed roadway source')
-        fields.setdefault(ident,{}).update(value)
+        current=fields.setdefault(ident,{})
+        for key,item in value.items():
+            if key=='_verified_structure_kinds':
+                current[key]=sorted(set(current.get(key,[]))|set(item))
+            elif key in current and current[key]!=item:
+                raise ValueError('Conflicting authored directed roadway source')
+            else:current[key]=item
     for ident,value in retained_obstruction_fields(evidence,first,inventory).items():fields.setdefault(ident,{}).update(value)
     role_fields,_,role_proof=retained_authored_surface_roles(evidence,first.get('structures',[]),native,region_sources,inventory)
     for ident,value in authored_role_way_fields(role_fields,highways,evidence.used.get('road.xodr')).items():

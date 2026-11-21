@@ -334,13 +334,23 @@ def export(project, root, partition_files, spec_file, destination, batch_id, max
                     # than an indexed witness list. Bind the exact reviewed
                     # cell and conditional verdict before exporting it.
                     cell_key = 'training_cell' if task['role'] == 'training' else 'testing_cell'
-                    if (not isinstance(data, dict) or
-                            data.get('law_id') != task['law_id'] or
-                            data.get('actor') != task['actor'] or
-                            data.get(cell_key) != task['cell_id'] or
-                            data.get('branch') != row.get('branch') or
-                            data.get('verdict') != row.get('relevance_review') or
-                            data.get('physical_feasibility') != row.get('physical_feasibility')):
+                    if not isinstance(data, dict):
+                        raise ValueError('Direct review identity/status mismatch')
+                    if isinstance(data.get('candidate'), dict):
+                        candidate = data['candidate']
+                        identity = (candidate.get('law'), candidate.get('actor'),
+                                    candidate.get('cell'), candidate.get('branch'),
+                                    data.get('decision'), data.get('physical_feasibility'))
+                        if (candidate.get('covers') != [task['law_id']] or
+                                data.get('fixed_cell_facts', {}).get('cell_id') != task['cell_id']):
+                            raise ValueError('Direct review identity/status mismatch')
+                    else:
+                        identity = (data.get('law_id'), data.get('actor'),
+                                    data.get(cell_key), data.get('branch'),
+                                    data.get('verdict'), data.get('physical_feasibility'))
+                    if identity != (task['law_id'], task['actor'], task['cell_id'],
+                                    row.get('branch'), row.get('relevance_review'),
+                                    row.get('physical_feasibility')):
                         raise ValueError('Direct review identity/status mismatch')
                     witnesses.append({'source': row['source'],
                                       'source_sha256': row['source_sha256'],

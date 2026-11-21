@@ -1,0 +1,32 @@
+# C101303 / NRS-484B-127-1
+
+## Law
+
+**NRS-484B-127-1 — Following distance**
+
+> Source text retained in the imported delivery package; legal judgment remains unresolved.
+
+## Recording comparisons
+
+Settings below are requested or authored, not measured outcomes. Judgment calls remain unresolved unless the saved metadata supplies an expected label. Videos, traces and metadata are editable review copies; demo links share the corresponding full-set recording directories.
+
+### Imported delivery cases
+
+Comparison: `C101303-127-1-delivery`.
+
+| Case | Video / data | Test setting | Compared against | Judgment call | Recorded label |
+| --- | --- | --- | --- | --- | --- |
+| 1 | [video](testing__C101303__NRS-484B-127-1__motor_vehicle_driver__base--ecf51981fe22/video.webm) · [trace](testing__C101303__NRS-484B-127-1__motor_vehicle_driver__base--ecf51981fe22/trace.json) · [metadata](testing__C101303__NRS-484B-127-1__motor_vehicle_driver__base--ecf51981fe22/metadata.json) · [manifest](testing__C101303__NRS-484B-127-1__motor_vehicle_driver__base--ecf51981fe22/manifest.json) | Base case; 45-second Native recording with lead and ego vehicles. | 2, 3, 4, 5, 6, 7, 8 | Reasonable and prudent following distance remains a legal judgment | Unresolved (no label assigned) |
+| 2 | [video](testing__C101303__NRS-484B-127-1__motor_vehicle_driver__closer--c92e35af1a19/video.webm) · [trace](testing__C101303__NRS-484B-127-1__motor_vehicle_driver__closer--c92e35af1a19/trace.json) · [metadata](testing__C101303__NRS-484B-127-1__motor_vehicle_driver__closer--c92e35af1a19/metadata.json) · [manifest](testing__C101303__NRS-484B-127-1__motor_vehicle_driver__closer--c92e35af1a19/manifest.json) | Closer following-distance case; 45-second Native recording with lead and ego vehicles. | 1, 3, 4, 5, 6, 7, 8 | Reasonable and prudent following distance remains a legal judgment | Unresolved (no label assigned) |
+| 3 | [video](testing__C101303__NRS-484B-127-1__motor_vehicle_driver__faster_ego--c0094c206abc/video.webm) · [trace](testing__C101303__NRS-484B-127-1__motor_vehicle_driver__faster_ego--c0094c206abc/trace.json) · [metadata](testing__C101303__NRS-484B-127-1__motor_vehicle_driver__faster_ego--c0094c206abc/metadata.json) · [manifest](testing__C101303__NRS-484B-127-1__motor_vehicle_driver__faster_ego--c0094c206abc/manifest.json) | Faster ego controlled following case; 45-second Native recording with lead and ego vehicles. | 1, 2, 4, 5, 6, 7, 8 | Reasonable and prudent following distance remains a legal judgment | Unresolved (no label assigned) |
+| 4 | [video](testing__C101303__NRS-484B-127-1__motor_vehicle_driver__slower_lead--8b40f55cfcbc/video.webm) · [trace](testing__C101303__NRS-484B-127-1__motor_vehicle_driver__slower_lead--8b40f55cfcbc/trace.json) · [metadata](testing__C101303__NRS-484B-127-1__motor_vehicle_driver__slower_lead--8b40f55cfcbc/metadata.json) · [manifest](testing__C101303__NRS-484B-127-1__motor_vehicle_driver__slower_lead--8b40f55cfcbc/manifest.json) | Slower lead controlled following case; 45-second Native recording with lead and ego vehicles. | 1, 2, 3, 5, 6, 7, 8 | Reasonable and prudent following distance remains a legal judgment | Unresolved (no label assigned) |
+| 5 | [video](testing__C101303__NRS-484B-127-1__motor_vehicle_driver__lead_brakes--842d67463b97/video.webm) · [trace](testing__C101303__NRS-484B-127-1__motor_vehicle_driver__lead_brakes--842d67463b97/trace.json) · [metadata](testing__C101303__NRS-484B-127-1__motor_vehicle_driver__lead_brakes--842d67463b97/metadata.json) · [manifest](testing__C101303__NRS-484B-127-1__motor_vehicle_driver__lead_brakes--842d67463b97/manifest.json) | Lead braking controlled following case; 45-second Native recording. | 1, 2, 3, 4, 6, 7, 8 | Reasonable and prudent following distance remains unresolved | Unresolved (no label assigned) |
+| 6 | [video](testing__C101303__NRS-484B-127-1__motor_vehicle_driver__wet_surface--f33584cee750/video.webm) · [trace](testing__C101303__NRS-484B-127-1__motor_vehicle_driver__wet_surface--f33584cee750/trace.json) · [metadata](testing__C101303__NRS-484B-127-1__motor_vehicle_driver__wet_surface--f33584cee750/metadata.json) · [manifest](testing__C101303__NRS-484B-127-1__motor_vehicle_driver__wet_surface--f33584cee750/manifest.json) | Wet surface controlled following case; 45-second Native recording. | 1, 2, 3, 4, 5, 7, 8 | Reasonable and prudent following distance remains unresolved | Unresolved (no label assigned) |
+| 7 | [video](testing__C101303__NRS-484B-127-1__motor_vehicle_driver__following_ends--a1f0d07cbffa/video.webm) · [trace](testing__C101303__NRS-484B-127-1__motor_vehicle_driver__following_ends--a1f0d07cbffa/trace.json) · [metadata](testing__C101303__NRS-484B-127-1__motor_vehicle_driver__following_ends--a1f0d07cbffa/metadata.json) · [manifest](testing__C101303__NRS-484B-127-1__motor_vehicle_driver__following_ends--a1f0d07cbffa/manifest.json) | Following relation ending case; 45-second Native recording. | 1, 2, 3, 4, 5, 6, 8 | Reasonable and prudent following distance remains unresolved | Unresolved (no label assigned) |
+| 8 | [video](testing__C101303__NRS-484B-127-1__motor_vehicle_driver__queued_traffic--39cb4a53e84f/video.webm) · [trace](testing__C101303__NRS-484B-127-1__motor_vehicle_driver__queued_traffic--39cb4a53e84f/trace.json) · [metadata](testing__C101303__NRS-484B-127-1__motor_vehicle_driver__queued_traffic--39cb4a53e84f/metadata.json) · [manifest](testing__C101303__NRS-484B-127-1__motor_vehicle_driver__queued_traffic--39cb4a53e84f/manifest.json) | Queued traffic controlled following case; 45-second Native recording with three vehicles. | 1, 2, 3, 4, 5, 6, 7 | Reasonable and prudent following distance remains unresolved; distant vehicle silhouettes are small in overhead pixels | Unresolved (no label assigned) |
+
+Case IDs: 1: `testing__C101303__NRS-484B-127-1__motor_vehicle_driver__base`; 2: `testing__C101303__NRS-484B-127-1__motor_vehicle_driver__closer`; 3: `testing__C101303__NRS-484B-127-1__motor_vehicle_driver__faster_ego`; 4: `testing__C101303__NRS-484B-127-1__motor_vehicle_driver__slower_lead`; 5: `testing__C101303__NRS-484B-127-1__motor_vehicle_driver__lead_brakes`; 6: `testing__C101303__NRS-484B-127-1__motor_vehicle_driver__wet_surface`; 7: `testing__C101303__NRS-484B-127-1__motor_vehicle_driver__following_ends`; 8: `testing__C101303__NRS-484B-127-1__motor_vehicle_driver__queued_traffic`.
+
+## Remaining requirements
+
+Remaining imported cases and comparisons are pending. This one accepted recording does not establish full law coverage.
