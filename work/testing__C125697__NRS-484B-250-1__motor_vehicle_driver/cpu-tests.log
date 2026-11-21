@@ -355,3 +355,8 @@ exit_code=0; exact_constructions=20; receipt_sha256=32a8fde7ea795b56cb8d03a3c31c
 negative changed compatibility receipt rejected: Missing bound compatibility proof
 negative duplicate fallback risk rejected: Distinct measurable physical risks required
 negative changed saved receipt rejected: Missing bound recorded-only proof
+
+CANONICAL SEMANTIC STAGE VALIDATION
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -c 'import json; from pathlib import Path; from worker_exchange.semantic_delivery import validate; p=Path("work/testing__C125697__NRS-484B-250-1__motor_vehicle_driver"); a=json.loads(Path("inputs/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/assignment.json").read_text()); m=json.loads((p/"execution-manifest.json").read_text()); print(validate(p,a,m))'
+exit_code=0; stage_count=10; selected_cases=5; index_sha256=7454653f1f970258a0ff8a018ef85191b5f686864c777eb36f26d910059ee928
+negative changed semantic template rejected: Stage proposal source hash changed
