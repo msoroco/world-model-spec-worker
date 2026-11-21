@@ -19,3 +19,4 @@ Executable Native construction and four candidate offline/compatibility proofs a
 ## CPU construction started after C110812
 
 `native/controller.py` now chooses a straight route and brakes for a same-frame, lawfully within other vehicle or pedestrian under a sole governing green straight arrow. It rejects missing/mixed signal observations and incomplete participant evidence. `native/geometry.py` checks the authored prior-entered vehicle clears before the ego release frame; `native/test_controller.py` passes hold/release and source-specific rejection tests. These are authored CPU controls only. A Native runner, source-derived finalizer, exact candidate bundles, fallback and saved-processing proofs are still to be built; the assignment stays partial.
+Assignment-scoped static `worker_check.py --complete` passes after these additions; strict delivery readiness remains unclaimed.
