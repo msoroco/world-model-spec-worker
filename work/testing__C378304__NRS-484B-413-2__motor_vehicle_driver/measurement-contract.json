@@ -1,0 +1,52 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Continuous right-intention signal over traveled approach before right-turn course change",
+      "source": "NRS 484B.413(2)",
+      "output_key": "continuous_right_signal_distance_m",
+      "method": "measure_continuous_right_signal_distance",
+      "value_type": "number",
+      "kind": "measured",
+      "inputs": [
+        "drive_history.jsonl",
+        "video_frames.jsonl",
+        "route_context.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Business/residential 100-foot versus other-area 300-foot boundary",
+      "source": "NRS 484B.413(2)",
+      "output_key": "district_boundary_source",
+      "method": "source_district_boundary",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "route_context.json",
+        "freight-zone-site-source.txt"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Right-turn onset after continuous signal; weather does not excuse threshold",
+      "source": "NRS 484B.413(2)",
+      "output_key": "right_turn_onset_and_weather",
+      "method": "measure_right_turn_onset",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "drive_history.jsonl",
+        "video_frames.jsonl",
+        "route_context.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "freight-zone-site-source.txt"
+    ],
+    "error_contains": "Missing required source: freight-zone-site-source.txt"
+  }
+}

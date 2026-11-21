@@ -23,6 +23,22 @@ def rows(path):
     return [json.loads(line) for line in Path(path).read_text().splitlines() if line.strip()]
 
 
+def measure_continuous_right_signal_distance(report):
+    return report["turn_onset"]["continuous_right_signal_distance_m"]
+
+
+def source_district_boundary(report):
+    return {"district_type": report["district_type"],
+            "required_distance_m": report["required_distance_m"],
+            "freight_loading_zone_source": report["freight_loading_zone_source"]}
+
+
+def measure_right_turn_onset(report):
+    return {"frame": report["turn_onset"]["frame"],
+            "continuous_signal_meets_boundary": report["observed_continuous_distance_meets_boundary"],
+            "weather_exception": report["weather_exception"]}
+
+
 def finalize_saved(attempt, output):
     attempt, output = Path(attempt), Path(output)
     if output.exists() or (attempt / "result.json").exists() or (attempt / "channels").exists():
@@ -82,7 +98,23 @@ def finalize_saved(attempt, output):
                                          "value": value}, allow_nan=False) + "\n")
         evidence.append({"name": name, "unit": unit, "reference": reference})
     evidence.append({"name": "freight_zone_site", "unit": "source document",
-                     "reference": "freight-zone-site-source.txt"})
+                     "reference": "contexts/freight_zone_site.json"})
+    context = json.loads((attempt / "route_context.json").read_text())
+    contextual = {
+        "freight_zone_site": {"source": "freight-zone-site-source.txt",
+                              "sha256": sha(attempt / "freight-zone-site-source.txt")},
+        "district": {"type": context["district_type"],
+                     "source": context["district_source"]},
+        "weather": context["native_weather_readback"],
+    }
+    context_root = attempt / "contexts"
+    context_root.mkdir()
+    for name, value in contextual.items():
+        (context_root / (name + ".json")).write_text(json.dumps({name: value}) + "\n")
+    evidence.extend({"name": name,
+                     "unit": "legal region class" if name == "district" else "CARLA weather scale",
+                     "reference": "contexts/" + name + ".json"}
+                    for name in ("district", "weather"))
     checksums = {"evidence/" + path.relative_to(evidence_root).as_posix(): sha(path)
                  for path in evidence_root.rglob("*") if path.is_file()}
     (attempt / "evidence-checksums.json").write_text(json.dumps(checksums, sort_keys=True) + "\n")
@@ -113,8 +145,20 @@ def finalize_saved(attempt, output):
               "realized_observables": {}}
     result = physical_result(attempt, result)
     write_result(attempt, result)
+    measurement_specs = (
+        ("continuous_right_signal_distance_m", measure_continuous_right_signal_distance,
+         ("drive_history.jsonl", "video_frames.jsonl", "route_context.json")),
+        ("district_boundary_source", source_district_boundary,
+         ("route_context.json", "freight-zone-site-source.txt")),
+        ("right_turn_onset_and_weather", measure_right_turn_onset,
+         ("drive_history.jsonl", "video_frames.jsonl", "route_context.json")),
+    )
+    measurements = {key: {"method": method.__name__, "value": method(report),
+                          "sources": {name: sha(attempt / name) for name in sources}}
+                    for key, method, sources in measurement_specs}
     analysis = {"format": "worker-right-turn-signal-analysis", "case_id": case,
                 "source_report": report, "source_hashes": report["sources"],
+                "measurements": measurements,
                 "physical_checks": result["physical_checks"],
                 "realized_observables": result["realized_observables"],
                 "legal_verdict_asserted": False, "physical_acceptance_claimed": False}
