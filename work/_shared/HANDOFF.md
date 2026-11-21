@@ -3184,3 +3184,9 @@ Strict batch gate rerun on 2026-11-20: `.venv-cpu/bin/python worker_check.py --c
 
 Proof-log consolidation checkpoint: 11 touched packages were checked with scoped `worker_check.py --complete`; C125697, C149237, C177008, C178244, C101303, C109749, C125763, C125751, C109705 and C158196 passed. C109749 required rebinding the SHA-256 of one changed physical receipt before its recheck passed. C129731 has 394 recorded test logs with matching hashes; its full scoped recheck was still running at this checkpoint, so no new pass is claimed.
 C129731 full scoped recheck remained silent for several minutes and was interrupted (exit 130); this is not a new proof pass. The prior scoped pass and direct 394-log hash check remain recorded.
+
+## 2026-11-20 C24757 checkpoint
+
+C24757 now has six source-shaped physical classifier and lifecycle receipts, passing direct execution-manifest, semantic, compatibility, and delivery checks. The scoped complete checkpoint passes. It remains partial pending canonical shared integration and original Native physical review. To make return-file headroom, 15 unreferenced C378304 logs and 12 C129731 logs not bound by result JSON were retained in `.runtime-work/retired-logs/20261120-physical-headroom/`; those ignored diagnostics are not part of the return. The files that C129731 result JSON binds were preserved.
+
+Full strict gate reattempt on 2026-11-21: `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --complete --require-delivery-ready` produced no output after repeated polling and was interrupted (exit 130); this is not a pass. The most recent completed strict-gate failure supplied by the operator remains `Unapproved output: runtime/runs/scenario_pipeline/inputs/shared/manifest.json`. Frozen runtime and inputs were not edited.

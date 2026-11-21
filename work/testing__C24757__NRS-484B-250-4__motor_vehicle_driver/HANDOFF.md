@@ -157,3 +157,13 @@ Added `delivery_fixture_proof.py` to synthesize a full 45-second, 20 Hz four-cam
 C24757 remains `partial` / `implementation_checkpoint`. These are synthetic software audits, not Native recordings or legal/physical acceptance. Canonical local integration and original capture review remain. The batch-level GPU queue and local-integration proof are absent, and other assignments remain unfinished. No frozen inputs, runtime, batch.json or Git action was taken.
 
 The unscoped strict delivery gate was attempted with a 90-second timeout after these receipts. It emitted no result and exited 124; this is not a pass. The latest completed caller output still reports an unapproved generated `runtime/runs/scenario_pipeline/inputs/shared/manifest.json`. Frozen runtime remains untouched.
+
+## 2026-11-20 CPU physical completion and delivery proof
+
+The six selected C24757 cases now each carry a source-shaped physical preparation receipt under `physical-proofs/`. `prove_physical_fixtures.py` replays each case's saved compatibility source through the pinned `physical_result` classifier. Its separate complete, incomplete, and missing-source fixtures return `met`, `not_met`, and `unverified`; the complete fixture has timestamp-joined body measurements and intersection clearance. Each receipt is bound to its exact construction hash and synthetic provenance. A lifecycle fixture checks capture finish, encoder closure, restoration, Native exit, owner release, then recorded-only saved processing. This is CPU diagnostic evidence only.
+
+Command: `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C24757__NRS-484B-250-4__motor_vehicle_driver/prove_physical_fixtures.py` (exit 0; log `physical-proofs/cpu-physical-fixtures.log`, SHA-256 `713f29e187d5c6d46b3fe0dbc61a96e3572a0fa94908ead139531a4dc5cb161a`). All six direct `execution_manifest.validate`, `semantic_delivery.validate`, and `package_compatibility.check_receipts` checks pass. All six `delivery_handoff.validate_case` checks pass after binding both frozen target sets (`demo-test`, `full-test`). Scoped `worker_check.py --assignment testing__C24757__NRS-484B-250-4__motor_vehicle_driver --complete` exits 0.
+
+Status remains `partial`: canonical shared local integration and actual Native source review have not passed. Diagnostic fixture classification does not establish that a local Native run realizes the planned stop lines, signal heads, vehicle ordering, or legal outcome. The shared exact GPU queue and integration proof remain incomplete.
+
+Full batch strict gate was reattempted 2026-11-21 but yielded no output before interrupt (exit 130); scoped complete and direct C24757 validators above are the completed CPU results.
