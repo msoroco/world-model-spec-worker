@@ -29,8 +29,7 @@
       "pending_cpu_proofs": [
         "semantic validation",
         "delivery acceptance",
-        "three risk-distinct fallbacks",
-        "canonical returned recorded-only post-capture receipt"
+        "three risk-distinct fallbacks"
       ],
       "fixture_recipe": "work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/diagnostic-recipe.json",
       "measurement_contract": "measurement-contract.json",
@@ -123,6 +122,15 @@
           "method": "finalize_saved derives channel from retained crossing/trace/frame sources",
           "evidence": "channels/other_position.jsonl"
         }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_other_first --attempt .runtime-work/c125745-1-first/saved-original --output .runtime-work/c125745-1-first/returned-recorded-only --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat .runtime-work/c125745-1-first/returned-recorded-only/v0001/feedback.json",
+        "test_log": "first-primary-returned-saved.log",
+        "test_log_sha256": "5a6d5cec08180b3e51ef36cc690ad0cf879d1d632a7da7b135917178a7c20115",
+        "test_exit_code": 0,
+        "proof_scope": "900-frame source-bundled synthetic original-source saved processing; no Native or physical/legal acceptance"
       }
     }
   ]
