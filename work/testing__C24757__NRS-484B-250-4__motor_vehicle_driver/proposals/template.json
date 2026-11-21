@@ -1,0 +1,77 @@
+{
+  "template_id": "NRS-484B-250-4@motor_vehicle_driver",
+  "law_id": "NRS-484B-250-4",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "When a vehicle enters an intersection controlled by a traffic-control signal which is installed and has its vehicular signals uncovered, but is inoperative at the time the vehicle enters the intersection, the driver of the vehicle shall proceed as if a stop sign had been erected at each entrance to the intersection and shall stop at a clearly marked stop line or, if there is none, before entering the crosswalk on the near side of the intersection or, if there is none, at the point nearest the intersection where the driver has a view of approaching traffic on the through highway. After making such a stop, the driver shall proceed cautiously, yielding to vehicles which have previously completed a stop or are within the intersection.",
+  "structure": {
+    "law_id": "NRS-484B-250-4",
+    "activation": {
+      "condition": "vehicle enters an intersection controlled by an installed traffic-control signal with uncovered vehicular heads that is inoperative at entry",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "stop at the applicable reference, then proceed cautiously and yield to vehicles that stopped earlier or are in the intersection",
+      "type": "must",
+      "numeric_conditions": []
+    },
+    "exceptions": [],
+    "timing": {
+      "description": "establish signal state and complete-body entry at the same original frame, stop before the selected boundary, and compare stop order or occupancy through entry",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "installed and has its vehicular signals uncovered",
+        "note": "Installed and uncovered appearance requires original source-camera review."
+      },
+      {
+        "phrase": "inoperative at the time the vehicle enters the intersection",
+        "note": "Off readback and original entry-frame state require source review."
+      },
+      {
+        "phrase": "clearly marked stop line",
+        "note": "Original pixels and authored boundary geometry must be joined."
+      },
+      {
+        "phrase": "view of approaching traffic on the through highway",
+        "note": "Original driver-reference view and approach visibility require source review."
+      },
+      {
+        "phrase": "proceed cautiously",
+        "note": "No numeric legal cautiousness cutoff is supplied."
+      },
+      {
+        "phrase": "yielding to vehicles which have previously completed a stop or are within the intersection",
+        "note": "Original complete-body stop order and occupancy must be reviewed."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "stop_reference",
+      "kind": "world_setup",
+      "range_or_domain": "sourced stop-line, crosswalk or nearest-view branch"
+    },
+    {
+      "name": "ego_stop_control",
+      "kind": "controller",
+      "range_or_domain": "full halt or rolling comparison"
+    },
+    {
+      "name": "other_stop_control",
+      "kind": "controller",
+      "range_or_domain": "full halt policy"
+    },
+    {
+      "name": "ego_release_rule",
+      "kind": "controller",
+      "range_or_domain": "scheduled or partner-clear release"
+    },
+    {
+      "name": "other_release_rule",
+      "kind": "controller",
+      "range_or_domain": "scheduled or clearance release"
+    }
+  ]
+}

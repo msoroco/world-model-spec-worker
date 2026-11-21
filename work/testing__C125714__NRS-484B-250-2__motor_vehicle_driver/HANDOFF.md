@@ -242,3 +242,7 @@ Status: **ready**, after exact current CPU proofs and `.venv-cpu/bin/python work
 Further return cap checkpoint: 13 more unbound historical top-level logs, exact bytes, hashes and any test rows were moved to the same shared archive. Current bound case receipts remain unchanged.
 
 2026-11-20 return-cap consolidation: historical unreferenced helper scripts from this owner were archived byte-for-byte under `work/_shared/archived-unbound-negative-logs-20261119.json` with SHA-256. Active construction and bound proof files remain in place. Restore a helper from the archive before rerunning historical authoring workflows.
+
+## 2026-11-20 identical empty analysis-log consolidation
+
+Rebound 31 execution-manifest references from 29 duplicate zero-byte compatibility-analysis logs to the retained zero-byte `primary-compatibility-analysis.log`. SHA-256 remains the empty-file digest; receipts and construction evidence were unchanged. Assignment-scoped `worker_check.py --complete` passes after consolidation. Its ready status was not changed. This frees returned-file capacity for remaining worker-owned C24757 proofs.

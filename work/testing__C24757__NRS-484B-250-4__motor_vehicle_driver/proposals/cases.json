@@ -4,9 +4,101 @@
   "status": "draft",
   "cases": [
     {
+      "case_id": "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__shared_baseline",
+      "target_law_id": "NRS-484B-250-4",
+      "target_type": "baseline",
+      "rationale": "Shared authored stop-line reference with source-bound observations; no legal acceptance claim.",
+      "variable_assignments": {
+        "stop_reference": {
+          "kind": "world_setup",
+          "value": "stop_line",
+          "unit": "categorical"
+        },
+        "ego_stop_control": {
+          "kind": "controller",
+          "value": "full_halt",
+          "unit": "categorical"
+        },
+        "other_stop_control": {
+          "kind": "controller",
+          "value": "full_halt",
+          "unit": "categorical"
+        },
+        "ego_release_rule": {
+          "kind": "controller",
+          "value": "after_other_clear",
+          "unit": "categorical"
+        },
+        "other_release_rule": {
+          "kind": "controller",
+          "value": "scheduled",
+          "unit": "categorical"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "method": "Original ego complete-body velocity magnitude per Native frame",
+            "time_window": "full original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Actual motion, pixels and legal significance require local source review"
+          },
+          {
+            "name": "other_speed",
+            "unit": "m/s",
+            "method": "Original other complete-body velocity magnitude per Native frame",
+            "time_window": "full original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Actual motion, pixels and legal significance require local source review"
+          },
+          {
+            "name": "ego_stop_boundary_distance",
+            "unit": "m",
+            "method": "Original ego complete-body signed front distance to sourced stop line",
+            "time_window": "full original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Actual motion, pixels and legal significance require local source review"
+          },
+          {
+            "name": "signal_state",
+            "unit": "device state",
+            "method": "Original ego governed signal Off-state readback per Native frame",
+            "time_window": "full original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Actual motion, pixels and legal significance require local source review"
+          },
+          {
+            "name": "ego_position",
+            "unit": "m",
+            "method": "Original complete-body vertex mean XY per Native frame",
+            "time_window": "full original 20 Hz capture",
+            "reference_frame": "Native original frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "Actual motion, pixels and legal significance require local source review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "junction_context",
+            "unit": "structured record",
+            "method": "Authored map and observed Native head IDs joined to original source rows"
+          }
+        ],
+        "limitations": [
+          "Authored site packet is a construction candidate; actual physical and legal acceptance unclaimed"
+        ]
+      }
+    },
+    {
       "case_id": "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__stop_line_other_prior",
       "target_law_id": "NRS-484B-250-4",
-      "target_type": "delivery",
+      "target_type": "judgment_sweep",
       "rationale": "Off installed uncovered signal; marked line; other vehicle completes stop first and enters before ego",
       "variable_assignments": {
         "stop_reference": {
@@ -95,13 +187,31 @@
         ]
       },
       "unresolved_judgment_calls": [
-        "Statutory inoperability, cautiousness and yielding require original physical review"
-      ]
+        "installed and has its vehicular signals uncovered",
+        "inoperative at the time the vehicle enters the intersection",
+        "clearly marked stop line",
+        "view of approaching traffic on the through highway",
+        "proceed cautiously",
+        "yielding to vehicles which have previously completed a stop or are within the intersection"
+      ],
+      "paired_probe_id": "inoperative_signal_boundary_comparison",
+      "deliberate_differences": [
+        "stop_reference",
+        "ego_stop_control",
+        "other_stop_control",
+        "ego_release_rule",
+        "other_release_rule"
+      ],
+      "probe": {
+        "primary_variable": "stop_reference",
+        "comparison_or_standard": "authored boundary and stop-order contrast",
+        "target_value_or_branch": "stop_line"
+      }
     },
     {
       "case_id": "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__stop_line_ego_prior",
       "target_law_id": "NRS-484B-250-4",
-      "target_type": "delivery",
+      "target_type": "judgment_sweep",
       "rationale": "Same physical junction; ego completes stop first",
       "variable_assignments": {
         "stop_reference": {
@@ -190,13 +300,31 @@
         ]
       },
       "unresolved_judgment_calls": [
-        "Statutory inoperability, cautiousness and yielding require original physical review"
-      ]
+        "installed and has its vehicular signals uncovered",
+        "inoperative at the time the vehicle enters the intersection",
+        "clearly marked stop line",
+        "view of approaching traffic on the through highway",
+        "proceed cautiously",
+        "yielding to vehicles which have previously completed a stop or are within the intersection"
+      ],
+      "paired_probe_id": "inoperative_signal_boundary_comparison",
+      "deliberate_differences": [
+        "stop_reference",
+        "ego_stop_control",
+        "other_stop_control",
+        "ego_release_rule",
+        "other_release_rule"
+      ],
+      "probe": {
+        "primary_variable": "stop_reference",
+        "comparison_or_standard": "authored boundary and stop-order contrast",
+        "target_value_or_branch": "stop_line"
+      }
     },
     {
       "case_id": "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__stop_line_other_inside",
       "target_law_id": "NRS-484B-250-4",
-      "target_type": "delivery",
+      "target_type": "judgment_sweep",
       "rationale": "Other vehicle already inside at ego post-stop entry",
       "variable_assignments": {
         "stop_reference": {
@@ -285,13 +413,31 @@
         ]
       },
       "unresolved_judgment_calls": [
-        "Statutory inoperability, cautiousness and yielding require original physical review"
-      ]
+        "installed and has its vehicular signals uncovered",
+        "inoperative at the time the vehicle enters the intersection",
+        "clearly marked stop line",
+        "view of approaching traffic on the through highway",
+        "proceed cautiously",
+        "yielding to vehicles which have previously completed a stop or are within the intersection"
+      ],
+      "paired_probe_id": "inoperative_signal_boundary_comparison",
+      "deliberate_differences": [
+        "stop_reference",
+        "ego_stop_control",
+        "other_stop_control",
+        "ego_release_rule",
+        "other_release_rule"
+      ],
+      "probe": {
+        "primary_variable": "stop_reference",
+        "comparison_or_standard": "authored boundary and stop-order contrast",
+        "target_value_or_branch": "stop_line"
+      }
     },
     {
       "case_id": "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__stop_line_no_halt",
       "target_law_id": "NRS-484B-250-4",
-      "target_type": "delivery",
+      "target_type": "judgment_sweep",
       "rationale": "Ego slows but does not fully halt at marked line",
       "variable_assignments": {
         "stop_reference": {
@@ -380,13 +526,31 @@
         ]
       },
       "unresolved_judgment_calls": [
-        "Statutory inoperability, cautiousness and yielding require original physical review"
-      ]
+        "installed and has its vehicular signals uncovered",
+        "inoperative at the time the vehicle enters the intersection",
+        "clearly marked stop line",
+        "view of approaching traffic on the through highway",
+        "proceed cautiously",
+        "yielding to vehicles which have previously completed a stop or are within the intersection"
+      ],
+      "paired_probe_id": "inoperative_signal_boundary_comparison",
+      "deliberate_differences": [
+        "stop_reference",
+        "ego_stop_control",
+        "other_stop_control",
+        "ego_release_rule",
+        "other_release_rule"
+      ],
+      "probe": {
+        "primary_variable": "stop_reference",
+        "comparison_or_standard": "authored boundary and stop-order contrast",
+        "target_value_or_branch": "stop_line"
+      }
     },
     {
       "case_id": "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__crosswalk_no_stop_line",
       "target_law_id": "NRS-484B-250-4",
-      "target_type": "delivery",
+      "target_type": "judgment_sweep",
       "rationale": "No line; near-side crosswalk is the required stopping location",
       "variable_assignments": {
         "stop_reference": {
@@ -475,13 +639,31 @@
         ]
       },
       "unresolved_judgment_calls": [
-        "Statutory inoperability, cautiousness and yielding require original physical review"
-      ]
+        "installed and has its vehicular signals uncovered",
+        "inoperative at the time the vehicle enters the intersection",
+        "clearly marked stop line",
+        "view of approaching traffic on the through highway",
+        "proceed cautiously",
+        "yielding to vehicles which have previously completed a stop or are within the intersection"
+      ],
+      "paired_probe_id": "inoperative_signal_boundary_comparison",
+      "deliberate_differences": [
+        "stop_reference",
+        "ego_stop_control",
+        "other_stop_control",
+        "ego_release_rule",
+        "other_release_rule"
+      ],
+      "probe": {
+        "primary_variable": "stop_reference",
+        "comparison_or_standard": "authored boundary and stop-order contrast",
+        "target_value_or_branch": "crosswalk"
+      }
     },
     {
       "case_id": "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__nearest_view_no_line_or_crosswalk",
       "target_law_id": "NRS-484B-250-4",
-      "target_type": "delivery",
+      "target_type": "judgment_sweep",
       "rationale": "No line/crosswalk; stop at nearest point with a view of through traffic",
       "variable_assignments": {
         "stop_reference": {
@@ -570,10 +752,64 @@
         ]
       },
       "unresolved_judgment_calls": [
-        "Statutory inoperability, cautiousness and yielding require original physical review"
+        "installed and has its vehicular signals uncovered",
+        "inoperative at the time the vehicle enters the intersection",
+        "clearly marked stop line",
+        "view of approaching traffic on the through highway",
+        "proceed cautiously",
+        "yielding to vehicles which have previously completed a stop or are within the intersection"
+      ],
+      "paired_probe_id": "inoperative_signal_boundary_comparison",
+      "deliberate_differences": [
+        "stop_reference",
+        "ego_stop_control",
+        "other_stop_control",
+        "ego_release_rule",
+        "other_release_rule"
+      ],
+      "probe": {
+        "primary_variable": "stop_reference",
+        "comparison_or_standard": "authored boundary and stop-order contrast",
+        "target_value_or_branch": "nearest_view"
+      }
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "inoperative_signal_judgments",
+      "target_law_id": "NRS-484B-250-4",
+      "judgment_refs": [
+        {
+          "phrase": "installed and has its vehicular signals uncovered",
+          "note": "Installed and uncovered appearance requires original source-camera review."
+        },
+        {
+          "phrase": "inoperative at the time the vehicle enters the intersection",
+          "note": "Off readback and original entry-frame state require source review."
+        },
+        {
+          "phrase": "clearly marked stop line",
+          "note": "Original pixels and authored boundary geometry must be joined."
+        },
+        {
+          "phrase": "view of approaching traffic on the through highway",
+          "note": "Original driver-reference view and approach visibility require source review."
+        },
+        {
+          "phrase": "proceed cautiously",
+          "note": "No numeric legal cautiousness cutoff is supplied."
+        },
+        {
+          "phrase": "yielding to vehicles which have previously completed a stop or are within the intersection",
+          "note": "Original complete-body stop order and occupancy must be reviewed."
+        }
+      ],
+      "rationale": "Retain a source-bound sweep plan over marking, no-halt, stop order and occupancy branches.",
+      "status": "incomplete",
+      "missing_inputs": [
+        "Original Native pixels and physical observations remain unmeasured; planned comparisons and selected cases are retained."
       ]
     }
   ],
-  "sweep_specs": [],
   "sweeps_expanded": true
 }

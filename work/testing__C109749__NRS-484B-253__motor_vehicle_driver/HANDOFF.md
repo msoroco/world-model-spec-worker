@@ -688,3 +688,7 @@ Four further unreferenced historical helper scripts (`record_signal_advance_phys
 ## 2026-11-20 reversible return-slot archive
 
 Eight unreferenced historical semantic authoring/validation helper scripts were byte-preserved with SHA-256 in `work/_shared/archived-unbound-negative-logs-20261119.json` (653 total entries) to free return slots. No current selected construction or receipt was removed. Assignment-scoped `worker_check.py --complete` passed after archival; existing ready status was not changed.
+
+## 2026-11-20 identical empty analysis-log consolidation
+
+Rebound 20 execution-manifest references from 20 duplicate zero-byte compatibility-analysis logs to the retained zero-byte `primary-compatibility-analysis.log`. The SHA-256 remains the empty-file digest; receipts and constructions were unchanged. Assignment-scoped `worker_check.py --complete` passes. Ready status was not changed.
