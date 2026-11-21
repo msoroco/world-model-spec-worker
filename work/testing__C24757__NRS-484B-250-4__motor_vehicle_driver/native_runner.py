@@ -13,7 +13,7 @@ from contextlib import ExitStack, contextmanager
 from pathlib import Path
 from queue import Empty, Queue
 
-from native_inoperative_control import StopController, all_heads_off, governing_lights
+from native_inoperative_control import RollingController, StopController, all_heads_off, governing_lights
 from native_site_contract import _bound_path, validate_site
 from native_stop_sources import signed_front_distance, source_row
 from saved_finalizer import CAMERAS, finalize_saved
@@ -70,14 +70,18 @@ def validate_capture_plan(config, packet_root):
                 type(route.get("target_speed_mps")) not in (int, float) or
                 not 0 < route["target_speed_mps"] <= 20):
             raise ValueError("Bounded Native stop/release control required: " + who)
-        if route.get("release_rule") not in ("scheduled", "after_other_clear"):
+        if route.get("release_rule") not in ("scheduled", "after_other_clear", "after_partner_entry"):
             raise ValueError("Named Native release condition required: " + who)
+        policy = route.get("stop_policy", "full_halt")
+        if policy not in ("full_halt", "rolling") or (policy == "rolling" and
+                (who != "ego" or not config["selected_case_id"].endswith("__stop_line_no_halt"))):
+            raise ValueError("Rolling policy limited to exact no-halt comparison")
     if routes["ego"]["spawn"][:2] == routes["other"]["spawn"][:2]:
         raise ValueError("Two distinct Native approaches required")
     if ([routes["ego"]["spawn"][:2], routes["other"]["spawn"][:2]] !=
             config["site"]["entrance_road_lanes"][:2]):
         raise ValueError("Actor routes must match ordered signal-governed approaches")
-    if all(route["release_rule"] == "after_other_clear" for route in routes.values()):
+    if all(route["release_rule"] != "scheduled" for route in routes.values()):
         raise ValueError("Circular Native release conditions")
     return receipt
 
@@ -212,10 +216,15 @@ def capture_native(args, config):
         ego, other = actors
         lights = governing_lights(world, config["site"]["entrance_road_lanes"])
         selected, other_selected = lights[:2]
-        if (selected.id != config["site"]["native_signal_id"] or
-                other_selected.id != config["site"]["other_native_signal_id"]):
+        if (config["site"]["native_signal_id"] is not None and
+                (selected.id != config["site"]["native_signal_id"] or
+                 other_selected.id != config["site"]["other_native_signal_id"])):
             raise ValueError("Reviewed Native signal heads do not govern the selected approaches")
-        controllers = {who: StopController(routes[who]["release_frame"], routes[who]["target_speed_mps"])
+        observed_site = dict(config["site"], native_signal_id=selected.id,
+                             other_native_signal_id=other_selected.id)
+        controllers = {who: (RollingController(routes[who]["target_speed_mps"])
+                             if routes[who].get("stop_policy") == "rolling" else
+                             StopController(routes[who]["release_frame"], routes[who]["target_speed_mps"]))
                        for who in routes}
         polygon = Polygon(config["site"]["intersection_polygon_xy_m"])
         entered = {"ego": False, "other": False}
@@ -241,7 +250,10 @@ def capture_native(args, config):
                                 signed = signed_front_distance(xy, boundary["point_xy_m"],
                                                                boundary["upstream_normal_xy"])
                                 partner = "other" if who == "ego" else "ego"
-                                release = (routes[who]["release_rule"] == "scheduled" or cleared[partner])
+                                rule = routes[who]["release_rule"]
+                                release = (rule == "scheduled" or
+                                           (rule == "after_other_clear" and cleared[partner]) or
+                                           (rule == "after_partner_entry" and entered[partner]))
                                 controllers[who].step(carla, actor, index, signed,
                                     steer=_steer(actor, routes[who]["target_xy_m"]),
                                     release_condition=release)
@@ -255,7 +267,7 @@ def capture_native(args, config):
                             collector.capture(snap.frame, snap.timestamp.elapsed_seconds)
                             row = source_row(int(snap.frame),
                                 float(snap.timestamp.elapsed_seconds), selected, ego, other,
-                                config["site"], other_selected)
+                                observed_site, other_selected)
                             for who in ("ego", "other"):
                                 inside = MultiPoint(row[who]["body_vertices_xy_m"]).convex_hull.intersects(polygon)
                                 if inside:
@@ -267,7 +279,7 @@ def capture_native(args, config):
                     finally:
                         collector.close(confirmed=frames == config["duration_s"]*20)
                         collector = None
-        site = config["site"]
+        site = observed_site
         context = {"native_map_id": site["native_map_name"],
                    "intersection_id": site["intersection_id"],
                    "native_signal_id": site["native_signal_id"],
@@ -280,6 +292,8 @@ def capture_native(args, config):
                    "intersection_polygon_xy_m": site["intersection_polygon_xy_m"],
                    "signal_head_video_source": site["approach_visibility_source"],
                    "lane_governance_source": config["site_review"]["sha256"],
+                   "map_signal_id": site.get("map_signal_id"),
+                   "other_map_signal_id": site.get("other_map_signal_id"),
                    site["stop_boundary"]["kind"] + "_source": site["stop_boundary"]["source"]}
         (output/"junction_context.json").write_text(json.dumps(context, indent=2) + "\n")
     except BaseException as exc:

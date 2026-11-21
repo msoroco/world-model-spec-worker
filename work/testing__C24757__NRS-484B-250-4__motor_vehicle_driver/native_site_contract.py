@@ -31,6 +31,15 @@ def _read_bound(base, binding, label):
     return json.loads(_bound_path(base, binding, label).read_text())
 
 
+def _read_source_document(base, binding, role):
+    if isinstance(binding, dict) and binding.get("role") == role:
+        source = _read_bound(base, {key: binding[key] for key in ("path", "sha256")}, role)
+        if source.get("format") != "worker-inoperative-junction-source-bundle":
+            raise ValueError("Structured junction source bundle required: " + role)
+        return source.get("sources", {}).get(role)
+    return _read_bound(base, binding, role)
+
+
 def _bound_path(base, binding, label):
     if not isinstance(binding, dict) or set(binding) != {"path", "sha256"}:
         raise ValueError("Hashed " + label + " binding required")
@@ -62,7 +71,7 @@ def validate_site(config, base_dir):
     if not isinstance(docs, dict) or set(docs) != set(REQUIRED_SOURCES):
         raise ValueError("Complete junction source inventory required")
     for role in REQUIRED_SOURCES:
-        document = _read_bound(base_dir, docs[role], role)
+        document = _read_source_document(base_dir, docs[role], role)
         if (document.get("format") != "worker-inoperative-junction-source" or
                 document.get("source_role") != role or
                 not document.get("review_basis") or
@@ -77,7 +86,7 @@ def validate_site(config, base_dir):
     if "native_map_xodr" in site:
         if docs["map_geometry"] is None:
             raise ValueError("Authored map must be source reviewed")
-        map_doc = _read_bound(base_dir, docs["map_geometry"], "map_geometry")
+        map_doc = _read_source_document(base_dir, docs["map_geometry"], "map_geometry")
         if map_doc["reviewed_site_fields"].get("native_map_xodr") != site["native_map_xodr"]:
             raise ValueError("Authored map binding must be source reviewed")
         map_path = _bound_path(base_dir, site["native_map_xodr"], "Native OpenDRIVE")
@@ -88,8 +97,18 @@ def validate_site(config, base_dir):
         junction = root.find("junction")
         if junction is None or int(junction.get("id")) != site["intersection_id"]:
             raise ValueError("Reviewed junction differs from authored map")
-        for lane, signal_id in zip(site["entrance_road_lanes"],
-                                   (site["native_signal_id"], site["other_native_signal_id"])):
+        map_signal_ids = (site.get("map_signal_id", site["native_signal_id"]),
+                          site.get("other_map_signal_id", site["other_native_signal_id"]))
+        if (any(type(value) is not int for value in map_signal_ids) or
+                map_signal_ids[0] == map_signal_ids[1]):
+            raise ValueError("Distinct authored map signal IDs required")
+        if site["native_signal_id"] is None:
+            governance_fields = _read_source_document(base_dir, docs["signal_governance"],
+                                                      "signal_governance")["reviewed_site_fields"]
+            if (governance_fields.get("map_signal_id") != map_signal_ids[0] or
+                    governance_fields.get("other_map_signal_id") != map_signal_ids[1]):
+                raise ValueError("Authored map signal IDs must be source reviewed")
+        for lane, signal_id in zip(site["entrance_road_lanes"], map_signal_ids):
             road_id, lane_id = lane
             road = roads.get(road_id)
             if road is None or not any(signal.get("id") == str(signal_id) and
@@ -98,6 +117,16 @@ def validate_site(config, base_dir):
                                       int(signal.find("validity").get("toLane"))
                                       for signal in road.findall("signals/signal")):
                 raise ValueError("Reviewed signal governance differs from authored map")
+        for index, lane in enumerate(site["entrance_road_lanes"]):
+            road = roads[lane[0]]
+            kinds = {"stop_line" if obj.get("name") == "StopLine" else
+                     "crosswalk" if obj.get("type") == "crosswalk" else None
+                     for obj in road.findall("objects/object")}
+            line_key = "stop_line_exists" if index == 0 else "other_stop_line_exists"
+            crosswalk_key = "crosswalk_exists" if index == 0 else "other_crosswalk_exists"
+            if (("stop_line" in kinds) != (site.get(line_key) is True) or
+                    ("crosswalk" in kinds) != (site.get(crosswalk_key) is True)):
+                raise ValueError("Stopping-reference branch differs from authored map")
     for field in ("native_map_name", "intersection_id", "native_signal_id", "other_native_signal_id",
                   "installed_uncovered_vehicular_heads", "intersection_polygon_xy_m",
                   "entrance_road_lanes", "stop_boundary", "other_stop_boundary"):
@@ -105,9 +134,10 @@ def validate_site(config, base_dir):
             raise ValueError("Missing junction construction field: " + field)
     if site["installed_uncovered_vehicular_heads"] is not True:
         raise ValueError("Uncovered installed heads must be sourced")
-    if (type(site["native_signal_id"]) is not int or
-            type(site["other_native_signal_id"]) is not int or
-            site["native_signal_id"] == site["other_native_signal_id"]):
+    observed_ids = (site["native_signal_id"], site["other_native_signal_id"])
+    if not (all(type(value) is int for value in observed_ids) and
+            observed_ids[0] != observed_ids[1]) and not (
+            "native_map_xodr" in site and observed_ids == (None, None)):
         raise ValueError("Two distinct sourced Native signal IDs required")
     lanes = site["entrance_road_lanes"]
     if (not isinstance(lanes, list) or len(lanes) != 2 or

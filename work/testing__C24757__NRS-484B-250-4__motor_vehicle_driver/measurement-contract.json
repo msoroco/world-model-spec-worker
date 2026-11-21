@@ -1,0 +1,97 @@
+{
+  "format": "worker-measurement-contract",
+  "assignment_id": "testing__C24757__NRS-484B-250-4__motor_vehicle_driver",
+  "selected_case_id": "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__stop_line_other_prior",
+  "requirements": [
+    {
+      "requirement": "Both governing installed, uncovered vehicular heads are Off when ego enters; statutory inoperability requires physical review",
+      "source": "NRS 484B.250(4); inputs/testing__C24757__NRS-484B-250-4__motor_vehicle_driver/assignment.json",
+      "output_key": "signal_states",
+      "method": "measure_signal_states",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "vehicle_signal_history.jsonl",
+        "video_frames.jsonl",
+        "junction_context.json"
+      ],
+      "disposition_index": 0
+    },
+    {
+      "requirement": "Apply marked-line, near-side-crosswalk, then nearest-view stopping-reference hierarchy",
+      "source": "NRS 484B.250(4); inputs/testing__C24757__NRS-484B-250-4__motor_vehicle_driver/assignment.json",
+      "output_key": "stop_reference",
+      "method": "measure_stop_reference",
+      "value_type": "text",
+      "kind": "sourced_context",
+      "inputs": [
+        "vehicle_signal_history.jsonl",
+        "video_frames.jsonl",
+        "junction_context.json"
+      ],
+      "disposition_index": 1
+    },
+    {
+      "requirement": "Ego completes a full halt at or before selected reference before intersection entry",
+      "source": "NRS 484B.250(4); inputs/testing__C24757__NRS-484B-250-4__motor_vehicle_driver/assignment.json",
+      "output_key": "ego_full_halt",
+      "method": "measure_ego_full_halt",
+      "value_type": "boolean",
+      "kind": "measured",
+      "inputs": [
+        "vehicle_signal_history.jsonl",
+        "video_frames.jsonl",
+        "junction_context.json"
+      ],
+      "disposition_index": 2
+    },
+    {
+      "requirement": "Identify whether the other vehicle completed its own full stop before ego",
+      "source": "NRS 484B.250(4); inputs/testing__C24757__NRS-484B-250-4__motor_vehicle_driver/assignment.json",
+      "output_key": "prior_stop",
+      "method": "measure_prior_stop",
+      "value_type": "boolean",
+      "kind": "measured",
+      "inputs": [
+        "vehicle_signal_history.jsonl",
+        "video_frames.jsonl",
+        "junction_context.json"
+      ],
+      "disposition_index": 3
+    },
+    {
+      "requirement": "Observe both complete-body entries and whether other vehicle is within intersection at ego entry",
+      "source": "NRS 484B.250(4); inputs/testing__C24757__NRS-484B-250-4__motor_vehicle_driver/assignment.json",
+      "output_key": "intersection_occupancy",
+      "method": "measure_intersection_occupancy",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "vehicle_signal_history.jsonl",
+        "video_frames.jsonl",
+        "junction_context.json"
+      ],
+      "disposition_index": 4
+    },
+    {
+      "requirement": "Retain post-stop motion samples while cautiousness and legal yielding remain judgment questions",
+      "source": "NRS 484B.250(4); inputs/testing__C24757__NRS-484B-250-4__motor_vehicle_driver/assignment.json",
+      "output_key": "post_stop_motion",
+      "method": "measure_post_stop_motion",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "vehicle_signal_history.jsonl",
+        "video_frames.jsonl",
+        "junction_context.json"
+      ],
+      "disposition_index": 5
+    }
+  ],
+  "negative": {
+    "remove": [
+      "junction_context.json"
+    ],
+    "error_contains": "Missing required source: junction_context.json"
+  }
+}

@@ -23,6 +23,52 @@ def write_bound(root, name, value):
 
 
 class SiteTests(unittest.TestCase):
+    def test_primary_packet_is_authored_and_cpu_validated(self):
+        base = Path(__file__).resolve().parents[1]
+        config = json.loads((base / "config.json").read_text())
+        receipt = native_runner.validate_capture_plan(config, base)
+        self.assertEqual(receipt["selected_boundary"], "stop_line")
+        self.assertFalse(receipt["native_site_verified"])
+        self.assertFalse(receipt["physical_head_visibility_verified"])
+        self.assertEqual(config["site"]["native_signal_id"], None)
+        self.assertEqual(config["site"]["map_signal_id"], 2475701)
+        pipeline_root = Path(__file__).resolve().parents[3] / "runtime" / "scenario_pipeline"
+        sys.path.insert(0, str(pipeline_root))
+        from worker_exchange.measurement_contract import validate
+        contract = json.loads((base / "measurement-contract.json").read_text())
+        plan = json.loads((base / "case-plan.json").read_text())
+        rows = validate(contract, plan["requirement_dispositions"],
+                        (base / "saved_finalizer.py").read_text(), config["selected_case_id"])
+        self.assertEqual(len(rows), 6)
+
+    def test_every_planned_case_binds_a_distinct_branch_construction(self):
+        base = Path(__file__).resolve().parents[1]
+        plan = json.loads((base / "case-plan.json").read_text())
+        self.assertEqual(len(plan["cases"]), 6)
+        for case in plan["cases"]:
+            candidate = case["construction_candidate"]
+            path = base / candidate["map_path"]
+            self.assertEqual(hashlib.sha256(path.read_bytes()).hexdigest(),
+                             candidate["map_sha256"])
+            self.assertEqual(candidate["ordered_approach_lanes"],
+                             [[158190, -1], [158194, -1]])
+            self.assertEqual(candidate["map_signal_ids"], [2475701, 2475702])
+            suffix = case["case_id"].rsplit("__", 1)[-1]
+            if suffix == "stop_line_no_halt":
+                self.assertEqual(candidate["ego_control"], "rolling_comparison")
+            else:
+                self.assertEqual(candidate["ego_control"], "full_halt")
+            if suffix.startswith("crosswalk"):
+                self.assertEqual(candidate["ego_stop_reference"], "crosswalk")
+            elif suffix.startswith("nearest_view"):
+                self.assertEqual(candidate["ego_stop_reference"], "nearest_view")
+            else:
+                self.assertEqual(candidate["ego_stop_reference"], "stop_line")
+        self.assertEqual(plan["cases"][1]["construction_candidate"]["other_release_rule"],
+                         "after_other_clear")
+        self.assertEqual(plan["cases"][2]["construction_candidate"]["ego_release_rule"],
+                         "after_partner_entry")
+
     def test_authored_two_head_map_has_distinct_governed_junction_approaches(self):
         path = Path(__file__).resolve().parents[1] / "inoperative-two-head.xodr"
         root = ET.parse(path).getroot()
@@ -62,11 +108,11 @@ class SiteTests(unittest.TestCase):
     def test_reviewed_authored_map_binding_and_governance(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
-            map_bytes = (Path(__file__).resolve().parents[1] / "inoperative-two-head.xodr").read_bytes()
+            map_bytes = (Path(__file__).resolve().parents[1] / "inoperative-stop-line.xodr").read_bytes()
             (root / "site.xodr").write_bytes(map_bytes)
             config = self.fixture(root)
             site = config["site"]
-            site.update(native_map_name="C24757 two-approach inoperative-head construction candidate",
+            site.update(native_map_name="C24757 two-head stop-line construction candidate",
                         native_map_xodr={"path": "site.xodr", "sha256": hashlib.sha256(map_bytes).hexdigest()},
                         intersection_id=158191, native_signal_id=2475701,
                         other_native_signal_id=2475702,
@@ -83,9 +129,43 @@ class SiteTests(unittest.TestCase):
                 "format": "worker-inoperative-junction-review", "review_status": "reviewed_candidate",
                 "site": site, "source_documents": docs})
             self.assertFalse(site_contract.validate_site(config, root)["native_site_verified"])
+            site.update(native_signal_id=None, other_native_signal_id=None,
+                        map_signal_id=2475701, other_map_signal_id=2475702)
+            claims = {field: site[field] for field in site_contract.SOURCE_CLAIMS["signal_governance"]}
+            claims.update(map_signal_id=2475701, other_map_signal_id=2475702)
+            docs["signal_governance"] = write_bound(root, "signal_governance.json", {
+                "format": "worker-inoperative-junction-source",
+                "source_role": "signal_governance", "review_basis": "synthetic CPU fixture only",
+                "reviewed_site_fields": claims})
+            config["site_review"] = write_bound(root, "review.json", {
+                "format": "worker-inoperative-junction-review", "review_status": "reviewed_candidate",
+                "site": site, "source_documents": docs})
+            self.assertFalse(site_contract.validate_site(config, root)["native_site_verified"])
             (root / "site.xodr").write_bytes(map_bytes + b"\n")
             with self.assertRaisesRegex(ValueError, "Native OpenDRIVE source missing or changed"):
                 site_contract.validate_site(config, root)
+
+    def test_stopping_reference_variants_have_separate_native_geometry(self):
+        pipeline_root = Path(__file__).resolve().parents[3] / "runtime" / "scenario_pipeline"
+        sys.path.insert(0, str(pipeline_root))
+        from traffic_spec_adapter.geometry import painted_map_objects, static_map
+        base = Path(__file__).resolve().parents[1]
+        for variant, kind in (("stop-line", "stop_line"),
+                              ("crosswalk", "crosswalk"), ("nearest-view", None)):
+            path = base / ("inoperative-two-head.xodr" if variant == "nearest-view" else
+                           "inoperative-" + variant + ".xodr")
+            observations = painted_map_objects(path)
+            self.assertEqual([row["region"]["kind"] for row in observations],
+                             [] if kind is None else [kind, kind])
+            if observations:
+                self.assertEqual([row["source"]["road_id"] for row in observations],
+                                 [158190, 158194])
+                self.assertTrue(all(row["shape"].area > 0 for row in observations))
+                self.assertTrue(all(row["shape"].bounds[2] < -8 or
+                                    row["shape"].bounds[3] < -8 for row in observations))
+            _, _, lane_keys = static_map(path, junctions=True)
+            self.assertIn((158190, 0, -1), lane_keys)
+            self.assertIn((158194, 0, -1), lane_keys)
 
     def fixture(self, root, kind="stop_line"):
         site = {"native_map_name": "DiagnosticTown", "intersection_id": 6,
@@ -186,6 +266,17 @@ class SiteTests(unittest.TestCase):
             config["actor_routes"]["other"]["release_rule"] = "after_other_clear"
             with self.assertRaisesRegex(ValueError, "Circular Native release"):
                 native_runner.validate_capture_plan(config, root)
+            config["actor_routes"]["ego"]["release_rule"] = "scheduled"
+            self.assertFalse(native_runner.validate_capture_plan(config, root)["native_site_verified"])
+            config["actor_routes"]["ego"]["release_rule"] = "after_partner_entry"
+            config["actor_routes"]["other"]["release_rule"] = "scheduled"
+            self.assertFalse(native_runner.validate_capture_plan(config, root)["native_site_verified"])
+            config["actor_routes"]["ego"]["stop_policy"] = "rolling"
+            with self.assertRaisesRegex(ValueError, "Rolling policy limited"):
+                native_runner.validate_capture_plan(config, root)
+            config["selected_case_id"] = config["selected_case_id"].replace(
+                "__stop_line_other_prior", "__stop_line_no_halt")
+            self.assertFalse(native_runner.validate_capture_plan(config, root)["native_site_verified"])
 
 
 if __name__ == "__main__":

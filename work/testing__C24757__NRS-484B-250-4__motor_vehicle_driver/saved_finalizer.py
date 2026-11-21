@@ -172,3 +172,12 @@ def finalize_saved(attempt, output):
                 "legal_verdict_asserted": False, "analysis_complete": True}
     output.write_text(json.dumps(analysis, indent=2, allow_nan=False) + "\n")
     return analysis
+
+
+if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--attempt", required=True, type=Path)
+    parser.add_argument("--output", required=True, type=Path)
+    arguments = parser.parse_args()
+    finalize_saved(arguments.attempt, arguments.output)

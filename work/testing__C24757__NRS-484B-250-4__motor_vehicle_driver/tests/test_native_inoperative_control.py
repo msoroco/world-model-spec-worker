@@ -54,6 +54,20 @@ class Actor:
 
 
 class NativeControlTests(unittest.TestCase):
+    def test_rolling_comparison_preserves_observed_motion(self):
+        carla = types.SimpleNamespace(VehicleControl=lambda: types.SimpleNamespace())
+        actor = Actor(2.0)
+        planner = control.RollingController(target_speed_mps=3.0, minimum_speed_mps=1.0)
+        row = planner.step(carla, actor, 21, -0.1)
+        self.assertTrue(row["rolling_comparison"])
+        self.assertEqual(row["speed_mps"], 2.0)
+        self.assertGreater(row["throttle"], 0)
+        self.assertEqual(row["brake"], 0)
+        actor.speed = 0.0
+        self.assertEqual(planner.step(carla, actor, 22, -0.2)["speed_mps"], 0.0)
+        with self.assertRaisesRegex(ValueError, "Bounded rolling"):
+            control.RollingController(target_speed_mps=3.0, minimum_speed_mps=4.0)
+
     def test_all_governed_heads_off_and_restored_after_capture(self):
         lights = [Light(10, (1, -1)), Light(20, (2, -1), "Red", frozen=True)]
         world = World(lights)
