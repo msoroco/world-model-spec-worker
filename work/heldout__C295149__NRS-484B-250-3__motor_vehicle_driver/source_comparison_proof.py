@@ -6,6 +6,7 @@ from hashlib import sha256
 import json
 from pathlib import Path
 import shlex
+import sys
 from tempfile import TemporaryDirectory
 
 from ending_road_measurement import measure
@@ -407,6 +408,73 @@ def audit_release_motion_diagnostic(output, *, tamper=False):
             'physical_acceptance_claimed': False, 'legal_acceptance_claimed': False}
 
 
+def audit_physical_outcomes(*, tamper=False):
+    """Exercise the pinned motion assessor for every selected exact case.
+
+    This checks the assessor's three outcomes on authored source rows. It does
+    not use a fixture label as an input to the assessor or imply Native motion.
+    """
+    here = Path(__file__).resolve().parent
+    root = here.parents[1]
+    sys.path.insert(0, str(root / 'runtime' / 'scenario_pipeline'))
+    from worker_exchange.native_output import assess_physical, default_descriptor
+
+    manifest = json.loads((here / 'execution-manifest.json').read_text())
+    results = []
+    for entry in manifest['cases']:
+        construction = json.loads((here / entry['construction']).read_text())
+        config = json.loads(next(item['content'] for item in construction['files']
+                                 if item['path'] == 'config.json'))
+        descriptor = default_descriptor(config)
+        if descriptor['criterion'] != 'travel_progress':
+            raise ValueError('Selected case needs a different physical fixture')
+        count = round(float(config['duration_s']) * float(config['rate_hz']))
+        if count < 3:
+            raise ValueError('Selected capture is too short for motion assessment')
+        observed = {}
+        for kind, factor in (('complete_motion', 1.5),
+                             ('incomplete_motion', .1),
+                             ('missing_evidence', 1.5)):
+            with TemporaryDirectory(prefix='c295149-physical-',
+                                    dir=root / '.runtime-work') as temporary:
+                folder = Path(temporary)
+                distance = descriptor['minimum_progress_m'] * factor
+                (folder / 'config.json').write_text(json.dumps(config) + '\n')
+                frames = [{'carla_frame': 42000 + i,
+                           'time_s': i / float(config['rate_hz'])}
+                          for i in range(count)]
+                (folder / 'video_frames.jsonl').write_text(''.join(
+                    json.dumps(row) + '\n' for row in frames))
+                if kind != 'missing_evidence':
+                    trace = [{'frame': row['carla_frame'],
+                              'time_s': row['time_s'],
+                              'position_m': [distance * i / (count - 1), 0, 0]}
+                             for i, row in enumerate(frames)]
+                    if tamper and kind == 'complete_motion' and entry == manifest['cases'][-1]:
+                        trace[-1]['frame'] += 1
+                    (folder / 'trace.jsonl').write_text(''.join(
+                        json.dumps(row) + '\n' for row in trace))
+                result = assess_physical(folder, config)
+                actual = result['physical_checks']['maneuver']['status']
+                expected = {'complete_motion': 'met',
+                            'incomplete_motion': 'not_met',
+                            'missing_evidence': 'unverified'}[kind]
+                if actual != expected or result['maneuver_completed'] != (expected == 'met'):
+                    raise ValueError('Physical source outcome differs: '
+                                     + entry['case_id'] + ' ' + kind + ' ' + actual)
+                if expected == 'met' and not result['realized_observables']:
+                    raise ValueError('Completed motion lacks measured observations')
+                observed[kind] = actual
+        results.append({'case_id': entry['case_id'],
+                        'construction_sha256': entry['construction_sha256'],
+                        'outcomes': observed,
+                        'engineering_minimum_progress_m': descriptor['minimum_progress_m']})
+    return {'passed': True, 'comparison_id': 'physical_outcome_diagnostic',
+            'cases': results, 'synthetic_fixture': True,
+            'native_motion_observed': False, 'physical_acceptance_claimed': False,
+            'legal_acceptance_claimed': False}
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--comparison', required=True)
@@ -415,5 +483,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     if args.comparison == 'release_motion_diagnostic':
         print(json.dumps(audit_release_motion_diagnostic(args.output, tamper=args.tamper)))
+    elif args.comparison == 'physical_outcome_diagnostic':
+        print(json.dumps(audit_physical_outcomes(tamper=args.tamper)))
     else:
         print(json.dumps(audit_exact(args.comparison, tamper=args.tamper)))
