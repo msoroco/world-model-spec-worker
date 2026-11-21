@@ -160,6 +160,26 @@ class CrossingTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "trajectory or source changed"):
                 comparison.audit(off, operating)
 
+    def test_entry_order_comparison_isolates_motion(self):
+        with tempfile.TemporaryDirectory() as temp:
+            other_first, ego_first = Path(temp) / "other", Path(temp) / "ego"
+            other_first.mkdir()
+            self.fixture(other_first)
+            shutil.copytree(other_first, ego_first)
+            rows = [json.loads(line) for line in (ego_first / "crossing_history.jsonl").read_text().splitlines()]
+            for row, ego_x, other_x in zip(rows, (-20, 1, 3, 5), (-20, -18, -10, 1)):
+                for who, x in (("ego", ego_x), ("other", other_x)):
+                    row[who]["body_vertices_xy_m"] = body(x)
+                    row[who]["distance_to_intersection_m"] = max(0, -x)
+            (ego_first / "crossing_history.jsonl").write_text("".join(json.dumps(row)+"\n" for row in rows))
+            report = comparison.audit_entry_order(other_first, ego_first)
+            self.assertTrue(report["fixed_junction_frames_signal_and_actor_identity_observed"])
+            self.assertEqual(report["right_of_way_judgment"], "unresolved")
+            rows[1]["native_signal_id"] = 28
+            (ego_first / "crossing_history.jsonl").write_text("".join(json.dumps(row)+"\n" for row in rows))
+            with self.assertRaisesRegex(ValueError, "Identified signal source changed"):
+                comparison.audit_entry_order(other_first, ego_first)
+
     def test_off_signal_native_selection_and_restoration(self):
         wrong, selected = FakeLight(99, -1), FakeLight(3, -1)
         world = FakeWorld([wrong, selected])
@@ -185,6 +205,49 @@ class CrossingTests(unittest.TestCase):
             (root / "video_frames.jsonl").write_text("".join(json.dumps(row)+"\n" for row in frames))
             with self.assertRaisesRegex(ValueError, "frame join"):
                 measure.analyze(root)
+
+    def test_opposing_left_intent_requires_original_geometry_and_rows(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            self.fixture(root)
+            context = json.loads((root / "junction_context.json").read_text())
+            context["other_highway_id"] = context["ego_highway_id"]
+            context["ego_approach_direction_xy"] = [1, 0]
+            context["other_approach_direction_xy"] = [-1, 0]
+            context["other_left_turn_intent_source"] = "Native route and original body/heading rows"
+            (root / "junction_context.json").write_text(json.dumps(context))
+            rows = [json.loads(line) for line in (root / "crossing_history.jsonl").read_text().splitlines()]
+            for row, x in zip(rows, (14, 9, 7, 5)):
+                row["other"]["body_vertices_xy_m"] = body(x)
+                row["other"]["distance_to_intersection_m"] = max(0, x - 10)
+                row["other"]["turn_intent"] = "left"
+                row["other"]["heading_deg"] = 180.0
+            (root / "crossing_history.jsonl").write_text("".join(json.dumps(row)+"\n" for row in rows))
+            with self.assertRaisesRegex(ValueError, "different highways"):
+                measure.analyze(root)
+            report = measure.analyze(root, opposing_left_exception=True)
+            observed = report["opposing_left_exception_observations"]
+            self.assertEqual(observed["approach_direction_dot"], -1)
+            self.assertEqual(len(observed["other_heading_samples_deg"]), 4)
+            self.assertGreater(observed["original_body_motion"]["other"]["projection_on_approach_direction_m"], 0)
+            self.assertEqual(observed["statutory_exception_judgment"], "unresolved")
+            reversed_rows = [json.loads(json.dumps(row)) for row in rows]
+            for row, x in zip(reversed_rows, (-14, -12, -9, 1)):
+                row["other"]["body_vertices_xy_m"] = body(x)
+            (root / "crossing_history.jsonl").write_text("".join(json.dumps(row)+"\n" for row in reversed_rows))
+            with self.assertRaisesRegex(ValueError, "motion contradicts"):
+                measure.analyze(root, opposing_left_exception=True)
+            (root / "crossing_history.jsonl").write_text("".join(json.dumps(row)+"\n" for row in rows))
+            rows[2]["other"].pop("turn_intent")
+            (root / "crossing_history.jsonl").write_text("".join(json.dumps(row)+"\n" for row in rows))
+            with self.assertRaisesRegex(ValueError, "left-turn intent missing"):
+                measure.analyze(root, opposing_left_exception=True)
+            rows[2]["other"]["turn_intent"] = "left"
+            (root / "crossing_history.jsonl").write_text("".join(json.dumps(row)+"\n" for row in rows))
+            context["other_approach_direction_xy"] = [0, 1]
+            (root / "junction_context.json").write_text(json.dumps(context))
+            with self.assertRaisesRegex(ValueError, "not opposite"):
+                measure.analyze(root, opposing_left_exception=True)
 
 
 if __name__ == "__main__":

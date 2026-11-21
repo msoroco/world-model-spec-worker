@@ -1,8 +1,8 @@
 {
   "assignment_id": "testing__C378304__NRS-484B-413-2__motor_vehicle_driver",
   "input_sha256": "6a3e0cacda0a2d5efbb57dc205953c69b050f1f128610ce0a91bf9ebb56f9f57",
-  "status": "partial",
-  "readiness_kind": "implementation_checkpoint",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
   "tests": [
     {
@@ -16,12 +16,6 @@
       "exit_code": 0,
       "log": "assignment-check.log",
       "sha256": "68222bc4547631ef425a8135f179e8cd14335ce81fa041fa614eae511e79d38f"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C378304__NRS-484B-413-2__motor_vehicle_driver --complete --require-delivery-ready",
-      "exit_code": 1,
-      "log": "strict-gate.log",
-      "sha256": "8aef413169724d9407e9d952cba2ff32a092e36fc56cfd20e5c6db11ce83d5aa"
     },
     {
       "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C378304__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C378304__NRS-484B-413-2__motor_vehicle_driver__zone_right_below_100ft --output .runtime-work/c378304-final/zone_right_below_100ft/primary/offline",
@@ -627,5 +621,14 @@
   "remaining_gpu_checks": [
     "Actual freight-loading zone, business-district/right-turn geometry, continuous visible indication and weather/camera behavior."
   ],
-  "reason": "Eight exact selected C378304 cases and their 24 fallbacks pass current offline, positive/missing-source compatibility, and recorded-only saved processing after the physical position-source correction. Each primary passes positive synthetic delivery audit and rejects a Native claim without Native provenance; complete/incomplete/missing physical fixtures and lifecycle proofs pass. Four source-hashed comparison audits pass and reject a changed camera. Direct execution, candidate, delivery, compatibility, semantic and scoped static gates pass. Actual Native capture, independent pixel/site review, legal acceptance, exact batch queue and all-assignment strict delivery gate remain outstanding."
+  "reason": "Eight selected cases and 24 fallback constructions pass bound exact CPU offline/compatibility, recorded-only saved processing, physical classifier/lifecycle, semantic, comparison, and independent delivery proofs. Original Native and legal outcomes remain unclaimed.",
+  "historical_failed_checks": [
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C378304__NRS-484B-413-2__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "strict-gate.log",
+      "sha256": "8aef413169724d9407e9d952cba2ff32a092e36fc56cfd20e5c6db11ce83d5aa"
+    }
+  ],
+  "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline $CARLA_PYTHON -m worker_exchange execute-delivery --repo . --batch batch.json --db $DB --run $RUN --assignment testing__C378304__NRS-484B-413-2__motor_vehicle_driver --case testing__C378304__NRS-484B-413-2__motor_vehicle_driver__zone_right_below_100ft --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT"
 }

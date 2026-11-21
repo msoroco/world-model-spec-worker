@@ -230,13 +230,48 @@
     }
   ],
   "observations": [
-    "installed and uncovered vehicular signal head with Native governance and visible source-camera proof",
-    "Native Off indication at ego body entry",
-    "stop-line/crosswalk/nearest-view hierarchy from map and camera",
-    "full halt before or at required stop reference",
-    "first body entry of both vehicles and prior-stop order",
-    "vehicles already within intersection at ego entry",
-    "post-stop approach speed, clearance and cautious motion without invented legal cutoff"
+    {
+      "name": "signal_state",
+      "mandatory": true,
+      "requirement": "installed and uncovered vehicular signal head with Native governance and visible source-camera proof",
+      "source": "vehicle_signal_history.jsonl and junction_context.json; original body geometry, frame map, and four cameras remain required"
+    },
+    {
+      "name": "signal_state",
+      "mandatory": true,
+      "requirement": "Native Off indication at ego body entry",
+      "source": "vehicle_signal_history.jsonl and junction_context.json; original body geometry, frame map, and four cameras remain required"
+    },
+    {
+      "name": "ego_stop_boundary_distance",
+      "mandatory": true,
+      "requirement": "stop-line/crosswalk/nearest-view hierarchy from map and camera",
+      "source": "vehicle_signal_history.jsonl and junction_context.json; original body geometry, frame map, and four cameras remain required"
+    },
+    {
+      "name": "ego_speed",
+      "mandatory": true,
+      "requirement": "full halt before or at required stop reference",
+      "source": "vehicle_signal_history.jsonl and junction_context.json; original body geometry, frame map, and four cameras remain required"
+    },
+    {
+      "name": "ego_position",
+      "mandatory": true,
+      "requirement": "first body entry of both vehicles and prior-stop order",
+      "source": "vehicle_signal_history.jsonl and junction_context.json; original body geometry, frame map, and four cameras remain required"
+    },
+    {
+      "name": "other_speed",
+      "mandatory": true,
+      "requirement": "vehicles already within intersection at ego entry",
+      "source": "vehicle_signal_history.jsonl and junction_context.json; original body geometry, frame map, and four cameras remain required"
+    },
+    {
+      "name": "ego_speed",
+      "mandatory": true,
+      "requirement": "post-stop approach speed, clearance and cautious motion without invented legal cutoff",
+      "source": "vehicle_signal_history.jsonl and junction_context.json; original body geometry, frame map, and four cameras remain required"
+    }
   ],
   "sources": [
     {
@@ -480,5 +515,33 @@
       ],
       "evidence_or_gap": "Measured from retained original Native rows, frame map and junction context; actual physical source review pending"
     }
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "ego and other complete bodies, both marked stop references, and crossing area",
+        "interval": "approach through final intersection clearance"
+      },
+      {
+        "view": "approach",
+        "subject": "ego stop-line approach, governing signal head and other vehicle",
+        "interval": "approach, halt, release and entry"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "both stop boundaries, other vehicle occupancy and ego entry",
+        "interval": "both vehicle approaches through clearance"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "ego forward view of signal head, stop paint and approaching traffic",
+        "interval": "entire capture"
+      }
+    ],
+    "physical_visibility_review": "pending original Native source pixels"
+  }
 }

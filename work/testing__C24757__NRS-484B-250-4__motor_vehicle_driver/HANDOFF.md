@@ -167,3 +167,9 @@ Command: `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C24757__N
 Status remains `partial`: canonical shared local integration and actual Native source review have not passed. Diagnostic fixture classification does not establish that a local Native run realizes the planned stop lines, signal heads, vehicle ordering, or legal outcome. The shared exact GPU queue and integration proof remain incomplete.
 
 Full batch strict gate was reattempted 2026-11-21 but yielded no output before interrupt (exit 130); scoped complete and direct C24757 validators above are the completed CPU results.
+
+## 2026-11-21 current CPU readiness
+
+Status is now **ready** / `delivery_prepared`. The exact `runner.py` entrypoint and three fallback construction hashes were rebound and all affected primary/fallback exact offline, compatibility and recorded-only saved-processing proofs passed. Six physical source-shaped classifier/lifecycle cases passed; positive delivery diagnostic passed software checks while retaining physical acceptance `false`, and the sealed-source negative rejected as expected. A materialized unittest passed. Current execution manifest, package compatibility, semantic and delivery validators passed, followed by `worker_check.py --assignment testing__C24757__NRS-484B-250-4__motor_vehicle_driver --complete` (exit 0). `result.json` binds the current proof receipts and records negative checks separately. Actual Native motion, pixels and legal judgment remain unverified for the GPU operator. Batch strict delivery readiness has not passed. No frozen input, runtime, batch or Git action was taken.
+
+2026-11-21 verification: `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C24757__NRS-484B-250-4__motor_vehicle_driver --complete --require-delivery-ready` exited 0 with `static_checks_passed: true`. This is assignment-scoped CPU delivery readiness, not a batch or Native acceptance claim.
