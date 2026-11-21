@@ -20,7 +20,7 @@ def sha(path):
 def run(suffix, kind):
     if suffix not in ('false', 'true'):
         raise ValueError('Unknown selected case')
-    entry = next(e for e in json.loads((HERE / 'selected-proof-manifest.json').read_text())['cases']
+    entry = next(e for e in json.loads((HERE / 'control-proof-manifest.json').read_text())['cases']
                  if e['case_id'].endswith('__' + suffix))
     case_id = entry['case_id']
     base = {'case_id': case_id, 'construction_sha256': entry['construction_sha256'],
