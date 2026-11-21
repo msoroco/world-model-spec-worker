@@ -29,8 +29,16 @@ def delivery(case,negative):
  for name in ('native_samples.jsonl','video_frames.jsonl','road_geometry.json','trace.jsonl','capture/evidence.jsonl'):
   item=source.get(name)
   if item is None or sha(HERE.parent.parent/item['source'])!=item['sha256']:raise ValueError('Retained source hash differs: '+name)
- proof=read(HERE/f'v2-proof-{l}-primary.json');report=read(HERE/f'v2-report-{l}-primary.json');decode=read(HERE/f'v2-decode-{l}-primary.json')
- if proof.get('construction_sha256')!=e['construction_sha256'] or proof.get('case_id')!=case or proof.get('passed') is not True:raise ValueError('Selected compatibility differs')
+ proof_path=HERE/e['compatibility']['receipt']
+ proof=read(proof_path)
+ report_path=HERE/f'update162-{l}-primary-report.json'
+ report=read(report_path)
+ decode=read(HERE/f'update162-{l}-primary-decode.json')
+ if (sha(proof_path)!=e['compatibility']['sha256'] or
+     proof.get('construction_sha256')!=e['construction_sha256'] or
+     proof.get('case_id')!=case or proof.get('passed') is not True or
+     proof.get('analysis_report_sha256')!=sha(report_path)):
+  raise ValueError('Selected compatibility differs')
  if proof['fixture_manifest']['native_samples.jsonl']!=sha(rows_path):raise ValueError('Native source differs from compatibility receipt')
  if {name+'.mkv' for name in NAMES}-set(proof['fixture_manifest']):raise ValueError('Four source cameras missing')
  if decode.get('passed') is not True or decode.get('frames')!=480:raise ValueError('Full video decode missing')
