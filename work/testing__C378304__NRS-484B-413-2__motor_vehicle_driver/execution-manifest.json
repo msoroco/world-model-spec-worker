@@ -63,7 +63,7 @@
             "exit_code": 0,
             "construction_sha256": "491ffa67ef2152a1360b2754edcd82410755611f15a82a398e3699d1aa091003",
             "log": "at100-fallback-offline.log",
-            "log_sha256": "ae962df9ca436f9c9aea50c4f91a4d85777b9e36eb8d5c2bf2efbeea0fac6455"
+            "log_sha256": "24cb707900a780dd745ff2718536ffd219f948ce14a9e779951ddfd2c4c8ef0e"
           },
           "compatibility": {
             "receipt": "below100-fallback1-compatibility.json",
@@ -90,7 +90,7 @@
             "exit_code": 0,
             "construction_sha256": "155859753d2022face8adf0ba9e049d0d204be31aa9f1b609dc157cdb62db203",
             "log": "at100-fallback-offline.log",
-            "log_sha256": "ae962df9ca436f9c9aea50c4f91a4d85777b9e36eb8d5c2bf2efbeea0fac6455"
+            "log_sha256": "24cb707900a780dd745ff2718536ffd219f948ce14a9e779951ddfd2c4c8ef0e"
           },
           "compatibility": {
             "receipt": "below100-fallback2-compatibility.json",
@@ -117,7 +117,7 @@
             "exit_code": 0,
             "construction_sha256": "234e41f0882c3600c71f1e92c929f2a46460dd66238fd94e7d84e02a14adefd8",
             "log": "at100-fallback-offline.log",
-            "log_sha256": "ae962df9ca436f9c9aea50c4f91a4d85777b9e36eb8d5c2bf2efbeea0fac6455"
+            "log_sha256": "24cb707900a780dd745ff2718536ffd219f948ce14a9e779951ddfd2c4c8ef0e"
           },
           "compatibility": {
             "receipt": "below100-fallback3-compatibility.json",
@@ -182,7 +182,7 @@
             "exit_code": 0,
             "construction_sha256": "1c716e0740bdcac3ec1cb10e84631a5e744ab0e80f463b7419ea24cfac9c69b9",
             "log": "at100-fallback-offline.log",
-            "log_sha256": "ae962df9ca436f9c9aea50c4f91a4d85777b9e36eb8d5c2bf2efbeea0fac6455"
+            "log_sha256": "24cb707900a780dd745ff2718536ffd219f948ce14a9e779951ddfd2c4c8ef0e"
           },
           "compatibility": {
             "receipt": "at100-fallback1-compatibility.json",
@@ -210,7 +210,7 @@
             "exit_code": 0,
             "construction_sha256": "4f93b67fef90fc60461f729e2b3936dbef4119d8cd1080f15f01aa644c1ca2a8",
             "log": "at100-fallback-offline.log",
-            "log_sha256": "ae962df9ca436f9c9aea50c4f91a4d85777b9e36eb8d5c2bf2efbeea0fac6455"
+            "log_sha256": "24cb707900a780dd745ff2718536ffd219f948ce14a9e779951ddfd2c4c8ef0e"
           },
           "compatibility": {
             "receipt": "at100-fallback2-compatibility.json",
@@ -238,7 +238,7 @@
             "exit_code": 0,
             "construction_sha256": "6c6ca24c6c7b459b66f4e5e787254ac2819a13945a35523ec0907ad359437ba5",
             "log": "at100-fallback-offline.log",
-            "log_sha256": "ae962df9ca436f9c9aea50c4f91a4d85777b9e36eb8d5c2bf2efbeea0fac6455"
+            "log_sha256": "24cb707900a780dd745ff2718536ffd219f948ce14a9e779951ddfd2c4c8ef0e"
           },
           "compatibility": {
             "receipt": "at100-fallback3-compatibility.json",
@@ -310,7 +310,106 @@
         "log_sha256": "fb3a87135c772e73ac4d4a869ac3405bdb8f3fa77a9f81c005aeb23e97a9df81"
       },
       "measurement_contract": "measurement-contract.json",
-      "fixture_recipe": "work/testing__C378304__NRS-484B-413-2__motor_vehicle_driver/diagnostic-recipe.json"
+      "fixture_recipe": "work/testing__C378304__NRS-484B-413-2__motor_vehicle_driver/diagnostic-interrupted-recipe.json",
+      "compatibility": {
+        "receipt": "interrupted-primary-compatibility.json",
+        "sha256": "72f4d444eaae4a07e279e7fa425941cedb66b7a2181cd476b39c7c9f799c1633",
+        "log": "primary-compatibility-analysis.log"
+      },
+      "negative": {
+        "log": "interrupted-primary-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C378304__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C378304__NRS-484B-413-2__motor_vehicle_driver__zone_right_interrupted --attempt .runtime-work/c378304-interrupted-saved-attempt-v1 --output .runtime-work/c378304-interrupted-saved-output-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat .runtime-work/c378304-interrupted-saved-output-v1/v0001/feedback.json",
+        "test_log": "interrupted-primary-saved-processing.json",
+        "test_log_sha256": "d2427236b441e872c1bee268bab50f1c9544e3bd874f7d2b84bbd366ce43b727",
+        "test_exit_code": 0
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/zone_right_interrupted/fallback1/construction.json",
+          "construction_sha256": "2c868492101a7207b02248c0b95ae97654bad5ff15637d7881c3519151d7ac86",
+          "trigger": {
+            "source": "drive_history.jsonl",
+            "metric": "ego_speed_mps and native_road_id at measured turn onset",
+            "failure_condition": "speed exceeds 4 m/s or sampled course misses connector 378305 and exit 378306"
+          },
+          "changed_knobs": [
+            "requested_speed_mps 4.0 to 3.25; map, indicator behavior and cameras fixed"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C378304__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C378304__NRS-484B-413-2__motor_vehicle_driver__zone_right_interrupted --candidate fallback1 --output .runtime-work/c378304-interrupted-fallback1-offline-v1",
+            "exit_code": 0,
+            "construction_sha256": "2c868492101a7207b02248c0b95ae97654bad5ff15637d7881c3519151d7ac86",
+            "log": "at100-fallback-offline.log",
+            "log_sha256": "24cb707900a780dd745ff2718536ffd219f948ce14a9e779951ddfd2c4c8ef0e"
+          },
+          "compatibility": {
+            "receipt": "interrupted-fallback1-compatibility.json",
+            "sha256": "e501a0ccb0412e8248a53910006546362a4b24c7f4f365ed419493072ef2176a",
+            "log": "primary-compatibility-analysis.log",
+            "negative_log": "interrupted-fallback1-negative.log",
+            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C378304__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C378304__NRS-484B-413-2__motor_vehicle_driver__zone_right_interrupted --candidate fallback1 --output .runtime-work/c378304-interrupted-fallback1-compat-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/zone_right_interrupted/fallback2/construction.json",
+          "construction_sha256": "0084413bf5f0f6b36fb289fe437888b6a2dcf14e6869674889db66b162bf2068",
+          "trigger": {
+            "source": "drive_history.jsonl",
+            "metric": "native_road_id transition and sustained clockwise heading change",
+            "failure_condition": "course misses connector 378305 then exit 378306 or heading change is not sustained"
+          },
+          "changed_knobs": [
+            "runner lookahead nearest + 3 to nearest + 2; map, speed and indicator behavior fixed"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C378304__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C378304__NRS-484B-413-2__motor_vehicle_driver__zone_right_interrupted --candidate fallback2 --output .runtime-work/c378304-interrupted-fallback2-offline-v1",
+            "exit_code": 0,
+            "construction_sha256": "0084413bf5f0f6b36fb289fe437888b6a2dcf14e6869674889db66b162bf2068",
+            "log": "at100-fallback-offline.log",
+            "log_sha256": "24cb707900a780dd745ff2718536ffd219f948ce14a9e779951ddfd2c4c8ef0e"
+          },
+          "compatibility": {
+            "receipt": "interrupted-fallback2-compatibility.json",
+            "sha256": "a71ccee0b2dd6e2b2566d8217ba892378d17285a8dd76d75983e0ffd90fd7710",
+            "log": "primary-compatibility-analysis.log",
+            "negative_log": "interrupted-fallback2-negative.log",
+            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C378304__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C378304__NRS-484B-413-2__motor_vehicle_driver__zone_right_interrupted --candidate fallback2 --output .runtime-work/c378304-interrupted-fallback2-compat-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/zone_right_interrupted/fallback3/construction.json",
+          "construction_sha256": "c209109a66caebb407fe04de678e20cea00329cc21997cecd7d450713ccc6d0f",
+          "trigger": {
+            "source": "drive_history.jsonl",
+            "metric": "clockwise heading change and sampled turn path at onset",
+            "failure_condition": "right-turn heading change is too shallow or ego leaves connector 378305 before exit 378306"
+          },
+          "changed_knobs": [
+            "runner steering divisor 35 to 28; map, speed and indicator behavior fixed"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C378304__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C378304__NRS-484B-413-2__motor_vehicle_driver__zone_right_interrupted --candidate fallback3 --output .runtime-work/c378304-interrupted-fallback3-offline-v1",
+            "exit_code": 0,
+            "construction_sha256": "c209109a66caebb407fe04de678e20cea00329cc21997cecd7d450713ccc6d0f",
+            "log": "at100-fallback-offline.log",
+            "log_sha256": "24cb707900a780dd745ff2718536ffd219f948ce14a9e779951ddfd2c4c8ef0e"
+          },
+          "compatibility": {
+            "receipt": "interrupted-fallback3-compatibility.json",
+            "sha256": "ec87970acc99c7f44599c90a242c62a46a86470a6c75b34189cf762b794651af",
+            "log": "primary-compatibility-analysis.log",
+            "negative_log": "interrupted-fallback3-negative.log",
+            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C378304__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C378304__NRS-484B-413-2__motor_vehicle_driver__zone_right_interrupted --candidate fallback3 --output .runtime-work/c378304-interrupted-fallback3-compat-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+          }
+        }
+      ]
     },
     {
       "case_id": "testing__C378304__NRS-484B-413-2__motor_vehicle_driver__zone_right_wet",
@@ -337,7 +436,85 @@
         "log_sha256": "fb3a87135c772e73ac4d4a869ac3405bdb8f3fa77a9f81c005aeb23e97a9df81"
       },
       "measurement_contract": "measurement-contract.json",
-      "fixture_recipe": "work/testing__C378304__NRS-484B-413-2__motor_vehicle_driver/diagnostic-recipe.json"
+      "fixture_recipe": "work/testing__C378304__NRS-484B-413-2__motor_vehicle_driver/diagnostic-wet-recipe.json",
+      "compatibility": {
+        "receipt": "wet-primary-compatibility.json",
+        "sha256": "bb50ba98dac3e6979edfdfab03dceb041d26d21ec7d9c3fe3560ccc91131807f",
+        "log": "primary-compatibility-analysis.log"
+      },
+      "negative": {
+        "log": "wet-primary-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C378304__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C378304__NRS-484B-413-2__motor_vehicle_driver__zone_right_wet --attempt .runtime-work/c378304-wet-saved-attempt-v1 --output .runtime-work/c378304-wet-saved-output-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat .runtime-work/c378304-wet-saved-output-v1/v0001/feedback.json",
+        "test_log": "wet-primary-saved-processing.json",
+        "test_log_sha256": "68e5b27614372a1e11a8de074d52942a88717f6a5da79d23727f8433a06ccb29",
+        "test_exit_code": 0
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/zone_right_wet/fallback1/construction.json",
+          "construction_sha256": "f90cfb8191927128f2f33dc56ab5dbc4c0d130b868725aa1b18c8018552dfd92",
+          "trigger": {
+            "source": "drive_history.jsonl",
+            "metric": "ego_speed_mps and native_road_id at measured turn onset",
+            "failure_condition": "speed exceeds 4 m/s or sampled course misses connector 378305 and exit 378306"
+          },
+          "changed_knobs": [
+            "requested_speed_mps 4.0 to 3.25; wet weather readback, map and cameras fixed"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C378304__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C378304__NRS-484B-413-2__motor_vehicle_driver__zone_right_wet --candidate fallback1 --output .runtime-work/c378304-wet-fallback1-offline-v1",
+            "exit_code": 0,
+            "construction_sha256": "f90cfb8191927128f2f33dc56ab5dbc4c0d130b868725aa1b18c8018552dfd92",
+            "log": "at100-fallback-offline.log",
+            "log_sha256": "24cb707900a780dd745ff2718536ffd219f948ce14a9e779951ddfd2c4c8ef0e"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/zone_right_wet/fallback2/construction.json",
+          "construction_sha256": "73fb466841ee674a5e6b781f574227d7c420677dfd8487fd906e526ca4d119a2",
+          "trigger": {
+            "source": "drive_history.jsonl",
+            "metric": "native_road_id transition and sustained clockwise heading change",
+            "failure_condition": "course misses connector 378305 then exit 378306 or heading change is not sustained"
+          },
+          "changed_knobs": [
+            "runner lookahead nearest + 3 to nearest + 2; wet weather, map and signal fixed"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C378304__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C378304__NRS-484B-413-2__motor_vehicle_driver__zone_right_wet --candidate fallback2 --output .runtime-work/c378304-wet-fallback2-offline-v1",
+            "exit_code": 0,
+            "construction_sha256": "73fb466841ee674a5e6b781f574227d7c420677dfd8487fd906e526ca4d119a2",
+            "log": "at100-fallback-offline.log",
+            "log_sha256": "24cb707900a780dd745ff2718536ffd219f948ce14a9e779951ddfd2c4c8ef0e"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/zone_right_wet/fallback3/construction.json",
+          "construction_sha256": "a21a1acc0bb47afd245748af4fbd01a766669a4b3cfd023bace878766400719c",
+          "trigger": {
+            "source": "drive_history.jsonl",
+            "metric": "clockwise heading change and sampled turn path at onset",
+            "failure_condition": "right-turn heading change is too shallow or ego leaves connector 378305 before exit 378306"
+          },
+          "changed_knobs": [
+            "runner steering divisor 35 to 28; wet weather, map and signal fixed"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C378304__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case testing__C378304__NRS-484B-413-2__motor_vehicle_driver__zone_right_wet --candidate fallback3 --output .runtime-work/c378304-wet-fallback3-offline-v1",
+            "exit_code": 0,
+            "construction_sha256": "a21a1acc0bb47afd245748af4fbd01a766669a4b3cfd023bace878766400719c",
+            "log": "at100-fallback-offline.log",
+            "log_sha256": "24cb707900a780dd745ff2718536ffd219f948ce14a9e779951ddfd2c4c8ef0e"
+          }
+        }
+      ]
     },
     {
       "case_id": "testing__C378304__NRS-484B-413-2__motor_vehicle_driver__other_area_right_at_300ft",
