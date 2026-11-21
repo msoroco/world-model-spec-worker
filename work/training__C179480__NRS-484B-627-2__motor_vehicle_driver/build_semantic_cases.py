@@ -3,6 +3,9 @@ import hashlib
 import json
 from pathlib import Path
 
+from audit_control_cell import inspect_inventory
+from source_measurement import analyze_control, load_rows
+
 HERE = Path(__file__).resolve().parent
 PROPOSALS = HERE / 'proposals'
 CASES = ('reference', 'contrast', 'safe_operation_stop', 'law_required_stop')
@@ -38,6 +41,18 @@ def assignments(name, binding):
 
 
 def build():
+    # The red control is supplemental: the frozen cell still requires a
+    # source-visible other vehicle throughout this proposed case.
+    law_source = HERE/'fixtures/law_required_stop-sources'
+    light_id = read(law_source/'native-map-readback.json')['surveyed_governing_traffic_light_id']
+    actor_source = law_source/'native-actors.jsonl'
+    frame_map = law_source/'video_frames.jsonl'
+    inspect_inventory(load_rows(actor_source, frame_map), light_id)
+    control = analyze_control(actor_source, frame_map,
+                              expected_control_id=light_id,
+                              source_kind='synthetic_native_sample')
+    if not control['associated_red_frames']:
+        raise ValueError('Law-required draft has no source-associated red frames')
     binding = read(PROPOSALS/'bindings.json')
     template = read(PROPOSALS/'template.json')
     draft = read(PROPOSALS/'cases.json')
