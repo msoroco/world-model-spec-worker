@@ -161,3 +161,5 @@ To stay within 10,200 direct files, 13 C295149 missing-source negative transcrip
 ## 2026-11-21 07:01 UTC capacity-preserving diagnostic source move
 
 The unbound `diagnostic-official-device-inactive.json` and `diagnostic-staggered-left-turns.json` were preserved byte-for-byte, with SHA256 and compressed contents, in `work/_shared/c295149-physical-proof-capacity-archive.json` (SHA256 `ca7ec5553afe020fb452cfa8c577d6390d9ccf58c900033a305f3f8422f55b0a`). Restore these direct source packets before binding their exact C329654 compatibility proofs. This is a worker-owned packaging action, not a capability blocker. C329654 remains partial.
+
+Final aggregate verification (2026-11-21 07:12 UTC): `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --complete --require-delivery-ready` exited 1 after full static traversal at `Preparation acceptance failed: partial/missing packages remain`. The 51 returned results remain 49 `ready`, two `partial` (C295149 and C329654); no package was promoted by this check. The physical-capacity archive has 41 entries, all decompressed and SHA256/length verified. Return count 10197/10,200; largest 2094837 bytes under 2 MiB.
