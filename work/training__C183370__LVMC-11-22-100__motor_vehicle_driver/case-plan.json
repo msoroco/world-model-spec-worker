@@ -9,7 +9,8 @@
     "Barrier",
     "Warning sign",
     "Highway closed sign",
-    "Paving employee exception"
+    "Paving employee exception",
+    "Newly laid pavement alternative"
   ],
   "source_law_text": "No person shall ride or drive any horse or vehicle over or across any pavement newly laid or repaired across or around which there has been placed a barrier, or at or near which there is a person or a sign warning persons against riding or driving over such pavement, or a sign stating that the highway is closed. The provisions of this Section shall not apply to the employees actually engaged in the paving or repair of such pavement.",
   "source_law_citation": "LVMC 11.22.100",
@@ -29,7 +30,9 @@
         "training__C183370__LVMC-11-22-100__motor_vehicle_driver__highway_closed_sign_crossing",
         "training__C183370__LVMC-11-22-100__motor_vehicle_driver__highway_closed_sign_avoidance",
         "training__C183370__LVMC-11-22-100__motor_vehicle_driver__employee_exception_employee_crossing",
-        "training__C183370__LVMC-11-22-100__motor_vehicle_driver__employee_exception_nonemployee_crossing"
+        "training__C183370__LVMC-11-22-100__motor_vehicle_driver__employee_exception_nonemployee_crossing",
+        "training__C183370__LVMC-11-22-100__motor_vehicle_driver__newly_laid_crossing",
+        "training__C183370__LVMC-11-22-100__motor_vehicle_driver__newly_laid_avoidance"
       ]
     },
     {
@@ -49,7 +52,9 @@
       "evidence_or_gap": "Exact statute: Warning person; no measured Native evidence or source-hashed equivalence receipt yet.",
       "case_ids": [
         "training__C183370__LVMC-11-22-100__motor_vehicle_driver__reference",
-        "training__C183370__LVMC-11-22-100__motor_vehicle_driver__contrast"
+        "training__C183370__LVMC-11-22-100__motor_vehicle_driver__contrast",
+        "training__C183370__LVMC-11-22-100__motor_vehicle_driver__newly_laid_crossing",
+        "training__C183370__LVMC-11-22-100__motor_vehicle_driver__newly_laid_avoidance"
       ]
     }
   ],
@@ -213,6 +218,38 @@
         "text-0",
         "text-1"
       ]
+    },
+    {
+      "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__newly_laid_crossing",
+      "target_law_id": "LVMC-11-22-100",
+      "planning_status": "draft_exact_cpu_preparation_unverified",
+      "target_type": "attempt",
+      "comparison_variable": "requested_pavement_crossing",
+      "comparison_unit": "bool",
+      "requested_setting": "crossing",
+      "recorded_value": null,
+      "case_description": "source-surveyed newly laid pavement and fixed warning-person crossing versus avoidance",
+      "fixed_context": "Hold C183370 cell, surveyed laid-surface polygon, warning person and act, surface history, operator exception status, weather, cameras and noncompared controller settings fixed; verify from original sources.",
+      "source_topic_ids": [
+        "text-0",
+        "text-1"
+      ]
+    },
+    {
+      "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__newly_laid_avoidance",
+      "target_law_id": "LVMC-11-22-100",
+      "planning_status": "draft_exact_cpu_preparation_unverified",
+      "target_type": "attempt",
+      "comparison_variable": "requested_pavement_crossing",
+      "comparison_unit": "bool",
+      "requested_setting": "avoidance",
+      "recorded_value": null,
+      "case_description": "source-surveyed newly laid pavement and fixed warning-person crossing versus avoidance",
+      "fixed_context": "Hold C183370 cell, surveyed laid-surface polygon, warning person and act, surface history, operator exception status, weather, cameras and noncompared controller settings fixed; verify from original sources.",
+      "source_topic_ids": [
+        "text-0",
+        "text-1"
+      ]
     }
   ],
   "comparisons": [
@@ -316,6 +353,28 @@
         "camera and capture profile"
       ],
       "status": "planned_unverified"
+    },
+    {
+      "case_ids": [
+        "training__C183370__LVMC-11-22-100__motor_vehicle_driver__newly_laid_crossing",
+        "training__C183370__LVMC-11-22-100__motor_vehicle_driver__newly_laid_avoidance"
+      ],
+      "comparison_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__comparison_newly_laid",
+      "deliberate_differences": [
+        "requested_pavement_crossing"
+      ],
+      "fixed_conditions": [
+        "C183370 cell",
+        "motor vehicle actor",
+        "surveyed newly laid polygon",
+        "warning person and source-reviewed warning act",
+        "surface history",
+        "operator exception status",
+        "weather",
+        "camera/capture profile",
+        "noncompared controller settings"
+      ],
+      "status": "planned_unverified"
     }
   ],
   "observations": [
@@ -336,6 +395,12 @@
       "unit": "bool",
       "mandatory": true,
       "purpose": "drive over newly repaired pavement with person warning versus avoid"
+    },
+    {
+      "name": "newly_laid_footprint_contact",
+      "unit": "bool",
+      "mandatory": true,
+      "purpose": "Measured vehicle body contact with the surveyed laid-surface polygon; surface age and warning require independent source review"
     }
   ],
   "source_observation_mapping": {
@@ -438,7 +503,8 @@
     "No exact CARLA construction, four candidate variants, or offline feasibility proof exists for these case definitions.",
     "No positive/negative saved fixture, semantic stage validation, independent saved audit, or comparison audit exists.",
     "Historical membership is context only; no source-hashed accepted equivalence receipt was verified.",
-    "CARLA execution, physical realization, camera framing, and legal judgment remain unverified."
+    "CARLA execution, physical realization, camera framing, and legal judgment remain unverified.",
+    "Update138: newly laid pair has exact acquisition/finalizer drafts and offline proofs; compatibility, saved processing, independent acceptance and final manifest selection remain unproven."
   ],
   "selection_targets": [
     "full-train"
