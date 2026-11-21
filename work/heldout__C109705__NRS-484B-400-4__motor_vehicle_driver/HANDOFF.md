@@ -91,3 +91,8 @@ The following historical, inactive JSON receipts were preserved byte-for-byte in
 ## 2026-11-18 pristine saved reproof correction
 
 Earlier saved-processing receipts with `missing_evidence=true` are superseded. All 24 candidates were rematerialized from current constructions and untouched diagnostic fixture sources, then processed into fresh saved outputs. `saved-proofs.json` records `missing_evidence=false`, preserved original hashes and passed final video checks for all 24.
+
+## 2026-11-20 return-cap proof-log consolidation
+
+The older check log(s) named below were archived losslessly with original path, SHA256 and bytes in `work/_shared/c329654-combined-draft-archive.json`; their entries were removed from `result.json.tests` while current direct CPU test evidence remains. The assignment-scoped strict gate passed after the change. The archive preserves the historical passing output for review.
+Archived: `delivery-validation.log`; retained `cpu-tests.log` and `saved-proofs.json`.

@@ -89,3 +89,8 @@ The following historical, inactive JSON receipts were preserved byte-for-byte in
 Result-only historical log reconciliation, 2026-11-16: 2 exact UTF-8 logs were SHA-256-preserved in `work/_shared/prune-history-bundle-all.json.preserved_source_files` and removed from this package; matching obsolete `result.json.tests` claims were removed. Current manifest-bound proofs remain direct. Re-run the scoped strict gate before relying on ready status.
 
 2026-11-19 return-cap preservation: unreferenced historical `validate_semantic.py` is byte-preserved in `work/_shared/c147331-turn-return-cap-archive.json`; current semantic proposals and proofs remain direct. Restore and hash-check before reuse.
+
+## 2026-11-20 return-cap proof-log consolidation
+
+The older check log(s) named below were archived losslessly with original path, SHA256 and bytes in `work/_shared/c329654-combined-draft-archive.json`; their entries were removed from `result.json.tests` while current direct CPU test evidence remains. The assignment-scoped strict gate passed after the change. The archive preserves the historical passing output for review.
+Archived: `strict-gate.log`; retained `cpu-tests.log`.

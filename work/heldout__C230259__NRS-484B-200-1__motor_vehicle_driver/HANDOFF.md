@@ -140,3 +140,8 @@ The current adapter exposed source joins previously hidden by stale receipts: `p
 A new work-owned `physical_fixture.py` verifies current diagnostic road/trace/frame joins and source hashes, then emits explicitly synthetic complete/incomplete/missing outcomes. All 21 outcome fixtures and positive/out-of-order lifecycle checks pass; current provenance is `synthetic_fixture`. The seven current `right_half_delivery_audit.py` runs verify original source joins and full camera decodes. `acceptance_fixture.py` now binds the current decoded-video fingerprint separately from the original encoded-video SHA; all seven positive and stale-pixel negative audits pass. The 34 CPU unit tests, execution-manifest, semantic, compatibility and seven handoff validators pass. Historical overwritten receipts are backed up under ignored `.runtime-work/`.
 
 The exact first GPU command is in `result.json`. This CPU proof does not establish actual CARLA map suitability, vehicle motion, original camera pixels, legal roadway width, one-way authority, closure authority or exception applicability; those remain for Native delivery and independent review.
+
+## 2026-11-20 return-cap proof-log consolidation
+
+The older check log(s) named below were archived losslessly with original path, SHA256 and bytes in `work/_shared/c329654-combined-draft-archive.json`; their entries were removed from `result.json.tests` while current direct CPU test evidence remains. The assignment-scoped strict gate passed after the change. The archive preserves the historical passing output for review.
+Archived: `preflight.log`, `cpu-tests.log`; retained `cpu-tests-current.log`.
