@@ -3,6 +3,7 @@ import importlib.util
 import json
 import tempfile
 import unittest
+import sys
 from pathlib import Path
 
 
@@ -10,6 +11,8 @@ spec = importlib.util.spec_from_file_location(
     "native_site_contract", Path(__file__).resolve().parents[1] / "native_site_contract.py")
 site_contract = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(site_contract)
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+import native_runner
 
 
 def write_bound(root, name, value):
@@ -65,6 +68,40 @@ class SiteTests(unittest.TestCase):
             config["site_review"]["path"] = "../review.json"
             with self.assertRaisesRegex(ValueError, "escapes packet root"):
                 site_contract.validate_site(config, root)
+
+    def test_two_actor_four_camera_capture_plan(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            config = self.fixture(root)
+            config.update(cell_id="C24757", law_id="NRS-484B-250-4",
+                selected_case_id="testing__C24757__NRS-484B-250-4__motor_vehicle_driver__stop_line_other_prior",
+                required_atoms=[], rate_hz=20, duration_s=40,
+                physical_completion={"motion_source": "vehicle_signal_history.jsonl",
+                                     "body_key": "ego.body_vertices_xy_m",
+                                     "context_sources": ["junction_context.json"]},
+                actor_routes={"ego": {"spawn": [1, -1, 10.0], "target_xy_m": [[-15, 0], [15, 0]],
+                                       "release_frame": 50, "release_rule": "after_other_clear",
+                                       "target_speed_mps": 4.0},
+                              "other": {"spawn": [2, -1, 10.0], "target_xy_m": [[0, -15], [0, 15]],
+                                        "release_frame": 30, "release_rule": "scheduled",
+                                        "target_speed_mps": 4.0}},
+                cameras=[{"name": name, "width": size[0], "height": size[1],
+                          "fov_deg": 90, "pose": {"x": 0, "y": 0, "z": 10,
+                                                 "yaw": 0, "pitch": -20}}
+                         for name, size in native_runner.SIZES.items()])
+            receipt = native_runner.validate_capture_plan(config, root)
+            self.assertFalse(receipt["native_site_verified"])
+            config["cameras"][2]["width"] = 640
+            with self.assertRaisesRegex(ValueError, "dimensions"):
+                native_runner.validate_capture_plan(config, root)
+            config["cameras"][2]["width"] = 1280
+            config["actor_routes"]["other"]["spawn"] = [1, -1, 10.0]
+            with self.assertRaisesRegex(ValueError, "distinct Native approaches"):
+                native_runner.validate_capture_plan(config, root)
+            config["actor_routes"]["other"]["spawn"] = [2, -1, 10.0]
+            config["actor_routes"]["other"]["release_rule"] = "after_other_clear"
+            with self.assertRaisesRegex(ValueError, "Circular Native release"):
+                native_runner.validate_capture_plan(config, root)
 
 
 if __name__ == "__main__":

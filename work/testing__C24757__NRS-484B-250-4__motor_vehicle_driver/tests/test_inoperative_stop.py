@@ -184,10 +184,17 @@ class StopTests(unittest.TestCase):
             history.write_text("".join(json.dumps(row) + "\n" for row in rows))
             order = comparison_audit.audit_pair(left, right, "full_halt_order")
             self.assertTrue(order["observed_difference"])
-            self.assertFalse(order["left"]["value"] == order["right"]["value"])
+            self.assertEqual((order["left"]["value"], order["right"]["value"]),
+                             ("other_first", "ego_first"))
             self.assertFalse(order["legal_verdict_asserted"])
             with self.assertRaisesRegex(ValueError, "difference is absent"):
                 comparison_audit.audit_pair(left, left, "full_halt_order")
+            tied = [dict(row) for row in rows]
+            tied[1] = json.loads(json.dumps(rows[1]))
+            tied[1]["other"]["speed_mps"] = 0
+            history.write_text("".join(json.dumps(row) + "\n" for row in tied))
+            with self.assertRaisesRegex(ValueError, "Distinct observed full-halt times"):
+                comparison_audit.audit_pair(left, right, "full_halt_order")
             rows[1]["ego"]["speed_mps"] = 2
             rows[2]["ego"]["speed_mps"] = 0.1
             history.write_text("".join(json.dumps(row) + "\n" for row in rows))

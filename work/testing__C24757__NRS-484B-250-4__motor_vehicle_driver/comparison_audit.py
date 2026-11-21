@@ -32,17 +32,24 @@ def audit_pair(left, right, mode):
         if (not all(a["first_full_halt_before_or_at_selected_boundary"].values()) or
                 not all(b["first_full_halt_before_or_at_selected_boundary"].values())):
             raise ValueError("Both vehicles must have observed complete halts")
-        metric = "other_completed_stop_before_ego_observed"
+        def strict_order(report):
+            stops = report["first_full_halt_before_or_at_selected_boundary"]
+            ego_time, other_time = stops["ego"]["time_s"], stops["other"]["time_s"]
+            if ego_time == other_time:
+                raise ValueError("Distinct observed full-halt times required")
+            return "other_first" if other_time < ego_time else "ego_first"
+        left_value, right_value = strict_order(a), strict_order(b)
     elif mode == "ego_full_halt":
         metric = "ego_stopped_before_entry_observed"
         for report in (a, b):
             if not report["first_body_entry"]["ego"]:
                 raise ValueError("Ego entry observation required")
+        left_value, right_value = a[metric], b[metric]
     else:
         metric = "selected_stop_boundary"
         if not all(report["ego_stopped_before_entry_observed"] for report in (a, b)):
             raise ValueError("Boundary comparison requires observed full stops")
-    left_value, right_value = a[metric], b[metric]
+        left_value, right_value = a[metric], b[metric]
     if left_value == right_value:
         raise ValueError("Declared comparison difference is absent")
     return {"format": "worker-inoperative-signal-comparison-audit",
