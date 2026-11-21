@@ -21,7 +21,7 @@ def _source(root, name):
     return json.loads(data), hashlib.sha256(data).hexdigest()
 
 
-def compare(other_first_root, ego_first_root, expected_frames=1100):
+def compare(other_first_root, ego_first_root, expected_frames=900):
     """Require a controlled changed order; return measurements, never a verdict."""
     if type(expected_frames) is not int or expected_frames < 3:
         raise ValueError("Expected full frame count required")
@@ -31,6 +31,34 @@ def compare(other_first_root, ego_first_root, expected_frames=1100):
     right, right_sha = _source(ego_first_root, "junction_context.json")
     if any(left.get(key) != right.get(key) for key in FIXED):
         raise ValueError("Fixed stop-sign crossing context changed")
+    source_hashes = []
+    histories = []
+    mappings = []
+    configs = []
+    for root in (Path(other_first_root), Path(ego_first_root)):
+        names = ("crossing_history.jsonl", "video_frames.jsonl", "config.json")
+        if any(not (root / name).is_file() for name in names):
+            raise ValueError("Comparison lacks original source")
+        source_hashes.append({name: hashlib.sha256((root / name).read_bytes()).hexdigest()
+                              for name in names})
+        histories.append([json.loads(line) for line in (root / names[0]).read_text().splitlines()])
+        mappings.append([json.loads(line) for line in (root / names[1]).read_text().splitlines()])
+        configs.append(json.loads((root / names[2]).read_text()))
+    if (configs[0].get("cameras") != configs[1].get("cameras") or
+            any(config.get("frames") != expected_frames or config.get("rate_hz") != 20
+                for config in configs)):
+        raise ValueError("Fixed source cameras or duration changed")
+    if any(len(series) != expected_frames for series in histories + mappings):
+        raise ValueError("Incomplete original comparison sources")
+    for left_row, right_row, left_map, right_map in zip(
+            histories[0], histories[1], mappings[0], mappings[1]):
+        if (left_row["frame"], left_row["time_s"]) != (right_row["frame"], right_row["time_s"]) or \
+                left_map != right_map:
+            raise ValueError("Original frame/time or camera join changed")
+        if (left_row["native_stop_sign_id"] != right_row["native_stop_sign_id"] or
+                left_row["ego"]["body_vertices_xy_m"] != right_row["ego"]["body_vertices_xy_m"] or
+                left_row["ego"]["speed_mps"] != right_row["ego"]["speed_mps"]):
+            raise ValueError("Fixed ego motion or sign changed")
     if len(first["samples"]) != expected_frames or len(second["samples"]) != expected_frames:
         raise ValueError("Incomplete original frame history")
     left_times = [(row["frame"], row["time_s"]) for row in first["samples"]]
@@ -47,6 +75,7 @@ def compare(other_first_root, ego_first_root, expected_frames=1100):
     return {"format": "worker-stop-sign-entry-comparison",
             "expected_frames": expected_frames,
             "fixed_context_sha256": [left_sha, right_sha],
+            "original_source_sha256": source_hashes,
             "source_sha256": [first["sources"], second["sources"]],
             "other_first_entries": first["first_body_entry"],
             "ego_first_entries": second["first_body_entry"],

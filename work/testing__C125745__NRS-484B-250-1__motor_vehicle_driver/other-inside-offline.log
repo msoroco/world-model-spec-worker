@@ -93,3 +93,81 @@ OK
 Ran 1 test in 0.005s
 
 OK
+
+=== CONSOLIDATED semantic-validation.log ===
+{'stage_count': 10, 'selected_cases': 4, 'index_sha256': '677550185682b8a2ef0810cd60df50d55574f63d59a9377f3033a9204bda69b0'}
+
+=== CONSOLIDATED comparison-opposite-left-proof.log ===
+positive worker-stop-sign-opposite-left-comparison [{'ego': 333, 'other': 185}, {'ego': 333, 'other': 213}] 90.0
+negative changed-sign Fixed ego stop-sign crossing context changed
+negative missing-left-intent Opposing left-turn intention lacks source
+negative changed-ego-motion Fixed ego motion or sign changed
+audit_sha256 454ac23e6b2d8abbd31587b4f998038e3bfca197634ae4672627c7099d499bf8
+
+=== CONSOLIDATED opposite-left-offline.log ===
+=== primary ===
+{"assignment_id": "testing__C125745__NRS-484B-250-1__motor_vehicle_driver", "case_id": "testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_opposite_left", "planned_frames": 900, "rate_hz": 20, "source_cameras": ["overview", "approach", "reference_corner", "driver_reference"], "site_review_status": "synthetic_cpu_candidate", "cpu_check_passed": true, "carla_started": false, "physical_acceptance_claimed": false}
+.
+----------------------------------------------------------------------
+Ran 1 test in 0.007s
+
+OK
+
+=== fallback1 ===
+{"assignment_id": "testing__C125745__NRS-484B-250-1__motor_vehicle_driver", "case_id": "testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_opposite_left", "planned_frames": 900, "rate_hz": 20, "source_cameras": ["overview", "approach", "reference_corner", "driver_reference"], "site_review_status": "synthetic_cpu_candidate", "cpu_check_passed": true, "carla_started": false, "physical_acceptance_claimed": false}
+.
+----------------------------------------------------------------------
+Ran 1 test in 0.009s
+
+OK
+
+=== fallback2 ===
+{"assignment_id": "testing__C125745__NRS-484B-250-1__motor_vehicle_driver", "case_id": "testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_opposite_left", "planned_frames": 900, "rate_hz": 20, "source_cameras": ["overview", "approach", "reference_corner", "driver_reference"], "site_review_status": "synthetic_cpu_candidate", "cpu_check_passed": true, "carla_started": false, "physical_acceptance_claimed": false}
+.
+----------------------------------------------------------------------
+Ran 1 test in 0.016s
+
+OK
+
+=== fallback3 ===
+{"assignment_id": "testing__C125745__NRS-484B-250-1__motor_vehicle_driver", "case_id": "testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_opposite_left", "planned_frames": 900, "rate_hz": 20, "source_cameras": ["overview", "approach", "reference_corner", "driver_reference"], "site_review_status": "synthetic_cpu_candidate", "cpu_check_passed": true, "carla_started": false, "physical_acceptance_claimed": false}
+.
+----------------------------------------------------------------------
+Ran 1 test in 0.006s
+
+OK
+
+
+=== PHYSICAL OTHER FIRST SOURCE-BOUND CPU FIXTURES ===
+COMMAND .venv-cpu/bin/python work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/physical_motion_fixture.py --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_other_first --kind complete_motion --output work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/physical-other-first-complete_motion.json
+EXIT 0
+{"case_id": "testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_other_first", "diagnostic_fixture": true, "kind": "complete_motion", "physical_acceptance_claimed": false, "status": "met"}
+COMMAND .venv-cpu/bin/python work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/physical_motion_fixture.py --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_other_first --kind incomplete_motion --output work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/physical-other-first-incomplete_motion.json
+EXIT 0
+{"case_id": "testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_other_first", "diagnostic_fixture": true, "kind": "incomplete_motion", "physical_acceptance_claimed": false, "status": "not_met"}
+COMMAND .venv-cpu/bin/python work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/physical_motion_fixture.py --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_other_first --kind missing_evidence --output work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/physical-other-first-missing_evidence.json
+EXIT 0
+{"case_id": "testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_other_first", "diagnostic_fixture": true, "kind": "missing_evidence", "physical_acceptance_claimed": false, "status": "unverified"}
+COMMAND .venv-cpu/bin/python work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/physical_motion_fixture.py --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_other_first --kind lifecycle
+EXIT 0
+{"case_id": "testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_other_first", "diagnostic_fixture": true, "events": ["capture_finished", "encoders_closed", "restoration_verified", "native_exit", "owner_released", "saved_processing_started"], "failed_encoder_rejected": true, "premature_release_rejected": true, "saved_processing_log_sha256": "72b18f9b3a32f9baca75cf3c0e3f39cc045888ce5d7e6891d6ec6de1e9a1a013"}
+
+=== CURRENT 900-FRAME prove_ego_comparison.py ===
+COMMAND PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python .runtime-work/c125745-1-opposite-left/prove_ego_comparison.py
+EXIT 0
+positive worker-stop-sign-entry-comparison {'ego': {'frame': 333, 'time_s': 12.65}, 'other': {'frame': 185, 'time_s': 5.25}} {'ego': {'frame': 333, 'time_s': 12.65}, 'other': {'frame': 485, 'time_s': 20.25}}
+negative changed-sign Identified governing stop sign not observed
+negative changed-ego-motion Fixed ego motion or sign changed
+negative changed-cameras Fixed source cameras or duration changed
+negative incomplete-history Incomplete crossing/frame history
+negative wrong-order Ego-first source did not measure requested order
+audit_sha256 6f0471759f627d94302ee25731dfbf8958de21e09586aa5114e6bd72acfa2587
+
+=== CURRENT 900-FRAME prove_comparison.py ===
+COMMAND PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python .runtime-work/c125745-1-opposite-left/prove_comparison.py
+EXIT 0
+positive worker-stop-sign-opposite-left-comparison [{'ego': 333, 'other': 185}, {'ego': 333, 'other': 213}] 90.0
+negative changed-sign Fixed ego stop-sign crossing context changed
+negative missing-left-intent Opposing left-turn intention lacks source
+negative changed-ego-motion Fixed ego motion or sign changed
+audit_sha256 6f0471759f627d94302ee25731dfbf8958de21e09586aa5114e6bd72acfa2587
