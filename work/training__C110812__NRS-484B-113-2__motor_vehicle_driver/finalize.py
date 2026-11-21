@@ -203,7 +203,7 @@ def finalize(attempt,output):
       'realized_observables':{'reverse_corner_heading_change':
           {'value':actual['max_reverse_heading_change_deg'],'unit':'deg',
            'method':'maximum sampled backing heading change while excluding crosswalk occupancy',
-           'time_window':'original 24 s / 480 frame attempt',
+           'time_window':'original 42 s / 840 frame attempt',
            'statistic':'maximum sampled heading change','reference':'native_samples.jsonl'}},
       'provenance_kind':'native','accepted':False,'legal_verdict_claimed':False}
     from worker_exchange.native_output import validate_result

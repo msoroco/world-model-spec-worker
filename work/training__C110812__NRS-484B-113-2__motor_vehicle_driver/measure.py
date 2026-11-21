@@ -8,7 +8,7 @@ def measure(source:Path,expected_sha256:str):
     raw=source.read_bytes()
     if hashlib.sha256(raw).hexdigest()!=expected_sha256:raise ValueError('Saved Native source hash differs')
     rows=[json.loads(line) for line in raw.splitlines()]
-    if len(rows)!=480:raise ValueError('Exact 480-frame saved path required')
+    if len(rows)!=840:raise ValueError('Exact 840-frame saved path required')
     prior_frame=None;prior_time=None;prior_pose=None;start_heading=None
     backing=0;turning=0;max_heading=0;corner_events=[];crosswalk_events=0;max_crosswalk_overlap=0
     for index,row in enumerate(rows):

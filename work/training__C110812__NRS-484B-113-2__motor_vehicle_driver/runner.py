@@ -45,7 +45,7 @@ def check(config):
     candidate = config["candidate_id"]
     if suffix not in ("condition_a","condition_b") or candidate not in ("primary","fallback1","fallback2","fallback3"):
         raise ValueError("Unknown selected case or construction")
-    if config["duration_s"] != 24 or config["rate_hz"] != 20:
+    if config["duration_s"] != 42 or config["rate_hz"] != 20:
         raise ValueError("Capture rate/duration differs from plan")
     if config['case_id'].split('__')[-1] != {'condition_a':'false','condition_b':'true'}[suffix]:
         raise ValueError("Case identity differs from route")
