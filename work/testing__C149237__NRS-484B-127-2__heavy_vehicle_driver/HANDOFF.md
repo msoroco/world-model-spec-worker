@@ -389,3 +389,5 @@ Return cap checkpoint: 10 unbound historical top-level logs and former test rows
 ## 2026-11-20 return-cap consolidation
 
 Seven historical root builder/proof scripts with no JSON or Python import references were preserved byte-for-byte with path and SHA-256 in `work/_shared/archived-unbound-negative-logs-20261119.json`: `author_semantics.py`, `complete_case_drafts.py`, `prove_full_converter.py`, `reprove_root_v17.py`, `build_primary_bundle.py`, `prove_canonical_sweep.py`, and `build_diagnostic.py`. Restore their exact bytes from the archive before any future reproof that needs a builder. The archive round-trip hashes verify, portable import validation passes, and this assignment’s scoped `worker_check.py --complete` passes. Its partial delivery status is unchanged.
+
+2026-11-20 file-budget maintenance: consolidated 20 identical zero-byte compatibility analysis logs into `shared-empty-analysis.log` and rebound manifest/result references. Receipt bytes and negative logs were preserved.
