@@ -69,16 +69,23 @@ def source_row(snapshot, ego, waypoint, light_state_type):
     frame = snapshot.frame
     time_s = snapshot.timestamp.elapsed_seconds
     location = ego.get_transform().location
+    yaw = ego.get_transform().rotation.yaw
     velocity = ego.get_velocity()
     light = ego.get_light_state()
+    body = [[vertex.x, vertex.y] for vertex in
+            ego.bounding_box.get_world_vertices(ego.get_transform())]
     if (type(frame) is not int or not _finite(time_s)
-            or not all(_finite(v) for v in (location.x, location.y, velocity.x,
-                                            velocity.y, velocity.z))):
+            or not all(_finite(v) for v in (location.x, location.y, yaw, velocity.x,
+                                            velocity.y, velocity.z))
+            or type(waypoint.road_id) is not int or type(waypoint.lane_id) is not int
+            or len(body) < 4 or any(not all(_finite(value) for value in point)
+                                     for point in body)):
         raise ValueError("Incomplete Native right-turn source tick")
     return {"frame": frame, "time_s": time_s,
             "ego_position_xy_m": [location.x, location.y],
             "ego_speed_mps": math.sqrt(velocity.x**2 + velocity.y**2 + velocity.z**2),
-            "ego_heading_deg": ego.get_transform().rotation.yaw,
+            "ego_heading_deg": yaw,
+            "ego_body_vertices_xy_m": body,
             "native_road_id": waypoint.road_id, "native_lane_id": waypoint.lane_id,
             "right_indicator": bool(light & light_state_type.RightBlinker),
             "ego_light_mask": int(light)}

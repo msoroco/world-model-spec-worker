@@ -3038,3 +3038,19 @@ Added `delivery_audit.py` for C24757. It binds an exact-case source seal, Native
 Status remains `partial` / `implementation_checkpoint`. The independent full-decode diagnostic fixture and positive/negative `delivery_acceptance` receipts have not been produced. Canonical local integration and original Native physical source review remain. No delivery or legal acceptance is claimed. No frozen inputs, runtime, batch.json or Git action was taken.
 
 The unscoped strict `worker_check.py --complete --require-delivery-ready` was attempted after this checkpoint; it produced no output for over two minutes and was interrupted (exit 130). This is not a pass. The latest completed caller output still rejects generated `runtime/runs/scenario_pipeline/inputs/shared/manifest.json` as unapproved; frozen runtime was not edited.
+
+## 2026-11-20 C24757 delivery and C378304 construction continuation
+
+C24757: all six full-length diagnostic independent delivery audits and six missing-source negatives passed. Exact `delivery_acceptance` contracts validate; the assignment scoped static complete check and pinned preflight pass. Diagnostic audits remain non-accepting, so C24757 stays partial pending canonical local integration and actual Native capture review. See its handoff for hashes and commands.
+
+C378304: authored an exact primary config and six-case Native right-indicator/readback policy with original source-row capture. Ten CPU tests and the non-complete assignment check pass. Native runner, saved processing and exact delivery proofs remain worker-owned. C149237 file-budget maintenance consolidated 20 identical zero-byte analysis logs into one shared log; its scoped static complete check passes. The work tree is below the 8,600-file cap. No frozen inputs, runtime, batch.json or Git action was taken.
+
+### Saved-only finalizer extension
+
+Added `saved_finalizer.py`. It checks exact C378304 identity and required retained sources, derives five observation channels from original drive rows, joins trace and video-frame identities, preserves source hashes and capture evidence, calls the pinned physical-completion checker, and writes an analysis with legal and physical acceptance false. A seven-sample synthetic fixture exercises this saved path, including indicator, path-distance and result output; it does not decode Native camera video or establish physical motion. The full C378304 CPU suite now passes 11 tests; `cpu-tests.log` SHA-256 is `0714de7af335744dd00df854f98c32f9ba47c8fe5f9bd5a4f19bb03ac8939a1c`. Exact runner, cases, fallbacks, offline/compatibility/process-saved and independent audits remain worker-owned.
+
+The unscoped strict delivery gate was attempted with a 90-second timeout after these receipts. It emitted no result and exited 124; this is not a pass. The latest completed caller output still reports an unapproved generated `runtime/runs/scenario_pipeline/inputs/shared/manifest.json`. Frozen runtime remains untouched.
+
+### C378304 exact runner checkpoint
+
+Added an exact Native runner for the selected freight-zone right turn. Its CPU-only construction check passes without CARLA. The runner is wired for four FFV1 source cameras, original frame/body/indicator/road telemetry, scene-graph capture, source-bound site packet, measured turn onset, and capture sealing after world restoration. The site packet is mandatory and must bind an independently reviewed district and freight-zone source to the exact map, Native map name and case. The C378304 CPU suite passes 12 tests (`cpu-tests.log` SHA-256 `b89cdc7ce91f8c0fd9a03ca6717879802d90e532ac44c16749f87792b2c4b07b`); pinned preflight and scoped static check pass. Scoped strict readiness rejects the truthful partial package. Construction packaging, exact receipts, fallbacks, semantic proposals and audits remain worker-owned; no Native capture or physical/legal acceptance is claimed. Frozen inputs, runtime, batch.json and Git were untouched.

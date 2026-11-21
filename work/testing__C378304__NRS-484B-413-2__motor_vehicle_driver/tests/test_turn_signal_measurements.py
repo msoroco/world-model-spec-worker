@@ -8,6 +8,7 @@ from pathlib import Path
 
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from saved_finalizer import finalize_saved
 spec = importlib.util.spec_from_file_location("turn_signal_measurements", Path(__file__).resolve().parents[1] / "turn_signal_measurements.py")
 measure = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(measure)
@@ -35,7 +36,9 @@ class TurnSignalTests(unittest.TestCase):
                  "native_road_id": 1 if i < 6 else 2,
                  "native_lane_id": -1,
                  "ego_light_mask": 16 if indicators[i] else 0,
-                 "right_indicator": indicators[i]}
+                 "right_indicator": indicators[i],
+                 "ego_body_vertices_xy_m": [[point-1, -1], [point+1, -1],
+                                              [point-1, 1], [point+1, 1]]}
                 for i, point in enumerate(x)]
         frames = [{"video_frame": i, "carla_frame": row["frame"], "time_s": row["time_s"]}
                   for i, row in enumerate(rows)]
@@ -99,6 +102,26 @@ class TurnSignalTests(unittest.TestCase):
             (root / "drive_history.jsonl").write_text("".join(json.dumps(row)+"\n" for row in rows))
             with self.assertRaisesRegex(ValueError, "light-mask"):
                 measure.analyze(root)
+
+    def test_saved_finalizer_derives_channels_and_preserves_unknown_physical_status(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            self.fixture(root, 30.48)
+            folder = Path(__file__).resolve().parents[1]
+            (root / "config.json").write_bytes((folder / "config.json").read_bytes())
+            history = [json.loads(line) for line in (root / "drive_history.jsonl").read_text().splitlines()]
+            (root / "trace.jsonl").write_text("".join(json.dumps({
+                "frame": row["frame"], "time_s": row["time_s"]}) + "\n" for row in history))
+            (root / "capture").mkdir()
+            (root / "capture/evidence.jsonl").write_text('{"frame":100}\n')
+            for name in ("overview", "approach", "reference_corner", "driver_reference"):
+                (root / (name + ".mkv")).write_bytes(b"synthetic placeholder; decode tested separately")
+            analysis = finalize_saved(root, root / "analysis.json")
+            self.assertEqual(analysis["case_id"], json.loads((root / "config.json").read_text())["selected_case_id"])
+            self.assertFalse(analysis["physical_acceptance_claimed"])
+            self.assertTrue((root / "channels/ego_turn_indicator.jsonl").is_file())
+            self.assertTrue((root / "channels/path_distance.jsonl").is_file())
+            self.assertEqual(json.loads((root / "result.json").read_text())["physical_acceptance_claimed"], False)
 
 
 if __name__ == "__main__":
