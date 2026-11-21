@@ -11,7 +11,7 @@ sys.path.insert(0, str(REPO / 'runtime/pipeline/scenario_pipeline'))
 from worker_exchange.semantic_delivery import validate as validate_delivery
 
 assignment = json.loads((REPO / 'inputs' / ROOT.name / 'assignment.json').read_text())
-manifest = json.loads((ROOT / 'draft-combined-capture-manifest.json').read_text())
+manifest = json.loads((ROOT / 'draft-twelve-capture-manifest.json').read_text())
 proposal = json.loads((ROOT / 'proposals/cases.json').read_text())
 law = assignment['law']
 actor = assignment['actor']
@@ -38,13 +38,13 @@ r_cell = write('relevance.json', relevance)
 
 judgments = [
     ('pavement newly laid or repaired', 'Surface condition and repair history require independent original review.',
-     ['ego_pose', 'pavement_footprint_contact'], ['surveyed_repair_region']),
+     ['ego_pose', 'pavement_footprint_contact'], []),
     ('a person or a sign warning persons against riding or driving over such pavement',
      'A nearby person alone does not prove a warning act. Draft barrier, warning-sign and closure-sign routes require original warning evidence.',
-     ['ego_pose', 'pavement_footprint_contact'], ['surveyed_repair_region']),
+     ['ego_pose', 'pavement_footprint_contact'], []),
     ('employees actually engaged in the paving or repair of such pavement',
      'The employee exception requires original role and activity evidence; no exception is presumed.',
-     ['ego_pose'], ['surveyed_repair_region']),
+     ['ego_pose'], []),
 ]
 template = {
     'template_id': template_id, 'law_id': law_id, 'actor': actor, 'status': 'draft',
@@ -96,7 +96,7 @@ baseline.update(case_id=ROOT.name + '__baseline', target_law_id=None,
                 target_type='baseline', rationale='Source-surveyed setup for the draft statutory comparisons.')
 cases.append(baseline)
 pair_names = ('warning_person', 'barrier', 'warning_sign', 'highway_closed_sign',
-              'employee_exception')
+              'employee_exception', 'newly_laid')
 def complete_variables(item):
     assignments = item['variable_assignments']
     for name, kind in names:
@@ -123,13 +123,14 @@ canonical = {'cell_id': assignment['cell_id'], 'actor': actor, 'status': 'draft'
              'cases': cases, 'sweeps_expanded': True,
              'sweep_specs': [{'sweep_id': ROOT.name + '__scope_pending', 'target_law_id': law_id,
                               'judgment_refs': [{'phrase': phrase, 'note': note} for phrase, note, _, _ in judgments],
-                              'rationale': 'Ten draft routes are constructed; original source review and exact delivery selection remain.',
+                              'rationale': 'Twelve draft routes are constructed; original source review and physical acceptance remain.',
                               'status': 'incomplete',
                               'missing_inputs': ['Original warning act and pavement repair evidence',
                                                  'Original barrier and sign-face evidence',
                                                  'Original employee activity evidence']}],
              'unselected_statutory_routes': ['warning person', 'barrier', 'warning sign',
-                                            'highway closure sign', 'paving/repair employee exception']}
+                                            'highway closure sign', 'paving/repair employee exception',
+                                            'newly laid surface']}
 c_ref = write('canonical-cases.json', canonical)
 index = {'format': 'worker-semantic-delivery', 'assignment_id': ROOT.name,
          'stages': {'relevance_batch': r_batch, 'relevance': r_cell, 'template': t_ref,

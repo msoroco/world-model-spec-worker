@@ -28,11 +28,12 @@ def sample_rows(*, crossing, kind):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--case', required=True)
+    parser.add_argument('--manifest', type=Path, default=HERE / 'execution-manifest.json')
     parser.add_argument('--kind', required=True, choices=(
         'complete_motion', 'incomplete_motion', 'missing_evidence', 'lifecycle'))
     parser.add_argument('--output', required=True, type=Path)
     args = parser.parse_args()
-    manifest = json.loads((HERE / 'execution-manifest.json').read_text())
+    manifest = json.loads(args.manifest.read_text())
     entry = next((row for row in manifest['cases']
                   if row['case_id'] == args.case), None)
     if entry is None:
