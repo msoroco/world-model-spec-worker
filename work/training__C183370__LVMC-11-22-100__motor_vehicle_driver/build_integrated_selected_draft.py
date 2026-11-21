@@ -86,6 +86,65 @@ def build(short, candidate):
                  "    for name in CHANNELS[4:]:\n"
                  "        (mandatory_folder / (name + '.jsonl')).replace(folder / (name + '.jsonl'))\n")
     finalizer = finalizer.replace(context_line, insertion + context_line)
+    if short.startswith('employee_exception_'):
+        measurement_anchor = '''def measurement_records(analysis):
+    return {'surveyed_pavement_contact': measure_variant_surveyed_pavement_contact(analysis),
+            'control_actor_vicinity': measure_control_actor_vicinity(analysis)}
+'''
+        measurement_replacement = '''def measure_employee_activity_source(analysis, attempt):
+    """Bind the chosen operator to retained activity references, without inferring status."""
+    if analysis['control_kind'] != 'employee_exception':
+        raise ValueError('Employee activity source requested for another control')
+    readback = json.loads((Path(attempt) / 'live-readback.json').read_text())
+    plan = readback['plan']
+    route = analysis['case']
+    if route not in ('employee_crossing', 'nonemployee_crossing'):
+        raise ValueError('Unknown employee comparison route')
+    sources = plan['source_references']
+    employee = sources.get('employee_activity_source')
+    nonemployee = sources.get('nonemployee_activity_source')
+    selected = plan['cases'][route].get('operator_activity_source')
+    expected = employee if route == 'employee_crossing' else nonemployee
+    diagnostic = analysis.get('source_kind') == 'synthetic_diagnostic_capture'
+    route_binding = (selected == 'synthetic_fixture_only_' + route + '_activity_unverified'
+                     if diagnostic else selected == expected)
+    if (not isinstance(employee, str) or not employee.strip() or
+            not isinstance(nonemployee, str) or not nonemployee.strip() or
+            employee == nonemployee or not route_binding):
+        raise ValueError('Employee activity sources are not distinct and route-bound')
+    actors = read_jsonl(Path(attempt) / 'native-actors.jsonl')
+    actor_id = readback['control_actor_id']
+    actor_type = readback['control_type_id']
+    if not actors or any(row.get('control_actor_id') != actor_id or
+                         row.get('control_type_id') != actor_type for row in actors):
+        raise ValueError('Employee operator identity differs from retained actor rows')
+    hashes = {name: analysis['source_hashes'][name] for name in MEASUREMENT_SOURCES}
+    return {'method': 'measure_employee_activity_source',
+            'value': {'operator_actor_id': actor_id,
+                      'operator_type_id': actor_type,
+                      'selected_route': route,
+                      'activity_source_reference': selected,
+                      'activity_source_route_bound': True,
+                      'employment_verified': False,
+                      'actually_engaged_in_paving_verified': False,
+                      'legal_exception_applies': None},
+            'sources': hashes}
+
+
+def measurement_records(analysis, attempt):
+    records = {'surveyed_pavement_contact': measure_variant_surveyed_pavement_contact(analysis),
+               'control_actor_vicinity': measure_control_actor_vicinity(analysis)}
+    if analysis['control_kind'] == 'employee_exception':
+        records['employee_activity_source'] = measure_employee_activity_source(analysis, attempt)
+    return records
+'''
+        if finalizer.count(measurement_anchor) != 1:
+            raise ValueError('Employee finalizer measurement anchor changed')
+        finalizer = finalizer.replace(measurement_anchor, measurement_replacement)
+        if finalizer.count("'measurements': measurement_records(analysis),") != 1:
+            raise ValueError('Employee measurement report anchor changed')
+        finalizer = finalizer.replace("'measurements': measurement_records(analysis),",
+                                      "'measurements': measurement_records(analysis, attempt),")
     files[finalizer_path]['content'] = finalizer
     files[finalizer_path].pop('source', None)
     source_module = HERE / 'derive_mandatory_channels.py'
