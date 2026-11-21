@@ -1010,6 +1010,210 @@
         "test_log_sha256": "0c37636c5818e6ba78de4c71e6f515e5d916552e239725b3bce1db87447ddec2",
         "test_exit_code": 0
       }
+    },
+    {
+      "case_id": "heldout__C295149__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay_0",
+      "construction": "construction-yield-release-delay-0.json",
+      "construction_sha256": "220a0bedac18d35b4a155f1119259a94eb424f172476839a470b32072929afe7",
+      "kind": "delivery",
+      "measurement_procedure": {
+        "entrypoint": "ending_road_finalizer.py"
+      },
+      "acquisition": {
+        "intersection_occupancy": {
+          "entrypoint": "ending_road_finalizer.py",
+          "method": "original Native body polygon overlap against retained conflict polygon",
+          "evidence": "intersection_topology.json, intersection_participants.jsonl, trace.jsonl and video_frames.jsonl joined by original frame identity"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "measurement_contract": "measurement-contract-yield-release-delay-0.json",
+      "fixture_recipe": "work/heldout__C295149__NRS-484B-250-3__motor_vehicle_driver/diagnostic-recipe-ending-yields.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native connected-route search, body-clearance threshold and full turn/camera capture can fail before the fixed release delay is observed."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-yield-release-delay-0-fallback1.json",
+          "construction_sha256": "b765edb8685145d2a1698fb2a446510bc241d93248394a72f7bbcc2b6cfa1895",
+          "trigger": {
+            "source": "original Native route-selection inventory",
+            "metric": "eligible connected ending/through route pairs",
+            "failure_condition": "Primary 300-spawn search finds no admissible connected route"
+          },
+          "changed_knobs": [
+            "Native route search max_spawns 300 to 600"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-yield-release-delay-0-fallback2.json",
+          "construction_sha256": "64fb48aa853518b0e836696a102ed465dfa78bdce750e30b189e39b1b117c739",
+          "trigger": {
+            "source": "original Native two-body/conflict trace",
+            "metric": "through-body clearance before ending release",
+            "failure_condition": "Primary 2 m body-clearance margin is ambiguous"
+          },
+          "changed_knobs": [
+            "Increase release clearance margin from 2 m to 4 m"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-yield-release-delay-0-fallback3.json",
+          "construction_sha256": "9cb0cabe03e498b4f90e1a0dd6a927a41383b2dc8b1c488fcaf543a798b00350",
+          "trigger": {
+            "source": "original 20 Hz body/video trace",
+            "metric": "through clearance and release visible in all four source views",
+            "failure_condition": "Primary 8 s capture ends before the controlled release"
+          },
+          "changed_knobs": [
+            "Extend capture from 8 s to 12 s"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "heldout__C295149__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay_4",
+      "construction": "construction-yield-release-delay-4.json",
+      "construction_sha256": "71d056841ad4c101ce478197c20d5e8a9f2068fb691a21868966e0c5964a2a16",
+      "kind": "delivery",
+      "measurement_procedure": {
+        "entrypoint": "ending_road_finalizer.py"
+      },
+      "acquisition": {
+        "intersection_occupancy": {
+          "entrypoint": "ending_road_finalizer.py",
+          "method": "original Native body polygon overlap against retained conflict polygon",
+          "evidence": "intersection_topology.json, intersection_participants.jsonl, trace.jsonl and video_frames.jsonl joined by original frame identity"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "measurement_contract": "measurement-contract-yield-release-delay-4.json",
+      "fixture_recipe": "work/heldout__C295149__NRS-484B-250-3__motor_vehicle_driver/diagnostic-recipe-ending-yields.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native connected-route search, body-clearance threshold and full turn/camera capture can fail before the fixed release delay is observed."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-yield-release-delay-4-fallback1.json",
+          "construction_sha256": "f59a92a84065cff54cf89ed4306a6973dd55ba88d8b94c8b967d9cfccb319648",
+          "trigger": {
+            "source": "original Native route-selection inventory",
+            "metric": "eligible connected ending/through route pairs",
+            "failure_condition": "Primary 300-spawn search finds no admissible connected route"
+          },
+          "changed_knobs": [
+            "Native route search max_spawns 300 to 600"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-yield-release-delay-4-fallback2.json",
+          "construction_sha256": "6ef9fbb35cbded8ea3be75c5023bfa227ba2f59dad4c5e4e32ae4dd3537d6b7e",
+          "trigger": {
+            "source": "original Native two-body/conflict trace",
+            "metric": "through-body clearance before ending release",
+            "failure_condition": "Primary 2 m body-clearance margin is ambiguous"
+          },
+          "changed_knobs": [
+            "Increase release clearance margin from 2 m to 4 m"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-yield-release-delay-4-fallback3.json",
+          "construction_sha256": "477f85c26d0f3c61cdb59ba31b68b289a472aa919d0a16eceea65b5304206a5a",
+          "trigger": {
+            "source": "original 20 Hz body/video trace",
+            "metric": "through clearance and release visible in all four source views",
+            "failure_condition": "Primary 8 s capture ends before the controlled release"
+          },
+          "changed_knobs": [
+            "Extend capture from 8 s to 12 s"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "heldout__C295149__NRS-484B-250-3__motor_vehicle_driver__yield_release_delay_8",
+      "construction": "construction-yield-release-delay-8.json",
+      "construction_sha256": "a2dd7d4715735f866023106274a706b384deee7c49f082618cc85ef7c046c06b",
+      "kind": "delivery",
+      "measurement_procedure": {
+        "entrypoint": "ending_road_finalizer.py"
+      },
+      "acquisition": {
+        "intersection_occupancy": {
+          "entrypoint": "ending_road_finalizer.py",
+          "method": "original Native body polygon overlap against retained conflict polygon",
+          "evidence": "intersection_topology.json, intersection_participants.jsonl, trace.jsonl and video_frames.jsonl joined by original frame identity"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "measurement_contract": "measurement-contract-yield-release-delay-8.json",
+      "fixture_recipe": "work/heldout__C295149__NRS-484B-250-3__motor_vehicle_driver/diagnostic-recipe-ending-yields.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native connected-route search, body-clearance threshold and full turn/camera capture can fail before the fixed release delay is observed."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-yield-release-delay-8-fallback1.json",
+          "construction_sha256": "cbc49a27e095825b98efa41469d95a09a6a24cb9ee1450b47a1be9c2d30dfbc3",
+          "trigger": {
+            "source": "original Native route-selection inventory",
+            "metric": "eligible connected ending/through route pairs",
+            "failure_condition": "Primary 300-spawn search finds no admissible connected route"
+          },
+          "changed_knobs": [
+            "Native route search max_spawns 300 to 600"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-yield-release-delay-8-fallback2.json",
+          "construction_sha256": "ce4fadada652474a11ceb16178f12e2f31969090f75a2194ee53c67bb65c75fd",
+          "trigger": {
+            "source": "original Native two-body/conflict trace",
+            "metric": "through-body clearance before ending release",
+            "failure_condition": "Primary 2 m body-clearance margin is ambiguous"
+          },
+          "changed_knobs": [
+            "Increase release clearance margin from 2 m to 4 m"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-yield-release-delay-8-fallback3.json",
+          "construction_sha256": "98ab8cf7f0015f72ba41defe2e5d0299dd37ef6569f110603d2be69a349e2ca4",
+          "trigger": {
+            "source": "original 20 Hz body/video trace",
+            "metric": "through clearance and release visible in all four source views",
+            "failure_condition": "Primary 8 s capture ends before the controlled release"
+          },
+          "changed_knobs": [
+            "Extend capture from 8 s to 12 s"
+          ]
+        }
+      ]
     }
   ],
   "runtime_manifest_sha256": "5b4738624542c97f321a302bd49b9ec154cb2cf63778acf64ba6042f8d5b4fd3",
