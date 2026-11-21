@@ -38,7 +38,8 @@ def compare(comparison_id, left_audit_path, right_audit_path,
     require(manifest.is_file(), 'Exact comparison manifest missing')
     require(manifest.resolve() in (
                 (HERE / 'execution-manifest.json').resolve(),
-                (HERE / 'draft-combined-capture-manifest.json').resolve())
+                (HERE / 'draft-combined-capture-manifest.json').resolve(),
+                (HERE / 'update153-integrated-all-text1-manifest.json').resolve())
             and (diagnostic or manifest.resolve() ==
                  (HERE / 'execution-manifest.json').resolve()),
             'Comparison manifest is not an approved selection')
