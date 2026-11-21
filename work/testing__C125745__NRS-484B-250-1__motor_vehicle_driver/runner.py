@@ -13,10 +13,9 @@ from pathlib import Path
 from shapely.geometry import MultiPoint, Polygon
 
 from crossing_measurements import capture_sample
-from site_packet import load_site
 from source_cameras import CAMERAS, SourceVideo, matching_frame, source_cameras
 from stop_entry_control import step_ego, step_other
-from stop_sign_control import construct_candidate
+from stop_sign_control import construct_candidate, load_site
 
 
 ASSIGNMENT = "testing__C125745__NRS-484B-250-1__motor_vehicle_driver"
@@ -25,7 +24,7 @@ FRAMES = 900
 RATE_HZ = 20
 
 
-def check_plan(plan_path):
+def check_plan(plan_path, config_path=None):
     plan = json.loads(Path(plan_path).read_text())
     if (plan.get("assignment_id") != ASSIGNMENT or
             plan.get("law_id") != "NRS-484B-250-1" or
@@ -36,6 +35,20 @@ def check_plan(plan_path):
     site = load_site()
     if set(site["camera_poses"]) != set(CAMERAS) or site["review_status"] != "synthetic_cpu_candidate":
         raise ValueError("Four source cameras and honest site provenance required")
+    if config_path is not None:
+        config = json.loads(Path(config_path).read_text())
+        if (config.get("assignment_id") != ASSIGNMENT or
+                config.get("selected_case_id") != CASE or
+                config.get("law_id") != "NRS-484B-250-1" or
+                config.get("cell_id") != "C125745" or
+                config.get("actor") != "motor_vehicle_driver" or
+                config.get("rate_hz") != RATE_HZ or config.get("frames") != FRAMES or
+                config.get("duration_s") != FRAMES / RATE_HZ or
+                not isinstance(config.get("required_atoms"), list) or
+                not config.get("recording_description", {}).get("channels") or
+                config.get("site_packet") != {"path": "site.json",
+                                               "sha256": site["site_source_sha256"]}):
+            raise ValueError("Exact source-bound C125745(1) config required")
     return site
 
 
@@ -96,7 +109,7 @@ def _context(site, ego_road, other_road):
     }
 
 
-def capture(args, site):
+def capture(args, site, config):
     import carla
     from pipeline_capture import PipelineCapture
     from worker_exchange.native_output import FrameMap, seal_capture
@@ -146,7 +159,8 @@ def capture(args, site):
                     frame_map = stack.enter_context(FrameMap(output / "video_frames.jsonl"))
                     for name, (width, height) in CAMERAS.items():
                         writers[name] = SourceVideo(output / (name + ".mkv"), width, height)
-                    helper = PipelineCapture(client, ego, output, CASE, required_observations=[])
+                    helper = PipelineCapture(client, ego, output, CASE,
+                                             required_observations=config["required_atoms"])
                     stopped_frames = 0
                     other_entered = False
                     try:
@@ -160,7 +174,7 @@ def capture(args, site):
                             ego_throttle, ego_brake, stopped_frames, phase = step_ego(
                                 stop_distance, _speed(ego), stopped_frames, clear)
                             other_throttle, other_brake, other_phase = step_other(
-                                _speed(other), args.other_release_frame, index)
+                                _speed(other), config["other_release_frame"], index)
                             commands = {
                                 "ego": _control(carla, ego, ego_throttle, ego_brake, (30, 0)),
                                 "other": _control(carla, other, other_throttle, other_brake, (15, 15)),
@@ -215,13 +229,14 @@ def capture(args, site):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--plan", default=str(Path(__file__).with_name("case-plan.json")))
+    parser.add_argument("--config", default=str(Path(__file__).with_name("config.json")))
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--output-dir")
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=2000)
-    parser.add_argument("--other-release-frame", type=int, default=100)
     args = parser.parse_args()
-    site = check_plan(args.plan)
+    config = json.loads(Path(args.config).read_text()) if Path(args.config).is_file() else None
+    site = check_plan(args.plan, args.config if config is not None else None)
     if args.check:
         print(json.dumps({"assignment_id": ASSIGNMENT, "case_id": CASE,
                           "planned_frames": FRAMES, "rate_hz": RATE_HZ,
@@ -231,9 +246,11 @@ def main():
         return
     if not args.output_dir:
         raise ValueError("--output-dir required for Native capture")
-    if not 0 <= args.other_release_frame < FRAMES:
+    if config is None:
+        raise ValueError("Exact config.json required for Native capture")
+    if type(config.get("other_release_frame")) is not int or not 0 <= config["other_release_frame"] < FRAMES:
         raise ValueError("Other release frame outside planned capture")
-    capture(args, site)
+    capture(args, site, config)
 
 
 if __name__ == "__main__":

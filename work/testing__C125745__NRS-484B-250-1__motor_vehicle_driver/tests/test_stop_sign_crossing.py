@@ -10,6 +10,7 @@ from types import SimpleNamespace as NS
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT.parents[1] / "runtime" / "scenario_pipeline"))
 
 
 def load(name):
@@ -22,9 +23,10 @@ def load(name):
 measure = load("crossing_measurements")
 signs = load("stop_sign_control")
 comparison = load("comparison_audit")
-packet = load("site_packet")
+packet = signs
 control = load("stop_entry_control")
 cameras = load("source_cameras")
+runner = load("runner")
 
 
 def body(x):
@@ -62,6 +64,59 @@ class FakeActors(list):
 
 
 class CrossingTests(unittest.TestCase):
+    def test_saved_finalizer_derives_channels_from_original_rows(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            self.fixture(root)
+            config = {"selected_case_id": runner.CASE, "law_id": "NRS-484B-250-1",
+                      "cell_id": "C125745", "recording_description": {
+                          "channels": [{"name": name} for name in (
+                              "ego_speed", "other_speed", "ego_approach_distance",
+                              "other_approach_distance", "ego_body_inside", "other_body_inside",
+                              "stop_sign_id", "ego_position", "other_position")]},
+                      "physical_completion": {"criterion": "intersection_clearance",
+                          "motion_source": "crossing_history.jsonl",
+                          "body_key": "ego.body_vertices_xy_m",
+                          "intersection_polygon_xy_m": [[0,-5],[10,-5],[10,5],[0,5]],
+                          "exit_axis": 0, "exit_sign": 1,
+                          "minimum_progress_m": 0.25}}
+            (root / "config.json").write_text(json.dumps(config))
+            frames = [json.loads(line) for line in
+                      (root / "video_frames.jsonl").read_text().splitlines()]
+            (root / "trace.jsonl").write_text("".join(json.dumps(
+                {"frame": row["carla_frame"], "time_s": row["time_s"]}) + "\n"
+                for row in frames))
+            (root / "capture").mkdir()
+            (root / "capture" / "evidence.jsonl").write_text("{}\n")
+            (root / "acquisition-provenance.json").write_text(json.dumps(
+                {"provenance_kind": "diagnostic", "diagnostic_fixture": True}))
+            for name in cameras.CAMERAS:
+                writer = cameras.SourceVideo(root / (name + ".mkv"), 2, 2)
+                for frame in frames:
+                    writer.write(NS(frame=frame["carla_frame"], raw_data=bytes(16)),
+                                 frame["carla_frame"])
+                writer.close()
+            source = (root / "crossing_history.jsonl").read_bytes()
+            report = measure.finalize_saved(root, root / "analysis.json")
+            self.assertTrue(report["analysis_complete"])
+            self.assertTrue(report["source_report"]["other_entered_before_ego_observed"])
+            self.assertEqual((root / "crossing_history.jsonl").read_bytes(), source)
+            self.assertEqual((root / "evidence" / "crossing_history.jsonl").read_bytes(), source)
+            self.assertEqual(len((root / "channels" / "ego_speed.jsonl").read_text().splitlines()), 4)
+            self.assertFalse(json.loads((root / "result.json").read_text())["physical_acceptance_claimed"])
+            with self.assertRaisesRegex(ValueError, "Fresh saved-processing"):
+                measure.finalize_saved(root, root / "analysis2.json")
+
+    def test_exact_first_runner_checks_without_starting_carla(self):
+        self.assertEqual(runner.check_plan(ROOT / "case-plan.json")["junction_id"], 44)
+        checked = subprocess.run([sys.executable, str(ROOT / "runner.py"), "--check"],
+                                 check=True, capture_output=True, text=True)
+        data = json.loads(checked.stdout)
+        self.assertEqual(data["case_id"], runner.CASE)
+        self.assertEqual(set(data["source_cameras"]), set(cameras.CAMERAS))
+        self.assertFalse(data["carla_started"])
+        self.assertFalse(data["physical_acceptance_claimed"])
+
     def test_four_camera_exact_join_and_owner_cleanup(self):
         created = []
         class Sensor:
@@ -116,6 +171,7 @@ class CrossingTests(unittest.TestCase):
                 writer.close()
 
     def test_stop_controller_holds_for_measured_other_body_then_releases(self):
+        self.assertGreater(control.step_ego(8.0, 0, 0, False)[0], 0)
         throttle, brake, count, phase = control.step_ego(1.0, 0.1, 0, False)
         self.assertEqual((throttle, count, phase), (0.0, 1, "approach_stop"))
         self.assertGreater(brake, 0)
@@ -254,6 +310,13 @@ class CrossingTests(unittest.TestCase):
         with signs.construct_candidate(world, packet, transforms, "vehicle") as candidate:
             self.assertEqual(candidate["approach_road_ids"], {"ego": 3, "other": 4})
             self.assertEqual(len(actors), 2)
+        self.assertEqual(actors, [])
+        transforms["ego_sign_check"] = NS(location="ego-sign-check-point")
+        waypoints["ego-sign-check-point"] = NS(road_id=3, transform=NS(location="ego-sign-check-point"))
+        sign.trigger_volume = NS(contains=lambda point, transform:
+                                 point == "ego-sign-check-point")
+        with signs.construct_candidate(world, packet, transforms, "vehicle") as candidate:
+            self.assertEqual(candidate["stop_sign"], sign)
         self.assertEqual(actors, [])
         waypoints["other_entry"] = NS(road_id=4, is_junction=True,
                                         get_junction=lambda: NS(id=10))

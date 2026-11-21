@@ -8,6 +8,7 @@ may make NRS 484B.250(1) inapplicable; no legal verdict is produced.
 import hashlib
 import json
 import math
+import shutil
 from pathlib import Path
 
 from shapely.geometry import MultiPoint, Polygon
@@ -167,3 +168,126 @@ def capture_sample(snapshot, world_map, ego, other, sign, crossing_polygon,
                      "body_vertices_xy_m": points,
                      "distance_to_intersection_m": distance, "speed_mps": speed}
     return row
+
+
+def finalize_saved(attempt, output):
+    """Create channels and a Native result from immutable saved source copies.
+
+    This does not classify official-device authority or legal right of way.
+    The finalizer refuses missing originals and stale frame/time joins.
+    """
+    attempt, output = Path(attempt), Path(output)
+    if output.exists() or (attempt / "result.json").exists() or (attempt / "channels").exists():
+        raise ValueError("Fresh saved-processing version required")
+    from worker_exchange.native_output import physical_result, write_result
+    required = ("config.json", "trace.jsonl", "capture/evidence.jsonl", *REQUIRED,
+                "overview.mkv", "approach.mkv", "reference_corner.mkv",
+                "driver_reference.mkv")
+    for name in required:
+        if not (attempt / name).is_file():
+            raise ValueError("Missing required source: " + name)
+    config = json.loads((attempt / "config.json").read_text())
+    case_id = "testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_other_first"
+    if (config.get("selected_case_id") != case_id or
+            config.get("law_id") != "NRS-484B-250-1" or
+            config.get("cell_id") != "C125745" or
+            not config.get("recording_description", {}).get("channels")):
+        raise ValueError("Wrong exact C125745(1) capture identity")
+    report = analyze(attempt)
+    rows, frames, trace = (_rows(attempt / name) for name in
+                           ("crossing_history.jsonl", "video_frames.jsonl", "trace.jsonl"))
+    if len(rows) != len(frames) or len(trace) != len(frames) or any(
+            original.get("frame") != frame.get("carla_frame") or
+            original.get("time_s") != frame.get("time_s")
+            for original, frame in zip(trace, frames)):
+        raise ValueError("Original trace/video frame join failed")
+    def center(actor):
+        vertices = actor["body_vertices_xy_m"]
+        return [sum(_number(p[axis]) for p in vertices) / len(vertices)
+                for axis in (0, 1)]
+    observations = {
+        "ego_speed": ("m/s", lambda row, sample: sample["ego"]["speed_mps"]),
+        "other_speed": ("m/s", lambda row, sample: sample["other"]["speed_mps"]),
+        "ego_approach_distance": ("m", lambda row, sample: sample["ego"]["distance_to_intersection_m"]),
+        "other_approach_distance": ("m", lambda row, sample: sample["other"]["distance_to_intersection_m"]),
+        "ego_body_inside": ("boolean", lambda row, sample: sample["ego"]["body_in_intersection"]),
+        "other_body_inside": ("boolean", lambda row, sample: sample["other"]["body_in_intersection"]),
+        "stop_sign_id": ("Native actor ID", lambda row, sample: row["native_stop_sign_id"]),
+        "ego_position": ("m", lambda row, sample: center(row["ego"])),
+        "other_position": ("m", lambda row, sample: center(row["other"])),
+    }
+    expected = {item["name"] for item in config["recording_description"]["channels"]}
+    if expected != set(observations):
+        raise ValueError("Recording channels differ from saved finalizer")
+    evidence_root = attempt / "evidence"
+    evidence_root.mkdir()
+    for name in ("config.json", "trace.jsonl", *REQUIRED):
+        target = evidence_root / name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(attempt / name, target)
+    shutil.copytree(attempt / "capture", evidence_root / "capture", dirs_exist_ok=True)
+    channels = attempt / "channels"
+    channels.mkdir()
+    recording_evidence = []
+    for name, (unit, method) in observations.items():
+        reference = "channels/" + name + ".jsonl"
+        with (attempt / reference).open("x") as stream:
+            for row, sample in zip(rows, report["samples"]):
+                stream.write(json.dumps({"time_s": row["time_s"],
+                    "original_frame": row["frame"], "value": method(row, sample)},
+                    allow_nan=False) + "\n")
+        recording_evidence.append({"name": name, "unit": unit, "reference": reference})
+    recording_evidence.append({"name": "junction_context", "unit": "structured record",
+                               "reference": "junction_context.json"})
+    checksums = {"evidence/" + path.relative_to(evidence_root).as_posix():
+                 hashlib.sha256(path.read_bytes()).hexdigest()
+                 for path in evidence_root.rglob("*") if path.is_file()}
+    (attempt / "evidence-checksums.json").write_text(json.dumps(checksums, sort_keys=True) + "\n")
+    target = report["other_entered_before_ego_observed"]
+    result = {
+        "case_id": case_id,
+        "measured_values": {"first_body_entry": report["first_body_entry"],
+                            "entry_left_censored": report["entry_left_censored"],
+                            "ego_approaching_at_other_entry_observed":
+                                report["ego_approaching_at_other_entry_observed"]},
+        "target_checks": [{"target": "other_enters_before_ego", "requested": True,
+            "measured": target, "method": "source-hashed complete-body entry and original frame join",
+            "tolerance": 0, "matched": target is True,
+            "physical_cause_confirmed": False, "cause_evidence": list(report["sources"])}],
+        "setup_confirmed": False, "behavior_attempted": False,
+        "maneuver_completed": False, "termination_reason": "Saved source assessment pending",
+        "physical_failure_flags": ["Native sign, crossing and legal judgments require original review"],
+        "trace_reference": "trace.jsonl",
+        "video_references": [name + ".mkv" for name in
+                             ("overview", "approach", "reference_corner", "driver_reference")],
+        "video_frame_map_reference": "video_frames.jsonl",
+        "recording_description": config["recording_description"],
+        "recording_evidence": recording_evidence,
+        "source_evidence_hashes": report["sources"],
+        "capture_evidence_sha256": hashlib.sha256((attempt / "capture/evidence.jsonl").read_bytes()).hexdigest(),
+        "realized_observables": {},
+    }
+    result = physical_result(attempt, result)
+    write_result(attempt, result)
+    analysis = {"format": "worker-analysis-report", "case_id": case_id,
+                "source_report": report, "source_hashes": report["sources"],
+                "physical_checks": result["physical_checks"],
+                "realized_observables": result["realized_observables"],
+                "provenance_kind": result["provenance_kind"],
+                "diagnostic_fixture": result["diagnostic_fixture"],
+                "legal_verdict_asserted": False, "analysis_complete": True}
+    output.write_text(json.dumps(analysis, indent=2, allow_nan=False) + "\n")
+    return analysis
+
+
+def main():
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--attempt", type=Path, required=True)
+    parser.add_argument("--output", type=Path, required=True)
+    args = parser.parse_args()
+    finalize_saved(args.attempt, args.output)
+
+
+if __name__ == "__main__":
+    main()
