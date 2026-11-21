@@ -80,7 +80,7 @@ def finalize_saved(attempt, output):
     from worker_exchange.native_output import physical_result, write_result
 
     attempt, output = Path(attempt), Path(output)
-    if output.exists() or (attempt / "result.json").exists() or (attempt / "channels").exists() or (attempt.parent / "evidence").exists():
+    if output.exists() or (attempt / "result.json").exists() or (attempt / "channels").exists():
         raise ValueError("Retain prior finalization; choose a fresh saved version")
     required = ("config.json", "trace.jsonl", "vehicle_signal_history.jsonl",
                 "video_frames.jsonl", "junction_context.json", "capture/evidence.jsonl",
@@ -114,12 +114,12 @@ def finalize_saved(attempt, output):
     }
     # Validate every derived value before creating any saved output.
     derived = {name: [value(row) for row in history] for name, (_, value) in values.items()}
-    evidence_root = attempt.parent / "evidence"
-    evidence_root.mkdir()
+    evidence_root = attempt / "evidence"
+    evidence_root.mkdir(exist_ok=True)
     for name in ("trace.jsonl", "vehicle_signal_history.jsonl", "video_frames.jsonl",
                  "junction_context.json", "config.json"):
         shutil.copyfile(attempt / name, evidence_root / name)
-    shutil.copytree(attempt / "capture", evidence_root / "capture")
+    shutil.copytree(attempt / "capture", evidence_root / "capture", dirs_exist_ok=True)
     channels = attempt / "channels"
     channels.mkdir()
     evidence = []
@@ -130,9 +130,11 @@ def finalize_saved(attempt, output):
                 stream.write(json.dumps({"time_s": row["time_s"], "original_frame": row["frame"],
                                          "value": value}, allow_nan=False) + "\n")
         evidence.append({"name": name, "unit": unit, "reference": reference})
+    evidence.append({"name": "junction_context", "unit": "structured record",
+                     "reference": "junction_context.json"})
     checksums = {"evidence/" + p.relative_to(evidence_root).as_posix(): _sha(p)
                  for p in evidence_root.rglob("*") if p.is_file()}
-    (attempt.parent / "evidence-checksums.json").write_text(json.dumps(checksums, sort_keys=True) + "\n")
+    (attempt / "evidence-checksums.json").write_text(json.dumps(checksums, sort_keys=True) + "\n")
     result = {
         "case_id": cfg["selected_case_id"],
         "measured_values": {

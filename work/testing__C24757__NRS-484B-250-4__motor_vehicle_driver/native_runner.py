@@ -295,6 +295,11 @@ def capture_native(args, config):
                    "map_signal_id": site.get("map_signal_id"),
                    "other_map_signal_id": site.get("other_map_signal_id"),
                    site["stop_boundary"]["kind"] + "_source": site["stop_boundary"]["source"]}
+        context["junction_context"] = {
+            "native_map_id": site["native_map_name"],
+            "intersection_id": site["intersection_id"],
+            "governed_entrance_lanes": site["entrance_road_lanes"],
+            "site_review_sha256": config["site_review"]["sha256"]}
         (output/"junction_context.json").write_text(json.dumps(context, indent=2) + "\n")
     except BaseException as exc:
         error = exc
