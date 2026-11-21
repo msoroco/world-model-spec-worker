@@ -28,10 +28,10 @@ def rows(path):
     return [json.loads(line) for line in Path(path).read_text().splitlines() if line.strip()]
 
 
-def audit(case, attempt, *, diagnostic_fixture=False):
-    root = Path(attempt)
+def audit(case, attempt, *, diagnostic_fixture=False, report_path=None):
+    root = Path(attempt).resolve()
     config = json.loads((root / 'config.json').read_text())
-    report = json.loads((root / 'analysis-report.json').read_text())
+    report = json.loads((Path(report_path) if report_path else root / 'analysis-report.json').read_text())
     result = json.loads((root / 'result.json').read_text())
     if (not case.startswith(PREFIX) or config.get('selected_case_id') != case
             or report.get('case_id') != case or result.get('case_id') != case):
@@ -135,9 +135,11 @@ def main():
     parser.add_argument('--case', required=True)
     parser.add_argument('--attempt', required=True)
     parser.add_argument('--diagnostic-fixture', action='store_true')
+    parser.add_argument('--report')
     parser.add_argument('--output', required=True)
     args = parser.parse_args()
-    result = audit(args.case, args.attempt, diagnostic_fixture=args.diagnostic_fixture)
+    result = audit(args.case, args.attempt, diagnostic_fixture=args.diagnostic_fixture,
+                   report_path=args.report)
     Path(args.output).write_text(json.dumps(result, indent=2) + '\n')
     print(json.dumps({'case_id': result['case_id'], 'frames': result['frames'],
                       'checks': result['checks']}))
