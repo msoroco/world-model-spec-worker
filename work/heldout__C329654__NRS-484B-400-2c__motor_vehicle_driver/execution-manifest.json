@@ -1,0 +1,287 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "heldout__C329654__NRS-484B-400-2c__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5b4738624542c97f321a302bd49b9ec154cb2cf63778acf64ba6042f8d5b4fd3",
+  "cases": [
+    {
+      "case_id": "heldout__C329654__NRS-484B-400-2c__motor_vehicle_driver__opposing_front_pass",
+      "construction": "construction-opposing_front_pass.json",
+      "construction_sha256": "d9c45298c184a1a177d50fe301606e983d73c0ff3ab5c952d3b6a934f8c00f09",
+      "kind": "delivery",
+      "measurement_procedure": {
+        "entrypoint": "opposing_turn_finalizer.py"
+      },
+      "measurement_contract": "measurement-contract-opposing_front_pass.json",
+      "fixture_recipe": "work/heldout__C109749__NRS-484B-400-2c__motor_vehicle_driver/diagnostic-recipe-front_pass_no_device.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native route, simultaneous crossing and camera coverage may not realize the intended front passing"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-opposing_front_pass-fallback1.json",
+          "construction_sha256": "57836af51cafaa759a82e1e1df1c2996bab51c3e1074eddba6de4d9d199e444f",
+          "changed_knobs": [
+            "route_step_m=1.0"
+          ],
+          "trigger": {
+            "source": "Original Native waypoint successor inventory",
+            "metric": "connected opposing left-turn paths",
+            "failure_condition": "Primary 2 m route sampling misses a connected left-turn successor"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-opposing_front_pass-fallback2.json",
+          "construction_sha256": "b9604fdc7e2689ca449bb0e83944876607905d5316182b4131175f178e335002",
+          "changed_knobs": [
+            "target_speed_mps=4.0"
+          ],
+          "trigger": {
+            "source": "Original 20 Hz two-body traces",
+            "metric": "simultaneous turn overlap and signed front-relative projection",
+            "failure_condition": "Primary speed 5 m/s does not retain a simultaneous front-passing window"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-opposing_front_pass-fallback3.json",
+          "construction_sha256": "992eb93af55ff948b472cf43a11737aa70fef26c5e6f32b90da2cbe4da546656",
+          "changed_knobs": [
+            "overview_height_delta_m=2.0"
+          ],
+          "trigger": {
+            "source": "Original overview camera frames",
+            "metric": "decoded intersection and both-body pixel coverage",
+            "failure_condition": "Primary overview mount fails to show both vehicles through the turn"
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "heldout__C329654__NRS-484B-400-2c__motor_vehicle_driver__opposing_rear_cross",
+      "construction": "construction-opposing_rear_cross.json",
+      "construction_sha256": "56e1c6f5bc7894d00aee647537931d39b5655b4470547a3a3c75194a9c8c8979",
+      "kind": "delivery",
+      "measurement_procedure": {
+        "entrypoint": "opposing_turn_rear_finalizer.py"
+      },
+      "measurement_contract": "measurement-contract-opposing_rear_cross.json",
+      "fixture_recipe": "work/heldout__C109749__NRS-484B-400-2c__motor_vehicle_driver/diagnostic-recipe-rear_pass_no_device.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original Native body geometry and simultaneous opposing turn remain unresolved."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-opposing_rear_cross-fallback1.json",
+          "construction_sha256": "d8d5117d3552bdfa94550b09a0ec9c5b3567e1cd022a3a7ee7146e0c9f65aaa7",
+          "changed_knobs": [
+            "route_step_m=1.0"
+          ],
+          "trigger": {
+            "source": "Original waypoint successor inventory",
+            "metric": "connected left-turn paths",
+            "failure_condition": "Primary 2 m sampling skips an opposing connected turn branch"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-opposing_rear_cross-fallback2.json",
+          "construction_sha256": "e05da7c04b100b2be219afa78ffd9eed4214dc266d2f6520697d75c73253b1fa",
+          "changed_knobs": [
+            "target_speed_mps=4.0"
+          ],
+          "trigger": {
+            "source": "Original 20 Hz subject/opposing body histories",
+            "metric": "simultaneous left-turn frame count",
+            "failure_condition": "Primary rear controller loses simultaneous junction occupancy"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-opposing_rear_cross-fallback3.json",
+          "construction_sha256": "33c9a4c9e12f92ba6f3a6d1b818269f9aeb44fc2b5019126a72c5bf16161d06e",
+          "changed_knobs": [
+            "overview_height_delta_m=2.0"
+          ],
+          "trigger": {
+            "source": "overview.mkv and original frame map",
+            "metric": "both vehicle bodies and crossing visible",
+            "failure_condition": "Primary mount occludes a body or crossing area"
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "heldout__C329654__NRS-484B-400-2c__motor_vehicle_driver__staggered_left_turns",
+      "kind": "delivery",
+      "measurement_procedure": {
+        "entrypoint": "opposing_turn_finalizer.py"
+      },
+      "measurement_contract": "measurement-contract-staggered_left_turns.json",
+      "fixture_recipe": ".runtime-work/c329654-staggered-draft-package/diagnostic-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native first turn may not clear before second release; source camera coverage and original turn intervals remain unresolved."
+      },
+      "construction": "construction-staggered_left_turns.json",
+      "construction_sha256": "3eb46ae2c3c3bf502ed67772627e200303271fb9696c3fea827023a893c6c607",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-staggered_left_turns-fallback1.json",
+          "construction_sha256": "535467f60d3e291c4e12ac60fba971301bce4e725bc06062ead3f51e5d76b1f4",
+          "changed_knobs": [
+            "route_step_m=1.0"
+          ],
+          "trigger": {
+            "source": "Original waypoint successor inventory",
+            "metric": "connected left-turn paths",
+            "failure_condition": "Primary 2 m sampling skips an opposing connected turn branch"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-staggered_left_turns-fallback2.json",
+          "construction_sha256": "2121dc0660ef1f2f84031c3abe0ea5f7993b79e2dc46089c5b521b2a43f2b322",
+          "changed_knobs": [
+            "target_speed_mps=4.0"
+          ],
+          "trigger": {
+            "source": "Original 20 Hz subject/opposing body histories",
+            "metric": "simultaneous left-turn frame count",
+            "failure_condition": "Primary rear controller loses simultaneous junction occupancy"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-staggered_left_turns-fallback3.json",
+          "construction_sha256": "92cc1a5619f64833eef54d845c13ebc69a9a9c064cd32f51e95f17b51e3416f7",
+          "changed_knobs": [
+            "overview_height_delta_m=2.0"
+          ],
+          "trigger": {
+            "source": "overview.mkv and original frame map",
+            "metric": "both vehicle bodies and crossing visible",
+            "failure_condition": "Primary mount occludes a body or crossing area"
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "heldout__C329654__NRS-484B-400-2c__motor_vehicle_driver__official_device_directs",
+      "kind": "delivery",
+      "measurement_procedure": {
+        "entrypoint": "opposing_turn_finalizer.py"
+      },
+      "measurement_contract": "measurement-contract-official_device_directs.json",
+      "fixture_recipe": "work/heldout__C109749__NRS-484B-400-2c__motor_vehicle_driver/diagnostic-recipe-front_pass_device_alternate.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original Native official-device governing direction and simultaneous crossing remain unresolved."
+      },
+      "construction": "construction-official_device_directs.json",
+      "construction_sha256": "815dfb7724fb9eb56eb98c779232162e4c3961119dd8167359708da6c553a887",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-official_device_directs-fallback1.json",
+          "construction_sha256": "b623ea70834938b2e3593020650a54d55e81d6d420d8869407754c823fd4c547",
+          "changed_knobs": [
+            "directed device branch; inherited front_pass_no_device fallback1 risk knob"
+          ],
+          "trigger": {
+            "source": "Original source geometry and operator signal survey",
+            "metric": "simultaneous turn and signal applicability",
+            "failure_condition": "Primary cannot realize intended directed crossing or original evidence is missing"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-official_device_directs-fallback2.json",
+          "construction_sha256": "1d38d9e460498fc03247410a1a1ca8069056a2993f3d61910b59de8059b91210",
+          "changed_knobs": [
+            "directed device branch; inherited front_pass_no_device fallback2 risk knob"
+          ],
+          "trigger": {
+            "source": "Original source geometry and operator signal survey",
+            "metric": "simultaneous turn and signal applicability",
+            "failure_condition": "Primary cannot realize intended directed crossing or original evidence is missing"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-official_device_directs-fallback3.json",
+          "construction_sha256": "e1bdc16e44c8b8057fe4dc6d6d5c3db2e71e051c3f2eb58f716484e60cdf4b76",
+          "changed_knobs": [
+            "directed device branch; inherited front_pass_no_device fallback3 risk knob"
+          ],
+          "trigger": {
+            "source": "Original source geometry and operator signal survey",
+            "metric": "simultaneous turn and signal applicability",
+            "failure_condition": "Primary cannot realize intended directed crossing or original evidence is missing"
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "heldout__C329654__NRS-484B-400-2c__motor_vehicle_driver__official_device_inactive",
+      "kind": "delivery",
+      "measurement_procedure": {
+        "entrypoint": "opposing_turn_finalizer.py"
+      },
+      "measurement_contract": "measurement-contract-official_device_inactive.json",
+      "fixture_recipe": ".runtime-work/c329654-device-inactive-draft-package/diagnostic-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original Native device presence, inoperative state, and applicability remain unresolved."
+      },
+      "construction": "construction-official_device_inactive.json",
+      "construction_sha256": "89b06b81920d3ce3bc6a00e85560718bf1151944c5b8760fbc0d0e24be0e1755",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-official_device_inactive-fallback1.json",
+          "construction_sha256": "a668b2b2a55d518f157fbf64d31e4d55d6179fefafbc0147739402fb76ed43b9",
+          "changed_knobs": [
+            "directed device branch; inherited front_pass_no_device fallback1 risk knob"
+          ],
+          "trigger": {
+            "source": "Original source geometry and operator signal survey",
+            "metric": "simultaneous turn and signal applicability",
+            "failure_condition": "Primary cannot realize intended directed crossing or original evidence is missing"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "construction-official_device_inactive-fallback2.json",
+          "construction_sha256": "72e2ca52815d70cc352c00ff9862961026abca04074ab51cc1c430ba47df40f6",
+          "changed_knobs": [
+            "directed device branch; inherited front_pass_no_device fallback2 risk knob"
+          ],
+          "trigger": {
+            "source": "Original source geometry and operator signal survey",
+            "metric": "simultaneous turn and signal applicability",
+            "failure_condition": "Primary cannot realize intended directed crossing or original evidence is missing"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "construction-official_device_inactive-fallback3.json",
+          "construction_sha256": "2f9347b3e9e15ad0fb3a9db67179183fa1236ad36198becb1a43bc30ffd4bab0",
+          "changed_knobs": [
+            "directed device branch; inherited front_pass_no_device fallback3 risk knob"
+          ],
+          "trigger": {
+            "source": "Original source geometry and operator signal survey",
+            "metric": "simultaneous turn and signal applicability",
+            "failure_condition": "Primary cannot realize intended directed crossing or original evidence is missing"
+          }
+        }
+      ]
+    }
+  ]
+}
