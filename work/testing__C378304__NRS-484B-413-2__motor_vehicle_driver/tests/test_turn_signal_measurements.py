@@ -1,10 +1,13 @@
 import importlib.util
 import json
+import hashlib
 import tempfile
 import unittest
+import sys
 from pathlib import Path
 
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 spec = importlib.util.spec_from_file_location("turn_signal_measurements", Path(__file__).resolve().parents[1] / "turn_signal_measurements.py")
 measure = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(measure)
@@ -12,17 +15,26 @@ spec.loader.exec_module(measure)
 
 class TurnSignalTests(unittest.TestCase):
     def fixture(self, root, distance, district="business", interrupted=False):
+        zone = root / "freight-zone-site-source.txt"
+        zone.write_text("Synthetic zone source for CPU fixture; physical sign and district unverified.\n")
         context = {"native_map_id": "TownX", "approach_road_id": 1,
                    "approach_lane_id": -1, "outgoing_road_id": 2,
                    "outgoing_lane_id": -1, "native_route_source": "native-lane-links",
                    "district_source": "source-reviewed-map-context",
-                   "freight_loading_zone_source": "native-zone-and-side-video",
+                   "freight_loading_zone_source": zone.name,
+                   "freight_loading_zone_source_sha256": hashlib.sha256(zone.read_bytes()).hexdigest(),
                    "district_type": district, "turn_onset_frame": 104}
         (root / "route_context.json").write_text(json.dumps(context))
-        x = [-1, 0, distance / 2, distance * .75, distance]
-        indicators = [False, True, not interrupted, True, True]
+        x = [-1, 0, distance / 2, distance * .75, distance,
+             distance + 1, distance + 2]
+        indicators = [False, True, True, not interrupted, True, True, True]
+        headings = [0, 0, 0, 0, -5, -25, -65]
         rows = [{"frame": 100+i, "time_s": 1+i*.05,
                  "ego_position_xy_m": [point, 0], "ego_speed_mps": 5,
+                 "ego_heading_deg": headings[i],
+                 "native_road_id": 1 if i < 6 else 2,
+                 "native_lane_id": -1,
+                 "ego_light_mask": 16 if indicators[i] else 0,
                  "right_indicator": indicators[i]}
                 for i, point in enumerate(x)]
         frames = [{"video_frame": i, "carla_frame": row["frame"], "time_s": row["time_s"]}
@@ -54,6 +66,38 @@ class TurnSignalTests(unittest.TestCase):
             frames[3]["carla_frame"] = 999
             (root / "video_frames.jsonl").write_text("".join(json.dumps(row)+"\n" for row in frames))
             with self.assertRaisesRegex(ValueError, "frame join"):
+                measure.analyze(root)
+
+    def test_authored_onset_and_direction_must_match_source_course(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            self.fixture(root, 30.48)
+            context = json.loads((root / "route_context.json").read_text())
+            context["turn_onset_frame"] = 103
+            (root / "route_context.json").write_text(json.dumps(context))
+            with self.assertRaisesRegex(ValueError, "disagrees"):
+                measure.analyze(root)
+            context["turn_onset_frame"] = 104
+            (root / "route_context.json").write_text(json.dumps(context))
+            rows = [json.loads(line) for line in (root / "drive_history.jsonl").read_text().splitlines()]
+            for row in rows:
+                row["ego_heading_deg"] = -row["ego_heading_deg"]
+            (root / "drive_history.jsonl").write_text("".join(json.dumps(row)+"\n" for row in rows))
+            with self.assertRaisesRegex(ValueError, "right-turn onset"):
+                measure.analyze(root)
+
+    def test_zone_source_and_native_light_mask_are_bound(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            self.fixture(root, 30.48)
+            (root / "freight-zone-site-source.txt").write_text("changed source\n")
+            with self.assertRaisesRegex(ValueError, "bound source"):
+                measure.analyze(root)
+            self.fixture(root, 30.48)
+            rows = [json.loads(line) for line in (root / "drive_history.jsonl").read_text().splitlines()]
+            rows[2]["ego_light_mask"] = 0
+            (root / "drive_history.jsonl").write_text("".join(json.dumps(row)+"\n" for row in rows))
+            with self.assertRaisesRegex(ValueError, "light-mask"):
                 measure.analyze(root)
 
 

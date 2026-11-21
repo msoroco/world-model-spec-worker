@@ -94,6 +94,10 @@ def analyze(root: Path) -> dict:
             sample[who] = {"speed_mps": speed, signed_field: signed,
                            "body_in_intersection": inside}
         samples.append(sample)
+    ego_entry_sample = next((sample for sample in samples if first_entry["ego"] and
+                             sample["frame"] == first_entry["ego"]["frame"]), None)
+    other_inside_at_ego_entry = (ego_entry_sample["other"]["body_in_intersection"]
+                                 if ego_entry_sample else None)
     return {"format": "worker-inoperative-signal-stop-history", "sources": hashes,
             "selected_stop_boundary": boundary, "selected_stop_boundary_source": context[source],
             "intersection_id": context["intersection_id"],
@@ -102,6 +106,7 @@ def analyze(root: Path) -> dict:
             "first_body_entry": first_entry,
             "ego_stopped_before_entry_observed": bool(first_stop["ego"] and first_entry["ego"] and first_stop["ego"]["time_s"] < first_entry["ego"]["time_s"]),
             "other_completed_stop_before_ego_observed": bool(first_stop["other"] and first_stop["ego"] and first_stop["other"]["time_s"] < first_stop["ego"]["time_s"]),
+            "other_body_inside_at_ego_entry_observed": other_inside_at_ego_entry,
             "samples": samples,
             "cautious_proceeding_judgment": "unresolved", "yield_judgment": "unresolved",
             "statutory_inoperative_judgment": "unresolved; Native Off and source declarations require physical review"}

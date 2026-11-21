@@ -52,6 +52,7 @@ class StopTests(unittest.TestCase):
             self.assertTrue(report["other_completed_stop_before_ego_observed"])
             self.assertEqual(report["first_body_entry"]["other"]["frame"], 102)
             self.assertEqual(report["first_body_entry"]["ego"]["frame"], 103)
+            self.assertTrue(report["other_body_inside_at_ego_entry_observed"])
 
     def test_rejects_operating_signal_and_stale_frame(self):
         with tempfile.TemporaryDirectory() as temp:

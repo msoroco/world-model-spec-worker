@@ -9,10 +9,12 @@ import hashlib
 import json
 import math
 from pathlib import Path
+from right_turn_course import measure_right_turn
 
 
 FEET_TO_M = 0.3048
-REQUIRED = ("drive_history.jsonl", "video_frames.jsonl", "route_context.json")
+REQUIRED = ("drive_history.jsonl", "video_frames.jsonl", "route_context.json",
+            "freight-zone-site-source.txt")
 
 
 def _number(value):
@@ -42,12 +44,17 @@ def analyze(root: Path) -> dict:
     district = context.get("district_type")
     if district not in ("business", "residential", "other"):
         raise ValueError("District class not sourced")
-    if not context["freight_loading_zone_source"]:
-        raise ValueError("Freight-loading-zone context lacks source")
+    if (context["freight_loading_zone_source"] != "freight-zone-site-source.txt"
+            or context.get("freight_loading_zone_source_sha256") !=
+            hashes["freight-zone-site-source.txt"]):
+        raise ValueError("Freight-loading-zone context lacks bound source")
     threshold = (100 if district in ("business", "residential") else 300) * FEET_TO_M
     rows, frames = _rows(root / "drive_history.jsonl"), _rows(root / "video_frames.jsonl")
     if len(rows) < 3 or len(rows) != len(frames):
         raise ValueError("Incomplete drive/frame history")
+    course = measure_right_turn(rows, context)
+    if context["turn_onset_frame"] != course["turn_onset_frame"]:
+        raise ValueError("Authored turn onset disagrees with measured Native course")
     prior = (-1, -math.inf)
     path = 0.0
     previous_xy = None
@@ -73,6 +80,9 @@ def analyze(root: Path) -> dict:
         indicator = row.get("right_indicator")
         if type(indicator) is not bool:
             raise ValueError("Missing measured right indicator")
+        mask = row.get("ego_light_mask")
+        if type(mask) is not int or indicator != bool(mask & 16):
+            raise ValueError("Right indicator differs from Native light-mask readback")
         if indicator and prior_indicator is False:
             seen_off_before_on = True
             signal_start_path = path
@@ -80,7 +90,7 @@ def analyze(root: Path) -> dict:
             signal_start_path = None
         prior_indicator = indicator
         speeds.append(_number(row.get("ego_speed_mps")))
-        if fid == context["turn_onset_frame"]:
+        if fid == course["turn_onset_frame"]:
             if not seen_off_before_on or signal_start_path is None or not indicator:
                 raise ValueError("No fully observed continuous pre-turn right signal")
             onset = {"frame": fid, "time_s": time, "path_length_m": path,
@@ -92,8 +102,9 @@ def analyze(root: Path) -> dict:
     return {"format": "worker-continuous-right-turn-signal-distance", "sources": hashes,
             "district_type": district, "required_distance_m": threshold,
             "freight_loading_zone_source": context["freight_loading_zone_source"],
-            "turn_onset": onset, "observed_continuous_distance_meets_boundary":
+            "turn_onset": onset, "course_measurement": course,
+            "observed_continuous_distance_meets_boundary":
                 onset["continuous_right_signal_distance_m"] >= threshold - 1e-9,
             "approach_speed_samples_mps": speeds,
-            "route_turn_direction_judgment": "unresolved until Native route geometry is reviewed",
+            "route_turn_direction_judgment": "sampled rightward heading and outgoing-lane transition; Native geometry still requires review",
             "weather_exception": "none in NRS 484B.413(2)"}

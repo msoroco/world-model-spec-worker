@@ -2,11 +2,15 @@ import importlib.util
 import json
 import tempfile
 import unittest
+import subprocess
+import sys
+import shutil
 from pathlib import Path
 from types import SimpleNamespace as NS
 
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
 
 
 def load(name):
@@ -18,6 +22,7 @@ def load(name):
 
 measure = load("crossing_measurements")
 control = load("signal_control")
+comparison = load("signal_comparison")
 
 
 def body(x):
@@ -95,6 +100,65 @@ class CrossingTests(unittest.TestCase):
             self.assertTrue(report["other_entered_before_ego_observed"])
             self.assertTrue(report["ego_approaching_at_other_entry_observed"])
             self.assertEqual(report["minimum_ego_speed_while_other_inside_mps"], 0)
+            self.assertEqual(report["occupancy_intervals"]["other"][0]["entry_frame"], 101)
+            self.assertFalse(report["other_exit_observed"])
+            self.assertEqual(len(report["ego_speed_samples_while_other_inside"]), 2)
+
+    def test_operating_signal_comparison_and_saved_cli(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            self.fixture(root)
+            rows = [json.loads(line) for line in (root / "crossing_history.jsonl").read_text().splitlines()]
+            for row in rows:
+                row["signal_state"] = "Green"
+            (root / "crossing_history.jsonl").write_text("".join(json.dumps(row)+"\n" for row in rows))
+            with self.assertRaisesRegex(ValueError, "not observed Off"):
+                measure.analyze(root)
+            report = measure.analyze(root, signal_mode="operating")
+            self.assertEqual(report["observed_signal_states"], ["Green"] * 4)
+            output = root / "processed" / "crossing.json"
+            done = subprocess.run([sys.executable, str(ROOT / "crossing_measurements.py"),
+                                   str(root), str(output), "--signal-mode", "operating"],
+                                  text=True, capture_output=True)
+            self.assertEqual(done.returncode, 0, done.stderr)
+            self.assertEqual(json.loads(output.read_text())["sources"], report["sources"])
+            rows[2]["signal_state"] = "Off"
+            (root / "crossing_history.jsonl").write_text("".join(json.dumps(row)+"\n" for row in rows))
+            with self.assertRaisesRegex(ValueError, "not observed operating"):
+                measure.analyze(root, signal_mode="operating")
+
+    def test_other_already_inside_is_left_censored(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            self.fixture(root)
+            rows = [json.loads(line) for line in (root / "crossing_history.jsonl").read_text().splitlines()]
+            rows[0]["other"]["body_vertices_xy_m"] = body(1)
+            (root / "crossing_history.jsonl").write_text("".join(json.dumps(row)+"\n" for row in rows))
+            with self.assertRaisesRegex(ValueError, "No observed pre-entry"):
+                measure.analyze(root)
+            report = measure.analyze(root, allow_other_initially_inside=True)
+            self.assertTrue(report["other_initially_inside_observed"])
+            self.assertIsNone(report["first_body_entry"]["other"])
+            self.assertIsNone(report["other_entered_before_ego_observed"])
+            self.assertIsNone(report["occupancy_intervals"]["other"][0]["entry_time_s"])
+
+    def test_signal_comparison_rejects_changed_trajectory(self):
+        with tempfile.TemporaryDirectory() as temp:
+            off, operating = Path(temp) / "off", Path(temp) / "operating"
+            off.mkdir()
+            self.fixture(off)
+            shutil.copytree(off, operating)
+            rows = [json.loads(line) for line in (operating / "crossing_history.jsonl").read_text().splitlines()]
+            for row in rows:
+                row["signal_state"] = "Green"
+            (operating / "crossing_history.jsonl").write_text("".join(json.dumps(row)+"\n" for row in rows))
+            report = comparison.audit(off, operating)
+            self.assertTrue(report["fixed_trajectories_observed"])
+            self.assertEqual(report["off_states"], ["Off"])
+            rows[2]["ego"]["speed_mps"] = 17
+            (operating / "crossing_history.jsonl").write_text("".join(json.dumps(row)+"\n" for row in rows))
+            with self.assertRaisesRegex(ValueError, "trajectory or source changed"):
+                comparison.audit(off, operating)
 
     def test_off_signal_native_selection_and_restoration(self):
         wrong, selected = FakeLight(99, -1), FakeLight(3, -1)

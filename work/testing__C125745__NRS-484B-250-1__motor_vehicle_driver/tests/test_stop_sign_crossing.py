@@ -36,6 +36,18 @@ class FakeSign:
         return "native-sign-transform"
 
 
+def site():
+    return {"native_map_name": "TownX", "junction_id": 9,
+            "highway_ids": {"ego": "a", "other": "b"},
+            "crossing_source": "review/crossing", "median_opening_source": "review/median",
+            "different_highways_source": "review/highways",
+            "device_inventory_source": "review/devices",
+            "sign_erection_source": "review/sign", "camera_plan_source": "review/cameras",
+            "crossing_polygon_xy_m": [[0, -5], [10, -5], [10, 5], [0, 5]],
+            "ego_approach": [-10, 0, 0, 0], "ego_entry": [2, 0, 0, 0],
+            "other_approach": [5, -10, 0, 90], "other_entry": [5, 0, 0, 90]}
+
+
 class FakeActors(list):
     def filter(self, pattern):
         assert pattern == "traffic.stop*"
@@ -101,6 +113,49 @@ class CrossingTests(unittest.TestCase):
             (root / "video_frames.jsonl").write_text("".join(json.dumps(row)+"\n" for row in frames))
             with self.assertRaisesRegex(ValueError, "frame join"):
                 measure.analyze(root)
+
+    def test_site_geometry_rejects_wrong_direction_and_highway(self):
+        packet = site()
+        self.assertGreater(signs.validate_site(packet).area, 0)
+        packet["ego_approach"][3] = 180
+        with self.assertRaisesRegex(ValueError, "points away"):
+            signs.validate_site(packet)
+        packet = site()
+        packet["highway_ids"]["other"] = "a"
+        with self.assertRaisesRegex(ValueError, "Distinct sourced"):
+            signs.validate_site(packet)
+
+    def test_native_construction_and_cleanup(self):
+        packet = site()
+        transforms = {key: NS(location=key) for key in
+                      ("ego_approach", "ego_entry", "other_approach", "other_entry")}
+        waypoints = {
+            "ego_approach": NS(road_id=3, transform=NS(location="ego-approach-point")),
+            "other_approach": NS(road_id=4, transform=NS(location="other-approach-point")),
+            "ego_entry": NS(road_id=3, is_junction=True, get_junction=lambda: NS(id=9)),
+            "other_entry": NS(road_id=4, is_junction=True, get_junction=lambda: NS(id=9)),
+        }
+        sign = FakeSign(True)
+        sign.trigger_volume = NS(contains=lambda point, transform:
+                                 point == "ego-approach-point")
+        actors = []
+        def spawn(blueprint, transform):
+            actor = NS(destroy=lambda: actors.remove(actor))
+            actors.append(actor)
+            return actor
+        world = NS(get_map=lambda: NS(name="TownX", get_waypoint=lambda point, project_to_road:
+                                      waypoints[point]),
+                   get_actors=lambda: FakeActors([sign]), try_spawn_actor=spawn)
+        with signs.construct_candidate(world, packet, transforms, "vehicle") as candidate:
+            self.assertEqual(candidate["approach_road_ids"], {"ego": 3, "other": 4})
+            self.assertEqual(len(actors), 2)
+        self.assertEqual(actors, [])
+        waypoints["other_entry"] = NS(road_id=4, is_junction=True,
+                                        get_junction=lambda: NS(id=10))
+        with self.assertRaisesRegex(ValueError, "selected Native junction"):
+            with signs.construct_candidate(world, packet, transforms, "vehicle"):
+                pass
+        self.assertEqual(actors, [])
 
 
 if __name__ == "__main__":

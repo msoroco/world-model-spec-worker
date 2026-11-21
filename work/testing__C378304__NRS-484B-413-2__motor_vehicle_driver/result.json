@@ -9,11 +9,23 @@
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C378304__NRS-484B-413-2__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "54315bc4c0710d3ad01bc719101cadbd798a68353a7492c7d90c87c9950796cd"
+      "sha256": "96e3ed2fe1bd0df06b454976b619f077ece9cdaf520ea1b19275ae6ac37b4412"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C378304__NRS-484B-413-2__motor_vehicle_driver",
+      "exit_code": 0,
+      "log": "assignment-check.log",
+      "sha256": "68222bc4547631ef425a8135f179e8cd14335ce81fa041fa614eae511e79d38f"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C378304__NRS-484B-413-2__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "strict-gate.log",
+      "sha256": "8aef413169724d9407e9d952cba2ff32a092e36fc56cfd20e5c6db11ce83d5aa"
     }
   ],
   "remaining_gpu_checks": [
     "Actual freight-loading zone, business-district/right-turn geometry, continuous visible indication and weather/camera behavior."
   ],
-  "reason": "CPU-tested continuous right-indicator path-distance measurement adapted to the freight-loading-zone cell exists. Actual zone/turn construction, course-change onset measurement, four-camera capture, saved finalizer, three fallbacks per selected case, semantic proposals, exact offline/compatibility/saved-processing proofs and independent audits remain unfinished CPU work. See HANDOFF.md."
+  "reason": "CPU-tested draft OpenDRIVE right-turn construction now includes a 120 m approach, clockwise connector, curbside freight sign and bay objects; Native rendering is unverified. Source-trace measurement derives sampled right-turn onset from Native heading and road/lane transition, cross-checks the authored onset, checks Native light-mask readback and binds a retained freight-zone site source by SHA. Native controller, four-camera capture, saved finalizer, candidate fallbacks, semantic proposals, exact offline/compatibility/saved-processing proofs and independent audits remain unfinished CPU work. The strict gate fails because partial/missing packages remain. See HANDOFF.md."
 }
