@@ -1,0 +1,128 @@
+{
+  "assignment_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver",
+  "cases": [
+    {
+      "candidate_offline_status": "pending",
+      "candidate_risk": {
+        "reason": "Native body tracking and original warning/surface pixels remain unverified",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "lower requested controller speed from 4 to 3 m/s"
+          ],
+          "construction": "draft-newly-laid-finalized-candidates/newly_laid_crossing/fallback1/construction.json",
+          "construction_sha256": "e93580258eff6dc1b7aeb160b4868ec56fef5f2b863fed52614e2066d622cd1f",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "ego overshoots the surveyed crossing or avoidance route",
+            "metric": "sampled body/route tracking near laid-surface polygon",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "raise overview camera from 24 to 28 m and pitch from -55 to -62 degrees"
+          ],
+          "construction": "draft-newly-laid-finalized-candidates/newly_laid_crossing/fallback2/construction.json",
+          "construction_sha256": "dd9d68fcdb8010db51aba7a6edb49c3b28bad04a5e69b9de5ba1456578f257b7",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "overview pixels omit the warning person or laid-surface edge",
+            "metric": "warning-person and full laid-surface polygon visibility",
+            "source": "overview.mkv"
+          }
+        },
+        {
+          "changed_knobs": [
+            "reduce waypoint reach from 1.5 to 1.0 m",
+            "increase steering response by reducing divisor from 40 to 32 degrees"
+          ],
+          "construction": "draft-newly-laid-finalized-candidates/newly_laid_crossing/fallback3/construction.json",
+          "construction_sha256": "a498c860a871de5dadba5e76e278cf13e574285272dba323ca92da33709418a6",
+          "id": "fallback3",
+          "trigger": {
+            "failure_condition": "body footprint leaves the surveyed route corridor",
+            "metric": "sampled lateral route error on surface approach",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__newly_laid_crossing",
+      "construction": "draft-newly-laid-finalized-candidates/newly_laid_crossing/primary/construction.json",
+      "construction_sha256": "afa7e6db8bc34bc9d94887f4985dbc252420b0aaa9e7bfee4cc2925533c43664",
+      "finalizer_status": "source_derived_cpu_test_pending",
+      "fixture_recipe": "work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/newly-laid-diagnostics/newly_laid_crossing/primary-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "newly-laid-measurement-contracts/newly_laid_crossing.json",
+      "measurement_procedure": {
+        "entrypoint": "native/newly_laid_finalize.py",
+        "output_schema": "c183370-newly-laid-diagnostic-finalization-v1"
+      }
+    },
+    {
+      "candidate_offline_status": "pending",
+      "candidate_risk": {
+        "reason": "Native body tracking and original warning/surface pixels remain unverified",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "lower requested controller speed from 4 to 3 m/s"
+          ],
+          "construction": "draft-newly-laid-finalized-candidates/newly_laid_avoidance/fallback1/construction.json",
+          "construction_sha256": "16c4da92bcfce3b183eeca7a4cae8ea20440ae006068225b7dfa373a8696be29",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "ego overshoots the surveyed crossing or avoidance route",
+            "metric": "sampled body/route tracking near laid-surface polygon",
+            "source": "native-actors.jsonl"
+          }
+        },
+        {
+          "changed_knobs": [
+            "raise overview camera from 24 to 28 m and pitch from -55 to -62 degrees"
+          ],
+          "construction": "draft-newly-laid-finalized-candidates/newly_laid_avoidance/fallback2/construction.json",
+          "construction_sha256": "ef2cf49e67701a1566be040a69b4b6452c8dd31616bb51f67e9ad0d291d0918a",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "overview pixels omit the warning person or laid-surface edge",
+            "metric": "warning-person and full laid-surface polygon visibility",
+            "source": "overview.mkv"
+          }
+        },
+        {
+          "changed_knobs": [
+            "reduce waypoint reach from 1.5 to 1.0 m",
+            "increase steering response by reducing divisor from 40 to 32 degrees"
+          ],
+          "construction": "draft-newly-laid-finalized-candidates/newly_laid_avoidance/fallback3/construction.json",
+          "construction_sha256": "af6a91d21d56ad1e6e686f75a37c3f3cb1831abd458b3fd88ee0391cf1148e26",
+          "id": "fallback3",
+          "trigger": {
+            "failure_condition": "body footprint leaves the surveyed route corridor",
+            "metric": "sampled lateral route error on surface approach",
+            "source": "native-actors.jsonl"
+          }
+        }
+      ],
+      "case_id": "training__C183370__LVMC-11-22-100__motor_vehicle_driver__newly_laid_avoidance",
+      "construction": "draft-newly-laid-finalized-candidates/newly_laid_avoidance/primary/construction.json",
+      "construction_sha256": "bdf81f6154d6cc11a605e0791f159b3d9a9ca62117f19e229039b9b2e6b26a48",
+      "finalizer_status": "source_derived_cpu_test_pending",
+      "fixture_recipe": "work/training__C183370__LVMC-11-22-100__motor_vehicle_driver/newly-laid-diagnostics/newly_laid_avoidance/primary-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "newly-laid-measurement-contracts/newly_laid_avoidance.json",
+      "measurement_procedure": {
+        "entrypoint": "native/newly_laid_finalize.py",
+        "output_schema": "c183370-newly-laid-diagnostic-finalization-v1"
+      }
+    }
+  ],
+  "format": "worker-execution-manifest",
+  "runtime_manifest_sha256": "5b4738624542c97f321a302bd49b9ec154cb2cf63778acf64ba6042f8d5b4fd3",
+  "status": "draft_newly_laid_source_finalization_not_delivery_ready"
+}
