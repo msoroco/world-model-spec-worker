@@ -475,15 +475,97 @@ def audit_physical_outcomes(*, tamper=False):
             'legal_acceptance_claimed': False}
 
 
+def physical_fixture(case_id, kind, *, tamper=False):
+    """Save one exact case's pinned physical assessment or lifecycle test."""
+    here = Path(__file__).resolve().parent
+    root = here.parents[1]
+    manifest = json.loads((here / 'execution-manifest.json').read_text())
+    entry = next((item for item in manifest['cases'] if item['case_id'] == case_id), None)
+    if entry is None:
+        raise ValueError('Unknown selected physical fixture case')
+    if kind == 'lifecycle':
+        events = ['capture_finished', 'encoders_closed', 'restoration_verified',
+                  'native_exit', 'owner_released', 'saved_processing_started']
+        def valid(rows):
+            return (rows.index('capture_finished') < rows.index('encoders_closed')
+                    < rows.index('restoration_verified') < rows.index('native_exit')
+                    < rows.index('owner_released') < rows.index('saved_processing_started'))
+        early = events.copy()
+        early[3], early[4] = early[4], early[3]
+        if tamper:
+            if valid(early):
+                raise AssertionError('Premature owner release was accepted')
+            raise ValueError('Premature owner release rejected')
+        if not valid(events) or valid(early):
+            raise AssertionError('Lifecycle ordering test failed')
+        return {'case_id': case_id, 'events': events,
+                'premature_owner_release_rejected': True,
+                'provenance_kind': 'synthetic_fixture', 'diagnostic_fixture': True}
+    if kind not in ('complete_motion', 'incomplete_motion', 'missing_evidence'):
+        raise ValueError('Unknown physical fixture kind')
+    construction = json.loads((here / entry['construction']).read_text())
+    config = json.loads(next(item['content'] for item in construction['files']
+                             if item['path'] == 'config.json'))
+    sys.path.insert(0, str(root / 'runtime' / 'scenario_pipeline'))
+    from worker_exchange.native_output import assess_physical, default_descriptor
+    descriptor = default_descriptor(config)
+    if descriptor['criterion'] != 'travel_progress':
+        raise ValueError('Unsupported selected physical criterion')
+    count = round(float(config['duration_s']) * float(config['rate_hz']))
+    if count < 3:
+        raise ValueError('Selected capture too short for physical assessment')
+    with TemporaryDirectory(prefix='c295149-physical-', dir=root / '.runtime-work') as temp:
+        folder = Path(temp)
+        (folder / 'config.json').write_text(json.dumps(config, sort_keys=True) + '\n')
+        frames = [{'carla_frame': 42000 + i, 'time_s': i / float(config['rate_hz'])}
+                  for i in range(count)]
+        (folder / 'video_frames.jsonl').write_text(''.join(
+            json.dumps(row) + '\n' for row in frames))
+        if kind != 'missing_evidence':
+            factor = 1.5 if kind == 'complete_motion' else .1
+            distance = descriptor['minimum_progress_m'] * factor
+            trace = [{'frame': row['carla_frame'], 'time_s': row['time_s'],
+                      'position_m': [distance * i / (count - 1), 0, 0]}
+                     for i, row in enumerate(frames)]
+            if tamper:
+                trace[-1]['frame'] += 1
+            (folder / 'trace.jsonl').write_text(''.join(
+                json.dumps(row) + '\n' for row in trace))
+        assessed = assess_physical(folder, config)
+    expected = {'complete_motion': 'met', 'incomplete_motion': 'not_met',
+                'missing_evidence': 'unverified'}[kind]
+    if assessed['physical_checks']['maneuver']['status'] != expected:
+        raise ValueError('Physical assessment differs from authored source outcome')
+    if assessed['maneuver_completed'] != (expected == 'met'):
+        raise ValueError('Physical completion boolean differs from source outcome')
+    if expected == 'met' and not assessed['realized_observables']:
+        raise ValueError('Complete motion lacks measured observables')
+    return {'case_id': case_id, 'construction_sha256': entry['construction_sha256'],
+            'fixture_kind': kind, 'provenance_kind': 'synthetic_fixture',
+            'diagnostic_fixture': True, 'actual_native_capture': False,
+            'physical_acceptance_claimed': False,
+            'legal_acceptance_claimed': False, **assessed}
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--comparison', required=True)
     parser.add_argument('--tamper', action='store_true')
     parser.add_argument('--output', default='.runtime-work/c295149-release-motion-diagnostic')
+    parser.add_argument('--case')
+    parser.add_argument('--kind')
     args = parser.parse_args()
     if args.comparison == 'release_motion_diagnostic':
         print(json.dumps(audit_release_motion_diagnostic(args.output, tamper=args.tamper)))
     elif args.comparison == 'physical_outcome_diagnostic':
         print(json.dumps(audit_physical_outcomes(tamper=args.tamper)))
+    elif args.comparison == 'physical_fixture':
+        if not args.case or not args.kind:
+            raise ValueError('Exact case and fixture kind required')
+        result = physical_fixture(args.case, args.kind, tamper=args.tamper)
+        Path(args.output).parent.mkdir(parents=True, exist_ok=True)
+        Path(args.output).write_text(json.dumps(result, indent=2) + '\n')
+        print(json.dumps({'case_id': args.case, 'kind': args.kind,
+                          'status': 'passed', 'synthetic_fixture': True}))
     else:
         print(json.dumps(audit_exact(args.comparison, tamper=args.tamper)))
