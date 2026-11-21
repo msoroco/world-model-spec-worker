@@ -43,11 +43,11 @@ def check(config):
     geometry = geometry_check()
     suffix = config["case_suffix"]
     candidate = config["candidate_id"]
-    if suffix not in ("condition_a","condition_b") or candidate not in ("primary","fallback1","fallback2","fallback3"):
+    if suffix not in ("condition_a","condition_b","condition_c") or candidate not in ("primary","fallback1","fallback2","fallback3"):
         raise ValueError("Unknown selected case or construction")
     if config["duration_s"] != 42 or config["rate_hz"] != 20:
         raise ValueError("Capture rate/duration differs from plan")
-    if config['case_id'].split('__')[-1] != {'condition_a':'false','condition_b':'true'}[suffix]:
+    if config['case_id'].split('__')[-1] != {'condition_a':'false','condition_b':'true','condition_c':'control'}[suffix]:
         raise ValueError("Case identity differs from route")
     parameters(suffix,candidate)
     cameras=camera_plan(candidate)
@@ -164,12 +164,12 @@ def execute(config, output, host, port):
         suffix=config["case_suffix"];candidate=config["candidate_id"]
         blueprint=world.get_blueprint_library().find("vehicle.lincoln.mkz_2020")
         blueprint.set_attribute("role_name","c110812_ego")
-        ego=world.spawn_actor(blueprint,carla.Transform(carla.Location(x=12,y=-1.75,z=.5),carla.Rotation(yaw=0)))
+        ego=world.spawn_actor(blueprint,carla.Transform(carla.Location(x=25 if config['case_suffix']=='condition_c' else 12,y=-1.75,z=.5),carla.Rotation(yaw=0)))
         owned.append(ego)
         ego.apply_control(carla.VehicleControl(brake=1,hand_brake=True))
         for _ in range(40):world.tick()
         initial=body_xy(ego)
-        if not all(-3.5<y<0 and 7<x<15 for x,y in initial):
+        if not all(-3.5<y<0 and (20<x<28 if config['case_suffix']=='condition_c' else 7<x<15) for x,y in initial):
             raise RuntimeError("Initial Native body touches intersection or road edge")
         native_route=route(suffix)
         knobs=controller_parameters(suffix,candidate)

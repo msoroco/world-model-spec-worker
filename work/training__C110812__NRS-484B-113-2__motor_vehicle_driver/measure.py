@@ -10,7 +10,7 @@ def measure(source:Path,expected_sha256:str):
     rows=[json.loads(line) for line in raw.splitlines()]
     if len(rows)!=840:raise ValueError('Exact 840-frame saved path required')
     prior_frame=None;prior_time=None;prior_pose=None;start_heading=None
-    backing=0;turning=0;max_heading=0;corner_events=[];crosswalk_events=0;max_crosswalk_overlap=0
+    backing=0;turning=0;max_heading=0;corner_events=[];crosswalk_events=0;max_crosswalk_overlap=0;max_intersection_overlap=0
     for index,row in enumerate(rows):
         frame=row.get('native_frame');time=row.get('time_s')
         if row.get('video_frame')!=index or type(frame) is not int or (prior_frame is not None and frame!=prior_frame+1):
@@ -48,6 +48,7 @@ def measure(source:Path,expected_sha256:str):
                 turning+=1
                 if overlap(body,INTERSECTION)>0:corner_events.append(index)
         if reverse<-.05:
+            max_intersection_overlap=max(max_intersection_overlap,overlap(body,INTERSECTION))
             backing+=1
             max_heading=max(max_heading,abs((heading-start_heading+180)%360-180))
             crosswalk_overlap=overlap(body,CROSSWALK)
@@ -61,7 +62,8 @@ def measure(source:Path,expected_sha256:str):
             'corner_event_frames':len(corner_events),'max_reverse_heading_change_deg':round(max_heading,5),
             'backing_crosswalk_event_frames':crosswalk_events,
             'max_backing_crosswalk_overlap_m2':round(max_crosswalk_overlap,5),
-            'relation':'backing_around_street_corner' if turning>=20 and max_heading>=30 else 'backing_straight_through_intersection',
+            'max_backing_intersection_overlap_m2':round(max_intersection_overlap,5),
+            'relation':'backing_clear_of_intersection' if max_intersection_overlap==0 else ('backing_around_street_corner' if turning>=20 and max_heading>=30 else 'backing_straight_through_intersection'),
             'scope':'sampled reverse motion and corner heading, with crosswalk exclusion; no physical or legal verdict'}
 if __name__=='__main__':
     import argparse

@@ -25,9 +25,9 @@ def offline(entry, suffix, candidate):
     selected = entry if candidate == 'primary' else next(
         c for c in entry['candidates'] if c['id'] == candidate)
     return {'exit_code': 0, 'construction_sha256': selected['construction_sha256'],
-            'command': f'.venv-cpu/bin/python runtime.py offline --manifest {PREFIX}execution-manifest.json '
+            'command': f'.venv-cpu/bin/python runtime.py offline --manifest {PREFIX}current-base-proof-manifest.json '
                        f'--case {entry["case_id"]} --candidate {candidate} '
-                       f'--output .runtime-work/c110812-formal-offline-{suffix}-{candidate}',
+                       f'--output .runtime-work/c110812-base-offline-{suffix}-{candidate}',
             'log': log.name, 'log_sha256': sha(log)}
 
 
@@ -52,7 +52,7 @@ def main():
     if not matrix_path.is_file() or len(read(matrix_path).get('rows', [])) != 8:
         raise ValueError('All eight current-runtime compatibility and saved proofs must pass first')
     comparison = read(HERE / 'selected-comparison-proof.json')
-    acceptance = read(HERE / 'selected-delivery-proof.json')
+    acceptance = read(HERE / 'current-base-delivery-proof.json')
     entries = []
     for old in harness['cases']:
         entry = dict(old)
@@ -110,6 +110,11 @@ def main():
             'negative_log': negative['log'], 'negative_log_sha256': negative['sha256'],
             'negative_exit_code': negative['exit_code'],
             'negative_expected_error': 'Comparison fixed condition changed: primary'}
+        triggers = HERE / 'current-base-trigger-tests.log'
+        entry['candidate_trigger_test'] = {
+            'command': f'PYTHONPATH={PREFIX[:-1]} .venv-cpu/bin/python -m unittest discover '
+                       f'-s {PREFIX}tests -p test_native.py',
+            'test_log': triggers.name, 'test_log_sha256': sha(triggers), 'test_exit_code': 0}
         entries.append(entry)
     manifest = {'format': 'worker-execution-manifest', 'assignment_id': ASSIGNMENT,
                 'runtime_manifest_sha256': harness['runtime_manifest_sha256'],

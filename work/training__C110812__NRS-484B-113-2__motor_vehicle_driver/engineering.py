@@ -3,7 +3,7 @@ from __future__ import annotations
 import hashlib,json,math
 from pathlib import Path
 from controller import ReverseKnobs
-CASES=('condition_a','condition_b')
+CASES=('condition_a','condition_b','condition_c')
 CANDIDATES=('primary','fallback1','fallback2','fallback3')
 BASE={'steering_gain':.35,'brake_margin_m':.10,'overview_fov_deg':90,'rate_hz':20,'duration_s':24}
 CHANGES={'primary':{},'fallback1':{'steering_gain':.55},

@@ -21,7 +21,7 @@ def sha(path):
 
 
 def audit(case, remove_native_source=False):
-    manifest = read(HERE / 'selected-proof-manifest.json')
+    manifest = read(HERE / 'current-base-proof-manifest.json')
     entry = next((x for x in manifest['cases'] if x['case_id'] == case), None)
     if entry is None:
         raise ValueError('Unknown selected case')
@@ -66,8 +66,10 @@ def audit(case, remove_native_source=False):
                 or len(evidence['ego']['body_vertices_m']) != 8
                 or source_xy != body_xy or source_xy != evidence_xy):
             raise ValueError('Original full body differs')
-    compat_path = HERE / f'selected-compatible-{suffix}-primary-receipt.json'
-    saved_path = HERE / f'selected-saved-{suffix}-primary-receipt.json'
+    compat_path = HERE / (f'current-base-compatible-true-primary-receipt.json' if suffix == 'true'
+                          else f'current-base-false-primary-compatibility-receipt.json')
+    saved_path = HERE / (f'current-base-saved-true-primary-receipt.json' if suffix == 'true'
+                         else f'current-base-false-primary-saved-receipt.json')
     compat, saved = read(compat_path), read(saved_path)
     sample_sha = hashlib.sha256(files['native_samples.jsonl'].encode()).hexdigest()
     if (not compat['passed'] or compat['case_id'] != case
@@ -79,7 +81,7 @@ def audit(case, remove_native_source=False):
     if {name + '.mkv' for name in CAMERAS} - set(compat['fixture_manifest']):
         raise ValueError('Four source camera bindings missing')
     result = saved['result']
-    final_path = HERE / f'selected-saved-{suffix}-primary-result.json'
+    final_path = HERE / f'current-base-saved-{suffix}-primary-result.json'
     final_result = read(final_path)
     if (saved['source']['fixture_sha256'] != compat['fixture_sha256']
             or result['case_id'] != case or result['candidate_id'] != 'primary'

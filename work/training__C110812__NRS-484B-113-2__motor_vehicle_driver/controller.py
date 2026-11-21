@@ -14,7 +14,7 @@ class ReverseKnobs:
             raise ValueError('Reverse corner controller knob outside bounded range')
 class ReverseController:
     def __init__(self,suffix:str,knobs:ReverseKnobs):
-        if suffix not in ('condition_a','condition_b'):raise ValueError('Unknown reverse corner path')
+        if suffix not in ('condition_a','condition_b','condition_c'):raise ValueError('Unknown reverse corner path')
         knobs.validate();self.suffix=suffix;self.knobs=knobs;self.path=route(suffix)
     def step(self,*,x_m:float,y_m:float,heading_rad:float,signed_forward_speed_m_s:float):
         if not all(math.isfinite(v) for v in (x_m,y_m,heading_rad,signed_forward_speed_m_s)):

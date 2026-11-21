@@ -73,9 +73,31 @@ def audit(drop_native=False):
                 or config['rate_hz'] != 20 or config['case_suffix'] != 'condition_c'
                 or len(config['cameras']) != 4):
             raise ValueError('Control candidate capture contract differs')
+    compatibility = read(HERE / 'current-base-control-primary-compatibility-receipt.json')
+    saved = read(HERE / 'current-base-control-primary-saved-receipt.json')['result']
+    result_path = HERE / 'current-base-control-primary-result.json'
+    final = read(result_path)
+    sample_sha = hashlib.sha256(source['native_samples.jsonl'].encode()).hexdigest()
+    if (not compatibility['passed'] or compatibility['case_id'] != case['case_id']
+            or compatibility['construction_sha256'] != case['construction_sha256']
+            or compatibility['runtime_manifest_sha256'] != manifest['runtime_manifest_sha256']
+            or compatibility['fixture_manifest']['native_samples.jsonl'] != sample_sha
+            or not {'overview.mkv', 'approach.mkv', 'reference_corner.mkv', 'driver_reference.mkv'}
+            <= set(compatibility['fixture_manifest'])):
+        raise ValueError('Control compatibility source/receipt differs')
+    if (not saved['passed'] or not saved['recorded_only'] or not saved['originals_preserved']
+            or saved['missing_evidence'] or saved['physical_acceptance_claimed']
+            or saved['legal_acceptance_claimed'] or saved['result_sha256'] != sha(result_path)
+            or saved['analysis_revision']['construction_sha256'] != case['construction_sha256']
+            or not saved['final_video_checks']['passed']
+            or saved['final_video_checks']['frames'] != 840
+            or final['measured_values']['relation'] != 'backing_clear_of_intersection'
+            or final['measured_values']['max_backing_intersection_overlap_m2'] != 0):
+        raise ValueError('Control saved processing/clear-body outcome differs')
     return {'passed': True, 'case_id': case['case_id'], 'source_frames': 840,
             'reverse_frames': backing, 'max_intersection_box_overlap_m2': max_junction,
             'max_crosswalk_box_overlap_m2': max_crosswalk, 'candidate_bundles': 4,
+            'four_camera_source_hashes': True, 'full_final_decode_receipt': True,
             'scope': 'authored synthetic control only; Native road/body and pixels remain unverified'}
 
 

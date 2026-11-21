@@ -38,10 +38,11 @@ def overlap(vertices,box):
     return abs(sum(a[0]*b[1]-b[0]*a[1] for a,b in
                    zip(polygon,polygon[1:]+polygon[:1])))/2
 def pose(suffix,fraction):
-    if suffix not in ('condition_a','condition_b'):raise ValueError('Unknown controlled case')
+    if suffix not in ('condition_a','condition_b','condition_c'):raise ValueError('Unknown controlled case')
     if not 0<=fraction<=1:raise ValueError('Invalid reverse progress')
     distance=TOTAL_REVERSE_DISTANCE*fraction
     if suffix=='condition_a':return (12-distance,-1.75,0.)
+    if suffix=='condition_c':return (25-distance,-1.75,0.)
     if distance<=4:return (12-distance,-1.75,0.)
     angle=(distance-4)/RADIUS
     return (ARC_CENTER[0]-RADIUS*math.sin(angle),
@@ -56,17 +57,18 @@ def check():
     objects=root.findall(".//object[@type='crosswalk']")
     if len(objects)!=1 or objects[0].attrib.get('name')!='C110812-west-crosswalk':
         raise ValueError('Authored crosswalk context differs')
-    if overlap(body(*START),INTERSECTION) or overlap(body(*START),CROSSWALK):
+    if overlap(body(*START),INTERSECTION) or overlap(body(*START),CROSSWALK) or overlap(body(25.,-1.75,0.),INTERSECTION):
         raise ValueError('Common start touches prohibited geometry')
     outcomes={}
-    for suffix in ('condition_a','condition_b'):
+    for suffix in ('condition_a','condition_b','condition_c'):
         path=route(suffix)
         max_cross=max(overlap(body(*p),CROSSWALK) for p in path)
         if max_cross:raise ValueError('Corner branch confounded by crosswalk')
         turning_frames=sum(abs(path[i][2]-path[i-1][2])>.01 for i in range(1,len(path)))
         junction=max(overlap(body(*p),INTERSECTION) for p in path)
-        if junction<=0:raise ValueError('Intersection context absent')
-        if (suffix=='condition_a' and turning_frames) or (suffix=='condition_b' and turning_frames<50):
+        if suffix=='condition_c' and junction>0:raise ValueError('Control enters intersection')
+        if suffix!='condition_c' and junction<=0:raise ValueError('Intersection context absent')
+        if (suffix in ('condition_a','condition_c') and turning_frames) or (suffix=='condition_b' and turning_frames<50):
             raise ValueError('Corner-turn distinction differs')
         outcomes[suffix]={'end_pose_xy_yaw':list(path[-1]),
                           'reverse_distance_m':TOTAL_REVERSE_DISTANCE,

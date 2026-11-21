@@ -162,11 +162,11 @@ def finalize(attempt,output):
         raise ValueError("Source camera frame count differs from delivered trace")
     actual={k:v for k,v in measured['value'].items() if k!='legal_verdict'}
     requested={'condition_a':'backing_straight_through_intersection',
-               'condition_b':'backing_around_street_corner'}[config['case_suffix']]
+               'condition_b':'backing_around_street_corner','condition_c':'backing_clear_of_intersection'}[config['case_suffix']]
     matched=actual['relation']==requested
     saved_motion=rows(attempt/'native_samples.jsonl')
     endpoint=saved_motion[-1]['native_center_xy_m']
-    target={'condition_a':[-1.817477042468104,-1.75],'condition_b':[1.75,4.5]}[config['case_suffix']]
+    target={'condition_a':[-1.817477042468104,-1.75],'condition_b':[1.75,4.5],'condition_c':[11.182522957531896,-1.75]}[config['case_suffix']]
     completed=math.dist(endpoint,target)<=.4 and \
               abs(saved_motion[-1]['signed_forward_velocity_m_s'])<=.05 and actual['backing_frames']>=10
     description=config['recording_description']
