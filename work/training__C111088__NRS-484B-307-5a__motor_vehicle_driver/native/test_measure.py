@@ -1,8 +1,11 @@
 """Numerical long-duration checks; generated samples are never Native proof."""
 import unittest
+import json
+from pathlib import Path
+from tempfile import TemporaryDirectory
 
 from geometry import body, ego_y, other_x
-from measure import measure_arrow_and_yield
+from measure import joined_samples, measure_arrow_and_yield
 
 
 def samples(yield_to_other=True):
@@ -27,8 +30,8 @@ def samples(yield_to_other=True):
 
 class MeasureStraightArrow(unittest.TestCase):
     def test_42_second_yield_and_non_yield(self):
-        safe = measure_arrow_and_yield(samples(True))
-        unsafe = measure_arrow_and_yield(samples(False))
+        safe = measure_arrow_and_yield(samples(True), verified_arrow_frames=set(range(100, 840)))
+        unsafe = measure_arrow_and_yield(samples(False), verified_arrow_frames=set(range(100, 840)))
         self.assertEqual(safe['sole_arrow_pixel_verified_frames'], 740)
         self.assertTrue(safe['yielded_before_entry'])
         self.assertFalse(unsafe['yielded_before_entry'])
@@ -37,10 +40,46 @@ class MeasureStraightArrow(unittest.TestCase):
 
     def test_missing_pixel_aspect_fails_closed(self):
         source = samples(True)
-        for row in source:
-            row['governing_signal']['pixel_aspect_verified'] = False
         with self.assertRaisesRegex(ValueError, 'No verified sole'):
             measure_arrow_and_yield(source)
+
+    def test_gradual_turn_is_detected(self):
+        source = samples(True)
+        for frame in range(300, 360):
+            source[frame]['native_yaw_deg'] = 90 + (frame - 300) / 2
+        result = measure_arrow_and_yield(source, verified_arrow_frames=set(range(100, 840)))
+        self.assertFalse(result['straight_heading_no_turn_observed'])
+
+    def test_original_frame_body_and_capture_join_rejects_mismatch(self):
+        with TemporaryDirectory() as directory:
+            attempt = Path(directory)
+            (attempt / 'capture').mkdir()
+            footprints = [body(1.75, -17 + index, 'north') for index in range(2)]
+            sources = {
+                'native_samples.jsonl': [
+                    {'native_frame': 100 + i, 'time_s': (i + 1) / 2,
+                     'native_body_xy_m': feet} for i, feet in enumerate(footprints)],
+                'body_history.jsonl': [
+                    {'frame': 100 + i, 'time_s': (i + 1) / 2,
+                     'body_vertices_m': feet} for i, feet in enumerate(footprints)],
+                'video_frames.jsonl': [
+                    {'video_frame': i, 'native_frame': 100 + i,
+                     'time_s': (i + 1) / 2} for i in range(2)],
+                'trace.jsonl': [
+                    {'frame': 100 + i, 'time_s': (i + 1) / 2} for i in range(2)],
+                'capture/evidence.jsonl': [
+                    {'original_frame': 100 + i, 'recording_time_s': (i + 1) / 2,
+                     'ego': {'body_vertices_m': feet}} for i, feet in enumerate(footprints)],
+            }
+            for name, rows in sources.items():
+                (attempt / name).write_text(''.join(json.dumps(row) + '\n' for row in rows))
+            joined, audit = joined_samples(attempt, rate_hz=2, duration_s=1)
+            self.assertEqual((len(joined), audit['frames']), (2, 2))
+            sources['video_frames.jsonl'][1]['native_frame'] = 104
+            (attempt / 'video_frames.jsonl').write_text(''.join(
+                json.dumps(row) + '\n' for row in sources['video_frames.jsonl']))
+            with self.assertRaisesRegex(ValueError, 'video frame mapping'):
+                joined_samples(attempt, rate_hz=2, duration_s=1)
 
 
 if __name__ == '__main__':

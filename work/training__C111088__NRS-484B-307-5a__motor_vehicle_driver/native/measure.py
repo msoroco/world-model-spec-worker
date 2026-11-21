@@ -66,7 +66,7 @@ def joined_samples(attempt: Path, *, rate_hz: int = 20, duration_s: int = 42) ->
                                       for name in names}}
 
 
-def measure_arrow_and_yield(samples: list[dict]) -> dict:
+def measure_arrow_and_yield(samples: list[dict], *, verified_arrow_frames: set[int] | None = None) -> dict:
     """Measure stop-line crossing relative to actual saved actor occupancy.
 
     `signal_aspect_source` records provenance. An authored OpenDRIVE subtype is
@@ -75,11 +75,12 @@ def measure_arrow_and_yield(samples: list[dict]) -> dict:
     if not samples:
         raise ValueError('No original samples')
     active = []
+    verified_arrow_frames = verified_arrow_frames or set()
     crossings = []
     forbidden_turn = []
     occupancies = []
     prior_front = None
-    prior_yaw = None
+    initial_yaw = None
     for index, sample in enumerate(samples):
         signal = sample.get('governing_signal')
         if not isinstance(signal, dict) or not signal.get('native_actor_id'):
@@ -91,7 +92,7 @@ def measure_arrow_and_yield(samples: list[dict]) -> dict:
             raise ValueError('Authored straight-arrow source absent')
         if signal.get('facing_ego_native_survey') is not True:
             raise ValueError('Governing head direction not surveyed')
-        if signal.get('native_state') in ('Green', 'TrafficLightState.Green') and signal.get('pixel_aspect_verified') is True:
+        if signal.get('native_state') in ('Green', 'TrafficLightState.Green') and index in verified_arrow_frames:
             active.append(index)
         body = sample.get('native_body_xy_m')
         if not isinstance(body, list) or len(body) != 4:
@@ -103,9 +104,10 @@ def measure_arrow_and_yield(samples: list[dict]) -> dict:
         yaw = sample.get('native_yaw_deg')
         if not isinstance(yaw, (int, float)) or not math.isfinite(yaw):
             raise ValueError('Native heading absent')
-        if prior_yaw is not None and abs((yaw - prior_yaw + 180) % 360 - 180) > 2:
+        if initial_yaw is None:
+            initial_yaw = yaw
+        if abs((yaw - initial_yaw + 180) % 360 - 180) > 20:
             forbidden_turn.append(index)
-        prior_yaw = yaw
         other = sample.get('other_vehicle')
         if not isinstance(other, dict) or not other.get('native_actor_id'):
             raise ValueError('Original other vehicle actor missing')
@@ -124,6 +126,8 @@ def measure_arrow_and_yield(samples: list[dict]) -> dict:
     crossing = crossings[0]
     occupied_at_arrow = [i for i in occupancies if i in active]
     clearance = max(occupied_at_arrow) if occupied_at_arrow else None
+    lawful_occupied = [i for i in occupied_at_arrow
+                       if samples[i]['other_vehicle'].get('prior_green_entry_observed') is True]
     speed_at_crossing = samples[crossing].get('speed_mps')
     if type(speed_at_crossing) not in (int, float) or not math.isfinite(speed_at_crossing):
         raise ValueError('Original speed missing at crossing')
@@ -131,9 +135,11 @@ def measure_arrow_and_yield(samples: list[dict]) -> dict:
         'sole_arrow_pixel_verified_frames': len(active),
         'first_front_stop_line_crossing_frame': crossing,
         'last_other_vehicle_occupancy_under_verified_arrow_frame': clearance,
+        'other_vehicle_present_under_verified_arrow': bool(occupied_at_arrow),
+        'prior_green_entry_within_verified_arrow': bool(lawful_occupied),
         'yielded_before_entry': clearance is None or crossing > clearance,
         'straight_heading_no_turn_observed': not forbidden_turn,
-        'heading_jump_frames': forbidden_turn,
+        'heading_deviation_frames': forbidden_turn,
         'other_vehicle_lawful_entry_inferred': False,
         'legal_verdict_claimed': False,
     }
