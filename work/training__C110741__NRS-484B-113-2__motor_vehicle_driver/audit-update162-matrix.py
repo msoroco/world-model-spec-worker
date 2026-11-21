@@ -31,6 +31,7 @@ def audit(inject_missing=False, inject_drift=False):
     fixed = {}
     areas = {}
     saved_hashes = {}
+    offline_hashes = {}
     for entry in manifest['cases']:
         suffix = entry['case_id'].rsplit('_', 1)[-1]
         if suffix not in ('a', 'b'):
@@ -72,6 +73,18 @@ def audit(inject_missing=False, inject_drift=False):
         for name, ref in refs:
             if sha(HERE/ref['construction']) != ref['construction_sha256']:
                 raise ValueError('Selected construction hash changed')
+            offline_log = HERE/f'update162-{suffix}-{name}-offline.log'
+            offline = read(offline_log)
+            offline_attempt = ROOT/'.runtime-work'/f'c110741-update162-{suffix}-{name}-offline'
+            offline_selection = read(offline_attempt/'candidate-selection.json')
+            if (offline.get('offline_passed') is not True
+                    or offline.get('simulation_started') is not False
+                    or offline.get('case_id') != entry['case_id']
+                    or offline.get('candidate_id') != name
+                    or offline_selection['manifest_sha256'] != sha(HERE/'execution-manifest.json')
+                    or offline_selection['construction_sha256'] != ref['construction_sha256']):
+                raise ValueError('Current exact offline candidate proof differs')
+            offline_hashes[suffix+'/'+name] = sha(offline_log)
             proof = read(HERE/ref['compatibility']['receipt'])
             report = read(HERE/f'update162-{suffix}-{name}-report.json')
             decode = read(HERE/f'update162-{suffix}-{name}-decode.json')
@@ -131,6 +144,8 @@ def audit(inject_missing=False, inject_drift=False):
     return {'format': 'c110741-update162-selected-cpu-matrix-audit-v1',
             'manifest_sha256': sha(HERE/'execution-manifest.json'),
             'candidates_checked': 8, 'source_frames_per_case': 480,
+            'offline_candidates_checked': len(offline_hashes),
+            'offline_log_sha256': offline_hashes,
             'saved_only_candidates_checked': len(saved_hashes),
             'saved_log_sha256': saved_hashes,
             'measured_overlap_m2': areas, 'negative_source_rejections_checked': 8,
