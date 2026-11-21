@@ -1,0 +1,39 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_opposite_left",
+  "requirements": [
+    {
+      "disposition_index": 2,
+      "requirement": "Governing stop sign identity and official-device exclusion remain separately reviewable",
+      "source": "NRS 484B.250(1); inputs/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/assignment.json",
+      "output_key": "stop_sign_authority_boundary",
+      "method": "analyze",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "junction_context.json",
+        "capture/evidence.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 5,
+      "requirement": "Opposite-direction other approach and left-turn exception context remain separately measurable at the same crossing",
+      "source": "NRS 484B.250(1); inputs/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/assignment.json",
+      "output_key": "opposite_left_turn_context",
+      "method": "analyze",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "crossing_history.jsonl",
+        "video_frames.jsonl",
+        "junction_context.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "junction_context.json"
+    ],
+    "error_contains": "Missing required source: junction_context.json"
+  }
+}
