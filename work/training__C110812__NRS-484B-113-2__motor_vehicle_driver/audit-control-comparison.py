@@ -59,15 +59,8 @@ def candidate(entry, ident):
 
 
 def proof(suffix, case, ident, construction_sha):
-    if suffix == 'true' and ident == 'primary':
-        compat = HERE / 'current-base-compatible-true-primary-receipt.json'
-        saved = HERE / 'current-base-saved-true-primary-receipt.json'
-    elif suffix == 'true':
-        compat = HERE / f'current-base-true-{ident}-compatibility-receipt.json'
-        saved = HERE / f'current-base-true-{ident}-saved-receipt.json'
-    else:
-        compat = HERE / f'current-base-control-{ident}-compatibility-receipt.json'
-        saved = HERE / f'current-base-control-{ident}-saved-receipt.json'
+    compat = HERE / f'atom-fixed-{suffix}-{ident}-compatibility-receipt.json'
+    saved = HERE / f'atom-fixed-{suffix}-{ident}-saved-receipt.json'
     a, b = read(compat), read(saved)['result']
     if (not a['passed'] or a['case_id'] != case or a['construction_sha256'] != construction_sha
             or not b['passed'] or not b['recorded_only'] or b['missing_evidence']
