@@ -237,8 +237,12 @@ def finalize_saved(attempt, output):
                     "original_frame": row["frame"], "value": method(row, sample)},
                     allow_nan=False) + "\n")
         recording_evidence.append({"name": name, "unit": unit, "reference": reference})
+    context_reference = "channels/junction_context.json"
+    (attempt / context_reference).write_text(json.dumps({"junction_context":
+        json.loads((attempt / "junction_context.json").read_text())},
+        allow_nan=False, sort_keys=True) + "\n")
     recording_evidence.append({"name": "junction_context", "unit": "structured record",
-                               "reference": "junction_context.json"})
+                               "reference": context_reference})
     checksums = {"evidence/" + path.relative_to(evidence_root).as_posix():
                  hashlib.sha256(path.read_bytes()).hexdigest()
                  for path in evidence_root.rglob("*") if path.is_file()}
