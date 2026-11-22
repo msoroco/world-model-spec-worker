@@ -13,7 +13,48 @@
         "entrypoint": "crossing_measurements.py"
       },
       "measurement_contract": "measurement-contract.json",
-      "fixture_recipe": "work/testing__C125763__NRS-484B-250-1__motor_vehicle_driver/diagnostic-recipe.json"
+      "fixture_recipe": "work/testing__C125763__NRS-484B-250-1__motor_vehicle_driver/diagnostic-recipe.json",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/yield_sign_other_first/fallback1-construction.json",
+          "construction_sha256": "ec5551332144d5a2571460323907dd68e320268f7777ecdda38ed239ab9a258f",
+          "trigger": {
+            "source": "original-frame ego and other body position, Native spawn log, and overview sign-face review",
+            "metric": "distance from ego body to yield line when braking begins",
+            "failure_condition": "insufficient distance for the controller to slow before the governed entrance"
+          },
+          "changed_knobs": [
+            "ego spawn pose moved 5 m upstream along its heading"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/yield_sign_other_first/fallback2-construction.json",
+          "construction_sha256": "7176c63e8152f350e4ea3e4c939f2347f13599139dc02d4f7d9cf68ba9b90edc",
+          "trigger": {
+            "source": "original-frame ego and other body position, Native spawn log, and overview sign-face review",
+            "metric": "other spawn clearance from median crossing and ego body",
+            "failure_condition": "spawn overlap or insufficient approach clearance before crossing entry"
+          },
+          "changed_knobs": [
+            "other spawn pose and route origin moved 5 m upstream along its heading"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/yield_sign_other_first/fallback3-construction.json",
+          "construction_sha256": "39c9bb18c51b6b71bf15cc25f3c1e31edf756060af56fd7416420d54f9cb58bf",
+          "trigger": {
+            "source": "original-frame ego and other body position, Native spawn log, and overview sign-face review",
+            "metric": "yield-sign and crossing visibility in overview source",
+            "failure_condition": "sign face or complete body entry is outside the overview view"
+          },
+          "changed_knobs": [
+            "overview source camera shifted and raised for crossing visibility"
+          ]
+        }
+      ]
     },
     {
       "case_id": "testing__C125763__NRS-484B-250-1__motor_vehicle_driver__yield_sign_ego_first",
