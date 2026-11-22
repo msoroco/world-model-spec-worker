@@ -4,17 +4,66 @@ import hashlib
 import json
 from pathlib import Path
 
+from arrow_source import load_binding
+
 
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 def read(path):return json.loads(Path(path).read_text())
 def rows(path):return [json.loads(line) for line in Path(path).read_text().splitlines() if line.strip()]
 
 
+def audit_arrow_source(attempt,acquisition,seal,signals,context):
+    """Independently join reviewed asset, installation and every green frame."""
+    provenance_path=attempt/'acquisition-provenance.json'
+    if not provenance_path.is_file() or 'acquisition-provenance.json' not in seal['sources']:
+        raise ValueError('reviewed arrow acquisition provenance absent')
+    names=read(provenance_path).get('reviewed_arrow_sources')
+    if not isinstance(names,list) or not names or len(names)%2:
+        raise ValueError('reviewed arrow packet/asset pair absent')
+    bindings=[]
+    for packet_name,asset_name in zip(names[::2],names[1::2]):
+        if not all(isinstance(name,str) and name.startswith('reviewed-arrow-sources/') and
+                   Path(name).as_posix()==name and '..' not in Path(name).parts
+                   for name in (packet_name,asset_name)):
+            raise ValueError('invalid reviewed arrow source path')
+        for name in (packet_name,asset_name):
+            if name not in seal['sources'] or acquisition.get(name,{}).get('sha256')!=sha(attempt/name):
+                raise ValueError('reviewed arrow source unsealed or stale')
+        bindings.append(load_binding(attempt/packet_name,attempt/asset_name))
+    chosen=[binding for binding in bindings if binding['packet']['actor_id']==context['facing_head_id']]
+    if len(chosen)!=1:raise ValueError('facing arrow lacks unique reviewed actor')
+    binding=chosen[0];packet=binding['packet']
+    if context.get('arrow_review_packet_sha256')!=binding['packet_sha256'] or \
+       context.get('arrow_review_asset_sha256')!=binding['asset_sha256']:
+        raise ValueError('intersection context differs from reviewed arrow source')
+    for signal in signals:
+        aspect=signal.get('aspect',{})
+        candidate=[item for item in signal.get('candidate_lights',[])
+                   if item.get('actor_id')==packet['actor_id']]
+        if len(candidate)!=1:raise ValueError('reviewed arrow actor missing from original frame')
+        observed=candidate[0]
+        if observed.get('blueprint_id')!=packet['blueprint_id'] or \
+           any(abs(a-b)>.25 for a,b in zip(observed.get('position_m',[]),packet['position_m'])) or \
+           len(observed.get('position_m',[]))!=3 or \
+           abs(((observed.get('yaw_deg',999)-packet['yaw_deg']+180)%360)-180)>2:
+            raise ValueError('reviewed arrow installation differs from original frame')
+        green=str(observed.get('state')).split('.')[-1]=='Green'
+        if aspect.get('packet_sha256')!=binding['packet_sha256'] or \
+           aspect.get('asset_sha256')!=binding['asset_sha256'] or \
+           aspect.get('source_ref')!='reviewed-asset-sha256:'+binding['asset_sha256']+';packet-sha256:'+binding['packet_sha256'] or \
+           aspect.get('head_id')!=packet['actor_id'] or \
+           aspect.get('observed_frame')!=signal.get('frame') or \
+           aspect.get('source_verified') is not green or \
+           aspect.get('illuminated_indications')!=(packet['green_indications'] if green else []):
+            raise ValueError('per-frame arrow claim differs from reviewed source and live actor')
+
+
 def audit(attempt,processing,decode_receipt,case_id,media_verify=None):
     attempt=Path(attempt);processing=Path(processing)
     required=('signal-head-history.jsonl','ego-body-history.jsonl',
               'participant-history.jsonl','intersection-context.json',
-              'trace.jsonl','video_frames.jsonl','acquisition.json','result.json')
+              'trace.jsonl','video_frames.jsonl','acquisition.json','result.json',
+              'controller-history.jsonl')
     seal=read(attempt/'capture-seal.json')
     if seal.get('events')!=['capture_finished','encoders_closed','restoration_verified']:
         raise ValueError('Native capture lifecycle incomplete')
@@ -35,19 +84,32 @@ def audit(attempt,processing,decode_receipt,case_id,media_verify=None):
     if not all(original.get(key) is True for key in ('setup_confirmed','behavior_attempted','maneuver_completed')):
         raise ValueError('physical completion not confirmed')
     acquisition=read(attempt/'acquisition.json')
-    for name in required[:4]:
+    for name in (*required[:4],'controller-history.jsonl'):
         info=acquisition.get(name,{})
         if info.get('kind')!='original_native' or info.get('sha256')!=sha(attempt/name):
             raise ValueError('original signal, body or context source absent: '+name)
     signals=rows(attempt/required[0]);ego=rows(attempt/required[1]);traffic=rows(attempt/required[2])
     trace=rows(attempt/'trace.jsonl');mapping=rows(attempt/'video_frames.jsonl')
-    if not signals or not all(len(stream)==len(mapping) for stream in (signals,ego,traffic,trace)):
+    controls=rows(attempt/'controller-history.jsonl')
+    if not signals or not all(len(stream)==len(mapping) for stream in (signals,ego,traffic,trace,controls)):
         raise ValueError('original frame streams incomplete')
-    for index,(signal,body,participants,position,frame) in enumerate(zip(signals,ego,traffic,trace,mapping)):
+    for index,(signal,body,participants,position,frame,control) in enumerate(zip(signals,ego,traffic,trace,mapping,controls)):
         identity=(frame.get('carla_frame'),frame.get('time_s'))
         if frame.get('video_frame')!=index or any((stream.get('frame'),stream.get('time_s'))!=identity
-            for stream in (signal,body,participants,position)):
+            for stream in (signal,body,participants,position,control)):
             raise ValueError('original frame/time join changed')
+    audit_arrow_source(attempt,acquisition,seal,signals,read(attempt/'intersection-context.json'))
+    from runner import control_step,load_scene
+    scene=load_scene();first_arrow_frame=None;exhibition_occupants=None
+    for signal,body,participants,control in zip(signals,ego,traffic,controls):
+        expected=control_step(scene,signal,participants['participants'],body['body_vertices_m'],
+                              first_arrow_frame=first_arrow_frame,
+                              exhibition_occupants=exhibition_occupants)
+        first_arrow_frame=expected['first_arrow_frame']
+        exhibition_occupants=expected['exhibition_occupants']
+        recorded={key:value for key,value in control.items() if key not in ('frame','time_s')}
+        if recorded!=expected:
+            raise ValueError('recorded controller decision differs from original frame sources')
     from analysis import measure
     measured=measure(attempt)
     if measured['unverified_lawful_presence_frames']:

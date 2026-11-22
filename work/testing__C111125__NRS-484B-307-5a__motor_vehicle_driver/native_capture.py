@@ -110,6 +110,21 @@ def map_context(mapping, scene, carla):
             'lawful_presence_source_verified':False}
 
 
+def participant_inventory(world, ego):
+    """Include all live vehicles and walkers, not only actors owned here."""
+    candidates=[('vehicle',actor) for actor in world.get_actors().filter('vehicle.*')]
+    candidates += [('pedestrian',actor) for actor in world.get_actors().filter('walker.pedestrian.*')]
+    rows=[]
+    for role,actor in candidates:
+        if int(actor.id)==int(ego.id):continue
+        rows.append({'id':int(actor.id),'role':role,'body_vertices_m':vertices(actor),
+                     'lawfully_present':None,'lawful_presence_source':None})
+    rows.sort(key=lambda item:item['id'])
+    if len({item['id'] for item in rows})!=len(rows):
+        raise ValueError('duplicate Native participant actor ID')
+    return rows
+
+
 class CameraBank:
     SPECS=(('overview',1920,1080,(0,0,45,-90)),
            ('approach',1280,720,(-15,-12,12,-25)),
@@ -172,9 +187,9 @@ class CameraBank:
 def run_native(scene,output,host,port):
     import carla
     from pipeline_capture import PipelineCapture
-    from worker_exchange.native_output import FrameMap,write_result,seal_capture
+    from worker_exchange.native_output import FrameMap,physical_result,write_result,seal_capture
     from worker_exchange.world_restore import fields,equal
-    from runner import apply_participant_motion,spawn_scene
+    from runner import apply_participant_motion,control_step,spawn_scene
 
     output=Path(output).resolve()
     if not output.is_dir():raise ValueError('Native attempt directory must already exist')
@@ -185,7 +200,9 @@ def run_native(scene,output,host,port):
     client=carla.Client(host,port);client.set_timeout(30)
     world=client.get_world();original_settings=world.get_settings()
     actors={};cameras=None;capture=None;frame_map=None
-    phase='initializing';error=None;restored=False;rows=[]
+    phase='initializing';error=None;restored=False;rows=[];verified_arrow_frames=[]
+    move_commands=0;pending={'throttle':0.0,'brake':1.0,'steer':0.0}
+    first_arrow_frame=None;exhibition_occupants=None
     try:
         context=map_context(world.get_map(),scene,carla)
         settings=world.get_settings();settings.synchronous_mode=True;settings.fixed_delta_seconds=.05
@@ -212,55 +229,72 @@ def run_native(scene,output,host,port):
         count=round(scene['duration_s']*scene['capture_rate_hz'])
         with (output/'signal-head-history.jsonl').open('x',buffering=1) as signals, \
              (output/'ego-body-history.jsonl').open('x',buffering=1) as bodies, \
-             (output/'participant-history.jsonl').open('x',buffering=1) as participants:
+             (output/'participant-history.jsonl').open('x',buffering=1) as participants, \
+             (output/'controller-history.jsonl').open('x',buffering=1) as controller:
             for index in range(count):
-                # No original source currently establishes a sole arrow or lawful
-                # presence, so the ego remains held upstream of the stop line.
-                ego.apply_control(carla.VehicleControl(throttle=0,brake=1,steer=0))
+                ego.apply_control(carla.VehicleControl(throttle=pending['throttle'],
+                                                       brake=pending['brake'],steer=pending['steer']))
                 apply_participant_motion(scene,actors,carla,index/scene['capture_rate_hz'])
                 frame=world.tick();snapshot=world.get_snapshot()
                 if snapshot.frame!=frame:raise RuntimeError('world tick identity differs')
                 time_s=snapshot.timestamp.elapsed_seconds
                 capture.capture(frame,time_s);cameras.append(frame);frame_map.append(frame,time_s)
                 signal=signal_snapshot(lights,frame,bindings,scene.get('candidate_head_slot',0))
+                if signal['aspect']['source_verified']:verified_arrow_frames.append(frame)
                 signal.update(time_s=time_s)
                 ego_row={'frame':frame,'time_s':time_s,'body_vertices_m':vertices(ego),
                          'heading_deg':ego.get_transform().rotation.yaw}
-                people=[]
-                for name,role in (('vehicle','vehicle'),('pedestrian','pedestrian')):
-                    people.append({'id':int(actors[name].id),'role':role,
-                                   'body_vertices_m':vertices(actors[name]),
-                                   'lawfully_present':None,
-                                   'lawful_presence_source':None})
+                people=participant_inventory(world,ego)
                 people_row={'frame':frame,'time_s':time_s,'participants':people}
+                decision=control_step(scene,signal,people,ego_row['body_vertices_m'],
+                                      first_arrow_frame=first_arrow_frame,
+                                      exhibition_occupants=exhibition_occupants)
+                first_arrow_frame=decision['first_arrow_frame']
+                exhibition_occupants=decision['exhibition_occupants']
+                pending=decision['control']
+                if pending['throttle']>0:move_commands+=1
                 signals.write(json.dumps(signal,allow_nan=False)+'\n')
                 bodies.write(json.dumps(ego_row,allow_nan=False)+'\n')
                 participants.write(json.dumps(people_row,allow_nan=False)+'\n')
+                controller.write(json.dumps({'frame':frame,'time_s':time_s,**decision},allow_nan=False)+'\n')
                 rows.append(frame)
         phase='closing'
         capture.close();capture=None
         frame_map.close();frame_map=None
         cameras.close();cameras=None
         source_names=['trace.jsonl','video_frames.jsonl','signal-head-history.jsonl',
-                      'ego-body-history.jsonl','participant-history.jsonl','intersection-context.json',
+                      'ego-body-history.jsonl','participant-history.jsonl','controller-history.jsonl',
+                      'intersection-context.json',
                       'road.xodr','carla_recorder.log',*[name+'.mkv' for name,*_ in CameraBank.SPECS],
                       *reviewed_names]
         write(output/'acquisition.json',{name:{'kind':'original_native','sha256':sha(output/name)} for name in source_names})
-        write_result(output,{'case_id':scene['case_id'],
-          'measured_values':{'sole_arrow_verified':False,'lawful_presence_verified':False},
+        planned=json.loads((output/'config.json').read_text())['case']['recording_description']
+        result={'case_id':scene['case_id'],
+          'measured_values':{'sole_arrow_verified':bool(verified_arrow_frames),
+                             'verified_arrow_frames':verified_arrow_frames,
+                             'lawful_presence_verified':False,
+                             'straight_move_commands':move_commands},
           'target_checks':[{'target':'original straight-arrow source acquisition','requested':True,
-                            'measured':False,'method':'CARLA actor state and asset inventory',
-                            'tolerance':0,'matched':False,'physical_cause_confirmed':False,
-                            'cause_evidence':'generic CARLA traffic light state does not identify arrow shape'}],
+                            'measured':bool(verified_arrow_frames),
+                            'method':'reviewed asset inventory bound to original CARLA actor state',
+                            'tolerance':0,'matched':bool(verified_arrow_frames),
+                            'physical_cause_confirmed':False,
+                            'cause_evidence':'reviewed source retained' if verified_arrow_frames else
+                              'generic CARLA traffic light state does not identify arrow shape'}],
           'setup_confirmed':False,'behavior_attempted':False,'maneuver_completed':False,
-          'termination_reason':'planned_duration_without_verified_arrow_source',
-          'physical_failure_flags':['sole_arrow_source_unverified','lawful_presence_source_unverified'],
+          'termination_reason':'planned_duration_pending_independent_physical_review',
+          'physical_failure_flags':
+            (['sole_arrow_source_unverified'] if not verified_arrow_frames else [])+
+            (['lawful_presence_source_unverified'] if scene['participant_occupancy_setup']=='lawfully_present' else []),
           'trace_reference':'trace.jsonl',
           'video_references':[name+'.mkv' for name,*_ in CameraBank.SPECS],
           'video_frame_map_reference':'video_frames.jsonl',
-          'recording_description':{'summary':'Original held approach and participant motion; arrow source unverified'},
+          'recording_description':planned,
           'recording_evidence':{'acquisition':'acquisition.json'},
-          'realized_observables':{'frame_count':len(rows),'candidate_lights':len(lights)}})
+          'realized_observables':{'frame_count':len(rows),'candidate_lights':len(lights),
+                                  'reviewed_arrow_source_count':len(bindings),
+                                  'straight_move_commands':move_commands}}
+        write_result(output,physical_result(output,result))
         phase='sealed'
     except BaseException as exc:
         error=repr(exc)
@@ -282,7 +316,8 @@ def run_native(scene,output,host,port):
         if phase=='sealed' and not cleanup and restored:
             seal_capture(output,frames=len(rows),restoration={'restored':True,
                 'settings_readback':'synchronous_mode and fixed_delta_seconds restored'},errors=[],
-                encoder_exit_codes={name:0 for name,*_ in CameraBank.SPECS},context={'arrow':False})
+                encoder_exit_codes={name:0 for name,*_ in CameraBank.SPECS},
+                context={'arrow':bool(verified_arrow_frames),'lawful_presence':False})
         else:
             write(output/'native-run-status.json',{'phase':phase,
                   'errors':[value for value in [error,*cleanup] if value],

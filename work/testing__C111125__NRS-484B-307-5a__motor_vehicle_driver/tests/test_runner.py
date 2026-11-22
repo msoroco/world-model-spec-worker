@@ -87,9 +87,44 @@ class ArrowControllerTests(unittest.TestCase):
         self.assertEqual(runner.command(self.scene,-10,decision)['brake'],1.0)
     def test_clear_region_can_proceed_straight(self):
         people=[participant('car','vehicle',30,30)]
+        people[0]['lawfully_present']=None;people[0]['lawful_presence_source']=None
         decision=runner.yield_decision(self.scene,people,signal_exhibited_frame=10,current_frame=12)
         self.assertFalse(decision['hold_at_stop_line'])
         self.assertEqual(runner.command(self.scene,-10,decision)['intended_maneuver'],'straight')
+    def test_next_tick_control_fails_closed_then_proceeds_on_verified_clear_frame(self):
+        ego=[[-11,-.5,0],[-10,-.5,0],[-10,.5,0],[-11,.5,0]]
+        person=participant('car','vehicle',35,0)
+        person['lawfully_present']=None;person['lawful_presence_source']=None
+        aspect={'source_verified':True,'source_ref':'reviewed original asset',
+                'head_id':7,'observed_frame':18,
+                'illuminated_indications':[{'color':'green','shape':'arrow','direction':'straight'}]}
+        signal={'frame':18,'facing_head_id':7,'aspect':aspect}
+        clear=runner.control_step(self.scene,signal,[person],ego)
+        self.assertEqual(clear['reason'],'straight_clear')
+        self.assertGreater(clear['control']['throttle'],0)
+        self.assertEqual(clear['first_arrow_frame'],18)
+        inside=dict(person,body_vertices_m=[[0,0,0],[1,0,0],[1,1,0],[0,1,0]])
+        unknown=runner.control_step(self.scene,signal,[inside],ego)
+        self.assertEqual(unknown['reason'],'unverified_exhibition_lawfulness')
+        self.assertEqual(unknown['control']['brake'],1)
+        later=runner.control_step(self.scene,dict(signal,frame=19,
+            aspect=dict(aspect,observed_frame=19)),
+            [dict(inside,lawfully_present=True,lawful_presence_source='late review')],ego,
+            first_arrow_frame=unknown['first_arrow_frame'],
+            exhibition_occupants=unknown['exhibition_occupants'])
+        self.assertEqual(later['reason'],'unverified_exhibition_lawfulness')
+        lawful=dict(inside,lawfully_present=True,lawful_presence_source='original phase context')
+        held=runner.control_step(self.scene,signal,[lawful],ego)
+        self.assertEqual(held['reason'],'yield_hold')
+        self.assertEqual(held['exhibition_occupants'],['car'])
+        changed=dict(lawful,lawfully_present=False)
+        still=runner.control_step(self.scene,dict(signal,frame=19,
+            aspect=dict(aspect,observed_frame=19)),[changed],ego,
+            first_arrow_frame=held['first_arrow_frame'],
+            exhibition_occupants=held['exhibition_occupants'])
+        self.assertEqual(still['reason'],'yield_hold')
+        unverified=dict(signal,aspect=dict(aspect,source_verified=False))
+        self.assertEqual(runner.control_step(self.scene,unverified,[person],ego)['reason'],'unverified_sole_arrow')
     def test_lawful_presence_and_body_sources_required(self):
         person=participant('walker','pedestrian',0,0)
         del person['lawful_presence_source']

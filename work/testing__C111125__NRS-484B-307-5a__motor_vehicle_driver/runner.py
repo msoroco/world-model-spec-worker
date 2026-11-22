@@ -89,10 +89,11 @@ def yield_decision(scene, participants, *, signal_exhibited_frame, current_frame
             raise ValueError('participant lawfulness or body source missing')
         if item['role'] not in ('vehicle','pedestrian'):
             raise ValueError('unsupported participant role')
-        if not item['lawful_presence_source']:
-            raise ValueError('lawful presence source missing')
         body_bounds(item['body_vertices_m'])
-        if item['lawfully_present'] and any(overlaps(item['body_vertices_m'],r) for r in regions):
+        within=any(overlaps(item['body_vertices_m'],r) for r in regions)
+        if within and (type(item['lawfully_present']) is not bool or not item['lawful_presence_source']):
+            raise ValueError('lawful presence source missing for governed-region occupant')
+        if within and item['lawfully_present']:
             occupied.append(item['id'])
     return {'hold_at_stop_line':bool(occupied),'occupied_by':occupied,
             'signal_exhibited_frame':signal_exhibited_frame,'decision_frame':current_frame,
@@ -107,6 +108,60 @@ def command(scene, ego_front_x_m, decision):
     return {'throttle':0.0 if decision['hold_at_stop_line'] else .25,
             'brake':1.0 if decision['hold_at_stop_line'] else 0.0,
             'steer':0.0,'intended_maneuver':'straight'}
+
+
+def control_step(scene, signal, participants, ego_vertices, *, first_arrow_frame=None,
+                 exhibition_occupants=None):
+    """Decide the next Native control from the latest original frame.
+
+    Unknown source facts fail closed. The initial control is a full brake until
+    the first observed frame is available; this decision controls the next tick.
+    """
+    frame=signal.get('frame')
+    if type(frame) is not int:
+        raise ValueError('original signal frame missing')
+    hold={'throttle':0.0,'brake':1.0,'steer':0.0,'intended_maneuver':'straight'}
+    try:
+        require_sole_straight_arrow(signal['aspect'],
+                                   head_id=signal['facing_head_id'],frame=frame)
+    except (KeyError,ValueError) as exc:
+        return {'control':hold,'reason':'unverified_sole_arrow',
+                'source_error':str(exc),'first_arrow_frame':first_arrow_frame,
+                'exhibition_occupants':exhibition_occupants}
+    if first_arrow_frame is None:
+        first_arrow_frame=frame
+        try:
+            first=yield_decision(scene,participants,
+                                 signal_exhibited_frame=frame,current_frame=frame)
+            exhibition_occupants=first['occupied_by']
+        except ValueError as exc:
+            return {'control':hold,'reason':'unverified_exhibition_lawfulness',
+                    'source_error':str(exc),'first_arrow_frame':frame,
+                    'exhibition_occupants':None}
+    if exhibition_occupants is None:
+        return {'control':hold,'reason':'unverified_exhibition_lawfulness',
+                'source_error':'lawful presence at original exhibition frame was unverified',
+                'first_arrow_frame':first_arrow_frame,'exhibition_occupants':None}
+    regions=[scene['intersection_bounds_m'],*scene['adjacent_crosswalk_bounds_m']]
+    occupants={item['id']:item for item in participants}
+    missing=[ident for ident in exhibition_occupants if ident not in occupants]
+    if missing:
+        return {'control':hold,'reason':'missing_exhibition_occupant_body',
+                'source_error':'original body no longer available: '+str(missing),
+                'first_arrow_frame':first_arrow_frame,
+                'exhibition_occupants':exhibition_occupants}
+    try:
+        remaining=[ident for ident in exhibition_occupants if any(
+            overlaps(occupants[ident]['body_vertices_m'],region) for region in regions)]
+        front=body_bounds(ego_vertices)[2]
+        control=command(scene,front,{'hold_at_stop_line':bool(remaining)})
+    except ValueError as exc:
+        return {'control':hold,'reason':'unverified_lawful_presence_or_geometry',
+                'source_error':str(exc),'first_arrow_frame':first_arrow_frame,
+                'exhibition_occupants':exhibition_occupants}
+    return {'control':control,'reason':'yield_hold' if remaining else 'straight_clear',
+            'occupied_by':remaining,'first_arrow_frame':first_arrow_frame,
+            'exhibition_occupants':exhibition_occupants}
 
 
 def spawn_scene(world,scene,transform_factory):

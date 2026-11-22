@@ -42,6 +42,23 @@ class Carla:
 
 
 class NativeSourceTests(unittest.TestCase):
+    def test_participant_inventory_includes_external_actors_and_excludes_ego(self):
+        class Box:
+            def get_world_vertices(self,_):return [Point(0,0),Point(1,0),Point(1,1),Point(0,1)]
+        class Actor:
+            bounding_box=Box()
+            def __init__(self,ident):self.id=ident
+            def get_transform(self):return object()
+        class Group:
+            def filter(self,pattern):
+                return [Actor(1),Actor(2),Actor(3)] if pattern=='vehicle.*' else [Actor(4)]
+        class World:
+            def get_actors(self):return Group()
+        rows=native.participant_inventory(World(),Actor(1))
+        self.assertEqual([row['id'] for row in rows],[2,3,4])
+        self.assertEqual(rows[-1]['role'],'pedestrian')
+        self.assertTrue(all(row['lawfully_present'] is None for row in rows))
+
     def reviewed_source(self,folder,actor_id=7):
         folder=Path(folder);asset=folder/'original-head.mesh'
         asset.write_bytes(b'CPU fixture representing original head mesh')
@@ -77,6 +94,12 @@ class NativeSourceTests(unittest.TestCase):
                 native.signal_snapshot([Light(8)],18,bindings)
             with self.assertRaisesRegex(ValueError,'slot'):
                 native.signal_snapshot([Light(7)],18,bindings,slot=1)
+            class ShiftedLight(Light):
+                def get_transform(self):
+                    return type('T',(),{'location':Point(2,0,4),
+                                       'rotation':type('R',(),{'yaw':90})()})()
+            with self.assertRaisesRegex(ValueError,'position mismatch'):
+                native.signal_snapshot([ShiftedLight(7)],18,bindings)
 
     def test_review_packet_rejects_broken_or_ambiguous_source(self):
         with tempfile.TemporaryDirectory() as source, tempfile.TemporaryDirectory() as output:
@@ -145,7 +168,8 @@ class NativeSourceTests(unittest.TestCase):
             def set_timeout(self,_):pass
             def get_world(self):return world
         fake_carla=types.SimpleNamespace(Client=Client,Location=Point)
-        output=types.SimpleNamespace(FrameMap=object,write_result=lambda *_:None,
+        output=types.SimpleNamespace(FrameMap=object,physical_result=lambda _,value:value,
+                                     write_result=lambda *_:None,
                                      seal_capture=lambda *_ , **__:self.fail('failed capture was sealed'))
         restore=types.SimpleNamespace(fields=lambda obj:{'synchronous_mode':obj.synchronous_mode,
                                                           'fixed_delta_seconds':obj.fixed_delta_seconds},

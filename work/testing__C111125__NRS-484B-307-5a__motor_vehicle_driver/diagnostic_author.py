@@ -33,10 +33,14 @@ def write_case(label):
         ego_rows.append(dict(ident,body_vertices_m=[[x,-.5,0],[x+1,-.5,0],
                                                      [x+1,.5,0],[x,.5,0]],heading_deg=0))
         people=[]
-        if label=='yield' and index in (1,2,3):
+        if label=='yield' and index in (0,1,2,3):
             people=[{'id':'pedestrian-1','role':'pedestrian','lawfully_present':True,
                      'lawful_presence_source':'diagnostic phase text only',
                      'body_vertices_m':[[-7,-.5,0],[-6,-.5,0],[-6,.5,0],[-7,.5,0]]}]
+        elif label=='yield':
+            people=[{'id':'pedestrian-1','role':'pedestrian','lawfully_present':True,
+                     'lawful_presence_source':'diagnostic phase text only',
+                     'body_vertices_m':[[-7,8,0],[-6,8,0],[-6,9,0],[-7,9,0]]}]
         participant_rows.append(dict(ident,participants=people))
     for name,rows in [('signal-head-history.jsonl',signal_rows),
                       ('ego-body-history.jsonl',ego_rows),

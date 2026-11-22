@@ -42,6 +42,7 @@ def measure(attempt):
     if len({len(signals),len(ego),len(traffic)})!=1:
         raise ValueError('original signal, ego and participant frame counts differ')
     first_arrow=None;first_entry=None;occupied_frames=[];unresolved=[];violated_hold=[]
+    exhibition_lawful_ids=None
     unverified_presence=[]
     headings=[];previous=None
     for signal,body,participants in zip(signals,ego,traffic):
@@ -56,6 +57,7 @@ def measure(attempt):
         aspect=signal.get('aspect',{})
         arrow=bool(aspect.get('illuminated_indications')==[
             {'color':'green','shape':'arrow','direction':'straight'}])
+        exhibition=arrow and first_arrow is None
         if arrow:
             require_sole_straight_arrow(aspect,head_id=context['facing_head_id'],frame=identity[0])
             if first_arrow is None:first_arrow=identity
@@ -65,27 +67,37 @@ def measure(attempt):
         if type(heading) not in (int,float) or not math.isfinite(heading):
             raise ValueError('missing original ego heading')
         headings.append(heading)
-        if right>=context['intersection_bounds_m'][0] and first_entry is None:
+        entering=right>=context['intersection_bounds_m'][0] and first_entry is None
+        if entering:
             first_entry=identity
-        present=[]
+        regions=[context['intersection_bounds_m'],*context['adjacent_crosswalk_bounds_m']]
+        current={}
+        if exhibition:exhibition_lawful_ids=[]
         for person in participants.get('participants',[]):
             if not {'id','role','body_vertices_m','lawfully_present','lawful_presence_source'}<=person.keys():
                 raise ValueError('participant source or lawful presence missing')
             footprint=person['body_vertices_m']
             body_bounds(footprint)
-            if person['lawfully_present'] is None:
+            if person['id'] in current:raise ValueError('duplicate original participant ID')
+            current[person['id']]=person
+            within=any(overlaps(footprint,r) for r in regions)
+            if exhibition and within:
+                if person['lawfully_present'] is None:
+                    unverified_presence.append(identity[0]);continue
+                if type(person['lawfully_present']) is not bool or not person['lawful_presence_source']:
+                    raise ValueError('lawful presence at exhibition lacks source')
+                if person['lawfully_present']:exhibition_lawful_ids.append(person['id'])
+        present=[]
+        for ident in exhibition_lawful_ids or []:
+            if ident not in current:
                 unverified_presence.append(identity[0]);continue
-            if type(person['lawfully_present']) is not bool or not person['lawful_presence_source']:
-                raise ValueError('lawful presence lacks source')
-            if first_arrow is None:continue
-            regions=[context['intersection_bounds_m'],*context['adjacent_crosswalk_bounds_m']]
-            if person['lawfully_present'] and any(overlaps(footprint,r) for r in regions):
-                present.append(person['id'])
+            if any(overlaps(current[ident]['body_vertices_m'],r) for r in regions):
+                present.append(ident)
         if present:
             occupied_frames.append({'frame':identity[0],'time_s':identity[1],'participant_ids':present})
             if right>context['stop_line_x_m']:
                 violated_hold.append(identity[0])
-        if right>=context['intersection_bounds_m'][0] and not arrow:
+        if entering and not arrow:
             unresolved.append(identity[0])
     return {'format':'worker-straight-arrow-measurements',
             'first_sole_arrow_frame':first_arrow[0] if first_arrow else None,
@@ -93,6 +105,7 @@ def measure(attempt):
             'first_ego_intersection_entry_frame':first_entry[0] if first_entry else None,
             'first_ego_intersection_entry_time_s':first_entry[1] if first_entry else None,
             'lawfully_occupied_frames':occupied_frames,
+            'exhibition_lawful_participant_ids':exhibition_lawful_ids,
             'unverified_lawful_presence_frames':sorted(set(unverified_presence)),
             'ego_past_stop_line_during_occupancy_frames':violated_hold,
             'entry_without_verified_arrow_frames':unresolved,
