@@ -54,8 +54,9 @@ def overlap_box(body, polygon):
 
 
 def audit(reject_drift=False, remove_source=False):
-    manifest = read(HERE / 'current-base-proof-manifest.json')
-    entries = {e['case_id'].rsplit('__', 1)[-1]: e for e in manifest['cases']}
+    manifest = read(HERE / 'current-runtime-reproof-manifest.json')
+    entries = {e['case_id'].rsplit('__', 1)[-1]: e for e in manifest['cases']
+               if e['case_id'].rsplit('__', 1)[-1] in ('false', 'true')}
     if set(entries) != {'false', 'true'}:
         raise ValueError('Selected exact pair missing')
     fixed = ('cell_id', 'law_id', 'actor', 'duration_s', 'rate_hz', 'required_atoms',
@@ -71,8 +72,8 @@ def audit(reject_drift=False, remove_source=False):
             raise ValueError('Selected route variable missing')
         if candidate != 'primary':
             for suffix, entry in entries.items():
-                stem = f'atom-fixed-{suffix}-{candidate}'
-                compatible = read(HERE / (stem + '-compatibility-receipt.json'))
+                stem = f'current-runtime-{suffix}-{candidate}'
+                compatible = read(HERE / (stem + '-compatibility.json'))
                 saved = read(HERE / (stem + '-saved-receipt.json'))
                 expected = next(c['construction_sha256'] for c in entry['candidates']
                                 if c['id'] == candidate)
@@ -93,8 +94,8 @@ def audit(reject_drift=False, remove_source=False):
     observations = {}
     for suffix, entry in entries.items():
         spec, rows, sample_sha = sources(entry, suffix, remove_source and suffix == 'true')
-        compat_path = HERE / f'atom-fixed-{suffix}-primary-compatibility-receipt.json'
-        saved_path = HERE / f'atom-fixed-{suffix}-primary-saved-receipt.json'
+        compat_path = HERE / f'current-runtime-{suffix}-primary-compatibility.json'
+        saved_path = HERE / f'current-runtime-{suffix}-primary-saved-receipt.json'
         compat, saved = read(compat_path), read(saved_path)
         selected_sha = entry['construction_sha256']
         if (compat['case_id'] != entry['case_id'] or compat['construction_sha256'] != selected_sha

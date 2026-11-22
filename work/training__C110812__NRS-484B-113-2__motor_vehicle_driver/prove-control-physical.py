@@ -10,7 +10,7 @@ EVENTS = ['capture_finished', 'encoders_closed', 'restoration_verified',
 
 
 def run(kind):
-    entry = next(e for e in json.loads((HERE / 'control-proof-manifest.json').read_text())['cases']
+    entry = next(e for e in json.loads((HERE / 'current-runtime-reproof-manifest.json').read_text())['cases']
                  if e['case_id'].endswith('__control'))
     base = {'case_id': entry['case_id'], 'construction_sha256': entry['construction_sha256'],
             'cpu_fixture_mock': True, 'original_native_motion_verified': False,

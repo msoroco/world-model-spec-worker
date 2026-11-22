@@ -22,7 +22,7 @@ def config(bundle):
 
 
 def audit():
-    entries = read(HERE / 'control-proof-manifest.json')['cases']
+    entries = read(HERE / 'current-runtime-reproof-manifest.json')['cases']
     rows = []
     for entry in entries:
         candidate = next(c for c in entry['candidates'] if c['id'] == 'fallback3')

@@ -23,7 +23,7 @@ def box_overlap(vertices, polygon):
 
 
 def audit(drop_native=False):
-    manifest = read(HERE / 'control-proof-manifest.json')
+    manifest = read(HERE / 'current-runtime-reproof-manifest.json')
     case = next(e for e in manifest['cases'] if e['case_id'].endswith('__control'))
     recipe = read(HERE / 'selected-diagnostic-condition_c-recipe.json')
     source_path = HERE / 'selected-diagnostic-condition_c.json'
@@ -73,9 +73,9 @@ def audit(drop_native=False):
                 or config['rate_hz'] != 20 or config['case_suffix'] != 'condition_c'
                 or len(config['cameras']) != 4):
             raise ValueError('Control candidate capture contract differs')
-    compatibility = read(HERE / 'atom-fixed-control-primary-compatibility-receipt.json')
-    saved = read(HERE / 'atom-fixed-control-primary-saved-receipt.json')['result']
-    result_path = HERE / 'atom-fixed-control-primary-result.json'
+    compatibility = read(HERE / 'current-runtime-control-primary-compatibility.json')
+    saved = read(HERE / 'current-runtime-control-primary-saved-receipt.json')['result']
+    result_path = HERE / 'current-runtime-control-primary-result.json'
     final = read(result_path)
     sample_sha = hashlib.sha256(source['native_samples.jsonl'].encode()).hexdigest()
     if (not compatibility['passed'] or compatibility['case_id'] != case['case_id']
@@ -106,7 +106,7 @@ if __name__ == '__main__':
     parser.add_argument('--case', required=True)
     parser.add_argument('--drop-native', action='store_true')
     args = parser.parse_args()
-    expected = json.loads((HERE / 'control-proof-manifest.json').read_text())['cases'][-1]['case_id']
+    expected = json.loads((HERE / 'current-runtime-reproof-manifest.json').read_text())['cases'][-1]['case_id']
     if args.case != expected or not expected.endswith('__control'):
         raise ValueError('Control audit selected another case')
     print(json.dumps(audit(args.drop_native), indent=2))

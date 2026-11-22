@@ -59,8 +59,8 @@ def candidate(entry, ident):
 
 
 def proof(suffix, case, ident, construction_sha):
-    compat = HERE / f'atom-fixed-{suffix}-{ident}-compatibility-receipt.json'
-    saved = HERE / f'atom-fixed-{suffix}-{ident}-saved-receipt.json'
+    compat = HERE / f'current-runtime-{suffix}-{ident}-compatibility.json'
+    saved = HERE / f'current-runtime-{suffix}-{ident}-saved-receipt.json'
     a, b = read(compat), read(saved)['result']
     if (not a['passed'] or a['case_id'] != case or a['construction_sha256'] != construction_sha
             or not b['passed'] or not b['recorded_only'] or b['missing_evidence']
@@ -72,7 +72,7 @@ def proof(suffix, case, ident, construction_sha):
 
 
 def audit(reject_drift=False, remove_native=False):
-    manifest = read(HERE / 'control-proof-manifest.json')
+    manifest = read(HERE / 'current-runtime-reproof-manifest.json')
     entries = {e['case_id'].rsplit('__', 1)[-1]: e for e in manifest['cases']}
     if set(entries) != {'false', 'true', 'control'}:
         raise ValueError('Comparison exact cases missing')
