@@ -14,6 +14,8 @@ from capture_attempt import acquire_with_world_restore
 from candidate_tuning import TUNINGS, tuning
 from source_measurement import analyze, analyze_hazard
 from stop_construction import RoadProfile, target
+from sweep_native_controller import RED_ONSETS_S, controlled_phase
+from sweep_case import SWEEPS
 
 
 CASES = {'reference': True, 'contrast': False,
@@ -69,10 +71,13 @@ def placement(survey, road, carla, case, candidate='primary'):
         x, y = xy(longitudinal, lateral_offset)
         return carla.Transform(carla.Location(x=x, y=y, z=anchor['z']+0.25),
                                carla.Rotation(yaw=anchor['yaw']))
+    hazard_gap = survey.get('hazard_center_gap_m', 8.0)
+    if case == 'safe_operation_stop' and hazard_gap not in (6.0, 8.0, 10.0):
+        raise ValueError('Unreviewed hazard center-gap setting')
     return {'ego_spawn': transform(selected.ego_spawn_longitudinal_m, 0.0),
             'following_spawn': transform(selected.follower_spawn_longitudinal_m, 0.0),
             'stop_xy': xy(0.0, lateral),
-            'hazard_spawn': (transform(8.0, 0.0)
+            'hazard_spawn': (transform(hazard_gap, 0.0)
                              if case == 'safe_operation_stop' else None),
             'target_lane_overlap': CASES[case],
             'ego_lateral_stop_m': lateral,
@@ -80,9 +85,14 @@ def placement(survey, road, carla, case, candidate='primary'):
             'tuning': selected}
 
 
-def run(client, carla, survey, attempt, case, *, candidate='primary', sink_factory=None):
+def run(client, carla, survey, attempt, case, *, candidate='primary', sink_factory=None,
+        sweep_axis=None):
     world = client.get_world()
     road, lane, shoulder = validate_survey(survey, world.get_map(), carla)
+    if sweep_axis is not None and not any(
+            spec[0] == case and spec[1] == sweep_axis and
+            survey.get(sweep_axis) in spec[2] for spec in SWEEPS.values()):
+        raise ValueError('Native sweep axis or value differs from reviewed binding')
     plan = placement(survey, road, carla, case, candidate)
     if case == 'safe_operation_stop' and not survey.get('hazard_blueprint'):
         raise ValueError('Safe-operation scene requires surveyed hazard blueprint')
@@ -94,6 +104,12 @@ def run(client, carla, survey, attempt, case, *, candidate='primary', sink_facto
         governing_light = world.get_actors().find(control_id)
         if (governing_light is None or governing_light.type_id != 'traffic.traffic_light'):
             raise ValueError('Surveyed governing traffic-light actor is absent')
+    red_onset_s = survey.get('governing_red_onset_s')
+    if red_onset_s is not None and (case != 'law_required_stop' or red_onset_s not in RED_ONSETS_S):
+        raise ValueError('Unreviewed governing red-onset setting')
+    follower_gap = survey.get('following_gap_m', tuning(candidate).follower_brake_gap_m)
+    if 'following_gap_m' in survey and (case != 'reference' or follower_gap not in (7.0, 9.5, 12.0)):
+        raise ValueError('Unreviewed follower brake-gap setting')
     library = world.get_blueprint_library()
     actors = []
     try:
@@ -111,16 +127,17 @@ def run(client, carla, survey, attempt, case, *, candidate='primary', sink_facto
         options = {'frames': survey['frames'],
                    'stop_radius_m': plan['tuning'].stop_radius_m,
                    'approach_speed_mps': plan['tuning'].approach_speed_mps,
-                   'follower_brake_gap_m': plan['tuning'].follower_brake_gap_m}
+                   'follower_brake_gap_m': follower_gap}
         if sink_factory is not None:
             options['sink_factory'] = sink_factory
         if plan['hazard_spawn'] is not None:
             options['hazard'] = actors[2]
         if governing_light is not None:
             options['governing_light'] = governing_light
-        receipt = acquire_with_world_restore(
-            world, carla, actors[0], actors[1], library,
-            plan['stop_xy'], attempt, **options)
+        with controlled_phase(world, governing_light, carla, red_onset_s) as capture_world:
+            receipt = acquire_with_world_restore(
+                capture_world, carla, actors[0], actors[1], library,
+                plan['stop_xy'], attempt, **options)
         readback = {
             'format': 'c179480-original-map-readback-v1',
             'map_name': world.get_map().name,
@@ -138,6 +155,12 @@ def run(client, carla, survey, attempt, case, *, candidate='primary', sink_facto
                                     if plan['hazard_spawn'] is not None else None),
             'surveyed_governing_traffic_light_id': (
                 governing_light.id if governing_light is not None else None),
+            'requested_following_brake_gap_m': follower_gap,
+            'requested_hazard_center_gap_m': (
+                survey.get('hazard_center_gap_m', 8.0) if case == 'safe_operation_stop' else None),
+            'requested_governing_red_onset_s': red_onset_s,
+            'sweep_axis': sweep_axis,
+            'sweep_value': survey[sweep_axis] if sweep_axis is not None else None,
             'physical_completion_claimed': False,
         }
         (Path(attempt) / 'native-map-readback.json').write_text(
@@ -151,6 +174,13 @@ def run(client, carla, survey, attempt, case, *, candidate='primary', sink_facto
             from source_measurement import analyze_control
             measured['governing_control_observation'] = analyze_control(
                 actor_path, frame_path, expected_control_id=governing_light.id)
+            if red_onset_s is not None:
+                from control_phase_measurement import measure_red_onset
+                phase = measure_red_onset(actor_path, frame_path,
+                                          expected_control_id=governing_light.id)
+                if abs(phase['red_onset_s'] - red_onset_s) > 0.05:
+                    raise ValueError('Observed governing red onset differs from requested phase')
+                measured['governing_phase_observation'] = phase
         measured.update(format='c179480-source-measurements-v1', case=case,
                         actor_source_sha256=hashlib.sha256(actor_path.read_bytes()).hexdigest(),
                         frame_map_sha256=hashlib.sha256(frame_path.read_bytes()).hexdigest(),

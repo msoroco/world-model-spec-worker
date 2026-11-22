@@ -6,6 +6,8 @@ from pathlib import Path
 
 from source_measurement import analyze_hazard, analyze_control, load_rows
 from source_provenance import classify
+from control_phase_measurement import measure_red_onset
+from sweep_case import SWEEPS
 
 
 CHANNELS = ('ego_pose', 'ego_speed', 'ego_stop_history',
@@ -17,11 +19,14 @@ SAFE_CHANNELS = ('hazard_actor_state', 'ego_hazard_gap_history')
 LAW_CHANNELS = ('governing_control_readback',)
 
 
-def channels_for(case):
+def channels_for(case, sweep_axis=None):
     if case not in ('reference', 'contrast', 'safe_operation_stop',
                     'law_required_stop'):
         raise ValueError('Unknown source case for channels')
-    return CHANNELS + SAFE_CHANNELS + LAW_CHANNELS
+    if sweep_axis is not None and not any(
+            spec[0] == case and spec[1] == sweep_axis for spec in SWEEPS.values()):
+        raise ValueError('Sweep channel differs from source case')
+    return CHANNELS + SAFE_CHANNELS + LAW_CHANNELS + ((sweep_axis,) if sweep_axis else ())
 
 
 def _vector(value, length):
@@ -41,13 +46,23 @@ def derive(attempt):
             or type(map_readback.get('road_id')) is not int
             or type(map_readback.get('lane_id')) is not int):
         raise ValueError('Missing original roadway map readback')
-    channels = channels_for(map_readback.get('case'))
+    axis = map_readback.get('sweep_axis')
+    channels = channels_for(map_readback.get('case'), axis)
+    if axis is not None and not any(
+            spec[0] == map_readback['case'] and spec[1] == axis and
+            map_readback.get('sweep_value') in spec[2] for spec in SWEEPS.values()):
+        raise ValueError('Source map readback lacks reviewed sweep setting')
     if map_readback['case'] == 'safe_operation_stop':
         analyze_hazard(attempt/'native-actors.jsonl', attempt/'video_frames.jsonl', source_kind=source_kind)
     if map_readback['case'] == 'law_required_stop':
         analyze_control(attempt/'native-actors.jsonl', attempt/'video_frames.jsonl',
                         expected_control_id=map_readback.get('surveyed_governing_traffic_light_id'),
                         source_kind=source_kind)
+    phase = (measure_red_onset(attempt/'native-actors.jsonl',
+                               attempt/'video_frames.jsonl',
+                               expected_control_id=map_readback.get('surveyed_governing_traffic_light_id'),
+                               source_kind=source_kind)
+             if axis == 'governing_red_onset_s' else None)
     values = {name: [] for name in channels}
     previous_speed = None
     for row, frame in zip(rows, mapping):
@@ -156,6 +171,12 @@ def derive(attempt):
                 'scoped_light_actor_ids': [actor['actor_id'] for actor in inventory['actors']
                                            if actor['type_id'] == 'traffic.traffic_light'],
                 'absence_claimed': False}
+        if axis == 'following_gap_m':
+            sample[axis] = row['following_gap_m']
+        elif axis == 'hazard_center_gap_m':
+            sample[axis] = row['hazard_state']['ego_center_gap_m']
+        elif axis == 'governing_red_onset_s':
+            sample[axis] = phase['red_onset_s']
         for name in channels:
             values[name].append({'time_s': time_s, 'value': sample[name]})
     directory = attempt/'channels'

@@ -7,6 +7,7 @@ from pathlib import Path
 from candidate_tuning import TUNINGS, tuning
 from native_channels import channels_for
 from native_controller import camera_specs
+from sweep_case import resolve
 
 
 HERE = Path(__file__).resolve().parent
@@ -17,9 +18,10 @@ CASES = ('reference', 'contrast', 'safe_operation_stop', 'law_required_stop')
 def check():
     config = json.loads((HERE/'config.json').read_text())
     case = config.get('case_suffix')
-    case_id = ASSIGNMENT + '__' + str(case)
+    base, axis, value = resolve(config)
+    case_id = config['case_id']
     if (case not in CASES
-            or config.get('case_id') != case_id
+            or base != case
             or config.get('selected_case_id') != case_id
             or config.get('law_id') != 'NRS-484B-627-2'
             or config.get('cell_id') != 'C179480'
@@ -34,7 +36,7 @@ def check():
             (spec['width'], spec['height']) for spec in camera_specs()]:
         raise ValueError('Original camera sizes differ')
     if [item['name'] for item in config['recording_description']['channels']] != list(
-            channels_for(case)):
+            channels_for(case, axis)):
         raise ValueError('Recorded source channel contract differs')
     if config.get('candidate_id') not in TUNINGS:
         raise ValueError('Unknown selected physical-risk candidate')
@@ -59,8 +61,13 @@ def capture(output_dir, host, port):
     client = carla.Client(host, port)
     client.set_timeout(20)
     config = json.loads((HERE/'config.json').read_text())
+    _, axis, value = resolve(config)
+    if axis is not None:
+        if axis in survey and survey[axis] != value:
+            raise ValueError('Operator survey conflicts with selected sweep point')
+        survey[axis] = value
     receipt = run(client, carla, survey, output_dir, config['case_suffix'],
-                  candidate=json.loads((HERE/'config.json').read_text())['candidate_id'])
+                  candidate=config['candidate_id'], sweep_axis=axis)
     report = finalize(output_dir, Path(output_dir)/'analysis-report.json')
     return {'capture': receipt, 'finalizer': report,
             'survey_path': str(survey_path),

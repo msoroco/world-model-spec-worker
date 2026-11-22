@@ -12,6 +12,8 @@ from native_channels import CHANNELS, channels_for, derive
 from saved_analysis import CAMERAS, review, sha256
 from source_measurement import analyze_hazard, analyze_control, load_rows, measure
 from source_provenance import classify, ORIGINAL, SYNTHETIC
+from sweep_case import resolve
+from control_phase_measurement import measure_red_onset
 
 
 ASSIGNMENT = 'training__C179480__NRS-484B-627-2__motor_vehicle_driver'
@@ -70,14 +72,15 @@ def finalize(attempt, output):
                     else 'original')
     config = json.loads((attempt/'config.json').read_text())
     case = config.get('case_suffix')
+    base, axis, value = resolve(config)
     if (case not in EXPECTED_OVERLAP
-            or config.get('case_id') != ASSIGNMENT+'__'+case
+            or base != case
             or config.get('law_id') != 'NRS-484B-627-2'
             or config.get('rate_hz') != 20):
         raise ValueError('Finalizer requires an exact C179480 primary case config')
     names = [entry.get('name') for entry in
              config.get('recording_description', {}).get('channels', [])]
-    expected_channels = channels_for(case)
+    expected_channels = channels_for(case, axis)
     if set(names) != set(expected_channels) or len(names) != len(expected_channels):
         raise ValueError('Recording description differs from source channels')
     if (attempt/'result.json').exists():
@@ -86,7 +89,8 @@ def finalize(attempt, output):
     if not map_path.is_file():
         raise ValueError('Missing required source: native-map-readback.json')
     map_readback = json.loads(map_path.read_text())
-    if map_readback.get('case') != case:
+    if (map_readback.get('case') != case or map_readback.get('sweep_axis') != axis
+            or (axis is not None and map_readback.get('sweep_value') != value)):
         raise ValueError('Original map readback belongs to another case')
     rows = load_rows(attempt/'native-actors.jsonl', attempt/'video_frames.jsonl')
     if source_kind == SYNTHETIC and not (attempt/'source-measurements.json').exists():
@@ -106,6 +110,11 @@ def finalize(attempt, output):
                 attempt/'native-actors.jsonl',attempt/'video_frames.jsonl',
                 expected_control_id=map_readback.get('surveyed_governing_traffic_light_id'),
                 source_kind=SYNTHETIC)
+            if axis == 'governing_red_onset_s':
+                receipt['governing_phase_observation'] = measure_red_onset(
+                    attempt/'native-actors.jsonl',attempt/'video_frames.jsonl',
+                    expected_control_id=map_readback.get('surveyed_governing_traffic_light_id'),
+                    source_kind=SYNTHETIC)
         with (attempt/'source-measurements.json').open('x') as stream:
             json.dump(receipt,stream,allow_nan=False)
             stream.write('\n')
