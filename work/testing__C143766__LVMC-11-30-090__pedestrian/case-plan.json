@@ -24,9 +24,121 @@
   "topic_inventory": {
     "exact-text": "Where sidewalks are provided it shall be unlawful for any pedestrian to walk along and upon an adjacent roadway."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C143766__LVMC-11-30-090__pedestrian__roadway_walk",
+      "target_law_id": "LVMC-11-30-090",
+      "target_type": "boundary_probe",
+      "construction": "cases/roadway_walk/scene.json",
+      "gap_ids": [
+        "roadway-beside-provided-sidewalk-unverified"
+      ],
+      "preparation_status": "diagnostic_geometry_cpu_proven",
+      "legal_judgment": "unresolved",
+      "physical_acceptance_claimed": false,
+      "physical_risk_assessment": {
+        "risk": "Native walker footprint or path may leave the authored band",
+        "status": "physical",
+        "trigger": "original body crosses the target band boundary",
+        "fallback_construction": null
+      },
+      "map_source": "candidate-corridor.xodr",
+      "map_source_sha256": "025ac762a1409d1de6f94741477dc1f6ef609224a338e6cc7000a1afd3aeddd1"
+    },
+    {
+      "case_id": "testing__C143766__LVMC-11-30-090__pedestrian__sidewalk_walk",
+      "target_law_id": "LVMC-11-30-090",
+      "target_type": "boundary_probe",
+      "construction": "cases/sidewalk_walk/scene.json",
+      "gap_ids": [
+        "roadway-beside-provided-sidewalk-unverified"
+      ],
+      "preparation_status": "diagnostic_geometry_cpu_proven",
+      "legal_judgment": "unresolved",
+      "physical_acceptance_claimed": false,
+      "physical_risk_assessment": {
+        "risk": "Native walker footprint or path may leave the authored band",
+        "status": "physical",
+        "trigger": "original body crosses the target band boundary",
+        "fallback_construction": null
+      },
+      "map_source": "candidate-corridor.xodr",
+      "map_source_sha256": "025ac762a1409d1de6f94741477dc1f6ef609224a338e6cc7000a1afd3aeddd1"
+    },
+    {
+      "case_id": "testing__C143766__LVMC-11-30-090__pedestrian__shoulder_walk",
+      "target_law_id": "LVMC-11-30-090",
+      "target_type": "context_probe",
+      "construction": "cases/shoulder_walk/scene.json",
+      "gap_ids": [
+        "roadway-beside-provided-sidewalk-unverified"
+      ],
+      "preparation_status": "diagnostic_geometry_cpu_proven",
+      "legal_judgment": "unresolved",
+      "physical_acceptance_claimed": false,
+      "physical_risk_assessment": {
+        "risk": "Native walker footprint or path may leave the authored band",
+        "status": "physical",
+        "trigger": "original body crosses the target band boundary",
+        "fallback_construction": null
+      },
+      "map_source": "candidate-corridor.xodr",
+      "map_source_sha256": "025ac762a1409d1de6f94741477dc1f6ef609224a338e6cc7000a1afd3aeddd1"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "roadway_vs_sidewalk",
+      "case_ids": [
+        "testing__C143766__LVMC-11-30-090__pedestrian__roadway_walk",
+        "testing__C143766__LVMC-11-30-090__pedestrian__sidewalk_walk"
+      ],
+      "fixed_conditions": [
+        "same authored corridor bands and trail",
+        "same longitudinal pedestrian route and body size"
+      ],
+      "deliberate_differences": [
+        "pedestrian lateral route band"
+      ],
+      "status": "source_bound_synthetic_original_pair_proven_native_pending",
+      "legal_judgment": "unresolved",
+      "proof": "diagnostic-comparison-proof.json"
+    },
+    {
+      "comparison_id": "roadway_vs_shoulder",
+      "case_ids": [
+        "testing__C143766__LVMC-11-30-090__pedestrian__roadway_walk",
+        "testing__C143766__LVMC-11-30-090__pedestrian__shoulder_walk"
+      ],
+      "fixed_conditions": [
+        "same authored corridor bands and trail",
+        "same longitudinal pedestrian route and body size"
+      ],
+      "deliberate_differences": [
+        "pedestrian lateral route band"
+      ],
+      "status": "source_bound_synthetic_original_pair_proven_native_pending",
+      "legal_judgment": "unresolved",
+      "proof": "diagnostic-comparison-proof.json"
+    }
+  ],
+  "observations": [
+    {
+      "name": "pedestrian_body_xy_m",
+      "source": "original Native walker bounding-box vertices joined by frame",
+      "mandatory": true
+    },
+    {
+      "name": "sidewalk_and_roadway_boundaries",
+      "source": "reviewed map and original OpenDRIVE or semantic source packet",
+      "mandatory": true
+    },
+    {
+      "name": "trail_access_and_purpose",
+      "source": "reviewed site context, presently unverified",
+      "mandatory": true
+    }
+  ],
   "sources": [
     {
       "path": "inputs/testing__C143766__LVMC-11-30-090__pedestrian/assignment.json",
@@ -51,17 +163,28 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "The source-hashed engineering OpenDRIVE has driving, shoulder, sidewalk, border and biking lanes. Its sidewalk purpose, trail access, municipal definitions and Native import need independent review.",
+    "Actual Native walker motion, original body histories and camera coverage need local capture.",
+    "Delivery manifest, semantic proposals, source-bound compatibility, saved-only finalizer and independent physical/comparison audits remain CPU work."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
     "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "roadway-beside-provided-sidewalk-unverified",
+        "requirement": "Original full-body pedestrian walking along and upon an adjacent roadway where a sidewalk is provided, with trail and shoulder distinguished",
+        "source": {
+          "path": "inputs/testing__C143766__LVMC-11-30-090__pedestrian/assignment.json",
+          "sha256": "a0bc00da91d231e3f614a4be794a964e32895c9d06e6fdc00fae17e13746d1b9"
+        },
+        "why_existing_insufficient": "Frozen accepted inventory has no recording or source proving sidewalk purpose, adjacency or original pedestrian road occupancy."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "three_exact_diagnostic_opendrive_routes_and_two_saved_original_pairs_cpu_proven_delivery_pending",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
