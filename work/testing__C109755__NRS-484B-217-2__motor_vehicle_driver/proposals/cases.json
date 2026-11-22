@@ -1,0 +1,315 @@
+{
+  "cell_id": "C109755",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "cases": [
+    {
+      "case_id": "testing__C109755__NRS-484B-217-2__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared physical crossing baseline; legal predicates unresolved.",
+      "variable_assignments": {
+        "turn_signal_command": {
+          "kind": "controller",
+          "value": true,
+          "note": "Command left signal before stripe"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "left_turn_crossing",
+          "note": "Same turn path in both probes"
+        },
+        "oncoming_gap_setup": {
+          "kind": "world_setup",
+          "value": 40.0,
+          "unit": "m",
+          "note": "Initial placement only"
+        },
+        "following_gap_setup": {
+          "kind": "world_setup",
+          "value": 20.0,
+          "unit": "m",
+          "note": "Initial placement only"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native ego transform and body envelope per simulator frame",
+            "time_window": "entire approach and left turn",
+            "reference_frame": "CARLA world with source frame and time",
+            "uncertainty": "20 Hz sampling and simulator geometry precision"
+          },
+          {
+            "name": "signal_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native ego left-signal control state per simulator frame",
+            "time_window": "entire approach and left turn",
+            "reference_frame": "CARLA world with source frame and time",
+            "uncertainty": "20 Hz sampling and simulator geometry precision"
+          },
+          {
+            "name": "oncoming_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native oncoming transform and body envelope per simulator frame",
+            "time_window": "entire approach and left turn",
+            "reference_frame": "CARLA world with source frame and time",
+            "uncertainty": "20 Hz sampling and simulator geometry precision"
+          },
+          {
+            "name": "following_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native following transform and body envelope per simulator frame",
+            "time_window": "entire approach and left turn",
+            "reference_frame": "CARLA world with source frame and time",
+            "uncertainty": "20 Hz sampling and simulator geometry precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "stripe_geometry",
+            "unit": "structured record",
+            "method": "Native map lane marking, crossing geometry and verified source context"
+          }
+        ],
+        "limitations": [
+          "Actual zone extent and statutory subsections remain unverified until source-backed Native capture.",
+          "No legal safety or impediment judgment is inferred from physical gaps."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "if it is safe",
+        "if it would not be an impediment to oncoming or following traffic"
+      ]
+    },
+    {
+      "case_id": "testing__C109755__NRS-484B-217-2__motor_vehicle_driver__signaled_left_turn",
+      "target_law_id": "NRS-484B-217-2",
+      "target_type": "boundary_probe",
+      "rationale": "Paired signal command comparison with the same authored traffic setup.",
+      "variable_assignments": {
+        "turn_signal_command": {
+          "kind": "controller",
+          "value": true,
+          "note": "Command left signal before stripe"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "left_turn_crossing",
+          "note": "Same turn path in both probes"
+        },
+        "oncoming_gap_setup": {
+          "kind": "world_setup",
+          "value": 40.0,
+          "unit": "m",
+          "note": "Initial placement only"
+        },
+        "following_gap_setup": {
+          "kind": "world_setup",
+          "value": 20.0,
+          "unit": "m",
+          "note": "Initial placement only"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native ego transform and body envelope per simulator frame",
+            "time_window": "entire approach and left turn",
+            "reference_frame": "CARLA world with source frame and time",
+            "uncertainty": "20 Hz sampling and simulator geometry precision"
+          },
+          {
+            "name": "signal_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native ego left-signal control state per simulator frame",
+            "time_window": "entire approach and left turn",
+            "reference_frame": "CARLA world with source frame and time",
+            "uncertainty": "20 Hz sampling and simulator geometry precision"
+          },
+          {
+            "name": "oncoming_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native oncoming transform and body envelope per simulator frame",
+            "time_window": "entire approach and left turn",
+            "reference_frame": "CARLA world with source frame and time",
+            "uncertainty": "20 Hz sampling and simulator geometry precision"
+          },
+          {
+            "name": "following_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native following transform and body envelope per simulator frame",
+            "time_window": "entire approach and left turn",
+            "reference_frame": "CARLA world with source frame and time",
+            "uncertainty": "20 Hz sampling and simulator geometry precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "stripe_geometry",
+            "unit": "structured record",
+            "method": "Native map lane marking, crossing geometry and verified source context"
+          }
+        ],
+        "limitations": [
+          "Actual zone extent and statutory subsections remain unverified until source-backed Native capture.",
+          "No legal safety or impediment judgment is inferred from physical gaps."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "if it is safe",
+        "if it would not be an impediment to oncoming or following traffic"
+      ],
+      "paired_probe_id": "testing__C109755__NRS-484B-217-2__motor_vehicle_driver__signal_pair",
+      "deliberate_differences": [
+        "turn_signal_command"
+      ],
+      "probe": {
+        "primary_variable": "turn_signal_command",
+        "comparison_or_standard": "Prior appropriate turn signal requirement; realized control state measured.",
+        "target_value_or_branch": true
+      }
+    },
+    {
+      "case_id": "testing__C109755__NRS-484B-217-2__motor_vehicle_driver__unsignaled_left_turn",
+      "target_law_id": "NRS-484B-217-2",
+      "target_type": "boundary_probe",
+      "rationale": "Paired signal command comparison with the same authored traffic setup.",
+      "variable_assignments": {
+        "turn_signal_command": {
+          "kind": "controller",
+          "value": false,
+          "note": "Do not command left signal"
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "left_turn_crossing",
+          "note": "Same turn path in both probes"
+        },
+        "oncoming_gap_setup": {
+          "kind": "world_setup",
+          "value": 40.0,
+          "unit": "m",
+          "note": "Initial placement only"
+        },
+        "following_gap_setup": {
+          "kind": "world_setup",
+          "value": 20.0,
+          "unit": "m",
+          "note": "Initial placement only"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native ego transform and body envelope per simulator frame",
+            "time_window": "entire approach and left turn",
+            "reference_frame": "CARLA world with source frame and time",
+            "uncertainty": "20 Hz sampling and simulator geometry precision"
+          },
+          {
+            "name": "signal_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native ego left-signal control state per simulator frame",
+            "time_window": "entire approach and left turn",
+            "reference_frame": "CARLA world with source frame and time",
+            "uncertainty": "20 Hz sampling and simulator geometry precision"
+          },
+          {
+            "name": "oncoming_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native oncoming transform and body envelope per simulator frame",
+            "time_window": "entire approach and left turn",
+            "reference_frame": "CARLA world with source frame and time",
+            "uncertainty": "20 Hz sampling and simulator geometry precision"
+          },
+          {
+            "name": "following_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native following transform and body envelope per simulator frame",
+            "time_window": "entire approach and left turn",
+            "reference_frame": "CARLA world with source frame and time",
+            "uncertainty": "20 Hz sampling and simulator geometry precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "stripe_geometry",
+            "unit": "structured record",
+            "method": "Native map lane marking, crossing geometry and verified source context"
+          }
+        ],
+        "limitations": [
+          "Actual zone extent and statutory subsections remain unverified until source-backed Native capture.",
+          "No legal safety or impediment judgment is inferred from physical gaps."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "if it is safe",
+        "if it would not be an impediment to oncoming or following traffic"
+      ],
+      "paired_probe_id": "testing__C109755__NRS-484B-217-2__motor_vehicle_driver__signal_pair",
+      "deliberate_differences": [
+        "turn_signal_command"
+      ],
+      "probe": {
+        "primary_variable": "turn_signal_command",
+        "comparison_or_standard": "Prior appropriate turn signal requirement; realized control state measured.",
+        "target_value_or_branch": false
+      }
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "c109755-safety",
+      "target_law_id": "NRS-484B-217-2",
+      "judgment_refs": [
+        {
+          "phrase": "if it is safe",
+          "note": "The law supplies no numeric safety boundary."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Physical coverage sweep awaits source-backed zone extent and feasible Native traffic ranges.",
+      "missing_inputs": [
+        "Verified statutory zone extent and subsection 3/4 applicability",
+        "Feasible Native spacing range and capture-backed realization measurements"
+      ]
+    },
+    {
+      "sweep_id": "c109755-impediment",
+      "target_law_id": "NRS-484B-217-2",
+      "judgment_refs": [
+        {
+          "phrase": "if it would not be an impediment to oncoming or following traffic",
+          "note": "The law supplies no numeric impediment boundary."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Physical coverage sweep awaits source-backed zone extent and feasible Native traffic ranges.",
+      "missing_inputs": [
+        "Verified statutory zone extent and subsection 3/4 applicability",
+        "Feasible Native spacing range and capture-backed realization measurements"
+      ]
+    }
+  ],
+  "sweeps_expanded": true
+}

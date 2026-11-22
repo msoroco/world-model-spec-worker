@@ -55,7 +55,10 @@ class SavedAnalysisTests(unittest.TestCase):
     def fixture(self,root,signaled):
         root=Path(root);rows=[]
         for frame,y in enumerate((-1.75,-0.4,0.25,1.75)):
+            vertices=[[frame,y-.1,0],[frame+1,y-.1,0],
+                      [frame+1,y+.1,0],[frame,y+.1,0]]
             rows.append({'frame':frame,'time_s':frame/20,'ego_center_y_m':y,
+                         'ego_body_vertices_m':vertices,
                          'left_signal':bool(signaled and frame>=1),
                          'oncoming_body_gap_m':20-frame,'following_body_gap_m':15+frame})
         (root/'turn-history.jsonl').write_text(''.join(json.dumps(r)+'\n' for r in rows))
@@ -92,6 +95,20 @@ class SavedAnalysisTests(unittest.TestCase):
             path=self.fixture(temp,True);(path/'turn-history.jsonl').unlink()
             with self.assertRaisesRegex(ValueError,'Missing required source: turn-history.jsonl'):
                 analysis.build_report(path)
+    def test_body_edge_precedes_center_crossing(self):
+        with tempfile.TemporaryDirectory() as temp:
+            path=self.fixture(temp,True)
+            rows=[json.loads(line) for line in (path/'turn-history.jsonl').read_text().splitlines()]
+            for vertex in rows[1]['ego_body_vertices_m']:
+                if vertex[1]>rows[1]['ego_center_y_m']:
+                    vertex[1]=.05
+            (path/'turn-history.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in rows))
+            acquisition=json.loads((path/'acquisition.json').read_text())
+            acquisition['turn-history.jsonl']['sha256']=hashlib.sha256((path/'turn-history.jsonl').read_bytes()).hexdigest()
+            (path/'acquisition.json').write_text(json.dumps(acquisition))
+            measured=analysis.measure(path)
+            self.assertEqual(measured['crossing_frame'],1)
+            self.assertLess(rows[1]['ego_center_y_m'],0)
 
 spec_compare=importlib.util.spec_from_file_location('comparison_audit',FOLDER/'comparison_audit.py')
 compare=importlib.util.module_from_spec(spec_compare);spec_compare.loader.exec_module(compare)
@@ -127,11 +144,13 @@ class DeliveryAuditTests(unittest.TestCase):
             'behavior_attempted':True,'maneuver_completed':True}))
         body=[[0,0,0],[1,0,0],[1,1,0],[0,1,0]]
         history={'frame':10,'time_s':0.5,'ego_body_vertices_m':body,
-            'oncoming_body_vertices_m':body,'following_body_vertices_m':body,
+            'oncoming_body_vertices_m':[[v[0]+5,v[1],v[2]] for v in body],
+            'following_body_vertices_m':[[v[0]-6,v[1],v[2]] for v in body],
             'left_signal':True,'oncoming_body_gap_m':4.0,'following_body_gap_m':5.0}
         (root/'turn-history.jsonl').write_text(json.dumps(history)+'\n')
         (root/'zone-context.json').write_text(json.dumps({'zone_kind':'marked_no_passing_zone',
-            'striping_source':'native_map'}))
+            'striping_source':'native_map','zone_extent_verified':True,
+            'statutory_exceptions_verified':True}))
         (root/'acquisition.json').write_text(json.dumps({name:{'kind':'original_native',
             'sha256':delivery.sha(root/name)} for name in ('turn-history.jsonl','zone-context.json')}))
         seal={'events':['capture_finished','encoders_closed','restoration_verified'],
@@ -177,4 +196,21 @@ class DeliveryAuditTests(unittest.TestCase):
             (p/'owner-release.json').write_text(json.dumps({'event':'owner_released','operator_attested':True,
                 'native_exit_sha256':delivery.sha(p/'native-exit.json')}))
             with self.assertRaisesRegex(ValueError,'participant/body history incomplete'):
+                delivery.audit(p,p/'processing.json',p/'source-decode.json',self.verifier)
+    def test_unverified_zone_rejected(self):
+        with tempfile.TemporaryDirectory() as temp:
+            p=self.fixture(temp)
+            zone=json.loads((p/'zone-context.json').read_text());zone['zone_extent_verified']=False
+            (p/'zone-context.json').write_text(json.dumps(zone))
+            acquisition=json.loads((p/'acquisition.json').read_text())
+            acquisition['zone-context.json']['sha256']=delivery.sha(p/'zone-context.json')
+            (p/'acquisition.json').write_text(json.dumps(acquisition))
+            seal=json.loads((p/'capture-seal.json').read_text())
+            for name in ('zone-context.json','acquisition.json'):
+                seal['sources'][name]=delivery.sha(p/name)
+            (p/'capture-seal.json').write_text(json.dumps(seal))
+            (p/'native-exit.json').write_text(json.dumps({'event':'native_exit','capture_seal_sha256':delivery.sha(p/'capture-seal.json')}))
+            (p/'owner-release.json').write_text(json.dumps({'event':'owner_released','operator_attested':True,
+                'native_exit_sha256':delivery.sha(p/'native-exit.json')}))
+            with self.assertRaisesRegex(ValueError,'statutory zone extent'):
                 delivery.audit(p,p/'processing.json',p/'source-decode.json',self.verifier)

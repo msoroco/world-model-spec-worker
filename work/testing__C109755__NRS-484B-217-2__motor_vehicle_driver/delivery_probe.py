@@ -27,10 +27,12 @@ def fixture(root,case):
     (attempt/'video_frames.jsonl').write_text(json.dumps({'video_frame':0,'carla_frame':frame,'time_s':time_s})+'\n')
     body=[[0,0,0],[1,0,0],[1,1,0],[0,1,0]]
     row={'frame':frame,'time_s':time_s,'ego_body_vertices_m':body,
-         'oncoming_body_vertices_m':body,'following_body_vertices_m':body,
+         'oncoming_body_vertices_m':[[v[0]+5,v[1],v[2]] for v in body],
+         'following_body_vertices_m':[[v[0]-6,v[1],v[2]] for v in body],
          'left_signal':True,'oncoming_body_gap_m':4.0,'following_body_gap_m':5.0}
     (attempt/'turn-history.jsonl').write_text(json.dumps(row)+'\n')
-    write(attempt/'zone-context.json',{'zone_kind':'marked_no_passing_zone','striping_source':'native_map'})
+    write(attempt/'zone-context.json',{'zone_kind':'marked_no_passing_zone','striping_source':'native_map',
+         'zone_extent_verified':True,'statutory_exceptions_verified':True})
     write(attempt/'acquisition.json',{name:{'kind':'original_native','sha256':sha(attempt/name)}
         for name in ('turn-history.jsonl','zone-context.json')})
     result={'case_id':case,'setup_confirmed':True,'behavior_attempted':True,'maneuver_completed':True}

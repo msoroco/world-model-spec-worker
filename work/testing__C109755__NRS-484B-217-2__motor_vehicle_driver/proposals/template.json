@@ -1,0 +1,74 @@
+{
+  "template_id": "NRS-484B-217-2@motor_vehicle_driver",
+  "law_id": "NRS-484B-217-2",
+  "actor": "motor_vehicle_driver",
+  "quote": "Except as otherwise provided in subsections 3 and 4, a driver shall not drive on the left side of the highway within such zone or drive across or on the left side of any pavement striping designed to mark such zone throughout its length. A driver may drive across a pavement striping marking such zone to an adjoining highway if the driver has first given the appropriate turn signal and there will be no impediment to oncoming or following traffic. Except where otherwise provided, a driver may drive across a pavement striping marking such a zone to make a left-hand turn if the driver has first given the appropriate turn signal in compliance with NRS 484B.413 [NRS-484B-413-2], if it is safe and if it would not be an impediment to oncoming or following traffic.",
+  "structure": {
+    "law_id": "NRS-484B-217-2",
+    "activation": {
+      "condition": "Driver encounters a marked no-passing zone or its marking on a highway.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "Do not drive on the left side within the zone or across/on its marking throughout its length, subject to stated exceptions.",
+      "type": "must_not",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "trigger": "Subsection 3 or 4 applies",
+        "effect": "Base prohibition may be displaced",
+        "replacement_obligation": "Resolve the applicable subsection from source evidence",
+        "source_clause": "Except as otherwise provided in subsections 3 and 4"
+      },
+      {
+        "trigger": "Crossing to an adjoining highway",
+        "effect": "Conditional crossing permission",
+        "replacement_obligation": "Prior turn signal and no impediment to oncoming or following traffic",
+        "source_clause": "A driver may drive across a pavement striping marking such zone to an adjoining highway if the driver has first given the appropriate turn signal and there will be no impediment to oncoming or following traffic."
+      },
+      {
+        "trigger": "Crossing to make a left-hand turn",
+        "effect": "Conditional crossing permission",
+        "replacement_obligation": "Prior appropriate turn signal, safety, and no impediment to oncoming or following traffic",
+        "source_clause": "Except where otherwise provided, a driver may drive across a pavement striping marking such a zone to make a left-hand turn if the driver has first given the appropriate turn signal in compliance with NRS 484B.413 [NRS-484B-413-2], if it is safe and if it would not be an impediment to oncoming or following traffic."
+      }
+    ],
+    "timing": {
+      "description": "Appropriate turn signal must precede crossing the marking.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "if it is safe",
+        "note": "The law supplies no numeric safety boundary."
+      },
+      {
+        "phrase": "if it would not be an impediment to oncoming or following traffic",
+        "note": "The law supplies no numeric impediment boundary."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "turn_signal_command",
+      "kind": "controller",
+      "range_or_domain": "on or off"
+    },
+    {
+      "name": "commanded_turn_path",
+      "kind": "controller",
+      "range_or_domain": "left turn across marking"
+    },
+    {
+      "name": "oncoming_gap_setup",
+      "kind": "world_setup",
+      "range_or_domain": "physical initial spacing in m"
+    },
+    {
+      "name": "following_gap_setup",
+      "kind": "world_setup",
+      "range_or_domain": "physical initial spacing in m"
+    }
+  ]
+}

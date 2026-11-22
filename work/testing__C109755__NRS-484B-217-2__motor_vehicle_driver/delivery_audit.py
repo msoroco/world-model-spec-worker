@@ -24,11 +24,23 @@ def body(value):
             for component in vertex[:3]) for vertex in value)
 
 
+def envelope_gap(a,b):
+    dx=max(min(v[0] for v in b)-max(v[0] for v in a),
+           min(v[0] for v in a)-max(v[0] for v in b),0)
+    dy=max(min(v[1] for v in b)-max(v[1] for v in a),
+           min(v[1] for v in a)-max(v[1] for v in b),0)
+    return math.hypot(dx,dy)
+
+
 def audit(attempt, processing, decode_receipt, media_verify=None, case_id=None):
     attempt=Path(attempt);processing=Path(processing)
     seal=read(attempt/'capture-seal.json')
     if seal.get('events')!=['capture_finished','encoders_closed','restoration_verified']:
         raise ValueError('Native capture lifecycle incomplete')
+    required_sources={'trace.jsonl','video_frames.jsonl','turn-history.jsonl',
+                      'zone-context.json','acquisition.json','result.json'}
+    if not required_sources<=set(seal.get('sources',{})):
+        raise ValueError('Native seal omits required original source')
     for name,checksum in seal.get('sources',{}).items():
         if not (attempt/name).is_file() or sha(attempt/name)!=checksum:
             raise ValueError('sealed original missing or changed: '+name)
@@ -62,9 +74,14 @@ def audit(attempt, processing, decode_receipt, media_verify=None, case_id=None):
             for key in ('oncoming_body_gap_m','following_body_gap_m'))
         for h,m in zip(turns,mapping)):
         raise ValueError('original participant/body history incomplete or frame join changed')
+    if any(abs(envelope_gap(h['ego_body_vertices_m'],h[role+'_body_vertices_m'])-
+               h[role+'_body_gap_m'])>.1 for h in turns for role in ('oncoming','following')):
+        raise ValueError('reported traffic gap differs from original body geometry')
     zone=read(attempt/'zone-context.json')
     if zone.get('striping_source')!='native_map' or zone.get('zone_kind')!='marked_no_passing_zone':
         raise ValueError('Native zone marking source is missing')
+    if zone.get('zone_extent_verified') is not True or zone.get('statutory_exceptions_verified') is not True:
+        raise ValueError('statutory zone extent or exception context is unverified')
     processed=read(processing)
     if processed.get('format')!='worker-saved-processing' or processed.get('passed') is not True or processed.get('recorded_only') is not True:
         raise ValueError('saved processing receipt absent or failed')

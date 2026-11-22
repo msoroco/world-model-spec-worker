@@ -2,6 +2,7 @@
 import argparse
 import hashlib
 import json
+import math
 from pathlib import Path
 
 
@@ -27,12 +28,21 @@ def measure(attempt):
     if not rows or context.get('zone_kind')!='marked_no_passing_zone' or context.get('striping_source')!='native_map':
         raise ValueError('marked zone or original turn history missing')
     stripe=context['stripe_y_m'];first=None;previous=None
+    def leading_y(row):
+        vertices=row.get('ego_body_vertices_m')
+        if not isinstance(vertices,list) or len(vertices)<4 or any(
+            not isinstance(v,list) or len(v)<2 or
+            any(type(component) not in (int,float) or not math.isfinite(component)
+                for component in v[:2]) for v in vertices):
+            raise ValueError('missing original ego body geometry')
+        return max(v[1] for v in vertices)
     for row in rows:
-        if previous and (row['frame']<=previous['frame'] or row['time_s']<=previous['time_s']):
+        edge=leading_y(row)
+        if previous and (row['frame']<=previous[0]['frame'] or row['time_s']<=previous[0]['time_s']):
             raise ValueError('original frame/time order invalid')
-        if previous and previous['ego_center_y_m']<stripe<=row['ego_center_y_m'] and first is None:
+        if previous and previous[1]<stripe<=edge and first is None:
             first=row
-        previous=row
+        previous=(row,edge)
     if first is None:raise ValueError('no observed stripe crossing')
     if not all('left_signal' in row and 'oncoming_body_gap_m' in row and 'following_body_gap_m' in row for row in rows):
         raise ValueError('signal or traffic measurements missing')
@@ -42,6 +52,7 @@ def measure(attempt):
     return {'format':'worker-stripe-measurements','crossing_frame':first['frame'],
             'crossing_time_s':first['time_s'],'signal_started_s':activated[0]['time_s'] if activated else None,
             'signal_active_at_crossing':bool(first['left_signal']),
+            'crossing_method':'first sampled original ego body edge over stripe after wholly-below sample',
             'minimum_oncoming_body_gap_m':min(r['oncoming_body_gap_m'] for r in rows),
             'minimum_following_body_gap_m':min(r['following_body_gap_m'] for r in rows),
             'zone_context_sha256':acquisition['zone-context.json']['sha256'],
@@ -62,6 +73,37 @@ def build_report(attempt):
 def saved_result(attempt, report):
     from worker_exchange.native_output import physical_result, validate_result
     cfg=json.loads((Path(attempt)/'config.json').read_text())
+    construction=json.loads((Path(attempt)/'construction.json').read_text())
+    planned=construction['recording_description']
+    acquisition=json.loads((Path(attempt)/'acquisition.json').read_text())
+    history=source(Path(attempt),acquisition,'turn-history.jsonl')
+    rows=[json.loads(line) for line in history.read_text().splitlines() if line.strip()]
+    channel_fields={'ego_body_history':'ego_body_vertices_m',
+                    'signal_history':'left_signal',
+                    'oncoming_history':'oncoming_body_vertices_m',
+                    'following_history':'following_body_vertices_m'}
+    channels=Path(attempt)/'channels'
+    channels.mkdir(exist_ok=True)
+    recording=[]
+    for channel in planned['channels']:
+        name=channel['name']
+        if name not in channel_fields:
+            raise ValueError('Unsupported declared recording channel: '+name)
+        field=channel_fields[name]
+        if any(field not in row for row in rows):
+            raise ValueError('Missing original recording channel: '+field)
+        path=channels/(name+'.jsonl')
+        with path.open('x') as stream:
+            for row in rows:
+                stream.write(json.dumps({'time_s':row['time_s'],'value':row[field]},allow_nan=False)+'\n')
+        recording.append({'name':name,'unit':channel['unit'],'reference':str(path.relative_to(attempt))})
+    zone=source(Path(attempt),acquisition,'zone-context.json')
+    context=json.loads(zone.read_text())
+    context_file=channels/'stripe_geometry.json'
+    with context_file.open('x') as stream:
+        stream.write(json.dumps({'stripe_geometry':context},allow_nan=False)+'\n')
+    recording.append({'name':'stripe_geometry','unit':'structured record',
+                      'reference':str(context_file.relative_to(attempt))})
     measured=report['measurements']['left_turn_crossing_measurement']['value']
     target={'target':'observed left-turn stripe crossing','requested':True,'measured':True,
             'method':'measure','tolerance':0,'matched':True,'physical_cause_confirmed':False,
@@ -72,8 +114,8 @@ def saved_result(attempt, report):
             'physical_failure_flags':[],'trace_reference':'trace.jsonl',
             'video_references':['overview.mkv','approach.mkv','reference_corner.mkv','driver_reference.mkv'],
             'video_frame_map_reference':'video_frames.jsonl',
-            'recording_description':{'summary':'Measured left-turn crossing of Native map marking'},
-            'recording_evidence':[{'source':k,'sha256':v} for k,v in report['measurements']['left_turn_crossing_measurement']['sources'].items()],
+            'recording_description':planned,
+            'recording_evidence':recording,
             'realized_observables':{}}
     result=physical_result(attempt,result)
     validate_result(result)
