@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import json
 import hashlib
+import math
 from pathlib import Path
 
 
@@ -20,6 +21,38 @@ def _inside(point, rect):
     return rect[0] <= point[0] <= rect[2] and rect[1] <= point[1] <= rect[3]
 
 
+def _body_overlaps(vertices, rect):
+    if len(rect) != 4 or rect[0] >= rect[2] or rect[1] >= rect[3]:
+        raise ValueError("invalid crossing rectangle")
+    if not isinstance(vertices, list) or len(vertices) != 4:
+        raise ValueError("original body footprint missing")
+    if any(not isinstance(p, list) or len(p) != 2 for p in vertices):
+        raise ValueError("invalid original body vertex")
+    xs = [p[0] for p in vertices]
+    ys = [p[1] for p in vertices]
+    if not all(isinstance(v, (int, float)) and math.isfinite(v) for v in xs + ys):
+        raise ValueError("non-numeric original body vertex")
+    turns = []
+    for index in range(4):
+        a, b, c = (vertices[(index + j) % 4] for j in range(3))
+        turns.append((b[0]-a[0])*(c[1]-b[1])-(b[1]-a[1])*(c[0]-b[0]))
+    if not all(t > 0 for t in turns) and not all(t < 0 for t in turns):
+        raise ValueError("original body vertices are not ordered convex corners")
+    region = [[rect[0], rect[1]], [rect[2], rect[1]],
+              [rect[2], rect[3]], [rect[0], rect[3]]]
+    for polygon in (vertices, region):
+        for index, point in enumerate(polygon):
+            following = polygon[(index + 1) % 4]
+            axis = (point[1] - following[1], following[0] - point[0])
+            if axis == (0, 0):
+                raise ValueError("degenerate original body or crossing edge")
+            body_projection = [axis[0]*p[0] + axis[1]*p[1] for p in vertices]
+            region_projection = [axis[0]*p[0] + axis[1]*p[1] for p in region]
+            if max(body_projection) < min(region_projection) or max(region_projection) < min(body_projection):
+                return False
+    return True
+
+
 def _first_entry(samples, rect):
     if len(samples) < 2:
         raise ValueError("at least two original samples required")
@@ -31,7 +64,9 @@ def _first_entry(samples, rect):
         frame = sample["frame"]
         if not isinstance(frame, int) or frame <= previous_frame:
             raise ValueError("nonmonotone or missing original frame")
-        now_inside = _inside(sample["center_xy"], rect)
+        if previous_frame >= 0 and frame != previous_frame + 1:
+            raise ValueError("gap in original frame history")
+        now_inside = _body_overlaps(sample["body_vertices_xy_m"], rect)
         if now_inside and not previous_inside and entry is None:
             if previous_frame < 0:
                 raise ValueError("first sample already in crossing; entry unobserved")
@@ -59,6 +94,10 @@ def measure(trace):
     if not crossing.get("crossing_id") or not crossing.get("roadway_id"):
         raise ValueError("crossing and separate roadway identities required")
     rect = crossing["bounds_xy_m"]
+    ego_frames = [sample["frame"] for sample in trace["ego_samples"]]
+    other_frames = [sample["frame"] for sample in trace["other_samples"]]
+    if ego_frames != other_frames:
+        raise ValueError("ego and other original frame windows do not match")
     ego_entry, ego_exit = _first_entry(trace["ego_samples"], rect)
     other_entry, other_exit = _first_entry(trace["other_samples"], rect)
     if ego_entry is None or other_entry is None:
@@ -98,6 +137,17 @@ def audit_comparison(left_trace, right_trace, varying_fields):
     for name in ("devices", "approach_relation", "left_turn_intent", "left_turn_realized"):
         if name not in fields and left_trace["context"][name] != right_trace["context"][name]:
             raise ValueError(f"undeclared difference: {name}")
+    observables = {
+        "entry_order": (left["other_entered_before_ego"], right["other_entered_before_ego"]),
+        "clearance": (left["other_cleared_before_ego_entry"], right["other_cleared_before_ego_entry"]),
+    }
+    for name in ("devices", "approach_relation", "left_turn_intent", "left_turn_realized"):
+        observables[name] = (left_trace["context"][name], right_trace["context"][name])
+    for name in fields:
+        if name not in observables:
+            raise ValueError(f"unsupported declared comparison variable: {name}")
+        if observables[name][0] == observables[name][1]:
+            raise ValueError(f"declared comparison variable did not differ: {name}")
     return {"left": left, "right": right, "declared_differences": sorted(fields)}
 
 

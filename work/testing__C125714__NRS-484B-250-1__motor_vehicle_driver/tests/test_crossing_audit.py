@@ -21,7 +21,11 @@ control_spec.loader.exec_module(control)
 
 def trace(other_frames=(1, 2, 3, 4), ego_frames=(3, 4, 5, 6)):
     def samples(frames):
-        return [{"frame": f, "center_xy": [0, y]} for f, y in zip(frames, [-2, 0, 0, 2])]
+        enter, leave = frames[1], frames[3]
+        return [{"frame": f, "body_vertices_xy_m":
+                 [[-.2, y-.2], [.2, y-.2], [.2, y+.2], [-.2, y+.2]]}
+                for f in range(9)
+                for y in [-2 if f < enter else (0 if f < leave else 2)]]
     return {
         "context": {
             "map_source": "OpenDRIVE map hash", "ego_highway": "A",
@@ -123,9 +127,30 @@ class CrossingAuditTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "map_source"):
             audit.measure(t)
         t = trace()
-        t["other_samples"][0]["center_xy"] = [0, 0]
+        t["other_samples"][0]["body_vertices_xy_m"] = [[-.2,-.2],[.2,-.2],[.2,.2],[-.2,.2]]
         with self.assertRaisesRegex(ValueError, "entry unobserved"):
             audit.measure(t)
+
+    def test_body_contact_counts_before_center_entry(self):
+        t = trace()
+        t["other_samples"][0]["body_vertices_xy_m"] = [[-.2,-1.2],[.2,-1.2],[.2,-.8],[-.2,-.8]]
+        with self.assertRaisesRegex(ValueError, "entry unobserved"):
+            audit.measure(t)
+
+    def test_gapped_or_misaligned_original_frames_rejected(self):
+        t = trace()
+        t["other_samples"].pop(3)
+        with self.assertRaisesRegex(ValueError, "windows do not match"):
+            audit.measure(t)
+        t = trace()
+        t["other_samples"].pop(3)
+        t["ego_samples"].pop(3)
+        with self.assertRaisesRegex(ValueError, "gap in original frame"):
+            audit.measure(t)
+
+    def test_rotated_body_box_overlap_is_not_physical_entry(self):
+        rotated = [[1.15,.95],[1.55,1.35],[1.35,1.55],[.95,1.15]]
+        self.assertFalse(audit._body_overlaps(rotated, [-1,-1,1,1]))
 
     def test_same_highway_rejected(self):
         t = trace()
@@ -145,6 +170,10 @@ class CrossingAuditTests(unittest.TestCase):
         b["crossing"]["crossing_id"] = "A-B-east"
         with self.assertRaisesRegex(ValueError, "fixed crossing"):
             audit.audit_comparison(a, b, ["entry_order"])
+
+    def test_comparison_requires_realized_difference(self):
+        with self.assertRaisesRegex(ValueError, "did not differ"):
+            audit.audit_comparison(trace(), trace(), ["entry_order"])
 
 
 if __name__ == "__main__":
