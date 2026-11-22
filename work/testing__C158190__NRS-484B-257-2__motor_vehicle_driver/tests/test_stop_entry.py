@@ -14,13 +14,12 @@ sys.path.insert(0, str(ROOT))
 spec = importlib.util.spec_from_file_location("stop_entry_measurements", ROOT / "stop_entry_measurements.py")
 module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(module)
-import stop_site
 import runner
 
 
 class StopEntryTests(unittest.TestCase):
     def test_authored_stop_site_and_case_staging_plans(self):
-        receipt = stop_site.validate_authored_site()
+        receipt = runner.validate_authored_site()
         self.assertEqual(receipt['approach_road_id'], 158190)
         self.assertEqual(receipt['approach_lane_id'], -1)
         self.assertEqual(receipt['stop_signal_id'], '1581902')
@@ -40,9 +39,9 @@ class StopEntryTests(unittest.TestCase):
     def test_mutated_authored_stop_control_rejected(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / 'wrong-sign.xodr'
-            path.write_text(stop_site.ROAD.read_text().replace('type="206"', 'type="205"'))
+            path.write_text(runner.ROAD.read_text().replace('type="206"', 'type="205"'))
             with self.assertRaisesRegex(ValueError, 'Stop sign does not govern'):
-                stop_site.validate_authored_site(path)
+                runner.validate_authored_site(path)
 
     def test_stop_stage_holds_until_observed_stillness_and_clear_path(self):
         prefix = runner.PREFIX
@@ -87,13 +86,13 @@ class StopEntryTests(unittest.TestCase):
         world = SimpleNamespace(get_snapshot=lambda: SimpleNamespace(frame=50),
                                 get_actors=lambda: [actor],
                                 get_map=lambda: road_map)
-        row = stop_site.observe_stop_control(world, 25, frame=50)
+        row = runner.observe_stop_control(world, 25, frame=50)
         self.assertEqual(row['stop_sign']['actor_id'], 25)
         self.assertEqual(len(row['stop_sign']['trigger_vertices_m']), 4)
         with self.assertRaisesRegex(ValueError, 'frame differs'):
-            stop_site.observe_stop_control(world, 25, frame=49)
+            runner.observe_stop_control(world, 25, frame=49)
         with self.assertRaisesRegex(ValueError, 'disappeared'):
-            stop_site.observe_stop_control(world, 26, frame=50)
+            runner.observe_stop_control(world, 26, frame=50)
 
     def test_runner_cpu_config_and_exact_capture_profile(self):
         config = json.loads((ROOT / 'config.json').read_text())
@@ -120,10 +119,16 @@ class StopEntryTests(unittest.TestCase):
         (root/"intersection_context.json").write_text(json.dumps(context))
         rows=[]
         for i,(speed,entry,before,other) in enumerate(((3,False,True,False),(0,False,True,True),(2,True,False,True))):
+            x = (-14.0, -13.0, -7.0)[i]
+            body = [[x+dx, dy, z] for dx in (-1.0, 1.0)
+                    for dy in (-.7, .7) for z in (0.0, 1.5)]
             rows.append({"frame":100+i,"time_s":1+i*.05,"ego_road_id":7,
+                         "ego":{"body_vertices_m":body},
                          "ego_speed_source":"actor.get_velocity","ego_speed_mps":speed,
                          "ego_body_in_intersection":entry,"ego_body_before_stop_reference":before,
-                         "other_body_in_intersection":other})
+                         "other_body_in_intersection":other,
+                         "other_center_m":[1.8,4.0-float(i),0.25] if other else None,
+                         "other_speed_mps":7.0 if other else None})
         frames=[{"video_frame":i,"carla_frame":r["frame"],"time_s":r["time_s"]} for i,r in enumerate(rows)]
         (root/"entry_history.jsonl").write_text("".join(json.dumps(r)+"\n" for r in rows))
         (root/"video_frames.jsonl").write_text("".join(json.dumps(r)+"\n" for r in frames))
@@ -135,6 +140,18 @@ class StopEntryTests(unittest.TestCase):
             self.assertTrue(result["observed_full_stop_before_reference"])
             self.assertTrue(result["observed_other_occupancy"])
             self.assertEqual(result["legal_conclusion"],"unresolved")
+
+    def test_occupied_intersection_requires_other_source_position(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.fixture(root)
+            path = root / 'entry_history.jsonl'
+            rows = [json.loads(line) for line in path.read_text().splitlines()]
+            rows[1]['other_center_m'] = None
+            rows[1]['other_speed_mps'] = None
+            path.write_text(''.join(json.dumps(row) + '\n' for row in rows))
+            with self.assertRaisesRegex(ValueError, 'source position'):
+                module.analyze(root)
 
     def test_crossing_road_join_and_off_route_rejection(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -245,6 +262,13 @@ class StopEntryTests(unittest.TestCase):
             output = root / 'analysis.json'
             report = module.finalize(root, output)
             self.assertEqual(report['legal_conclusion'], 'unresolved')
+            from worker_exchange.measurement_contract import verify_report
+            contract = json.loads((ROOT / 'measurement-contract.json').read_text())
+            measured = verify_report(contract, report, root)
+            self.assertEqual(len(measured), 5)
+            self.assertTrue(measured['full_stop_before_entry']['value'])
+            self.assertEqual(len(measured['approaching_hazard_context']['value']
+                                 ['other_approach_samples']), 2)
             self.assertEqual(len((root / 'channels/ego_speed_and_stop_reference.jsonl')
                                  .read_text().splitlines()), 3)
             result = json.loads((root / 'result.json').read_text())

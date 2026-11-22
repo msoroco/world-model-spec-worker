@@ -20,6 +20,48 @@ def _rows(path):
     return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
 
 
+def _ego_body(row):
+    body = row.get('ego', {}).get('body_vertices_m')
+    if not isinstance(body, list) or len(body) < 8:
+        raise ValueError('Missing original ego body vertices')
+    for point in body:
+        if not isinstance(point, list) or len(point) != 3:
+            raise ValueError('Incomplete original ego body vertex')
+        for value in point:
+            _finite(value, 'ego body vertex')
+    return body
+
+
+def measure_signed_entrance(context, observations):
+    return {'native_stop_sign_id': context['native_stop_sign_id'],
+            'non_through_highway': context['non_through_highway'],
+            'entrances': context['entrances']}
+
+
+def measure_full_stop_before_entry(context, observations):
+    return observations['observed_full_stop_before_reference']
+
+
+def measure_other_intersection_occupancy(context, observations):
+    return observations['observed_other_occupancy']
+
+
+def measure_control_exception(context, observations):
+    return {'police_control': context['police_control'],
+            'traffic_signal_control': context['traffic_signal_control']}
+
+
+def measure_approaching_hazard_context(context, observations):
+    return {'other_approach_samples': [
+                {'frame': row['frame'], 'time_s': row['time_s'],
+                 'other_center_m': row['other_center_m'],
+                 'other_speed_mps': row['other_speed_mps'],
+                 'other_body_in_intersection': row['other_body_in_intersection']}
+                for row in observations['samples'] if row['other_center_m'] is not None],
+            'first_ego_entry_frame': observations['first_ego_entry_frame'],
+            'legal_hazard_judgment': 'unresolved'}
+
+
 REVIEW_SOURCES = ("intersection_context.json", "entry_history.jsonl",
                   "video_frames.jsonl", "stop_control_inventory.jsonl",
                   "overview.mkv", "approach.mkv", "reference_corner.mkv",
@@ -139,9 +181,30 @@ def analyze(root: Path):
         other_in = row.get("other_body_in_intersection")
         if any(type(v) is not bool for v in (entry, before_ref, other_in)):
             raise ValueError("Missing original body occupancy")
+        body = _ego_body(row)
+        computed_entry = (min(p[0] for p in body) <= 8 and max(p[0] for p in body) >= -8
+                          and min(p[1] for p in body) <= 8 and max(p[1] for p in body) >= -8)
+        computed_before = max(p[0] for p in body) < -11
+        if (entry, before_ref) != (computed_entry, computed_before):
+            raise ValueError('Original ego body disagrees with sampled occupancy or stop reference')
+        other_center, other_speed = row.get('other_center_m'), row.get('other_speed_mps')
+        if other_center is not None:
+            if (not isinstance(other_center, list) or len(other_center) != 3
+                    or other_speed is None):
+                raise ValueError('Incomplete other approach source sample')
+            other_center = [_finite(v, 'other center') for v in other_center]
+            other_speed = _finite(other_speed, 'other speed')
+            if other_speed < 0:
+                raise ValueError('Negative other speed')
+        elif other_speed is not None:
+            raise ValueError('Other speed without source position')
+        if other_in and other_center is None:
+            raise ValueError('Occupied intersection lacks other source position')
         samples.append({"frame":fid,"time_s":time,"ego_speed_mps":speed,
                         "ego_body_in_intersection":entry,"ego_body_before_stop_reference":before_ref,
-                        "other_body_in_intersection":other_in})
+                        "other_body_in_intersection":other_in,
+                        "other_center_m": other_center,
+                        "other_speed_mps": other_speed})
     first_entry = next((i for i,s in enumerate(samples) if s["ego_body_in_intersection"]), None)
     if first_entry is None or first_entry == 0:
         raise ValueError("No observed approach before entry")
@@ -165,7 +228,7 @@ def finalize(attempt: Path, output: Path):
                 "stop_context_review.json")
     for name in required:
         if not (attempt / name).is_file():
-            raise ValueError("Missing saved stop-sign source: " + name)
+            raise ValueError("Missing required source: " + name)
     config = json.loads((attempt / "config.json").read_text())
     case_id = config.get("selected_case_id", "")
     if not case_id.startswith(
@@ -216,6 +279,29 @@ def finalize(attempt: Path, output: Path):
     for name in ("config.json", "trace.jsonl", "capture/evidence.jsonl",
                  "capture/native_map_facts.json"):
         hashes[name] = hashlib.sha256((attempt / name).read_bytes()).hexdigest()
+    measurement_specs = (
+        ('signed_entrance_control', measure_signed_entrance,
+         ('intersection_context.json', 'stop_control_inventory.jsonl')),
+        ('full_stop_before_entry', measure_full_stop_before_entry,
+         ('intersection_context.json', 'entry_history.jsonl', 'video_frames.jsonl')),
+        ('other_intersection_occupancy', measure_other_intersection_occupancy,
+         ('entry_history.jsonl', 'video_frames.jsonl')),
+        ('control_exception_state', measure_control_exception,
+         ('intersection_context.json', 'stop_control_inventory.jsonl')),
+        ('approaching_hazard_context', measure_approaching_hazard_context,
+         ('entry_history.jsonl', 'video_frames.jsonl')),
+    )
+    for name in ('stop_control_inventory.jsonl',):
+        hashes[name] = hashlib.sha256((attempt / name).read_bytes()).hexdigest()
+    context = json.loads((attempt / 'intersection_context.json').read_text())
+    if any(context.get(key) is None for key in
+           ('non_through_highway', 'police_control', 'traffic_signal_control')):
+        context = _review_context(attempt, context, {})
+    measurements = {
+        key: {'method': method.__name__, 'value': method(context, report),
+              'sources': {name: hashes[name] for name in inputs}}
+        for key, method, inputs in measurement_specs
+    }
     result = {"case_id": case_id,
               "measured_values": {
                   "observed_full_stop_before_reference": observed_stop,
@@ -248,6 +334,7 @@ def finalize(attempt: Path, output: Path):
     write_result(attempt, result)
     analysis = {"format": "worker-stop-sign-saved-analysis", "case_id": case_id,
                 "observations": report, "source_evidence_hashes": hashes,
+                "measurements": measurements,
                 "physical_checks": result["physical_checks"],
                 "legal_conclusion": "unresolved"}
     output.write_text(json.dumps(analysis, indent=2, allow_nan=False) + "\n")

@@ -12,10 +12,162 @@ from pathlib import Path
 from queue import Empty, Queue
 import subprocess
 
-from stop_site import load_native_site, observe_stop_control, validate_authored_site
-from stop_site import opendrive_to_carla, validate_native_site
+import hashlib
+import xml.etree.ElementTree as ET
 
 
+
+
+
+ROAD = Path(__file__).resolve().parent / 'native-map-plan/stop-sign-crossing.xodr'
+JUNCTION = 158191
+APPROACH = 158190
+THROUGH = (158194, 158195, 158196)
+
+
+def opendrive_to_carla(x, y):
+    """CARLA's Native world reflects the OpenDRIVE map's Y axis."""
+    return (float(x), -float(y))
+
+
+def _lanes(road):
+    section = road.find('./lanes/laneSection')
+    if section is None:
+        raise ValueError('Missing authored lane section')
+    return {int(lane.attrib['id']): lane for lane in section.findall('./left/lane')
+            + section.findall('./right/lane') if lane.attrib.get('type') == 'driving'}
+
+
+def validate_authored_site(path=ROAD):
+    path = Path(path)
+    document = ET.parse(path).getroot()
+    if document.tag != 'OpenDRIVE':
+        raise ValueError('Not an OpenDRIVE site')
+    roads = {int(road.attrib['id']): road for road in document.findall('road')}
+    if set(roads) != {158190, 158192, 158193, *THROUGH}:
+        raise ValueError('Authored junction road inventory differs')
+    if set(_lanes(roads[APPROACH])) != {-1}:
+        raise ValueError('Stop approach is not one-way')
+    if any(set(_lanes(roads[rid])) != {-1, 1} for rid in THROUGH):
+        raise ValueError('Through highway is not two-way')
+    if any(road.attrib.get('junction') != str(JUNCTION) for road in
+           (roads[158192], roads[158195])):
+        raise ValueError('Crossing segments lack junction membership')
+    for rid, x, y, hdg, length in ((APPROACH, -80, 0, 0, 72),
+                                   (158192, -8, 0, 0, 16),
+                                   (158193, 8, 0, 0, 72),
+                                   (158194, 0, -80, math.pi / 2, 72),
+                                   (158195, 0, -8, math.pi / 2, 16),
+                                   (158196, 0, 8, math.pi / 2, 72)):
+        geometry = roads[rid].find('./planView/geometry')
+        if geometry is None or geometry.find('line') is None or any(
+                not math.isclose(float(geometry.attrib[key]), value, abs_tol=1e-9)
+                for key, value in (('x', x), ('y', y), ('hdg', hdg), ('length', length))):
+            raise ValueError('Authored road centerline differs')
+    junction = document.find(f"./junction[@id='{JUNCTION}']")
+    if junction is None:
+        raise ValueError('Missing authored junction')
+    links = {(int(c.attrib['incomingRoad']), int(c.attrib['connectingRoad']),
+              c.attrib['contactPoint'], tuple((int(link.attrib['from']), int(link.attrib['to']))
+              for link in c.findall('laneLink'))) for c in junction.findall('connection')}
+    if links != {(APPROACH, 158192, 'start', ((-1, -1),)),
+                 (158194, 158195, 'start', ((-1, -1),)),
+                 (158196, 158195, 'end', ((1, 1),))}:
+        raise ValueError('One-way/through junction lane connections differ')
+    signals = roads[APPROACH].findall('./signals/signal')
+    if len(signals) != 1:
+        raise ValueError('Expected one authored stop sign')
+    sign = signals[0]
+    validity = sign.find('validity')
+    if (sign.attrib.get('type') != '206' or sign.attrib.get('orientation') != '+'
+            or not math.isclose(float(sign.attrib['s']), 60)
+            or validity is None or (validity.attrib.get('fromLane'),
+                                    validity.attrib.get('toLane')) != ('-1', '-1')):
+        raise ValueError('Stop sign does not govern the selected approach lane')
+    if document.findall('.//object') or len(document.findall('.//signal')) != 1:
+        raise ValueError('Authored markings or other controls are present')
+    return {'format': 'worker-c158190-authored-stop-site',
+            'road_sha256': hashlib.sha256(path.read_bytes()).hexdigest(),
+            'approach_road_id': APPROACH, 'approach_lane_id': -1,
+            'through_road_ids': list(THROUGH), 'junction_id': JUNCTION,
+            'stop_signal_id': sign.attrib['id'],
+            'no_authored_stop_line_or_crosswalk_objects': True,
+            'native_marking_absence_claimed': False}
+
+
+def validate_native_site(world, *, location_factory=None):
+    """Reject a loaded map that lacks the intended lanes or sign trigger."""
+    if location_factory is None:
+        import carla
+        location_factory = carla.Location
+    road_map = world.get_map()
+    expected = ((-20, -1.8, APPROACH, -1, False),
+                (0, -1.8, 158192, -1, True),
+                (1.8, -20, 158194, -1, False),
+                (1.8, 0, 158195, -1, True),
+                (-1.8, 20, 158196, 1, False))
+    for map_x, map_y, road_id, lane_id, is_junction in expected:
+        x, y = opendrive_to_carla(map_x, map_y)
+        point = location_factory(x=x, y=y, z=.25)
+        waypoint = road_map.get_waypoint(point, project_to_road=False)
+        if (waypoint is None or waypoint.road_id != road_id
+                or waypoint.lane_id != lane_id
+                or bool(waypoint.is_junction) != is_junction):
+            raise ValueError(f'Native road/lane/junction readback differs at {(x, y)}')
+    approach_x, approach_y = opendrive_to_carla(-20, -1.8)
+    approach_point = location_factory(x=approach_x, y=approach_y, z=.25)
+    signs = [actor for actor in world.get_actors().filter('traffic.stop*')
+             if actor.trigger_volume.contains(approach_point, actor.get_transform())]
+    if len(signs) != 1:
+        raise ValueError(f'Expected one Native stop trigger governing approach; found {len(signs)}')
+    return {'native_map_name': road_map.name, 'native_stop_sign_id': signs[0].id,
+            'native_approach_road_id': APPROACH, 'native_through_road_ids': list(THROUGH),
+            'native_marking_absence_claimed': False,
+            'properly_erected_sign_face_claimed': False}
+
+
+def load_native_site(client):
+    """Explicit Native operation; never called by CPU diagnostics."""
+    validate_authored_site()
+    world = client.generate_opendrive_world(ROAD.read_text())
+    return world, validate_native_site(world)
+
+
+def _xyz(point):
+    return [float(point.x), float(point.y), float(point.z)]
+
+
+def observe_stop_control(world, expected_stop_id, *, frame):
+    """Sample the Native control actor and crossing inventory at one frame."""
+    if type(frame) is not int or world.get_snapshot().frame != frame:
+        raise ValueError('Stop-control inventory frame differs from world')
+    actors = list(world.get_actors())
+    stops = [actor for actor in actors if actor.type_id.startswith('traffic.stop')]
+    matched = [actor for actor in stops if actor.id == expected_stop_id]
+    if len(matched) != 1:
+        raise ValueError('Native stop sign disappeared or changed identity')
+    sign = matched[0]
+    transform = sign.get_transform()
+    if not hasattr(sign, 'trigger_volume'):
+        raise ValueError('Native stop sign lacks trigger volume')
+    vertices = [_xyz(p) for p in sign.trigger_volume.get_world_vertices(transform)]
+    if len(vertices) < 4:
+        raise ValueError('Native stop trigger geometry incomplete')
+    competing = [{'actor_id': actor.id, 'blueprint': actor.type_id,
+                  'position_m': _xyz(actor.get_transform().location)}
+                 for actor in actors if actor.type_id.startswith(
+                     ('traffic.yield', 'traffic.traffic_light'))]
+    return {'frame': frame, 'native_map_name': world.get_map().name,
+            'stop_sign': {'actor_id': sign.id, 'blueprint': sign.type_id,
+                          'position_m': _xyz(transform.location),
+                          'trigger_vertices_m': vertices},
+            'other_stop_sign_ids': [actor.id for actor in stops if actor.id != sign.id],
+            'competing_controls': competing,
+            'native_crosswalk_vertices_m': [_xyz(p) for p in
+                                            world.get_map().get_crosswalks()],
+            'sign_face_legibility': 'pending_original_source_camera_review',
+            'police_direction': 'pending_original_source_review',
+            'all_entrance_governance': 'pending_original_source_review'}
 
 
 
@@ -319,11 +471,14 @@ def source_row(world, staging, frame, time_s, video_frame):
     other_body = [] if other is None else _body_vertices(other)
     return {'frame': frame, 'time_s': float(time_s), 'video_frame': video_frame,
             'ego_road_id': ego_waypoint.road_id,
+            'ego': {'body_vertices_m': [_xyz(p) for p in ego_body]},
             'ego_speed_source': 'actor.get_velocity', 'ego_speed_mps': _speed(ego),
             'ego_body_before_stop_reference': max(p.x for p in ego_body) < STOP_REFERENCE_X,
             'ego_body_in_intersection': _intersects_junction(ego_body),
             'other_body_in_intersection': bool(other_body) and _intersects_junction(other_body),
             'other_actor_id': None if other is None else other.id,
+            'other_body_vertices_m': None if other is None else
+            [_xyz(p) for p in other_body],
             'other_speed_mps': None if other is None else _speed(other),
             'other_center_m': None if other is None else
             [other.get_location().x, other.get_location().y, other.get_location().z],
