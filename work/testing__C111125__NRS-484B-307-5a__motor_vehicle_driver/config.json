@@ -1,0 +1,107 @@
+{
+  "assignment_id": "testing__C111125__NRS-484B-307-5a__motor_vehicle_driver",
+  "selected_case_id": "testing__C111125__NRS-484B-307-5a__motor_vehicle_driver__clear_straight",
+  "supported_case_ids": [
+    "testing__C111125__NRS-484B-307-5a__motor_vehicle_driver__clear_straight",
+    "testing__C111125__NRS-484B-307-5a__motor_vehicle_driver__yield_straight"
+  ],
+  "law_id": "NRS-484B-307-5a",
+  "cell_id": "C111125",
+  "actor": "motor_vehicle_driver",
+  "rate_hz": 20,
+  "duration_s": 30,
+  "required_atoms": [],
+  "source_packets": [],
+  "case": {
+    "case_id": "testing__C111125__NRS-484B-307-5a__motor_vehicle_driver__clear_straight",
+    "participant_occupancy_setup": "clear",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "signal_head_history",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Per-frame facing-head indication readback",
+          "time_window": "signal exhibition through intersection clearance",
+          "reference_frame": "CARLA world with frame and time",
+          "uncertainty": "20 Hz sampling and simulator geometry precision"
+        },
+        {
+          "name": "ego_body_history",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Per-frame Native ego body and heading",
+          "time_window": "signal exhibition through intersection clearance",
+          "reference_frame": "CARLA world with frame and time",
+          "uncertainty": "20 Hz sampling and simulator geometry precision"
+        },
+        {
+          "name": "vehicle_body_history",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Per-frame Native other-vehicle body readback",
+          "time_window": "signal exhibition through intersection clearance",
+          "reference_frame": "CARLA world with frame and time",
+          "uncertainty": "20 Hz sampling and simulator geometry precision"
+        },
+        {
+          "name": "pedestrian_body_history",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Per-frame Native pedestrian body readback",
+          "time_window": "signal exhibition through intersection clearance",
+          "reference_frame": "CARLA world with frame and time",
+          "uncertainty": "20 Hz sampling and simulator geometry precision"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "intersection_geometry",
+          "unit": "structured record",
+          "method": "Native map and stop-line readback"
+        },
+        {
+          "name": "crosswalk_geometry",
+          "unit": "structured record",
+          "method": "Native map crosswalk readback"
+        },
+        {
+          "name": "lawful_presence_context",
+          "unit": "structured record",
+          "method": "Independent phase and priority source review"
+        }
+      ],
+      "limitations": [
+        "Arrow asset and lawful presence need source verification.",
+        "Physical occupancy is retained without a legal yield verdict."
+      ]
+    }
+  },
+  "physical_completion": {
+    "criterion": "intersection_clearance",
+    "motion_source": "ego-body-history.jsonl",
+    "body_key": "body_vertices_m",
+    "exit_axis": 0,
+    "exit_sign": 1,
+    "intersection_polygon_xy_m": [
+      [
+        -5,
+        -5
+      ],
+      [
+        8,
+        -5
+      ],
+      [
+        8,
+        5
+      ],
+      [
+        -5,
+        5
+      ]
+    ],
+    "minimum_progress_m": 5,
+    "minimum_samples": 2
+  }
+}

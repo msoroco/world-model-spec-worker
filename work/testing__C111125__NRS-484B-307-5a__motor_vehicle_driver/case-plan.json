@@ -24,9 +24,66 @@
   "topic_inventory": {
     "exact-text": "Where the signal is a green straight-through arrow alone: Vehicular traffic facing the signal may proceed straight through, but must not turn right or left. Such vehicular traffic must yield the right-of-way to other vehicles and to pedestrians lawfully within the intersection or an adjacent crosswalk at the time the signal is exhibited."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C111125__NRS-484B-307-5a__motor_vehicle_driver__clear_straight",
+      "target_law_id": "NRS-484B-307-5a",
+      "purpose": "Sole straight-arrow approach with no lawfully present intersection/crosswalk participant"
+    },
+    {
+      "case_id": "testing__C111125__NRS-484B-307-5a__motor_vehicle_driver__yield_straight",
+      "target_law_id": "NRS-484B-307-5a",
+      "purpose": "Same sole arrow with lawfully present vehicle and pedestrian requiring yield"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "straight_arrow_yield_occupancy",
+      "case_ids": [
+        "testing__C111125__NRS-484B-307-5a__motor_vehicle_driver__clear_straight",
+        "testing__C111125__NRS-484B-307-5a__motor_vehicle_driver__yield_straight"
+      ],
+      "fixed_conditions": [
+        "same verified facing sole green straight arrow",
+        "same ego straight route and control",
+        "same intersection and crosswalk geometry",
+        "same camera and duration plan"
+      ],
+      "deliberate_differences": [
+        "source-bound lawful participant occupancy when the signal is exhibited"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "signal_head_history",
+      "mandatory": true
+    },
+    {
+      "name": "ego_body_history",
+      "mandatory": true
+    },
+    {
+      "name": "vehicle_body_history",
+      "mandatory": true
+    },
+    {
+      "name": "pedestrian_body_history",
+      "mandatory": true
+    },
+    {
+      "name": "intersection_geometry",
+      "mandatory": true
+    },
+    {
+      "name": "crosswalk_geometry",
+      "mandatory": true
+    },
+    {
+      "name": "lawful_presence_context",
+      "mandatory": true
+    }
+  ],
   "sources": [
     {
       "path": "inputs/testing__C111125__NRS-484B-307-5a__motor_vehicle_driver/assignment.json",
@@ -51,8 +108,9 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "CARLA generic green traffic-light state does not prove a sole straight arrow; verify head asset, facing approach and per-frame indication from Native source.",
+    "Lawful presence of other vehicles/pedestrians needs independent context; footprints alone cannot establish it.",
+    "Actual route, yield timing, camera coverage and physical completion await Native validation; controller and source guards are CPU-tested."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
@@ -61,7 +119,7 @@
     "gaps": []
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "partial_controller_and_case_scope",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
@@ -80,6 +138,34 @@
         "Use an ordinary motor vehicle and a qualifying intersection rather than an alley junction."
       ],
       "reason": "The traffic light can display the required arrow alone to the straight-intending vehicle."
+    }
+  ],
+  "requirement_dispositions": [
+    {
+      "status": "selected_required",
+      "requirement": "Facing sole green straight-through arrow at exhibition",
+      "source": "NRS 484B.307(5)(a) exact exported text",
+      "evidence_or_gap": "Native signal-head source and per-frame illuminated indications must be implemented and verified.",
+      "case_ids": [
+        "testing__C111125__NRS-484B-307-5a__motor_vehicle_driver__clear_straight",
+        "testing__C111125__NRS-484B-307-5a__motor_vehicle_driver__yield_straight"
+      ]
+    },
+    {
+      "status": "selected_required",
+      "requirement": "May proceed straight but must yield to other vehicles and pedestrians lawfully within intersection or adjacent crosswalk",
+      "source": "NRS 484B.307(5)(a) exact exported text",
+      "evidence_or_gap": "Original bodies, lawful presence context, signal exhibition and ego stopping/entry history required.",
+      "case_ids": [
+        "testing__C111125__NRS-484B-307-5a__motor_vehicle_driver__clear_straight",
+        "testing__C111125__NRS-484B-307-5a__motor_vehicle_driver__yield_straight"
+      ]
+    },
+    {
+      "status": "alternative_pending",
+      "requirement": "Must not turn right or left under sole straight arrow",
+      "source": "NRS 484B.307(5)(a) exact exported text",
+      "evidence_or_gap": "Frozen cell maneuver is straight; turning comparison needs scope review before any case is added."
     }
   ]
 }

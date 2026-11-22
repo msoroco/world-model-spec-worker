@@ -1,0 +1,324 @@
+{
+  "cell_id": "C111125",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "cases": [
+    {
+      "case_id": "testing__C111125__NRS-484B-307-5a__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared straight-arrow physical baseline; judgment unresolved.",
+      "variable_assignments": {
+        "sole_arrow_setup": {
+          "kind": "world_setup",
+          "value": "source_verified_sole_straight_arrow",
+          "note": "Target setup only; actual Native aspect must be read back"
+        },
+        "participant_occupancy_setup": {
+          "kind": "world_setup",
+          "value": "clear",
+          "note": "Target occupancy"
+        },
+        "commanded_straight_path": {
+          "kind": "controller",
+          "value": "straight",
+          "note": "Same straight route in both probes"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "signal_head_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Per-frame facing-head indication readback",
+            "time_window": "signal exhibition through intersection clearance",
+            "reference_frame": "CARLA world with frame and time",
+            "uncertainty": "20 Hz sampling and simulator geometry precision"
+          },
+          {
+            "name": "ego_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Per-frame Native ego body and heading",
+            "time_window": "signal exhibition through intersection clearance",
+            "reference_frame": "CARLA world with frame and time",
+            "uncertainty": "20 Hz sampling and simulator geometry precision"
+          },
+          {
+            "name": "vehicle_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Per-frame Native other-vehicle body readback",
+            "time_window": "signal exhibition through intersection clearance",
+            "reference_frame": "CARLA world with frame and time",
+            "uncertainty": "20 Hz sampling and simulator geometry precision"
+          },
+          {
+            "name": "pedestrian_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Per-frame Native pedestrian body readback",
+            "time_window": "signal exhibition through intersection clearance",
+            "reference_frame": "CARLA world with frame and time",
+            "uncertainty": "20 Hz sampling and simulator geometry precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "intersection_geometry",
+            "unit": "structured record",
+            "method": "Native map and stop-line readback"
+          },
+          {
+            "name": "crosswalk_geometry",
+            "unit": "structured record",
+            "method": "Native map crosswalk readback"
+          },
+          {
+            "name": "lawful_presence_context",
+            "unit": "structured record",
+            "method": "Independent phase and priority source review"
+          }
+        ],
+        "limitations": [
+          "Arrow asset and lawful presence need source verification.",
+          "Physical occupancy is retained without a legal yield verdict."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "yield the right-of-way",
+        "lawfully within the intersection or an adjacent crosswalk"
+      ]
+    },
+    {
+      "case_id": "testing__C111125__NRS-484B-307-5a__motor_vehicle_driver__clear_straight",
+      "target_law_id": "NRS-484B-307-5a",
+      "target_type": "boundary_probe",
+      "rationale": "Paired physical occupancy comparison under the same sole straight arrow.",
+      "variable_assignments": {
+        "sole_arrow_setup": {
+          "kind": "world_setup",
+          "value": "source_verified_sole_straight_arrow",
+          "note": "Target setup only; actual Native aspect must be read back"
+        },
+        "participant_occupancy_setup": {
+          "kind": "world_setup",
+          "value": "clear",
+          "note": "Target occupancy"
+        },
+        "commanded_straight_path": {
+          "kind": "controller",
+          "value": "straight",
+          "note": "Same straight route in both probes"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "signal_head_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Per-frame facing-head indication readback",
+            "time_window": "signal exhibition through intersection clearance",
+            "reference_frame": "CARLA world with frame and time",
+            "uncertainty": "20 Hz sampling and simulator geometry precision"
+          },
+          {
+            "name": "ego_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Per-frame Native ego body and heading",
+            "time_window": "signal exhibition through intersection clearance",
+            "reference_frame": "CARLA world with frame and time",
+            "uncertainty": "20 Hz sampling and simulator geometry precision"
+          },
+          {
+            "name": "vehicle_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Per-frame Native other-vehicle body readback",
+            "time_window": "signal exhibition through intersection clearance",
+            "reference_frame": "CARLA world with frame and time",
+            "uncertainty": "20 Hz sampling and simulator geometry precision"
+          },
+          {
+            "name": "pedestrian_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Per-frame Native pedestrian body readback",
+            "time_window": "signal exhibition through intersection clearance",
+            "reference_frame": "CARLA world with frame and time",
+            "uncertainty": "20 Hz sampling and simulator geometry precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "intersection_geometry",
+            "unit": "structured record",
+            "method": "Native map and stop-line readback"
+          },
+          {
+            "name": "crosswalk_geometry",
+            "unit": "structured record",
+            "method": "Native map crosswalk readback"
+          },
+          {
+            "name": "lawful_presence_context",
+            "unit": "structured record",
+            "method": "Independent phase and priority source review"
+          }
+        ],
+        "limitations": [
+          "Arrow asset and lawful presence need source verification.",
+          "Physical occupancy is retained without a legal yield verdict."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "yield the right-of-way",
+        "lawfully within the intersection or an adjacent crosswalk"
+      ],
+      "paired_probe_id": "testing__C111125__NRS-484B-307-5a__motor_vehicle_driver__occupancy_pair",
+      "deliberate_differences": [
+        "participant_occupancy_setup"
+      ],
+      "probe": {
+        "primary_variable": "participant_occupancy_setup",
+        "comparison_or_standard": "Original lawful-presence and yielding evidence; no legal cutoff assumed",
+        "target_value_or_branch": "clear"
+      }
+    },
+    {
+      "case_id": "testing__C111125__NRS-484B-307-5a__motor_vehicle_driver__yield_straight",
+      "target_law_id": "NRS-484B-307-5a",
+      "target_type": "boundary_probe",
+      "rationale": "Paired physical occupancy comparison under the same sole straight arrow.",
+      "variable_assignments": {
+        "sole_arrow_setup": {
+          "kind": "world_setup",
+          "value": "source_verified_sole_straight_arrow",
+          "note": "Target setup only; actual Native aspect must be read back"
+        },
+        "participant_occupancy_setup": {
+          "kind": "world_setup",
+          "value": "lawfully_present",
+          "note": "Target occupancy"
+        },
+        "commanded_straight_path": {
+          "kind": "controller",
+          "value": "straight",
+          "note": "Same straight route in both probes"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "signal_head_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Per-frame facing-head indication readback",
+            "time_window": "signal exhibition through intersection clearance",
+            "reference_frame": "CARLA world with frame and time",
+            "uncertainty": "20 Hz sampling and simulator geometry precision"
+          },
+          {
+            "name": "ego_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Per-frame Native ego body and heading",
+            "time_window": "signal exhibition through intersection clearance",
+            "reference_frame": "CARLA world with frame and time",
+            "uncertainty": "20 Hz sampling and simulator geometry precision"
+          },
+          {
+            "name": "vehicle_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Per-frame Native other-vehicle body readback",
+            "time_window": "signal exhibition through intersection clearance",
+            "reference_frame": "CARLA world with frame and time",
+            "uncertainty": "20 Hz sampling and simulator geometry precision"
+          },
+          {
+            "name": "pedestrian_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Per-frame Native pedestrian body readback",
+            "time_window": "signal exhibition through intersection clearance",
+            "reference_frame": "CARLA world with frame and time",
+            "uncertainty": "20 Hz sampling and simulator geometry precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "intersection_geometry",
+            "unit": "structured record",
+            "method": "Native map and stop-line readback"
+          },
+          {
+            "name": "crosswalk_geometry",
+            "unit": "structured record",
+            "method": "Native map crosswalk readback"
+          },
+          {
+            "name": "lawful_presence_context",
+            "unit": "structured record",
+            "method": "Independent phase and priority source review"
+          }
+        ],
+        "limitations": [
+          "Arrow asset and lawful presence need source verification.",
+          "Physical occupancy is retained without a legal yield verdict."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "yield the right-of-way",
+        "lawfully within the intersection or an adjacent crosswalk"
+      ],
+      "paired_probe_id": "testing__C111125__NRS-484B-307-5a__motor_vehicle_driver__occupancy_pair",
+      "deliberate_differences": [
+        "participant_occupancy_setup"
+      ],
+      "probe": {
+        "primary_variable": "participant_occupancy_setup",
+        "comparison_or_standard": "Original lawful-presence and yielding evidence; no legal cutoff assumed",
+        "target_value_or_branch": "lawfully_present"
+      }
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "c111125-1",
+      "target_law_id": "NRS-484B-307-5a",
+      "judgment_refs": [
+        {
+          "phrase": "yield the right-of-way",
+          "note": "The source supplies no numeric yielding boundary."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Physical sweep range and lawful-presence source need construction and source verification.",
+      "missing_inputs": [
+        "Source-verified sole-arrow Native head and lawful-presence context",
+        "Feasible physical occupancy and response sweep range"
+      ]
+    },
+    {
+      "sweep_id": "c111125-2",
+      "target_law_id": "NRS-484B-307-5a",
+      "judgment_refs": [
+        {
+          "phrase": "lawfully within the intersection or an adjacent crosswalk",
+          "note": "Lawful presence requires independent signal and right-of-way context."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Physical sweep range and lawful-presence source need construction and source verification.",
+      "missing_inputs": [
+        "Source-verified sole-arrow Native head and lawful-presence context",
+        "Feasible physical occupancy and response sweep range"
+      ]
+    }
+  ],
+  "sweeps_expanded": true
+}

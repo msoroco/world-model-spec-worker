@@ -1,0 +1,40 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Facing sole green straight-through arrow at exhibition",
+      "source": "NRS 484B.307(5)(a) exact exported text",
+      "output_key": "sole_arrow_measurement",
+      "method": "measure_arrow",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "signal-head-history.jsonl",
+        "ego-body-history.jsonl",
+        "intersection-context.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "May proceed straight but must yield to other vehicles and pedestrians lawfully within intersection or adjacent crosswalk",
+      "source": "NRS 484B.307(5)(a) exact exported text",
+      "output_key": "yield_measurement",
+      "method": "measure_yield",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "signal-head-history.jsonl",
+        "ego-body-history.jsonl",
+        "participant-history.jsonl",
+        "intersection-context.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "signal-head-history.jsonl"
+    ],
+    "error_contains": "Missing required source: signal-head-history.jsonl"
+  }
+}
