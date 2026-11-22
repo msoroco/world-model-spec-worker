@@ -1,0 +1,669 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C104538__NRS-484B-407__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5b4738624542c97f321a302bd49b9ec154cb2cf63778acf64ba6042f8d5b4fd3",
+  "status": "partial_selected_cpu_proofs_bound_physical_unverified",
+  "selection_review": {
+    "law_input_sha256": "26f622cd1dd36d710429264917a1435323cc941294206ef4ea0d963640e2aab0",
+    "case_plan_sha256": "5654a4607ac0b557619d5fc598b66c566418553b4fdd57dae557e6b4fd645341",
+    "proposal_sha256": "f4c84fcb7c3cb31620cfd83d8528eb7290321b6c99a5814ca338ee23c515b3a0",
+    "historical_accepted_recording_ids": [
+      "118d30dca38a76184dda043948eb6e79fe5f0f3a27b4df5998905137c0eba02d",
+      "da9c52e53f1fb223f7169031ea0cf016e38cc6c0e1b5b03d3911d775b652ca6f"
+    ],
+    "historical_reuse_receipt": null,
+    "unresolved": [
+      "accepted straight/U-turn equivalence lacks source-hashed review in export",
+      "original 500-foot driver-eye, body and pixel visibility from both directions",
+      "Native road/obstruction geometry, physical reversal and source-camera pixels"
+    ],
+    "scope": "Select distinct authored sweep cases for CPU preparation; no replay or physical/legal acceptance"
+  },
+  "cases": [
+    {
+      "case_id": "training__C104538__NRS-484B-407__motor_vehicle_driver__below_500_ft",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native crest, obstruction geometry, physical opacity, driver-eye pixels and turn completion remain unmeasured"
+      },
+      "measurement_contract": "draft-candidates/below_500_ft/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c104538-saved-analysis-v1"
+      },
+      "fixture_recipe": "work/training__C104538__NRS-484B-407__motor_vehicle_driver/update043-below_500_ft-diagnostic-recipe.json",
+      "kind": "delivery",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-candidates/below_500_ft/fallback1/construction.json",
+          "construction_sha256": "c1a5f214560b656e3551738d82505711ce1462c5588e8432e0e16ab0964224ae",
+          "trigger": {
+            "source": "original Native map waypoint/elevation readback",
+            "metric": "maximum crest mesh height error against authored profile, m",
+            "failure_condition": "> 0.15 m"
+          },
+          "changed_knobs": [
+            "opendrive_vertex_distance_m: 0.25 to 0.1"
+          ],
+          "offline": {
+            "construction_sha256": "c1a5f214560b656e3551738d82505711ce1462c5588e8432e0e16ab0964224ae",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C104538__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case training__C104538__NRS-484B-407__motor_vehicle_driver__below_500_ft --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c104538-update043f-below_500_ft-fallback1-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "update043f-current-below_500_ft-fallback1-offline.log",
+            "log_sha256": "56712173198226105ed72224fb4aaca08be36c46be06057722f2dee66cd0884b"
+          },
+          "compatibility": {
+            "receipt": "update043f-current-proofs/below_500_ft/fallback1/compatibility.json",
+            "sha256": "5c030a0a23ba33e385f1c2883dfd67f79a1e2d84c00cfcba4930a093299182f5",
+            "log": "update043f-current-proofs/below_500_ft/fallback1/analysis.log",
+            "negative_log": "update043f-current-proofs/below_500_ft/fallback1/negative.log"
+          },
+          "saved_processing": {
+            "receipt": "update043f-current-proofs/below_500_ft/fallback1/processing.json",
+            "sha256": "95932c2b7318de45cdbeb36d544bf53e65d911be4f8e480077500383ae11d89e"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-candidates/below_500_ft/fallback2/construction.json",
+          "construction_sha256": "d48ba024a8ac219269b0070aa56a3a7ffb86c33d095722529d5a8d139f9809cb",
+          "trigger": {
+            "source": "original Native obstruction actor polygon/readback",
+            "metric": "maximum radial gap in inner obstruction, m",
+            "failure_condition": "> 0.05 m"
+          },
+          "changed_knobs": [
+            "obstruction_segment_length_m: 2.0 to 1.0"
+          ],
+          "offline": {
+            "construction_sha256": "d48ba024a8ac219269b0070aa56a3a7ffb86c33d095722529d5a8d139f9809cb",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C104538__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case training__C104538__NRS-484B-407__motor_vehicle_driver__below_500_ft --candidate fallback2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c104538-update043f-below_500_ft-fallback2-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "update043f-current-below_500_ft-fallback2-offline.log",
+            "log_sha256": "22f39016ea72aa0084f928d6ba7f0f139eef83d235bb5d75535b82d863132c53"
+          },
+          "compatibility": {
+            "receipt": "update043f-current-proofs/below_500_ft/fallback2/compatibility.json",
+            "sha256": "43f59731708da228e5e1b2c98d7ac9ccaead217b9ff67d49e24d0bf9e4b36cfb",
+            "log": "update043f-current-proofs/below_500_ft/fallback2/analysis.log",
+            "negative_log": "update043f-current-proofs/below_500_ft/fallback2/negative.log"
+          },
+          "saved_processing": {
+            "receipt": "update043f-current-proofs/below_500_ft/fallback2/processing.json",
+            "sha256": "6b7beee584f9ca2b8b173b6080466492217bc04df8dae5fe87f31a7baf407659"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-candidates/below_500_ft/fallback3/construction.json",
+          "construction_sha256": "6256dde05ed04f7d246f469e8af3dd7d5f42a28f4bcb2a1974eae77b1e2b63d8",
+          "trigger": {
+            "source": "independent original-pixel visibility audit at 500 ft, both directions",
+            "metric": "fraction of target body/pixel frames with audited line of sight",
+            "failure_condition": "< 0.95"
+          },
+          "changed_knobs": [
+            "reference_camera_height_m: 4.0 to 6.0"
+          ],
+          "offline": {
+            "construction_sha256": "6256dde05ed04f7d246f469e8af3dd7d5f42a28f4bcb2a1974eae77b1e2b63d8",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C104538__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case training__C104538__NRS-484B-407__motor_vehicle_driver__below_500_ft --candidate fallback3 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c104538-update043f-below_500_ft-fallback3-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "update043f-current-below_500_ft-fallback3-offline.log",
+            "log_sha256": "26ef5d6a4b0c6afbaefc74618cb41e7ed3deaa182e6dcb1d9da5c3fa317b99f9"
+          },
+          "compatibility": {
+            "receipt": "update043f-current-proofs/below_500_ft/fallback3/compatibility.json",
+            "sha256": "a46f900fb18935077b6e30b0a5905619ab52594e6aae6ec9d58af9f03c29f7d4",
+            "log": "update043f-current-proofs/below_500_ft/fallback3/analysis.log",
+            "negative_log": "update043f-current-proofs/below_500_ft/fallback3/negative.log"
+          },
+          "saved_processing": {
+            "receipt": "update043f-current-proofs/below_500_ft/fallback3/processing.json",
+            "sha256": "65a9a6cfd34ab0001595474752a0edfb16cb2d3eba79378417c4c8828785cefa"
+          }
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "preparation_status": "selected_cpu_offline_compat_saved_proven_physical_unverified",
+      "construction": "selected-candidates/below_500_ft/primary/construction.json",
+      "construction_sha256": "61ee4473469c2893f5f2f9d42f2353a2503da11f8ca048260890208dd1fb2ea7",
+      "offline": {
+        "construction_sha256": "61ee4473469c2893f5f2f9d42f2353a2503da11f8ca048260890208dd1fb2ea7",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C104538__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case training__C104538__NRS-484B-407__motor_vehicle_driver__below_500_ft --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c104538-update043f-below_500_ft-primary-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "update043f-current-below_500_ft-primary-offline.log",
+        "log_sha256": "017151fb74c76d24eaeae1ff6263390daf41c31d763f1df20331f2cacb7637e0"
+      },
+      "compatibility": {
+        "receipt": "update043f-current-proofs/below_500_ft/primary/compatibility.json",
+        "sha256": "0572a83477782d0cad4b6ad527c07dc17baf052fecd2c33ae9f7dd3289c6050f",
+        "log": "update043f-current-proofs/below_500_ft/primary/analysis.log",
+        "negative_log": "update043f-current-proofs/below_500_ft/primary/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "update043-selected-physical/below_500_ft/proof.json",
+        "sha256": "010183b74ecebe439191275232076269351c8722cba90dfe56644b41d331bcd2"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C104538__NRS-484B-407__motor_vehicle_driver__below_500_ft",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "actual_pixels",
+          "all_participants",
+          "full_video_decode",
+          "native_source",
+          "physical_completion",
+          "time_join"
+        ],
+        "script": "selected_delivery_chain_update043f.py",
+        "script_sha256": "bfa29225782cc04150945dc3b830c595dc773f11ba111d22caa6d32bd7515784",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C104538__NRS-484B-407__motor_vehicle_driver/selected_delivery_chain_update043f.py --case training__C104538__NRS-484B-407__motor_vehicle_driver__below_500_ft",
+        "test_exit_code": 0,
+        "test_log": "update043f-selected-delivery-cpu/below_500_ft/positive.log",
+        "test_log_sha256": "d8f9eca44641127a9461e3b9e414229672804243f8dcbfe7d467bc4e2777dec5",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C104538__NRS-484B-407__motor_vehicle_driver/selected_delivery_chain_update043f.py --case training__C104538__NRS-484B-407__motor_vehicle_driver__below_500_ft --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Delivery construction differs from selected manifest",
+        "negative_log": "update043f-selected-delivery-cpu/below_500_ft/negative.log",
+        "negative_log_sha256": "017d8a30f70f3004e16797710a76ef63f91024acbebcfd942cde2d0c4db35d16",
+        "scope": "CPU diagnostic source chain only; original Native reversal and two-direction pixels unverified"
+      },
+      "negative": {
+        "log": "update043f-current-proofs/below_500_ft/primary/negative.log"
+      },
+      "acquisition": {
+        "drv.u_turn": {
+          "entrypoint": "measure_native.py",
+          "method": "Original frame-joined body/heading/velocity reversal from native_body_history.jsonl and trace.jsonl",
+          "evidence": "Saved original Native sources must be verified after capture; diagnostic fixture is synthetic_native_sample"
+        },
+        "st.curvature": {
+          "entrypoint": "geometry.py",
+          "method": "Authored curve geometry in road.xodr, checked against Native road context after capture",
+          "evidence": "Saved original Native sources must be verified after capture; diagnostic fixture is synthetic_native_sample"
+        },
+        "st.grade": {
+          "entrypoint": "geometry.py",
+          "method": "Authored grade geometry in road.xodr, checked against Native road context after capture",
+          "evidence": "Saved original Native sources must be verified after capture; diagnostic fixture is synthetic_native_sample"
+        },
+        "st.crest": {
+          "entrypoint": "geometry.py",
+          "method": "Authored crest location in road.xodr and Native construction context",
+          "evidence": "Saved original Native sources must be verified after capture; diagnostic fixture is synthetic_native_sample"
+        },
+        "st.sight_distance": {
+          "entrypoint": "measure_native.py",
+          "method": "Two-direction virtual-observer driver_eye_rays.jsonl joined to original ego body and approach lanes",
+          "evidence": "Saved original Native sources must be verified after capture; diagnostic fixture is synthetic_native_sample"
+        },
+        "rel.oncoming": {
+          "entrypoint": "runner.py",
+          "method": "Original opposing approach identity, pose and frame-joined trace/capture evidence",
+          "evidence": "Saved original Native sources must be verified after capture; diagnostic fixture is synthetic_native_sample"
+        },
+        "drv.approaching": {
+          "entrypoint": "measure_native.py",
+          "method": "Measured opposing approach distance and original frame/time from driver_eye_rays.jsonl and trace",
+          "evidence": "Saved original Native sources must be verified after capture; diagnostic fixture is synthetic_native_sample"
+        },
+        "kin.position": {
+          "entrypoint": "measure_native.py",
+          "method": "Original ego and approach body position in native_body_history.jsonl and trace.jsonl",
+          "evidence": "Saved original Native sources must be verified after capture; diagnostic fixture is synthetic_native_sample"
+        }
+      },
+      "saved_processing": {
+        "receipt": "update043f-current-proofs/below_500_ft/primary/processing.json",
+        "sha256": "579450226a728e83e7f9442464f48cd12b2dbc73a36e89f0826e93127d112c8a"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C104538__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case training__C104538__NRS-484B-407__motor_vehicle_driver__below_500_ft --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c104538-update043f-below_500_ft-primary-compat --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c104538-update043f-below_500_ft-primary-saved --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime/pipeline/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/decoder-update015-c10316/.lake/build/bin/adapterCheck",
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C104538__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case training__C104538__NRS-484B-407__motor_vehicle_driver__below_500_ft --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c104538-update043f-below_500_ft-primary-compat --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c104538-update043f-below_500_ft-primary-saved --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime/pipeline/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/decoder-update015-c10316/.lake/build/bin/adapterCheck",
+        "test_log": "update043f-current-below_500_ft-primary-saved.log",
+        "test_log_sha256": "579450226a728e83e7f9442464f48cd12b2dbc73a36e89f0826e93127d112c8a",
+        "test_exit_code": 0,
+        "scope": "Synthetic saved-processing diagnostic; original Native feedback unverified"
+      }
+    },
+    {
+      "case_id": "training__C104538__NRS-484B-407__motor_vehicle_driver__at_500_ft",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native crest, obstruction geometry, physical opacity, driver-eye pixels and turn completion remain unmeasured"
+      },
+      "measurement_contract": "draft-candidates/at_500_ft/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c104538-saved-analysis-v1"
+      },
+      "fixture_recipe": "work/training__C104538__NRS-484B-407__motor_vehicle_driver/update043-at_500_ft-diagnostic-recipe.json",
+      "kind": "delivery",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-candidates/at_500_ft/fallback1/construction.json",
+          "construction_sha256": "7a262aa98fd10c03709b4aaf650f4bbc986c80cd218e233d2b47b93416ab8632",
+          "trigger": {
+            "source": "original Native map waypoint/elevation readback",
+            "metric": "maximum crest mesh height error against authored profile, m",
+            "failure_condition": "> 0.15 m"
+          },
+          "changed_knobs": [
+            "opendrive_vertex_distance_m: 0.25 to 0.1"
+          ],
+          "offline": {
+            "construction_sha256": "7a262aa98fd10c03709b4aaf650f4bbc986c80cd218e233d2b47b93416ab8632",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C104538__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case training__C104538__NRS-484B-407__motor_vehicle_driver__at_500_ft --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c104538-update043f-at_500_ft-fallback1-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "update043f-current-at_500_ft-fallback1-offline.log",
+            "log_sha256": "d059e6b8c69d29aa3082a9c2047c6f578641b9a28f718de75d1f28ee64b957cb"
+          },
+          "compatibility": {
+            "receipt": "update043f-current-proofs/at_500_ft/fallback1/compatibility.json",
+            "sha256": "18fdcc10b32a77bca1086fa4df260e6e07b167d249fc6b439db3db6ad0faf257",
+            "log": "update043f-current-proofs/at_500_ft/fallback1/analysis.log",
+            "negative_log": "update043f-current-proofs/at_500_ft/fallback1/negative.log"
+          },
+          "saved_processing": {
+            "receipt": "update043f-current-proofs/at_500_ft/fallback1/processing.json",
+            "sha256": "f6ff9a443cbb2dc10ab753e49e5940746a97ff14e0459e7fb72df3f89236a3c8"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-candidates/at_500_ft/fallback2/construction.json",
+          "construction_sha256": "e334a1f1d13aa40b8e54ea539011db92b5255fb97ee9a6d464f4cc64b6780fb9",
+          "trigger": {
+            "source": "original Native obstruction actor polygon/readback",
+            "metric": "maximum radial gap in inner obstruction, m",
+            "failure_condition": "> 0.05 m"
+          },
+          "changed_knobs": [
+            "obstruction_segment_length_m: 2.0 to 1.0"
+          ],
+          "offline": {
+            "construction_sha256": "e334a1f1d13aa40b8e54ea539011db92b5255fb97ee9a6d464f4cc64b6780fb9",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C104538__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case training__C104538__NRS-484B-407__motor_vehicle_driver__at_500_ft --candidate fallback2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c104538-update043f-at_500_ft-fallback2-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "update043f-current-at_500_ft-fallback2-offline.log",
+            "log_sha256": "1a86b177711a217778a24c17ca7090101530c0ce1fdd65fe6c1dc5de72b73474"
+          },
+          "compatibility": {
+            "receipt": "update043f-current-proofs/at_500_ft/fallback2/compatibility.json",
+            "sha256": "f10d6fb9ef00394c47bbf241f05da4b32305ad497a1bbb5650cb3b521177c972",
+            "log": "update043f-current-proofs/at_500_ft/fallback2/analysis.log",
+            "negative_log": "update043f-current-proofs/at_500_ft/fallback2/negative.log"
+          },
+          "saved_processing": {
+            "receipt": "update043f-current-proofs/at_500_ft/fallback2/processing.json",
+            "sha256": "505840fa30cdb6909b2ae94b0daa94c6334158fa14d9b049280bcd68fe8d909a"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-candidates/at_500_ft/fallback3/construction.json",
+          "construction_sha256": "f68b9799a711e6f71cc2bf6e3ad4b47a17695b920426cef3913d8c3d645dd42c",
+          "trigger": {
+            "source": "independent original-pixel visibility audit at 500 ft, both directions",
+            "metric": "fraction of target body/pixel frames with audited line of sight",
+            "failure_condition": "< 0.95"
+          },
+          "changed_knobs": [
+            "reference_camera_height_m: 4.0 to 6.0"
+          ],
+          "offline": {
+            "construction_sha256": "f68b9799a711e6f71cc2bf6e3ad4b47a17695b920426cef3913d8c3d645dd42c",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C104538__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case training__C104538__NRS-484B-407__motor_vehicle_driver__at_500_ft --candidate fallback3 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c104538-update043f-at_500_ft-fallback3-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "update043f-current-at_500_ft-fallback3-offline.log",
+            "log_sha256": "19f3bb1de9bb4c67b5899f35010ea74199c3eb18005bec2aba02ac56f68e2dda"
+          },
+          "compatibility": {
+            "receipt": "update043f-current-proofs/at_500_ft/fallback3/compatibility.json",
+            "sha256": "d42ba377b138ada26a9388b984a557bade9c0627c68c10ebc9bb068ebbb0e3a9",
+            "log": "update043f-current-proofs/at_500_ft/fallback3/analysis.log",
+            "negative_log": "update043f-current-proofs/at_500_ft/fallback3/negative.log"
+          },
+          "saved_processing": {
+            "receipt": "update043f-current-proofs/at_500_ft/fallback3/processing.json",
+            "sha256": "20e9c15875b605f648eadbb6b752ccc866b9fe165e6146112614d1cd6522ae5b"
+          }
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "preparation_status": "selected_cpu_offline_compat_saved_proven_physical_unverified",
+      "construction": "selected-candidates/at_500_ft/primary/construction.json",
+      "construction_sha256": "67b87c8009f38c094300dd59f28d61c782a5e14593f70985162aac7f7ec601a0",
+      "offline": {
+        "construction_sha256": "67b87c8009f38c094300dd59f28d61c782a5e14593f70985162aac7f7ec601a0",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C104538__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case training__C104538__NRS-484B-407__motor_vehicle_driver__at_500_ft --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c104538-update043f-at_500_ft-primary-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "update043f-current-at_500_ft-primary-offline.log",
+        "log_sha256": "4a85bb2bcca2a908813ef3c6aa91083894a48e2fb1e90cc26080ad90d3054c82"
+      },
+      "compatibility": {
+        "receipt": "update043f-current-proofs/at_500_ft/primary/compatibility.json",
+        "sha256": "35e8be8c2f067016f3fc043e6131cf26040f04de9ba665230b732154e3c37f63",
+        "log": "update043f-current-proofs/at_500_ft/primary/analysis.log",
+        "negative_log": "update043f-current-proofs/at_500_ft/primary/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "update043-selected-physical/at_500_ft/proof.json",
+        "sha256": "0cffb80ff824535b893921f663e60f3d031d81baf188df1a5d8b61b9d3b909e9"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C104538__NRS-484B-407__motor_vehicle_driver__at_500_ft",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "actual_pixels",
+          "all_participants",
+          "full_video_decode",
+          "native_source",
+          "physical_completion",
+          "time_join"
+        ],
+        "script": "selected_delivery_chain_update043f.py",
+        "script_sha256": "bfa29225782cc04150945dc3b830c595dc773f11ba111d22caa6d32bd7515784",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C104538__NRS-484B-407__motor_vehicle_driver/selected_delivery_chain_update043f.py --case training__C104538__NRS-484B-407__motor_vehicle_driver__at_500_ft",
+        "test_exit_code": 0,
+        "test_log": "update043f-selected-delivery-cpu/at_500_ft/positive.log",
+        "test_log_sha256": "d1b0cad6b53eb9030609786df3e79f0a41524193eef28ae44fbe8f264423d4b0",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C104538__NRS-484B-407__motor_vehicle_driver/selected_delivery_chain_update043f.py --case training__C104538__NRS-484B-407__motor_vehicle_driver__at_500_ft --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Delivery construction differs from selected manifest",
+        "negative_log": "update043f-selected-delivery-cpu/at_500_ft/negative.log",
+        "negative_log_sha256": "017d8a30f70f3004e16797710a76ef63f91024acbebcfd942cde2d0c4db35d16",
+        "scope": "CPU diagnostic source chain only; original Native reversal and two-direction pixels unverified"
+      },
+      "negative": {
+        "log": "update043f-current-proofs/at_500_ft/primary/negative.log"
+      },
+      "acquisition": {
+        "drv.u_turn": {
+          "entrypoint": "measure_native.py",
+          "method": "Original frame-joined body/heading/velocity reversal from native_body_history.jsonl and trace.jsonl",
+          "evidence": "Saved original Native sources must be verified after capture; diagnostic fixture is synthetic_native_sample"
+        },
+        "st.curvature": {
+          "entrypoint": "geometry.py",
+          "method": "Authored curve geometry in road.xodr, checked against Native road context after capture",
+          "evidence": "Saved original Native sources must be verified after capture; diagnostic fixture is synthetic_native_sample"
+        },
+        "st.grade": {
+          "entrypoint": "geometry.py",
+          "method": "Authored grade geometry in road.xodr, checked against Native road context after capture",
+          "evidence": "Saved original Native sources must be verified after capture; diagnostic fixture is synthetic_native_sample"
+        },
+        "st.crest": {
+          "entrypoint": "geometry.py",
+          "method": "Authored crest location in road.xodr and Native construction context",
+          "evidence": "Saved original Native sources must be verified after capture; diagnostic fixture is synthetic_native_sample"
+        },
+        "st.sight_distance": {
+          "entrypoint": "measure_native.py",
+          "method": "Two-direction virtual-observer driver_eye_rays.jsonl joined to original ego body and approach lanes",
+          "evidence": "Saved original Native sources must be verified after capture; diagnostic fixture is synthetic_native_sample"
+        },
+        "rel.oncoming": {
+          "entrypoint": "runner.py",
+          "method": "Original opposing approach identity, pose and frame-joined trace/capture evidence",
+          "evidence": "Saved original Native sources must be verified after capture; diagnostic fixture is synthetic_native_sample"
+        },
+        "drv.approaching": {
+          "entrypoint": "measure_native.py",
+          "method": "Measured opposing approach distance and original frame/time from driver_eye_rays.jsonl and trace",
+          "evidence": "Saved original Native sources must be verified after capture; diagnostic fixture is synthetic_native_sample"
+        },
+        "kin.position": {
+          "entrypoint": "measure_native.py",
+          "method": "Original ego and approach body position in native_body_history.jsonl and trace.jsonl",
+          "evidence": "Saved original Native sources must be verified after capture; diagnostic fixture is synthetic_native_sample"
+        }
+      },
+      "saved_processing": {
+        "receipt": "update043f-current-proofs/at_500_ft/primary/processing.json",
+        "sha256": "e37f965a0c82892e1201d5c7be0d3e150bcd0d894e1925a8ee7dc0f15b35d055"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C104538__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case training__C104538__NRS-484B-407__motor_vehicle_driver__at_500_ft --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c104538-update043f-at_500_ft-primary-compat --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c104538-update043f-at_500_ft-primary-saved --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime/pipeline/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/decoder-update015-c10316/.lake/build/bin/adapterCheck",
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C104538__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case training__C104538__NRS-484B-407__motor_vehicle_driver__at_500_ft --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c104538-update043f-at_500_ft-primary-compat --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c104538-update043f-at_500_ft-primary-saved --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime/pipeline/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/decoder-update015-c10316/.lake/build/bin/adapterCheck",
+        "test_log": "update043f-current-at_500_ft-primary-saved.log",
+        "test_log_sha256": "e37f965a0c82892e1201d5c7be0d3e150bcd0d894e1925a8ee7dc0f15b35d055",
+        "test_exit_code": 0,
+        "scope": "Synthetic saved-processing diagnostic; original Native feedback unverified"
+      }
+    },
+    {
+      "case_id": "training__C104538__NRS-484B-407__motor_vehicle_driver__above_500_ft",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native crest, obstruction geometry, physical opacity, driver-eye pixels and turn completion remain unmeasured"
+      },
+      "measurement_contract": "draft-candidates/above_500_ft/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c104538-saved-analysis-v1"
+      },
+      "fixture_recipe": "work/training__C104538__NRS-484B-407__motor_vehicle_driver/update043-above_500_ft-diagnostic-recipe.json",
+      "kind": "delivery",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-candidates/above_500_ft/fallback1/construction.json",
+          "construction_sha256": "d6fcfc12dbf281c7b39c9b31ddcebe0e41f7810ae882b46007cce4892a231c6e",
+          "trigger": {
+            "source": "original Native map waypoint/elevation readback",
+            "metric": "maximum crest mesh height error against authored profile, m",
+            "failure_condition": "> 0.15 m"
+          },
+          "changed_knobs": [
+            "opendrive_vertex_distance_m: 0.25 to 0.1"
+          ],
+          "offline": {
+            "construction_sha256": "d6fcfc12dbf281c7b39c9b31ddcebe0e41f7810ae882b46007cce4892a231c6e",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C104538__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case training__C104538__NRS-484B-407__motor_vehicle_driver__above_500_ft --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c104538-update043f-above_500_ft-fallback1-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "update043f-current-above_500_ft-fallback1-offline.log",
+            "log_sha256": "e6ab4c5da8f8fbc771b3fabd0598e029d6642492db12ac89e02996dc03d9759a"
+          },
+          "compatibility": {
+            "receipt": "update043f-current-proofs/above_500_ft/fallback1/compatibility.json",
+            "sha256": "4bd9f4a41252d187fd029ef57a05c02cb6eea3700d35b90af55f293470ef56e7",
+            "log": "update043f-current-proofs/above_500_ft/fallback1/analysis.log",
+            "negative_log": "update043f-current-proofs/above_500_ft/fallback1/negative.log"
+          },
+          "saved_processing": {
+            "receipt": "update043f-current-proofs/above_500_ft/fallback1/processing.json",
+            "sha256": "8cc5170e9a776aa5fa6e967181ab851c6d127fa4bc59bba07cc47a4d4f63b313"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-candidates/above_500_ft/fallback2/construction.json",
+          "construction_sha256": "719d2e0c9f1fd6ae78a71329293dda271243a12f8ea276354a57ece3aff69615",
+          "trigger": {
+            "source": "original Native obstruction actor polygon/readback",
+            "metric": "maximum radial gap in inner obstruction, m",
+            "failure_condition": "> 0.05 m"
+          },
+          "changed_knobs": [
+            "obstruction_segment_length_m: 2.0 to 1.0"
+          ],
+          "offline": {
+            "construction_sha256": "719d2e0c9f1fd6ae78a71329293dda271243a12f8ea276354a57ece3aff69615",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C104538__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case training__C104538__NRS-484B-407__motor_vehicle_driver__above_500_ft --candidate fallback2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c104538-update043f-above_500_ft-fallback2-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "update043f-current-above_500_ft-fallback2-offline.log",
+            "log_sha256": "690a7f8a2ed1492379f9ee38c84220d518df9590f9307f1cd42d228a3b7d87bf"
+          },
+          "compatibility": {
+            "receipt": "update043f-current-proofs/above_500_ft/fallback2/compatibility.json",
+            "sha256": "727b3a17afe52abf2a28e5e18651f2cc0e22e5331d3d25b71d3fa68530d651dd",
+            "log": "update043f-current-proofs/above_500_ft/fallback2/analysis.log",
+            "negative_log": "update043f-current-proofs/above_500_ft/fallback2/negative.log"
+          },
+          "saved_processing": {
+            "receipt": "update043f-current-proofs/above_500_ft/fallback2/processing.json",
+            "sha256": "a844a8686a63eaa2b2174bf5612459dc899b5031b031dd9187b37550e4dc671f"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-candidates/above_500_ft/fallback3/construction.json",
+          "construction_sha256": "69ee7ff7284911dc93f394c34a93ef9459be570752fb448ae2e107008f487d5e",
+          "trigger": {
+            "source": "independent original-pixel visibility audit at 500 ft, both directions",
+            "metric": "fraction of target body/pixel frames with audited line of sight",
+            "failure_condition": "< 0.95"
+          },
+          "changed_knobs": [
+            "reference_camera_height_m: 4.0 to 6.0"
+          ],
+          "offline": {
+            "construction_sha256": "69ee7ff7284911dc93f394c34a93ef9459be570752fb448ae2e107008f487d5e",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C104538__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case training__C104538__NRS-484B-407__motor_vehicle_driver__above_500_ft --candidate fallback3 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c104538-update043f-above_500_ft-fallback3-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "update043f-current-above_500_ft-fallback3-offline.log",
+            "log_sha256": "ef5e038f01d0a2f2cb6d664ac8e935aa0682a100575ea793929d8d638fde2438"
+          },
+          "compatibility": {
+            "receipt": "update043f-current-proofs/above_500_ft/fallback3/compatibility.json",
+            "sha256": "bc7a8008759311480fa61f91b222baddfdafcdc6a68bb457ddc32624de70628b",
+            "log": "update043f-current-proofs/above_500_ft/fallback3/analysis.log",
+            "negative_log": "update043f-current-proofs/above_500_ft/fallback3/negative.log"
+          },
+          "saved_processing": {
+            "receipt": "update043f-current-proofs/above_500_ft/fallback3/processing.json",
+            "sha256": "190b719a9e411c0eeb78b196b4bbed6236947f2c001b7dfa0353735446e56bcc"
+          }
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "preparation_status": "selected_cpu_offline_compat_saved_proven_physical_unverified",
+      "construction": "selected-candidates/above_500_ft/primary/construction.json",
+      "construction_sha256": "d65a22225889f7e2adf3ae6b0ebdb6539ebaae48830f3ea9e0ee92cd4a1fd581",
+      "offline": {
+        "construction_sha256": "d65a22225889f7e2adf3ae6b0ebdb6539ebaae48830f3ea9e0ee92cd4a1fd581",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C104538__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case training__C104538__NRS-484B-407__motor_vehicle_driver__above_500_ft --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c104538-update043f-above_500_ft-primary-offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "update043f-current-above_500_ft-primary-offline.log",
+        "log_sha256": "6d89e7631a61e4b20dcb165154c747a37b64ab7cd019c2c1b8447fad219b24de"
+      },
+      "compatibility": {
+        "receipt": "update043f-current-proofs/above_500_ft/primary/compatibility.json",
+        "sha256": "a7e82bc5c5931728281cde268d101be08c991ee9100f4924dfc8ff795422fa56",
+        "log": "update043f-current-proofs/above_500_ft/primary/analysis.log",
+        "negative_log": "update043f-current-proofs/above_500_ft/primary/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "update043-selected-physical/above_500_ft/proof.json",
+        "sha256": "23dbecfe3f0f4700fed8e255716c9b464f2f7e875f190dd0e027e997f5d72edc"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C104538__NRS-484B-407__motor_vehicle_driver__above_500_ft",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "actual_pixels",
+          "all_participants",
+          "full_video_decode",
+          "native_source",
+          "physical_completion",
+          "time_join"
+        ],
+        "script": "selected_delivery_chain_update043f.py",
+        "script_sha256": "bfa29225782cc04150945dc3b830c595dc773f11ba111d22caa6d32bd7515784",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C104538__NRS-484B-407__motor_vehicle_driver/selected_delivery_chain_update043f.py --case training__C104538__NRS-484B-407__motor_vehicle_driver__above_500_ft",
+        "test_exit_code": 0,
+        "test_log": "update043f-selected-delivery-cpu/above_500_ft/positive.log",
+        "test_log_sha256": "de0bdda10e6e60d619c6432f6496d4e7ce821d4553a262cdab9d499bab858c4e",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C104538__NRS-484B-407__motor_vehicle_driver/selected_delivery_chain_update043f.py --case training__C104538__NRS-484B-407__motor_vehicle_driver__above_500_ft --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Delivery construction differs from selected manifest",
+        "negative_log": "update043f-selected-delivery-cpu/above_500_ft/negative.log",
+        "negative_log_sha256": "017d8a30f70f3004e16797710a76ef63f91024acbebcfd942cde2d0c4db35d16",
+        "scope": "CPU diagnostic source chain only; original Native reversal and two-direction pixels unverified"
+      },
+      "negative": {
+        "log": "update043f-current-proofs/above_500_ft/primary/negative.log"
+      },
+      "acquisition": {
+        "drv.u_turn": {
+          "entrypoint": "measure_native.py",
+          "method": "Original frame-joined body/heading/velocity reversal from native_body_history.jsonl and trace.jsonl",
+          "evidence": "Saved original Native sources must be verified after capture; diagnostic fixture is synthetic_native_sample"
+        },
+        "st.curvature": {
+          "entrypoint": "geometry.py",
+          "method": "Authored curve geometry in road.xodr, checked against Native road context after capture",
+          "evidence": "Saved original Native sources must be verified after capture; diagnostic fixture is synthetic_native_sample"
+        },
+        "st.grade": {
+          "entrypoint": "geometry.py",
+          "method": "Authored grade geometry in road.xodr, checked against Native road context after capture",
+          "evidence": "Saved original Native sources must be verified after capture; diagnostic fixture is synthetic_native_sample"
+        },
+        "st.crest": {
+          "entrypoint": "geometry.py",
+          "method": "Authored crest location in road.xodr and Native construction context",
+          "evidence": "Saved original Native sources must be verified after capture; diagnostic fixture is synthetic_native_sample"
+        },
+        "st.sight_distance": {
+          "entrypoint": "measure_native.py",
+          "method": "Two-direction virtual-observer driver_eye_rays.jsonl joined to original ego body and approach lanes",
+          "evidence": "Saved original Native sources must be verified after capture; diagnostic fixture is synthetic_native_sample"
+        },
+        "rel.oncoming": {
+          "entrypoint": "runner.py",
+          "method": "Original opposing approach identity, pose and frame-joined trace/capture evidence",
+          "evidence": "Saved original Native sources must be verified after capture; diagnostic fixture is synthetic_native_sample"
+        },
+        "drv.approaching": {
+          "entrypoint": "measure_native.py",
+          "method": "Measured opposing approach distance and original frame/time from driver_eye_rays.jsonl and trace",
+          "evidence": "Saved original Native sources must be verified after capture; diagnostic fixture is synthetic_native_sample"
+        },
+        "kin.position": {
+          "entrypoint": "measure_native.py",
+          "method": "Original ego and approach body position in native_body_history.jsonl and trace.jsonl",
+          "evidence": "Saved original Native sources must be verified after capture; diagnostic fixture is synthetic_native_sample"
+        }
+      },
+      "saved_processing": {
+        "receipt": "update043f-current-proofs/above_500_ft/primary/processing.json",
+        "sha256": "05a14e92ac349a3b012d32421766cdd4d1097da2ea3801f5f236e89f94905573"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C104538__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case training__C104538__NRS-484B-407__motor_vehicle_driver__above_500_ft --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c104538-update043f-above_500_ft-primary-compat --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c104538-update043f-above_500_ft-primary-saved --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime/pipeline/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/decoder-update015-c10316/.lake/build/bin/adapterCheck",
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C104538__NRS-484B-407__motor_vehicle_driver/execution-manifest.json --case training__C104538__NRS-484B-407__motor_vehicle_driver__above_500_ft --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c104538-update043f-above_500_ft-primary-compat --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c104538-update043f-above_500_ft-primary-saved --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime/pipeline/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/decoder-update015-c10316/.lake/build/bin/adapterCheck",
+        "test_log": "update043f-current-above_500_ft-primary-saved.log",
+        "test_log_sha256": "05a14e92ac349a3b012d32421766cdd4d1097da2ea3801f5f236e89f94905573",
+        "test_exit_code": 0,
+        "scope": "Synthetic saved-processing diagnostic; original Native feedback unverified"
+      }
+    }
+  ]
+}
