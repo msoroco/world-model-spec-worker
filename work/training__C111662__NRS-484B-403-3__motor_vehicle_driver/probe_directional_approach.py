@@ -1,6 +1,7 @@
 """Isolate a six-driving-lane directional approach without shoulder transitions."""
 import hashlib
 import json
+import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -82,11 +83,13 @@ def write(path, value):
     path.write_text(json.dumps(value, indent=2, sort_keys=True) + '\n')
 
 
-def main():
+def main(suffix='reference'):
+    if suffix not in ('reference', 'contrast'):
+        raise ValueError('Only the intersection comparison pair is supported')
     scope = {}
     exec(TRANSFORM, scope)
     transform = scope['directional_approach']
-    manifest = json.loads((HERE / 'current-16-manifest-reference-primary.json').read_text())
+    manifest = json.loads((HERE / ('current-16-manifest-' + suffix + '-primary.json')).read_text())
     entry = manifest['cases'][0]
     original = json.loads((HERE / entry['construction']).read_text())
     road = next(item['content'] for item in original['files'] if item['path'] == 'road.xodr')
@@ -119,18 +122,20 @@ def main():
             item['content'] = item['content'].replace(
                 'not in (403, 404, 405, None)',
                 'not in (403, 404, 405, 411, None)')
-    target = DEST / 'construction.json'
+    target = DEST / ('construction.json' if suffix == 'reference' else
+                     suffix + '-construction.json')
     write(target, original)
     entry['construction'] = str(target.relative_to(HERE))
     entry['construction_sha256'] = sha(target)
     entry['candidates'] = []
     entry['preparation_status'] = 'isolated directional approach CPU probe'
     manifest['status'] = 'isolated_directional_approach_probe'
-    output = HERE / 'directional-approach-experiment-manifest.json'
+    output = HERE / ('directional-approach-experiment-manifest.json' if suffix == 'reference'
+                     else 'directional-approach-' + suffix + '-experiment-manifest.json')
     write(output, manifest)
     print(json.dumps({'road_sha256': road_sha, 'construction_sha256': sha(target),
                       'manifest_sha256': sha(output)}))
 
 
 if __name__ == '__main__':
-    main()
+    main(sys.argv[1] if len(sys.argv) > 1 else 'reference')
