@@ -101,3 +101,7 @@ Current synthetic physical outcome/lifecycle proof receipts are `update704-physi
 The batch remains incomplete. Continue C111662's source-bound centre-line occupancy construction or the next independent partial assignment, then rerun their current CPU proofs and scoped strict gates. The separate timer owns Git publication.
 
 The Update 706 full strict batch rerun was interrupted during silent full-tree traversal and produced no verdict; see `work/_shared/update706-full-strict-attempt.json`. The latest completed full strict failure is the existing generated `.lock` in frozen runtime, and 243 assignments remain partial.
+
+## Current runtime cutover reproof checkpoint
+
+The previously selected execution manifest binds `5b4738624542c97f321a302bd49b9ec154cb2cf63778acf64ba6042f8d5b4fd3`; frozen batch/runtime now pin `ade64f2acdaf6d4b653c38f49b71f8c4bd2cf4a985cab7313f160b97b06c3d90`. Earlier ready/strict claims and runtime-dependent receipts are historical. `result.json` is `partial` until exact offline, positive/negative compatibility, recorded-only saved, physical, delivery and comparison proofs are rebound and the assignment-scoped strict gate passes. Selected case definitions and construction sources are preserved. This is worker-owned CPU reproof, not an external blocker.
