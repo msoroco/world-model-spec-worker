@@ -6304,3 +6304,5 @@ C183370 cutover checkpoint: 48/48 offline, 16/48 full current-runtime candidate 
 C183370 return-format correction: renamed returned generated-style logs, rebound 16 proofs, independent audit SHA-256 `297bfa1b1b3abf2b3f1a03950489c6916f835c46e986d86408a5a04656ae7bac`; ordinary scoped complete passes. Scoped strict exits 1 on partial status, log SHA-256 `4b7c473100b0567da2a85548669f3b674e506ee243d68a01763fb24c3c8a61e2`.
 
 C183370 warning-sign cutover pair: 24/48 full current-runtime chains, 3/6 diagnostic comparisons with swapped-source negatives; 24-chain audit SHA-256 `7ec6a3e786f5647c25f74b2f72482840b3d228d3f5a1b0ac3cd0ec036e7c2e6c`, warning proof SHA-256 `a55c7bf6f9039e4e93b21d99b62b0b3b520b9219ed042b2711aec6cb67941778`. Selected manifest remains prior-runtime; partial, 24 chains and final audits pending.
+
+C183370 highway-sign cutover pair: 32/48 current-runtime full chains and 4/6 diagnostic comparisons; independent audit SHA-256 `dc5ad80fbf9c5027938b929ee3a347022e4ddbc98e0dbf1d4eaa97ca811753be`, comparison proof SHA-256 `55ca8259c21075775f4b49077035348eeb7fdd8eace4270b29aedd3c8d68ba37`. Selected manifest prior-runtime; status partial.
