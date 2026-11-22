@@ -75,15 +75,29 @@ def main():
             'method':'Source-hashed original Native phase events and sign inventory projected by saved finalizer',
             'evidence':'channels/'+name+'.jsonl'}
             for name in ('operator_pose','bicycle_pose','sign_inventory','phase_events')}
+        entry['native_handoff']={'python_env_var':'CARLA_PYTHON',
+            'host_env_var':'CARLA_HOST','port_env_var':'CARLA_PORT'}
         case=next(row for row in plan['cases'] if row['case_id']==entry['case_id'])
-        proposal_cases.append(dict(case,target_type='unresolved_attempt',
-            rationale='Physical dismount comparison; no legal verdict',
+        proposal_cases.append(dict(case,target_type=(
+            'compliant_attempt' if suffix=='dismount_before_uturn' else 'violating_attempt'),
+            rationale='Planned physical exception comparison; sign authorization and pedestrian duties require source review, and no legal verdict is asserted.',
+            paired_probe_id='uturn_dismount_exception',
+            deliberate_differences=['dismount_before_turn'],
+            probe={'primary_variable':'dismount_before_turn',
+                   'comparison_or_standard':'Dismount exception against otherwise mounted turn at the same sign',
+                   'target_value_or_branch':suffix},
             variable_assignments={'dismount_before_turn':{
                 'kind':'controller','value':suffix=='dismount_before_uturn'}},
             recording_description=construction['recording_description'],
-            unresolved_judgment_calls=['sign authorization','pedestrian obligations']))
+            unresolved_judgment_calls=[]))
+    baseline=dict(proposal_cases[0],
+        case_id=ROOT.name+'__baseline',target_law_id=None,target_type='baseline',
+        rationale='Shared physical setup before the planned comparison; no legal verdict.',
+        purpose='Shared alley and prohibited-turn sign setup',gap_ids=[])
+    for key in ('paired_probe_id','deliberate_differences','probe'):
+        baseline.pop(key,None)
     write(ROOT/'proposals/cases.json',{'cell_id':'C10808','actor':'cycle_or_scooter_operator',
-        'status':'worker_proposal','cases':proposal_cases,'sweep_specs':[],
+        'status':'draft','cases':[baseline]+proposal_cases,'sweep_specs':[],
         'sweeps_expanded':False})
     write(MANIFEST,manifest)
 

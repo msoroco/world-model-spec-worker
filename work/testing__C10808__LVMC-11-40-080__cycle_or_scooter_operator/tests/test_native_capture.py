@@ -45,6 +45,19 @@ class Map:
 
 
 class NativeCaptureTests(unittest.TestCase):
+    def test_walker_capture_proxy_exposes_neutral_control(self):
+        actor=types.SimpleNamespace(id=12,type_id='walker.pedestrian.fixture',
+                                    get_velocity=lambda: types.SimpleNamespace(
+                                        x=0.,y=0.,z=0.))
+        proxy=native_capture.WalkerCaptureProxy(actor)
+        control=proxy.get_control()
+        self.assertEqual(proxy.id,12)
+        self.assertEqual(proxy.type_id,'walker.pedestrian.fixture')
+        self.assertEqual((control.throttle,control.steer,control.brake),
+                         (0.,0.,1.))
+        self.assertTrue(control.hand_brake)
+        self.assertFalse(control.reverse)
+
     def test_rotated_route_stays_on_one_driving_road(self):
         scene = load_scene()
         origin, context = native_capture.discover_origin(Map(), scene, Carla)
