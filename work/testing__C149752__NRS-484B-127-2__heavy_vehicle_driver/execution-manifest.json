@@ -1,0 +1,305 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver",
+  "runtime_manifest_sha256": "5b4738624542c97f321a302bd49b9ec154cb2cf63778acf64ba6042f8d5b4fd3",
+  "status": "partial",
+  "cases": [
+    {
+      "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__following_under_500_ft",
+      "construction": "construction.json",
+      "construction_sha256": "e50c07bc2651fec5f41a0d3e3a91bc4fb6408ffd76477db463571da50209087e",
+      "kind": "delivery",
+      "fixture_recipe": "work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/fixture-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "acquisition": {
+        "ego_overall_width": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl ego.overall_width_m",
+          "method": "_actor Native bounding-box extent for ego single vehicle"
+        },
+        "kin.position": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl body_vertices_xy_m joined to capture/evidence.jsonl",
+          "method": "record_sample original Native body vertices and frame"
+        },
+        "kin.speed": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl velocity_mps and trace.jsonl speed_mps",
+          "method": "derive speed from original Native velocity, with pipeline trace readback"
+        },
+        "kin.velocity": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl velocity_mps",
+          "method": "_actor Native get_velocity"
+        },
+        "lead_overall_width": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl lead.overall_width_m",
+          "method": "_actor Native bounding-box extent for lead single vehicle"
+        },
+        "longitudinal_body_gap": {
+          "entrypoint": "truck_measurements.py",
+          "evidence": "truck_history.jsonl body_vertices_xy_m and road_context.json lane_forward_xy",
+          "method": "analyze projected complete-body gap"
+        },
+        "rel.ahead_behind_in_lane": {
+          "entrypoint": "truck_measurements.py",
+          "evidence": "truck_history.jsonl ego/lead lane_id and longitudinal_body_gap_m",
+          "method": "analyze sourced lane identity and body gap sign"
+        },
+        "rel.surface_gap": {
+          "entrypoint": "truck_measurements.py",
+          "evidence": "truck_history.jsonl and road_context.json",
+          "method": "analyze projected body-edge separation on sourced lane tangent"
+        },
+        "ru.subject": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl ego.actor_id and blueprint_id",
+          "method": "record_sample ego actor identity"
+        },
+        "ru.truck": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl ego/lead blueprint_id, overall_width_m and body_vertices_xy_m; combination status unresolved",
+          "method": "_actor pinned Native type ID and measured single-vehicle width"
+        },
+        "same_direction_lane_count": {
+          "entrypoint": "runner.py",
+          "evidence": "road_context.json same_direction_lane_count and truck_history.jsonl lane_id",
+          "method": "capture authored road lane count and Native actor lane readback"
+        },
+        "st.lane": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl road_id and lane_id",
+          "method": "record_sample original Native waypoint road_id and lane_id"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__following_under_500_ft --output .runtime-work/c149752-first-offline-v3 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "construction_sha256": "e50c07bc2651fec5f41a0d3e3a91bc4fb6408ffd76477db463571da50209087e",
+        "exit_code": 0,
+        "log": "cpu-tests.log",
+        "log_sha256": "2ab9f366e2085c4b929bf354bd4ca4aaec98d76d4d9abe1a7168572f9e85470b"
+      },
+      "compatibility": {
+        "receipt": "following-under-compatibility.json",
+        "sha256": "a3a586abd2c9a6346841dca84f3c60998e054ad37d9dc35263d1359af2755f76",
+        "log": "following-under-compatibility-analysis.log"
+      },
+      "negative": {
+        "log": "following-under-negative-analysis.log",
+        "log_sha256": "90b027c1dd1bdc98af93f7713aaa56083a23f3aafc71c5ed8925e0025da1f883"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__following_under_500_ft --attempt .runtime-work/c149752-first-saved-attempt-v1 --output .runtime-work/c149752-first-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "receipt": "following-under-saved-processing.json",
+        "receipt_sha256": "bb447d2a00451aded0d30871d97d2d56d4048a471575b3836525a478e7e65907",
+        "recorded_only": true,
+        "scope": "nine-frame synthetic diagnostic saved-only software processing",
+        "test_exit_code": 0,
+        "test_log": "following-under-compatibility-analysis.log",
+        "test_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__following_at_500_ft",
+      "kind": "delivery",
+      "construction": "following-at-construction.json",
+      "construction_sha256": "7705db81cbc2f9e096f3bc627172187bfa81efae5113aabcb37e05ab4060cce5",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "fixture_recipe": "work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/following-at-fixture-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__following_at_500_ft --output .runtime-work/c149752-at-offline-v1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "exit_code": 0,
+        "construction_sha256": "7705db81cbc2f9e096f3bc627172187bfa81efae5113aabcb37e05ab4060cce5",
+        "log": "cpu-tests.log",
+        "log_sha256": "2ab9f366e2085c4b929bf354bd4ca4aaec98d76d4d9abe1a7168572f9e85470b"
+      },
+      "acquisition": {
+        "ego_overall_width": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl ego.overall_width_m",
+          "method": "_actor Native bounding-box extent for ego single vehicle"
+        },
+        "kin.position": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl body_vertices_xy_m joined to capture/evidence.jsonl",
+          "method": "record_sample original Native body vertices and frame"
+        },
+        "kin.speed": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl velocity_mps and trace.jsonl speed_mps",
+          "method": "derive speed from original Native velocity, with pipeline trace readback"
+        },
+        "kin.velocity": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl velocity_mps",
+          "method": "_actor Native get_velocity"
+        },
+        "lead_overall_width": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl lead.overall_width_m",
+          "method": "_actor Native bounding-box extent for lead single vehicle"
+        },
+        "longitudinal_body_gap": {
+          "entrypoint": "truck_measurements.py",
+          "evidence": "truck_history.jsonl body_vertices_xy_m and road_context.json lane_forward_xy",
+          "method": "analyze projected complete-body gap"
+        },
+        "rel.ahead_behind_in_lane": {
+          "entrypoint": "truck_measurements.py",
+          "evidence": "truck_history.jsonl ego/lead lane_id and longitudinal_body_gap_m",
+          "method": "analyze sourced lane identity and body gap sign"
+        },
+        "rel.surface_gap": {
+          "entrypoint": "truck_measurements.py",
+          "evidence": "truck_history.jsonl and road_context.json",
+          "method": "analyze projected body-edge separation on sourced lane tangent"
+        },
+        "ru.subject": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl ego.actor_id and blueprint_id",
+          "method": "record_sample ego actor identity"
+        },
+        "ru.truck": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl ego/lead blueprint_id, overall_width_m and body_vertices_xy_m; combination status unresolved",
+          "method": "_actor pinned Native type ID and measured single-vehicle width"
+        },
+        "same_direction_lane_count": {
+          "entrypoint": "runner.py",
+          "evidence": "road_context.json same_direction_lane_count and truck_history.jsonl lane_id",
+          "method": "capture authored road lane count and Native actor lane readback"
+        },
+        "st.lane": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl road_id and lane_id",
+          "method": "record_sample original Native waypoint road_id and lane_id"
+        }
+      },
+      "compatibility": {
+        "receipt": "following-at-compatibility.json",
+        "sha256": "89dc33539645b94ab0a71d57f2c681fd92e60aaa5c9eaa6f21b331e57830c6ac",
+        "log": "following-under-compatibility-analysis.log"
+      },
+      "negative": {
+        "log": "following-at-negative-analysis.log",
+        "log_sha256": "ace98cee410a51d8ee2adeaf097441aaa3eb5176ed943407a3e878367c220bcc"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__following_at_500_ft --attempt .runtime-work/c149752-at-saved-attempt-v1 --output .runtime-work/c149752-at-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "receipt": "following-at-saved-processing.json",
+        "receipt_sha256": "960016353813ec7cf5273c86dd6253d649db19263a68ddf29a383e462d9cf837",
+        "recorded_only": true,
+        "scope": "nine-frame synthetic diagnostic saved-only software processing",
+        "test_exit_code": 0,
+        "test_log": "following-under-compatibility-analysis.log",
+        "test_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "case_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__overtaking_pass",
+      "kind": "delivery",
+      "construction": "overtaking-pass-construction.json",
+      "construction_sha256": "c65bec5650e2dc355e2b3af3eb8f5ad1cd5268ea06ca92f43a0ed4a7d60e0ef0",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "measurement_contract": "overtaking-pass-measurement-contract.json",
+      "fixture_recipe": "work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/overtaking-pass-fixture-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__overtaking_pass --output .runtime-work/c149752-overtake-offline-v1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "exit_code": 0,
+        "construction_sha256": "c65bec5650e2dc355e2b3af3eb8f5ad1cd5268ea06ca92f43a0ed4a7d60e0ef0",
+        "log": "cpu-tests.log",
+        "log_sha256": "2ab9f366e2085c4b929bf354bd4ca4aaec98d76d4d9abe1a7168572f9e85470b"
+      },
+      "acquisition": {
+        "ego_overall_width": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl ego.overall_width_m",
+          "method": "_actor Native bounding-box extent for ego single vehicle"
+        },
+        "kin.position": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl body_vertices_xy_m joined to capture/evidence.jsonl",
+          "method": "record_sample original Native body vertices and frame"
+        },
+        "kin.speed": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl velocity_mps and trace.jsonl speed_mps",
+          "method": "derive speed from original Native velocity, with pipeline trace readback"
+        },
+        "kin.velocity": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl velocity_mps",
+          "method": "_actor Native get_velocity"
+        },
+        "lead_overall_width": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl lead.overall_width_m",
+          "method": "_actor Native bounding-box extent for lead single vehicle"
+        },
+        "longitudinal_body_gap": {
+          "entrypoint": "truck_measurements.py",
+          "evidence": "truck_history.jsonl body_vertices_xy_m and road_context.json lane_forward_xy",
+          "method": "analyze projected complete-body gap"
+        },
+        "rel.ahead_behind_in_lane": {
+          "entrypoint": "truck_measurements.py",
+          "evidence": "truck_history.jsonl ego/lead lane_id and longitudinal_body_gap_m",
+          "method": "analyze sourced lane identity and body gap sign"
+        },
+        "rel.surface_gap": {
+          "entrypoint": "truck_measurements.py",
+          "evidence": "truck_history.jsonl and road_context.json",
+          "method": "analyze projected body-edge separation on sourced lane tangent"
+        },
+        "ru.subject": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl ego.actor_id and blueprint_id",
+          "method": "record_sample ego actor identity"
+        },
+        "ru.truck": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl ego/lead blueprint_id, overall_width_m and body_vertices_xy_m; combination status unresolved",
+          "method": "_actor pinned Native type ID and measured single-vehicle width"
+        },
+        "same_direction_lane_count": {
+          "entrypoint": "runner.py",
+          "evidence": "road_context.json same_direction_lane_count and truck_history.jsonl lane_id",
+          "method": "capture authored road lane count and Native actor lane readback"
+        },
+        "st.lane": {
+          "entrypoint": "truck_capture_sources.py",
+          "evidence": "truck_history.jsonl road_id and lane_id",
+          "method": "record_sample original Native waypoint road_id and lane_id"
+        }
+      },
+      "compatibility": {
+        "receipt": "overtaking-pass-compatibility.json",
+        "sha256": "9ab8a90766cfc1308092ef791a886da83be7045b42dac0e8fe8a1bb5299c0ac4",
+        "log": "following-under-compatibility-analysis.log"
+      },
+      "negative": {
+        "log": "overtaking-pass-negative-analysis.log",
+        "log_sha256": "a9f360708d11a186bed24eff3f0eca83d240be4ea66998d960a445f31676be79"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__overtaking_pass --attempt .runtime-work/c149752-overtake-saved-attempt-v1 --output .runtime-work/c149752-overtake-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "receipt": "overtaking-pass-saved-processing.json",
+        "receipt_sha256": "d56182117128b049b63749811a5ef6abbfd5c5c1f59cabb0afb9d93ab56c02ed",
+        "recorded_only": true,
+        "scope": "nine-frame synthetic diagnostic saved-only software processing",
+        "test_exit_code": 0,
+        "test_log": "following-under-compatibility-analysis.log",
+        "test_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ]
+}
