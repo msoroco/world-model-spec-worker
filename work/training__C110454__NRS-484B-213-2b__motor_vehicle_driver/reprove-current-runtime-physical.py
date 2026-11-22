@@ -25,8 +25,11 @@ def main():
     if len(entries) != 9:
         raise ValueError('Nine selected cases required')
     rows = []
+    selected = set(os.environ.get('C110454_CASE_FILTER', '').split(',')) - {''}
     for entry in entries:
         suffix = entry['case_id'].rsplit('__', 1)[-1]
+        if selected and suffix not in selected:
+            continue
         matches = sorted((ROOT / '.runtime-work').glob(
             f'c110454-current-{suffix}-primary-*-compat'))
         matches = [p for p in matches if (p / 'compatibility.json').is_file()]
@@ -67,6 +70,8 @@ def main():
         rows.append({'case_id': entry['case_id'], 'receipt': str(path.relative_to(HERE)),
                      'sha256': sha(path)})
         print(suffix, 'physical CPU fixtures passed', flush=True)
+    if len(rows) != 9:
+        return
     index = {'format': 'c110454-current-runtime-physical-v1',
              'manifest_sha256': sha(manifest), 'selected_cases': len(rows),
              'synthetic_outcome_branches': 3 * len(rows), 'lifecycle_fixtures': len(rows),

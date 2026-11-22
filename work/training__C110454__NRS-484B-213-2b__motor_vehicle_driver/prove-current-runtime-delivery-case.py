@@ -1,0 +1,34 @@
+"""Check nine selected audit branches on retained, source-bound CPU attempts."""
+import argparse,json,subprocess,sys,tempfile
+from pathlib import Path
+from source_join_audit import read,require,sha
+HERE=Path(__file__).resolve().parent;ROOT=HERE.parents[1];AUDITOR=HERE/'delivery_audit.py'
+def run(case,negative=False):
+ manifest=read(HERE/'execution-manifest.json');entry=next((e for e in manifest['cases'] if e['case_id']==case),None)
+ require(entry is not None and entry['kind']=='delivery','Delivery case is not selected')
+ suffix=case.removeprefix(HERE.name+'__')
+ source_manifest=HERE/'current-runtime-reproof-manifest.json';proof_root=HERE/'current-runtime-selected-proof'
+ proof_dir=proof_root/suffix/'primary';saved=proof_dir/'saved-command.log'
+ receipt=read(proof_dir/'compatibility.json')
+ attempts=[path for path in (ROOT/'.runtime-work').glob(f'c110454-current-{suffix}-primary-*-compat')
+           if (path/'compatibility.json').is_file() and sha(path/'compatibility.json')==sha(proof_dir/'compatibility.json')]
+ require(attempts,'Retained current source attempt missing')
+ attempt=max(attempts,key=lambda path:path.stat().st_mtime_ns)
+ require(receipt['runtime_manifest_sha256']==read(source_manifest)['runtime_manifest_sha256'] and
+         receipt['construction_sha256']==entry['construction_sha256'] and
+         read(saved)['native_revision']['construction_sha256']==entry['construction_sha256'],
+         'Retained current source proof changed')
+ require(read(attempt/'candidate-selection.json')['manifest_sha256']==sha(source_manifest),'Retained current source selection changed')
+ with tempfile.TemporaryDirectory(dir=ROOT/'.runtime-work',prefix='c110454-current-delivery-') as temp:
+  out=Path(temp)/'audit.json';construction='0'*64 if negative else entry['construction_sha256']
+  command=[sys.executable,str(AUDITOR),'--case',case,'--candidate','primary','--construction-sha256',construction,'--attempt',str(attempt),'--processing',str(saved),'--output',str(out),'--diagnostic']
+  run=subprocess.run(command,cwd=ROOT,text=True,capture_output=True);content=run.stdout+run.stderr
+  if negative:
+   require(run.returncode!=0 and 'Delivery construction differs from selected manifest' in content and not out.exists(),'Wrong construction accepted')
+   print(content,end='');return
+  require(run.returncode==0 and out.is_file(),'Diagnostic delivery auditor failed: '+content)
+  receipt=read(out);require(receipt['source_shaped_unit_test'] is True and receipt['passed'] is False and not any(receipt['checks'].values()) and receipt['physical_or_legal_acceptance_claimed'] is False,'CPU fixture promoted to acceptance')
+  print(json.dumps({'case_id':case,'auditor_sha256':sha(AUDITOR),'source_shape_passed':True,'delivery_accepted':False}))
+if __name__=='__main__':
+ p=argparse.ArgumentParser();p.add_argument('--case',required=True);p.add_argument('--negative',action='store_true');a=p.parse_args();run(a.case,a.negative)
+ if a.negative:sys.exit(1)

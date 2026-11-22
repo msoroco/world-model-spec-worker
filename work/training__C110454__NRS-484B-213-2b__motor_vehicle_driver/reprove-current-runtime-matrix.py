@@ -1,5 +1,6 @@
 """Regenerate exact C110454 compatibility and recorded-only saved CPU receipts."""
 import hashlib
+import os
 import json
 import shutil
 import subprocess
@@ -12,7 +13,8 @@ ROOT = HERE.parents[1]
 MANIFEST = HERE/'current-runtime-reproof-manifest.json'
 VALIDATOR = ROOT/'.runtime-work/decoder-update015-c10316/.lake/build/bin/adapterCheck'
 PROOFS = HERE/'current-runtime-selected-proof'
-PROGRESS = HERE/'current-runtime-matrix-progress.json'
+FILTER = set(os.environ.get('C110454_CASE_FILTER', '').split(',')) - {''}
+PROGRESS = HERE / ('current-runtime-matrix-progress-' + '-'.join(sorted(FILTER)) + '.json' if FILTER else 'current-runtime-matrix-progress.json')
 
 
 def sha(path):
@@ -38,6 +40,8 @@ def main():
     rows=[]
     for entry in doc['cases']:
         suffix=entry['case_id'].rsplit('__',1)[-1]
+        if FILTER and suffix not in FILTER:
+            continue
         for candidate in ('primary','fallback1','fallback2','fallback3'):
             selected=entry if candidate=='primary' else next(c for c in entry['candidates'] if c['id']==candidate)
             if sha(HERE/selected['construction']) != selected['construction_sha256']:
