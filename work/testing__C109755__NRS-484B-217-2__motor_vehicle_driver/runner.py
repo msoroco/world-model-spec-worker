@@ -1,8 +1,4 @@
-"""Draft construction for NRS 484B.217(2) left-turn stripe crossing.
-
-The Native execution/capture path remains unfinished. CARLA is never imported
-at module import or by offline checks.
-"""
+"""NRS 484B.217(2) left-turn construction; CARLA loads only for Native runs."""
 import argparse
 import json
 from pathlib import Path
@@ -61,10 +57,15 @@ def spawn_scene(world, scene, transform_factory):
              ('oncoming','oncoming_blueprint',scene['oncoming_start_x_m'],scene['opposing_lane_center_y_m'],180),
              ('following','following_blueprint',scene['following_start_x_m'],scene['approach_lane_center_y_m'],0)]
     actors={}
-    for name,key,x,y,yaw in specs:
-        actors[name] = world.spawn_actor(choose(library,scene[key]),transform_factory(x,y,0,yaw))
-    if len({id(a) for a in actors.values()}) != len(actors):
-        raise ValueError('world reused an actor for distinct traffic roles')
+    try:
+        for name,key,x,y,yaw in specs:
+            actors[name] = world.spawn_actor(choose(library,scene[key]),transform_factory(x,y,0,yaw))
+        if len({id(a) for a in actors.values()}) != len(actors):
+            raise ValueError('world reused an actor for distinct traffic roles')
+    except BaseException:
+        for actor in reversed(list(actors.values())):
+            if hasattr(actor,'destroy'):actor.destroy()
+        raise
     return actors
 
 
@@ -90,7 +91,11 @@ def main():
     parser.add_argument('--port',type=int,default=2000)
     args=parser.parse_args()
     if args.check:check()
-    else:raise SystemExit('Native execution/capture unfinished for this partial construction')
+    else:
+        if not args.output_dir:
+            parser.error('--output-dir is required for Native capture')
+        from native_capture import run_native
+        run_native(load_scene(),Path(args.output_dir),args.host,args.port)
 
 
 if __name__=='__main__':main()

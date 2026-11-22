@@ -27,7 +27,8 @@ class ConstructionTests(unittest.TestCase):
     def test_stripe_geometry_and_signal_station(self):
         self.assertTrue(runner.crosses_stripe(self.scene))
         self.assertLess(self.scene['signal_start_x_m'],self.scene['crossing_x_m'])
-        self.assertTrue(runner.controller_command(self.scene,0,True)['left_signal'])
+        self.assertEqual(runner.controller_command(self.scene,0,True)['left_signal'],
+                         self.scene['signal_enabled'])
     def test_actual_spawn_calls_and_opposing_direction(self):
         world=World();actors=runner.spawn_scene(world,self.scene,lambda *args:args)
         self.assertEqual(set(actors),{'ego','oncoming','following'})
@@ -79,6 +80,18 @@ class SavedAnalysisTests(unittest.TestCase):
             (path/'zone-context.json').write_text('{}')
             with self.assertRaisesRegex(ValueError,'stale original Native source'):
                 analysis.measure(path)
+    def test_measurement_report_binds_original_sources(self):
+        with tempfile.TemporaryDirectory() as temp:
+            path=self.fixture(temp,True)
+            item=analysis.build_report(path)['measurements']['left_turn_crossing_measurement']
+            self.assertEqual(item['method'],'measure')
+            self.assertEqual(item['sources']['turn-history.jsonl'],hashlib.sha256((path/'turn-history.jsonl').read_bytes()).hexdigest())
+            self.assertEqual(item['value']['crossing_frame'],2)
+    def test_missing_required_history_rejected(self):
+        with tempfile.TemporaryDirectory() as temp:
+            path=self.fixture(temp,True);(path/'turn-history.jsonl').unlink()
+            with self.assertRaisesRegex(ValueError,'Missing required source: turn-history.jsonl'):
+                analysis.build_report(path)
 
 spec_compare=importlib.util.spec_from_file_location('comparison_audit',FOLDER/'comparison_audit.py')
 compare=importlib.util.module_from_spec(spec_compare);spec_compare.loader.exec_module(compare)
@@ -112,8 +125,17 @@ class DeliveryAuditTests(unittest.TestCase):
         (root/'raw.mkv').write_bytes(b'test-video-placeholder')
         (root/'result.json').write_text(json.dumps({'case_id':'case-1','setup_confirmed':True,
             'behavior_attempted':True,'maneuver_completed':True}))
+        body=[[0,0,0],[1,0,0],[1,1,0],[0,1,0]]
+        history={'frame':10,'time_s':0.5,'ego_body_vertices_m':body,
+            'oncoming_body_vertices_m':body,'following_body_vertices_m':body,
+            'left_signal':True,'oncoming_body_gap_m':4.0,'following_body_gap_m':5.0}
+        (root/'turn-history.jsonl').write_text(json.dumps(history)+'\n')
+        (root/'zone-context.json').write_text(json.dumps({'zone_kind':'marked_no_passing_zone',
+            'striping_source':'native_map'}))
+        (root/'acquisition.json').write_text(json.dumps({name:{'kind':'original_native',
+            'sha256':delivery.sha(root/name)} for name in ('turn-history.jsonl','zone-context.json')}))
         seal={'events':['capture_finished','encoders_closed','restoration_verified'],
-              'sources':{name:delivery.sha(root/name) for name in ('trace.jsonl','video_frames.jsonl','raw.mkv','result.json')}}
+              'sources':{name:delivery.sha(root/name) for name in ('trace.jsonl','video_frames.jsonl','raw.mkv','result.json','turn-history.jsonl','zone-context.json','acquisition.json')}}
         (root/'capture-seal.json').write_text(json.dumps(seal))
         (root/'native-exit.json').write_text(json.dumps({'event':'native_exit','capture_seal_sha256':delivery.sha(root/'capture-seal.json')}))
         (root/'owner-release.json').write_text(json.dumps({'event':'owner_released','operator_attested':True,
@@ -138,4 +160,21 @@ class DeliveryAuditTests(unittest.TestCase):
             p=self.fixture(temp);result=json.loads((p/'result.json').read_text());result['maneuver_completed']=False
             (p/'result.json').write_text(json.dumps(result));seal=json.loads((p/'capture-seal.json').read_text());seal['sources']['result.json']=delivery.sha(p/'result.json');(p/'capture-seal.json').write_text(json.dumps(seal));(p/'native-exit.json').write_text(json.dumps({'event':'native_exit','capture_seal_sha256':delivery.sha(p/'capture-seal.json')}));(p/'owner-release.json').write_text(json.dumps({'event':'owner_released','operator_attested':True,'native_exit_sha256':delivery.sha(p/'native-exit.json')}))
             with self.assertRaisesRegex(ValueError,'physical completion'):
+                delivery.audit(p,p/'processing.json',p/'source-decode.json',self.verifier)
+    def test_missing_participant_history_rejected(self):
+        with tempfile.TemporaryDirectory() as temp:
+            p=self.fixture(temp)
+            row=json.loads((p/'turn-history.jsonl').read_text());del row['following_body_vertices_m']
+            (p/'turn-history.jsonl').write_text(json.dumps(row)+'\n')
+            acquisition=json.loads((p/'acquisition.json').read_text())
+            acquisition['turn-history.jsonl']['sha256']=delivery.sha(p/'turn-history.jsonl')
+            (p/'acquisition.json').write_text(json.dumps(acquisition))
+            seal=json.loads((p/'capture-seal.json').read_text())
+            for name in ('turn-history.jsonl','acquisition.json'):
+                seal['sources'][name]=delivery.sha(p/name)
+            (p/'capture-seal.json').write_text(json.dumps(seal))
+            (p/'native-exit.json').write_text(json.dumps({'event':'native_exit','capture_seal_sha256':delivery.sha(p/'capture-seal.json')}))
+            (p/'owner-release.json').write_text(json.dumps({'event':'owner_released','operator_attested':True,
+                'native_exit_sha256':delivery.sha(p/'native-exit.json')}))
+            with self.assertRaisesRegex(ValueError,'participant/body history incomplete'):
                 delivery.audit(p,p/'processing.json',p/'source-decode.json',self.verifier)

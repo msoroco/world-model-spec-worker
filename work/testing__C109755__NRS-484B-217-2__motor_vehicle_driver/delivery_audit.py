@@ -6,6 +6,7 @@ receipt. A passing result is software/physical-evidence validation, not law.
 import argparse
 import hashlib
 import json
+import math
 from pathlib import Path
 
 
@@ -16,7 +17,14 @@ def read(path):return json.loads(Path(path).read_text())
 def rows(path):return [json.loads(line) for line in Path(path).read_text().splitlines() if line.strip()]
 
 
-def audit(attempt, processing, decode_receipt, media_verify=None):
+def body(value):
+    return isinstance(value,list) and len(value)>=4 and all(
+        isinstance(vertex,list) and len(vertex)>=3 and all(
+            type(component) in (int,float) and math.isfinite(component)
+            for component in vertex[:3]) for vertex in value)
+
+
+def audit(attempt, processing, decode_receipt, media_verify=None, case_id=None):
     attempt=Path(attempt);processing=Path(processing)
     seal=read(attempt/'capture-seal.json')
     if seal.get('events')!=['capture_finished','encoders_closed','restoration_verified']:
@@ -31,6 +39,8 @@ def audit(attempt, processing, decode_receipt, media_verify=None):
     if owner.get('event')!='owner_released' or owner.get('operator_attested') is not True or owner.get('native_exit_sha256')!=sha(attempt/'native-exit.json'):
         raise ValueError('owner release missing or stale')
     result=read(attempt/'result.json')
+    if case_id is not None and result.get('case_id')!=case_id:
+        raise ValueError('delivery case identity differs')
     if not all(result.get(key) is True for key in ('setup_confirmed','behavior_attempted','maneuver_completed')):
         raise ValueError('physical completion not confirmed')
     trace=rows(attempt/'trace.jsonl');mapping=rows(attempt/'video_frames.jsonl')
@@ -38,12 +48,33 @@ def audit(attempt, processing, decode_receipt, media_verify=None):
         t['frame']!=m['carla_frame'] or abs(t['time_s']-m['time_s'])>1e-6 or m['video_frame']!=i
         for i,(t,m) in enumerate(zip(trace,mapping))):
         raise ValueError('original frame/time join missing or changed')
+    acquisition=read(attempt/'acquisition.json')
+    for name in ('turn-history.jsonl','zone-context.json'):
+        source=acquisition.get(name,{})
+        if source.get('kind')!='original_native' or not (attempt/name).is_file() or source.get('sha256')!=sha(attempt/name):
+            raise ValueError('original turn source missing or changed: '+name)
+    turns=rows(attempt/'turn-history.jsonl')
+    if len(turns)!=len(mapping) or any(
+        h.get('frame')!=m['carla_frame'] or abs(h.get('time_s',-1)-m['time_s'])>1e-6 or
+        not all(body(h.get(key)) for key in ('ego_body_vertices_m','oncoming_body_vertices_m','following_body_vertices_m')) or
+        type(h.get('left_signal')) is not bool or
+        any(type(h.get(key)) not in (int,float) or not math.isfinite(h[key]) or h[key]<0
+            for key in ('oncoming_body_gap_m','following_body_gap_m'))
+        for h,m in zip(turns,mapping)):
+        raise ValueError('original participant/body history incomplete or frame join changed')
+    zone=read(attempt/'zone-context.json')
+    if zone.get('striping_source')!='native_map' or zone.get('zone_kind')!='marked_no_passing_zone':
+        raise ValueError('Native zone marking source is missing')
     processed=read(processing)
     if processed.get('format')!='worker-saved-processing' or processed.get('passed') is not True or processed.get('recorded_only') is not True:
         raise ValueError('saved processing receipt absent or failed')
     saved_result=Path(processed.get('result',''))
     if not saved_result.is_file() or processed.get('result_sha256')!=sha(saved_result):
         raise ValueError('saved result hash differs')
+    saved=read(saved_result)
+    if saved.get('case_id')!=result.get('case_id') or not all(saved.get(key) is True
+            for key in ('setup_confirmed','behavior_attempted','maneuver_completed')):
+        raise ValueError('saved result case or physical completion differs')
     if media_verify is None:
         from worker_exchange.media import verify_receipt
         media_verify=verify_receipt
@@ -61,5 +92,6 @@ def audit(attempt, processing, decode_receipt, media_verify=None):
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--attempt',required=True)
     parser.add_argument('--processing',required=True);parser.add_argument('--decode-receipt',required=True)
-    args=parser.parse_args();print(json.dumps(audit(args.attempt,args.processing,args.decode_receipt),indent=2))
+    parser.add_argument('--case',required=True)
+    args=parser.parse_args();print(json.dumps(audit(args.attempt,args.processing,args.decode_receipt,case_id=args.case),indent=2))
 if __name__=='__main__':main()

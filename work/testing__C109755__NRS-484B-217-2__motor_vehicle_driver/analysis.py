@@ -11,6 +11,8 @@ def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
 def source(attempt, acquisition, name):
     info=acquisition.get(name)
     path=attempt/name
+    if not path.is_file():
+        raise ValueError('Missing required source: '+name)
     if not info or info.get('kind')!='original_native' or not path.is_file() or sha(path)!=info.get('sha256'):
         raise ValueError('missing or stale original Native source: '+name)
     return path
@@ -47,7 +49,46 @@ def measure(attempt):
             'legal_safety_and_impediment':'unresolved'}
 
 
+def build_report(attempt):
+    attempt=Path(attempt)
+    value=measure(attempt)
+    sources={name:sha(attempt/name) for name in ('turn-history.jsonl','zone-context.json')}
+    return {'format':'worker-analysis-report','measurements':{
+        'left_turn_crossing_measurement':{'value':value,'method':'measure','sources':sources}},
+        'limitations':['Statutory zone extent, subsection 3/4 applicability, safety and impediment remain unresolved.'],
+        'analysis_complete':True,'legal_verdict_claimed':False}
+
+
+def saved_result(attempt, report):
+    from worker_exchange.native_output import physical_result, validate_result
+    cfg=json.loads((Path(attempt)/'config.json').read_text())
+    measured=report['measurements']['left_turn_crossing_measurement']['value']
+    target={'target':'observed left-turn stripe crossing','requested':True,'measured':True,
+            'method':'measure','tolerance':0,'matched':True,'physical_cause_confirmed':False,
+            'cause_evidence':report['measurements']['left_turn_crossing_measurement']['sources']}
+    result={'case_id':cfg['selected_case_id'],'measured_values':measured,
+            'target_checks':[target],'setup_confirmed':False,'behavior_attempted':False,
+            'maneuver_completed':False,'termination_reason':'Saved measurements pending physical assessment',
+            'physical_failure_flags':[],'trace_reference':'trace.jsonl',
+            'video_references':['overview.mkv','approach.mkv','reference_corner.mkv','driver_reference.mkv'],
+            'video_frame_map_reference':'video_frames.jsonl',
+            'recording_description':{'summary':'Measured left-turn crossing of Native map marking'},
+            'recording_evidence':[{'source':k,'sha256':v} for k,v in report['measurements']['left_turn_crossing_measurement']['sources'].items()],
+            'realized_observables':{}}
+    result=physical_result(attempt,result)
+    validate_result(result)
+    return result
+
+
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--attempt',required=True);parser.add_argument('--output',required=True)
-    args=parser.parse_args();Path(args.output).write_text(json.dumps(measure(args.attempt),indent=2)+'\n')
+    args=parser.parse_args()
+    report=build_report(args.attempt)
+    result=saved_result(args.attempt,report)
+    report['physical_checks']=result['physical_checks']
+    report['realized_observables']=result['realized_observables']
+    with Path(args.attempt,'result.json').open('x') as stream:
+        stream.write(json.dumps(result,indent=2)+'\n')
+    with Path(args.output).open('x') as stream:
+        stream.write(json.dumps(report,indent=2)+'\n')
 if __name__=='__main__':main()
