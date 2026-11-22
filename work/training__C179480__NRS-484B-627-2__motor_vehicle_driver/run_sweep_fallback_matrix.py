@@ -11,7 +11,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 ASSETS = ROOT / '.runtime-work/c179480-native-sweep'
 MANIFEST = HERE / 'sweep-candidate-manifest.json'
-TAG = 'sweep-qualified'
+TAG = 'sweep-qualified-v3'
 LIBRARY = ROOT / 'runtime/pipeline/library'
 VALIDATOR = ROOT / '.runtime-work/c10316-current-decoder/.lake/build/bin/adapterCheck'
 
@@ -22,8 +22,9 @@ def sha(path):
 
 def proof(case_id, candidate, compatibility_only=False):
     name = f'{case_id}-{candidate}'
-    attempt = ASSETS / ('compatibility-' + TAG) / case_id / candidate
-    saved = ASSETS / ('saved-' + TAG) / case_id / candidate
+    path_tag = 'qualified-v3' if TAG == 'sweep-qualified-v3' else TAG
+    attempt = ASSETS / ('compatibility-' + path_tag) / case_id / candidate
+    saved = ASSETS / ('saved-' + path_tag) / case_id / candidate
     env = os.environ.copy()
     env['SCENARIO_PIPELINE_OUTPUT_ROOT'] = str(ASSETS / ('adapter-' + TAG) / case_id / candidate)
     env['MPLCONFIGDIR'] = str(ASSETS / 'mpl')

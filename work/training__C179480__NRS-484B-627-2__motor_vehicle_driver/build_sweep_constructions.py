@@ -45,6 +45,11 @@ def build():
                       case_suffix=base, case={'case_id': cid},
                       sweep={'sweep_id': sweep_id, 'sweep_point': point},
                       recording_description=deepcopy(semantic['recording_description']))
+        measurements = semantic.get('sweep_measurements', [])
+        if (len(measurements) != 1 or measurements[0].get('variable') != axis or
+                measurements[0].get('observable') != axis):
+            raise ValueError('Semantic sweep measurement does not bind exact axis')
+        config['sweep_measurement'] = deepcopy(measurements[0])
         config['supported_case_ids'] = list(dict.fromkeys(
             config['supported_case_ids'] + [cid]))
         if [item['name'] for item in config['recording_description']['channels']] != list(
@@ -54,10 +59,15 @@ def build():
         files['config.json'] = json.dumps(config, indent=2, sort_keys=True)+'\n'
         for name in MODULES:
             files[name] = (HERE/name).read_text()
+        files['native_finalize.py'] = (HERE/'native_sweep_finalize.py').read_text()
         construction.update(case_id=cid,
                             status='draft_cpu_preparation_incomplete',
                             recording_description=config['recording_description'],
-                            files=[{'path':name,'content':content} for name,content in files.items()])
+                            files=[({'path':name,'content':content,
+                                     'source':str((HERE/'native_sweep_finalize.py').relative_to(ROOT))}
+                                   if name == 'native_finalize.py' else
+                                   {'path':name,'content':content})
+                                   for name,content in files.items()])
         construction['measurement_plan']['per_case_contracts'][0]['case_id'] = cid
         construction['mechanisms'] = list(dict.fromkeys(construction['mechanisms'] + [
             'source-measured '+axis+' controlled sweep at '+str(point[axis])]))

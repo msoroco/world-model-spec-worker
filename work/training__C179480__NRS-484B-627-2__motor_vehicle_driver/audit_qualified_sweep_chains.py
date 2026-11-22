@@ -34,14 +34,14 @@ def audit():
         candidates = [('primary', entry)] + [(item['id'], item) for item in entry['candidates']]
         for candidate_id, candidate in candidates:
             name = f'{cid}-{candidate_id}'
-            attempt = ASSETS / 'compatibility-qualified' / cid / candidate_id
+            attempt = ASSETS / 'compatibility-qualified-v3' / cid / candidate_id
             config = read(attempt / 'config.json')
             _, axis, value = resolve(config)
             construction = HERE / candidate['construction']
             if sha(construction) != candidate['construction_sha256']:
                 raise ValueError('Construction changed: ' + name)
-            compat_path = HERE / f'sweep-qualified-{name}-compatibility.log'
-            saved_path = HERE / f'sweep-qualified-{name}-saved.log'
+            compat_path = HERE / f'sweep-qualified-v3-{name}-compatibility.log'
+            saved_path = HERE / f'sweep-qualified-v3-{name}-saved.log'
             compat, saved = read(compat_path), read(saved_path)
             if (not compat['passed'] or compat['case_id'] != cid or
                     compat['candidate_id'] != candidate_id or
@@ -80,6 +80,17 @@ def audit():
                 values = [row['hazard_state']['ego_center_gap_m'] for row in actors]
             if [row['value'] for row in channel] != values:
                 raise ValueError('Sweep channel differs from retained actors: ' + name)
+            definition = config['sweep_measurement']
+            summary = read(attempt / 'result.json')['realized_observables'][axis]
+            procedure = definition['measurement']
+            measured = min(values) if procedure['statistic'] == 'min' else values[0]
+            if (definition['observable'] != axis or definition['variable'] != axis or
+                    summary['value'] != measured or
+                    summary['reference'] != 'channels/' + axis + '.jsonl' or
+                    summary['sample_window_s'] != [channel[0]['time_s'], channel[-1]['time_s']] or
+                    any(summary[key] != procedure[key]
+                        for key in ('method', 'time_window', 'statistic'))):
+                raise ValueError('Frozen realized sweep summary differs from sources: ' + name)
             rows.append({'case_id': cid, 'candidate_id': candidate_id,
                          'axis': axis, 'point': value,
                          'compatibility_log_sha256': sha(compat_path),

@@ -14,7 +14,7 @@ def sha(path):
 def audit():
     manifest_path = HERE / 'sweep-candidate-manifest.json'
     manifest = json.loads(manifest_path.read_text())
-    index = json.loads((HERE / 'sweep-qualified-offline-index.json').read_text())
+    index = json.loads((HERE / 'sweep-qualified-v3-offline-index.json').read_text())
     if (len(manifest['cases']) != 9 or index['manifest_sha256'] != sha(manifest_path)
             or index['count'] != 36 or len(index['rows']) != 36):
         raise ValueError('Exact qualified sweep matrix is incomplete')
@@ -36,7 +36,7 @@ def audit():
             if sha(construction) != candidate['construction_sha256']:
                 raise ValueError('Construction changed: ' + cid + '/' + name)
             hashes.add(candidate['construction_sha256'])
-            log = HERE / f'sweep-qualified-{cid}-{name}-offline.log'
+            log = HERE / f'sweep-qualified-v3-{cid}-{name}-offline.log'
             receipt = json.loads(log.read_text())
             if (not receipt['offline_passed'] or receipt['case_id'] != cid
                     or receipt['candidate_id'] != name or receipt['simulation_started']):
@@ -53,7 +53,7 @@ def audit():
     return {'format': 'c179480-qualified-sweep-offline-audit-v1', 'passed': True,
             'case_count': 9, 'candidate_count': 36,
             'candidate_manifest_sha256': sha(manifest_path),
-            'offline_index_sha256': sha(HERE / 'sweep-qualified-offline-index.json'),
+            'offline_index_sha256': sha(HERE / 'sweep-qualified-v3-offline-index.json'),
             'selected_cases': 0, 'native_observed': False}
 
 

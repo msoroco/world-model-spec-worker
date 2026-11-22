@@ -19,9 +19,10 @@ def read(path):
 
 
 def audit(label):
-    if label not in ('update092', 'update095'):
+    if label not in ('update092', 'update095', 'base-current'):
         raise ValueError('Unsupported diagnostic matrix label')
-    assets = ROOT / '.runtime-work' / f'c179480-{label}-matrix'
+    assets = (ROOT / '.runtime-work/c179480-native-sweep' if label == 'base-current'
+              else ROOT / '.runtime-work' / f'c179480-{label}-matrix')
     manifest = read(MANIFEST)
     manifest_sha = sha(MANIFEST)
     rows = []
@@ -32,8 +33,10 @@ def audit(label):
         for choice in choices:
             candidate = choice['id']
             stem = f'{label}-{name}-{candidate}'
-            compat = assets / f'{name}-{candidate}-compatibility'
-            saved = assets / f'{name}-{candidate}-saved/v0001'
+            compat = (assets / 'compatibility-base-current' / case / candidate
+                      if label == 'base-current' else assets / f'{name}-{candidate}-compatibility')
+            saved = (assets / 'saved-base-current' / case / candidate / 'v0001'
+                     if label == 'base-current' else assets / f'{name}-{candidate}-saved/v0001')
             artifacts = {
                 'selection': compat / 'candidate-selection.json',
                 'compatibility': compat / 'compatibility.json',
@@ -68,7 +71,7 @@ def audit(label):
                     or processing.get('final_video_checks', {}).get('frames') != 600
                     or processing.get('final_video_checks', {}).get('passed') is not True):
                 raise ValueError(f'Saved timing or video incomplete: {stem}')
-            if label == 'update095':
+            if label in ('update095', 'base-current'):
                 source_rows = (saved/'analysis/native-actors.jsonl').read_text().splitlines()
                 if len(source_rows) != 600 or any(
                         'scene_actor_inventory' not in json.loads(row)
@@ -92,7 +95,8 @@ def audit(label):
                 shutil.copyfile(source, destination)
                 copied[kind] = {'path': destination.name, 'sha256': sha(destination)}
             for phase in ('offline', 'compatibility', 'saved'):
-                log = HERE / f'{stem}-{phase}.log'
+                log = HERE / (f'base-current-{case}-{candidate}-{phase}.log'
+                              if label == 'base-current' else f'{stem}-{phase}.log')
                 if not log.is_file():
                     raise ValueError(f'Missing exact command log: {log.name}')
                 copied[f'{phase}_command_log'] = {'path': log.name, 'sha256': sha(log)}
@@ -111,5 +115,5 @@ def audit(label):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--label', choices=('update092', 'update095'), default='update095')
+    parser.add_argument('--label', choices=('update092', 'update095', 'base-current'), default='base-current')
     print(audit(parser.parse_args().label))

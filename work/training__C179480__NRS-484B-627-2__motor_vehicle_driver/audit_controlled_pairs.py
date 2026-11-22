@@ -10,8 +10,8 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 MANIFEST = HERE / 'candidate-matrix-manifest.json'
-MATRIX = HERE / 'update095-candidate-matrix-audit.json'
-ASSETS = ROOT / '.runtime-work/c179480-update095-matrix'
+MATRIX = HERE / 'base-current-candidate-matrix-audit.json'
+ASSETS = ROOT / '.runtime-work/c179480-native-sweep/saved-base-current'
 NAMES = ('reference', 'contrast', 'safe_operation_stop', 'law_required_stop')
 CHOICES = ('primary', 'fallback1', 'fallback2', 'fallback3')
 PAIRS = (('reference', 'contrast', 'roadway_placement'),
@@ -33,7 +33,7 @@ def require(condition, message):
 
 
 def channel(name, choice, key):
-    path = ASSETS / f'{name}-{choice}-saved/v0001/analysis/channels/{key}.jsonl'
+    path = ASSETS / f'{HERE.name}__{name}' / choice / 'v0001/analysis/channels' / f'{key}.jsonl'
     rows = [json.loads(line) for line in path.read_text().splitlines()]
     require(len(rows) == 600, f'{name}/{choice}/{key}: expected 600 source rows')
     require(all(row['time_s'] == i / 20 for i, row in enumerate(rows)),
