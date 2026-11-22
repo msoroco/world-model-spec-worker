@@ -65,7 +65,7 @@ def _source(attempt, acquisition, name):
     record = acquisition.get(name, {})
     path = attempt / name
     if not path.is_file() or record.get('kind') != 'original_native':
-        raise ValueError(f'missing original Native source: {name}')
+        raise ValueError(f'Missing required source: {name}')
     digest = hashlib.sha256(path.read_bytes()).hexdigest()
     if digest != record.get('sha256'):
         raise ValueError(f'stale original Native source: {name}')
@@ -109,6 +109,7 @@ def measure(attempt, case_id, *, diagnostic=False):
     if not diagnostic and len(rows) != round(rate*duration):
         raise ValueError('original following history does not cover capture duration')
     prev = None
+    previous_logical = None
     measured = []
     for row in rows:
         frame = row.get('frame')
@@ -116,6 +117,11 @@ def measure(attempt, case_id, *, diagnostic=False):
         if type(frame) is not int or (prev and (frame <= prev[0] or time_s <= prev[1])):
             raise ValueError('original frame/time order invalid')
         prev = frame, time_s
+        logical_time = (_finite(row.get('diagnostic_time_s'), 'diagnostic logical time')
+                        if diagnostic and 'diagnostic_time_s' in row else time_s)
+        if previous_logical is not None and logical_time <= previous_logical:
+            raise ValueError('diagnostic logical window order invalid')
+        previous_logical = logical_time
         ego, lead = row.get('ego'), row.get('leader')
         if not isinstance(ego, dict) or not isinstance(lead, dict):
             raise ValueError('original ego and leader participants required')
@@ -151,12 +157,12 @@ def measure(attempt, case_id, *, diagnostic=False):
         observed_lane = lane.get('ego_lane_id')
         if observed_lane not in (following_lane, target_lane):
             raise ValueError('ego observed outside planned lane-change pair')
-        if (time_s <= 20 and observed_lane != following_lane or
+        if (logical_time <= 20 and observed_lane != following_lane or
                 lane.get('started') is not (observed_lane != following_lane)):
             raise ValueError('lane change occurred during steady following or flag differs from Native lane')
         gap = body_gap(ego['body_vertices_m'], lead['body_vertices_m'], route)
         ego_station = sum(body_interval(ego['body_vertices_m'], route))/2
-        measured.append({'frame': frame, 'time_s': time_s, 'along_route_body_gap_m': gap,
+        measured.append({'frame': frame, 'time_s': logical_time, 'along_route_body_gap_m': gap,
                          'ego_station_m': ego_station,
                          'ego_speed_mps': ego_speed, 'leader_speed_mps': lead_speed,
                          'relative_speed_mps': ego_speed - lead_speed,
@@ -178,6 +184,7 @@ def measure(attempt, case_id, *, diagnostic=False):
         return sum(r['highway_condition'][key] for r in steady)/len(steady)
     return {'format': 'worker-following-measurements', 'case_id': case_id,
             'frame_count': len(rows), 'steady_window_s': [14, 20],
+            'diagnostic_sparse_window': diagnostic and any('diagnostic_time_s' in r for r in rows),
             'steady_frame_count': len(steady),
             'mean_along_route_body_gap_m': mean('along_route_body_gap_m'),
             'mean_ego_speed_mps': mean('ego_speed_mps'),

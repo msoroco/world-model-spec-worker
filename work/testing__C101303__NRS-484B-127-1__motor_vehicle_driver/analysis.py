@@ -4,7 +4,11 @@ import hashlib
 import json
 from pathlib import Path
 
-from following import measure
+from following import measure as measure_following
+
+
+def measure(attempt, case_id, *, diagnostic=False):
+    return measure_following(attempt, case_id, diagnostic=diagnostic)
 
 
 def _original(attempt, acquisition, name):
@@ -40,11 +44,16 @@ def build_report(attempt):
             'measurements': {
                 'following_spacing_measurement': {'value': value,
                     'method': 'measure', 'sources': value['sources']},
-                'following_speed_traffic_condition_measurement': {'value': {
+                'following_speed_measurement': {'value': {
                     'ego_speed_mps': value['mean_ego_speed_mps'],
                     'leader_speed_mps': value['mean_leader_speed_mps'],
-                    'relative_speed_mps': value['mean_relative_speed_mps'],
+                    'relative_speed_mps': value['mean_relative_speed_mps']},
+                    'method': 'measure', 'sources': value['sources']},
+                'following_traffic_measurement': {'value': {
                     'traffic_count': value['mean_surrounding_vehicle_count'],
+                    'raw_history': value['raw_history']},
+                    'method': 'measure', 'sources': value['sources']},
+                'following_highway_condition_measurement': {'value': {
                     'precipitation_percent': value['mean_native_precipitation_strength'],
                     'fog_percent': value['mean_native_fog_density'],
                     'tire_friction': value['mean_observed_tire_friction'],
@@ -95,8 +104,10 @@ def saved_result(attempt, report):
                          'reference': str(path.relative_to(attempt))})
     context_path = output/'context.json'
     with context_path.open('x') as stream:
-        stream.write(json.dumps({'following_context': context,
-            'highway_status': 'unresolved_requires_independent_review'},
+        stream.write(json.dumps({'hill_route_context': context,
+            'highway_context': {'road_id': context['road_id'],
+                'map_source': context['map_source'],
+                'public_status': 'unresolved_requires_independent_review'}},
             allow_nan=False)+'\n')
     for item in planned['context_inputs']:
         evidence.append({'name': item['name'], 'unit': item['unit'],

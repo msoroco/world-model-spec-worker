@@ -32,6 +32,8 @@ def load_scene(path=None):
         raise ValueError('surrounding vehicle target outside supported capture domain')
     if scene.get('lane_change_start_s') != 21:
         raise ValueError('lane change must follow 14..20 s judgment window')
+    if scene.get('route_seed_strategy', 'spawn') not in ('spawn', 'topology'):
+        raise ValueError('unknown route seed strategy')
     return scene
 
 

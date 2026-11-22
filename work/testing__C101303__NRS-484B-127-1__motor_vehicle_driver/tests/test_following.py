@@ -83,7 +83,7 @@ class FollowingTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'transition missing'):
                 following.measure(root, CASE, diagnostic=True)
             (root / 'following-context.json').unlink()
-            with self.assertRaisesRegex(ValueError, 'missing original Native source'):
+            with self.assertRaisesRegex(ValueError, 'Missing required source'):
                 following.measure(root, CASE, diagnostic=True)
 
     def test_rejects_crest_outside_realized_following_window(self):

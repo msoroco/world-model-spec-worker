@@ -29,7 +29,8 @@ def _adjacent(waypoint):
 
 
 def discover_hill_route(native_map, *, step_m=4., points=120,
-                        crest_station_range_m=None, change_station_m=None):
+                        crest_station_range_m=None, change_station_m=None,
+                        seed_strategy='spawn'):
     """Choose connected original waypoints with crest and forward adjacent lane.
 
     Selection is geometric. A missing map feature is an explicit Native failure,
@@ -37,8 +38,14 @@ def discover_hill_route(native_map, *, step_m=4., points=120,
     """
     if step_m <= 0 or points < 9:
         raise ValueError('invalid Native route search resolution')
-    for spawn in native_map.get_spawn_points():
-        first = native_map.get_waypoint(spawn.location)
+    if seed_strategy == 'spawn':
+        firsts = [native_map.get_waypoint(spawn.location)
+                  for spawn in native_map.get_spawn_points()]
+    elif seed_strategy == 'topology':
+        firsts = native_map.generate_waypoints(20.0)
+    else:
+        raise ValueError('unknown Native route seed strategy')
+    for first in firsts:
         if first is None or _lane_type(first) != 'Driving':
             continue
         waypoints = [first]

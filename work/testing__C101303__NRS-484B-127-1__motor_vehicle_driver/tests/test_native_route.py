@@ -50,6 +50,9 @@ class Map:
     def get_waypoint(self, location):
         return self.points[0]
 
+    def generate_waypoints(self, spacing):
+        return [self.points[0]]
+
 
 class NativeRouteTest(unittest.TestCase):
     def test_map_discovery_uses_actual_elevation_and_forward_lane(self):
@@ -63,6 +66,15 @@ class NativeRouteTest(unittest.TestCase):
                            Map([0,.1,.3,.7,1.1,1.7,2,1.8,1.4,1,.6,.2], -1)):
             with self.subTest(native_map=native_map), self.assertRaisesRegex(ValueError, 'lacks connected hill crest'):
                 discover_hill_route(native_map, points=12)
+
+    def test_topology_fallback_uses_same_connected_route_without_spawn_seed(self):
+        native_map = Map([0,.1,.3,.7,1.1,1.7,2,1.8,1.4,1,.6,.2])
+        native_map.get_spawn_points = lambda: []
+        with self.assertRaisesRegex(ValueError, 'lacks connected hill crest'):
+            discover_hill_route(native_map, points=12)
+        route = discover_hill_route(native_map, points=12,
+                                    seed_strategy='topology')
+        self.assertEqual(route['geometry']['target_lane_id'], -2)
 
 
 if __name__ == '__main__':

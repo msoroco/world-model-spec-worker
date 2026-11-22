@@ -150,7 +150,8 @@ def run_native(scene, output, host, port):
     speed = scene['ego_target_speed_mps']
     route = discover_hill_route(native_map,
         crest_station_range_m=(max(12, 14*speed-40), 20*speed+40),
-        change_station_m=scene['lane_change_start_s']*speed)
+        change_station_m=scene['lane_change_start_s']*speed,
+        seed_strategy=scene.get('route_seed_strategy', 'spawn'))
     waypoints = route['waypoints']
     geometry = route['geometry']
     if list(world.get_actors().filter('vehicle.*')):
