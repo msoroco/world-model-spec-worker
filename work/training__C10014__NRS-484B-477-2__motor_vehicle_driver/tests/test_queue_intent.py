@@ -18,11 +18,11 @@ class QueueIntentTest(unittest.TestCase):
         cls.manifest = json.loads((HERE / "execution-manifest.json").read_text())
         cls.plan = json.loads((HERE / "case-plan.json").read_text())
 
-    def test_current_selected_rows_and_legacy_format(self):
+    def test_current_selected_rows_and_canonical_format(self):
         report = module.audit(self.queue, self.manifest, self.plan)
         self.assertEqual(len(report["cases"]), 2)
         self.assertFalse(report["dispatchable"])
-        self.assertFalse(report["canonical_format_ready"])
+        self.assertTrue(report["canonical_format_ready"])
 
     def test_wrong_case_and_early_release_rejected(self):
         for edit in (lambda row: row.update(dispatchable=True),

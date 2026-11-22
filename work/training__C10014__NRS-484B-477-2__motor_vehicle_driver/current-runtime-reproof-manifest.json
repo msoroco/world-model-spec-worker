@@ -1,0 +1,122 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C10014__NRS-484B-477-2__motor_vehicle_driver",
+  "runtime_manifest_sha256": "ade64f2acdaf6d4b653c38f49b71f8c4bd2cf4a985cab7313f160b97b06c3d90",
+  "status": "selected_cpu_partial",
+  "cases": [
+    {
+      "case_id": "training__C10014__NRS-484B-477-2__motor_vehicle_driver__reference",
+      "kind": "delivery",
+      "fixture_recipe": "work/training__C10014__NRS-484B-477-2__motor_vehicle_driver/update041-diagnostic-reference-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native abutting-property access, precise stop, route tracking and source-camera framing require original evidence"
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c10014-alley-entrance-saved-analysis-v1"
+      },
+      "measurement_contract": "draft-measurements/reference/measurement-contract.json",
+      "construction": "selected-candidates/reference/primary/construction.json",
+      "construction_sha256": "ac86f7764181320071f3fd989bd9f8e902a2d622ffccd8a310db818705b78e43",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-candidates/reference/fallback1/construction.json",
+          "construction_sha256": "1ed0e643380745428ce352a19919b66cabc0322766a5b0336059a70263c4f8d5",
+          "trigger": {
+            "source": "original Native pose/stop trace",
+            "metric": "available approach distance before the entrance",
+            "failure_condition": "primary spawn-to-stop clearance below 25 m or route setup fails"
+          },
+          "changed_knobs": [
+            "approach start -45 m to -55 m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-candidates/reference/fallback2/construction.json",
+          "construction_sha256": "4f0456ae2e01fe2239362db95edea1210db1282a7cd86e7921e9bd5d83130fb4",
+          "trigger": {
+            "source": "original Native pose, velocity and body trace",
+            "metric": "settled stop-target longitudinal error",
+            "failure_condition": "absolute stop-position error exceeds 0.25 m or 2 s stationary interval is absent"
+          },
+          "changed_knobs": [
+            "braking onset 6 m to 9 m before target"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-candidates/reference/fallback3/construction.json",
+          "construction_sha256": "5e5804e6a5bf71d07823e35ba5dbc5ea290666d3195a866d73d166ad2f9fe0f7",
+          "trigger": {
+            "source": "four original source videos and frame map",
+            "metric": "visible body and complete entrance corridor fraction during stationary frames",
+            "failure_condition": "fraction below 0.95 in any required view"
+          },
+          "changed_knobs": [
+            "overview/entrance FOV 90 to 105 degrees and elevated mount"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "training__C10014__NRS-484B-477-2__motor_vehicle_driver__contrast",
+      "kind": "delivery",
+      "fixture_recipe": "work/training__C10014__NRS-484B-477-2__motor_vehicle_driver/update041-diagnostic-contrast-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native abutting-property access, precise stop, route tracking and source-camera framing require original evidence"
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c10014-alley-entrance-saved-analysis-v1"
+      },
+      "measurement_contract": "draft-measurements/contrast/measurement-contract.json",
+      "construction": "selected-candidates/contrast/primary/construction.json",
+      "construction_sha256": "6a1cd893c595b6e35860db42754f74f3552c8345edc26bcb79a609ef7cb5bc40",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-candidates/contrast/fallback1/construction.json",
+          "construction_sha256": "708aea9e3c1224b8c23bcd6571d17a1f7c1c22306f9aebc10d19446c54f55c43",
+          "trigger": {
+            "source": "original Native pose/stop trace",
+            "metric": "available approach distance before the entrance",
+            "failure_condition": "primary spawn-to-stop clearance below 25 m or route setup fails"
+          },
+          "changed_knobs": [
+            "approach start -45 m to -55 m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-candidates/contrast/fallback2/construction.json",
+          "construction_sha256": "7d4d560ddb0801765df18c28b17576878af11b7a260199bdef4d4da8fb1e7421",
+          "trigger": {
+            "source": "original Native pose, velocity and body trace",
+            "metric": "settled stop-target longitudinal error",
+            "failure_condition": "absolute stop-position error exceeds 0.25 m or 2 s stationary interval is absent"
+          },
+          "changed_knobs": [
+            "braking onset 6 m to 9 m before target"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-candidates/contrast/fallback3/construction.json",
+          "construction_sha256": "514727dfe2139758c3485b5297758d684996a9bfe108cd3f9dc2165688f257ce",
+          "trigger": {
+            "source": "four original source videos and frame map",
+            "metric": "visible body and complete entrance corridor fraction during stationary frames",
+            "failure_condition": "fraction below 0.95 in any required view"
+          },
+          "changed_knobs": [
+            "overview/entrance FOV 90 to 105 degrees and elevated mount"
+          ]
+        }
+      ]
+    }
+  ]
+}
