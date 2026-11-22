@@ -92,3 +92,36 @@ Final C125763(1) scoped complete check after polygon alignment and audit return 
 The current `cpu-tests.log` SHA-256 is `7159ee7fe9ec237078e3c2e5f0ec28c78860a9508271e79bc5545f42b5cc0eaa` after recording the exact shell output redirections; the earlier log SHA in this handoff is superseded. All 9 `result.json.tests` entries were rebound to this hash.
 
 Settled-tree full strict rerun (`PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --complete --require-delivery-ready`) exited 1 at `preparation.py:97`: `Unapproved output: runtime/runs/scenario_pipeline/inputs/shared/manifest.json`. Ignored diagnostic log `.runtime-work/c125763-1-full-strict-final.log` SHA-256 `1619540c7826a8754909c30b9a431397b0eb2ffd3d1e0a6dfdbc09ce68150e62`. This protected runtime path was not edited. Independent status inventory remains 15 ready / 28 partial; C125763(1) remains partial and its scoped complete check passes. Continue worker-owned selected cases, fallbacks, comparisons and audits.
+
+## 2026-11-21 third selected case: other inside at ego approach
+Status remains **partial**. The source-bound synthetic `yield_sign_other_inside` construction adds a controlled other-vehicle occupancy hold in the Native runner. The corrected 900-frame source fixture follows the ego source trajectory without a zero-motion/speed mismatch and places the other body on the reviewed north-south approach. Its saved finalizer requires at least ten original frames with other body in the crossing and ego within 30 m on approach; it measures 28. These are CPU source observations, not Native or legal acceptance.
+
+Proof files and SHA-256:
+- construction: `cases/yield_sign_other_inside/construction.json` — `69eb26b2279ceb25a9648ede46e8fff0808129a52e7f763fd394e9a8fc0ea861`
+- crossing source: `cases/yield_sign_other_inside/crossing_history.jsonl` — `a54a2f80d5a21542043210aadf5f8613b6be01bdfcfc51c0bebbedde9dec809a`
+- compatibility: `other-inside-compat-receipt.json` — `5243bbebde2bafa86aa91830aafa4349b98d404606e8a81707e75b63eaf36bbf`
+- compatibility negative: `other-inside-compat-negative.log` — `e357da10f2159c1f4e740e0030655439e056ed827987d05246b7fd2c3a4a4f95`
+- saved: `other-inside-saved-receipt.json` — `8a3ae8109c111fd36b822cadca2813d50a4d2f5c7d7b6d86e93369d90ffe7625`
+- independent audit: `other_occupancy_audit.py` — `693ccdaf5ad89554823168492dc4b08f8be90993ee45dfa618b5c04d7ac29f42`
+- CPU log: `cpu-tests.log` — `6fc934e3ac5bfe34c572a68c8f9cd8bbf27b01ebe50d47e0c9a56edf1daa4015`
+
+Exact commands and receipt hashes are in `cpu-tests.log`; its 13 passing commands are bound in `result.json.tests`. Current exact offline, 11-check positive/missing-source compatibility and recorded-only saved processing exit 0. Saved receipt reports `passed=true`, `recorded_only=true`, `originals_preserved=true`, and 900 decoded composed frames. `other_occupancy_audit.py` recomputes source polygons and frame timing, verifies current compatibility source hashes, and contrasts 0 original qualifying frames in `other_first` with 28 in `other_inside`; tampered-source negative exits 1 as expected. Scoped `worker_check.py --assignment testing__C125763__NRS-484B-250-1__motor_vehicle_driver --complete` passes.
+
+Next worker-owned CPU work: construct and prove `yield_sign_opposite_left`, then three distinct fallbacks per selected case, saved processing, semantic/delivery audits, manifest/queue bindings and final strict checks. Native lane/sign status, physical motion and statutory interpretation remain unverified. No ready status is claimed.
+
+Settled-tree full strict retry exited 1 at `preparation.py:97`: `Unapproved output: runtime/runs/scenario_pipeline/inputs/shared/manifest.json`; ignored log `.runtime-work/c125763-1-inside-full-strict.log` SHA-256 `1619540c7826a8754909c30b9a431397b0eb2ffd3d1e0a6dfdbc09ce68150e62`. The protected runtime path was not edited. C125763(1) remains truthful partial; its assignment-scoped complete check passes. Continue the opposite-left selected case and remaining worker-owned proofs.
+
+## 2026-11-21 fourth selected case: opposite-direction left-turn context
+Status remains **partial**. The fourth selected case uses the same synthetic median-opening polygon, yield-sign candidate, and ego approach, with an opposite-direction other route turning left. The 60-frame 20 Hz diagnostic was adapted from the same-cell subsection (2) software fixture; no accepted recording or Native physical observation is reused. `finalizer.py` binds original crossing bodies, controller history, source frame map and the unresolved exception context.
+
+Current proof files and SHA-256:
+- construction: `cases/yield_sign_opposite_left/construction.json` — `6eeebf57cb7e2d080ced457c14914da5925a124183939015708615ab9643dffa`
+- compatibility: `opposite-left-compat-receipt.json` — `cb7410cd5744a3a3c9d36e145305d26b8d0788855a820504f7ad0422d47dabcb`
+- compatibility negative: `opposite-left-compat-negative.log` — `5fd2993b7a2990028daf82533d6c3bde038ac2b69046e41c42c8bd0dc96680ab`
+- saved: `opposite-left-saved-receipt.json` — `51da12f5444d50a5846da0d75a6cdb267a41a4a9083a2b027b2f75d00de6b441`
+- independent audit: `opposite_left_audit.py` — `eae1ca7013c3bd336f3d9f97d0a89487b722779c00b82dad377a2f6ccc25478e`
+- CPU log: `cpu-tests.log` — `1cbfe22240d2dacd3318322654be51731851f065fa4fc01e6efd95978593858a`
+
+Exact offline, 11-check positive/missing-source compatibility and recorded-only saved processing exit 0; saved processing has 60 joined original frames and 60 decoded composed frames, with originals preserved and physical/legal acceptance false. `opposite_left_audit.py` verifies the same junction/sign/ego approach, the opposite-route geometry, original source/body entry, controller left-turn intention, and current receipt hashes. Its positive exits 0; tampered crossing source exits 1. `result.json` remains partial with 17 passing CPU command entries bound to the current log. Scoped complete check passes.
+
+Next: construct three distinct risk fallbacks for each of four selected cases, run their exact offline/compatibility checks, bind saved and independent delivery audits, then rerun scoped/full strict gates. The frozen runtime manifest path identified by the last full strict check remains untouched.

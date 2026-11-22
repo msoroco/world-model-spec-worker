@@ -36,6 +36,58 @@
       },
       "measurement_contract": "cases/yield_sign_other_inside/measurement-contract.json",
       "fixture_recipe": "work/testing__C125763__NRS-484B-250-1__motor_vehicle_driver/cases/yield_sign_other_inside/diagnostic-recipe.json"
+    },
+    {
+      "case_id": "testing__C125763__NRS-484B-250-1__motor_vehicle_driver__yield_sign_opposite_left",
+      "kind": "delivery",
+      "construction": "cases/yield_sign_opposite_left/construction.json",
+      "construction_sha256": "6eeebf57cb7e2d080ced457c14914da5925a124183939015708615ab9643dffa",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py"
+      },
+      "measurement_contract": "cases/yield_sign_opposite_left/measurement-contract.json",
+      "fixture_recipe": "work/testing__C125763__NRS-484B-250-1__motor_vehicle_driver/cases/yield_sign_opposite_left/diagnostic-recipe.json",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/yield_sign_opposite_left/fallback1-construction.json",
+          "construction_sha256": "ac5cbef7ec38d919a7565c5b08b2e279dfe105e56fa0608c5a31008baedc96cb",
+          "trigger": {
+            "source": "original-frame ego position and controller history",
+            "metric": "distance from ego body to yield line when braking begins",
+            "failure_condition": "insufficient distance for the controller to slow before the governed entrance"
+          },
+          "changed_knobs": [
+            "ego spawn pose moved 5 m upstream along its heading"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "cases/yield_sign_opposite_left/fallback2-construction.json",
+          "construction_sha256": "7614bbe3d9a81694c1afcb466ce63dc60bf0afdb654020fa576d1df427c9a210",
+          "trigger": {
+            "source": "original-frame other body and Native spawn log",
+            "metric": "other spawn clearance from median crossing and ego body",
+            "failure_condition": "spawn overlap or insufficient approach clearance before crossing entry"
+          },
+          "changed_knobs": [
+            "other spawn pose moved 5 m upstream along its heading"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "cases/yield_sign_opposite_left/fallback3-construction.json",
+          "construction_sha256": "a09a38e5a02b20c7e489c2cbf7bc746a68b39e73dd4cf65e8aa336a76403fd13",
+          "trigger": {
+            "source": "original overview camera frames and sign-face review",
+            "metric": "yield-sign and crossing visibility in overview source",
+            "failure_condition": "sign face or complete body entry is outside the overview view"
+          },
+          "changed_knobs": [
+            "overview source camera shifted and raised for crossing visibility"
+          ]
+        }
+      ]
     }
   ]
 }
