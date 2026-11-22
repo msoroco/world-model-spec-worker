@@ -22,7 +22,11 @@ def sample(actors, *, frame, time_s, phase):
     sign, bike, operator = (actors[name] for name in ('sign', 'bicycle', 'operator'))
     if len({sign.id, bike.id, operator.id}) != 3:
         raise ValueError('sign, bicycle and operator must be distinct Native actors')
+    heading=float(operator.get_transform().rotation.yaw)
+    if not math.isfinite(heading):
+        raise ValueError('original Native operator heading missing')
     return {'frame': frame, 'time_s': time_s, 'phase': phase,
+            'heading_deg': heading,
             'operator_id': operator.id, 'bicycle_id': bike.id,
             'sign_id': sign.id,
             'operator_body_vertices_m': body(operator),

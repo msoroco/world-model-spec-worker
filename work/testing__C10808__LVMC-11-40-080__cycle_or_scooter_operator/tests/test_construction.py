@@ -2,6 +2,10 @@ import importlib.util
 import json
 from pathlib import Path
 import unittest
+import sys
+import types
+from unittest.mock import patch
+import os
 
 FOLDER = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location('runner', FOLDER / 'runner.py')
@@ -79,6 +83,17 @@ class ConstructionTests(unittest.TestCase):
             runner.spawn_scene(world, self.scene, lambda *parts: parts)
         self.assertEqual(destroyed, ['sign'])
 
+    def test_runtime_capture_env_hands_off_authorization_source(self):
+        calls=[]
+        fake=types.SimpleNamespace(run_native=lambda *args: calls.append(args))
+        with patch.dict(sys.modules, {'native_capture':fake}), patch.dict(
+                'os.environ', {'C10808_SIGN_AUTHORIZATION_SOURCE':'/local/sign-source'}), patch.object(
+                sys, 'argv', ['runner.py','--output-dir','/local/attempt']):
+            runner.main()
+        self.assertEqual(len(calls),1)
+        self.assertEqual(calls[0][1],'/local/attempt')
+        self.assertEqual(calls[0][-1],'/local/sign-source')
+
 
 if __name__ == '__main__':
     unittest.main()
@@ -151,6 +166,10 @@ class SavedAnalysisTests(unittest.TestCase):
         (path/'video_frames.jsonl').write_text(''.join(json.dumps({
             'carla_frame':row['frame'],'time_s':row['time_s']})+'\n'
             for row in rows))
+        (path/'trace.jsonl').write_text(''.join(json.dumps({
+            'frame':row['frame'],'time_s':row['time_s'],
+            'position_m':[float(i),0.,0.], 'speed_mps':1.})+'\n'
+            for i,row in enumerate(rows)))
         authorization=path/'sign-authorization-source'
         authorization.write_text('fixture source; authorization unresolved')
         sign = path/'sign-inventory.json'
@@ -161,6 +180,15 @@ class SavedAnalysisTests(unittest.TestCase):
         acquisition = {name:{'kind':'original_native','sha256':hashlib.sha256((path/name).read_bytes()).hexdigest()}
                        for name in analysis.REQUIRED}
         (path/'acquisition.json').write_text(json.dumps(acquisition))
+        (path/'config.json').write_text(json.dumps({
+            'selected_case_id':'testing__C10808__LVMC-11-40-080__cycle_or_scooter_operator__'+
+                ('dismount_before_uturn' if dismounted else 'mounted_uturn'),
+            'case':{'dismount_before_turn':dismounted},
+            'law_id':'LVMC-11-40-080','cell_id':'C10808',
+            'actor':'cycle_or_scooter_operator','duration_s':30}))
+        (path/'construction.json').write_text(json.dumps({
+            'recording_description':{'channels':[{'name':name} for name in
+                ('operator_pose','bicycle_pose','sign_inventory','phase_events')]}}))
         return path
 
     def test_dismounted_measurement(self):
@@ -179,7 +207,7 @@ class SavedAnalysisTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             path=self.attempt(temp)
             (path/'phase-events.jsonl').unlink()
-            with self.assertRaisesRegex(ValueError,'missing or changed source'):
+            with self.assertRaisesRegex(ValueError,'Missing required source: phase-events.jsonl'):
                 analysis.finalize(path)
 
     def test_stale_source_rejected(self):
@@ -214,6 +242,23 @@ class SavedAnalysisTests(unittest.TestCase):
             (path/'acquisition.json').write_text(json.dumps(acquisition))
             with self.assertRaisesRegex(ValueError,'original phase event/frame map join failed'):
                 analysis.finalize(path)
+
+    def test_saved_result_emits_source_channels_and_native_shape(self):
+        runtime = FOLDER.parents[1]/'runtime/scenario_pipeline'
+        with tempfile.TemporaryDirectory() as temp, patch.dict(os.environ, {
+                'SCENARIO_PIPELINE_OUTPUT_ROOT':str(FOLDER.parents[1]/'.runtime-work/c10808-test')}):
+            path=self.attempt(temp)
+            sys.path.insert(0,str(runtime))
+            try:
+                report=analysis.build_report(path)
+                result=analysis.saved_result(path,report)
+            finally:
+                sys.path.remove(str(runtime))
+            self.assertEqual(result['case_id'],json.loads((path/'config.json').read_text())['selected_case_id'])
+            self.assertEqual(len(result['recording_evidence']),4)
+            self.assertTrue((path/'channels/operator_pose.jsonl').is_file())
+            self.assertTrue(report['measurements']['dismount_turn_measurement']['value']['dismounted_before_turn'])
+            self.assertNotIn('legal_verdict',result)
 
     def test_phase_labels_without_body_separation_rejected(self):
         with tempfile.TemporaryDirectory() as temp:

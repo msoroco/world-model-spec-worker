@@ -18,10 +18,12 @@ def sha(path):
 
 
 def read_bound(attempt, acquisition, name):
+    path = (attempt / name).resolve()
+    if not path.is_file():
+        raise ValueError('Missing required source: ' + name)
     entry = acquisition.get(name)
     if not entry or entry.get('kind') != 'original_native' or not entry.get('sha256'):
         raise ValueError('missing original Native acquisition: ' + name)
-    path = (attempt / name).resolve()
     if attempt.resolve() not in path.parents or not path.is_file() or sha(path) != entry['sha256']:
         raise ValueError('missing or changed source: ' + name)
     return path
@@ -114,13 +116,86 @@ def finalize(attempt):
             'legal_judgment':'unresolved'}
 
 
+def build_report(attempt):
+    attempt = Path(attempt)
+    measurement = finalize(attempt)
+    sources = {name:sha(attempt/name) for name in REQUIRED}
+    return {'format':'worker-analysis-report',
+            'measurements':{'dismount_turn_measurement':{
+                'value':measurement,'method':'finalize','sources':sources}},
+            'limitations':['Sign authorization and pedestrian obligations require independent source review; constructed phase labels and body proximity are not a legal verdict.'],
+            'analysis_complete':True,'legal_verdict_claimed':False}
+
+
+def saved_result(attempt, report):
+    """Build a Native-shaped saved result without asserting physical acceptance."""
+    from worker_exchange.native_output import physical_result, validate_result
+    attempt = Path(attempt)
+    config = json.loads((attempt/'config.json').read_text())
+    construction = json.loads((attempt/'construction.json').read_text())
+    acquisition = json.loads((attempt/'acquisition.json').read_text())
+    event_path = read_bound(attempt, acquisition, 'phase-events.jsonl')
+    rows = [json.loads(line) for line in event_path.read_text().splitlines() if line.strip()]
+    sign = json.loads(read_bound(attempt, acquisition, 'sign-inventory.json').read_text())
+    channels = attempt/'channels'
+    channels.mkdir(exist_ok=True)
+    fields = {'operator_pose':'operator_body_vertices_m',
+              'bicycle_pose':'bicycle_body_vertices_m',
+              'phase_events':'phase'}
+    recording = []
+    for channel in construction['recording_description']['channels']:
+        name = channel['name']
+        if name == 'sign_inventory':
+            values = [sign for _ in rows]
+        elif name in fields:
+            field = fields[name]
+            if any(field not in row for row in rows):
+                raise ValueError('Missing original recording channel: '+field)
+            values = [row[field] for row in rows]
+        else:
+            raise ValueError('Unsupported declared recording channel: '+name)
+        target = channels/(name+'.jsonl')
+        with target.open('x') as stream:
+            for row,value in zip(rows,values):
+                stream.write(json.dumps({'time_s':row['time_s'],'value':value},allow_nan=False)+'\n')
+        recording.append({'name':name,'unit':'structured record',
+                          'reference':str(target.relative_to(attempt))})
+    measured = report['measurements']['dismount_turn_measurement']['value']
+    requested = bool(config['case']['dismount_before_turn'])
+    target = {'target':'observed dismount before U-turn',
+              'requested':requested,'measured':measured['dismounted_before_turn'],
+              'method':'source-bound body separation and phase timing',
+              'tolerance':0,'matched':requested==measured['dismounted_before_turn'],
+              'physical_cause_confirmed':False,
+              'cause_evidence':report['measurements']['dismount_turn_measurement']['sources']}
+    result = {'case_id':config['selected_case_id'],'measured_values':measured,
+              'target_checks':[target], 'setup_confirmed':False,
+              'behavior_attempted':False,'maneuver_completed':False,
+              'termination_reason':'Saved measurements pending physical assessment',
+              'physical_failure_flags':[], 'trace_reference':'trace.jsonl',
+              'video_references':['overview.mkv','approach.mkv',
+                                  'reference_corner.mkv','driver_reference.mkv'],
+              'video_frame_map_reference':'video_frames.jsonl',
+              'recording_description':construction['recording_description'],
+              'recording_evidence':recording,'realized_observables':{}}
+    result = physical_result(attempt,result)
+    validate_result(result)
+    return result
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--attempt', required=True)
     parser.add_argument('--output', required=True)
     args = parser.parse_args()
-    result = finalize(Path(args.attempt))
-    Path(args.output).write_text(json.dumps(result,indent=2)+'\n')
+    report = build_report(args.attempt)
+    result = saved_result(args.attempt, report)
+    report['physical_checks'] = result['physical_checks']
+    report['realized_observables'] = result['realized_observables']
+    with Path(args.attempt,'result.json').open('x') as stream:
+        stream.write(json.dumps(result,indent=2)+'\n')
+    with Path(args.output).open('x') as stream:
+        stream.write(json.dumps(report,indent=2)+'\n')
 
 
 if __name__ == '__main__':

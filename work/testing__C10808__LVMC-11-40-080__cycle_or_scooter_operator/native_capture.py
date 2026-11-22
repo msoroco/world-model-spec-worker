@@ -39,13 +39,24 @@ def local_transform(carla, origin, x, y, z=0., yaw=0.):
 
 
 def discover_origin(native_map, scene, carla):
-    """Require actual connected road support for every authored turn waypoint."""
+    """Require connected Driving support along each authored turn segment.
+
+    Lane-center proximity is an engineering map check; it does not establish an
+    alley classification, authorized sign or physical riding pose.
+    """
     candidates = native_map.get_spawn_points()
     route = path_points(scene)
-    points = route['mounted']+route['afoot']
+    anchors = route['mounted']+route['afoot']
+    points = []
+    for start,end in zip(anchors, anchors[1:]):
+        steps = max(1,math.ceil(math.dist(start,end)))
+        points.extend((start[0]+(end[0]-start[0])*i/steps,
+                       start[1]+(end[1]-start[1])*i/steps)
+                      for i in range(steps))
+    points.append(anchors[-1])
     for origin in candidates:
-        waypoints = [native_map.get_waypoint(
-            local_transform(carla,origin,*point).location) for point in points]
+        positions = [local_transform(carla,origin,*point).location for point in points]
+        waypoints = [native_map.get_waypoint(position) for position in positions]
         if any(w is None for w in waypoints):
             continue
         roads = {w.road_id for w in waypoints}
@@ -53,8 +64,14 @@ def discover_origin(native_map, scene, carla):
             continue
         if any(str(w.lane_type).split('.')[-1] != 'Driving' for w in waypoints):
             continue
+        if any(math.dist((position.x,position.y),
+                         (waypoint.transform.location.x,waypoint.transform.location.y))
+               > max(1.5,float(waypoint.lane_width)/2)
+               for position,waypoint in zip(positions,waypoints)):
+            continue
         return origin, {'road_id': next(iter(roads)),
                         'waypoint_count': len(waypoints),
+                        'maximum_map_support_spacing_m': 1.0,
                         'map_source': native_map.name,
                         'alley_classification': 'unresolved_requires_local_review'}
     raise ValueError('Native map lacks connected turn geometry for authored alley path')
@@ -172,7 +189,10 @@ def run_native(scene, output, host, port, authorization_file):
                 point=[position.x,position.y,position.z]
                 velocity=0 if previous is None else math.dist(point,previous)*20
                 trace.write(json.dumps({'frame':frame,'time_s':elapsed,
-                    'position_m':point,'speed_mps':velocity,
+                    'position':{'x':point[0],'y':point[1],'z':point[2]},
+                    'position_m':point,
+                    'heading_deg':actors['operator'].get_transform().rotation.yaw,
+                    'speed_mps':velocity,
                     'motion_source':'observed actor transform after scripted control'},
                     allow_nan=False)+'\n')
                 previous=point;rows+=1

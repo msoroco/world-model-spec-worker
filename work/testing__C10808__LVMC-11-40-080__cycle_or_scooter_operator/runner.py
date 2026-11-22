@@ -6,6 +6,7 @@ checked against the local blueprint library.
 import argparse
 import json
 import math
+import os
 from pathlib import Path
 
 SCENE = Path(__file__).with_name('scene.json')
@@ -166,11 +167,13 @@ def main():
     if args.check:
         check()
     else:
-        if not args.output_dir or not args.authorization_source:
-            parser.error('Native capture requires --output-dir and --authorization-source')
+        source = args.authorization_source or os.environ.get(
+            'C10808_SIGN_AUTHORIZATION_SOURCE')
+        if not args.output_dir or not source:
+            parser.error('Native capture requires --output-dir and sign authorization source via --authorization-source or C10808_SIGN_AUTHORIZATION_SOURCE')
         from native_capture import run_native
         run_native(load_scene(args.scene), args.output_dir, args.host, args.port,
-                   args.authorization_source)
+                   source)
 
 
 if __name__ == '__main__':

@@ -6,37 +6,186 @@
       "case_id": "testing__C10808__LVMC-11-40-080__cycle_or_scooter_operator__dismount_before_uturn",
       "kind": "delivery",
       "construction": "construction.json",
-      "construction_sha256": "8fac1a757d0991a73a7248b30033aa0101c770d82f76f7684ba38527e0086156",
+      "construction_sha256": "d16e30e09ae0fc481b7c11a435965c51e0cce2296ac2a5c73261a07d87bd66f9",
       "candidate_risk": {
         "status": "physical",
-        "reason": "The local CARLA asset library may lack an actual no-U-turn sign or human-powered bicycle prop; rider/dismount body pose and camera visibility require physical review."
+        "reason": "The high view or corner view may omit the sign and operator during the original U-turn; a second camera pose retains the same names, sizes and recording contract."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/dismount_before_uturn/fallback1-construction.json",
+          "construction_sha256": "9b7fca4026c8fbc536e7121017426afa1233ff9cc823c2d8e0fabaaa08a146e8",
+          "trigger": {
+            "source": "original overview.mkv and reference_corner.mkv full decoded frames",
+            "metric": "frames jointly showing sign face and operator body during the U-turn",
+            "failure_condition": "zero qualified frames in either required view after independent pixel review"
+          },
+          "changed_knobs": [
+            "overview camera z 35 to 40 m, x -12 to -10 m, pitch -70 to -75 deg",
+            "reference_corner camera y -6 to -8 m, z 10 to 14 m, pitch -35 to -50 deg"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C10808__LVMC-11-40-080__cycle_or_scooter_operator/execution-manifest.json --case testing__C10808__LVMC-11-40-080__cycle_or_scooter_operator__dismount_before_uturn --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10808-fallback-offline-dismount_before_uturn --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "9b7fca4026c8fbc536e7121017426afa1233ff9cc823c2d8e0fabaaa08a146e8",
+            "log": "proof-dismount_before_uturn-fallback1.log",
+            "log_sha256": "e77bc325f42a171f8bc1d0a4dbbb0f31a3b3553501616b9ed428eacbc64d3609"
+          },
+          "compatibility": {
+            "receipt": "compat-dismount_before_uturn-fallback1-receipt.json",
+            "log": "compat-dismount_before_uturn-fallback1-analysis.log",
+            "negative_log": "compat-dismount_before_uturn-fallback1-negative.log",
+            "sha256": "9ab69fa221abbdaf9c942db5340ed28219d3b07e553b330cb040ae45529b3207",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C10808__LVMC-11-40-080__cycle_or_scooter_operator/execution-manifest.json --case testing__C10808__LVMC-11-40-080__cycle_or_scooter_operator__dismount_before_uturn --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10808-fallback-compat-dismount_before_uturn --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck"
+          }
+        }
+      ],
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "fixture_recipe": "work/testing__C10808__LVMC-11-40-080__cycle_or_scooter_operator/diagnostic-dismount_before_uturn-recipe.json",
+      "acquisition": {
+        "operator_pose": {
+          "entrypoint": "analysis.py",
+          "method": "Source-hashed original Native phase events and sign inventory projected by saved finalizer",
+          "evidence": "channels/operator_pose.jsonl"
+        },
+        "bicycle_pose": {
+          "entrypoint": "analysis.py",
+          "method": "Source-hashed original Native phase events and sign inventory projected by saved finalizer",
+          "evidence": "channels/bicycle_pose.jsonl"
+        },
+        "sign_inventory": {
+          "entrypoint": "analysis.py",
+          "method": "Source-hashed original Native phase events and sign inventory projected by saved finalizer",
+          "evidence": "channels/sign_inventory.jsonl"
+        },
+        "phase_events": {
+          "entrypoint": "analysis.py",
+          "method": "Source-hashed original Native phase events and sign inventory projected by saved finalizer",
+          "evidence": "channels/phase_events.jsonl"
+        }
+      },
+      "negative": {
+        "log": "compat-dismount_before_uturn-negative-analysis.log"
+      },
       "offline": {
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C10808__LVMC-11-40-080__cycle_or_scooter_operator/execution-manifest.json --case testing__C10808__LVMC-11-40-080__cycle_or_scooter_operator__dismount_before_uturn --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10808-offline-refresh-dismount_before_uturn --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
         "exit_code": 0,
-        "construction_sha256": "8fac1a757d0991a73a7248b30033aa0101c770d82f76f7684ba38527e0086156",
+        "construction_sha256": "d16e30e09ae0fc481b7c11a435965c51e0cce2296ac2a5c73261a07d87bd66f9",
         "log": "proof-dismount_before_uturn.log",
-        "log_sha256": "f7b6b083f466b1986b66e0e0de2da36588bb9ac978f80fdb328a618b9ed6520e"
+        "log_sha256": "e77bc325f42a171f8bc1d0a4dbbb0f31a3b3553501616b9ed428eacbc64d3609"
+      },
+      "compatibility": {
+        "receipt": "compat-dismount_before_uturn-compatibility.json",
+        "log": "compat-dismount_before_uturn-compatibility-analysis.log",
+        "negative_log": "compat-dismount_before_uturn-negative-analysis.log",
+        "sha256": "7aab06dbdd9ed1f748e4c40b1ee97aed8f83a3d5e20d18641e84c10965c56dae",
+        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C10808__LVMC-11-40-080__cycle_or_scooter_operator/execution-manifest.json --case testing__C10808__LVMC-11-40-080__cycle_or_scooter_operator__dismount_before_uturn --output .runtime-work/c10808-compat-dismount --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C10808__LVMC-11-40-080__cycle_or_scooter_operator/execution-manifest.json --case testing__C10808__LVMC-11-40-080__cycle_or_scooter_operator__dismount_before_uturn --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10808-saved-dismount-attempt --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10808-saved-dismount --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C10808__LVMC-11-40-080__cycle_or_scooter_operator/execution-manifest.json --case testing__C10808__LVMC-11-40-080__cycle_or_scooter_operator__dismount_before_uturn --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10808-saved-dismount-attempt --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10808-saved-dismount --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "test_log": "saved-dismount_before_uturn.log",
+        "test_log_sha256": "39ad95eb4364f36f0e970daa777420523b0b9b3e64a41be053671a35995cf3a7",
+        "test_exit_code": 0
       }
     },
     {
       "case_id": "testing__C10808__LVMC-11-40-080__cycle_or_scooter_operator__mounted_uturn",
       "kind": "delivery",
       "construction": "cases/mounted/construction.json",
-      "construction_sha256": "b793ab4249e0ce8aafa0fa37d1fe46f3f38fa3e339f5df331ae5541668673630",
+      "construction_sha256": "d667c4eeb4fa32b3cd9940a4954cbd1620b3e6d79d30dd49cd3f84a3ef4b59d2",
       "candidate_risk": {
         "status": "physical",
-        "reason": "The local CARLA asset library may lack an actual no-U-turn sign or human-powered bicycle prop; rider/dismount body pose and camera visibility require physical review."
+        "reason": "The high view or corner view may omit the sign and operator during the original U-turn; a second camera pose retains the same names, sizes and recording contract."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/mounted_uturn/fallback1-construction.json",
+          "construction_sha256": "9bbbc9d83748df0baaee97ccfa4675922275c892ffc450c9ad89cc7fc6d4cfcf",
+          "trigger": {
+            "source": "original overview.mkv and reference_corner.mkv full decoded frames",
+            "metric": "frames jointly showing sign face and operator body during the U-turn",
+            "failure_condition": "zero qualified frames in either required view after independent pixel review"
+          },
+          "changed_knobs": [
+            "overview camera z 35 to 40 m, x -12 to -10 m, pitch -70 to -75 deg",
+            "reference_corner camera y -6 to -8 m, z 10 to 14 m, pitch -35 to -50 deg"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C10808__LVMC-11-40-080__cycle_or_scooter_operator/execution-manifest.json --case testing__C10808__LVMC-11-40-080__cycle_or_scooter_operator__mounted_uturn --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10808-fallback-offline-mounted_uturn --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "9bbbc9d83748df0baaee97ccfa4675922275c892ffc450c9ad89cc7fc6d4cfcf",
+            "log": "proof-mounted_uturn-fallback1.log",
+            "log_sha256": "fe2c1bdfdcf9373333d2f8e8d6bc8c3bcefd3591e818f0bf7306ecd4be593f44"
+          },
+          "compatibility": {
+            "receipt": "compat-mounted_uturn-fallback1-receipt.json",
+            "log": "compat-mounted_uturn-fallback1-analysis.log",
+            "negative_log": "compat-mounted_uturn-fallback1-negative.log",
+            "sha256": "384e13c179abc81664eb117055790643930bcb1a25ccc1becf196a08aadb2e61",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C10808__LVMC-11-40-080__cycle_or_scooter_operator/execution-manifest.json --case testing__C10808__LVMC-11-40-080__cycle_or_scooter_operator__mounted_uturn --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10808-fallback-compat-mounted_uturn --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck"
+          }
+        }
+      ],
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "fixture_recipe": "work/testing__C10808__LVMC-11-40-080__cycle_or_scooter_operator/diagnostic-mounted_uturn-recipe.json",
+      "acquisition": {
+        "operator_pose": {
+          "entrypoint": "analysis.py",
+          "method": "Source-hashed original Native phase events and sign inventory projected by saved finalizer",
+          "evidence": "channels/operator_pose.jsonl"
+        },
+        "bicycle_pose": {
+          "entrypoint": "analysis.py",
+          "method": "Source-hashed original Native phase events and sign inventory projected by saved finalizer",
+          "evidence": "channels/bicycle_pose.jsonl"
+        },
+        "sign_inventory": {
+          "entrypoint": "analysis.py",
+          "method": "Source-hashed original Native phase events and sign inventory projected by saved finalizer",
+          "evidence": "channels/sign_inventory.jsonl"
+        },
+        "phase_events": {
+          "entrypoint": "analysis.py",
+          "method": "Source-hashed original Native phase events and sign inventory projected by saved finalizer",
+          "evidence": "channels/phase_events.jsonl"
+        }
+      },
+      "negative": {
+        "log": "compat-mounted_uturn-negative-analysis.log"
+      },
       "offline": {
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C10808__LVMC-11-40-080__cycle_or_scooter_operator/execution-manifest.json --case testing__C10808__LVMC-11-40-080__cycle_or_scooter_operator__mounted_uturn --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10808-offline-refresh-mounted_uturn --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
         "exit_code": 0,
-        "construction_sha256": "b793ab4249e0ce8aafa0fa37d1fe46f3f38fa3e339f5df331ae5541668673630",
+        "construction_sha256": "d667c4eeb4fa32b3cd9940a4954cbd1620b3e6d79d30dd49cd3f84a3ef4b59d2",
         "log": "proof-mounted_uturn.log",
-        "log_sha256": "03a01a2daa7fd690661afc90e3b858d50168fe81d572696e6d1dc875e977676e"
+        "log_sha256": "279c43c99e8a4ce0dd635bc19ebcc617c83f41f76b52ed3e14cfbbe9d69308f7"
+      },
+      "compatibility": {
+        "receipt": "compat-mounted_uturn-compatibility.json",
+        "log": "compat-mounted_uturn-compatibility-analysis.log",
+        "negative_log": "compat-mounted_uturn-negative-analysis.log",
+        "sha256": "3c6992fd827e1f77469855f5723d75943c081f28f7cf571116171e2fb12b5cd6",
+        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C10808__LVMC-11-40-080__cycle_or_scooter_operator/execution-manifest.json --case testing__C10808__LVMC-11-40-080__cycle_or_scooter_operator__mounted_uturn --output .runtime-work/c10808-compat-mounted --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C10808__LVMC-11-40-080__cycle_or_scooter_operator/execution-manifest.json --case testing__C10808__LVMC-11-40-080__cycle_or_scooter_operator__mounted_uturn --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10808-saved-mounted-attempt --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10808-saved-mounted --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C10808__LVMC-11-40-080__cycle_or_scooter_operator/execution-manifest.json --case testing__C10808__LVMC-11-40-080__cycle_or_scooter_operator__mounted_uturn --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10808-saved-mounted-attempt --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10808-saved-mounted --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "test_log": "saved-mounted_uturn.log",
+        "test_log_sha256": "c3c0410b5a96e6a9353047d544dc3c93f0229fd4c4d15fb12454940950913dc5",
+        "test_exit_code": 0
       }
     }
-  ]
+  ],
+  "runtime_manifest_sha256": "8c37e7719b3607424c88237d679368075e9278af4dddb569d2123f456e0fefa8"
 }

@@ -1,0 +1,26 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Prohibited U-turn sign and operator dismount exception",
+      "source": "LVMC 11.40.080",
+      "output_key": "dismount_turn_measurement",
+      "method": "finalize",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "phase-events.jsonl",
+        "sign-inventory.json",
+        "sign-authorization-source",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "phase-events.jsonl"
+    ],
+    "error_contains": "Missing required source: phase-events.jsonl"
+  }
+}

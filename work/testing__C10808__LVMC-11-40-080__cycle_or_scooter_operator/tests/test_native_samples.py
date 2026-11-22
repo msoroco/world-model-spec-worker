@@ -11,7 +11,7 @@ from native_samples import sample
 def actor(identity, x):
     vertices = [S(x=x+dx,y=y,z=0) for dx,y in
                 [(-.2,-.2),(-.2,.2),(.2,-.2),(.2,.2)]]
-    return S(id=identity, get_transform=lambda: None,
+    return S(id=identity, get_transform=lambda: S(rotation=S(yaw=0.)),
              bounding_box=S(get_world_vertices=lambda transform: vertices))
 
 

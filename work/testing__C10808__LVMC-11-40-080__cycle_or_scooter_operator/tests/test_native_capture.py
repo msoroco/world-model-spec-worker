@@ -39,7 +39,9 @@ class Map:
     def get_waypoint(self, location):
         if location.y < 30.:
             return None
-        return types.SimpleNamespace(road_id=7, lane_type='Driving')
+        return types.SimpleNamespace(road_id=7, lane_type='Driving',
+                                     lane_width=3.5,
+                                     transform=types.SimpleNamespace(location=location))
 
 
 class NativeCaptureTests(unittest.TestCase):
@@ -50,8 +52,9 @@ class NativeCaptureTests(unittest.TestCase):
         self.assertAlmostEqual(pose.location.x, 97.)
         self.assertAlmostEqual(pose.location.y, 52.)
         self.assertEqual(context['road_id'], 7)
-        self.assertEqual(context['waypoint_count'],
-                         sum(map(len, path_points(scene).values())))
+        self.assertGreater(context['waypoint_count'],
+                           sum(map(len, path_points(scene).values())))
+        self.assertEqual(context['maximum_map_support_spacing_m'], 1.0)
         self.assertEqual(context['alley_classification'], 'unresolved_requires_local_review')
 
     def test_missing_road_support_rejected(self):
@@ -61,6 +64,17 @@ class NativeCaptureTests(unittest.TestCase):
                 return None
         with self.assertRaisesRegex(ValueError, 'lacks connected turn geometry'):
             native_capture.discover_origin(BadMap(), scene, Carla)
+
+    def test_snapped_distant_road_rejected(self):
+        class DistantMap(Map):
+            def get_waypoint(self, location):
+                waypoint = super().get_waypoint(location)
+                if waypoint is not None:
+                    waypoint.transform.location = Carla.Location(
+                        x=location.x+10., y=location.y, z=location.z)
+                return waypoint
+        with self.assertRaisesRegex(ValueError, 'lacks connected turn geometry'):
+            native_capture.discover_origin(DistantMap(), load_scene(), Carla)
 
     def test_capture_requires_sealable_source_and_authorization(self):
         with tempfile.TemporaryDirectory() as directory:
