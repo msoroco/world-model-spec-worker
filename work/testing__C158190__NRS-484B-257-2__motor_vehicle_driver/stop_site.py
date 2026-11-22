@@ -124,6 +124,43 @@ def load_native_site(client):
     return world, validate_native_site(world)
 
 
+def _xyz(point):
+    return [float(point.x), float(point.y), float(point.z)]
+
+
+def observe_stop_control(world, expected_stop_id, *, frame):
+    """Sample the Native control actor and crossing inventory at one frame."""
+    if type(frame) is not int or world.get_snapshot().frame != frame:
+        raise ValueError('Stop-control inventory frame differs from world')
+    actors = list(world.get_actors())
+    stops = [actor for actor in actors if actor.type_id.startswith('traffic.stop')]
+    matched = [actor for actor in stops if actor.id == expected_stop_id]
+    if len(matched) != 1:
+        raise ValueError('Native stop sign disappeared or changed identity')
+    sign = matched[0]
+    transform = sign.get_transform()
+    if not hasattr(sign, 'trigger_volume'):
+        raise ValueError('Native stop sign lacks trigger volume')
+    vertices = [_xyz(p) for p in sign.trigger_volume.get_world_vertices(transform)]
+    if len(vertices) < 4:
+        raise ValueError('Native stop trigger geometry incomplete')
+    competing = [{'actor_id': actor.id, 'blueprint': actor.type_id,
+                  'position_m': _xyz(actor.get_transform().location)}
+                 for actor in actors if actor.type_id.startswith(
+                     ('traffic.yield', 'traffic.traffic_light'))]
+    return {'frame': frame, 'native_map_name': world.get_map().name,
+            'stop_sign': {'actor_id': sign.id, 'blueprint': sign.type_id,
+                          'position_m': _xyz(transform.location),
+                          'trigger_vertices_m': vertices},
+            'other_stop_sign_ids': [actor.id for actor in stops if actor.id != sign.id],
+            'competing_controls': competing,
+            'native_crosswalk_vertices_m': [_xyz(p) for p in
+                                            world.get_map().get_crosswalks()],
+            'sign_face_legibility': 'pending_original_source_camera_review',
+            'police_direction': 'pending_original_source_review',
+            'all_entrance_governance': 'pending_original_source_review'}
+
+
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()

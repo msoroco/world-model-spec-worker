@@ -1,0 +1,98 @@
+{
+  "law_id": "NRS-484B-257-2",
+  "cell_id": "C158190",
+  "actor": "motor_vehicle_driver",
+  "selected_case_id": "testing__C158190__NRS-484B-257-2__motor_vehicle_driver__stop_other_inside",
+  "supported_case_ids": [
+    "testing__C158190__NRS-484B-257-2__motor_vehicle_driver__stop_other_inside",
+    "testing__C158190__NRS-484B-257-2__motor_vehicle_driver__stop_other_approaching",
+    "testing__C158190__NRS-484B-257-2__motor_vehicle_driver__stop_no_other",
+    "testing__C158190__NRS-484B-257-2__motor_vehicle_driver__stop_no_halt",
+    "testing__C158190__NRS-484B-257-2__motor_vehicle_driver__signal_control_exception"
+  ],
+  "rate_hz": 20,
+  "duration_s": 30,
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 90,
+      "pose_strategy": "fixed junction overview"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "fixed sign-governed approach"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "fixed through-highway reference"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "ego attached driver reference"
+    }
+  ],
+  "required_atoms": [
+    "ru.subject",
+    "ru.motor_vehicle",
+    "kin.position",
+    "kin.velocity",
+    "kin.speed",
+    "st.lane",
+    "st.intersection",
+    "dev.stop_sign"
+  ],
+  "source_packets": [],
+  "recording_description": {
+    "channels": [
+      {
+        "name": "ego_speed_and_stop_reference",
+        "unit": "m/s and m",
+        "method": "original actor velocity and body vertices at every joined Native frame",
+        "time_window": "approach through intersection exit",
+        "reference_frame": "Native frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "sampled body and speed; legal stop reference needs source review"
+      },
+      {
+        "name": "ego_and_other_intersection_occupancy",
+        "unit": "structured record",
+        "method": "original actor bounding-box vertices against authored junction bounds",
+        "time_window": "entire capture",
+        "reference_frame": "Native frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "sampled overlap; between-frame occupancy unresolved"
+      },
+      {
+        "name": "other_approach_history",
+        "unit": "structured record",
+        "method": "original non-obligated vehicle position and velocity where staged",
+        "time_window": "entire capture",
+        "reference_frame": "Native frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "immediate-hazard judgment unresolved"
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "stop_control_and_entrance_review",
+        "unit": "structured record",
+        "method": "authored OpenDRIVE, Native stop trigger, per-frame controls and original camera review"
+      }
+    ],
+    "limitations": [
+      "Authored map and CPU fixture do not establish legal non-through-highway status or sign-face legibility.",
+      "Immediate hazard, caution and yielding remain qualitative source-review judgments."
+    ]
+  }
+}

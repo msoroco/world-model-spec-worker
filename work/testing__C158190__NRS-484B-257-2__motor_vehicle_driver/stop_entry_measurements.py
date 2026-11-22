@@ -20,6 +20,70 @@ def _rows(path):
     return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
 
 
+REVIEW_SOURCES = ("intersection_context.json", "entry_history.jsonl",
+                  "video_frames.jsonl", "stop_control_inventory.jsonl",
+                  "overview.mkv", "approach.mkv", "reference_corner.mkv",
+                  "driver_reference.mkv")
+
+
+def _review_context(root, original, hashes):
+    """Overlay explicit source review; retain the original capture unchanged."""
+    path = root / "stop_context_review.json"
+    if not path.is_file():
+        raise ValueError("Missing hash-bound stop context review")
+    review = json.loads(path.read_text())
+    if review.get("format") != "worker-stop-context-review":
+        raise ValueError("Wrong stop context review format")
+    if not isinstance(review.get("reviewer"), str) or not review["reviewer"].strip():
+        raise ValueError("Missing independent stop context reviewer")
+    if not isinstance(review.get("method"), str) or not review["method"].strip():
+        raise ValueError("Missing original-source review method")
+    expected = {}
+    for name in REVIEW_SOURCES:
+        source = root / name
+        if not source.is_file():
+            raise ValueError("Missing reviewed original source: " + name)
+        expected[name] = hashlib.sha256(source.read_bytes()).hexdigest()
+    if review.get("source_hashes") != expected:
+        raise ValueError("Stale or incomplete stop context source hashes")
+    findings = review.get("findings")
+    if not isinstance(findings, dict):
+        raise ValueError("Missing stop context findings")
+    if findings.get("native_map_id") != original.get("native_map_id") or \
+       findings.get("native_stop_sign_id") != original.get("native_stop_sign_id"):
+        raise ValueError("Reviewed Native map/sign identity differs")
+    if findings.get("stop_sign_face_legible") is not True:
+        raise ValueError("Stop sign face not independently visible")
+    if findings.get("stop_reference_kind") not in ("stop_line", "crosswalk", "nearest_view"):
+        raise ValueError("Stop-reference hierarchy remains unresolved")
+    if not isinstance(findings.get("stop_reference_source"), str) or \
+       not findings["stop_reference_source"].strip():
+        raise ValueError("Missing sourced stop reference")
+    for key in ("non_through_highway", "police_control", "traffic_signal_control"):
+        if type(findings.get(key)) is not bool:
+            raise ValueError("Missing reviewed control/highway status: " + key)
+    entrances = findings.get("entrances")
+    if not isinstance(entrances, list) or len(entrances) < 2 or any(
+            type(e.get("road_id")) is not int or
+            e.get("device") not in ("stop", "yield", "signal", "none")
+            for e in entrances if isinstance(e, dict)) or any(
+            not isinstance(e, dict) for e in entrances):
+        raise ValueError("Incomplete reviewed entrance inventory")
+    if {e["road_id"] for e in entrances} != {e["road_id"] for e in original["entrances"]}:
+        raise ValueError("Reviewed entrance IDs differ from Native plan")
+    if len({e["road_id"] for e in entrances}) != len(entrances):
+        raise ValueError("Duplicate reviewed entrance identity")
+    merged = dict(original)
+    merged.update({key: findings[key] for key in
+                   ("non_through_highway", "police_control", "traffic_signal_control",
+                    "entrances", "stop_reference_source")})
+    merged["entrance_inventory_source"] = "hash_bound_original_camera_and_control_review"
+    merged["highway_status_source"] = "hash_bound_original_map_and_camera_review"
+    hashes.update(expected)
+    hashes["stop_context_review.json"] = hashlib.sha256(path.read_bytes()).hexdigest()
+    return merged
+
+
 def analyze(root: Path):
     root = Path(root)
     names = ("intersection_context.json", "entry_history.jsonl", "video_frames.jsonl")
@@ -30,6 +94,11 @@ def analyze(root: Path):
             raise ValueError("Missing original source: " + name)
         hashes[name] = hashlib.sha256(path.read_bytes()).hexdigest()
     context = json.loads((root/"intersection_context.json").read_text())
+    if any(context.get(key) is None for key in
+           ("non_through_highway", "police_control", "traffic_signal_control")) or \
+       any(e.get("device") == "unreviewed" for e in context.get("entrances", [])
+           if isinstance(e, dict)):
+        context = _review_context(root, context, hashes)
     for key in ("native_map_id", "intersection_id", "ego_approach_road_id",
                 "native_stop_sign_id", "sign_governance_source", "entrance_inventory_source",
                 "stop_reference_source", "highway_status_source"):
@@ -55,8 +124,12 @@ def analyze(root: Path):
         previous = fid, time
         if frame.get("video_frame") != index or frame.get("carla_frame") != fid or frame.get("time_s") != time:
             raise ValueError("Original frame join failed")
-        if row.get("ego_road_id") != context["ego_approach_road_id"]:
+        road_id = row.get("ego_road_id")
+        if index == 0 and road_id != context["ego_approach_road_id"]:
             raise ValueError("Ego approach identity mismatch")
+        allowed_route = context.get("ego_route_road_ids", [context["ego_approach_road_id"]])
+        if road_id not in allowed_route:
+            raise ValueError("Ego route identity mismatch")
         if row.get("ego_speed_source") != "actor.get_velocity":
             raise ValueError("Ego Native velocity source missing")
         speed = _finite(row.get("ego_speed_mps"), "ego speed")
@@ -80,3 +153,115 @@ def analyze(root: Path):
             "observed_other_occupancy":bool(other_occupied),"samples":samples,
             "immediate_hazard_judgment":"unresolved; no legal time-to-conflict cutoff",
             "caution_and_yield_judgment":"unresolved","legal_conclusion":"unresolved"}
+
+
+def finalize(attempt: Path, output: Path):
+    """Write saved observations from immutable capture and separate review sources."""
+    attempt, output = Path(attempt), Path(output)
+    if output.exists() or (attempt / "result.json").exists() or (attempt / "channels").exists():
+        raise ValueError("Retain prior stop-sign finalization; use a fresh attempt")
+    required = ("config.json", "trace.jsonl", "capture/evidence.jsonl",
+                "capture/native_map_facts.json", *REVIEW_SOURCES,
+                "stop_context_review.json")
+    for name in required:
+        if not (attempt / name).is_file():
+            raise ValueError("Missing saved stop-sign source: " + name)
+    config = json.loads((attempt / "config.json").read_text())
+    case_id = config.get("selected_case_id", "")
+    if not case_id.startswith(
+            "testing__C158190__NRS-484B-257-2__motor_vehicle_driver__"):
+        raise ValueError("Wrong exact stop-sign case")
+    if case_id.endswith("signal_control_exception"):
+        raise ValueError("Signal-control exception needs its distinct saved analyzer")
+    report = analyze(attempt)
+    frame_map = _rows(attempt / "video_frames.jsonl")
+    if len(frame_map) != len(report["samples"]):
+        raise ValueError("Saved stop history and original footage differ")
+    requested_stop = not case_id.endswith("stop_no_halt")
+    observed_stop = report["observed_full_stop_before_reference"]
+    target = {"target": "sampled_complete_stop_before_reviewed_reference",
+              "requested": requested_stop, "measured": observed_stop,
+              "method": "original actor velocity and body position joined to video frames",
+              "tolerance": 0, "matched": requested_stop == observed_stop,
+              "physical_cause_confirmed": False,
+              "cause_evidence": ["entry_history.jsonl", "video_frames.jsonl",
+                                 "stop_context_review.json"]}
+    values = {
+        "ego_speed_and_stop_reference": [
+            {"original_frame": row["frame"], "time_s": row["time_s"],
+             "value": {"ego_speed_mps": row["ego_speed_mps"],
+                       "body_before_stop_reference": row["ego_body_before_stop_reference"]}}
+            for row in report["samples"]],
+        "ego_and_other_intersection_occupancy": [
+            {"original_frame": row["frame"], "time_s": row["time_s"],
+             "value": {"ego_body_in_intersection": row["ego_body_in_intersection"],
+                       "other_body_in_intersection": row["other_body_in_intersection"]}}
+            for row in report["samples"]],
+        "other_approach_history": [
+            {"original_frame": row["frame"], "time_s": row["time_s"],
+             "value": {"other_actor_id": source.get("other_actor_id"),
+                       "other_speed_mps": source.get("other_speed_mps"),
+                       "other_center_m": source.get("other_center_m")}}
+            for row, source in zip(report["samples"], _rows(attempt / "entry_history.jsonl"))],
+    }
+    units = {"ego_speed_and_stop_reference": "m/s and m",
+             "ego_and_other_intersection_occupancy": "structured record",
+             "other_approach_history": "structured record"}
+    evidence = [{"name": name, "unit": units[name],
+                 "reference": "channels/" + name + ".jsonl"} for name in values]
+    evidence.append({"name": "stop_control_and_entrance_review",
+                     "unit": "structured record",
+                     "reference": "channels/stop_control_and_entrance_review.json"})
+    hashes = dict(report["sources"])
+    for name in ("config.json", "trace.jsonl", "capture/evidence.jsonl",
+                 "capture/native_map_facts.json"):
+        hashes[name] = hashlib.sha256((attempt / name).read_bytes()).hexdigest()
+    result = {"case_id": case_id,
+              "measured_values": {
+                  "observed_full_stop_before_reference": observed_stop,
+                  "first_ego_entry_frame": report["first_ego_entry_frame"],
+                  "observed_other_occupancy": report["observed_other_occupancy"]},
+              "target_checks": [target], "setup_confirmed": False,
+              "behavior_attempted": False, "maneuver_completed": False,
+              "termination_reason": "saved-source analysis; physical review pending",
+              "physical_failure_flags": [
+                  "sign face, highway classification, immediate hazard and yielding need original-source review"],
+              "trace_reference": "trace.jsonl",
+              "video_references": ["overview.mkv", "approach.mkv",
+                                   "reference_corner.mkv", "driver_reference.mkv"],
+              "video_frame_map_reference": "video_frames.jsonl",
+              "recording_description": config["recording_description"],
+              "recording_evidence": evidence,
+              "source_evidence_hashes": hashes,
+              "capture_evidence_sha256": hashes["capture/evidence.jsonl"],
+              "realized_observables": {}}
+    from worker_exchange.native_output import physical_result, write_result
+    result = physical_result(attempt, result)
+    channels = attempt / "channels"
+    channels.mkdir()
+    for name, samples in values.items():
+        with (channels / (name + ".jsonl")).open("x") as stream:
+            for sample in samples:
+                stream.write(json.dumps(sample, allow_nan=False) + "\n")
+    (channels / "stop_control_and_entrance_review.json").write_text(
+        (attempt / "stop_context_review.json").read_text())
+    write_result(attempt, result)
+    analysis = {"format": "worker-stop-sign-saved-analysis", "case_id": case_id,
+                "observations": report, "source_evidence_hashes": hashes,
+                "physical_checks": result["physical_checks"],
+                "legal_conclusion": "unresolved"}
+    output.write_text(json.dumps(analysis, indent=2, allow_nan=False) + "\n")
+    return analysis
+
+
+def main():
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--attempt", type=Path, required=True)
+    parser.add_argument("--output", type=Path, required=True)
+    args = parser.parse_args()
+    finalize(args.attempt, args.output)
+
+
+if __name__ == "__main__":
+    main()

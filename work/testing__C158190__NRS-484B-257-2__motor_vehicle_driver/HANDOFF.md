@@ -17,3 +17,31 @@ Resume commands:
 Pinned CPU preflight passes. No frozen input, runtime or batch file was edited. Assignment and full-gate output are retained in `assignment-check.log` and `strict-gate.log` after this checkpoint.
 
 Checkpoint: assignment-scoped `worker_check.py --complete` passed. The full strict gate now reports missing result `testing__C158208__NRS-484B-257-1__motor_vehicle_driver` in `strict-gate.log`. It is unfinished worker preparation, not an external dependency.
+
+## 2026-11-22 stop-sign construction checkpoint
+
+Authored `native-map-plan/stop-sign-crossing.xodr` with a lane-valid OpenDRIVE type 206 stop control at the one-way C158190 entrance. `stop_site.py` validates the road inventory, one-way and two-way lane connections, junction membership, sign control and Native sign trigger readback. Its CPU authored-site validation passed; Native loading, face legibility, entrance obligations and non-through-highway status remain source review checks.
+
+`stop_construction.py` stages four stop-sign cases on the authored lanes: competing vehicle inside, approaching, absent and rolling-response contrast. It rejects the signal-control exception until a separate Native control variant is authored. Its `StopStage` requests a pre-reference halt, holds while the competing path is occupied and then requests crossing; it records construction targets only, never a legal stop or hazard verdict. `tests/test_stop_entry.py` covers the authored site, wrong-sign rejection, exact case staging and controller hold/release. The pinned CPU preflight and six CPU unit tests passed. Assignment-scoped `worker_check.py --complete` passed with truthful partial status.
+
+Next: implement and test the full Native runner with four source cameras and source channels, then one primary exact saved-processing path; add signal exception construction, remaining case bundles, fallbacks, independent delivery/comparison audits and scoped strict gate. Keep status partial until those proofs pass.
+
+`stop_site.observe_stop_control` now retains exact Native stop-sign identity, four trigger vertices, other stop/signal controls and crosswalk inventory at each joined frame. A CPU fake-world test verifies valid sampling and rejects stale frames or sign identity changes. Sign face, non-through status and all entrance obligations remain explicit source-review questions.
+
+## 2026-11-22 first Native capture path
+
+Added `config.json` and `runner.py` for `stop_other_inside`. The CPU `runner.py --check` command exited 0 without starting simulation. The runner stages the authored stop-sign world and selected motor vehicles, requests a stop before the authored engineering reference, captures all four named source cameras at 20 Hz for 30 seconds, joins each sensor frame to a Native tick, retains per-frame control inventory and actor body/speed/occupancy rows, invokes the pinned PipelineCapture and seals only after lifecycle cleanup. Its original `intersection_context.json` deliberately leaves non-through-highway status, officer/signal exception and entrance obligations unresolved pending original-source review; these are not asserted by the CPU check. `stop_entry_measurements.py` now accepts only the authored approach/crossing/exit route and rejects off-route histories. Eight CPU tests pass.
+
+Next CPU work: add a hash-bound source-review receipt without editing captured originals, then a saved finalizer and a primary diagnostic process-saved proof; complete the other cases, signal exception, fallbacks, proposals and audits.
+
+## 2026-11-22 source-review and saved-finalizer checkpoint
+
+`stop_entry_measurements.py` now accepts a separate `stop_context_review.json` only when its reviewer, method, Native map/sign identities, stop-reference hierarchy, full entrance inventory and exact SHA-256 bindings to the original context, frame histories, Native control inventory and four camera files match. It never modifies captured originals. The review findings are scoped to source observations; the analyzer still leaves immediate hazard, caution, yielding and legal conclusion unresolved. A mutated camera is rejected.
+
+The same module exposes saved-only `finalize --attempt --output`. It reads immutable original sources and the review, writes three measured channels plus a review channel, invokes the pinned physical-result assessor and writes a native result without physical-acceptance or legal claims. A source-shaped three-frame diagnostic fixture exercised this path and verified the output channels/result; it is not a full media or planned-duration proof. Ten CPU tests pass. Next CPU work: bind the module into an exact construction/manifest, generate a 600-frame four-view diagnostic fixture and run `runtime.py offline`, positive/negative `compatibility`, and `process-saved` for the primary case; then complete remaining cases and audits.
+
+## 2026-11-22 first exact offline proof
+
+`construction.json` inlines the current runner, stop-site map/validator, controller, saved analyzer, config and ten CPU tests. `execution-manifest.json` binds the first exact `stop_other_inside` construction SHA and primary offline proof. `runtime.py offline` materialized this bundle under `.runtime-work/` and ran its `--check` plus ten tests successfully; its output is appended to `cpu-tests.log` and hash-bound in the manifest/result. The first invocation with a relative `--python` could not resolve the interpreter after the runtime changed working directory; rerunning with `$PWD/.venv-cpu/bin/python` succeeded. No CARLA or physical acceptance was involved.
+
+The manifest is deliberately partial: it has only the first exact case and no fallback or compatibility receipts. Next is first-case positive/negative compatibility and recorded-only process-saved proof, then the other four cases and three distinct physical-risk fallbacks each, semantic proposals, independent audits and scoped strict gate.

@@ -1,6 +1,6 @@
 # Shared CPU preparation handoff
 
-Older checkpoint sections: [2026-11-15 early archive](HANDOFF-archive-20261115-part1.md). Current sections follow.
+Older checkpoint sections: [2026-11-15 early archive, byte-exact embedded entry](archived-unbound-c129731-logs-20261122-part2.json). Current sections follow.
 
 ## 2026-11-20 C177008 returned right-turn road
 
@@ -814,7 +814,7 @@ C149752 scoped strict gate after this checkpoint returns `Preparation acceptance
 
 Pinned `runtime.py preflight` passed. C149752 now has all six ego/lead below/at/above 80-inch exact construction bundles, current construction hashes in its partial execution manifest, and returned primary offline logs. Each exact `runtime.py offline` invocation against the returned manifest exited 0 and ran four CPU unit tests; no simulation started. Its scoped `worker_check.py --complete` passed. The C149752 assignment HANDOFF lists each SHA-256 and the next proof work. The case remains partial and the strict delivery gate remains unmet.
 
-To make return capacity, sixteen C125763 and sixteen C158196 historical physical-proof logs absent from their current execution manifests and results were preserved byte-for-byte with SHA-256 in `archived-unbound-negative-logs-20261119.json`, then removed from their old paths. Restore the referenced logs from that reversible archive before completing those two assignments' physical-preparation receipts. The old opening sections of this shared handoff were moved intact to `HANDOFF-archive-20261115-part1.md`; the index at this file's top points to them. Current return inventory is 19 ready, 24 partial, 0 missing, with 8,580 files under `work/`.
+To make return capacity, sixteen C125763 and sixteen C158196 historical physical-proof logs absent from their current execution manifests and results were preserved byte-for-byte with SHA-256 in `archived-unbound-negative-logs-20261119.json`, then removed from their old paths. Restore the referenced logs from that reversible archive before completing those two assignments' physical-preparation receipts. The old opening sections of this shared handoff were moved intact to `archived-unbound-c129731-logs-20261122-part2.json`; the index at this file's top points to them. Current return inventory is 19 ready, 24 partial, 0 missing, with 8,580 files under `work/`.
 
 C149752 width follow-up: all six semantic proposal rows and selected-requirement bindings are now returned. Their inline finalizers support all six below/at/above relations; exact primary offline checks were rerun after that change and passed four CPU tests each. `ego_width_below_80in` additionally passed pinned positive/missing-source compatibility and recorded-only nine-frame saved processing with returned receipts. The assignment HANDOFF and manifest carry current construction/log/receipt hashes. It remains partial; five width cases and all width fallback/delivery proofs remain. Return inventory after the new diagnostic, recipe and receipts is 8,587 files.
 
@@ -833,3 +833,15 @@ C149752's six width primaries now each have three distinct exact camera-framing 
 C149752 deep verification correction: all eighteen width fallback compatibility bindings now point to their passing `compatibility.json` receipts with current SHA-256, after the pinned validator exposed an incorrect four-view receipt binding. Direct compatibility verification for all eleven cases, required three-fallback validation for all six width cases, physical-preparation validation and assignment-scoped `worker_check.py --complete` now pass. Status remains partial pending audits and dispatch.
 
 C149752 manifest and semantic stage validation now pass for all eleven selected cases. Six width entries have canonical Native handoff variables; the canonical cases proposal includes the unresolved qualitative judgment sweep with an updated semantic-index hash. No original-source judgment completion is claimed. Delivery/comparison audits and root dispatch bindings remain.
+
+## 2026-11-22 C149752 ready and C158190 stop-sign construction
+
+C149752 passed `worker_check.py --assignment testing__C149752__NRS-484B-127-2__heavy_vehicle_driver --complete --require-delivery-ready` after all 11 exact delivery audits, five comparison proofs, root construction refresh, and first-case receipt regeneration. It is CPU delivery prepared, with Native/physical/legal review pending. Batch now has 20 ready and 23 partial assignments. The full strict gate remains pending until all 43 are ready.
+
+C158190 NRS-484B-257-2 remains partial. Its authored type 206 stop-sign junction, Native lane/trigger validator, four stop-sign actor staging plans and pre-reference halt controller are CPU-tested. The signal-control exception and complete delivery proof chain remain worker-owned CPU work. See its HANDOFF.md and result.json.
+
+C158190 continuation: `config.json` and `runner.py` now form a CPU-checked first exact-case Native capture path with four joined camera streams, per-frame stop control/actor body sources and source-sealed cleanup. The stop-entry analyzer accepts the authored crossing/exit route and rejects off-route frames. It remains partial pending source review and the full saved-processing/proof chain. The two small C129731/C125714 log archives were merged byte-exact into `archived-unbound-c129731-logs-20261122-part2.json` to recover two returned-file slots.
+
+C158190 continuation: a separate hash-bound original-source stop-context review overlay and a saved-only finalizer now exist in `stop_entry_measurements.py`. Ten CPU tests pass, including a positive diagnostic finalizer run and stale-camera rejection. Full exact media/manifest/process-saved proofs remain worker-owned.
+
+C158190 first exact offline proof: current inline `construction.json` and one-case draft `execution-manifest.json` passed `runtime.py offline` using the absolute pinned interpreter. The runner check and ten materialized tests passed with no simulation. The package remains partial pending compatibility, process-saved, other cases, fallbacks, proposals and audits. The old 2026-11-15 shared handoff archive is now preserved byte-exact with SHA-256 in `archived-unbound-c129731-logs-20261122-part2.json`; the former standalone archive file was removed to recover returned-file capacity.
