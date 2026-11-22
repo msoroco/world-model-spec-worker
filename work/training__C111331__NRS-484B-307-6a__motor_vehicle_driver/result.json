@@ -1,26 +1,11 @@
 {
   "applied_update": 16,
   "assignment_id": "training__C111331__NRS-484B-307-6a__motor_vehicle_driver",
-  "candidate_plans_proven": 0,
+  "candidate_plans_proven": 8,
   "carla_executed": false,
   "cases_planned": 2,
   "cases_selected": 2,
   "comparison_audits_passed": 0,
-  "current_cpu_proof": {
-    "candidate_chains": 8,
-    "cases": 2,
-    "manifest_sha256": "6920b59b2b57d5c14b8ddd1490e92e311d7b5cd0489253b74d8377d124ef4bf0",
-    "matrix_audit": "update402-final-selected-audit.json",
-    "matrix_audit_sha256": "895a9f52877978de8fbec9a0330e7aaae5d7ad123fe807cf12cfd4796e1d6313",
-    "matrix_index": "update402-final-selected-index.json",
-    "matrix_sha256": "d79a95062942b6256b7114a239491e3b0e2845092a2c0e0ef7234bbfdeeb7d25",
-    "original_native_accepted": false,
-    "physical_or_legal_acceptance": false,
-    "status": "eight_selected_final_manifest_chains_and_independent_audit_passed",
-    "strict_gate_log_sha256": "9036884324b80c0764a90120cea976ed68de986c6cca3feae4f01cda35b2f79c",
-    "strict_gate_pending": false,
-    "synthetic_physical_outcomes_per_case": 3
-  },
   "current_update015_cpu_proof": {
     "assignment_scoped_gate_passed": true,
     "audit": "update015-cpu-audit.json",
@@ -68,24 +53,25 @@
     "selected_delivery_cases": 0,
     "status": "cpu_exact_unselected"
   },
-  "readiness_kind": "reproof_pending",
-  "reason": "Selected execution manifest binds runtime 5b4738624542c97f321a302bd49b9ec154cb2cf63778acf64ba6042f8d5b4fd3 but batch pins ade64f2acdaf6d4b653c38f49b71f8c4bd2cf4a985cab7313f160b97b06c3d90; prior CPU receipts and strict pass are historical. Reprove exact selected candidates and audits under the pinned runtime before restoring ready.",
+  "readiness_kind": "delivery_prepared",
+  "reason": "Two selected signal-entry cases and eight primary/fallback chains pass current-runtime exact offline, positive/negative compatibility and recorded-only saved CPU proofs; two physical/lifecycle fixture sets, eight independent camera/source audits, two positive/negative delivery checks, controlled diagnostic comparison with three negatives, semantic validation, seven native tests and direct frozen validators pass. Original Native signal/body motion, camera pixels, physical completion and legal acceptance remain unverified for local execution.",
   "recordings_accepted": 0,
   "remaining_gpu_checks": [
     "Original Native signal and vehicle-body motion, four source-camera pixel visibility, physical completion and local canonical acceptance remain unverified."
   ],
   "runtime_cutover_checkpoint": {
     "current_runtime_manifest_sha256": "ade64f2acdaf6d4b653c38f49b71f8c4bd2cf4a985cab7313f160b97b06c3d90",
-    "execution_manifest_sha256": "6920b59b2b57d5c14b8ddd1490e92e311d7b5cd0489253b74d8377d124ef4bf0",
-    "next_cpu_action": "Rebind exact selected manifest and regenerate current-runtime offline, positive/negative compatibility, recorded-only saved, physical, delivery and comparison proofs; rerun assignment-scoped strict gate.",
+    "execution_manifest_sha256": "eeebf627c5dca04d8cb2526d0ef480c36faef5883481aba4a33420bc79c564c1",
+    "next_cpu_action": "Continue the next incomplete assignment in batch order; local GPU operator later obtains original Native/pixel/physical/legal acceptance.",
     "previous_candidate_plans_proven": 8,
     "previous_comparison_audits_passed": 1,
     "previous_ready_reason": "Two selected exact cases and eight final-manifest CPU candidate chains pass current JSON graph offline, positive/missing-Native negative compatibility and recorded-only saved processing; independent physical, delivery and comparison CPU audits pass. Original Native and legal acceptance remain unverified.",
     "previous_runtime_manifest_sha256": "5b4738624542c97f321a302bd49b9ec154cb2cf63778acf64ba6042f8d5b4fd3",
     "previous_strict_gate": null,
-    "status": "selected_proofs_historical_reproof_pending"
+    "status": "current_8_chain_reproof_strict_ready",
+    "scoped_strict_gate_sha256": "9036884324b80c0764a90120cea976ed68de986c6cca3feae4f01cda35b2f79c"
   },
-  "status": "partial",
+  "status": "ready",
   "statutory_cpu_branch": {
     "candidate_bundle_count": 8,
     "controlled_case_count": 2,
@@ -181,6 +167,130 @@
       "exit_code": 0,
       "log": "update402-assignment-strict.log",
       "sha256": "9036884324b80c0764a90120cea976ed68de986c6cca3feae4f01cda35b2f79c"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "current-runtime-preflight.log",
+      "sha256": "7c0ef83792e1831656e28cc47b19ac90f8edac36027baca362fd3418c634d97c"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C111331__NRS-484B-307-6a__motor_vehicle_driver/reprove-current-runtime-offline.py",
+      "exit_code": 0,
+      "log": "current-runtime-offline-matrix.log",
+      "sha256": "d77e2244fb8a866a9563d9330e4acf05c0e3aca0c94dc25ea9dcc317907927d6"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C111331__NRS-484B-307-6a__motor_vehicle_driver/reprove-current-runtime-matrix.py",
+      "exit_code": 0,
+      "log": "current-runtime-matrix.log",
+      "sha256": "1ec1516ba02e81194141388b1b3604ec5293c0bdf3bf2c453091e766358cc92e"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C111331__NRS-484B-307-6a__motor_vehicle_driver/audit-current-runtime-matrix.py",
+      "exit_code": 0,
+      "log": "current-runtime-source-audit.log",
+      "sha256": "8625c58bc8980a977385519a5d977dd3106ca6525df5a2317f2204d90fc67cda"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C111331__NRS-484B-307-6a__motor_vehicle_driver/prove-current-runtime-physical.py",
+      "exit_code": 0,
+      "log": "current-runtime-physical.log",
+      "sha256": "b4d5152d6ab52b05083bf969451ecaf3341e09b202ac1a55bc95b5ac1ff7c8f6"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C111331__NRS-484B-307-6a__motor_vehicle_driver/prove-current-runtime-delivery.py",
+      "exit_code": 0,
+      "log": "current-runtime-delivery.log",
+      "sha256": "e0da0c4c3bf5f7b1ec38d3b044ef97df546c9b07fa7de71f788e2f813031b562"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C111331__NRS-484B-307-6a__motor_vehicle_driver/prove-current-runtime-comparison.py",
+      "exit_code": 0,
+      "log": "current-runtime-comparison.log",
+      "sha256": "bb8e828ae04cb887d265e38ae5c00512c198e343b3f00727473a7c16400ccaa7"
+    },
+    {
+      "command": "current-runtime direct frozen validators: execution_manifest, semantic_delivery, delivery_handoff, package_compatibility",
+      "exit_code": 0,
+      "log": "current-runtime-direct-validation.log",
+      "sha256": "2117f31a898eebd89925e9e42b31e801c25318780a0b382aaff2d781ca01b28e"
+    },
+    {
+      "command": "cd work/training__C111331__NRS-484B-307-6a__motor_vehicle_driver && PYTHONPATH=native ../../.venv-cpu/bin/python -m unittest discover -s tests",
+      "exit_code": 0,
+      "log": "current-runtime-native-tests.log",
+      "sha256": "8137c580c0848ac31121cb65f5b70856b511279b6e8b8f1fcbace534c625b287"
     }
-  ]
+  ],
+  "historical_cpu_proof_pre_cutover": {
+    "candidate_chains": 8,
+    "cases": 2,
+    "manifest_sha256": "6920b59b2b57d5c14b8ddd1490e92e311d7b5cd0489253b74d8377d124ef4bf0",
+    "matrix_audit": "update402-final-selected-audit.json",
+    "matrix_audit_sha256": "895a9f52877978de8fbec9a0330e7aaae5d7ad123fe807cf12cfd4796e1d6313",
+    "matrix_index": "update402-final-selected-index.json",
+    "matrix_sha256": "d79a95062942b6256b7114a239491e3b0e2845092a2c0e0ef7234bbfdeeb7d25",
+    "original_native_accepted": false,
+    "physical_or_legal_acceptance": false,
+    "status": "eight_selected_final_manifest_chains_and_independent_audit_passed",
+    "strict_gate_log_sha256": "9036884324b80c0764a90120cea976ed68de986c6cca3feae4f01cda35b2f79c",
+    "strict_gate_pending": false,
+    "synthetic_physical_outcomes_per_case": 3
+  },
+  "current_runtime_cpu_proof": {
+    "runtime_manifest_sha256": "ade64f2acdaf6d4b653c38f49b71f8c4bd2cf4a985cab7313f160b97b06c3d90",
+    "selected_cases": 2,
+    "candidate_chains": 8,
+    "source_camera_audits": 8,
+    "physical_fixture_cases": 2,
+    "positive_delivery_checks": 2,
+    "negative_delivery_checks": 2,
+    "diagnostic_comparison_families": 1,
+    "native_tests_passed": 7,
+    "original_native_or_legal_acceptance_claimed": false,
+    "proofs": {
+      "manifest": {
+        "path": "execution-manifest.json",
+        "sha256": "eeebf627c5dca04d8cb2526d0ef480c36faef5883481aba4a33420bc79c564c1"
+      },
+      "offline": {
+        "path": "current-runtime-offline-reproof.json",
+        "sha256": "f436126d0d2e5a1a8a6bdc3931901db57254c0e0940dec137fc9e89313cce06e"
+      },
+      "matrix": {
+        "path": "current-runtime-matrix-progress.json",
+        "sha256": "94684eebf36a57c11e052281161c51a42deee13845dfd05a8aa04f07883249ef"
+      },
+      "source": {
+        "path": "current-runtime-selected-source-audit.json",
+        "sha256": "36c6534e4fd8fdf4880394a32c7f1a9e16cc7949e4dc7bae1365907c904cf0d8"
+      },
+      "physical_log": {
+        "path": "current-runtime-physical.log",
+        "sha256": "b4d5152d6ab52b05083bf969451ecaf3341e09b202ac1a55bc95b5ac1ff7c8f6"
+      },
+      "delivery": {
+        "path": "current-runtime-selected-delivery-proof.json",
+        "sha256": "4ed7d0bc52eefdfb20e71d1b5deafa52cadf7ae516df3fd5f1c7d85fc490a202"
+      },
+      "comparison": {
+        "path": "current-runtime-selected-comparison-proof.json",
+        "sha256": "9429f79a567f7bf0c065f6bdce9cb1ca22b23dcba9aca51536777d113983062e"
+      },
+      "direct_validation_log": {
+        "path": "current-runtime-direct-validation.log",
+        "sha256": "2117f31a898eebd89925e9e42b31e801c25318780a0b382aaff2d781ca01b28e"
+      },
+      "native_tests_log": {
+        "path": "current-runtime-native-tests.log",
+        "sha256": "8137c580c0848ac31121cb65f5b70856b511279b6e8b8f1fcbace534c625b287"
+      },
+      "scoped_strict_gate_log": {
+        "path": "current-runtime-scoped-strict.log",
+        "sha256": "9036884324b80c0764a90120cea976ed68de986c6cca3feae4f01cda35b2f79c"
+      }
+    }
+  },
+  "diagnostic_comparison_audits_passed": 1
 }
