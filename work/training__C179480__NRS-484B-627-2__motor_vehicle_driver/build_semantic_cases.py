@@ -17,7 +17,7 @@ CASES = ('reference', 'contrast', 'safe_operation_stop', 'law_required_stop')
 VARIABLES = ('roadway_stop_placement', 'other_vehicle_hazard',
              'governing_stop_control', 'ego_stop_controller',
              'following_vehicle_controller', 'following_gap_m',
-             'hazard_center_gap_m')
+             'hazard_center_gap_m', 'governing_red_onset_s')
 
 
 def read(path):
@@ -41,6 +41,7 @@ def assignments(name, binding):
         'following_vehicle_controller': 'fixed_approach_and_gap_response',
         'following_gap_m': 9.5,
         'hazard_center_gap_m': 8.0,
+        'governing_red_onset_s': 11.0,
     }
     kinds = {item['name']: item['kind'] for item in binding['variable_parameters']}
     if set(values) != set(kinds) or set(values) != set(VARIABLES):
@@ -192,6 +193,41 @@ def build():
                 }],
                 'landmarks': [],
                 'variable_assignments': assignments('safe_operation_stop', binding),
+                'recording_description': recording,
+            }
+        elif slug == 'governing-law':
+            probe = read(HERE/'governing-law-sweep-probe.json')
+            settings = [row['red_onset_s'] for row in probe['probe_rows']]
+            if not probe['passed'] or settings != [9.0, 11.0, 13.0] or probe['original_native_observed']:
+                raise ValueError('Governing-law engineering probe changed')
+            recording = deepcopy(old['law_required_stop']['recording_description'])
+            recording['channels'].append({
+                'name': 'governing_red_onset_s', 'unit': 's',
+                'method': 'derive first red-state transition from original traffic-light readback rows; retain ego association separately',
+                'sampling_rate_hz': 20, 'time_window': 'all 600 frames / 30 seconds',
+                'reference_frame': 'original CARLA frame joined to four video sources',
+                'uncertainty': '50 ms sampling; commanded light phase may differ from observed transition; governing applicability requires independent review',
+            })
+            spec = {
+                'sweep_id': 'c179480-governing-red-onset',
+                'target_law_id': template['law_id'],
+                'judgment_refs': [item],
+                'rationale': 'Sample source-visible red onset around the measured stop while retaining the frozen other-vehicle cell, ego and follower trajectories, light identity and association history. Legal applicability and compliance remain unresolved.',
+                'status': 'complete', 'mode': 'one_dimensional',
+                'axes': [{
+                    'variable': 'governing_red_onset_s', 'observable': 'governing_red_onset_s',
+                    'unit': 's', 'min': 9.0, 'max': 13.0, 'spacing': 2.0,
+                    'measurement': {
+                        'method': 'derive first red transition from original surveyed light actor state on synchronized CARLA frames; retain ego-control association and stop history',
+                        'time_window': 'all 600 frames / 30 seconds including the complete roadway stop',
+                        'statistic': 'first',
+                    },
+                    'range_rationale': '9, 11 and 13 second synthetic phase settings yield distinct source-visible transitions before, at and after the sampled ego stop; these are engineering coverage points, not legal boundaries.',
+                    'spacing_rationale': '2 seconds includes both endpoints and one midpoint with distinct 20 Hz control histories while keeping light identity and the focal other vehicle fixed.',
+                    'feasibility_evidence': 'governing-law-sweep-probe.json, sha256 '+sha(HERE/'governing-law-sweep-probe.json')+'; synthetic control phase only; Native realization pending.',
+                }],
+                'landmarks': [],
+                'variable_assignments': assignments('law_required_stop', binding),
                 'recording_description': recording,
             }
         specs.append(spec)
