@@ -87,12 +87,46 @@
     "uncovered": "All exact branches; evidence.json has zero accepted recordings."
   },
   "observations": [
-    "public-highway status and one-way geometry",
-    "available same-direction lane count over time, not inferred from one-way label",
-    "both truck/combination identities and overall widths >=80 inches",
-    "complete body gap relative to 500 feet throughout following period",
-    "body entry/exit order and lateral clearance during pass",
-    "conditions-permit and safe occupancy context preserved for review"
+    {
+      "name": "longitudinal_body_gap",
+      "unit": "m",
+      "method": "source-bound projection of both truck bodies",
+      "time_window": "entire captured interval",
+      "reference_frame": "original Native frame",
+      "sampling_rate_hz": 20,
+      "uncertainty": "sampled only; between-frame state unresolved",
+      "mandatory": true
+    },
+    {
+      "name": "ego_overall_width",
+      "unit": "m",
+      "method": "Native single-vehicle bounding box",
+      "time_window": "entire captured interval",
+      "reference_frame": "original Native frame",
+      "sampling_rate_hz": 20,
+      "uncertainty": "sampled only; between-frame state unresolved",
+      "mandatory": true
+    },
+    {
+      "name": "lead_overall_width",
+      "unit": "m",
+      "method": "Native single-vehicle bounding box",
+      "time_window": "entire captured interval",
+      "reference_frame": "original Native frame",
+      "sampling_rate_hz": 20,
+      "uncertainty": "sampled only; between-frame state unresolved",
+      "mandatory": true
+    },
+    {
+      "name": "same_direction_lane_count",
+      "unit": "count",
+      "method": "authored map and Native lane readback",
+      "time_window": "entire captured interval",
+      "reference_frame": "original Native frame",
+      "sampling_rate_hz": 20,
+      "uncertainty": "sampled only; between-frame state unresolved",
+      "mandatory": true
+    }
   ],
   "sources": [
     {
@@ -165,5 +199,128 @@
       "source": "NRS 484B.127(2)",
       "status": "selected_required"
     }
-  ]
+  ],
+  "observation_topics": [
+    "public-highway status and one-way geometry",
+    "available same-direction lane count over time, not inferred from one-way label",
+    "both truck/combination identities and overall widths >=80 inches",
+    "complete body gap relative to 500 feet throughout following period",
+    "body entry/exit order and lateral clearance during pass",
+    "conditions-permit and safe occupancy context preserved for review"
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "both truck bodies, same-direction lane inventory, and following or passing route",
+        "interval": "entire 45-second capture"
+      },
+      {
+        "view": "approach",
+        "subject": "lead and subject truck approach, gap, and pass entry",
+        "interval": "entire 45-second capture"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "both truck widths, body-to-body gap, and adjacent lane boundary",
+        "interval": "entire 45-second capture"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "subject forward road, lead truck and overtaking occupancy",
+        "interval": "entire 45-second capture"
+      }
+    ]
+  },
+  "source_observation_mapping": {
+    "ru.truck": {
+      "evidence": "Exact source-joined CPU diagnostic measurement; Native realization remains unverified.",
+      "channels": [
+        "ego_overall_width",
+        "lead_overall_width"
+      ],
+      "source_refs": [
+        "original truck actor identities and blueprints"
+      ]
+    },
+    "ru.trailer_or_combination": {
+      "evidence": "Exact source-joined CPU diagnostic measurement; Native realization remains unverified.",
+      "channels": [
+        "ego_overall_width",
+        "lead_overall_width"
+      ],
+      "source_refs": [
+        "original truck/combination actor blueprints"
+      ]
+    },
+    "kin.extent": {
+      "evidence": "Exact source-joined CPU diagnostic measurement; Native realization remains unverified.",
+      "channels": [
+        "ego_overall_width",
+        "lead_overall_width"
+      ],
+      "source_refs": [
+        "original Native bounding boxes"
+      ]
+    },
+    "drv.following": {
+      "evidence": "Exact source-joined CPU diagnostic measurement; Native realization remains unverified.",
+      "channels": [
+        "longitudinal_body_gap"
+      ],
+      "source_refs": [
+        "source-joined truck body histories and lane identity"
+      ]
+    },
+    "rel.surface_gap": {
+      "evidence": "Exact source-joined CPU diagnostic measurement; Native realization remains unverified.",
+      "channels": [
+        "longitudinal_body_gap"
+      ],
+      "source_refs": [
+        "original-frame lead-rear to ego-front body projections"
+      ]
+    },
+    "rel.ahead_behind_in_lane": {
+      "evidence": "Exact source-joined CPU diagnostic measurement; Native realization remains unverified.",
+      "channels": [
+        "longitudinal_body_gap",
+        "same_direction_lane_count"
+      ],
+      "source_refs": [
+        "original actor lane IDs and body positions"
+      ]
+    },
+    "drv.laned_roadway": {
+      "evidence": "Exact source-joined CPU diagnostic measurement; Native realization remains unverified.",
+      "channels": [
+        "same_direction_lane_count"
+      ],
+      "source_refs": [
+        "authored map and Native lane readback"
+      ]
+    },
+    "st.lane_adjacency": {
+      "evidence": "Exact source-joined CPU diagnostic measurement; Native realization remains unverified.",
+      "channels": [
+        "same_direction_lane_count"
+      ],
+      "source_refs": [
+        "original map lane inventory"
+      ]
+    },
+    "drv.overtaking": {
+      "evidence": "Exact source-joined CPU diagnostic measurement; Native realization remains unverified.",
+      "channels": [
+        "longitudinal_body_gap",
+        "same_direction_lane_count"
+      ],
+      "source_refs": [
+        "source-joined passing-phase body history"
+      ]
+    }
+  }
 }
