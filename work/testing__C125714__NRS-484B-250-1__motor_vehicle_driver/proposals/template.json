@@ -5,19 +5,64 @@
   "quote": "The driver of a vehicle approaching an intersection shall yield the right-of-way to a vehicle which has entered the intersection from a different highway. Except as otherwise provided in subsection 4 [NRS-484B-250-4], this section does not apply at intersections controlled by official traffic-control devices or to vehicles approaching each other from opposite directions, when the driver of one of the vehicles is intending to or is making a left turn.",
   "structure": {
     "law_id": "NRS-484B-250-1",
-    "activation": {"condition": "Driver approaches a statutory intersection; another vehicle has entered that same intersection from a different highway.", "numeric_conditions": []},
-    "obligation": {"description": "Approaching driver yields the right-of-way to the entered vehicle.", "type": "yield", "numeric_conditions": []},
-    "exceptions": ["Subsection 4 qualification", "Official traffic-control device intersection exclusion", "Opposite-direction approach with one driver intending or making a left turn exclusion"],
-    "timing": {"description": "Other vehicle entry precedes ego's approach and crossing entry.", "numeric_conditions": []},
+    "activation": {
+      "condition": "Driver approaches a statutory intersection; another vehicle has entered that same intersection from a different highway.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "Approaching driver yields the right-of-way to the entered vehicle.",
+      "type": "yield",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "source_clause": "Except as otherwise provided in subsection 4 [NRS-484B-250-4]",
+        "description": "Subsection 4 qualification remains source and scope dependent."
+      },
+      {
+        "source_clause": "intersections controlled by official traffic-control devices",
+        "description": "Official device intersection exclusion."
+      },
+      {
+        "source_clause": "vehicles approaching each other from opposite directions, when the driver of one of the vehicles is intending to or is making a left turn",
+        "description": "Opposite approach with intended or actual left turn exclusion."
+      }
+    ],
+    "timing": {
+      "description": "Other vehicle entry precedes ego's approach and crossing entry.",
+      "numeric_conditions": []
+    },
     "judgment_calls_needed": [
-      {"phrase": "yield the right-of-way", "note": "No numeric yield cutoff is supplied by the statute."},
-      {"phrase": "intersection from a different highway", "note": "Median opening and separate roadway geometry require source review; body overlap alone is not legal identity."}
+      {
+        "phrase": "yield the right-of-way",
+        "note": "No numeric legal yielding boundary is supplied; report observed entry, clearance, braking and progress separately."
+      },
+      {
+        "phrase": "intersection from a different highway",
+        "note": "Statutory intersection, public access and distinct-highway identity require review beyond OpenDRIVE lane geometry."
+      }
     ]
   },
   "parameter_refs": [
-    {"name": "crossing_entry_order", "kind": "world_setup", "range_or_domain": "other first versus ego first, measured in original frames"},
-    {"name": "official_device_context", "kind": "world_setup", "range_or_domain": "source-reviewed device inventory"},
-    {"name": "approach_and_left_turn_context", "kind": "world_setup", "range_or_domain": "crossing versus opposite; separate intent and realized turn"},
-    {"name": "roadway_intersection_identity", "kind": "world_setup", "range_or_domain": "first versus second physical roadway crossing"}
+    {
+      "name": "crossing_entry_order",
+      "kind": "world_setup",
+      "range_or_domain": "other first versus ego first, measured in original frames"
+    },
+    {
+      "name": "official_device_context",
+      "kind": "world_setup",
+      "range_or_domain": "source-reviewed device inventory"
+    },
+    {
+      "name": "approach_and_left_turn_context",
+      "kind": "world_setup",
+      "range_or_domain": "crossing versus opposite; separate intent and realized turn"
+    },
+    {
+      "name": "roadway_intersection_identity",
+      "kind": "world_setup",
+      "range_or_domain": "first versus second physical roadway crossing"
+    }
   ]
 }
