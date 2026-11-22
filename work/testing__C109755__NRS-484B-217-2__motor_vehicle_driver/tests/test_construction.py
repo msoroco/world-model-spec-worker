@@ -81,9 +81,40 @@ class SavedAnalysisTests(unittest.TestCase):
             self.assertTrue(m['signal_active_at_crossing'])
             self.assertLess(m['signal_started_s'],m['crossing_time_s'])
             self.assertGreater(m['traffic_speed_observations']['oncoming']['observed_range_mps'],0)
+            response=m['traffic_response_window']
+            self.assertFalse(response['full_window_observed'])
+            self.assertEqual(response['pre_sample_count'],2)
+            self.assertEqual(response['crossing_and_post_sample_count'],2)
+            self.assertIsNotNone(response['participants']['oncoming']['mean_speed_change_mps'])
     def test_unsignaled_crossing(self):
         with tempfile.TemporaryDirectory() as temp:
             self.assertIsNone(analysis.measure(self.fixture(temp,False))['signal_started_s'])
+
+    def test_response_window_completeness_and_invalid_gap(self):
+        rows=[{'frame':index,'time_s':index/20,
+               'oncoming_body_gap_m':20-index/20,
+               'following_body_gap_m':15+index/20} for index in range(100)]
+        speeds={role:{'samples_mps':[2-index/100 for index in range(100)]}
+                for role in ('oncoming','following')}
+        complete=analysis.traffic_response(rows,2.5,speeds)
+        self.assertTrue(complete['full_window_observed'])
+        self.assertLess(complete['participants']['oncoming']['mean_speed_change_mps'],0)
+        del rows[50:53]
+        incomplete=analysis.traffic_response(rows,2.5,
+                    {role:{'samples_mps':[2-index/100 for index in range(97)]}
+                     for role in ('oncoming','following')})
+        self.assertFalse(incomplete['full_window_observed'])
+        with tempfile.TemporaryDirectory() as temp:
+            path=self.fixture(temp,True)
+            history=path/'turn-history.jsonl'
+            values=[json.loads(line) for line in history.read_text().splitlines()]
+            values[0]['oncoming_body_gap_m']=float('nan')
+            history.write_text(''.join(json.dumps(row)+'\n' for row in values))
+            acquisition=json.loads((path/'acquisition.json').read_text())
+            acquisition['turn-history.jsonl']['sha256']=hashlib.sha256(history.read_bytes()).hexdigest()
+            (path/'acquisition.json').write_text(json.dumps(acquisition))
+            with self.assertRaisesRegex(ValueError,'invalid traffic gap'):
+                analysis.measure(path)
     def test_stale_source_rejected(self):
         with tempfile.TemporaryDirectory() as temp:
             path=self.fixture(temp,True)

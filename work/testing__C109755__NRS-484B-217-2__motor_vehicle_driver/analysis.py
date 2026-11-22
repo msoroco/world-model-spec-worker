@@ -19,6 +19,44 @@ def source(attempt, acquisition, name):
     return path
 
 
+def traffic_response(rows, crossing_time_s, traffic_speed, *, flank_s=2.0):
+    """Describe physical traffic response around crossing without a legal cutoff."""
+    before=[index for index,row in enumerate(rows)
+            if crossing_time_s-flank_s<=row['time_s']<crossing_time_s]
+    after=[index for index,row in enumerate(rows)
+           if crossing_time_s<=row['time_s']<=crossing_time_s+flank_s]
+    in_window=before+after
+    maximum_gap=max((rows[b]['time_s']-rows[a]['time_s']
+                     for a,b in zip(in_window,in_window[1:])),default=None)
+    full_coverage=bool(before and after and
+                       rows[0]['time_s']<=crossing_time_s-flank_s and
+                       rows[-1]['time_s']>=crossing_time_s+flank_s and
+                       maximum_gap is not None and maximum_gap<=0.1)
+    result={'crossing_time_s':crossing_time_s,'flank_s':flank_s,
+            'pre_sample_count':len(before),'crossing_and_post_sample_count':len(after),
+            'maximum_sample_gap_s':maximum_gap,'full_window_observed':full_coverage,
+            'participants':{}}
+    for role in ('oncoming','following'):
+        speeds=traffic_speed[role]['samples_mps']
+        def summary(indices):
+            if not indices:return None
+            values=[speeds[index] for index in indices]
+            gaps=[rows[index][role+'_body_gap_m'] for index in indices]
+            return {'first_frame':rows[indices[0]]['frame'],
+                    'last_frame':rows[indices[-1]]['frame'],
+                    'mean_speed_mps':sum(values)/len(values),
+                    'minimum_body_gap_m':min(gaps),
+                    'speed_samples_mps':values,'body_gap_samples_m':gaps}
+        pre=summary(before);post=summary(after)
+        result['participants'][role]={
+            'before':pre,'crossing_and_after':post,
+            'mean_speed_change_mps':
+                post['mean_speed_mps']-pre['mean_speed_mps'] if pre and post else None,
+            'minimum_gap_change_m':
+                post['minimum_body_gap_m']-pre['minimum_body_gap_m'] if pre and post else None}
+    return result
+
+
 def measure(attempt):
     attempt=Path(attempt);acquisition=json.loads((attempt/'acquisition.json').read_text())
     history=source(attempt,acquisition,'turn-history.jsonl')
@@ -46,7 +84,9 @@ def measure(attempt):
     if first is None:raise ValueError('no observed stripe crossing')
     if not all('left_signal' in row and 'oncoming_body_gap_m' in row and 'following_body_gap_m' in row for row in rows):
         raise ValueError('signal or traffic measurements missing')
-    if any(row['oncoming_body_gap_m']<0 or row['following_body_gap_m']<0 for row in rows):
+    if any(type(row[role+'_body_gap_m']) not in (int,float) or
+           not math.isfinite(row[role+'_body_gap_m']) or row[role+'_body_gap_m']<0
+           for role in ('oncoming','following') for row in rows):
         raise ValueError('invalid traffic gap measurement')
     traffic_speed={}
     for role in ('oncoming','following'):
@@ -85,6 +125,7 @@ def measure(attempt):
             'minimum_oncoming_body_gap_m':min(r['oncoming_body_gap_m'] for r in rows),
             'minimum_following_body_gap_m':min(r['following_body_gap_m'] for r in rows),
             'traffic_speed_observations':traffic_speed,
+            'traffic_response_window':traffic_response(rows,first['time_s'],traffic_speed),
             'zone_context_sha256':acquisition['zone-context.json']['sha256'],
             'turn_history_sha256':acquisition['turn-history.jsonl']['sha256'],
             'legal_safety_and_impediment':'unresolved'}

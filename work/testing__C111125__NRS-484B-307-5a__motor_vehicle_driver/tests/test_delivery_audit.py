@@ -3,6 +3,7 @@ import importlib.util
 import json
 from pathlib import Path
 import sys
+import subprocess
 import tempfile
 import unittest
 
@@ -11,6 +12,8 @@ sys.path.insert(0,str(ROOT))
 from runner import control_step,load_scene
 from native_capture import apply_phase_sources
 from phase_source import load as load_phase_source
+from pixel_review import CAMERAS
+from pixel_review import audit as audit_pixels
 spec=importlib.util.spec_from_file_location('arrow_delivery',ROOT/'delivery_audit.py')
 delivery=importlib.util.module_from_spec(spec);spec.loader.exec_module(delivery)
 
@@ -97,17 +100,35 @@ class DeliveryAuditTests(unittest.TestCase):
             files['video_frames.jsonl'].append({'carla_frame':frame,'time_s':time_s,'video_frame':index})
         for name,values in files.items():
             (attempt/name).write_text(''.join(json.dumps(v)+'\n' for v in values))
+        for camera in CAMERAS:
+            subprocess.run(['ffmpeg','-nostdin','-hide_banner','-loglevel','error','-y',
+                            '-f','lavfi','-i','testsrc2=s=64x64:r=20',
+                            '-frames:v',str(len(xs)),'-c:v','ffv1',str(attempt/(camera+'.mkv'))],
+                           check=True,capture_output=True)
+        pixel_packet=folder/'pixel-review.json'
+        claims=['sole_straight_arrow_visible']
+        if occupied:claims.append('participant_visible')
+        write(pixel_packet,{'format':'c111125-original-pixel-review-v1',
+                            'reviewer':'CPU synthetic fixture reviewer',
+                            'observations':[{'claim':claim,'camera':'overview',
+                                             'source_sha256':sha(attempt/'overview.mkv'),
+                                             'video_frame':2 if occupied else 1,
+                                             'actor_id':7 if claim=='sole_straight_arrow_visible' else 17,
+                                             'roi_xywh':[0,0,64,64]}
+                                            for claim in claims]})
         acquisition={name:{'kind':'original_native','sha256':sha(attempt/name)} for name in
                      ('signal-head-history.jsonl','ego-body-history.jsonl','participant-history.jsonl',
                       'intersection-context.json','controller-history.jsonl',
                       'reviewed-arrow-sources/head-0.json',
-                      'reviewed-arrow-sources/head-0.mesh',*phase_names)}
+                      'reviewed-arrow-sources/head-0.mesh',*phase_names,
+                      *(camera+'.mkv' for camera in CAMERAS))}
         write(attempt/'acquisition.json',acquisition)
         write(attempt/'result.json',{'case_id':case,'setup_confirmed':True,
                                     'behavior_attempted':True,'maneuver_completed':True})
         sealed={name:sha(attempt/name) for name in (*files,'intersection-context.json',
                 'acquisition.json','acquisition-provenance.json','result.json',
-                'reviewed-arrow-sources/head-0.json','reviewed-arrow-sources/head-0.mesh',*phase_names)}
+                'reviewed-arrow-sources/head-0.json','reviewed-arrow-sources/head-0.mesh',*phase_names,
+                *(camera+'.mkv' for camera in CAMERAS))}
         write(attempt/'capture-seal.json',{'events':['capture_finished','encoders_closed','restoration_verified'],
                                            'sources':sealed})
         write(attempt/'native-exit.json',{'event':'native_exit','capture_seal_sha256':sha(attempt/'capture-seal.json')})
@@ -118,6 +139,8 @@ class DeliveryAuditTests(unittest.TestCase):
         processing=folder/'processing.json'
         write(processing,{'format':'worker-saved-processing','passed':True,'recorded_only':True,
                           'result':str(saved),'result_sha256':sha(saved),'analysis_directory':str(analysis)})
+        processed=json.loads(processing.read_text());processed['pixel_review']=str(pixel_packet)
+        write(processing,processed)
         decode=folder/'decode.json';write(decode,{'diagnostic':True})
         return attempt,processing,decode,case
 
@@ -130,6 +153,59 @@ class DeliveryAuditTests(unittest.TestCase):
                 with (attempt/'signal-head-history.jsonl').open('a') as stream:stream.write('{}\n')
                 with self.assertRaisesRegex(ValueError,'sealed original'):
                     delivery.audit(attempt,processing,decode,case,audit)
+
+    def test_pixel_review_rejects_stale_camera_and_wrong_claim_frame(self):
+        with tempfile.TemporaryDirectory() as temp:
+            attempt,processing,decode,case=self.make(Path(temp),occupied=True)
+            processed=json.loads(processing.read_text())
+            packet_path=Path(processed['pixel_review'])
+            packet=json.loads(packet_path.read_text())
+            seal=delivery.read(attempt/'capture-seal.json')
+            acquisition=delivery.read(attempt/'acquisition.json')
+            signals=delivery.rows(attempt/'signal-head-history.jsonl')
+            traffic=delivery.rows(attempt/'participant-history.jsonl')
+            context=delivery.read(attempt/'intersection-context.json')
+            def check():
+                return audit_pixels(attempt,packet_path,seal,acquisition,len(signals),True,
+                                    signals,traffic,context)
+            self.assertEqual(len(check()['observations']),2)
+            packet['observations'][0]['source_sha256']='0'*64
+            write(packet_path,packet)
+            with self.assertRaisesRegex(ValueError,'source hash differs'):
+                check()
+            packet['observations'][0]['source_sha256']=sha(attempt/'overview.mkv')
+            packet['observations'][1]['video_frame']=0
+            write(packet_path,packet)
+            with self.assertRaisesRegex(ValueError,'lawful occupied frame'):
+                check()
+            packet['observations'][1]['video_frame']=2
+            packet['observations'][0]['video_frame']=1
+            write(packet_path,packet)
+            with self.assertRaisesRegex(ValueError,'verified frame'):
+                check()
+
+    def test_pixel_review_rejects_uniform_decoded_crop(self):
+        with tempfile.TemporaryDirectory() as temp:
+            attempt,processing,_,_=self.make(Path(temp))
+            camera=attempt/'overview.mkv'
+            camera.unlink()
+            subprocess.run(['ffmpeg','-nostdin','-hide_banner','-loglevel','error','-y',
+                            '-f','lavfi','-i','color=c=green:s=64x64:r=20',
+                            '-frames:v','2','-c:v','ffv1',str(camera)],
+                           check=True,capture_output=True)
+            seal=delivery.read(attempt/'capture-seal.json')
+            acquisition=delivery.read(attempt/'acquisition.json')
+            seal['sources'][camera.name]=sha(camera)
+            acquisition[camera.name]['sha256']=sha(camera)
+            packet_path=Path(delivery.read(processing)['pixel_review'])
+            packet=delivery.read(packet_path)
+            packet['observations'][0]['source_sha256']=sha(camera)
+            write(packet_path,packet)
+            with self.assertRaisesRegex(ValueError,'lacks visible contrast'):
+                audit_pixels(attempt,packet_path,seal,acquisition,2,False,
+                             delivery.rows(attempt/'signal-head-history.jsonl'),
+                             delivery.rows(attempt/'participant-history.jsonl'),
+                             delivery.read(attempt/'intersection-context.json'))
 
     def test_rejects_live_arrow_state_against_authored_schedule(self):
         with tempfile.TemporaryDirectory() as temp:

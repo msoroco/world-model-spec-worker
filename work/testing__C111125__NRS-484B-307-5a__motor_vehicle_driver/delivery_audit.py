@@ -6,6 +6,7 @@ from pathlib import Path
 
 from arrow_source import load_binding
 from phase_source import entry_observation, load as load_phase_source
+from pixel_review import audit as audit_pixels
 
 
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
@@ -221,11 +222,16 @@ def audit(attempt,processing,decode_receipt,case_id,media_verify=None):
     video=Path(processed.get('analysis_directory',''))/'raw.mkv'
     if not video.is_file():raise ValueError('saved primary video missing')
     media_verify(video,decode_receipt,len(mapping),mapping_sha256=sha(attempt/'video_frames.jsonl'))
+    pixel_path=Path(processed.get('pixel_review',''))
+    if not pixel_path.is_file():
+        raise ValueError('source-bound original pixel review absent')
+    visual=audit_pixels(attempt,pixel_path,seal,acquisition,len(mapping),occupied,
+                        signals,traffic,read(attempt/'intersection-context.json'))
     return {'format':'worker-delivery-audit','passed':True,'case_id':case_id,
             'native_result_sha256':sha(attempt/'result.json'),'frame_count':len(mapping),
             'trace_sha256':sha(attempt/'trace.jsonl'),'frame_map_sha256':sha(attempt/'video_frames.jsonl'),
             'video_sha256':sha(video),'source_decode_receipt_sha256':sha(decode_receipt),
-            'measurement':measured,'legal_verdict':None}
+            'measurement':measured,'pixel_review':visual,'legal_verdict':None}
 
 
 def main():
